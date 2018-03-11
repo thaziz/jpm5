@@ -1,0 +1,239 @@
+<?php
+
+namespace App\Http\Controllers\sales;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests;
+
+
+class do_Controller extends Controller
+{
+    public function table_data_detail (Request $request) {
+        $nomor =$request->input('nomor');
+        $sql = "    SELECT d.id, d.kode_item, i.nama,d.jumlah, d.satuan, d.keterangan, d.total, d.nomor_so FROM delivery_orderd d,item i
+                    WHERE i.kode=d.kode_item AND d.nomor='$nomor' ";
+        
+        $list = DB::select($sql);
+        $data = array();
+        foreach ($list as $r) {
+            $data[] = (array) $r;
+        }
+        $i=0;
+        foreach ($data as $key) {
+            // add new button
+            $data[$i]['button'] = ' <div class="btn-group">
+                                        <button type="button" id="'.$data[$i]['id'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                    </div> ';
+            $i++;
+        }
+        $datax = array('data' => $data);
+        echo json_encode($datax);
+    }
+    
+    public function table_data_item () {        
+        $list = DB::select(DB::raw(" SELECT kode,nama,kode_satuan FROM item "));
+        $data = array();
+        foreach ($list as $r) {
+            $data[] = (array) $r;
+        }
+        $i=0;
+        foreach ($data as $key) {
+            // add new button
+            $data[$i]['button'] = ' <div class="btn-group">
+                                        <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Pilih" class="btn btn-warning btn-xs btnpilih" ><i class="glyphicon glyphicon-ok"></i></button>
+                                    </div> ';
+            $i++;
+        }
+        $datax = array('data' => $data);
+        echo json_encode($datax);
+    }
+    
+    public function get_item (Request $request) {
+        $id =$request->input('id');
+        $data = DB::select(DB::raw(" SELECT kode,nama,kode_satuan,harga FROM item WHERE kode='$id' "));
+        echo json_encode($data);
+    }
+
+    public function get_data_detail (Request $request) {
+        $id =$request->input('id');
+        $sql = "    SELECT d.id, d.kode_item, i.nama,d.jumlah, d.satuan, d.keterangan, d.total, d.nomor_so FROM delivery_orderd d,item i
+                    WHERE i.kode=d.kode_item AND d.id='$id' ";
+        
+        $data = DB::select($sql);
+        echo json_encode($data);
+    }
+    
+    public function jumlah_data_detail (Request $request) {
+        $nomor =$request->input('nomor');
+        $sql = "SELECT COUNT(id) jumlah FROM delivery_orderd  WHERE nomor='$nomor' ";
+        $data = DB::select($sql);
+        echo json_encode($data);
+    }
+
+    public function save_data_detail (Request $request) {
+        $simpan='';
+        $crud = $request->crud;
+        $data = array(
+                'nomor' => strtoupper($request->ed_nomor),
+                'nomor_so' => strtoupper($request->ed_so),
+                'kode_item' => strtoupper($request->ed_kode_item),
+                'kode_angkutan' => $request->cb_angkutan,
+                'no_surat_jalan' => strtoupper($request->ed_surat_jalan),
+                'nopol' => strtoupper($request->ed_nopol),
+                'lebar' => filter_var($request->ed_lebar, FILTER_SANITIZE_NUMBER_INT),
+                'panjang' => filter_var($request->ed_panjang, FILTER_SANITIZE_NUMBER_INT),
+                'tinggi' => filter_var($request->ed_tinggi, FILTER_SANITIZE_NUMBER_INT),
+                'jumlah' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
+                'satuan' => strtoupper($request->ed_satuan),
+                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                'biaya_penerus' => filter_var($request->ed_biaya_penerus, FILTER_SANITIZE_NUMBER_INT),
+                'diskon' => filter_var($request->ed_diskon, FILTER_SANITIZE_NUMBER_INT),
+                'total' => filter_var($request->ed_total_harga, FILTER_SANITIZE_NUMBER_INT),
+                'keterangan' => strtoupper($request->ed_keterangan),
+            );
+        
+        if ($crud == 'N') {
+            $simpan = DB::table('delivery_orderd')->insert($data);
+        }elseif ($crud == 'E') {
+            $simpan = DB::table('delivery_orderd')->where('id', $request->ed_id)->update($data);
+        }
+        if($simpan == TRUE){
+            $result['error']='';
+            $result['result']=1;
+        }else{
+            $result['error']=$data;
+            $result['result']=0;
+        }
+        $result['crud']=$crud;
+        echo json_encode($result);
+    }
+    
+    public function save_data (Request $request) {
+        $simpan='';
+        $crud = $request->crud_h;
+        $data = array(
+                'nomor' => strtoupper($request->ed_nomor),
+                'tanggal' => $request->ed_tanggal,
+                'id_kota_asal' => $request->cb_kota_asal,
+                'id_kota_tujuan' => $request->cb_kota_tujuan,
+                'pendapatan' => $request->pendapatan,
+                'type_kiriman' => $request->type_kiriman,
+                'jenis_pengiriman' => $request->jenis_kiriman,
+                'kode_outlet' => $request->cb_outlet,
+                'biaya_tambahan' => filter_var($request->ed_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
+                'biaya_komisi' => filter_var($request->ed_biaya_komisi, FILTER_SANITIZE_NUMBER_INT),
+                'kode_customer' => $request->cb_customer,
+                'kode_marketing' => $request->cb_marketing,
+                'ppn' => $request->ck_ppn,
+                'nama_pengirim' => strtoupper($request->ed_nama_pengirim),
+                'alamat_pengirim' => strtoupper($request->ed_alamat_pengirim),
+                'telpon_pengirim' => strtoupper($request->ed_telpon_pengirim),
+                'nama_penerima' => strtoupper($request->ed_nama_penerima),
+                'alamat_penerima' => strtoupper($request->ed_alamat_penerima),
+                'telpon_penerima' => strtoupper($request->ed_telpon_penerima),
+            /*
+                'total' => filter_var($request->ed_total, FILTER_SANITIZE_NUMBER_INT),
+                'diskon' => filter_var($request->ed_diskon_m, FILTER_SANITIZE_NUMBER_INT),
+                'total_net' => filter_var($request->ed_total_net, FILTER_SANITIZE_NUMBER_INT),
+                 */
+            );
+        
+        if ($crud == 'N') {
+            if ($request->ed_nomor_old == '') {
+                $simpan = DB::table('delivery_order')->insert($data);
+            } elseif ($request->ed_nomor_old != '') {
+                $simpan = DB::table('delivery_order')->where('nomor', $request->ed_nomor)->update($data);
+            }            
+        } elseif ($crud == 'E') {
+            $simpan = DB::table('delivery_order')->where('nomor', $request->ed_nomor)->update($data);
+        }
+        if($simpan == TRUE){
+            $result['error']='';
+            $result['result']=1;
+        }else{
+            $result['error']=$data;
+            $result['result']=0;
+        }
+        $result['crud']=$crud;
+        echo json_encode($result);
+    }
+
+    public function hapus_data_detail (Request $request) {
+        $hapus='';
+        $id=$request->id;
+        $hapus = DB::table('delivery_orderd')->where('id' ,'=', $id)->delete();
+        if($hapus == TRUE){
+            $result['error']='';
+            $result['result']=1;
+        }else{
+            $result['error']=$hapus;
+            $result['result']=0;
+        }
+        echo json_encode($result);
+    }
+
+    public function index(){
+        $sql = "    SELECT d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net
+                    FROM delivery_order d
+                    LEFT JOIN kota k ON k.id=d.id_kota_asal 
+                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan ";
+        
+        $do =  DB::select($sql);
+        return view('sales.do.index',compact('do'));
+    }
+    
+    public function form(){
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT nopol FROM kendaraan ");
+        $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
+        $angkutan = DB::select(" SELECT kode,nama FROM angkutan ORDER BY nama ASC ");
+        $outlet = DB::select(" SELECT kode,nama FROM outlet WHERE kode<>'NON OUTLET' ");
+        //$item = DB::select(DB::raw(" SELECT kode,nama,kode_satuan FROM item "));
+        return view('sales.do.form',compact('kota','customer', 'kendaraan', 'marketing', 'angkutan', 'outlet'));
+    }
+    
+    public function cari_harga(Request $request){
+        $pendapatan =$request->input('pendapatan');
+        $asal = $request->input('asal');
+        $tujuan = $request->input('tujuan');
+        $tipe = $request->input('tipe');
+        $jenis = $request->input('jenis');
+        $angkutan = $request->input('angkutan');
+        if ($tipe == 'DOKUMEN') {
+            $sql = " SELECT harga FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' ";
+        } else if ($tipe == 'KARGO PAKET' or $tipe == 'KARGO KERTAS') {
+            $sql = " SELECT harga FROM tarif_cabang_kargo WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_angkutan='$angkutan' ";
+        } else if ($tipe == 'KILOGRAM') {
+            $berat = $request->input('berat');
+            if ($berat <= 10) {
+                $keterangan = 'TARIF 0 KG SAMPAI 10 KG';
+            } else if ($berat > 10 and $berat <= 20) {
+                $keterangan = 'TARIF 10 KG SAMPAI 20 KG';
+            } else if ($berat > 20) {
+                $keterangan = 'TARIF DIATAS 20 KG';
+            }
+            $sql = " SELECT harga FROM tarif_cabang_kilogram WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND keterangan='$keterangan' ";
+        } else if ($tipe == 'KOLI') {
+            $berat = $request->input('berat');
+            if ($berat <= 10) {
+                $keterangan = 'TARIF 0 KG SAMPAI 10 KG';
+            } else if ($berat > 10 and $berat <= 20) {
+                $keterangan = 'TARIF 10 KG SAMPAI 20 KG';
+            } else if ($berat > 20 and $berat <= 30) {
+                $keterangan = 'TARIF 20 KG SAMPAI 30 KG';
+            } else if ($berat > 30) {
+                $keterangan = 'TARIF DIATAS 30 KG';
+            }
+            $sql = " SELECT harga FROM tarif_cabang_koli WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND keterangan='$keterangan' ";
+        }else if ($tipe == 'KERTAS') {
+            $sql = " SELECT harga FROM tarif_cabang_kilogram WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND keterangan='$keterangan' ";
+        }    
+        $harga = DB::select($sql);
+        //$harga = number_format($harga[0].harga, 0, ",", ".");
+        return json_encode($harga);
+    }
+
+}

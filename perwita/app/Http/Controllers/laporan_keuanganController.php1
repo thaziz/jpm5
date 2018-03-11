@@ -1,0 +1,372 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Http\Requests;
+use Session;
+use Carbon\carbon;
+use DB;
+
+class laporan_keuanganController extends Controller {
+
+    public function neraca() {
+        $comp = Session::get('mem_comp');
+        $year =Session::get('comp_year');
+        $tgl_now = Carbon::now()->format('Y-m-d');
+        $asset = DB::select(DB::raw("select *,coa_opening + (select COALESCE(sum(jrdt_value),0) from d_jurnal_dt
+                        where jrdt_id in (select jr_id from d_jurnal where jr_comp = coa_comp and jr_year = coa_year
+			and jr_tgl BETWEEN '2016-01-01' and '$tgl_now' )
+                        and jrdt_acc = coa_code) as COAend
+                        from d_comp_coa
+                        where coa_comp = '$comp' and coa_year = '$year'
+                        and coa_code like '1%'
+                        and (coa_isparent = 1 or coa_isactive = 1)
+                        order by coa_code"));
+        $total_asset = 0;
+        foreach ($asset as $asset_total) {
+            $total_asset+=$asset_total->COAend;
+        }
+
+        $kewajiban_modal = DB::select(DB::raw("select *,SUBSTRING(coa_code,1,1) as coa_kategori,coa_opening + (select COALESCE(sum(jrdt_value),0) from d_jurnal_dt
+                        where jrdt_id in (select jr_id from d_jurnal where jr_comp = coa_comp and jr_year = coa_year
+                        and jr_tgl BETWEEN '2016-01-01' and  '$tgl_now')
+                        and jrdt_acc = coa_code) as COAend
+                        from d_comp_coa
+                        where coa_comp = '$comp' and coa_year = '$year'
+                        and (coa_code like '2%' or coa_code like '3%')
+                        and (coa_isparent = 1 or coa_isactive = 1)
+                        order by coa_code"));
+        $total_kewajiban_modal = 0;
+        foreach ($kewajiban_modal as $km) {
+            $total_kewajiban_modal+=$km->COAend;
+        }
+        return view('laporan.neraca', compact('asset', 'total_asset', 'kewajiban_modal', 'total_kewajiban_modal', 'tgl_now'));
+    }
+
+    public function cari_neraca(Request $request) {
+
+        $comp = Session::get('mem_comp');
+        $year =Session::get('comp_year');
+        $tgl_now = $request->tanggal;
+        if (!empty($tgl_now)) {
+            $asset = DB::select(DB::raw("select *,coa_opening + (select sum(jrdt_value) from d_jurnal_dt
+                        where jrdt_id in (select jr_id from d_jurnal where jr_comp = coa_comp and jr_year = coa_year
+			and jr_tgl BETWEEN '$year-01-01' and '$tgl_now' )
+                        and jrdt_acc = coa_code) as COAend
+                        from d_comp_coa
+                        where coa_comp = '$comp' and coa_year = '$year'
+                        and coa_code like '1%'
+                        and (coa_isparent = 1 or coa_isactive = 1)
+                        order by coa_code"));
+            $total_asset = 0;
+            foreach ($asset as $asset_total) {
+                $total_asset+=$asset_total->COAend;
+            }
+            $kewajiban_modal = DB::select(DB::raw("select *,SUBSTRING(coa_code,1,1) as coa_kategori,coa_opening + (select sum(jrdt_value) from d_jurnal_dt
+                        where jrdt_id in (select jr_id from d_jurnal where jr_comp = coa_comp and jr_year = coa_year
+                        and jr_tgl BETWEEN '$year-01-01' and  '$tgl_now')
+                        and jrdt_acc = coa_code) as COAend
+                        from d_comp_coa
+                        where coa_comp = '$comp' and coa_year = '$year'
+                        and (coa_code like '2%' or coa_code like '3%')
+                        and (coa_isparent = 1 or coa_isactive = 1)
+                        order by coa_code"));
+            $total_kewajiban_modal = 0;
+            foreach ($kewajiban_modal as $km) {
+                $total_kewajiban_modal+=$km->COAend;
+            }
+            return view('laporan.neraca', compact('asset', 'total_asset', 'kewajiban_modal', 'total_kewajiban_modal', 'tgl_now'));
+        }
+    }
+
+    public function labarugi() {
+        $comp = Session::get('mem_comp');
+        $year =Session::get('comp_year');
+        $tgl1 = Carbon::now()->format('Y-m-d');
+        $tgl2 = Carbon::now()->format('Y-m-d');
+
+//pendapatan ada isi
+        $pendapatan = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('10','11','12')
+                        group by tr_code order by tr_code"));
+        $total_pendapata = 0;
+        foreach ($pendapatan as $total_pendapatan) {
+            $total_pendapata+=$total_pendapatan->jum;
+        }
+//hpp ada isi
+        $hpp = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('20','21')
+                        group by tr_code order by tr_code"));
+        $total_hpp = 0;
+        foreach ($hpp as $total) {
+            $total_hpp+=$total->jum;
+        }
+
+//expenses ada isi
+        $expenses = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('30')
+                        group by tr_code order by tr_code"));
+
+        $total_expenses = 0;
+        foreach ($expenses as $total) {
+            $total_expenses+=$total->jum;
+        }
+
+
+//kosong
+        $depresiasi = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('41')
+                        group by tr_code order by tr_code
+                            "));
+        $total_depresiasi = 0;
+        foreach ($depresiasi as $total) {
+            $total_depresiasi+=$total->jum;
+        }
+//kosong amortisasi 
+        $amortisasi = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('42')
+                        group by tr_code order by tr_code
+                            "));
+        $total_amortisasi = 0;
+        foreach ($amortisasi as $total) {
+            $total_amortisasi+=$total->jum;
+        }
+//pendapatanlain    ada
+        $pendapatanlain = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('51')
+                        group by tr_code order by tr_code
+                            "));
+        $total_pendapatanlain = 0;
+        foreach ($pendapatanlain as $total) {
+            $total_pendapatanlain+=$total->jum;
+        }
+//kosong pengeluaranlain
+        $pengeluaranlain = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('52')
+                        group by tr_code order by tr_code
+                            "));
+        $total_pengeluaranlain = 0;
+        foreach ($pengeluaranlain as $total) {
+            $total_pengeluaranlain+=$total->jum;
+        }
+        //bungga investasi
+        $bunggainvesi = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('61')
+                        group by tr_code order by tr_code
+                            "));
+        $total_bunggainvesi = 0;
+        foreach ($bunggainvesi as $total) {
+            $total_bunggainvesi+=$total->jum;
+        }
+        //pajak kosong
+        $pajak = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'
+                        and tt_code in ('62')
+                        group by tr_code order by tr_code
+                            "));
+
+        $total_pajak = 0;
+        foreach ($pajak as $total) {
+            $total_pajak+=$total->jum;
+        }
+
+
+
+        return view('laporan.labarugi', compact('pendapatan', 'hpp', 'expenses', 'depresiasi', 'amortisasi', 'pendapatanlain', 'pengeluaranlain', 'bunggainvesi', 'pajak', 'date1', 'date2', 'total_pendapata', 'total_hpp'
+                        , 'total_expenses'
+                        , 'total_depresiasi', 'total_pendapatanlain', 'total_pengeluaranlain'
+                        , 'total_bunggainvesi', 'total_pajak', 'tgl1', 'tgl2'));
+    }
+
+    public function carilabarugi(Request $req) {
+        $comp = Session::get('mem_comp');
+        $year =Session::get('comp_year');
+        $tgl1 = $req->tanggal1;
+        $tgl2 = $req->tanggal2;
+        if (!empty($req))
+            ; {
+            $pendapatan = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year' and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('10','11','12')
+                        group by tr_code order by tr_code"));
+            $total_pendapata = 0;
+            foreach ($pendapatan as $total_pendapatan) {
+                $total_pendapata+=$total_pendapatan->jum;
+            }
+//hpp ada isi
+            $hpp = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year'and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('20','21')
+                        group by tr_code order by tr_code"));
+            $total_hpp = 0;
+            foreach ($hpp as $total) {
+                $total_hpp+=$total->jum;
+            }
+
+//expenses ada isi
+            $expenses = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year' and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('30')
+                        group by tr_code order by tr_code"));
+
+            $total_expenses = 0;
+            foreach ($expenses as $total) {
+                $total_expenses+=$total->jum;
+            }
+
+
+//kosong
+            $depresiasi = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year' and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('41')
+                        group by tr_code order by tr_code
+                            "));
+            $total_depresiasi = 0;
+            foreach ($depresiasi as $total) {
+                $total_depresiasi+=$total->jum;
+            }
+//kosong amortisasi 
+            $amortisasi = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year' and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('42')
+                        group by tr_code order by tr_code
+                            "));
+            $total_amortisasi = 0;
+            foreach ($amortisasi as $total) {
+                $total_amortisasi+=$total->jum;
+            }
+//pendapatanlain    ada
+            $pendapatanlain = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year' and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('51')
+                        group by tr_code order by tr_code
+                            "));
+            $total_pendapatanlain = 0;
+            foreach ($pendapatanlain as $total) {
+                $total_pendapatanlain+=$total->jum;
+            }
+//kosong pengeluaranlain
+            $pengeluaranlain = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year' and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('52')
+                        group by tr_code order by tr_code
+                            "));
+            $total_pengeluaranlain = 0;
+            foreach ($pengeluaranlain as $total) {
+                $total_pengeluaranlain+=$total->jum;
+            }
+            //bungga investasi
+            $bunggainvesi = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year' and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('61')
+                        group by tr_code order by tr_code
+                            "));
+            $total_bunggainvesi = 0;
+            foreach ($bunggainvesi as $total) {
+                $total_bunggainvesi+=$total->jum;
+            }
+            //pajak kosong
+            $pajak = DB::select(DB::raw("select tr_code,tr_name,sum(tt_income*jr_value) as jum from d_jurnal dj
+                        left join m_trans_cat on left(jr_trans,2) = tt_code
+                        left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                        where jr_comp = '$comp' and jr_year = '$year' and jr_tgl BETWEEN '$tgl1' and '$tgl2'
+                        and tt_code in ('62')
+                        group by tr_code order by tr_code
+                            "));
+            $total_pajak = 0;
+            foreach ($pajak as $total) {
+                $total_pajak+=$total->jum;
+            }
+            return view('keuangan.labarugi', compact('pendapatan', 'hpp', 'expenses', 'depresiasi', 'amortisasi', 'pendapatanlain', 'pengeluaranlain', 'bunggainvesi', 'pajak', 'date1', 'date2', 'total_pendapata', 'total_hpp', 'total_expenses', 'total_depresiasi', 'total_pendapatanlain', 'total_pengeluaranlain', 'total_bunggainvesi', 'total_pajak', 'tgl1', 'tgl2'));
+        }
+        return redirect('labarugi');
+    }
+    
+    
+    public function aruskas() {
+		
+        $comp = Session::get('mem_comp');
+        $year =Session::get('comp_year');
+        $tgl1 = Carbon::now()->format('Y-m-d');
+        $tgl2 = Carbon::now()->format('Y-m-d');
+        $comp = Session::get('mem_comp');
+        $ocf = DB::select(DB::raw("select tr_code,tr_name,sum(jr_value*tr_cashflow) as jum     from d_jurnal dj
+                left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                where jr_comp = '$comp' and jr_year = '$year'
+                and tr_cashtype ='O'
+                group by tr_code order by tr_code"));
+        //dd($ocf);
+        $total_ocf = 0;
+        foreach ($ocf as $data_ocf) {
+            $total_ocf=$total_ocf+$data_ocf->jum;
+        }
+
+        $icf = DB::select(DB::raw("select tr_code,tr_name,sum(jr_value*tr_cashflow) as jum
+                from d_jurnal dj
+                left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                where jr_comp = '$comp' and jr_year = '$year'
+                and tr_cashtype ='I'
+                group by tr_code order by tr_code"));
+        $total_icf = 0;
+        foreach ($icf as $data_icf) {
+			$total_icf=$total_icf+$data_icf->jum;
+        }
+        
+        $fcf = DB::select(DB::raw("select tr_code,tr_name,sum(jr_value*tr_cashflow) as jum
+                from d_jurnal dj
+                left join d_comp_trans on jr_comp = tr_comp and jr_year = tr_year and jr_trans = tr_code
+                where jr_comp = '$comp' and jr_year = '$year'
+                and tr_cashtype ='F'
+                group by tr_code order by tr_code"));
+        $total_fcf = 0;
+        foreach ($fcf as $data_fcf) {
+            $total_fcf=$total_fcf+$data_fcf->jum;
+        }
+        return view('laporan.arus_kas', compact('ocf', 'icf', 'fcf', 'total_fcf','tgl1','tgl2'));
+    }
+     
+
+}
