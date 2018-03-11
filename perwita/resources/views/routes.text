@@ -1,0 +1,144 @@
+//**** PENJUALAN***
+// Master Sales
+
+
+//item
+Route::get('mastersales/item', function(){
+        return view('master_sales.item.index');
+});
+
+//group grup item
+Route::get('mastersales/grupitem', function(){
+        return view('master_sales.grupitem.index');
+});
+
+//customer
+Route::get('mastersales/customer', function(){
+        return view('master_sales.customer.index');
+});
+
+//biaya
+Route::get('mastersales/biaya', function(){
+        return view('master_sales.biaya.index');
+});
+
+//saldo piutang
+Route::get('mastersales/saldopiutang', function(){
+        return view('master_sales.saldo_piutang.index');
+});
+
+//Piutang lain
+Route::get('mastersales/saldoawalpiutanglain', function(){
+        return view('master_sales.piutang_lain.index');
+});
+Route::get('mastersales/saldoawalpiutanglainform', function(){
+        return view('master_sales.piutang_lain.form');
+});
+
+//cabang
+Route::get('mastersales/cabang', function(){
+        return view('master_sales.cabang.index');
+});
+
+//Tipe Angkutan
+Route::get('mastersales/tipeangkutan', function(){
+        return view('master_sales.tipe_angkutan.index');
+});
+
+//Nomor seri pajak
+Route::get('mastersales/nomorseripajak', function(){
+        return view('master_sales.nomor_seri_pajak.index');
+});
+
+
+// sales order
+
+Route::get('sales/salesorder', function(){
+        return view('sales.so.index');
+});
+
+Route::get('sales/salesorderform', 'so_Controller@index');;
+
+// delivery order cabang
+Route::get('sales/deliveryordercabang', function(){
+        return view('sales.do_cabang.index');
+});
+
+Route::get('sales/deliveryordercabangform', function(){
+        return view('sales.do_cabang.form');
+});
+
+//update status order cabang
+Route::get('sales/updatestatusorder', function(){
+        return view('sales.do_cabang.update_status');
+});
+
+//tracking dekivery order cabang
+Route::get('sales/deliveryordercabangtracking', function(){
+        return view('sales.do_cabang.tracking');
+});
+
+
+// delivery order
+Route::get('sales/deliveryorder', function(){
+        return view('sales.do.index');
+});
+
+Route::get('sales/deliveryorderform', function(){
+        return view('sales.do.form');
+});
+
+//nota penjualan
+Route::get('sales/notapenjualan', function(){
+        return view('sales.nota.index');
+});
+
+Route::get('sales/notapenjualanform', function(){
+        return view('sales.nota.form');
+});
+
+//fakturpajak
+Route::get('sales/fakturpajak', function(){
+        return view('sales.faktur_pajak.index');
+});
+
+Route::get('sales/fakturpajakform', function(){
+        return view('sales.faktur_pajak.form');
+});
+
+//penerimaanpenjualan
+Route::get('sales/penerimaanpenjualan', function(){
+        return view('sales.penerimaan_penjualan.index');
+});
+
+Route::get('sales/penerimaanpenjualanform', function(){
+        return view('sales.penerimaan_penjualan.form');
+});
+
+//Route::get('sales/salesorderform', 'so_Controller@so_form');
+
+// LAPORAN PENJUALAN
+//laporan sales order
+Route::get('sales/laporansalesorder', function(){
+        return view('laporan_sales.so.index');
+});
+
+//laporan delivery order
+Route::get('sales/laporandeliveryorder', function(){
+        return view('laporan_sales.do.index');
+});
+
+//laporan penjualan
+Route::get('sales/laporaninvoicepenjualan', function(){
+        return view('laporan_sales.penjualan.index');
+});
+
+//laporan penjualan per item
+Route::get('sales/laporaninvoicepenjualanperitem', function(){
+        return view('laporan_sales.penjualan_per_item.index');
+});
+
+//kartu piutang
+Route::get('sales/laporankartupiutang', function(){
+        return view('laporan_sales.kartu_piutang.index');
+});
