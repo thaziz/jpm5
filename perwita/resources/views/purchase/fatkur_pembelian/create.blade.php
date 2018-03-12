@@ -447,7 +447,7 @@
                                     </div>
                                                   
                                     <div class="modal-body">              
-                                    <table class="table table-stripped">
+                                    <table class="table table-stripped tabel_tt">
                                       <tr>
                                         <td width="150px">
                                           No Tanda Terima
