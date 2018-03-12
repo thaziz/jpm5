@@ -363,7 +363,7 @@ $('.nama-kontak-vendor1').change(function(){
 $('.simpan_penerus').click(function(){
 	$.ajax({    
             type :"get",
-            data : 'cab='+cabang+'&'+'supp='+ven+'&'+'jenis='+agen,
+            data : $('.tabel_tt :input').serialize(),
             url : baseUrl + '/fakturpembelian/simpan_tt1',
             dataType:'json',
             success : function(data){
