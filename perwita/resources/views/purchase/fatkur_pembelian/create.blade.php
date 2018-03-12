@@ -541,7 +541,7 @@
 
                                       <div class="modal-footer">
                                           <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="button" class="btn btn-primary" id="buttonsimpan_tt">Simpan</button>
+                                          <button type="button" class="btn btn-primary simpan_penerus" id="buttonsimpan_tt">Simpan</button>
                                          
                                       </div>
                                       
@@ -3498,10 +3498,7 @@ $(document).ready(function(){
       data:{vendor,cabang},
       type:'get',
       success:function(response){
-
-        var persen = parseInt(response.persen[0].persen);
-        id_persen  = response.persen[0].kode;
-        $('.master_persen').val(persen);
+       $('.agen_dropdown').html(response);
       }
 
     })
@@ -3528,19 +3525,16 @@ $(document).ready(function(){
 
     })
 
-      $.ajax({
+    $.ajax({
       url:baseUrl + '/fakturpembelian/rubahVen',
       data:{vendor,cabang},
       type:'get',
       success:function(response){
-        
-        var persen = parseInt(response.persen[0].persen);
-        id_persen  = response.persen[0].kode;
-        $('.master_persen').val(persen);
+       $('.vendor_dropdown').html(response);
       }
 
     })
- 
+
     }else{
       $('.nama-kontak-kosong').attr('hidden',false);
       $('.nama-kontak-agen').attr('hidden',true);
@@ -3815,6 +3809,8 @@ $(document).ready(function(){
     }
    
    function save_biaya(){
+      var cabang = $('.cabang').val();
+
     swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Biaya Penerus!",
@@ -3834,8 +3830,8 @@ $(document).ready(function(){
 
       $.ajax({
       url:baseUrl + '/fakturpembelian/save_agen',
-      type:'post',
-      data:'id_persen='+id_persen+'&'+$('.head1 .nofaktur').serialize()+'&'+ $('.head-biaya :input').serialize()+'&'+ datatable1.$('input').serialize()+'&'+$('.head_atas').serialize(),
+      type:'get',
+      data:'id_persen='+id_persen+'&'+$('.head1 .nofaktur').serialize()+'&'+ $('.head-biaya :input').serialize()+'&'+ datatable1.$('input').serialize()+'&'+$('.head_atas').serialize()+'&'+'cab='+cabang,
       success:function(response){
         swal({
         title: "Berhasil!",
@@ -3875,7 +3871,7 @@ function  cari_outlet(){
 
     })
 }
-
+///////////////////////////////////////////////
 $('#tmbhdataitem').click(function(){
        cabang = $('.cabang').val();
        $.ajax({

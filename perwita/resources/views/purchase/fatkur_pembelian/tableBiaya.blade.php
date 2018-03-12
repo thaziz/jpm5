@@ -51,26 +51,16 @@
  <tr hidden="" class="nama-kontak-agen">
  	<td style="width: 100px">Nama Kontak </td>
  	<td width="10">:</td>
- 	<td width="200">
- 		<select name="nama_kontak1" class="form-control nama-kontak-agen1  chosen-select-width1" style="text-align: center; width: 250px;">
- 			<option value="0">- Pilih - Agen -</option>
- 			@foreach($agen as $val)
- 			<option value="{{$val->kode}}">{{$val->nama}}</option>
- 			@endforeach
- 		</select>
+ 	<td width="200" class="agen_dropdown">
+
  	</td>
  </tr>
  <!-- NAMA KONTAK VENDOR -->
   <tr hidden="" class="nama-kontak-vendor">
  	<td style="width: 100px">Nama Kontak </td>
  	<td width="10">:</td>
- 	<td width="200">
- 		<select name="nama_kontak2" class="form-control nama-kontak-vendor1 chosen-select-width1" style="text-align: center; width: 250px;">
- 			<option value="0">- Pilih - Vendor -</option>
- 			@foreach($vendor as $val)
- 			<option value="{{$val->kode}}">{{$val->nama}}</option>
- 			@endforeach
- 		</select>
+ 	<td width="200" class="vendor_dropdown">
+
  	</td>
  </tr>
  <tr>
@@ -360,4 +350,16 @@ $('.nama-kontak-vendor1').change(function(){
             }
         })
     })
+
+$('.simpan_penerus').click(function(){
+	$.ajax({    
+            type :"get",
+            data : 'cab='+cabang+'&'+'supp='+ven+'&'+'jenis='+agen,
+            url : baseUrl + '/fakturpembelian/simpan_tt1',
+            dataType:'json',
+            success : function(data){
+            	toastr.success('Form Tanda terima berjhasil disimpan');
+            }
+        })
+})
 </script>

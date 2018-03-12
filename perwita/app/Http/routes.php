@@ -191,6 +191,7 @@ Route::get('fakturpembelian/cari_kontrak_subcon1/{i}', 'BiayaPenerusController@c
 Route::get('fakturpembelian/getdatapenerusedit', 'BiayaPenerusController@getdatapenerusedit');
 Route::post('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');
 Route::get('fakturpembelian/simpan_tt', 'BiayaPenerusController@simpan_tt');
+Route::get('fakturpembelian/simpan_tt1', 'BiayaPenerusController@simpan_tt1');
 Route::get('fakturpembelian/simpan_tt_subcon', 'BiayaPenerusController@simpan_tt_subcon');
 Route::get('fakturpembelian/cetak_tt', 'BiayaPenerusController@cetak_tt');
 Route::get('fakturpembelian/hapusbiayapenerus/{id}', 'BiayaPenerusController@hapus_biaya');
