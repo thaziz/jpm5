@@ -82,15 +82,7 @@
  	<td style="width: 100px">Keterangan</td>
  	<td width="10">:</td>
  	<td width="200"><input type="text" name="Keterangan_biaya" class="form-control" style="width: 250px;"></td>
- </tr>
- <tr>
-    <td colspan="2">
-    	<button class="btn btn-info modal_penerus_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#myModal_TT" type="button">
-    		<i class="fa fa-book"></i>
-    		&nbsp; Form Tanda Terima
-    	</button>
-    </td>
-</tr>
+ </tr>	
 <!--  <tr>
  	<td style="width: 100px">Biaya Khusus</td>
  	<td width="10">:</td>
@@ -154,17 +146,19 @@
 	  <tr>
 		<td style="width: 100px">Nominal Resi</td>
 		<td width="10">:</td>
-		<td width="200"><input type="text" name="" class="form-control nom_resi" style="width: 250px;" readonly=""></td>
+		<td width="200"><input type="text" readonly="" class="form-control total_pod" style="width: 250px;"></td>
 	  </tr>
 	  <tr>
 		<td style="width: 100px">Nominal</td>
 		<td width="10">:</td>
 		<td width="200">
 			<input type="text" name="nominal" class="form-control nominal" onkeyup="hitung()" style="width: 250px;">
-			<input type="hidden" class="form-control total_pod" style="width: 250px;">
+			
 		</td>
 	  </tr>
      </table>
+      <button class="btn btn-info modal_penerus_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+   
      <button type="button" class="btn btn-primary pull-right cari-pod" onclick="cariPOD();"><i class="fa fa-search">&nbsp;Append</i></button>
     </form>
 </div>
@@ -179,6 +173,7 @@
 				<th width="90">Nomor Bukti</th>
 				<th>Tanggal</th>
 				<th width="90">AccBiaya</th>
+				<th>Tarif Resi</th>
 				<th>Jumlah Bayar</th>
 				<th>Tipe Debet</th>
 				<th>Keterangan</th>
@@ -331,6 +326,8 @@ $('.nama-kontak-vendor1').change(function(){
  	  agen   = $('.vendor1 ').val();
       cabang = $('.cabang').val();
       supplier = $('.idsup').val();
+      jatuh_tempo = $('.jatuh_tempo').val();
+      total_jml = $('.total_jml').val();
       string = supplier.split(",");
       if (agen == 'AGEN') {
       	ven = $('.nama-kontak-agen1').val();
@@ -338,7 +335,7 @@ $('.nama-kontak-vendor1').change(function(){
       	ven = $('.nama-kontak-vendor1').val();
       }
 
-      // console.log(agen);
+      console.log(agen);
       tgl = $('.tgl').val();
       jatuhtempo = $('.jatuhtempoitem').val();
       nettohutang = $('.nettohutang').val();
@@ -357,6 +354,8 @@ $('.nama-kontak-vendor1').change(function(){
             success : function(data){
             	$('.supplier_tt').val(data.sup.nama);
             	$('.notandaterima').val(data.nota);
+            	$('.jatuhtempo_tt').val(jatuh_tempo);
+            	$('.totalterima_tt').val(total_jml);
 
             }
         })

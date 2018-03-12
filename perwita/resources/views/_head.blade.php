@@ -9,6 +9,7 @@
     <!-- Bootstrap -->
     <link href="{{ asset('assets/vendors/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
     <!-- Font Awesome -->
+    
     <link href="{{ asset('assets/vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
 <!-- chosen -->
     <link href="{{ asset('assets/css/chosen/chosen.css') }}" rel="stylesheet">
@@ -40,4 +41,5 @@
     <link href="{{ asset('assets/css/dboard.css') }}" rel="stylesheet">
     <!-- AUtocomplete -->
     <link href="{{ asset('assets/vendors/autocomplete/autocomplete.css')}}" rel="stylesheet">
+    <link href="{{asset('assets/css/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet">
     

@@ -34,6 +34,8 @@
     opacity: 0.4;
 }
 </style>
+<link href="{{asset('assets/css/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet">
+
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
@@ -382,9 +384,7 @@
                           </tr>
 
 
-                          <tr>
-                            <td colspan="2">   <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button> </td>
-                          </tr>
+                         
 
                           <tr>
                             <td>
@@ -3523,7 +3523,7 @@ $(document).ready(function(){
       success:function(response){
         if(response.status == 1){
             var total = parseInt(response.data.tarif_dasar);
-          $('.total_pod').val(total);
+          $('.total_pod').val(accounting.formatMoney(total, "Rp ", 2, ".",','));
 
           $('.tgl_resi').val(response.data.tanggal);
         }else{
@@ -3594,6 +3594,11 @@ $(document).ready(function(){
     var ket   = $('.ket-biaya').val();
     var debet = $('.debit').val();
     var harga_resi = $('.total_pod').val();
+
+    harga_resi = harga_resi.replace(/[^0-9\-]+/g,"")
+    harga_resi = harga_resi/100;
+    console.log(harga_resi);
+
     try{
         bayar = bayar.replace(/[^0-9\.-]+/g,"");
       }catch(err){
@@ -3609,7 +3614,8 @@ $(document).ready(function(){
                 '<input  type="hidden" class="form-control tengah kecil pod_biaya" name="pod_biaya[]" value="'+valPo+'" readonly>'+'<div class="val-app">'+valPo+'</div>',
                 '<input type="hidden" class="form-control tengah tgl_biaya" name="tgl_biaya[]" value="'+tgl+'" readonly>'+'<div class="seq-app">'+tgl+'</div>',
                 '<input type="hidden" class="form-control tengah kecil kode_biaya" name="kode_biaya[]" value="'+kode+'" readonly>'+'<div class="kode-app">'+kode+'</div>',
-                '<input type="hidden" class="form-control tengah bayar_biaya" name="bayar_biaya[]" value="'+parseFloat(bayar).toFixed(2)+'" readonly>'+'<input type="hidden" class="form-control tengah bayar_biaya_resi" name="harga_resi[]" value="'+harga_resi+'" readonly>'+'<div class="bayar-app">'+parseFloat(bayar).toFixed(2)+'</div>',
+                '<div>'+accounting.formatMoney(harga_resi, "Rp ", 2, ".",',')+'</div>'+'<input type="hidden" class="form-control tengah bayar_biaya_resi" name="harga_resi[]" value="'+parseFloat(harga_resi).toFixed(2)+'" readonly>',
+                '<input type="hidden" class="form-control tengah bayar_biaya" name="bayar_biaya[]" value="'+parseFloat(bayar).toFixed(2)+'" readonly>'+'<div class="bayar-app">'+accounting.formatMoney(bayar, "Rp ", 2, ".",',')+'</div>',
                 '<input type="hidden" class="form-control tengah debet_biaya" name="debet_biaya[]" value="'+debet+'" readonly>'+'<div class="debet-app">'+debet+'</div>',
                 '<input type="hidden" class="form-control tengah ket_biaya" name="ket_biaya[]" value="'+ket+'" readonly>'+'<div class="ket-app">'+ket+'</div>',
                 '<a class="btn btn-success btn-xs fa fa-pencil" align="center" onclick="edit_biaya(this)" title="edit"></i></a>&nbsp;&nbsp;<a class="btn btn-danger btn-xs fa fa-minus" align="center" onclick="hapus_biaya(this)" title="hapus"></i></a>'
@@ -3617,7 +3623,7 @@ $(document).ready(function(){
       $('.table-biaya').css('display','block');
       bayar = parseInt(bayar);
       temp.push(bayar); 
-      console.log(temp);
+      // console.log(temp);
 
       $('.no_pod').val("");
       $('.nominal').val("");
