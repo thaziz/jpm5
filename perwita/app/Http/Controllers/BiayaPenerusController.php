@@ -2333,9 +2333,13 @@ class BiayaPenerusController extends Controller
 					  ->get();
 		}else{
 			$data = DB::table('vendor')
-					  ->where('kode_cabang',$request->cabang)
 					  ->get();
 		}
+
+
+		return response()->json([
+					'data' => $data
+					]);
 	}
 }
 
