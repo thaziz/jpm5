@@ -15,6 +15,7 @@ use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use App\master_note;
+use Auth;
 
 class pendingController extends Controller
 {
@@ -32,7 +33,7 @@ class pendingController extends Controller
 				  ->get();
 		$data = array_merge($agen,$vendor);
 
-
+		// return Auth::user()->m_level;
 
 
 	

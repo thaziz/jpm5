@@ -605,8 +605,10 @@ class BiayaPenerusController extends Controller
 			$date = Carbon::now()->format('d/m/Y');
 
 			$agen = DB::table('agen')
+					  ->where()
 					  ->get();
 			$vendor = DB::table('vendor')
+					  ->where()
 					  ->get();
 			$akun_biaya = DB::table('akun_biaya')
 					  ->get();
@@ -2317,6 +2319,23 @@ class BiayaPenerusController extends Controller
 		}
 			return view('purchase/fatkur_pembelian/tabelModalSubcon',compact('fix'));
 		
+	}
+
+
+	public function rubahVen(request $request)
+	{
+		dd($request->all());
+
+		if ($request->vendor == 'AGEN') {
+			$data = DB::table('agen')
+					  ->where('kode_cabang',$request->cabang)
+					  ->where('kategori','AGEN')
+					  ->get();
+		}else{
+			$data = DB::table('vendor')
+					  ->where('kode_cabang',$request->cabang)
+					  ->get();
+		}
 	}
 }
 

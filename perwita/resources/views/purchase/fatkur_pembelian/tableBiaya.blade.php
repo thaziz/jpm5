@@ -303,7 +303,7 @@ $('.nama-kontak-agen1').change(function(){
  	@foreach($agen as $a)
  	if ($(this).val() == '{{$a->kode}}') {
  		$('.akun_agen').val('{{$a->acc_hutang}}');
- 		console.log($('.akun_agen').val());
+ 		// console.log($('.akun_agen').val());
  	}
  	@endforeach
 
@@ -335,7 +335,7 @@ $('.nama-kontak-vendor1').change(function(){
       	ven = $('.nama-kontak-vendor1').val();
       }
 
-      console.log(agen);
+      // console.log(agen);
       tgl = $('.tgl').val();
       jatuhtempo = $('.jatuhtempoitem').val();
       nettohutang = $('.nettohutang').val();

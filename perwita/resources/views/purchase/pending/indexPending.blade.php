@@ -57,8 +57,8 @@
                
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                    <input type="text" name="" class="date1">
-                    <input type="text" name="" class="date2">
+                  <!--   <input type="text" name="" class="date1">
+                    <input type="text" name="" class="date2"> -->
                 <div class="box-body">
                   <table id="addColumn" class="table table-bordered table-striped tbl1">
                     <thead align="center">

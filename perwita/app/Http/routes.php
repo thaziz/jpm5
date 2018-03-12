@@ -181,6 +181,7 @@ Route::get('fakturpembelian/getdatapenerus', 'BiayaPenerusController@getdatapene
 Route::get('fakturpembelian/caripod', 'BiayaPenerusController@caripod');
 Route::get('fakturpembelian/carimaster/{vendor}', 'BiayaPenerusController@carimaster');
 Route::get('fakturpembelian/auto/{i}', 'BiayaPenerusController@auto');
+Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::post('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
