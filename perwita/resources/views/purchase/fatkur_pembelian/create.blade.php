@@ -93,7 +93,7 @@
                             <td>
                               <select class='form-control chosen-select-width1 cabang' name="cabang">
                                   <option value="">
-                                    Pilih Cabang
+                                    Pilih-Cabang
                                   </option>
 
                                   @foreach($data['cabang'] as $cabang)
