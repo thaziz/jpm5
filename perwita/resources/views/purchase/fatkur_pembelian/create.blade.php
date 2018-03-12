@@ -409,7 +409,11 @@
                             <td> <input style="text-align: right" type='text' class='form-control nettohutang' readonly="" name="nettohutang"> </td>
                           </tr>
 
-
+                          <tr>
+                                              <td colspan="2">
+                                                <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+                                              </td>
+                                            </tr>
                          
 
                           <tr>
@@ -438,7 +442,8 @@
                                   <div class="modal-content">
                                     <div class="modal-header">
                                       <button style="min-height:0;" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
-                                      <h4 class="modal-title" style="text-align: center;"> FORM TANDA TERIMA </h4>     
+                                      <h4 class="modal-title" style="text-align: center;"> 
+                                       </h4>     
                                     </div>
                                                   
                                     <div class="modal-body">              
@@ -844,6 +849,7 @@
                                               <td> Netto Hutang </td>
                                               <td> <input type='text' class='form-control nettohutang_po' readonly="" name="nettohutang_po" style="text-align: right"> </td>
                                             </tr>
+                                              
                                           </table>
                                     </div>
                     </div>
@@ -3466,6 +3472,7 @@ $(document).ready(function(){
     $('.nama-kontak-vendor1').val('0').trigger("chosen:updated");
     $('.nama-kontak-agen1').val('0').trigger("chosen:updated");
     var vendor = $('.vendor1').val();
+    var cabang = $('.cabang').val();
     if(vendor == 'AGEN'){
 
       $('.nama-kontak-agen').attr('hidden',false);
@@ -3485,6 +3492,21 @@ $(document).ready(function(){
       }
 
     })
+
+     $.ajax({
+      url:baseUrl + '/fakturpembelian/rubahVen',
+      data:{vendor,cabang},
+      type:'get',
+      success:function(response){
+
+        var persen = parseInt(response.persen[0].persen);
+        id_persen  = response.persen[0].kode;
+        $('.master_persen').val(persen);
+      }
+
+    })
+
+
     
     }else if(vendor == 'VENDOR'){
 
@@ -3499,6 +3521,19 @@ $(document).ready(function(){
       url:baseUrl + '/fakturpembelian/carimaster/'+vendor,
       type:'get',
       success:function(response){
+        var persen = parseInt(response.persen[0].persen);
+        id_persen  = response.persen[0].kode;
+        $('.master_persen').val(persen);
+      }
+
+    })
+
+      $.ajax({
+      url:baseUrl + '/fakturpembelian/rubahVen',
+      data:{vendor,cabang},
+      type:'get',
+      success:function(response){
+        
         var persen = parseInt(response.persen[0].persen);
         id_persen  = response.persen[0].kode;
         $('.master_persen').val(persen);

@@ -2320,6 +2320,23 @@ class BiayaPenerusController extends Controller
 			return view('purchase/fatkur_pembelian/tabelModalSubcon',compact('fix'));
 		
 	}
+
+
+	public function rubahVen(request $request)
+	{
+		dd($request->all());
+
+		if ($request->vendor == 'AGEN') {
+			$data = DB::table('agen')
+					  ->where('kode_cabang',$request->cabang)
+					  ->where('kategori','AGEN')
+					  ->get();
+		}else{
+			$data = DB::table('vendor')
+					  ->where('kode_cabang',$request->cabang)
+					  ->get();
+		}
+	}
 }
 
 
