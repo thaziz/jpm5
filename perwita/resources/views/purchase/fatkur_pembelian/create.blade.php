@@ -3840,7 +3840,31 @@ $(document).ready(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                  location.reload();
+                  // location.reload();
+                   $(".tmbhdatapenerus").addClass('disabled');
+                  $(".tmbhdatapenerus").css('background','grey');
+                  $(".tmbhdatapenerus").css('color','black');
+
+                  $(".tmbhdatapo").addClass('disabled');
+                  $(".tmbhdatapo").css('background','none');
+                  $(".tmbhdatapo").css('color','none');
+
+                  $(".tmbhdataitem").addClass('disabled');
+                  $(".tmbhdataitem").css('background','none');
+                  $(".tmbhdataitem").css('color','none');
+
+                  $(".tmbhdataoutlet").addClass('disabled');
+                  $(".tmbhdataoutlet").css('background','none');
+                  $(".tmbhdataoutlet").css('color','none');
+
+                  $(".tmbhdatasubcon").addClass('disabled');
+                  $(".tmbhdatasubcon").css('background','none');
+                  $(".tmbhdatasubcon").css('color','none');
+
+                  $('#save-update').addClass('disabled');
+                  $('.cari-pod').addClass('disabled');
+                
+
         });
       },
       error:function(data){
