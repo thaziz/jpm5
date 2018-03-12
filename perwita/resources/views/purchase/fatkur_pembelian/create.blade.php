@@ -87,21 +87,47 @@
                   
                       <div class="col-xs-6">
                          <table class="table head1">    
-
+                          @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
                             <tr>
                             <td width="150px"> Cabang </td>
-                            <td> <select class='form-control chosen-select-width1 cabang' name="cabang">
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' name="cabang">
                                   <option value="">
                                     Pilih Cabang
                                   </option>
+
                                   @foreach($data['cabang'] as $cabang)
                                     <option value="{{$cabang->kode}}">
                                       {{$cabang->nama}}
                                     </option>
-                                    @endforeach
+                                  @endforeach
                                  </select>
                             </td>
-                         </tr>
+                            </tr>
+                            @else
+                            <tr>
+                            <td width="150px"> Cabang </td>
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                                  <option value="">
+                                    Pilih Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    @if($cabang->kode == Auth::user()->kode_cabang)
+                                    <option selected="" value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @else
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @endif
+                                  @endforeach
+                                 </select>
+                            </td>
+                            </tr>
+                            @endif
 
 
                           <tr>

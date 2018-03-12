@@ -605,8 +605,10 @@ class BiayaPenerusController extends Controller
 			$date = Carbon::now()->format('d/m/Y');
 
 			$agen = DB::table('agen')
+					  ->where()
 					  ->get();
 			$vendor = DB::table('vendor')
+					  ->where()
 					  ->get();
 			$akun_biaya = DB::table('akun_biaya')
 					  ->get();
