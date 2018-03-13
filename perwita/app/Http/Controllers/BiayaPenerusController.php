@@ -1064,7 +1064,7 @@ class BiayaPenerusController extends Controller
 			 }
 
 			 $total = filter_var($request->total_diterima, FILTER_SANITIZE_NUMBER_INT);
-			 $total = $total/100;
+			 // $total = $total/100;
 			
 		      	if($request->kwitansi == 'on')	{
 		      		$kwitansi = 'ADA';

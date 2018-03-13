@@ -185,7 +185,7 @@ Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::post('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
-Route::get('fakturpembelian/edit_subcon/{i}', 'BiayaPenerusController@edit');
+Route::get('fakturpembelian/edit_penerus/{i}', 'BiayaPenerusController@edit');
 Route::get('fakturpembelian/cari_kontrak_subcon/{i}', 'BiayaPenerusController@cari_kontrak_subcon');
 Route::get('fakturpembelian/cari_kontrak_subcon1/{i}', 'BiayaPenerusController@cari_kontrak_subcon1');
 Route::get('fakturpembelian/getdatapenerusedit', 'BiayaPenerusController@getdatapenerusedit');
