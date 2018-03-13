@@ -259,7 +259,7 @@ class BiayaPenerusController extends Controller
 
 			 }
 
-
+			 // return $vend;
 
 			 if ($request->vendor == "AGEN") {
 			 	$cari_persen = DB::table('agen')
@@ -273,9 +273,10 @@ class BiayaPenerusController extends Controller
 			 // return $cari_persen->acc_hutang;
 			 $status=[];
 			 $total_tarif=0;
+
 			 for ($i=0; $i < count($request->harga_resi); $i++) {
 			    $persentase = $cari_persen->komisi/100; 
-			    $harga_fix = $request->harga_resi[$i]*$persentase;
+			    $harga_fix = round($request->harga_resi[$i])*$persentase;
 			    $total_tarif+=$request->bayar_biaya[$i];
 
 				if($request->bayar_biaya[$i] <= $harga_fix){
@@ -291,51 +292,26 @@ class BiayaPenerusController extends Controller
 			 	$pending_status='APPROVED';
 			 }
 			 // dd($request->Keterangan_biaya);
-			 $idfaktur = DB::table('form_tt')->where('tt_idcabang' , '001')
-									   ->where('tt_noform','LIKE','%'.'BP-0'.'%')
-									   ->max('tt_noform');
-			//	dd($nosppid);
-				if(isset($idfaktur)) {
-					$explode  = explode("/", $idfaktur);
-					$idfaktur = $explode[2];
-					$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
-					$idfaktur = str_replace('-', '', $idfaktur) ;
-					$string = (int)$idfaktur + 1;
-					$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
-				}
-
-				else {
-					$idfaktur = '001';
-				}
-
-				$nota = 'TT' . $month . $year . '/' . '001' . '/BP-' .  $idfaktur;
-
-			 $id = DB::table('form_tt')
-					->max('tt_idform');
-			 if($id == null){
-			 	$id=1;
-			 }else{
-			 	$id+=1;
-			 }
+// car
 
 
-			$save = DB::table('form_tt')
-			        			->insert([
-			        				'tt_idform'		 	 => $id,
-			        				'tt_tgl'   			 => $tgl,
-			        				'tt_idagen' 	 	 => $vend,
-			        				'tt_totalterima'	 => round($total_tarif,2),
-			        				'created_at'		 => Carbon::now(),
-			        				'updated_at'	 	 => Carbon::now(),
-			        				'tt_tglkembali'	 	 => Carbon::now(),
-			        				'tt_kwitansi'	 	 => 'ADA',
-			        				'tt_suratperan'	 	 => 'ADA',
-			        				'tt_suratjalanasli'	 => 'ADA',
-			        				'tt_faktur'			 => 'ADA',
-			        				'tt_noform'			 => $nota,
-			        				'tt_nofp'			 => $request->nofaktur,
-			        				'tt_idcabang'		 => '001'
-			        			]);
+			// $save = DB::table('form_tt')
+			//         			->insert([
+			//         				'tt_idform'		 	 => $id,
+			//         				'tt_tgl'   			 => $tgl,
+			//         				'tt_idagen' 	 	 => $vend,
+			//         				'tt_totalterima'	 => round($total_tarif,2),
+			//         				'created_at'		 => Carbon::now(),
+			//         				'updated_at'	 	 => Carbon::now(),
+			//         				'tt_tglkembali'	 	 => Carbon::now(),
+			//         				'tt_kwitansi'	 	 => 'ADA',
+			//         				'tt_suratperan'	 	 => 'ADA',
+			//         				'tt_suratjalanasli'	 => 'ADA',
+			//         				'tt_faktur'			 => 'ADA',
+			//         				'tt_noform'			 => $nota,
+			//         				'tt_nofp'			 => $request->nofaktur,
+			//         				'tt_idcabang'		 => '001'
+			//         			]);
 
 			$cari_tt = DB::table('form_tt')
 		    			 ->where('tt_nofp',$request->nofaktur)
@@ -346,7 +322,7 @@ class BiayaPenerusController extends Controller
 								'fp_nofaktur'		=> $request->nofaktur,
 								'fp_tgl'			=> $tgl,
 								'fp_jenisbayar' 	=> 6,
-								'fp_comp'			=> '001',
+								'fp_comp'			=> $request->cabang,
 								'fp_noinvoice'		=> $request->Invoice_biaya,
 								'created_at'		=> Carbon::now(),
 								'fp_pending_status' => $pending_status,
@@ -605,8 +581,10 @@ class BiayaPenerusController extends Controller
 			$date = Carbon::now()->format('d/m/Y');
 
 			$agen = DB::table('agen')
+					  ->where()
 					  ->get();
 			$vendor = DB::table('vendor')
+					  ->where()
 					  ->get();
 			$akun_biaya = DB::table('akun_biaya')
 					  ->get();
@@ -850,9 +828,10 @@ class BiayaPenerusController extends Controller
 			$month =Carbon::now()->format('m'); 
 
 			 $idfaktur =   fakturpembelian::where('fp_comp' , $request->cab)
-											->where('fp_nofaktur','LIKE','%'.'P-0'.'%')
+											->where('fp_nofaktur','LIKE','%'.'P-'.'%')
 											->max('fp_nofaktur');
 		//	dd($nosppid);
+			// return $idfaktur;
 			if(isset($idfaktur)) {
 				$explode  = explode("/", $idfaktur);
 				$idfaktur = $explode[2];
@@ -981,6 +960,91 @@ class BiayaPenerusController extends Controller
 		}
 		public function simpan_tt(request $request){
 		
+			 $id = DB::table('form_tt')
+					->max('tt_idform');
+			 if($id == null){
+			 	$id=1;
+			 }else{
+			 	$id+=1;
+			 }
+
+			 $total = filter_var($request->total_terima, FILTER_SANITIZE_NUMBER_INT);
+			 $total = $total/100;
+			
+		      	if($request->Kwitansi == 'on')	{
+		      		$kwitansi = 'ADA';
+		      	}else{
+		      		$kwitansi = 'tidak ada';
+		      	}
+		      	if($request->Faktur == 'on')	{
+		      		$Faktur = 'ada';
+		      	}else{
+		      		$Faktur = 'tidak ada';
+		      	}
+		      	if($request->Peranan == 'on')	{
+		      		$Peranan = 'ada';
+		      	}else{
+		      		$Peranan = 'tidak ada';
+		      	}
+		      	if($request->Jalan == 'on')	{
+		      		$Jalan = 'ada';
+		      	}else{
+		      		$Jalan = 'tidak ada';
+		      	}
+
+		      	$valid_notafp =DB::table('form_tt')
+		      					 ->where('tt_nofp',$request->nota)
+		      					 ->get();
+
+		      	if($valid_notafp == null){
+			        $save = DB::table('form_tt')
+			        			->insert([
+			        				'tt_idform'		 	 => $id,
+			        				'tt_tgl'   			 => $request->modal_tanggal,
+			        				'tt_idagen' 	 	 => $request->supplier,
+			        				'tt_lainlain'		 => $request->modal_lain,
+			        				'tt_tglkembali' 	 => $request->tgl_terima,
+			        				'tt_totalterima'	 => round($total,2),
+			        				'created_at'		 => Carbon::now(),
+			        				'updated_at'	 	 => Carbon::now(),
+			        				'tt_kwitansi'	 	 => strtoupper($kwitansi),
+			        				'tt_suratperan'	 	 => strtoupper($Peranan),
+			        				'tt_suratjalanasli'	 => strtoupper($Jalan),
+			        				'tt_faktur'			 => strtoupper($Faktur),
+			        				'tt_noform'			 => $request->no_tt,
+			        				'tt_nofp'			 => $request->nota,
+			        				'tt_idcabang'		 =>'001'
+			        			]);
+			        return response()->json(['status' => '1']);
+			    }else{
+			    	$save = DB::table('form_tt')
+			    				->where('tt_noform',$request->no_tt)
+			        			->update([
+			        				'tt_idform'		 	 => $id,
+			        				'tt_tgl'   			 => $request->modal_tanggal,
+			        				'tt_idagen' 	 	 => $request->supplier,
+			        				'tt_lainlain'		 => $request->modal_lain,
+			        				'tt_tglkembali' 	 => $request->tgl_terima,
+			        				'tt_totalterima'	 => round($total,2),
+			        				'created_at'		 => Carbon::now(),
+			        				'updated_at'	 	 => Carbon::now(),
+			        				'tt_kwitansi'	 	 => strtoupper($kwitansi),
+			        				'tt_suratperan'	 	 => strtoupper($Peranan),
+			        				'tt_suratjalanasli'	 => strtoupper($Jalan),
+			        				'tt_faktur'			 => strtoupper($Faktur),
+			        				'tt_noform'			 => $request->no_tt,
+			        				'tt_nofp'			 => $request->nota,
+			        				'tt_idcabang'		 =>'001'
+			        			]);
+			    	return response()->json(['status' => '0']);
+			    }
+
+		}
+
+
+
+		public function simpan_tt1(request $request){
+			dd($request->all());
 			 $id = DB::table('form_tt')
 					->max('tt_idform');
 			 if($id == null){
@@ -2317,6 +2381,26 @@ class BiayaPenerusController extends Controller
 		}
 			return view('purchase/fatkur_pembelian/tabelModalSubcon',compact('fix'));
 		
+	}
+
+
+	public function rubahVen(request $request)
+	{
+		// dd($request->all());
+
+		if ($request->vendor == 'AGEN') {
+			$data = DB::table('agen')
+					  ->where('kode_cabang',$request->cabang)
+					  ->where('kategori','AGEN')
+					  ->orWhere('kategori','AGEN DAN OUTLET')
+					  ->get();
+		}else{
+			$data = DB::table('vendor')
+					  ->get();
+		}
+			$flag = $request->vendor;
+// return 'asd';
+		return view('purchase/fatkur_pembelian/dropdownBiayaPenerus',compact('data','flag'));
 	}
 }
 

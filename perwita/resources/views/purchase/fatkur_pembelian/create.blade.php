@@ -87,21 +87,47 @@
                   
                       <div class="col-xs-6">
                          <table class="table head1">    
-
+                          @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
                             <tr>
                             <td width="150px"> Cabang </td>
-                            <td> <select class='form-control chosen-select-width1 cabang' name="cabang">
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' name="cabang">
                                   <option value="">
-                                    Pilih Cabang
+                                    Pilih-Cabang
                                   </option>
+
                                   @foreach($data['cabang'] as $cabang)
                                     <option value="{{$cabang->kode}}">
                                       {{$cabang->nama}}
                                     </option>
-                                    @endforeach
+                                  @endforeach
                                  </select>
                             </td>
-                         </tr>
+                            </tr>
+                            @else
+                            <tr>
+                            <td width="150px"> Cabang </td>
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                                  <option value="">
+                                    Pilih Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    @if($cabang->kode == Auth::user()->kode_cabang)
+                                    <option selected="" value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @else
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @endif
+                                  @endforeach
+                                 </select>
+                            </td>
+                            </tr>
+                            @endif
 
 
                           <tr>
@@ -383,7 +409,11 @@
                             <td> <input style="text-align: right" type='text' class='form-control nettohutang' readonly="" name="nettohutang"> </td>
                           </tr>
 
-
+                          <tr>
+                                              <td colspan="2">
+                                                <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+                                              </td>
+                                            </tr>
                          
 
                           <tr>
@@ -412,14 +442,15 @@
                                   <div class="modal-content">
                                     <div class="modal-header">
                                       <button style="min-height:0;" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
-                                      <h4 class="modal-title" style="text-align: center;"> FORM TANDA TERIMA </h4>     
+                                      <h4 class="modal-title" style="text-align: center;"> 
+                                       </h4>     
                                     </div>
                                                   
                                     <div class="modal-body">              
-                                    <table class="table table-stripped">
+                                    <table class="table table-stripped tabel_tt">
                                       <tr>
                                         <td width="150px">
-                                          No Tanda Terima
+                                          No Tanda Terima 
                                         </td>
                                         <td>
                                           <input type='text' class='input-sm form-control notandaterima'>
@@ -510,7 +541,7 @@
 
                                       <div class="modal-footer">
                                           <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="button" class="btn btn-primary" id="buttonsimpan_tt">Simpan</button>
+                                          <button type="button" class="btn btn-primary simpan_penerus" id="buttonsimpan_tt">Simpan</button>
                                          
                                       </div>
                                       
@@ -818,6 +849,7 @@
                                               <td> Netto Hutang </td>
                                               <td> <input type='text' class='form-control nettohutang_po' readonly="" name="nettohutang_po" style="text-align: right"> </td>
                                             </tr>
+                                              
                                           </table>
                                     </div>
                     </div>
@@ -3440,6 +3472,7 @@ $(document).ready(function(){
     $('.nama-kontak-vendor1').val('0').trigger("chosen:updated");
     $('.nama-kontak-agen1').val('0').trigger("chosen:updated");
     var vendor = $('.vendor1').val();
+    var cabang = $('.cabang').val();
     if(vendor == 'AGEN'){
 
       $('.nama-kontak-agen').attr('hidden',false);
@@ -3459,6 +3492,18 @@ $(document).ready(function(){
       }
 
     })
+
+     $.ajax({
+      url:baseUrl + '/fakturpembelian/rubahVen',
+      data:{vendor,cabang},
+      type:'get',
+      success:function(response){
+       $('.agen_dropdown').html(response);
+      }
+
+    })
+
+
     
     }else if(vendor == 'VENDOR'){
 
@@ -3479,7 +3524,17 @@ $(document).ready(function(){
       }
 
     })
- 
+
+    $.ajax({
+      url:baseUrl + '/fakturpembelian/rubahVen',
+      data:{vendor,cabang},
+      type:'get',
+      success:function(response){
+       $('.vendor_dropdown').html(response);
+      }
+
+    })
+
     }else{
       $('.nama-kontak-kosong').attr('hidden',false);
       $('.nama-kontak-agen').attr('hidden',true);
@@ -3754,6 +3809,8 @@ $(document).ready(function(){
     }
    
    function save_biaya(){
+      var cabang = $('.cabang').val();
+
     swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Biaya Penerus!",
@@ -3773,8 +3830,8 @@ $(document).ready(function(){
 
       $.ajax({
       url:baseUrl + '/fakturpembelian/save_agen',
-      type:'post',
-      data:'id_persen='+id_persen+'&'+$('.head1 .nofaktur').serialize()+'&'+ $('.head-biaya :input').serialize()+'&'+ datatable1.$('input').serialize()+'&'+$('.head_atas').serialize(),
+      type:'get',
+      data:'id_persen='+id_persen+'&'+$('.head1 .nofaktur').serialize()+'&'+ $('.head-biaya :input').serialize()+'&'+ datatable1.$('input').serialize()+'&'+$('.head_atas').serialize()+'&'+'cab='+cabang,
       success:function(response){
         swal({
         title: "Berhasil!",
@@ -3783,7 +3840,31 @@ $(document).ready(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                  location.reload();
+                  // location.reload();
+                   $(".tmbhdatapenerus").addClass('disabled');
+                  $(".tmbhdatapenerus").css('background','grey');
+                  $(".tmbhdatapenerus").css('color','black');
+
+                  $(".tmbhdatapo").addClass('disabled');
+                  $(".tmbhdatapo").css('background','none');
+                  $(".tmbhdatapo").css('color','none');
+
+                  $(".tmbhdataitem").addClass('disabled');
+                  $(".tmbhdataitem").css('background','none');
+                  $(".tmbhdataitem").css('color','none');
+
+                  $(".tmbhdataoutlet").addClass('disabled');
+                  $(".tmbhdataoutlet").css('background','none');
+                  $(".tmbhdataoutlet").css('color','none');
+
+                  $(".tmbhdatasubcon").addClass('disabled');
+                  $(".tmbhdatasubcon").css('background','none');
+                  $(".tmbhdatasubcon").css('color','none');
+
+                  $('#save-update').addClass('disabled');
+                  $('.cari-pod').addClass('disabled');
+                
+
         });
       },
       error:function(data){
@@ -3814,7 +3895,7 @@ function  cari_outlet(){
 
     })
 }
-
+///////////////////////////////////////////////
 $('#tmbhdataitem').click(function(){
        cabang = $('.cabang').val();
        $.ajax({

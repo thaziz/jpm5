@@ -14,7 +14,7 @@
 @section('content')
 
         <div class="row border-bottom white-bg dashboard-header">
-          <center> <span style="font-size:18px;">Hai, {{ Auth::user()->m_name }} Ratu Sejagat</span> </center>
+          <center> <span style="font-size:18px;">Hai, {{ Auth::user()->m_name }} Selamat Bergabung</span> </center>
         </div>
    
 
@@ -24,7 +24,7 @@
               <div class="modal-header">
                   <i class="fa fa-step-backward fa-2x" aria-hidden="true"></i>&nbsp;&nbsp;
                   <i class="fa fa-step-forward fa-2x" aria-hidden="true"></i>
-                  <h4 class="modal-title" style="color:red">{{ Auth::user()->m_name }} Ratu Sejagat</h4>
+                  <h4 class="modal-title" style="color:red">{{ Auth::user()->m_name }} Selamat Bergabung</h4>
                   <small class="font-bold">Selamat Datang Di Aplikasi DBoard dan Selamat Bergabung.</small>
               </div>
               <div class="modal-body">

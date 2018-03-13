@@ -51,26 +51,16 @@
  <tr hidden="" class="nama-kontak-agen">
  	<td style="width: 100px">Nama Kontak </td>
  	<td width="10">:</td>
- 	<td width="200">
- 		<select name="nama_kontak1" class="form-control nama-kontak-agen1  chosen-select-width1" style="text-align: center; width: 250px;">
- 			<option value="0">- Pilih - Agen -</option>
- 			@foreach($agen as $val)
- 			<option value="{{$val->kode}}">{{$val->nama}}</option>
- 			@endforeach
- 		</select>
+ 	<td width="200" class="agen_dropdown">
+
  	</td>
  </tr>
  <!-- NAMA KONTAK VENDOR -->
   <tr hidden="" class="nama-kontak-vendor">
  	<td style="width: 100px">Nama Kontak </td>
  	<td width="10">:</td>
- 	<td width="200">
- 		<select name="nama_kontak2" class="form-control nama-kontak-vendor1 chosen-select-width1" style="text-align: center; width: 250px;">
- 			<option value="0">- Pilih - Vendor -</option>
- 			@foreach($vendor as $val)
- 			<option value="{{$val->kode}}">{{$val->nama}}</option>
- 			@endforeach
- 		</select>
+ 	<td width="200" class="vendor_dropdown">
+
  	</td>
  </tr>
  <tr>
@@ -156,10 +146,20 @@
 			
 		</td>
 	  </tr>
-     </table>
-      <button class="btn btn-info modal_penerus_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-   
+	  <tr>
+	  	<td colspan="3">
+	  <button class="btn btn-info modal_penerus_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
      <button type="button" class="btn btn-primary pull-right cari-pod" onclick="cariPOD();"><i class="fa fa-search">&nbsp;Append</i></button>
+	  	</td>
+	  </tr>
+	  <tr>
+	  	<td colspan="3">
+	  		<button type="button" class="btn btn-primary pull-right disabled" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
+	  		<button type="button" class="btn btn-warning pull-left disabled" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
+	  	</td>
+	  </tr>
+     </table>
+      
     </form>
 </div>
 
@@ -184,7 +184,6 @@
 
 			</tbody>   	
 	    </table>
-	    <button type="button" class="btn btn-primary pull-right" id="save-update" onclick="save_biaya()" data-dismiss="modal">Simpan Data</button>
 	</div>
 	
 <div id="modal-biaya" class="modal fade" role="dialog">
@@ -303,7 +302,7 @@ $('.nama-kontak-agen1').change(function(){
  	@foreach($agen as $a)
  	if ($(this).val() == '{{$a->kode}}') {
  		$('.akun_agen').val('{{$a->acc_hutang}}');
- 		console.log($('.akun_agen').val());
+ 		// console.log($('.akun_agen').val());
  	}
  	@endforeach
 
@@ -335,7 +334,7 @@ $('.nama-kontak-vendor1').change(function(){
       	ven = $('.nama-kontak-vendor1').val();
       }
 
-      console.log(agen);
+      // console.log(agen);
       tgl = $('.tgl').val();
       jatuhtempo = $('.jatuhtempoitem').val();
       nettohutang = $('.nettohutang').val();
@@ -360,4 +359,16 @@ $('.nama-kontak-vendor1').change(function(){
             }
         })
     })
+
+$('.simpan_penerus').click(function(){
+	$.ajax({    
+            type :"get",
+            data : $('.tabel_tt :input').serialize(),
+            url : baseUrl + '/fakturpembelian/simpan_tt1',
+            dataType:'json',
+            success : function(data){
+            	toastr.success('Form Tanda terima berhasil disimpan');
+            }
+        })
+})
 </script>
