@@ -450,7 +450,7 @@
                                     <table class="table table-stripped tabel_tt">
                                       <tr>
                                         <td width="150px">
-                                          No Tanda Terima
+                                          No Tanda Terima 
                                         </td>
                                         <td>
                                           <input type='text' class='input-sm form-control notandaterima'>
