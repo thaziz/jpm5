@@ -3804,7 +3804,8 @@ $(document).ready(function(){
       $(updt).find('.kode-app').html(kode);
       $(updt).find('.debet-app').html(debit);
       $(updt).find('.ket-app').html(ket);
-      $(updt).find('.bayar-app').html(parseFloat(bayar));
+      $(updt).find('.bayar-app').html(accounting.formatMoney(bayar, "Rp ", 2, ".",','));
+      $('.save_biaya').addClass('disabled');
 
     }
     
