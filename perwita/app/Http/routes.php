@@ -205,7 +205,9 @@ Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
 Route::post('fakturpembelian/cari_outlet/{agen}', 'BiayaPenerusController@cari_outlet');
+Route::post('fakturpembelian/cari_outlet/{agen}', 'BiayaPenerusController@cari_outlet');
 Route::post('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
+// Route::get('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
 Route::get('fakturpembelian/cariNote', 'BiayaPenerusController@cari_note');
 Route::post('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');
 Route::get('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');

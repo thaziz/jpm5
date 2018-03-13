@@ -98,7 +98,11 @@
                           @endif
                         </td>
                         <td align="left" align="40">
-                          <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailbiayapenerus', ['id' => $faktur->fp_nofaktur])}}"> Print Detail</a><br>
+                          <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailbiayapenerus', ['id' => $faktur->fp_nofaktur])}}"> Print Detail
+                          </a>
+                          <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailbiayapenerus', ['id' => $faktur->fp_nofaktur])}}"> Print Detail
+                          </a>
+                          <br>
                         </td>
                         <!-- <td align="center"><input type="checkbox" class="form-control" name="allow"></td> -->
                        @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)

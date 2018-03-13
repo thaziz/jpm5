@@ -8,13 +8,13 @@
 
     <link href="{{ asset('assets/vendors/bootstrapTour/bootstrap-tour.min.css') }}" rel="stylesheet">
 <div class="col-sm-12 msh_hdn">
-	{{ csrf_field() }}
 <h3>Tabel Detail Resi</h3>
  	<hr>
  		<div class="col-sm-5">
 
 	 	<table class="table table-stripped header_total_outlet1">
-
+	{{ csrf_field() }}
+	 		
 	 		<tr>
 	 			<td>Total Tarif</td>
 	 			<td>:</td>

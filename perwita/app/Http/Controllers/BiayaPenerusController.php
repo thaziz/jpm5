@@ -691,7 +691,7 @@ class BiayaPenerusController extends Controller
 		}
 
 		public function cari_outlet1(request $request,$agen){
-			// dd($request);
+			// dd($request->all());
 			$ini = DB::table('master_note')
 					->max('mn_id');
 			if($ini == ''){
@@ -725,7 +725,7 @@ class BiayaPenerusController extends Controller
 		}
 		if(isset($tgl[1])){
 
-			$list = DB::select("SELECT nomor,tanggal,nama_pengirim,nama_penerima,asal.nama as asal,asal.id as id_asal,
+			$list = DB::select("SELECT agen.kode_cabang,nomor,tanggal,nama_pengirim,nama_penerima,asal.nama as asal,asal.id as id_asal,
 			 							tujuan.nama as tujuan,tujuan.id as id_tujuan,status,agen.nama as nama_agen,tarif_dasar,biaya_komisi
 					 					FROM delivery_order
 										LEFT JOIN agen on agen.kode = kode_outlet
@@ -931,7 +931,7 @@ class BiayaPenerusController extends Controller
 			for ($i=0; $i < count($request->harga_resi); $i++) {
 			    $persentase = $cari_persen->komisi/100; 
 			    $harga_fix = $request->harga_resi[$i]*$persentase;
-			    $total_tarif+=$request->bayar_biaya[$i];
+			     $total_tarif+=$request->bayar_biaya[$i];
 
 				if($request->bayar_biaya[$i] <= $harga_fix){
 					$status[$i] = 'APPROVED';
@@ -942,11 +942,11 @@ class BiayaPenerusController extends Controller
 			// return $total_tarif;
 			 if(in_array('PENDING', $status)){
 			 	$pending_status='PENDING';
-			 }else{
+			 }else{ 
 			 	$pending_status='APPROVED';
 			 }
 
-			 // return $total_tarif;
+			 // return $pending_status;
 	      	 for ($i=0; $i < count($request->seq_biaya); $i++) { 
 
 		       	$max_id = DB::table('biaya_penerus_dt')
@@ -960,7 +960,8 @@ class BiayaPenerusController extends Controller
 		       	$update_fp = DB::table('faktur_pembelian')
 		       				   ->where('fp_nofaktur',$request->nota)
 		       				   ->update([
-		       				   		'fp_netto' => $total_tarif
+		       				   		'fp_netto' => $total_tarif,
+		       				   		'fp_pending_status' => $pending_status
 		       				   ]);
 		       	$update_fp = DB::table('biaya_penerus')
 		       				   ->where('bp_faktur',$request->nota)
@@ -987,7 +988,11 @@ class BiayaPenerusController extends Controller
 
 	       }
 
-	       return 'Success';
+	       $status = DB::table('faktur_pembelian')
+						->where('fp_nofaktur',$request->nota)
+						->first();
+
+			return response()->json(['status'=>$status->fp_pending_status]);
 		}
 		public function simpan_tt(request $request){
 		
@@ -1769,6 +1774,8 @@ class BiayaPenerusController extends Controller
 		}
 
 		public function update_outlet(request $request){
+
+			dd($request->all());
 			$cari_nota  = DB::table('faktur_pembelian')
 							->where('fp_idfaktur',$request->id)
 							->first();
@@ -1852,7 +1859,11 @@ class BiayaPenerusController extends Controller
 				}
 			}
 
-			return 'Success';
+			$status = DB::table('faktur_pembelian')
+						->where('fp_nofaktur',$cari_nota->fp_nofaktur)
+						->first();
+
+			return response()->json(['status'=>$status->fp_pending_status]);
 		}
 
 		public function getpembayaransubcon(){

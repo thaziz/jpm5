@@ -8,7 +8,6 @@
 
     <link href="{{ asset('assets/vendors/bootstrapTour/bootstrap-tour.min.css') }}" rel="stylesheet">
 <div class="col-sm-12 msh_hdn">
-	{{ csrf_field() }}
 <h3>Tabel Detail Resi</h3>
  	<hr>
  		<div class="col-sm-5">
@@ -86,7 +85,7 @@
 						<input type="hidden" name="no_resi[]" class="form-control" value="{{$data[$index]['nomor']}}">
 					</td>
 					<td>
-					<?php echo date('d/m/Y',strtotime($data[$index]['tanggal'])) ?>
+					<?php echo date('d/m/Y',strtotime($data[$index]['tanggal'])); ?>
 						<input type="hidden" name="tgl[]" class="form-control" value="{{$data[$index]['tanggal']}}">
 					</td>
 					<td>
@@ -108,7 +107,7 @@
 					<td>
 						{{$data[$index]['komisi']}}
 						<input type="hidden" name="komisi[]" class="form-control komisi" value="{{$data[$index]['komisi']}}">
-						<input type="hidden" name="comp[]" class="form-control komisi" value="{{$data[$index]['kode_cabang']}}">
+						<input type="hidden" name="comp[]" class="form-control" value="{{$data[$index]['kode_cabang']}}">
 					</td>
 					<td>
 						{{$data[$index]['biaya_komisi']}}
@@ -356,9 +355,10 @@ function save_outlet(){
                 type: 'success',
                 text: "Data berhasil disimpan",
                 timer: 900,
-               showConfirmButton: false
+               showConfirmButton: true
                 },function(){
-                   location.reload();
+                   // location.reload();
+                   $('.tt_print').removeClass('disabled');   
         });
       },
       error:function(data){

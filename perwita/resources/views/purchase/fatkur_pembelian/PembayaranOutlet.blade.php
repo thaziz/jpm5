@@ -1,9 +1,9 @@
 
 <div class="header_outlet" style="width: 400px; margin: 0 auto;min-height: 400px;" >
 
-	<form>
-		<table class="table	head_outlet">
+	<form class="head_outlet2">
 			{{ csrf_field() }}
+		<table class="table	head_outlet">
 		<h3 style="text-align: center;">Form Pembayaran Outlet</h3>
 		 <tr>
 		 	<td>Pilih Outlet</td>

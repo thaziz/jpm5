@@ -111,6 +111,7 @@
     </tr>
     <tr>
       <td style="border:none;" colspan="2">
+        @if($data[0]->fp_pending_status == 'APPROVED')
         @if($valid_cetak[0]->tt_nofp != null)
         <div class="cetak_tt">
          <a class="btn btn-warning pull-right" onclick="tt_print()"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>
@@ -118,6 +119,11 @@
         @else
         <div class="cetak_tt" hidden="">
          <a class="btn btn-warning pull-right" onclick="tt_print()"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>
+        </div>
+        @endif
+        @else
+        <div class="cetak_tt">
+         <a class="btn btn-warning pull-right tt_print disabled" onclick="tt_print()"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>
         </div>
         @endif
         <button class="btn btn-primary pull-right" style="margin-right: 10px;" type="text" onclick="modal_tt()"><i class="fa fa-book">&nbsp;Buat Tanda Terima</i></button>
@@ -280,11 +286,11 @@
       <td width="10">:</td>
       <td width="200"><input type="text" name="nominal" class="form-control nominal_update" onkeyup="hitung()" style="width: 250px;"></td>
     </tr>
-    <tr>
+{{--     <tr>
       <td style="width: 100px">Nominal Resi</td>
       <td width="10">:</td>
       <td width="200"><input type="text" name="" class="form-control nom_resi" style="width: 250px;" readonly=""></td>
-    </tr>
+    </tr> --}}
      </table>
       <div class="pull-right">
         <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
@@ -842,7 +848,9 @@ function save_tt1(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   // location.reload();
+                 if (response.status == 'APPROVED') {
+                    $('.tt_print').removeClass('disabled');
+                  }
         });
       },
       error:function(data){

@@ -3917,7 +3917,7 @@ function  cari_outlet(){
 
 function print_penerus(){
   var id = $('.idfaktur').val();
-  window.open(baseUrl+"{{route('detailbiayapenerus')}}"+"/?id="+id);
+  window.open(baseUrl+"/fakturpembelian/detailbiayapenerus?id="+id);
 }
 ///////////////////////////////////////////////
 $('#tmbhdataitem').click(function(){
