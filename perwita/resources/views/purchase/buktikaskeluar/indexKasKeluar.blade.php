@@ -72,7 +72,7 @@
                         <th> Keterangan </th> 
                         <th> Total </th>   
                         <th> Print </th>   
-                        <th> Allow Edit </th>
+                        {{-- <th> Allow Edit </th> --}}
                         <th> Aksi </th>
                     </tr>
                     </thead>
@@ -97,7 +97,7 @@
                               <i class="fa fa-print" aria-hidden="true">&nbsp; Print</i>
                             </a> 
                           </td>
-                          <td align="center"><input type="checkbox" class="checker"></td>
+                          {{-- <td align="center"><input type="checkbox" class="checker"></td> --}}
                           <td align="center" class="form-inline"> 
 
                               <a title="Edit" class="btn btn-xs btn-success" href={{url('buktikaskeluar/edit/'.$val->bkk_id.'')}}>

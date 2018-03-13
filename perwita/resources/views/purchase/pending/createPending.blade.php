@@ -102,7 +102,7 @@
             </tr>
             <tr>
               <td>Tanggal</td>
-              <td><input readonly="" class="form-control" type="text" value="<?php echo date('d/m/Y',strtotime($header->fp_tgl)) ?>" name="tN"></td>
+              <td><input readonly="" class="form-control" type="text" value="<?php echo date('d/m/Y',strtotime($header->fp_tgl)); ?>" name="tN"></td>
             </tr>
             <tr>
               <td>Persentase saat ini</td>
@@ -419,7 +419,7 @@
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                  // location.href = '../pending/index'
+                  location.href = '../pending/index'
                 });
       },
       error:function(data){

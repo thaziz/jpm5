@@ -80,7 +80,7 @@
       <td>No Faktur</td>
       <td>
         <input type="text" name="no_faktur" readonly="" value="{{$data[0]->fp_nofaktur}}" class="form-control">
-        <input type="text" name="akun_agen" readonly="" value="{{$data[0]->bp_akun_agen}}" class="form-control">
+        <input type="hidden" name="akun_agen" readonly="" value="{{$data[0]->bp_akun_agen}}" class="form-control">
       </td>
     </tr>
     <tr>
@@ -89,7 +89,7 @@
        <div class="input-group date">
          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
          <input type="text" name="tgl" readonly="" class="form-control" value="<?php echo date('d/M/Y',strtotime($data[0]->fp_tgl)) ?>">
-         <input type="hidden" name="tgl_biaya_head" class="form-control tgl-biaya" value="<?php echo date('d/M/Y',strtotime($data[0]->fp_tgl)) ?>" readonly="" style="width: 250px;">
+         <input type="hidden" name="tgl_biaya_head" class="form-control tgl-biaya" value="<?php echo date('d/M/Y',strtotime($data[0]->fp_tgl)); ?>" readonly="" style="width: 250px;">
        </div>
      </td>
     </tr>
@@ -144,7 +144,7 @@
     <td style="width: 100px">Account Biaya</td>
     <td width="200" class="form-inline">
       <input type="text" name="kode_akun" class="form-control kode_akun" style="width: 23.8%;" readonly="">
-      <select name="nama_akun" class="form-control nama_akun chosen-select-width"  style="width: 75%;" onchange="setNo()">
+      <select name="nama_akun" class="form-control nama_akun chosen-select-width3"  style="width: 75%;" onchange="setNo()">
         @foreach($akun_biaya as $val)
         <option value="{{$val->id_akun}}">{{$val->nama_akun}}</option>
         @endforeach
@@ -176,7 +176,7 @@
     </td>
     </tr>
      </table>
-     <button type="button" class="btn btn-primary pull-right cari-pod" onclick="cariPOD();"><i class="fa fa-search">&nbsp;Search</i></button>
+     <button type="button" class="btn btn-primary pull-right cari-pod" onclick="cariPOD();"><i class="fa fa-search">&nbsp;Append</i></button>
     </form>
 </div>
 <div class="table-biaya col-sm-12"  >
@@ -253,7 +253,7 @@
     <td width="10">:</td>
     <td width="200" class="form-inline">
       <input type="text" name="kode_akun" class="form-control kode_akun_update" style="width: 20%;" readonly="">
-      <select name="nama_akun" class="form-control nama_akun_update chosen-select-width" style="width: 79% !important;" onchange="updt()">
+      <select name="nama_akun" class="form-control nama_akun_update chosen-select-width3" style="width: 79% !important;" onchange="updt()">
         @foreach($akun_biaya as $val)
         <option value="{{$val->id_akun}}">{{$val->nama_akun}}</option>
         @endforeach
@@ -505,15 +505,15 @@ $(document).ready(function(){
             "language": dataTableLanguage,
     });
 
-  var config = {
+  var config3 = {
                '.chosen-select'           : {},
                '.chosen-select-deselect'  : {allow_single_deselect:true},
                '.chosen-select-no-single' : {disable_search_threshold:10},
                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-               '.chosen-select-width'     : {width:"75%"}
+               '.chosen-select-width3'     : {width:"75%"}
              }
-             for (var selector in config) {
-               $(selector).chosen(config[selector]);
+             for (var selector in config3) {
+               $(selector).chosen(config3[selector]);
              }
     var config1 = {
                '.chosen-select'           : {},
@@ -842,7 +842,7 @@ function save_tt1(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   location.reload();
+                   // location.reload();
         });
       },
       error:function(data){

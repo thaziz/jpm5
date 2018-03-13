@@ -386,10 +386,10 @@ class kasKeluarController extends Controller
 	}
 
 	public function edit($id){
-
 		$cari_bkk = DB::table('bukti_kas_keluar')
 					  ->where('bkk_id',$id)
 					  ->first();
+		// $jenis_bayar = $cari_bkk->bkk_jenisbayar;
 
 		if($cari_bkk->bkk_jenisbayar == 8){
 
@@ -439,6 +439,8 @@ class kasKeluarController extends Controller
 					  ->join('faktur_pembelian','fp_nofaktur','=','bkkd_ref')
 					  ->where('bkk_id',$id)
 					  ->get();
+
+				// $supplier =[];
 			}else if ($cari_bkk->bkk_jenisbayar == 2) {
 				$data = DB::table('bukti_kas_keluar')
 					  ->select('bukti_kas_keluar.*','cabang.nama AS nama_cabang','cabang.kode AS kode_cabang','nama_supplier AS nama_agen','no_supplier AS kode_agen')

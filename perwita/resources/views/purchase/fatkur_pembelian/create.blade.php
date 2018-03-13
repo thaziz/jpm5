@@ -453,7 +453,7 @@
                                           No Tanda Terima 
                                         </td>
                                         <td>
-                                          <input type='text' class='input-sm form-control notandaterima'>
+                                          <input type='text' name="nota_tt" class='input-sm form-control notandaterima'>
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         </td>
                                       </tr>
@@ -461,14 +461,14 @@
                                         <td> Tanggal </td>
                                         <td>
                                            <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="" readonly="">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="" readonly="" name="tgl_tt">
                                           </div>
                                         </td>
                                       </tr>
                                      
                                       <tr>
                                         <td> Supplier </td>
-                                        <td> <input type='text' class="form-control supplier_tt" value="" readonly=""></td>
+                                        <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
                                         </td>
                                       </tr>
                                       <tr>
@@ -476,7 +476,7 @@
                                            <div class="row">
                                               <div class="col-sm-3"> 
                                                 <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="Kwitansi" type="checkbox" checked="">
+                                                    <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
                                                       <label for="Kwitansi">
                                                           Kwitansi / Invoice / No
                                                       </label>
@@ -484,7 +484,7 @@
                                               </div>
                                               <div class="col-sm-3"> 
                                                 <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="FakturPajak" type="checkbox" checked="">
+                                                    <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
                                                       <label for="FakturPajak">
                                                           Faktur Pajak
                                                       </label>
@@ -493,7 +493,7 @@
 
                                               <div class="col-sm-3"> 
                                                 <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratPerananAsli" type="checkbox" checked="">
+                                                    <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
                                                       <label for="SuratPerananAsli">
                                                           Surat Peranan Asli
                                                       </label>
@@ -502,7 +502,7 @@
 
                                                <div class="col-sm-3"> 
                                                 <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratJalanAsli" type="checkbox" checked="">
+                                                    <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
                                                       <label for="SuratJalanAsli">
                                                          Surat Jalan Asli
                                                       </label>
@@ -524,7 +524,7 @@
                                       <tr>
                                         <td> Tanggal Kembali </td>
                                         <td>   <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
                                           </div> </td>
                                       </tr>
 
@@ -532,7 +532,7 @@
                                         <td>
                                          Total di Terima
                                         </td>
-                                        <td> <div class="row"> <div class="col-sm-3"> <label class="col-sm-3 label-control"> Rp </label> </div> <div class="col-sm-9"> <input type="text" class="form-control totalterima_tt"  style="text-align:right;" readonly=""></div> </div> </td>
+                                        <td> <div class="row"> <div class="col-sm-3"> <label class="col-sm-3 label-control"> Rp </label> </div> <div class="col-sm-9"> <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly=""></div> </div> </td>
                                       </tr>
                                      
                                        </table>                           
@@ -3684,11 +3684,17 @@ $(document).ready(function(){
       $('.nominal').val("");
       $('.total_pod').val('');
       $('.ket-biaya').val('');
+      $('.save_biaya').addClass('disabled');
+
 
       if (tabel_remove == 0) {
-        $('.header_biaya').addClass('disabled');
+        $('.vendor1').addClass('disabled');
+        $('.nama-kontak-agen1').addClass('disabled');
+        $('.nama-kontak-vendor1').addClass('disabled');
       }else{
-        $('.header_biaya').removeClass('disabled');
+        $('.vendor1').removeClass('disabled');
+        $('.nama-kontak-agen1').removeClass('disabled');
+        $('.nama-kontak-vendor1').removeClass('disabled');
       }
 
     }else if(valPo == ""){
@@ -3798,7 +3804,8 @@ $(document).ready(function(){
       $(updt).find('.kode-app').html(kode);
       $(updt).find('.debet-app').html(debit);
       $(updt).find('.ket-app').html(ket);
-      $(updt).find('.bayar-app').html(parseFloat(bayar));
+      $(updt).find('.bayar-app').html(accounting.formatMoney(bayar, "Rp ", 2, ".",','));
+      $('.save_biaya').addClass('disabled');
 
     }
     
@@ -3819,7 +3826,7 @@ $(document).ready(function(){
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
   function(){
        $.ajaxSetup({
@@ -3863,7 +3870,9 @@ $(document).ready(function(){
 
                   $('#save-update').addClass('disabled');
                   $('.cari-pod').addClass('disabled');
-                
+                  
+                  $('.modal_penerus_tt').addClass('disabled');
+                  $('#print-penerus').removeClass('disabled');
 
         });
       },
