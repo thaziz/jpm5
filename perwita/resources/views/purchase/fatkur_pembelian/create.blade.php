@@ -136,6 +136,7 @@
                             </td>
                             <td>
                                <input type="text" class="form-control nofaktur" name="nofaktur" required="" readonly="">
+                               <input type="hidden" class="form-control idfaktur" name="idfaktur" required="" readonly="">
                             
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             </td>
@@ -3881,7 +3882,7 @@ $(document).ready(function(){
                   
                   $('.modal_penerus_tt').addClass('disabled');
                   $('#print-penerus').removeClass('disabled');
-
+                  $('.idfaktur').val(response.id);
         });
       },
       error:function(data){
@@ -3915,8 +3916,8 @@ function  cari_outlet(){
 
 
 function print_penerus(){
-  var id = $('.id_bkk').val();
-  window.open("{{route('detailbiayapenerus', ['id' => $faktur->fp_nofaktur])}}");
+  var id = $('.idfaktur').val();
+  window.open(baseUrl+"{{route('detailbiayapenerus')}}"+"/?id="+id);
 }
 ///////////////////////////////////////////////
 $('#tmbhdataitem').click(function(){

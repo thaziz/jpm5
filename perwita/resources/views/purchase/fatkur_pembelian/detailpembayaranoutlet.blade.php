@@ -538,6 +538,8 @@ function hitung_komisi(o){
                   $('.modal_penerus_tt').addClass('disabled');
                   $('.print-penerus').removeClass('disabled');
                   $('#save-update-outlet').removeClass('disabled');
+                  $('.idfaktur').val(response.id);
+
         });
       },
       error:function(data){

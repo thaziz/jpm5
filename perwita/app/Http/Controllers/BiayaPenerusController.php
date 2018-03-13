@@ -406,8 +406,9 @@ class BiayaPenerusController extends Controller
 										'updated_at'	=> Carbon::now()
 										]);
 		        }
-			
-			return 'success';
+				
+				
+			return response()->json(['id'=>$request->nofaktur]);
 		}
 		public function edit($id){
 
@@ -1763,7 +1764,8 @@ class BiayaPenerusController extends Controller
 			}
 
 
-
+			return response()->json(['id'=>$request->nofaktur]);
+			
 		}
 
 		public function update_outlet(request $request){
