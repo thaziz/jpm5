@@ -453,7 +453,7 @@
                                           No Tanda Terima 
                                         </td>
                                         <td>
-                                          <input type='text' class='input-sm form-control notandaterima'>
+                                          <input type='text' name="nota_tt" class='input-sm form-control notandaterima'>
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         </td>
                                       </tr>
@@ -3684,11 +3684,17 @@ $(document).ready(function(){
       $('.nominal').val("");
       $('.total_pod').val('');
       $('.ket-biaya').val('');
+      $('.save_biaya').addClass('disabled');
+
 
       if (tabel_remove == 0) {
-        $('.header_biaya').addClass('disabled');
+        $('.vendor1').addClass('disabled');
+        $('.nama-kontak-agen1').addClass('disabled');
+        $('.nama-kontak-vendor1').addClass('disabled');
       }else{
-        $('.header_biaya').removeClass('disabled');
+        $('.vendor1').removeClass('disabled');
+        $('.nama-kontak-agen1').removeClass('disabled');
+        $('.nama-kontak-vendor1').removeClass('disabled');
       }
 
     }else if(valPo == ""){

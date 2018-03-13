@@ -154,7 +154,7 @@
 	  </tr>
 	  <tr>
 	  	<td colspan="3">
-	  		<button type="button" class="btn btn-primary pull-right disabled" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
+	  		<button type="button" class="btn btn-primary pull-right disabled save_biaya" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
 	  		<button type="button" class="btn btn-warning pull-left disabled" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
 	  	</td>
 	  </tr>
@@ -347,7 +347,7 @@ $('.nama-kontak-vendor1').change(function(){
 
        $.ajax({    
             type :"get",
-            data : 'cab='+cabang+'&'+'supp='+ven+'&'+'jenis='+agen,
+            data : 'cab='+cabang+'&'+'supp='+ven+'&'+'jenis='+agen+'&'+$('.head1 .nofaktur').serialize(),
             url : baseUrl + '/fakturpembelian/adinott',
             dataType:'json',
             success : function(data){
@@ -361,13 +361,24 @@ $('.nama-kontak-vendor1').change(function(){
     })
 
 $('.simpan_penerus').click(function(){
+ 	agen = $('.vendor1 ').val();
+ 	cabang = $('.cabang').val();
+ 	// console.log(agen);
+
+	if (agen == 'AGEN') {
+      	ven = $('.nama-kontak-agen1').val();
+      }else{
+      	ven = $('.nama-kontak-vendor1').val();
+      }
+      // console.log(ven);
 	$.ajax({    
             type :"get",
-            data : $('.tabel_tt :input').serialize(),
+            data : $('.tabel_tt :input').serialize()+'&'+'agen='+ven+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
             url : baseUrl + '/fakturpembelian/simpan_tt1',
             dataType:'json',
             success : function(data){
             	toastr.success('Form Tanda terima berhasil disimpan');
+            	$('.save_biaya').removeClass('disabled');
             }
         })
 })
