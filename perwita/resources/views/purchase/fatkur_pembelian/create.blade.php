@@ -3869,7 +3869,9 @@ $(document).ready(function(){
 
                   $('#save-update').addClass('disabled');
                   $('.cari-pod').addClass('disabled');
-                
+                  
+                  $('.modal_penerus_tt').addClass('disabled');
+                  $('#print-penerus').removeClass('disabled');
 
         });
       },

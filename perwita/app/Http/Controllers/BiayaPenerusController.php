@@ -228,7 +228,7 @@ class BiayaPenerusController extends Controller
 	    
 		}
 		public function save_agen(request $request){
-			// dd($request);
+			// dd($request->all());
 			 // $request->master_persen;
 			 $year  = Carbon::now()->format('Y'); 
 			 $month = Carbon::now()->format('m'); 
@@ -322,7 +322,7 @@ class BiayaPenerusController extends Controller
 								'fp_nofaktur'		=> $request->nofaktur,
 								'fp_tgl'			=> $tgl,
 								'fp_jenisbayar' 	=> 6,
-								'fp_comp'			=> $request->cabang,
+								'fp_comp'			=> $request->cab,
 								'fp_noinvoice'		=> $request->Invoice_biaya,
 								'created_at'		=> Carbon::now(),
 								'fp_pending_status' => $pending_status,
@@ -756,37 +756,47 @@ class BiayaPenerusController extends Controller
         
 		}
 		public function adinott(request $request){
-				dd($request->all());
-				$idfaktur = DB::table('form_tt')->where('tt_idcabang' , $request->cab)
+				// dd($request->all());
+
+				$cari_tt = DB::table('form_tt')
+							 ->where('tt_nofp',$request->nofaktur)
+							 ->first();
+				if ($cari_tt == null) {
+
+					$idfaktur = DB::table('form_tt')->where('tt_idcabang' , $request->cab)
 									   ->max('tt_noform');
-			//	dd($nosppid);
-				$month = Carbon::now()->format('m');
-				$year = Carbon::now()->format('y');
-				if(isset($idfaktur)) {
-					$explode  = explode("/", $idfaktur);
-					$idfaktur = $explode[2];
-					$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
-					$idfaktur = str_replace('-', '', $idfaktur) ;
-					$string = (int)$idfaktur + 1;
-					$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
-				}
 
-				else {
-					$idfaktur = '001';
-				}
+					$month = Carbon::now()->format('m');
+					$year = Carbon::now()->format('y');
+					if(isset($idfaktur)) {
+						$explode  = explode("/", $idfaktur);
+						$idfaktur = $explode[2];
+						$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
+						$idfaktur = str_replace('-', '', $idfaktur) ;
+						$string = (int)$idfaktur + 1;
+						$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
+					}
 
-				$nota = 'TT' . $month . $year . '/' . $request->cab . '/' .  $idfaktur;
+					else {
+						$idfaktur = '001';
+					}
 
-				if ($request->jenis == 'AGEN') {
-					$sup = DB::table('agen')
-							 ->where('kode',$request->supp)
-							 ->first();
+					$nota = 'TT' . $month . $year . '/' . $request->cab . '/' .  $idfaktur;
+
+					
 				}else{
-					$sup = DB::table('vendor')
-							 ->where('kode',$request->supp)
-							 ->first();
+					$nota = $cari_tt->tt_noform;
 				}
-
+				
+				if ($request->jenis == 'AGEN') {
+						$sup = DB::table('agen')
+								 ->where('kode',$request->supp)
+								 ->first();
+				}else{
+						$sup = DB::table('vendor')
+								 ->where('kode',$request->supp)
+								 ->first();
+				}
 				return response()->json([
 								'nota'=>$nota,
 								'sup'=>$sup
@@ -828,7 +838,7 @@ class BiayaPenerusController extends Controller
 			$month =Carbon::now()->format('m'); 
 
 			 $idfaktur =   fakturpembelian::where('fp_comp' , $request->cab)
-											->where('fp_nofaktur','LIKE','%'.'P-'.'%')
+											->where('fp_jenisbayar','6')
 											->max('fp_nofaktur');
 		//	dd($nosppid);
 			// return $idfaktur;
