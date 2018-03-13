@@ -42,9 +42,11 @@
                     <h5> Faktur Pembelian
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                     @if(Auth::user()->PunyaAkses('Faktur Pembelian','aktif'))
                       <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('fakturpembelian/createfatkurpembelian')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>
+                    @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -100,14 +102,19 @@
                         </td>
                         <!-- <td align="center"><input type="checkbox" class="form-control" name="allow"></td> -->
                        @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
-                        @if($faktur->fp_status == 'Released' or Auth::user()->PunyaAkses('aktif','Aksi Faktur'))
+                        @if($faktur->fp_status == 'Released' or Auth::user()->PunyaAkses('Aksi Faktur','aktif'))
+
                          <td align="center"> 
+                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
                             <a title="Edit" class="btn btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             </a> 
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
                             <a title="Hapus" class="btn btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                             </a> 
+                            @endif
                           <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
                          </td> 
                          @else

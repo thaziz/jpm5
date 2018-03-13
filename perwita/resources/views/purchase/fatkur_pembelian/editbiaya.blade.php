@@ -842,7 +842,7 @@ function save_tt1(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   location.reload();
+                   // location.reload();
         });
       },
       error:function(data){

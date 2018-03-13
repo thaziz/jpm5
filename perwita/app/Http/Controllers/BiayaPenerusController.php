@@ -599,7 +599,8 @@ class BiayaPenerusController extends Controller
 			$date = Carbon::now()->format('d/m/Y');
 
 			$agen = DB::table('agen')
-					  ->where('nama','LIKE','%'.'OUTLET'.'%')
+					  ->where('kategori','OUTLET')
+					  ->orWhere('kategori','AGEN DAN OUTLET')
 					  ->get();
 
 			$akun_biaya = DB::table('akun_biaya')
@@ -888,7 +889,7 @@ class BiayaPenerusController extends Controller
 			return response()->json(['nota' => $nota]);
 		}
 		public function update_agen(request $request){
-			// dd($request);
+			// dd($request->all());
 	
 	        $cari_bp = DB::table('biaya_penerus')
 	      				->where('bp_faktur',$request->nota)
@@ -936,7 +937,7 @@ class BiayaPenerusController extends Controller
 			 	$pending_status='APPROVED';
 			 }
 
-			 
+			 // return $total_tarif;
 	      	 for ($i=0; $i < count($request->seq_biaya); $i++) { 
 
 		       	$max_id = DB::table('biaya_penerus_dt')
@@ -947,7 +948,16 @@ class BiayaPenerusController extends Controller
 		       		$max_id+=1;
 		       	}
 
-		       	
+		       	$update_fp = DB::table('faktur_pembelian')
+		       				   ->where('fp_nofaktur',$request->nota)
+		       				   ->update([
+		       				   		'fp_netto' => $total_tarif
+		       				   ]);
+		       	$update_fp = DB::table('biaya_penerus')
+		       				   ->where('bp_faktur',$request->nota)
+		       				   ->update([
+		       				   		'bp_total_penerus' => $total_tarif
+		       				   ]);
 
 		       	$update = DB::table('biaya_penerus_dt')
 		       				->insert([
@@ -967,6 +977,8 @@ class BiayaPenerusController extends Controller
 		       				]);
 
 	       }
+
+	       return 'Success';
 		}
 		public function simpan_tt(request $request){
 		
