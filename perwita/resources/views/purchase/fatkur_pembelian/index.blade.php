@@ -42,7 +42,7 @@
                     <h5> Faktur Pembelian
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     @if(Auth::user()->PunyaAkses('Faktur Pembelian','aktif'))
+                     @if(Auth::user()->PunyaAkses('Faktur Pembelian','tambah'))
                       <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('fakturpembelian/createfatkurpembelian')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>

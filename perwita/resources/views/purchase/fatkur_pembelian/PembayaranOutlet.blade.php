@@ -23,6 +23,13 @@
 		 		<input  class="form-control reportrange" type="text" value="{{$start}} - {{$second}}" name="rangepicker"  >
 		 	</td>
 		 </tr>
+		 <tr>
+		 	<td>Jatuh Tempo</td>
+		 	<td width="10">:</td>
+		 	<td>
+		 		<input  class="form-control jatuh_tempo_outlet" type="text" value="{{$jt}}" name="jatuh_tempo_outlet"  >
+		 	</td>
+		 </tr>
 		<tr>
 		 	<td width="111">Note</td>
 		 	<td width="20">:</td>
@@ -31,6 +38,7 @@
 		 	</td>
 		 </tr>
      </table>
+     <button type="button" class="btn btn-warning pull-left disabled print-penerus" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
      <button type="button" class="btn btn-primary pull-right cari_outlet" onclick="cari_outlet()"><i class="fa fa-search">&nbsp;Search</i></button>
     </form>
 </div>
@@ -41,11 +49,8 @@
 <!-- Include Required Prerequisites -->
 
 <script type="text/javascript">
-	$(document).ready( function () {
+$(document).ready( function () {
         
-
-	
-
 var config2 = {
                '.chosen-select'           : {},
                '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -60,6 +65,10 @@ var config2 = {
   $('.selectOutlet').chosen(config2); 
 
 
+});
+
+$('.jatuh_tempo_outlet').datepicker({
+	format:'dd/mm/yyyy'
 });
 
 function autoNote(){

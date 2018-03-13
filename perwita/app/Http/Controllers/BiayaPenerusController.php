@@ -55,7 +55,8 @@ class BiayaPenerusController extends Controller
 			$akun_biaya = DB::table('d_akun')
 					  ->where('id_parrent',5)
 					  ->get();
-			return view('purchase/fatkur_pembelian/tableBiaya',compact('data','date','agen','vendor','akun_biaya','now'));
+			$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
+			return view('purchase/fatkur_pembelian/tableBiaya',compact('data','date','agen','vendor','akun_biaya','now','jt'));
 		}
 
 		public function kekata($x) {
@@ -609,10 +610,11 @@ class BiayaPenerusController extends Controller
 	        $second = Carbon::now()->format('d/m/Y');
 	        // $start = $first->subMonths(1)->startOfMonth();
 	        $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
+	        $jt = Carbon::now()->subDays(-30)->format('d/m/Y');
 
 
 
-			return view('purchase/fatkur_pembelian/PembayaranOutlet',compact('date','agen','akun_biaya','second','start'));
+			return view('purchase/fatkur_pembelian/PembayaranOutlet',compact('date','agen','akun_biaya','second','start','jt'));
 		}
 		public function cari_outlet(request $request,$agen){
 			// dd($request);
@@ -788,16 +790,22 @@ class BiayaPenerusController extends Controller
 				}else{
 					$nota = $cari_tt->tt_noform;
 				}
-				
-				if ($request->jenis == 'AGEN') {
+				if (isset($request->jenis)) {
+					if ($request->jenis == 'AGEN') {
 						$sup = DB::table('agen')
 								 ->where('kode',$request->supp)
 								 ->first();
-				}else{
+				 	}else{
 						$sup = DB::table('vendor')
 								 ->where('kode',$request->supp)
 								 ->first();
+				 	}
+				}else if ($request->outlet) {
+					$sup = DB::table('agen')
+							 ->where('kode',$request->outlet)
+							 ->first();
 				}
+				 
 				return response()->json([
 								'nota'=>$nota,
 								'sup'=>$sup

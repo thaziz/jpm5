@@ -1546,10 +1546,12 @@
                                  " style="border-left:none;">
                                     <a href="#" style="font-size:85%"> Transaksi Hutang <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
-                                        <li >
+                                @if(Auth::user()->PunyaAkses('Faktur Pembelian','aktif'))
+                                <li >
                                     <a class="sidebar master-perusahaan {{Request::is('fakturpembelian/fakturpembelian') ? 'active' : '' || 
                                         Request::is('fakturpembelian/fakturpembelian/*') ? 'active' : ''}}" href="{{ url('fakturpembelian/fakturpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pembelian </a>
                                 </li>
+                                @endif
                                 <li>
                                     <a class=" {{/* uangmuka */Request::is('uangmuka') ? 'active' : '' || Request::is('uangmuka/*') ? 'active' : '' }}" href="{{url('uangmuka')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Uang Muka </a>
                                 </li>

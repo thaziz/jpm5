@@ -437,11 +437,14 @@
 
                         </table>
                           <!-- FORM TANA TERIMA -->
-                                 <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
+                              <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
                                   <div class="modal-content">
                                     <div class="modal-header">
-                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
                                       <h4 class="modal-title" style="text-align: center;"> 
                                        </h4>     
                                     </div>
@@ -523,7 +526,7 @@
 
                                       <tr>
                                         <td> Tanggal Kembali </td>
-                                        <td>   <div class="input-group date">
+                                        <td>   <div class="input-group">
                                                       <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
                                           </div> </td>
                                       </tr>
@@ -541,7 +544,9 @@
 
                                       <div class="modal-footer">
                                           <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="button" class="btn btn-primary simpan_penerus" id="buttonsimpan_tt">Simpan</button>
+                                          <button type="button" class="btn btn-primary simpan_penerus simpan_outlet" id="buttonsimpan_tt">
+                                            Simpan
+                                          </button>
                                          
                                       </div>
                                       
@@ -1796,7 +1801,10 @@
         $('.amount').val(addCommas(num_amount));
       }
     })
-
+    $('.date').datepicker({
+        autoclose: true,
+        format: 'dd-MM-yyyy',
+    }).datepicker("setDate", "0");;
 
     $('.date').datepicker({
         autoclose: true,
@@ -3848,7 +3856,7 @@ $(document).ready(function(){
                showConfirmButton: true
                 },function(){
                   // location.reload();
-                   $(".tmbhdatapenerus").addClass('disabled');
+                  $(".tmbhdatapenerus").addClass('disabled');
                   $(".tmbhdatapenerus").css('background','grey');
                   $(".tmbhdatapenerus").css('color','black');
 
@@ -3903,6 +3911,12 @@ function  cari_outlet(){
       }
 
     })
+}
+
+
+function print_penerus(){
+  var id = $('.id_bkk').val();
+  window.open("{{route('detailbiayapenerus', ['id' => $faktur->fp_nofaktur])}}");
 }
 ///////////////////////////////////////////////
 $('#tmbhdataitem').click(function(){

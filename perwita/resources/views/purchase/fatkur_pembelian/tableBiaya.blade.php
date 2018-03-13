@@ -17,7 +17,7 @@
  	<td style="width: 100px">Jatuh Tempo</td>
  	<td width="10">:</td>
  	<td width="200">
- 		<input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="" placeholder="Jatuh tempo" style="width: 250px;">
+ 		<input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="{{$jt}}" placeholder="Jatuh tempo" style="width: 250px;">
  	</td>
  </tr>
 <tr>
