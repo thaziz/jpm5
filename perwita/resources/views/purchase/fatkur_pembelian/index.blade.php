@@ -64,6 +64,7 @@
                         <th> Tanggal </th>
                         <th> Jenis Faktur </th>
                         <th> No Invoice </th>
+                        <th> Total </th>
                         <th> Status </th>
                         <th> Detail </th>
                         <!-- <th> Allow Edit</th> -->
@@ -84,6 +85,7 @@
                         @else
                         <td align="center"> - </td>
                         @endif
+                        <td>{{$faktur->fp_netto}}</td>
                         <td>
                           @if($faktur->fp_pending_status == 'APPROVED')
                             <label class="label label-success">APPROVED</label>
@@ -98,17 +100,19 @@
                         </td>
                         <!-- <td align="center"><input type="checkbox" class="form-control" name="allow"></td> -->
                        @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
-
-                       <td align="center"> 
-                          <a title="Edit" class="btn btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
-                          <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                          </a> 
-                          <a title="Hapus" class="btn btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
-                          <i class="fa fa-trash" aria-hidden="true"></i>
-                          </a> 
-                        <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
-                       </td>  
-                       
+                        @if($faktur->fp_status == 'Released' or Auth::user()->PunyaAkses('aktif','Aksi Faktur'))
+                         <td align="center"> 
+                            <a title="Edit" class="btn btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
+                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                            </a> 
+                            <a title="Hapus" class="btn btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                            </a> 
+                          <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
+                         </td> 
+                         @else
+                         <td align="center">-</td>
+                        @endif
                        @else
                         <td align="center"> <a title="Edit" class="btn btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
                         <a title="Hapus" class="btn btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">

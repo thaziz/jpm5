@@ -176,7 +176,7 @@
     </td>
     </tr>
      </table>
-     <button type="button" class="btn btn-primary pull-right cari-pod" onclick="cariPOD();"><i class="fa fa-search">&nbsp;Search</i></button>
+     <button type="button" class="btn btn-primary pull-right cari-pod" onclick="cariPOD();"><i class="fa fa-search">&nbsp;Append</i></button>
     </form>
 </div>
 <div class="table-biaya col-sm-12"  >
