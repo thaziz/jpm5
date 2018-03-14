@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
-use Carbon\Carbon;
+
 
 class subcon_Controller extends Controller
 {
@@ -36,76 +36,25 @@ class subcon_Controller extends Controller
     }
 
     public function save_data (Request $request) {
-        // dd($request);
         $simpan='';
         $crud = $request->crud;
-
-        $year = carbon::now()->format('y');
-        $month = carbon::now()->format('m');
-        $day = carbon::now()->format('d');
-         // $kodecabang =  auth::user()->kode_cabang;
-
-        if ($request->ed_kode == null || $request->ed_kode == '') {
-             $kodekode = DB::table('subcon')->max('id_subcon');
-              if ($kodekode == '' ) {
-                 $kodekode=1;
-               }
-               else{
-                  $kodekode+=1;
-               }
-
-             
-
-
-               // return $kodekode;
-               if ($kodekode < 1000) {
-                  $kodekode = '000'.$kodekode;
-                }
-                 $kodekode =  /*$kodecabang.*/'SC/'.'001'.'/'.$kodekode;
-        }else{
-           $kodekode = $request->ed_kode;
-        }
-          $idsubconkode = DB::table('subcon')->max('id_subcon');
-              if ($idsubconkode == '' ) {
-                 $idsubconkode=1;
-               }
-               else{
-                  $idsubconkode+=1;
-               }
-               // return date('Y-m-d',strtotime($request->ed_tgl_kontrak));
-       
+        $data = array(
+                'kode' => strtoupper($request->ed_kode),
+                'nama' => strtoupper($request->ed_nama),                
+                'nomor_kontrak' => strtoupper($request->ed_nomor_kontrak),
+                'tgl_kontrak' => strtoupper($request->ed_tgl_kontrak),
+                'penanggung_jawab' => strtoupper($request->ed_penanggung_jawab),
+                'alamat' => strtoupper($request->ed_alamat),
+                'telpon' => strtoupper($request->ed_telpon),
+                'fax' => strtoupper($request->ed_fax),
+                'kontak_person' => strtoupper($request->ed_kontak_person),
+                'email' => strtoupper($request->ed_email),
+                'keterangan' => strtoupper($request->ed_keterangan),
+            );
         
         if ($crud == 'N') {
-             $data = array(
-                'id_subcon' =>$idsubconkode,
-                'kode' => $kodekode,
-                'nama' => strtoupper($request->ed_nama),                
-                'nomor_kontrak' => strtoupper($request->ed_nomor_kontrak),
-                'tgl_kontrak' => date('Y-m-d',strtotime($request->ed_tgl_kontrak)),
-                'penanggung_jawab' => strtoupper($request->ed_penanggung_jawab),
-                'alamat' => strtoupper($request->ed_alamat),
-                'telpon' => strtoupper($request->ed_telpon),
-                'fax' => strtoupper($request->ed_fax),
-                'kontak_person' => strtoupper($request->ed_kontak_person),
-                'email' => strtoupper($request->ed_email),
-                'keterangan' => strtoupper($request->ed_keterangan),
-            );
             $simpan = DB::table('subcon')->insert($data);
         }elseif ($crud == 'E') {
-            $data = array(
-                'id_subcon' => $request->id_subcon,
-                'kode' => $request->ed_kode,
-                'nama' => strtoupper($request->ed_nama),                
-                'nomor_kontrak' => strtoupper($request->ed_nomor_kontrak),
-                'tgl_kontrak' => date('Y-m-d',strtotime($request->ed_tgl_kontrak)),
-                'penanggung_jawab' => strtoupper($request->ed_penanggung_jawab),
-                'alamat' => strtoupper($request->ed_alamat),
-                'telpon' => strtoupper($request->ed_telpon),
-                'fax' => strtoupper($request->ed_fax),
-                'kontak_person' => strtoupper($request->ed_kontak_person),
-                'email' => strtoupper($request->ed_email),
-                'keterangan' => strtoupper($request->ed_keterangan),
-            );
             $simpan = DB::table('subcon')->where('kode', $request->ed_kode_old)->update($data);
         }
         if($simpan == TRUE){
