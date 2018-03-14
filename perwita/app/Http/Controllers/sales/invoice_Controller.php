@@ -788,12 +788,17 @@ public function nota_invoice(request $request){
     $bulan = Carbon::now()->format('m');
     $tahun = Carbon::now()->format('y');
 
-    return $cari_nota = DB::select("SELECT  substring(max(nomor),11) as tgl from invoice
+    $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from invoice
                                     WHERE kode_cabang = '$request->cabang'
                                     AND to_char(tanggal,'MM') = '$bulan'
                                     AND to_char(tanggal,'YY') = '$tahun'");
+    $index = (integer)$cari_nota[0]->id + 1;
+    $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+    $nota = 'INV' . $request->cabang . $bulan . $tahun . $index;
 
-    return $nota = 'INV' . $request->cabang
+    return response()->json([
+                         'nota'=>$nota
+                        ]);
 }
 
 }

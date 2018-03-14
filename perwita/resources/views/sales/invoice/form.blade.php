@@ -72,10 +72,10 @@
                             <tr>
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td colspan="4">
-                                    <select class="chosen-select-width"  name="cb_customer" id="cb_customer" style="width:100%" >
-                                        <option> </option>
+                                    <select class="chosen-select-width"  name="customer" id="customer" style="width:100%" >
+                                        <option value="0">Pilih - Cabang</option>
                                     @foreach ($customer as $row)
-                                        <option value="" >  </option>
+                                        <option value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" name="ed_customer" value="" >
@@ -91,20 +91,8 @@
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
                                 <td>
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_jatuh_tempo" value="">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" readonly="" class="form-control" name="ed_jatuh_tempo" value="">
                                     </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="4">
-                                    <select class="chosen-select-width"  name="cb_customer" id="cb_customer" style="width:100%" >
-                                        <option> </option>
-                                    @foreach ($customer as $row)
-                                        <option value="" >  </option>
-                                    @endforeach
-                                    </select>
-                                    <input type="hidden" name="ed_customer" value="" >
                                 </td>
                             </tr>
                             <tr>
@@ -322,7 +310,8 @@
 
     //date picker
     $('.tgl').datepicker({
-        format:'dd/mm/yyyy'
+        format:'dd/mm/yyyy',
+        endDate:'today'
     });
     //ajax cari nota
     $(document).ready(function(){
@@ -330,11 +319,15 @@
         $.ajax({
             url:baseUrl+'/sales/nota_invoice',
             data:{cabang},
-            succces:function(response){
+            dataType : 'json',
+            success:function(response){
+                console.log(response.nota);
                 $('#nota_invoice').val(response.nota);
             }
         });
     });
+    //ajax customer
+    
     
 </script>
 @endsection
