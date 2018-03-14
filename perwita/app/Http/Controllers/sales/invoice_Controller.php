@@ -9,6 +9,7 @@ use PDF;
 use App\master_akun;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Carbon\Carbon;
 
 
 class invoice_Controller extends Controller
@@ -606,10 +607,15 @@ else if($jenis_ppn!=3){
         return view('sales.invoice.index',compact('data'));
     }
 
-    public function form($nomor=null){
-        
-        
-        return view('sales.invoice.form',compact(''));
+    public function form(){
+        $customer = DB::table('customer')
+                      ->get();
+
+        $cabang   = DB::table('cabang')
+                      ->get();
+        $tgl      = Carbon::now()->format('d/m/Y');
+
+        return view('sales.invoice.form',compact('customer','cabang','tgl'));
     }
 
     public function tampil_do(Request $request) {
@@ -777,7 +783,22 @@ else if($jenis_ppn!=3){
         return view('sales.invoice.jurnal',compact('nomor','jurnal_dt'));
     }
     
-    
-    
+public function nota_invoice(request $request){
+    // dd($request->all());
+    $bulan = Carbon::now()->format('m');
+    $tahun = Carbon::now()->format('y');
+
+    $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from invoice
+                                    WHERE kode_cabang = '$request->cabang'
+                                    AND to_char(tanggal,'MM') = '$bulan'
+                                    AND to_char(tanggal,'YY') = '$tahun'");
+    $index = (integer)$cari_nota[0]->id + 1;
+    $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+    $nota = 'INV' . $request->cabang . $bulan . $tahun . $index;
+
+    return response()->json([
+                         'nota'=>$nota
+                        ]);
+}
 
 }
