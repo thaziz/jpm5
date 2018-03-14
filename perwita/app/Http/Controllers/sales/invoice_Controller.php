@@ -614,8 +614,9 @@ else if($jenis_ppn!=3){
         $cabang   = DB::table('cabang')
                       ->get();
         $tgl      = Carbon::now()->format('d/m/Y');
+        $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
 
-        return view('sales.invoice.form',compact('customer','cabang','tgl'));
+        return view('sales.invoice.form',compact('customer','cabang','tgl','tgl1'));
     }
 
     public function tampil_do(Request $request) {
@@ -800,5 +801,40 @@ public function nota_invoice(request $request){
                          'nota'=>$nota
                         ]);
 }
+public function jatuh_tempo_customer(request $request)
+{
+    $cus = DB::table('customer')
+             ->where('kode',$request->cus)
+             ->first();
+    $jt = $cus->syarat_kredit;
+    $tgl = str_replace('/', '-' ,$request->tgl);
+    $tgl = Carbon::parse($tgl)->format('Y-m-d');
 
+    $tgl = Carbon::parse($tgl)->subDays(-$jt)->format('d/m/Y');
+
+    return response()->json([
+                         'jt' =>$jt,
+                         'tgl'=>$tgl
+                       ]);
+}
+public function cari_do_invoice(request $request)
+{   
+    $do_awal = str_replace('/', '-' ,$request->do_awal);
+    $do_akhir = str_replace('/', '-' ,$request->do_akhir);
+    $do_awal = Carbon::parse($do_awal)->format('Y-m-d');
+    $do_akhir = Carbon::parse($do_akhir)->format('Y-m-d');
+    if ($request->jenis) {
+        $data = DB::table('delivery_order')
+              ->join('delivery_orderd','delivery_orderd.nomor','=','delivery_order.nomor')
+              ->join('invoice','delivery_orderd.nomor','=','delivery_order.nomor')
+              ->where('tanggal','>=',$do_awal)
+              ->where('tanggal','<=',$do_akhir)
+              ->where('jenis',$request->cb_pendapatan)
+              ->where('kode_customer',$request->customer)
+              ->get();
+    }
+    
+
+    return view('sales.invoice.tableDo',compact('data'));
+}
 }

@@ -91,7 +91,7 @@
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
                                 <td>
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" readonly="" class="form-control" name="ed_jatuh_tempo" value="">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" readonly="" class="ed_jatuh_tempo form-control" name="ed_jatuh_tempo" value="">
                                     </div>
                                 </td>
                             </tr>
@@ -99,7 +99,7 @@
                                 <td style="width:110px; padding-top: 0.4cm">Pendapatan</td>
                                 <td colspan="3">
                                     <select class="form-control"  name="cb_pendapatan" id="cb_pendapatan" >
-                                        <option></option>
+                                        <option value="0">Pilih - Pendapatan</option>
                                         <option value="PAKET">PAKET</option>
                                         <option value="KARGO">KARGO</option>
                                         <option value="KORAN">KORAN</option>
@@ -123,31 +123,20 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="{{ $data->keterangan or null }}" >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="4">
-                                    <select class="form-control" name="cb_cabang" >
-                                    @foreach ($cabang as $row)
-                                        <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                    @endforeach
-                                    </select>
-                                    <input type="hidden" name="ed_cabang" value="{{ $data->kode_cabang or null }}" >
+                                    <input type="text" name="ed_keterangan" placeholder="harap diisi" class="form-control ed_keterangan" style="text-transform: uppercase" value="" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tgl DO Mulai</td>
                                 <td >
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal_mulai_do" value="">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="do_awal form-control" name="do_awal" value="{{$tgl1}}">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Tgl DO Sampai</td>
                                 <td>
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal_sampai_do" value="">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="do_akhir form-control" name="do_akhir" value="{{$tgl}}">
                                     </div>
                                 </td>
                             </tr>
@@ -155,7 +144,7 @@
                     </table>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Order</button>
+                            <button type="button" class="btn btn-info " id="btn_modal_do" name="btnadd"  ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                         </div>
                     </div>
@@ -240,7 +229,7 @@
                     </table>
                 </form>
                 <!-- modal -->
-                <div id="modal" class="modal" >
+                <div id="modal_do" class="modal" >
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -313,6 +302,9 @@
         format:'dd/mm/yyyy',
         endDate:'today'
     });
+    $('.date').datepicker({
+        format:'dd/mm/yyyy',
+    });
     //ajax cari nota
     $(document).ready(function(){
         var cabang = $('.cabang').val();
@@ -326,8 +318,68 @@
             }
         });
     });
-    //ajax customer
-    
+
+    //ajax jatuh  tempo
+   $('#customer').change(function(){
+        var cus = $('#customer').val();
+        var tgl = $('.tgl').val();
+        $.ajax({
+            url:baseUrl+'/sales/jatuh_tempo_customer',
+            data:{cus,tgl},
+            dataType : 'json',
+            success:function(response){
+                console.log(response.tgl);
+                $('.ed_jatuh_tempo').val(response.tgl);
+            }
+        });
+    });
+
+   $('.tgl').change(function(){
+        var cus = $('#customer').val();
+        var tgl = $('.tgl').val();
+        $.ajax({
+            url:baseUrl+'/sales/jatuh_tempo_customer',
+            data:{cus,tgl},
+            dataType : 'json',
+            success:function(response){
+                console.log(response.tgl);
+                $('.ed_jatuh_tempo').val(response.tgl);
+            }
+        });
+    });
+   //modal do
+   $('#btn_modal_do').click(function(){
+        var array_validasi = [];
+        var customer      = $('#customer').val();
+        var cb_pendapatan = $('#cb_pendapatan').val();
+        var ed_keterangan = $('#ed_keterangan').val();
+        var do_awal       = $('.do_awal').val();
+        var do_akhir      = $('.do_akhir').val();
+
+        if (customer == 0) {
+            array_validasi.push(0)
+        }
+        if (cb_pendapatan == 0) {
+            array_validasi.push(0)
+        }
+        if (ed_keterangan == 0) {
+            array_validasi.push(0)
+        }
+        var index = array_validasi.indexOf(0);
+
+        if (index == -1) {
+            $.ajax({
+              url:baseUrl + '/sales/cari_do_invoice',
+              data:{customer,cb_pendapatan,do_awal,do_akhir},
+              success:function(data){
+                $('.kirim').html(data);
+              }
+            });
+        }else{
+            toastr.warning('Harap Lengkapi Data Diatas');
+        }
+
+   })
     
 </script>
 @endsection
