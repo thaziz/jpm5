@@ -607,26 +607,9 @@ else if($jenis_ppn!=3){
     }
 
     public function form($nomor=null){
-        $jurnal_dt=null;
-        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
-        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
-        $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
-        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
-        $customer = DB::select(" SELECT kode,nama,syarat_kredit FROM customer ORDER BY nama ASC ");
-        $pajak = DB::select(" SELECT kode,nama,nilai FROM pajak ORDER BY nama ASC ");
-        if ($nomor != null) {
-            $data = DB::table('invoice')->where('nomor', $nomor)->first();
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM invoice_d WHERE nomor_invoice='$nomor' "))->first();
-             $jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
-                        FROM d_akun a join d_jurnal_dt jd
-                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
-                        (select j.jr_id from d_jurnal j where jr_ref='$nomor')")); 
-
-        }else{
-            $data = null;
-            $jml_detail = 0;
-        }
-        return view('sales.invoice.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','pajak','jurnal_dt' ));
+        
+        
+        return view('sales.invoice.form',compact(''));
     }
 
     public function tampil_do(Request $request) {

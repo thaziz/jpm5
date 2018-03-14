@@ -74,15 +74,13 @@
                     </div>
                 </form>
                 <form id="form_header" class="form-horizontal">
+                    {{ csrf_token() }}
                     <table class="table table-striped table-bordered table-hover">
                         <tbody>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_nomor" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
-                                    <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
-                                    <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                    <input type="hidden" class="form-control" name="crud_h" class="form-control" @if ($data === null) value="N" @else value="E" @endif>
+                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
                                 </td>
                             </tr>
                             <tr>
