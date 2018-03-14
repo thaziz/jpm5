@@ -1106,7 +1106,7 @@
     $('#buttonsimpan_tt').click(function(){
       lainlain =   $('.lainlain_tt').val();
       notandaterima = $('.notandaterima').val();
-      alert(lainlain);
+   //   alert(lainlain);
       if(lainlain == ''){
         toastr.info('Kolom lain lain belum di isi');
       }
