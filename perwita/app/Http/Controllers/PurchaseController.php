@@ -3402,7 +3402,7 @@ $indexakun=0;
 				$fatkurpembelian->fp_jatuhtempo = $request->jatuhtempoitem;
 				$fatkurpembelian->fp_jumlah = $total;
 
-				if($request->diskon != ''){
+				if($request->diskon2 != ''){
 					$fatkurpembelian->fp_discount = $request->diskon;
 					$hasildiskon = str_replace(',', '', $request->hasildiskon);	
 					$fatkurpembeliand->fp_hsldiscount = $hasildiskon;
@@ -3531,7 +3531,7 @@ $indexakun=0;
 				$fatkurpembeliandt->fpdt_totalharga =  $totalharga;
 				$fatkurpembeliandt->fpdt_updatedstock =  $request->updatestock[$x];
 
-				if($request->diskon != ''){
+				if($request->diskon2 != ''){
 					$diskon = $request->diskon;
 					$nominal = (float) $diskon / 100 * (float)$biaya;
 					$hargajadi = (float)$biaya - (float)$nominal;
