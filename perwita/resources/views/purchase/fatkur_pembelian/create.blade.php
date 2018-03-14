@@ -2062,6 +2062,8 @@
       $('#myform').submit(function(event){
           $('.idsup').prop('disabled', true).trigger("liszt:updated");
           $('.idsup').prop('disabled', true).trigger("chosen:updated");
+          $('.gudang').prop('disabled', true).trigger("liszt:updated");
+
           $('.gudang').prop('disabled', true).trigger("chosen:updated");
         $('.idsup').attr('disabled', true);  
           $('.keterangan2').attr('disabled' , true);
