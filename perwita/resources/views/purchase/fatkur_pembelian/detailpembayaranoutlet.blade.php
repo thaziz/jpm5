@@ -131,7 +131,7 @@
 	    </table>
 	</div>
 
-{{-- MODAL TT OUTLET --}}
+<!-- {{-- MODAL TT OUTLET --}} -->
 
 <div class="modal fade" id="modal_tt_outlet" tabindex="-1" role="dialog"  aria-hidden="true">
   <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
