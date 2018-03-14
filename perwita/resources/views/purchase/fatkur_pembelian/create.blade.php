@@ -185,9 +185,12 @@
                                     <td>   <select class="form-control idsup chosen-select-width1" name="supplier" required="" novalidate> 
                                             <option value=""> -- Pilih Supplier -- </option>
                                         @foreach($data['supplier'] as $supplier)
-                                            <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}"> {{$supplier->nama_supplier}}</option>
+                                            <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}},{{$supplier->acc_hutang}}"> {{$supplier->nama_supplier}}</option>
                                         @endforeach
                                         </select>
+                                       
+
+
                                     </td>
                                     </td>
                                   </tr>
@@ -367,7 +370,7 @@
                             <img src="{{ asset('assets/image/loading1.gif') }}" width="100px">
                         </div>
                           <tr>
-                            <td> <input type='hidden' class='nofakturitem nofaktur' name='nofakturitem'> <input type='hidden' class='keteranganheader' name='keteranganheader'> <input type='hidden' class='noinvoiceitem' name='noinvoice'> <input type='hidden' class='jatuhtempoitem' name='jatuhtempoitem'> <input type='hidden' class='tglitem' name='tglitem'> <input type='hidden' class='idsupitem' name='idsupitem'> <input type='hidden' class='inputfakturpajakmasukan'>  <input type='hidden' class='inputtandaterima'> <input type='hidden' class='cabang2' name='cabang'>  <input type='hidden' class='inputtandaterima'>   </td>
+                            <td> <input type='hidden' class='nofakturitem nofaktur' name='nofakturitem'> <input type='hidden' class='keteranganheader' name='keteranganheader'> <input type='hidden' class='noinvoiceitem' name='noinvoice'> <input type='hidden' class='jatuhtempoitem' name='jatuhtempoitem'> <input type='hidden' class='tglitem' name='tglitem'> <input type='hidden' class='idsupitem' name='idsupitem'> <input type='hidden' class='inputfakturpajakmasukan'>  <input type='hidden' class='inputtandaterima'> <input type='hidden' class='cabang2' name='cabang'>  <input type='hidden' class='inputtandaterima'>  <input type="hidden" class="acchutangdagang" name="acchutangdagang">   </td>
                              <input type="hidden" name="_token" value="{{ csrf_token() }}">
                           </tr>
 
@@ -2908,8 +2911,9 @@
       // alert(updatestock);
        var string = idsupplier.split(",");
        var idsup = string[0];
+       var acchutangdagang = string[3];
        console.log(idsup);
-
+       $('.acchutangdagang').val(acchutangdagang);
        var variable = grupitem.split(",");
        var groupitem = variable[0];
        var stock = variable[1];
