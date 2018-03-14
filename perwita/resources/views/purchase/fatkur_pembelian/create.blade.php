@@ -313,7 +313,7 @@
 
                           <tr>
                             <td> Diskon </td>
-                            <td> <div class="form-group"> <div class="col-md-3"> <input type='text' class='form-control diskon' name="diskon2" required=""> </div> <label class="col-sm-2 col-sm-2 control-label"> % </label> <div class="col-sm-7"> <input style='text-align: right' type="text" class="form-control hasildiskonitem"> </div> </div> </td>
+                            <td> <div class="form-group"> <div class="col-md-3"> <input type='text' class='form-control diskon' name="diskon2" required=""> </div> <label class="col-sm-2 col-sm-2 control-label"> % </label> <div class="col-sm-7"> <input style='text-align: right' type="text" class="form-control hasildiskonitem" name="hasildiskon"> </div> </div> </td>
                           </tr>
 
 
@@ -391,7 +391,7 @@
                           </tr>
                           <tr>
                             <td> PPn % </td>
-                            <td > <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputppn"> </div>  <div class="col-md-8"> <input style='text-align: right' type="text" class="form-control hasilppn" readonly="" name="hasilppn"> </div>  </div> </td>
+                            <td > <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputppn" name="inputppn"> </div>  <div class="col-md-8"> <input style='text-align: right' type="text" class="form-control hasilppn" readonly="" name="hasilppn"> </div>  </div> </td>
                           </tr>
 
                           <tr>
@@ -1002,6 +1002,48 @@
         $('#myModal2').modal("toggle" );
          $('.inputfakturpajakmasukan').val('edit');
   })
+
+
+  //MENDAPATKAN NO FAKTUR
+      cabang = $('.cabang').val();
+      var a = $('ul#tabmenu').find('li.active').data('val');
+      alert(cabang);
+      $('.cabang2').val(cabang);
+       $.ajax({
+          type : "get",
+          data : {cabang},
+          url : baseUrl + '/fakturpembelian/getbiayalain',
+          dataType : 'json',
+          success : function (response){     
+  
+               var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'FP' + month1 + year2 + '/' + cabang + '/' + a + '-' + response.idfaktur ;
+                $('.aslinofaktur').val(nofaktur);
+                $('.nofaktur').val(nofaktur);
+                $('.no_faktur').val(nofaktur);
+          },
+        })
+
 
   $('#formPajak').click(function(){
     
@@ -1856,7 +1898,7 @@
           },
           function(){
         $.ajax({
-          type : "get",
+          type : "POST",
           data : form_data2,
           url : post_url2,
           dataType : 'json',
@@ -1963,7 +2005,7 @@
          
 
           var  row = "<tr id='data-item-"+nourut+"'> <td>"+nourut+"</td>"+
-                  "<td> <select class='form-control barangitem brg-"+nourut+"'  name='item[]' data-id="+nourut+"> @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}},{{$brg->harga}},{{$brg->nama_masteritem}}'>{{$brg->nama_masteritem}}</option> @endforeach </select>  </td>" + //nama barang
+                  "<td> <select class='form-control barangitem brg-"+nourut+"'  name='item[]' data-id="+nourut+"> @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}},{{$brg->harga}},{{$brg->nama_masteritem}},{{$brg->acc_persediaan}},{{$brg->acc_hpp}}'>{{$brg->nama_masteritem}}</option> @endforeach </select>  </td>" + //nama barang
 
                   "<td> <input type='text' class='form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
                   "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem'> </td>"+ //qty
@@ -2013,7 +2055,7 @@
                     $('#tablefp').append(row);
                   }
 
-                
+                  alert(item);
                  $('.brg-'+nourut).val(item);
 
                  //pembersihan value
@@ -2730,6 +2772,7 @@
   //item TANPA PO
     $('.item').change(function(){
       $this = $(this).val();
+      alert($this);
       var string = $this.split(",");
       var harga = string[1];
         var acc_persediaan = string[3];
@@ -2859,6 +2902,7 @@
                      $('.harga').attr('readonly' , false);
 
                     if(arrItem.length > 0) {
+                      alert('yes');
                       $('.item').empty();
                       $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
@@ -2953,7 +2997,7 @@
                       $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                              $(".item").trigger("liszt:updated");
                         })
@@ -2995,7 +3039,7 @@
                       $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                           $(".item").trigger("liszt:updated");
                         })
@@ -3017,7 +3061,7 @@
                       $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                              $(".item").trigger("liszt:updated");
                         })
@@ -3074,7 +3118,7 @@
                       $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                           $(".item").trigger("liszt:updated");
                         })
@@ -3096,7 +3140,7 @@
                       $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
                           $(".item").trigger("chosen:updated");
                              $(".item").trigger("liszt:updated");
                         })

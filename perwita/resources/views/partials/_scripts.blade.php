@@ -123,7 +123,7 @@
         function alertSuccess(message){
             swal({
                 title: "Berhasil",
-                text: message+"!",
+                text: "Data Berhasil Disimpan ! ",
                 type: "success"
             });
         }

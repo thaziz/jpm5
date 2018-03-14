@@ -3404,6 +3404,9 @@ $indexakun=0;
 
 				if($request->diskon != ''){
 					$fatkurpembelian->fp_discount = $request->diskon;
+					$hasildiskon = str_replace(',', '', $request->hasildiskon);	
+					$fatkurpembeliand->fp_hsldiscount = $hasildiskon;
+					
 				}
 
 				$fatkurpembelian->fp_dpp =$dpp;
@@ -3411,6 +3414,7 @@ $indexakun=0;
 				if($request->hasilppn != ''){
 					$fatkurpembelian->fp_jenisppn = $request->jenisppn;
 					$fatkurpembelian->fp_ppn = $hasilppn;
+					$fatkurpembelian->fp_inputppn = $request->inputppn;
 				}
 				
 
@@ -3460,7 +3464,7 @@ $indexakun=0;
 					for($i = 0; $i < count($request->gudang); $i++){
 						$lastidterima = barang_terima::max('bt_id'); 
 
-						if(isset($lastid)) {
+						if(isset($lastidterima)) {
 							$idbarangterima = $lastidterima;
 							$idbarangterima = (int)$idbarangterima + 1;
 							
@@ -3565,8 +3569,7 @@ $indexakun=0;
 			
 
 
-		return json_encode('sukses');
-		
+		return json_encode('sukses');		
 	}
 	
 	public function getnotatt(Request $request){
