@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
-use Carbon\Carbon;
+
 
 class customer_Controller extends Controller
 {
@@ -35,74 +35,9 @@ class customer_Controller extends Controller
     }
 
     public function save_data (Request $request) {
-        // dd($request);
-        $year = carbon::now()->format('y');
-        $month = carbon::now()->format('m');
-        $day = carbon::now()->format('d');
-         // $kodecabang =  auth::user()->kode_cabang;
-
-        if ($request->ed_kode == null || $request->ed_kode == '') {
-             $kodekode = DB::table('customer')->max('id_cus');
-              if ($kodekode == '' ) {
-                 $kodekode=1;
-               }
-               else{
-                  $kodekode+=1;
-               }
-
-             
-
-
-               // return $kodekode;
-               if ($kodekode < 1000) {
-                  $kodekode = '000'.$kodekode;
-                }
-                 $kodekode =  /*$kodecabang.*/'CS-'.'001'.'/'.$kodekode;
-        }else{
-           $kodekode = $request->ed_kode;
-        }
-          $idcuskode = DB::table('customer')->max('id_cus');
-              if ($idcuskode == '' ) {
-                 $idcuskode=1;
-               }
-               else{
-                  $idcuskode+=1;
-               }
-
         $simpan='';
         $crud = $request->crud;
-       
-        
-        if ($crud == 'N') {
-             $data = array(
-                'id_cus'=>$idcuskode,
-                'kode' => $kodekode/*strtoupper($request->ed_kode)*/,
-                'nama' => strtoupper($request->ed_nama),
-                'alamat' => strtoupper($request->ed_alamat),
-                'kota' => strtoupper($request->cb_kota),
-                'telpon' => strtoupper($request->ed_telpon),
-                'cabang' => $request->cabang,
-                //plafon numeric(20,4),
-                'pajak_npwp' => strtoupper($request->ed_npwp),
-                //pajak_nama character varying(64),
-                //pajak_alamat character varying(128),
-                //pajak_kota character varying(20),
-                'nama_pph23'  => strtoupper($request->cb_nama_pajak_23),
-                'type_faktur_ppn'  => strtoupper($request->cb_type_faktur),
-                'acc_piutang' => strtoupper($request->ed_acc_piutang),
-                'csf_piutang' => strtoupper($request->ed_csf_piutang),
-                'syarat_kredit' => strtoupper($request->ed_syarat_kredit),
-                //groups character varying(2),
-                'hold_id' => 'HL',
-                'comp_id' => 'EM',
-                'sub_comp_id'  => 1,
-                'pph23' => $request->ck_pph23,
-                'ppn' => $request->ck_ppn,
-            );
-            $simpan = DB::table('customer')->insert($data);
-        }elseif ($crud == 'E') {
-             $data = array(
-                'id_cus'=>$idcuskode,
+        $data = array(
                 'kode' => strtoupper($request->ed_kode),
                 'nama' => strtoupper($request->ed_nama),
                 'alamat' => strtoupper($request->ed_alamat),
@@ -125,6 +60,10 @@ class customer_Controller extends Controller
                 'pph23' => $request->ck_pph23,
                 'ppn' => $request->ck_ppn,
             );
+        
+        if ($crud == 'N') {
+            $simpan = DB::table('customer')->insert($data);
+        }elseif ($crud == 'E') {
             $simpan = DB::table('customer')->where('kode', $request->ed_kode_old)->update($data);
         }
         if($simpan == TRUE){
@@ -154,10 +93,7 @@ class customer_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
-
-        $cabang = DB::table('cabang')
-                    ->get();
-        return view('master_sales.customer.index', compact('kota','cabang'));
+        return view('master_sales.customer.index', compact('kota'));
     }
 
 }

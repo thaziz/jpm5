@@ -5,7 +5,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
-use Carbon\Carbon;
 
 
 class vendor_Controller extends Controller
@@ -45,53 +44,17 @@ class vendor_Controller extends Controller
     }
 
     public function save_data (Request $request) {
-        // dd($request);
-        $statusbol = $request->ck_status;
-        if ($statusbol == null || $statusbol == '') {
-            $statusbol = 'false';
-        }else{
-            $statusbol = 'true';
-        }
-     
-        $year = carbon::now()->format('y');
-        $month = carbon::now()->format('m');
-        $day = carbon::now()->format('d');
-         // $kodecabang =  auth::user()->kode_cabang;
-
-        if ($request->ed_kode == null || $request->ed_kode == '') {
-             $kodekode = DB::table('vendor')->max('id_vendor');
-              if ($kodekode == '' ) {
-                 $kodekode=1;
-               }
-               else{
-                  $kodekode+=1;
-               }
-               if ($kodekode < 1000) {
-                  $kodekode = '000'.$kodekode;
-                }
-                 $kodekode =  /*$kodecabang.*/'AV-'.'001'.'/'.$kodekode;
-        }else{
-           $kodekode = $request->ed_kode;
-        }
-          $idvendorkode = DB::table('vendor')->max('id_vendor');
-              if ($idvendorkode == '' ) {
-                 $idvendorkode=1;
-               }
-               else{
-                  $idvendorkode+=1;
-               }
         $simpan='';
         $crud = $request->crud;
         $data = array(
-                'kode' => $kodekode,
-                'id_vendor'=>$idvendorkode,
+                'kode' => strtoupper($request->ed_kode),
                 'nama' => strtoupper($request->ed_nama),
                 'tipe' => strtoupper($request->cb_tipe),
                 'id_kota' => strtoupper($request->cb_kota),
                 'alamat' => strtoupper($request->ed_alamat),
                 'telpon' => strtoupper($request->ed_telpon),
                 'kode_pos' => strtoupper($request->ed_kode_pos),
-                'status' => strtoupper($statusbol),
+                'status' => strtoupper($request->ck_status),
                 'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
             );
