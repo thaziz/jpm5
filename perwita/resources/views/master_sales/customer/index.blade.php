@@ -158,6 +158,17 @@
                                     <td><input type="text" class="form-control" name="ed_npwp" ></td>
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td>
+                                        <select class="chosen-select-width" name="cabang">
+                                            <option value="0">Pilih - Cabang</option>
+                                            @foreach($cabang as $val)
+                                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">PPH 23</td>
                                     <td colspan="3">
                                         <input type="checkbox" name="ck_pph23">
