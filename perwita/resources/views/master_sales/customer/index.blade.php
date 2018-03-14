@@ -4,28 +4,7 @@
 
 @section('content')
 
-<div class="row wrapper border-bottom white-bg page-heading">
-                <div class="col-lg-10">
-                    <h2> CUSTOMER </h2>
-                    <ol class="breadcrumb">
-                        <li>
-                            <a>Home</a>
-                        </li>
-                        <li>
-                            <a>Master Penjualan</a>
-                        </li>
-                        <li>
-                          <a> Master DO</a>
-                        </li>
-                        <li class="active">
-                            <strong> CUSTOMER </strong>
-                        </li>
 
-                    </ol>
-                </div>
-                <div class="col-lg-2">
-             </div>
-</div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
@@ -125,6 +104,7 @@
                                         <td><input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" ></td>
                                     </td>
                                 </tr>
+                                <input type="hidden" name="id_cus">
                                 <tr>
                                     <td style="padding-top: 0.4cm">Alamat</td>
                                     <td><input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" ></td>
@@ -311,6 +291,7 @@
             success: function(data, textStatus, jqXHR)
             {
                 $("input[name='crud']").val('E');
+                $("input[name='id_cus']").val(data.id_cus);
                 $("input[name='ed_kode']").val(data.kode);
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("input[name='ed_nama']").val(data.nama);
@@ -363,7 +344,7 @@
         $.ajax(
         {
             url : baseUrl + "/master_sales/customer/save_data",
-            type: "POST",
+            type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
