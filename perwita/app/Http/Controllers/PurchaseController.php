@@ -3285,7 +3285,7 @@ $indexakun=0;
 
 	}
 
-	public function update_fp(Request $request){
+		public function update_fp(Request $request){
 		$nofaktur = $request->nofakturitem;
 		$jumlahtotal = $request->jumlahtotal;
 		$variable = $request->idsupitem;
@@ -3387,10 +3387,6 @@ $indexakun=0;
 			/*	$tgl = date_format($request->tglitem , "yyyy-m-d");
 				$jatuhtempo - date_format($request->jatuhtempo, "yyyy-m-d");*/
 
-				if(isset($request->diskon)){
-					$request->diskon = 0;
-				}
-
 
 				$fatkurpembelian = new fakturpembelian();
 				$fatkurpembelian->fp_idfaktur = $idfaktur; 
@@ -3402,12 +3398,13 @@ $indexakun=0;
 				$fatkurpembelian->fp_jatuhtempo = $request->jatuhtempoitem;
 				$fatkurpembelian->fp_jumlah = $total;
 
-				if($request->diskon2 != ''){
+				if($request->diskon != ''){
 					$fatkurpembelian->fp_discount = $request->diskon;
 					$hasildiskon = str_replace(',', '', $request->hasildiskon);	
-					$fatkurpembeliand->fp_hsldiscount = $hasildiskon;
-					
+					$fatkurpembelian->fp_hsldiscount = $hasildiskon;
+	
 				}
+				
 
 				$fatkurpembelian->fp_dpp =$dpp;
 
@@ -3530,17 +3527,7 @@ $indexakun=0;
 				$fatkurpembeliandt->fpdt_harga =  $harga;
 				$fatkurpembeliandt->fpdt_totalharga =  $totalharga;
 				$fatkurpembeliandt->fpdt_updatedstock =  $request->updatestock[$x];
-
-				if($request->diskon2 != ''){
-					$diskon = $request->diskon;
-					$nominal = (float) $diskon / 100 * (float)$biaya;
-					$hargajadi = (float)$biaya - (float)$nominal;
-					$fatkurpembeliandt->fpdt_biaya = $hargajadi;  
-
-				}
-				else {
-					$fatkurpembeliandt->fpdt_biaya = $biaya;  					
-				}
+				$fatkurpembeliandt->fpdt_biaya = $biaya;  
 				$fatkurpembeliandt->fpdt_accbiaya =  $request->acc_biaya[$x];
 				$fatkurpembeliandt->fpdt_keterangan =  $request->keteranganitem[$x];
 				$fatkurpembeliandt->fpdt_diskon =  $request->diskonitem[$x];
@@ -3548,9 +3535,6 @@ $indexakun=0;
 				$fatkurpembeliandt->save();
 				/*$fatkurpembeliandt->fpdt_idpo =  */
 			}
-
-
-
 
 
 			if($hasilppn != ''){
@@ -3582,7 +3566,8 @@ $indexakun=0;
 			
 
 
-		return json_encode('sukses');		
+		return json_encode('sukses');
+		
 	}
 	
 	public function getnotatt(Request $request){

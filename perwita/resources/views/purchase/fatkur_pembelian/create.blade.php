@@ -249,7 +249,7 @@
 
                           <tr>
                             <td width='150px'> Nama Item : </td>
-                            <td>
+                            <td width="200px">
                             <select class='form-control chosen-select item' name="nama_item" required="" id="item"> 
                                     <option value=""> -- Pilih Barang -- </option>                              
                                                               
@@ -377,7 +377,7 @@
                           </tr>
                           <tr>
                             <td> Discount </td>
-                            <td> <div class="form-group"> <div class="col-md-3"> <input type="text" class="form-control disc_item" name="diskon"> </div> <label class="col-md-2"> % </label> <div class="col-xs-6"> <input type="text" class="form-control hasildiskon" style="text-align:right" readonly="">  </div> </div> </td>
+                            <td> <div class="form-group"> <div class="col-md-3"> <input type="text" class="form-control disc_item" name="diskon"> </div> <label class="col-md-2"> % </label> <div class="col-xs-6"> <input type="text" class="form-control hasildiskon" style="text-align:right" readonly="" name="hasildiskon">  </div> </div> </td>
                           </tr>
                           <tr>
                              <td> Jenis PPn </td> 
@@ -388,7 +388,7 @@
                           </tr>
                           <tr>
                             <td> DPP </th>
-                            <td>  <div class='col-xs-4'> Rp </div> <div class='col-xs-8'> <input type='text' class='form-control dpp' readonly="" name='dpp' style="text-align: right"> </div> </td>
+                            <td>  <div class='col-xs-4'> Rp </div> <div class='col-xs-8'> <input type='text' class='form-control dpp' readonly="" name='dpp' style="text-align: right">  <input type='hidden' class='form-control dpp2' readonly="" style="text-align: right"></div> </td>
                           </tr>
                           <tr>
                             <td> PPn % </td>
@@ -2002,7 +2002,7 @@
             console.log(response);
              if(response == 'sukses') {
                 alertSuccess(); 
-              window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
+            //  window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
              }
           },
           error : function(){
