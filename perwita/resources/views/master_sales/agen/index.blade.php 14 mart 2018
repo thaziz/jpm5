@@ -115,9 +115,9 @@
                                     <td><input type="text" class="form-control" name="ed_kode_area" style="text-transform: uppercase" ></td>
                                     <td style="padding-top: 0.4cm">Kategori</td>
                                     <td>
-                                        <select class="form-control" name="cb_kategori" id="cb_kategori">
-                                            <option value="AGEN" data-agen="40">AGEN</option>
-                                            <option value="OUTLET" data-outlet="15"> OUTLET</option>
+                                        <select class="form-control" name="cb_kategori">
+                                            <option value="AGEN">AGEN</option>
+                                            <option value="OUTLET">OUTLET</option>
                                             <option value="AGEN DAN OUTLET">AGEN DAN OUTLET </option>
                                         </select>
                                     </td>
@@ -162,7 +162,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Komisi(%)</td>
                                     <td>
-                                        <input type="text" class="form-control" name="ed_komisi" id="ed_komisi" style="text-transform: uppercase" >
+                                        <input type="text" class="form-control" name="ed_komisi" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
                                 <tr>
@@ -204,7 +204,7 @@
                                             <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} </option>
                                         @endforeach
                                         </select>
-									</td>
+                                    </td>
                                     <td colspan="3"><input type="text" class="form-control" name="ed_csf_penjualan2" ></td>
                                 </tr> --}}
                             </tbody>
@@ -243,24 +243,6 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
-
-    $('#cb_kategori').change(function(){
-        var agensel = $('#cb_kategori :selected').data('agen');
-        var outletsel = $('#cb_kategori :selected').data('outlet');
-        // alert(agensel);
-        // alert(outletsel);
-        if (agensel == '40') {
-            $('#ed_komisi').val(agensel);
-            // alert('a');
-        }else if (outletsel == '15'){
-            $('#ed_komisi').val(outletsel);
-            // alert('a');
-        }
-        // if () {}
-    })
-
-    
     $(document).ready( function () {
         $('#table_data').DataTable({
             "paging": true,
@@ -323,8 +305,8 @@
         $("select[name='cb_kota']").val('').trigger('chosen:updated');
         $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
         $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
-		$("select[name='cb_acc_penjualan']").change();
-		$("select[name='cb_csf_penjualan']").change();
+        $("select[name='cb_acc_penjualan']").change();
+        $("select[name='cb_csf_penjualan']").change();
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_telpon']").val('');
         $("input[name='ed_fax']").val('');

@@ -3606,12 +3606,7 @@ $indexakun=0;
 
 	public function getbiayalain (Request $request){
 		$cabang = $request->cabang;
-		if($cabang == '000'){
-			$data['biaya'] = DB::select("select * from d_akun");
-		}
-		else {
-			$data['biaya'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
-		}
+		
 
 		$faktur = DB::select("select * from faktur_pembelian where fp_comp = '$cabang' order by fp_idfaktur desc limit 1");
 
@@ -3619,10 +3614,13 @@ $indexakun=0;
 		if(count($faktur) > 0) {
 		
 			$explode = explode("/", $faktur[0]->fp_nofaktur);
-			$idfaktur = $explode[2];
-		//	dd($nosppid);
-			$idfaktur = (int)$idfaktur + 1;
+			$idfaktur3 = $explode[2];
+			$string = explode("-", $idfaktur3);
+			$idfaktur2 = $string[1];
+
+			$idfaktur = (int)$idfaktur2 + 1;
 			$data['idfaktur'] = str_pad($idfaktur, 3, '0', STR_PAD_LEFT);
+			
 		}
 
 		else {
@@ -3630,6 +3628,7 @@ $indexakun=0;
 			$data['idfaktur'] = '001';
 		}
 
+		return json_encode($data);
 	
 		return json_encode($data);
 	}

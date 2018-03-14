@@ -254,7 +254,7 @@
             </tr>
             <tr>
               <td colspan="2">     
-                  <input readonly=""  style="width: 100%;text-align: right;" class="form-control total_pembayaran" type="text"  value="" name="total_pembayaran">
+                  <input readonly=""  style="width: 100%;text-align: right;" class="form-control total_pembayaran" value="{{'Rp ' . number_format($data->bkk_total,2,',','.')}}" type="text"  value="" name="total_pembayaran">
               </td>
             </tr>         
           </table>
@@ -351,8 +351,8 @@
             <input type="hidden" class="acc_patty"  name="acc_patty[]" value="{{$val->bkkd_akun}}" >
           </td>
           <td align="right">
-            <label class="bayar_text"><?php echo round($val->bkkd_total) ?></label>
-            <input type="hidden" name="bayar_patty[]" class="bayar_patty" value="<?php echo round($val->bkkd_total) ?>" >
+            <label class="bayar_text"><?php echo round($val->bkkd_total); ?></label>
+            <input type="hidden" name="bayar_patty[]" class="bayar_patty" value="<?php echo round($val->bkkd_total); ?>" >
           </td>
           <td>
             <label class="debit_text">{{$val->bkkd_debit}}</label>
@@ -524,7 +524,8 @@
     </form>
   </div>
 </div>
- <div class=" ibox-content col-sm-12 tb_sb_hidden" >
+
+ <div class=" ibox-content col-sm-12 " >
   <h3>Tabel Detail Faktur</h3>
 
   <hr>
@@ -608,6 +609,7 @@
 </div>
 <!-- END FORM FAKTUR -->
 <!-- FORM BODY UANG MUKA -->
+@if($data_dt[0]->bkk_jenisbayar == 4)
 <div class="ibox uang_muka" hidden=""  style="padding-top: 10px;">
       <div class="ibox-title">
         <h5>Form Uang Muka</h5>
@@ -740,6 +742,8 @@
       
   </div>
 </div>
+@endif
+
 <!-- END UANG MUKA -->
     <!-- tabel data resi -->
   </div>
@@ -886,8 +890,9 @@ for(var i =0; i < total_pembayaran.length; i++){
   }
   temp = accounting.formatMoney(temp, "Rp ", 2, ".",',');
 
-
+@if($data->bkk_jenisbayar == 8)
   $('.total_pembayaran').val(temp);
+@endif
 
 jenis_bayar();
 seq_patty();
@@ -918,8 +923,8 @@ var patty  = $('.tabel_patty_cash').DataTable({
 
 
 function jenis_bayar(){
-  tabel_faktur.clear().draw();
-  $('.total_pembayaran').val('');
+  // tabel_faktur.clear().draw();
+  // $('.total_pembayaran').val('');
   id.splice(0,id.length);
   var val = $('.jenis_bayar').val();
   var val2 = $('.nama_akun').val();
@@ -1585,7 +1590,7 @@ function save_faktur(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                       // location.href='../index';
+                       location.href='../index';
             });
 
       },
@@ -1704,9 +1709,11 @@ var count_um = 1;
 var um_array=[];
 $(document).ready(function(){
 
+
   @foreach($data_dt as $val)
     um_array.push('{{$val->bkkd_ref}}');
   @endforeach
+@if($data_dt[0]->bkk_jenisbayar == 4)
   var total_pembayaran = 0
   $('.nominal_um_table').each(function(){
     var temp2 = $(this).val();
@@ -1717,7 +1724,7 @@ $(document).ready(function(){
 
   });
     total_pembayaran = accounting.formatMoney(total_pembayaran,"Rp ", 2, ".",',');
-
+@endif
   $('.total_pembayaran').val(total_pembayaran);
 });
 $('.cari_um').click(function(){

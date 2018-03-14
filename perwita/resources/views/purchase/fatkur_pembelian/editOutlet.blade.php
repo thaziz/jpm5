@@ -44,6 +44,10 @@
   .dataTables_length{
     display: none;
   }
+  .disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
 </style>
 @section('content')
 
@@ -88,7 +92,7 @@
       <td>
        <div class="input-group date">
          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-         <input type="text" name="tgl" readonly="" class="form-control" value="<?php echo date('d/F/Y',strtotime($data[0]->fp_tgl)) ?>">
+         <input type="text" name="tgl" readonly="" class="form-control" value="<?php echo date('d/F/Y',strtotime($data[0]->fp_tgl)); ?>">
        </div>
      </td>
     </tr>
@@ -106,6 +110,7 @@
     </tr>
     <tr>
       <td style="border:none;" colspan="2">
+        @if($data[0]->fp_pending_status == 'APPROVED')
         @if($valid_cetak[0]->tt_nofp != null)
         <div class="cetak_tt">
          <a class="btn btn-warning pull-right" onclick="tt_print()"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>
@@ -113,6 +118,11 @@
         @else
         <div class="cetak_tt" hidden="">
          <a class="btn btn-warning pull-right" onclick="tt_print()"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>
+        </div>
+        @endif
+        @else
+        <div class="cetak_tt">
+         <a class="btn btn-warning pull-right tt_print disabled" onclick="tt_print()"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>
         </div>
         @endif
         <button class="btn btn-primary pull-right" style="margin-right: 10px;" type="text" onclick="modal_tt()"><i class="fa fa-book">&nbsp;Buat Tanda Terima</i></button>
@@ -418,10 +428,18 @@ if(checker != undefined){
 function  cari_outlet(){
    $('.loading').css('display', 'block');
  var agen = $('.selectOutlet').val();
+
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
       $.ajax({
       url:baseUrl + '/fakturpembelian/cari_outlet1/'+agen,
       type:'post',
-      data:'id={{$id}}'+'&'+$('.head-outlet :input').serialize(),
+      data:'id={{$id}}'+'&'+$('.head_outlet :input').serialize(),
       success:function(data){
          $('.loading').css('display', 'none');
         $('.table-outlet1').html(data);
@@ -455,7 +473,9 @@ function save_outlet1(){
       type:'post',
       data:'id='+id+'&'+ $('.header_total_outlet1 :input').serialize()+'&'+ $('.header_total_outlet2 :input').serialize()+'&'+ $('.head-outlet :input').serialize()+'&'+ datatable2.$('input').serialize(),
       success:function(response){
-
+        if (response.status == 'APPROVED') {
+          $('.tt_print').removeClass('disabled');
+        }
       },
       error:function(data){
 

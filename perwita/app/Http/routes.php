@@ -165,6 +165,8 @@ Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@det
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
 Route::get('fakturpembelian/tampil_po', 'PurchaseController@tampil_po');
 Route::post('fakturpembelian/save', 'PurchaseController@savefaktur');
+Route::get('fakturpembelian/save', 'PurchaseController@savefaktur');
+
 Route::post('fakturpembelian/update_fp', 'PurchaseController@update_fp');
 Route::post('fakturpembelian/update_tt', 'PurchaseController@update_tt');
 Route::post('fakturpembelian/getnotatt', 'PurchaseController@getnotatt');
@@ -185,11 +187,12 @@ Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::post('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
-Route::get('fakturpembelian/edit_subcon/{i}', 'BiayaPenerusController@edit');
+Route::get('fakturpembelian/edit_penerus/{i}', 'BiayaPenerusController@edit');
 Route::get('fakturpembelian/cari_kontrak_subcon/{i}', 'BiayaPenerusController@cari_kontrak_subcon');
 Route::get('fakturpembelian/cari_kontrak_subcon1/{i}', 'BiayaPenerusController@cari_kontrak_subcon1');
 Route::get('fakturpembelian/getdatapenerusedit', 'BiayaPenerusController@getdatapenerusedit');
 Route::post('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');
+Route::get('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');
 Route::get('fakturpembelian/simpan_tt', 'BiayaPenerusController@simpan_tt');
 Route::get('fakturpembelian/simpan_tt1', 'BiayaPenerusController@simpan_tt1');
 Route::get('fakturpembelian/simpan_tt_subcon', 'BiayaPenerusController@simpan_tt_subcon');
@@ -204,7 +207,9 @@ Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
 Route::post('fakturpembelian/cari_outlet/{agen}', 'BiayaPenerusController@cari_outlet');
+Route::post('fakturpembelian/cari_outlet/{agen}', 'BiayaPenerusController@cari_outlet');
 Route::post('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
+// Route::get('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
 Route::get('fakturpembelian/cariNote', 'BiayaPenerusController@cari_note');
 Route::post('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');
 Route::get('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');
@@ -278,6 +283,7 @@ Route::get('pending_kas/index', 'pendingController@index_kas');
 Route::get('pending_kas/save_kas/{id}', 'pendingController@save_kas');
 Route::get('pending/create', 'pendingController@create')->name('proses');
 Route::get('pending/save', 'pendingController@save')->name('save_pending');
+Route::post('pending/save', 'pendingController@save')->name('save_pending');
 
 // VOucher hutang
 Route::get('voucherhutang/voucherhutang', 'v_hutangController@voucherhutang');

@@ -1358,6 +1358,7 @@ function save_faktur(){
                        $('.kiri').addClass('disabled');
                        $('.box_head').addClass('disabled');
                        $('.print_faktur').removeClass('disabled');
+
             });
 
       },

@@ -4,7 +4,7 @@
  </div>
  <div style="margin-left: 5%">
 	<h4 style="text-align: center;">
-		LAPORAN AGEN/VENDOR
+		LAPORAN AGEN/VENDOR/OUTLET
 		<br>
 		<br>
 		PT. JAWA PRATAMA MANDIRI
