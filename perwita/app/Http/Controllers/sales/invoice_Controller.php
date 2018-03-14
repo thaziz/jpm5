@@ -819,18 +819,19 @@ public function jatuh_tempo_customer(request $request)
 }
 public function cari_do_invoice(request $request)
 {   
+    // dd($request->all());
     $do_awal = str_replace('/', '-' ,$request->do_awal);
     $do_akhir = str_replace('/', '-' ,$request->do_akhir);
     $do_awal = Carbon::parse($do_awal)->format('Y-m-d');
     $do_akhir = Carbon::parse($do_akhir)->format('Y-m-d');
-    if ($request->jenis) {
+    if ($request->cb_pendapatan == 'KORAN') {
         $data = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.nomor','=','delivery_order.nomor')
-              ->join('invoice','delivery_orderd.nomor','=','delivery_order.nomor')
-              ->where('tanggal','>=',$do_awal)
-              ->where('tanggal','<=',$do_akhir)
-              ->where('jenis',$request->cb_pendapatan)
-              ->where('kode_customer',$request->customer)
+              ->leftjoin('invoice','delivery_orderd.nomor','=','delivery_order.nomor')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
               ->get();
     }
     

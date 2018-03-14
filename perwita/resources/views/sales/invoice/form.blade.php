@@ -302,6 +302,9 @@
         format:'dd/mm/yyyy',
         endDate:'today'
     });
+    $('.ed_jatuh_tempo').datepicker({
+        format:'dd/mm/yyyy',
+    });
     $('.date').datepicker({
         format:'dd/mm/yyyy',
     });

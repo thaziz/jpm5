@@ -365,10 +365,20 @@ class do_Controller extends Controller
     }
 
     public function save_data_detail (Request $request) {
+        // return 'asd';
         $simpan='';
         $crud = $request->crud;
+        $cari_dt = DB::table('delivery_orderd')
+                     ->where('nomor',strtoupper($request->ed_nomor_d))
+                     ->max('nomor_dt')
+        if ($cari_dt == null) {
+            $cari_dt = 1;
+        }else{
+            $cari_dt +=1;
+        }
         $data = array(
                 'nomor' => strtoupper($request->ed_nomor_d),
+                
                 'nomor_so' => strtoupper($request->ed_so),
                 'kode_item' => strtoupper($request->ed_kode_item),
                 'kode_angkutan' => $request->cb_angkutan,

@@ -130,13 +130,32 @@ class do_kertas_Controller extends Controller
     }
 
     public function save_data_detail (Request $request) {
+        // dd($request->all());
         $simpan='';
 		$crud = $request->crud;
 		$id_old = $request->ed_id_old;
+        $cari_dt = DB::table('delivery_orderd')
+                     ->where('nomor',strtoupper($request->ed_nomor_do))
+                     ->max('nomor_dt');
+        if ($cari_dt == null) {
+            $cari_dt = 1;
+        }else{
+            $cari_dt +=1;
+        }
+
+        $cari_id = DB::table('delivery_orderd')
+                     ->max('id');
+        if ($cari_id == null) {
+            $cari_id = 1;
+        }else{
+            $cari_id +=1;
+        }
+        // return $cari_dt;
         $nomor = strtoupper($request->ed_nomor_do);
         $hitung = count($request->nomor_do);
         $data = array(
             'nomor' => strtoupper($request->ed_nomor_do),
+            'nomor_dt' => $cari_dt,
             'kode_item' => strtoupper($request->cb_item),
             'kode_satuan' => strtoupper($request->ed_satuan),
             'jumlah' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
@@ -149,9 +168,8 @@ class do_kertas_Controller extends Controller
             'acc_penjualan'=>strtoupper($request->acc_penjualan),
         );
         if ($crud == 'N') {            
-			$id= collect(\DB::select(" SELECT COALESCE(MAX(id),0)+1 id FROM delivery_orderd WHERE nomor='$request->ed_nomor_do' "))->first();
-			$id= $id->id;
-			$data['id'] = $id;
+
+			$data['id'] = $cari_id;
 			$simpan = DB::table('delivery_orderd')->insert($data);
         }elseif ($crud == 'E') {
             
