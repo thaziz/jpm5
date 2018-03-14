@@ -3075,6 +3075,9 @@ $indexakun=0;
 				$fatkurpembeliand->fp_fakturpajak = 1;
 
 				$fatkurpembeliand->fp_tipe = 'PO';
+				$fatkurpembeliand->fp_pending_status = 'APPROVED';
+				$fatkurpembeliand->fp_status = 'Released';
+
 				$fatkurpembeliand->save();
 
 
@@ -3450,6 +3453,9 @@ $indexakun=0;
 
 				$fatkurpembelian->fp_updatestock = $request->updatestock[0];
 				$fatkurpembelian->fp_terimabarang = 'BELUM';
+				$fatkurpembelian->fp_pending_status = 'APPROVED';
+				$fatkurpembelian->fp_status = 'Released';
+
 				$fatkurpembelian->save();
 
 					
@@ -3530,7 +3536,23 @@ $indexakun=0;
 				$fatkurpembeliandt->fpdt_harga =  $harga;
 				$fatkurpembeliandt->fpdt_totalharga =  $totalharga;
 				$fatkurpembeliandt->fpdt_updatedstock =  $request->updatestock[$x];
-				$fatkurpembeliandt->fpdt_biaya = $biaya;  
+
+				if($request->diskon != ''){
+						
+
+					$diskon = $request->diskon;
+					$nominal = (float)$diskon / 100 * (float)$biaya;
+					$hargajadi = (float)$biaya - (float)$nominal;
+
+					$fatkurpembeliandt->fpdt_biaya = $hargajadi;  
+	
+				}
+				else {
+					$fatkurpembeliandt->fpdt_biaya = $biaya;  
+				}
+				
+				
+				
 				$fatkurpembeliandt->fpdt_accbiaya =  $request->acc_biaya[$x];
 				$fatkurpembeliandt->fpdt_keterangan =  $request->keteranganitem[$x];
 				$fatkurpembeliandt->fpdt_diskon =  $request->diskonitem[$x];
