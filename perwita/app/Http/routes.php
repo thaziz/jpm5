@@ -165,6 +165,8 @@ Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@det
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
 Route::get('fakturpembelian/tampil_po', 'PurchaseController@tampil_po');
 Route::post('fakturpembelian/save', 'PurchaseController@savefaktur');
+Route::get('fakturpembelian/save', 'PurchaseController@savefaktur');
+
 Route::post('fakturpembelian/update_fp', 'PurchaseController@update_fp');
 Route::post('fakturpembelian/update_tt', 'PurchaseController@update_tt');
 Route::post('fakturpembelian/getnotatt', 'PurchaseController@getnotatt');
