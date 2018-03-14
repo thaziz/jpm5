@@ -270,7 +270,7 @@
                               Gudang
                             </td>
                             <td>
-                            <select class="form-control gudang" name="gudang" required="">
+                            <select class="form-control chosen-select gudang" name="gudang" required="">
                                 <option value=""> -- Pilih Gudang -- </option>
                               @foreach($data['gudang'] as $gudang)
                                 <option value="{{$gudang->mg_id}},{{$gudang->mg_namagudang}}"> {{$gudang->mg_namagudang}} </option>
@@ -2060,6 +2060,9 @@
       var nourut = 1;
       $jumlahharga = 0;
       $('#myform').submit(function(event){
+          $('.idsup').prop('disabled', true).trigger("liszt:updated");
+          $('.idsup').prop('disabled', true).trigger("chosen:updated");
+          $('.gudang').prop('disabled', true).trigger("chosen:updated");
         $('.idsup').attr('disabled', true);  
           $('.keterangan2').attr('disabled' , true);
 
