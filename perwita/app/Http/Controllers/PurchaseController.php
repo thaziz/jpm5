@@ -3075,6 +3075,9 @@ $indexakun=0;
 				$fatkurpembeliand->fp_fakturpajak = 1;
 
 				$fatkurpembeliand->fp_tipe = 'PO';
+				$fatkurpembeliand->fp_pending_status = 'APPROVED';
+				$fatkurpembeliand->fp_status = 'Released';
+
 				$fatkurpembeliand->save();
 
 
@@ -3447,6 +3450,9 @@ $indexakun=0;
 
 				$fatkurpembelian->fp_updatestock = $request->updatestock[0];
 				$fatkurpembelian->fp_terimabarang = 'BELUM';
+				$fatkurpembelian->fp_pending_status = 'APPROVED';
+				$fatkurpembelian->fp_status = 'Released';
+
 				$fatkurpembelian->save();
 
 					
