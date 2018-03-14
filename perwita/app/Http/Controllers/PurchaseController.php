@@ -3285,7 +3285,7 @@ $indexakun=0;
 
 	}
 
-		public function update_fp(Request $request){
+	public function update_fp(Request $request){
 		$nofaktur = $request->nofakturitem;
 		$jumlahtotal = $request->jumlahtotal;
 		$variable = $request->idsupitem;
@@ -3387,6 +3387,10 @@ $indexakun=0;
 			/*	$tgl = date_format($request->tglitem , "yyyy-m-d");
 				$jatuhtempo - date_format($request->jatuhtempo, "yyyy-m-d");*/
 
+				if(isset($request->diskon)){
+					$request->diskon = 0;
+				}
+
 
 				$fatkurpembelian = new fakturpembelian();
 				$fatkurpembelian->fp_idfaktur = $idfaktur; 
@@ -3401,10 +3405,9 @@ $indexakun=0;
 				if($request->diskon != ''){
 					$fatkurpembelian->fp_discount = $request->diskon;
 					$hasildiskon = str_replace(',', '', $request->hasildiskon);	
-					$fatkurpembelian->fp_hsldiscount = $hasildiskon;
-	
+					$fatkurpembeliand->fp_hsldiscount = $hasildiskon;
+					
 				}
-				
 
 				$fatkurpembelian->fp_dpp =$dpp;
 
@@ -3566,8 +3569,7 @@ $indexakun=0;
 			
 
 
-		return json_encode('sukses');
-		
+		return json_encode('sukses');		
 	}
 	
 	public function getnotatt(Request $request){
