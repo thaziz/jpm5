@@ -3530,7 +3530,17 @@ $indexakun=0;
 				$fatkurpembeliandt->fpdt_harga =  $harga;
 				$fatkurpembeliandt->fpdt_totalharga =  $totalharga;
 				$fatkurpembeliandt->fpdt_updatedstock =  $request->updatestock[$x];
-				$fatkurpembeliandt->fpdt_biaya = $biaya;  
+
+				if($request->diskon != ''){
+					$diskon = $request->diskon;
+					$nominal = (float) $diskon / 100 * (float)$biaya;
+					$hargajadi = (float)$biaya - (float)$nominal;
+					$fatkurpembeliandt->fpdt_biaya = $hargajadi;  
+
+				}
+				else {
+					$fatkurpembeliandt->fpdt_biaya = $biaya;  					
+				}
 				$fatkurpembeliandt->fpdt_accbiaya =  $request->acc_biaya[$x];
 				$fatkurpembeliandt->fpdt_keterangan =  $request->keteranganitem[$x];
 				$fatkurpembeliandt->fpdt_diskon =  $request->diskonitem[$x];
@@ -3538,6 +3548,9 @@ $indexakun=0;
 				$fatkurpembeliandt->save();
 				/*$fatkurpembeliandt->fpdt_idpo =  */
 			}
+
+
+
 
 
 			if($hasilppn != ''){
