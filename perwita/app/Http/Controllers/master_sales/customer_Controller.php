@@ -81,6 +81,7 @@ class customer_Controller extends Controller
                 'alamat' => strtoupper($request->ed_alamat),
                 'kota' => strtoupper($request->cb_kota),
                 'telpon' => strtoupper($request->ed_telpon),
+                'cabang' => $request->cabang,
                 //plafon numeric(20,4),
                 'pajak_npwp' => strtoupper($request->ed_npwp),
                 //pajak_nama character varying(64),
@@ -153,7 +154,10 @@ class customer_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
-        return view('master_sales.customer.index', compact('kota'));
+
+        $cabang = DB::table('cabang')
+                    ->get();
+        return view('master_sales.customer.index', compact('kota','cabang'));
     }
 
 }

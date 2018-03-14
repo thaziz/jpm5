@@ -18,11 +18,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
 
-                    @if(count($jurnal_dt)!=0)
-                            <div class="pull-right"><strong><h5><a onclick="lihatjurnal()">Lihat Jurnal</a></h5></strong></div>
-                    @else
-                     <div id="btn-jurnal" class="pull-right" style="display: none"><strong><h5><a onclick="lihatjurnal()">Lihat Jurnal</a></h5></strong></div>
-                    @endif
+            
 
 
                 </div>
