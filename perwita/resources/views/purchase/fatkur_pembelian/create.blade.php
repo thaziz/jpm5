@@ -1007,7 +1007,7 @@
   //MENDAPATKAN NO FAKTUR
       cabang = $('.cabang').val();
       var a = $('ul#tabmenu').find('li.active').data('val');
-      alert(cabang);
+   
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
@@ -2055,7 +2055,7 @@
                     $('#tablefp').append(row);
                   }
 
-                  alert(item);
+                 // alert(item);
                  $('.brg-'+nourut).val(item);
 
                  //pembersihan value
@@ -2617,7 +2617,7 @@
                                var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].fpdt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].fpdt_qty+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].fpdt_biaya+" name='totalharga[]'> </th> <th> <th> <input type='hidden' value="+response.po_barang[k][z].fp_idfaktur+" name='idpo[]'> <input type='hidden' value="+response.po_barang[k][z].fpdt_harga+" name='hpp[]'>   <th> <input type='hidden' value="+flag[0]+" name='flag'>  </th> </tr> ";
 
                                 $('#input_data').append(rowinput);
-                                alert()
+                              
                                   jumlahtotalharga_fp = jumlahtotalharga_fp + parseInt(response.po_barang[k][z].fpdt_biaya);
                                   console.log('test');
                           }
@@ -2772,7 +2772,7 @@
   //item TANPA PO
     $('.item').change(function(){
       $this = $(this).val();
-      alert($this);
+     // alert($this);
       var string = $this.split(",");
       var harga = string[1];
         var acc_persediaan = string[3];
@@ -2902,7 +2902,7 @@
                      $('.harga').attr('readonly' , false);
 
                     if(arrItem.length > 0) {
-                      alert('yes');
+                   //   alert('yes');
                       $('.item').empty();
                       $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
