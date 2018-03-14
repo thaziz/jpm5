@@ -6,7 +6,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> SUBCON </h2>
+                    <h2> CUSTOMER </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -18,7 +18,7 @@
                           <a> Master DO</a>
                         </li>
                         <li class="active">
-                            <strong> SUBCON </strong>
+                            <strong> CUSTOMER </strong>
                         </li>
 
                     </ol>
@@ -31,7 +31,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> SUBCON
+                    <h5> CUSTOMER
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
@@ -73,7 +73,7 @@
                           </div> -->
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
-                                    
+
                             </table>
                         <div class="col-xs-6">
 
@@ -86,20 +86,21 @@
                     </div>
                 </form>
                 <div class="box-body">
-                  <table id="table_data" class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th> Kode</th>
-                            <th> Nama </th>
-                            <th> Alamat </th>
-                            <th> Telpon </th>
-                            <th> Fax </th>
-                            <th> Aksi </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                  </table>
+                    <table id="table_data" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th> Kode</th>
+                                <th> Nama </th>
+                                <th> Alamat </th>
+                                <th> Kota </th>
+                                <th> Telpon </th>
+                                <th> Aksi </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
                 </div><!-- /.box-body -->
                 <!-- modal -->
                 <div id="modal" class="modal" >
@@ -107,13 +108,12 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Insert Edit Subcon</h4>
+                        <h4 class="modal-title">Insert Edit Item</h4>
                       </div>
                       <div class="modal-body">
-                        <form class="form-horizontal  kirim">
+                        <form class="form-horizontal kirim">
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                             <tbody>
-                                <input type="hidden" name="id_subcon">
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
                                     <td>
@@ -121,68 +121,86 @@
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Tgl Kontrak</td>
-                                    <td>
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tgl_kontrak">
-                                        </div>
-                                    </td>
-                                    <td style="padding-top: 0.4cm">Nomor Kontrak</td>
-                                    <td>
-                                        <input type="text" class="form-control" name="ed_nomor_kontrak" style="text-transform: uppercase" >
-                                    </td>
-                                </tr>
-                                
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Penanggung Jawab</td>
-                                    <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_penanggung_jawab" style="text-transform: uppercase" >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Nama</td>
-                                    <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" >
+                                        <td style="padding-top: 0.4cm">Nama</td>
+                                        <td><input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" ></td>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Alamat</td>
-                                    <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" >
+                                    <td><input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" ></td>
+                                    <td style="padding-top: 0.4cm">Kota</td>
+                                    <td>
+                                        <select class="chosen-select-width"  name="cb_kota" style="width:100%">
+                                            <option value=""></option>
+                                        @foreach ($kota as $row)
+                                            <option value="{{ $row->nama }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Telpon</td>
-                                    <td>
-                                        <input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" >
-                                    </td>
-                                    <td style="padding-top: 0.4cm">Fax</td>
-                                    <td>
-                                        <input type="text" class="form-control" name="ed_fax" style="text-transform: uppercase" >
-                                    </td>
+                                    <td><input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" ></td>
+                                    <td style="width:100px;">Syarat Kredit (Hari)</td>
+                                    <td><input type="number" class="form-control" name="ed_syarat_kredit" style="text-transform: uppercase" style="text-align:right"></td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Email</td>
-                                    <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_email" style="text-transform: uppercase" >
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Kontak Person</td>
-                                    <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_kontak_person" style="text-transform: uppercase" >
-                                    </td>
+                                    <td style="padding-top: 0.4cm">Acc Piutang</td>
+                                    <td><input type="text" class="form-control" name="ed_acc_piutang" style="text-transform: uppercase" ></td>
+                                    <td style="padding-top: 0.4cm">CSF Piutang</td>
+                                    <td><input type="text" class="form-control" name="ed_csf_piutang" style="text-transform: uppercase" ></td>
                                 </tr>
                                 
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Kode Bank</td>
+                                    <td><input type="text" class="form-control" name="ed_kode_bank" ></td>
+                                    <td style="padding-top: 0.4cm">NPWP</td>
+                                    <td><input type="text" class="form-control" name="ed_npwp" ></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">PPH 23</td>
+                                    <td colspan="3">
+                                        <input type="checkbox" name="ck_pph23">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Nama Pajak 23</td>
+                                    <td>
+                                        <select class="select2_single form-control"  name="cb_nama_pajak_23"  style="width: 100% !important;">
+                                            <option></option>
+                                            <option value="PPH PS 23"> PPH PS 23</option>
+                                            <option value="PPH PS 23 SEWA"> PPH PS 23 SEWA</option>
+                                            <option value="PPH PS 4/2">PPH PS 4/2</option>
+                                            <option value="PPN BM">PPH BM</option>
+                                            <option value="TANPA PPH 23">TANPA PPH 23</option>
+                                            <option value="UM PAJAK PS 23">UM PAJAK PS 23</option>
+                                        </select>
+                                    </td>
+                                    <td style="padding-top: 0.4cm">Tarif Pajak 23</td>
+                                    <td><input type="text" class="form-control" name="ed_tarif_pajak" style="text-align: right"></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">PPN</td>
+                                    <td>
+                                        <input type="checkbox" name="ck_ppn">
+                                    </td>
+                                    <td style="padding-top: 0.4cm">Type Faktur</td>
+                                    <td>
+                                        <select class="select2_single form-control"  name="cb_type_faktur"  style="width: 100% !important;">
+                                            <option></option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="3">2</option>
+                                        </select>
+                                    </td>
+                                </tr>
                             </tbody>
                           </table>
+
                         </form>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="btnsave">Save changes</button>
+                        <button type="submit" class="btn btn-primary" id="btnsave">Save changes</button>
                       </div>
                     </div>
                   </div>
@@ -225,15 +243,15 @@
             "pageLength": 10,
             "retrieve" : true,
             "ajax": {
-              "url" :  baseUrl + "/master_sales/subcon/tabel",
+              "url" :  baseUrl + "/master_sales/customer/tabel",
               "type": "GET"
             },
             "columns": [
             { "data": "kode" },
             { "data": "nama" },
             { "data": "alamat" },
+            { "data": "kota" },
             { "data": "telpon" },
-            { "data": "fax" },
             { "data": "button" },
             ]
         });
@@ -247,25 +265,23 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
-       // $("input[name='ed_harga']").maskMoney({thousands:'.', decimal:',', precision:-1});
     });
 
     $(document).on("click","#btn_add",function(){
-        var d = new Date();
-        var date = d.getDate() +'-'+(d.getMonth()+1)+'-'+d.getFullYear();
-        // alert(d);    
         $("input[name='crud']").val('N');
         $("input[name='ed_kode']").val('');
-        $("input[name='ed_tgl_kontrak']").val(date);
         $("input[name='ed_kode_old']").val('');
         $("input[name='ed_nama']").val('');
-        $("input[name='ed_nomor_kontrak']").val('');
-        $("input[name='ed_penanggung_jawab']").val('');
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_telpon']").val('');
-        $("input[name='ed_fax']").val('');
-        $("input[name='ed_kontak_person']").val('');
-        $("input[name='ed_email']").val('');
+        $("select[name='cb_kota']").val('').trigger('chosen:updated');
+        $("input[name='ed_pajak_npwp']").val('');
+        $("select[name='cb_nama_pajak_23']").val('');
+        $("select[name='cb_type_faktur']").val('');
+        $("input[name='ed_alamat']").val('');
+        $("input[name='ed_acc_piutang']").val('');
+        $("input[name='ed_csf_piutang']").val('');
+        $("input[name='ed_syarat_kredit']").val('0');
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
     });
@@ -277,7 +293,7 @@
         };
         $.ajax(
         {
-            url : baseUrl + "/master_sales/subcon/get_data",
+            url : baseUrl + "/master_sales/customer/get_data",
             type: "GET",
             data : value,
             dataType:'json',
@@ -285,18 +301,18 @@
             {
                 $("input[name='crud']").val('E');
                 $("input[name='ed_kode']").val(data.kode);
-                $("input[name='id_subcon']").val(data.id_subcon);
                 $("input[name='ed_kode_old']").val(data.kode);
-                $("input[name='ed_nama']").val(data.nama);                
-                $("input[name='ed_tgl_kontrak']").val(data.tgl_kontrak);
-                $("input[name='ed_nomor_kontrak']").val(data.nomor_kontrak);
-                $("input[name='ed_penanggung_jawab']").val(data.penanggung_jawab);
-                $("input[name='ed_alamat']").val(data.alamat);
+                $("input[name='ed_nama']").val(data.nama);
+                $("input[name='ed_alamat']").val(data.nama);
                 $("input[name='ed_telpon']").val(data.telpon);
-                $("input[name='ed_fax']").val(data.fax);
-                $("input[name='ed_email']").val(data.email);
-                $("input[name='ed_kontak_person']").val(data.kontak_person);
-                $("#modal").modal('show');
+                $("select[name='cb_kota']").val(data.kota).trigger('chosen:updated');
+                $("input[name='ed_npwp']").val(data.pajak_npwp);
+                $("select[name='cb_nama_pajak_23']").val(data.nama_pph23);
+                $("select[name='cb_type_faktur']").val(data.type_faktur_ppn);
+                $("input[name='ed_acc_piutang']").val(data.acc_piutang);
+                $("input[name='ed_csf_piutang']").val(data.csf_piutang);
+                $("input[name='ed_syarat_kredit']").val(data.syarat_kredit);
+                $("#modal").modal("show");
                 $("input[name='ed_kode']").focus();
             },
             error: function(jqXHR, textStatus, errorThrown)
@@ -307,104 +323,36 @@
     });
 
     $(document).on("click","#btnsave",function(){
-       var b = $("input[name='ed_nama']").val();
-       var c = $("input[name='ed_nomor_kontrak']").val();
-       var d = $("input[name='ed_penanggung_jawab']").val();
-       var e = $("input[name='ed_alamat']").val();
-       var f = $("input[name='ed_telpon']").val();
-       var g =$("input[name='ed_kontak_person']").val();
-       var h = $("input[name='ed_email']").val();
-
-       if (b == '' || b == null) {
-            Command: toastr["warning"]("Nama Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (c== '' || c == null)  {
-            Command: toastr["warning"]("Nomor Kontrak Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (d== '' || d == null)  {
-            Command: toastr["warning"]("Penanggung Jawab Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (e== '' || e == null)  {
-            Command: toastr["warning"]("Alamat Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-
-
+        /*
+        var kode_old = $("#ed_kode_old").val();
+        var kode = $("#ed_kode").val();
+        var kota = $("#ed_kota").val();
+        var provinsi = $("#cb_kota_asal").val();
+        var crud   = $("#crud").val();
+        if(id == '' || id == null ){
+            alert('Id harus di isi');
+            $("#ed_kode").focus();
+            return false;
+        }
+        if(provinsi == '' || provinsi == null ){
+            alert('provinsi harus di isi');
+            $("#cb_kota_asal").focus();
+            return false;
+        }
+        /*
+        value = {
+            id_old: id_old,
+            id: id,
+            provinsi: provinsi,
+            kota: kota.toUpperCase(),
+            crud: crud,
+            _token: "{{ csrf_token() }}",
+        };
+        */
         $.ajax(
         {
-            url : baseUrl + "/master_sales/subcon/save_data",
-            type: "get",
+            url : baseUrl + "/master_sales/customer/save_data",
+            type: "POST",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
@@ -450,7 +398,7 @@
         };
         $.ajax({
             type: "POST",
-            url : baseUrl + "/master_sales/subcon/hapus_data",
+            url : baseUrl + "/master_sales/customer/hapus_data",
             dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)
@@ -471,14 +419,6 @@
 
 
     });
-     $('.date').datepicker({
-        autoclose: true,
-        format: 'dd-mm-yyyy',
-        calendarWeeks: true,
-        todayHighlight: true,
-        autoclose: true
-    });
-
 
 </script>
 @endsection

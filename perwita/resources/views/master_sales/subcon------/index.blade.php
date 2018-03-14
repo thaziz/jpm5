@@ -113,7 +113,6 @@
                         <form class="form-horizontal  kirim">
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                             <tbody>
-                                <input type="hidden" name="id_subcon">
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
                                     <td>
@@ -251,12 +250,9 @@
     });
 
     $(document).on("click","#btn_add",function(){
-        var d = new Date();
-        var date = d.getDate() +'-'+(d.getMonth()+1)+'-'+d.getFullYear();
-        // alert(d);    
         $("input[name='crud']").val('N');
         $("input[name='ed_kode']").val('');
-        $("input[name='ed_tgl_kontrak']").val(date);
+        $("input[name='ed_tgl_kontrak']").val();
         $("input[name='ed_kode_old']").val('');
         $("input[name='ed_nama']").val('');
         $("input[name='ed_nomor_kontrak']").val('');
@@ -285,7 +281,6 @@
             {
                 $("input[name='crud']").val('E');
                 $("input[name='ed_kode']").val(data.kode);
-                $("input[name='id_subcon']").val(data.id_subcon);
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("input[name='ed_nama']").val(data.nama);                
                 $("input[name='ed_tgl_kontrak']").val(data.tgl_kontrak);
@@ -307,104 +302,10 @@
     });
 
     $(document).on("click","#btnsave",function(){
-       var b = $("input[name='ed_nama']").val();
-       var c = $("input[name='ed_nomor_kontrak']").val();
-       var d = $("input[name='ed_penanggung_jawab']").val();
-       var e = $("input[name='ed_alamat']").val();
-       var f = $("input[name='ed_telpon']").val();
-       var g =$("input[name='ed_kontak_person']").val();
-       var h = $("input[name='ed_email']").val();
-
-       if (b == '' || b == null) {
-            Command: toastr["warning"]("Nama Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (c== '' || c == null)  {
-            Command: toastr["warning"]("Nomor Kontrak Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (d== '' || d == null)  {
-            Command: toastr["warning"]("Penanggung Jawab Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (e== '' || e == null)  {
-            Command: toastr["warning"]("Alamat Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-
-
         $.ajax(
         {
             url : baseUrl + "/master_sales/subcon/save_data",
-            type: "get",
+            type: "POST",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
@@ -473,10 +374,7 @@
     });
      $('.date').datepicker({
         autoclose: true,
-        format: 'dd-mm-yyyy',
-        calendarWeeks: true,
-        todayHighlight: true,
-        autoclose: true
+        format: 'yyyy-mm-dd'
     });
 
 

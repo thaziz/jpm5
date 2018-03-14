@@ -4,34 +4,13 @@
 
 @section('content')
 
-<div class="row wrapper border-bottom white-bg page-heading">
-                <div class="col-lg-10">
-                    <h2> SUBCON </h2>
-                    <ol class="breadcrumb">
-                        <li>
-                            <a>Home</a>
-                        </li>
-                        <li>
-                            <a>Master Penjualan</a>
-                        </li>
-                        <li>
-                          <a> Master DO</a>
-                        </li>
-                        <li class="active">
-                            <strong> SUBCON </strong>
-                        </li>
 
-                    </ol>
-                </div>
-                <div class="col-lg-2">
-             </div>
-</div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> SUBCON
+                    <h5> VENDOR
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
@@ -92,8 +71,9 @@
                             <th> Kode</th>
                             <th> Nama </th>
                             <th> Alamat </th>
+                            <th> Kota </th>
                             <th> Telpon </th>
-                            <th> Fax </th>
+                            <th> Status </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -107,13 +87,12 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Insert Edit Subcon</h4>
+                        <h4 class="modal-title">Insert Edit Vendor</h4>
                       </div>
                       <div class="modal-body">
                         <form class="form-horizontal  kirim">
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                             <tbody>
-                                <input type="hidden" name="id_subcon">
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
                                     <td>
@@ -123,31 +102,36 @@
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Tgl Kontrak</td>
-                                    <td>
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tgl_kontrak">
-                                        </div>
-                                    </td>
-                                    <td style="padding-top: 0.4cm">Nomor Kontrak</td>
-                                    <td>
-                                        <input type="text" class="form-control" name="ed_nomor_kontrak" style="text-transform: uppercase" >
-                                    </td>
-                                </tr>
                                 
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Penanggung Jawab</td>
-                                    <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_penanggung_jawab" style="text-transform: uppercase" >
-                                    </td>
-                                </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Nama</td>
                                     <td colspan="3">
                                         <input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Tipe</td>
+                                    <td>
+                                        <select class="form-control" name="cb_tipe">
+                                            <option value=""> </option>
+                                            <option value="AGEN">AGEN</option>
+                                            <option value="VENDOR">VENDOR</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Kota</td>
+                                    <td>   
+                                        <select class="chosen-select-width"  name="cb_kota" style="width:100%">
+                                            <option value=""></option>
+                                        @foreach ($kota as $row)
+                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                
                                 <tr>
                                     <td style="padding-top: 0.4cm">Alamat</td>
                                     <td colspan="3">
@@ -159,24 +143,48 @@
                                     <td>
                                         <input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" >
                                     </td>
-                                    <td style="padding-top: 0.4cm">Fax</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Kode Pos</td>
                                     <td>
-                                        <input type="text" class="form-control" name="ed_fax" style="text-transform: uppercase" >
+                                        <input type="text" class="form-control" name="ed_kode_pos" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Email</td>
-                                    <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_email" style="text-transform: uppercase" >
+                                    <td>
+                                        
                                     </td>
+                                    <td>
+                                        <div class="checkbox">
+                                            <label for="checkbox1"> <input type="checkbox" name="ck_status"> Pakai Angkutan </label>
+                                        </div>  
+                                    </td>
+                                    
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Kontak Person</td>
-                                    <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_kontak_person" style="text-transform: uppercase" >
-                                    </td>
+                                    <td style="padding-top: 0.4cm">Acc Penjualan</td>
+									<td>
+                                        <select class="chosen-select-width"  name="cb_acc_penjualan" style="width:100%">
+                                            <option value=""></option>
+                                        @foreach ($akun as $row)
+                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}">{{ $row->id_akun }} - {{$row->nama_akun}}</option>
+                                        @endforeach
+                                        </select>
+									</td>
+									{{-- <td><input type="text" class="form-control" name="ed_acc_penjualan2" ></td> --}}
                                 </tr>
-                                
+                                <tr>
+                                    <td style="padding-top: 0.4cm">CSF Penjualan</td>
+                                    <td>
+                                        <select class="chosen-select-width"  name="cb_csf_penjualan" style="width:100%">
+                                            <option value=""></option>
+                                        @foreach ($akun as $row)
+                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} </option>
+                                        @endforeach
+                                        </select>
+									</td>
+                                    <td><input type="text" class="form-control" name="ed_csf_penjualan2" ></td>
+                                </tr>
                             </tbody>
                           </table>
                         </form>
@@ -225,15 +233,16 @@
             "pageLength": 10,
             "retrieve" : true,
             "ajax": {
-              "url" :  baseUrl + "/master_sales/subcon/tabel",
+              "url" :  baseUrl + "/master_sales/vendor/tabel",
               "type": "GET"
             },
             "columns": [
             { "data": "kode" },
             { "data": "nama" },
             { "data": "alamat" },
+            { "data": "kota" },
             { "data": "telpon" },
-            { "data": "fax" },
+            { "data": "status" },
             { "data": "button" },
             ]
         });
@@ -242,7 +251,7 @@
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"100%"}
+                '.chosen-select-width'     : {width:"100%",search_contains:true}
                 }
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
@@ -250,22 +259,31 @@
        // $("input[name='ed_harga']").maskMoney({thousands:'.', decimal:',', precision:-1});
     });
 
+    $("select[name='cb_acc_penjualan']").change(function(){
+        var nama_akun = $(this).find(':selected').data('nama_akun');
+        $("input[name='ed_acc_penjualan2']").val(nama_akun);
+    });
+
+    $("select[name='cb_csf_penjualan']").change(function(){
+        var nama_akun = $(this).find(':selected').data('nama_akun');
+        $("input[name='ed_csf_penjualan2']").val(nama_akun);
+    });
+
     $(document).on("click","#btn_add",function(){
-        var d = new Date();
-        var date = d.getDate() +'-'+(d.getMonth()+1)+'-'+d.getFullYear();
-        // alert(d);    
         $("input[name='crud']").val('N');
         $("input[name='ed_kode']").val('');
-        $("input[name='ed_tgl_kontrak']").val(date);
         $("input[name='ed_kode_old']").val('');
         $("input[name='ed_nama']").val('');
-        $("input[name='ed_nomor_kontrak']").val('');
-        $("input[name='ed_penanggung_jawab']").val('');
+        $("select[name='cb_tipe']").val('');
+        $("select[name='cb_kota']").val('').trigger('chosen:updated');
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_telpon']").val('');
-        $("input[name='ed_fax']").val('');
-        $("input[name='ed_kontak_person']").val('');
-        $("input[name='ed_email']").val('');
+        $("input[name='ed_kode_pos']").val('');
+        $("input[name='ck_status']").attr('checked', false);
+        $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
+		$("select[name='cb_acc_penjualan']").change();
+		$("select[name='cb_csf_penjualan']").change();
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
     });
@@ -277,7 +295,7 @@
         };
         $.ajax(
         {
-            url : baseUrl + "/master_sales/subcon/get_data",
+            url : baseUrl + "/master_sales/vendor/get_data",
             type: "GET",
             data : value,
             dataType:'json',
@@ -285,17 +303,18 @@
             {
                 $("input[name='crud']").val('E');
                 $("input[name='ed_kode']").val(data.kode);
-                $("input[name='id_subcon']").val(data.id_subcon);
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("input[name='ed_nama']").val(data.nama);                
-                $("input[name='ed_tgl_kontrak']").val(data.tgl_kontrak);
-                $("input[name='ed_nomor_kontrak']").val(data.nomor_kontrak);
-                $("input[name='ed_penanggung_jawab']").val(data.penanggung_jawab);
+                $("select[name='cb_tipe']").val(data.tipe);
+                $("select[name='cb_kota']").val(data.id_kota).trigger('chosen:updated');
                 $("input[name='ed_alamat']").val(data.alamat);
                 $("input[name='ed_telpon']").val(data.telpon);
-                $("input[name='ed_fax']").val(data.fax);
-                $("input[name='ed_email']").val(data.email);
-                $("input[name='ed_kontak_person']").val(data.kontak_person);
+                $("input[name='ed_kode_pos']").val(data.kode_pos);
+                $("input[name='ck_status']").attr('checked', data.status);
+                $("select[name='cb_acc_penjualan']").val(data.acc_penjualan).trigger('chosen:updated');
+                $("select[name='cb_csf_penjualan']").val(data.csf_penjualan).trigger('chosen:updated'); 
+                $("select[name='cb_acc_penjualan']").change();
+                $("select[name='cb_csf_penjualan']").change();
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
             },
@@ -307,104 +326,10 @@
     });
 
     $(document).on("click","#btnsave",function(){
-       var b = $("input[name='ed_nama']").val();
-       var c = $("input[name='ed_nomor_kontrak']").val();
-       var d = $("input[name='ed_penanggung_jawab']").val();
-       var e = $("input[name='ed_alamat']").val();
-       var f = $("input[name='ed_telpon']").val();
-       var g =$("input[name='ed_kontak_person']").val();
-       var h = $("input[name='ed_email']").val();
-
-       if (b == '' || b == null) {
-            Command: toastr["warning"]("Nama Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (c== '' || c == null)  {
-            Command: toastr["warning"]("Nomor Kontrak Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (d== '' || d == null)  {
-            Command: toastr["warning"]("Penanggung Jawab Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-       else if (e== '' || e == null)  {
-            Command: toastr["warning"]("Alamat Tidak Boleh Kosong", "Peringatan!")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": true,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "800",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-       }
-
-
         $.ajax(
         {
-            url : baseUrl + "/master_sales/subcon/save_data",
-            type: "get",
+            url : baseUrl + "/master_sales/vendor/save_data",
+            type: "POST",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
@@ -450,7 +375,7 @@
         };
         $.ajax({
             type: "POST",
-            url : baseUrl + "/master_sales/subcon/hapus_data",
+            url : baseUrl + "/master_sales/vendor/hapus_data",
             dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)
@@ -471,14 +396,7 @@
 
 
     });
-     $('.date').datepicker({
-        autoclose: true,
-        format: 'dd-mm-yyyy',
-        calendarWeeks: true,
-        todayHighlight: true,
-        autoclose: true
-    });
-
+    
 
 </script>
 @endsection

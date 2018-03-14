@@ -109,16 +109,6 @@
                                         <input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Tipe</td>
-                                    <td>
-                                        <select class="form-control" name="cb_tipe">
-                                            <option value=""> </option>
-                                            <option value="AGEN">AGEN</option>
-                                            <option value="VENDOR">VENDOR</option>
-                                        </select>
-                                    </td>
-                                </tr>
                                 
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kota</td>
@@ -130,6 +120,14 @@
                                         @endforeach
                                         </select>
                                     </td>
+                                    <td style="padding-top: 0.4cm">Tipe</td>
+                                    <td>
+                                        <select class="form-control" name="cb_tipe">
+                                            <option value=""> </option>
+                                            <option value="AGEN">AGEN</option>
+                                            <option value="VENDOR">VENDOR</option>
+                                        </select>
+                                    </td>
                                 </tr>
                                 
                                 <tr>
@@ -138,13 +136,12 @@
                                         <input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
+                                
                                 <tr>
                                     <td style="padding-top: 0.4cm">Telpon</td>
                                     <td>
                                         <input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" >
                                     </td>
-                                </tr>
-                                <tr>
                                     <td style="padding-top: 0.4cm">Kode Pos</td>
                                     <td>
                                         <input type="text" class="form-control" name="ed_kode_pos" style="text-transform: uppercase" >
@@ -163,27 +160,25 @@
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Penjualan</td>
-									<td>
+									<td colspan="3">
                                         <select class="chosen-select-width"  name="cb_acc_penjualan" style="width:100%">
                                             <option value=""></option>
                                         @foreach ($akun as $row)
-                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}">{{ $row->id_akun }} - {{$row->nama_akun}}</option>
+                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} - {{$row->nama_akun}}</option>
                                         @endforeach
                                         </select>
 									</td>
-									{{-- <td><input type="text" class="form-control" name="ed_acc_penjualan2" ></td> --}}
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">CSF Penjualan</td>
-                                    <td>
+                                    <td colspan="3">
                                         <select class="chosen-select-width"  name="cb_csf_penjualan" style="width:100%">
                                             <option value=""></option>
                                         @foreach ($akun as $row)
-                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} </option>
+                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} - {{$row->nama_akun}}</option>
                                         @endforeach
                                         </select>
 									</td>
-                                    <td><input type="text" class="form-control" name="ed_csf_penjualan2" ></td>
                                 </tr>
                             </tbody>
                           </table>
@@ -329,7 +324,7 @@
         $.ajax(
         {
             url : baseUrl + "/master_sales/vendor/save_data",
-            type: "POST",
+            type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
