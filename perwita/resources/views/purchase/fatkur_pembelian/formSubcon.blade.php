@@ -328,7 +328,7 @@
                Lain Lain
               </td>
               <td>                      
-                <input type="text" class="form-control lainlain_tt" name="lainlain">
+                <input type="text" class="form-control lain_subcon" name="lainlain">
               </td>
             </tr>
             <tr>

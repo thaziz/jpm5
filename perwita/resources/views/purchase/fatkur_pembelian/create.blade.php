@@ -545,7 +545,7 @@
 
                                       <div class="modal-footer">
                                           <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="button" class="btn btn-primary simpan_penerus simpan_outlet" id="buttonsimpan_tt">
+                                          <button type="button" class="btn btn-primary " id="buttonsimpan_tt">
                                             Simpan
                                           </button>
                                          
