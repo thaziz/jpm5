@@ -601,9 +601,9 @@ else if($jenis_ppn!=3){
     }
 
     public function index(){
-        $sql = "    SELECT i.*,c.nama customer FROM invoice i
-                    LEFT JOIN customer c ON c.kode=i.kode_customer ";
-        $data =  DB::select($sql);
+        $data = DB::table('invoice')
+                  ->join('customer','i_kode_customer','=','kode')
+                  ->get();
         return view('sales.invoice.index',compact('data'));
     }
 
@@ -826,17 +826,39 @@ public function cari_do_invoice(request $request)
     $do_akhir = Carbon::parse($do_akhir)->format('Y-m-d');
     $jenis = $request->cb_pendapatan;
     if ($request->cb_pendapatan == 'KORAN') {
-        $data = DB::table('delivery_order')
+
+      $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
-              ->whereIn('delivery_orderd.dd_id','!=',(int)$request->array_simpan)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
               ->get();
 
-        return $data;
+      $temp1 = DB::table('delivery_order')
+              ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
+              ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+        if (isset($request->array_simpan)) {
+            for ($i=0; $i < count($temp1); $i++) { 
+                for ($a=0; $a < count($request->array_simpan); $a++) { 
+                    if ($request->array_simpan[$a] == $temp1[$i]->dd_id) {
+                        unset($temp[$i]);
+                    }
+                }
+            }
+
+            $data = $temp;
+            
+        }else{
+            $data = $temp;
+        }
     }
     
 
@@ -845,7 +867,7 @@ public function cari_do_invoice(request $request)
 public function append_do(request $request)
 {
     // dd($request->all());
-
+    $jenis = $request->cb_pendapatan;
     $cari_do = DB::table('delivery_orderd')
                  ->join('delivery_order','delivery_order.nomor','=','delivery_orderd.dd_nomor')
                  ->whereIn('delivery_orderd.dd_nomor',$request->nomor_do)
@@ -868,7 +890,8 @@ public function append_do(request $request)
 
     }
     return response()->json([
-                         'data' => $cari_do
+                         'data' => $cari_do,
+                         'jenis' => $jenis
                        ]);
 }
 }
