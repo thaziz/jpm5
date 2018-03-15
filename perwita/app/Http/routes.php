@@ -840,6 +840,7 @@ Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
 Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
+Route::get('sales/pajak_lain', 'sales\invoice_Controller@pajak_lain');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
 Route::get('sales/invoice_form/tampil_do', 'sales\invoice_Controller@tampil_do');
 Route::get('sales/invoice_form/{nomor}/edit', 'sales\invoice_Controller@form');
@@ -848,7 +849,8 @@ Route::get('sales/invoice_form/tabel_data_detail', 'sales\invoice_Controller@tab
 Route::get('sales/invoice/tabel', 'sales\invoice_Controller@table_data');
 Route::get('sales/invoice/get_data', 'sales\invoice_Controller@get_data');
 Route::get('sales/invoice/get_data_detail', 'sales\invoice_Controller@get_data_detail');
-Route::post('sales/invoice/save_data', 'sales\invoice_Controller@save_data');
+Route::post('sales/simpan_invoice', 'sales\invoice_Controller@simpan_invoice');
+Route::get('sales/simpan_invoice', 'sales\invoice_Controller@simpan_invoice');
 Route::post('sales/invoice/save_data_detail', 'sales\invoice_Controller@save_data_detail');
 Route::post('sales/invoice/hapus_data', 'sales\invoice_Controller@hapus_data');
 Route::post('sales/invoice/hapus_data_detail', 'sales\invoice_Controller@hapus_data_detail');

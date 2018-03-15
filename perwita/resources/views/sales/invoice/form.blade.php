@@ -47,7 +47,7 @@
                     </div>
                 </form>
                 <form id="form_header" class="form-horizontal">
-                    <table class="table table-striped table-bordered table-hover">
+                    <table class="table table_header table-striped table-bordered table-hover">
 
                         <tbody>
                             <tr>
@@ -73,15 +73,15 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4">
-                                    <select class="chosen-select-width"  name="customer" id="customer" style="width:100%" >
+                                    <select class="chosen-select-width cus_disabled" oncha  name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                         <option value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
                                     @endforeach
                                     </select>
-                                    <input type="hidden" name="ed_customer" value="" >
+                                    <input type="hidden" class="ed_customer" name="ed_customer" value="" >
                                 </td>
                             </tr>
                             <tr>
@@ -107,7 +107,7 @@
                                         <option value="KARGO">KARGO</option>
                                         <option value="KORAN">KORAN</option>
                                     </select>
-                                    <input type="hidden" name="ed_pendapatan" value="" >
+                                    <input type="hidden" class="ed_pendapatan" name="ed_pendapatan" value="" >
                                 </td>
                                 <td style="width:110px; padding-top: 0.4cm;display:none" >Type Kiriman</td>
                                 <td style="display:none;>
@@ -147,13 +147,13 @@
                     </table>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-info " id="btn_modal_do" name="btnadd"  ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
+                            <button type="button" class="btn btn-success " onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                         </div>
                     </div>
                 </form>
                 <div class="box-body">
-                  <table id="table_data" class="table table-bordered table-striped">
+                  <table id="table_data" class="table table-bordered table-striped table_data">
                     <thead>
                         <tr>
                             <th align="center">No</th>
@@ -174,30 +174,36 @@
                 </div>
                 <!-- /.box-body -->
                 <form class="form-horizontal" id="form_bottom" >
-                    <table class="table table-hover">
+                    <table class="table table-hover table_pajak">
                         <tbody>
                             <tr>
                                 <td style="width:64%; padding-top: 0.4cm; text-align:right">Total</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_total" class="form-control" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                    <input type="text" name="ed_total" class="form-control ed_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Diskon</td>
+                                <td style="padding-top: 0.4cm; text-align:right">Diskon DO</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_diskon" id="ed_diskon"  class="form-control angka" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" readonly="" name="diskon1"  class="form-control diskon1" style="text-transform: uppercase;text-align:right" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
+                                <td colspan="4">
+                                    <input type="text" name="diskon2" onblur="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Netto</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_netto" id="ed_netto" class="form-control" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" name="netto_total" id="netto_total" class="form-control netto_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm; text-align:right">Jenis PPN</td>
                                 <td>
-                                    <select class="form-control" name="cb_jenis_ppn" id="cb_jenis_ppn" >
+                                    <select class="form-control" name="cb_jenis_ppn" onchange="hitung_pajak_ppn()" id="cb_jenis_ppn" >
                                         <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
                                         <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
                                         <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
@@ -207,25 +213,28 @@
                                 </td>
                                 <td style="padding-top: 0.4cm; text-align:right">PPN</td>
                                 <td>
-                                    <input type="text" name="ed_ppn" class="form-control" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" name="ppn" class="form-control ppn" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:110px; padding-top: 0.4cm; text-align:right">Pajak</td>
+                                <td style="width:110px; padding-top: 0.4cm; text-align:right">Pajak lain-lain</td>
                                 <td>
-                                    <select class="form-control" name="cb_pajak" id="cb_pajak" >
-                                        <option value=""  > </option>
+                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="pajak_lain" id="pajak_lain" >
+                                        <option value="0"  >Pilih Pajak Lain-lain</option>
+                                        @foreach($pajak as $val)
+                                            <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                        @endforeach
                                     </select>
                                 </td>
                                 <td style="padding-top: 0.4cm; text-align:right">PPH</td>
                                 <td>
-                                    <input type="text" name="ed_pph" class="form-control" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" name="pph" class="pph form-control" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Total Tagihan</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_total_tagihan" class="form-control" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                    <input type="text" name="total_tagihan" class="form-control total_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
                             </tr>
                         </tbody>
@@ -337,7 +346,6 @@
             data:{cabang},
             dataType : 'json',
             success:function(response){
-                console.log(response.nota);
                 $('#nota_invoice').val(response.nota);
             }
         });
@@ -352,7 +360,6 @@
             data:{cus,tgl},
             dataType : 'json',
             success:function(response){
-                console.log(response.tgl);
                 $('.ed_jatuh_tempo').val(response.tgl);
             }
         });
@@ -366,11 +373,17 @@
             data:{cus,tgl},
             dataType : 'json',
             success:function(response){
-                console.log(response.tgl);
                 $('.ed_jatuh_tempo').val(response.tgl);
             }
         });
     });
+
+   $('.cus_disabled').change(function(){
+        $('.ed_customer').val($(this).val());
+   });
+   $('#cb_pendapatan').change(function(){
+        $('.ed_pendapatan').val($(this).val());
+   })
    //modal do
    $('#btn_modal_do').click(function(){
         var array_validasi = [];
@@ -386,7 +399,7 @@
         if (cb_pendapatan == 0) {
             array_validasi.push(0)
         }
-        if (ed_keterangan == 0) {
+        if (ed_keterangan == '') {
             array_validasi.push(0)
         }
         var index = array_validasi.indexOf(0);
@@ -406,12 +419,147 @@
 
    })
 
+   // Menghitung pajak
+
+
+   function hitung_total_tagihan(){
+        var cb_jenis_ppn = $('#cb_jenis_ppn').val();
+
+        var netto_total  = $('.netto_total').val();
+        netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
+        netto_total      = parseInt(netto_total)/100;
+
+        var ppn  = $('.ppn').val();
+        ppn      = ppn.replace(/[^0-9\-]+/g,"");
+        ppn      = parseInt(ppn)/100;
+
+        var pph  = $('.pph').val();
+        pph      = pph.replace(/[^0-9\-]+/g,"");
+        pph      = parseInt(pph)/100;
+        if (cb_jenis_ppn == 1 || cb_jenis_ppn == 2 || cb_jenis_ppn == 0) {
+            var total_tagihan = netto_total+ppn-pph;
+        }else if (cb_jenis_ppn == 3 || cb_jenis_ppn == 5) {
+            var total_tagihan = netto_total-pph;
+        }
+
+        $('.total_tagihan').val(accounting.formatMoney(total_tagihan,"",2,'.',','))
+
+    }
+
+
+   function hitung_pajak_ppn() {
+       var cb_jenis_ppn = $('#cb_jenis_ppn').val();
+       var netto_total  = $('.netto_total').val();
+       netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
+       netto_total      = parseInt(netto_total)/100;
+        if (cb_jenis_ppn == 1) {
+            var ppn = 0;
+            ppn = netto_total * 1.1 ;
+            ppn_netto = ppn - netto_total;
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+        }else if (cb_jenis_ppn == 2){
+            var ppn = 0;
+            ppn = netto_total * 1.01 ;
+            ppn_netto = ppn - netto_total;
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+        }else if (cb_jenis_ppn == 3){
+            var ppn = 0;
+            ppn = netto_total * 1.01 ;
+            ppn_netto = ppn - netto_total;
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+        }else if (cb_jenis_ppn == 5){
+            var ppn = 0;
+            ppn = netto_total * 1.1 ;
+            ppn_netto = ppn - netto_total;
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+        }else if (cb_jenis_ppn == 4){
+            var ppn = 0;
+            ppn = netto_total * 1 ;
+            ppn_netto = ppn - netto_total;
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+        }
+
+
+       hitung_total_tagihan();
+   }
+
+   function hitung_pajak_lain(){
+
+       var netto_total  = $('.netto_total').val();
+       var pajak_lain   = $('.pajak_lain').val();
+       netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
+       netto_total      = parseInt(netto_total)/100;
+       var pajak_persen = 0;
+       var pajak_total  = 0;
+       if (pajak_lain == 0) {
+
+        $('.pph').val(accounting.formatMoney(pajak_total,"",2,'.',','));
+        hitung_total_tagihan();
+        return 1;
+       }
+
+       $.ajax({
+             url:baseUrl +'/sales/pajak_lain',
+             dataType:'json',
+             data:{pajak_lain},
+             success:function(response){
+                pajak_persen = response.persen.nilai;
+                var persen_fix = parseInt(pajak_persen)+100;
+                persen_fix     = persen_fix/100;
+                pajak_total  = persen_fix * netto_total;
+                pajak_total  = pajak_total - netto_total;
+                $('.pph').val(accounting.formatMoney(pajak_total,"",2,'.',','));
+                hitung_total_tagihan();
+
+             }
+       })
+   }
+
+
+
+   // fungsi menghitung total dan diskon DO
+
+    $(".diskon2").focus(function() {
+     $(this).select();
+    });
+   function hitung(){
+        var temp_total   = 0 ;
+        var temp_diskon  = 0 ;
+        var temp_diskon  = 0 ;
+        var temp_diskon2 = $('.diskon2').val();
+        temp_diskon2     = temp_diskon2.replace(/[^0-9\.-]+/g,"");
+        temp_diskon2     = parseFloat(temp_diskon2)
+
+
+        var netto = 0 ;
+        $('.dd_total').each(function(){
+            temp_total += parseFloat($(this).val());
+        });
+
+        $('.dd_diskon').each(function(){
+            temp_diskon += parseFloat($(this).val());
+        });
+
+    
+        netto = temp_total-(temp_diskon2+temp_diskon);
+
+        $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
+        $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
+        $('.netto_total').val(accounting.formatMoney(netto,"",2,'.',','));
+        $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
+
+        hitung_pajak_ppn();
+        hitung_pajak_lain();
+   }
+
+   
    // untuk mengirim yang di check ke controller dengan ajax
    var index_detail = 0;
    $('#btnsave').click(function(){
 
         var nomor_dt = [];
         var nomor_do = [];
+        var cb_pendapatan = $('#cb_pendapatan').val();
         
         $('.tanda').each(function(){
             var check = $(this).is(':checked');
@@ -419,49 +567,169 @@
                var par   = $(this).parents('tr');
                var no_dt = $(par).find('.nomor_dt').val();
                var no_do = $(par).find('.nomor_do').val();
-               var cb_pendapatan = $('#cb_pendapatan').val();
+
+               if (cb_pendapatan == 'KORAN') {
+                  array_simpan.push(no_dt);
+               }else{
+                  array_simpan.push(no_do);
+               }
                nomor_dt.push(no_dt);
                nomor_do.push(no_do);
-               array_simpan.push(no_dt);
             }
         });
-        console.log(array_simpan);
+
+
         $.ajax({
             url:baseUrl +'/sales/append_do',
             data:{nomor_dt,nomor_do,cb_pendapatan},
             dataType:'json',
             success:function(response){
-                if (response.Jenis == 'KORAN') {
+                if (response.jenis == 'KORAN') {
+                    // //////////////////////////////////
                     for(var i = 0 ; i < response.data.length;i++){
                         index_detail+=1;
                         table_detail.row.add([
                             index_detail,
-                            response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
-                            response.data[i].tanggal+'<input type="hidden" value="'+response.data[i].dd_id+'" name="do_id[]">',
-                            response.data[i].dd_keterangan,
+                            response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].dd_nomor+'" name="do_detail[]">',
+                            response.data[i].tanggal+'<input type="hidden" class="dd_id" value="'+response.data[i].dd_id+'" name="do_id[]">',
+                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
-                            accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input type="hidden" value="'+response.data[i].dd_total+'" name="dd_total[]">',
-                            accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
-                            accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
-                            '<button type="button" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+                            accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
+                            accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_total+'" name="dd_total[]">',
+                            accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
+                            accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+                            '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);
                     }
+                    hitung();
+                    
+                    $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
+                    $('#cb_pendapatan').attr('disabled',true);
+                    ///////////////////////////////////////////
+                }else if (response.jenis == 'PAKET' || jenis == 'KARGO') {
+                    for(var i = 0 ; i < response.data.length;i++){
+                        ///////////////////////////////////////
+                        index_detail+=1;
+                        table_detail.row.add([
+                            index_detail,
+                            response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
+                            response.data[i].tanggal,
+                            response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+                            response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
+                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].total+'" name="dd_harga[]">',
+                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+                            accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
+                            accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+                            '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+
+                        ]).draw(false);
+                    }
+
+                    hitung();
+                    
+                    $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
+                    $('#cb_pendapatan').attr('disabled',true);
+                    /////////////////////////////////////
                 }
 
+                $('#modal_do').modal('hide');                   
+            },
+            error:function(){
                 $('#modal_do').modal('hide');                   
             }
 
         })
    });
    // hapus detail
-   $('.hapus').click(function(){
-        var par = $(this).parents('tr');
-        indexOf
-        table_detail.row(par).remove().draw(false);
+   function hapus_detail(o) {
+        var jenis = $('#cb_pendapatan').val();
+        var par = $(o).parents('tr');
+        var length = table_detail.page.info().recordsTotal;
 
-   })
+        if (jenis == 'KORAN') {
+            var arr = $(par).find('.dd_id')
+            var index = array_simpan.indexOf(arr);
+            array_simpan.splice(index,1);
+            table_detail.row(par).remove().draw(false);
+
+        }else if (jenis == 'PAKET' || jenis == 'KARGO'){
+            var arr = $(par).find('.nomor_detail')
+            var index = array_simpan.indexOf(arr);
+            array_simpan.splice(index,1);
+            table_detail.row(par).remove().draw(false);
+        }
+
+        if (length == 1) {
+            
+            $('.cus_disabled').attr('disabled',false).trigger("chosen:updated");
+            $('#cb_pendapatan').attr('disabled',false);
+        }
+
+        hitung();
+            
+   }
+   // untuk check all detail
+    function check_parent(){
+      var parent_check = $('.parent_check:checkbox:checked');
+
+      if (parent_check.length >0) {
+        table_data_do.$('.tanda:checkbox').prop('checked',true);
+      }else if(parent_check.length==0) {
+        table_data_do.$('.tanda:checkbox').removeAttr('checked');
+      }
+
+    }
+
+    // SIMPAN DATA
+    function simpan(){
+
+      swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data Biaya Penerus!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+          $.ajax({
+          url:baseUrl + '/sales/simpan_invoice',
+          type:'get',
+          data:$('.table_header :input').serialize()
+               +'&'+table_detail.$('input').serialize()
+               +'&'+$('.table_pajak :input').serialize(),
+          success:function(response){
+            swal({
+            title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                   showConfirmButton: true
+                    },function(){
+                     
+            });
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
+        });
+       }
+      });  
+     });
+    }
 
    
     
