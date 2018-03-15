@@ -522,13 +522,15 @@ Route::get('master_sales/agen/tabel', 'master_sales\agen_Controller@table_data')
 Route::get('master_sales/agen/get_data', 'master_sales\agen_Controller@get_data');
 Route::get('master_sales/agen/save_data', 'master_sales\agen_Controller@save_data');
 Route::post('master_sales/agen/hapus_data', 'master_sales\agen_Controller@hapus_data');
+
+
 // end agen
 
 //grup vendor
 Route::get('master_sales/vendor', 'master_sales\vendor_Controller@index');
 Route::get('master_sales/vendor/tabel', 'master_sales\vendor_Controller@table_data');
 Route::get('master_sales/vendor/get_data', 'master_sales\vendor_Controller@get_data');
-Route::post('master_sales/vendor/save_data', 'master_sales\vendor_Controller@save_data');
+Route::get('master_sales/vendor/save_data', 'master_sales\vendor_Controller@save_data');
 Route::post('master_sales/vendor/hapus_data', 'master_sales\vendor_Controller@hapus_data');
 // end vendor
 
@@ -585,7 +587,7 @@ Route::post('master_sales/satuan/hapus_data', 'master_sales\satuan_Controller@ha
 Route::get('master_sales/customer', 'master_sales\customer_Controller@index');
 Route::get('master_sales/customer/tabel', 'master_sales\customer_Controller@table_data');
 Route::get('master_sales/customer/get_data', 'master_sales\customer_Controller@get_data');
-Route::post('master_sales/customer/save_data', 'master_sales\customer_Controller@save_data');
+Route::get('master_sales/customer/save_data', 'master_sales\customer_Controller@save_data');
 Route::post('master_sales/customer/hapus_data', 'master_sales\customer_Controller@hapus_data');
 // end customer
 
@@ -620,7 +622,7 @@ Route::post('master_sales/cabang/hapus_data', 'master_sales\cabang_Controller@ha
 Route::get('master_sales/subcon', 'master_sales\subcon_Controller@index');
 Route::get('master_sales/subcon/tabel', 'master_sales\subcon_Controller@table_data');
 Route::get('master_sales/subcon/get_data', 'master_sales\subcon_Controller@get_data');
-Route::post('master_sales/subcon/save_data', 'master_sales\subcon_Controller@save_data');
+Route::get('master_sales/subcon/save_data', 'master_sales\subcon_Controller@save_data');
 Route::post('master_sales/subcon/hapus_data', 'master_sales\subcon_Controller@hapus_data');
 // end subcon
 
@@ -678,7 +680,7 @@ Route::get('sales/kecamatan', function(){
 Route::get('sales/tarif_cabang_dokumen', 'tarif\cabang_dokumen_Controller@index');
 Route::get('sales/tarif_cabang_dokumen/tabel', 'tarif\cabang_dokumen_Controller@table_data');
 Route::get('sales/tarif_cabang_dokumen/get_data', 'tarif\cabang_dokumen_Controller@get_data');
-Route::post('sales/tarif_cabang_dokumen/save_data', 'tarif\cabang_dokumen_Controller@save_data');
+Route::get('sales/tarif_cabang_dokumen/save_data', 'tarif\cabang_dokumen_Controller@save_data');
 Route::post('sales/tarif_cabang_dokumen/hapus_data', 'tarif\cabang_dokumen_Controller@hapus_data');
 // end tarif cabang dokumen
 
@@ -837,6 +839,7 @@ Route::get('sales/invoice', 'sales\invoice_Controller@index');
 Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
+Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
 Route::get('sales/invoice_form/tampil_do', 'sales\invoice_Controller@tampil_do');
 Route::get('sales/invoice_form/{nomor}/edit', 'sales\invoice_Controller@form');

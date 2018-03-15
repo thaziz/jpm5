@@ -73,7 +73,7 @@
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td colspan="4">
                                     <select class="chosen-select-width"  name="customer" id="customer" style="width:100%" >
-                                        <option value="0">Pilih - Cabang</option>
+                                        <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                         <option value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
                                     @endforeach
@@ -153,16 +153,16 @@
                   <table id="table_data" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th style="display:none;">id</th>
+                            <th align="center">No</th>
                             <th>Nomor DO</th>
                             <th>Tgl DO</th>
                             <th>Keterangan</th>
-                            <th>Kuantum</th>
+                            <th width="20">Jumlah</th>
                             <th>Harga Satuan</th>
                             <th>Harga Bruto</th>
                             <th>Diskon</th>
                             <th>Harga Netto</th>
-                            <th>Aksi</th>
+                            <th align="center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -285,6 +285,9 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+    // global variabel
+    var array_simpan = [];
+
     // chosen select
     var config = {
                    '.chosen-select'           : {},
@@ -296,6 +299,11 @@
     for (var selector in config) {
       $(selector).chosen(config[selector]);
     }
+    //data tabel detail
+    var table_detail = $('#table_data').DataTable({
+     searching:false,
+
+    });
 
     //date picker
     $('.tgl').datepicker({
@@ -373,8 +381,9 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan},
               success:function(data){
+                $('#modal_do').modal('show');
                 $('.kirim').html(data);
               }
             });
@@ -383,6 +392,59 @@
         }
 
    })
+
+   // untuk mengirim yang di check ke controller dengan ajax
+   var index_detail = 0;
+   $('#btnsave').click(function(){
+
+        var nomor_dt = [];
+        var nomor_do = [];
+        
+        $('.tanda').each(function(){
+            var check = $(this).is(':checked');
+            if (check == true) {
+               var par   = $(this).parents('tr');
+               var no_dt = $(par).find('.nomor_dt').val();
+               var no_do = $(par).find('.nomor_do').val();
+               nomor_dt.push(no_dt);
+               nomor_do.push(no_do);
+               array_simpan.push(no_dt);
+            }
+        });
+        console.log(array_simpan);
+        $.ajax({
+            url:baseUrl +'/sales/append_do',
+            data:{nomor_dt,nomor_do},
+            dataType:'json',
+            success:function(response){
+                for(var i = 0 ; i < response.data.length;i++){
+                console.log(response.data.length)
+                console.log('asd');
+
+                    index_detail+=1;
+                    table_detail.row.add([
+                        index_detail,
+                        response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
+                        response.data[i].tanggal+'<input type="hidden" value="'+response.data[i].dd_id+'" name="do_id[]">',
+                        response.data[i].dd_keterangan,
+                        response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
+                        accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
+                        accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input type="hidden" value="'+response.data[i].dd_total+'" name="dd_total[]">',
+                        accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
+                        accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+                        '<button type="button" class="btn btn-danger btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+
+                    ]).draw(false);
+                }
+
+                $('#modal_do').modal('hide');
+                    
+            }
+
+        })
+   });
+
+   
     
 </script>
 @endsection

@@ -26,30 +26,6 @@
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
                                     
@@ -75,7 +51,8 @@
                             <th> Kota </th>
                             <th> Telpon </th>
                             <th> Fax </th>
-                            <th> Komisi </th>
+                            <th> Komisi Outlet</th>
+                            <th> Komisi Agen</th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -118,7 +95,7 @@
                                         <select class="form-control" name="cb_kategori" id="cb_kategori">
                                             <option value="AGEN" data-agen="40">AGEN</option>
                                             <option value="OUTLET" data-outlet="15"> OUTLET</option>
-                                            <option value="AGEN DAN OUTLET">AGEN DAN OUTLET </option>
+                                            <option value="AGEN DAN OUTLET"  data-agen-g="40" data-outlet-g="15" >AGEN DAN OUTLET </option>
                                         </select>
                                     </td>
                                 </tr>
@@ -160,11 +137,16 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Komisi(%)</td>
+                                    <td style="padding-top: 0.4cm">Komisi agen(%)</td>
                                     <td>
-                                        <input type="text" class="form-control" name="ed_komisi" id="ed_komisi" style="text-transform: uppercase" >
+                                        <input type="text" class="form-control" name="ed_komisi_agen" id="ed_komisi_agen" style="text-transform: uppercase" >
+                                    </td>
+                                    <td style="padding-top: 0.4cm">Komisi outlet(%)</td>
+                                    <td>
+                                        <input type="text" class="form-control" name="ed_komisi_outlet" id="ed_komisi_outlet" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
+                                
                                 <tr>
                                 <td style="padding-top: 0.4cm">Acc Penjulan</td>
                                 <td colspan="7">
@@ -184,7 +166,7 @@
                                 <td style="padding-top: 0.4cm">Acc Hutang</td>
                                 <td colspan="7">
                                     <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
+                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc2" width="100%">
                                          <option value="" selected="" disabled="">-- Pilih kode akun --</option>
                                         @foreach($akun as $a)
                                           <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
@@ -195,18 +177,21 @@
                                     </div>
                                 </td>
                             </tr>
-                                {{-- <tr>
-                                    <td style="padding-top: 0.4cm">CSF Penjualan</td>
-                                    <td>
-                                        <select class="chosen-select-width"  name="cb_csf_penjualan" style="width:100%">
-                                            <option value=""></option>
-                                        @foreach ($akun as $row)
-                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} </option>
+                            <tr>
+                                <td style="padding-top: 0.4cm">CSF Penjulan</td>
+                                <td colspan="7">
+                                    <div class="input-group date">
+                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc3" width="100%">
+                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
+                                        @foreach($akun as $a)
+                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
+                                            {{$a->id_akun}} - {{$a->nama_akun}}
+                                          </option>
                                         @endforeach
-                                        </select>
-									</td>
-                                    <td colspan="3"><input type="text" class="form-control" name="ed_csf_penjualan2" ></td>
-                                </tr> --}}
+                                      </select>
+                                    </div>
+                                </td>
+                            </tr>
                             </tbody>
                           </table>
                         </form>
@@ -244,19 +229,29 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-
+     $('#ed_komisi_agen').attr('readonly',true);
+     $('#ed_komisi_outlet').attr('readonly',true);
     $('#cb_kategori').change(function(){
         var agensel = $('#cb_kategori :selected').data('agen');
         var outletsel = $('#cb_kategori :selected').data('outlet');
-        // alert(agensel);
-        // alert(outletsel);
+        var outletsel_g = $('#cb_kategori :selected').data('outlet-g');
+        var agensel_g = $('#cb_kategori :selected').data('agen-g');
+        // alert(outletsel_g);
+        // alert(agensel_g);
         if (agensel == '40') {
-            $('#ed_komisi').val(agensel);
+            $('#ed_komisi_agen').val(agensel);
+            $('#ed_komisi_outlet').val('');
             // alert('a');
         }else if (outletsel == '15'){
-            $('#ed_komisi').val(outletsel);
+            $('#ed_komisi_outlet').val(outletsel);
+            $('#ed_komisi_agen').val('');
+
             // alert('a');
+        }else if (outletsel_g == '15' && agensel_g == '40') {
+            $('#ed_komisi_agen').val(agensel_g);
+            $('#ed_komisi_outlet').val(outletsel_g);
         }
+
         // if () {}
     })
 
@@ -285,6 +280,7 @@
             { "data": "telpon" },
             { "data": "fax" },
             { "data": "komisi" },
+            { "data": "komisi_agen" },
             { "data": "button" },
             ]
         });
@@ -323,8 +319,8 @@
         $("select[name='cb_kota']").val('').trigger('chosen:updated');
         $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
         $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
-		$("select[name='cb_acc_penjualan']").change();
-		$("select[name='cb_csf_penjualan']").change();
+        $("select[name='cb_acc_penjualan']").change();
+        $("select[name='cb_csf_penjualan']").change();
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_telpon']").val('');
         $("input[name='ed_fax']").val('');
@@ -334,6 +330,8 @@
     });
 
     $(document).on( "click",".btnedit", function() {
+     $('#ed_komisi_agen').attr('readonly',false);
+     $('#ed_komisi_outlet').attr('readonly',false);
         var id=$(this).attr("id");
         var value = {
             id: id
@@ -359,9 +357,11 @@
                 $("input[name='ed_alamat']").val(data.alamat);
                 $("input[name='ed_telpon']").val(data.telpon);
                 $("input[name='ed_fax']").val(data.fax);
-                $("input[name='ed_komisi']").val(data.komisi);
-                $("select[name='cb_acc_penjualan']").val(data.acc_penjualan).trigger('chosen:updated');
-                $("select[name='cb_csf_penjualan']").val(data.csf_penjualan).trigger('chosen:updated'); 
+                $("input[name='ed_komisi_outlet']").val(data.komisi);
+                $("input[name='ed_komisi_agen']").val(data.komisi_agen);
+                $("select[name='ed_acc1']").val(data.acc_penjualan).trigger('chosen:updated');
+                $("select[name='ed_acc2']").val(data.acc_hutang).trigger('chosen:updated');
+                $("select[name='ed_acc3']").val(data.csf_penjualan).trigger('chosen:updated'); 
                 $("select[name='cb_acc_penjualan']").change();
                 $("select[name='cb_csf_penjualan']").change();
                 $("#modal").modal('show');
