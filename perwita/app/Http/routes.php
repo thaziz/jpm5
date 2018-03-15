@@ -842,9 +842,9 @@ Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
 Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
 Route::get('sales/pajak_lain', 'sales\invoice_Controller@pajak_lain');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
-Route::get('sales/invoice_form/tampil_do', 'sales\invoice_Controller@tampil_do');
-Route::get('sales/invoice_form/{nomor}/edit', 'sales\invoice_Controller@form');
-Route::get('sales/invoice_form/{nomor}/hapus_data', 'sales\invoice_Controller@hapus_data');
+Route::get('sales/edit_invoice/{i}', 'sales\invoice_Controller@edit_invoice');
+Route::get('sales/hapus_invoice', 'sales\invoice_Controller@hapus_invoice');
+
 Route::get('sales/invoice_form/tabel_data_detail', 'sales\invoice_Controller@table_data_detail');
 Route::get('sales/invoice/tabel', 'sales\invoice_Controller@table_data');
 Route::get('sales/invoice/get_data', 'sales\invoice_Controller@get_data');

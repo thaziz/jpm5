@@ -415,6 +415,7 @@ public function simpan_invoice(request $request)
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
+                                          'i_total_tagihan'      =>  $total_tagihan,
                                           'i_netto'              =>  $ed_total,
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
@@ -475,14 +476,14 @@ public function simpan_invoice(request $request)
 
              $bulan = Carbon::now()->format('m');
              $tahun = Carbon::now()->format('y');
-
+             $cabang= Auth::user()->kode_cabang;
              $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
-                                            WHERE i_kode_cabang = '$request->cabang'
+                                            WHERE i_kode_cabang = '$cabang'
                                             AND to_char(i_tanggal,'MM') = '$bulan'
                                             AND to_char(i_tanggal,'YY') = '$tahun'");
              $index = (integer)$cari_nota[0]->id + 1;
              $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-             $nota = 'INV' . $request->cabang . $bulan . $tahun . $index;
+             $nota = 'INV' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
 
 
              $save_header_invoice = DB::table('invoice')
@@ -494,6 +495,7 @@ public function simpan_invoice(request $request)
                                           'i_tgl_sampai_do'      =>  $do_akhir,
                                           'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
                                           'i_total'              =>  $total_tagihan,
+                                          'i_total_tagihan'      =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
@@ -539,7 +541,7 @@ public function simpan_invoice(request $request)
                                               'update_at'        => Carbon::now(),
                                               'id_tgl_do'        => $do->tanggal,
                                               'id_jumlah'        => $request->dd_jumlah[$i],
-                                              'id_keterangan'    => $o->deskripsi,
+                                              'id_keterangan'    => $do->deskripsi,
                                               'id_harga_satuan'  => $request->dd_harga[$i],
                                               'id_harga_bruto'   => $request->dd_total[$i],
                                               'id_diskon'        => $request->dd_diskon[$i],
@@ -552,7 +554,7 @@ public function simpan_invoice(request $request)
                                           ]);
              }
 
-             return response()->json(['status' => 2]);
+             return response()->json(['status' => 2,'nota'=>$nota]);
         }
 
     }else if($request->ed_pendapatan == 'KORAN'){
@@ -569,6 +571,7 @@ public function simpan_invoice(request $request)
                                           'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
                                           'i_total'              =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
+                                          'i_total_tagihan'      =>  $total_tagihan,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_netto'              =>  $ed_total,
@@ -633,14 +636,14 @@ public function simpan_invoice(request $request)
 
              $bulan = Carbon::now()->format('m');
              $tahun = Carbon::now()->format('y');
-
+             $cabang= Auth::user()->kode_cabang;
              $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
-                                            WHERE i_kode_cabang = '$request->cabang'
+                                            WHERE i_kode_cabang = '$cabang'
                                             AND to_char(i_tanggal,'MM') = '$bulan'
                                             AND to_char(i_tanggal,'YY') = '$tahun'");
              $index = (integer)$cari_nota[0]->id + 1;
              $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-             $nota = 'INV' . $request->cabang . $bulan . $tahun . $index;
+             $nota = 'INV' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
 
 
              $save_header_invoice = DB::table('invoice')
@@ -652,6 +655,7 @@ public function simpan_invoice(request $request)
                                           'i_tgl_sampai_do'      =>  $do_akhir,
                                           'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
                                           'i_total'              =>  $total_tagihan,
+                                          'i_total_tagihan'      =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
@@ -684,7 +688,7 @@ public function simpan_invoice(request $request)
                  }
                  $do = DB::table('delivery_orderd')
                          ->join('delivery_order','nomor','=','dd_nomor')
-                         ->where('id',$request->do_id[$i])
+                         ->where('dd_id',$request->do_id[$i])
                          ->first();
 
                  $save_detail_invoice = DB::table('invoice_d')
@@ -712,9 +716,40 @@ public function simpan_invoice(request $request)
                                           ]);
              }
 
-             return response()->json(['status' => 2]);
+             return response()->json(['status' => 2,'nota'=>$nota]);
         }
     }
         
+}
+
+
+public function edit_invoice($id)
+{
+    $data = DB::table('invoice')
+              ->where('i_nomor',$id)
+              ->first();
+    $data_dt = DB::table('invoice_d')
+              ->where('id_nomor_invoice',$id)
+              ->get();
+
+    $customer = DB::table('customer')
+                ->get();
+
+    $cabang   = DB::table('cabang')
+                ->get();
+    $tgl      = Carbon::now()->format('d/m/Y');
+    $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
+
+    $pajak    = DB::table('pajak')
+                ->get();
+    return view('sales.invoice.editInvoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt'));
+}
+
+public function hapus_invoice(request $request)
+{
+    $hapus = DB::table('invoice')
+               ->where('i_nomor',$request->id)
+               ->delete();
+    return 'berhasil';
 }
 }

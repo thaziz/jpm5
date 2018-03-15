@@ -45,18 +45,17 @@
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td>{{ $row->nomor }}</td>
-                                <td>{{ $row->tanggal }}</td>
-                                <td>{{ $row->customer }}</td>
-                                <td>{{ $row->jatuh_tempo }}</td>
-                                <td style="text-align:right"> {{ number_format($row->total_tagihan, 0, ",", ".") }} </td>
-                                <td>{{ $row->keterangan }}</td>
-                                <td>{{ $row->no_faktur_pajak }}</td>
+                                <td>{{ $row->i_nomor }}</td>
+                                <td>{{ $row->i_tanggal }}</td>
+                                <td>{{ $row->nama }}</td>
+                                <td>{{ $row->i_jatuh_tempo }}</td>
+                                <td style="text-align:right"> {{ number_format($row->i_total_tagihan, 2, ",", ".") }} </td>
+                                <td>{{ $row->i_keterangan }}</td>
+                                <td>{{ $row->i_no_faktur_pajak }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <a href="{{ url('sales/invoice_form/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
-                                        <a href="{{ url('sales/invoice_form/'.$row->nomor.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                        <a href="{{ url('sales/invoice_form/'.$row->nomor.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                        <button type="button" onclick="hapus('{{$row->i_nomor}}')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                        <button type="button" onclick="edit('{{$row->i_nomor}}')" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button>
                                     </div>
                                 </td>
                             </tr>
@@ -119,10 +118,53 @@
         format: 'yyyy-mm-dd'
     });
 
+    function edit(id){
+        window.location.href = baseUrl + '/sales/edit_invoice/'+id;
 
-    $(document).on( "click",".btnhapus", function(){
-        if(!confirm("Hapus Data ?")) return false;
+    }
+
+    function hapus(id){
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+
+    function(){
+
+         $.ajax({
+          url:baseUrl + '/sales/hapus_invoice',
+          data:{id},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                         location.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
     });
+}
 
 
 </script>
