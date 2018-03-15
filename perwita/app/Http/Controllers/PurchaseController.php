@@ -4637,6 +4637,7 @@ public function kekata($x) {
 							->where('tt_nofp' , $nofaktur)
 							->update([
 								'tt_lainlain' => $request->lainlain_tt2,
+								'tt_totalterima' => $netto,
 							]);
 
 
@@ -4925,7 +4926,7 @@ public function kekata($x) {
 			$data['supplier'] = DB::select("select * from supplier where idsup = '$idsup'");
 		return json_encode($data);
 	}
-	
+
 	public function getfaktur(Request $request){
 
 		$idfp = $request->idfp;
