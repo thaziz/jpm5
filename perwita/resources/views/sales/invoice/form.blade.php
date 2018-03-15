@@ -411,7 +411,7 @@
                array_simpan.push(no_dt);
             }
         });
-
+        console.log(array_simpan);
         $.ajax({
             url:baseUrl +'/sales/append_do',
             data:{nomor_dt,nomor_do},

@@ -830,14 +830,13 @@ public function cari_do_invoice(request $request)
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
+              ->whereIn('delivery_orderd.dd_id','!=',(int)$request->array_simpan)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
               ->get();
 
-        for ($i=0; $i < count($request->array_simpan); $i++) { 
-            $validasi[$i] = $request->array_simpan
-        }
+        return $data;
     }
     
 
