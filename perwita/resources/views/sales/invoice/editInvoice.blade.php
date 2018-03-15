@@ -9,7 +9,7 @@
 
 .disabled {
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 1;
 }
 .center{
     text-align: center;
@@ -54,16 +54,16 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota_invoice" id="nota_invoice" value="{{$data->i_nomor}}" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">
-                                        <select class="form-control chosen-select-width cabang " disabled="" name="cb_cabang">
+                                        <select class="form-control cabang disabled"  name="cb_cabang">
                                         @foreach ($cabang as $row)
-                                            @if(Auth::user()->kode_cabang == $row->kode)
+                                            @if($data->i_kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                             @else
                                             <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -76,10 +76,12 @@
                             <tr>
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4">
-                                    <select class="chosen-select-width cus_disabled" oncha  name="customer" id="customer" style="width:100%" >
+                                    <select class="cus_disabled form-control disabled"  name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
-                                        <option value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
+                                       @if($row->kode == $data->i_kode_customer)
+                                        <option selected="" value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
+                                       @endif
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -89,26 +91,26 @@
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td >
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl" name="tgl" value="{{$tgl}}">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                        <input readonly="" type="text" class="form-control tgl disabled " name="tgl" value="{{\Carbon\Carbon::parse($data->i_tanggal)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
                                 <td>
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" readonly="" class="ed_jatuh_tempo form-control" name="ed_jatuh_tempo" value="">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                        <input type="text" readonly="" class="ed_jatuh_tempo form-control disabled " name="ed_jatuh_tempo" value="{{\Carbon\Carbon::parse($data->i_jatuh_tempo)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Pendapatan</td>
                                 <td colspan="3">
-                                    <select class="form-control"  name="cb_pendapatan" id="cb_pendapatan" >
-                                        <option value="0">Pilih - Pendapatan</option>
-                                        <option value="PAKET">PAKET</option>
-                                        <option value="KARGO">KARGO</option>
-                                        <option value="KORAN">KORAN</option>
-                                    </select>
-                                    <input type="hidden" class="ed_pendapatan" name="ed_pendapatan" value="" >
+                                    <input type="text" class="ed_pendapatan disabled form-control" name="ed_pendapatan" value="{{$data->i_pendapatan}}" >
                                 </td>
                                 <td style="width:110px; padding-top: 0.4cm;display:none" >Type Kiriman</td>
                                 <td style="display:none;>
@@ -127,7 +129,7 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_keterangan" placeholder="harap diisi" class="form-control ed_keterangan" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="ed_keterangan" placeholder="harap diisi" class="form-control ed_keterangan" style="text-transform: uppercase" value="{{$data->i_keterangan}}" >
                                 </td>
                             </tr>
                             <tr>
@@ -170,6 +172,45 @@
                         </tr>
                     </thead>
                     <tbody>
+                        index_detail,
+                            response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
+                            response.data[i].tanggal,
+                            response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+                            response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
+                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].total+'" name="dd_harga[]">',
+                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+                            accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
+                            accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+                            '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+                        @foreach($data_dt as $i => $val)
+                          @if($data->i_pendapatan == 'KORAN')
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          @else
+                          <tr>
+                            <td>{{$i+1}}</td>
+                            <td>{{$val->i_nomor_do}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          @endif
+                        @endforeach
                     </tbody>
                   </table>
                 </div>
@@ -341,15 +382,7 @@
     });
     //ajax cari nota
     $(document).ready(function(){
-        var cabang = $('.cabang').val();
-        $.ajax({
-            url:baseUrl+'/sales/nota_invoice',
-            data:{cabang},
-            dataType : 'json',
-            success:function(response){
-                $('#nota_invoice').val(response.nota);
-            }
-        });
+
     });
 
     //ajax jatuh  tempo

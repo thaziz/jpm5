@@ -10,6 +10,7 @@ use App\master_akun;
 use App\d_jurnal;
 use App\d_jurnal_dt;
 use Carbon\Carbon;
+use Auth;
 
 
 class invoice_Controller extends Controller
@@ -51,559 +52,12 @@ class invoice_Controller extends Controller
         echo json_encode($data);
     }
 
-    public function save_data (Request $request) {
-        $nomor = strtoupper($request->ed_nomor);
-        $cek_data =DB::table('penerimaan_penjualan_d')->select('id')->where('nomor_invoice', $nomor)->first();
-        if ($cek_data !=NULL) {
-            $result['result']='3';
-        }else{
-            $simpan='';
-            $crud = $request->crud_h;
-            $nomor_old = strtoupper($request->ed_nomor_old);
-            $data = array(
-                    'nomor' => strtoupper($request->ed_nomor),
-                    'tanggal' => strtoupper($request->ed_tanggal),
-                    'jatuh_tempo' =>strtoupper($request->ed_jatuh_tempo),
-                    'kode_customer' => strtoupper($request->ed_customer),
-                    'type_kiriman' => strtoupper($request->ed_type_kiriman),
-                    'pendapatan' => strtoupper($request->ed_pendapatan),
-                    'keterangan' => strtoupper($request->ed_keterangan),
-                    'jenis_ppn' => strtoupper($request->cb_jenis_ppn),
-                    'kode_pajak' => strtoupper($request->cb_pajak),
-                    // 'tgl_mulai_do' => strtoupper($request->ed_tanggal_mulai_do),
-                    // 'tgl_sampai_do' => strtoupper($request->ed_tanggal_sampai_do),
-                    'kode_cabang' => strtoupper($request->ed_cabang),
-                    //'no_faktur_pajak' => strtoupper($request->ed_no_faktur_pajak),
-                    'total' => filter_var($request->ed_total, FILTER_SANITIZE_NUMBER_INT), 
-                    'diskon' => filter_var($request->ed_diskon, FILTER_SANITIZE_NUMBER_INT),
-                    'netto' => filter_var($request->ed_netto, FILTER_SANITIZE_NUMBER_INT),
-                    'pph' => filter_var($request->ed_pph, FILTER_SANITIZE_NUMBER_INT), 
-                    'ppn' => filter_var($request->ed_ppn, FILTER_SANITIZE_NUMBER_INT), 
-                    'total_tagihan' => filter_var($request->ed_total_tagihan, FILTER_SANITIZE_NUMBER_INT), 
-                );
 
-            if ($crud == 'N' and $nomor_old =='') {
-                //auto number
-                if ($data['nomor'] ==''){
-                    $tanggal = strtoupper($request->ed_tanggal);
-                    $kode_cabang = strtoupper($request->ed_cabang);
-                    $tanggal = date_create($tanggal);
-                    $tanggal = date_format($tanggal,'ym');
-                    $sql = "	SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
-                                FROM invoice WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' ";
-                    $list = collect(\DB::select($sql))->first();
-                    if ($list->nomor == ''){
-                        //$data['nomor']='SJT-'.$kode_cabang.'-'.$tanggal.'-00001';
-                        $data['nomor']='INV'.$kode_cabang.$tanggal.'00001';
-                    } else{
-                        $kode  = substr_replace('00000',$list->nomor,-strlen($list->nomor)); 
-                        $data['nomor']='INV'.$kode_cabang.$tanggal.$kode;
-                    }
-                }
-                // end auto number
-                $simpan = DB::table('invoice')->insert($data);
-
-            } else {
-                $simpan = DB::table('invoice')->where('nomor', $nomor_old)->update($data);
-            }
-            if($simpan == TRUE){
-                $result['error']='';
-                $result['result']=1;
-                $result['nomor']=$data['nomor'];
-            }else{
-                $result['error']=$data;
-                $result['result']=0;
-            }
-            $result['crud']=$crud;
-        }
-        echo json_encode($result);
-    }
-
-    public function hapus_data($nomor_invoice=null){
-        $cek_data =DB::table('penerimaan_penjualan_d')->select('id')->where('nomor_invoice', $nomor_invoice)->first();
-		$cek_data1 =DB::table('nota_debet_kredit')->select('id')->where('nomor_invoice', $nomor_invoice)->first();
-        $pesan ='';
-        if ($cek_data !=NULL) {
-            $pesan='Nomor invoice '.$nomor_invoice.' sudah di pakai pada penerimaan penjualan atau kwitansi';
-            return view('sales.invoice.pesan',compact('pesan'));
-		}else if ($cek_data1 !=NULL){
-            $pesan='Nomor invoice '.$nomor_invoice.' sudah di pakai pada penerimaan nota debet kredit';
-            return view('sales.invoice.pesan',compact('pesan'));
-        }else{
-            DB::beginTransaction();
-            DB::table('invoice_d')->where('nomor_invoice' ,'=', $nomor_invoice)->delete();
-            DB::table('invoice')->where('nomor' ,'=', $nomor_invoice)->delete();
-            DB::commit();
-            return redirect('sales/invoice');
-        }
-    }
-
-    public function save_data_detail (Request $request) {
-        return DB::transaction(function() use ($request) {  
-        /*
-        jenis ppn
-        4= ppnrte="0" ppntpe="npkp"NON PPN
-        1= ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %
-        2= ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %
-        3= ppnrte="1" ppntpe="npkp" >INCLUDE 1 %
-        5= ppnrte="10" ppntpe="npkp" >INCLUDE 10 %
-        */
-        $id_akun=[];
-        $simpan='';
-        $id_do=NULL;
-        $nomor = strtoupper($request->nomor);
-        $hitung = count($request->nomor_do);
-        $diskon = filter_var($request->diskon, FILTER_SANITIZE_NUMBER_INT);
-        $jenis_ppn = strtoupper($request->jenis_ppn);
-        $pendapatan = strtoupper($request->pendapatan);
-        $type_kiriman = strtoupper($request->type_kiriman);
-        $pajak = $request->pajak;
-        $kode_satuan= NULL;
-        $jumlah=1;
-        $kuantum=NULL;
-        for ($i=0; $i < $hitung; $i++) {
-            $nomor_do = strtoupper($request->nomor_do[$i]);
-            $sql = "    SELECT d.*, k.nama asal, kk.nama tujuan FROM delivery_order d
-                        LEFT JOIN kota k ON k.id=d.id_kota_asal
-                        LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan 
-                        WHERE d.nomor='$nomor_do' ";
-            if ($pendapatan == 'KORAN'){
-                $posisi_ke=strpos($nomor_do,"-");
-                $id_do= substr($nomor_do,$posisi_ke + 1);
-                $nomor_do=substr($nomor_do,0,$posisi_ke);
-                $sql = "    SELECT dd.*,d.nomor,d.tanggal FROM delivery_orderd dd,delivery_order d
-                            WHERE  d.nomor=dd.nomor AND d.nomor='$nomor_do' AND dd.id='$id_do' ";
-            }
-            $data_do = collect(\DB::select($sql))->first();
-            // if ($pendapatan == 'PAKET' or $pendapatan='KARGO'){
-            //     if ($type_kiriman == 'KILOGRAM' or $type_kiriman == 'KOLI' or $type_kiriman == 'KORAN') {
-            //         $tipe = $type_kiriman ;
-            //         $harga_satuan = $data_do->total + $data_do->diskon;//round(($data_do->total + $data_do->diskon) / $data_do->berat);
-            //         $harga_brutto = $data_do->total + $data_do->diskon;
-            //         $keterangan = $data_do->asal.' KE '.$data_do->tujuan.' '.$data_do->tanggal ;
-            //     } else if ($type_kiriman == 'DOKUMEN') {
-            //         $tipe = 'DOKUMEN' ;
-            //         $harga_satuan = $data_do->total + $data_do->diskon;
-            //         $harga_brutto = $data_do->total + $data_do->diskon;
-            //         $keterangan = $data_do->asal.' KE '.$data_do->tujuan.' '.$data_do->tanggal ;
-            //     } else {
-            //         $tipe = $type_kiriman ;
-            //         $harga_satuan = $data_do->total + $data_do->diskon;
-            //         $harga_brutto = $data_do->total + $data_do->diskon;
-            //         if ($type_kiriman == 'KARGO PAKET' or $type_kiriman == 'KARGO KERTAS' ) {
-            //             $keterangan = $data_do->asal.' KE '.$data_do->tujuan.' '.$data_do->nomor.' '.$data_do->nopol ;
-            //         } else {
-            //             $keterangan = $data_do->asal.' KE '.$data_do->tujuan.' '.$data_do->tanggal ;
-            //         }
-            //     }
-            // }
-            if ($pendapatan == 'PAKET'){
-                $tipe = $type_kiriman ;
-                $harga_satuan = $data_do->total;// + $data_do->diskon;
-                $harga_brutto = $data_do->total;// + $data_do->diskon;
-                $kuantum= $data_do->jumlah.' '.$data_do->kode_satuan;
-                if ($type_kiriman == 'KILOGRAM' || $type_kiriman == 'KORAN') {
-                    $kuantum= $data_do->jumlah.' '.$data_do->kode_satuan;
-                }else if($type_kiriman == 'KOLI'){
-                    $kuantum= $data_do->jumlah.' '.$data_do->kode_satuan;
-                }else if ($type_kiriman == 'DOKUMEN'){
-                    $kuantum= $data_do->kode_satuan;
-                }
-                $jumlah=$data_do->jumlah;
-                $kode_satuan=$data_do->kode_satuan;
-                $keterangan = $data_do->asal.' KE '.$data_do->tujuan.' '.$data_do->tanggal ;
-            }else if ($pendapatan == 'KARGO'){
-                if ($data_do->kontrak==TRUE){
-                    $harga_satuan = $data_do->tarif_dasar;
-                    $kuantum=$data_do->jumlah.' '.$data_do->kode_satuan;
-                    $jumlah=$data_do->jumlah;
-                    $kode_satuan=$data_do->kode_satuan;
-                    $harga_brutto=$data_do->total;
-                }else{
-                    if ($data_do->diskon > 0){
-                        $harga_satuan = $data_do->total;
-                        $harga_brutto = $data_do->total;
-                        $jumlah=$data_do->jumlah;
-                        $kode_satuan=$data_do->kode_satuan;
-                        $kuantum=$data_do->jumlah.' '.$data_do->kode_satuan;
-                    }else{
-                        $harga_satuan = $data_do->tarif_dasar;
-                        $kuantum=$data_do->jumlah.' '.$data_do->kode_satuan;
-                        $jumlah=$data_do->jumlah;
-                        $kode_satuan=$data_do->kode_satuan;
-                    }
-                }
-                $tipe = 'KARGO' ;
-                $kode_satuan =$data_do->kode_satuan;
-                $keterangan = $data_do->no_surat_jalan.' PENGIRIMAN KARGO DARI'.$data_do->asal.' KE '.$data_do->tujuan.' '.$data_do->tanggal ;
-            }else if ($pendapatan == 'KORAN'){
-                $tipe = 'KORAN' ;
-                $jumlah = $data_do->jumlah;
-                $kuantum = $jumlah.' '.$data_do->kode_satuan;
-                $harga_satuan = $data_do->harga;
-                $harga_brutto = $data_do->total + $data_do->diskon;
-                $keterangan = $data_do->keterangan ;
-                $kode_satuan =$data_do->kode_satuan;
-            }
-            
-            $data = array(
-                'nomor_invoice' => $nomor,
-                'nomor_do' => $nomor_do,
-                'tgl_do' => $data_do->tanggal,
-                'harga_netto' => $data_do->total,
-                'harga_satuan' => $harga_satuan,
-                'harga_bruto' => $harga_brutto,
-                'diskon' => $diskon,
-                'keterangan' => $keterangan,
-                'kuantum' => $kuantum,
-                'jumlah' => $jumlah,
-                'kode_satuan' => $kode_satuan,
-                'tipe' => $tipe,
-                'id_do' => $id_do,
-                'acc_penjualan'=>$data_do->acc_penjualan,
-            );  
-            DB::table('invoice_d')->insert($data);
-        } 
-        $invoice_d = collect(\DB::select("  SELECT  COALESCE(SUM(harga_netto),0) ttl_harga_netto FROM invoice_d WHERE nomor_invoice='$nomor' "))->first();
-        $invoiceLengkap = collect(\DB::select("  SELECT  COALESCE((harga_netto),0) netto,acc_penjualan FROM invoice_d WHERE nomor_invoice='$nomor' "));
-
-        $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM invoice_d WHERE nomor_invoice='$nomor' "))->first();
-        $nilai_pajak = collect(\DB::select(" SELECT * FROM pajak WHERE kode='$pajak' "))->first();
-        $netto = $invoice_d->ttl_harga_netto - $diskon; 
-        $ppn=0; 
-        if ($jenis_ppn == 1) {
-            $ppn =round($invoice_d->ttl_harga_netto * 0.1);
-        }elseif ($jenis_ppn == 2) {
-            $ppn = round($invoice_d->ttl_harga_netto * 0.01);
-        }elseif ($jenis_ppn == 4) {
-            $ppn =0;
-        }elseif ($jenis_ppn == 3) {
-            $ppn = round(($invoice_d->ttl_harga_netto / 100.1)) ;
-            $netto = $netto - $ppn;
-        }elseif ($jenis_ppn == 5) {
-            $ppn = round(($invoice_d->ttl_harga_netto / 10.1)) ;
-            $netto = $netto - $ppn;
-        }
-        $pph =  round($netto * $nilai_pajak->nilai/100);
-        $data_h = array(
-            'total' => $invoice_d->ttl_harga_netto,
-            'diskon' => $diskon,
-            'netto' => $netto,
-            'ppn' => $ppn,
-            'pph' => $pph,
-            'total_tagihan' => $ppn + $netto - $pph,
-        );
-
-        if($jenis_ppn==3){    
-
-$jumlahPiutang= $ppn + $netto - $pph;  
-
-}
-//exclude
-else if($jenis_ppn!=3){
-    $jumlahPiutang= $ppn + $netto - $pph;      
-}
-
-
-
-
-$cabang=$request->cabang;
-//dd($request->cabang);
-
-$Nilaijurnal=[];    
-
-$diskonItem=$diskon/count($invoiceLengkap);
-
-
-foreach ($invoiceLengkap as $idx => $value) {
-               $id_akun[$idx]['akunPendapatan']=$value->acc_penjualan;
-               $id_akun[$idx]['subtotal']=$value->netto;
-               $id_akun[$idx]['ppn']=$jenis_ppn;
-               $id_akun[$idx]['pph']=$nilai_pajak->nilai;
-               $id_akun[$idx]['diskon']=$diskonItem;
-        }
-    
-$Nilaijurnal=$this->groupJurnal($id_akun);
-
-$indexakun=0;
-$totalPiutang=0;
-$totalPPH=0;
-$totalPPN=0;
-$nilaiPendapatan=0;
-//$cabang='C001';
-//dd($request->all());
-
-
-foreach ($Nilaijurnal as  $dataJurnal) {    
-    if($jenis_ppn==3){    
-            $nilaiPendapatan=$dataJurnal['subtotal']+$dataJurnal['diskon'];
-        }
-        else if($jenis_ppn!=3){
-            $nilaiPendapatan=$dataJurnal['subtotal'];
-        }
-    
-       $akunPendapatan=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$dataJurnal['akunPendapatan'].'%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first();                  
-                  
-        if(count($akunPendapatan)!=0){
-        $akun[$indexakun]['id_akun']=$akunPendapatan->id_akun;
-        $akun[$indexakun]['value']=$nilaiPendapatan;
-        $akun[$indexakun]['dk']='K';
-        $indexakun++;      
-        
-        //$totalPiutang+=$dataJurnal['subtotal']-$dataJurnal['ppn'];
-
-        $totalPPH+=round($dataJurnal['subtotal'],2)*round($nilai_pajak->nilai/100,2);
-        $totalPPN+=$dataJurnal['ppn'] ;
-        $totalPiutang+=($dataJurnal['subtotal']+$totalPPN-$totalPPH);
-        
-        //$totalPiutang+=$dataJurnal['subtotal']+$totalPPN-$totalPPH;
-        
-        
-        }
-        else{
-            $dataInfo=['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Belum Tersedia'];
-	    DB::rollback();
-            return json_encode($dataInfo);
-        }       
-}      
-
-//include
-if($jenis_ppn==3){    
-        $jumlahPiutang= $totalPiutang;      
-        $ppn=$totalPPN;
-        $pph=round($totalPPH,2);
-        
-
-
-
-}
-
-//exclude
-else if($jenis_ppn!=3){
-    $jumlahPiutang= $ppn + $netto - $pph;      
-}
-
-
-        $akunPiutang=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$request->acc_piutang.'%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first();   
-
-
-
-
-
-        if(count($akunPiutang)!=0){
-            
-                $akun[$indexakun]['id_akun']=$akunPiutang->id_akun;
-                $akun[$indexakun]['value']=$jumlahPiutang;
-                $akun[$indexakun]['dk']='D';
-                $indexakun++;               
-
-        }
-
-        else{
-            
-            $dataInfo=['status'=>'gagal','info'=>'Akun Piutang Untuk Cabang Belum Tersedia'];
-	      DB::rollback();
-            return json_encode($dataInfo);
-        }         
-    if($jenis_ppn!=4){
-        //include 3
-        //exclude 2
-         $akunPPN=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', '2301%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first(); 
-        if(count($akunPPN)!=0){
-
-                $akun[$indexakun]['id_akun']=$akunPPN->id_akun;
-                $akun[$indexakun]['value']=$ppn;
-                $akun[$indexakun]['dk']='K';
-                $indexakun++;
-        }
-        else{
-            
-            $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
-		DB::rollback();
-                      return json_encode($dataInfo);
-        } 
-    }
-
-    if($pajak!='T'){        
-        $akunPPH=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', '2305%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first(); 
-
-        if(count($akunPPH)!=0){            
-                $akun[$indexakun]['id_akun']=$akunPPH->id_akun;
-                $akun[$indexakun]['value']=$pph;                
-                $akun[$indexakun]['dk']='D';
-                $indexakun++;
-            }                    
-        else{            
-            $dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Belum Tersedia'];
-		DB::rollback();
-                      return json_encode($dataInfo);
-        } 
-    }
-
-    if($diskon!=0){
-        $akunDiskon=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', '5298%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first(); 
-
-        if(count($akunDiskon)!=0){
-                $akun[$indexakun]['id_akun']=$akunDiskon->id_akun;
-                $akun[$indexakun]['value']=$diskon;
-                $akun[$indexakun]['dk']='D';
-                $indexakun++;
-        }
-        else{
-            $dataInfo=['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Belum Tersedia'];
-		DB::rollback();
-                      return json_encode($dataInfo);
-        } 
-    }
-
-
-        
-
-
-
-              $jurnal=d_jurnal::where('jr_ref',$nomor);
-
-              if(count($jurnal->first())==0){
-              $id_jurnal=d_jurnal::max('jr_id')+1;
-                foreach ($akun as $key => $data) {   
-                        $id_jrdt=$key;
-                        $jurnal_dt[$key]['jrdt_jurnal']=$id_jurnal;
-                        $jurnal_dt[$key]['jrdt_detailid']=$id_jrdt+1;
-                        $jurnal_dt[$key]['jrdt_acc']=$data['id_akun'];
-                        $jurnal_dt[$key]['jrdt_value']=$data['value'];
-                        $jurnal_dt[$key]['jrdt_statusdk']=$data['dk'];
-                }
-            d_jurnal::create([
-                        'jr_id'=>$id_jurnal,
-                        'jr_year'=> date('Y',strtotime($request->tgl)),
-                        'jr_date'=> $request->tgl,
-                        'jr_detail'=> 'INVOICE'.' '.$pendapatan,
-                        'jr_ref'=> $nomor,
-                        'jr_note'=> 'INVOICE',
-                        ]);
-            d_jurnal_dt::insert($jurnal_dt);
-        }else{           
-            $a=d_jurnal_dt::where('jrdt_jurnal',$jurnal->first()->jr_id);
-
-            $a->delete(); 
-            foreach ($akun as $key => $data) {            
-                        $id_jrdt=$key;
-                        $jurnal_dt[$key]['jrdt_jurnal']=$jurnal->first()->jr_id;
-                        $jurnal_dt[$key]['jrdt_detailid']=$id_jrdt+1;
-                       $jurnal_dt[$key]['jrdt_acc']=$data['id_akun'];
-                        $jurnal_dt[$key]['jrdt_value']=$data['value'];
-                        $jurnal_dt[$key]['jrdt_statusdk']=$data['dk'];
-                }
-            d_jurnal_dt::insert($jurnal_dt);
-        }
-
-            
-          
-
-        
-           
-
-            
-        
-
-
-        $simpan = DB::table('invoice')->where('nomor', $nomor)->update($data_h);
-        $result['error']='';
-        $result['result']=1;
-        $result['jml_detail']=$jml_detail->jumlah;
-        $result['total']=number_format($invoice_d->ttl_harga_netto, 0, ",", ".");
-        $result['ppn']=number_format($ppn, 0, ",", ".");
-        $result['pph']=$pph;
-        $result['diskon']=number_format($diskon, 0, ",", ".");
-        $result['netto']=number_format($netto);
-        $result['total_tagihan']=number_format($ppn + $netto - $pph) ;
-        echo json_encode($result);
-    });
-    }
-
-    public function hapus_data_detail (Request $request) {
-        $hapus='';
-        $id=$request->id;
-        $nomor=$request->nomor;
-        $cek_data =DB::table('penerimaan_penjualan_d')->select('id')->where('nomor_invoice', $nomor)->first();
-        if ($cek_data !=NULL) {
-            $result['result']='3';
-        }else{
-            $diskon = filter_var($request->diskon, FILTER_SANITIZE_NUMBER_INT);
-            $jenis_ppn = strtoupper($request->jenis_ppn);
-            $pajak = $request->pajak;
-            $type_kiriman = strtoupper($request->type_kiriman);
-            $hapus = DB::table('invoice_d')->where('id' ,'=', $id)->delete();
-            $invoice_d = collect(\DB::select("  SELECT  COALESCE(SUM(harga_netto),0) ttl_harga_netto FROM invoice_d WHERE nomor_invoice='$nomor' "))->first();
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM invoice_d WHERE nomor_invoice='$nomor' "))->first();
-            $nilai_pajak = collect(\DB::select(" SELECT * FROM pajak WHERE kode='$pajak' "))->first();
-            $netto = $invoice_d->ttl_harga_netto - $diskon; 
-            $ppn=0;
-            if ($jenis_ppn == 1) {
-                $ppn =round($invoice_d->ttl_harga_netto * 0.1);
-            }elseif ($jenis_ppn == 2) {
-                $ppn = round($invoice_d->ttl_harga_netto * 0.01);
-            }elseif ($jenis_ppn == 4) {
-                $ppn =0;
-            }elseif ($jenis_ppn == 3) {
-                $ppn = round(($invoice_d->ttl_harga_netto / 100.1)) ;
-                $netto = $netto - $ppn;
-            }elseif ($jenis_ppn == 5) {
-                $ppn = round(($invoice_d->ttl_harga_netto / 10.1)) ;
-                $netto = $netto - $ppn;
-            }
-            $pph =  round($netto * $nilai_pajak->nilai/100);
-            $data_h = array(
-                'total' => $invoice_d->ttl_harga_netto,
-                'diskon' => $diskon,
-                'netto' => $netto,
-                'ppn' => $ppn,
-                'pph' => $pph,
-                'total_tagihan' => $ppn + $netto - $pph,
-            );
-            $simpan = DB::table('invoice')->where('nomor', $nomor)->update($data_h);
-            $result['error']='';
-            $result['result']=1;
-            $result['jml_detail']=$jml_detail->jumlah;
-            $result['total']=number_format($invoice_d->ttl_harga_netto, 0, ",", ".");
-            $result['ppn']=number_format($ppn, 0, ",", ".");
-            $result['pph']=$pph;
-            $result['diskon']=number_format($diskon, 0, ",", ".");
-            $result['netto']=number_format($netto);
-            $result['total_tagihan']=number_format($ppn + $netto - $pph) ;
-        }
-        echo json_encode($result);
-    }
 
     public function index(){
-        $sql = "    SELECT i.*,c.nama customer FROM invoice i
-                    LEFT JOIN customer c ON c.kode=i.kode_customer ";
-        $data =  DB::select($sql);
+        $data = DB::table('invoice')
+                  ->join('customer','i_kode_customer','=','kode')
+                  ->get();
         return view('sales.invoice.index',compact('data'));
     }
 
@@ -616,50 +70,12 @@ else if($jenis_ppn!=3){
         $tgl      = Carbon::now()->format('d/m/Y');
         $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
 
-        return view('sales.invoice.form',compact('customer','cabang','tgl','tgl1'));
+        $pajak    = DB::table('pajak')
+                      ->get();
+
+        return view('sales.invoice.form',compact('customer','cabang','tgl','tgl1','pajak'));
     }
 
-    public function tampil_do(Request $request) {
-        $customer = $request->kode_customer;
-        $type_kiriman = $request->type_kiriman;
-        $pendapatan = $request->pendapatan;
-        $kode_cabang = $request->kode_cabang;
-        $tgl_mulai_do = $request->tgl_mulai_do;
-        $tgl_sampai_do = $request->tgl_sampai_do;
-        if ($pendapatan == 'KORAN'){
-            $sql = "    SELECT d.nomor ||'-'||dd.id AS nomor ,dd.id,d.nomor AS nomor_d, d.tanggal,dd.total
-                        FROM delivery_order d, delivery_orderd dd
-                        WHERE NOT EXISTS (SELECT * FROM invoice_d i WHERE d.nomor=i.nomor_do AND dd.id=i.id_do) 
-                        AND dd.nomor=d.nomor AND d.kode_customer='$customer' AND d.jenis='$pendapatan' 
-                        AND d.kode_cabang='$kode_cabang' AND d.tanggal BETWEEN '$tgl_mulai_do' AND '$tgl_sampai_do' ";
-        }else if($pendapatan == 'KARGO'){
-            $sql = "    SELECT d.nomor, d.tanggal,d.total
-                        FROM delivery_order d
-                        WHERE NOT EXISTS (SELECT * FROM invoice_d i WHERE d.nomor=i.nomor_do ) 
-                        AND d.kode_customer='$customer' AND d.jenis='$pendapatan' 
-                        AND d.kode_cabang='$kode_cabang' AND d.tanggal BETWEEN '$tgl_mulai_do' AND '$tgl_sampai_do' ";
-        }else{
-            $sql = "    SELECT d.nomor, d.tanggal,d.total
-                        FROM delivery_order d
-                        WHERE NOT EXISTS (SELECT * FROM invoice_d i WHERE d.nomor=i.nomor_do ) 
-                        AND d.kode_customer='$customer' AND d.pendapatan = '$pendapatan' 
-                        AND d.kode_cabang='$kode_cabang' AND d.tanggal BETWEEN '$tgl_mulai_do' AND '$tgl_sampai_do' ";
-        }       
-
-        $list = DB::select(DB::raw($sql));
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = '<input type="checkbox"  id="'.$data[$i]['nomor'].'" class="btnpilih" >';
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
-    }
 
     public function cetak_nota($nomor=null) {
         $head = collect(\DB::select(" SELECT c.*,i.* FROM invoice i LEFT JOIN customer c ON c.kode=i.kode_customer WHERE i.nomor='$nomor' "))->first();
@@ -755,22 +171,7 @@ else if($jenis_ppn!=3){
     }
     
 
-    public function ppn($jenis_ppn,$subtotal){
-        
-        if ($jenis_ppn == 1) {            
-            $ppn =round($subtotal * 0.1,2);
-        }elseif ($jenis_ppn == 2) {            
-            $ppn = round($subtotal * 0.01,2);
-        }elseif ($jenis_ppn == 4) {            
-            $ppn =0;
-        }elseif ($jenis_ppn == 3) {                                    
-            $ppn = round(($subtotal*1/100),2);                      
-        }elseif ($jenis_ppn == 5) {            
-            $ppn = round(($subtotal/ 10.1),2) ;
-            
-        }
-        return $ppn;
-    }
+
 
  public function jurnal($nomor=null){
         $jurnal_dt=null;
@@ -826,17 +227,70 @@ public function cari_do_invoice(request $request)
     $do_akhir = Carbon::parse($do_akhir)->format('Y-m-d');
     $jenis = $request->cb_pendapatan;
     if ($request->cb_pendapatan == 'KORAN') {
-        $data = DB::table('delivery_order')
+
+      $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
-              ->whereIn('delivery_orderd.dd_id','!=',(int)$request->array_simpan)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
               ->get();
 
-        return $data;
+      $temp1 = DB::table('delivery_order')
+              ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
+              ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+        if (isset($request->array_simpan)) {
+            for ($i=0; $i < count($temp1); $i++) { 
+                for ($a=0; $a < count($request->array_simpan); $a++) { 
+                    if ($request->array_simpan[$a] == $temp1[$i]->dd_id) {
+                        unset($temp[$i]);
+                    }
+                }
+            }
+
+            $data = $temp;
+            
+        }else{
+            $data = $temp;
+        }
+    }else if ($request->cb_pendapatan == 'PAKET' || $jenis == 'KARGO') {
+        $temp = DB::table('delivery_order')
+              ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+        $temp1 = DB::table('delivery_order')
+              ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+        if (isset($request->array_simpan)) {
+            for ($i=0; $i < count($temp1); $i++) { 
+                for ($a=0; $a < count($request->array_simpan); $a++) { 
+                    if ($request->array_simpan[$a] == $temp1[$i]->nomor) {
+                        unset($temp[$i]);
+                    }
+                }
+            }
+
+            $data = $temp;
+            
+        }else{
+            $data = $temp;
+        }
     }
     
 
@@ -845,30 +299,457 @@ public function cari_do_invoice(request $request)
 public function append_do(request $request)
 {
     // dd($request->all());
+    $jenis = $request->cb_pendapatan;
 
-    $cari_do = DB::table('delivery_orderd')
-                 ->join('delivery_order','delivery_order.nomor','=','delivery_orderd.dd_nomor')
-                 ->whereIn('delivery_orderd.dd_nomor',$request->nomor_do)
-                 ->whereIn('dd_id',$request->nomor_dt)
-                 ->get();
+    if ($jenis == 'KORAN') {
 
-    $cari_kota  = DB::table('kota')
-                    ->get();
+        $cari_do = DB::table('delivery_orderd')
+                     ->join('delivery_order','delivery_order.nomor','=','delivery_orderd.dd_nomor')
+                     ->whereIn('delivery_orderd.dd_nomor',$request->nomor_do)
+                     ->whereIn('dd_id',$request->nomor_dt)
+                     ->get();
 
-    for ($i=0; $i < count($cari_do); $i++) { 
-       for ($a=0; $a < count($cari_kota); $a++) { 
-           if ($cari_kota[$a]->id == $cari_do[$i]->dd_id_kota_asal) {
-               $cari_do[$i]->nama_kota_asal = $cari_kota[$a]->nama;
+        $cari_kota  = DB::table('kota')
+                        ->get();
+
+        for ($i=0; $i < count($cari_do); $i++) { 
+           for ($a=0; $a < count($cari_kota); $a++) { 
+               if ($cari_kota[$a]->id == $cari_do[$i]->dd_id_kota_asal) {
+                   $cari_do[$i]->nama_kota_asal = $cari_kota[$a]->nama;
+               }
+               if ($cari_kota[$a]->id == $cari_do[$i]->dd_id_kota_tujuan) {
+                   $cari_do[$i]->nama_kota_tujuan = $cari_kota[$a]->nama;
+               }
            }
-           if ($cari_kota[$a]->id == $cari_do[$i]->dd_id_kota_tujuan) {
-               $cari_do[$i]->nama_kota_tujuan = $cari_kota[$a]->nama;
+            $cari_do[$i]->harga_netto = $cari_do[$i]->dd_total - $cari_do[$i]->dd_diskon;
+
+        }
+
+    }else if ($jenis == 'PAKET' || $jenis == 'KARGO') {
+
+        $cari_do = DB::table('delivery_order')
+                     ->whereIn('delivery_order.nomor',$request->nomor_do)
+                     ->get();
+
+        $cari_kota  = DB::table('kota')
+                        ->get();
+
+        for ($i=0; $i < count($cari_do); $i++) { 
+           for ($a=0; $a < count($cari_kota); $a++) { 
+               if ($cari_kota[$a]->id == $cari_do[$i]->id_kota_asal) {
+                   $cari_do[$i]->nama_kota_asal = $cari_kota[$a]->nama;
+               }
+               if ($cari_kota[$a]->id == $cari_do[$i]->id_kota_tujuan) {
+                   $cari_do[$i]->nama_kota_tujuan = $cari_kota[$a]->nama;
+               }
            }
-       }
-        $cari_do[$i]->harga_netto = $cari_do[$i]->dd_total - $cari_do[$i]->dd_diskon;
+            $cari_do[$i]->harga_netto = $cari_do[$i]->total - $cari_do[$i]->diskon;
+
+        }
 
     }
+        
     return response()->json([
-                         'data' => $cari_do
+                         'data' => $cari_do,
+                         'jenis' => $jenis
                        ]);
+}
+public function pajak_lain(request $request)
+{
+    $persen = DB::table('pajak')
+                ->where('kode',$request->pajak_lain)
+                ->first();
+
+    return response()->json(['persen' => $persen]);
+}
+public function simpan_invoice(request $request)
+{
+    // dd($request->all());
+  
+    $do_awal        = str_replace('/', '-', $request->do_awal);
+    $do_akhir       = str_replace('/', '-', $request->do_awal);
+    $ed_jatuh_tempo = str_replace('/', '-', $request->ed_jatuh_tempo);
+    $do_awal        = Carbon::parse($do_awal)->format('Y-m-d');
+    $do_akhir       = Carbon::parse($do_akhir)->format('Y-m-d');
+    $ed_jatuh_tempo = Carbon::parse($ed_jatuh_tempo)->format('Y-m-d');
+
+    $total_tagihan  = filter_var($request->total_tagihan, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+    $netto_total    = filter_var($request->netto_total, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+    $diskon1        = filter_var($request->diskon1, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+    $diskon2        = filter_var($request->diskon2, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+    $ed_total       = filter_var($request->ed_total, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+    $total_ppn      = filter_var($request->ppn, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+    $total_pph      = filter_var($request->pph, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+
+    $cari_no_invoice = DB::table('invoice')
+                         ->where('i_nomor',$request->nota_invoice)
+                         ->first();
+
+
+    if ($request->cb_jenis_ppn == 1) {
+        $ppn_type = 'pkp';
+        $ppn_persen = 10;
+    } elseif ($request->cb_jenis_ppn == 2) {
+        $ppn_type = 'pkp';
+        $ppn_persen = 1;
+    } elseif ($request->cb_jenis_ppn == 3) {
+        $ppn_type = 'npkp';
+        $ppn_persen = 1;
+    } elseif ($request->cb_jenis_ppn == 5) {
+        $ppn_type = 'npkp';
+        $ppn_persen = 10;
+    }
+    if ($request->ed_pendapatan == 'PAKET' || $request->ed_pendapatan == 'KARGO') {
+
+        if ($cari_no_invoice == null) {
+
+            $save_header_invoice = DB::table('invoice')
+                                     ->insert([
+                                          'i_nomor'              =>  $request->nota_invoice,
+                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_keterangan'         =>  $request->ed_keterangan,
+                                          'i_tgl_mulai_do'       =>  $do_awal,
+                                          'i_tgl_sampai_do'      =>  $do_akhir,
+                                          'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
+                                          'i_total'              =>  $total_tagihan,
+                                          'i_netto_detail'       =>  $netto_total,
+                                          'i_diskon1'            =>  $diskon1,
+                                          'i_diskon2'            =>  $diskon2,
+                                          'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_netto'              =>  $ed_total,
+                                          'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
+                                          'i_ppntpe'             =>  $ppn_type,
+                                          'i_ppnrte'             =>  $ppn_persen,
+                                          'i_ppnrp'              =>  $total_ppn,
+                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_pajak_lain'         =>  $total_pph,
+                                          'i_tagihan'            =>  $total_tagihan,
+                                          'i_kode_customer'      =>  $request->ed_customer,
+                                          'i_kode_cabang'        =>  Auth::user()->kode_cabang,
+                                          'create_by'            =>  Auth::user()->m_name,
+                                          'create_at'            =>  Carbon::now(),
+                                          'update_by'            =>  Auth::user()->m_name,
+                                          'update_at'            =>  Carbon::now(),
+                                          'i_pendapatan'         =>  $request->ed_pendapatan
+                                     ]);
+             for ($i=0; $i < count($request->do_detail); $i++) { 
+
+                $cari_id = DB::table('invoice_d')
+                             ->max('id_id');
+
+                 if ($cari_id == null ) {
+                     $cari_id = 1;
+                 }else{
+                     $cari_id += 1;
+                 }
+                 $do = DB::table('delivery_order')
+                         ->where('nomor',$request->do_detail[$i])
+                         ->first();
+
+                 $save_detail_invoice = DB::table('invoice_d')
+                                          ->insert([
+                                              'id_id'            => $cari_id,
+                                              'id_nomor_invoice' => $request->nota_invoice,
+                                              'id_nomor_do'      => $request->do_detail[$i],
+                                              'create_by'        => Auth::user()->m_name,
+                                              'create_at'        => Carbon::now(),
+                                              'update_by'        => Auth::user()->m_name,
+                                              'update_at'        => Carbon::now(),
+                                              'id_tgl_do'        => $do->tanggal,
+                                              'id_jumlah'        => $request->dd_jumlah[$i],
+                                              'id_keterangan'    => $do->deskripsi,
+                                              'id_harga_satuan'  => $request->dd_harga[$i],
+                                              'id_harga_bruto'   => $request->dd_total[$i],
+                                              'id_diskon'        => $request->dd_diskon[$i],
+                                              'id_harga_netto'   => $request->harga_netto[$i],
+                                              'id_kode_satuan'   => $do->kode_satuan,
+                                              'id_kuantum'       => $do->jumlah,
+                                              'id_kode_item'     => 'tidak ada',
+                                              'id_tipe'          => 'tidak tahu',
+                                              'id_acc_penjualan' => $do->acc_penjualan
+                                          ]);
+             }
+
+             return response()->json(['status' => 1]);
+
+        }else{
+
+             $bulan = Carbon::now()->format('m');
+             $tahun = Carbon::now()->format('y');
+             $cabang= Auth::user()->kode_cabang;
+             $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
+                                            WHERE i_kode_cabang = '$cabang'
+                                            AND to_char(i_tanggal,'MM') = '$bulan'
+                                            AND to_char(i_tanggal,'YY') = '$tahun'");
+             $index = (integer)$cari_nota[0]->id + 1;
+             $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+             $nota = 'INV' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
+
+
+             $save_header_invoice = DB::table('invoice')
+                                     ->insert([
+                                          'i_nomor'              =>  $nota,
+                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_keterangan'         =>  $request->ed_keterangan,
+                                          'i_tgl_mulai_do'       =>  $do_awal,
+                                          'i_tgl_sampai_do'      =>  $do_akhir,
+                                          'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
+                                          'i_total'              =>  $total_tagihan,
+                                          'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_netto_detail'       =>  $netto_total,
+                                          'i_diskon1'            =>  $diskon1,
+                                          'i_diskon2'            =>  $diskon2,
+                                          'i_netto'              =>  $ed_total,
+                                          'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
+                                          'i_ppntpe'             =>  $ppn_type,
+                                          'i_ppnrte'             =>  $ppn_persen,
+                                          'i_ppnrp'              =>  $total_ppn,
+                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_pajak_lain'         =>  $total_pph,
+                                          'i_tagihan'            =>  $total_tagihan,
+                                          'i_kode_customer'      =>  $request->ed_customer,
+                                          'i_kode_cabang'        =>  Auth::user()->kode_cabang,
+                                          'create_by'            =>  Auth::user()->m_name,
+                                          'create_at'            =>  Carbon::now(),
+                                          'update_by'            =>  Auth::user()->m_name,
+                                          'update_at'            =>  Carbon::now(),
+                                          'i_pendapatan'         =>  $request->ed_pendapatan
+                                     ]);
+
+             for ($i=0; $i < count($request->do_detail); $i++) { 
+                
+                $cari_id = DB::table('invoice_d')
+                             ->max('id_id');
+
+                 if ($cari_id == null ) {
+                     $cari_id = 1;
+                 }else{
+                     $cari_id += 1;
+                 }
+                 $do = DB::table('delivery_order')
+                         ->where('nomor',$request->do_detail[$i])
+                         ->first();
+
+                 $save_detail_invoice = DB::table('invoice_d')
+                                          ->insert([
+                                              'id_id'            => $cari_id,
+                                              'id_nomor_invoice' => $request->nota_invoice,
+                                              'id_nomor_do'      => $request->do_detail[$i],
+                                              'create_by'        => Auth::user()->m_name,
+                                              'create_at'        => Carbon::now(),
+                                              'update_by'        => Auth::user()->m_name,
+                                              'update_at'        => Carbon::now(),
+                                              'id_tgl_do'        => $do->tanggal,
+                                              'id_jumlah'        => $request->dd_jumlah[$i],
+                                              'id_keterangan'    => $do->deskripsi,
+                                              'id_harga_satuan'  => $request->dd_harga[$i],
+                                              'id_harga_bruto'   => $request->dd_total[$i],
+                                              'id_diskon'        => $request->dd_diskon[$i],
+                                              'id_harga_netto'   => $request->harga_netto[$i],
+                                              'id_kode_satuan'   => $do->kode_satuan,
+                                              'id_kuantum'       => $do->jumlah,
+                                              'id_kode_item'     => 'tidak ada',
+                                              'id_tipe'          => 'tidak tahu',
+                                              'id_acc_penjualan' => $do->acc_penjualan
+                                          ]);
+             }
+
+             return response()->json(['status' => 2,'nota'=>$nota]);
+        }
+
+    }else if($request->ed_pendapatan == 'KORAN'){
+
+        if ($cari_no_invoice == null) {
+
+            $save_header_invoice = DB::table('invoice')
+                                     ->insert([
+                                          'i_nomor'              =>  $request->nota_invoice,
+                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_keterangan'         =>  $request->ed_keterangan,
+                                          'i_tgl_mulai_do'       =>  $do_awal,
+                                          'i_tgl_sampai_do'      =>  $do_akhir,
+                                          'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
+                                          'i_total'              =>  $total_tagihan,
+                                          'i_netto_detail'       =>  $netto_total,
+                                          'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_diskon1'            =>  $diskon1,
+                                          'i_diskon2'            =>  $diskon2,
+                                          'i_netto'              =>  $ed_total,
+                                          'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
+                                          'i_ppntpe'             =>  $ppn_type,
+                                          'i_ppnrte'             =>  $ppn_persen,
+                                          'i_ppnrp'              =>  $total_ppn,
+                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_pajak_lain'         =>  $total_pph,
+                                          'i_tagihan'            =>  $total_tagihan,
+                                          'i_kode_customer'      =>  $request->ed_customer,
+                                          'i_kode_cabang'        =>  Auth::user()->kode_cabang,
+                                          'create_by'            =>  Auth::user()->m_name,
+                                          'create_at'            =>  Carbon::now(),
+                                          'update_by'            =>  Auth::user()->m_name,
+                                          'update_at'            =>  Carbon::now(),
+                                          'i_pendapatan'         =>  $request->ed_pendapatan
+                                     ]);
+             for ($i=0; $i < count($request->do_detail); $i++) { 
+
+                $cari_id = DB::table('invoice_d')
+                             ->max('id_id');
+
+                 if ($cari_id == null ) {
+                     $cari_id = 1;
+                 }else{
+                     $cari_id += 1;
+                 }
+                 $do = DB::table('delivery_orderd')
+                         ->join('delivery_order','nomor','=','dd_nomor')
+                         ->where('dd_id',$request->do_id[$i])
+                         ->first();
+
+                 $save_detail_invoice = DB::table('invoice_d')
+                                          ->insert([
+                                              'id_id'            => $cari_id,
+                                              'id_nomor_invoice' => $request->nota_invoice,
+                                              'id_nomor_do'      => $request->do_detail[$i],
+                                              'create_by'        => Auth::user()->m_name,
+                                              'create_at'        => Carbon::now(),
+                                              'update_by'        => Auth::user()->m_name,
+                                              'update_at'        => Carbon::now(),
+                                              'id_tgl_do'        => $do->tanggal,
+                                              'id_jumlah'        => $request->dd_jumlah[$i],
+                                              'id_keterangan'    => $do->dd_keterangan,
+                                              'id_harga_satuan'  => $request->dd_harga[$i],
+                                              'id_harga_bruto'   => $request->dd_total[$i],
+                                              'id_diskon'        => $request->dd_diskon[$i],
+                                              'id_harga_netto'   => $request->harga_netto[$i],
+                                              'id_kode_satuan'   => $do->dd_kode_satuan,
+                                              'id_kuantum'       => $do->dd_jumlah,
+                                              'id_kode_item'     => $do->dd_kode_item,
+                                              'id_tipe'          => 'tidak tahu',
+                                              'id_acc_penjualan' => $do->dd_acc_penjualan,
+                                              'id_nomor_do_dt'   => $request->do_id[$i]
+                                          ]);
+             }
+
+             return response()->json(['status' => 1]);
+
+        }else{
+
+             $bulan = Carbon::now()->format('m');
+             $tahun = Carbon::now()->format('y');
+             $cabang= Auth::user()->kode_cabang;
+             $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
+                                            WHERE i_kode_cabang = '$cabang'
+                                            AND to_char(i_tanggal,'MM') = '$bulan'
+                                            AND to_char(i_tanggal,'YY') = '$tahun'");
+             $index = (integer)$cari_nota[0]->id + 1;
+             $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+             $nota = 'INV' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
+
+
+             $save_header_invoice = DB::table('invoice')
+                                     ->insert([
+                                          'i_nomor'              =>  $nota,
+                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_keterangan'         =>  $request->ed_keterangan,
+                                          'i_tgl_mulai_do'       =>  $do_awal,
+                                          'i_tgl_sampai_do'      =>  $do_akhir,
+                                          'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
+                                          'i_total'              =>  $total_tagihan,
+                                          'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_netto_detail'       =>  $netto_total,
+                                          'i_diskon1'            =>  $diskon1,
+                                          'i_diskon2'            =>  $diskon2,
+                                          'i_netto'              =>  $ed_total,
+                                          'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
+                                          'i_ppntpe'             =>  $ppn_type,
+                                          'i_ppnrte'             =>  $ppn_persen,
+                                          'i_ppnrp'              =>  $total_ppn,
+                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_pajak_lain'         =>  $total_pph,
+                                          'i_tagihan'            =>  $total_tagihan,
+                                          'i_kode_customer'      =>  $request->ed_customer,
+                                          'i_kode_cabang'        =>  Auth::user()->kode_cabang,
+                                          'create_by'            =>  Auth::user()->m_name,
+                                          'create_at'            =>  Carbon::now(),
+                                          'update_by'            =>  Auth::user()->m_name,
+                                          'update_at'            =>  Carbon::now(),
+                                          'i_pendapatan'         =>  $request->ed_pendapatan
+                                     ]);
+
+             for ($i=0; $i < count($request->do_detail); $i++) { 
+                
+                $cari_id = DB::table('invoice_d')
+                             ->max('id_id');
+
+                 if ($cari_id == null ) {
+                     $cari_id = 1;
+                 }else{
+                     $cari_id += 1;
+                 }
+                 $do = DB::table('delivery_orderd')
+                         ->join('delivery_order','nomor','=','dd_nomor')
+                         ->where('dd_id',$request->do_id[$i])
+                         ->first();
+
+                 $save_detail_invoice = DB::table('invoice_d')
+                                          ->insert([
+                                              'id_id'            => $cari_id,
+                                              'id_nomor_invoice' => $request->nota_invoice,
+                                              'id_nomor_do'      => $request->do_detail[$i],
+                                              'create_by'        => Auth::user()->m_name,
+                                              'create_at'        => Carbon::now(),
+                                              'update_by'        => Auth::user()->m_name,
+                                              'update_at'        => Carbon::now(),
+                                              'id_tgl_do'        => $do->tanggal,
+                                              'id_jumlah'        => $request->dd_jumlah[$i],
+                                              'id_keterangan'    => $do->dd_keterangan,
+                                              'id_harga_satuan'  => $request->dd_harga[$i],
+                                              'id_harga_bruto'   => $request->dd_total[$i],
+                                              'id_diskon'        => $request->dd_diskon[$i],
+                                              'id_harga_netto'   => $request->harga_netto[$i],
+                                              'id_kode_satuan'   => $do->dd_kode_satuan,
+                                              'id_kuantum'       => $do->dd_jumlah,
+                                              'id_kode_item'     => $do->dd_kode_item,
+                                              'id_tipe'          => 'tidak tahu',
+                                              'id_acc_penjualan' => $do->dd_acc_penjualan,
+                                              'id_nomor_do_dt'   => $request->do_id[$i]
+                                          ]);
+             }
+
+             return response()->json(['status' => 2,'nota'=>$nota]);
+        }
+    }
+        
+}
+
+
+public function edit_invoice($id)
+{
+    $data = DB::table('invoice')
+              ->where('i_nomor',$id)
+              ->first();
+    $data_dt = DB::table('invoice_d')
+              ->where('id_nomor_invoice',$id)
+              ->get();
+
+    $customer = DB::table('customer')
+                ->get();
+
+    $cabang   = DB::table('cabang')
+                ->get();
+    $tgl      = Carbon::now()->format('d/m/Y');
+    $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
+
+    $pajak    = DB::table('pajak')
+                ->get();
+    return view('sales.invoice.editInvoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt'));
+}
+
+public function hapus_invoice(request $request)
+{
+    $hapus = DB::table('invoice')
+               ->where('i_nomor',$request->id)
+               ->delete();
+    return 'berhasil';
 }
 }
