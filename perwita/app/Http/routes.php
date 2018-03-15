@@ -165,8 +165,6 @@ Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@det
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
 Route::get('fakturpembelian/tampil_po', 'PurchaseController@tampil_po');
 Route::post('fakturpembelian/save', 'PurchaseController@savefaktur');
-Route::get('fakturpembelian/save', 'PurchaseController@savefaktur');
-
 Route::post('fakturpembelian/update_fp', 'PurchaseController@update_fp');
 Route::post('fakturpembelian/update_tt', 'PurchaseController@update_tt');
 Route::post('fakturpembelian/getnotatt', 'PurchaseController@getnotatt');
@@ -176,6 +174,9 @@ Route::get('fakturpembelian/cetakfaktur/{id}' , 'PurchaseController@cetakfaktur'
 Route::get('fakturpembelian/cetaktt/{id}' , 'PurchaseController@cetaktt');
 Route::post('fakturpembelian/savefakturpajak' , 'PurchaseController@savefakturpajak');
 Route::get('fakturpembelian/getbiayalain' , 'PurchaseController@getbiayalain');
+Route::post('fakturpembelian/updatefaktur' , 'PurchaseController@updatefaktur');
+Route::post('fakturpembelian/updatestockbrgfp' , 'PurchaseController@updatestockbrgfp');
+Route::post('fakturpembelian/getbarang' , 'PurchaseController@getbarang');
 
 
 //BIAYA PENERUS AGEN

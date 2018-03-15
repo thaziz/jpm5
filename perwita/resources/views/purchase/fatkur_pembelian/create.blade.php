@@ -2045,7 +2045,6 @@
                   alertSuccess(); 
                    window.location.href = baseUrl + "/fakturpembelian/fakturpembelian"; 
               
-              
             },
             error:function(data){
                 swal("Error", "Server Sedang Mengalami Masalah", "error");
