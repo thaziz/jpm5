@@ -3703,7 +3703,7 @@
                                var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].fpdt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].fpdt_qty+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].fpdt_biaya+" name='totalharga[]'> </th> <th> <th> <input type='hidden' value="+response.po_barang[k][z].fp_idfaktur+" name='idpo[]'> <input type='hidden' value="+response.po_barang[k][z].fpdt_harga+" name='hpp[]'>   <th> <input type='hidden' value="+flag[0]+" name='flag'>  </th> </tr> ";
 
                                 $('#input_data').append(rowinput);
-                                alert()
+                               // alert()
                                   jumlahtotalharga_fp = jumlahtotalharga_fp + parseInt(response.po_barang[k][z].fpdt_biaya);
                                   console.log('test');
                           }
@@ -3732,8 +3732,8 @@
                        if(inputppn != ''){
                           if(jenisppn == 'E'){
                             hasil = parseFloat((inputppn / 100) * numeric);
-                            alert(inputppn);
-                            alert(hasil);
+                           // alert(inputppn);
+                           // alert(hasil);
                             hasil2 = hasil.toFixed(2);
                             total = parseFloat(parseFloat(hasil2) + parseFloat(numeric));
                             $('.hasilppn_po').val(addCommas(hasil2));
@@ -4114,7 +4114,7 @@
      // alert(stock);
 
        if(idsup == '') {
-          alert('Dimohon untuk pilih Supplier Terlebih Dahulu :)');
+          toastr.info('Dimohon untuk pilih Supplier Terlebih Dahulu :)');
        }
        if(stock == 'T') {
             $('.penerimaan').val(stock);
@@ -4260,7 +4260,7 @@
        var stock = variable[1];
 
        if(idsup == '') {
-          alert('Dimohon untuk pilih Supplier Terlebih Dahulu :)');
+          toastr.info('Dimohon untuk pilih Supplier Terlebih Dahulu :)');
        }
        else {
           $.ajax({    
@@ -4348,7 +4348,7 @@
         }
 
         pph = $('.hasilpph_po').val();
-        alert(pph);
+       // alert(pph);
         ppn = $('.hasilppn_po').val();       
         replacepph = pph.replace(/,/g,'');
         replaceppn = ppn.replace(/,/g,'');
