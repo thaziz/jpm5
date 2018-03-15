@@ -9,6 +9,7 @@ use PDF;
 use App\master_akun;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use Carbon\Carbon;
 
 
 class invoice_Controller extends Controller
@@ -606,10 +607,16 @@ else if($jenis_ppn!=3){
         return view('sales.invoice.index',compact('data'));
     }
 
-    public function form($nomor=null){
-        
-        
-        return view('sales.invoice.form',compact(''));
+    public function form(){
+        $customer = DB::table('customer')
+                      ->get();
+
+        $cabang   = DB::table('cabang')
+                      ->get();
+        $tgl      = Carbon::now()->format('d/m/Y');
+        $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
+
+        return view('sales.invoice.form',compact('customer','cabang','tgl','tgl1'));
     }
 
     public function tampil_do(Request $request) {
@@ -777,7 +784,91 @@ else if($jenis_ppn!=3){
         return view('sales.invoice.jurnal',compact('nomor','jurnal_dt'));
     }
     
-    
+public function nota_invoice(request $request){
+    // dd($request->all());
+    $bulan = Carbon::now()->format('m');
+    $tahun = Carbon::now()->format('y');
+
+    $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from invoice
+                                    WHERE i_kode_cabang = '$request->cabang'
+                                    AND to_char(i_tanggal,'MM') = '$bulan'
+                                    AND to_char(i_tanggal,'YY') = '$tahun'");
+    $index = (integer)$cari_nota[0]->id + 1;
+    $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+    $nota = 'INV' . $request->cabang . $bulan . $tahun . $index;
+
+    return response()->json([
+                         'nota'=>$nota
+                        ]);
+}
+public function jatuh_tempo_customer(request $request)
+{
+    $cus = DB::table('customer')
+             ->where('kode',$request->cus)
+             ->first();
+    $jt = $cus->syarat_kredit;
+    $tgl = str_replace('/', '-' ,$request->tgl);
+    $tgl = Carbon::parse($tgl)->format('Y-m-d');
+
+    $tgl = Carbon::parse($tgl)->subDays(-$jt)->format('d/m/Y');
+
+    return response()->json([
+                         'jt' =>$jt,
+                         'tgl'=>$tgl
+                       ]);
+}
+public function cari_do_invoice(request $request)
+{   
+    // dd($request->all());
+    $do_awal = str_replace('/', '-' ,$request->do_awal);
+    $do_akhir = str_replace('/', '-' ,$request->do_akhir);
+    $do_awal = Carbon::parse($do_awal)->format('Y-m-d');
+    $do_akhir = Carbon::parse($do_akhir)->format('Y-m-d');
+    $jenis = $request->cb_pendapatan;
+    if ($request->cb_pendapatan == 'KORAN') {
+        $data = DB::table('delivery_order')
+              ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
+              ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->whereIn('delivery_orderd.dd_id','!=',(int)$request->array_simpan)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+        return $data;
+    }
     
 
+    return view('sales.invoice.tableDo',compact('data','jenis'));
+}
+public function append_do(request $request)
+{
+    // dd($request->all());
+
+    $cari_do = DB::table('delivery_orderd')
+                 ->join('delivery_order','delivery_order.nomor','=','delivery_orderd.dd_nomor')
+                 ->whereIn('delivery_orderd.dd_nomor',$request->nomor_do)
+                 ->whereIn('dd_id',$request->nomor_dt)
+                 ->get();
+
+    $cari_kota  = DB::table('kota')
+                    ->get();
+
+    for ($i=0; $i < count($cari_do); $i++) { 
+       for ($a=0; $a < count($cari_kota); $a++) { 
+           if ($cari_kota[$a]->id == $cari_do[$i]->dd_id_kota_asal) {
+               $cari_do[$i]->nama_kota_asal = $cari_kota[$a]->nama;
+           }
+           if ($cari_kota[$a]->id == $cari_do[$i]->dd_id_kota_tujuan) {
+               $cari_do[$i]->nama_kota_tujuan = $cari_kota[$a]->nama;
+           }
+       }
+        $cari_do[$i]->harga_netto = $cari_do[$i]->dd_total - $cari_do[$i]->dd_diskon;
+
+    }
+    return response()->json([
+                         'data' => $cari_do
+                       ]);
+}
 }

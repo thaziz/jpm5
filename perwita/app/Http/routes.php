@@ -165,8 +165,6 @@ Route::get('fakturpembelian/detailfatkurpembelian/{id}', 'PurchaseController@det
 Route::get('fakturpembelian/getchangefaktur', 'PurchaseController@supplierfaktur');
 Route::get('fakturpembelian/tampil_po', 'PurchaseController@tampil_po');
 Route::post('fakturpembelian/save', 'PurchaseController@savefaktur');
-Route::get('fakturpembelian/save', 'PurchaseController@savefaktur');
-
 Route::post('fakturpembelian/update_fp', 'PurchaseController@update_fp');
 Route::post('fakturpembelian/update_tt', 'PurchaseController@update_tt');
 Route::post('fakturpembelian/getnotatt', 'PurchaseController@getnotatt');
@@ -176,6 +174,9 @@ Route::get('fakturpembelian/cetakfaktur/{id}' , 'PurchaseController@cetakfaktur'
 Route::get('fakturpembelian/cetaktt/{id}' , 'PurchaseController@cetaktt');
 Route::post('fakturpembelian/savefakturpajak' , 'PurchaseController@savefakturpajak');
 Route::get('fakturpembelian/getbiayalain' , 'PurchaseController@getbiayalain');
+Route::post('fakturpembelian/updatefaktur' , 'PurchaseController@updatefaktur');
+Route::post('fakturpembelian/updatestockbrgfp' , 'PurchaseController@updatestockbrgfp');
+Route::post('fakturpembelian/getbarang' , 'PurchaseController@getbarang');
 
 
 //BIAYA PENERUS AGEN
@@ -832,6 +833,10 @@ Route::get('sales/surat_jalan_trayek_form/{nomor}/nota', 'sales\surat_jalan_tray
 //invoice penjualan
 Route::get('sales/invoice', 'sales\invoice_Controller@index');
 Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
+Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
+Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
+Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
+Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
 Route::get('sales/invoice_form/tampil_do', 'sales\invoice_Controller@tampil_do');
 Route::get('sales/invoice_form/{nomor}/edit', 'sales\invoice_Controller@form');
 Route::get('sales/invoice_form/{nomor}/hapus_data', 'sales\invoice_Controller@hapus_data');
