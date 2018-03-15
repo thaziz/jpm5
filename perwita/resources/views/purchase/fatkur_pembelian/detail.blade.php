@@ -1438,7 +1438,7 @@
                 jumlah = parseFloat(parseFloat(jmlbiayaqty) - parseFloat(hsl)).toFixed(2);
               }
               else {
-                jumlah = hasiltotal;
+                jumlah = jmlbiayaqty;
               }
 
               //DPP
@@ -1664,7 +1664,7 @@
                 jumlah = parseFloat(parseFloat(jmlbiayaqty) - parseFloat(hsl)).toFixed(2);
               }
               else {
-                jumlah = hasiltotal;
+                jumlah = jmlbiayaqty;
               }
 
               //DPP
