@@ -409,6 +409,7 @@ class penerimaan_penjualan_Controller extends Controller
             $data = null;
             $jml_detail = 0;
         }
+        
         return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun_biaya' ));
     }
 
