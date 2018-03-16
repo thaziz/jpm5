@@ -939,26 +939,9 @@ Route::get('sales/fakturpajakform', function(){
 
 //penerimaanpenjualan
 Route::get('sales/penerimaan_penjualan', 'sales\penerimaan_penjualan_Controller@index');
-Route::get('sales/penerimaan_penjualan_form/tampil_invoice', 'sales\penerimaan_penjualan_Controller@tampil_invoice');
-Route::get('sales/penerimaan_penjualan_form/tampil_invoice_biaya', 'sales\penerimaan_penjualan_Controller@tampil_invoice_biaya');
-Route::get('sales/penerimaan_penjualan_form/get_data_akun_biaya', 'sales\penerimaan_penjualan_Controller@get_data_akun_biaya');
-Route::get('sales/penerimaan_penjualan_form/tampil_riwayat_invoice', 'sales\penerimaan_penjualan_Controller@tampil_riwayat_invoice');
 Route::get('sales/penerimaan_penjualan_form', 'sales\penerimaan_penjualan_Controller@form');
-Route::get('sales/penerimaan_penjualan_form/{nomor}/edit', 'sales\penerimaan_penjualan_Controller@form');
-Route::get('sales/penerimaan_penjualan_form/{nomor}/hapus_data', 'sales\penerimaan_penjualan_Controller@hapus_data');
-Route::get('sales/penerimaan_penjualan_form/tabel_data_detail', 'sales\penerimaan_penjualan_Controller@table_data_detail');
-Route::get('sales/penerimaan_penjualan_form/tabel_data_detail_biaya', 'sales\penerimaan_penjualan_Controller@table_data_detail_biaya');
-Route::get('sales/penerimaan_penjualan/tabel', 'sales\penerimaan_penjualan_Controller@table_data');
-Route::get('sales/penerimaan_penjualan/get_data', 'sales\penerimaan_penjualan_Controller@get_data');
-Route::get('sales/penerimaan_penjualan/get_data_detail', 'sales\penerimaan_penjualan_Controller@get_data_detail');
-Route::post('sales/penerimaan_penjualan/save_data', 'sales\penerimaan_penjualan_Controller@save_data');
-Route::post('sales/penerimaan_penjualan/save_data_detail', 'sales\penerimaan_penjualan_Controller@save_data_detail');
-Route::post('sales/penerimaan_penjualan/save_data_detail2', 'sales\penerimaan_penjualan_Controller@save_data_detail2');
-Route::post('sales/penerimaan_penjualan/save_data_detail_biaya', 'sales\penerimaan_penjualan_Controller@save_data_detail_biaya');
-Route::post('sales/penerimaan_penjualan/hapus_data', 'sales\penerimaan_penjualan_Controller@hapus_data');
-Route::post('sales/penerimaan_penjualan/hapus_data_detail', 'sales\penerimaan_penjualan_Controller@hapus_data_detail');
-Route::post('sales/penerimaan_penjualan/hapus_data_detail_biaya', 'sales\penerimaan_penjualan_Controller@hapus_data_detail_biaya');
-Route::get('sales/penerimaan_penjualan/{nomor}/nota', 'sales\penerimaan_penjualan_Controller@cetak_nota');
+Route::get('sales/nota_kwitansi', 'sales\penerimaan_penjualan_Controller@nota_kwitansi');
+
 
 //end penerimaan penjualan
 

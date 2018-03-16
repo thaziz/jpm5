@@ -457,33 +457,57 @@
    function hitung_pajak_ppn() {
        var cb_jenis_ppn = $('#cb_jenis_ppn').val();
        var netto_total  = $('.netto_total').val();
+       var netto_detail = $('.netto_detail').val();
+       var diskon2      = $('.diskon2').val();
        netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
        netto_total      = parseInt(netto_total)/100;
+
+       netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
+       netto_detail     = parseInt(netto_detail)/100;
+
+       diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+       diskon2          = parseInt(diskon2)/100;
+       hasil_netto      = parseFloat(netto_detail) - parseFloat(diskon2);
+
         if (cb_jenis_ppn == 1) {
+
             var ppn = 0;
             ppn = netto_total * 1.1 ;
             ppn_netto = ppn - netto_total;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 2){
+
             var ppn = 0;
             ppn = netto_total * 1.01 ;
             ppn_netto = ppn - netto_total;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 3){
+
             var ppn = 0;
-            ppn = netto_total * 1.01 ;
-            ppn_netto = netto_total ;
+            ppn = 100/101 * hasil_netto ;
+            ppn_netto = hasil_netto - ppn;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 5){
+
             var ppn = 0;
-            ppn = netto_total * 1.1 ;
-            ppn_netto = ppn - netto_total;
+            ppn = 100/110 * hasil_netto ;
+            ppn_netto = hasil_netto - ppn ;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 4){
             var ppn = 0;
             ppn = netto_total * 1 ;
             ppn_netto = ppn - netto_total;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+
         }
 
 
@@ -549,11 +573,10 @@
 
     
         netto = temp_total-(temp_diskon2+temp_diskon);
-        var ed_total = temp_total - parseFloat($('.diskon1').val());
-        $('.ed_total').val(accounting.formatMoney(ed_total,"",2,'.',','));
+        $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto,"",2,'.',','));
-        $('.netto_detail').val(accounting.formatMoney(netto,"",2,'.',','));
+        $('.netto_detail').val(accounting.formatMoney(temp_total,"",2,'.',','));
         $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
 
         hitung_pajak_ppn();
