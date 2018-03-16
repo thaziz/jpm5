@@ -11,11 +11,11 @@ class do_kertas_Controller extends Controller
 {
     public function table_data_detail (Request $request) {
         $nomor = strtoupper($request->input('nomor'));
-        $sql = "    SELECT id,kode_item,nama,d.kode_satuan,jumlah,d.harga,diskon,total,d.keterangan FROM delivery_orderd d,item i
-                    WHERE i.kode=d.kode_item AND d.nomor='$nomor' 
+        $sql = "    SELECT dd_id,dd_kode_item,nama,d.dd_kode_satuan,dd_jumlah,d.dd_harga,dd_diskon,dd_total,d.dd_keterangan FROM delivery_orderd d,item i
+                    WHERE i.kode=d.dd_kode_item AND d.dd_nomor='$nomor' 
 					UNION ALL
-         			SELECT i.id,kode_item,i.keterangan nama,d.kode_satuan,jumlah,d.harga,diskon,total,d.keterangan FROM delivery_orderd d,kontrak_d i
-                    WHERE i.kode=d.kode_item AND d.nomor='$nomor'  ";
+         			SELECT i.id,dd_kode_item,i.keterangan nama,d.dd_kode_satuan,dd_jumlah,d.dd_harga,dd_diskon,dd_total,d.dd_keterangan FROM delivery_orderd d,kontrak_d i
+                    WHERE i.kode=d.dd_kode_item AND d.dd_nomor='$nomor'  ";
         $list = DB::select(DB::raw($sql));
         $data = array();
         foreach ($list as $r) {
@@ -25,8 +25,8 @@ class do_kertas_Controller extends Controller
         foreach ($data as $key) {
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" id="'.$data[$i]['dd_id'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                        <button type="button" id="'.$data[$i]['dd_id'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                     </div> ';
             $i++;
         }
@@ -45,8 +45,8 @@ class do_kertas_Controller extends Controller
         $nomor = $request->input('nomor');
         $data = DB::table('delivery_orderd')
                     ->where([
-                        ['id', '=', $id],
-                        ['nomor', '=', $nomor],
+                        ['dd_id', '=', $id],
+                        ['dd_nomor', '=', $nomor],
                         ])
                     ->first();
         echo json_encode($data);
@@ -123,7 +123,7 @@ class do_kertas_Controller extends Controller
 
     public function hapus_data($nomor_delivery_order=null){
         DB::beginTransaction();
-        DB::table('delivery_orderd')->where('nomor' ,'=', $nomor_delivery_order)->delete();
+        DB::table('delivery_orderd')->where('dd_nomor' ,'=', $nomor_delivery_order)->delete();
         DB::table('delivery_order')->where('nomor' ,'=', $nomor_delivery_order)->delete();
         DB::commit();
         return redirect('sales/deliveryorderkertas');
@@ -135,8 +135,8 @@ class do_kertas_Controller extends Controller
 		$crud = $request->crud;
 		$id_old = $request->ed_id_old;
         $cari_dt = DB::table('delivery_orderd')
-                     ->where('nomor',strtoupper($request->ed_nomor_do))
-                     ->max('nomor_dt');
+                     ->where('dd_nomor',strtoupper($request->ed_nomor_do))
+                     ->max('dd_nomor_dt');
         if ($cari_dt == null) {
             $cari_dt = 1;
         }else{
@@ -144,7 +144,7 @@ class do_kertas_Controller extends Controller
         }
 
         $cari_id = DB::table('delivery_orderd')
-                     ->max('id');
+                     ->max('dd_id');
         if ($cari_id == null) {
             $cari_id = 1;
         }else{
@@ -154,22 +154,22 @@ class do_kertas_Controller extends Controller
         $nomor = strtoupper($request->ed_nomor_do);
         $hitung = count($request->nomor_do);
         $data = array(
-            'nomor' => strtoupper($request->ed_nomor_do),
-            'nomor_dt' => $cari_dt,
-            'kode_item' => strtoupper($request->cb_item),
-            'kode_satuan' => strtoupper($request->ed_satuan),
-            'jumlah' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
-            'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
-            'diskon' => filter_var($request->ed_diskon, FILTER_SANITIZE_NUMBER_INT),
-            'total' => filter_var($request->ed_total, FILTER_SANITIZE_NUMBER_INT),
-            'id_kota_asal' => strtoupper($request->cb_kota_asal),
-            'id_kota_tujuan' => strtoupper($request->cb_kota_tujuan),
-            'keterangan' => strtoupper($request->ed_keterangan),
-            'acc_penjualan'=>strtoupper($request->acc_penjualan),
+            'dd_nomor' => strtoupper($request->ed_nomor_do),
+            'dd_nomor_dt' => $cari_dt,
+            'dd_kode_item' => strtoupper($request->cb_item),
+            'dd_kode_satuan' => strtoupper($request->ed_satuan),
+            'dd_jumlah' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
+            'dd_harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+            'dd_diskon' => filter_var($request->ed_diskon, FILTER_SANITIZE_NUMBER_INT),
+            'dd_total' => filter_var($request->ed_total, FILTER_SANITIZE_NUMBER_INT),
+            'dd_id_kota_asal' => strtoupper($request->cb_kota_asal),
+            'dd_id_kota_tujuan' => strtoupper($request->cb_kota_tujuan),
+            'dd_keterangan' => strtoupper($request->ed_keterangan),
+            'dd_acc_penjualan'=>strtoupper($request->acc_penjualan),
         );
         if ($crud == 'N') {            
 
-			$data['id'] = $cari_id;
+			$data['dd_id'] = $cari_id;
 			$simpan = DB::table('delivery_orderd')->insert($data);
         }elseif ($crud == 'E') {
             
@@ -180,18 +180,18 @@ class do_kertas_Controller extends Controller
                                 ])
                         ->update($data);
         }
-        $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor='$nomor' "))->first();
-        $total = collect(\DB::select(" SELECT COALESCE(SUM(diskon),0) ttl_diskon,COALESCE(SUM(total),0) total FROM delivery_orderd WHERE nomor='$nomor' "))->first();
+        $jml_detail = collect(\DB::select(" SELECT COUNT(dd_id) dd_jumlah FROM delivery_orderd WHERE dd_nomor='$nomor' "))->first();
+        $total = collect(\DB::select(" SELECT COALESCE(SUM(dd_diskon),0) ttl_diskon,COALESCE(SUM(dd_total),0) dd_total FROM delivery_orderd WHERE dd_nomor='$nomor' "))->first();
         $data_h = array(
             'nomor' => $nomor,
-            'total' => $total->total,
+            'total' => $total->dd_total,
             'diskon' =>$total->ttl_diskon,
         );
         DB::table('delivery_order')->where('nomor', $nomor)->update($data_h);
         $result['error']='';
         $result['result']=1;
-        $result['jml_detail']=$jml_detail->jumlah;
-        $result['total']=number_format($total->total, 0, ",", ".");
+        $result['jml_detail']=$jml_detail->dd_jumlah;
+        $result['total']=number_format($total->dd_total, 0, ",", ".");
         $result['diskon']=number_format($total->ttl_diskon, 0, ",", ".");
         echo json_encode($result);
     }
@@ -203,18 +203,18 @@ class do_kertas_Controller extends Controller
         $nomor = strtoupper($request->nomor);
         $hapus = DB::table('delivery_orderd')
                     ->where([
-                                ['id', '=', $id],
-                                ['nomor', '=', $nomor],
+                                ['dd_id', '=', $id],
+                                ['dd_nomor', '=', $nomor],
                             ])
                     ->delete();
-        $total = collect(\DB::select(" SELECT COALESCE(SUM(diskon),0) ttl_diskon,COALESCE(SUM(total),0) total FROM delivery_orderd WHERE nomor='$nomor' "))->first();
+        $total = collect(\DB::select(" SELECT COALESCE(SUM(dd_diskon),0) ttl_diskon,COALESCE(SUM(dd_total),0) total FROM delivery_orderd WHERE dd_nomor='$nomor' "))->first();
         $data_h = array(
             'nomor' => $nomor,
             'total' => $total->total,
             'diskon' =>$total->ttl_diskon,
         );
         DB::table('delivery_order')->where('nomor', $nomor)->update($data_h);
-        $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor='$nomor' "))->first();
+        $jml_detail = collect(\DB::select(" SELECT COUNT(dd_id) jumlah FROM delivery_orderd WHERE dd_nomor='$nomor' "))->first();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
