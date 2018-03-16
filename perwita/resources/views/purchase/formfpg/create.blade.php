@@ -57,6 +57,22 @@
                       <div class="row">
                         <div class="col-xs-6"> 
                             <table class="table table-striped table-bordered">
+                            <tr>
+                              <th> Cabang </th>
+                              <td> select class='form-control chosen-select-width1 cabang' name="cabang">
+                                  <option value="">
+                                    Pilih-Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                  @endforeach
+                                 </select>
+                                 </td>
+                            </tr>
+
                               <tr>
                                 <th> No FPG </th>
                                 <td> <input type='text' class='input-sm form-control nofpg' value="{{$data['nofpg']}}" readonly="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"></td>

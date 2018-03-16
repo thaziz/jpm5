@@ -179,6 +179,7 @@ Route::post('fakturpembelian/updatestockbrgfp' , 'PurchaseController@updatestock
 Route::post('fakturpembelian/getbarang' , 'PurchaseController@getbarang');
 Route::post('fakturpembelian/getbarangfpitem' , 'PurchaseController@getbarangfpitem');
 Route::post('fakturpembelian/updatebarangitem' , 'PurchaseController@updatebarangitem');
+Route::get('fakturpembelian/hapusfakturpembelian/{id}' , 'PurchaseController@hapusfakturpembelian');
 
 
 //BIAYA PENERUS AGEN

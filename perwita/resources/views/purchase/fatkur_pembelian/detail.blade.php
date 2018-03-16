@@ -187,8 +187,17 @@
                       <tr>
                          <td style='text-align: right'>
                           <select class='form-control pajakpph_po edit' name="jenispph_po" disabled="">
-                            @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}' @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+                            @if($faktur->fp_pph != '')
+                              @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'   @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+  
+                            @else
+                              <option value=""> Pilih Pajak PPH
+                              </option>
 
+                              @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'   @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+                              
+                            @endif
+                            
                           </select> </td>
 
                          <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph_po" readonly=""> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph_po" style='text-align: right' readonly="" name='hasilpph_po' value="{{ number_format($faktur->fp_pph, 2) }}"> </div> </div> </td>
@@ -821,7 +830,7 @@
     $('.removes-btn').hide();
     $('.removes-itm').hide();
     $('.tmbh-po').hide();
-    $('.simpan').hide();
+    $('.simpanupdate').hide();
     $('#createmodal_tt').hide();
     $('#createmodal_pajakpo').hide();
     $('.tmbh-brg').hide();

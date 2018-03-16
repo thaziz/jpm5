@@ -3172,7 +3172,8 @@ $indexakun=0;
 				$fatkurpembeliand->fp_comp = $cabang;
 				$fatkurpembeliand->fp_sisapelunasan = $netto;
 				
-
+				$fatkurpembeliand->fp_pending_status = 'APPROVED';
+				$fatkurpembeliand->fp_status = 'Released';
 				$fatkurpembeliand->fp_tipe = 'PO';
 				$fatkurpembeliand->save();
 
@@ -3716,9 +3717,20 @@ $indexakun=0;
 					}
 					else {
 						
-					
+					$lokasigudang = [];
+					$idgudang = [];
+					for($ds = 0; $ds < count($request->gudang); $ds++){
+						$gudang = explode(",", $request->gudang[$ds]);
+						$mgid = $gudang[0];
+						
 
-					for($i = 0; $i < count($request->gudang); $i++){
+						array_push($lokasigudang , $mgid);		
+					}
+					
+					
+					$idgudang = array_unique($lokasigudang);
+
+					for($i = 0; $i < count($idgudang); $i++){
 						$lastidterima = barang_terima::max('bt_id'); 
 
 						if(isset($lastidterima)) {
@@ -3731,8 +3743,7 @@ $indexakun=0;
 							$idbarangterima = 1;
 							
 						}
-							$gudang = explode(",", $request->gudang[$i]);
-							$idgudang = $gudang[0];
+							
 
 							$barangterima = new barang_terima();
 							$barangterima->bt_id = $idbarangterima;
@@ -4610,6 +4621,7 @@ public function kekata($x) {
 		$data['jenisbayar'] = DB::select("select * from jenisbayar where idjenisbayar != '8'  and idjenisbayar != 10");
 		$data['bank'] = DB::select("select * from masterbank");
 		$data['agen'] = DB::select("select * from agen where kategori = 'AGEN'");
+		$data['cabang'] = DB::select("select * from cabang");
 		$time = Carbon::now();
 	//	$newtime = date('Y-M-d H:i:s', $time);  
 		
@@ -4782,7 +4794,7 @@ public function kekata($x) {
 		$dpp = str_replace(',', '', $request->dpp_po);
 		$netto = str_replace(',', '', $request->nettohutang_po);
 
-		if($request->hasilpph_po != 0){
+		if($request->hasilpph_po != 0 ){
 			$pph = str_replace(',', '', $request->hasilpph_po);
 			$stringpph = explode(",", $request->jenispph_po);
 			$jenispph = $stringpph[0];
@@ -4871,6 +4883,7 @@ public function kekata($x) {
 				if(count($dataitempo['po']) == 0){ // JIKA KOSONG, MAKA
 					$idpodb = $datafp['fp'][0]->fpdt_idpo;
 					DB::delete("DELETE from faktur_pembeliandt where fpdt_idfp = '$idfaktur' and fpdt_idpo = '$idpodb'");
+
 
 					//UPDATE
 					$data['header7'] = DB::table('penerimaan_barang')
@@ -5095,6 +5108,59 @@ public function kekata($x) {
 				
 			}
 			
+
+		return json_encode('sukses');
+	}
+
+
+	public function hapusfakturpembelian($id){
+		$data['faktur'] = DB::select("select * from faktur_pembelian where fp_idfaktur = '$id'");
+		$flag = $data['faktur'][0]->fp_tipe;
+		$nofaktur = $data['faktur'][0]->fp_nofaktur;
+		if($flag == 'PO'){
+			
+				$ambilpo = DB::select("select * from faktur_pembelian, faktur_pembeliandt where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id'");
+				$countambilpo = count($ambilpo);
+
+				for($i = 0; $i < $countambilpo; $i++){
+					$idpbpo = $ambilpo[$i]->fpdt_idpo;
+						//UPDATE
+						$data['header7'] = DB::table('penerimaan_barang')
+						->where('pb_po' , $idpbpo)
+						->update([
+							'pb_terfaktur' => null,
+							'pb_timeterfaktur' => null,
+						]);	
+
+						//UPDATE PO
+						$data['header5'] = DB::table('pembelian_order')
+						->where('po_idfaktur' , $id)
+						->update([
+							'po_idfaktur' => null,
+							'po_updatefp' => 'T'
+						]);						
+				}
+
+				$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
+				$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
+				$deletefp3 = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();
+		}
+		else {	
+				$flag = $data['faktur'][0]->fp_tipe;
+				if($flag != 'J') {				
+					$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
+					$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
+					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();			
+					$deletebt = 	DB::delete("DELETE from barang_terima where bt_idtransaksi = '$id' and bt_flag = '$idpodb'"); 
+				}
+				else {
+					$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
+					$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
+					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();
+				}
+
+				
+		}
 
 		return json_encode('sukses');
 	}
