@@ -3836,7 +3836,7 @@ $indexakun=0;
 
 
 			if($hasilppn != ''){
-				$lastidpajak =  fakturpajakmasukan::max('fpm_id');;
+				$lastidpajak =  fakturpajakmasukan::max('fpm_id');
 					if(isset($lastidpajak)) {
 						$idpajakmasukan = $lastidpajak;
 						$idpajakmasukan = (int)$idpajakmasukan + 1;
