@@ -168,6 +168,7 @@ Route::post('fakturpembelian/save', 'PurchaseController@savefaktur');
 Route::get('fakturpembelian/save', 'PurchaseController@savefaktur');
 
 Route::post('fakturpembelian/update_fp', 'PurchaseController@update_fp');
+Route::get('fakturpembelian/update_fp', 'PurchaseController@update_fp');
 Route::post('fakturpembelian/update_tt', 'PurchaseController@update_tt');
 Route::post('fakturpembelian/getnotatt', 'PurchaseController@getnotatt');
 Route::post('fakturpembelian/savefakturpo', 'PurchaseController@savefakturpo');

@@ -399,8 +399,8 @@
                           </tr>
 
                           <tr>
-                              <td style='text-align: right'> <select class='form-control pajakpph' name="jenispph"> @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'> {{$pajak->nama}}</option> @endforeach </select> </td>
-                              <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph" readonly=""> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph" style='text-align: right' readonly="" name='hasilpph'> </div> </div> </td>
+                              <td style='text-align: right'> <select class='form-control pajakpph' name="jenispph"> @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}' data-acc="{{$pajak->acc1}}"> {{$pajak->nama}}</option> @endforeach </select> </td>
+                              <td> <div class="row"> <div class="col-md-4"> <input name="inputpph" type="text" class="form-control inputpph" readonly=""> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph" style='text-align: right' readonly="" name='hasilpph'> </div> </div> </td>
                           </tr>
 
                          <!--  <tr>
@@ -1909,9 +1909,10 @@
             closeOnConfirm: true
           },
           function(){
+            var accPph=$(".pajakpph").find(':selected').data('acc');            
         $.ajax({
-          type : "POST",
-          data : form_data2,
+          type : "GET",
+          data : form_data2+'&accPph='+accPph,
           url : post_url2,
           dataType : 'json',
           success : function (response){
@@ -2002,8 +2003,10 @@
           var amount = $('.amount').val();
           var diskon = $('.diskon').val();
           var biaya = $('.biaya').val();
+
           var acc_biaya = $('.acc_biaya').val();
           var acc_persediaan = $('.acc_persediaan').val();
+
           var keterangan = $('.keterangan').val();
          
        
@@ -2037,7 +2040,7 @@
 
                   "<td> <input type='text' class='form-control acc_biayaitem acc_biayaitem"+nourut+"' value='"+acc_biaya+"' name='acc_biaya[]'> </td>"+ //acc_biaya
 
-                  "<td> <input type='text' class='form-control acc_persediaanitem acc_persediaanitem"+nourut+"' value='"+acc_biaya+"' name='acc_persediaan[]'> </td>"+ //acc_persediaan
+                  "<td> <input type='text' class='form-control acc_persediaanitem acc_persediaanitem"+nourut+"' value='"+acc_persediaan+"' name='acc_persediaan[]'> </td>"+ //acc_persediaan
 
                   "<td> <input type='text' class='form-control keteranganitem keteranganitem"+nourut+"' value='"+keterangan+"'  name='keteranganitem[]'>  <input type='hidden' name='penerimaan[]' class='penerimaan' value='"+penerimaan+"'></td>" +
                   
