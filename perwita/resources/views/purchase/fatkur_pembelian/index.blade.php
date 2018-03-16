@@ -136,9 +136,13 @@
                             <i class="fa fa-trash" aria-hidden="true"></i>
                           </a> 
                           @else
-                           <a title="Hapus" class="btn btn-success" onclick="hapusData({{$faktur->fp_idfaktur}})">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                          </a>
+                            @if($faktur->fp_status == 'Approved')
+                           
+                            @else
+                              <a title="Hapus" class="btn btn-success" onclick="hapusData({{$faktur->fp_idfaktur}})">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                              </a>
+                            @endif
                           @endif
                         <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
                        </td> 

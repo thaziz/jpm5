@@ -59,7 +59,7 @@
                             <table class="table table-striped table-bordered">
                             <tr>
                               <th> Cabang </th>
-                              <td> select class='form-control chosen-select-width1 cabang' name="cabang">
+                              <td> <select class='form-control chosen-select-width1 cabang' name="cabang">
                                   <option value="">
                                     Pilih-Cabang
                                   </option>
