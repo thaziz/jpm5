@@ -98,7 +98,14 @@
                           @endif
                         </td>
                         <td align="left" align="40">
-                          <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailbiayapenerus', ['id' => $faktur->fp_nofaktur])}}"> Print Detail
+
+                          @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
+                            <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailbiayapenerus', ['id' => $faktur->fp_nofaktur])}}"> Print Detail</a>
+                          @else
+                            <a class="fa asw fa-print" align="center"  title="edit" href={{url('fakturpembelian/cetakfaktur/'.$faktur->fp_idfaktur.'')}}> Print Detail</a>
+                          @endif
+                        
+
                           </a>
                           <br>
                         </td>

@@ -12,7 +12,7 @@ use Auth;
 class agen_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi FROM agen a
+        $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi,a.komisi_agen FROM agen a
                     LEFT JOIN kota k ON k.id=a.id_kota  ";
         $list = DB::select(DB::raw($sql));
         $data = array();
@@ -50,7 +50,7 @@ class agen_Controller extends Controller
         $year = carbon::now()->format('y');
         $month = carbon::now()->format('m');
         $day = carbon::now()->format('d');
-         $kodecabang =  auth::user()->kode_cabang;
+         // $kodecabang =  auth::user()->kode_cabang;
 
         if ($request->ed_kode == null || $request->ed_kode == '') {
              $kodekode = DB::table('agen')->max('id_agen');
@@ -65,10 +65,10 @@ class agen_Controller extends Controller
 
 
                // return $kodekode;
-               if ($kodekode < 100) {
-                  $kodekode = '0000'.$kodekode;
+               if ($kodekode < 1000) {
+                  $kodekode = '000'.$kodekode;
                 }
-                 $kodekode =  'AG/'.$kodecabang.'/'.$day.$month.$year.'/'.$kodekode;
+                 $kodekode =  /*$kodecabang.*/'AG-'.'001'.'/'.$kodekode;
         }else{
            $kodekode = $request->ed_kode;
         }
@@ -79,7 +79,13 @@ class agen_Controller extends Controller
                else{
                   $idagenkode+=1;
                }
-
+        if ($request->ed_komisi_outlet == '') {
+            $request->ed_komisi_outlet = '0';
+        }
+        if ($request->ed_komisi_agen == '') {
+            $request->ed_komisi_agen = '0';
+        }
+        // return $request->ed_komisi_outlet;
         if ($crud == 'N') {
         $data = array(
                 'id_agen'=>strtoupper($idagenkode),
@@ -92,9 +98,11 @@ class agen_Controller extends Controller
                 'telpon' => strtoupper($request->ed_telpon),
                 'fax' => strtoupper($request->ed_fax),
                 'kode_cabang' => strtoupper($request->cb_cabang),
-                'komisi' => strtoupper($request->ed_komisi),
-                'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                /*'csf_penjualan' => strtoupper($request->cb_csf_penjualan),*/
+                'komisi' => strtoupper($request->ed_komisi_outlet),
+                'komisi_agen' => strtoupper($request->ed_komisi_agen),
+                'acc_penjualan' => strtoupper($request->ed_acc1),
+                'csf_penjualan' => strtoupper($request->ed_acc3),
+                'acc_hutang' => strtoupper($request->ed_acc2),
             );
         }elseif ($crud == 'E') {
              $data = array(
@@ -108,8 +116,11 @@ class agen_Controller extends Controller
                 'telpon' => strtoupper($request->ed_telpon),
                 'fax' => strtoupper($request->ed_fax),
                 'kode_cabang' => strtoupper($request->cb_cabang),
-                'komisi' => strtoupper($request->ed_komisi),
-                'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
+                'komisi' => strtoupper($request->ed_komisi_outlet),
+                'komisi_agen' => strtoupper($request->ed_komisi_agen),
+                'acc_penjualan' => strtoupper($request->ed_acc1),
+                'csf_penjualan' => strtoupper($request->ed_acc3),
+                'acc_hutang' => strtoupper($request->ed_acc2),
             );
         }
         if ($crud == 'N') {
