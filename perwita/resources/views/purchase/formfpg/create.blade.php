@@ -61,15 +61,22 @@
                               <th> Cabang </th>
                               <td> <select class='form-control chosen-select-width1 cabang' name="cabang">
                                   <option value="">
-                                    Pilih-Cabang
+                                    Pilih-Cabang 
                                   </option>
 
-                                  @foreach($data['cabang'] as $cabang)
+                                   @foreach($data['cabang'] as $cabang)
+                                    @if($cabang->kode == Auth::user()->kode_cabang)
+                                    <option selected="" value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @else
                                     <option value="{{$cabang->kode}}">
                                       {{$cabang->nama}}
                                     </option>
+                                    @endif
                                   @endforeach
-                                 </select>
+                                  </select>
+
                                  </td>
                             </tr>
 
@@ -622,6 +629,7 @@
     })
 
 
+     $('.cabang').attr('disabled' , true);
 
     $('.reload').click(function(){
       location.reload();
@@ -1565,9 +1573,10 @@
          $('.jenisbayar2').change(function(){
               var idsup = $(this).val();
               var idjenisbayar = $('.jenisbayar').val();
+              var cabang = $('.cabang').val();
                 $.ajax({
                   url : baseUrl + '/formfpg/changesupplier',
-                  data : {idsup, idjenisbayar},
+                  data : {idsup, idjenisbayar,cabang},
                   type : "get",
                   dataType : "json",
                   success : function(data) {
