@@ -195,7 +195,7 @@
                       </tr>
                       <tr>
                         <td> <b> Netto Hutang </b> </td>
-                        <td> <input type='text' class='form-control nettohutang_po' readonly="" name="nettohutang_po" style="text-align: right" value="{{ number_format($faktur->fp_netto, 2) }}"> <input type="hidden" name="idfaktur" value="{{$faktur->fp_idfaktur}}" >  </td>
+                        <td> <input type='text' class='form-control nettohutang_po' readonly="" name="nettohutang_po" style="text-align: right" value="{{ number_format($faktur->fp_netto, 2) }}"> <input type="hidden" name="idfaktur" value="{{$faktur->fp_idfaktur}}" class="idfaktur">  </td>
                       </tr>
                       @endforeach
 
@@ -766,7 +766,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-white" data-dismiss="modal">Tutup</button>
                                      <button class='btn btn-sm btn-warning editfakturpajak' type="button"> <i class='fa fa-pencil' id='editkeuangan'> </i> Edit </button>
-                                     <button type="button"  class="simpan btn btn-success" id="formPajak"> Simpan  </button>
+                                     <button type="button"  class="simpan btn btn-success " id="formPajak"> Simpan  </button>
                                   
                                 </div>
 						   </div>
@@ -777,7 +777,16 @@
 
                 <div class="box-footer">
                   <div class="pull-right">
-                        <button class="btn btn-sm btn-success simpan"> <i class="fas fa-save"></i> Simpan </button>  
+                        <table border="0">
+                          <tr>  
+                            <td> <div class="printpo"> </div> 
+                         </td>
+                          <td> &nbsp; </td>
+                          <td>  <button class="btn btn-sm btn-success simpanupdate"> <i class="fa fa-save"></i> &nbsp; Simpan </button> </td>
+                          
+                          </tr>
+                        </table>
+                       
 
                     </div>
                   </div>
@@ -1012,21 +1021,7 @@
           toastr.info("Tidak ada perubahan yang dibuat :)");
           return false;
         }
-       if(inputppn != '' && hasilppn != '' ) {
-          if(pajakmasukan == 'edit'|| pajakmasukan == 'tidaksukses'){
-          
-            toastr.info("Mohon maaf Anda belum menginputkan data pajak masukan :)");
-            return false;
-          }
-          else if(tandaterima == 'tidaksukses'){
-             toastr.info("Mohon maaf Anda belum menginputkan data form tanda terima :)");
-          return false;
-          }
-        }
-       if(tandaterima == 'tidaksukses'){
-          toastr.info("Mohon maaf Anda belum menginputkan data form tanda terima :)");
-          return false;
-        }
+      
         else{         
 
           event.preventDefault();
@@ -1054,6 +1049,10 @@
              if(response == 'sukses') {
                 alertSuccess(); 
              // window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
+             $('.simpanupdate').attr('disabled' , true);
+             idfaktur = $('.idfaktur').val();
+                html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+idfaktur+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+              $('.printpo').html(html);
              }
           },
           error : function(){
