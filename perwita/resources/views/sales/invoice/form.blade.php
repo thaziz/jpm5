@@ -190,13 +190,19 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Netto Detail</td>
+                                <td colspan="4">
+                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right" >
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
                                 <td colspan="4">
                                     <input type="text" name="diskon2" onblur="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Netto</td>
+                                <td style="padding-top: 0.4cm; text-align:right">Netto DPP</td>
                                 <td colspan="4">
                                     <input type="text" name="netto_total" id="netto_total" class="form-control netto_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
                                 </td>
@@ -466,7 +472,7 @@
         }else if (cb_jenis_ppn == 3){
             var ppn = 0;
             ppn = netto_total * 1.01 ;
-            ppn_netto = ppn - netto_total;
+            ppn_netto = netto_total ;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
         }else if (cb_jenis_ppn == 5){
             var ppn = 0;
@@ -543,10 +549,11 @@
 
     
         netto = temp_total-(temp_diskon2+temp_diskon);
-
-        $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
+        var ed_total = temp_total - parseFloat($('.diskon1').val());
+        $('.ed_total').val(accounting.formatMoney(ed_total,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto,"",2,'.',','));
+        $('.netto_detail').val(accounting.formatMoney(netto,"",2,'.',','));
         $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
 
         hitung_pajak_ppn();
