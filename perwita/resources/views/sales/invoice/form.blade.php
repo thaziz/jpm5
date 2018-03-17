@@ -9,7 +9,7 @@
 
 .disabled {
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 1;
 }
 .center{
     text-align: center;

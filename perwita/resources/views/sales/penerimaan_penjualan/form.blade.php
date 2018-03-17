@@ -6,6 +6,10 @@
 <style type="text/css">
       .id {display:none; }
       .cssright { text-align: right; }
+      .disabled {
+        pointer-events: none;
+        opacity: 0.7;
+       }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -16,6 +20,8 @@
                     <h5> PENERIMAAN PENJUALAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+
+                     <a href="../sales/penerimaan_penjualan" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
 
                 </div>
                
@@ -28,30 +34,6 @@
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
 
@@ -120,10 +102,14 @@
                                 </td>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td >
-                                    <select class="chosen-select-width cb_cabang" name="cb_cabang" onchange="nota_kwitansi()" >
-                                        <option></option>
+                                    <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                        <option>Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
-                                        <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @if(Auth()->user()->kode_cabang == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @else
+                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @endif
                                     @endforeach
                                     </select>
                                     <input type="hidden" name="ed_cabang" value="" >
@@ -168,7 +154,7 @@
                             
                         </div>
                         <div class="col-sm-5">
-                            <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Invoice</button>
+                            <button type="button" class="btn btn-info tambah_invoice" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Invoice</button>
                             <button type="button" class="btn btn-info " id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i>Add Biaya</button>
                             <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                         </div>
@@ -223,7 +209,7 @@
                 <!-- /.box-body -->
                 
                 <!-- modal -->
-                <div id="modal" class="modal" >
+                <div id="modal_invoice" class="modal" >
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -231,19 +217,8 @@
                                 <h4 class="modal-title">Pilih Nomor Invoice</h4>
                             </div>
                             <div class="modal-body">
-                                <form class="form-horizontal  kirim">
-                                    <table id="table_data_invoice" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Nomor Invoice</th>
-                                                <th>Tanggal</th>
-                                                <th style="width:20%">Jml Tagihan</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                <form class="form-horizontal  tabel_invoice">
+                                    
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -503,7 +478,25 @@ function nota_kwitansi() {
     })
 }
 
+// tambah invoice
+ $('.tambah_invoice').click(function(){
+    var cb_cabang = $('.cb_cabang').val();
 
+    $.ajax({
+        url:baseUrl + '/sales/cari_invoice',
+        data:{cb_cabang},
+        success:function(data){
+
+
+            $('.tabel_invoice').html(data);
+            $('#modal_invoice').modal('show');       
+        }
+    })
+
+ })
+
+
+  
 </script>
 
 @endsection

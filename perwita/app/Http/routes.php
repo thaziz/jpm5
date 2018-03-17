@@ -941,6 +941,9 @@ Route::get('sales/fakturpajakform', function(){
 Route::get('sales/penerimaan_penjualan', 'sales\penerimaan_penjualan_Controller@index');
 Route::get('sales/penerimaan_penjualan_form', 'sales\penerimaan_penjualan_Controller@form');
 Route::get('sales/nota_kwitansi', 'sales\penerimaan_penjualan_Controller@nota_kwitansi');
+Route::get('sales/cari_invoice', 'sales\penerimaan_penjualan_Controller@cari_invoice');
+Route::get('sales/datatable_kwitansi', 'sales\penerimaan_penjualan_Controller@datatable_kwitansi')->name('datatable_kwitansi');
+Route::get('sales/datatable_invoice', 'sales\penerimaan_penjualan_Controller@datatable_invoice')->name('datatable_invoice');
 
 
 //end penerimaan penjualan
