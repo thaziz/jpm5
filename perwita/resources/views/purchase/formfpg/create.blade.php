@@ -488,7 +488,7 @@
                                                     <option value=""> Pilih Data Bank </option>
 
                                                     @foreach($data['bank'] as $bank)
-                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}}"> {{$bank->mb_kode}}  </option>
+                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                                     @endforeach
                                                   
                                                 </select> </td>
@@ -501,14 +501,14 @@
                                     <div class="col-md-3">
                                     <fieldset>
                                         <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="checkbox7" type="checkbox" name="jenisbayarbank" value="CHECK/BG">
-                                            <label for="checkbox7">
+                                            <input id="jenisbayarbankcekbg" type="checkbox" name="jenisbayarbank" value="CHECK/BG" class="jenisbayarbankbg">
+                                            <label for="jenisbayarbankcekbg">
                                                 Cheque / BG
                                             </label>
                                         </div>
                                         <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="checkbox8" type="checkbox" checked="" name="jenisbayarbank" value="TF">
-                                            <label for="checkbox8">
+                                            <input id="jenisbayarbanktf" type="checkbox" checked="" name="jenisbayarbank" value="TF" class="jenisbayarbankbgtf">
+                                            <label for="jenisbayarbanktf">
                                                Transfer Bank
                                             </label>
                                         </div>
@@ -521,9 +521,11 @@
                                 <div class="col-md-6">
                                 <table class="table">
                                 <tr>
-                                  <th> No Cheque / BG </th>
-                                  <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2"> </td>
-                                
+                                  <th> <h4 class="checkbgtf" style=""> No Cheque / BG </h4> </th>
+                                  <td> <input type="text" class="input-sm form-control nocheck checkbgtf" type="button" data-toggle="modal" data-target="#myModal2">
+
+                                 </td>
+                                  
                                   <th> Nominal </th>
                                   <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
 
@@ -622,6 +624,34 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+      $('.tujuanbank').hide();
+
+      // BANK BG TF
+      $('.jenisbayarbankbg').change(function(){
+          $this = $(this);
+           if ($this.is(":checked")) {
+              $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
+           }
+           else {
+              $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
+
+           }
+      })
+
+       $('.jenisbayarbankbgtf').change(function(){
+        $this = $(this);
+          if ($this.is(":checked")) {
+           $('.jenisbayarbankbg').prop({ disabled: true, checked: false }); 
+           $('.checkbgtf').hide();
+           $('.tujuanbank').show();
+          }
+          else {
+           $('.jenisbayarbankbg').prop({ disabled: false, checked: false }); 
+           $('.checkbgtf').show();
+           $('.tujuanbank').hide();
+          }
+      })
+
      $('#formfpg').submit(function(){
         if(!this.checkValidity() ) 
           return false;
@@ -634,6 +664,11 @@
     $('.reload').click(function(){
       location.reload();
     })
+
+    $('#jenisbayarbankcekbg').click(function(){
+
+    })
+
 
     $('#formfpg').submit(function(event){
         var temp = 0;
@@ -1576,7 +1611,7 @@
               var cabang = $('.cabang').val();
                 $.ajax({
                   url : baseUrl + '/formfpg/changesupplier',
-                  data : {idsup, idjenisbayar,cabang},
+                  data : {idsup, idjenisbayar},
                   type : "get",
                   dataType : "json",
                   success : function(data) {
