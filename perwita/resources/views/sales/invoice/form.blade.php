@@ -9,7 +9,7 @@
 
 .disabled {
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 1;
 }
 .center{
     text-align: center;
@@ -190,13 +190,19 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Netto Detail</td>
+                                <td colspan="4">
+                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right" >
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
                                 <td colspan="4">
                                     <input type="text" name="diskon2" onblur="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Netto</td>
+                                <td style="padding-top: 0.4cm; text-align:right">Netto DPP</td>
                                 <td colspan="4">
                                     <input type="text" name="netto_total" id="netto_total" class="form-control netto_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
                                 </td>
@@ -451,33 +457,57 @@
    function hitung_pajak_ppn() {
        var cb_jenis_ppn = $('#cb_jenis_ppn').val();
        var netto_total  = $('.netto_total').val();
+       var netto_detail = $('.netto_detail').val();
+       var diskon2      = $('.diskon2').val();
        netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
        netto_total      = parseInt(netto_total)/100;
+
+       netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
+       netto_detail     = parseInt(netto_detail)/100;
+
+       diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+       diskon2          = parseInt(diskon2)/100;
+       hasil_netto      = parseFloat(netto_detail) - parseFloat(diskon2);
+
         if (cb_jenis_ppn == 1) {
+
             var ppn = 0;
             ppn = netto_total * 1.1 ;
             ppn_netto = ppn - netto_total;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 2){
+
             var ppn = 0;
             ppn = netto_total * 1.01 ;
             ppn_netto = ppn - netto_total;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 3){
+
             var ppn = 0;
-            ppn = netto_total * 1.01 ;
-            ppn_netto = ppn - netto_total;
+            ppn = 100/101 * hasil_netto ;
+            ppn_netto = hasil_netto - ppn;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 5){
+
             var ppn = 0;
-            ppn = netto_total * 1.1 ;
-            ppn_netto = ppn - netto_total;
+            ppn = 100/110 * hasil_netto ;
+            ppn_netto = hasil_netto - ppn ;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 4){
             var ppn = 0;
             ppn = netto_total * 1 ;
             ppn_netto = ppn - netto_total;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+
         }
 
 
@@ -543,10 +573,10 @@
 
     
         netto = temp_total-(temp_diskon2+temp_diskon);
-
         $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto,"",2,'.',','));
+        $('.netto_detail').val(accounting.formatMoney(temp_total,"",2,'.',','));
         $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
 
         hitung_pajak_ppn();

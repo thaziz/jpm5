@@ -5,6 +5,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
+use Carbon\Carbon;
+use Auth;
+use Yajra\Datatables\Datatables;
 
 
 class penerimaan_penjualan_Controller extends Controller
@@ -423,59 +426,12 @@ class penerimaan_penjualan_Controller extends Controller
         echo json_encode($result);
     }
 
-    public function index(){
-        $sql = "    SELECT pp.*,c.nama customer FROM penerimaan_penjualan pp
-                    LEFT JOIN customer c ON c.kode=pp.kode_customer ";
-        $data =  DB::select($sql);
-        return view('sales.penerimaan_penjualan.index',compact('data'));
-    }
+ 
 
-    public function form($nomor=null){
-        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
-        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
-        $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
-        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
-        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
-        $kas_bank = DB::select(" SELECT kode,nama FROM akun WHERE jenis='KAS' OR jenis='BANK' ORDER BY nama ASC ");
-        $akun_biaya = DB::select(" SELECT * FROM akun_biaya ORDER BY nama ASC ");
-        if ($nomor != null) {
-            $data = DB::table('penerimaan_penjualan')->where('nomor', $nomor)->first();
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM penerimaan_penjualan_d WHERE nomor_penerimaan_penjualan='$nomor' "))->first();
-        }else{
-            $data = null;
-            $jml_detail = 0;
-        }
-        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun_biaya' ));
-    }
+    
 
     public function tampil_invoice(Request $request) {
-        $customer = $request->kode_customer;
-        $kode_cabang = $request->kode_cabang;
-        $sql = "    SELECT nomor, tanggal, total_tagihan - jml_bayar_memorial sisa_tagihan,total_tagihan FROM invoice i where 
-					total_tagihan > jml_bayar_memorial+(select COALESCE(SUM(debet-kredit),0) from nota_debet_kredit where nomor_invoice=i.nomor)
-                    AND kode_customer='$customer' AND kode_cabang='$kode_cabang' ";
-
-        $list = DB::select(DB::raw($sql));
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <input type="checkbox"  id="'.$data[$i]['nomor'].'" class="btnpilih" tabindex="-1" > ';         
-            // // add new text
-            // $data[$i]['jml_bayar'] = '  <input type="text"  id="ed_'.$data[$i]['nomor'].'" name="ed_jumlah_bayar[]" class="form-control angka" style="text-align:right">
-            //                             <input type="hidden"  id="ed_bayar'.$data[$i]['nomor'].'" value="'.$data[$i]['sisa_tagihan'].'">
-            //                             <input type="hidden"  name="ed_nomor_invoice[]" value="'.$data[$i]['nomor'].'" >
-            //                             ';
-            // add button info
-            $data[$i]['btn_info'] = ' <button type="button" id="'.$data[$i]['nomor'].'" name="'.$data[$i]['nomor'].'" data-toggle="tooltip" title="Info" class="btn btn-success btn-xs btninfo" tabindex="-1"><i class="glyphicon glyphicon-info-sign"></i></button> '
-                                ;
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
+       
 
     }
 
@@ -618,5 +574,66 @@ class penerimaan_penjualan_Controller extends Controller
 		}     
 		return $temp;
     }
+
+    public function form($nomor=null)
+    {
+        $comp = Auth::user()->kode_cabang;
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
+        $akun = DB::table('d_akun')
+                  ->where('id_parrent','1001')
+                  ->where('kode_cabang',$comp)
+                  ->get();
+        $tgl  = Carbon::now()->format('d/m/Y');
+       
+        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl' ));
+    }
+
+
+    public function index()
+    {
+        
+        return view('sales.penerimaan_penjualan.index',compact('data'));
+    }
+
+
+    public function datatable_kwitansi()
+    {
+        return Datatables::of(DB::table('penerimaan_penjualan'))
+                        ->addColumn('tes', function ($this) {
+                                   return     '<div class="btn-group">
+                                        <button type="button" onclick="hapus('.$this->nomor.')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                        <button type="button" onclick="edit('.$this->nomor.')" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button>
+                                        </div>';
+                            })
+                        ->make(true);
+    }
+    public function nota_kwitansi(request $request)
+    {
+        $bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
+        $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from kwitansi
+                                        WHERE k_kode_cabang = '$request->cabang'
+                                        AND to_char(k_tanggal,'MM') = '$bulan'
+                                        AND to_char(k_tanggal,'YY') = '$tahun'");
+        $index = (integer)$cari_nota[0]->id + 1;
+        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+        $nota = 'KWT' . $request->cabang . $bulan . $tahun . $index;
+    }
+    public function cari_invoice(request $request)
+    {   
+
+        return view('sales.penerimaan_penjualan.tabel_invoice');
+    }
+    public function datatable_invoice()
+    {
+        
+    }
+
+
 
 }
