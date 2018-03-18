@@ -431,10 +431,15 @@
 
    function hitung_total_tagihan(){
         var cb_jenis_ppn = $('#cb_jenis_ppn').val();
-
+        var diskon2      = $('.diskon2').val();
         var netto_total  = $('.netto_total').val();
+        var netto_detail = $('.netto_detail').val();
         netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
         netto_total      = parseInt(netto_total)/100;
+        netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
+        netto_detail     = parseInt(netto_detail)/100;
+        diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+        diskon2          = parseInt(diskon2)/100;
 
         var ppn  = $('.ppn').val();
         ppn      = ppn.replace(/[^0-9\-]+/g,"");
@@ -446,6 +451,8 @@
         if (cb_jenis_ppn == 1 || cb_jenis_ppn == 2 || cb_jenis_ppn == 0) {
             var total_tagihan = netto_total+ppn-pph;
         }else if (cb_jenis_ppn == 3 || cb_jenis_ppn == 5) {
+            var total_tagihan = netto_detail-diskon2-pph;
+        }else if (cb_jenis_ppn == 4) {
             var total_tagihan = netto_total-pph;
         }
 
@@ -562,6 +569,7 @@
         temp_diskon2     = parseFloat(temp_diskon2)
 
 
+
         var netto = 0 ;
         $('.dd_total').each(function(){
             temp_total += parseFloat($(this).val());
@@ -573,10 +581,11 @@
 
     
         netto = temp_total-(temp_diskon2+temp_diskon);
+        netto_diskon1 = temp_total - temp_diskon;
         $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
-        $('.netto_total').val(accounting.formatMoney(netto,"",2,'.',','));
-        $('.netto_detail').val(accounting.formatMoney(temp_total,"",2,'.',','));
+        $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
+        $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
 
         hitung_pajak_ppn();

@@ -254,7 +254,7 @@ public function cari_do_invoice(request $request)
                     }
                 }
             }
-
+            $temp = array_values($temp);
             $data = $temp;
             
         }else{
@@ -416,6 +416,7 @@ public function simpan_invoice(request $request)
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_netto'              =>  $ed_total,
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
@@ -496,6 +497,7 @@ public function simpan_invoice(request $request)
                                           'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
                                           'i_total'              =>  $total_tagihan,
                                           'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
@@ -572,6 +574,7 @@ public function simpan_invoice(request $request)
                                           'i_total'              =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_netto'              =>  $ed_total,
@@ -657,6 +660,7 @@ public function simpan_invoice(request $request)
                                           'i_total'              =>  $total_tagihan,
                                           'i_total_tagihan'      =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
+                                          'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_netto'              =>  $ed_total,

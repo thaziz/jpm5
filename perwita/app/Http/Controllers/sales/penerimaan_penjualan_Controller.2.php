@@ -602,11 +602,17 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function datatable_kwitansi()
     {
-        return Datatables::of(DB::table('penerimaan_penjualan'))
-                        ->addColumn('tes', function ($this) {
+        $cabang = Auth::user()->kode_cabang;
+        $data = DB::table('penerimaan_penjualan')
+                  ->where('kode_cabang',$cabang)
+                  ->get();
+        $data = collect($data);
+
+        return Datatables::of($data)
+                        ->addColumn('tes', function ($data) {
                                    return     '<div class="btn-group">
-                                        <button type="button" onclick="hapus('.$this->nomor.')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-                                        <button type="button" onclick="edit('.$this->nomor.')" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button>
+                                        <button type="button" onclick="hapus('.$data->nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                        <button type="button" onclick="edit('.$data->nomor.')" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
                                         </div>';
                             })
                         ->make(true);
@@ -616,21 +622,95 @@ class penerimaan_penjualan_Controller extends Controller
         $bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
 
-        $cari_nota = DB::select("SELECT  substring(max(i_nomor),11) as id from kwitansi
+        $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
                                         WHERE k_kode_cabang = '$request->cabang'
                                         AND to_char(k_tanggal,'MM') = '$bulan'
                                         AND to_char(k_tanggal,'YY') = '$tahun'");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
         $nota = 'KWT' . $request->cabang . $bulan . $tahun . $index;
+
+        return response()->json(['nota'=>$nota]);
     }
     public function cari_invoice(request $request)
     {   
-
-        return view('sales.penerimaan_penjualan.tabel_invoice');
+        $cabang       = $request->cb_cabang;
+        $customer     = $request->cb_customer;
+        $customer     = $request->cb_customer;
+        $array_simpan = $request->array_simpan;
+        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan'));
     }
-    public function datatable_invoice()
+    public function datatable_detail_invoice(request $request)
+    {   
+        // dd($request->all());
+        // return $request->customer;
+        $temp  = DB::table('invoice')
+                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->where('i_kode_customer',$request->customer)
+                  ->where('i_kode_cabang',$request->cabang)
+                  ->get();
+
+        $temp1 = DB::table('invoice')
+                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->where('i_kode_customer',$request->customer)
+                  ->where('i_kode_cabang',$request->cabang)
+                  ->get();
+
+                  
+        for ($i=0; $i < count($temp1); $i++) { 
+            if ($temp1[$i]->k_nomor != null) {
+                unset($temp[$i]);
+            } 
+        }
+
+        $temp = array_values($temp);
+
+
+        if (isset($request->array_simpan)) {
+
+            for ($i=0; $i < count($temp1); $i++) { 
+                for ($a=0; $a < count($request->array_simpan); $a++) { 
+                    if ($request->array_simpan[$a] == $temp1[$i]->i_nomor) {
+                        unset($temp[$i]);
+                    }
+                    
+                }
+            }
+            $temp = array_values($temp);
+            $data = $temp;
+            
+        }else{
+
+            $data = $temp;
+        }
+
+        $data = collect($data);
+
+        return Datatables::of($data)
+                        ->addColumn('tes', function ($data) {
+                                   return     '<input type="checkbox" class="child_check">';
+                        })
+                        ->addColumn('nomor', function ($data) {
+                                return  $data->i_nomor .'<input type="hidden" class="nomor_inv" value="'. $data->i_nomor .'" >';
+                        })
+                        ->addColumn('i_sisa', function ($data) {
+                                return number_format($data->i_sisa_pelunasan,2,',','.');
+                        })
+                        ->addColumn('i_tagihan', function ($data) {
+                                return number_format($data->i_total_tagihan,2,',','.');
+                        })
+                        ->make(true);
+    }
+
+    public function append_invoice(request $request)
     {
+        // dd($request->all());
+
+        $data = DB::table('invoice')
+                  ->whereIn('i_nomor',$request->nomor)
+                  ->get();
+
+        return response()->json(['data'=>$data]);
         
     }
 
