@@ -479,16 +479,16 @@
         if (cb_jenis_ppn == 1) {
 
             var ppn = 0;
-            ppn = netto_total * 1.1 ;
-            ppn_netto = ppn - netto_total;
+            ppn = hasil_netto * 1.1 ;
+            ppn_netto = ppn - hasil_netto;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
             $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
 
         }else if (cb_jenis_ppn == 2){
 
             var ppn = 0;
-            ppn = netto_total * 1.01 ;
-            ppn_netto = ppn - netto_total;
+            ppn = hasil_netto * 1.01 ;
+            ppn_netto = ppn - hasil_netto;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
             $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
 
@@ -497,23 +497,23 @@
             var ppn = 0;
             ppn = 100/101 * hasil_netto ;
             ppn_netto = hasil_netto - ppn;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
-            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','))
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','));
 
         }else if (cb_jenis_ppn == 5){
 
             var ppn = 0;
             ppn = 100/110 * hasil_netto ;
             ppn_netto = hasil_netto - ppn ;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
-            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','))
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','));
 
         }else if (cb_jenis_ppn == 4){
             var ppn = 0;
             ppn = netto_total * 1 ;
             ppn_netto = ppn - netto_total;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
-            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','));
 
         }
 
@@ -743,7 +743,7 @@
 
           $.ajax({
           url:baseUrl + '/sales/simpan_invoice',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
