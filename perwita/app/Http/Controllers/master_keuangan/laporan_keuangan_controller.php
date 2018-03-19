@@ -204,7 +204,7 @@ class laporan_keuangan_controller extends Controller
 
             return view("laporan_neraca.index")->withDatat1($datat1)->withDatat2($datat2)->withRequest($request)->withThrottle($throttle)->withMydatatotal1($mydatatotal1)->withMydatatotal2($mydatatotal2);
         }else{
-            $data = []; $no = 0; $request = $request->all();
+            $data = []; $no = 0; $request = $request->all(); $data_akun = []; $data_akun_no = 0; $total_in_header = [];
 
             $dateToSearch = ($request["m"] < 10) ? str_replace("0", "", $request["m"]) : $request["m"];
             // return $dateToSearch;
@@ -258,11 +258,26 @@ class laporan_keuangan_controller extends Controller
 
                         $dataTotal += ($total->total + $transaksi->total);
 
+                        $data_akun[$data_akun_no] = [
+                            "nomor_id"   => $dataDetail->nomor_id,
+                            "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
+                            "id_akun"    => $akun->id_akun,
+                            "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
+                            "total"      => $total->total + $transaksi->total
+                        ];
+
+                        $data_akun_no++;
+
+                        if(array_key_exists($dataDetail->id_parrent, $total_in_header))
+                            $total_in_header[$dataDetail->id_parrent] += ($total->total + $transaksi->total);
+                            // $total_in_header[$dataDetail->id_parrent] = $total_in_header[$dataDetail->id_parrent]." + ".($total->total + $transaksi->total);
                         //return $dataTotal;
                     }
 
                     // return $dataTotal;
 
+                }else if($dataDetail->jenis == "1"){
+                    $total_in_header[$dataDetail->nomor_id] = 0;
                 }
 
                 $data[$no] = [
@@ -271,19 +286,21 @@ class laporan_keuangan_controller extends Controller
                     "type"              => $dataDetail->type,
                     "jenis"             => $dataDetail->jenis,
                     "parrent"           => $dataDetail->id_parrent,
-                    "total"             => $dataTotal
+                    "total"             => $dataTotal,
+                    "level"             => $dataDetail->level
                 ];
 
                 $no++;
             }
 	
-           	// return json_encode($data);
+           	// return json_encode($total_in_header);
+            // return json_encode($data_akun);
 
             $mydatatotal = $this->get_total($data, "neraca");
 
             // return json_encode($mydatatotal);
 
-            return view("laporan_neraca.index")->withData($data)->withMydatatotal($mydatatotal)->withRequest($request)->withThrottle($throttle);
+            return view("laporan_neraca.index")->withData($data)->withMydatatotal($mydatatotal)->withRequest($request)->withThrottle($throttle)->withData_akun($data_akun)->withTotal_in_header($total_in_header);
         }
     }
 

@@ -187,15 +187,24 @@
                       <tr>
                          <td style='text-align: right'>
                           <select class='form-control pajakpph_po edit' name="jenispph_po" disabled="">
-                            @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}' @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+                            @if($faktur->fp_pph != '')
+                              @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'   @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+  
+                            @else
+                              <option value=""> Pilih Pajak PPH
+                              </option>
 
+                              @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'   @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+                              
+                            @endif
+                            
                           </select> </td>
 
                          <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph_po" readonly=""> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph_po" style='text-align: right' readonly="" name='hasilpph_po' value="{{ number_format($faktur->fp_pph, 2) }}"> </div> </div> </td>
                       </tr>
                       <tr>
                         <td> <b> Netto Hutang </b> </td>
-                        <td> <input type='text' class='form-control nettohutang_po' readonly="" name="nettohutang_po" style="text-align: right" value="{{ number_format($faktur->fp_netto, 2) }}"> <input type="hidden" name="idfaktur" value="{{$faktur->fp_idfaktur}}" >  </td>
+                        <td> <input type='text' class='form-control nettohutang_po' readonly="" name="nettohutang_po" style="text-align: right" value="{{ number_format($faktur->fp_netto, 2) }}"> <input type="hidden" name="idfaktur" value="{{$faktur->fp_idfaktur}}" class="idfaktur">  </td>
                       </tr>
                       @endforeach
 
@@ -229,7 +238,13 @@
                           <!--  <button class="btn btn-primary" style="margin-right: 10px;" type="text" id="createmodal" data-toggle="modal" data-target="#myModal5"><i class="fa fa-book">&nbsp;Buat Tanda Terima</i></button> 
                        &nbsp;
                         -->
-                           <a class="btn btn-sm btn-info " href="{{url('fakturpembelian/cetaktt/'.$data['tt'][0]->tt_idform.'')}}" "><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>   &nbsp; <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+                           <a class="btn btn-sm btn-info " href="{{url('fakturpembelian/cetaktt/'.$data['tt'][0]->tt_idform.'')}}" "><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>   &nbsp;
+
+                           @if($data['faktur'][0]->fp_status == 'Approved')
+
+                           @else
+                             <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+                           @endif
                           
                         </td>
                       </tr>
@@ -766,7 +781,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-white" data-dismiss="modal">Tutup</button>
                                      <button class='btn btn-sm btn-warning editfakturpajak' type="button"> <i class='fa fa-pencil' id='editkeuangan'> </i> Edit </button>
-                                     <button type="button"  class="simpan btn btn-success" id="formPajak"> Simpan  </button>
+                                     <button type="button"  class="simpan btn btn-success " id="formPajak"> Simpan  </button>
                                   
                                 </div>
 						   </div>
@@ -777,7 +792,16 @@
 
                 <div class="box-footer">
                   <div class="pull-right">
-                        <button class="btn btn-sm btn-success simpan"> <i class="fas fa-save"></i> Simpan </button>  
+                        <table border="0">
+                          <tr>  
+                            <td> <div class="printpo"> </div> 
+                         </td>
+                          <td> &nbsp; </td>
+                          <td>  <button class="btn btn-sm btn-success simpanupdate"> <i class="fa fa-save"></i> &nbsp; Simpan </button> </td>
+                          
+                          </tr>
+                        </table>
+                       
 
                     </div>
                   </div>
@@ -812,7 +836,7 @@
     $('.removes-btn').hide();
     $('.removes-itm').hide();
     $('.tmbh-po').hide();
-    $('.simpan').hide();
+    $('.simpanupdate').hide();
     $('#createmodal_tt').hide();
     $('#createmodal_pajakpo').hide();
     $('.tmbh-brg').hide();
@@ -1012,21 +1036,7 @@
           toastr.info("Tidak ada perubahan yang dibuat :)");
           return false;
         }
-       if(inputppn != '' && hasilppn != '' ) {
-          if(pajakmasukan == 'edit'|| pajakmasukan == 'tidaksukses'){
-          
-            toastr.info("Mohon maaf Anda belum menginputkan data pajak masukan :)");
-            return false;
-          }
-          else if(tandaterima == 'tidaksukses'){
-             toastr.info("Mohon maaf Anda belum menginputkan data form tanda terima :)");
-          return false;
-          }
-        }
-       if(tandaterima == 'tidaksukses'){
-          toastr.info("Mohon maaf Anda belum menginputkan data form tanda terima :)");
-          return false;
-        }
+      
         else{         
 
           event.preventDefault();
@@ -1054,6 +1064,10 @@
              if(response == 'sukses') {
                 alertSuccess(); 
              // window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
+             $('.simpanupdate').attr('disabled' , true);
+             idfaktur = $('.idfaktur').val();
+                html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+idfaktur+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+              $('.printpo').html(html);
              }
           },
           error : function(){
@@ -1438,7 +1452,7 @@
                 jumlah = parseFloat(parseFloat(jmlbiayaqty) - parseFloat(hsl)).toFixed(2);
               }
               else {
-                jumlah = hasiltotal;
+                jumlah = jmlbiayaqty;
               }
 
               //DPP
@@ -1664,7 +1678,7 @@
                 jumlah = parseFloat(parseFloat(jmlbiayaqty) - parseFloat(hsl)).toFixed(2);
               }
               else {
-                jumlah = hasiltotal;
+                jumlah = jmlbiayaqty;
               }
 
               //DPP
@@ -4552,7 +4566,7 @@ $('.ubah').click(function(){
   $('.edit').attr('disabled' , false);
    $('.tmbh-po').show();
    $('.tmbh-brg').show();
-   $('.simpan').show();
+   $('.simpanupdate').show();
    $('#createmodal_pajakpo').show();
    $('#createmodal_tt').show();
     

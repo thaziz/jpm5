@@ -77,7 +77,7 @@
         </ol>
     </div>
 
-    <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
+    {{-- <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
       <table border="0" width="100%" id="table-filter">
         <tr>
           <th width="7%" class="text-center">Pencarian Berdasarkan : </th>
@@ -96,7 +96,7 @@
           </td>
         </tr>
       </table>
-    </div>
+    </div> --}}
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -192,7 +192,24 @@
     </div>
 </div>
 
- <!-- modal -->
+   <!-- modal -->
+<div id="modal_view" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Tampilan Laba Rugi</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body" style="padding: 0px;padding-left: 15px;">
+        <center class="text-muted" style="padding: 10px;">Sedang Mengambil Data...</center>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- modal -->
+
+<!-- modal -->
 <div id="modal_tambah_akun" class="modal">
   <div class="modal-dialog" style="width: 70%">
     <div class="modal-content">
@@ -228,24 +245,7 @@
 </div>
   <!-- modal -->
 
-   <!-- modal -->
-<div id="modal_view" class="modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Tampilan Laba Rugi</h4>
-        <input type="hidden" class="parrent"/>
-      </div>
-      <div class="modal-body" style="padding: 0px;padding-left: 15px;">
-        <center class="text-muted" style="padding: 10px;">Sedang Mengambil Data...</center>
-      </div>
-    </div>
-  </div>
-</div>
-  <!-- modal -->
-
-<div id="modal_detail" class="modal">
+  <div id="modal_detail" class="modal">
     <div class="modal-dialog" style="width: 50%;">
       <div class="modal-content">
         <div class="modal-header">
@@ -364,7 +364,7 @@
       //alert($("#modal_tambah_akun .modal-header .parrent").val())
 
       $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/add", {
-         timeout: 5000,
+         timeout: 10000,
          dataType: "html",
          success: function (data) {
              $("#modal_tambah_akun .modal-body").html(data);
@@ -385,7 +385,7 @@
       $("#modal_edit_akun .modal-body").html('<center class="text-muted" style="padding: 10px;">Menyiapkan Form</center>');
 
       $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/edit/"+$(this).data("id"), {
-         timeout: 5000,
+         timeout: 10000,
          dataType: "html",
          success: function (data) {
              $("#modal_edit_akun .modal-body").html(data);

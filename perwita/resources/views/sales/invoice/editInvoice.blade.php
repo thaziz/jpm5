@@ -25,7 +25,7 @@
                     <h5> INVOICE DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -54,16 +54,16 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota_invoice" id="nota_invoice" value="{{$data->i_nomor}}" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">
-                                        <select class="form-control chosen-select-width cabang " disabled="" name="cb_cabang">
+                                        <select class="form-control cabang disabled"  name="cb_cabang">
                                         @foreach ($cabang as $row)
-                                            @if(Auth::user()->kode_cabang == $row->kode)
+                                            @if($data->i_kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                             @else
                                             <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -76,39 +76,41 @@
                             <tr>
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4">
-                                    <select class="chosen-select-width cus_disabled" oncha  name="customer" id="customer" style="width:100%" >
+                                    <select class="cus_disabled form-control disabled"  name="ed_customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
-                                        <option value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
+                                       @if($row->kode == $data->i_kode_customer)
+                                        <option selected="" value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
+                                       @endif
                                     @endforeach
                                     </select>
-                                    <input type="hidden" class="ed_customer" name="ed_customer" value="" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td >
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl" name="tgl" value="{{$tgl}}">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                        <input readonly="" type="text" class="form-control tgl disabled " name="tgl" value="{{\Carbon\Carbon::parse($data->i_tanggal)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
                                 <td>
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" readonly="" class="ed_jatuh_tempo form-control" name="ed_jatuh_tempo" value="">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                        <input type="text" readonly="" class="ed_jatuh_tempo form-control disabled " name="ed_jatuh_tempo" value="{{\Carbon\Carbon::parse($data->i_jatuh_tempo)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Pendapatan</td>
                                 <td colspan="3">
-                                    <select class="form-control"  name="cb_pendapatan" id="cb_pendapatan" >
-                                        <option value="0">Pilih - Pendapatan</option>
-                                        <option value="PAKET">PAKET</option>
-                                        <option value="KARGO">KARGO</option>
-                                        <option value="KORAN">KORAN</option>
-                                    </select>
-                                    <input type="hidden" class="ed_pendapatan" name="ed_pendapatan" value="" >
+                                    <input type="text" readonly="" id="cb_pendapatan" class="form-control ed_pendapatan" name="ed_pendapatan" value="{{$data->i_pendapatan}}" >
+
                                 </td>
                                 <td style="width:110px; padding-top: 0.4cm;display:none" >Type Kiriman</td>
                                 <td style="display:none;>
@@ -121,13 +123,12 @@
                                         <option value="KILOGRAM">KILOGRAM</option>
                                         <option value="KOLI">KOLI</option>
                                     </select>
-                                    <input type="hidden" name="ed_type_kiriman" value="{{ $data->type_kiriman or null }}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="4">
-                                    <input type="text" name="ed_keterangan" placeholder="harap diisi" class="form-control ed_keterangan" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="ed_keterangan" placeholder="harap diisi" class="form-control ed_keterangan" style="text-transform: uppercase" value="{{$data->i_keterangan}}" >
                                 </td>
                             </tr>
                             <tr>
@@ -170,6 +171,65 @@
                         </tr>
                     </thead>
                     <tbody>
+                         @foreach($data_dt as $i => $val)
+                          @if($data->i_pendapatan == 'KORAN')
+                          <tr>
+                            <td>
+                                {{$i+1}}
+                            </td>
+                            <td>
+                                {{$val->id_nomor_do}}
+                                <input class="nomor_detail" type="hidden" value="{{$val->id_nomor_do}}" name="do_detail[]">
+                            </td>
+                            <td>
+                                {{$val->tanggal}}
+                                <input type="hidden" class="dd_id" value="{{$val->id_nomor_do_dt}}" name="do_id[]">
+                            </td>
+                            <td>
+                                {{$val->dd_keterangan}}
+                                <input type="hidden" class="acc_penjualan" value="{{$val->id_acc_penjualan}}" name="akun[]">
+                            </td>
+                            <td>
+                                {{$val->id_jumlah}}
+                                <input type="hidden"  value="{{$val->id_jumlah}}" name="dd_jumlah[]">
+                            </td>
+                            <td>
+                                {{number_format($val->id_harga_satuan, 2, ",", ".")}}
+                                <input type="hidden" class="dd_harga" value="{{$val->id_harga_satuan}}" name="dd_harga[]">
+                            </td>
+                            <td>
+                                {{number_format($val->id_harga_bruto, 2, ",", ".")}}
+                                <input type="hidden" class="dd_total" value="{{$val->id_harga_bruto}}" name="dd_total[]">
+                            </td>
+                            <td>
+                                {{number_format($val->id_diskon, 2, ",", ".")}}
+                                <input class="dd_diskon" type="hidden" value="{{$val->id_diskon}}" name="dd_diskon[]">
+                            </td>
+                            <td>
+                                {{number_format($val->id_harga_netto, 2, ",", ".")}}
+                                <input type="hidden" class="harga_netto" value="{{$val->id_harga_netto}}" name="harga_netto[]">
+                            </td>
+                            <td>
+                                <button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus">
+                                    <label class="fa fa-trash"></label>
+                                </button>
+                            </td>
+                          </tr>
+                          @else
+                          <tr>
+                            <td>{{$i+1}}</td>
+                            <td>{{$val->i_nomor_do}}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          @endif
+                        @endforeach
                     </tbody>
                   </table>
                 </div>
@@ -198,11 +258,11 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
                                 <td colspan="4">
-                                    <input type="text" name="diskon2" onblur="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" name="diskon2" onblur="hitung()" value="{{$data->i_diskon2}}"   class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Netto DPP</td>
+                                <td style="padding-top: 0.4cm; text-align:right">Netto</td>
                                 <td colspan="4">
                                     <input type="text" name="netto_total" id="netto_total" class="form-control netto_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
                                 </td>
@@ -211,11 +271,38 @@
                                 <td style="width:110px; padding-top: 0.4cm; text-align:right">Jenis PPN</td>
                                 <td>
                                     <select class="form-control" name="cb_jenis_ppn" onchange="hitung_pajak_ppn()" id="cb_jenis_ppn" >
-                                        <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
-                                        <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
-                                        <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
-                                        <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
-                                        <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @if($data->i_jenis_ppn == 1)
+                                            <option selected="" value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @elseif($data->i_jenis_ppn == 2)
+                                            <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option selected="" value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @elseif($data->i_jenis_ppn == 3)
+                                            <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option selected="" value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @elseif($data->i_jenis_ppn == 4)
+                                            <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option selected="" value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @elseif($data->i_jenis_ppn == 5)
+                                            <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option selected="" value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @endif
+
                                     </select>
                                 </td>
                                 <td style="padding-top: 0.4cm; text-align:right">PPN</td>
@@ -229,7 +316,11 @@
                                     <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="pajak_lain" id="pajak_lain" >
                                         <option value="0"  >Pilih Pajak Lain-lain</option>
                                         @foreach($pajak as $val)
-                                            <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                            @if($data->i_kode_pajak == $val->kode)
+                                                <option selected="" value="{{$val->kode}}">{{$val->nama}}</option>
+                                            @else
+                                                <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </td>
@@ -306,7 +397,15 @@
 <script type="text/javascript">
     // global variabel
     var array_simpan = [];
-
+    @if($data->i_pendapatan == 'KORAN')
+        @foreach($data_dt as $i=>$val)
+            array_simpan.push("{{$val->id_nomor_do_dt}}");
+        @endforeach
+    @else
+        @foreach($data_dt as $i=>$val)
+            array_simpan.push("{{$val->id_nomor_do}}");
+        @endforeach
+    @endif
     // chosen select
     var config = {
                    '.chosen-select'           : {},
@@ -347,15 +446,7 @@
     });
     //ajax cari nota
     $(document).ready(function(){
-        var cabang = $('.cabang').val();
-        $.ajax({
-            url:baseUrl+'/sales/nota_invoice',
-            data:{cabang},
-            dataType : 'json',
-            success:function(response){
-                $('#nota_invoice').val(response.nota);
-            }
-        });
+        hitung();
     });
 
     //ajax jatuh  tempo
@@ -399,6 +490,7 @@
         var ed_keterangan = $('#ed_keterangan').val();
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
+        var id            = "{{$id}}";
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -413,8 +505,8 @@
 
         if (index == -1) {
             $.ajax({
-              url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan},
+              url:baseUrl + '/sales/cari_do_edit_invoice',
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,id},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);
@@ -429,7 +521,7 @@
    // Menghitung pajak
 
 
-   function hitung_total_tagihan(){
+ function hitung_total_tagihan(){
         var cb_jenis_ppn = $('#cb_jenis_ppn').val();
         var diskon2      = $('.diskon2').val();
         var netto_total  = $('.netto_total').val();
@@ -456,9 +548,10 @@
             var total_tagihan = netto_total-pph;
         }
 
-        $('.total_tagihan').val(accounting.formatMoney(total_tagihan,"",2,'.',','))
+        $('.total_tagihan').val(accounting.formatMoney(total_tagihan,"",2,'.',','));
 
     }
+
 
 
    function hitung_pajak_ppn() {
@@ -475,6 +568,7 @@
        diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
        diskon2          = parseInt(diskon2)/100;
        hasil_netto      = parseFloat(netto_detail) - parseFloat(diskon2);
+       console.log(hasil_netto);
 
         if (cb_jenis_ppn == 1) {
 
@@ -497,23 +591,23 @@
             var ppn = 0;
             ppn = 100/101 * hasil_netto ;
             ppn_netto = hasil_netto - ppn;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
-            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','));
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','))
 
         }else if (cb_jenis_ppn == 5){
 
             var ppn = 0;
             ppn = 100/110 * hasil_netto ;
             ppn_netto = hasil_netto - ppn ;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
-            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','));
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','))
 
         }else if (cb_jenis_ppn == 4){
             var ppn = 0;
             ppn = netto_total * 1 ;
             ppn_netto = ppn - netto_total;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
-            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','));
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
 
         }
 
@@ -521,7 +615,7 @@
        hitung_total_tagihan();
    }
 
-   function hitung_pajak_lain(){
+function hitung_pajak_lain(){
 
        var netto_total  = $('.netto_total').val();
        var pajak_lain   = $('.pajak_lain').val();
@@ -560,7 +654,7 @@
     $(".diskon2").focus(function() {
      $(this).select();
     });
-   function hitung(){
+  function hitung(){
         var temp_total   = 0 ;
         var temp_diskon  = 0 ;
         var temp_diskon  = 0 ;
@@ -591,7 +685,6 @@
         hitung_pajak_ppn();
         hitung_pajak_lain();
    }
-
    
    // untuk mengirim yang di check ke controller dengan ajax
    var index_detail = 0;
@@ -644,8 +737,8 @@
                     }
                     hitung();
                     
-                    $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
-                    $('#cb_pendapatan').attr('disabled',true);
+                    // $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
+                    // $('#cb_pendapatan').attr('disabled',true);
                     ///////////////////////////////////////////
                 }else if (response.jenis == 'PAKET' || jenis == 'KARGO') {
                     for(var i = 0 ; i < response.data.length;i++){
@@ -686,7 +779,7 @@
         var jenis = $('#cb_pendapatan').val();
         var par = $(o).parents('tr');
         var length = table_detail.page.info().recordsTotal;
-
+        console.log(jenis);
         if (jenis == 'KORAN') {
             var arr = $(par).find('.dd_id')
             var index = array_simpan.indexOf(arr);
@@ -700,11 +793,7 @@
             table_detail.row(par).remove().draw(false);
         }
 
-        if (length == 1) {
-            
-            $('.cus_disabled').attr('disabled',false).trigger("chosen:updated");
-            $('#cb_pendapatan').attr('disabled',false);
-        }
+
 
         hitung();
             
@@ -742,8 +831,8 @@
             });
 
           $.ajax({
-          url:baseUrl + '/sales/simpan_invoice',
-          type:'post',
+          url:baseUrl + '/sales/update_invoice',
+          type:'get',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()

@@ -44,7 +44,7 @@
 
                 </div>                
 
-              <form method="GET" id="formId" action="{{url('penerimaanbarang/savepenerimaan')}}"  enctype="multipart/form-data" class="form-horizontal">
+              <form method="POST" id="formId" action="{{url('penerimaanbarang/savepenerimaan')}}"  enctype="multipart/form-data" class="form-horizontal">
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
@@ -504,7 +504,7 @@
           },
           function(){
         $.ajax({
-          type : "GET",
+          type : "POST",
           data : form_data2,
           url : post_url2,
           dataType : 'json',
@@ -517,7 +517,7 @@
                         timer: 900,
                        showConfirmButton: false
                         },function(){
-                           location.reload();
+                         location.reload();
                 });
              }
              else  if(response.status == 'gagal') {
@@ -1034,6 +1034,7 @@
      function lihatjurnal(){
         $('#jurnal').modal('show');
     }
+
 
 
 </script>

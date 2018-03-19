@@ -29,7 +29,7 @@
                 <div class="box-header">
                 <div class="box-body">
 
-                    <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+                    <table id="tabel_data" class="table table-bordered table-striped tabel_data" cellspacing="10">
                         <thead>
                             <tr>
                                 <th>Nomor</th>
@@ -41,22 +41,6 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $row)
-                            <tr>
-                                <td>{{ $row->nomor }}</td>
-                                <td>{{ $row->tanggal }}</td>
-                                <td>{{ $row->customer }}</td>
-                                <td style="text-align:right"> {{ number_format($row->jumlah, 0, ",", ".") }} </td>
-                                <td>{{ $row->keterangan }}</td>
-                                <td class="text-center">
-                                    <div class="btn-group">
-                                        <a href="{{ url('sales/penerimaan_penjualan/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
-                                        <a href="{{ url('sales/penerimaan_penjualan_form/'.$row->nomor.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                        <a href="{{ url('sales/penerimaan_penjualan_form/'.$row->nomor.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
 
                         </tbody>
 
@@ -91,20 +75,21 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    $(document).ready( function () {
-        $('#tabel_data').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-      });
+$(document).ready(function() {
+    $('.tabel_data').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: '{{ route('datatable_kwitansi') }}',
+        columns: [
+            {data: 'nomor', name: 'nomor'},
+            {data: 'tanggal', name: 'tanggal'},
+            {data: 'kode_customer', name: 'kode_customer'},
+            {data: 'jumlah', name: 'jumlah'},
+            {data: 'keterangan', name: 'keterangan'},
+            {data: 'tes', name: 'tes'}
+        ]
     });
-
+});
 
     $(document).on("click","#btn_add_order",function(){
         window.location.href = baseUrl + '/sales/penerimaan_penjualan_form'

@@ -370,7 +370,7 @@ class do_Controller extends Controller
         $crud = $request->crud;
         $cari_dt = DB::table('delivery_orderd')
                      ->where('nomor',strtoupper($request->ed_nomor_d))
-                     ->max('nomor_dt')
+                     ->max('nomor_dt');
         if ($cari_dt == null) {
             $cari_dt = 1;
         }else{
