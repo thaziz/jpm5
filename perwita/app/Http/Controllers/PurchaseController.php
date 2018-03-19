@@ -3065,7 +3065,7 @@ $indexakun=0;
 	}
 
 	public function savefakturpo(Request $request){
-		/*dd($request);*/
+		dd($request->all());
 		$variable = $request->supplier_po;
 		$data = explode(",", $variable);
 		$idsup = $data[0];

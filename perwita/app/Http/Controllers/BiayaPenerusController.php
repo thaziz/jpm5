@@ -2446,6 +2446,50 @@ class BiayaPenerusController extends Controller
 // return 'asd';
 		return view('purchase/fatkur_pembelian/dropdownBiayaPenerus',compact('data','flag'));
 	}
+
+
+
+public function cari_do_subcon(request $request)
+{
+	// dd($request->all());
+	$cari_do = DB::table('delivery_order')
+				 ->where('jenis','KARGO')
+				 ->where('kode_subcon',$request->sc)
+				 ->where('kode_cabang',$request->cabang)
+				 ->get();
+	$asal = DB::table('delivery_order')
+				 ->join('kota','id','=','id_kota_asal')
+				 ->where('jenis','KARGO')
+				 ->where('kode_subcon',$request->sc)
+				 ->where('kode_cabang',$request->cabang)
+				 ->get();
+
+	$tujuan = DB::table('delivery_order')
+				 ->join('kota','id','=','id_kota_tujuan')
+				 ->where('jenis','KARGO')
+				 ->where('kode_subcon',$request->sc)
+				 ->where('kode_cabang',$request->cabang)
+				 ->get();
+
+	$angkutan = DB::table('delivery_order')
+				 ->join('tipe_angkutan','kode','=','tipe_kendaraan')
+				 ->where('jenis','KARGO')
+				 ->where('kode_subcon',$request->sc)
+				 ->where('kode_cabang',$request->cabang)
+				 ->get();
+
+	for ($i=0; $i < count($kontrak); $i++) { 
+			$fix[$i]['d_nomor'] = $cari_do[$i]->nomor;
+			$fix[$i]['d_total_net'] = $cari_do[$i]->d_total_net;
+			$fix[$i]['d_tanggal'] = $cari_do[$i]->tanggal;
+			$fix[$i]['d_jenis_tarif'] = $cari_do[$i]->jenis;
+			$fix[$i]['d_asal'] = $asal[$i]->asal;
+			$fix[$i]['d_tujuan'] = $tujuan[$i]->tujuan;
+			$fix[$i]['d_angkutan'] = $angkutan[$i]->nama;
+			$fix[$i]['ksd_id_angkutan'] = $angkutan[$i]->kode;
+	}
+}
+
 }
 
 
