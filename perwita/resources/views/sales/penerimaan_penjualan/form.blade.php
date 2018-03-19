@@ -499,9 +499,6 @@ $('.riwayat').DataTable({
     searching:false,
 });
 
-
-         
-
 //mengganti nota kwitansi
 function nota_kwitansi() {
     var cb_cabang = $('.cb_cabang').val();
@@ -593,6 +590,10 @@ $('#btnsave').click(function(){
               console.log(temp);
               $(this).val(accounting.formatMoney(temp, "", 2, ".",','));
             });  
+
+            $(".i_bayar").focus(function() {
+                 $(this).select();
+            });
 
         }
     })
