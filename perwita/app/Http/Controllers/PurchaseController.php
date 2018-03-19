@@ -4501,8 +4501,20 @@ public function kekata($x) {
 	public function createpelunasanbank() {
 		$data['bank'] = DB::select("select * from masterbank");
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['akun'] = DB::select("select * from d_akun");
+		$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' and d_akun");
 		return view('purchase/pelunasanhutangbank/create', compact('data'));
+	}
+
+	public function cetakbbk ($id) {
+		$data['bbk'] = DB::select("select * from bukti_bank_keluar where bbk_id = '$id'");
+		$flag = $data['bbk'][0]->bbk_flag;
+		if($flag == 'CEKBG'){
+			$data['detail'] = DB::select("select * from bukti_bank_keluar_detail , bukti_bank_keluar where bbkd_idbbk = bbk_id and bbk_id = '$id'");
+		}
+		else {
+			$data['detail'] = DB::select("select * from bukti_bank_keluar_biaya, bukti_bank_keluar where bbkb_idbbk = bbk_id and bbk_id = '$id'");
+		}
+		return view('purchase/pelunasanhutangbank/cetakbbk', compact('data'));
 	}
 
 	public function detailpelunasanbank($id) {

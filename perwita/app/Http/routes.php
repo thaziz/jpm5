@@ -192,6 +192,7 @@ Route::get('fakturpembelian/carimaster/{vendor}', 'BiayaPenerusController@carima
 Route::get('fakturpembelian/auto/{i}', 'BiayaPenerusController@auto');
 Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
+Route::get('fakturpembelian/cari_do_subcon', 'BiayaPenerusController@cari_do_subcon');
 Route::post('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/edit_penerus/{i}', 'BiayaPenerusController@edit');
@@ -324,7 +325,7 @@ Route::get('pelunasanhutangbank/nocheck', 'PurchaseController@nocheckpelunasanhu
 Route::post('pelunasanhutangbank/getnota', 'PurchaseController@getnobbk');
 Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
-Route::post('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
+Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');

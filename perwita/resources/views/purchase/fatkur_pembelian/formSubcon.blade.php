@@ -1,20 +1,21 @@
 
-<div class="col-sm-5 header_biaya"  >
+<div class="col-sm-12 header_biaya"  >
 	{{ csrf_field() }}
 <form>
+<div class="col-sm-6">
 <table class="table	head_subcon">
 	<h3 style="text-align: center;">Form Subcon</h3>
  <tr>
  	<td style="width: 100px">Jatuh Tempo</td>
  	<td width="10">:</td>
  	<td width="200">
- 		<input type="text" name="tempo_subcon" class="form-control tempo_subcon" value="{{$date}}" style="width: 250px;">
+ 		<input type="text" name="tempo_subcon" class="form-control tempo_subcon" value="{{$date}}" >
  	</td>
  </tr>
 <tr>
  	<td style="width: 100px">Status </td>
  	<td width="10">:</td>
-	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" style="width: 250px;"></td>
+	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" ></td>
  </tr>
  <tr class=" hd2" >
  	<td style="width: 100px">Persentase</td>
@@ -46,94 +47,21 @@
  		</select>
  	</td>
   </tr>	
-<!--  <tr class=" hd2" >
- 	<td style="width: 100px">Kontrak Subcon</td>
- 	<td width="10">:</td>
- 	<td width="200" class="kontrak_subcon">
- 		<select class="form-control">
- 			<option> - Cari-Kontrak - </option>
- 		</select>
- 	</td>
- </tr> -->
  <tr>
  	<td style="width: 100px">No Invoice </td>
  	<td width="10">:</td>
-	<td width="200"><input type="text" name="invoice_subcon" class="form-control invoice_subcon"  style="width: 250px;"></td>
+	<td width="200"><input type="text" name="invoice_subcon" class="form-control invoice_subcon" ></td>
  </tr>	
  <tr>
  	<td style="width: 100px">Keterangan </td>
  	<td width="10">:</td>
-	<td width="200"><input type="text" name="keterangan_subcon" class="form-control keterangan_subcon"  style="width: 250px;"></td>
+	<td width="200"><input type="text" name="keterangan_subcon" class="form-control keterangan_subcon"  ></td>
  </tr>	
- <tr class="hd2 tr_disabled">
- 	<td colspan="3">
- 		<button type="button" onclick="nama_sc()" class="btn btn-primary pull-right">Cari Kontrak</button>
- 	</td>
- </tr>
- <tr>
- 	<td colspan="3">
- 		
- 	</td>
- </tr> 
 </table>
-</form>
 </div>
-
-
-<div class="col-sm-5 table_filter_subcon disabled"   style="margin-left: 100px;">
+<div class="col-sm-12 detail_subcon disabled"  >
+	<div class="col-sm-5 table_filter_subcon"   >
     <form class="form">
-     <table class="table">
-     <div align="center" style="width: 100%;">	
-		<h3 >Detail Kontrak Subcon</h3>
-	 </div>	
-	  <tr>
-		<td style="width: 100px">Nomor</td>
-		<td width="10">:</td>
-		<td>
-			<input type="text" name="no_kontrak_subcon" class="form-control nota_subcon"  readonly="">
-			<input type="hidden" name="id_subcon" class="form-control id_subcon"  readonly="">
-			<input type="hidden" name="dt_subcon" class="form-control dt_subcon"  readonly="">
-		</td>
-	  </tr>
-	  <tr>
-		<td style="width: 100px">Biaya Subcon</td>
-		<td width="10">:</td>
-		<td width="200">
-			<input type="text" class="form-control biaya_subcon"  readonly="" value="" >
-			<input type="hidden" class="form-control biaya_subcon_dt" style="width: 250px;">
-		</td>
-	  </tr>
-	  <tr>
-		<td style="width: 100px">Jenis Tarif</td>
-		<td width="10">:</td>
-		<td width="200">
-
-			<input type="text" name="tarif_subcon" class="form-control tarif_subcon" readonly=""  >
-			<input type="hidden" name="kode_tarif_subcon" class="form-control tarif_subcon" style="width: 250px;">
-		</td>
-	  </tr>
-	  <tr>
-		<td style="width: 100px">Kendaraaan</td>
-		<td width="10">:</td>
-		<td width="200">
-
-			<input type="text" class="form-control kendaraan_subcon" readonly=""  >
-			<input type="hidden" class="form-control kode_angkutan" style="width: 250px;">
-		</td>
-	  </tr>
-	</table>
-<!-- 	  <tr>
-		<td colspan="3">
-			<div style="display: inline-block; width: 49%;">
-				<label>Asal</label>
-				<input type="text" readonly="" class="asal_table_subcon form-control"  >
-			</div>
-			<div style="display: inline-block; width: 50%;">
-				<label>Tujuan</label>
-				<input type="text" readonly="" class="tujuan_table_subcon form-control"  >
-			</div>
-		</td>
-	  </tr> -->
 	  <table class="table">
 	  	<div align="center" style="width: 100%;">	
 			<h3 >Form Resi Subcon</h3>
@@ -152,7 +80,7 @@
 		<td width="10">:</td>
 		<td width="200">
 
-			<input type="text" class="form-control pod_subcon" onkeyup="cariDATASUBCON(this.value)" >
+			<input type="text" readonly="" class="form-control pod_subcon" onkeyup="cariDATASUBCON(this.value)" >
 			<input type="hidden" class="form-control status_pod_subcon" style="width: 250px;">
 		</td>
 	  </tr>
@@ -186,11 +114,86 @@
 			<input type="hidden"  class="form-control comp_subcon" >
 		</td>
 	 </tr>
+	 <tr>
+	 	<td colspan="3">
+	 		<button class="btn btn-info modal_tt_subcon pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+		    <button type="button" class="btn btn-primary pull-right disabled" onclick="cariSUB()"><i class="fa fa-plus">&nbsp;Append</i></button>
+		    <button type="button" class="btn btn-primary pull-right" style="margin-right: 20px" onclick="cariDOSUBCON()"><i class="fa fa-search">&nbsp;Cari DO</i></button>
+	 	</td>
+	 </tr>
      </table>
-     <button class="btn btn-info modal_tt_subcon pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-     <button type="button" class="btn btn-primary pull-right" onclick="cariSUB();"><i class="fa fa-search">&nbsp;Append</i></button>
+     
     </form>
 </div>
+
+	<div class="col-sm-5" style="margin-left: 100px;">
+	<table class="table" >
+	     <div align="center" style="width: 100%;" >	
+			<h3 >Detail Kontrak Subcon</h3>
+		 </div>	
+		  <tr>
+			<td style="width: 100px">Nomor</td>
+			<td width="10">:</td>
+			<td>
+				<input type="text" name="no_kontrak_subcon" class="form-control nota_subcon"  readonly="">
+				<input type="hidden" name="id_subcon" class="form-control id_subcon"  readonly="">
+				<input type="hidden" name="dt_subcon" class="form-control dt_subcon"  readonly="">
+			</td>
+		  </tr>
+		  <tr>
+			<td style="width: 100px">Biaya Subcon</td>
+			<td width="10">:</td>
+			<td width="200">
+				<input type="text" class="form-control biaya_subcon"  readonly="" value="" >
+				<input type="hidden" class="form-control biaya_subcon_dt" style="width: 250px;">
+			</td>
+		  </tr>
+		  <tr>
+			<td style="width: 100px">Jenis Tarif</td>
+			<td width="10">:</td>
+			<td width="200">
+
+				<input type="text" name="tarif_subcon" class="form-control tarif_subcon" readonly=""  >
+				<input type="hidden" name="kode_tarif_subcon" class="form-control tarif_subcon" style="width: 250px;">
+			</td>
+		  </tr>
+		  <tr>
+			<td style="width: 100px">Asal Kontrak</td>
+			<td width="10">:</td>
+			<td width="200">
+
+				<input type="text" readonly="" class="form-control asal_subcon" >
+			</td>
+		  </tr>
+		  <tr>
+			<td style="width: 100px">Tujuan Kontrak</td>
+			<td width="10">:</td>
+			<td width="200">
+
+				<input type="text" readonly=""  class="form-control tujuan_subcon">
+			</td>
+		  </tr>
+		  <tr>
+			<td style="width: 100px">Kendaraaan</td>
+			<td width="10">:</td>
+			<td width="200">
+
+				<input type="text" class="form-control kendaraan_subcon" readonly=""  >
+				<input type="hidden" class="form-control kode_angkutan" style="width: 250px;">
+			</td>
+		  </tr>
+		  <tr class="hd2 tr_disabled">
+		 	<td colspan="3">
+		 		<button type="button" onclick="nama_sc()" class="btn btn-primary pull-right">Cari Kontrak</button>
+		 	</td>
+		 </tr>
+	</table>
+	</div>
+</div>
+</form>
+</div>
+
+
 
 <div class="col-sm-5 table_filter_resi disabled " hidden   style="margin-left: 100px;">
     <form class="form">
@@ -360,13 +363,33 @@
     </div>
   </div>
 </div>
+
+
+<!-- modal DO-->
+                <div id="modal_do" class="modal" >
+                  <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Pilih Nomor DO</h4>
+                      </div>
+                      <div class="modal-body">
+                            <form class="form-horizontal  tabel_subcon_detail">
+                               
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                          </div>
+                    </div>
+                  </div>
+                </div>
 <script type="text/javascript">
 var config1 = {
                '.chosen-select'           : {},
                '.chosen-select-deselect'  : {allow_single_deselect:true},
                '.chosen-select-no-single' : {disable_search_threshold:10},
                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-               '.chosen-select-width1'     : {width:"250px"}
+               '.chosen-select-width1'     : {width:"100%"}
              }
              for (var selector in config1) {
                $(selector).chosen(config1[selector]);
@@ -481,6 +504,8 @@ function pilih_kontrak(asd){
 	    	$('.id_subcon').val(response.subcon_dt[0].ksd_id);
 	    	$('.dt_subcon').val(response.subcon_dt[0].ksd_dt);
 	    	$('.tarif_subcon').val(response.subcon_dt[0].ksd_jenis_tarif);
+	    	$('.asal_subcon').val(response.subcon_dt[0].ksd_asal);
+	    	$('.tujuan_subcon').val(response.subcon_dt[0].ksd_tujuan);
 	    	$('.kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
 	    	$('.table_filter_subcon').removeClass('disabled');
 
@@ -524,9 +549,18 @@ function pilih_kontrak(asd){
 }
 var sequence=[];
 function cariDATASUBCON(asd){
+	var asal_subcon   = $('.asal_subcon').val();
+	var tujuan_subcon = $('.tujuan_subcon').val();
     // console.log(asd);
     $('.pod_subcon').autocomplete({
-      source:baseUrl + '/fakturpembelian/caripodsubcon', 
+      source:function (request, response) {
+    		$.ajax({
+  			type: "get",
+  			url:baseUrl+'/fakturpembelian/caripodsubcon',
+  			data: {asal_subcon,tujuan_subcon},
+  			dataType: 'json'
+			});
+  	  },
       minLength: 3,
        change: function(event, ui) {
        	try{
@@ -735,19 +769,15 @@ function save_subcon(){
      }
  });
 
- function nama_sc(){
- 	var nama_sc = $('.nama_sc').val();
+$('.nama_sc').change(function(){
+	if ($(this).val() != 0) {
+		$('.detail_subcon').removeClass('disabled');
+	}else{
+		$('.detail_subcon').addClass('disabled');
+	}
+});
 
- 	$.ajax({
- 		url:baseUrl + '/fakturpembelian/cari_kontrak_subcon/' + nama_sc,
- 		success:function(data){
- 			$('.subcon_modal').html(data)
- 			$('#modal_subcon').modal('show');
 
- 		}
- 	})
-
- }
 
  function cari_kontrak(){
  	var kontrak_id = $('.kontrak_id').val();
@@ -755,6 +785,21 @@ function save_subcon(){
  	$.ajax({
  		url:baseUrl + '/fakturpembelian/cari_kontrak_subcon1/' + kontrak_id,
  		success:function(data){
+ 		}
+ 	})
+
+ }
+
+ function cariDOSUBCON() {
+ 	var sc =  $('.nama_sc').val();
+ 	var cabang = $('.cabang').val();
+ 	$.ajax({
+ 		url:baseUrl + '/fakturpembelian/cari_do_subcon',
+ 		data:{sc,cabang},
+ 		dataType:'json',
+ 		success:function(response){
+ 			$('.tabel_subcon_detail').html(response);
+ 			$('#modal_do').modal('show');
  		}
  	})
 
