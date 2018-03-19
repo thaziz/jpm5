@@ -1555,3 +1555,31 @@ Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 });
 
 Route::get('logout', 'mMemberController@logout');
+
+
+//pembelian
+Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');
+Route::get('reportbayarbank/reportbayarbank', 'LaporanPurchaseController@reportbayarbank');
+Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
+Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
+Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
+Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
+
+Route::get('fakturpajakmasukan/fakturpajakmasukan', 'LaporanPurchaseController@fakturpajakmasukan');
+Route::get('kartuhutang/kartuhutang', 'LaporanPurchaseController@kartuhutang');
+
+Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
+
+Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
+Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPurchaseController@reportexcelkartuhutang');
+Route::get('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPurchaseController@reportfakturpajakmasukan');
+
+
+Route::get('invoiceprint','sales\invoice_Controller@checkinvoice');
+Route::get('date', 'sales\invoice_Controller@date');
+
+
+Route::get('sales/zona','zona_Controller@index');
+Route::get('sales/zona/simpan','zona_Controller@simpan');
+Route::get('sales/zona/hapus','zona_Controller@hapus');
+Route::get('sales/zona/getdata','zona_Controller@getdata');
