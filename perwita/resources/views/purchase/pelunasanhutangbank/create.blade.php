@@ -58,12 +58,34 @@
                            <table border="0" class="table table-stripped">
 
                           <tr>
-                            <td> 
-                              Cabang
-                            </td>
+                           
+                               @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
+                            <tr>
+                            <td width="150px"> Cabang </td>
                             <td>
-                              <select class="chosen-select-width form-control cabang" name="cabang">
-                                @foreach($data['cabang'] as $cabang)
+                              <select class='form-control chosen-select-width1 cabang' name="cabang">
+                                  <option value="">
+                                    Pilih-Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                  @endforeach
+                                 </select>
+                            </td>
+                            </tr>
+                            @else
+                            <tr>
+                            <td width="150px"> Cabang </td>
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                                  <option value="">
+                                    Pilih Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
                                     @if($cabang->kode == Auth::user()->kode_cabang)
                                     <option selected="" value="{{$cabang->kode}}">
                                       {{$cabang->nama}}
@@ -74,8 +96,10 @@
                                     </option>
                                     @endif
                                   @endforeach
-                              </select>
+                                 </select>
                             </td>
+                            </tr>
+                            @endif
                           </tr>
 
                           <tr>
@@ -84,6 +108,7 @@
                             </td>
                             <td>
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk">
+                             <input type="hidden" class="valcabang" readonly="" name="cabang">
                             </td>
                           </tr>
 
@@ -418,7 +443,7 @@
 
     //GET NO BBK
     cabang = $('.cabang').val();
-      
+    $('.valcabang').val(cabang);
    
       $('.cabang2').val(cabang);
        $.ajax({
@@ -449,7 +474,7 @@
 //                console.log('year' + year);
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
-                 nofaktur = 'FPG' + month1 + year2 + '/' + cabang + '/' +  response ;
+                 nofaktur = 'BBK' + month + year2 + '/' + cabang + '/' +  response ;
                 $('.nobbk').val(nofaktur);
               
           },
@@ -826,11 +851,11 @@
           nobbk = $('.nobbk').val();
 
           rowHtml = "<tr class='transaksi"+$nmrbiaya+"'> <td>"+$nmrbiaya+"</td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+idakun+"' name='akun[]'> </td>" +
-          "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+jumlah+"' name='jumlah[]'> </td>" +
-          "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]'></td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"' readonly> </td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+idakun+"' name='akun[]' readonly> </td>" +
+          "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]' readonly> </td>" +
+          "<td> <input type='text' class='input-sm form-control jumlah' value='"+jumlah+"' name='jumlah[]' style='text-align:right' data-dk='"+dk+"'> </td>" +
+          "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]' readonly></td>" +
           "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
 
           $('#tbl-biaya').append(rowHtml);
@@ -839,13 +864,46 @@
           $('.biaya').val('');
 
           jumlah2 = jumlah.replace(/,/g, '');
-          totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+          if(dk == 'D'){
+              totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+          }
+          else {
+            totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+          }
           $('.totalbiaya').val(addCommas(totalbiaya));
           $('.total').val(addCommas(totalbiaya));
           $nmrbiaya++;
 
           }
+
+           jmlahval = 0;
+          $('.jumlah').change(function(){  
+             val = $(this).val();
+             val2 = accounting.formatMoney(val, "", 2, ",",'.');
+              
+              $(this).val(val2);
+              dk = $(this).data('dk');
+              $('.jumlah').each(function(){
+                val2 = $(this).val();
+                jmlval = val2.replace(/,/g, '');
+                if(dk == 'D'){
+                  jmlahval = parseFloat(parseFloat(jmlahval) + parseFloat(jmlval)).toFixed(2);
+                }
+                else {
+                  jmlahval = parseFloat(parseFloat(jmlahval) - parseFloat(jmlval)).toFixed(2);
+
+                }
+              })
+
+              alert(jmlahval);
+              console.log(jmlahval + 'jmlahval');
+
+              $('.total').val(addCommas(jmlahval));
+              $('.totalbiaya').val(addCommas(jmlahval));
+          })
       })
+
+     
 
       $(document).on('click','.remove-btn',function(){
             id = $(this).data('id');

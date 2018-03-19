@@ -115,18 +115,20 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Harga</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_harga" style="text-align: right;">
+                                        <select  class="form-control d" name="ed_harga" id="ed_harga" style="text-align: right;">
                                         
                                             <option value="">-- Pilih Zona Terlebih Dahulu --</option>
                                             @foreach ($zona as $el)
-                                                <option value="{{ $el->harga_zona }}">{{ $el->nama }} - {{ $el->harga_zona }}</option>
+                                                <option value="{{ $el->harga_zona }}" data-id="{{ $el->id_zona }}">{{ $el->nama }} - {{ $el->harga_zona }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                 </tr>
+                                <input type="hidden" name="id_zona_foreign">
 
                             </tbody>
                           </table>
+
 
                         </form>
                       </div>
@@ -162,6 +164,14 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+    $('#ed_harga').change(function(){
+        var hargafind = $(this).find(':selected').data('id');
+        alert(hargafind);
+        $('input[name="id_zona_foreign"]').val(hargafind);
+
+    });
+
 
     $('#cb_tipe_kiriman').change(function(){
         var jenis = $('#cb_jenis').find(':selected').val();

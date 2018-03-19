@@ -728,7 +728,7 @@
                   
                     <a class="btn btn-warning" href={{url('formfpg/formfpg')}} id="kembali"> Kembali </a>
                     
-                    <a class="btn btn-success" href="{{url('formfpg/printformfpg/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a>
+                    <a class="btn btn-info" href="{{url('formfpg/printformfpg/'.$data['fpg'][0]->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a>
                    <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-success">
                 </form>
                     
