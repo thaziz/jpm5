@@ -11,7 +11,7 @@
     </thead>
     <tbody>
         @foreach($data as $i=>$val)
-        @if($val->id_nomor_do == null)
+        @if($val->id_nomor_do == null or $val->id_nomor_invoice == $id)
                 <tr>
                     <td align="center">
                         {{$i+1}}
@@ -19,6 +19,7 @@
                     </td>
                     <td>
                         {{$val->nomor}}
+                        {{$val->id_nomor_invoice}}
                         <input type="hidden" value="{{$val->dd_nomor}}" class="nomor_do" name="nomor_do">
                     </td>
                     <td>{{$val->tanggal}}</td>
@@ -44,7 +45,7 @@
     </thead>
     <tbody>
         @foreach($data as $i=>$val)
-        @if($val->id_nomor_do == null)
+        @if($val->id_nomor_do == null or $val->id_nomor_invoice == $id)
                 <tr>
                     <td align="center">
                         {{$i+1}}

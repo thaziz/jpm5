@@ -953,12 +953,12 @@
                                        </div>
 
                                 <div class="modal-body">
-                                    <table id="addColumn" class="table  table-bordered table-striped tbl-purchase">
+                                  <table id="addColumn" class="table  table-bordered table-striped tbl-purchase">
                                        <thead>
                                          <tr>
                                           <th style="width:10px">No</th>
                                           <th> No PO </th>
-                      <th> Cabang </th>
+                                           <th> Cabang </th>
                                           <th> Status </th>
                                           <th> Jumlah Harga </th>
                                           <th> Aksi </th>      
@@ -967,10 +967,8 @@
                                       <tbody>
                                        
                                       </tbody>
-                                   </table>                              
-                                   <div class="kosong"> </div>
-                                </form>
-                             </div>
+                                   </table>  
+                                </div>
 
                           <div class="modal-footer">
                               <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>

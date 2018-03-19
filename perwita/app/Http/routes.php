@@ -323,7 +323,7 @@ Route::get('pelunasanhutangbank/nocheck', 'PurchaseController@nocheckpelunasanhu
 Route::post('pelunasanhutangbank/getnota', 'PurchaseController@getnobbk');
 Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
-Route::post('pelunasanhutangbank/cetak', 'PurchaseController@cetakbbk');
+Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
@@ -356,6 +356,7 @@ Route::post('formfpg/updateformfpg', 'PurchaseController@updateformfpg');
 Route::post('formfpg/deletedetailformfpg', 'PurchaseController@deletedetailformfpg');
 Route::post('formfpg/deletedetailbankformfpg', 'PurchaseController@deletedetailbankformfpg');
 Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
+Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
 
 
 Route::get('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan', 'PurchaseController@pelaporanfakturpajakmasukan');
@@ -842,6 +843,7 @@ Route::get('sales/invoice', 'sales\invoice_Controller@index');
 Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
+Route::get('sales/cari_do_edit_invoice', 'sales\invoice_Controller@cari_do_edit_invoice');
 Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
 Route::get('sales/pajak_lain', 'sales\invoice_Controller@pajak_lain');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
@@ -854,6 +856,8 @@ Route::get('sales/invoice/get_data', 'sales\invoice_Controller@get_data');
 Route::get('sales/invoice/get_data_detail', 'sales\invoice_Controller@get_data_detail');
 Route::post('sales/simpan_invoice', 'sales\invoice_Controller@simpan_invoice');
 Route::get('sales/simpan_invoice', 'sales\invoice_Controller@simpan_invoice');
+Route::post('sales/update_invoice', 'sales\invoice_Controller@update_invoice');
+Route::get('sales/update_invoice', 'sales\invoice_Controller@update_invoice');
 Route::post('sales/invoice/save_data_detail', 'sales\invoice_Controller@save_data_detail');
 Route::post('sales/invoice/hapus_data', 'sales\invoice_Controller@hapus_data');
 Route::post('sales/invoice/hapus_data_detail', 'sales\invoice_Controller@hapus_data_detail');
@@ -938,28 +942,16 @@ Route::get('sales/fakturpajakform', function(){
         return view('sales.faktur_pajak.form');
 });
 
-//penerimaanpenjualan
+//kwitansi
 Route::get('sales/penerimaan_penjualan', 'sales\penerimaan_penjualan_Controller@index');
-Route::get('sales/penerimaan_penjualan_form/tampil_invoice', 'sales\penerimaan_penjualan_Controller@tampil_invoice');
-Route::get('sales/penerimaan_penjualan_form/tampil_invoice_biaya', 'sales\penerimaan_penjualan_Controller@tampil_invoice_biaya');
-Route::get('sales/penerimaan_penjualan_form/get_data_akun_biaya', 'sales\penerimaan_penjualan_Controller@get_data_akun_biaya');
-Route::get('sales/penerimaan_penjualan_form/tampil_riwayat_invoice', 'sales\penerimaan_penjualan_Controller@tampil_riwayat_invoice');
 Route::get('sales/penerimaan_penjualan_form', 'sales\penerimaan_penjualan_Controller@form');
-Route::get('sales/penerimaan_penjualan_form/{nomor}/edit', 'sales\penerimaan_penjualan_Controller@form');
-Route::get('sales/penerimaan_penjualan_form/{nomor}/hapus_data', 'sales\penerimaan_penjualan_Controller@hapus_data');
-Route::get('sales/penerimaan_penjualan_form/tabel_data_detail', 'sales\penerimaan_penjualan_Controller@table_data_detail');
-Route::get('sales/penerimaan_penjualan_form/tabel_data_detail_biaya', 'sales\penerimaan_penjualan_Controller@table_data_detail_biaya');
-Route::get('sales/penerimaan_penjualan/tabel', 'sales\penerimaan_penjualan_Controller@table_data');
-Route::get('sales/penerimaan_penjualan/get_data', 'sales\penerimaan_penjualan_Controller@get_data');
-Route::get('sales/penerimaan_penjualan/get_data_detail', 'sales\penerimaan_penjualan_Controller@get_data_detail');
-Route::post('sales/penerimaan_penjualan/save_data', 'sales\penerimaan_penjualan_Controller@save_data');
-Route::post('sales/penerimaan_penjualan/save_data_detail', 'sales\penerimaan_penjualan_Controller@save_data_detail');
-Route::post('sales/penerimaan_penjualan/save_data_detail2', 'sales\penerimaan_penjualan_Controller@save_data_detail2');
-Route::post('sales/penerimaan_penjualan/save_data_detail_biaya', 'sales\penerimaan_penjualan_Controller@save_data_detail_biaya');
-Route::post('sales/penerimaan_penjualan/hapus_data', 'sales\penerimaan_penjualan_Controller@hapus_data');
-Route::post('sales/penerimaan_penjualan/hapus_data_detail', 'sales\penerimaan_penjualan_Controller@hapus_data_detail');
-Route::post('sales/penerimaan_penjualan/hapus_data_detail_biaya', 'sales\penerimaan_penjualan_Controller@hapus_data_detail_biaya');
-Route::get('sales/penerimaan_penjualan/{nomor}/nota', 'sales\penerimaan_penjualan_Controller@cetak_nota');
+Route::get('sales/nota_kwitansi', 'sales\penerimaan_penjualan_Controller@nota_kwitansi');
+Route::get('sales/cari_invoice', 'sales\penerimaan_penjualan_Controller@cari_invoice');
+Route::get('sales/append_invoice', 'sales\penerimaan_penjualan_Controller@append_invoice');
+Route::get('sales/datatable_kwitansi', 'sales\penerimaan_penjualan_Controller@datatable_kwitansi')->name('datatable_kwitansi');
+Route::get('sales/datatable_detail_invoice', 'sales\penerimaan_penjualan_Controller@datatable_detail_invoice')->name('datatable_detail_invoice');
+Route::get('sales/datatable_invoice', 'sales\penerimaan_penjualan_Controller@datatable_invoice')->name('datatable_invoice');
+
 
 //end penerimaan penjualan
 
@@ -1562,3 +1554,31 @@ Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 });
 
 Route::get('logout', 'mMemberController@logout');
+
+
+//pembelian
+Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');
+Route::get('reportbayarbank/reportbayarbank', 'LaporanPurchaseController@reportbayarbank');
+Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
+Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
+Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
+Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
+
+Route::get('fakturpajakmasukan/fakturpajakmasukan', 'LaporanPurchaseController@fakturpajakmasukan');
+Route::get('kartuhutang/kartuhutang', 'LaporanPurchaseController@kartuhutang');
+
+Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
+
+Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
+Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPurchaseController@reportexcelkartuhutang');
+Route::get('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPurchaseController@reportfakturpajakmasukan');
+
+
+Route::get('invoiceprint','sales\invoice_Controller@checkinvoice');
+Route::get('date', 'sales\invoice_Controller@date');
+
+
+Route::get('sales/zona','zona_Controller@index');
+Route::get('sales/zona/simpan','zona_Controller@simpan');
+Route::get('sales/zona/hapus','zona_Controller@hapus');
+Route::get('sales/zona/getdata','zona_Controller@getdata');
