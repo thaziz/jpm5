@@ -170,7 +170,7 @@
                                     
                                 </tr>
                                 <tr>
-                                <td style="padding-top: 0.4cm">Acc Penjulan</td>
+                                <td style="padding-top: 0.4cm">Acc Biaya</td>
                                 <td colspan="7">
                                     <div class="input-group date">
                                       <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
@@ -185,7 +185,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm">CSF Penjulan</td>
+                                <td style="padding-top: 0.4cm">CSF Biaya</td>
                                 <td colspan="7">
                                     <div class="input-group date">
                                       <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc3" width="100%">

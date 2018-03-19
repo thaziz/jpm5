@@ -146,75 +146,75 @@
                                         <input type="text" class="form-control" name="ed_komisi_outlet" id="ed_komisi_outlet" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
-                                
+                              {{--   
+                                    <tr>
+                                    <td style="padding-top: 0.4cm">Acc Penjulan</td>
+                                    <td colspan="7">
+                                        <div class="input-group date">
+                                          <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
+                                             <option value="" selected="" disabled="">-- Pilih kode akun --</option>
+                                            @foreach($akun as $a)
+                                              <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
+                                                {{$a->id_akun}} - {{$a->nama_akun}}
+                                              </option>
+                                            @endforeach
+                                          </select>
+                                        </div>
+                                    </td>
+                                </tr> --}}
                                 <tr>
-                                <td style="padding-top: 0.4cm">Acc Penjulan</td>
-                                <td colspan="7">
-                                    <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
-                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
-                                        @foreach($akun as $a)
-                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
-                                            {{$a->id_akun}} - {{$a->nama_akun}}
-                                          </option>
-                                        @endforeach
-                                      </select>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Acc Penjulan</td>
-                                <td colspan="7">
-                                    <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
-                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
-                                        @foreach($akun as $a)
-                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
-                                            {{$a->id_akun}} - {{$a->nama_akun}}
-                                          </option>
-                                        @endforeach
-                                      </select>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Acc Hutang</td>
-                                <td colspan="7">
-                                    <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc2" width="100%">
-                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
-                                        @foreach($akun as $a)
-                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
-                                            {{$a->id_akun}} - {{$a->nama_akun}}
-                                          </option>
-                                        @endforeach
-                                      </select>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">CSF Penjulan</td>
-                                <td colspan="7">
-                                    <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc3" width="100%">
-                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
-                                        @foreach($akun as $a)
-                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
-                                            {{$a->id_akun}} - {{$a->nama_akun}}
-                                          </option>
-                                        @endforeach
-                                      </select>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">CSF Hutang</td>
-                                <td colspan="7">
-                                    <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc4" width="100%">
-                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
-                                        @foreach($akun as $a)
-                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
+                                    <td style="padding-top: 0.4cm">Acc Penjulan</td>
+                                    <td colspan="7">
+                                        <div class="input-group date">
+                                          <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
+                                             <option value="" selected="" disabled="">-- Pilih kode akun --</option>
+                                            @foreach($akun as $a)
+                                              <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
+                                                {{$a->id_akun}} - {{$a->nama_akun}}
+                                              </option>
+                                            @endforeach
+                                          </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Acc Hutang</td>
+                                    <td colspan="7">
+                                        <div class="input-group date">
+                                          <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc2" width="100%">
+                                             <option value="" selected="" disabled="">-- Pilih kode akun --</option>
+                                            @foreach($akun as $a)
+                                              <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
+                                                {{$a->id_akun}} - {{$a->nama_akun}}
+                                              </option>
+                                            @endforeach
+                                          </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">CSF Penjulan</td>
+                                    <td colspan="7">
+                                        <div class="input-group date">
+                                          <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc3" width="100%">
+                                             <option value="" selected="" disabled="">-- Pilih kode akun --</option>
+                                            @foreach($akun as $a)
+                                              <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
+                                                {{$a->id_akun}} - {{$a->nama_akun}}
+                                              </option>
+                                            @endforeach
+                                          </select>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">CSF Hutang</td>
+                                    <td colspan="7">
+                                        <div class="input-group date">
+                                          <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc4" width="100%">
+                                             <option value="" selected="" disabled="">-- Pilih kode akun --</option>
+                                            @foreach($akun as $a)
+                                              <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
                                             {{$a->id_akun}} - {{$a->nama_akun}}
                                           </option>
                                         @endforeach
