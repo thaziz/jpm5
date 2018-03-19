@@ -59,7 +59,7 @@
                             <table class="table table-striped table-bordered">
                             <tr>
                               <th> Cabang </th>
-                              <td> <select class='form-control chosen-select-width1 cabang' name="cabang">
+                              <td> <select class='form-control chosen-select-width1 cabang' >
                                   <option value="">
                                     Pilih-Cabang 
                                   </option>
@@ -82,7 +82,7 @@
 
                               <tr>
                                 <th> No FPG </th>
-                                <td> <input type='text' class='input-sm form-control nofpg' value="" readonly="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"></td>
+                                <td> <input type='text' class='input-sm form-control nofpg' value="" readonly="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type="hidden" class="valcabang" name="cabang"> </td>
                               </tr>
                               <tr>
                                 <th> Tanggal </th>
@@ -650,8 +650,8 @@
 
       //MENDAPATKAN NO FPG
        cabang = $('.cabang').val();
-    
-   
+        $('.valcabang').val(cabang);
+     
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
