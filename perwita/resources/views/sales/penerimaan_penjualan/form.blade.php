@@ -9,7 +9,23 @@
       .disabled {
         pointer-events: none;
         opacity: 0.7;
-       }
+        }
+       .center{
+        text-align: center;
+        }
+       .right{
+        text-align: right;
+        }
+        td.details-control {
+            background: url('{{ asset('assets/img/details_open.png') }}') no-repeat center center;
+            cursor: pointer;
+        }
+        tr.shown td.details-control {
+            background: url('{{ asset('assets/img/details_close.png') }}') no-repeat center center;
+        }
+        .tabel_coba thead th{
+            background: yellow;
+        }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -54,10 +70,8 @@
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="20">
-                                    <input type="text" name="ed_nomor" id="ed_nomor" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
-                                    <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota" id="nota_kwitansi" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                    <input type="hidden" class="form-control" name="crud_h" class="form-control" >
                                 </td>
                             </tr>
                             <tr>
@@ -124,26 +138,26 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Ttl Jml Bayar</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_jumlah" class="form-control" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
+                                    <input type="text" name="jumlah_bayar" class="form-control jumlah_bayar" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
                                 </td>
                               
                             </tr>
                             <tr>
                                   <td style="width:120px; padding-top: 0.4cm">Ttl Debet</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_debet" class="form-control" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text" name="ed_debet" class="form-control ed_debet" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
                                 </td>
                             </tr>
                             <tr>
                                  <td style="width:120px; padding-top: 0.4cm">Ttl Kredit</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_kredit" class="form-control" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text" name="ed_kredit" class="form-control ed_kredit" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Netto</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_netto" class="form-control" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text" name="ed_netto" class="form-control ed_netto" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
                                 </td>
                             </tr>
                             
@@ -169,11 +183,12 @@
                         <div class="tab-content ">
                             <div id="tab-1" class="tab-pane active">
                                 <div class="panel-body">
-                                    <table id="table_data" class="table table-bordered table-striped gg">
+                                    <table id="table_data" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th style="display:none;">id</th>
                                                 <th>Nomor Invoice</th>
+                                                <th>Total Bayar</th>
+                                                <th>Sisa Bayar</th>
                                                 <th>Jumlah Bayar</th>
                                                 <th>Keterangan</th>
                                                 <th>Aksi</th>
@@ -189,7 +204,6 @@
                                     <table id="table_data_biaya" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th style="display:none;">id</th>
                                                 <th>Nomor Invoice</th>
                                                 <th>Nama Biaya</th>
                                                 <th>Jenis</th>
@@ -222,7 +236,7 @@
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" id="btnsave">Save changes</button>
+                                <button type="submit" class="btn btn-primary" id="btnsave"><i class="fa fa-plus"> Tambah</i></button>
                             </div>
                         </div>
                     </div>
@@ -251,7 +265,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Jumlah Tagihan</td>
+                                                        <td>Jumlah Bayar</td>
                                                         <td>
                                                             <input type="text" class="form-control" name="ed_jumlah_tagihan"  style="text-align:right" readonly="readonly" tabindex="-1">
                                                         </td>
@@ -292,23 +306,11 @@
                                                             <input type="text" readonly="readonly" class="form-control" name="ed_biaya_kredit"  style="text-align:right" tabindex="-1">
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td>Net Jml Bayar</td>
-                                                        <td>
-                                                            <input type="text" readonly="readonly" class="form-control" name="ed_netto_jml_bayar" style="text-align:right" tabindex="-1">
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="padding-top: 0.4cm">Sisa Tagihan</td>
-                                                        <td colspan="4">
-                                                            <input type="text" class="form-control" readonly="readonly" id="ed_sisa_tagihan" name="ed_sisa_tagihan" tabindex="-1" style="text-align:right" >
-                                                        </td>
-                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
                                         <div class="col-md-7">
-                                            <table id="table_data_riwayat_invoice" class="table table-bordered table-striped">
+                                            <table id="table_data_riwayat_invoice" class="table riwayat table-bordered table-striped">
                                                 <thead>
                                                     <tr>
                                                         <th>Nomor Penerimaan</th>
@@ -458,12 +460,48 @@
 
 
 <script type="text/javascript">
-
+//GLOBAL VARIABLE
+var array_simpan = [];
 // datepicker
 $('.ed_tanggal').datepicker({
     format:'dd/mm/yyyy',
     endDate:'today'
 })
+
+//datatable detail_invoice
+var anjay = [];
+
+
+var table_data = $('#table_data').DataTable({
+                    searching:false,
+                    columnDefs: [
+                      {
+                         targets: 1 ,
+                         className: 'right'
+                      },
+                      {
+                         targets: 2,
+                         className: 'right'
+                      },
+                      {
+                         targets: 3,
+                         className: 'right'
+                      },
+                      {
+                         targets: 5,
+                         className: 'center'
+                      }
+                    ],
+                    
+                })
+
+$('.riwayat').DataTable({
+    searching:false,
+});
+
+
+         
+
 //mengganti nota kwitansi
 function nota_kwitansi() {
     var cb_cabang = $('.cb_cabang').val();
@@ -478,13 +516,31 @@ function nota_kwitansi() {
     })
 }
 
+//NOTA kwitansi
+$(document).ready(function(){
+    var cabang = $('.cb_cabang').val();
+    $.ajax({
+        url:baseUrl+'/sales/nota_kwitansi',
+        data:{cabang},
+        dataType : 'json',
+        success:function(response){
+            $('#nota_kwitansi').val(response.nota);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+});
+
+
 // tambah invoice
- $('.tambah_invoice').click(function(){
+$('.tambah_invoice').click(function(){
     var cb_cabang = $('.cb_cabang').val();
+    var cb_customer = $('#cb_customer').val();
 
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
-        data:{cb_cabang},
+        data:{cb_cabang,cb_customer,array_simpan},
         success:function(data){
 
 
@@ -493,10 +549,73 @@ function nota_kwitansi() {
         }
     })
 
- })
+})
+
+//Append invoice
 
 
-  
+
+$('#btnsave').click(function(){
+
+    var nomor = [];
+        
+    $('.child_check').each(function(){
+        var check = $(this).is(':checked');
+        if (check == true) {
+            var par   = $(this).parents('tr');
+            var inv   = $(par).find('.nomor_inv').val();
+            nomor.push(inv);
+            array_simpan.push(inv);
+
+        }  
+    });
+///////////////////////////////////////////
+    $.ajax({
+        url:baseUrl + '/sales/append_invoice',
+        data:{nomor},
+        dataType:'json',
+        success:function(response){
+            for(var i = 0; i < response.data.length;i++){
+                table_data.row.add([
+                        '<a onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
+                        accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
+                        accounting.formatMoney(response.data[i].i_sisa_pelunasan, "", 2, ".",',')+'<input type="hidden" name="i_sisa_pelunasan[]" value="'+response.data[i].i_sisa_pelunasan+'">',
+                        '<input type="text" class="form-control i_bayar input-sm" name="i_bayar[]" value="0">',
+                        '<input type="text" class="form-control input-sm" name="i_keterangan[]" value="">',
+                        '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
+                    ]).draw();
+
+                $('#modal_invoice').modal('hide');
+            }     
+
+            $('.i_bayar').blur(function(){
+              var temp =  $(this).val();
+              console.log(temp);
+              $(this).val(accounting.formatMoney(temp, "", 2, ".",','));
+            });  
+
+        }
+    })
+});
+
+
+function histori(p){
+    var par   = $(p).parents('td');
+    var nomor = $(par).find('.i_nomor').val();
+    console.log(nomor); 
+    $('#modal_info').modal('show');
+}
+
+
+ 
+//hapus detail
+function hapus_detail(o) {
+    var par = $(o).parents('tr');
+    var arr = $(par).find('.i_nomor')
+    var index = array_simpan.indexOf(arr);
+    array_simpan.splice(index,1);
+    table_data.row(par).remove().draw(false);
+}
 </script>
 
 @endsection

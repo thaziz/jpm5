@@ -842,6 +842,7 @@ Route::get('sales/invoice', 'sales\invoice_Controller@index');
 Route::get('sales/invoice_form', 'sales\invoice_Controller@form');
 Route::get('sales/nota_invoice', 'sales\invoice_Controller@nota_invoice');
 Route::get('sales/cari_do_invoice', 'sales\invoice_Controller@cari_do_invoice');
+Route::get('sales/cari_do_edit_invoice', 'sales\invoice_Controller@cari_do_edit_invoice');
 Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
 Route::get('sales/pajak_lain', 'sales\invoice_Controller@pajak_lain');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
@@ -854,6 +855,8 @@ Route::get('sales/invoice/get_data', 'sales\invoice_Controller@get_data');
 Route::get('sales/invoice/get_data_detail', 'sales\invoice_Controller@get_data_detail');
 Route::post('sales/simpan_invoice', 'sales\invoice_Controller@simpan_invoice');
 Route::get('sales/simpan_invoice', 'sales\invoice_Controller@simpan_invoice');
+Route::post('sales/update_invoice', 'sales\invoice_Controller@update_invoice');
+Route::get('sales/update_invoice', 'sales\invoice_Controller@update_invoice');
 Route::post('sales/invoice/save_data_detail', 'sales\invoice_Controller@save_data_detail');
 Route::post('sales/invoice/hapus_data', 'sales\invoice_Controller@hapus_data');
 Route::post('sales/invoice/hapus_data_detail', 'sales\invoice_Controller@hapus_data_detail');
@@ -938,12 +941,14 @@ Route::get('sales/fakturpajakform', function(){
         return view('sales.faktur_pajak.form');
 });
 
-//penerimaanpenjualan
+//kwitansi
 Route::get('sales/penerimaan_penjualan', 'sales\penerimaan_penjualan_Controller@index');
 Route::get('sales/penerimaan_penjualan_form', 'sales\penerimaan_penjualan_Controller@form');
 Route::get('sales/nota_kwitansi', 'sales\penerimaan_penjualan_Controller@nota_kwitansi');
 Route::get('sales/cari_invoice', 'sales\penerimaan_penjualan_Controller@cari_invoice');
+Route::get('sales/append_invoice', 'sales\penerimaan_penjualan_Controller@append_invoice');
 Route::get('sales/datatable_kwitansi', 'sales\penerimaan_penjualan_Controller@datatable_kwitansi')->name('datatable_kwitansi');
+Route::get('sales/datatable_detail_invoice', 'sales\penerimaan_penjualan_Controller@datatable_detail_invoice')->name('datatable_detail_invoice');
 Route::get('sales/datatable_invoice', 'sales\penerimaan_penjualan_Controller@datatable_invoice')->name('datatable_invoice');
 
 
