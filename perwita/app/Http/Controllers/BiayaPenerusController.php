@@ -2478,16 +2478,17 @@ public function cari_do_subcon(request $request)
 				 ->where('kode_cabang',$request->cabang)
 				 ->get();
 
-	for ($i=0; $i < count($kontrak); $i++) { 
+	for ($i=0; $i < count($cari_do); $i++) { 
 			$fix[$i]['d_nomor'] = $cari_do[$i]->nomor;
-			$fix[$i]['d_total_net'] = $cari_do[$i]->d_total_net;
+			$fix[$i]['d_total_net'] = $cari_do[$i]->total_net;
 			$fix[$i]['d_tanggal'] = $cari_do[$i]->tanggal;
 			$fix[$i]['d_jenis_tarif'] = $cari_do[$i]->jenis;
-			$fix[$i]['d_asal'] = $asal[$i]->asal;
-			$fix[$i]['d_tujuan'] = $tujuan[$i]->tujuan;
+			$fix[$i]['d_asal'] = $asal[$i]->nama;
+			$fix[$i]['d_tujuan'] = $tujuan[$i]->nama;
 			$fix[$i]['d_angkutan'] = $angkutan[$i]->nama;
 			$fix[$i]['ksd_id_angkutan'] = $angkutan[$i]->kode;
 	}
+	return view('purchase.fatkur_pembelian.tabelSubcon',compact('fix'));
 }
 
 }
