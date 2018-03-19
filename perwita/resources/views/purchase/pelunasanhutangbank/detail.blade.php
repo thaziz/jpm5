@@ -136,7 +136,7 @@
                           <tr>
                             <td>Keterangan </td>
                             <td> <input type="text" class="input-sm form-control" name="keteranganheader">  </td>
-                            <td> <input type="hidden" class="input-sm form-control flag" name="flag" value="{{$data['bbk'][0]->bbk_keterangan}}" readonly="">   </td>
+                            <td> <input type="hidden" class="input-sm form-control flag" name="flag" value="{{$data['bbk'][0]->bbk_flag}}" readonly="">   </td>
                           </tr>
                           </table>
                         </div>
@@ -193,8 +193,8 @@
                               <div class="col-lg-12">
                                   <div class="tabs-container">
                                       <ul class="nav nav-tabs">
-                                          <li class="active"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
-                                          <li class=""><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
+                                          <li class="active" id="tabmenu"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
+                                          <li class="" id="tabmenu"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
                                       </ul>
                                       <div class="tab-content">
                                           <div id="tab-1" class="tab-pane active">
@@ -431,6 +431,18 @@
       $('.removes-btn').hide();
       $('.tmbhdatacek').hide();
       $('.simpansukses').hide();
+
+      $('.flag').val();
+         flag = $('.flag').val();
+     
+      if(flag == 'CEKBG') {
+          $('#tab-1').addClass('active');
+           $('#tab-2').removeClass("active");
+      }
+      else {
+          $('#tab-2').addClass('active');
+           $('#tab-1').removeClass("active");
+      }
 
      $('#formbbk').submit(function(){
         if(!this.checkValidity() ) 

@@ -168,7 +168,7 @@
                           <tr>
                             <td>Keterangan </td>
                             <td> <input type="text" class="input-sm form-control" name="keteranganheader">  </td>
-                            <td> <input type="hidden" class="input-sm form-control flag" name="flag">   </td>
+                            <td>    </td>
                           </tr>
                           </table>
                         </div>
@@ -209,8 +209,8 @@
                               <div class="col-lg-12">
                                   <div class="tabs-container">
                                       <ul class="nav nav-tabs">
-                                          <li class="active"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
-                                          <li class=""><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
+                                          <li class="active" id="tabmenu"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
+                                          <li class="" id="tabmenu"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
                                       </ul>
                                       <div class="tab-content">
                                           <div id="tab-1" class="tab-pane active">
@@ -301,6 +301,10 @@
                                                         <td>
                                                             <div class="col-sm-12">
                                                             <select class="chosen-select-width form-control akun biaya">
+                                                               <option value="">
+                                                                Pilih Akun 
+                                                              </option>
+
                                                               @foreach($data['akun'] as $akun)
                                                               <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
                                                                 {{$akun->nama_akun}}
@@ -441,6 +445,8 @@
         }
     });
 
+   
+
     //GET NO BBK
     cabang = $('.cabang').val();
     $('.valcabang').val(cabang);
@@ -527,7 +533,7 @@
                        
                   });
              
-             $('.formbbk').attr('disabled' , true);
+             $('.simpansukses').attr('disabled' , true);
              html = "<a class='btn btn-info btn-sm' href={{url('pelunasanhutangbank/cetak')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
             $('.print').html(html);
           },
@@ -885,6 +891,7 @@
               dk = $(this).data('dk');
               $('.jumlah').each(function(){
                 val2 = $(this).val();
+                dk = $(this).data('dk');
                 jmlval = val2.replace(/,/g, '');
                 if(dk == 'D'){
                   jmlahval = parseFloat(parseFloat(jmlahval) + parseFloat(jmlval)).toFixed(2);
