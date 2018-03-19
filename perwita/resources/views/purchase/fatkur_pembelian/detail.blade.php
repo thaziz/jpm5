@@ -4566,7 +4566,7 @@ $('.ubah').click(function(){
   $('.edit').attr('disabled' , false);
    $('.tmbh-po').show();
    $('.tmbh-brg').show();
-   $('.simpan').show();
+   $('.simpanupdate').show();
    $('#createmodal_pajakpo').show();
    $('#createmodal_tt').show();
     

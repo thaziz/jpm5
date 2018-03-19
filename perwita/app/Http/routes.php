@@ -322,7 +322,7 @@ Route::get('pelunasanhutangbank/nocheck', 'PurchaseController@nocheckpelunasanhu
 Route::post('pelunasanhutangbank/getnota', 'PurchaseController@getnobbk');
 Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
-Route::post('pelunasanhutangbank/cetak', 'PurchaseController@cetakbbk');
+Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
@@ -355,6 +355,7 @@ Route::post('formfpg/updateformfpg', 'PurchaseController@updateformfpg');
 Route::post('formfpg/deletedetailformfpg', 'PurchaseController@deletedetailformfpg');
 Route::post('formfpg/deletedetailbankformfpg', 'PurchaseController@deletedetailbankformfpg');
 Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
+Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
 
 
 Route::get('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan', 'PurchaseController@pelaporanfakturpajakmasukan');

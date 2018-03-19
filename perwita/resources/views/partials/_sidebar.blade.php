@@ -1576,8 +1576,8 @@
                                         Request::is('pelunasanhutang/pelunasanhutang/*') ? 'active' : ''}}" href="{{ url('pelunasanhutang/pelunasanhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Kas </a>
                                 </li>
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbayarbank/pelunasanhutangbayarbank') ? 'active' : '' || 
-                                        Request::is('pelunasanhutangbayarbank/pelunasanhutangbayarbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbayarbank/pelunasanhutangbayarbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
+                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbank/pelunasanhutangbank') ? 'active' : '' || 
+                                        Request::is('pelunasanhutangbank/pelunasanhutangbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbank/pelunasanhutangbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
                                 </li>
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('bankkaslain/bankkaslain') ? 'active' : '' || 
