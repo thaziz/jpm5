@@ -168,7 +168,7 @@
     $('#ed_harga').change(function(){
         var hargafind = $(this).find(':selected').data('id');
         alert(hargafind);
-        $('id_zona_foreign').val(hargafind);
+        $('input[name="id_zona_foreign"]').val(hargafind);
 
     });
 
