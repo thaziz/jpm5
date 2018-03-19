@@ -10,7 +10,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> VENDOR
+                    <h5> AGEN
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
@@ -70,10 +70,12 @@
                         <tr>
                             <th> Kode</th>
                             <th> Nama </th>
+                            <th> Kategori </th>
                             <th> Alamat </th>
                             <th> Kota </th>
                             <th> Telpon </th>
-                            <th> Status </th>
+                            <th> Fax </th>
+                            <th> Komisi </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -87,7 +89,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Insert Edit Vendor</h4>
+                        <h4 class="modal-title">Insert Edit Agen</h4>
                       </div>
                       <div class="modal-body">
                         <form class="form-horizontal  kirim">
@@ -96,35 +98,27 @@
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
                                     <td>
-                                        <input type="text" name="ed_kode" placeholder="Otomatis" class="form-control" style="text-transform: uppercase" >
+                                        <input type="text" name="ed_kode" class="form-control" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
                                     </td>
                                 </tr>
-                                
                                 <tr>
                                     <td style="padding-top: 0.4cm">Nama</td>
                                     <td colspan="3">
                                         <input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
-                                
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Kota</td>
-                                    <td>   
-                                        <select class="chosen-select-width"  name="cb_kota" style="width:100%">
-                                            <option value=""></option>
-                                        @foreach ($kota as $row)
-                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
-                                        @endforeach
-                                        </select>
-                                    </td>
-                                    <td style="padding-top: 0.4cm">Tipe</td>
+                                    <td style="padding-top: 0.4cm">Kode Area</td>
+                                    <td><input type="text" class="form-control" name="ed_kode_area" style="text-transform: uppercase" ></td>
+                                    <td style="padding-top: 0.4cm">Kategori</td>
                                     <td>
-                                        <select class="form-control" name="cb_tipe">
-                                            {{-- <option value="" selected="">Pilih-</option> --}}
-                                            <option value="VENDOR">VENDOR</option>
+                                        <select class="form-control" name="cb_kategori">
+                                            <option value="AGEN">AGEN</option>
+                                            <option value="OUTLET">OUTLET</option>
+                                            <option value="AGEN DAN OUTLET">AGEN DAN OUTLET </option>
                                         </select>
                                     </td>
                                 </tr>
@@ -138,39 +132,41 @@
                                             @endforeach
                                         </select>
                                     </td>
+                                    <td style="padding-top: 0.4cm">Kota</td>
+                                    <td>   
+                                        <select class="form-control"  name="cb_kota" style="width:100%">
+                                            <option value=""></option>
+                                        @foreach ($kota as $row)
+                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <input type="hidden" name="id_agen">
+                                <tr>
                                     <td style="padding-top: 0.4cm">Alamat</td>
-                                    <td>
+                                    <td colspan="3">
                                         <input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
-                                
                                 <tr>
                                     <td style="padding-top: 0.4cm">Telpon</td>
                                     <td>
                                         <input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" >
                                     </td>
-                                    <td style="padding-top: 0.4cm">Kode Pos</td>
+                                    <td style="padding-top: 0.4cm">Fax</td>
                                     <td>
-                                        <input type="text" class="form-control" name="ed_kode_pos" style="text-transform: uppercase" >
+                                        <input type="text" class="form-control" name="ed_fax" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Komisi(%)</td>
                                     <td>
-                                        
+                                        <input type="text" class="form-control" name="ed_komisi" style="text-transform: uppercase" >
                                     </td>
-                                    <td>
-                                        <div class="checkbox">
-                                            <label for="checkbox1"> <input type="checkbox" name="ck_status"> Pakai Angkutan </label>
-                                        </div>  
-                                    </td>
-                                     <td style="padding-top: 0.4cm">Komisi Vendor(%)</td>
-                                    <td>
-                                        <input type="text" class="form-control" name="ed_komisi_vendor" value="80" id="ed_komisi_vendor"  >
-                                    </td>
-                                    
                                 </tr>
                                 <tr>
-                                <td style="padding-top: 0.4cm">Acc Biaya</td>
+                                <td style="padding-top: 0.4cm">Acc Penjulan</td>
                                 <td colspan="7">
                                     <div class="input-group date">
                                       <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
@@ -185,25 +181,10 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm">CSF Biaya</td>
-                                <td colspan="7">
-                                    <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc3" width="100%">
-                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
-                                        @foreach($akun as $a)
-                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
-                                            {{$a->id_akun}} - {{$a->nama_akun}}
-                                          </option>
-                                        @endforeach
-                                      </select>
-                                    </div>
-                                </td>
-                            </tr>
-                             <tr>
                                 <td style="padding-top: 0.4cm">Acc Hutang</td>
                                 <td colspan="7">
                                     <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc2" width="100%">
+                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
                                          <option value="" selected="" disabled="">-- Pilih kode akun --</option>
                                         @foreach($akun as $a)
                                           <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
@@ -214,21 +195,18 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">CSF Hutang</td>
-                                <td colspan="7">
-                                    <div class="input-group date">
-                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc4" width="100%">
-                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
-                                        @foreach($akun as $a)
-                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
-                                            {{$a->id_akun}} - {{$a->nama_akun}}
-                                          </option>
+                                {{-- <tr>
+                                    <td style="padding-top: 0.4cm">CSF Penjualan</td>
+                                    <td>
+                                        <select class="chosen-select-width"  name="cb_csf_penjualan" style="width:100%">
+                                            <option value=""></option>
+                                        @foreach ($akun as $row)
+                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} </option>
                                         @endforeach
-                                      </select>
-                                    </div>
-                                </td>
-                            </tr>
+                                        </select>
+                                    </td>
+                                    <td colspan="3"><input type="text" class="form-control" name="ed_csf_penjualan2" ></td>
+                                </tr> --}}
                             </tbody>
                           </table>
                         </form>
@@ -265,13 +243,6 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
-     $('#ed_komisi_vendor').attr('readonly',true);
-     $('input[name="ed_kode"]').attr('readonly',true);
-
-
-     $('#ed_komisi_vendor').val('80');
-    
     $(document).ready( function () {
         $('#table_data').DataTable({
             "paging": true,
@@ -284,16 +255,18 @@
             "pageLength": 10,
             "retrieve" : true,
             "ajax": {
-              "url" :  baseUrl + "/master_sales/vendor/tabel",
+              "url" :  baseUrl + "/master_sales/agen/tabel",
               "type": "GET"
             },
             "columns": [
             { "data": "kode" },
             { "data": "nama" },
+            { "data": "kategori" },
             { "data": "alamat" },
             { "data": "kota" },
             { "data": "telpon" },
-            { "data": "status" },
+            { "data": "fax" },
+            { "data": "komisi" },
             { "data": "button" },
             ]
         });
@@ -323,21 +296,21 @@
     $(document).on("click","#btn_add",function(){
         $("input[name='crud']").val('N');
         $("input[name='ed_kode']").val('');
+        $("input[name='ed_kode']").attr('readonly',false); 
         $("input[name='ed_kode_old']").val('');
         $("input[name='ed_nama']").val('');
-        $("select[name='cb_tipe']").val('');
+        $("input[name='ed_kode_area']").val('');
+        $("select[name='cb_kategori']").val('');
+        $("select[name='cb_cabang']").val('');
         $("select[name='cb_kota']").val('').trigger('chosen:updated');
+        $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='cb_acc_penjualan']").change();
+        $("select[name='cb_csf_penjualan']").change();
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_telpon']").val('');
-        $("#ed_komisi_vendor").val('80');
-        $("input[name='ed_kode_pos']").val('');
-        $("input[name='ck_status']").attr('checked', false);
-        $("select[name='ed_acc1']").val('').trigger('chosen:updated');
-        $("select[name='ed_acc2']").val('').trigger('chosen:updated');
-        $("select[name='ed_acc3']").val('').trigger('chosen:updated'); 
-        $("select[name='ed_acc4']").val('').trigger('chosen:updated'); 
-        $("select[name='cb_cabang']").val('').trigger('chosen:updated');
-
+        $("input[name='ed_fax']").val('');
+        $("input[name='ed_komisi']").val('0');
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
     });
@@ -349,7 +322,7 @@
         };
         $.ajax(
         {
-            url : baseUrl + "/master_sales/vendor/get_data",
+            url : baseUrl + "/master_sales/agen/get_data",
             type: "GET",
             data : value,
             dataType:'json',
@@ -357,22 +330,22 @@
             {
                 $("input[name='crud']").val('E');
                 $("input[name='ed_kode']").val(data.kode);
-                $("input[name='ed_kode_old']").val(data.id_vendor);
+                $("input[name='id_agen']").val(data.id_agen);
+                $("input[name='ed_kode_old']").val(data.kode);
+                $("input[name='ed_kode']").attr('readonly','true');
                 $("input[name='ed_nama']").val(data.nama);                
-                $("select[name='cb_tipe']").val(data.tipe);
+                $("input[name='ed_kode_area']").val(data.kode_area);
+                $("select[name='cb_kategori']").val(data.kategori);
+                $("select[name='cb_cabang']").val(data.kode_cabang);
                 $("select[name='cb_kota']").val(data.id_kota).trigger('chosen:updated');
                 $("input[name='ed_alamat']").val(data.alamat);
                 $("input[name='ed_telpon']").val(data.telpon);
-                $("input[name='ed_kode_pos']").val(data.kode_pos);
-                $("#ed_komisi_vendor").val(data.komisi_vendor);
-                $("#ed_komisi_vendor").attr('readonly',false);
-                $("input[name='ck_status']").attr('checked', data.status);
-                $("select[name='ed_acc1']").val(data.acc_penjualan).trigger('chosen:updated');
-                $("select[name='ed_acc2']").val(data.acc_hutang).trigger('chosen:updated');
-                $("select[name='ed_acc3']").val(data.csf_penjualan).trigger('chosen:updated'); 
-                $("select[name='ed_acc4']").val(data.csf_hutang).trigger('chosen:updated'); 
-                $("select[name='cb_cabang']").val(data.cabang_vendor).trigger('chosen:updated');
-
+                $("input[name='ed_fax']").val(data.fax);
+                $("input[name='ed_komisi']").val(data.komisi);
+                $("select[name='cb_acc_penjualan']").val(data.acc_penjualan).trigger('chosen:updated');
+                $("select[name='cb_csf_penjualan']").val(data.csf_penjualan).trigger('chosen:updated'); 
+                $("select[name='cb_acc_penjualan']").change();
+                $("select[name='cb_csf_penjualan']").change();
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
             },
@@ -384,9 +357,174 @@
     });
 
     $(document).on("click","#btnsave",function(){
+
+        var nama = $("input[name='ed_nama']").val();
+        var kodearea = $("input[name='ed_kode_area']").val();
+        var cbkategori= $("select[name='cb_kategori']").val();
+        var cbcabang= $("select[name='cb_cabang']").val();
+        var edalamat= $("input[name='ed_alamat']").val();
+        var edtelpon= $("input[name='ed_telpon']").val();
+        var edkota = $("select[name='cb_kota']").val();
+        if (nama == '' || nama == null) 
+        {
+            Command: toastr["warning"]("Nama Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        else if (kodearea == '' || kodearea == null) 
+        {  
+            Command: toastr["warning"]("Kode Area Tidak boleh kosong", "Peringatan")
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        else if (cbkategori == null || cbkategori == '') 
+        {
+         Command: toastr["warning"]("Kategori Tidak boleh kosong", "Peringatan")
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        else if (cbcabang == null || cbcabang == '') 
+        {
+         Command: toastr["warning"]("Cabang Tidak boleh kosong", "Peringatan")
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        else if (edkota == null || edkota == '') 
+        {
+            Command: toastr["warning"]("Kota Tidak boleh kosong", "Peringatan")
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        else if (edalamat == null || edalamat == '') 
+        {
+            Command: toastr["warning"]("Alamat Tidak boleh kosong", "Peringatan")
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        else if (edtelpon == null || edtelpon == '') 
+        {
+            Command: toastr["warning"]("Telepon Tidak boleh kosong", "Peringatan")
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+
+
         $.ajax(
         {
-            url : baseUrl + "/master_sales/vendor/save_data",
+            url : baseUrl + "/master_sales/agen/save_data",
             type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
@@ -398,8 +536,44 @@
                         table.ajax.reload( null, false );
                         $("#modal").modal('hide');
                         $("#btn_add").focus();
+
+                           Command: toastr["success"]("Data berhasil disimpan", "Pemberitahuan ")
+                            toastr.options = {
+                              "closeButton": false,
+                              "debug": false,
+                              "newestOnTop": false,
+                              "progressBar": true,
+                              "positionClass": "toast-top-right",
+                              "preventDuplicates": false,
+                              "onclick": null,
+                              "showDuration": "300",
+                              "hideDuration": "1000",
+                              "timeOut": "5000",
+                              "extendedTimeOut": "1000",
+                              "showEasing": "swing",
+                              "hideEasing": "linear",
+                              "showMethod": "fadeIn",
+                              "hideMethod": "fadeOut"
+                            }
                     }else{
-                        alert("Gagal menyimpan data!");
+                        Command: toastr["error"]("Data gagal disimpan", "Peringatan")
+                            toastr.options = {
+                              "closeButton": false,
+                              "debug": false,
+                              "newestOnTop": false,
+                              "progressBar": true,
+                              "positionClass": "toast-top-right",
+                              "preventDuplicates": false,
+                              "onclick": null,
+                              "showDuration": "300",
+                              "hideDuration": "1000",
+                              "timeOut": "5000",
+                              "extendedTimeOut": "1000",
+                              "showEasing": "swing",
+                              "hideEasing": "linear",
+                              "showMethod": "fadeIn",
+                              "hideMethod": "fadeOut"
+                            }
                     }
                 }else if(data.crud == 'E'){
                     if(data.result == 1){
@@ -433,7 +607,7 @@
         };
         $.ajax({
             type: "POST",
-            url : baseUrl + "/master_sales/vendor/hapus_data",
+            url : baseUrl + "/master_sales/agen/hapus_data",
             dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)
@@ -454,6 +628,17 @@
 
 
     });
+$('.chosen-select-width212').chosen();
+ $('.chosen-single').css({
+                            "min-width": "700px",
+                            "max-width": "700px"
+                            });
+   $('.chosen-container-single').css({
+                            "min-width": "400px",
+                            "max-width": "400px"
+                        });
+    
+
     
 
 </script>
