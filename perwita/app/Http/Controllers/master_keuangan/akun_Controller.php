@@ -15,77 +15,77 @@ use Session;
 class akun_Controller extends Controller
 {
     public function index(){
-    	$data = master_akun::whereNull("id_parrent")->get();
+        $data = master_akun::whereNull("id_parrent")->get();
         //return json_encode($data);
-    	return view("keuangan.master_akun.idx")->withData($data);
-    	//return $data;
+        return view("keuangan.master_akun.idx")->withData($data);
+        //return $data;
     }
 
     public function add($parrent){
 
-    	$data = master_akun::whereNull("id_parrent")->get();
-    	$nama = "Tidak Memiliki Parrent";
-    	$provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
+        $data = master_akun::whereNull("id_parrent")->get();
+        $nama = "Tidak Memiliki Parrent";
+        $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
         $cabang = DB::table("cabang")->orderBy("nama", "asc")->select(DB::raw("substr(kode, 2) as kode"), "nama")->get();
         $subakun = master_akun::orderBy("nama_akun", "asc")->get();
         $namakota = "";
 
         //return json_encode($cabang);
 
-    	if($parrent != 0){
-    		$data = master_akun::where("id_parrent", "=", $parrent)->get();
-    		$nama = master_akun::where("id_akun", "=", $parrent)->first();
+        if($parrent != 0){
+            $data = master_akun::where("id_parrent", "=", $parrent)->get();
+            $nama = master_akun::where("id_akun", "=", $parrent)->first();
             $namakota = DB::table("kota")->where("id", $nama->id_kota)->first();
-    	}
+        }
 
-    	return view("keuangan.master_akun.form-insert")
-    		->withData($data)
-    		->withParrent($parrent)
-    		->withProvinsi($provinsi)
+        return view("keuangan.master_akun.form-insert")
+            ->withData($data)
+            ->withParrent($parrent)
+            ->withProvinsi($provinsi)
             ->withCabang($cabang)
-    		->withNama($nama)
+            ->withNama($nama)
             ->withNamakota($namakota)
             ->withSubakun($subakun);
     }
 
     public function kota($id_provinsi){
-    	$kota = DB::table("kota")->where("id_provinsi", "=", $id_provinsi)->orderBy("nama", "asc")->get();
-    	$html = "";
+        $kota = DB::table("kota")->where("id_provinsi", "=", $id_provinsi)->orderBy("nama", "asc")->get();
+        $html = "";
 
-    	foreach ($kota as $dataKota) {
-    		$html = $html.'<option value="'.$dataKota->id.'">'.$dataKota->nama.'</option>';
-    	}
+        foreach ($kota as $dataKota) {
+            $html = $html.'<option value="'.$dataKota->id.'">'.$dataKota->nama.'</option>';
+        }
 
-    	return '<option value="0">Pilih Kota</option>'.$html;
+        return '<option value="0">Pilih Kota</option>'.$html;
     }
 
     public function save_data(Request $request){
         //return json_encode($request->all());
         //return json_encode(explode(",", str_replace(".", "", substr($request->saldo_awal, 3)))[0]);
 
-    	$response = [
-			'status' 	=> 'berhasil',
-			'content'	=> $request->all()
-		];
+        $response = [
+            'status'    => 'berhasil',
+            'content'   => $request->all()
+        ];
 
-    	$rules = [
-    		'nama_akun'			=> 'required'
-    	];
+        $rules = [
+            'nama_akun'         => 'required'
+        ];
 
-    	$messages = [
-    		'nama_akun.required'	=> 'Inputan Nama Akun Tidak Boleh Kosong',
-    	];
+        $messages = [
+            'nama_akun.required'    => 'Inputan Nama Akun Tidak Boleh Kosong',
+        ];
 
-    	$validator = Validator::make($request->all(), $rules, $messages);
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-    	if($validator->fails()){
-    		$response = [
-    			'status' 	=> 'gagal',
-    			'content'	=> $validator->errors()->first()
-    		];
+        if($validator->fails()){
+            $response = [
+                'status'    => 'gagal',
+                'content'   => $validator->errors()->first()
+            ];
 
-    		return json_encode($response);
-    	}
+            return json_encode($response);
+        }
 
         if($request->sebagai == 1){
             $cek = master_akun::find($request->id_akun);
@@ -193,46 +193,46 @@ class akun_Controller extends Controller
                 return json_encode($response);
             }
         }
-    	
+        
     }
 
     public function edit($parrent){
 
-    	$data = master_akun::find($parrent);
-    	$provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
+        $data = master_akun::find($parrent);
+        $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
 
-    	return view("keuangan.master_akun.edit")
-    		->withData($data)
-    		->withProvinsi($provinsi);
+        return view("keuangan.master_akun.edit")
+            ->withData($data)
+            ->withProvinsi($provinsi);
     }
 
     public function update_data(Request $request, $id){
-    	$response = [
-			'status' 	=> 'berhasil',
-			'content'	=> $request->all()
-		];
+        $response = [
+            'status'    => 'berhasil',
+            'content'   => $request->all()
+        ];
 
-		$akun = master_akun::find($id);
-		$akun->nama_akun = $request->nama_akun;
-		$akun->is_active = $request->is_active;
+        $akun = master_akun::find($id);
+        $akun->nama_akun = $request->nama_akun;
+        $akun->is_active = $request->is_active;
 
-		if($akun->save()){
-			return json_encode($response);
-		}    	
+        if($akun->save()){
+            return json_encode($response);
+        }       
     }
 
     public function hapus_data($id){
-    	$data = master_akun::where("id_parrent", "=", $id)->get();
+        $data = master_akun::where("id_parrent", "=", $id)->get();
 
-    	foreach ($data as $dataSubAkun) {
+        foreach ($data as $dataSubAkun) {
             DB::table('d_akun')->where("id_akun", '=', $dataSubAkun->id_akun)->delete();
             $this->hapus_data($dataSubAkun->id_akun);
          }
 
         DB::table('d_akun_saldo')->where("id_akun", '=', $id)->delete();
         DB::table('d_akun')->where("id_akun", '=', $id)->delete();
-    	Session::flash('sukses', "Data Akun Berhasil Dihapus.");
-    	return redirect(route("akun.index"));
+        Session::flash('sukses', "Data Akun Berhasil Dihapus.");
+        return redirect(route("akun.index"));
     }
 
     public function cek_parrent($id){

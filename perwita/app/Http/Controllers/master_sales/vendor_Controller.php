@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Carbon\Carbon;
-
+use Auth;
 
 class vendor_Controller extends Controller
 {
@@ -56,7 +56,7 @@ class vendor_Controller extends Controller
         $year = carbon::now()->format('y');
         $month = carbon::now()->format('m');
         $day = carbon::now()->format('d');
-         // $kodecabang =  auth::user()->kode_cabang;
+         $kodecabang =  /*Auth::user()->kode_cabang*/ 'test';
 
         if ($request->ed_kode == null || $request->ed_kode == '') {
              $kodekode = DB::table('vendor')->max('id_vendor');
@@ -69,7 +69,7 @@ class vendor_Controller extends Controller
                if ($kodekode < 1000) {
                   $kodekode = '000'.$kodekode;
                 }
-                 $kodekode =  /*$kodecabang.*/'AV-'.'001'.'/'.$kodekode;
+                 $kodekode =  /*$kodecabang.*/'AV-'.$kodecabang.'/'.$kodekode;
         }else{
            $kodekode = $request->ed_kode;
         }
@@ -82,7 +82,10 @@ class vendor_Controller extends Controller
                }
         $simpan='';
         $crud = $request->crud;
-        $data = array(
+        
+        
+        if ($crud == 'N') {
+            $data = array(
                 'kode' => $kodekode,
                 'id_vendor'=>$idvendorkode,
                 'nama' => strtoupper($request->ed_nama),
@@ -92,14 +95,33 @@ class vendor_Controller extends Controller
                 'telpon' => strtoupper($request->ed_telpon),
                 'kode_pos' => strtoupper($request->ed_kode_pos),
                 'status' => strtoupper($statusbol),
-                'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                'komisi_vendor' =>strtoupper($request->ed_komisi_vendor),
+                'cabang_vendor' => strtoupper($request->cb_cabang),
+                'acc_penjualan' => strtoupper($request->ed_acc1),
+                'acc_hutang' => strtoupper($request->ed_acc2),
+                'csf_penjualan' => strtoupper($request->ed_acc3),
+                'csf_hutang' => strtoupper($request->ed_acc4),
             );
-        
-        if ($crud == 'N') {
             $simpan = DB::table('vendor')->insert($data);
         }elseif ($crud == 'E') {
-            $simpan = DB::table('vendor')->where('kode', $request->ed_kode_old)->update($data);
+              $data = array(
+                'kode' => $request->ed_kode,
+                'id_vendor'=>$request->ed_kode_old,
+                'nama' => strtoupper($request->ed_nama),
+                'tipe' => strtoupper($request->cb_tipe),
+                'id_kota' => strtoupper($request->cb_kota),
+                'alamat' => strtoupper($request->ed_alamat),
+                'telpon' => strtoupper($request->ed_telpon),
+                'kode_pos' => strtoupper($request->ed_kode_pos),
+                'status' => strtoupper($statusbol),
+                'cabang_vendor' => strtoupper($request->cb_cabang),
+                'komisi_vendor' =>strtoupper($request->ed_komisi_vendor),
+                'acc_penjualan' => strtoupper($request->ed_acc1),
+                'acc_hutang' => strtoupper($request->ed_acc2),
+                'csf_penjualan' => strtoupper($request->ed_acc3),
+                'csf_hutang' => strtoupper($request->ed_acc4),
+            );
+            $simpan = DB::table('vendor')->where('kode', $request->ed_kode)->update($data);
         }
         if($simpan == TRUE){
             $result['error']='';
@@ -128,8 +150,9 @@ class vendor_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
+        $cabang = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY nama ASC "));
         $akun= DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
-        return view('master_sales.vendor.index',compact('kota','akun'));
+        return view('master_sales.vendor.index',compact('kota','akun','cabang'));
     }
 
 }
