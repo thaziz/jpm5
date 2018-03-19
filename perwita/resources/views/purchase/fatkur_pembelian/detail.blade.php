@@ -1055,7 +1055,7 @@
           },
           function(){
         $.ajax({
-          type : "post",
+          type : "get",
           data : form_data2,
           url : baseUrl + "/fakturpembelian/updatefaktur",
           dataType : 'json',

@@ -404,7 +404,7 @@
                                 Pilih Pajak PPH
                               </option>
 
-                               @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'> {{$pajak->nama}}</option> @endforeach </select> </td>
+                               @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}' data-acc="{{$pajak->acc1}}"> {{$pajak->nama}}</option> @endforeach </select> </td>
                               <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph" readonly=""> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph" style='text-align: right' readonly="" name='hasilpph'> </div> </div> </td>
                           </tr>
 
@@ -739,7 +739,7 @@
                   
                             <!-- KONTEN FAKTUR PAKE PO -->
                            <div id="tab-2" class="tab-pane">
-                             <form method="post" action="{{url('fakturpembelian/savefakturpo')}}"  enctype="multipart/form-data" class="form-horizontal savefakturpo" id="savefakturpo">
+                             <form method="get" action="{{url('fakturpembelian/savefakturpo')}}"  enctype="multipart/form-data" class="form-horizontal savefakturpo" id="savefakturpo">
                                 <div class="panel-body">
                                     <div class="row">
                                     <div class="col-xs-6">
@@ -749,9 +749,9 @@
                                             <td>   <select class="form-control idsup_po" name="supplier_po" novalidate required=""> 
                                                     <option value=""> -- Pilih Supplier -- </option>
                                                 @foreach($data['supplier'] as $supplier)
-                                                    <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}"> {{$supplier->nama_supplier}}</option>
+                                                    <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->nama_supplier}}</option>
                                                 @endforeach
-                                                </select>
+                                                </select>                                        
                                             </td>
                                             </td>
                                           </tr>
@@ -2203,9 +2203,10 @@
             closeOnConfirm: true
           },
           function(){
+          var accPph=$(".pajakpph").find(':selected').data('acc');            
         $.ajax({
-          type : "POST",
-          data : form_data2,
+          type : "GET",          
+          data : form_data2+'&accPph='+accPph,
           url : post_url2,
           dataType : 'json',
           success : function (response){
@@ -2272,9 +2273,10 @@
             closeOnConfirm: false
           },
            function(){
+            var accHutang=$(".idsup_po").find(':selected').data('accHutang');
           $.ajax({
-            type : "post",
-            data : form_data3,
+            type : "GET",
+            data : form_data3+'&accHutang='+acc_hutang,
             url : post_url3,
           
             success : function(response){
@@ -2384,7 +2386,7 @@
 
                   "<td> <input type='text' class='form-control acc_biayaitem acc_biayaitem"+nourut+"' value='"+acc_biaya+"' name='acc_biaya[]' readonly> </td>"+ //acc_biaya
 
-                  "<td> <input type='text' class='form-control acc_persediaanitem acc_persediaanitem"+nourut+"' value='"+acc_biaya+"' name='acc_persediaan[]' readonly> </td>"+ //acc_persediaan
+                  "<td> <input type='text' class='form-control acc_persediaanitem acc_persediaanitem"+nourut+"' value='"+acc_persediaan+"' name='acc_persediaan[]' readonly> </td>"+ //acc_persediaan
 
                   "<td> <input type='text' class='form-control keteranganitem keteranganitem"+nourut+"' value='"+keterangan+"'  name='keteranganitem[]'>  <input type='hidden' name='penerimaan[]' class='penerimaan' value='"+penerimaan+"'></td>" +
                   

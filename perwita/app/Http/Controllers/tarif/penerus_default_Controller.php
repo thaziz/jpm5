@@ -11,6 +11,7 @@ class penerus_default_Controller extends Controller
 {
     public function table_data () {
         $list = DB::table('tarif_penerus_default')->get();
+        // return $list;
         $data = array();
         foreach ($list as $r) {
             $data[] = (array) $r;
@@ -35,13 +36,18 @@ class penerus_default_Controller extends Controller
     }
 
     public function save_data (Request $request) {
+        // dd($request);   
         $simpan='';
         $crud = $request->crud;
+        if ($request->cb_keterangan == null ) {
+            $request->cb_keterangan = ' ';
+        }
         $data = array(
                 'jenis' => $request->cb_jenis,
                 'keterangan' => $request->cb_keterangan,
                 'tipe_kiriman' => $request->cb_tipe_kiriman,
                 'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                'id_zona_foreign' => $request->id_zona_foreign,
             );
         if ($crud == 'N') {
             $simpan = DB::table('tarif_penerus_default')->insert($data);
@@ -75,7 +81,8 @@ class penerus_default_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
-        return view('tarif.penerus_default.index',compact('kota'));
+        $zona = DB::select(DB::raw(" SELECT * FROM zona ORDER BY nama ASC "));
+        return view('tarif.penerus_default.index',compact('kota','zona'));
     }
 
 }

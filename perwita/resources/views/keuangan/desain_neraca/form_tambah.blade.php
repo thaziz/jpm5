@@ -223,18 +223,18 @@
 
       $idOnSelect = "";
 
-      if(data.node.id.substring(0, 1) != "D"){
+      if(data.node.id.indexOf("/") == -1){
         $.each($dataNeraca, function(i, n){
           if(n.nomor_id == data.node.id){
             $("#detail-in-show").html("");
-            $("#level").val(n.level); $("#level_view").val(n.nomor_id.substring(0,2)); $("#level").attr("disabled", "disabled");
-            $("#no_id").val(n.nomor_id.substring(2)); $("#no_id").attr("disabled", "disabled");
+            $("#level").val(n.level); $("#level_view").val(n.nomor_id.substring(0,4)); $("#level").attr("disabled", "disabled");
+            $("#no_id").val(n.nomor_id.substring(4)); $("#no_id").attr("disabled", "disabled");
             $("#parrent_id_view").val(n.id_parrent);
             $("#jenis").val(n.jenis); $("#jenis").attr("disabled", "disabled");
             $("#keterangan").val(n.keterangan.toUpperCase());
             $("#cancel-edit").css("visibility", "visible");
 
-            $idOnSelect = n.nomor_id.substring(0,2)+""+n.nomor_id.substring(2);
+            $idOnSelect = n.nomor_id.substring(0,4)+""+n.nomor_id.substring(4);
 
             return false;
           }
@@ -261,18 +261,18 @@
       //alert("okee");
       $idOnSelect = "";
 
-      if(data.node.id.substring(0, 1) != "D"){
+      if(data.node.id.indexOf("/") == -1){
         $.each($dataNeraca, function(i, n){
           if(n.nomor_id == data.node.id){
             $("#detail-in-show").html("");
-            $("#level").val(n.level); $("#level_view").val(n.nomor_id.substring(0,2)); $("#level").attr("disabled", "disabled");
-            $("#no_id").val(n.nomor_id.substring(2)); $("#no_id").attr("disabled", "disabled");
+            $("#level").val(n.level); $("#level_view").val(n.nomor_id.substring(0,4)); $("#level").attr("disabled", "disabled");
+            $("#no_id").val(n.nomor_id.substring(4)); $("#no_id").attr("disabled", "disabled");
             $("#parrent_id_view").val(n.id_parrent);
             $("#jenis").val(n.jenis); $("#jenis").attr("disabled", "disabled");
             $("#keterangan").val(n.keterangan.toUpperCase());
             $("#cancel-edit").css("visibility", "visible");
 
-            $idOnSelect = n.nomor_id.substring(0,2)+""+n.nomor_id.substring(2);
+            $idOnSelect = n.nomor_id.substring(0,4)+""+n.nomor_id.substring(4);
 
             return false;
           }
@@ -401,7 +401,7 @@
 
        $dataNeraca[$node_id]["keterangan"] = $("#keterangan").val().toUpperCase();
 
-        $('#'+$type+'_tree').jstree('rename_node', $node , $("#keterangan").val().toUpperCase());
+        $('#'+$type+'_tree').jstree('rename_node', $node , $("#keterangan").val().toUpperCase()+" ("+$("#level_view").val()+""+$("#no_id").val()+")");
         $("#cancel-edit").click();
 
         return false;

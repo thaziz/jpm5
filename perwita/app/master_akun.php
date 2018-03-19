@@ -8,16 +8,16 @@ use DB;
 class master_akun extends Model
 {
       protected $table = "d_akun";
-   	protected $primaryKey = "id_akun";
-   	public $incrementing = false;
-   	CONST CREATED_AT = "tanggal_buat";
-   	CONST UPDATED_AT = "terakhir_diupdate";
+      protected $primaryKey = "id_akun";
+      public $incrementing = false;
+      CONST CREATED_AT = "tanggal_buat";
+      CONST UPDATED_AT = "terakhir_diupdate";
 
-   	protected $fillable = ['id_akun','nama_akun', 'is_parrent', 'id_parrent', 'id_provinsi', 'id_kota', 'is_active', 'level', 'type_akun'];
+      protected $fillable = ['id_akun','nama_akun', 'is_parrent', 'id_parrent', 'id_provinsi', 'id_kota', 'is_active', 'level', 'type_akun'];
 
-   	public function provinsi(){
-   		return $this->belongsTo("App\master_provinsi", "id_provinsi", "id");
-   	}
+      public function provinsi(){
+         return $this->belongsTo("App\master_provinsi", "id_provinsi", "id");
+      }
 
       public function kota(){
          return $this->belongsTo("App\master_kota", "id_kota", "id");
@@ -67,11 +67,11 @@ class master_akun extends Model
 
       }
 
-   	public function cekSubAkun($id){
-   		$data = DB::table('d_akun')->where('id_parrent', '=', $id)->get();
-   		//return $id;
-	 	   return count($data);
-   	}
+      public function cekSubAkun($id){
+         $data = DB::table('d_akun')->where('id_parrent', '=', $id)->get();
+         //return $id;
+         return count($data);
+      }
 
       public function cekSaldo($id){
          $data = DB::table("d_akun_saldo")->where("id_akun", "=", $id)->where("tahun", "=", date("Y"))->first();
@@ -82,7 +82,7 @@ class master_akun extends Model
       public function hasSaldo($id){
          $data = DB::table("d_akun_saldo")->where("id_akun", $id)->where("tahun", date("Y"))->first();
          
-         if($data->is_active == 0)
+         if($data->is_active == 0 || is_null($data->saldo_akun))
             return false;
 
          return true;

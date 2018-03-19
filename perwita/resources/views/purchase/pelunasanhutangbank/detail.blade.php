@@ -78,6 +78,8 @@
                             </td>
                             <td>
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk" value='{{$data['bbk'][0]->bbk_nota}}'>
+                              <input type="text" class="input-sm form-control" readonly="" name="bbkid" value='{{$data['bbk'][0]->bbk_id}}'>
+
                             </td>
                           </tr>
 
@@ -221,19 +223,19 @@
                                                           @for($j=0; $j < count($data['bbkd'][$i]); $j++)
                                                         <tr class=data-<?php echo $n ?> id="hslbank">
                                                          <td> <?php echo $n ?> </td>
-                                                         <td>  {{$data['bbkd'][$i][$j]->bbk_nota}}</td>
-                                                         <td> {{ Carbon\Carbon::parse($data['bbkd'][$i][$j]->bbkd_tglfpg)->format('d-M-Y ') }} </td>
-                                                         <td> {{$data['bbkd'][$i][$j]->bbkd_nocheck}} </td>
-                                                         <td> {{ Carbon\Carbon::parse($data['bbkd'][$i][$j]->bbkd_jatuhtempo)->format('d-M-Y ') }} </td>
-                                                         <td> {{$data['bbkd'][$i][$j]->mb_kode}} </td>
-                                                         <td style="text-align: right">   {{ number_format($data['bbkd'][$i][$j]->bbkd_nominal, 2) }}</td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbk_nota}}" name="nofpg[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i][$j]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i][$j]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
+                                                         <td> <input type="text" class="form-control input-sm" name="idbank[]" value="{{$data['bbkd'][$i][$j]->mb_kode}}" readonly=""> </td>
+                                                         <td style="text-align: right"> <input type="text" class="form-control input-sm nominal2" value=" {{ number_format($data['bbkd'][$i][$j]->bbkd_nominal, 2) }}" name="nominal[]" readonly=""> </td>
                                                          @if($data['bbkd'][$i][$j]->bbkd_jenissup == 'supplier')
-                                                          <td> {{$data['bbkd'][$i][$j]->nama_supplier}}</td>
+                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->nama_supplier}}" name="supplier[]" readonly=""> </td>
                                                          @else
-                                                           <td> {{$data['bbkd'][$i][$j]->nama}}</td>
+                                                           <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->nama}}" name="supplier[]" readonly=""> </td>
                                                          @endif
-                                                        <!--  <td> {{$data['bbkd'][$i][$j]->bbkd_jenissup}}</td> -->
-                                                         <td> {{$data['bbkd'][$i][$j]->bbkd_keterangan}} </td>
+                                                        
+                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_keterangan}}" name="keterangan[]" readonly=""> </td>
                                                          <td> <button class="btn btn-danger btn-sm removes-btn" type="button" data-id=<?php echo $n ?> data-cek="{{$data['bbkd'][$i][$j]->bbkd_nocheck}}" data-nominal="{{ number_format($data['bbkd'][$i][$j]->bbkd_nominal, 2) }}"><i class="fa fa-trash"></i></button>  </td>
                                                         </tr>
                                                           @endfor
@@ -394,11 +396,11 @@
                             <table border="0">
                             <tr>
                               <td> 
-                             <a class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'.$data['bbk'][0]->bbk_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> Cetak BBK  </a>  
+                             <button class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'. $data['bbk'][0]->bbk_id.'')}}" type="button"> <i class="fa fa-print" aria-hidden="true"></i> Cetak BBK  </button>  
                               </td>
 
                               <td> &nbsp; </td>
-                              <td> <button class="btn btn-success simpansukses" type="submit"> Simpan </button> </td>
+                              <td> <button class="btn btn-success btn-sm simpansukses" type="submit"> Simpan </button> </td>
                             </tr>
                             </table>
                              <!--   -->
@@ -446,14 +448,14 @@
 
      $('#formfpg').submit(function(event){
        
-       url : baseUrl + '/pelunasanhutangbank/simpan';
+    
 
         event.preventDefault();
          var post_url2 = $(this).attr("action");
          var form_data2 = $(this).serialize();
          swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Form FPG!",
+            text: "Simpan Data Form BBK!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -617,12 +619,7 @@
       if(flag == 'BIAYA'){
         toastr.info("Anda sudah mengisi form 'biaya biaya' mohon untuk dilanjutkan :)");       
       }
-      else if(nofpg == ''){
-        toastr.info("Mohon isi data transaksi bank");
-      }
-      else if(nobbk == ''){
-        toastr.info("Mohon isi data cabang");
-      }
+     
      
       else {
         flag = $('.flag').val('CEKBG');
@@ -643,10 +640,10 @@
           "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
-          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value="+jatuhtempo+" readonly> </td>" +
+          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value= "+accbank+" name='bank[]' readonly> <input type='hidden' class='idbank' name='idbank[]' value='"+idbank+"'>  </td>" +
-          "<td style='text-align:right'> <input type='text' class='input-sm form-control' value= '"+addCommas(nominal)+"' name='nominal[]' readonly> </td>" +
-          "<td><input type='text' class='input-sm form-control' value= '"+supplier+"-"+namasupplier+"' name='supplier[]' readonly> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
+          "<td style='text-align:right'> <input type='text' class='input-sm form-control nominal' value= '"+addCommas(nominal)+"' name='nominal[]' readonly> </td>" +
+          "<td><input type='text' class='input-sm form-control' value= '"+supplier+"' name='supplier[]' readonly> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]' readonly></td>" +
           "<td> <button class='btn btn-danger btn-sm removes-btn' type='button' data-id="+$nomr+" data-cek='"+notransaksi+"' data-nominal='"+nominal+"'><i class='fa fa-trash'></i></button> </td> </tr>";
 
@@ -656,12 +653,23 @@
       $('#tbl-hasilbank').append(row);
       $nomr++;
 
-      nominal2 =  nominal.replace(/,/g, '');
-      nilaicekbg = parseFloat(parseFloat(nilaicekbg) + parseFloat(nominal2));
-      nilaicekbg2 = nilaicekbg.toFixed(2);
+      $('.nominal2').each(function(){
+        val = $(this).val();
+        nominal2 = val.replace(/,/g, '');
+        nilaicekbg = parseFloat(parseFloat(nilaicekbg) + parseFloat(nominal2)).toFixed(2);
+      })
+      console.log(nilaicekbg + 'nilaicekbg');
 
-      $('.cekbg').val(addCommas(nilaicekbg2));
-      $('.total').val(addCommas(nilaicekbg2));
+      nominal2 = $('.nominal').val();
+      nominal = nominal2.replace(/,/g, '');
+      console.log(nominal + 'nominal');
+
+      nilaicekbg = parseFloat(parseFloat(nilaicekbg) + parseFloat(nominal)).toFixed(2);
+      console.log(nilaicekbg + 'nilaicekbg');
+
+
+      $('.cekbg').val(addCommas(nilaicekbg));
+      $('.total').val(addCommas(nilaicekbg));
       }
     })
 
