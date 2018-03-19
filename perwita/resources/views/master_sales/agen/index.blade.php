@@ -163,6 +163,21 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td style="padding-top: 0.4cm">Acc Penjulan</td>
+                                <td colspan="7">
+                                    <div class="input-group date">
+                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc1" width="100%">
+                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
+                                        @foreach($akun as $a)
+                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
+                                            {{$a->id_akun}} - {{$a->nama_akun}}
+                                          </option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="padding-top: 0.4cm">Acc Hutang</td>
                                 <td colspan="7">
                                     <div class="input-group date">
@@ -182,6 +197,21 @@
                                 <td colspan="7">
                                     <div class="input-group date">
                                       <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc3" width="100%">
+                                         <option value="" selected="" disabled="">-- Pilih kode akun --</option>
+                                        @foreach($akun as $a)
+                                          <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
+                                            {{$a->id_akun}} - {{$a->nama_akun}}
+                                          </option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm">CSF Hutang</td>
+                                <td colspan="7">
+                                    <div class="input-group date">
+                                      <select class="acc1 form-control chosen-select-width212" id="acc1" name="ed_acc4" width="100%">
                                          <option value="" selected="" disabled="">-- Pilih kode akun --</option>
                                         @foreach($akun as $a)
                                           <option value="{{$a->id_akun}}" data-nama="{{$a->nama_akun}}">
@@ -317,10 +347,10 @@
         $("select[name='cb_kategori']").val('');
         $("select[name='cb_cabang']").val('');
         $("select[name='cb_kota']").val('').trigger('chosen:updated');
-        $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
-        $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
-        $("select[name='cb_acc_penjualan']").change();
-        $("select[name='cb_csf_penjualan']").change();
+        $("select[name='ed_acc1']").val('').trigger('chosen:updated');
+        $("select[name='ed_acc3']").val('').trigger('chosen:updated');
+        $("select[name='ed_acc2']").val('').trigger('chosen:updated'); 
+        $("select[name='ed_acc4']").val('').trigger('chosen:updated'); 
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_telpon']").val('');
         $("input[name='ed_fax']").val('');
@@ -360,8 +390,9 @@
                 $("input[name='ed_komisi_outlet']").val(data.komisi);
                 $("input[name='ed_komisi_agen']").val(data.komisi_agen);
                 $("select[name='ed_acc1']").val(data.acc_penjualan).trigger('chosen:updated');
-                $("select[name='ed_acc2']").val(data.acc_hutang).trigger('chosen:updated');
-                $("select[name='ed_acc3']").val(data.csf_penjualan).trigger('chosen:updated'); 
+                $("select[name='ed_acc3']").val(data.acc_hutang).trigger('chosen:updated');
+                $("select[name='ed_acc2']").val(data.csf_penjualan).trigger('chosen:updated'); 
+                $("select[name='ed_acc4']").val(data.csf_hutang).trigger('chosen:updated'); 
                 $("select[name='cb_acc_penjualan']").change();
                 $("select[name='cb_csf_penjualan']").change();
                 $("#modal").modal('show');
