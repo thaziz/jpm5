@@ -176,6 +176,7 @@ Route::get('fakturpembelian/cetaktt/{id}' , 'PurchaseController@cetaktt');
 Route::post('fakturpembelian/savefakturpajak' , 'PurchaseController@savefakturpajak');
 Route::get('fakturpembelian/getbiayalain' , 'PurchaseController@getbiayalain');
 Route::post('fakturpembelian/updatefaktur' , 'PurchaseController@updatefaktur');
+Route::get('fakturpembelian/updatefaktur' , 'PurchaseController@updatefaktur');
 Route::post('fakturpembelian/updatestockbrgfp' , 'PurchaseController@updatestockbrgfp');
 Route::post('fakturpembelian/getbarang' , 'PurchaseController@getbarang');
 Route::post('fakturpembelian/getbarangfpitem' , 'PurchaseController@getbarangfpitem');
