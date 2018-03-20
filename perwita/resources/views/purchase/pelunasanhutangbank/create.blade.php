@@ -29,7 +29,7 @@
             </div>
 
             <br>
-    <form method="post" action="{{url('pelunasanhutangbank/simpan')}}"  enctype="multipart/form-data" class="form-horizontal" id="formfpg">
+    <form method="post" action="{{url('pelunasanhutangbank/simpan')}}"  enctype="multipart/form-data" class="form-horizontal" id="formbbk">
 
     <div class="row">
         <div class="col-lg-12" >
@@ -58,18 +58,48 @@
                            <table border="0" class="table table-stripped">
 
                           <tr>
-                            <td> 
-                              Cabang
-                            </td>
+                           
+                               @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
+                            <tr>
+                            <td width="150px"> Cabang </td>
                             <td>
-                              <select class="chosen-select-width form-control cabang" name="cabang">
-                                  @foreach($data['cabang'] as $cabang)
-                                  <option value="{{$cabang->kode}}">
-                                    {{$cabang->nama}}
+                              <select class='form-control chosen-select-width1 cabang' name="cabang">
+                                  <option value="">
+                                    Pilih-Cabang
                                   </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
                                   @endforeach
-                              </select>
+                                 </select>
                             </td>
+                            </tr>
+                            @else
+                            <tr>
+                            <td width="150px"> Cabang </td>
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                                  <option value="">
+                                    Pilih Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    @if($cabang->kode == Auth::user()->kode_cabang)
+                                    <option selected="" value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @else
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @endif
+                                  @endforeach
+                                 </select>
+                            </td>
+                            </tr>
+                            @endif
                           </tr>
 
                           <tr>
@@ -78,6 +108,7 @@
                             </td>
                             <td>
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk">
+                             <input type="hidden" class="valcabang" readonly="" name="cabang">
                             </td>
                           </tr>
 
@@ -137,7 +168,7 @@
                           <tr>
                             <td>Keterangan </td>
                             <td> <input type="text" class="input-sm form-control" name="keteranganheader">  </td>
-                            <td> <input type="hidden" class="input-sm form-control flag" name="flag">   </td>
+                            <td>    </td>
                           </tr>
                           </table>
                         </div>
@@ -178,8 +209,8 @@
                               <div class="col-lg-12">
                                   <div class="tabs-container">
                                       <ul class="nav nav-tabs">
-                                          <li class="active"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
-                                          <li class=""><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
+                                          <li class="active" id="tabmenu"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
+                                          <li class="" id="tabmenu"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
                                       </ul>
                                       <div class="tab-content">
                                           <div id="tab-1" class="tab-pane active">
@@ -214,12 +245,12 @@
 
                                                       <tr>
                                                         <th> No FPG </th>
-                                                        <td> <input type='text' class='input-sm form-control nofpg bg' readonly=""> </td>
+                                                        <td> <input type='text' class='input-sm form-control nofpg bg' readonly=""> <input type='hidden' class='input-sm form-control idfpg' readonly=""> </td>
                                                       </tr>
 
                                                         <tr>
                                                         <th> Bank </th>
-                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='text' class="idbank">  </div>  </div>
+                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div>  </div>
                                                       
                                                         </tr>
                                                         <tr>
@@ -270,6 +301,10 @@
                                                         <td>
                                                             <div class="col-sm-12">
                                                             <select class="chosen-select-width form-control akun biaya">
+                                                               <option value="">
+                                                                Pilih Akun 
+                                                              </option>
+
                                                               @foreach($data['akun'] as $akun)
                                                               <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
                                                                 {{$akun->nama_akun}}
@@ -370,8 +405,19 @@
 
                             <div class="pull-right">
                              <!--  <button class="btn btn-success" type="submit"> Simpan </button> -->
-                               <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-sm btn-success simpansukses">
-                              
+                              <table border="0">
+                                  <tr>
+                                    <td>
+                                      <div class="print"> </div>
+                                    </td>
+                                    <td> 
+                                      &nbsp;
+                                    </td>
+                                    <td>
+                                       <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-sm btn-success simpansukses">
+                                    </td>
+                                  </tr>
+                              </table>
                           </div>
 
                         </div>
@@ -393,8 +439,52 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+        $.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
+   
 
+    //GET NO BBK
+    cabang = $('.cabang').val();
+    $('.valcabang').val(cabang);
+   
+      $('.cabang2').val(cabang);
+       $.ajax({
+          type : "post",
+          data : {cabang},
+          url : baseUrl + '/pelunasanhutangbank/getnota',
+          dataType : 'json',
+          success : function (response){     
+  
+               var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'BBK' + month + year2 + '/' + cabang + '/' +  response ;
+                $('.nobbk').val(nofaktur);
+              
+          },
+        })
 
      $('#formbbk').submit(function(){
         if(!this.checkValidity() ) 
@@ -410,7 +500,7 @@
       this.setCustomValidity("");
     });
 
-     $('#formfpg').submit(function(event){
+     $('#formbbk').submit(function(event){
        
        url : baseUrl + '/pelunasanhutangbank/simpan';
 
@@ -419,7 +509,7 @@
          var form_data2 = $(this).serialize();
          swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Form FPG!",
+            text: "Simpan Data Form Posting Bank !",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -443,6 +533,9 @@
                        
                   });
              
+             $('.simpansukses').attr('disabled' , true);
+             html = "<a class='btn btn-info btn-sm' href={{url('pelunasanhutangbank/cetak')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+            $('.print').html(html);
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -577,7 +670,7 @@
         nofpg = $('.nofpg').val();
         nobbk = $('.nobbk').val();
         flag = $('.flag').val();
-          
+        idfpg = $('.idfpg').val();
       if(flag == 'BIAYA'){
         toastr.info("Anda sudah mengisi form 'biaya biaya' mohon untuk dilanjutkan :)");       
       }
@@ -612,7 +705,7 @@
           "<td style='text-align:right'> <input type='text' class='input-sm form-control' value= '"+addCommas(nominal)+"' name='nominal[]'> </td>" +
           "<td><input type='text' class='input-sm form-control' value= '"+supplier+"-"+namasupplier+"' name='supplier[]'> <input type='text' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]'></td>" +
-          "<td> <button class='btn btn-danger btn-sm removes-btn' type='button' data-id="+$nomr+" data-cek='"+notransaksi+"' data-nominal='"+nominal+"'><i class='fa fa-trash'></i></button> </td> </tr>";
+          "<td> <button class='btn btn-danger btn-sm removes-btn' type='button' data-id="+$nomr+" data-cek='"+notransaksi+"' data-nominal='"+nominal+"'><i class='fa fa-trash'></i></button> <input type='hidden' name='idfpg[]' value="+idfpg+">  </td> </tr>";
 
 
       arrtransaksi.push(notransaksi);
@@ -672,6 +765,7 @@
             dataType : "json",
             success : function (response){
                 $('#myModal2').modal('hide');
+                  $('.idfpg').val(response.fpg[0].idfpg);
                   $('.nofpg').val(response.fpg[0].fpg_nofpg);
                   $('.nocheck').val(response.fpg[0].fpgb_nocheckbg);
                     $('.jatuhtempo').val(response.fpg[0].fpgb_jatuhtempo);
@@ -763,11 +857,11 @@
           nobbk = $('.nobbk').val();
 
           rowHtml = "<tr class='transaksi"+$nmrbiaya+"'> <td>"+$nmrbiaya+"</td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+idakun+"' name='akun[]'> </td>" +
-          "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+jumlah+"' name='jumlah[]'> </td>" +
-          "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]'></td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"' readonly> </td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+idakun+"' name='akun[]' readonly> </td>" +
+          "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]' readonly> </td>" +
+          "<td> <input type='text' class='input-sm form-control jumlah' value='"+jumlah+"' name='jumlah[]' style='text-align:right' data-dk='"+dk+"'> </td>" +
+          "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]' readonly></td>" +
           "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
 
           $('#tbl-biaya').append(rowHtml);
@@ -776,13 +870,47 @@
           $('.biaya').val('');
 
           jumlah2 = jumlah.replace(/,/g, '');
-          totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+          if(dk == 'D'){
+              totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+          }
+          else {
+            totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
+          }
           $('.totalbiaya').val(addCommas(totalbiaya));
           $('.total').val(addCommas(totalbiaya));
           $nmrbiaya++;
 
           }
+
+           jmlahval = 0;
+          $('.jumlah').change(function(){  
+             val = $(this).val();
+             val2 = accounting.formatMoney(val, "", 2, ",",'.');
+              
+              $(this).val(val2);
+              dk = $(this).data('dk');
+              $('.jumlah').each(function(){
+                val2 = $(this).val();
+                dk = $(this).data('dk');
+                jmlval = val2.replace(/,/g, '');
+                if(dk == 'D'){
+                  jmlahval = parseFloat(parseFloat(jmlahval) + parseFloat(jmlval)).toFixed(2);
+                }
+                else {
+                  jmlahval = parseFloat(parseFloat(jmlahval) - parseFloat(jmlval)).toFixed(2);
+
+                }
+              })
+
+              alert(jmlahval);
+              console.log(jmlahval + 'jmlahval');
+
+              $('.total').val(addCommas(jmlahval));
+              $('.totalbiaya').val(addCommas(jmlahval));
+          })
       })
+
+     
 
       $(document).on('click','.remove-btn',function(){
             id = $(this).data('id');

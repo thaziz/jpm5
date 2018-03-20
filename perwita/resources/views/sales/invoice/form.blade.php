@@ -61,7 +61,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">
-                                        <select class="form-control chosen-select-width cabang " disabled="" name="cb_cabang">
+                                        <select class="form-control chosen-select-width cabang chosen-disabled " disabled=""  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -76,7 +76,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4">
-                                    <select class="chosen-select-width cus_disabled" oncha  name="customer" id="customer" style="width:100%" >
+                                    <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                         <option value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
@@ -399,6 +399,7 @@
         var ed_keterangan = $('#ed_keterangan').val();
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
+        var cabang        = $('.cabang').val();
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -414,7 +415,7 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);

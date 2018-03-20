@@ -1055,7 +1055,7 @@
           },
           function(){
         $.ajax({
-          type : "post",
+          type : "get",
           data : form_data2,
           url : baseUrl + "/fakturpembelian/updatefaktur",
           dataType : 'json',
@@ -4566,7 +4566,7 @@ $('.ubah').click(function(){
   $('.edit').attr('disabled' , false);
    $('.tmbh-po').show();
    $('.tmbh-brg').show();
-   $('.simpan').show();
+   $('.simpanupdate').show();
    $('#createmodal_pajakpo').show();
    $('#createmodal_tt').show();
     

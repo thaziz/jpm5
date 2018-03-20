@@ -219,7 +219,7 @@
 
       $idOnSelect = "";
 
-      if(data.node.id.substring(0, 1) != "D"){
+      if(data.node.id.indexOf("/") == -1){
         $.each($dataNeraca, function(i, n){
           if(n.nomor_id == data.node.id){
             $("#detail-in-show").html("");

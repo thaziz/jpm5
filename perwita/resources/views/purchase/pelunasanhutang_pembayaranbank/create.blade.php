@@ -324,6 +324,8 @@
         format: 'yyyy-mm-dd'
     });
     
+   
+
    /* $('#tmbh_data_barang').click(function(){
       $("#addColumn").append('<tr> <td rowspan="3"> 1 </td> <td rowspan="3"> </td> <td rowspan="3"> </td>  <td rowspan="3"> </td> <td> halo </td> <td> 3000 </td>  <tr> <td> halo </td> <td>  5.000 </td> </tr> <tr><td> halo </td> <td> 3000 </td> </tr>');
     })*/

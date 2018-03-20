@@ -97,6 +97,9 @@
                     /* satuan */
                     Request::is('master_sales/satuan') ? 'active' : '' || 
                     Request::is('master_sales/satuan/*') ? 'active' : '' ||
+                     /* Zona */
+                    Request::is('sales/zona') ? 'active' : '' || 
+                    Request::is('sales/zona/*') ? 'active' : '' ||
                     /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
@@ -315,6 +318,9 @@
                     /* satuan */
                     Request::is('master_sales/satuan') ? 'active' : '' || 
                     Request::is('master_sales/satuan/*') ? 'active' : '' ||
+                     /* Zona */
+                    Request::is('sales/zona') ? 'active' : '' || 
+                    Request::is('sales/zona/*') ? 'active' : '' ||
                     /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
@@ -451,6 +457,9 @@
                     /* satuan */
                     Request::is('master_sales/satuan') ? 'active' : '' || 
                     Request::is('master_sales/satuan/*') ? 'active' : '' ||
+                     /* Zona */
+                    Request::is('sales/zona') ? 'active' : '' || 
+                    Request::is('sales/zona/*') ? 'active' : '' ||
                     /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
@@ -515,6 +524,14 @@
                     Request::is('master_sales/satuan/*') ? 'active' : ''}} 
 
                     " href="{{ url('master_sales/satuan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Satuan</a>
+                    </li>
+                    <li >
+                        <a class="sidebar master-perusahaan 
+
+                    {{Request::is('sales/zona') ? 'active' : '' || 
+                    Request::is('sales/zona/*') ? 'active' : ''}} 
+
+                    " href="{{ url('sales/zona')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Zona</a>
                     </li>
                     <li >
                         <a class="sidebar master-perusahaan 
@@ -1576,8 +1593,8 @@
                                         Request::is('pelunasanhutang/pelunasanhutang/*') ? 'active' : ''}}" href="{{ url('pelunasanhutang/pelunasanhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Kas </a>
                                 </li>
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbayarbank/pelunasanhutangbayarbank') ? 'active' : '' || 
-                                        Request::is('pelunasanhutangbayarbank/pelunasanhutangbayarbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbayarbank/pelunasanhutangbayarbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
+                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbank/pelunasanhutangbank') ? 'active' : '' || 
+                                        Request::is('pelunasanhutangbank/pelunasanhutangbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbank/pelunasanhutangbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
                                 </li>
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('bankkaslain/bankkaslain') ? 'active' : '' || 
