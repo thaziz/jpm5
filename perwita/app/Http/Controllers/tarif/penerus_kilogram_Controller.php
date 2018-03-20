@@ -10,7 +10,7 @@ use Auth;
 class penerus_kilogram_Controller  extends Controller
 {
     public function table_data () {
-        $list = DB::table('tarif_penerus_dokumen')
+        $list = DB::table('tarif_penerus_kilogram')
         ->select(
             'provinsi.nama as provinsi_nama',
             'provinsi.id as provinsi_id',
@@ -21,14 +21,14 @@ class penerus_kilogram_Controller  extends Controller
             'kecamatan.id as kecamatan_id',
             'kecamatan.nama as kecamatan_nama',
 
-            'id_tarif_dokumen','tarif_express','id_increment_dokumen','tarif_reguler','type')
+            'id_tarif_kilogram','tarif_10express_kilo','tarif_10reguler_kilo','tarif_20express_kilo','tarif_20reguler_kilo','id_increment_kilogram','type_kilo')
 
 
-        ->join('provinsi','tarif_penerus_dokumen.id_provinsi','=','provinsi.id')
+        ->join('provinsi','tarif_penerus_kilogram.id_provinsi_kilo','=','provinsi.id')
 
-        ->join('kota','tarif_penerus_dokumen.id_kota','=','kota.id')
+        ->join('kota','tarif_penerus_kilogram.id_kota_kilo','=','kota.id')
         
-        ->join('kecamatan','tarif_penerus_dokumen.id_kecamatan','=','kecamatan.id')
+        ->join('kecamatan','tarif_penerus_kilogram.id_kecamatan_kilo','=','kecamatan.id')
 
         ->get();
         // return $list;
@@ -40,8 +40,8 @@ class penerus_kilogram_Controller  extends Controller
         foreach ($data as $key) {
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id_increment_dokumen'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['id_tarif_dokumen'].'" name="'.$data[$i]['id_tarif_dokumen'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_tarif_kilogram'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_tarif_kilogram'].'" name="'.$data[$i]['id_tarif_kilogram'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                     </div> ';
             $i++;
         }
@@ -52,21 +52,21 @@ class penerus_kilogram_Controller  extends Controller
     public function get_data (Request $request) {
         // dd($request);
         $id =$request->input('id');
-        $data = DB::table('tarif_penerus_dokumen')->where('id_increment_dokumen','=', $id)->get();
+        $data = DB::table('tarif_penerus_kilogram')->where('id_tarif_kilogram','=', $id)->get();
         echo json_encode($data);
     }
 
     public function save_data (Request $request) {
         // dd($request);
 
-        $id_incremet = DB::table('tarif_penerus_dokumen')->select('id_increment_dokumen')->max('id_increment_dokumen');    
+        $id_incremet = DB::table('tarif_penerus_kilogram')->select('id_increment_kilogram')->max('id_increment_kilogram');    
         if ($id_incremet == '') {
             $id_incremet = 1;
         }else{
             $id_incremet += 1;
         }
 
-        $kode_id = DB::table('tarif_penerus_dokumen')->select('id_increment_dokumen')->max('id_increment_dokumen');    
+        $kode_id = DB::table('tarif_penerus_kilogram')->select('id_increment_kilogram')->max('id_increment_kilogram');    
         if ($kode_id == '') {
             $kode_id = 1;
         }else{
@@ -90,37 +90,41 @@ class penerus_kilogram_Controller  extends Controller
         if ($crud == 'N') {
 
            $data = array(
-                'id_tarif_dokumen' => $kodeutama,
-                'id_provinsi'=> $request->ed_provinsi,
-                'id_kota' =>$request->ed_kota,
-                'id_kecamatan'=>$request->ed_kecamatan,
-                'tarif_reguler'=>$request->ed_reguler,
-                'tarif_express'=>$request->ed_express,
-                'type' =>'DOKUMEN',
-                'id_increment_dokumen'=>$id_incremet,
+                'id_tarif_kilogram' => $kodeutama,
+                'id_provinsi_kilo'=> $request->ed_provinsi,
+                'id_kota_kilo' =>$request->ed_kota,
+                'id_kecamatan_kilo'=>$request->ed_kecamatan,
+                'tarif_10reguler_kilo'=>$request->ed_10reguler,
+                'tarif_10express_kilo'=>$request->ed_10express,
+                'tarif_20express_kilo'=>$request->ed_20express,
+                'tarif_20reguler_kilo'=>$request->ed_20reguler,
+                'type_kilo' =>$request->ed_tipe,
+                'id_increment_kilogram'=>$id_incremet,
 
             );
 
-            $simpan = DB::table('tarif_penerus_dokumen')->insert($data);
+            $simpan = DB::table('tarif_penerus_kilogram')->insert($data);
         }elseif ($crud == 'E') {
             $kode_sama = $request->ed_kode_old;
             if ($kode_sama < 10000 ) {
             $kode_sama = '0000'.$kode_sama;
             }
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
-            $data = array(
-                'id_tarif_dokumen' => $kodeedit,
-                'id_provinsi'=> $request->ed_provinsi,
-                'id_kota' =>$request->ed_kota,
-                'id_kecamatan'=>$request->ed_kecamatan,
-                'tarif_reguler'=>$request->ed_reguler,
-                'tarif_express'=>$request->ed_express,
-                'type' =>'DOKUMEN',
-                'id_increment_dokumen'=>$request->ed_kode_old,
+
+             $data = array(
+                'id_tarif_kilogram' => $kodeedit,
+                'id_provinsi_kilo'=> $request->ed_provinsi,
+                'id_kota_kilo' =>$request->ed_kota,
+                'id_kecamatan_kilo'=>$request->ed_kecamatan,
+                'tarif_10reguler_kilo'=>$request->ed_10reguler,
+                'tarif_10express_kilo'=>$request->ed_10express,
+                'tarif_20express_kilo'=>$request->ed_20express,
+                'tarif_20reguler_kilo'=>$request->ed_20reguler,
+                'type_kilo' =>$request->ed_tipe,
+                'id_increment_kilogram'=>$request->ed_kode_old,
 
             );
-
-            $simpan = DB::table('tarif_penerus_dokumen')->where('id_tarif_dokumen', $request->ed_kode)->update($data);
+            $simpan = DB::table('tarif_penerus_kilogram')->where('id_tarif_kilogram', $request->ed_kode)->update($data);
         }
         if($simpan == TRUE){
             $result['error']='';
@@ -136,7 +140,7 @@ class penerus_kilogram_Controller  extends Controller
     public function hapus_data (Request $request) {
         $hapus='';
         $id=$request->id;
-        $hapus = DB::table('tarif_penerus_dokumen')->where('id_tarif_dokumen' ,'=', $id)->delete();
+        $hapus = DB::table('tarif_penerus_kilogram')->where('id_tarif_kilogram' ,'=', $id)->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
@@ -153,7 +157,7 @@ class penerus_kilogram_Controller  extends Controller
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $kecamatan = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan ORDER BY nama ASC "));
          // $kotakota = $this->get_kota();
-        return view('tarif.penerus_dokumen.index',compact('provinsi','kota','kecamatan'));
+        return view('tarif.penerus_kilogram.index',compact('provinsi','kota','kecamatan'));
     }
 
 

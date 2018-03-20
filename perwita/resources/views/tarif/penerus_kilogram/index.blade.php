@@ -52,13 +52,15 @@
                     <table id="table_data" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th style="width:100px"> Tarif Dokumen</th>
-                                <th> Provinsi </th>
+                                <th style="width:100px"> Tarif Kilogram</th>
+                                {{-- <th> Provinsi </th> --}}
                                 <th> Kota </th>
                                 <th> kecamatan </th>
                                 <th> type </th>
-                                <th> tarif reguler </th>
-                                <th> tarif express </th>
+                                <th> >= 10 reguler </th>
+                                <th> >= 10 express </th>
+                                <th> > 20 reguler </th>
+                                <th> > 20 express </th>
                                 <th style="width:50px"> Aksi </th>
                             </tr>
                         </thead>
@@ -84,12 +86,12 @@
                                     <td><input type="text" name="ed_kode" class="form-control" placeholder="OTOMATIS"></td>
                                     <input type="hidden" name="ed_kode_old">
                                     <input type="hidden" name="crud">
+                                    
                                 </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Tipe Kiriman</td>
-                                    <td><input type="text" name="ed_tipe" value="DOKUMEN" readonly="" class="form-control"></td>
-                                </tr>
-                               
+                               <tr>
+                                   <td style="padding-top: 0.4cm">Tipe Kiriman</td>
+                                    <td><input type="text" name="ed_tipe" value="KILOGRAM" readonly="" class="form-control"></td>
+                               </tr>
                                <tr>
                                    <td style="padding-top: 0.4cm"> Provinsi </td>
                                    <td>
@@ -125,24 +127,29 @@
                                         </select>
                                     </td>
                                </tr>
-
-                               <tr>
-                                   <td style="padding-top: 0.4cm"> Tarif Reguler</td>
-                                   <td><input type="text" class="form-control" name="ed_reguler"></td>
-                               </tr>
-
-                               <tr>
-                                   <td style="padding-top: 0.4cm"> Tarif Express</td>
-                                   <td><input type="text" class="form-control" name="ed_express"></td>
-                               </tr>
-
-                              
                                 <input type="hidden" name="kode_kota">
-
                             </tbody>
                           </table>
-
-
+                          <table class="table table-striped table-bordered table-hover ">
+                              <tr>
+                                   <td style="padding-top: 0.4cm"> Tarif >= 10 Reguler</td>
+                                   <td><input type="text" class="form-control" name="ed_10reguler"></td>
+                               </tr>
+                               <tr>
+                                  <td style="padding-top: 0.4cm"> Tarif > 20 Reguler</td>
+                                   <td><input type="text" class="form-control" name="ed_20reguler"></td>
+                              </tr>
+                          </table>
+                          <table class="table table-striped table-bordered table-hover ">
+                              <tr>
+                                   <td style="padding-top: 0.4cm"> Tarif >= 10 Express</td>
+                                   <td><input type="text" class="form-control" name="ed_10express"></td>
+                               </tr>
+                              <tr>
+                                  <td style="padding-top: 0.4cm"> Tarif > 20 Express</td>
+                                   <td><input type="text" class="form-control" name="ed_20express"></td>
+                              </tr>
+                          </table>
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -183,7 +190,7 @@
         $.ajax({
             type: "GET",
             data : {kota:prov},
-            url : baseUrl + "/sales/tarif_penerus_dokumen/get_kota",
+            url : baseUrl + "/sales/tarif_penerus_kilogram/get_kota",
             dataType:'json',
             success: function(data)
             {   
@@ -211,7 +218,7 @@
          $.ajax({
             type: "GET",
             data : {kecamatan:kot},
-            url : baseUrl + "/sales/tarif_penerus_dokumen/get_kec",
+            url : baseUrl + "/sales/tarif_penerus_kilogram/get_kec",
             dataType:'json',
             success: function(data)
             {   
@@ -240,17 +247,19 @@
             "pageLength": 10,
             "retrieve" : true,
             "ajax": {
-              "url" :  baseUrl + "/sales/tarif_penerus_dokumen/tabel",
+              "url" :  baseUrl + "/sales/tarif_penerus_kilogram/tabel",
               "type": "GET"
             },
             "columns": [
-            { "data": "id_tarif_dokumen", },
-            { "data": "provinsi_nama", },
+            { "data": "id_tarif_kilogram", },
+            // { "data": "provinsi_nama", },
             { "data": "kota_nama" },
             { "data": "kecamatan_nama" },  
-            { "data": "type" },  
-            { "data": "tarif_reguler", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_express", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "type_kilo" },  
+            { "data": "tarif_10reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "tarif_10express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "tarif_20reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "tarif_20express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
             ]
         });
@@ -272,16 +281,23 @@
         $('#test2').show();
         $("input[name='crud']").val('N');
         $("input[name='ed_kode_old']").val('');
-        $("input[name='ed_reguler']").val('');
-        $("input[name='ed_express']").val('');
+        
+
         $("input[name='ed_kode']").attr('readonly',true);
         $("input[name='ed_kode']").attr('');
 
-        $("#provinsi").val('').trigger('chosen:updated');
-        $("#kota").val('').trigger('chosen:updated');
-        $("#kecamatan").val('').trigger('chosen:updated');
+
+        $("input[name='ed_10reguler']").val('');
+        $("input[name='ed_10express']").val('');
+        $("input[name='ed_20reguler']").val('');
+        $("input[name='ed_20express']").val('');
+
+        $("#provinsi").val('');
+        $("#kota").val('');
+        $("#kecamatan").val('');
+
         $("#modal").modal("show");
-        $("input[name='cb_jenis']").focus();
+        
     });
 
     $(document).on( "click",".btnedit", function() {
@@ -291,7 +307,7 @@
         };
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_penerus_dokumen/get_data",
+            url : baseUrl + "/sales/tarif_penerus_kilogram/get_data",
             type: "GET",
             data : value,
             dataType:'json',
@@ -299,15 +315,19 @@
             {
                 console.log(data);
                 $("input[name='crud']").val('E');
-                $("input[name='ed_kode']").val(data[0].id_tarif_dokumen);
-                $("input[name='ed_kode_old']").val(data[0].id_increment_dokumen);
-                $("input[name='ed_reguler']").val(data[0].tarif_reguler);
-                $("input[name='ed_express']").val(data[0].tarif_express);
+                $("input[name='ed_kode']").val(data[0].id_tarif_kilogram);
+                $("input[name='ed_kode_old']").val(data[0].id_increment_kilogram);
+                
+                $("input[name='ed_10reguler']").val(data[0].tarif_10reguler_kilo);
+                $("input[name='ed_10express']").val(data[0].tarif_10express_kilo);
+                $("input[name='ed_20reguler']").val(data[0].tarif_20reguler_kilo);
+                $("input[name='ed_20express']").val(data[0].tarif_20express_kilo);
+                
                 $("input[name='ed_kode']").attr('readonly',true);
 
-                $("#provinsi").val(data[0].id_provinsi).trigger('chosen:updated');
-                $("#kota").val(data[0].id_kota).trigger('chosen:updated');
-                $("#kecamatan").val(data[0].id_kecamatan).trigger('chosen:updated');
+                $("#provinsi").val(data[0].id_provinsi_kilo).trigger('chosen:updated');
+                $("#kota").val(data[0].id_kota_kilo).trigger('chosen:updated');
+                $("#kecamatan").val(data[0].id_kecamatan_kilo).trigger('chosen:updated');
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
@@ -323,7 +343,7 @@
     $(document).on("click","#btnsave",function(){
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_penerus_dokumen/save_data",
+            url : baseUrl + "/sales/tarif_penerus_kilogram/save_data",
             type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
@@ -371,7 +391,7 @@
         };
         $.ajax({
             type: "get",
-            url : baseUrl + "/sales/tarif_penerus_dokumen/hapus_data",
+            url : baseUrl + "/sales/tarif_penerus_kilogram/hapus_data",
             //dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)
