@@ -95,7 +95,7 @@ class cabang_koli_Controller extends Controller
         }else{
             $kode_detail += 1;
         }
-        $kodecabang = /*Auth::user()->kode_cabang*/ '001';
+        $kodecabang = Auth::user()->kode_cabang;
         
         // return $kode_detail;
       $cekdata = DB::table('tarif_cabang_koli')->select('kode')->get();
@@ -168,7 +168,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.'001'.$kode_utama;
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
@@ -176,7 +176,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.'001'.$kode_utama;
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
                 }
                
                $tarif10_20reguler = array(
@@ -200,7 +200,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.'001'.$kode_utama;
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
@@ -208,7 +208,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.'001'.$kode_utama;
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
                 }
                
                $tarif20reguler = array(
@@ -235,7 +235,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
@@ -243,7 +243,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
                 }
 
                 $kertas_express = array(
@@ -267,7 +267,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
@@ -275,7 +275,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
                 }
                 // return $kode_utama;   
                
@@ -300,7 +300,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
@@ -308,7 +308,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
                 }
                
                $tarif10_20express = array(
@@ -332,7 +332,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
@@ -340,7 +340,7 @@ class cabang_koli_Controller extends Controller
                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                     }
-                    $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
                 }
                
                $tarif20express = array(
@@ -651,7 +651,11 @@ class cabang_koli_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC "));
-        return view('tarif.cabang_koli.index',compact('kota'));
+        $cabang_default = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY kode ASC "));
+
+        $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
+        $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
+        return view('tarif.cabang_koli.index',compact('kota','cabang_default','accpenjualan','csfpenjualan'));
     }
 
 }
