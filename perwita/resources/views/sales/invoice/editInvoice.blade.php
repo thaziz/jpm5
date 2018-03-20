@@ -483,14 +483,14 @@
         $('.ed_pendapatan').val($(this).val());
    })
    //modal do
-   $('#btn_modal_do').click(function(){
+  $('#btn_modal_do').click(function(){
         var array_validasi = [];
         var customer      = $('#customer').val();
         var cb_pendapatan = $('#cb_pendapatan').val();
         var ed_keterangan = $('#ed_keterangan').val();
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
-        var id            = "{{$id}}";
+        var cabang        = $('.cabang').val();
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -505,8 +505,8 @@
 
         if (index == -1) {
             $.ajax({
-              url:baseUrl + '/sales/cari_do_edit_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,id},
+              url:baseUrl + '/sales/cari_do_invoice',
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);

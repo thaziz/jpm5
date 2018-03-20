@@ -1588,23 +1588,16 @@
                                     <a class="sidebar master-perusahaan {{Request::is('cndnpembelian/cndnpembelian') ? 'active' : '' || 
                                         Request::is('cndnpembelian/cndnpembelian/*') ? 'active' : ''}}" href="{{ url('cndnpembelian/cndnpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN / DN Pembelian </a>
                                 </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutang/pelunasanhutang') ? 'active' : '' || 
-                                        Request::is('pelunasanhutang/pelunasanhutang/*') ? 'active' : ''}}" href="{{ url('pelunasanhutang/pelunasanhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Kas </a>
-                                </li>
+                           
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbank/pelunasanhutangbank') ? 'active' : '' || 
                                         Request::is('pelunasanhutangbank/pelunasanhutangbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbank/pelunasanhutangbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
                                 </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('bankkaslain/bankkaslain') ? 'active' : '' || 
-                                        Request::is('bankkaslain/bankkaslain/*') ? 'active' : ''}}" href="{{ url('bankkaslain/bankkaslain')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Bank / Kas Lain </a>
-                                </li>
-                                <li >
+<!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('formtandaterimatagihan/formtandaterimatagihan') ? 'active' : '' || 
                                         Request::is('formtandaterimatagihan/formtandaterimatagihan/*') ? 'active' : ''}}" href="{{ url('formtandaterimatagihan/formtandaterimatagihan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima Tagihan (TTT)</a>
                                 </li>
-
+ -->
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('formaju/formaju') ? 'active' : '' || 
                                         Request::is('formaju/formaju/*') ? 'active' : ''}}" href="{{ url('formaju/formaju')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Pengajuan Cek / BG (AJU)</a>
@@ -1615,15 +1608,15 @@
                                         Request::is('formfpg/formfpg/*') ? 'active' : ''}}" href="{{ url('formfpg/formfpg')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Permintaan Cek / BG (FPG)</a>
                                 </li>
 
-                                <li >
+<!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan') ? 'active' : '' || 
                                         Request::is('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan/*') ? 'active' : ''}}" href="{{ url('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelaporan  Faktur Pajak Masukan</a>
-                                </li>
+                                </li> -->
 
-                                <li >
+<!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('memorialpurchase/memorialpurchase') ? 'active' : '' || 
                                         Request::is('memorialpurchase/memorialpurchase/*') ? 'active' : ''}}" href="{{ url('memorialpurchase/memorialpurchase')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Memorial Purchase</a>
-                                </li> 
+                                </li>  -->
                                     </ul>
                                 </li>
                                 <li class="

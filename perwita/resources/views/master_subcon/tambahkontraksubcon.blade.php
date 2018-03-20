@@ -176,6 +176,7 @@
                                                         <option value="KILOGRAM">KILOGRAM</option>
                                                         <option value="ONE WAY STANDART">ONE WAY STANDART</option>
                                                         <option value="EMBALASI STANDART">EMBALASI STANDART</option>
+                                                        <option value="ROUND TRIP">ROUND STANDART</option>
                                                     </select>
                                                 </td>
                                             </tr>

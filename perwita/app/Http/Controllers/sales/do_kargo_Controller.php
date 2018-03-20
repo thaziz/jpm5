@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use PDF;
+use Carbon\Carbon;
+use Auth;
 
 
 class do_kargo_Controller extends Controller
@@ -269,6 +271,13 @@ class do_kargo_Controller extends Controller
         $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
+        $now = Carbon::now()->format('d/m/Y');
+        $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->where('jt_group',1)
+                         ->orWhere('jt_group',2)
+                         ->orWhere('jt_group',3)
+                         ->get();
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
             $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor='$nomor' "))->first();
@@ -276,7 +285,7 @@ class do_kargo_Controller extends Controller
             $do = null;
             $jml_detail = 0;
         }
-        return view('sales.do_kargo.form',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'do', 'jml_detail','cabang','tipe_angkutan' ));
+        return view('sales.do_kargo.form',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'do', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan'));
     }
     
     public function form_update_status($nomor=null){

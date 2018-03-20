@@ -170,6 +170,7 @@ Route::get('fakturpembelian/update_fp', 'PurchaseController@update_fp');
 Route::post('fakturpembelian/update_tt', 'PurchaseController@update_tt');
 Route::post('fakturpembelian/getnotatt', 'PurchaseController@getnotatt');
 Route::post('fakturpembelian/savefakturpo', 'PurchaseController@savefakturpo');
+Route::get('fakturpembelian/savefakturpo', 'PurchaseController@savefakturpo');
 Route::post('fakturpembelian/updatestockbarang' , 'PurchaseController@updatestockbarang');
 Route::get('fakturpembelian/cetakfaktur/{id}' , 'PurchaseController@cetakfaktur');
 Route::get('fakturpembelian/cetaktt/{id}' , 'PurchaseController@cetaktt');
@@ -191,6 +192,7 @@ Route::get('fakturpembelian/carimaster/{vendor}', 'BiayaPenerusController@carima
 Route::get('fakturpembelian/auto/{i}', 'BiayaPenerusController@auto');
 Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
+Route::get('fakturpembelian/cari_do_subcon', 'BiayaPenerusController@cari_do_subcon');
 Route::post('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/edit_penerus/{i}', 'BiayaPenerusController@edit');
@@ -324,6 +326,7 @@ Route::post('pelunasanhutangbank/getnota', 'PurchaseController@getnobbk');
 Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
 Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
+Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');

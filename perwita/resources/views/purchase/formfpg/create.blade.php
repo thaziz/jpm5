@@ -59,7 +59,7 @@
                             <table class="table table-striped table-bordered">
                             <tr>
                               <th> Cabang </th>
-                              <td> <select class='form-control chosen-select-width1 cabang' name="cabang">
+                              <td> <select class='form-control chosen-select-width1 cabang' >
                                   <option value="">
                                     Pilih-Cabang 
                                   </option>
@@ -82,7 +82,7 @@
 
                               <tr>
                                 <th> No FPG </th>
-                                <td> <input type='text' class='input-sm form-control nofpg' value="" readonly="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"></td>
+                                <td> <input type='text' class='input-sm form-control nofpg' value="" readonly="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type="hidden" class="valcabang" name="cabang"> </td>
                               </tr>
                               <tr>
                                 <th> Tanggal </th>
@@ -137,7 +137,7 @@
                           <table class='table table-bordered table-striped tbl-jenisbayar' style="width:100%">
                             <tr>
                               <th> Kode  </th>
-                              <td> <select class='form-control  chosen-select-width  jenisbayar2' name="kodebayar">  </select> <input text="hidden" class="hsljenisbayar" name="kodebayar">  </td>
+                              <td> <select class='form-control  chosen-select-width  jenisbayar2' name="kodebayar">  </select> <input type="hidden" class="hsljenisbayar" name="kodebayar">  </td>
                             </tr>
 
                             <tr>
@@ -650,8 +650,8 @@
 
       //MENDAPATKAN NO FPG
        cabang = $('.cabang').val();
-    
-   
+        $('.valcabang').val(cabang);
+     
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
@@ -1903,8 +1903,16 @@
                     
                 })
             })
+    
+    jenisbayar = $('.jenisbayar').val();
+    if(jenisbayar == '5') {
 
-   $('.hsljenisbayar').val(idsup);
+    }
+    else {
+          idsup = $('jenisbayar2').val();
+         $('.hsljenisbayar').val(idsup);
+
+    }
 		$('.jenisbayar2').change(function(){
               var idsup = $(this).val();
               var idjenisbayar = $('.jenisbayar').val();
@@ -2090,13 +2098,13 @@
         $('#detailbayar').attr('disabled' , false);
 
       }
-     /* if(idjenis == '1') { // GIRO / KAS KECIL
+      if(idjenis == '1') { // GIRO / KAS KECIL
         $('.tbl-jenisbayar').hide();
         $('.deskirpsijenisbayar').show();
         $("#jurnal").show(); 
           $('#detailbayar').attr('disabled' , false);
 
-          // $('.deskirpsijenisbayar').show();
+       /*   // $('.deskirpsijenisbayar').show();
          var rowSupplier =  "<table class='table table-bordered table-striped'>" +
                             "<tr>" +
                               "<th> Kepada </th>" +
@@ -2110,8 +2118,8 @@
                           "</table>";
                        
 
-                        $('.deskirpsijenisbayar').html(rowSupplier);
-      }*/
+                        $('.deskirpsijenisbayar').html(rowSupplier);*/
+      }
 
       if(idjenis == '5'){ // TRANSFER KAS BANK
           $('#tab-1').removeClass("active");
