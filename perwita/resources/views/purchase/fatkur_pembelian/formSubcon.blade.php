@@ -374,21 +374,8 @@
                         <h4 class="modal-title">Pilih Nomor DO</h4>
                       </div>
                       <div class="modal-body">
-                            <form class="form-horizontal  kirim">
-                                <table id="table_data_do" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Nomor DO</th>
-                                            <th>Tgl Order</th>
-                                            <th>Total DO</th>
-                                            <th>Jenis Tarif</th>
-                                            <th>Asal</th>
-                                            <th>Tujuan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                            <form class="form-horizontal  tabel_subcon_detail">
+                               
                             </form>
                           </div>
                           <div class="modal-footer">
@@ -811,6 +798,7 @@ $('.nama_sc').change(function(){
  		data:{sc,cabang},
  		dataType:'json',
  		success:function(response){
+ 			$('.tabel_subcon_detail').html(response);
  			$('#modal_do').modal('show');
  		}
  	})

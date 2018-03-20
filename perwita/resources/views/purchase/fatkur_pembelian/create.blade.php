@@ -2273,10 +2273,10 @@
             closeOnConfirm: false
           },
            function(){
-            var accHutang=$(".idsup_po").find(':selected').data('accHutang');
+           // var accHutang=$(".idsup_po").find(':selected').data('accHutang');
           $.ajax({
             type : "GET",
-            data : form_data3+'&accHutang='+acc_hutang,
+            data : form_data3,
             url : post_url3,
           
             success : function(response){

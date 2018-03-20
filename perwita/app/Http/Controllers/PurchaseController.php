@@ -3065,7 +3065,7 @@ $indexakun=0;
 	}
 
 	public function savefakturpo(Request $request){
-		dd($request->all());
+		/*dd($request->all());*/
 		$variable = $request->supplier_po;
 		$data = explode(",", $variable);
 		$idsup = $data[0];
@@ -3181,7 +3181,7 @@ $indexakun=0;
 				$fatkurpembeliand->fp_idtt = $idtandaterima[0]->tt_idform;
 				$fatkurpembeliand->fp_comp = $cabang;
 				$fatkurpembeliand->fp_sisapelunasan = $netto;
-				$fatkurpembeliand->fp_sisapelunasan = 'ALLOWED';
+				
 				
 				$fatkurpembeliand->fp_pending_status = 'APPROVED';
 				$fatkurpembeliand->fp_status = 'Released';
@@ -3396,10 +3396,11 @@ $indexakun=0;
 			//	return $iditem;
 				$masteritem =DB::select("select * from masteritem where kode_item = '$iditem'");
 				
-				$acc_biaya = $masteritem[0]->acc_biaya;
+				$acc_biaya = $masteritem[0]->acc_hpp;
 				$acc_persediaan = $masteritem[0]->acc_persediaan;
 
-			
+			dd($acc_biaya);
+			dd($acc_persediaan);
 				$fatkurpembeliandt2->fpdt_accbiaya = $acc_biaya;
 				$fatkurpembeliandt2->fpdt_accbiaya = $acc_persediaan;
 
@@ -3446,7 +3447,7 @@ $indexakun=0;
 					]);																				
 
 			}
-
+dd('s');
 		return json_encode($idfp);
 	}
 
