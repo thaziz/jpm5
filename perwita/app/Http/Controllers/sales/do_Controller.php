@@ -518,69 +518,77 @@ class do_Controller extends Controller
     }
 
     public function cari_harga(Request $request){
+        // dd($request);
         $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
         $pendapatan =$request->input('pendapatan');
-        $tipe = $request->input('tipe');
-        $jenis = $request->input('jenis');
+        /*return */$tipe = $request->input('tipe');
+        /*return */$jenis = $request->input('jenis');
         $angkutan = $request->input('angkutan');
-        $cabang = $request->input('cabang');
+        /*return*/ $cabang = $request->input('cabang');
         if ($tipe == 'DOKUMEN') {
-            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' ";
+            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'  ";
 
-            $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND kode_cabang='$cabang' ";
-        } else if ($tipe == 'KARGO PAKET' or $tipe == 'KARGO KERTAS') {
-            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_kargo WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_angkutan='$angkutan' AND kode_cabang='$cabang' ";
-        } else if ($tipe == 'KILOGRAM') {
-            $berat = $request->input('berat');
-            if ($berat <= 10) {
-                $keterangan = 'TARIF 0 KG SAMPAI 10 KG';
-            } else if ($berat > 10 and $berat <= 20) {
-                $keterangan = 'TARIF 10 KG SAMPAI 20 KG';
-            } else if ($berat > 20) {
-                $keterangan = 'TARIF DI ATAS 20 KG';
-            }
-            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_kilogram WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND keterangan='$keterangan'  AND kode_cabang='$cabang' ";
-            $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND keterangan='$keterangan' ";
-        } else if ($tipe == 'KOLI') {
-            $berat = $request->input('berat');
-            if ($berat <= 10) {
-                $keterangan = 'TARIF 0 KG SAMPAI 10 KG';
-            } else if ($berat > 10 and $berat <= 20) {
-                $keterangan = 'TARIF 10 KG SAMPAI 20 KG';
-            } else if ($berat > 20 and $berat <= 30) {
-                $keterangan = 'TARIF 20 KG SAMPAI 30 KG';
-            } else if ($berat > 30) {
-                $keterangan = 'TARIF DI ATAS 30 KG';
-            }
-            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_koli WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND keterangan='$keterangan' AND kode_cabang='$cabang' ";
-            $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND keterangan='$keterangan' ";
-        }else if ($tipe == 'KERTAS') {
-            $berat = filter_var($request->input('berat'), FILTER_SANITIZE_NUMBER_INT);
-            $sql = " SELECT (harga * '$berat') harga FROM tarif_cabang_kilogram WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' ";
-        }
-        $data = collect(DB::select($sql));
+            $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND cabang_default='$cabang' ";
+        } 
+        // else if ($tipe == 'KARGO PAKET' or $tipe == 'KARGO KERTAS') {
+        //     $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_kargo WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_angkutan='$angkutan' AND kode_cabang='$cabang' ";
+        // } else if ($tipe == 'KILOGRAM') {
+        //     $berat = $request->input('berat');
+        //     if ($berat <= 10) {
+        //         $keterangan = 'TARIF 0 KG SAMPAI 10 KG';
+        //     } else if ($berat > 10 and $berat <= 20) {
+        //         $keterangan = 'TARIF 10 KG SAMPAI 20 KG';
+        //     } else if ($berat > 20) {
+        //         $keterangan = 'TARIF DI ATAS 20 KG';
+        //     }
+        //     $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_kilogram WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND keterangan='$keterangan'  AND kode_cabang='$cabang' ";
+        //     $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND keterangan='$keterangan' ";
+        // } else if ($tipe == 'KOLI') {
+        //     $berat = $request->input('berat');
+        //     if ($berat <= 10) {
+        //         $keterangan = 'TARIF 0 KG SAMPAI 10 KG';
+        //     } else if ($berat > 10 and $berat <= 20) {
+        //         $keterangan = 'TARIF 10 KG SAMPAI 20 KG';
+        //     } else if ($berat > 20 and $berat <= 30) {
+        //         $keterangan = 'TARIF 20 KG SAMPAI 30 KG';
+        //     } else if ($berat > 30) {
+        //         $keterangan = 'TARIF DI ATAS 30 KG';
+        //     }
+        //     $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_koli WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND keterangan='$keterangan' AND kode_cabang='$cabang' ";
+        //     $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND keterangan='$keterangan' ";
+        // }else if ($tipe == 'KERTAS') {
+        //     $berat = filter_var($request->input('berat'), FILTER_SANITIZE_NUMBER_INT);
+        //     $sql = " SELECT (harga * '$berat') harga FROM tarif_cabang_kilogram WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' ";
+        // }
+       /*return*/ $data = collect(DB::select($sql));
+        $biaya_penerus = collect(DB::select($sql_biaya_penerus));
+
         $jumlah_data = $data->count();
         if ($jumlah_data > 0) {
             $harga = collect(\DB::select($sql))->first();
-            if ($tipe = 'KARGO PAKET' or $tipe ='KARGO KERTAS') {
-                $biaya_penerus = 0;
-                $result['biaya_penerus'] = 0;
-            } else{
-                $biaya_penerus = collect(\DB::select($sql_biaya_penerus))->first();
-                $result['biaya_penerus'] = number_format($biaya_penerus->harga, 0, ",", ".");
-            }
+            $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
+            // if ($tipe = 'KARGO PAKET' or $tipe ='KARGO KERTAS') {
+            //     $biaya_penerus = 0;
+            //     $result['biaya_penerus'] = 0;
+            // } else{
+            //     $biaya_penerus = collect(\DB::select($sql_biaya_penerus))->first();
+            //     $result['biaya_penerus'] = number_format($biaya_penerus->harga, 0, ",", ".");
+            // }
+            // return $result;
+            $result['biaya_penerus'] = $biaya_penerus->harga;
             $result['harga'] = number_format($harga->harga, 0, ",", ".");
-            
+            // $result['biaya_penerus'] = $biaya_penerus->harga;
             $result['jumlah_data'] = $jumlah_data;
             $result['acc_penjualan']=$data[0]->acc_penjualan;
-        }else{
-            $harga = 0;
-            $result['harga'] = 0;
-            $result['biaya_penerus'] = 0;
-            $result['jumlah_data'] = 0;
-            $result['acc_penjualan']=$data[0]->acc_penjualan;
         }
+        // else{
+        //     $harga = 0;
+        //     $result['harga'] = 0;
+        //     $result['biaya_penerus'] = 0;
+        //     $result['jumlah_data'] = 0;
+        //     $result['acc_penjualan']=$data[0]->acc_penjualan;
+        // }
 
         
         return json_encode($result);
