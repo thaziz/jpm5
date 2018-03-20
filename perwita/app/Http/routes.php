@@ -643,7 +643,7 @@ Route::post('master_sales/tipe_angkutan/hapus_data', 'master_sales\tipe_angkutan
 
 //kendaraan
 Route::get('master_sales/kendaraan', 'master_sales\kendaraan_Controller@index');
-Route::get('master_sales/kendaraan_form', 'master_sales\kendaraan_Controller@form');
+Route::get('master_sales/kendaraan_form', 'master_sales\kendaraan_Controller@form')->name('form_kendaraan');
 Route::get('master_sales/kendaraan_form/{nomor}/edit', 'master_sales\kendaraan_Controller@form');
 Route::get('master_sales/kendaraan_form/{nomor}/hapus_data', 'master_sales\kendaraan_Controller@hapus_data');
 Route::post('master_sales/kendaraan/save_data', 'master_sales\kendaraan_Controller@save_data');
@@ -778,7 +778,11 @@ Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_no
 // delivery order kargo
 Route::get('sales/deliveryorderkargo', 'sales\do_kargo_Controller@index');
 Route::get('sales/deliveryorderkargoform', 'sales\do_kargo_Controller@form');
-Route::get('sales/deliveryorderkargoform/{nomor}/edit', 'sales\do_kargo_Controller@form');
+Route::get('sales/cari_nopol_kargo', 'sales\do_kargo_Controller@cari_nopol_kargo');
+Route::get('sales/nama_subcon', 'sales\do_kargo_Controller@nama_subcon');
+
+
+
 Route::get('sales/deliveryorderkargoform/tabel_data_detail', 'sales\do_kargo_Controller@table_data_detail');
 Route::get('sales/deliveryorderkargoform/get_data_detail', 'sales\do_kargo_Controller@get_data_detail');
 Route::get('sales/deliveryorderkargoform/tabel_item', 'sales\do_kargo_Controller@table_data_item');
