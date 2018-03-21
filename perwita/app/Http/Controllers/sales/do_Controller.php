@@ -14,12 +14,8 @@ use PDF;
 
 class do_Controller extends Controller
 {
-<<<<<<< HEAD
-    public function table_data_detail (Request $request) {        
-=======
     public function table_data_detail(Request $request)
     {
->>>>>>> 4251e9354d3fb0911a91098343675607b673a2e2
         $nomor = strtoupper($request->input('nomor'));
         $sql = "    SELECT d.id, d.kode_item, i.nama,d.jumlah, d.satuan, d.keterangan, d.total, d.harga, d.nomor_so FROM delivery_orderd d,item i
                     WHERE i.kode=d.kode_item AND d.nomor='$nomor' ";
@@ -262,6 +258,16 @@ class do_Controller extends Controller
                         ->where('kode_cabang', $cabang)
                         ->orderBy('id_akun')
                         ->first();
+<<<<<<< HEAD
+=======
+
+                    $akunDana = master_akun::
+                    select('id_akun', 'nama_akun')
+                        ->where('id_akun', 'like', '%2001%')
+                        ->where('kode_cabang', $cabang)
+                        ->orderBy('id_akun')
+                        ->first();
+>>>>>>> afacd3890c78d68508e32a6c86265d70b20060ea
 
                     $akunDana = master_akun::
                     select('id_akun', 'nama_akun')
@@ -270,7 +276,11 @@ class do_Controller extends Controller
                         ->orderBy('id_akun')
                         ->first();
 
+                    if (count($akunKas) == 0) {
+                        $dataInfo = ['status' => 'gagal', 'info' => 'Akun Kas Untuk Cabang Belum Tersedia'];
+                        return json_encode($dataInfo);
 
+<<<<<<< HEAD
                     if (count($akunKas) == 0) {
                         $dataInfo = ['status' => 'gagal', 'info' => 'Akun Kas Untuk Cabang Belum Tersedia'];
                         return json_encode($dataInfo);
@@ -285,15 +295,37 @@ class do_Controller extends Controller
                     $akun[0]['value'] = $valueJurnal;
                     $akun[0]['dk'] = 'D';
 
+=======
+                    } else if (count($akunDana) == 0) {
+                        $dataInfo = ['status' => 'gagal', 'info' => 'Akun Dana Untuk Cabang Belum Tersedia'];
+                        return json_encode($dataInfo);
+                    }
+
+
+                    $akun[0]['id_akun'] = $akunKas->id_akun;
+                    $akun[0]['value'] = $valueJurnal;
+                    $akun[0]['dk'] = 'D';
+
+
+                    $akun[1]['id_akun'] = $akunDana->id_akun;
+                    $akun[1]['value'] = $valueJurnal;
+                    $akun[1]['dk'] = 'K';
+>>>>>>> afacd3890c78d68508e32a6c86265d70b20060ea
 
                     $akun[1]['id_akun'] = $akunDana->id_akun;
                     $akun[1]['value'] = $valueJurnal;
                     $akun[1]['dk'] = 'K';
 
+<<<<<<< HEAD
 
                     $nomor = $nomor;
                     $jurnal = d_jurnal::where('jr_ref', $nomor);
 
+=======
+                    $nomor = $nomor;
+                    $jurnal = d_jurnal::where('jr_ref', $nomor);
+
+>>>>>>> afacd3890c78d68508e32a6c86265d70b20060ea
                     if (count($jurnal->first()) == 0) {
                         $id_jurnal = d_jurnal::max('jr_id') + 1;
                         foreach ($akun as $key => $detailData) {
@@ -514,6 +546,7 @@ class do_Controller extends Controller
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public function cari_harga(Request $request){
 
 =======
@@ -521,6 +554,11 @@ class do_Controller extends Controller
     {
         //dd($request);
 >>>>>>> 4251e9354d3fb0911a91098343675607b673a2e2
+=======
+    public function cari_harga(Request $request)
+    {
+        //dd($request);
+>>>>>>> afacd3890c78d68508e32a6c86265d70b20060ea
         $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
         $pendapatan = $request->input('pendapatan');
@@ -528,6 +566,7 @@ class do_Controller extends Controller
         $jenis = $request->input('jenis');
         $angkutan = $request->input('angkutan');
         $cabang = $request->input('cabang');
+<<<<<<< HEAD
 <<<<<<< HEAD
         if ($tipe == 'DOKUMEN') {            
             
@@ -545,6 +584,8 @@ class do_Controller extends Controller
             } else if ($berat > 20) {
                 $keterangan = 'TARIF DI ATAS 20 KG';
 =======
+=======
+>>>>>>> afacd3890c78d68508e32a6c86265d70b20060ea
         $biaya_penerus = null;
         if ($tipe == 'DOKUMEN') {
             $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'  ";
@@ -556,6 +597,7 @@ class do_Controller extends Controller
             } else if ($jenis == 'REGULER'){
                 $sql_biaya_penerus = "SELECT tarif_reguler as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
+<<<<<<< HEAD
 >>>>>>> 4251e9354d3fb0911a91098343675607b673a2e2
             }
 
@@ -665,6 +707,97 @@ class do_Controller extends Controller
                     ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 20 Kg')
                     ->get();
             }
+=======
+            }
+
+            if ($biaya_penerus == null){
+                $sql_biaya_penerus = "SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND cabang_default='$cabang' ";
+                $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
+            }
+
+            $jumlah_data = $data->count();
+            if ($jumlah_data > 0) {
+                $harga = collect(\DB::select($sql))->first();
+                $result['biaya_penerus'] = $biaya_penerus->harga;
+                $result['harga'] = $harga->harga;
+                $result['jumlah_data'] = $jumlah_data;
+                $result['acc_penjualan'] = $data[0]->acc_penjualan;
+                return json_encode($result);
+            }
+            else{
+                return response()->json([
+                    'status' => 'kosong'
+                ]);
+            }
+        }
+//======================== End Dokumen =============================
+        elseif ($tipe == 'KILOGRAM'){
+            $berat = $request->berat;
+            $tarif = null;
+            if ($berat < 10){
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', DB::raw('(harga * '.$berat.') as harga'))
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kertas / Kg')
+                    ->get();
+
+            } elseif ($berat == 10){
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
+                    ->get();
+
+            } elseif ($berat > 10 && $berat < 20){
+                $tarifAwal = DB::table('tarif_cabang_kilogram')
+                    ->select('harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif <= 10 Kg')
+                    ->get();
+
+                $tarifAwal = $tarifAwal[0]->harga;
+
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 10))) as harga'))
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
+                    ->get();
+            } elseif ($berat == 20){
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif <= 20 Kg')
+                    ->get();
+            } elseif ($berat > 20){
+                $tarifAwal = DB::table('tarif_cabang_kilogram')
+                    ->select('harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif <= 20 Kg')
+                    ->get();
+
+                $tarifAwal = $tarifAwal[0]->harga;
+
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 20))) as harga'))
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 20 Kg')
+                    ->get();
+            }
+>>>>>>> afacd3890c78d68508e32a6c86265d70b20060ea
 
             if ($tarif != null) {
                 $result['biaya_penerus'] = $biaya_penerus->harga;

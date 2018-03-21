@@ -81,6 +81,15 @@ class cabang_dokumen_Controller extends Controller
         //     $kode_detail += 1;
         // }
 
+         return $kode_detailtambah1;
+         
+        if ($kode_detail == '') {
+            $kode_detail = 1;
+        }else{
+            $kode_detail += 1;
+        }
+
+
         if ($kode_utama < 10000 ) {
             $kode_utama = '0000'.$kode_utama;
         }
@@ -101,6 +110,14 @@ class cabang_dokumen_Controller extends Controller
              $id_provinsi_loop =explode(' ', $id_provinsi_loop);
               json_encode($id_provinsi_loop);
       for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
+
+          if ($crud =='N') {
+        
+             if ($datadetailcount == 0) {
+                    $kode_detail += 1;
+                }
+                else if ($kode_detailtambah1 == $kode_detailtambah1) {
+                    $kode_detail += 1;
 
           if ($crud =='N') {
         
