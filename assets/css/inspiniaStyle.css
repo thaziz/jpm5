@@ -3252,12 +3252,15 @@ body {
   font-size: 13px;
   color: #676a6c;
   overflow-x: hidden;
-  -webkit-animation:colorchange 10s infinite alternate;
+  
 }
 @-webkit-keyframes colorchange {
       0% {
         
         background-color: red;
+      }
+      33.33%{
+        background-color: orange;
       }
 
       66.66%{

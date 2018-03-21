@@ -82,11 +82,7 @@
 
 toastr.options.onShown = function() { window.location = baseUrl+'/dashboard';
 }
-<<<<<<< HEAD
-				toastr.success(response.nama, "Selamat Datang,");
-=======
                 toastr.success(response.nama, "Selamat Datang,");
->>>>>>> c939b95f2860319f62b463c869c3e3ef6d584665
 
 
                              //window.location = baseUrl+'/dashboard';
