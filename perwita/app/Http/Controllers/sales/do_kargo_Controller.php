@@ -403,4 +403,27 @@ class do_kargo_Controller extends Controller
                   ->first();
         return response()->json(['nama'=>$nama->nama]);
     }
+    public function cari_kontrak_tarif(request $request)
+    {
+        if ($request->check == 'false') {
+           $data = DB::table('tarif_cabang_kargo')
+                      ->where('id_kota_asal',$request->asal)
+                      ->where('id_kota_tujuan',$request->tujuan)
+                      ->where('kode_cabang',$request->cabang_select)
+                      ->where('kode_angkutan',$request->tipe_angkutan)
+                      ->get();
+            $kontrak = 0;
+        }else {
+            $data = DB::table('kontrak')
+                      ->join('kontrak_d','nomor','=','nomor_kontrak')
+                      ->where('id_kota_asal',$request->asal)
+                      ->where('id_kota_tujuan',$request->tujuan)
+                      ->where('kode_cabang',$request->cabang_select)
+                      ->where('jenis','KARGO')
+                      ->get();
+            $kontrak = 1;
+        }
+
+        return view('sales.do_kargo.modal_tarif',compact('data','kontrak'));
+    }
 }
