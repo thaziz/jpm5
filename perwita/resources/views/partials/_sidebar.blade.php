@@ -82,6 +82,15 @@
                     /* tarif penerus default */
                     Request::is('sales/tarif_penerus_default') ? 'active' : '' || 
                     Request::is('sales/tarif_penerus_default/*') ? 'active' : '' ||
+                    /* tarif penerus doc */
+                    Request::is('sales/tarif_penerus_dokumen') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_dokumen/*') ? 'active' : ''|| 
+                    /* tarif penerus Kilogram */
+                    Request::is('sales/tarif_penerus_kilogram') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''|| 
+                    /* tarif penerus koli */
+                    Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' ||
                  /*================ END OF MASTER TARIF =================*/
 
                  /*===================== MASTER DO ======================*/
@@ -261,7 +270,7 @@
                 {{Request::is('master_sales/cabang') ? 'active' : '' ||
                  Request::is('master_sales/cabang/*') ? 'active' : ''}} 
 
-                " href="{{ url('master_sales/cabang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Cabang</a>
+                " href="{{ url('master_sales/cabang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Cabang</a>
                 </li>
                 @if(Auth::user()->PunyaAkses('Tipe Kendaraan','aktif'))
                 <li >
@@ -270,7 +279,7 @@
                 {{Request::is('master_sales/tipe_angkutan') ? 'active' : '' ||
                  Request::is('master_sales/tipe_angkutan/*') ? 'active' : ''}} 
 
-                " href="{{ url('master_sales/tipe_angkutan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tipe Angkutan</a>
+                " href="{{ url('master_sales/tipe_angkutan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tipe Angkutan</a>
                 </li>
                 @endif
                 <li >
@@ -279,7 +288,7 @@
                 {{Request::is('master_sales/kendaraan') ? 'active' : '' ||
                  Request::is('master_sales/kendaraan/*') ? 'active' : ''}} 
 
-                " href="{{ url('master_sales/kendaraan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kendaraan</a>
+                " href="{{ url('master_sales/kendaraan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kendaraan</a>
                 </li>
             </ul>
         </li>
@@ -304,6 +313,15 @@
                     /* tarif penerus default */
                     Request::is('sales/tarif_penerus_default') ? 'active' : '' || 
                     Request::is('sales/tarif_penerus_default/*') ? 'active' : '' || 
+                    /* tarif penerus doc */
+                    Request::is('sales/tarif_penerus_dokumen') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_dokumen/*') ? 'active' : ''|| 
+                    /* tarif penerus Kilogram */
+                    Request::is('sales/tarif_penerus_kilogram') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''|| 
+                    /* tarif penerus koli */
+                    Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' ||
                     /*=============== END OF MASTER TARIF ==============*/
                     /*===================== MASTER DO ======================*/
                     /* agen */
@@ -382,7 +400,16 @@
                     Request::is('sales/tarif_cabang_kargo/*') ? 'active' : '' ||
                     /* tarif penerus default */
                     Request::is('sales/tarif_penerus_default') ? 'active' : '' || 
-                    Request::is('sales/tarif_penerus_default/*') ? 'active' : '' 
+                    Request::is('sales/tarif_penerus_default/*') ? 'active' : '' ||
+                    /* tarif penerus doc */
+                    Request::is('sales/tarif_penerus_dokumen') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_dokumen/*') ? 'active' : ''|| 
+                    /* tarif penerus Kilogram */
+                    Request::is('sales/tarif_penerus_kilogram') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''|| 
+                    /* tarif penerus koli */
+                    Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' 
                     /*=============== END OF MASTER TARIF ==============*/
 
                 }}
@@ -412,29 +439,45 @@
                             <a class="sidebar master-perusahaan 
 
                         {{Request::is('sales/tarif_cabang_kargo') ? 'active' : '' || 
-                    Request::is('sales/tarif_cabang_kargo/*') ? 'active' : ''}} 
-
-                        "
-                        class="sidebar master-perusahaan 
-
-                        {{Request::is('sales/tarif_penerus_default') ? 'active' : '' ||
-                         Request::is('sales/tarif_penerus_default/*') ? 'active' : ''}} 
-
-                        " href="{{ url('sales/tarif_cabang_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kargo</a>
+                    Request::is('sales/tarif_cabang_kargo/*') ? 'active' : ''}} "
+                         href="{{ url('sales/tarif_cabang_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kargo</a>
                         </li>
+                        <br>
                         <li >
-                            <a class="sidebar master-perusahaan 
-
-                        {{Request::is('sales/tarif_cabang_kargo') ? 'active' : '' || 
-                    Request::is('sales/tarif_cabang_kargo/*') ? 'active' : ''}} 
-
-                        "
+                            <a
                         class="sidebar master-perusahaan 
 
                         {{Request::is('sales/tarif_penerus_default') ? 'active' : '' ||
                          Request::is('sales/tarif_penerus_default/*') ? 'active' : ''}} 
 
                         " href="{{ url('sales/tarif_penerus_default')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Default</a>
+                        </li>
+                        <li >
+                            <a
+                        class="sidebar master-perusahaan 
+
+                        {{Request::is('sales/tarif_penerus_dokumen') ? 'active' : '' ||
+                         Request::is('sales/tarif_penerus_dokumen/*') ? 'active' : ''}} 
+
+                        " href="{{ url('sales/tarif_penerus_dokumen')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Dokumen</a>
+                        </li>
+                        <li >
+                            <a
+                        class="sidebar master-perusahaan 
+
+                        {{Request::is('sales/tarif_penerus_kilogram') ? 'active' : '' ||
+                         Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''}} 
+
+                        " href="{{ url('sales/tarif_penerus_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Kilogram</a>
+                        </li>
+                        <li >
+                            <a
+                        class="sidebar master-perusahaan 
+
+                        {{Request::is('sales/tarif_penerus_koli') ? 'active' : '' ||
+                         Request::is('sales/tarif_penerus_koli/*') ? 'active' : ''}} 
+
+                        " href="{{ url('sales/tarif_penerus_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Koli</a>
                         </li>
                         
                     </ul>

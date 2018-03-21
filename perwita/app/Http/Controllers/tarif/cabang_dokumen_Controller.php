@@ -5,16 +5,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
-
+use Auth;
 
 class cabang_dokumen_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
+        $sql = "    SELECT t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
                     FROM tarif_cabang_dokumen t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
-                    ORDER BY t.id_kota_asal, t.id_kota_tujuan ";
+                    ORDER BY t.kode_detail DESC ";
         
         $list = DB::select(DB::raw($sql));
         $data = array();
@@ -25,7 +25,7 @@ class cabang_dokumen_Controller extends Controller
         foreach ($data as $key) {
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['kode_sama'].'" data-kode0="'.$data[0]['kode'].'" data-kode1="'.$data[1]['kode'].'" data-kode2="'.$data[2]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                        <button type="button" id="'.$data[$i]['kode_sama'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
                                         <button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                     </div> ';
             $i++;
@@ -35,29 +35,12 @@ class cabang_dokumen_Controller extends Controller
     }
 
     public function get_data (Request $request) {
-        $kode0req = $request->kodekode0;
-        $formatstr0 = '%s';
-        $kode0 = sprintf($formatstr0,$kode0req);
-        // echo $kode0; echo gettype($kode0);   
-        // INDEX 0 
-        $kode1req = $request->kodekode1;
-        $formatstr1 = '%s';
-        $kode1 = sprintf($formatstr1,$kode1req);
-        // INDEX 1
-        $kode2req = $request->kodekode2;
-        $formatstr2 = '%s';
-        $kode2 = sprintf($formatstr2,$kode2req);
-        // INDEX 2
-        $id =$request->input('id');
-        $data = DB::table('tarif_cabang_dokumen')->where('kode_sama', $id)->get();
-
-        $datakode0 = DB::table('tarif_cabang_dokumen')->select('kode','jenis','waktu','harga')->where('kode', $kode0)->get();
-        // return $datakode0;
-        $datakode1 = DB::table('tarif_cabang_dokumen')->select('kode','jenis','waktu','harga')->where('kode', $kode1)->get();
-        // return $datakode1;
-        $datakode2 = DB::table('tarif_cabang_dokumen')->select('kode','jenis','harga')->where('kode', $kode2)->get();
         
-        echo json_encode([$data,$datakode0,$datakode1,$datakode2]);
+        $id =$request->input('id');
+        $data = DB::table('tarif_cabang_dokumen')->where('kode_sama', $id)->orderBy('kode_detail','ASC')->get();
+
+        
+        echo json_encode($data);
     }
 
     public function save_data (Request $request) {
@@ -96,10 +79,11 @@ class cabang_dokumen_Controller extends Controller
             $kode_utama = '0000'.$kode_utama;
         }
         $kodekota = $request->kodekota;
+        $kodecabang = Auth::user()->kode_cabang;
 
-        $kode_reguler = $kodekota.'/'.'D'.'R'.'001'.$kode_utama;
-        $kode_express = $kodekota.'/'.'D'.'E'.'001'.$kode_utama;
-        $kode_outlet = $kodekota.'/'.'D'.'O'.'001'.$kode_utama;
+        $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+        $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
+        $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;
 
         
         if ($crud == 'N') {
@@ -110,9 +94,12 @@ class cabang_dokumen_Controller extends Controller
                 'kode'=>$kode_reguler,
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_kota_tujuan' => $request->cb_kota_tujuan,
+                'kode_cabang' => $request->ed_cabang,
                 'jenis' => 'REGULER',
                 'harga' => $request->harga_regular,
                 'waktu' => $request->waktu_regular,
+                'acc_penjualan'=>$request->ed_acc_penjualan,
+                'csf_penjualan'=>$request->ed_csf_penjualan,
             );
                 if ($datadetailcount == 0) {
                     $kode_detail += 1;
@@ -126,9 +113,12 @@ class cabang_dokumen_Controller extends Controller
                         'kode'=>$kode_express,
                         'id_kota_asal' => $request->cb_kota_asal,
                         'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang,
                         'jenis' => 'EXPRESS',
                         'harga' => $request->harga_express,
                         'waktu' => $request->waktu_express,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
                     );
                 if ($datadetailcount == 0) {
                     $kode_detail += 1;
@@ -136,20 +126,28 @@ class cabang_dokumen_Controller extends Controller
                 else if ($kode_detailtambah1 == $kode_detailtambah1) {
                     $kode_detail += 1;
                 }
-                $outlet = array(
+                if ($request->harga_outlet != null) {
+                     $outlet = array(
                         'kode_sama' => $kode_sama,
                         'kode_detail'=>$kode_detail,
                         'kode'=>$kode_outlet,
                         'id_kota_asal' => $request->cb_kota_asal,
                         'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang,
                         'jenis' => 'OUTLET',
                         'harga' => $request->harga_outlet,
                         'waktu' => null,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
                     );
+                $simpan = DB::table('tarif_cabang_dokumen')->insert($outlet);
+                }else{
 
+                }
+               
             $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
             $simpan = DB::table('tarif_cabang_dokumen')->insert($express);
-            $simpan = DB::table('tarif_cabang_dokumen')->insert($outlet);
+            
 
         }elseif ($crud == 'E') {
 
@@ -160,8 +158,11 @@ class cabang_dokumen_Controller extends Controller
                         'id_kota_asal' => $request->cb_kota_asal,
                         'id_kota_tujuan' => $request->cb_kota_tujuan,
                         'jenis' => 'REGULER',
+                        'kode_cabang' => $request->ed_cabang,      
                         'harga' => $request->harga_regular,
                         'waktu' => $request->waktu_regular,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
                    );
                    
                 // return $regular;
@@ -171,9 +172,12 @@ class cabang_dokumen_Controller extends Controller
                         'kode'=>$request->id_express,
                         'id_kota_asal' => $request->cb_kota_asal,
                         'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang, 
                         'jenis' => 'EXPRESS',
                         'harga' => $request->harga_express,
                         'waktu' => $request->waktu_express,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
                     );
                
 
@@ -183,9 +187,12 @@ class cabang_dokumen_Controller extends Controller
                         'kode'=>$request->id_outlet,
                         'id_kota_asal' => $request->cb_kota_asal,
                         'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang,
                         'jenis' => 'OUTLET',
                         'harga' => $request->harga_outlet,
                         'waktu' => null,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
                     );
 
             $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_reguler)->update($regular);
@@ -219,8 +226,13 @@ class cabang_dokumen_Controller extends Controller
     public function index(){
 
         $kota = DB::select(DB::raw(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC "));
+        $cabang_default = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY kode ASC "));
+
+        $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
+        $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         
-        return view('tarif.cabang_dokumen.index',compact('kota'));
+
+        return view('tarif.cabang_dokumen.index',compact('kota','cabang_default','accpenjualan','csfpenjualan'));
     }
 
 }

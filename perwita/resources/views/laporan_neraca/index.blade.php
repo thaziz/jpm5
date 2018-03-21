@@ -912,7 +912,7 @@
                                                     <td style="font-weight: bold;">{{ $dataAktiva["nama_perkiraan"] }}</td><td class="text-right" id="tot-{{ $dataAktiva["nomor_id"] }}">{{ str_replace("-", "", $view) }}</td>
                                                   </tr>
 
-                                                  {!! get_Sub($data, $dataAktiva["nomor_id"]) !!}
+                                                  {!! get_Sub($data, $dataAktiva["nomor_id"], $data_akun) !!}
 
                                                 @elseif($dataAktiva["jenis"] == '4' && $dataAktiva["type"] == 'aktiva')
 
@@ -997,12 +997,12 @@
       initialState: "collapse",
     });
 
-   $('.tree').treegrid('getRootNodes').on('collapse', function(){
+   $('.tree').treegrid('getAllNodes').on('collapse', function(){
      $id = $(this).attr("id");
      $("#tot-"+$id).fadeIn();
    });
 
-   $('.tree').treegrid('getRootNodes').on('expand', function(){
+   $('.tree').treegrid('getAllNodes').on('expand', function(){
      $id = $(this).attr("id");
      $("#tot-"+$id).fadeOut();
    });

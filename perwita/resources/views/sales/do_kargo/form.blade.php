@@ -115,21 +115,33 @@
                                                 <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
                                             @endforeach
                                             </select>
+                                            <input type="hidden" class="jenis_tarif_temp">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Status Kendaraan</td>
                                         <td>
-                                            <select name="status_kendaraan" class="form-control status_kendaraan chosen-select-width">
+                                            <select name="status_kendaraan" onchange="cari_nopol_kargo()" class="form-control status_kendaraan chosen-select-width">
                                                 <option value="OWN">OWN</option>
                                                 <option value="SUB">SUB</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="nama_subcon_tr" hidden="">
+                                        <td>Nama Subcon</td>
+                                        <td>
+                                            <select name="nama_subcon" onchange="cari_nopol_kargo()" class="form-control nama_subcon chosen-select-width">
+                                                <option value="0">Pilih - Subcon</option>
+                                                @foreach($subcon as $i=>$val)
+                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @endforeach
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Tipe Angkutan</td>
                                         <td>
-                                            <select name="tipe_kendaraan" class="form-control tipe_kendaraan chosen-select-width">
+                                            <select name="tipe_angkutan" onchange="cari_nopol_kargo()" class="form-control tipe_angkutan chosen-select-width">
                                                 <option value="0">Pilih - Tipe Angkutan</option>
                                                 @foreach($tipe_angkutan as $val)
                                                     <option value="{{$val->kode}}">{{$val->nama}}</option>
@@ -143,15 +155,18 @@
                                 <table class="table table-bordered table-striped">
                                     <tr>
                                         <td>Nopol</td>
-                                        <td class="nopol_dropdown" colspan="3">
+                                        <td class="nopol_dropdown" colspan="2">
                                             <select name="tipe_kendaraan" class="form-control tipe_kendaraan chosen-select-width input-sm">
-                                                <option>Pilih status Kendaraan dan tipe angkutan dulu</option>
+                                                <option></option>
                                             </select>
+                                        </td>
+                                        <td>
+                                            <button type="button" class=" buat_nopol btn btn-warning"><i class="fa fa-car"> Buat Nopol</i></button>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Nama Subcon</td>
-                                        <td colspan="3"><input type="text" readonly="" name="nama_subcon" class="nama_subcon form-control input-sm"></td>
+                                        <td colspan="3"><input type="text" readonly="" class="nama_subcon_detail form-control input-sm"></td>
                                     </tr>
                                     <tr>
                                         <td>Driver</td>
@@ -193,10 +208,10 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="kontrak_tr">
                                         <td>
                                             <div class="checkbox checkbox-info checkbox-circle">
-                                                <input class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
                                                 <label>
                                                     Kontrak
                                                 </label>
@@ -222,19 +237,19 @@
                                         </td>
                                         <td>Tarif Dasar</td>
                                         <td>
-                                            <input type="text" class="form-control" name="tarif_dasar" style="text-align:right" readonly="readonly" value="0">
+                                            <input type="text" class="form-control tarif_dasar" name="tarif_dasar" style="text-align:right" readonly="readonly" value="0">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Discount</td>
                                         <td colspan="3">
-                                            <input type="text" value="0" name="discount" class="nama_subcon form-control discount input-sm">
+                                            <input type="text" value="0" name="discount" class=" form-control discount input-sm">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Total</td>
                                         <td colspan="3">
-                                            <input type="text" readonly="" value="0" name="total" class="nama_subcon form-control total input-sm">
+                                            <input type="text" readonly="" value="0" name="total" class=" form-control total input-sm">
                                         </td>
                                     </tr>
                                 </table>
@@ -426,7 +441,74 @@ $('.date').datepicker({
 //menentukan cabang
 $(document).ready(function(){
    var cabang = $('.cabang_select').val();
+   var jenis_tarif_do  = $('.jenis_tarif_do').val();
    $('.cabang_input').val(cabang);
+   $('.jenis_tarif_do').val(jenis_tarif_do);
+   $('.jumlah').maskMoney({precision:0});
+   $('.jenis_tarif_temp').val(jenis_tarif_do);
 })
+//hide unhide subcon
+$('.status_kendaraan').change(function(){
+    if ($(this).val() == 'SUB'){
+        $('.nama_subcon_tr').attr('hidden',false);
+    }else{
+        $('.nama_subcon_tr').attr('hidden',true);
+    }
+});
+//membuat nopol
+$('.buat_nopol').click(function(){
+    window.open('{{route('form_kendaraan')}}');
+});
+
+//fungsi cari nopol
+function cari_nopol_kargo() {
+    var status_kendaraan = $('.status_kendaraan').val();
+    var nama_subcon      = $('.nama_subcon').val();
+    var tipe_angkutan    = $('.tipe_angkutan').val();
+    var cabang_select    = $('.cabang_select').val();
+
+    $.ajax({
+        url:baseUrl + '/sales/cari_nopol_kargo',
+        data:{status_kendaraan,nama_subcon,tipe_angkutan,cabang_select},
+        success:function(data){
+            console.log(data);
+            $('.nopol_dropdown').html(data);
+        }
+    })
+}
+//nama subcon
+$('.nama_subcon').change(function(){
+    var nama_subcon = $('.nama_subcon').val();
+    $.ajax({
+        url:baseUrl + '/sales/nama_subcon',
+        data:{nama_subcon},
+        dataType:'json',
+        success:function(data){
+            $('.nama_subcon_detail').val(data.nama);  
+        }
+    });
+});
+// jika check kontrak checked
+function centang() {
+    var check = $('.kontrak_tarif').is(':checked'); 
+    var temp  = $('.jenis_tarif_temp').val();
+
+    if (check == true) {
+        $('.jenis_tarif_do').val(5).trigger('chosen:updated');
+    }else{
+        $('.jenis_tarif_do').val(temp).trigger('chosen:updated');
+    }
+}
+//menghilangkan kontrak
+$('.jenis_tarif_do').change(function(){
+    if ($(this).val() == 9) {
+        $('.kontrak_tr').attr('hidden',true);
+        $('.tarif_dasar').val(1);
+    }else{      
+        $('.kontrak_tr').attr('hidden',false);
+        $('.jenis_tarif_temp').val($(this).val());
+        $('.tarif_dasar').val(0);
+    }
+});
 </script>
 @endsection
