@@ -374,27 +374,16 @@
                             </form>
                         </div>
                 <!-- modal -->
-                <div id="modal_do" class="modal" >
+                <div id="modal_tarif" class="modal" >
                   <div class="modal-dialog">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Pilih Nomor DO</h4>
+                        <h4 class="modal-title">Pilih Tarif</h4>
                       </div>
                       <div class="modal-body">
-                            <form class="form-horizontal  kirim">
-                                <table id="table_data_do" class="table table-bordered table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Nomor Order</th>
-                                            <th>Tgl Order</th>
-                                            <th>Jumlah</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
+                            <form class="form-horizontal  modal_tarif">
+                                
                             </form>
                           </div>
                           <div class="modal-footer">
@@ -509,6 +498,25 @@ $('.jenis_tarif_do').change(function(){
         $('.jenis_tarif_temp').val($(this).val());
         $('.tarif_dasar').val(0);
     }
+});
+
+$('#btn_cari_tarif').click(function(){
+    var check = $('.kontrak_tarif').is(':checked'); 
+    var asal = $('.asal_do').val(); 
+    var tujuan = $('.tujuan_do').val(); 
+    var jenis_tarif = $('.jenis_tarif_do').val(); 
+    var cabang_select = $('.cabang_select').val(); 
+    var tipe_angkutan = $('.tipe_angkutan ').val(); 
+    $.ajax({
+        url:baseUrl + '/sales/cari_kontrak_tarif',
+        data:{check,asal,tujuan,jenis_tarif,cabang_select,tipe_angkutan },
+        success:function(data){
+            $('.modal_tarif').html(data);
+        },
+        error:function(){
+            toastr.warning('Periksa Kembali Data Anda');
+        }
+    })
 });
 </script>
 @endsection
