@@ -8,20 +8,19 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Faktur Pembelian </h2>
+                    <h2> Pengguna </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
                         </li>
                         <li>
-                            <a>Purchase</a>
-                        </li>
-                        <li>
-                          <a> Transaksi Purchase</a>
+                            <a>Setting</a><
                         </li>
                         <li class="active">
-                            <strong> Create Faktur Pembelian </strong>
+                            <strong> Pengguna </strong>
                         </li>
+  
+                        
 
                     </ol>
                 </div>
