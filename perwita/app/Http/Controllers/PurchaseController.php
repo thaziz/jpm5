@@ -211,7 +211,7 @@ class PurchaseController extends Controller
 	}
 
 	public function savespp(Request $request) {
-	//	dd($request);
+		//dd($request);
 			$nospp = $request->nospp;
 			$cabang = $request->comp;
 			$dataspp = DB::select("select * from spp where spp_nospp = '$nospp' and spp_cabang = '$cabang'");
@@ -252,48 +252,7 @@ class PurchaseController extends Controller
 			$hasiltahun = $tanggal[0];
 			
 		//	dd($hasilbulan);
-			if($hasilbulan == '01') {
-				
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/I/' . $hasiltahun;
-			}
-			if($hasilbulan == '02') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/II/' . $hasiltahun;
-				
-			}
-			if($hasilbulan == '03') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/III/' . $hasiltahun;
-				
-			}
-			if($hasilbulan == '04') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/IV/' . $hasiltahun;
-				
-			}
-			if($hasilbulan == '05') {
-				$nospp = 'SPP/'. $cabang .'/' . $nospp .'/v/' . $hasiltahun;
-				
-			}
-			if($hasilbulan == '06') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/VI/' . $hasiltahun;
-				
-			}
-			if($hasilbulan == '07') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/VII/' . $hasiltahun;
-			}
-			if($hasilbulan == '08') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/VIII/' . $hasiltahun;
-			}
-			if($hasilbulan == '09') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/IX/' . $hasiltahun;
-			}
-			if($hasilbulan == '10') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/X/' . $hasiltahun;
-			}
-			if($hasilbulan == '11') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/XI/' . $hasiltahun;
-			}
-			if($hasilbulan == '12') {
-				$nospp = 'SPP/'. $cabang . '/' . $nospp .'/XII/' . $hasiltahun;
-			}
+		
 
 			$tbb = $request->total_biaya;
 			$hasiltbb = str_replace(',', '', $tbb);
@@ -302,7 +261,7 @@ class PurchaseController extends Controller
 			$spp->spp_nospp = strtoupper($request->nospp);
 			$spp->spp_id = strtoupper($idspp);
 			$spp->spp_tgldibutuhkan = strtoupper($request->tgl_dibutuhkan);
-			$spp->spp_cabang = strtoupper($request->comp);
+			$spp->spp_cabang = strtoupper($request->cabang);
 			$spp->spp_bagian = strtoupper($request->bagian);
 			$spp->spp_keperluan = strtoupper($request->keperluan);
 			$spp->spp_status = 'DITERBITKAN';
@@ -3065,6 +3024,7 @@ $indexakun=0;
 	}
 
 	public function savefakturpo(Request $request){
+		return DB::transaction(function() use ($request) {   
 		/*dd($request->all());*/
 		$variable = $request->supplier_po;
 		$data = explode(",", $variable);
@@ -3396,10 +3356,10 @@ $indexakun=0;
 			//	return $iditem;
 				$masteritem =DB::select("select * from masteritem where kode_item = '$iditem'");
 				
-				$acc_biaya = $masteritem[0]->acc_hpp;
-				$acc_persediaan = $masteritem[0]->acc_persediaan;
+				$acc_biaya[$i] = $masteritem[0]->acc_hpp;
+				$acc_persediaan[$i] = $masteritem[0]->acc_persediaan;
 
-			dd($acc_biaya);
+			dd($acc_biaya[$i]);
 			dd($acc_persediaan);
 				$fatkurpembeliandt2->fpdt_accbiaya = $acc_biaya;
 				$fatkurpembeliandt2->fpdt_accbiaya = $acc_persediaan;
@@ -3449,6 +3409,7 @@ $indexakun=0;
 			}
 dd('s');
 		return json_encode($idfp);
+	});
 	}
 
 

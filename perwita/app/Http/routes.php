@@ -79,7 +79,7 @@ Route::get('suratpermintaanpembelian/ajax_hargasupplier/{id}', 'PurchaseControll
 Route::post('suratpermintaanpembelian/ajax_jenisitem/', 'PurchaseController@ajax_jenisitem');
 Route::get('suratpermintaanpembelian/statusspp/{id}', 'PurchaseController@statusspp');
 Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@createPdfSpp');
-Route::post('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
+Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
 Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
@@ -759,6 +759,8 @@ Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data
 Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
 Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
 Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
+
+Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
 Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');

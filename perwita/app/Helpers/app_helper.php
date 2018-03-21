@@ -28,9 +28,11 @@
         foreach ($data_akun as $akun) {
         	$view = ($akun["total"] < 0) ? "(".number_format($akun["total"], 2).")" : number_format($akun["total"], 2);
         	if($akun["nomor_id"] == $nomor_id){
-        		$html = $html.'<tr class="treegrid-'.$akun["id_akun"].' treegrid-parent-'.$nomor_id.'">
-                            <td>'.$akun["nama_akun"].' ('.$akun["id_akun"].')</td><td class="text-right">'.str_replace("-", "", $view).'</td>
+        		$html = $html.'<tr class="treegrid-'.$akun["id_akun"].' treegrid-parent-'.$nomor_id.'" id="'.$akun["id_akun"].'">
+                            <td>'.$akun["nama_akun"].' ('.$akun["id_akun"].')</td><td class="text-right" id="tot-'.$akun["id_akun"].'">'.str_replace("-", "", $view).'</td>
                          </tr>';
+
+                $html = $html.get_akun($data_akun, $akun["id_akun"]);
         	}
         }
 

@@ -120,7 +120,7 @@ class invoice_Controller extends Controller
 		return $temp;
     }
 
-    public function groupJurnal($data) {
+  /*  public function groupJurnal($data) {
         $total=0;
         $ppn=0;        
         $groups = array();
@@ -171,7 +171,7 @@ class invoice_Controller extends Controller
         }                
         return $groups;
     }
-    
+    */
 
 
 
@@ -371,6 +371,8 @@ public function pajak_lain(request $request)
 }
 public function simpan_invoice(request $request)
 {
+  return DB::transaction(function() use ($request) {  
+    /*dd($request->all());*/
     $do_awal        = str_replace('/', '-', $request->do_awal);
     $do_akhir       = str_replace('/', '-', $request->do_awal);
     $ed_jatuh_tempo = str_replace('/', '-', $request->ed_jatuh_tempo);
@@ -391,7 +393,8 @@ public function simpan_invoice(request $request)
                          ->first();
     // dd($request->all());
 
-
+    $ppn_type='';
+    $ppn_persen='';
     if ($request->cb_jenis_ppn == 1) {
         $ppn_type = 'pkp';
         $ppn_persen = 10;
@@ -475,8 +478,26 @@ public function simpan_invoice(request $request)
                                               'id_tipe'          => 'tidak tahu',
                                               'id_acc_penjualan' => $do->acc_penjualan
                                           ]);
+    $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
+    $request->netto_detail =str_replace(',', '.', $request->netto_detail);
+
+    $request->diskon2 = str_replace(['Rp', '\\', '.', ' '], '', $request->diskon2);
+    $request->diskon2 =str_replace(',', '.', $request->diskon2);
+    
+                      $dataItem[$i]['acc_penjualan']=$request->akun[$i];
+                      $dataItem[$i]['dd_diskon']=$request->dd_diskon[$i];                      
+                      $dataItem[$i]['dd_total']=$request->dd_total[$i];
+                      $dataItem[$i]['harga_netto']=$request->harga_netto[$i];
+                      $dataItem[$i]['diskon2']=$request->diskon2*$request->harga_netto[$i]/$request->netto_detail;
+                      $dataItem[$i]['ppn']=$request->cb_jenis_ppn;                      
+                      $dataItem[$i]['pajak_lain']=$request->pajak_lain;      
+                      $dataItem[$i]['netto_detail']=$request->netto_detail;                
+                    
              }
 
+             
+            $Nilaijurnal=$this->groupJurnal($dataItem);
+            dd($Nilaijurnal);
              return response()->json(['status' => 1]);
 
         }else{
@@ -728,6 +749,7 @@ public function simpan_invoice(request $request)
              return response()->json(['status' => 2,'nota'=>$nota]);
         }
     }
+    });
         
 }
 
@@ -857,4 +879,37 @@ public function update_invoice(request $request)
     $this->simpan_invoice($request);
     return response()->json(['status'=>1]);
 }
+
+  //funngsi Thoriq
+ /*$dataItem[$i]['acc_penjualan']=$request->akun[$i];
+                      $dataItem[$i]['dd_diskon']=$request->dd_diskon[$i];                      
+                      $dataItem[$i]['dd_total']=$request->dd_total[$i];
+                      $dataItem[$i]['harga_netto']=$request->harga_netto[$i];
+                      $dataItem[$i]['diskon']=$request->diskon2;                      
+                      $dataItem[$i]['ppn']=$request->cb_jenis_ppn;                      
+                      $dataItem[$i]['pajak_lain']=$request->pajak_lain;    */
+  public function groupJurnal($data) {
+      $groups = array();
+      $key = 0;
+      foreach ($data as $item) {
+          $key = $item['acc_penjualan'];
+          if (!array_key_exists($key, $groups)) {
+              $groups[$key] = array(                  
+                  'acc_penjualan' => $item['acc_penjualan'],
+                  'totalDo'  =>$item['dd_total'],
+                  'diskonDo'  =>$item['dd_diskon'],
+                  'totalInvoice' => $item['harga_netto'],
+                  'diskonInvoice'=>$item['diskon2'],
+
+
+              );              
+          } else {
+              $groups[$key]['totalDo'] = $groups[$key]['totalDo'] + $item['dd_total'];        
+              $groups[$key]['totalInvoice'] = $groups[$key]['totalInvoice'] + $item['harga_netto'];        
+              $groups[$key]['diskonInvoice'] = $groups[$key]['diskonInvoice'] + $item['diskon2'];        
+          }
+          $key++;
+      }
+      return $groups;
+  }
 }
