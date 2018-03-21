@@ -475,7 +475,7 @@
       $("#modal_view .modal-body").html('<center class="text-muted" style="padding: 10px;">Sedang Mengambil Data...</center>');
 
       $.ajax(baseUrl+"/master_keuangan/desain_neraca/view/"+$(this).data("id"), {
-         timeout: 5000,
+         timeout: 10000,
          dataType: "html",
          success: function (data) {
              $("#modal_view .modal-body").html(data);
