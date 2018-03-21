@@ -10,7 +10,9 @@ use Auth;
 class cabang_dokumen_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
+        $sql = "    SELECT t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        t.id_kota_tujuan,
+        kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
                     FROM tarif_cabang_dokumen t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
@@ -45,6 +47,8 @@ class cabang_dokumen_Controller extends Controller
 
     public function save_data (Request $request) {
         // dd($request);
+        
+
         $simpan='';
         $crud = $request->crud;
         $kode_sama = DB::table('tarif_cabang_dokumen')->select('kode_sama')->max('kode_sama');    
@@ -75,6 +79,7 @@ class cabang_dokumen_Controller extends Controller
         }else{
             $kode_detail += 1;
         }
+
         if ($kode_utama < 10000 ) {
             $kode_utama = '0000'.$kode_utama;
         }
@@ -85,15 +90,46 @@ class cabang_dokumen_Controller extends Controller
         $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
         $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;
 
+        /*return*/ $prov = $request->cb_provinsi_tujuan;
+        $sel_prov = DB::table('kota')->select('id','nama')->where('id_provinsi','=',$prov)->get();
+        // return $sel_prov; 
+        $gege = '';
+       
+        // return $gege;
+        for ($for=0; $for <count($sel_prov) ; $for++) { 
+             $gege = $gege.' '.$sel_prov[$for]->id;
         
-        if ($crud == 'N') {
+              json_encode(explode(' ', $gege));
+              $gege = str_replace(' ', '', $gege);
 
+              return next($gege);
+
+             }  
+            
+
+       /*return*/ 
+       
+      
+        
+      
+        if ($crud =='N') {
+                
+            if (strlen($gege) < 5) {
+                $gege = $gege;
+            }else{
+
+                 $gege = substr($gege, -4);
+            }
+            if ($kode_utama == $kode_utama) {
+                $kode_utama = $kode_utama+1;
+            }
+            // return $gege;
             $regular = array(
-                'kode_sama' => $kode_sama,
+                'kode_sama' =>$kode_detail,
                 'kode_detail'=>$kode_detail,
-                'kode'=>$kode_reguler,
+                'kode'=>$kode_utama,
                 'id_kota_asal' => $request->cb_kota_asal,
-                'id_kota_tujuan' => $request->cb_kota_tujuan,
+                'id_kota_tujuan' => $gege,
                 'kode_cabang' => $request->ed_cabang,
                 'jenis' => 'REGULER',
                 'harga' => $request->harga_regular,
@@ -101,104 +137,145 @@ class cabang_dokumen_Controller extends Controller
                 'acc_penjualan'=>$request->ed_acc_penjualan,
                 'csf_penjualan'=>$request->ed_csf_penjualan,
             );
-                if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1) {
-                    $kode_detail += 1;
-                }
-                $express = array(
-                        'kode_sama' => $kode_sama,
-                        'kode_detail'=>$kode_detail,
-                        'kode'=>$kode_express,
-                        'id_kota_asal' => $request->cb_kota_asal,
-                        'id_kota_tujuan' => $request->cb_kota_tujuan,
-                        'kode_cabang' => $request->ed_cabang,
-                        'jenis' => 'EXPRESS',
-                        'harga' => $request->harga_express,
-                        'waktu' => $request->waktu_express,
-                        'acc_penjualan'=>$request->ed_acc_penjualan,
-                        'csf_penjualan'=>$request->ed_csf_penjualan,
-                    );
-                if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1) {
-                    $kode_detail += 1;
-                }
-                if ($request->harga_outlet != null) {
-                     $outlet = array(
-                        'kode_sama' => $kode_sama,
-                        'kode_detail'=>$kode_detail,
-                        'kode'=>$kode_outlet,
-                        'id_kota_asal' => $request->cb_kota_asal,
-                        'id_kota_tujuan' => $request->cb_kota_tujuan,
-                        'kode_cabang' => $request->ed_cabang,
-                        'jenis' => 'OUTLET',
-                        'harga' => $request->harga_outlet,
-                        'waktu' => null,
-                        'acc_penjualan'=>$request->ed_acc_penjualan,
-                        'csf_penjualan'=>$request->ed_csf_penjualan,
-                    );
-                $simpan = DB::table('tarif_cabang_dokumen')->insert($outlet);
-                }else{
-
-                }
-               
+            
             $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
-            $simpan = DB::table('tarif_cabang_dokumen')->insert($express);
+        }
+    /*}*/
+
+        // if ($crud =='N') {
+        //      $regular = array(
+        //         'kode_sama' =>$kode_detail,
+        //         'kode_detail'=>$kode_detail,
+        //         'kode'=>$kode_detail,
+        //         'id_kota_asal' => $request->cb_kota_asal,
+        //         'id_kota_tujuan' => $gege,
+        //         'kode_cabang' => $request->ed_cabang,
+        //         'jenis' => 'REGULER',
+        //         'harga' => $request->harga_regular,
+        //         'waktu' => $request->waktu_regular,
+        //         'acc_penjualan'=>$request->ed_acc_penjualan,
+        //         'csf_penjualan'=>$request->ed_csf_penjualan,
+        //     );
+            
+        //     $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
+        // }
+
+        
+
+        
+        // if ($crud == 'N') {
+
+        //     $regular = array(
+        //         'kode_sama' => $kode_sama,
+        //         'kode_detail'=>$kode_detail,
+        //         'kode'=>$kode_reguler,
+        //         'id_kota_asal' => $request->cb_kota_asal,
+        //         'id_kota_tujuan' => $request->cb_kota_tujuan,
+        //         'kode_cabang' => $request->ed_cabang,
+        //         'jenis' => 'REGULER',
+        //         'harga' => $request->harga_regular,
+        //         'waktu' => $request->waktu_regular,
+        //         'acc_penjualan'=>$request->ed_acc_penjualan,
+        //         'csf_penjualan'=>$request->ed_csf_penjualan,
+        //     );
+        //         if ($datadetailcount == 0) {
+        //             $kode_detail += 1;
+        //         }
+        //         else if ($kode_detailtambah1 == $kode_detailtambah1) {
+        //             $kode_detail += 1;
+        //         }
+        //         $express = array(
+        //                 'kode_sama' => $kode_sama,
+        //                 'kode_detail'=>$kode_detail,
+        //                 'kode'=>$kode_express,
+        //                 'id_kota_asal' => $request->cb_kota_asal,
+        //                 'id_kota_tujuan' => $request->cb_kota_tujuan,
+        //                 'kode_cabang' => $request->ed_cabang,
+        //                 'jenis' => 'EXPRESS',
+        //                 'harga' => $request->harga_express,
+        //                 'waktu' => $request->waktu_express,
+        //                 'acc_penjualan'=>$request->ed_acc_penjualan,
+        //                 'csf_penjualan'=>$request->ed_csf_penjualan,
+        //             );
+        //         if ($datadetailcount == 0) {
+        //             $kode_detail += 1;
+        //         }
+        //         else if ($kode_detailtambah1 == $kode_detailtambah1) {
+        //             $kode_detail += 1;
+        //         }
+        //         if ($request->harga_outlet != null) {
+        //              $outlet = array(
+        //                 'kode_sama' => $kode_sama,
+        //                 'kode_detail'=>$kode_detail,
+        //                 'kode'=>$kode_outlet,
+        //                 'id_kota_asal' => $request->cb_kota_asal,
+        //                 'id_kota_tujuan' => $request->cb_kota_tujuan,
+        //                 'kode_cabang' => $request->ed_cabang,
+        //                 'jenis' => 'OUTLET',
+        //                 'harga' => $request->harga_outlet,
+        //                 'waktu' => null,
+        //                 'acc_penjualan'=>$request->ed_acc_penjualan,
+        //                 'csf_penjualan'=>$request->ed_csf_penjualan,
+        //             );
+        //         $simpan = DB::table('tarif_cabang_dokumen')->insert($outlet);
+        //         }else{
+
+        //         }
+               
+        //     $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
+        //     $simpan = DB::table('tarif_cabang_dokumen')->insert($express);
             
 
-        }elseif ($crud == 'E') {
+        // }elseif ($crud == 'E') {
 
-                $regular = array(
-                        'kode_sama' => $request->ed_kode_old,
-                        // 'kode_detail'=>$request->id_kode_detail,
-                        'kode'=>$request->id_reguler,
-                        'id_kota_asal' => $request->cb_kota_asal,
-                        'id_kota_tujuan' => $request->cb_kota_tujuan,
-                        'jenis' => 'REGULER',
-                        'kode_cabang' => $request->ed_cabang,      
-                        'harga' => $request->harga_regular,
-                        'waktu' => $request->waktu_regular,
-                        'acc_penjualan'=>$request->ed_acc_penjualan,
-                        'csf_penjualan'=>$request->ed_csf_penjualan,
-                   );
+        //         $regular = array(
+        //                 'kode_sama' => $request->ed_kode_old,
+        //                 // 'kode_detail'=>$request->id_kode_detail,
+        //                 'kode'=>$request->id_reguler,
+        //                 'id_kota_asal' => $request->cb_kota_asal,
+        //                 'id_kota_tujuan' => $request->cb_kota_tujuan,
+        //                 'jenis' => 'REGULER',
+        //                 'kode_cabang' => $request->ed_cabang,      
+        //                 'harga' => $request->harga_regular,
+        //                 'waktu' => $request->waktu_regular,
+        //                 'acc_penjualan'=>$request->ed_acc_penjualan,
+        //                 'csf_penjualan'=>$request->ed_csf_penjualan,
+        //            );
                    
-                // return $regular;
-                $express = array(
-                        'kode_sama' => $request->ed_kode_old,
-                        // 'kode_detail'=>$request->id_kode_detail,
-                        'kode'=>$request->id_express,
-                        'id_kota_asal' => $request->cb_kota_asal,
-                        'id_kota_tujuan' => $request->cb_kota_tujuan,
-                        'kode_cabang' => $request->ed_cabang, 
-                        'jenis' => 'EXPRESS',
-                        'harga' => $request->harga_express,
-                        'waktu' => $request->waktu_express,
-                        'acc_penjualan'=>$request->ed_acc_penjualan,
-                        'csf_penjualan'=>$request->ed_csf_penjualan,
-                    );
+        //         // return $regular;
+        //         $express = array(
+        //                 'kode_sama' => $request->ed_kode_old,
+        //                 // 'kode_detail'=>$request->id_kode_detail,
+        //                 'kode'=>$request->id_express,
+        //                 'id_kota_asal' => $request->cb_kota_asal,
+        //                 'id_kota_tujuan' => $request->cb_kota_tujuan,
+        //                 'kode_cabang' => $request->ed_cabang, 
+        //                 'jenis' => 'EXPRESS',
+        //                 'harga' => $request->harga_express,
+        //                 'waktu' => $request->waktu_express,
+        //                 'acc_penjualan'=>$request->ed_acc_penjualan,
+        //                 'csf_penjualan'=>$request->ed_csf_penjualan,
+        //             );
                
 
-                $outlet = array(
-                        'kode_sama' => $request->ed_kode_old,
-                        // 'kode_detail'=>$request->id_kode_detail,
-                        'kode'=>$request->id_outlet,
-                        'id_kota_asal' => $request->cb_kota_asal,
-                        'id_kota_tujuan' => $request->cb_kota_tujuan,
-                        'kode_cabang' => $request->ed_cabang,
-                        'jenis' => 'OUTLET',
-                        'harga' => $request->harga_outlet,
-                        'waktu' => null,
-                        'acc_penjualan'=>$request->ed_acc_penjualan,
-                        'csf_penjualan'=>$request->ed_csf_penjualan,
-                    );
+        //         $outlet = array(
+        //                 'kode_sama' => $request->ed_kode_old,
+        //                 // 'kode_detail'=>$request->id_kode_detail,
+        //                 'kode'=>$request->id_outlet,
+        //                 'id_kota_asal' => $request->cb_kota_asal,
+        //                 'id_kota_tujuan' => $request->cb_kota_tujuan,
+        //                 'kode_cabang' => $request->ed_cabang,
+        //                 'jenis' => 'OUTLET',
+        //                 'harga' => $request->harga_outlet,
+        //                 'waktu' => null,
+        //                 'acc_penjualan'=>$request->ed_acc_penjualan,
+        //                 'csf_penjualan'=>$request->ed_csf_penjualan,
+        //             );
 
-            $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_reguler)->update($regular);
-            $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_express)->update($express);
-            $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_outlet)->update($outlet);
-        }
+        //     $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_reguler)->update($regular);
+        //     $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_express)->update($express);
+        //     $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_outlet)->update($outlet);
+        // }
         if($simpan == TRUE){
             $result['error']='';
             $result['result']=1;
@@ -227,12 +304,13 @@ class cabang_dokumen_Controller extends Controller
 
         $kota = DB::select(DB::raw(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC "));
         $cabang_default = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY kode ASC "));
+        $prov = DB::select(DB::raw("SELECT p.id,k.id_provinsi,p.nama FROM kota as k left join  provinsi as p on p.id =k.id_provinsi group by p.id,k.id_provinsi order by p.id"));
 
         $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         
 
-        return view('tarif.cabang_dokumen.index',compact('kota','cabang_default','accpenjualan','csfpenjualan'));
+        return view('tarif.cabang_dokumen.index',compact('kota','cabang_default','accpenjualan','csfpenjualan','prov'));
     }
 
 }

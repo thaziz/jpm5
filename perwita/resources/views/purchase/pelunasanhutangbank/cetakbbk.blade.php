@@ -75,20 +75,178 @@ table, td, th {
 			<td align="center" width="280px" class="tebal" style="text-decoration: underline;border:hidden;text-align: left;">
 				BUKTI BANK KELUAR
 			</td>
-			<td class="top" width="130px" style="border:hidden;">No.BBK :</td>
+			<td class="top" width="130px" style="border:hidden;">No.BBK : {{$data['bbk'][0]->bbk_nota}}</td>
 		</tr>
 		<tr style="border:hidden;">
 			<td colspan="2" class="top" style="font-size: 10px;border:hidden;">Gedung Temprina Lt 1 Jl. Wringin Anom KM 30-31 Sumengkir Gresik<br>
 				Telp (031) 89886777, 8986888<br>
 				Email : ekspedisi@jawapos.co.id</td>
-			<td class="top" width="240px" style="border:hidden;">Tgl BBK :</td>
+			<td class="top" width="240px" style="border:hidden;">Tgl BBK : {{ Carbon\Carbon::parse($data['bbk'][0]->bbk_tgl)->format('d-M-Y ') }} </td>
 		</tr>
 		<tr style="border:hidden;">
 			<td colspan="3" style="text-align: left; border:hidden;">
-				Dibayar Kepada : 
+				Dibayar Kepada : {{$data['bbk'][0]->mb_nama}}
 			</td>
 		</tr>
 	</table>
+
+	@if($data['bbk'][0]->bbk_flag == 'BIAYA')
+	<table width="100%">
+		<tr>
+			<td colspan="2" width="40px" class="tebal">BIAYA </td>
+			<td rowspan="2" width="190px" class="tebal"> Nama Biaya </td>
+			<td rowspan="2" width="100px" class="tebal">Nilai Cek / BG</td>
+			<td colspan="2" class="tebal">Kode Account</td>
+			<td rowspan="2" class="tebal" width="170px">Keterangan / Tindak lanjut yang akan dilakukan</td>
+			<td rowspan="2" class="tebal">D/K</td>
+			<td rowspan="2" class="tebal" width="150px">Rupiah</td>
+		</tr>
+		<tr>
+			
+			<td class="tebal" colspan="2">Tanggal</td>
+			<td width="65px" class="tebal">CF</td>
+			<td width="65px" class="tebal">AK</td>
+
+		</tr>
+		@foreach($data['detail'] as $detail)
+		<tr>
+		
+			<td colspan="2"> {{ Carbon\Carbon::parse($data['bbk'][0]->bbk_tgl)->format('d-M-Y ') }} </td>
+			<td> {{$detail->nama_akun}} </td>
+			<td>{{ number_format($detail->bbkb_nominal, 2) }} </td>
+			<td> {{$detail->bbkb_akun}} </td>
+			<td>  {{$detail->bbkb_akun}}</td>
+			<td> {{$detail->bbkb_keterangan}}</td>
+			<td> {{$detail->bbkb_dk}}</td>
+			<td></td>
+		</tr>
+		@endforeach
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="9" class="tebal top">Terbilang : </td>
+		</tr>
+	</table>
+	@else
 	<table width="100%">
 		<tr>
 			<td colspan="2" width="40px" class="tebal">Cheque / BG</td>
@@ -107,7 +265,7 @@ table, td, th {
 
 		</tr>
 		<tr>
-			<td class="blank"></td>
+			<td class="blank"> </td>
 			<td></td>
 			<td></td>
 			<td></td>
@@ -242,7 +400,7 @@ table, td, th {
 			<td colspan="9" class="tebal top">Terbilang : </td>
 		</tr>
 	</table>
-
+	@endif
 	<table width="100%" style="border-top: hidden;">
 		<tr>
 			<td width="200px">

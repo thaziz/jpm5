@@ -70,6 +70,7 @@ class cabang_kargo_Controller extends Controller
         //end
         //KODE 
         $kode_detail = DB::table('tarif_cabang_kargo')->select('kode_detail_kargo')->max('kode_detail_kargo');
+        
           $datadetail = DB::table('tarif_cabang_kargo')->select('kode_detail_kargo')->get();  
                $datadetailcount = count($datadetail);
          for ($i=0; $i <count($datadetail) ; $i++) {  
@@ -174,8 +175,12 @@ class cabang_kargo_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC "));
-        $angkutan = DB::select(DB::raw(" SELECT kode,nama FROM angkutan ORDER BY nama ASC "));
-        return view('tarif.cabang_kargo.index',compact('kota','angkutan'));
+        $angkutan = DB::select(DB::raw(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC "));
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->where('jt_group',1)
+                         ->orWhere('jt_group',3)
+                         ->get();
+        return view('tarif.cabang_kargo.index',compact('kota','angkutan','jenis_tarif'));
     }
 
 }

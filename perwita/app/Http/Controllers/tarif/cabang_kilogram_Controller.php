@@ -192,7 +192,7 @@ class cabang_kilogram_Controller extends Controller
                     'kode' => $kode_reguler,
                     'kode_sama_kilo' => $kode_sama,
                     'kode_detail_kilo' => $kode_detail,
-                    'keterangan' => 'Tarif Kg selanjutnya <= 10',
+                    'keterangan' => 'Tarif Kg selanjutnya <= 10 kg',
                     'harga' => $request->tarif10kg_reguler,
                     //BAWAH SAMA SEMUA
                     'waktu' => $request->waktu_regular,
