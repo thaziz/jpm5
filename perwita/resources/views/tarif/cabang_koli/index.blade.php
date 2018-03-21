@@ -108,6 +108,42 @@
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_cabang" id="ed_harga" style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
+                                            @foreach ($cabang_default as $a)
+                                                <option value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Acc Penjualan</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_acc_penjualan"  style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Acc Penjualan Terlebih Dahulu --</option>
+                                            @foreach ($accpenjualan as $b)
+                                                <option value="{{ $b->id_akun }}" >{{ $b->id_akun }} - {{ $b->nama_akun }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Csf Penjualan</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_csf_penjualan" style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Csf Penjualan Terlebih Dahulu --</option>
+                                            @foreach ($csfpenjualan as $a)
+                                                <option value="{{ $a->id_akun }}" >{{ $a->id_akun }} - {{ $a->nama_akun }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
                             </tbody>
                           </table>
 

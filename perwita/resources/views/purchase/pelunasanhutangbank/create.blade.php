@@ -703,7 +703,7 @@
           "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value="+jatuhtempo+"> </td>" +
           "<td> <input type='text' class='input-sm form-control' value= "+accbank+"-"+namabank+" name='bank[]'> <input type='hidden' class='idbank' name='idbank[]' value='"+idbank+"'>  </td>" +
           "<td style='text-align:right'> <input type='text' class='input-sm form-control' value= '"+addCommas(nominal)+"' name='nominal[]'> </td>" +
-          "<td><input type='text' class='input-sm form-control' value= '"+supplier+"-"+namasupplier+"' name='supplier[]'> <input type='text' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
+          "<td><input type='text' class='input-sm form-control' value= '"+supplier+"-"+namasupplier+"' name='supplier[]'> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]'></td>" +
           "<td> <button class='btn btn-danger btn-sm removes-btn' type='button' data-id="+$nomr+" data-cek='"+notransaksi+"' data-nominal='"+nominal+"'><i class='fa fa-trash'></i></button> <input type='hidden' name='idfpg[]' value="+idfpg+">  </td> </tr>";
 

@@ -4503,19 +4503,20 @@ public function kekata($x) {
 	public function createpelunasanbank() {
 		$data['bank'] = DB::select("select * from masterbank");
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' and d_akun");
+		$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%'");
 		return view('purchase/pelunasanhutangbank/create', compact('data'));
 	}
 
 	public function cetakbbk ($id) {
-		$data['bbk'] = DB::select("select * from bukti_bank_keluar where bbk_id = '$id'");
+		$data['bbk'] = DB::select("select * from bukti_bank_keluar , masterbank where bbk_id = '$id' and bbk_kodebank = mb_id ");
 		$flag = $data['bbk'][0]->bbk_flag;
 		if($flag == 'CEKBG'){
 			$data['detail'] = DB::select("select * from bukti_bank_keluar_detail , bukti_bank_keluar where bbkd_idbbk = bbk_id and bbk_id = '$id'");
 		}
 		else {
-			$data['detail'] = DB::select("select * from bukti_bank_keluar_biaya, bukti_bank_keluar where bbkb_idbbk = bbk_id and bbk_id = '$id'");
+			$data['detail'] = DB::select("select * from bukti_bank_keluar_biaya, bukti_bank_keluar, d_akun where bbkb_idbbk = bbk_id and bbk_id = '$id' and bbkb_akun = id_akun");
 		}
+		dd($data);
 		return view('purchase/pelunasanhutangbank/cetakbbk', compact('data'));
 	}
 
@@ -5940,8 +5941,6 @@ public function kekata($x) {
 		$formfpg->fpg_idbank = $idbank; 
 		$formfpg->acc_supplier = $request->hutangdagang;
 		$formfpg->fpg_posting = 'NOT';
-
-
 		$formfpg->save();
 
 

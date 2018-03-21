@@ -78,7 +78,7 @@
                             </td>
                             <td>
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk" value='{{$data['bbk'][0]->bbk_nota}}'>
-                              <input type="text" class="input-sm form-control" readonly="" name="bbkid" value='{{$data['bbk'][0]->bbk_id}}'>
+                              <input type="hidden" class="input-sm form-control" readonly="" name="bbkid" value='{{$data['bbk'][0]->bbk_id}}'>
 
                             </td>
                           </tr>
@@ -265,12 +265,12 @@
                                                       @foreach($data['bbkd'] as $index=>$bbkd)
                                                       <tr>
                                                         <td> {{$index + 1}} </td>
-                                                        <td> {{$bbkd->bbk_nota}} </td>
-                                                        <td> {{$bbkd->bbkb_akun}} - {{$bbkd->nama_akun}} </td>
-                                                        <td> {{$bbkd->bbkb_dk}} </td>
-                                                        <td style='text-align: right'> {{ number_format($bbkd->bbkb_nominal, 2) }}</td>
-                                                        <td> {{$bbkd->bbkb_keterangan}} </td>
-                                                       <!--  <td> </td> -->
+                                                        <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbk_nota}}" readonly=""> </td>
+                                                        <td> <input type="text" class="form-control input-sm" value="{{$bbkd->nama_akun}}" name="akun[]" readonly="">  </td>
+                                                        <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkb_dk}}" name="dk[]"> </td>
+                                                        <td style='text-align: right'> <input type="text" class="form-control input-sm" value="{{ number_format($bbkd->bbkb_nominal, 2) }}" name="jumlah[]"> </td>
+                                                        <td> <input type="text" class="form-control" value="{{$bbkd->bbkb_keterangan}}" name="keterangan[]"> </td>
+                                                        <td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="{{$index + 1}}" data-cek='"{{$bbkd->nama_akun}}"' data-nominal='"{{ number_format($bbkd->bbkb_nominal, 2) }}"'><i class='fa fa-trash'></i></button> </td>
                                                       </tr>
                                                       @endforeach
                                                       @endif
@@ -396,7 +396,7 @@
                             <table border="0">
                             <tr>
                               <td> 
-                             <button class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'. $data['bbk'][0]->bbk_id.'')}}" type="button"> <i class="fa fa-print" aria-hidden="true"></i> Cetak BBK  </button>  
+                             <a class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'. $data['bbk'][0]->bbk_id.'')}}" type="button"> <i class="fa fa-print" aria-hidden="true"></i> Cetak BBK  </a>  
                               </td>
 
                               <td> &nbsp; </td>
@@ -680,13 +680,30 @@
       console.log(nilaicekbg + 'nilaicekbg');
 
 
-      $('.cekbg').val(addCommas(nilaicekbg));
+      $('.cekbg').val(addCommas(nilaic,ekbg));
       $('.total').val(addCommas(nilaicekbg));
       }
     })
 
+      //HAPUS BIAYA
+       $(document).on('click','.remove-btn',function(){
+            id = $(this).data('id');
+            cek = $(this).data('cek');
+            nominal = $(this).data('nominal');
+            parentbayar = $('.transaksi'+id);
+            $('#datacek' + cek).show();
+            biaya = $('.biaya').val();
+            biaya2 =  biaya.replace(/,/g, '');
+            nominal2 = nominal.replace(/,/g,'');
+            $('.biaya').val('')
+            nilaibiaya = parseInt(biaya2) - parseInt(nominal2).toFixed(2);
+            $('.totalbiaya').val(addCommas(nilaibiaya));
+            $('.total').val(addCommas(nilaibiaya));
+         //   parent.remove();
+            parentbayar.remove();
+          })
 
-
+      //HAPUS CEK BG
       $(document).on('click','.removes-btn',function(){
           id = $(this).data('id');
           cek = $(this).data('cek');
