@@ -14,7 +14,7 @@
 @section('content')
 
         <div class="row border-bottom white-bg dashboard-header">
-          <center> <span style="font-size:18px;">Hai, {{ Auth::user()->m_name }} Selamat Bergabung</span> </center>
+          <center> <span style="font-size:18px;">Hai, {{ Auth::user()->m_name }} Selamat Bekerja</span> </center>
         </div>
    
 

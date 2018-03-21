@@ -113,11 +113,23 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_cabang" style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
+                                            @foreach ($cabang_default as $a)
+                                                <option value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">Harga</td>
                                     <td>
                                         <select  class="form-control d" name="ed_harga" id="ed_harga" style="text-align: right;">
                                         
-                                            <option value="">-- Pilih Zona Terlebih Dahulu --</option>
+                                            <option value="">-- Pilih Harga Zona Terlebih Dahulu --</option>
                                             @foreach ($zona as $el)
                                                 <option value="{{ $el->harga_zona }}" data-id="{{ $el->id_zona }}">{{ $el->nama }} - {{ $el->harga_zona }}</option>
                                             @endforeach

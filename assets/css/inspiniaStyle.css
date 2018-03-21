@@ -1191,6 +1191,9 @@ button.dim:active:before {
   position: relative;
   width: 100%;
 }
+.chosen-container-single:hover,.chosen-search input:hover, .chosen-search input:focus ,.chosen-single:hover, .chosen-container-multi:hover, .chosen-choices:hover ,li.search-choice:hover {
+  border-color: #1ab394 !important;
+}
 .chosen-container-multi .chosen-choices li.search-choice {
   background: #f1f1f1;
   border: 1px solid #ededed;
@@ -1575,13 +1578,16 @@ a.list-group-item.active:focus {
   position: relative;
 }
 /* DATATABLES */
+/*--ari--*/
 table.dataTable thead .sorting,
 table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc,
 table.dataTable thead .sorting_asc_disabled,
 table.dataTable thead .sorting_desc_disabled {
-  background: transparent;
+  background: #005b96;
+  
 }
+/*------*/
 .dataTables_wrapper {
   padding-bottom: 30px;
 }
@@ -1845,6 +1851,11 @@ div.dt-button-info {
 .single-line:focus {
   border-color: #1ab394 !important;
 }
+/*Ari*/
+.form-control:hover{
+  border-color: #1ab394 !important;
+}
+/*----*/
 .has-success .form-control {
   border-color: #1ab394;
 }
@@ -3241,7 +3252,26 @@ body {
   font-size: 13px;
   color: #676a6c;
   overflow-x: hidden;
+  
 }
+@-webkit-keyframes colorchange {
+      0% {
+        
+        background-color: red;
+      }
+      33.33%{
+        background-color: orange;
+      }
+
+      66.66%{
+        background-color: green;
+      }
+      
+      100% {
+        
+        background-color: blue;
+      }
+    }
 html,
 body {
   height: 100%;
@@ -3490,10 +3520,17 @@ body.body-small .footer.fixed {
 .table-bordered > tfoot > tr > td {
   border: 1px solid #e7e7e7;
 }
-.table > thead > tr > th {
-  border-bottom: 1px solid #DDDDDD;
-  vertical-align: bottom;
+/*--Ari--*/
+.table > thead > tr > th  {
+  border-bottom: 1px solid #DDDDDD !important;
+  vertical-align: bottom !important;
+  background-color: #107dac !important;
+  
+  color: white;
+  text-align: center;
 }
+
+/*-----*/
 .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
@@ -3504,6 +3541,8 @@ body.body-small .footer.fixed {
   line-height: 1.42857;
   padding: 8px;
   vertical-align: top;
+
+
 }
 /* PANELS */
 .panel.blank-panel {
@@ -3658,6 +3697,7 @@ code {
   margin-bottom: 25px;
   margin-top: 0;
   padding: 0;
+
 }
 .ibox.collapsed .ibox-content {
   display: none;
@@ -5057,7 +5097,7 @@ dd.project-people {
 .client-detail .vertical-timeline-content p {
   margin: 0;
 }
-.client-detail .vertical-timeline-icon.gray-bg {
+.client-detail .vertical-timeline-icon .gray-bg .white-bg .blue-bg .lazure-bg .yellow-bg .red-bg .black-bg{
   color: #a7aaab;
 }
 .clients-list .nav-tabs > li.active > a,

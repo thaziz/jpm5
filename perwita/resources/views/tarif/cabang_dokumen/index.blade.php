@@ -115,6 +115,53 @@
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
+                                    <td>   
+                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" style="width:100%" i>
+                                            <option value="" selected="" disabled="">-- Pilih Kota tujuan --</option>
+                                        @foreach ($prov as $prov)
+                                            <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_cabang" id="ed_harga" style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
+                                            @foreach ($cabang_default as $a)
+                                                <option value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Acc Penjualan</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_acc_penjualan"  style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Acc Penjualan Terlebih Dahulu --</option>
+                                            @foreach ($accpenjualan as $b)
+                                                <option value="{{ $b->id_akun }}" >{{ $b->id_akun }} - {{ $b->nama_akun }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Csf Penjualan</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_csf_penjualan" style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Csf Penjualan Terlebih Dahulu --</option>
+                                            @foreach ($csfpenjualan as $a)
+                                                <option value="{{ $a->id_akun }}" >{{ $a->id_akun }} - {{ $a->nama_akun }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
                             </tbody>
                           </table>
                           
@@ -291,26 +338,44 @@
             success: function(data, textStatus, jqXHR)
             {
                 console.log(data);
+
                 $("input[name='crud']").val('E');
                 //
-                $("input[name='id_reguler']").val(data[1][0].kode);
-                $("input[name='id_express']").val(data[2][0].kode);
-                $("input[name='id_outlet']").val(data[3][0].kode);
+                $("input[name='id_reguler']").val(data[0].kode);
+                $("input[name='id_express']").val(data[1].kode);
                 //
-                $("input[name='harga_regular']").val(data[1][0].harga);
-                $("input[name='harga_express']").val(data[2][0].harga);
-                $("input[name='harga_outlet']").val(data[3][0].harga);
+                $("input[name='harga_regular']").val(data[0].harga);
+                $("input[name='harga_express']").val(data[1].harga);
                 //
-                $("input[name='waktu_regular']").val(data[1][0].waktu);
-                $("input[name='waktu_express']").val(data[2][0].waktu);
+                $("input[name='waktu_regular']").val(data[0].waktu);
+                $("input[name='waktu_express']").val(data[1].waktu);
                 //  
-                $("input[name='jenis_reguler']").val(data[1][0].jenis);
-                $("input[name='jenis_express']").val(data[2][0].jenis);
-                $("input[name='jenis_outlet']").val(data[3][0].jenis);
+                $("input[name='jenis_reguler']").val(data[0].jenis);
+                $("input[name='jenis_express']").val(data[1].jenis);
                 //
-                $("input[name='ed_kode_old']").val(data[0][0].kode_sama);
-                $("select[name='cb_kota_asal']").val(data[0][0].id_kota_asal).trigger('chosen:updated');
-                $("select[name='cb_kota_tujuan']").val(data[0][0].id_kota_tujuan).trigger('chosen:updated');
+               
+                var gege = data[2];
+                alert(gege);
+                if (gege !== undefined) {
+                  $("input[name='id_outlet']").val(data[2].kode);
+                  $("input[name='harga_outlet']").val(data[2].harga);
+                  $("input[name='jenis_outlet']").val(data[2].jenis);
+                }else if (gege === undefined){
+                  $("input[name='id_outlet']").val('');
+                  $("input[name='harga_outlet']").val('');
+                  $("input[name='jenis_outlet']").val('');
+                  
+                }
+
+                  
+
+
+                $("input[name='ed_kode_old']").val(data[0].kode_sama);
+                $("select[name='cb_kota_asal']").val(data[0].id_kota_asal).trigger('chosen:updated');
+                $("select[name='cb_kota_tujuan']").val(data[0].id_kota_tujuan).trigger('chosen:updated');
+                $("select[name='ed_cabang']").val(data[0].kode_cabang).trigger('chosen:updated');
+                $("select[name='ed_acc_penjualan']").val(data[0].acc_penjualan).trigger('chosen:updated');
+                $("select[name='ed_csf_penjualan']").val(data[0].csf_penjualan).trigger('chosen:updated');
                 $("#modal").modal('show');
             },
             error: function(jqXHR, textStatus, errorThrown)

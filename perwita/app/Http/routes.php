@@ -643,7 +643,7 @@ Route::post('master_sales/tipe_angkutan/hapus_data', 'master_sales\tipe_angkutan
 
 //kendaraan
 Route::get('master_sales/kendaraan', 'master_sales\kendaraan_Controller@index');
-Route::get('master_sales/kendaraan_form', 'master_sales\kendaraan_Controller@form');
+Route::get('master_sales/kendaraan_form', 'master_sales\kendaraan_Controller@form')->name('form_kendaraan');
 Route::get('master_sales/kendaraan_form/{nomor}/edit', 'master_sales\kendaraan_Controller@form');
 Route::get('master_sales/kendaraan_form/{nomor}/hapus_data', 'master_sales\kendaraan_Controller@hapus_data');
 Route::post('master_sales/kendaraan/save_data', 'master_sales\kendaraan_Controller@save_data');
@@ -723,19 +723,13 @@ Route::get('sales/tarif_penerus_default/hapus_data', 'tarif\penerus_default_Cont
 // end tarif penerus default
 
 
-//kontrak
+//kontrak customer
 Route::get('master_sales/kontrak', 'master_sales\kontrak_Controller@index');
 Route::get('master_sales/kontrak_form', 'master_sales\kontrak_Controller@form');
-Route::get('master_sales/kontrak_form/{nomor}/edit', 'master_sales\kontrak_Controller@form');
-Route::get('master_sales/kontrak_form/{nomor}/hapus_data', 'master_sales\kontrak_Controller@hapus_data');
-Route::get('master_sales/kontrak_form/tabel_data_detail', 'master_sales\kontrak_Controller@table_data_detail');
-Route::get('master_sales/kontrak/tabel', 'master_sales\kontrak_Controller@table_data');
-Route::get('master_sales/kontrak/get_data', 'master_sales\kontrak_Controller@get_data');
-Route::get('master_sales/kontrak/get_data_detail', 'master_sales\kontrak_Controller@get_data_detail');
-Route::post('master_sales/kontrak/save_data', 'master_sales\kontrak_Controller@save_data');
-Route::post('master_sales/kontrak/save_data_detail', 'master_sales\kontrak_Controller@save_data_detail');
-Route::post('master_sales/kontrak/hapus_data', 'master_sales\kontrak_Controller@hapus_data');
-Route::post('master_sales/kontrak/hapus_data_detail', 'master_sales\kontrak_Controller@hapus_data_detail');
+Route::get('master_sales/kontrak_set_nota', 'master_sales\kontrak_Controller@kontrak_set_nota');
+Route::get('master_sales/set_kode_akun_acc', 'master_sales\kontrak_Controller@set_kode_akun_acc');
+Route::get('master_sales/set_kode_akun_csf', 'master_sales\kontrak_Controller@set_kode_akun_csf');
+
 // end kontrak
 
 
@@ -765,7 +759,10 @@ Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data
 Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
 Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
 Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
+<<<<<<< HEAD
 Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+=======
+>>>>>>> 4251e9354d3fb0911a91098343675607b673a2e2
 Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
 Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');
@@ -779,7 +776,12 @@ Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_no
 // delivery order kargo
 Route::get('sales/deliveryorderkargo', 'sales\do_kargo_Controller@index');
 Route::get('sales/deliveryorderkargoform', 'sales\do_kargo_Controller@form');
-Route::get('sales/deliveryorderkargoform/{nomor}/edit', 'sales\do_kargo_Controller@form');
+Route::get('sales/cari_nopol_kargo', 'sales\do_kargo_Controller@cari_nopol_kargo');
+Route::get('sales/nama_subcon', 'sales\do_kargo_Controller@nama_subcon');
+Route::get('sales/cari_kontrak_tarif', 'sales\do_kargo_Controller@cari_kontrak_tarif');
+
+
+
 Route::get('sales/deliveryorderkargoform/tabel_data_detail', 'sales\do_kargo_Controller@table_data_detail');
 Route::get('sales/deliveryorderkargoform/get_data_detail', 'sales\do_kargo_Controller@get_data_detail');
 Route::get('sales/deliveryorderkargoform/tabel_item', 'sales\do_kargo_Controller@table_data_item');
@@ -1586,3 +1588,34 @@ Route::get('sales/zona','zona_Controller@index');
 Route::get('sales/zona/simpan','zona_Controller@simpan');
 Route::get('sales/zona/hapus','zona_Controller@hapus');
 Route::get('sales/zona/getdata','zona_Controller@getdata');
+
+
+//penerus dokumen
+Route::get('sales/tarif_penerus_dokumen','tarif\penerus_dokumen_Controller@index');
+Route::get('sales/tarif_penerus_dokumen/hapus_data','tarif\penerus_dokumen_Controller@hapus_data');
+Route::get('sales/tarif_penerus_dokumen/get_data','tarif\penerus_dokumen_Controller@get_data');
+Route::get('sales/tarif_penerus_dokumen/save_data','tarif\penerus_dokumen_Controller@save_data');
+Route::get('sales/tarif_penerus_dokumen/tabel', 'tarif\penerus_dokumen_Controller@table_data');
+Route::get('sales/tarif_penerus_dokumen/get_kota', 'tarif\penerus_dokumen_Controller@get_kota');
+Route::get('sales/tarif_penerus_dokumen/get_kec', 'tarif\penerus_dokumen_Controller@get_kec');
+
+
+//penerus koli
+Route::get('sales/tarif_penerus_koli','tarif\penerus_koli_Controller@index');
+Route::get('sales/tarif_penerus_koli/hapus_data','tarif\penerus_koli_Controller@hapus_data');
+Route::get('sales/tarif_penerus_koli/get_data','tarif\penerus_koli_Controller@get_data');
+Route::get('sales/tarif_penerus_koli/save_data','tarif\penerus_koli_Controller@save_data');
+Route::get('sales/tarif_penerus_koli/tabel', 'tarif\penerus_koli_Controller@table_data');
+Route::get('sales/tarif_penerus_koli/get_kota', 'tarif\penerus_koli_Controller@get_kota');
+Route::get('sales/tarif_penerus_koli/get_kec', 'tarif\penerus_koli_Controller@get_kec');
+
+//penerus kilogram
+Route::get('sales/tarif_penerus_kilogram','tarif\penerus_kilogram_Controller@index');
+Route::get('sales/tarif_penerus_kilogram/hapus_data','tarif\penerus_kilogram_Controller@hapus_data');
+Route::get('sales/tarif_penerus_kilogram/get_data','tarif\penerus_kilogram_Controller@get_data');
+Route::get('sales/tarif_penerus_kilogram/save_data','tarif\penerus_kilogram_Controller@save_data');
+Route::get('sales/tarif_penerus_kilogram/tabel', 'tarif\penerus_kilogram_Controller@table_data');
+Route::get('sales/tarif_penerus_kilogram/get_kota', 'tarif\penerus_kilogram_Controller@get_kota');
+Route::get('sales/tarif_penerus_kilogram/get_kec', 'tarif\penerus_kilogram_Controller@get_kec');
+
+

@@ -243,16 +243,15 @@
 												<tr>
 													<td style="width:110px; padding-top: 0.4cm; ">Jenis PPN</td>
 													<td>
-														<select class="form-control" name="cb_jenis_ppn" id="cb_jenis_ppn" >
+														<select class="form-control" name="cb_jenis_ppn" id="cb_jenis_ppn" onchange="setJmlPPN()">
 															<option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
 															<option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
 															<option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
-															
 														</select>
                                                          <input type="hidden" name="acc_penjualan" class="form-control"  value="{{ $do->acc_penjualan or null }}">
 													</td>
 													<td style="width:35%">
-                                                        <input type="text" class="form-control" name="ed_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->biaya_komisi, 0, ",", ".") }}" @endif>
+                                                        <input type="text" class="form-control jml_ppn" name="ed_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->biaya_komisi, 0, ",", ".") }}" @endif>
 													</td>
 												</tr>
                                                 <tr>
@@ -512,78 +511,6 @@
                               </div>
                             </div>
                         </div>
-                        <!-- end modal dokumen-->
-
-
-
-                        <!--- END TIPE PENDAPATAN PAKET-->
-
-                        <!----modal pilih nomor sales order--->
-
-                        <div id="modal_pilih_nomor_so" class="modal" >
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h2>Pilih Nomor SO dari Pelanggan 1</h2>
-                              </div>
-                              <div class="modal-body">
-                                <form class="form-horizontal">
-                                    <table id="table_data_so" class="table table-striped table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Nomor SO</th>
-                                                <th>Tanggal</th>
-                                                <th>Item</th>
-                                                <th>Qty</th>
-                                                <th>Jml Harga</th>
-                                                <th>Pilih</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        </tbody>
-                                    </table>
-
-                                </form>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!----modal pilih item--->
-                        <div id="modal_pilih_item" class="modal" >
-                          <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4>Pilih Item</h4>
-                              </div>
-                              <div class="modal-body">
-                                <form class="form-horizontal">
-                                    <table id="tableitem" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th> Kode</th>
-                                                <th> Nama </th>
-                                                <th> Satuan </th>
-                                                <th style="width:50px"> Aksi </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </form>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <!-- modal -->
-
-
-
-
                     </div>
                 </form>
                 <div class="box-body" style="display:none">
@@ -870,6 +797,10 @@
         hitung();
     });
     $('#type_kiriman').change(function(){
+        $("input[name='ed_tarif_dasar']").val(0);
+        $("input[name='ed_tarif_penerus']").val(0);
+        $("input[name='acc_penjualan']").val(0);
+        hitung();
         type_kiriman=$(this).val();
         if ( type_kiriman =='DOKUMEN') {
             $("#surat_jalan").hide();
@@ -1073,13 +1004,43 @@
             dataType:'json',
             success: function(data, textStatus, jqXHR)
             {
-                $("input[name='ed_tarif_dasar']").val(data.harga);
-                $("input[name='ed_tarif_penerus']").val(data.biaya_penerus);
-                $("input[name='acc_penjualan']").val(data.acc_penjualan);
-                if (data.jumlah_data == 0){
-                    alert('Harga tidak ditemukan');
+                if (data.status == 'kosong') {
+                    Command: toastr["warning"]("Tidak ada data terkait", "Peringatan !")
+
+                    toastr.options = {
+                      "closeButton": false,
+                      "debug": true,
+                      "newestOnTop": false,
+                      "progressBar": true,
+                      "positionClass": "toast-top-right",
+                      "preventDuplicates": false,
+                      "onclick": null,
+                      "showDuration": "300",
+                      "hideDuration": "1000",
+                      "timeOut": "5000",
+                      "extendedTimeOut": "1000",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                    }
+
+                    $("input[name='ed_tarif_dasar']").val(0);
+                    $("input[name='ed_tarif_penerus']").val(0);
+                    $("input[name='acc_penjualan']").val(0);
+                    hitung();
+                } else {
+                    var harga = convertToRupiah(parseInt(data.harga));
+                    var biaya = convertToRupiah(parseInt(data.biaya_penerus));
+                    var acc_penjualan = convertToRupiah(parseInt(data.acc_penjualan));
+                    $("input[name='ed_tarif_dasar']").val(harga);
+                    $("input[name='ed_tarif_penerus']").val(biaya);
+                    $("input[name='acc_penjualan']").val(acc_penjualan);
+                    if (data.jumlah_data == 0){
+                        alert('Harga tidak ditemukan');
+                    }
+                    hitung();
                 }
-                hitung();
                 
             },
             error: function(jqXHR, textStatus, errorThrown)
@@ -1989,6 +1950,24 @@
                return false;
     }
    });
+
+   function convertToRupiah(angka) {
+        var rupiah = '';        
+        var angkarev = angka.toString().split('').reverse().join('');
+        for(var i = 0; i < angkarev.length; i++) if(i%3 == 0) rupiah += angkarev.substr(i,3)+'.';
+        var hasil = rupiah.split('',rupiah.length-1).reverse().join('');
+        return hasil;
+    
+    }
+
+    function convertToAngka(rupiah)
+    {
+        return parseInt(rupiah.replace(/,.*|[^0-9]/g, ''), 10);
+    }
+
+    function setJmlPPN(){
+
+    }
 
 </script>
 @endsection
