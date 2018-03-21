@@ -172,17 +172,6 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Tipe Angkutan</td>
-                                <td>
-                                    <select class="tipe_angkutan_modal form-control chosen-select-width">
-                                        <option value="0">Pilih - Angkutan</option>
-                                        @foreach($tipe_angkutan as $val)
-                                        <option value="{{$val->kode}}">{{$val->nama}}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr>
                                 <td>Jenis Tarif</td>
                                 <td>
                                     <select class="jenis_tarif_modal form-control chosen-select-width">
@@ -236,7 +225,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary btn_save" data-dismiss="modal">Simpan</button>
+                        <button type="button" class="btn btn-primary" onclick="tambah()" data-dismiss="modal">Simpan</button>
                       </div>
                     </div>
 
@@ -350,36 +339,43 @@ var datatable = $('#table_data').DataTable({
 var count = 0;
 function tambah(){
   
-var kota_asal_modal       = $('.kota_asal_modal').val();
-var kota_tujuan_modal     = $('.kota_asal_modal').val();
-var jenis_modal           = $('.jenis_modal').val();
-var tipe_angkutan_modal   = $('.tipe_angkutan_modal').val();
-var jenis_tarif_modal     = $('.jenis_tarif_modal').val();
-var harga_modal           = $('.harga_modal').val();
-var satuan_modal          = $('.satuan_modal').val();
-var keterangan_modal      = $('.keterangan_modal ').val();
-var acc_akun_modal        = $('.acc_akun_modal ').val();
-var csf_akun_modal        = $('.csf_akun_modal').val();
-  // console.log(asal);
+var kota_asal_modal_text     = $('.kota_asal_modal  option:selected').text();
+var kota_tujuan_modal_text   = $('.kota_asal_modal option:selected').text();
+var jenis_modal_text         = $('.jenis_modal option:selected').text();
+var jenis_tarif_modal_text   = $('.jenis_tarif_modal option:selected').text();
+var acc_akun_modal_text      = $('.acc_akun_modal option:selected ').text();
+var csf_akun_modal_text      = $('.csf_akun_modal option:selected').text();
+var satuan_modal_text        = $('.satuan_modal option:selected').text();
 
+var harga_modal              = $('.harga_modal').val();
+var keterangan_modal         = $('.keterangan_modal ').val();
 
+var kota_asal_modal          = $('.kota_asal_modal').val();
+var kota_tujuan_modal        = $('.kota_asal_modal').val();
+var jenis_modal              = $('.jenis_modal').val();
+var jenis_tarif_modal        = $('.jenis_tarif_modal').val();
+var acc_akun_modal           = $('.acc_akun_modal ').val();
+var csf_akun_modal           = $('.csf_akun_modal').val();
+var satuan_modal             = $('.satuan_modal').val();
 
+kota_asal_modal_text   = kota_asal_modal_text.split('-');
+kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
 
   datatable.row.add([
-           kota_asal_modal+'<input type="hidden">' ,
+           kota_asal_modal_text[1]+'<input type="hidden" class="kota_asal" value="'+kota_asal_modal+'" name="kota_asal[]">' ,
+           kota_tujuan_modal_text[1]+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
+           jenis_modal_text+'<input type="hidden" class="jenis_modal" value="'+jenis_modal+'" name="jenis_modal[]">' ,
+           satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+           '<input type="text" class="harga form-control" value="'+harga_modal+'" name="harga[]">' ,
+           '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
+           '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+           '<input type="hidden" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">'
+           '<i class="fa fa-trash"><i></button>',
         
-    ]).draw(false);
+    ]).draw();
   // console.log('asd');
-  count++;
-  var edit = $('.edit').closest('td');
 
-  $(edit).css('text-align','center');
-
-  var harga = $('.harga_tb').closest('td');
-
-  $(harga).css('text-align','right');
-
-  $('.modal').modal('hide');
+  $('.modal_customer').modal('hide');
 }
   
 function hapus(p){
