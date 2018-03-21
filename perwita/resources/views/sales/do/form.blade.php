@@ -869,6 +869,10 @@
         hitung();
     });
     $('#type_kiriman').change(function(){
+        $("input[name='ed_tarif_dasar']").val(0);
+        $("input[name='ed_tarif_penerus']").val(0);
+        $("input[name='acc_penjualan']").val(0);
+        hitung();
         type_kiriman=$(this).val();
         if ( type_kiriman =='DOKUMEN') {
             $("#surat_jalan").hide();
