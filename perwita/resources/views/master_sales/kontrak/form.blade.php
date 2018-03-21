@@ -142,6 +142,7 @@
                                 <td>Kota Asal</td>
                                 <td>
                                     <select class="kota_asal_modal form-control">
+                                        <option value="0">Pilih - Asal</option>
                                         @foreach($kota as $val)
                                         <option value="{{$val->id}}">{{$val->id}} - {{$val->nama}}</option>
                                         @endforeach
@@ -151,7 +152,8 @@
                             <tr>
                                 <td>Kota Tujuan</td>
                                 <td>
-                                    <select class="kota_asal_modal form-control">
+                                    <select class="kota_tujuan_modal form-control">
+                                        <option value="0">Pilih - Tujuan</option>
                                         @foreach($kota as $val)
                                         <option value="{{$val->id}}">{{$val->id}} - {{$val->nama}}</option>
                                         @endforeach
@@ -162,6 +164,7 @@
                                 <td>Jenis</td>
                                 <td>
                                     <select class="jenis_modal form-control">
+                                        <option value="0">Pilih - Jenis</option>
                                         <option value="PAKET">PAKET</option>
                                         <option value="KORAN">KORAN</option>
                                         <option value="KARGO">KARGO</option>
@@ -233,6 +236,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary btn_save" data-dismiss="modal">Simpan</button>
                       </div>
                     </div>
 
@@ -346,15 +350,12 @@ var datatable = $('#table_data').DataTable({
 var count = 0;
 function tambah(){
   
-  var asal        = $('.asal option:selected').text();
-  var tujuan      = $('.tujuan option:selected').text();
-  var angkutan    = $('.angkutan option:selected').text();
-  var asal_dt     = $('.asal').val();
-  var tujuan_dt   = $('.tujuan').val();
-  var angkutan_dt = $('.angkutan').val();
-  var tarif       = $('.tarif').val();
-  var Harga       = $('.harga').val();
-  var keterangan  = $('.keterangan').val();
+var kota_asal_modal       = $('.kota_asal_modal').val();
+var kota_tujuan_modal     = $('.kota_asal_modal').val();
+var jenis_modal           = $('.jenis_modal').val();
+var tipe_angkutan_modal   = $('.tipe_angkutan_modal').val();
+var jenis_tarif_modal     = $('.jenis_tarif_modal ').val();
+var harga_modal           = $('.harga_modal ').val();
   // console.log(asal);
 
 
