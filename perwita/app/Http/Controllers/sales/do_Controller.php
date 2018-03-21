@@ -14,12 +14,8 @@ use PDF;
 
 class do_Controller extends Controller
 {
-<<<<<<< HEAD
-    public function table_data_detail (Request $request) {        
-=======
     public function table_data_detail(Request $request)
     {
->>>>>>> 4251e9354d3fb0911a91098343675607b673a2e2
         $nomor = strtoupper($request->input('nomor'));
         $sql = "    SELECT d.id, d.kode_item, i.nama,d.jumlah, d.satuan, d.keterangan, d.total, d.harga, d.nomor_so FROM delivery_orderd d,item i
                     WHERE i.kode=d.kode_item AND d.nomor='$nomor' ";
@@ -513,14 +509,9 @@ class do_Controller extends Controller
         }
     }
 
-<<<<<<< HEAD
-    public function cari_harga(Request $request){
-
-=======
     public function cari_harga(Request $request)
     {
         //dd($request);
->>>>>>> 4251e9354d3fb0911a91098343675607b673a2e2
         $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
         $pendapatan = $request->input('pendapatan');
@@ -528,23 +519,6 @@ class do_Controller extends Controller
         $jenis = $request->input('jenis');
         $angkutan = $request->input('angkutan');
         $cabang = $request->input('cabang');
-<<<<<<< HEAD
-        if ($tipe == 'DOKUMEN') {            
-            
-            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' ";
-
-            $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND kode_cabang='$cabang' ";
-        } else if ($tipe == 'KARGO PAKET' or $tipe == 'KARGO KERTAS') {
-            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_kargo WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_angkutan='$angkutan' AND kode_cabang='$cabang' ";
-        } else if ($tipe == 'KILOGRAM') {
-            $berat = $request->input('berat');
-            if ($berat <= 10) {
-                $keterangan = 'TARIF 0 KG SAMPAI 10 KG';
-            } else if ($berat > 10 and $berat <= 20) {
-                $keterangan = 'TARIF 10 KG SAMPAI 20 KG';
-            } else if ($berat > 20) {
-                $keterangan = 'TARIF DI ATAS 20 KG';
-=======
         $biaya_penerus = null;
         if ($tipe == 'DOKUMEN') {
             $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'  ";
@@ -556,31 +530,12 @@ class do_Controller extends Controller
             } else if ($jenis == 'REGULER'){
                 $sql_biaya_penerus = "SELECT tarif_reguler as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
->>>>>>> 4251e9354d3fb0911a91098343675607b673a2e2
             }
 
             if ($biaya_penerus == null){
                 $sql_biaya_penerus = "SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND cabang_default='$cabang' ";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
-<<<<<<< HEAD
-            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_koli WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND keterangan='$keterangan' AND kode_cabang='$cabang' ";
-            $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND keterangan='$keterangan' ";
-        }else if ($tipe == 'KERTAS') {
-            $berat = filter_var($request->input('berat'), FILTER_SANITIZE_NUMBER_INT);
-            $sql = " SELECT (harga * '$berat') harga FROM tarif_cabang_kilogram WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' ";
-        }
-        $data = collect(DB::select($sql));        
-        $jumlah_data = $data->count();
-        if ($jumlah_data > 0) {
-            $harga = collect(\DB::select($sql))->first();
-            if ($tipe = 'KARGO PAKET' or $tipe ='KARGO KERTAS') {
-                $biaya_penerus = 0;
-                $result['biaya_penerus'] = 0;
-            } else{
-                $biaya_penerus = collect(\DB::select($sql_biaya_penerus))->first();
-                $result['biaya_penerus'] = number_format($biaya_penerus->harga, 0, ",", ".");
-=======
 
             $jumlah_data = $data->count();
             if ($jumlah_data > 0) {
@@ -595,7 +550,6 @@ class do_Controller extends Controller
                 return response()->json([
                     'status' => 'kosong'
                 ]);
->>>>>>> 4251e9354d3fb0911a91098343675607b673a2e2
             }
         }
 //======================== End Dokumen =============================
