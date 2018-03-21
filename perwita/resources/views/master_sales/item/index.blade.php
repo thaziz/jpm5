@@ -7,7 +7,32 @@
     .cssright { text-align: right; }
 </style>
 
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2> Item </h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Master</a>
+                        </li>
+                        <li>
+                          <a> Master Penjualan</a>
+                        </li>
+                        <li>
+                          <a> Tarif DO</a>
+                        </li>
+                        <li class="active">
+                            <strong> Item </strong>
+                        </li>
 
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
