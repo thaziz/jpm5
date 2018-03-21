@@ -258,6 +258,14 @@ class laporan_keuangan_controller extends Controller
 
                         $dataTotal += ($total->total + $transaksi->total);
 
+                        $data_akun[$data_akun_no] = [
+                            "nomor_id"   => $dataDetail->nomor_id,
+                            "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
+                            "id_akun"    => $akun->id_akun,
+                            "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
+                            "total"      => $total->total + $transaksi->total
+                        ];
+
                         $data_akun_no++;
 
                         if(array_key_exists($dataDetail->id_parrent, $total_in_header))
@@ -292,7 +300,7 @@ class laporan_keuangan_controller extends Controller
 
             // return json_encode($mydatatotal);
 
-            return view("laporan_neraca.index")->withData($data)->withMydatatotal($mydatatotal)->withRequest($request)->withThrottle($throttle)->withTotal_in_header($total_in_header);
+            return view("laporan_neraca.index")->withData($data)->withMydatatotal($mydatatotal)->withRequest($request)->withThrottle($throttle)->withData_akun($data_akun)->withTotal_in_header($total_in_header);
         }
     }
 

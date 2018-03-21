@@ -915,6 +915,8 @@
                                                           ?>
 
                                                           <td class="text-right {{ $total }}">{{ str_replace("-", "", $show) }}</td>
+
+                                                          {!! get_sub($data, $dataAktiva["nomor_id"], $data_akun) !!}
                                                         @elseif($dataAktiva["jenis"] == 3)
                                                           <?php 
                                                             $show = ($mydatatotal[$dataAktiva["nomor_id"]] < 0) ? "(".number_format($mydatatotal[$dataAktiva["nomor_id"]]).")" : number_format($mydatatotal[$dataAktiva["nomor_id"]]); 
