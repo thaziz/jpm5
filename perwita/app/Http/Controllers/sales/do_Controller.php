@@ -13,7 +13,7 @@ use PDF;
 
 class do_Controller extends Controller
 {
-    public function table_data_detail (Request $request) {
+    public function table_data_detail (Request $request) {        
         $nomor = strtoupper($request->input('nomor'));
         $sql = "    SELECT d.id, d.kode_item, i.nama,d.jumlah, d.satuan, d.keterangan, d.total, d.harga, d.nomor_so FROM delivery_orderd d,item i
                     WHERE i.kode=d.kode_item AND d.nomor='$nomor' ";
@@ -518,6 +518,7 @@ class do_Controller extends Controller
     }
 
     public function cari_harga(Request $request){
+
         $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
         $pendapatan =$request->input('pendapatan');
@@ -525,7 +526,8 @@ class do_Controller extends Controller
         $jenis = $request->input('jenis');
         $angkutan = $request->input('angkutan');
         $cabang = $request->input('cabang');
-        if ($tipe == 'DOKUMEN') {
+        if ($tipe == 'DOKUMEN') {            
+            
             $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' ";
 
             $sql_biaya_penerus = " SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND kode_cabang='$cabang' ";
@@ -559,7 +561,7 @@ class do_Controller extends Controller
             $berat = filter_var($request->input('berat'), FILTER_SANITIZE_NUMBER_INT);
             $sql = " SELECT (harga * '$berat') harga FROM tarif_cabang_kilogram WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' ";
         }
-        $data = collect(DB::select($sql));
+        $data = collect(DB::select($sql));        
         $jumlah_data = $data->count();
         if ($jumlah_data > 0) {
             $harga = collect(\DB::select($sql))->first();

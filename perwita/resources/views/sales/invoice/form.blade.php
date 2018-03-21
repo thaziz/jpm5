@@ -744,7 +744,7 @@
 
           $.ajax({
           url:baseUrl + '/sales/simpan_invoice',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()

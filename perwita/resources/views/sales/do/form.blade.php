@@ -1450,7 +1450,7 @@
         $.ajax(
         {
             url :  baseUrl + "/sales/deliveryorderform/save_data",
-            type: "POST",
+            type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
@@ -1809,7 +1809,7 @@
         $.ajax(
         {
             url :  baseUrl + "/sales/deliveryorderform/save_data",
-            type: "POST",
+            type: "GET",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
