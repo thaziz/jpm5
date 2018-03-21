@@ -18,7 +18,7 @@
                           <a> Master DO</a>
                         </li>
                         <li class="active">
-                            <strong> BIAYA </strong>
+                            <strong> Biaya </strong>
                         </li>
 
                     </ol>
