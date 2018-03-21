@@ -3519,9 +3519,9 @@ body.body-small .footer.fixed {
 }
 /*--Ari--*/
 .table > thead > tr > th  {
-  border-bottom: 1px solid #DDDDDD;
-  vertical-align: bottom;
-  background-color: #107dac;
+  border-bottom: 1px solid #DDDDDD !important;
+  vertical-align: bottom !important;
+  background-color: #107dac !important;
   
   color: white;
   text-align: center;
