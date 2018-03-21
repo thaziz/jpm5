@@ -79,7 +79,7 @@ Route::get('suratpermintaanpembelian/ajax_hargasupplier/{id}', 'PurchaseControll
 Route::post('suratpermintaanpembelian/ajax_jenisitem/', 'PurchaseController@ajax_jenisitem');
 Route::get('suratpermintaanpembelian/statusspp/{id}', 'PurchaseController@statusspp');
 Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@createPdfSpp');
-Route::post('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
+Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
 Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
