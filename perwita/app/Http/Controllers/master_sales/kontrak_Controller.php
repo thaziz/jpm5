@@ -37,6 +37,7 @@ class kontrak_Controller extends Controller
         $satuan = DB::table('satuan')
                          ->get();
         $jenis_tarif = DB::table('jenis_tarif')
+                         ->orderBy('jt_id','ASC')
                          ->get();
         $now1    = Carbon::now()->subDay(-30)->format('d/m/Y');
         $now    = Carbon::now()->format('d/m/Y');
@@ -195,6 +196,7 @@ class kontrak_Controller extends Controller
         $satuan = DB::table('satuan')
                          ->get();
         $jenis_tarif = DB::table('jenis_tarif')
+                         ->orderBy('jt_id','ASC')
                          ->get();
         $now1    = Carbon::now()->subDay(-30)->format('d/m/Y');
         $now    = Carbon::now()->format('d/m/Y');
