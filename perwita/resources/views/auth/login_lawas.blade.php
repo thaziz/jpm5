@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -20,42 +20,66 @@
     <link href="{{ asset('assets/css/inspiniaAnimate.css') }}" rel="stylesheet">
 
     <link href="{{asset('assets/vendors/ladda/ladda-themeless.min.css')}}" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/material-design-login/css/style.css') }}">
 
 </head>
 
-<body style="background: url('assets/img/dboard/background/login.png') center center fixed; background-size: cover">
+<body class="gray-bg" style="background-image: url('{{ asset('assets/img/dboard/background/login.png') }}')">
 
-  <hgroup>
-  <img src="{{asset('assets/logo_jpm.png')}}"></a>
-  <h1>Jawa Pratama Mandiri</h1>
-  
-</hgroup>
-<form role="form" id="login-form">
-    <div class="group">
-        <input type="text" required name="username" id="username"></span><span class="bar"></span>
-        <label>Name</label>
-        <span style="padding-left: 5px;color:#ed5565;" class="help-block m-b-none hidden" id="username-error"><small>Inputan username ini wajib diisi !</small></span>
+    <div class="loginColumns animated fadeInDown">
+        <div class="row">
+
+            
+            <div class="col-md-12">
+                <div class="ibox-content" style="margin-top: 0px; padding: 25px;">
+                    <div class="row text-center">
+                        
+                    </div>
+                    <div class="row">
+                        <form class="m-t" role="form" id="login-form">
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                            <div class="form-group">
+
+                                <input type="text" class="form-control" placeholder="Username" required name="username" id="username" value="shitta">
+                                <span style="padding-left: 5px;color:#ed5565;visibility: hidden;" class="help-block m-b-none" id="username-error"><small>Inputan username ini wajib diisi !</small></span>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="password" class="form-control" placeholder="Password" required name="password" id="password" value="123456">
+                                <span style="padding-left: 5px;color:#ed5565;visibility: hidden;" class="help-block m-b-none" id="password-error"><small>Inputan password ini wajib diisi !</small></span>
+                            </div>
+
+                            <button type="button" class="ladda-button ladda-button-demo btn btn-primary block full-width m-b" data-style="zoom-in">Masuk</button>
+
+                            {{-- <a href="#">
+                                <small>Forgot password?</small>
+                            </a> --}}
+
+                            {{-- <p class="text-muted text-center">
+                                <small>Do not have an account?</small>
+                            </p>
+                            <a class="btn btn-sm btn-white btn-block" href="register.html">Create an account</a> --}}
+                        </form>
+                        <p class="m-t text-center error-load" style="color:#ed5565; visibility: hidden;">
+                            <small>..</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <div class="col-md-6">
+                Copyright DBoard
+            </div>
+            <div class="col-md-6 text-right">
+               <small>© 2017</small> {{ Session::get('comp_year')}}
+            </div>
+        </div>
     </div>
-    <div class="group">
-        <input type="password" required name="password" id="password"></span><span class="bar"></span>
-        <label>Password</label> 
-        <span style="padding-left: 5px;color:#ed5565;" class="help-block m-b-none hidden" id="password-error"><small>Inputan password ini wajib diisi !</small></span>
-    </div>
-        <button type="button" class="ladda-button ladda-button-demo btn btn-primary block full-width m-b" data-style="zoom-in">Sign In!
-            <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
-        </button>
-</form>
-    <p class="m-t text-center error-load hidden" style="color:#ed5565;">
-        <small>..</small>
-    </p>
-<footer><a href="http://www.alamraya.co.id/" target="_blank"><img src="{{asset('assets/alamraya.png')}}" width="128px" height="64px"></a>
-  <p>Created By <a href="http://www.alamraya.co.id/" target="_blank">Alamraya Sebar Barokah</a></p>
-</footer>
 
 
     <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/material-design-login/js/index.js') }}"></script>
+
     <!-- Ladda -->
     <script src="{{ asset('assets/vendors/ladda/spin.min.js') }}"></script>
     <script src="{{ asset('assets/vendors/ladda/ladda.min.js') }}"></script>
@@ -82,11 +106,7 @@
 
 toastr.options.onShown = function() { window.location = baseUrl+'/dashboard';
 }
-<<<<<<< HEAD
-				toastr.success(response.nama, "Selamat Datang,");
-=======
-                toastr.success(response.nama, "Selamat Datang,");
->>>>>>> c939b95f2860319f62b463c869c3e3ef6d584665
+				toastr.success(response.nama);
 
 
                              //window.location = baseUrl+'/dashboard';
@@ -100,23 +120,22 @@ toastr.options.onShown = function() { window.location = baseUrl+'/dashboard';
                             }*/
                         }
                         else if(response.status == 'gagal'){
-                            $('.error-load').removeClass('hidden');
+                            $('.error-load').css('visibility', 'visible');
                             $('.error-load small').text(response.content);
-                            toastr.error(response.content, "Gagal!");
                             buttonLadda.ladda('stop');
                         }
                     },
                     error       : function(xhr, status){
                         if(status == 'timeout'){
-                            $('.error-load').removeClass('hidden');
+                            $('.error-load').css('visibility', 'visible');
                             $('.error-load small').text('Ups. Terjadi Kesalahan, Coba Lagi Nanti');
                         }
                         else if(xhr.status == 0){
-                            $('.error-load').removeClass('hidden');
+                            $('.error-load').css('visibility', 'visible');
                             $('.error-load small').text('Ups. Koneksi Internet Bemasalah, Coba Lagi Nanti');
                         }
                         else if(xhr.status == 500){
-                           $('.error-load').removeClass('hidden');
+                            $('.error-load').css('visibility', 'visible');
                             $('.error-load small').text('Ups. Server Bemasalah, Coba Lagi Nanti');
                         }
 
@@ -134,11 +153,11 @@ toastr.options.onShown = function() { window.location = baseUrl+'/dashboard';
             //alert(username.value);
 
             if(username.validity.valueMissing){
-                $('#username-error').removeClass('hidden');
+                $('#username-error').css('visibility', 'visible');
                 return false;
             }
             else if(password.validity.valueMissing){
-                $('#password-error').removeClass('hidden');
+                $('#password-error').css('visibility', 'visible');
                 return false;
             }
 

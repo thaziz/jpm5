@@ -1092,6 +1092,11 @@
                       "showMethod": "fadeIn",
                       "hideMethod": "fadeOut"
                     }
+
+                    $("input[name='ed_tarif_dasar']").val(0);
+                    $("input[name='ed_tarif_penerus']").val(0);
+                    $("input[name='acc_penjualan']").val(0);
+                    hitung();
                 } else {
                     var harga = convertToRupiah(parseInt(data.harga));
                     var biaya = convertToRupiah(parseInt(data.biaya_penerus));
