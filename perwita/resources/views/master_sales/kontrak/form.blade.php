@@ -152,9 +152,9 @@
                                 <td>Kota Tujuan</td>
                                 <td>
                                     <select class="kota_asal_modal form-control">
-                                        <option value="PAKET"></option>
-                                        <option></option>
-                                        <option></option>
+                                        @foreach($kota as $val)
+                                        <option value="{{$val->id}}">{{$val->id}} - {{$val->nama}}</option>
+                                        @endforeach
                                     </select>   
                                 </td>
                             </tr>
@@ -162,58 +162,69 @@
                                 <td>Jenis</td>
                                 <td>
                                     <select class="jenis_modal form-control">
-                                        <option></option>
+                                        <option value="PAKET">PAKET</option>
+                                        <option value="KORAN">KORAN</option>
+                                        <option value="KARGO">KARGO</option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Tipe Angkutan</td>
                                 <td>
-                                    <select class="jenis_modal form-control">
-                                        <option></option>
+                                    <select class="tipe_angkutan_modal form-control">
+                                        <option value="0">Pilih - Angkutan</option>
+                                        @foreach($tipe_angkutan as $val)
+                                        <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                        @endforeach
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Jenis Tarif</td>
                                 <td>
-                                    <select class="jenis_modal form-control">
-                                        <option></option>
+                                    <select class="jenis_tarif_modal form-control">
+                                        <option value="0">Pilih - Jenis Tarif</option>
+                                        @foreach($jenis_tarif as $val)
+                                        <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                        @endforeach
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Harga</td>
                                 <td>
-                                    <input class="form-control" type="text" style="text-align: right">
+                                    <input class="form-control harga_modal" type="text" style="text-align: right">
                                 </td>
                             </tr>
                             <tr>
                                 <td>Satuan</td>
                                 <td>
-                                    <select class="jenis_modal form-control">
-                                        <option></option>
+                                    <select class="stuan_modal form-control">
+                                        <option value="0">Pilih - Satuan</option>
+                                        @foreach($satuan as $val)
+                                        <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                        @endforeach
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <td>Keterangan</td>
                                 <td>
-                                    <input class="form-control" type="text" style="text-align: right">
+                                    <input class="form-control keterangan_modal" type="text" style="text-align: right">
                                 </td>
                             </tr>
-                            <tr>
+                            <tr >
                                 <td>Acc Penjualan</td>
-                                <td>
-                                    <select class="jenis_modal form-control">
+                                <td class="acc_tr">
+                                    <select class="acc_akun_modal form-control">
                                         <option></option>
                                     </select>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr >
                                 <td>CSF Penjualan</td>
-                                <td>
-                                    <select class="jenis_modal form-control">
+                                <td class="csf_tr">
+                                    <select class="csf_akun_modal form-control">
                                         <option></option>
                                     </select>
                                 </td>
@@ -259,8 +270,8 @@
   $('.tgl2').datepicker();
 
  $(document).ready( function () {
-        
-
+            
+    $('.harga_modal').maskMoney({precision:0});
     var asd = $('.harga').maskMoney({thousands:'.', precision:0});
     var cabang = $('.cabang').val();
 
@@ -281,12 +292,35 @@
         dataType:'json',
         success:function(response){
             $('#ed_nomor').val(response.nota);
+            $('#ed_nomor').val(response.nota);
         },
         error:function(){
             // location.reload();
         }
 
     })
+
+    $.ajax({
+        url:baseUrl +'/master_sales/set_kode_akun_acc',
+        data:{cabang},
+        success:function(response){
+            $('.acc_tr').html(response);
+        },
+        error:function(){
+            // location.reload();
+        }
+    });
+
+    $.ajax({
+        url:baseUrl +'/master_sales/set_kode_akun_csf',
+        data:{cabang},
+        success:function(response){
+            $('.csf_tr').html(response);
+        },
+        error:function(){
+            // location.reload();
+        }
+    });
 });
 
 $('#btnadd').click(function(){

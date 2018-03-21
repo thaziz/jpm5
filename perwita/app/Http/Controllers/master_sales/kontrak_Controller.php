@@ -22,14 +22,16 @@ class kontrak_Controller extends Controller
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
-        $satuan = DB::select(" SELECT kode,nama,isi FROM satuan ORDER BY nama ASC ");
-        $akun = DB::select(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC");
-        $tipe_angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
+        $tipe_angkutan = DB::select(" SELECT * FROM tipe_angkutan ORDER BY nama ASC ");
+        $satuan = DB::table('satuan')
+                         ->get();
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->get();
         $now1    = Carbon::now()->subDay(-30)->format('d/m/Y');
         $now    = Carbon::now()->format('d/m/Y');
 
         
-        return view('master_sales.kontrak.form',compact('kota','customer','data','cabang','jml_detail','satuan','tipe_angkutan','akun','now','now1'));
+        return view('master_sales.kontrak.form',compact('kota','customer','data','cabang','satuan','tipe_angkutan','akun','now','now1','jenis_tarif'));
     }
 
     public function kontrak_set_nota(request $request)
@@ -57,5 +59,20 @@ class kontrak_Controller extends Controller
         $nota = 'KNK' . $month . $year . '/' . $request->cabang . '/' .  $idfaktur;
         return response()->json(['nota'=>$nota]);
     }
-
+    public function set_kode_akun_acc(request $request)
+    {   
+       $data = DB::table('d_akun')
+                 ->where('kode_cabang',$request->cabang)
+                 ->where('id_parrent','LIKE','%'.'13'.'%')
+                 ->get();
+       return view('master_sales.kontrak.acc_drop',compact('data'));
+    }
+     public function set_kode_akun_csf(request $request)
+    {
+       $data = DB::table('d_akun')
+                 ->where('kode_cabang',$request->cabang)
+                 ->where('id_parrent','LIKE','%'.'13'.'%')
+                 ->get();
+       return view('master_sales.kontrak.csf_drop',compact('data'));
+    }
 }
