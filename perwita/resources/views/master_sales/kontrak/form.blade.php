@@ -58,7 +58,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm">Subcon</td>
+                                <td style="padding-top: 0.4cm">Customer</td>
                                 <td colspan="3">
                                     <select class="chosen-select-width form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
                                         <option selected="" disabled="">- Pilih Customer -</option>
@@ -115,8 +115,8 @@
                         <tr>
                             <th>Asal</th>
                             <th>Tujuan</th>
-                            <th>Angkutan</th>
-                            <th>Tarif</th>
+                            <th>Jenis Tarif</th>
+                            <th>Satuan</th>
                             <th>Harga</th>
                             <th>Keterangan</th>
                             <th style="text-align: center;">Aksi</th>
@@ -141,7 +141,7 @@
                             <tr>
                                 <td>Kota Asal</td>
                                 <td>
-                                    <select class="kota_asal_modal form-control">
+                                    <select class="kota_asal_modal form-control chosen-select-width">
                                         <option value="0">Pilih - Asal</option>
                                         @foreach($kota as $val)
                                         <option value="{{$val->id}}">{{$val->id}} - {{$val->nama}}</option>
@@ -152,7 +152,7 @@
                             <tr>
                                 <td>Kota Tujuan</td>
                                 <td>
-                                    <select class="kota_tujuan_modal form-control">
+                                    <select class="kota_tujuan_modal form-control chosen-select-width">
                                         <option value="0">Pilih - Tujuan</option>
                                         @foreach($kota as $val)
                                         <option value="{{$val->id}}">{{$val->id}} - {{$val->nama}}</option>
@@ -163,7 +163,7 @@
                             <tr>
                                 <td>Jenis</td>
                                 <td>
-                                    <select class="jenis_modal form-control">
+                                    <select class="jenis_modal form-control chosen-select-width">
                                         <option value="0">Pilih - Jenis</option>
                                         <option value="PAKET">PAKET</option>
                                         <option value="KORAN">KORAN</option>
@@ -174,7 +174,7 @@
                             <tr>
                                 <td>Tipe Angkutan</td>
                                 <td>
-                                    <select class="tipe_angkutan_modal form-control">
+                                    <select class="tipe_angkutan_modal form-control chosen-select-width">
                                         <option value="0">Pilih - Angkutan</option>
                                         @foreach($tipe_angkutan as $val)
                                         <option value="{{$val->kode}}">{{$val->nama}}</option>
@@ -185,7 +185,7 @@
                             <tr>
                                 <td>Jenis Tarif</td>
                                 <td>
-                                    <select class="jenis_tarif_modal form-control">
+                                    <select class="jenis_tarif_modal form-control chosen-select-width">
                                         <option value="0">Pilih - Jenis Tarif</option>
                                         @foreach($jenis_tarif as $val)
                                         <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
@@ -202,7 +202,7 @@
                             <tr>
                                 <td>Satuan</td>
                                 <td>
-                                    <select class="stuan_modal form-control">
+                                    <select class="satuan_modal form-control chosen-select-width">
                                         <option value="0">Pilih - Satuan</option>
                                         @foreach($satuan as $val)
                                         <option value="{{$val->kode}}">{{$val->nama}}</option>
@@ -219,7 +219,7 @@
                             <tr >
                                 <td>Acc Penjualan</td>
                                 <td class="acc_tr">
-                                    <select class="acc_akun_modal form-control">
+                                    <select class="acc_akun_modal form-control chosen-select-width">
                                         <option></option>
                                     </select>
                                 </td>
@@ -227,7 +227,7 @@
                             <tr >
                                 <td>CSF Penjualan</td>
                                 <td class="csf_tr">
-                                    <select class="csf_akun_modal form-control">
+                                    <select class="csf_akun_modal form-control chosen-select-width">
                                         <option></option>
                                     </select>
                                 </td>
@@ -354,21 +354,19 @@ var kota_asal_modal       = $('.kota_asal_modal').val();
 var kota_tujuan_modal     = $('.kota_asal_modal').val();
 var jenis_modal           = $('.jenis_modal').val();
 var tipe_angkutan_modal   = $('.tipe_angkutan_modal').val();
-var jenis_tarif_modal     = $('.jenis_tarif_modal ').val();
-var harga_modal           = $('.harga_modal ').val();
+var jenis_tarif_modal     = $('.jenis_tarif_modal').val();
+var harga_modal           = $('.harga_modal').val();
+var satuan_modal          = $('.satuan_modal').val();
+var keterangan_modal      = $('.keterangan_modal ').val();
+var acc_akun_modal        = $('.acc_akun_modal ').val();
+var csf_akun_modal        = $('.csf_akun_modal').val();
   // console.log(asal);
 
 
 
 
   datatable.row.add([
-        '<div class="asal_text">'+asal+'</div>'+'<input type="hidden" class="asal_tb hitung_'+count+'" name="asal_tb[]" value="'+asal_dt+'" >'+'<input type="hidden" class="id_table" value="'+count+'" >',
-        '<div class="tujuan_text">'+tujuan+'</div>'+'<input type="hidden" class="tujuan_tb" name="tujuan_tb[]" value="'+tujuan_dt+'" >',
-        '<div class="angkutan_text">'+angkutan+'</div>'+'<input type="hidden" class="angkutan_tb" name="angkutan_tb[]" value="'+angkutan_dt+'" >',
-        '<div class="tarif_text">'+tarif+'</div>'+'<input type="hidden" class="tarif_tb" name="tarif_tb[]" value="'+tarif+'" >',
-        '<div class="harga_text">'+Harga+'</div>'+'<input type="hidden" class="harga_tb" name="harga_tb[]" value="'+Harga+'" >',
-        '<div class="keterangan_text">'+keterangan+'</div>'+'<input type="hidden" class="keterangan_tb" name="keterangan_tb[]" value="'+keterangan+'" >',
-        '<button align="center" type="button" class="btn btn-xs edit btn-warning" onclick="edit(this)"><i class="fa fa-pencil"></i></button>'+'&nbsp;<button align="center" type="button" class="btn btn-xs hapus btn-danger" onclick="hapus(this)"><i class="fa fa-trash"></i></button>',
+           kota_asal_modal+'<input type="hidden">' ,
         
     ]).draw(false);
   // console.log('asd');
