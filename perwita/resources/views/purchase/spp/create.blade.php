@@ -54,20 +54,55 @@
                               <div class="col-md-6">
                                     <table class="table table-striped" id='table-utama'>
                                           <tr>
-                                            <td> Kode SPP </td>
+                                            <td width="200px"> Kode SPP </td>
                                             <td> <input type='text' class="input-sm form-control nospp" readonly="" name="nospp"></td>
                                           </tr>
                                           
                                           <tr>
-                                              <td style="width:230px">  Cabang  </td>
-                                              <td>   
-                                                <select class="chosen-select-width cabang" name="comp" required="">  
-                                                    <option value=""> -- Pilih Cabang -- </option>
-                                                  @foreach($data['cabang'] as $comp)
-                                                      <option value="{{$comp->kode}}"> {{$comp->nama}} </option>
-                                                  @endforeach
-                                                </select>
-                                              </td>
+                                              
+                                           
+                                                @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
+                                                    <tr>
+                                                    <td width="150px"> Cabang </td>
+                                                    <td>
+                                                      <select class='form-control chosen-select-width1 cabang' name="cabang">
+                                                          <option value="">
+                                                            Pilih-Cabang
+                                                          </option>
+
+                                                          @foreach($data['cabang'] as $cabang)
+                                                            <option value="{{$cabang->kode}}">
+                                                              {{$cabang->nama}}
+                                                            </option>
+                                                          @endforeach
+                                                         </select>
+                                                    </td>
+                                                    </tr>
+                                                    @else
+                                                    <tr>
+                                                    <td width="150px"> Cabang </td>
+                                                    <td>
+                                                      <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                                                          <option value="">
+                                                            Pilih Cabang
+                                                          </option>
+
+                                                          @foreach($data['cabang'] as $cabang)
+                                                            @if($cabang->kode == Auth::user()->kode_cabang)
+                                                            <option selected="" value="{{$cabang->kode}}">
+                                                              {{$cabang->nama}}
+                                                            </option>
+                                                            @else
+                                                            <option value="{{$cabang->kode}}">
+                                                              {{$cabang->nama}}
+                                                            </option>
+                                                            @endif
+                                                          @endforeach
+                                                         </select>
+                                                    </td>
+                                                    </tr>
+                                                    @endif
+                                              
                                           </tr>
 
                                         
@@ -89,7 +124,7 @@
                                             </td>
 
                                             <td> 
-                                            <input type="text" class="input-sm form-control" name="keperluan" required="">
+                                            <input type="text" class="input-sm form-control" name="keperluan" required=""> <input type="hidden" class="valcabang" name="cabang">
                                             </td>
                                           </tr>
                                         
@@ -229,6 +264,9 @@
         return true;
     })
 
+    cabang = $('.cabang').val();
+    $('.valcabang').val(cabang);
+
     var arrnobrg = [];
 
     $('#formId input').on("invalid" , function(){
@@ -292,10 +330,48 @@
             return x1 + x2;
     }
 
+
+    comp = $('.cabang').val();
+
+        $.ajax({    
+            type :"get",
+            data : {comp},
+            url : baseUrl + '/suratpermintaanpembelian/getnospp',
+            dataType:'json',
+            success : function(data){
+             console.log(data);
+                var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+
+              
+                 nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data;
+                console.log(nospp);
+                $('.nospp').val(nospp);
+            }
+        })
+
     $('.cabang').change(function(){    
       var comp = $(this).val();
         $.ajax({    
-            type :"post",
+            type :"get",
             data : {comp},
             url : baseUrl + '/suratpermintaanpembelian/getnospp',
             dataType:'json',
@@ -361,7 +437,7 @@
           if(val == 'Y') {
          valupdatestock = val;
                 $('.kendaraan').remove();
-               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td style='width:230px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
                               "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
                            "</select> </td>";
               $('.lokasigudang').html(rowgudang);
@@ -395,7 +471,7 @@
          if(val == 'Y') {
            valupdatestock = val;
                 $('.kendaraan').remove();
-               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td style='width:230px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
                               "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
                            "</select> </td>";
               $('.lokasigudang').html(rowgudang);
@@ -661,8 +737,13 @@
             arrSup.push(supplier);
             arrIdSup.push(idsupplier);
             kodesup.push(kodesupplier);
-           // arrsyarat.push(syaratkredit);
+            arrsyarat.push({
+              idsup : idsupplier,
+              syaratkredit : syaratkredit
+            });
          })
+
+
 
   //       console.log(arrSup);
           var hslqty = [];
@@ -694,14 +775,21 @@
           var noidqty3 = [];
           var idsupp = [];
           var arrIdqty = [];
-          var hslsyarat = [];
-
+          var hslsyaratkredit = [];
           idsupp = removeDuplicates(arrIdSup);
           outputSup = removeDuplicates(arrSup);
           hslkodesup = removeDuplicates(kodesup);
-          
 
-    
+          
+          uniqueIdsup = [];
+            for(ds = 0; ds < arrsyarat.length; ds++){
+              if(uniqueIdsup.indexOf(arrsyarat[ds].idsup) === -1){
+               // indexsup = arrsyarat.indexOf(arrsyarat[ds].idsup);
+                uniqueIdsup.push(arrsyarat[ds].idsup);
+              }
+            }
+            
+           // console.log(arrsyarat.syaratkredit + 'syaratkredit');
 
          //remove qty yg undefined
           var rmvqty = undefined;
@@ -721,9 +809,9 @@
                    arrtotal.push(nilai);
               }
             }
-     
-
           }
+
+
 
           var jumlahtotal = 0;
           var jumlahtotalpembayaran = [];
@@ -768,7 +856,7 @@
               hsljmlhpmbayaran = Math.round(jumlahtotalpembayaran[a]).toFixed(2);
              // console.log(hsljmlhpmbayaran);
           var  rowhslSupp = "<tr id='tbl_total' style='margin-bottom:30px'>"+
-                            "<td style='width:240px'><input type='text' class='form-control' value='"+ outputSup[a] +"' readonly>" +
+                            "<td style='width:240px'><input type='text' class='form-control' value='"+ outputSup[a] +"' readonly>" + 
                             "<input type='hidden' name='idsupplier[]' value='"+hslkodesup[a]+"'> </td>" +
                             "<td class='text-right'> <input type='text' class='input-sm form-control' value='"+ addCommas(hsljmlhpmbayaran) +"' name='totbiaya[]' readonly style='text-align:right'  ></td>" +
                             "<td> <div class='col-sm-7'> <input type='text' class='input-sm form-control input-sm' name='syaratkredit[]' required> </div> <label class='control-label col-sm-2'> Hari</label>  </td>" +
@@ -972,7 +1060,7 @@
 
                     "<td> <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' data-id='"+counterId+"' data-no='"+no+"'/> </td>"+ //harga
 
-                    "<td><select id='supselect' class='input-sm form-control select2 suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
+                    "<td><select id='supselect' class='input-sm form-control select2 suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div>"+no+" </td>"; //supplier
 
                   /*  "<td class='pembayaranken'> <div class='form-group'> <div class='col-sm-8'> <input type='text' class='form-control bayar"+counterId+"' name='bayar[]' data-id='"+counterId+"'> </div> <label class='col-sm-2 col-sm-2 control-label'> Hari </label></div></td>";*/ //bayar
 
@@ -1097,7 +1185,7 @@
               var kodeitem = string[0];
               var nobarang = $(this).data('no');
               var hrgbrg = string[2];
-         
+              alert(nobarang);
               console.log(valbarang);
 
              // toastr.info(kodeitem);
@@ -1142,7 +1230,7 @@
                       $('.sup' + nobarang).empty();
                       $.each(arrSupid, function(i , obj) {
                       
-                        $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nourut+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.nama_supplier+"</option>");
+                        $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.nama_supplier+"</option>");
                       });
                       
                         supbtn = arrSupid;
@@ -1188,7 +1276,7 @@
                         console.log(syarat_kredit);
                         $('.bayar' + id).val(syarat_kredit);
                     } // end arrSUpid
-                    else {
+                    else { // TIDAK TERIKAT KONTRAK
                      console.log('tdk ada terikat kontrak');
                        $('.sup' + nobarang).empty();
                       $.each(supplier, function(i , obj) {
@@ -1196,7 +1284,7 @@
                       idcntr = counterId - 1;
                
 
-                     $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nourut+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.nama_supplier+"</option>");
+                     $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.nama_supplier+"</option>");
                     
                         var datasup = $('.sup'+nobarang).find('option:selected').val();
                   
@@ -1280,7 +1368,7 @@
                       }) 
                 }
 
-      					rowSup  +="</select> <br> </td>"; //supplier
+      					rowSup  +="</select>"+idtrsup+" <br> </td>"; //supplier
       					
       					rowSup +=  "<td> <button class='btn btn-sm btn-danger remove-btn' data-id='"+idtrsup+"' type='button'><i class='fa fa-trash'></i></button></td>";
       					rowSup += "</tr>";
@@ -1427,11 +1515,11 @@
         idremovesup = idremovesup - 1;
         var id = $(this).data('id');
         var parent2 = $('#supp-'+id);
-        //no = no - 1;
+        no = no - 1;
 
         var index = arrnobrg.indexOf(id);
         arrnobrg.splice(index, 1);
-     //   parent2.remove();
+       parent2.remove();
     })
 
    var $sup = 0;
