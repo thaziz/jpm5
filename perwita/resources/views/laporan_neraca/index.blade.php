@@ -907,7 +907,7 @@
                                                     @else
                                                       <tr>
 
-                                                        <td class="{{ $header." ".$child." ".$total." ".$dataAktiva["parrent"] }} no-border" width="70%"><i style="font-size: 8pt;" class="fa fa-chevron-down"></i> &nbsp;{{ $dataAktiva["nomor_id"] }}</td>
+                                                        <td class="{{ $header." ".$child." ".$total." ".$dataAktiva["parrent"] }} no-border" width="70%"> &nbsp;{{ $dataAktiva["nama_perkiraan"] }}</td>
                                                         @if($dataAktiva["jenis"] == 2)
 
                                                           <?php 
