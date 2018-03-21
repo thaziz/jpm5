@@ -5,9 +5,8 @@
 @section('content')
 
 
-<div class="wrapper wrapper-content animated fadeInRight">
 
-    <div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Faktur Pembelian </h2>
                     <ol class="breadcrumb">
@@ -30,6 +29,9 @@
 
                 </div>
             </div>
+<div class="wrapper wrapper-content animated fadeInRight">
+
+
     <div class="row">
 
                 <div class="col-lg-2">
