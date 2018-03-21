@@ -91,7 +91,7 @@
                 </div><!-- /.box-body -->
                 <!-- modal -->
                 <div id="modal" class="modal" >
-                  <div class="modal-dialog modal-lg">
+                  <div class="modal-dialog ">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -104,30 +104,19 @@
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
                                     <td>
-                                        <input type="text" name="ed_kode" class="form-control" style="text-transform: uppercase" >
+                                        <input type="text" name="ed_kode" class="form-control a" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Cabang</td>
-                                    <td>   
-                                        <select class="chosen-select-width b"  name="cb_cabang" style="width:100%">
-                                            <option value="" selected="" disabled="">-- Pilih Cabang --</option>
-                                        @foreach ($cabang as $row)
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                        @endforeach
-                                        </select>
-                                    </td>
-                                </tr>                                
-                                <tr>
                                     <td style="padding-top: 0.4cm">Kota Asal</td>
                                     <td>   
-                                        <select class="chosen-select-width"  name="cb_kota_asal" style="width:100%">
-                                            <option value=""></option>
+                                        <select class="chosen-select-width b"  name="cb_kota_asal" style="width:100%" id="cb_kota_asal">
+                                            <option value="" selected="" disabled="">-- Pilih Kota asal --</option>
                                         @foreach ($kota as $row)
-                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->id }}" data-kota="{{ $row->kode_kota }}"> {{ $row->nama }} </option>
                                         @endforeach
                                         </select>
                                     </td>
@@ -135,8 +124,8 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td>   
-                                        <select class="chosen-select-width"  name="cb_kota_tujuan" style="width:100%">
-                                            <option value=""></option>
+                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" style="width:100%">
+                                           <option value="" selected="" disabled="">-- Pilih Kota tujuan --</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
                                         @endforeach
@@ -146,7 +135,8 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Angkutan</td>
                                     <td>   
-                                        <select class="form-control"  name="cb_angkutan" style="width:100%">
+                                        <select class="form-control d"  name="cb_angkutan" style="width:100%">
+                                            <option value="" selected="" disabled="">-- Pilih Kota angkatan --</option>
                                         @foreach ($angkutan as $row)
                                             <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @endforeach
@@ -156,61 +146,25 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Jenis</td>
                                     <td>   
-                                        <select class="form-control"  name="cb_jenis" style="width:100%">
+                                        <select class="form-control e"  name="cb_jenis" style="width:100%">
+                                            <option value="" selected="" disabled="">-- Pilih Kota jenis --</option>
                                             <option value="REGULER">REGULER</option>
                                             <option value="EXPRESS">EXPRESS</option>
-                                            <option value="KILOGRAM">KILOGRAM</option>
-                                            <option value="ONE WAY STANDART">ONE WAY STANDART</option>
-                                            <option value="EMBALASI STANDART">EMBALASI STANDART</option>
-                                            <option value="ROUND TRIP STANDART">ROUND TRIP STANDART</option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Harga</td>
-                                    <td><input type="text" class="form-control" name="ed_harga" style="text-align: right;"></td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Satuan</td>
-                                    <td>   
-                                        <select class="form-control"  name="cb_satuan" style="width:100%">
-                                        @foreach ($satuan as $row)
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                        @endforeach
-                                        </select>
-                                    </td>
+                                    <td><input type="text" class="form-control f" name="ed_harga" style="text-align: right;"></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Waktu/Estimasi</td>
-                                    <td><input type="text" class="form-control" name="ed_waktu" style="text-align: right;"></td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Acc Penjualan</td>
-									<td>
-                                        <select class="chosen-select-width"  name="cb_acc_penjualan" style="width:100%">
-                                            <option value=""></option>
-                                        @foreach ($akun as $row)
-                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} </option>
-                                        @endforeach
-                                        </select>
-									</td>
-									<td><input type="text" class="form-control" name="ed_acc_penjualan2" ></td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">CSF Penjualan</td>
-                                    <td>
-                                        <select class="chosen-select-width"  name="cb_csf_penjualan" style="width:100%">
-                                            <option value=""></option>
-                                        @foreach ($akun as $row)
-                                            <option value="{{ $row->id_akun}}" data-nama_akun="{{$row->nama_akun}}"> {{ $row->id_akun }} </option>
-                                        @endforeach
-                                        </select>
-									</td>
-                                    <td><input type="text" class="form-control" name="ed_csf_penjualan2" ></td>
+                                    <td><input type="text" class="form-control g" name="ed_waktu" style="text-align: right;"></td>
                                 </tr>
 
                             </tbody>
                           </table>
+                          <input type="hidden" name="kodekota" id="kodekota">
 
                         </form>
                       </div>
@@ -246,6 +200,11 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+    $('#cb_kota_asal').change(function(){
+        var idkota = $('#cb_kota_asal :selected').data('kota');
+        // alert(idkota);
+        var kotaid = $('#kodekota').val(idkota);
+    })
     $(document).ready( function () {
         $('#table_data').DataTable({
             "paging": true,
@@ -285,33 +244,11 @@
         $("input[name='ed_harga'],input[name='ed_waktu']").maskMoney({thousands:'.', decimal:',', precision:-1});
     });
 
-    $("select[name='cb_acc_penjualan']").change(function(){
-        var nama_akun = $(this).find(':selected').data('nama_akun');
-        $("input[name='ed_acc_penjualan2']").val(nama_akun);
-    });
-
-    $("select[name='cb_csf_penjualan']").change(function(){
-        var nama_akun = $(this).find(':selected').data('nama_akun');
-        $("input[name='ed_csf_penjualan2']").val(nama_akun);
-    });
-
-
     $(document).on("click","#btn_add",function(){
-		$("input[name='crud']").val('N');
-		$("input[name='ed_kode']").val('');
-		$("input[name='ed_kode_old']").val('');
-		$("input[name='ed_harga']").val('');
-		$("input[name='ed_waktu']").val('');
-		$("select[name='cb_jenis']").val('');
-		$("select[name='cb_angkutan']").val('');
-		$("select[name='cb_satuan']").val('');
-		$("select[name='cb_cabang']").val('').trigger('chosen:updated');
-		$("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
-		$("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
-		$("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
-		$("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
-		$("select[name='cb_acc_penjualan']").change();
-		$("select[name='cb_csf_penjualan']").change();
+        $("input[name='crud']").val('N');
+        $("input[name='ed_kode']").val('');
+        $("input[name='ed_kode_old']").val('');
+        $("input[name='ed_harga']").val(0);
         $("input[name='ed_waktu']").val(0);
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
@@ -334,19 +271,13 @@
             {
                 $("input[name='crud']").val('E');
                 $("input[name='ed_kode']").val(data.kode);
-                $("input[name='ed_kode_old']").val(data.kode);
+                $("input[name='ed_kode_old']").val(data.kode_detail_kargo);
                 $("input[name='ed_harga']").val(data.harga);
                 $("input[name='ed_waktu']").val(data.waktu);
                 $("select[name='cb_jenis']").val(data.jenis);
                 $("select[name='cb_angkutan']").val(data.kode_angkutan);
-                $("select[name='cb_satuan']").val(data.kode_satuan);
-                $("select[name='cb_cabang']").val(data.kode_cabang).trigger('chosen:updated');
                 $("select[name='cb_kota_asal']").val(data.id_kota_asal).trigger('chosen:updated');
                 $("select[name='cb_kota_tujuan']").val(data.id_kota_tujuan).trigger('chosen:updated');
-				$("select[name='cb_acc_penjualan']").val(data.acc_penjualan).trigger('chosen:updated');
-				$("select[name='cb_csf_penjualan']").val(data.csf_penjualan).trigger('chosen:updated');
-				$("select[name='cb_acc_penjualan']").change();
-				$("select[name='cb_csf_penjualan']").change();
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
             },
@@ -358,36 +289,92 @@
     });
 
     $(document).on("click","#btnsave",function(){
-        /*
-        var kode_old = $("#ed_kode_old").val();
-        var kode = $("#ed_kode").val();
-        var kota = $("#ed_kota").val();
-        var provinsi = $("#cb_kota_asal").val();
-        var crud   = $("#crud").val();
-        if(id == '' || id == null ){
-            alert('Id harus di isi');
-            $("#ed_kode").focus();
-            return false;
-        }
-        if(provinsi == '' || provinsi == null ){
-            alert('provinsi harus di isi');
-            $("#cb_kota_asal").focus();
-            return false;
-        }
-        /*
-        value = {
-            id_old: id_old,
-            id: id,
-            provinsi: provinsi,
-            kota: kota.toUpperCase(),
-            crud: crud,
-            _token: "{{ csrf_token() }}",
-        };
-        */
+        // /*
+        // var kode_old = $("#ed_kode_old").val();
+        // var kode = $("#ed_kode").val();
+        // var kota = $("#ed_kota").val();
+        // var provinsi = $("#cb_kota_asal").val();
+        // var crud   = $("#crud").val();
+        // if(id == '' || id == null ){
+        //     alert('Id harus di isi');
+        //     $("#ed_kode").focus();
+        //     return false;
+        // }
+        // if(provinsi == '' || provinsi == null ){
+        //     alert('provinsi harus di isi');
+        //     $("#cb_kota_asal").focus();
+        //     return false;
+        // }
+        // /*
+        // value = {
+        //     id_old: id_old,
+        //     id: id,
+        //     provinsi: provinsi,
+        //     kota: kota.toUpperCase(),
+        //     crud: crud,
+        //     _token: "{{ csrf_token() }}",
+        // };
+        // */
+        // var a = $(".a").val();
+        // var b = $(".b").val();
+        // var c = $(".c").val();
+        // var d = $(".d").val();
+        // var e = $(".e").val();
+        // var f = $(".f").val();
+        // var g = $(".g").val();
+        // if(a == '' || a == null ){
+        //     alert('Kode harus di isi');
+        //      $('html,body').animate({scrollTop: $('.a').offset().top}, 200, function() {
+        //       $(".a").focus();
+        //  });
+        //     return false;
+        // }
+        // if(b == '' || b == null ){
+        //     alert('Kota asal harus di isi');
+        //      $('html,body').animate({scrollTop: $('.b').offset().top}, 200, function() {
+        //      $('.b').focus();
+        //  });
+        //     return false;
+        // }
+        // if(c == '' || c == null ){
+        //     alert('Kota tujuan harus di isi');
+        //      $('html,body').animate({scrollTop: $('.c').offset().top}, 200, function() {
+        //      $('.c').focus();
+        //  });
+        //     return false;
+        // }
+        // if(d == '' || d == null ){
+        //     alert('Angkutan harus di isi');
+        //      $('html,body').animate({scrollTop: $('.d').offset().top}, 200, function() {
+        //      $('.d').focus();
+        //  });
+        //     return false;
+        // }
+        // if(e == '' || e == null ){
+        //     alert('Harga harus di isi');
+        //     $('html,body').animate({scrollTop: $('.e').offset().top}, 200, function() {
+        //      $('.e').focus();
+        //  });
+        //     return false;
+        // }
+        // if(f == '' || f == null ){
+        //     alert('Waktu/Estimasi harus di isi');
+        //    $('html,body').animate({scrollTop: $('.f').offset().top}, 200, function() {
+        //      $('.f').focus();
+        //  });
+        //     return false;
+        // }
+        //  if(g == '' || g == null ){
+        //     alert('Waktu/Estimasi harus di isi');
+        //    $('html,body').animate({scrollTop: $('.g').offset().top}, 200, function() {
+        //      $('.g').focus();
+        //  });
+        //     return false;
+        // }
         $.ajax(
         {
             url : baseUrl + "/sales/tarif_cabang_kargo/save_data",
-            type: "POST",
+            type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
@@ -418,7 +405,7 @@
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
-               swal("Error!", textStatus, "error");
+               swal("Kode Tidak boleh sama !", 'periksa sekali lagi', "warning");
             }
         });
     });
@@ -432,7 +419,7 @@
             _token: "{{ csrf_token() }}"
         };
         $.ajax({
-            type: "POST",
+            type: "get",
             url : baseUrl + "/sales/tarif_cabang_kargo/hapus_data",
             //dataType:"JSON",
             data: value,

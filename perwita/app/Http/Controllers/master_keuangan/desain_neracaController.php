@@ -40,7 +40,7 @@ class desain_neracaController extends Controller
     }
 
     public function save(Request $request){
-        //return json_encode($request->all());
+        // return json_encode($request->all());
         $response = [
             "status"    => "sukses",
             "content"   => "berhasil"
@@ -66,12 +66,14 @@ class desain_neracaController extends Controller
                 ]);
             }
 
-            foreach($request->detail as $data_detail){
-                DB::table("desain_detail_dt")->insert([
-                    "id_desain"     => $id,
-                    "nomor_id"      => $data_detail["nomor_id"],
-                    "id_akun"       => $data_detail["id_akun"]
-                ]);
+            if(isset($request->detail)){
+                foreach($request->detail as $data_detail){
+                    DB::table("desain_detail_dt")->insert([
+                        "id_desain"     => $id,
+                        "nomor_id"      => $data_detail["nomor_id"],
+                        "id_akun"       => $data_detail["id_akun"]
+                    ]);
+                }
             }
 
             return json_encode($response);
@@ -120,13 +122,16 @@ class desain_neracaController extends Controller
             ]);
         }
 
-        foreach($request->detail as $data_detail){
-            DB::table("desain_detail_dt")->insert([
-                "id_desain"     => $id,
-                "nomor_id"      => $data_detail["nomor_id"],
-                "id_akun"       => $data_detail["id_akun"]
-            ]);
+        if(isset($request->detail)){
+            foreach($request->detail as $data_detail){
+                DB::table("desain_detail_dt")->insert([
+                    "id_desain"     => $id,
+                    "nomor_id"      => $data_detail["nomor_id"],
+                    "id_akun"       => $data_detail["id_akun"]
+                ]);
+            }
         }
+        
 
         return json_encode($response);
     }

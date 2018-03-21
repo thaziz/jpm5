@@ -55,8 +55,10 @@ class invoice_Controller extends Controller
 
 
     public function index(){
+      $comp = Auth::user()->kode_cabang;
         $data = DB::table('invoice')
                   ->join('customer','i_kode_customer','=','kode')
+                  ->where('i_kode_cabang',$comp)
                   ->get();
         return view('sales.invoice.index',compact('data'));
     }
@@ -226,12 +228,14 @@ public function cari_do_invoice(request $request)
     $do_awal = Carbon::parse($do_awal)->format('Y-m-d');
     $do_akhir = Carbon::parse($do_akhir)->format('Y-m-d');
     $jenis = $request->cb_pendapatan;
+    $id = '0';
     if ($request->cb_pendapatan == 'KORAN') {
 
       $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
@@ -241,6 +245,7 @@ public function cari_do_invoice(request $request)
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
@@ -254,7 +259,7 @@ public function cari_do_invoice(request $request)
                     }
                 }
             }
-
+            $temp = array_values($temp);
             $data = $temp;
             
         }else{
@@ -263,6 +268,7 @@ public function cari_do_invoice(request $request)
     }else if ($request->cb_pendapatan == 'PAKET' || $jenis == 'KARGO') {
         $temp = DB::table('delivery_order')
               ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
+              ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','>=',$do_awal)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
@@ -272,6 +278,7 @@ public function cari_do_invoice(request $request)
         $temp1 = DB::table('delivery_order')
               ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
               ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
@@ -294,7 +301,7 @@ public function cari_do_invoice(request $request)
     }
     
 
-    return view('sales.invoice.tableDo',compact('data','jenis'));
+    return view('sales.invoice.tableDo',compact('data','jenis','id'));
 }
 public function append_do(request $request)
 {
@@ -364,8 +371,6 @@ public function pajak_lain(request $request)
 }
 public function simpan_invoice(request $request)
 {
-    // dd($request->all());
-  
     $do_awal        = str_replace('/', '-', $request->do_awal);
     $do_akhir       = str_replace('/', '-', $request->do_awal);
     $ed_jatuh_tempo = str_replace('/', '-', $request->ed_jatuh_tempo);
@@ -384,6 +389,7 @@ public function simpan_invoice(request $request)
     $cari_no_invoice = DB::table('invoice')
                          ->where('i_nomor',$request->nota_invoice)
                          ->first();
+    // dd($request->all());
 
 
     if ($request->cb_jenis_ppn == 1) {
@@ -416,6 +422,7 @@ public function simpan_invoice(request $request)
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_netto'              =>  $ed_total,
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
@@ -496,6 +503,7 @@ public function simpan_invoice(request $request)
                                           'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
                                           'i_total'              =>  $total_tagihan,
                                           'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
@@ -572,6 +580,7 @@ public function simpan_invoice(request $request)
                                           'i_total'              =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_total_tagihan'      =>  $total_tagihan,
+                                          'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_netto'              =>  $ed_total,
@@ -645,7 +654,6 @@ public function simpan_invoice(request $request)
              $index = str_pad($index, 5, '0', STR_PAD_LEFT);
              $nota = 'INV' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
 
-
              $save_header_invoice = DB::table('invoice')
                                      ->insert([
                                           'i_nomor'              =>  $nota,
@@ -657,6 +665,7 @@ public function simpan_invoice(request $request)
                                           'i_total'              =>  $total_tagihan,
                                           'i_total_tagihan'      =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
+                                          'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_netto'              =>  $ed_total,
@@ -729,6 +738,8 @@ public function edit_invoice($id)
               ->where('i_nomor',$id)
               ->first();
     $data_dt = DB::table('invoice_d')
+              ->join('delivery_order','nomor','=','id_nomor_do')
+              ->leftjoin('delivery_orderd','dd_id','=','id_nomor_do_dt')
               ->where('id_nomor_invoice',$id)
               ->get();
 
@@ -744,6 +755,88 @@ public function edit_invoice($id)
                 ->get();
     return view('sales.invoice.editInvoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt'));
 }
+public function cari_do_edit_invoice(request $request)
+{
+    $do_awal = str_replace('/', '-' ,$request->do_awal);
+    $do_akhir = str_replace('/', '-' ,$request->do_akhir);
+    $do_awal = Carbon::parse($do_awal)->format('Y-m-d');
+    $do_akhir = Carbon::parse($do_akhir)->format('Y-m-d');
+    $jenis = $request->cb_pendapatan;
+    $id = $request->id;
+    if ($request->cb_pendapatan == 'KORAN') {
+
+      $temp = DB::table('delivery_order')
+              ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
+              ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.kode_cabang','=',$request->cabang)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+      $temp1 = DB::table('delivery_order')
+              ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
+              ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.kode_cabang','=',$request->cabang)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+        if (isset($request->array_simpan)) {
+            for ($i=0; $i < count($temp1); $i++) { 
+                for ($a=0; $a < count($request->array_simpan); $a++) { 
+                    if ($request->array_simpan[$a] == $temp1[$i]->dd_id) {
+                        unset($temp[$i]);
+                    }
+                }
+            }
+            $temp = array_values($temp);
+            $data = $temp;
+            
+        }else{
+            $data = $temp;
+        }
+    }else if ($request->cb_pendapatan == 'PAKET' || $jenis == 'KARGO') {
+        $temp = DB::table('delivery_order')
+              ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.kode_cabang','=',$request->cabang)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+        $temp1 = DB::table('delivery_order')
+              ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
+              ->where('delivery_order.tanggal','>=',$do_awal)
+              ->where('delivery_order.kode_cabang','=',$request->cabang)
+              ->where('delivery_order.tanggal','<=',$do_akhir)
+              ->where('delivery_order.jenis',$request->cb_pendapatan)
+              ->where('delivery_order.kode_customer',$request->customer)
+              ->get();
+
+        if (isset($request->array_simpan)) {
+            for ($i=0; $i < count($temp1); $i++) { 
+                for ($a=0; $a < count($request->array_simpan); $a++) { 
+                    if ($request->array_simpan[$a] == $temp1[$i]->nomor) {
+                        unset($temp[$i]);
+                    }
+                }
+            }
+
+            $data = $temp;
+            
+        }else{
+            $data = $temp;
+        }
+    }
+    
+
+    return view('sales.invoice.tableDo',compact('data','jenis','id'));
+}
 
 public function hapus_invoice(request $request)
 {
@@ -751,5 +844,17 @@ public function hapus_invoice(request $request)
                ->where('i_nomor',$request->id)
                ->delete();
     return 'berhasil';
+}
+
+public function update_invoice(request $request)
+{
+    // dd($request->all());
+    
+    $delete = DB::table('invoice')
+                ->where('i_nomor',$request->nota_invoice)
+                ->delete();
+
+    $this->simpan_invoice($request);
+    return response()->json(['status'=>1]);
 }
 }

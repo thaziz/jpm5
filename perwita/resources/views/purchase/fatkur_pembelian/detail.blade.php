@@ -187,8 +187,17 @@
                       <tr>
                          <td style='text-align: right'>
                           <select class='form-control pajakpph_po edit' name="jenispph_po" disabled="">
-                            @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}' @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+                            @if($faktur->fp_pph != '')
+                              @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'   @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+  
+                            @else
+                              <option value=""> Pilih Pajak PPH
+                              </option>
 
+                              @foreach($data['pajak'] as $pajak) <option value='{{$pajak->id}},{{$pajak->nilai}}'   @if($pajak->nama == $faktur->fp_jenispph) selected @endif> {{$pajak->nama}}</option> @endforeach
+                              
+                            @endif
+                            
                           </select> </td>
 
                          <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph_po" readonly=""> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph_po" style='text-align: right' readonly="" name='hasilpph_po' value="{{ number_format($faktur->fp_pph, 2) }}"> </div> </div> </td>
@@ -229,7 +238,13 @@
                           <!--  <button class="btn btn-primary" style="margin-right: 10px;" type="text" id="createmodal" data-toggle="modal" data-target="#myModal5"><i class="fa fa-book">&nbsp;Buat Tanda Terima</i></button> 
                        &nbsp;
                         -->
-                           <a class="btn btn-sm btn-info " href="{{url('fakturpembelian/cetaktt/'.$data['tt'][0]->tt_idform.'')}}" "><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>   &nbsp; <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+                           <a class="btn btn-sm btn-info " href="{{url('fakturpembelian/cetaktt/'.$data['tt'][0]->tt_idform.'')}}" "><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>   &nbsp;
+
+                           @if($data['faktur'][0]->fp_status == 'Approved')
+
+                           @else
+                             <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+                           @endif
                           
                         </td>
                       </tr>
@@ -821,7 +836,7 @@
     $('.removes-btn').hide();
     $('.removes-itm').hide();
     $('.tmbh-po').hide();
-    $('.simpan').hide();
+    $('.simpanupdate').hide();
     $('#createmodal_tt').hide();
     $('#createmodal_pajakpo').hide();
     $('.tmbh-brg').hide();
@@ -1040,7 +1055,7 @@
           },
           function(){
         $.ajax({
-          type : "post",
+          type : "get",
           data : form_data2,
           url : baseUrl + "/fakturpembelian/updatefaktur",
           dataType : 'json',
@@ -4551,7 +4566,7 @@ $('.ubah').click(function(){
   $('.edit').attr('disabled' , false);
    $('.tmbh-po').show();
    $('.tmbh-brg').show();
-   $('.simpan').show();
+   $('.simpanupdate').show();
    $('#createmodal_pajakpo').show();
    $('#createmodal_tt').show();
     

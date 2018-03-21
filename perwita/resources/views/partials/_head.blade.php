@@ -35,7 +35,7 @@
 	
     
     <!--checkbox-->
- {{-- <link href="{{asset('assets/css/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet"> --}}
+  <link href="{{asset('assets/css/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet"> 
     <!-- datepicker -->
     <link href="{{ asset('assets/vendors/datapicker/datepicker3.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/vendors/daterangepicker/daterangepicker.css') }}" rel="stylesheet">

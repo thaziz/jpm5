@@ -33,30 +33,7 @@
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
+                    
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
 
@@ -92,7 +69,7 @@
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title">Insert Edit Tarif Cabang Koli</h4>
+                        <h4 class="modal-title">Insert Edit Tarif Penerus Default</h4>
                       </div>
                       <div class="modal-body">
                         <form class="form-horizontal kirim">
@@ -102,7 +79,8 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Jenis</td>
                                     <td>   
-                                        <select class="form-control"  name="cb_jenis" style="width:100%">
+                                        <select class="form-control a"  name="cb_jenis" id="cb_jenis" style="width:100%">
+                                            <option value="" selected="" disabled="">-- Pilih jenis --</option>
                                             <option value="REGULER">REGULER</option>
                                             <option value="EXPRESS">EXPRESS</option>
                                         </select>
@@ -114,21 +92,19 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Tipe Kiriman</td>
                                     <td>   
-                                        <select class="form-control"  name="cb_tipe_kiriman" style="width:100%">
+                                        <select class="form-control b"  name="cb_tipe_kiriman" id="cb_tipe_kiriman" style="width:100%">
+                                            <option value="" selected="" disabled="">-- Pilih kiriman --</option>
                                             <option value="DOKUMEN">DOKUMEN</option>
-                                            <option value="KARGO PAKET">KARGO PAKET</option>
                                             <option value="KILOGRAM">KILOGRAM</option>
                                             <option value="KOLI">KOLI</option>
-                                            <option value="KERTAS">KERTAS</option>
-                                            <option value="KARGO KERTAS">KARGO KERTAS</option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Keterangan</td>
-                                    <td>   
-                                        <select class="form-control"  name="cb_keterangan" style="width:100%">
-                                            <option></option>
+                                    <td style="padding-top: 0.4cm" id="test">Keterangan</td>
+                                    <td id="test2">   
+                                        <select class="form-control c"  name="cb_keterangan" id="cb_keterangan" style="width:100%">
+                                            <option value="" selected="" disabled="">-- Pilih keterangan --</option>
                                             <option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>
                                             <option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>
                                             <option value="TARIF 20 KG SAMPAI 30 KG">TARIF 20 KG SAMPAI 30 KG</option>
@@ -137,12 +113,34 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Harga</td>
-                                    <td><input type="text" class="form-control" name="ed_harga" style="text-align: right;"></td>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_cabang" style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
+                                            @foreach ($cabang_default as $a)
+                                                <option value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
                                 </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Harga</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_harga" id="ed_harga" style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Harga Zona Terlebih Dahulu --</option>
+                                            @foreach ($zona as $el)
+                                                <option value="{{ $el->harga_zona }}" data-id="{{ $el->id_zona }}">{{ $el->nama }} - {{ $el->harga_zona }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <input type="hidden" name="id_zona_foreign">
 
                             </tbody>
                           </table>
+
 
                         </form>
                       </div>
@@ -178,6 +176,62 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+    $('#ed_harga').change(function(){
+        var hargafind = $(this).find(':selected').data('id');
+        alert(hargafind);
+        $('input[name="id_zona_foreign"]').val(hargafind);
+
+    });
+
+
+    $('#cb_tipe_kiriman').change(function(){
+        var jenis = $('#cb_jenis').find(':selected').val();
+        var tipe = $(this).find(':selected').val();
+        // alert(abc);
+        if (jenis == 'REGULER' && tipe == 'KILOGRAM') {
+            $('#cb_keterangan').html('<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+'<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
+                                                        '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>');
+
+            $('#test').show();
+            $('#test2').show();
+        }else if (jenis == 'EXPRESS' && tipe == 'KILOGRAM') {
+            $('#cb_keterangan').html('<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+'<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
+                                                        '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>');
+
+            $('#test').show();
+            $('#test2').show();
+        }
+        else if (jenis == 'REGULER' && tipe == 'KOLI') {
+            $('#cb_keterangan').html('<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+
+                                                        '<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
+                                                        '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>'+
+                                                        '<option value="TARIF 20 KG SAMPAI 30 KG">TARIF 20 KG SAMPAI 30 KG</option>'+
+                                                        '<option value="TARIF DI ATAS 30 KG">TARIF DI ATAS 30 KG</option>');
+
+            $('#test').show();
+            $('#test2').show();
+        }
+        else if (jenis == 'EXPRESS' && tipe == 'KOLI') {
+            $('#cb_keterangan').html('<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+
+                                                        '<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
+                                                        '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>'+
+                                                        '<option value="TARIF 20 KG SAMPAI 30 KG">TARIF 20 KG SAMPAI 30 KG</option>'+
+                                                        '<option value="TARIF DI ATAS 30 KG">TARIF DI ATAS 30 KG</option>');
+
+            $('#test').show();
+            $('#test2').show();
+        }
+        else if (jenis == 'REGULER' && tipe == 'DOKUMEN') {
+            $('#test').hide();
+            $('#test2').hide();
+        }else if (jenis == 'EXPRESS' && tipe == 'DOKUMEN') {
+            $('#test').hide();
+            $('#test2').hide();
+        }
+        
+    })
+
     $(document).ready( function () {
         $('#table_data').DataTable({
             "paging": true,
@@ -206,7 +260,7 @@
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
                 '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"100%",search_contains:true}
+                '.chosen-select-width'     : {width:"100%"}
                 }
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
@@ -215,9 +269,14 @@
     });
 
     $(document).on("click","#btn_add",function(){
+         $('#test').show();
+            $('#test2').show();
         $("input[name='crud']").val('N');
         $("input[name='ed_id']").val('');
         $("input[name='ed_harga']").val(0);
+        $("select[name='cb_jenis']").val('');
+        $("select[name='cb_tipe_kiriman']").val('');
+        $("select[name='cb_keterangan']").val('');
         $("#modal").modal("show");
         $("input[name='cb_jenis']").focus();
     });
@@ -279,10 +338,11 @@
             _token: "{{ csrf_token() }}",
         };
         */
+       
         $.ajax(
         {
             url : baseUrl + "/sales/tarif_penerus_default/save_data",
-            type: "POST",
+            type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
@@ -292,7 +352,8 @@
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );
                         $("#modal").modal('hide');
-                        $("#btn_add").focus();
+                        $("#btn_add").focus(); 
+                        alert('data berhasil di simpan');
                     }else{
                         alert("Gagal menyimpan data!");
                     }
@@ -313,7 +374,7 @@
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
-               swal("Error!", textStatus, "error");
+               swal("Data sudah ada di Database!", 'Cek Data Sekali lagi!', "warning");
             }
         });
     });
@@ -327,7 +388,7 @@
             _token: "{{ csrf_token() }}"
         };
         $.ajax({
-            type: "POST",
+            type: "get",
             url : baseUrl + "/sales/tarif_penerus_default/hapus_data",
             //dataType:"JSON",
             data: value,

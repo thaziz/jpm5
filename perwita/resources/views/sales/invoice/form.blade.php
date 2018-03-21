@@ -9,7 +9,7 @@
 
 .disabled {
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 1;
 }
 .center{
     text-align: center;
@@ -61,7 +61,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">
-                                        <select class="form-control chosen-select-width cabang " disabled="" name="cb_cabang">
+                                        <select class="form-control chosen-select-width cabang chosen-disabled " disabled=""  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -76,7 +76,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4">
-                                    <select class="chosen-select-width cus_disabled" oncha  name="customer" id="customer" style="width:100%" >
+                                    <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                         <option value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
@@ -190,13 +190,19 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Netto Detail</td>
+                                <td colspan="4">
+                                    <input type="text" name="netto_detail" readonly=""  class="form-control netto_detail" style="text-transform: uppercase;text-align:right" >
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
                                 <td colspan="4">
                                     <input type="text" name="diskon2" onblur="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Netto</td>
+                                <td style="padding-top: 0.4cm; text-align:right">Netto DPP</td>
                                 <td colspan="4">
                                     <input type="text" name="netto_total" id="netto_total" class="form-control netto_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
                                 </td>
@@ -393,6 +399,7 @@
         var ed_keterangan = $('#ed_keterangan').val();
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
+        var cabang        = $('.cabang').val();
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -408,7 +415,7 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);
@@ -425,10 +432,15 @@
 
    function hitung_total_tagihan(){
         var cb_jenis_ppn = $('#cb_jenis_ppn').val();
-
+        var diskon2      = $('.diskon2').val();
         var netto_total  = $('.netto_total').val();
+        var netto_detail = $('.netto_detail').val();
         netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
         netto_total      = parseInt(netto_total)/100;
+        netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
+        netto_detail     = parseInt(netto_detail)/100;
+        diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+        diskon2          = parseInt(diskon2)/100;
 
         var ppn  = $('.ppn').val();
         ppn      = ppn.replace(/[^0-9\-]+/g,"");
@@ -440,6 +452,8 @@
         if (cb_jenis_ppn == 1 || cb_jenis_ppn == 2 || cb_jenis_ppn == 0) {
             var total_tagihan = netto_total+ppn-pph;
         }else if (cb_jenis_ppn == 3 || cb_jenis_ppn == 5) {
+            var total_tagihan = netto_detail-diskon2-pph;
+        }else if (cb_jenis_ppn == 4) {
             var total_tagihan = netto_total-pph;
         }
 
@@ -451,33 +465,57 @@
    function hitung_pajak_ppn() {
        var cb_jenis_ppn = $('#cb_jenis_ppn').val();
        var netto_total  = $('.netto_total').val();
+       var netto_detail = $('.netto_detail').val();
+       var diskon2      = $('.diskon2').val();
        netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
        netto_total      = parseInt(netto_total)/100;
+
+       netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
+       netto_detail     = parseInt(netto_detail)/100;
+
+       diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+       diskon2          = parseInt(diskon2)/100;
+       hasil_netto      = parseFloat(netto_detail) - parseFloat(diskon2);
+
         if (cb_jenis_ppn == 1) {
+
             var ppn = 0;
-            ppn = netto_total * 1.1 ;
-            ppn_netto = ppn - netto_total;
+            ppn = hasil_netto * 1.1 ;
+            ppn_netto = ppn - hasil_netto;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 2){
+
             var ppn = 0;
-            ppn = netto_total * 1.01 ;
-            ppn_netto = ppn - netto_total;
+            ppn = hasil_netto * 1.01 ;
+            ppn_netto = ppn - hasil_netto;
             $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','))
+
         }else if (cb_jenis_ppn == 3){
+
             var ppn = 0;
-            ppn = netto_total * 1.01 ;
-            ppn_netto = ppn - netto_total;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            ppn = 100/101 * hasil_netto ;
+            ppn_netto = hasil_netto - ppn;
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','));
+
         }else if (cb_jenis_ppn == 5){
+
             var ppn = 0;
-            ppn = netto_total * 1.1 ;
-            ppn_netto = ppn - netto_total;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            ppn = 100/110 * hasil_netto ;
+            ppn_netto = hasil_netto - ppn ;
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
+            $('.netto_total').val(accounting.formatMoney(ppn,"",2,'.',','));
+
         }else if (cb_jenis_ppn == 4){
             var ppn = 0;
             ppn = netto_total * 1 ;
             ppn_netto = ppn - netto_total;
-            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','))
+            $('.ppn').val(accounting.formatMoney(ppn_netto,"",2,'.',','));
+            $('.netto_total').val(accounting.formatMoney(hasil_netto,"",2,'.',','));
+
         }
 
 
@@ -532,6 +570,7 @@
         temp_diskon2     = parseFloat(temp_diskon2)
 
 
+
         var netto = 0 ;
         $('.dd_total').each(function(){
             temp_total += parseFloat($(this).val());
@@ -543,10 +582,11 @@
 
     
         netto = temp_total-(temp_diskon2+temp_diskon);
-
+        netto_diskon1 = temp_total - temp_diskon;
         $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
-        $('.netto_total').val(accounting.formatMoney(netto,"",2,'.',','));
+        $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
+        $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
 
         hitung_pajak_ppn();
@@ -704,7 +744,7 @@
 
           $.ajax({
           url:baseUrl + '/sales/simpan_invoice',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()

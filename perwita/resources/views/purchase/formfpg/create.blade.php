@@ -57,9 +57,32 @@
                       <div class="row">
                         <div class="col-xs-6"> 
                             <table class="table table-striped table-bordered">
+                            <tr>
+                              <th> Cabang </th>
+                              <td> <select class='form-control chosen-select-width1 cabang' >
+                                  <option value="">
+                                    Pilih-Cabang 
+                                  </option>
+
+                                   @foreach($data['cabang'] as $cabang)
+                                    @if($cabang->kode == Auth::user()->kode_cabang)
+                                    <option selected="" value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @else
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @endif
+                                  @endforeach
+                                  </select>
+
+                                 </td>
+                            </tr>
+
                               <tr>
                                 <th> No FPG </th>
-                                <td> <input type='text' class='input-sm form-control nofpg' value="{{$data['nofpg']}}" readonly="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"></td>
+                                <td> <input type='text' class='input-sm form-control nofpg' value="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type="hidden" class="valcabang" name="cabang"> </td>
                               </tr>
                               <tr>
                                 <th> Tanggal </th>
@@ -80,20 +103,7 @@
                                            <option value="{{$jenisbayar->idjenisbayar}}"> {{$jenisbayar->jenisbayar}} </option>
                                        @endforeach
                                       </select>
-                                  <!-- <div class="row">
-                                    <div class="col-md-3">
-                                      <input type='text' class='form-control'>
-                                    </div>
-                                    <div class="col-xs-6">
-                                      <select class="form-control">
-                                        <option value=""> Giro Kas Kecil </option>
-                                        <option value=""> Supplier / Hutang Dagang </option>
-                                        <option value=""> Voucher / Hutang Lain -2 </option>
-                                        <option value=""> Uang Muka Pembelian </option>
-                                        <option value=""> Transfer Kas / Bank </option>
-                                      </select>
-                                    </div>
-                                  </div> -->
+                                 
                                 </td>
                               </tr>
                             </table>
@@ -127,7 +137,7 @@
                           <table class='table table-bordered table-striped tbl-jenisbayar' style="width:100%">
                             <tr>
                               <th> Kode  </th>
-                              <td> <select class='form-control  chosen-select-width  jenisbayar2' name="kodebayar">  </select> </td>
+                              <td> <select class='form-control  chosen-select-width  jenisbayar2' name="kodebayar">  </select> <input type="hidden" class="hsljenisbayar" name="kodebayar">  </td>
                             </tr>
 
                             <tr>
@@ -165,8 +175,8 @@
                         <div class="tabs-container">
                         <ul class="nav nav-tabs">
 
-                          <button class="btn btn-default active"  data-toggle="tab" href="#tab-1" id="detailbayar"> Detail Pembayaran </a></button>
-                          <button data-toggle="tab" href="#tab-2" id="bayarcek" class="btn btn-default">Pembayaran dengan Cek / BG  </button></li>
+                          <button class="btn btn-default active"  data-toggle="tab" href="#tab-1" id="detailbayar" > Detail Pembayaran </a></button>
+                          <button data-toggle="tab" href="#tab-2" id="bayarcek" class="btn btn-default" > Pembayaran dengan Cek / BG  </button></li>
                         
                         </ul>
                         <div class="tab-content">
@@ -216,7 +226,7 @@
 
                                           </tr>
                                         </table>
-                                        <div class="pull-left"> <button class="btn tbn-sm btn-info " type="button" data-toggle="modal" data-target="#myModal5"> <i class="fa fa-plus" aria-hidden="true"></i> Tambah Data  Faktur</button> </div>
+                                        <div class="pull-left"> <button class="btn tbn-sm btn-info " type="button" data-toggle="modal" data-target="#myModal5" id="getDataFaktur"> <i class="fa fa-plus" aria-hidden="true"></i> Tambah Data  Faktur</button> </div>
 
                                    </div>
                                     <hr>
@@ -447,13 +457,13 @@
               </div>
            </div> <!-- END MODAL -->   <!-- MODAL NO FAKTUR -->
               
-
-
-
                             <div id="tab-2" class="tab-pane">
                                 <div class="panel-body">
                                    <div class="row">
                                      <table class="table">
+                                        <tr>
+                                          <th colspan="4" style="color:#009aa9"> <h3> Asal Bank : </h3> </th>
+                                        </tr>
                                         <tr>
                                           <th> Kode Bank </th> <th> Nama Bank </th> <th> Cabang / Alamat </th> <th> No Account </th>
                                         </tr>
@@ -465,7 +475,7 @@
                                                     <option value=""> Pilih Data Bank </option>
 
                                                     @foreach($data['bank'] as $bank)
-                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}}"> {{$bank->mb_kode}}  </option>
+                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                                     @endforeach
                                                   
                                                 </select> </td>
@@ -478,54 +488,180 @@
                                     <div class="col-md-3">
                                     <fieldset>
                                         <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="checkbox7" type="checkbox" name="jenisbayarbank" value="CHECK/BG">
-                                            <label for="checkbox7">
+                                            <input id="jenisbayarbankcekbg" type="checkbox" name="jenisbayarbank" value="CHECK/BG" class="jenisbayarbankbg" checked="">
+                                            <label for="jenisbayarbankcekbg">
                                                 Cheque / BG
                                             </label>
                                         </div>
                                         <div class="checkbox checkbox-info checkbox-circle">
-                                            <input id="checkbox8" type="checkbox" checked="" name="jenisbayarbank" value="TF">
-                                            <label for="checkbox8">
-                                               Transfer Bank
+                                            <input id="jenisbayarbanktf" type="checkbox"  name="jenisbayarbank" value="TF" class="jenisbayarbankbgtf">
+                                            <label for="jenisbayarbanktf">
+                                               Transfer Bank Luar Rekening
                                             </label>
                                         </div>
+
+                                       <div class="checkbox checkbox-info checkbox-circle">
+                                            <input id="jenisbayarbanktfacc" type="checkbox"  name="jenisbayarbank" value="TF" class="jenisbayarbanktfacc">
+                                            <label for="jenisbayarbanktfacc">
+                                               Transfer Bank Account Bank
+                                            </label>
+                                        </div>
+
                                     </fieldset>
                                       <br>
                                       <br>
                                 <!--       <div class="pull-left"> <button class="btn btn-info"> <i class="fa fa-plus" aria-hidden="true"></i> Tambah Data Bank </button> </div> -->
                                 </div>
 
-                                <div class="col-md-6">
-                                <table class="table">
-                                <tr>
-                                  <th> No Cheque / BG </th>
-                                  <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2"> </td>
-                                
-                                  <th> Nominal </th>
-                                  <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
+                                <div class="col-md-6 checkbgtf">
+                                    <table class="table">
+                                    <tr>
+                                      <th colspan="4" style="color:#009aa9"> <h3> Tujuan Bank : </h3> </th>
+                                    </tr>
 
-                                  <td> <div class="checkbox  checkbox-circle">
-                                            <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
-                                            <label for="checkbox7">
-                                               Setuju
-                                            </label>
-                                        </div> </td>
-                                </tr>
+                                    <tr>
+                                      <th> <h4> No Cheque / BG </h4> </th>
+                                      <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank">
 
-                                <tr>
-                                  <th>Jatuh Tempo </th>
-                                  <td> <input type="text" class="input-sm form-control jthtmpo_bank"></td>
+                                     </td>
+                                      
+                                      <th> Nominal </th>
+                                      <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
 
-                                  <th> Hari </th>
-                                  <td> <input type="text" class="input-sm form-control hari_bank"> </td>
+                                      <td> <div class="checkbox  checkbox-circle">
+                                                <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
+                                                <label for="checkbox7">
+                                                   Setuju
+                                                </label>
+                                            </div> </td>
+                                    </tr>
 
+                                    <tr>
+                                      <th>Jatuh Tempo </th>
+                                      <td> <input type="text" class="input-sm form-control jthtmpo_bank"></td>
 
-                                </tr>
-                                </table>
-
-
+                                  
+                                    </tr>
+                                    </table>
                                 </div>
 
+
+                                <div class="col-xs-8 tujuanbank">
+                                    <table class="table">
+                                      <tr>
+                                      <th colspan="4" style="color:#009aa9"> <h3> Tujuan Bank : </h3> </th>
+                                    </tr>
+
+                                    <tr>
+                                      <th> <h4> No Referensi  </h4> </th>
+                                      <td> <input type="text" class="input-sm form-control namabank" name="namabank">
+                                     </td>
+                                      
+
+                                      <th> No Rekening </th>
+                                      <td> <input type="text" class="input-sm form-control norekening" name="norekening"></td>
+                                     
+                                     <th> Nama Rekening </th>
+                                      <td> <input type="text" class="input-sm form-control norekening" name="norekening"></td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                      <th> Nominal </th>
+                                      
+                                      <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
+
+                                      
+
+                                      <th> Periode </th>
+                                      <td> <div class="input-group date">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tglfpg" required="">
+                                          </div>
+                                      </td>
+
+
+                                      <td> <div class="checkbox  checkbox-circle">
+                                                <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
+                                                <label for="checkbox7">
+                                                   Setuju
+                                                </label>
+                                            </div>
+                                      </td>
+
+                                    </tr>
+                                    </table>
+
+
+                                    <div class="pull-right">
+                                        <button class="btn btn-sm btn-info" id="tmbhtujuan" type="button"> Tambah Rekening </button>
+                                    </div>
+                                </div>
+
+                                 <div class="col-xs-8 tujuanbankacc">
+                                  
+
+                                    <table class="table">
+                                      <tr>
+                                      <th colspan="4" style="color:#009aa9"> <h3> Tujuan Bank : </h3> </th>
+                                    </tr>
+
+                                    <tr>
+                                      <th> <h4> No Referensi  </h4> </th>
+                                      <td> <input type="text" class="input-sm form-control namabank" name="namabank">
+                                     </td>
+                                      
+
+                                      <th> Acc Rekening </th>
+                                      <td> <select class="form-control selectOutlet chosen-select-width1 bank" name="tujuanbank">
+                                                  <!--   <option value="1, BANK A, 1245"> Bank A </option>
+                                                    <option value="2, BANK B, 234"> Bank B </option>
+                                                    <option value="3, BANK C, 235"> Bank C </option> -->
+                                                    <option value=""> Pilih Data Bank </option>
+
+                                                    @foreach($data['bank'] as $bank)
+                                                      <option value="{{$bank->mb_id}}, {{$bank->mb_nama}} , {{$bank->mb_cabang}} ,{{$bank->mb_accno}}"> {{$bank->mb_kode}}  </option>
+                                                    @endforeach
+                                                  
+                                                </select>
+                                      </td>
+                                     
+                                     <th> Nama Rekening </th>
+                                      <td> <input type="text" class="input-sm form-control nmbank" name="nama"></td>
+
+                                    </tr>
+
+                                    <tr>
+
+                                      <th> Nominal </th>
+                                      
+                                      <td> <input type="text" class="input-sm form-control nominal" style="text-align: right"> <input type="hidden" class="idbank"> </td>
+
+                                      
+
+                                      <th> Periode </th>
+                                      <td> <div class="input-group date">
+                                          <span class="input-sm input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control tgl" name="tglfpg" required="">
+                                          </div>
+                                      </td>
+
+
+                                      <td> <div class="checkbox  checkbox-circle">
+                                                <input id="checkbox7" type="checkbox" name="setuju" required="" checked="">
+                                                <label for="checkbox7">
+                                                   Setuju
+                                                </label>
+                                            </div>
+                                      </td>
+
+                                    </tr>
+                                    </table>
+
+
+                                    <div class="pull-right">
+                                        <button class="btn btn-sm btn-info" id="tmbhtujuan" type="button"> Tambah Rekening </button>
+                                    </div>
+                                </div>
 
                                 <div class="col-md-12" style="padding-top: 20px">
                                   <table class="table table-bordered" id="tbl-bank">
@@ -568,10 +704,10 @@
                   <div class="pull-right">
                     <table border="0">
                     <tr>
-                      <td> <a class="btn btn-sm btn-warning" href={{url('formfpg/formfpg')}}> Kembali </a> &nbsp; </td>
-                      <td> <div class='print'> </div> &nbsp; </td>
-                      <td> <a class="btn btn-sm btn-info reload"> <i class="fa fa-refresh"></i>  Reload  </a> &nbsp;</td>
-                      <td> <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-sm btn-success simpansukses">    &nbsp; </form> </td>
+                      <td> <a  class="btn btn-sm btn-warning" href={{url('formfpg/formfpg')}}> Kembali </a> </td>
+                      <td> <div class='print'> </div> </td>
+                      <td> <a class="btn btn-sm btn-info reload" type="button"> <i class="fa fa-refresh"></i>  Reload  </a> </td>
+                      <td> <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-sm btn-success simpansukses">  </form> </td>
                     </tr>
                     </table>
                    
@@ -599,6 +735,150 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+      $('.tujuanbank').hide();
+      $('.tujuanbankacc').hide();
+
+      //MENDAPATKAN NO FPG
+       cabang = $('.cabang').val();
+        $('.valcabang').val(cabang);
+     
+      $('.cabang2').val(cabang);
+       $.ajax({
+          type : "get",
+          data : {cabang},
+          url : baseUrl + '/formfpg/getnofpg',
+          dataType : 'json',
+          success : function (response){     
+                cabang = $('.cabang').val();
+               var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
+               
+                $('.nofpg').val(nofpg);
+          },
+        })
+
+
+     
+
+
+      $('#getbank').click(function(){
+     //   alert('hei');
+        bank = $('.bank').val();
+       // alert(bank);
+        if(bank == ''){
+          toastr.info("Data Bank Belum diisi :)");
+          return false;
+        }
+      })
+
+      nomrbnk = 1;   
+      $('#tmbhtujuan').click(function(){
+          lengthbank2 = $('.tblbank').length;
+          if(lengthbank2 > 1){
+            $('.nominal').attr('readonly' , true);
+          }
+
+           nofpg = $('.nofpg').val();
+          namabank = $('.namabank').val();
+          norekening = $('.norekening').val();
+          nominal = $('.nominal').val();
+          jatuhtempo = $('.jthtmpo_bank').val();
+          tgl = $('.tgl').val();
+
+          var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
+                      "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> - </a></td>"+ // NOSERI
+                      "<td>"+tgl+"</td>"+ // TGL
+                      "<td>"+namabank+"-"+norekening+"</td> <td> <input type='text' class='form-control jatuhtempotblbank' value='"+jatuhtempo+"'> </td>" + //JATUH TEMPO
+                      "<td> <input type='text' data-id='"+nomrbnk+"' class='input-sm form-control nominaltblbank nominalbank"+nomrbnk+"' readonly name='nominalbank[]' style='text-align:right' required value="+nominal+"> </td>" + //NOMINAL
+                      "<td> <button class='btn btn-danger remove-btn' data-id='"+nomrbnk+"' type='button'><i class='fa fa-trash'></i></button></td> </tr>"
+          
+          $("#tbl-bank").append(row);
+
+          $('.nominalbank1').val(nominalbank);
+          $('.ChequeBg').val(nominalbank);
+
+      })
+
+       $('.jenisbayarbankbgtf').change(function(){
+        $this = $(this);
+          if ($this.is(":checked")) {
+           $('.jenisbayarbankbg').prop({ disabled: true, checked: false }); 
+           $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false }); 
+           $('.checkbgtf').hide();
+           $('.tujuanbank').show();
+          }
+          else {
+           $('.jenisbayarbankbg').prop({ disabled: false, checked: false }); 
+           $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false }); 
+           $('.checkbgtf').show();
+           $('.tujuanbank').hide();
+           $('.tujuanbankacc').hide();
+          }
+      })
+
+
+       $('.jenisbayarbanktfacc').change(function(){
+        $this = $(this);
+          if ($this.is(":checked")) {
+           $('.jenisbayarbankbg').prop({ disabled: true, checked: false }); 
+           $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
+           $('.checkbgtf').hide();
+           $('.tujuanbank').hide();
+           $('.tujuanbankacc').show();
+          }
+          else {
+           $('.jenisbayarbankbg').prop({ disabled: false, checked: false }); 
+           $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
+           $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false }); 
+           $('.checkbgtf').show();
+           $('.tujuanbank').hide();
+           $('.tujuanbankacc').hide();
+          }
+      })
+
+        // BANK BG TF
+       $this = $('.jenisbayarbankbgtf');
+           if ($this.is(":checked")) {
+              $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
+           }
+           else {
+              $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
+
+           }
+
+      $('.jenisbayarbankbg').change(function(){
+          $this = $(this);
+           if ($this.is(":checked")) {
+              $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
+              $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false }); 
+           }
+           else {
+              $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
+              $('.jenisbayarbanktfacc').prop({ disabled: false, checked: false }); 
+
+           }
+      })
+
      $('#formfpg').submit(function(){
         if(!this.checkValidity() ) 
           return false;
@@ -606,10 +886,16 @@
     })
 
 
+     $('.cabang').attr('disabled' , true);
 
     $('.reload').click(function(){
       location.reload();
     })
+
+    $('#jenisbayarbankcekbg').click(function(){
+
+    })
+
 
     $('#formfpg').submit(function(event){
         var temp = 0;
@@ -676,7 +962,7 @@
                 
                 var idfpg = response.isfpg[0].idfpg;
                 $('.simpansukses').attr('disabled', true);
-                html = "<a class='btn btn-success btn-sm' href={{url('formfpg/printformfpg')}}"+'/'+idfpg+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+                html = "<a class='btn btn-success btn-sm' href={{url('formfpg/printformfpg')}}"+'/'+idfpg+"><i class='fa fa-print'></i>  Cetak </a>";
                 $('.print').html(html);
           },
           error : function(){
@@ -1225,6 +1511,14 @@
      nomrbnk = 1;
      arrnohapus = [];
     $('#buttongetcek').click(function(){
+
+        lengthbank = $('.tblbank').length;
+        $('.bank').prop('disabled' , true).trigger("liszt:updated");
+          $('.bank').prop('disabled', true).trigger("chosen:updated");;
+
+        if(lengthbank > 1){
+          $('.nominal').attr('readonly', true);
+        }
        var checked = $(".checkcek:checked").map(function(){
           return this.id;
         }).toArray();
@@ -1273,7 +1567,7 @@
                     jenisbayar = $('.jenisbayar').val();
                     if(jenisbayar == 5){
                       $('.jthtmpo_bank').attr('disabled' , true);
-                      $('.hari_bank').attr('disabled', true);
+                      //$('.hari_bank').attr('disabled', true);
                       jatuhtempo = $('.jthtmpo_bank').val();
                     }
                     else {
@@ -1282,7 +1576,7 @@
                     }
                  
                     for(var i =0 ; i < mbdt.length; i++ ){  
-                      var row = "<tr id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
+                      var row = "<tr class='tblbank' id='datas"+nomrbnk+"'> <td>"+nomrbnk+"</td>  <td>"+nofpg+"</td>" + // NO FPG
                       "<td>  <a class='noseri'  data-id='"+nomrbnk+"'> "+mbdt[i][0].mbdt_noseri+ "</a> <input type='hidden' class='noseri"+nomrbnk+"' value='"+mbdt[i][0].mbdt_noseri+"' name='noseri[]'></td>"+ // NOSERI
 
                       "<td>"+tgl+"</td>"+ // TGL
@@ -1362,6 +1656,7 @@
 
                         val = $(this).val();
                         id = $(this).data("id");
+                        $('.nominal').attr('readonly', false);
                    //     toastr.info(id);
                         var noseri =  $('.noseri' + id).val();
                          //   toastr.info(noseri);
@@ -1531,6 +1826,16 @@
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
+
+                        cabang = $('.cabang').val();
+                       // alert(cabang);
+                        if(cabang != 000){
+                          $('.jenisbayar2').val(cabang);
+                          $('.jenisbayar2').prop('disabled', true).trigger("liszt:updated");
+                          $('.jenisbayar2').prop('disabled', true).trigger("chosen:updated");
+
+                        }
+
                     }
                     else if(idjenis == '4'){
                         $('.jenisbayar2').empty();  
@@ -1544,11 +1849,17 @@
 
                   }
         })
-
-
-         $('.jenisbayar2').change(function(){
-              var idsup = $(this).val();
+            
+			
+			
+			
+        //button get faktur
+		$('#getDataFaktur').click(function(){
+              var idsup = $('.jenisbayar2').val();
               var idjenisbayar = $('.jenisbayar').val();
+              var cabang = $('.cabang').val();
+               $('.hsljenisbayar').val(idsup);
+
                 $.ajax({
                   url : baseUrl + '/formfpg/changesupplier',
                   data : {idsup, idjenisbayar},
@@ -1557,7 +1868,194 @@
                   success : function(data) {
                     var fp = data.fakturpembelian;
                     $('.jthtmpo_bank').val(fp[0].fp_jatuhtempo);
-                    $('.hari_bank').val(fp[0].fp_jatuhtempo);
+                    //$('.hari_bank').val(fp[0].fp_jatuhtempo);
+
+                     //tambah data ke table data po
+                    var tablefaktur = $('#tbl-faktur').DataTable();
+                    tablefaktur.clear().draw();
+                    var n = 1;
+                    if(idjenisbayar == '2' ){
+                      $('.supfaktur').show();
+                      $('.invfaktur').show();
+                        for(var i = 0; i < fp.length; i++){   
+                                  
+                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
+                                           "<td>"+fp[i].nama+"</td>" +
+                                          "<td>"+fp[i].fp_nofaktur+"</td>" +
+                                          "<td>"+fp[i].fp_noinvoice+"</td>" +                                       
+                                        
+                                          "<td>"+fp[i].nama_supplier +"</td>"+
+                                          "<td>"+fp[i].tt_noform+"</td>";
+                                          if(idjenisbayar != '7'){
+                                              html2 +=  "<td>"+fp[i].fp_jatuhtempo+"</td>";
+                                          }
+                                          else {
+                                            html2 +=  "<td>- </td>";
+                                          }
+                                         html2 += "<td>"+addCommas(fp[i].fp_sisapelunasan)+"</td> ";
+
+                                       
+                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].fp_idfaktur+","+fp[i].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div></td>";
+                                          
+                           html2 +=  "</tr>"; 
+                           tablefaktur.rows.add($(html2)).draw(); 
+                          n++; 
+
+                          console.log(n +'n');
+                         }      
+
+                        $('.hutangdagang').val(fp[0].acc_hutang);                       
+                    }
+                    else if(idjenisbayar == '6' || idjenisbayar == '7'|| idjenisbayar == '9') {
+                      $('.supfaktur').show();
+                      $('.invfaktur').show();
+                      for(var i = 0; i < fp.length; i++){   
+                                  
+                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
+                                           "<td>"+fp[i].namacabang+"</td>" +
+                                          "<td>"+fp[i].fp_nofaktur+"</td>" +
+                                          "<td> - </td>";                                   
+                                          if(idjenisbayar == '9') {
+                                  html2 +=  "<td>"+fp[i].namavendor +"</td>";                                            
+                                          }
+                                          else {
+                                  html2 += "<td>"+fp[i].namaoutlet+"</td>";
+                                          }
+
+                                          html2 += "<td> - </td>";
+                                          if(idjenisbayar == 6){
+                                            html2 += "<td>"+fp[i].fp_jatuhtempo+"</td>";
+                                          }
+                                          else {
+                                            html2 += "<td> - </td>";
+                                          }
+
+                                       html2 += "<td>"+addCommas(fp[i].fp_sisapelunasan)+"</td> ";
+
+                                       
+                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].fp_idfaktur+","+fp[i].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div></td>";
+                                          
+                           html2 +=  "</tr>"; 
+                           tablefaktur.rows.add($(html2)).draw(); 
+                          n++; 
+
+                          console.log(n +'n');
+                         }      
+
+                        $('.hutangdagang').val(fp[0].acc_hutang);     
+                    }
+                    else if(idjenisbayar == '3'){
+                      $('.supfaktur').show();
+                      $('.invfaktur').show();
+                       for(var i = 0; i < fp.length; i++){   
+                                  
+                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].v_nomorbukti+"'> <td>"+n+"</td>" +
+                                           "<td>"+fp[i].nama+"</td>" +
+                                          "<td>"+fp[i].v_nomorbukti+"</td>" +
+                                          "<td> - </td>" +                                       
+                                        
+                                          "<td>"+fp[i].nama_supplier +"</td>"+
+                                          "<td> - </td>" +
+                                          "<td>"+fp[i].v_tempo+"</td>" +
+                                          "<td>"+fp[i].v_pelunasan+"</td> ";
+
+                                       
+                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].v_id+","+fp[i].v_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div></td>";
+                                          
+                           html2 +=  "</tr>"; 
+                           tablefaktur.rows.add($(html2)).draw(); 
+                          n++; 
+
+                          console.log(n +'n');
+                         }   
+                    }
+                    else if(idjenisbayar == '4'){
+                      $('.invfaktur').hide();
+                      $('.supfaktur').hide();
+                      for(var i = 0; i < fp.length; i++){   
+                    
+                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].um_nomorbukti+"'>"+
+                                          " <td>"+n+"</td>" +
+                                          "<td>"+fp[i].nama+"</td>" +
+                                          "<td>"+fp[i].um_nomorbukti+"</td>" +
+                                          " <td class='invfaktur'> </td> <td class='supfaktur'> </td>" +
+                                          "<td> - </td>" +
+                                          "<td> - </td>" +
+                                          "<td>"+fp[i].um_pelunasan+"</td> ";
+                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].um_id+","+fp[i].um_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div></td>";
+                                          
+                           html2 +=  "</tr>"; 
+                         
+                           tablefaktur.rows.add($(html2)).draw(); 
+                          n++; 
+
+                          console.log(n +'n');
+                         } 
+                           $('.invfaktur').hide();
+                      $('.supfaktur').hide(); 
+                    }
+                                         
+                    else if(idjenisbayar == '1'){
+                       for(var i = 0; i < fp.length; i++){                                   
+                          var html2 = "<tr class='data"+n+"' id='data"+fp[i].ik_nota+"'> <td>"+n+"</td>" +
+                                           "<td>"+fp[i].nama+"</td>" +
+                                          "<td>"+fp[i].ik_nota+"</td>" +
+                                          "<td> - </td>" +                                       
+                                        
+                                          "<td>"+fp[i].nama +"</td>"+
+                                          "<td> - </td>" +
+                                          "<td> - </td>" +
+                                          "<td>"+fp[i].ik_pelunasan+"</td> ";
+
+                                       
+                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].ik_id+","+fp[i].ik_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div></td>";
+                                          
+                           html2 +=  "</tr>"; 
+                           tablefaktur.rows.add($(html2)).draw(); 
+                          n++; 
+
+                          console.log(n +'n');
+                         } 
+                    }
+                   
+                      }
+                    
+                })
+            })
+    
+    jenisbayar = $('.jenisbayar').val();
+    if(jenisbayar == '5') {
+
+    }
+    else {
+          idsup = $('jenisbayar2').val();
+         $('.hsljenisbayar').val(idsup);
+
+    }
+		$('.jenisbayar2').change(function(){
+              var idsup = $(this).val();
+              var idjenisbayar = $('.jenisbayar').val();
+              var cabang = $('.cabang').val();
+              $('.hsljenisbayar').val(idsup);
+                $.ajax({
+                  url : baseUrl + '/formfpg/changesupplier',
+                  data : {idsup, idjenisbayar},
+                  type : "get",
+                  dataType : "json",
+                  success : function(data) {
+                    var fp = data.fakturpembelian;
+                    $('.jthtmpo_bank').val(fp[0].fp_jatuhtempo);
+                    //$('.hari_bank').val(fp[0].fp_jatuhtempo);
 
                      //tambah data ke table data po
                     var tablefaktur = $('#tbl-faktur').DataTable();
@@ -1760,7 +2258,7 @@
           $('.tbl-jenisbayar').hide();
             $('.deskirpsijenisbayar').show();
           $('.jthtmpo_bank').attr('disabled' , true);
-          $('.hari_bank').attr('disabled' , true);
+          //$('.hari_bank').attr('disabled' , true);
 
           rowTransfer =  "<table class='table table-bordered table-striped'> " +
                             "<tr>" +

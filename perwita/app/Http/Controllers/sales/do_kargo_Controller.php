@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use PDF;
+use Carbon\Carbon;
+use Auth;
 
 
 class do_kargo_Controller extends Controller
@@ -269,6 +271,14 @@ class do_kargo_Controller extends Controller
         $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
+        $subcon =DB::select("SELECT * FROM subcon");
+        $now = Carbon::now()->format('d/m/Y');
+        $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->where('jt_group',1)
+                         ->orWhere('jt_group',2)
+                         ->orWhere('jt_group',3)
+                         ->get();
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
             $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor='$nomor' "))->first();
@@ -276,7 +286,7 @@ class do_kargo_Controller extends Controller
             $do = null;
             $jml_detail = 0;
         }
-        return view('sales.do_kargo.form',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'do', 'jml_detail','cabang','tipe_angkutan' ));
+        return view('sales.do_kargo.form',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'do', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon'));
     }
     
     public function form_update_status($nomor=null){
@@ -361,24 +371,36 @@ class do_kargo_Controller extends Controller
         return view('sales.do_kargo.print',compact('nota'));
 
     }
-
-    public function cari_customer(Request $request){
-        $id =$request->input('kode_customer');
-        $data = DB::table('customer')->where('kode', $id)->first();
-        return json_encode($data);
+	
+    public function cari_nopol_kargo(request $request)
+    {   
+        // return dd($request->all());
+        if ($request->status_kendaraan == 'OWN') {
+            $data = DB::table('kendaraan')
+                  ->where('status',$request->status_kendaraan)
+                  ->where('tipe_angkutan',$request->tipe_angkutan)
+                  ->where('kode_cabang',$request->cabang_select)
+                  ->get();
+        }else{
+            $data = DB::table('kendaraan')
+                  ->where('status',$request->status_kendaraan)
+                  ->where('tipe_angkutan',$request->tipe_angkutan)
+                  ->where('kode_cabang',$request->cabang_select)
+                  ->where('kode_subcon',$request->nama_subcon)
+                  ->get();
+        }
+        if ($data == null) {
+            $status = 0;
+        }else{  
+            $status = 1;
+        }
+        return view('sales.do_kargo.dropdown_nopol',compact('data','status'));
     }
-    public function tampil_nopol(Request $request){
-        $tipe_angkutan =$request->input('tipe_angkutan');
-        $status_kendaraan =$request->input('status_kendaraan');
-		$list = DB::select(DB::raw("SELECT id,nopol FROM kendaraan WHERE tipe_angkutan='$tipe_angkutan' AND status='$status_kendaraan' "));
-		if ($list != NULL){
-			$nopol = '<option class="B"></option>';
-		}
-		$nopol = NULL ; 
-		foreach ($list as $row) {
-			$nopol = $nopol.'<option value="'.$row->nopol.'" data-id="'.$row->id.'"  >  '.$row->nopol.' </option>';
-		};        
-        return json_encode($nopol);
-		
-	}	
+    public function nama_subcon(request $request)
+    {
+        $nama = DB::table('subcon')
+                  ->where('kode',$request->nama_subcon)
+                  ->first();
+        return response()->json(['nama'=>$nama->nama]);
+    }
 }

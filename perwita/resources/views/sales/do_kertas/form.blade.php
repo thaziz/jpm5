@@ -319,15 +319,15 @@
                 "data" : { nomor : function () { return $('#ed_nomor').val()}},
             },
             "columns": [
-            { "data": "id"},
-            { "data": "kode_item" },
+            { "data": "dd_id"},
+            { "data": "dd_kode_item" },
             { "data": "nama" },
-            { "data": "keterangan"},
-            { "data": "jumlah" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "kode_satuan"},
-            { "data": "harga" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "diskon" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "total" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "dd_keterangan"},
+            { "data": "dd_jumlah" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "dd_kode_satuan"},
+            { "data": "dd_harga" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "dd_diskon" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "dd_total" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
             ]
         });

@@ -82,6 +82,15 @@
                     /* tarif penerus default */
                     Request::is('sales/tarif_penerus_default') ? 'active' : '' || 
                     Request::is('sales/tarif_penerus_default/*') ? 'active' : '' ||
+                    /* tarif penerus doc */
+                    Request::is('sales/tarif_penerus_dokumen') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_dokumen/*') ? 'active' : ''|| 
+                    /* tarif penerus Kilogram */
+                    Request::is('sales/tarif_penerus_kilogram') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''|| 
+                    /* tarif penerus koli */
+                    Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' ||
                  /*================ END OF MASTER TARIF =================*/
 
                  /*===================== MASTER DO ======================*/
@@ -97,6 +106,9 @@
                     /* satuan */
                     Request::is('master_sales/satuan') ? 'active' : '' || 
                     Request::is('master_sales/satuan/*') ? 'active' : '' ||
+                     /* Zona */
+                    Request::is('sales/zona') ? 'active' : '' || 
+                    Request::is('sales/zona/*') ? 'active' : '' ||
                     /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
@@ -258,7 +270,7 @@
                 {{Request::is('master_sales/cabang') ? 'active' : '' ||
                  Request::is('master_sales/cabang/*') ? 'active' : ''}} 
 
-                " href="{{ url('master_sales/cabang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Cabang</a>
+                " href="{{ url('master_sales/cabang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Cabang</a>
                 </li>
                 @if(Auth::user()->PunyaAkses('Tipe Kendaraan','aktif'))
                 <li >
@@ -267,7 +279,7 @@
                 {{Request::is('master_sales/tipe_angkutan') ? 'active' : '' ||
                  Request::is('master_sales/tipe_angkutan/*') ? 'active' : ''}} 
 
-                " href="{{ url('master_sales/tipe_angkutan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tipe Angkutan</a>
+                " href="{{ url('master_sales/tipe_angkutan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tipe Angkutan</a>
                 </li>
                 @endif
                 <li >
@@ -276,7 +288,7 @@
                 {{Request::is('master_sales/kendaraan') ? 'active' : '' ||
                  Request::is('master_sales/kendaraan/*') ? 'active' : ''}} 
 
-                " href="{{ url('master_sales/kendaraan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kendaraan</a>
+                " href="{{ url('master_sales/kendaraan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kendaraan</a>
                 </li>
             </ul>
         </li>
@@ -301,6 +313,15 @@
                     /* tarif penerus default */
                     Request::is('sales/tarif_penerus_default') ? 'active' : '' || 
                     Request::is('sales/tarif_penerus_default/*') ? 'active' : '' || 
+                    /* tarif penerus doc */
+                    Request::is('sales/tarif_penerus_dokumen') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_dokumen/*') ? 'active' : ''|| 
+                    /* tarif penerus Kilogram */
+                    Request::is('sales/tarif_penerus_kilogram') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''|| 
+                    /* tarif penerus koli */
+                    Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' ||
                     /*=============== END OF MASTER TARIF ==============*/
                     /*===================== MASTER DO ======================*/
                     /* agen */
@@ -315,6 +336,9 @@
                     /* satuan */
                     Request::is('master_sales/satuan') ? 'active' : '' || 
                     Request::is('master_sales/satuan/*') ? 'active' : '' ||
+                     /* Zona */
+                    Request::is('sales/zona') ? 'active' : '' || 
+                    Request::is('sales/zona/*') ? 'active' : '' ||
                     /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
@@ -376,7 +400,16 @@
                     Request::is('sales/tarif_cabang_kargo/*') ? 'active' : '' ||
                     /* tarif penerus default */
                     Request::is('sales/tarif_penerus_default') ? 'active' : '' || 
-                    Request::is('sales/tarif_penerus_default/*') ? 'active' : '' 
+                    Request::is('sales/tarif_penerus_default/*') ? 'active' : '' ||
+                    /* tarif penerus doc */
+                    Request::is('sales/tarif_penerus_dokumen') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_dokumen/*') ? 'active' : ''|| 
+                    /* tarif penerus Kilogram */
+                    Request::is('sales/tarif_penerus_kilogram') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''|| 
+                    /* tarif penerus koli */
+                    Request::is('sales/tarif_penerus_koli') ? 'active' : '' || 
+                    Request::is('sales/tarif_penerus_koli/*') ? 'active' : '' 
                     /*=============== END OF MASTER TARIF ==============*/
 
                 }}
@@ -406,29 +439,45 @@
                             <a class="sidebar master-perusahaan 
 
                         {{Request::is('sales/tarif_cabang_kargo') ? 'active' : '' || 
-                    Request::is('sales/tarif_cabang_kargo/*') ? 'active' : ''}} 
-
-                        "
-                        class="sidebar master-perusahaan 
-
-                        {{Request::is('sales/tarif_penerus_default') ? 'active' : '' ||
-                         Request::is('sales/tarif_penerus_default/*') ? 'active' : ''}} 
-
-                        " href="{{ url('sales/tarif_cabang_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kargo</a>
+                    Request::is('sales/tarif_cabang_kargo/*') ? 'active' : ''}} "
+                         href="{{ url('sales/tarif_cabang_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kargo</a>
                         </li>
+                        <br>
                         <li >
-                            <a class="sidebar master-perusahaan 
-
-                        {{Request::is('sales/tarif_cabang_kargo') ? 'active' : '' || 
-                    Request::is('sales/tarif_cabang_kargo/*') ? 'active' : ''}} 
-
-                        "
+                            <a
                         class="sidebar master-perusahaan 
 
                         {{Request::is('sales/tarif_penerus_default') ? 'active' : '' ||
                          Request::is('sales/tarif_penerus_default/*') ? 'active' : ''}} 
 
                         " href="{{ url('sales/tarif_penerus_default')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Default</a>
+                        </li>
+                        <li >
+                            <a
+                        class="sidebar master-perusahaan 
+
+                        {{Request::is('sales/tarif_penerus_dokumen') ? 'active' : '' ||
+                         Request::is('sales/tarif_penerus_dokumen/*') ? 'active' : ''}} 
+
+                        " href="{{ url('sales/tarif_penerus_dokumen')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Dokumen</a>
+                        </li>
+                        <li >
+                            <a
+                        class="sidebar master-perusahaan 
+
+                        {{Request::is('sales/tarif_penerus_kilogram') ? 'active' : '' ||
+                         Request::is('sales/tarif_penerus_kilogram/*') ? 'active' : ''}} 
+
+                        " href="{{ url('sales/tarif_penerus_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Kilogram</a>
+                        </li>
+                        <li >
+                            <a
+                        class="sidebar master-perusahaan 
+
+                        {{Request::is('sales/tarif_penerus_koli') ? 'active' : '' ||
+                         Request::is('sales/tarif_penerus_koli/*') ? 'active' : ''}} 
+
+                        " href="{{ url('sales/tarif_penerus_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Koli</a>
                         </li>
                         
                     </ul>
@@ -451,6 +500,9 @@
                     /* satuan */
                     Request::is('master_sales/satuan') ? 'active' : '' || 
                     Request::is('master_sales/satuan/*') ? 'active' : '' ||
+                     /* Zona */
+                    Request::is('sales/zona') ? 'active' : '' || 
+                    Request::is('sales/zona/*') ? 'active' : '' ||
                     /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
@@ -515,6 +567,14 @@
                     Request::is('master_sales/satuan/*') ? 'active' : ''}} 
 
                     " href="{{ url('master_sales/satuan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Satuan</a>
+                    </li>
+                    <li >
+                        <a class="sidebar master-perusahaan 
+
+                    {{Request::is('sales/zona') ? 'active' : '' || 
+                    Request::is('sales/zona/*') ? 'active' : ''}} 
+
+                    " href="{{ url('sales/zona')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Zona</a>
                     </li>
                     <li >
                         <a class="sidebar master-perusahaan 
@@ -1571,42 +1631,35 @@
                                     <a class="sidebar master-perusahaan {{Request::is('cndnpembelian/cndnpembelian') ? 'active' : '' || 
                                         Request::is('cndnpembelian/cndnpembelian/*') ? 'active' : ''}}" href="{{ url('cndnpembelian/cndnpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN / DN Pembelian </a>
                                 </li>
+                           
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutang/pelunasanhutang') ? 'active' : '' || 
-                                        Request::is('pelunasanhutang/pelunasanhutang/*') ? 'active' : ''}}" href="{{ url('pelunasanhutang/pelunasanhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Kas </a>
+                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbank/pelunasanhutangbank') ? 'active' : '' || 
+                                        Request::is('pelunasanhutangbank/pelunasanhutangbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbank/pelunasanhutangbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
                                 </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbayarbank/pelunasanhutangbayarbank') ? 'active' : '' || 
-                                        Request::is('pelunasanhutangbayarbank/pelunasanhutangbayarbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbayarbank/pelunasanhutangbayarbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('bankkaslain/bankkaslain') ? 'active' : '' || 
-                                        Request::is('bankkaslain/bankkaslain/*') ? 'active' : ''}}" href="{{ url('bankkaslain/bankkaslain')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Bank / Kas Lain </a>
-                                </li>
-                                <li >
+<!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('formtandaterimatagihan/formtandaterimatagihan') ? 'active' : '' || 
                                         Request::is('formtandaterimatagihan/formtandaterimatagihan/*') ? 'active' : ''}}" href="{{ url('formtandaterimatagihan/formtandaterimatagihan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima Tagihan (TTT)</a>
                                 </li>
-
-                                <li >
+ -->
+                             <!--    <li >
                                     <a class="sidebar master-perusahaan {{Request::is('formaju/formaju') ? 'active' : '' || 
                                         Request::is('formaju/formaju/*') ? 'active' : ''}}" href="{{ url('formaju/formaju')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Pengajuan Cek / BG (AJU)</a>
                                 </li>
-
+ -->
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('formfpg/formfpg') ? 'active' : '' || 
                                         Request::is('formfpg/formfpg/*') ? 'active' : ''}}" href="{{ url('formfpg/formfpg')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Permintaan Cek / BG (FPG)</a>
                                 </li>
 
-                                <li >
+<!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan') ? 'active' : '' || 
                                         Request::is('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan/*') ? 'active' : ''}}" href="{{ url('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelaporan  Faktur Pajak Masukan</a>
-                                </li>
+                                </li> -->
 
-                                <li >
+<!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('memorialpurchase/memorialpurchase') ? 'active' : '' || 
                                         Request::is('memorialpurchase/memorialpurchase/*') ? 'active' : ''}}" href="{{ url('memorialpurchase/memorialpurchase')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Memorial Purchase</a>
-                                </li> 
+                                </li>  -->
                                     </ul>
                                 </li>
                                 <li class="

@@ -504,7 +504,7 @@
           },
           function(){
         $.ajax({
-          type : "POST",
+          type : "get",
           data : form_data2,
           url : post_url2,
           dataType : 'json',
@@ -1034,6 +1034,7 @@
      function lihatjurnal(){
         $('#jurnal').modal('show');
     }
+
 
 
 </script>

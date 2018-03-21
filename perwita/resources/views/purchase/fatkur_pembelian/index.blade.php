@@ -131,9 +131,19 @@
                         @endif
                        @else
                         <td align="center"> <a title="Edit" class="btn btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
-                        <a title="Hapus" class="btn btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
-                          <i class="fa fa-trash" aria-hidden="true"></i>
+                          @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
+                          <a title="Hapus" class="btn btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
+                            <i class="fa fa-trash" aria-hidden="true"></i>
                           </a> 
+                          @else
+                            @if($faktur->fp_status == 'Approved')
+                           
+                            @else
+                              <a title="Hapus" class="btn btn-success" onclick="hapusData({{$faktur->fp_idfaktur}})">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                              </a>
+                            @endif
+                          @endif
                         <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
                        </td> 
 
@@ -187,39 +197,9 @@
         format: 'yyyy-mm-dd'
     });
     
-   /* $('#tmbh_data_barang').click(function(){
-      $("#addColumn").append('<tr> <td rowspan="3"> 1 </td> <td rowspan="3"> </td> <td rowspan="3"> </td>  <td rowspan="3"> </td> <td> halo </td> <td> 3000 </td>  <tr> <td> halo </td> <td>  5.000 </td> </tr> <tr><td> halo </td> <td> 3000 </td> </tr>');
-    })*/
-     $no = 0;
-    $('#tmbh_data_barang').click(function(){
-         $no++;
-     $("#addColumn").append('<tr id=field-'+$no+'> <td> <b>' + $no +' </b> </td> <td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]">  <option value=""> -- Pilih Data Barang -- </option> <option value="">  Barang 1 </option> <option value="">  Barang 2 </option> </td> <td> </td>  <td> </td> <td> </td> <td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]"> <option value=""> -- Pilih Data Supplier -- </option> <option value="">  Supplier 1 </option> <option value="">  Supplier 2 </option> </td> <td> 3000 </td> <td> <button class="btn btn-danger remove-btn" data-id='+$no+' type="button"><i class="fa fa-trash"></i></button> </td> </tr>');
+    
 
-
-
-      $(document).on('click','.remove-btn',function(){
-              var id = $(this).data('id');
-              var parent = $('#field-'+id);
-
-              parent.remove();
-          })
-    })
-
-      $('#tmbh_supplier').click(function(){
-            $no++;
-        $("#addColumn").append('<tr id=supp-'+$no+'> <td> <b>  </b> </td> <td> </td> <td> </td>  <td> </td> <td> </td><td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]"> <option value=""> -- Pilih Data Supplier -- </option> <option value="">  Supplier 1 </option> <option value="">  Supplier 2 </option>  </td> <td> 3000 </td> <td> <button class="btn btn-danger removes-btn" data-id='+$no+' type="button"><i class="fa fa-trash"></i></button>  </td> </tr>');
-
-
-        $(document).on('click','.removes-btn',function(){
-              var id = $(this).data('id');
-       //       alert(id);
-              var parent = $('#supp-'+id);
-
-             parent.remove();
-          })
-     })
-
-    function hapus(id){
+   function hapus(id){
     swal({
     title: "Apakah anda yakin?",
     text: "Hapus Data!",
@@ -236,6 +216,57 @@ function(){
 
      $.ajax({
       url:baseUrl + '/fakturpembelian/hapusbiayapenerus/'+id,
+      type:'get',
+      success:function(data){
+        if(data == 'sukses'){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                     location.reload();
+          });
+        }else{
+         swal({
+        title: "Data Tidak Bisa Dihapus",
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+    });
+        }
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+  });
+}
+    
+  
+   function hapusData(id){
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Hapus Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+  },
+
+function(){
+     $.ajax({
+      url:baseUrl + '/fakturpembelian/hapusfakturpembelian/'+id,
       type:'get',
       success:function(data){
         if(data.status == '1'){
@@ -269,7 +300,7 @@ function(){
   });
   });
 }
-    
+
 
 </script>
 @endsection
