@@ -815,7 +815,7 @@ function hitung_pajak_lain(){
 
       swal({
         title: "Apakah anda yakin?",
-        text: "Simpan Data Biaya Penerus!",
+        text: "Update Data Invoice!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",

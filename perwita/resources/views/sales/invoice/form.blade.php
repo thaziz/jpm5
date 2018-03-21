@@ -727,7 +727,7 @@
 
       swal({
         title: "Apakah anda yakin?",
-        text: "Simpan Data Biaya Penerus!",
+        text: "Simpan Data Invoice!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",

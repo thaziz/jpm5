@@ -6,7 +6,7 @@
 <style type="text/css">
       .id {display:none; }
       .center {text-align:center; }
-      .lebar {width:200px }
+      .lebar {width:150px }
     </style>
 
 
@@ -18,7 +18,7 @@
                     <h5> KONTRAK
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../master_sales/kontrak" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../kontrak" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -29,17 +29,18 @@
                 </div><!-- /.box-header -->
                 <form id="form_header" class="form-horizontal">
                     <table class="table table-striped table-bordered table-hover">
+                        {{csrf_field()}}
                         <tbody>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="kontrak_nomor" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" >
+                                    <input type="text" name="kontrak_nomor" value="{{$data->kc_nomor}}" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
-                                    <input type="text" class="form-control tgl" name="ed_tanggal" value="{{$now}}" >
+                                    <input type="text" class="form-control tgl" name="ed_tanggal" value="{{Carbon\Carbon::parse($data->kc_tanggal)->format('d/m/Y')}}" >
                                 </td>
                             </tr>
                             <tr>
@@ -49,27 +50,21 @@
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
-                                        <input type="text" class="tgl1 form-control" name="ed_mulai" value="{{$now}}">
+                                        <input type="text" class="tgl1 form-control" name="ed_mulai" value="{{Carbon\Carbon::parse($data->kc_mulai)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Berakhir</td>
                                 <td>
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="tgl2 form-control" name="ed_akhir" value="{{$now1}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="tgl2 form-control" name="ed_akhir" value="{{Carbon\Carbon::parse($data->kc_akhir)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td colspan="3">
-                                    <select class="chosen-select-width form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
-                                        <option selected="" disabled="">- Pilih Customer -</option>
-                                        @foreach($customer as $val)
-                                        <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                        @endforeach
-
-                                    </select>
-                                
+                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
+                                    <input type="hidden" readonly="" name="id_subcon" id="id_subcon" value="{{$data->kc_kode_customer}}">
                                 </td>
                             </tr>
                             <tr>
@@ -90,7 +85,7 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" value="{{$data->kc_keterangan}}" >
                                 </td>
                             </tr>
                             <tr>
@@ -125,6 +120,40 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($data_dt as $val)
+                        <tr>
+                            <td>
+                                {{$val->nama_asal}}
+                                <input type="hidden" class="kota_asal" value="{{$val->kcd_kota_asal}}" name="kota_asal[]">
+                            </td>
+                            <td>
+                                {{$val->nama_tujuan}}
+                                <input type="hidden" class="kota_tujuan" value="{{$val->kcd_kota_tujuan}}" name="kota_tujuan[]">
+                            </td>
+                            <td>
+                                {{$val->kcd_jenis}}
+                                <input type="hidden" class="jenis_detail" value="{{$val->kcd_jenis}}" name="jenis_modal[]">
+                                <input type="hidden" class="jenis_tarif_detail" value="{{$val->kcd_jenis_tarif}}" name="jenis_tarif[]">
+                            </td>
+                            <td>
+                                {{$val->kcd_kode_satuan}}
+                                <input type="hidden" class="satuan" value="{{$val->kcd_kode_satuan}}" name="satuan[]">
+                            </td>
+                            <td>
+                                <input type="text" class="harga form-control" style="text-align:right" value="{{number_format($val->kcd_harga,0, ".", ",")}}" name="harga[]">
+                                <input type="hidden" class="type_tarif form-control" value="{{$val->kcd_type_tarif}}" name="type_tarif[]">
+                            </td>
+                            <td>
+                                <input type="text" class="keterangan form-control" value="{{$val->kcd_keterangan}}" name="keterangan[]">
+                            </td>
+                            <td>
+                                <button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">
+                                <label class="fa fa-trash"></label></button>
+                                <input type="hidden" class="akun_acc form-control" value="{{$val->kcd_acc_penjualan}}" name="akun_acc[]">
+                                <input type="hidden" class="akun_csf form-control" value="{{$val->kcd_csf_penjualan}}" name="akun_csf[]">
+                            </td>
+                        </tr>
+                        @endforeach
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
@@ -269,7 +298,7 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-   $('.tgl').datepicker({
+  $('.tgl').datepicker({
     format:'dd/mm/yyyy'
   });
   $('.tgl1').datepicker({
@@ -283,7 +312,7 @@
  $(document).ready( function () {
             
     $('.harga_modal').maskMoney({precision:0});
-    var asd = $('.harga').maskMoney({thousands:'.', precision:0});
+    var asd = $('.harga').maskMoney({thousands:',', precision:0});
     var cabang = $('.cabang').val();
 
     var config2 = {
@@ -297,19 +326,6 @@
                $(selector).chosen(config2[selector]);
              }
 
-    $.ajax({
-        url:baseUrl+'/master_sales/kontrak_set_nota',
-        data:{cabang},
-        dataType:'json',
-        success:function(response){
-            $('#ed_nomor').val(response.nota);
-            $('#ed_nomor').val(response.nota);
-        },
-        error:function(){
-            // location.reload();
-        }
-
-    })
 
     $.ajax({
         url:baseUrl +'/master_sales/set_kode_akun_acc',
@@ -344,10 +360,9 @@ $('#btnadd').click(function(){
     var jenis_modal              = $('.jenis_modal').val(0).trigger('chosen:updated');
     var jenis_tarif_modal        = $('.jenis_tarif_modal').val(0).trigger('chosen:updated');
     var acc_akun_modal           = $('.acc_akun_modal ').val(0).trigger('chosen:updated');
-    var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
-
+    var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
     var id_subcon                = $('.id_subcon').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var validasi                 = [];
@@ -373,14 +388,7 @@ $('#btnadd').click(function(){
 
 
 });
-$('.jenis_modal').change(function(){
-    if ($(this).val() == 'PAKET') {
-        $('.type_tarif_tr').attr('hidden',false);
-    }else{
-        $('.type_tarif_modal').val(0).trigger('chosen:updated');
-        $('.type_tarif_tr').attr('hidden',true);
-    }
-});
+
 var datatable = $('#table_data').DataTable({
                       'paging':false,
                       'searching':false,
@@ -400,7 +408,15 @@ var datatable = $('#table_data').DataTable({
                    
                     ]
                 });
-var count = 0;
+
+$('.jenis_modal').change(function(){
+    if ($(this).val() == 'PAKET') {
+        $('.type_tarif_tr').attr('hidden',false);
+    }else{
+        $('.type_tarif_modal').val(0).trigger('chosen:updated');
+        $('.type_tarif_tr').attr('hidden',true);
+    }
+});
 function tambah(){
   
 var kota_asal_modal_text     = $('.kota_asal_modal  option:selected').text();
@@ -433,7 +449,7 @@ kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
            '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
            satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
            '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
-           '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
+           '<input type="hidden" class="type_tarif_detail form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
            '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
            '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
            '<label class="fa fa-trash"></label></button>'+
@@ -510,7 +526,7 @@ $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();
    swal({
     title: "Apakah anda yakin?",
-    text: "Simpan Data Kontrak!",
+    text: "Update Data Kontrak!",
     type: "warning",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
@@ -526,8 +542,8 @@ $('#btnsimpan').click(function(){
         });
 
       $.ajax({
-      url:baseUrl + '/master_sales/save_kontrak',
-      type:'POST',
+      url:baseUrl + '/master_sales/update_kontrak',
+      type:'post',
       data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang,
       success:function(response){
         swal({
