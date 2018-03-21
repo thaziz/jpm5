@@ -148,8 +148,9 @@
                                     <td>   
                                         <select class="form-control e"  name="cb_jenis" style="width:100%">
                                             <option value="" selected="" disabled="">-- Pilih Kota jenis --</option>
-                                            <option value="REGULER">REGULER</option>
-                                            <option value="EXPRESS">EXPRESS</option>
+                                            @foreach ($jenis_tarif as $row)
+                                            <option value="{{ $row->jt_id }}"> {{$row->jt_nama_tarif}} </option>
+                                             @endforeach
                                         </select>
                                     </td>
                                 </tr>
