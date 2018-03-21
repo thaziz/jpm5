@@ -14,7 +14,7 @@
                             <a>Home</a>
                         </li>
                         <li>
-                            <a>Setting</a><
+                            <a>Setting</a>
                         </li>
                         <li class="active">
                             <strong> Pengguna </strong>
