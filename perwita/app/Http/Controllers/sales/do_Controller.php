@@ -570,6 +570,7 @@ class do_Controller extends Controller
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
                     ->where('keterangan', '=', 'Tarif Kertas / Kg')
+                    ->where('kode_cabang', '=', $cabang)
                     ->get();
 
                 if ($jenis == 'EXPRESS'){
@@ -591,6 +592,7 @@ class do_Controller extends Controller
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
                     ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
+                    ->where('kode_cabang', '=', $cabang)
                     ->get();
 
                 if ($jenis == 'EXPRESS'){
@@ -612,6 +614,7 @@ class do_Controller extends Controller
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
                     ->where('keterangan', '=', 'Tarif <= 10 Kg')
+                    ->where('kode_cabang', '=', $cabang)
                     ->get();
 
                 $tarifAwal = $tarifAwal[0]->harga;
@@ -622,6 +625,7 @@ class do_Controller extends Controller
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
                     ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
+                    ->where('kode_cabang', '=', $cabang)
                     ->get();
 
                 if ($jenis == 'EXPRESS'){
@@ -643,6 +647,7 @@ class do_Controller extends Controller
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
                     ->where('keterangan', '=', 'Tarif <= 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
                     ->get();
 
                 if ($jenis == 'EXPRESS'){
@@ -664,6 +669,7 @@ class do_Controller extends Controller
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
                     ->where('keterangan', '=', 'Tarif <= 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
                     ->get();
 
                 $tarifAwal = $tarifAwal[0]->harga;
@@ -674,6 +680,7 @@ class do_Controller extends Controller
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
                     ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
                     ->get();
 
                 if ($jenis == 'EXPRESS'){
