@@ -51,7 +51,7 @@ h5 {
 }
 .navbar-default .nav > li > a:hover,
 .navbar-default .nav > li > a:focus {
-  background-color: #293846;
+  background-color: rgba(0,0,0,0.2);
   color: white;
 }
 .nav .open > a,
@@ -73,6 +73,7 @@ h5 {
   background-color: transparent;
   border-color: #2f4050;
 }
+
 .navbar-top-links li {
   display: inline-block;
 }
@@ -168,7 +169,7 @@ h5 {
 }
 .nav > li.active {
   border-left: 4px solid #19aa8d;
-  background: #293846;
+  background: rgba(0,0,0,0.2);
 }
 .nav.nav-second-level > li.active {
   border: none;
@@ -1585,7 +1586,7 @@ table.dataTable thead .sorting_desc,
 table.dataTable thead .sorting_asc_disabled,
 table.dataTable thead .sorting_desc_disabled {
   background: #005b96;
-  vertical-align: center;
+  vertical-align: middle;
 }
 /*------*/
 .dataTables_wrapper {
@@ -3248,30 +3249,40 @@ body.tour-open .animated {
 }
 body {
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #2f4050;
+  background: linear-gradient(156deg, #212d38, #3472aa);
+background-size: 400% 400%;
+
+-webkit-animation: gradientBreath 8s ease infinite;
+-moz-animation: gradientBreath 8s ease infinite;
+-o-animation: gradientBreath 8s ease infinite;
+animation: gradientBreath 8s ease infinite;
+
   font-size: 13px;
   color: #676a6c;
   overflow-x: hidden;
   
 }
-@-webkit-keyframes colorchange {
-      0% {
-        
-        background-color: red;
-      }
-      33.33%{
-        background-color: orange;
-      }
+ @-webkit-keyframes gradientBreath {
+    0%{background-position:23% 0%}
+    50%{background-position:78% 100%}
+    100%{background-position:23% 0%}
+}
+@-moz-keyframes gradientBreath {
+    0%{background-position:23% 0%}
+    50%{background-position:78% 100%}
+    100%{background-position:23% 0%}
+}
+@-o-keyframes gradientBreath {
+    0%{background-position:23% 0%}
+    50%{background-position:78% 100%}
+    100%{background-position:23% 0%}
+}
+@keyframes gradientBreath {
+    0%{background-position:23% 0%}
+    50%{background-position:78% 100%}
+    100%{background-position:23% 0%}
+}
 
-      66.66%{
-        background-color: green;
-      }
-      
-      100% {
-        
-        background-color: blue;
-      }
-    }
 html,
 body {
   height: 100%;
@@ -3524,7 +3535,7 @@ body.body-small .footer.fixed {
 .table > thead > tr > th  {
 
   border-bottom: 1px solid #DDDDDD;
-  vertical-align: center;
+  vertical-align: middle;
   background-color: #107dac;
 
   
