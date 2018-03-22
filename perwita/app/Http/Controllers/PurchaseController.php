@@ -3412,7 +3412,7 @@ $indexakun=0;
 	}
 
 
-	// FAKTUR tanpa po
+	// FAKTUR tanpa po tidak di pakek
 	public function savefaktur(Request $request) {
 	/*dd($request);*/
 			$variable = $request->supplier;
