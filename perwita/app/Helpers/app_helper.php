@@ -22,7 +22,7 @@
 		return $html;
 	}
 
-	function get_akun($data_akun, $nomor_id){
+	function get_akun($data_akun, $nomor_id, $idx = null){
 		$html = '';
 
         foreach ($data_akun as $akun) {
@@ -31,7 +31,7 @@
         	$view = ($akun["total"] < 0) ? "(".number_format($akun["total"], 2).")" : number_format($akun["total"], 2);
         	if($akun["nomor_id"] == $nomor_id){
         		$html = $html.'<tr class="treegrid-'.$akun["id_akun"].' treegrid-parent-'.$nomor_id.'" id="'.$akun["id_akun"].'">
-                            <td>'.$nama.'</td><td class="text-right" style="display:'.$show.'" id="tot-'.$akun["id_akun"].'">'.str_replace("-", "", $view).'</td>
+                            <td>'.$nama.'</td><td class="text-right" style="display:'.$show.'" id="tot-'.$idx.$akun["id_akun"].'">'.str_replace("-", "", $view).'</td>
                          </tr>';
 
                 $html = $html.get_akun($data_akun, $akun["id_akun"]);
