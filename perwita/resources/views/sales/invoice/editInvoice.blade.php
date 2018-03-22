@@ -150,7 +150,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
-                            <button type="button" class="btn btn-success " onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-success simpan_btn" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                         </div>
                     </div>
                 </form>
@@ -611,6 +611,7 @@
 
         }
 
+       hitung_pajak_lain();
 
        hitung_total_tagihan();
    }
@@ -629,7 +630,7 @@ function hitung_pajak_lain(){
         hitung_total_tagihan();
         return 1;
        }
-
+       $('.simpan_btn').addClass('disabled');
        $.ajax({
              url:baseUrl +'/sales/pajak_lain',
              dataType:'json',
@@ -641,7 +642,10 @@ function hitung_pajak_lain(){
                 pajak_total  = persen_fix * netto_total;
                 pajak_total  = pajak_total - netto_total;
                 $('.pph').val(accounting.formatMoney(pajak_total,"",2,'.',','));
+                // hitung_pajak_lain();
                 hitung_total_tagihan();
+                $('.simpan_btn').removeClass('disabled');
+
 
              }
        })
@@ -815,7 +819,7 @@ function hitung_pajak_lain(){
 
       swal({
         title: "Apakah anda yakin?",
-        text: "Simpan Data Biaya Penerus!",
+        text: "Update Data Invoice!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",

@@ -77,15 +77,14 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
-                                    <select class="form-control cabang chosen-select-width" name="cabang" >
-                                      <option  disabled="">- Pilih Cabang -</option>
-                                        @foreach($cabang as $val)
-                                        @if($data->ks_cabang == $val->kode)
-                                        <option selected="" value="{{$val->kode}}">{{$val->nama}}</option>
-                                        @else
-                                        <option value="{{$val->kode}}">{{$val->nama}}</option>
-                                        @endif
-                                        @endforeach
+                                    <select class="form-control cabang" disabled="" name="cabang" >
+                                      @foreach($cabang as $val)
+                                                @if(Auth::user()->kode_cabang == $val->kode)
+                                                <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @else
+                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @endif
+                                      @endforeach
                                     </select>
                                 </td>
                             </tr>
@@ -221,9 +220,9 @@
                                                 <td style="width:110px; padding-top: 0.4cm">Jenis Tarif</td>
                                                 <td>
                                                     <select class="form-control tarif" name="tarif" >
-                                                        <option value="KILOGRAM">KILOGRAM</option>
-                                                        <option value="ONE WAY STANDART">ONE WAY STANDART</option>
-                                                        <option value="EMBALASI STANDART">EMBALASI STANDART</option>
+                                                       @foreach($jenis_tarif as $val)
+                                                          <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                                       @endforeach
                                                     </select>
                                                 </td>
                                             </tr>
@@ -335,7 +334,7 @@ function tambah(){
   var asal_dt     = $('.asal').val();
   var tujuan_dt   = $('.tujuan').val();
   var angkutan_dt = $('.angkutan').val();
-  var tarif       = $('.tarif').val();
+  var tarif       = $('.tarif option:selected').text();
   var Harga       = $('.harga').val();
   var keterangan  = $('.keterangan').val();
   // console.log(asal);
@@ -487,6 +486,7 @@ function updt(){
 }
 
 $('#btnsimpan').click(function(){
+    var cabang =$('.cabang').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Subcon!",
@@ -507,7 +507,7 @@ $('#btnsimpan').click(function(){
       $.ajax({
       url:baseUrl + '/master_subcon/update_subcon',
       type:'get',
-      data:'id={{$data->ks_id}}'+'&'+$('#form_header').serialize()+'&'+datatable.$('input').serialize(),
+      data:'id={{$data->ks_id}}'+'&'+$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cab='+cabang,
       success:function(response){
         swal({
         title: "Berhasil!",

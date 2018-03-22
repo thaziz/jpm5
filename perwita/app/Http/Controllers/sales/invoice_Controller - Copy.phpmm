@@ -373,7 +373,6 @@ public function simpan_invoice(request $request)
 {
   return DB::transaction(function() use ($request) {  
     /*dd($request->all());*/
-    $cabang=Auth::user()->kode_cabang;
     $do_awal        = str_replace('/', '-', $request->do_awal);
     $do_akhir       = str_replace('/', '-', $request->do_awal);
     $ed_jatuh_tempo = str_replace('/', '-', $request->ed_jatuh_tempo);
@@ -396,23 +395,18 @@ public function simpan_invoice(request $request)
 
     $ppn_type='';
     $ppn_persen='';
-    $nilaiPpn='';
     if ($request->cb_jenis_ppn == 1) {
         $ppn_type = 'pkp';
         $ppn_persen = 10;
-        $nilaiPpn=10/100;
     } elseif ($request->cb_jenis_ppn == 2) {
         $ppn_type = 'pkp';
         $ppn_persen = 1;
-        $nilaiPpn=1/100;
-    } elseif ($request->cb_jenis_ppn == 3) {//include
+    } elseif ($request->cb_jenis_ppn == 3) {
         $ppn_type = 'npkp';
         $ppn_persen = 1;
-        $nilaiPpn=1/101;
-    } elseif ($request->cb_jenis_ppn == 5) {//include
+    } elseif ($request->cb_jenis_ppn == 5) {
         $ppn_type = 'npkp';
         $ppn_persen = 10;
-        $nilaiPpn=10/110;
     }
     if ($request->ed_pendapatan == 'PAKET' || $request->ed_pendapatan == 'KARGO') {
 
@@ -489,106 +483,21 @@ public function simpan_invoice(request $request)
 
     $request->diskon2 = str_replace(['Rp', '\\', '.', ' '], '', $request->diskon2);
     $request->diskon2 =str_replace(',', '.', $request->diskon2);
-    $diskonItem=$request->diskon2*$request->harga_netto[$i]/$request->netto_detail;
-    $totalStlhDiskon=$request->harga_netto[$i]-$diskonItem;
     
                       $dataItem[$i]['acc_penjualan']=$request->akun[$i];
-                      $dataItem[$i]['dd_diskon']=$request->dd_diskon[$i]; //diskon per item                 
-                      /*$dataItem[$i]['dd_total']=$request->dd_total[$i];//total per item sblm diskon*/
-                      $dataItem[$i]['harga_netto']=$request->dd_total[$i];//total per item stlh diskon
-                      $dataItem[$i]['diskon2']=$diskonItem;// presentase diskon global
-                      $dataItem[$i]['ppn']=$totalStlhDiskon*$nilaiPpn;                      
-                      $dataItem[$i]['pajak_lain']=$totalStlhDiskon*($request->pajak_lain/100);
-                      /*$dataItem[$i]['netto_detail']=$request->netto_detail;  */              
+                      $dataItem[$i]['dd_diskon']=$request->dd_diskon[$i];                      
+                      $dataItem[$i]['dd_total']=$request->dd_total[$i];
+                      $dataItem[$i]['harga_netto']=$request->harga_netto[$i];
+                      $dataItem[$i]['diskon2']=$request->diskon2*$request->harga_netto[$i]/$request->netto_detail;
+                      $dataItem[$i]['ppn']=$request->cb_jenis_ppn;                      
+                      $dataItem[$i]['pajak_lain']=$request->pajak_lain;      
+                      $dataItem[$i]['netto_detail']=$request->netto_detail;                
                     
              }
 
-
-  /*           $ppn_type='';
-    $ppn_persen='';
-    if ($request->cb_jenis_ppn == 1) {
-        $ppn_type = 'pkp';
-        $ppn_persen = 10;
-    } elseif ($request->cb_jenis_ppn == 2) {
-        $ppn_type = 'pkp';
-        $ppn_persen = 1;
-    } elseif ($request->cb_jenis_ppn == 3) {//include
-        $ppn_type = 'npkp';
-        $ppn_persen = 1;
-    } elseif ($request->cb_jenis_ppn == 5) {//include
-        $ppn_type = 'npkp';
-        $ppn_persen = 10;
-    }*/
-    
-
-/*dd($dataItem);*/
+             
             $Nilaijurnal=$this->groupJurnal($dataItem);
-/*dd($Nilaijurnal);*/
-            foreach ($Nilaijurnal as  $indexakun=> $dataJurnal) {  
-
-       $acc=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first();                   
-        if(count($acc)!=0){
-        $akun[$indexakun]['id_akun']=$acc->id_akun;
-        $akun[$indexakun]['value']=$dataJurnal['totalInvoice'];
-        $akun[$indexakun]['dk']='D';
-        $indexakun++;              
-        }
-        else{
-            $dataInfo=['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Belum Tersedia'];
-      DB::rollback();
-            return json_encode($dataInfo);
-        }        
-      
-    }  
-
-
-      $akunPiutang=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first();                    
-
-                  if(count($akunPiutang)==0){
-                        $dataInfo=['status'=>'gagal','info'=>'Akun Piutang Untuk Cabang Belum Tersedia'];
-                        DB::rollback();
-                        return json_encode($dataInfo);
-                    }
-
-                $akun[$indexakun]['id_akun']=$akunHutang->id_akun;
-                $akun[$indexakun]['value']=$total_tagihan;
-                $akun[$indexakun]['dk']='K';
-                $indexakun++;
-
-
-
-    if($request->diskon1!=0 || $request->diskon2!=0){
-        $akunDiskon=master_akun::
-                  select('id_akun','nama_akun')
-                  ->where('id_akun','like', '5298%')                                    
-                  ->where('kode_cabang',$cabang)
-                  ->orderBy('id_akun')
-                  ->first(); 
-
-        if(count($akunDiskon)!=0){
-                $akun[$indexakun]['id_akun']=$akunDiskon->id_akun;
-                $akun[$indexakun]['value']=-($diskon1+$diskon2);
-                $akun[$indexakun]['dk']='D';
-                $indexakun++;
-        }
-        else{
-            $dataInfo=['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Belum Tersedia'];
-                      return json_encode($dataInfo);
-        } 
-    }
-
-dd($akun);
-
+            dd($Nilaijurnal);
              return response()->json(['status' => 1]);
 
         }else{
@@ -979,18 +888,6 @@ public function update_invoice(request $request)
                       $dataItem[$i]['diskon']=$request->diskon2;                      
                       $dataItem[$i]['ppn']=$request->cb_jenis_ppn;                      
                       $dataItem[$i]['pajak_lain']=$request->pajak_lain;    */
-
-
-
-
-                   /*   $dataItem[$i]['acc_penjualan']=$request->akun[$i];
-                      $dataItem[$i]['dd_diskon']=$request->dd_diskon[$i]; //diskon per item                 
-                      
-                      $dataItem[$i]['harga_netto']=$request->dd_total[$i];//total per item stlh diskon
-                      $dataItem[$i]['diskon2']=$diskonItem;// presentase diskon global
-                      $dataItem[$i]['ppn']=$totalStlhDiskon*$nilaiPpn;                      
-                      $dataItem[$i]['pajak_lain']=$totalStlhDiskon*($request->pajak_lain/100);*/
-
   public function groupJurnal($data) {
       $groups = array();
       $key = 0;
@@ -998,22 +895,18 @@ public function update_invoice(request $request)
           $key = $item['acc_penjualan'];
           if (!array_key_exists($key, $groups)) {
               $groups[$key] = array(                  
-                  'acc_penjualan' => $item['acc_penjualan'],                                  
-                  'diskon1'       => $item['dd_diskon'],
-                  'diskon2'       => $item['diskon2'],
-                  'totalInvoice'  => $item['harga_netto']+$item['dd_diskon']+$item['diskon2']+$item['ppn']+$item['diskon2'],
-                  /*'totalInvoice'  => $item['harga_netto']-$item['diskon2'],*/
-                  
+                  'acc_penjualan' => $item['acc_penjualan'],
+                  'totalDo'  =>$item['dd_total'],
+                  'diskonDo'  =>$item['dd_diskon'],
+                  'totalInvoice' => $item['harga_netto'],
+                  'diskonInvoice'=>$item['diskon2'],
 
 
               );              
-          } else {          
+          } else {
+              $groups[$key]['totalDo'] = $groups[$key]['totalDo'] + $item['dd_total'];        
               $groups[$key]['totalInvoice'] = $groups[$key]['totalInvoice'] + $item['harga_netto'];        
-              /*$groups[$key]['totalInvoice'] = $groups[$key]['totalInvoice'] + ($item['harga_netto']-$item['diskon2']);        */
-              $groups[$key]['diskon1'] = $groups[$key]['diskon1'] + $item['dd_diskon']+
-                                         $groups[$key]['diskon2'] + $item['diskon2'];   
-              $groups[$key]['diskon2'] = $groups[$key]['diskon2'] + $item['diskon2'];        
-
+              $groups[$key]['diskonInvoice'] = $groups[$key]['diskonInvoice'] + $item['diskon2'];        
           }
           $key++;
       }

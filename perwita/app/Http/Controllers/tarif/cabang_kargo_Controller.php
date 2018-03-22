@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
-
+use Auth;
 
 class cabang_kargo_Controller extends Controller
 {
@@ -92,7 +92,7 @@ class cabang_kargo_Controller extends Controller
         }else{
             $kode_detail += 1;
         }
-        $kodecabang = /*Auth::user()->kode_cabang*/ 'TEST';
+        $kodecabang = Auth::user()->kode_cabang ;
         
 
       $cekdata = DB::table('tarif_cabang_kargo')->select('kode')->get();
@@ -103,11 +103,11 @@ class cabang_kargo_Controller extends Controller
 
         $kodekota = $request->kodekota;
 
-        if ($request->cb_jenis == 'EXPRESS') {
-            $kodeutama = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
-        }else if ($request->cb_jenis == 'REGULER') {
-            $kodeutama = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-        }
+        $jt_kode = DB::table('jenis_tarif')
+                     ->where('jt_id',$request->cb_jenis)
+                     ->first();
+        $kodeutama = $kodekota.'/'.'D'.$jt_kode->jt_kode.$kodecabang.$kode_utama;
+
         $kodeutama = $kodeutama ;
         if ($crud == 'N') {
             $data = array(

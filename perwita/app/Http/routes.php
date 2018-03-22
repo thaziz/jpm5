@@ -230,6 +230,7 @@ Route::get('master_subcon/tambahkontraksubcon', 'subconController@tambahkontraks
 Route::get('master_subcon/edit_subcon/{id}', 'subconController@edit_subcon');
 Route::get('master_subcon/update_subcon', 'subconController@update_subcon');
 Route::get('master_subcon/cek_hapus', 'subconController@cek_hapus');
+Route::get('master_subcon/nota_kontrak_subcon', 'subconController@nota_kontrak_subcon');
 Route::get('master_subcon/save_subcon', 'subconController@save_subcon');
 Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontrak');
@@ -729,6 +730,13 @@ Route::get('master_sales/kontrak_form', 'master_sales\kontrak_Controller@form');
 Route::get('master_sales/kontrak_set_nota', 'master_sales\kontrak_Controller@kontrak_set_nota');
 Route::get('master_sales/set_kode_akun_acc', 'master_sales\kontrak_Controller@set_kode_akun_acc');
 Route::get('master_sales/set_kode_akun_csf', 'master_sales\kontrak_Controller@set_kode_akun_csf');
+Route::post('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
+
+Route::get('master_sales/edit_kontrak/{id}', 'master_sales\kontrak_Controller@edit_kontrak');
+Route::post('master_sales/update_kontrak', 'master_sales\kontrak_Controller@update_kontrak');
+Route::get('master_sales/update_kontrak', 'master_sales\kontrak_Controller@update_kontrak');
+Route::get('master_sales/hapus_kontrak', 'master_sales\kontrak_Controller@hapus_kontrak');
+
 
 // end kontrak
 
@@ -777,6 +785,11 @@ Route::get('sales/deliveryorderkargoform', 'sales\do_kargo_Controller@form');
 Route::get('sales/cari_nopol_kargo', 'sales\do_kargo_Controller@cari_nopol_kargo');
 Route::get('sales/nama_subcon', 'sales\do_kargo_Controller@nama_subcon');
 Route::get('sales/cari_kontrak_tarif', 'sales\do_kargo_Controller@cari_kontrak_tarif');
+Route::get('sales/nomor_do_kargo', 'sales\do_kargo_Controller@nomor_do_kargo');
+Route::get('sales/pilih_tarif_kargo', 'sales\do_kargo_Controller@pilih_tarif_kargo');
+Route::get('sales/pilih_kontrak_kargo', 'sales\do_kargo_Controller@pilih_kontrak_kargo');
+Route::get('sales/save_do_kargo', 'sales\do_kargo_Controller@save_do_kargo');
+Route::get('sales/hapus_do_kargo', 'sales\do_kargo_Controller@hapus_do_kargo');
 
 
 

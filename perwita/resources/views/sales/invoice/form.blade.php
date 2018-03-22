@@ -75,11 +75,11 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm" >Customer</td>
-                                <td colspan="4">
+                                <td colspan="4">                                    
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
-                                        <option value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
+                                        <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} </option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -229,7 +229,7 @@
                                     <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="pajak_lain" id="pajak_lain" >
                                         <option value="0"  >Pilih Pajak Lain-lain</option>
                                         @foreach($pajak as $val)
-                                            <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                            <option value="{{$val->kode}}" data-pph="{{$val->nilai}}">{{$val->nama}}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -518,8 +518,9 @@
 
         }
 
-
+       hitung_pajak_lain();
        hitung_total_tagihan();
+
    }
 
    function hitung_pajak_lain(){
@@ -536,7 +537,7 @@
         hitung_total_tagihan();
         return 1;
        }
-
+       $('.simpan_btn').addClass('disabled');
        $.ajax({
              url:baseUrl +'/sales/pajak_lain',
              dataType:'json',
@@ -548,7 +549,10 @@
                 pajak_total  = persen_fix * netto_total;
                 pajak_total  = pajak_total - netto_total;
                 $('.pph').val(accounting.formatMoney(pajak_total,"",2,'.',','));
+                // hitung_pajak_ppn();
                 hitung_total_tagihan();
+                $('.simpan_btn').removeClass('disabled');
+
 
              }
        })
@@ -727,7 +731,7 @@
 
       swal({
         title: "Apakah anda yakin?",
-        text: "Simpan Data Biaya Penerus!",
+        text: "Simpan Data Invoice!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -736,6 +740,9 @@
         closeOnConfirm: true
       },
       function(){
+            var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
+            var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
+               alert(accPiutang);
            $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -748,7 +755,9 @@
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
-               +'&'+$('.table_pajak :input').serialize(),
+               +'&'+$('.table_pajak :input').serialize()
+               +'&accPiutang='+accPiutang
+               +'&pajak_lain='+pajak_lain,
           success:function(response){
             
 
