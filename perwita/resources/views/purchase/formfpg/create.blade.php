@@ -479,7 +479,7 @@
                                                     @endforeach
                                                   
                                                 </select> </td>
-                                          <td> <input type="text" class="form-control nmbank" readonly=""> </td> <td> <input type="text" class="form-control cbgbank" readonly=""> </td> <td> <input type="text" class="form-control account" readonly=""> <input type="text" class="valbank" readonly="" name="selectOutlet"></td>
+                                          <td> <input type="text" class="form-control nmbank" readonly=""> </td> <td> <input type="text" class="form-control cbgbank" readonly=""> </td> <td> <input type="text" class="form-control account" readonly=""> <input type="hidden" class="valbank" readonly="" name="selectOutlet"></td>
                                           
                                         </tr>
                                      </table>
