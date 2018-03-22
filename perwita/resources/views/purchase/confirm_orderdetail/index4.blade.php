@@ -40,7 +40,7 @@
                      </h5>
                     <div class="text-right">
                     
-                          <a class="btn btn-success" href="{{url('konfirmasi_order/konfirmasi_order')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
+                          <a class="btn btn-default" href="{{url('konfirmasi_order/konfirmasi_order')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
                     
                     </div>
                 </div>
@@ -109,15 +109,15 @@
                     <hr>
                     
                   @if($data['countcodt'] > 0)
-                     <table class="table table-bordered table-striped" id="hargatable">
+                     <table class="table table-bordered" id="hargatable">
                       <tr>
-                        <th rowspan="2"  style="width:20px"> No </th>
-                        <th rowspan="2"  style="width:200px"> Nama Barang </th>
-                        <th rowspan="2"  style="width:50px"> Jumlah Permintaan </th>
-                        <th rowspan="2"  style="width:50px"> Jumlah Disetujui </th>
-                        <th rowspan="2"  style="width:50px"> Satuan </th>
-                        <th rowspan="2"  style="width:50px"> Stock Gudang </th>
-                        <th colspan= {{$data['count']}} style="text-align: center"> Supplier </th>
+                        <td rowspan="2"  style="width:20px"> No </td>
+                        <td rowspan="2"  style="width:200px"> Nama Barang </td>
+                        <td rowspan="2"  style="width:50px"> Jumlah Permintaan </td>
+                        <td rowspan="2"  style="width:50px"> Jumlah Disetujui </td>
+                        <td rowspan="2"  style="width:50px"> Satuan </td>
+                        <td rowspan="2"  style="width:50px"> Stock Gudang </td>
+                        <td colspan= {{$data['count']}} style="text-align: center"> Supplier </td>
                       </tr>
 
                       <tr class="data-supplier">
@@ -187,14 +187,14 @@
                 <table id="hargatable" class="table table-bordered" >
                     <thead>
                      <tr>
-                        <th style="width:20px" rowspan="2"> No  </th>
-                        <th style="width:150px; text-align: center" rowspan="2"> Nama Barang</th>
-                        <th style="width:50px" rowspan="2"> Jumlah Permintaan </th>
-                        <th style="width:50px" rowspan="2"> Jumlah Disetujui </th>
-                        <th style="width:50px" rowspan="2"> Stock Gudang </th>
-                        <th style="width:70px" rowspan="2"> Satuan </th>                      
-                        <th style="width:700px; text-align: center" colspan="{{$data['count']}}"> Supplier </th>
-                        <th rowspan="2"> Ditolak </th>
+                        <td style="width:20px" rowspan="2"> No  </td>
+                        <td style="width:150px; text-align: center" rowspan="2"> Nama Barang</td>
+                        <td style="width:50px" rowspan="2"> Jumlah Permintaan </td>
+                        <td style="width:50px" rowspan="2"> Jumlah Disetujui </td>
+                        <td style="width:50px" rowspan="2"> Stock Gudang </td>
+                        <td style="width:70px" rowspan="2"> Satuan </td>                      
+                        <td style="width:700px; text-align: center" colspan="{{$data['count']}}"> Supplier </td>
+                        <td rowspan="2"> Ditolak </td>
                     
                     </tr>
 

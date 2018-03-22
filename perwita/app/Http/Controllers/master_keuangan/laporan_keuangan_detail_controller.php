@@ -25,7 +25,7 @@ class laporan_keuangan_controller extends Controller
 
             // return json_encode($m1);
 
-            $datat1 = []; $datat2 = []; $no = 0; $request = $request->all(); $data_akun1 = []; $data_akun2 = []; $total_in_header1 = []; $total_in_header2 = [];
+            $datat1 = []; $datat2 = []; $no = 0; $request = $request->all();
 
             $dateToSearch = ($request["m"] < 10) ? str_replace("0", "", $request["m"]) : $request["m"];
             // return $dateToSearch;
@@ -62,20 +62,6 @@ class laporan_keuangan_controller extends Controller
 
                         $dataTotal1 += ($total->total + $transaksi->total);
 
-                        $data_akun1[count($data_akun1)] = [
-                            "nomor_id"   => $dataDetail->nomor_id,
-                            "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
-                            "id_akun"    => $akun->id_akun,
-                            "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
-                            "total"      => $total->total + $transaksi->total,
-                            'is_parrent' => false
-                        ];
-
-                        if(array_key_exists($dataDetail->id_parrent, $total_in_header1))
-                            $total_in_header1[$dataDetail->id_parrent] += ($total->total + $transaksi->total);
-                            // $total_in_header[$dataDetail->id_parrent] = $total_in_header[$dataDetail->id_parrent]." + ".($total->total + $transaksi->total);
-                            //return $dataTotal;
-
                         $total = DB::table("d_akun_saldo")
                                     ->where(DB::raw("substring(id_akun, 1, ".$sub.")"), $akun->id_akun)
                                     ->where("d_akun_saldo.bulan", $m2[0])
@@ -93,27 +79,11 @@ class laporan_keuangan_controller extends Controller
 
                         $dataTotal2 += ($total->total + $transaksi->total);
 
-                        if(array_key_exists($dataDetail->id_parrent, $total_in_header2))
-                            $total_in_header2[$dataDetail->id_parrent] += ($total->total + $transaksi->total);
-                            // $total_in_header[$dataDetail->id_parrent] = $total_in_header[$dataDetail->id_parrent]." + ".($total->total + $transaksi->total);
-                            //return $dataTotal;
-
-                        $data_akun2[count($data_akun2)] = [
-                            "nomor_id"   => $dataDetail->nomor_id,
-                            "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
-                            "id_akun"    => $akun->id_akun,
-                            "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
-                            "total"      => $total->total + $transaksi->total,
-                            'is_parrent' => false
-                        ];
-
+                        //return $dataTotal;
                     }
 
                     // return $dataTotal;
 
-                }else if($dataDetail->jenis == "1"){
-                    $total_in_header1[$dataDetail->nomor_id] = 0;
-                    $total_in_header2[$dataDetail->nomor_id] = 0;
                 }
 
                 $datat1[$no] = [
@@ -144,12 +114,12 @@ class laporan_keuangan_controller extends Controller
 
             // return json_encode($mydatatotal);
 
-            return view("laporan_neraca.index")->withDatat1($datat1)->withDatat2($datat2)->withRequest($request)->withThrottle($throttle)->withMydatatotal1($mydatatotal1)->withMydatatotal2($mydatatotal2)->withTotal_in_header1($total_in_header1)->withTotal_in_header2($total_in_header2)->withData_akun1($data_akun1)->withData_akun2($data_akun2);
+            return view("laporan_neraca.index")->withDatat1($datat1)->withDatat2($datat2)->withRequest($request)->withThrottle($throttle)->withMydatatotal1($mydatatotal1)->withMydatatotal2($mydatatotal2);
 
         }else if($throttle == "perbandingan_tahun"){
             // return json_encode($m1);
 
-            $datat1 = []; $datat2 = []; $no = 0; $request = $request->all(); $data_akun1 = []; $data_akun2 = []; $total_in_header1 = []; $total_in_header2 = [];
+            $datat1 = []; $datat2 = []; $no = 0; $request = $request->all();
 
             $dateToSearch = ($request["m"] < 10) ? str_replace("0", "", $request["m"]) : $request["m"];
             // return $dateToSearch;
@@ -183,19 +153,6 @@ class laporan_keuangan_controller extends Controller
                                     })->select(DB::raw("sum(jrdt_value) as total"))->first();
 
                         $dataTotal1 += ($total->total + $transaksi->total);
-                        $data_akun1[count($data_akun1)] = [
-                            "nomor_id"   => $dataDetail->nomor_id,
-                            "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
-                            "id_akun"    => $akun->id_akun,
-                            "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
-                            "total"      => $total->total + $transaksi->total,
-                            'is_parrent' => false
-                        ];
-
-                        if(array_key_exists($dataDetail->id_parrent, $total_in_header1))
-                            $total_in_header1[$dataDetail->id_parrent] += ($total->total + $transaksi->total);
-                            // $total_in_header[$dataDetail->id_parrent] = $total_in_header[$dataDetail->id_parrent]." + ".($total->total + $transaksi->total);
-                            //return $dataTotal;
 
                         $total = DB::table("d_akun_saldo")
                                     ->where(DB::raw("substring(id_akun, 1, ".$sub.")"), $akun->id_akun)
@@ -211,28 +168,12 @@ class laporan_keuangan_controller extends Controller
                                     })->select(DB::raw("sum(jrdt_value) as total"))->first();
 
                         $dataTotal2 += ($total->total + $transaksi->total);
-                        if(array_key_exists($dataDetail->id_parrent, $total_in_header2))
-                            $total_in_header2[$dataDetail->id_parrent] += ($total->total + $transaksi->total);
-                            // $total_in_header[$dataDetail->id_parrent] = $total_in_header[$dataDetail->id_parrent]." + ".($total->total + $transaksi->total);
-                            //return $dataTotal;
-
-                        $data_akun2[count($data_akun2)] = [
-                            "nomor_id"   => $dataDetail->nomor_id,
-                            "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
-                            "id_akun"    => $akun->id_akun,
-                            "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
-                            "total"      => $total->total + $transaksi->total,
-                            'is_parrent' => false
-                        ];
 
                         //return $dataTotal;
                     }
 
                     // return $dataTotal;
 
-                }else if($dataDetail->jenis == "1"){
-                    $total_in_header1[$dataDetail->nomor_id] = 0;
-                    $total_in_header2[$dataDetail->nomor_id] = 0;
                 }
 
                 $datat1[$no] = [
@@ -256,14 +197,14 @@ class laporan_keuangan_controller extends Controller
                 $no++;
             }
 
-            // return json_encode($total_in_header1);
+            // return json_encode($datat1);
 
             $mydatatotal1 = $this->get_total($datat1, "neraca");
             $mydatatotal2 = $this->get_total($datat2, "neraca");
 
             // return json_encode($mydatatotal1);
 
-            return view("laporan_neraca.index")->withDatat1($datat1)->withDatat2($datat2)->withRequest($request)->withThrottle($throttle)->withMydatatotal1($mydatatotal1)->withMydatatotal2($mydatatotal2)->withTotal_in_header1($total_in_header1)->withTotal_in_header2($total_in_header2)->withData_akun1($data_akun1)->withData_akun2($data_akun2);
+            return view("laporan_neraca.index")->withDatat1($datat1)->withDatat2($datat2)->withRequest($request)->withThrottle($throttle)->withMydatatotal1($mydatatotal1)->withMydatatotal2($mydatatotal2);
         }else{
             $data = []; $no = 0; $request = $request->all(); $data_akun = []; $data_akun_no = 0; $total_in_header = [];
 
@@ -325,8 +266,10 @@ class laporan_keuangan_controller extends Controller
                             "id_akun"    => $akun->id_akun,
                             "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
                             "total"      => $total->total + $transaksi->total,
-                            'is_parrent' => false
+                            'is_parrent' => (DB::table('d_akun')->where("id_parrent", $akun->id_akun)->select(DB::raw("count(id_akun) as ct"))->first()->ct > 0) ? true : false
                         ];
+
+                        $data_akun = $this->get_detail($data_akun, $akun->id_akun, $request, $dateToSearch, $throttle);
 
                         if(array_key_exists($dataDetail->id_parrent, $total_in_header))
                             $total_in_header[$dataDetail->id_parrent] += ($total->total + $transaksi->total);
@@ -362,6 +305,59 @@ class laporan_keuangan_controller extends Controller
 
             return view("laporan_neraca.index")->withData($data)->withMydatatotal($mydatatotal)->withRequest($request)->withThrottle($throttle)->withData_akun($data_akun)->withTotal_in_header($total_in_header);
         }
+    }
+
+    public function get_detail($data_akun, $key, $request, $dateToSearch, $throttle){
+        $dataAkun = DB::table("d_akun")->where(DB::raw("substring(id_akun, 1, ".strlen($key).")"), $key)->where("id_parrent", $key)->orderBy("id_akun", "desc")->get();
+
+        foreach ($dataAkun as $akun) {
+            $sub = strlen($akun->id_akun);
+
+            if($throttle == "bulan"){
+                $total = DB::table("d_akun_saldo")
+                        ->where(DB::raw("substring(id_akun, 1, ".$sub.")"), $akun->id_akun)
+                        ->where("d_akun_saldo.bulan", $request["m"])
+                        ->where("d_akun_saldo.tahun", $request["y"])
+                        ->select(DB::raw("sum(saldo_akun) as total"))->first();
+
+                $transaksi = DB::table("d_jurnal_dt")
+                        ->where(DB::raw("substring(jrdt_acc, 1, ".$sub.")"), $akun->id_akun)
+                        ->whereIn("d_jurnal_dt.jrdt_jurnal", function($query) use ($dateToSearch, $request){
+                            $query->select("jr_id")
+                                  ->from("d_jurnal")
+                                  ->where(DB::raw("date_part('month', jr_date)"), $dateToSearch)
+                                  ->where(DB::raw("date_part('year', jr_date)"), $request["y"])->get();
+                        })->select(DB::raw("sum(jrdt_value) as total"))->first();
+            }else{
+                $total = DB::table("d_akun_saldo")
+                        ->where(DB::raw("substring(id_akun, 1, ".$sub.")"), $akun->id_akun)
+                        ->where("d_akun_saldo.tahun", $request["y"])
+                        ->select(DB::raw("sum(saldo_akun) as total"))->first();
+
+                $transaksi = DB::table("d_jurnal_dt")
+                        ->where(DB::raw("substring(jrdt_acc, 1, ".$sub.")"), $akun->id_akun)
+                        ->whereIn("d_jurnal_dt.jrdt_jurnal", function($query) use ($dateToSearch, $request){
+                            $query->select("jr_id")
+                                  ->from("d_jurnal")
+                                  ->where(DB::raw("date_part('year', jr_date)"), $request["y"])->get();
+                        })->select(DB::raw("sum(jrdt_value) as total"))->first();
+            }
+
+            $dat = [
+                "nomor_id"   => $key,
+                "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
+                "id_akun"    => $akun->id_akun,
+                "class"      => $key,
+                "total"      => $total->total + $transaksi->total,
+                'is_parrent' => (DB::table('d_akun')->where("id_parrent", $akun->id_akun)->select(DB::raw("count(id_akun) as ct"))->first()->ct > 0) ? true : false
+            ];
+
+            array_push($data_akun, $dat);
+
+            $data_akun = $this->get_detail($data_akun, $akun->id_akun, $request, $dateToSearch, $throttle);
+        }
+
+        return $data_akun;
     }
 
     public function print_pdf_neraca(Request $request, $throttle){

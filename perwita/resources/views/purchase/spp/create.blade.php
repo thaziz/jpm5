@@ -365,8 +365,17 @@
                  nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data;
                 console.log(nospp);
                 $('.nospp').val(nospp);
+                 nospp = $('.nospp').val();
+                if(nospp === ''){
+                    location.reload();
+                }
+
+               
             }
         })
+
+
+
 
     $('.cabang').change(function(){    
       var comp = $(this).val();
@@ -548,7 +557,7 @@
       $(function(){
       var harga = [];
       $('.cek_tb').click(function(){
-      
+        
 
           $('.brgduplicate').empty();
           $('.supduplicate').empty();
@@ -653,6 +662,8 @@
                 else {
                    rowduplicate2 = "<i> <h5 style='color:purple'> *Barang ini memiliki duplicate Supplier </h5> </i>";
                    $('.supduplicate' + parseInt(arrnobrg[nmrbrg])).html(rowduplicate2);
+                    $('.simpan').attr('disabled', true);
+
                 } // end c
                }
             }
@@ -737,10 +748,7 @@
             arrSup.push(supplier);
             arrIdSup.push(idsupplier);
             kodesup.push(kodesupplier);
-            arrsyarat.push({
-              idsup : idsupplier,
-              syaratkredit : syaratkredit
-            });
+            arrsyarat.push(syaratkredit);
          })
 
 
@@ -781,14 +789,12 @@
           hslkodesup = removeDuplicates(kodesup);
 
           
-          uniqueIdsup = [];
-            for(ds = 0; ds < arrsyarat.length; ds++){
-              if(uniqueIdsup.indexOf(arrsyarat[ds].idsup) === -1){
-               // indexsup = arrsyarat.indexOf(arrsyarat[ds].idsup);
-                uniqueIdsup.push(arrsyarat[ds].idsup);
-              }
-            }
-            
+         for(var jx = 0; jx < idsupp.length; jx++){
+          indexsyarat = arrIdSup.indexOf(idsupp[jx]);
+          hslsyaratkredit.push(indexsyarat);
+         }
+          
+         
            // console.log(arrsyarat.syaratkredit + 'syaratkredit');
 
          //remove qty yg undefined
@@ -815,22 +821,27 @@
 
           var jumlahtotal = 0;
           var jumlahtotalpembayaran = [];
+          var indexhslsup = [];
           for(var i = 0; i < idsupp.length; i++ ) {
             jumlahtotal = 0;
             for(var j = 0; j < hasilrow; j++){
               if(arrIdSup[j] == idsupp[i]) {
                 jumlahtotal = parseInt(jumlahtotal + arrtotal[j]);
-             //   console.log(jumlahtotal);
+                console.log(jumlahtotal);
+              //  indexhslsup1 = arrIdSup.indexOf(idsupp[i]);
+               
+               
              }
 
             }
+            // indexhslsup.push(indexhslsup1);
              jumlahtotalpembayaran.push(jumlahtotal);
           }
         
         //  console.log(jumlahtotalpembayaran);
           hsljmlhpmbayaran = [];
          // console.log(outputSup);
-      
+          
 
           if(tempceknull != 0){
             toastr.info(tempceknull);
@@ -853,16 +864,17 @@
            $('#tbl_total_sup').append(rowhslSupp1);
            // toastr.info(tempceknull);
           for (var a = 0; a < outputSup.length; a++) {
-              hsljmlhpmbayaran = Math.round(jumlahtotalpembayaran[a]).toFixed(2);
+              hsljmlhpmbayaran = parseFloat(jumlahtotalpembayaran[a]).toFixed(2);
              // console.log(hsljmlhpmbayaran);
           var  rowhslSupp = "<tr id='tbl_total' style='margin-bottom:30px'>"+
-                            "<td style='width:240px'><input type='text' class='form-control' value='"+ outputSup[a] +"' readonly>" + 
-                            "<input type='hidden' name='idsupplier[]' value='"+hslkodesup[a]+"'> </td>" +
-                            "<td class='text-right'> <input type='text' class='input-sm form-control' value='"+ addCommas(hsljmlhpmbayaran) +"' name='totbiaya[]' readonly style='text-align:right'  ></td>" +
-                            "<td> <div class='col-sm-7'> <input type='text' class='input-sm form-control input-sm' name='syaratkredit[]' required> </div> <label class='control-label col-sm-2'> Hari</label>  </td>" +
+                            "<td style='width:240px'><input type='text' class='form-control' value='"+ outputSup[a] +"' readonly name='outputSup[]'>" + 
+                            "<input type='hidden' name='idsupplier[]' value='"+kodesup[hslsyaratkredit[a]]+"'> </td>" +
+                            "<td class='text-right'><input type='text' class='input-sm form-control' value='"+ addCommas(hsljmlhpmbayaran) +"'  readonly style='text-align:right'  >  <input type='hidden' class='input-sm form-control' value='"+ addCommas(hsljmlhpmbayaran) +"-"+hslkodesup[a]+"' name='totbiaya[]' readonly style='text-align:right'  ></td>" +
+                            "<td> <div class='col-sm-7'> <input type='text' class='input-sm form-control input-sm' name='syaratkredit[]' required value='"+arrsyarat[hslsyaratkredit[a]]+"'> </div> <label class='control-label col-sm-2'> Hari</label>  </td>" +
                             "<td> <input type='hidden' class='form-control' readonly value='"+hasilrow+"' name='row'> </td>  </tr>";
              $('#tbl_total_sup').append(rowhslSupp);
           }
+            $('.cek_tb').attr('disabled' , true);
            $('.simpan').attr('disabled', false);
          }
          
@@ -1052,7 +1064,7 @@
           rowStr +=  "<option value=''> -- Data Kosong -- </option>";              
                       }
           rowStr += "</select> <br> <div class='brgduplicate duplicate"+nourutbrg+"'> </div> <br>   </td>" +
-                    "<td> <input type='text' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required style='width:60px'> <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'>  </td>" + //qty
+                    "<td> <input type='number' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required style='width:60px'> <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'>  </td>" + //qty
 
                     "<td> <div class='stock_gudang"+counterId+"'> </td>" + //stockgudang
 
@@ -1088,9 +1100,13 @@
                 var id = $(this).data('id');
                 harga = $(this).val();
                 numhar = Math.round(harga).toFixed(2);
-         
-                $('.harga' + id).val(addCommas(numhar));
+               val = $(this).val();
+      
+               val = accounting.formatMoney(val, "", 2, ",",'.');
+               $(this).val(val);
 
+             //   $('.harga' + id).val(addCommas(numhar));
+                $('.cek_tb').attr('disabled', false);
                $('.simpan').attr('disabled', true);
             })
         }) 
@@ -1103,7 +1119,7 @@
                 var qty_request = qty;
          
               var id = $(this).data('id');
-
+                $('.cek_tb').attr('disabled', false);
                 $('.simpan').attr('disabled', true);
 
                 var rowqty = "<input type='text' value="+ qty + ','+no+" name='qty_request[]'>";
@@ -1119,6 +1135,7 @@
           $('.supplier' + counterId).change(function(){  
 
               $('.simpan').attr('disabled', true);
+              $('.cek_tb').attr('disabled', false);
 
             var val = $(this).val();
             var id = $(this).data('id');
@@ -1185,7 +1202,7 @@
               var kodeitem = string[0];
               var nobarang = $(this).data('no');
               var hrgbrg = string[2];
-              alert(nobarang);
+             // alert(nobarang);
               console.log(valbarang);
 
              // toastr.info(kodeitem);
@@ -1305,6 +1322,8 @@
 
               })
               $('.simpan').attr('disabled', true);
+                $('.cek_tb').attr('disabled', false);
+
           })
         })
 
@@ -1434,14 +1453,18 @@
 					$(function(){
 						$('.harga' + counterId).change(function(){
 							var id = $(this).data('id');
-							
-							harga = $(this).val();
-		
-							numhar = Math.round(harga).toFixed(2);
+						
 
-							$('.harga' + id).val(addCommas(numhar));
+               val = $(this).val();
+      
+             val = accounting.formatMoney(val, "", 2, ",",'.');
+             $(this).val(val);
+
+					//		$('.harga' + id).val(addCommas(numhar));
 
 						   $('.simpan').attr('disabled', true);
+                $('.cek_tb').attr('disabled', false);
+
 						})
 					}) 
 
@@ -1462,6 +1485,8 @@
 					var contract = string[4];
 				  //  console.log(val);
 					 $('.simpan').attr('disabled', true);
+            $('.cek_tb').attr('disabled', false);
+
 					  console.log(val);
 					 numhar = Math.round(harga).toFixed(2);
 

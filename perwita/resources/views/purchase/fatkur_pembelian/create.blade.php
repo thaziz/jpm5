@@ -1270,8 +1270,8 @@
       hasilppn = $('.hasilppn').val();
       netto = $('.nettohutang').val();
      
-
-      if(inputppn == '' && hasilppn == ''){
+      alert(jenisppn);
+      if(inputppn == '' || hasilppn == '' || hasilppn != '0.00' || jenisppn == 'T'){
         toastr.info("Anda belum mengisi data PPN :)");
         return false;
       }
@@ -1299,7 +1299,7 @@
      // alert('jatuhtempo_po');
       masapajak = $('.masapajak_faktur').val(jatuhtempo_po);
 
-      if(inputppn == '' && hasilppn == ''){
+      if(inputppn == '' || hasilppn == '' || hasilppn == 0 || jenisppn == 'T' ){
         toastr.info("Anda belum mengisi data PPN :)");
         return false;
       }
@@ -2246,7 +2246,7 @@
           inputppn = $('.inputppn_po').val();
           hasilppn = $('.hasilppn_po').val();
 
-          if(inputppn != '' && hasilppn != '' ) {
+          if(inputppn != '' && hasilppn != '' && hasilppn != 0 ) {
             if(pajakmasukan == 'edit'|| pajakmasukan == ''){
             
               toastr.info("Mohon maaf Anda belum menginputkan data pajak masukan :)");
@@ -2275,7 +2275,7 @@
            function(){
            // var accHutang=$(".idsup_po").find(':selected').data('accHutang');
           $.ajax({
-            type : "GET",
+            type : "POST",
             data : form_data3,
             url : post_url3,
           
@@ -2297,7 +2297,7 @@
          
 
 
-              html = "<a class='btn btn-success btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+              html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
               $('.printpo').html(html);
               
             },
