@@ -25,7 +25,7 @@ class laporan_keuangan_controller extends Controller
 
             // return json_encode($m1);
 
-            $datat1 = []; $datat2 = []; $no = 0; $request = $request->all();
+            $datat1 = []; $datat2 = []; $no = 0; $request = $request->all(); $data_akun1 = []; $data_akun2 = []; $total_in_header1 = []; $total_in_header2 = [];
 
             $dateToSearch = ($request["m"] < 10) ? str_replace("0", "", $request["m"]) : $request["m"];
             // return $dateToSearch;
@@ -62,6 +62,20 @@ class laporan_keuangan_controller extends Controller
 
                         $dataTotal1 += ($total->total + $transaksi->total);
 
+                        $data_akun1[count($data_akun1)] = [
+                            "nomor_id"   => $dataDetail->nomor_id,
+                            "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
+                            "id_akun"    => $akun->id_akun,
+                            "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
+                            "total"      => $total->total + $transaksi->total,
+                            'is_parrent' => false
+                        ];
+
+                        if(array_key_exists($dataDetail->id_parrent, $total_in_header1))
+                            $total_in_header1[$dataDetail->id_parrent] += ($total->total + $transaksi->total);
+                            // $total_in_header[$dataDetail->id_parrent] = $total_in_header[$dataDetail->id_parrent]." + ".($total->total + $transaksi->total);
+                            //return $dataTotal;
+
                         $total = DB::table("d_akun_saldo")
                                     ->where(DB::raw("substring(id_akun, 1, ".$sub.")"), $akun->id_akun)
                                     ->where("d_akun_saldo.bulan", $m2[0])
@@ -79,11 +93,27 @@ class laporan_keuangan_controller extends Controller
 
                         $dataTotal2 += ($total->total + $transaksi->total);
 
-                        //return $dataTotal;
+                        if(array_key_exists($dataDetail->id_parrent, $total_in_header2))
+                            $total_in_header2[$dataDetail->id_parrent] += ($total->total + $transaksi->total);
+                            // $total_in_header[$dataDetail->id_parrent] = $total_in_header[$dataDetail->id_parrent]." + ".($total->total + $transaksi->total);
+                            //return $dataTotal;
+
+                        $data_akun2[count($data_akun2)] = [
+                            "nomor_id"   => $dataDetail->nomor_id,
+                            "nama_akun"  => DB::table("d_akun")->where("id_akun", $akun->id_akun)->select("nama_akun")->first()->nama_akun,
+                            "id_akun"    => $akun->id_akun,
+                            "class"      => $dataDetail->nomor_id." ".$dataDetail->id_parrent,
+                            "total"      => $total->total + $transaksi->total,
+                            'is_parrent' => false
+                        ];
+
                     }
 
                     // return $dataTotal;
 
+                }else if($dataDetail->jenis == "1"){
+                    $total_in_header1[$dataDetail->nomor_id] = 0;
+                    $total_in_header2[$dataDetail->nomor_id] = 0;
                 }
 
                 $datat1[$no] = [
@@ -114,7 +144,7 @@ class laporan_keuangan_controller extends Controller
 
             // return json_encode($mydatatotal);
 
-            return view("laporan_neraca.index")->withDatat1($datat1)->withDatat2($datat2)->withRequest($request)->withThrottle($throttle)->withMydatatotal1($mydatatotal1)->withMydatatotal2($mydatatotal2);
+            return view("laporan_neraca.index")->withDatat1($datat1)->withDatat2($datat2)->withRequest($request)->withThrottle($throttle)->withMydatatotal1($mydatatotal1)->withMydatatotal2($mydatatotal2)->withTotal_in_header1($total_in_header1)->withTotal_in_header2($total_in_header2)->withData_akun1($data_akun1)->withData_akun2($data_akun2);
 
         }else if($throttle == "perbandingan_tahun"){
             // return json_encode($m1);
