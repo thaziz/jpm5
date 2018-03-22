@@ -28,7 +28,7 @@
                     <h5> Delivery Order Kargo
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../sales/deliveryorderkargo" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -60,7 +60,10 @@
                                     </tr>
                                     <tr>
                                         <td>No Surat Jalan</td>
-                                        <td><input type="text" name="surat_jalan" class="surat_jalan form-control input-sm"></td>
+                                        <td>
+                                            <input type="text" name="surat_jalan" class="surat_jalan form-control input-sm">
+                                            <input type="hidden" name="nomor_print" class="nomor_print form-control input-sm">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Cabang</td>
@@ -321,12 +324,16 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
+                                            <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
+                                                <i class="fa fa-print"> Print</i>
+                                            </button>
                                             <button type="button" class="pull-right btn btn-primary save">
                                                 <i class="fa fa-save"> Simpan</i>
                                             </button>
                                             <button type="button" class="pull-right btn btn-warning reload" style="margin-right: 30px">
                                                 <i class="fa fa-refresh"> Reload</i>
                                             </button>
+                                            
                                         </td>
                                     </tr>
                                 </table>
@@ -627,7 +634,7 @@ function pilih_kontrak(a) {
             $('.kcd_dt').val(response.data.kcd_dt);
             $('#kode_tarif').val(0);
             $('.acc_penjualan').val(response.data.kcd_acc_penjualan);
-            $('.satuan').val(response.data.kcd_satuan);
+            $('.satuan').val(response.data.kcd_kode_satuan);
             $('.jumlah').val(1);
             $('#modal_tarif').modal('hide');
             hitung();
@@ -681,9 +688,10 @@ $('.save').click(function(){
                 },function(){
                     $('.nomor_do').val(response.nota);
                     $('.save').addClass('disabled');
-                   // location.reload();
+                    $('.ngeprint').removeClass('disabled');
+                    $('.nomor_print').val(response.nota);
             });
-        }else{
+        }else if (response.status == 1){
             swal({
             title: "Berhasil!",
                     type: 'success',
@@ -693,7 +701,17 @@ $('.save').click(function(){
                     },function(){
                        // location.reload();
                     $('.save').addClass('disabled');
+                    $('.ngeprint').removeClass('disabled');
+                    $('.nomor_print').val(response.nota);
                        
+            });
+        }else{
+            swal({
+                title: "Harap Lengkapi Data Anda",
+                type: 'warning',
+                timer: 900,
+                showConfirmButton: true
+
             });
         }
         
@@ -710,5 +728,12 @@ $('.save').click(function(){
   });  
  });
 });
+
+// ngeprint
+$('.ngeprint').click(function(){
+    var print = $('.nomor_print').val();
+
+    window.open('{{ url('sales/deliveryorderkargoform')}}'+'/'+print+'/nota');
+})
 </script>
 @endsection

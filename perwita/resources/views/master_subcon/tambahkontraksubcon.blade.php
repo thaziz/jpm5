@@ -31,7 +31,7 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="kontrak_nomor" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" value="{{$nota}} " >
+                                    <input type="text" name="kontrak_nomor" id="ed_nomor" readonly="readonly" class="form-control ed_nomor" style="text-transform: uppercase" value="" >
                                 </td>
                             </tr>
                             <tr>
@@ -72,10 +72,13 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
-                                    <select class="form-control cabang chosen-select-width" name="cabang" >
-                                      <option selected="" disabled="">- Pilih Cabang -</option>
+                                    <select class="form-control cabang" disabled="" name="cabang" >
                                       @foreach($cabang as $val)
-                                      <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                                @if(Auth::user()->kode_cabang == $val->kode)
+                                                <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @else
+                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @endif
                                       @endforeach
                                     </select>
                                 </td>
@@ -173,10 +176,9 @@
                                                 <td style="width:110px; padding-top: 0.4cm">Jenis Tarif</td>
                                                 <td>
                                                     <select class="form-control tarif" name="tarif" >
-                                                        <option value="KILOGRAM">KILOGRAM</option>
-                                                        <option value="ONE WAY STANDART">ONE WAY STANDART</option>
-                                                        <option value="EMBALASI STANDART">EMBALASI STANDART</option>
-                                                        <option value="ROUND TRIP">ROUND STANDART</option>
+                                                       @foreach($jenis_tarif as $val)
+                                                          <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                                       @endforeach
                                                     </select>
                                                 </td>
                                             </tr>
@@ -253,6 +255,15 @@
 
   $('.cabang').chosen(config2); 
 
+var cabang = $('.cabang').val();
+$.ajax({
+        url:baseUrl + '/master_subcon/nota_kontrak_subcon',
+        data:{cabang},
+        dataType:'json',
+        success:function(data){
+            $('.ed_nomor').val(data.nota);
+        }
+    })
 
 });
 
@@ -285,7 +296,7 @@ function tambah(){
   var asal_dt     = $('.asal').val();
   var tujuan_dt   = $('.tujuan').val();
   var angkutan_dt = $('.angkutan').val();
-  var tarif       = $('.tarif').val();
+  var tarif       = $('.tarif option:selected').text();
   var Harga       = $('.harga').val();
   var keterangan  = $('.keterangan').val();
   // console.log(asal);
@@ -377,6 +388,8 @@ function updt(){
 }
 
 $('#btnsimpan').click(function(){
+var cabang = $('.cabang').val();
+
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Subcon!",
@@ -397,7 +410,7 @@ $('#btnsimpan').click(function(){
       $.ajax({
       url:baseUrl + '/master_subcon/save_subcon',
       type:'get',
-      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize(),
+      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'cab='+cabang,
       success:function(response){
         swal({
         title: "Berhasil!",
