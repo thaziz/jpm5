@@ -18,10 +18,17 @@
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Pembayaran Kas </h2>
+                    <h2> KONTRAK SUBCON </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
+                        </li>
+                         <li>
+                            <a>Master</a>
+                             <li>
+                            <a>Master Penjualan</a>
+                             <li>
+                            <a>Master Kontrak</a>
                         </li>
                         <li class="active">
                             <strong> Kontrak Subcon </strong>

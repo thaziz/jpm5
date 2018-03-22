@@ -18,7 +18,7 @@
                           <a> Master DO</a>
                         </li>
                         <li class="active">
-                            <strong> NOMOR SERI PAJAK </strong>
+                            <strong> Nomor Seri Pajak </strong>
                         </li>
 
                     </ol>

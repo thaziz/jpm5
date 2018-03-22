@@ -1,6 +1,7 @@
 <select class="csf_akun_modal form-control chosen-select-width1">
+        <option value="0">Pilih - Akun</option>
 	@foreach($data as $val)
-    	<option class="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+    	<option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
     @endforeach
 </select>
 <script>

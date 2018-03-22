@@ -20,12 +20,15 @@ use Dompdf\Dompdf;
 class subconController extends Controller
 {
 	public function subcon(){
+		$cabang =Auth::user()->kode_cabang;
 		 $data = DB::table('kontrak_subcon')
 				 ->join('cabang','kode','=','ks_cabang')
+				 ->where('ks_cabang',$cabang)
 				 ->orderBy('ks_id','asc')
 				 ->get();
 		 $subcon = DB::table('kontrak_subcon')
 				 ->join('subcon','kode','=','ks_nama')
+				 ->where('ks_cabang',$cabang)
 				 ->orderBy('ks_id','asc')
 				 ->get();
 
@@ -39,27 +42,26 @@ class subconController extends Controller
 
 	public function tambahkontraksubcon(){
 
-		$year =Carbon::now()->format('Y'); 
-		$month =Carbon::now()->format('m'); 
+		
 
-		$idfaktur =   DB::table('kontrak_subcon')
-						->where('ks_cabang' , '001')
-						->max('ks_nota');
-		//	dd($nosppid);
-		if(isset($idfaktur)) {
-			$explode  = explode("/", $idfaktur);
-			$idfaktur = $explode[2];
-			$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
-			$idfaktur = str_replace('-', '', $idfaktur) ;
-			$string = (int)$idfaktur + 1;
-			$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
-		}
+		// $idfaktur =   DB::table('kontrak_subcon')
+		// 				->where('ks_cabang' , '001')
+		// 				->max('ks_nota');
+		// //	dd($nosppid);
+		// if(isset($idfaktur)) {
+		// 	$explode  = explode("/", $idfaktur);
+		// 	$idfaktur = $explode[2];
+		// 	$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
+		// 	$idfaktur = str_replace('-', '', $idfaktur) ;
+		// 	$string = (int)$idfaktur + 1;
+		// 	$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
+		// }
 
-		else {
-			$idfaktur = '001';
-		}
+		// else {
+		// 	$idfaktur = '001';
+		// }
 
-		$nota = 'SC' . $month . $year . '/' . '001' . '/' .  $idfaktur;
+		// $nota = 'SC' . $month . $year . '/' .  . '/' .  $idfaktur;
 
 		$data = DB::table('subcon')
 				 ->get();
@@ -67,7 +69,8 @@ class subconController extends Controller
 		$now = Carbon::now()->format('d-m-Y');
 
 		$tgl2 = Carbon::parse($now)->subDay(-7)->format('d-m-Y');
-
+		$jenis_tarif = DB::table('jenis_tarif')
+					     ->get();
 		$cabang = DB::table('cabang')
 					->get();
 		$kota   = DB::table('kota')
@@ -75,11 +78,11 @@ class subconController extends Controller
 		$angkutan = DB::table('tipe_angkutan')
 					  ->get();
 		
-		return view('master_subcon.tambahkontraksubcon',compact('data','now','cabang','kota','angkutan','nota','tgl2'));
+		return view('master_subcon.tambahkontraksubcon',compact('jenis_tarif','data','now','cabang','kota','angkutan','tgl2'));
 	}
 
 	public function save_subcon(request $request){
-		// dd($request);
+		// dd($request->all());
 
 		if (isset($request->ck_aktif)) {
 			$cek = 'ACTIVE';
@@ -95,6 +98,7 @@ class subconController extends Controller
 		}else{
 			$id+=1;
 		}
+		
 		$request->kontrak_nomor = str_replace(' ', '', $request->kontrak_nomor);
 
 		$cari_nota = DB::table('kontrak_subcon')
@@ -122,6 +126,7 @@ class subconController extends Controller
 		}
 		
 		for ($i=0; $i < count($request->asal_tb); $i++) { 
+
 
 			$harga=str_replace('.', '', $request->harga_tb[$i]);
 
@@ -166,7 +171,8 @@ class subconController extends Controller
 				 ->where('ks_id',$id)
 				 ->orderBy('ks_id','asc')
 				 ->first();
-
+		$jenis_tarif = DB::table('jenis_tarif')
+					     ->get();
 		 $subcon_dt = DB::SELECT("SELECT kontrak_subcon.*,kontrak_subcon_dt.*, asal.nama as asal ,asal.id as id_asal,
 						 				tujuan.nama as tujuan, tujuan.id as id_tujuan,
 						 				angkutan.kode as kode_angkutan, angkutan.nama as angkutan
@@ -202,7 +208,7 @@ class subconController extends Controller
 		$tgl3 = Carbon::parse($data->ks_tgl)->format('d/m/Y');
 
 
-		return view('master_subcon.editSubcon',compact('data','subcon','subcon_dt','tgl1','tgl2','tgl3','cabang','kota','angkutan','sub'));
+		return view('master_subcon.editSubcon',compact('data','subcon','subcon_dt','tgl1','tgl2','tgl3','cabang','kota','angkutan','sub','jenis_tarif'));
 	}
 
 	public function update_subcon(request $request){
@@ -216,7 +222,7 @@ class subconController extends Controller
 		}else{
 			$cek = 'NOT ACTIVE';
 		}
-
+	
 		$delete = DB::table('kontrak_subcon')
 				->where('ks_id',$request->id)
 				->delete();
@@ -230,7 +236,7 @@ class subconController extends Controller
 								'ks_tgl'		=>	Carbon::parse($request->ed_tanggal)->format('Y-m-d'),
 								'ks_tgl_mulai'	=>  Carbon::parse($request->ed_mulai)->format('Y-m-d'),
 								'ks_tgl_akhir'  =>	Carbon::parse($request->ed_akhir)->format('Y-m-d'),
-								'ks_cabang'		=>	$request->cabang,
+								'ks_cabang'		=>	$request->cab,
 								'ks_keterangan' =>	$request->ed_keterangan,
 								'ks_active'		=>	$cek,	
 								'ks_edit'		=>  'UNALLOWED',
@@ -244,6 +250,7 @@ class subconController extends Controller
 				->delete();
 
 		for ($i=0; $i < count($request->asal_tb); $i++) { 
+
 
 			$harga=str_replace('.', '', $request->harga_tb[$i]);
 
@@ -310,7 +317,31 @@ class subconController extends Controller
 						]);
 		}
 	}
+public function nota_kontrak_subcon(request $request)
+{
 
+	$year =Carbon::now()->format('y'); 
+	$month =Carbon::now()->format('m'); 
+	$idfaktur =   DB::table('kontrak_subcon')
+						->where('ks_cabang' , $request->cabang)
+						->max('ks_nota');
+		//	dd($nosppid);
+		if(isset($idfaktur)) {
+			$explode  = explode("/", $idfaktur);
+			$idfaktur = $explode[2];
+			$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
+			$idfaktur = str_replace('-', '', $idfaktur) ;
+			$string = (int)$idfaktur + 1;
+			$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
+		}
+
+		else {
+			$idfaktur = '001';
+		}
+
+		$nota = 'SC' . $month . $year . '/' . $request->cabang . '/' .  $idfaktur;
+		return response()->json(['nota'=>$nota]);
+}
 }
 
 ?>

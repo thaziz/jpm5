@@ -21,7 +21,7 @@
                           <a> Master DO</a>
                         </li>
                         <li class="active">
-                            <strong> RUTE </strong>
+                            <strong> Rute </strong>
                         </li>
 
                     </ol>

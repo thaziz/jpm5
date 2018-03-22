@@ -908,13 +908,15 @@
                                                       <tr>
 
                                                         <td class="{{ $header." ".$child." ".$total." ".$dataAktiva["parrent"] }} no-border" width="70%"> &nbsp;{{ $dataAktiva["nama_perkiraan"] }}</td>
+                                                        
                                                         @if($dataAktiva["jenis"] == 2)
-
                                                           <?php 
                                                             $show = ($dataAktiva["total"] < 0) ? "(".number_format($dataAktiva["total"]).")" : number_format($dataAktiva["total"]); 
                                                           ?>
 
                                                           <td class="text-right {{ $total }}">{{ str_replace("-", "", $show) }}</td>
+
+                                                          {!! get_sub($data, $dataAktiva["nomor_id"], $data_akun) !!}
                                                         @elseif($dataAktiva["jenis"] == 3)
                                                           <?php 
                                                             $show = ($mydatatotal[$dataAktiva["nomor_id"]] < 0) ? "(".number_format($mydatatotal[$dataAktiva["nomor_id"]]).")" : number_format($mydatatotal[$dataAktiva["nomor_id"]]); 
@@ -1083,11 +1085,28 @@
 
   $(document).ready(function(){
     //$("#tree").DataTable();
+<<<<<<< HEAD
+   $(".tree").treegrid({
+      treeColumn: 0,
+      initialState: "collapse",
+    });
+
+   $('.tree').treegrid('getAllNodes').on('collapse', function(){
+     $id = $(this).attr("id");
+     $("#tot-"+$id).fadeIn();
+   });
+
+   $('.tree').treegrid('getAllNodes').on('expand', function(){
+     $id = $(this).attr("id");
+     $("#tot-"+$id).fadeOut();
+   });
+=======
     $("#tree").treegrid({
           treeColumn: 0,
           initialState: "expanded",
 
     });
+>>>>>>> afacd3890c78d68508e32a6c86265d70b20060ea
 
     $("#show").val("{{ $throttle }}");
     $('body').removeClass('fixed-sidebar');
