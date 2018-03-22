@@ -18,7 +18,7 @@
                           <a> Master DO</a>
                         </li>
                         <li class="active">
-                            <strong> SALDO PIUTANG </strong>
+                            <strong> Saldo Piutang </strong>
                         </li>
 
                     </ol>

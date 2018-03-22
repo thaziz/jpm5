@@ -27,7 +27,7 @@ class cabang_dokumen_Controller extends Controller
         foreach ($data as $key) {
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['kode_sama'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
                                         <button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                     </div> ';
             $i++;
@@ -37,18 +37,16 @@ class cabang_dokumen_Controller extends Controller
     }
 
     public function get_data (Request $request) {
-        
-        $id =$request->input('id');
-        $data = DB::table('tarif_cabang_dokumen')->where('kode_sama', $id)->orderBy('kode_detail','ASC')->get();
+        // dd($request);
+        $asal = $request->asal;
+        $tujuan = $request->tujuan;
+        return $data = DB::table('tarif_cabang_dokumen')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail','ASC')->get();
 
         
         echo json_encode($data);
     }
 
     public function save_data (Request $request) {
-        // dd($request);
-        
-
         $simpan='';
         $crud = $request->crud;
         $kode_sama = DB::table('tarif_cabang_dokumen')->select('kode_sama')->max('kode_sama');    
@@ -57,7 +55,7 @@ class cabang_dokumen_Controller extends Controller
         }else{
             $kode_sama += 1;
         }
-        $kode_utama = DB::table('tarif_cabang_dokumen')->select('kode_sama')->max('kode_sama');    
+        $kode_utama = DB::table('tarif_cabang_dokumen')->select('kode_detail')->max('kode_detail');    
         if ($kode_utama == '') {
             $kode_utama = 1;
         }else{
@@ -74,11 +72,21 @@ class cabang_dokumen_Controller extends Controller
             }
             $kode_detailtambah1+1;  
          }
+         // return $kode_detailtambah1;
+        // if ($kode_detail == '') {
+        //     $kode_detail = 1;
+        // }else{
+        //     $kode_detail += 1;
+        // }
+
+         // return $kode_detailtambah1;
+         
         if ($kode_detail == '') {
             $kode_detail = 1;
         }else{
             $kode_detail += 1;
         }
+
 
         if ($kode_utama < 10000 ) {
             $kode_utama = '0000'.$kode_utama;
@@ -86,83 +94,295 @@ class cabang_dokumen_Controller extends Controller
         $kodekota = $request->kodekota;
         $kodecabang = Auth::user()->kode_cabang;
 
-        $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-        $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
-        $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;
 
-        /*return*/ $prov = $request->cb_provinsi_tujuan;
+        $prov = $request->cb_provinsi_tujuan;
         $sel_prov = DB::table('kota')->select('id','nama')->where('id_provinsi','=',$prov)->get();
-        // return $sel_prov; 
-        $gege = '';
-       
-        // return $gege;
+        
+        $id_provinsi_loop = '';
         for ($for=0; $for <count($sel_prov) ; $for++) { 
-             $gege = $gege.' '.$sel_prov[$for]->id;
-        
-              json_encode(explode(' ', $gege));
-              $gege = str_replace(' ', '', $gege);
-
-              return next($gege);
-
-             }  
-            
-
-       /*return*/ 
-       
-      
-        
-      
-        if ($crud =='N') {
-                
-            if (strlen($gege) < 5) {
-                $gege = $gege;
-            }else{
-
-                 $gege = substr($gege, -4);
-            }
-            if ($kode_utama == $kode_utama) {
-                $kode_utama = $kode_utama+1;
-            }
-            // return $gege;
-            $regular = array(
-                'kode_sama' =>$kode_detail,
-                'kode_detail'=>$kode_detail,
-                'kode'=>$kode_utama,
-                'id_kota_asal' => $request->cb_kota_asal,
-                'id_kota_tujuan' => $gege,
-                'kode_cabang' => $request->ed_cabang,
-                'jenis' => 'REGULER',
-                'harga' => $request->harga_regular,
-                'waktu' => $request->waktu_regular,
-                'acc_penjualan'=>$request->ed_acc_penjualan,
-                'csf_penjualan'=>$request->ed_csf_penjualan,
-            );
-            
-            $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
+             $id_provinsi_loop = $id_provinsi_loop.' '.$sel_prov[$for]->id;
         }
-    /*}*/
+             $id_provinsi_loop =explode(' ', $id_provinsi_loop);
+              json_encode($id_provinsi_loop); 
+     if ($request->cb_kota_tujuan == '' ) {  
+      for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
+         
+          if ($crud =='N') {
 
-        // if ($crud =='N') {
-        //      $regular = array(
-        //         'kode_sama' =>$kode_detail,
-        //         'kode_detail'=>$kode_detail,
-        //         'kode'=>$kode_detail,
-        //         'id_kota_asal' => $request->cb_kota_asal,
-        //         'id_kota_tujuan' => $gege,
-        //         'kode_cabang' => $request->ed_cabang,
-        //         'jenis' => 'REGULER',
-        //         'harga' => $request->harga_regular,
-        //         'waktu' => $request->waktu_regular,
-        //         'acc_penjualan'=>$request->ed_acc_penjualan,
-        //         'csf_penjualan'=>$request->ed_csf_penjualan,
-        //     );
+              if ($datadetailcount != 0) {
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
+
+                }else if ($datadetailcount == 0){
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                }
+                        $regular = array(
+                        'kode_sama' =>$kode_sama,
+                        'kode_detail'=>$kode_detail,
+                        'kode'=>$kode_reguler,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $id_provinsi_loop[$save],
+                        'kode_cabang' => $request->ed_cabang,
+                        'jenis' => 'REGULER',
+                        'harga' => $request->harga_regular,
+                        'waktu' => $request->waktu_regular,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$request->cb_provinsi_tujuan,
+                    );
             
-        //     $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
-        // }
+             if ($datadetailcount != 0) {
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
-        
+                }else if ($datadetailcount == 0){
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                }
 
-        
+            $express = array(
+                        'kode_sama' => $kode_sama,
+                        'kode_detail'=>$kode_detail,
+                        'kode'=>$kode_express,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $id_provinsi_loop[$save],
+                        'kode_cabang' => $request->ed_cabang,
+                        'jenis' => 'EXPRESS',
+                        'harga' => $request->harga_express,
+                        'waktu' => $request->waktu_express,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$request->cb_provinsi_tujuan,
+                    );
+
+            if ($request->harga_outlet != null) {
+
+               if ($datadetailcount != 0) {
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;   
+
+                }else if ($datadetailcount == 0){
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;            
+                }
+
+                     $outlet = array(
+                        'kode_sama' => $kode_sama,
+                        'kode_detail'=>$kode_detail,
+                        'kode'=>$kode_outlet,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $id_provinsi_loop[$save],
+                        'kode_cabang' => $request->ed_cabang,
+                        'jenis' => 'OUTLET',
+                        'harga' => $request->harga_outlet,
+                        'waktu' => null,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$request->cb_provinsi_tujuan,
+                    );
+                $simpan = DB::table('tarif_cabang_dokumen')->insert($outlet);
+                }else{
+
+                }
+
+            $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
+            $simpan = DB::table('tarif_cabang_dokumen')->insert($express);
+        }
+      }
+    }else{
+        $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                  
+
+         if ($crud == 'N') {
+
+                    $regular = array(
+                        'kode_sama' => $kode_sama,
+                        'kode_detail'=>$kode_detail,
+                        'kode'=>$kode_reguler,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang,
+                        'jenis' => 'REGULER',
+                        'harga' => $request->harga_regular,
+                        'waktu' => $request->waktu_regular,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                    );
+                if ($datadetailcount == 0) {
+                    $kode_detail += 1;
+                }
+                else if ($kode_detailtambah1 == $kode_detailtambah1) {
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;    
+                }
+                $express = array(
+                        'kode_sama' => $kode_sama,
+                        'kode_detail'=>$kode_detail,
+                        'kode'=>$kode_express,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang,
+                        'jenis' => 'EXPRESS',
+                        'harga' => $request->harga_express,
+                        'waktu' => $request->waktu_express,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                    );
+                if ($datadetailcount == 0) {
+                    $kode_detail += 1;
+                }
+                else if ($kode_detailtambah1 == $kode_detailtambah1) {
+                    $kode_detail += 1;
+                    if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama; 
+                }
+                if ($request->harga_outlet != null) {
+                     $outlet = array(
+                        'kode_sama' => $kode_sama,
+                        'kode_detail'=>$kode_detail,
+                        'kode'=>$kode_outlet,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang,
+                        'jenis' => 'OUTLET',
+                        'harga' => $request->harga_outlet,
+                        'waktu' => null,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                    );
+                $simpan = DB::table('tarif_cabang_dokumen')->insert($outlet);
+                }else{
+
+                }
+               
+            $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
+            $simpan = DB::table('tarif_cabang_dokumen')->insert($express);
+            
+
+        }elseif ($crud == 'E') {
+            // dd($request);   
+                
+                $id_reguler_edit = $request->id_reguler_edit;
+                $id_express_edit = $request->id_express_edit;
+                $id_outlet_edit = $request->id_outlet_edit;
+                $integer_reg =  (int)$id_reguler_edit;
+                $integer_exp =  (int)$id_express_edit;
+                $integer_out =  (int)$id_outlet_edit;
+                
+                
+                if ($integer_reg < 10000) {
+                    $integer_reg = '0000'.$integer_reg; 
+                }
+                if ($integer_exp < 10000) {
+                    $integer_exp = '0000'.$integer_exp; 
+                }
+                if ($integer_out < 10000) {
+                    $integer_out = '0000'.$integer_out; 
+                }
+                
+                if ($kodekota == '') {
+                    $kode_reguler_edit = $request->id_reguler;
+                }else{   
+                    $kode_reguler_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_reg;
+                }
+
+
+                // return $kode_reguler_edit;
+                if ($kodekota == '') {
+                    $kode_express_edit = $request->id_express;
+                }else{   
+                    $kode_express_edit = $kodekota.'/'.'D'.'E'.$kodecabang.$integer_exp;
+                }
+
+
+                if ($kodekota == '') {
+                    $kode_reguler_edit = $request->id_outlet;
+                }else{   
+                    $kode_outlet_edit = $kodekota.'/'.'D'.'O'.$kodecabang.$integer_out;
+                }
+
+                $regular = array(
+                        'kode_sama' => $request->ed_kode_old,
+                        'kode_detail'=>$request->id_reguler_edit,
+                        'kode'=>$kode_reguler_edit,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'jenis' => 'REGULER',
+                        'kode_cabang' => $request->ed_cabang,      
+                        'harga' => $request->harga_regular,
+                        'waktu' => $request->waktu_regular,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                   );
+                   if ($request->id_reguler_edit < 10000) {
+                    $request->id_reguler_edit = '0000'.$integer_exp; 
+                }
+                // return $regular;
+                $express = array(
+                        'kode_sama' => $request->ed_kode_old,
+                        'kode_detail'=>$request->id_express_edit,
+                        'kode'=>$kode_express_edit,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang, 
+                        'jenis' => 'EXPRESS',
+                        'harga' => $request->harga_express,
+                        'waktu' => $request->waktu_express,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                    );
+               
+                   
+                if ($request->harga_outlet != null) {
+                     if ($request->id_reguler_edit < 10000) {
+                    $request->id_reguler_edit = '0000'.$integer_out; 
+                }
+                $outlet = array(
+                        'kode_sama' => $request->ed_kode_old,
+                        'kode_detail'=>$request->id_outlet_edit,
+                        'kode'=>$kode_outlet_edit,
+                        'id_kota_asal' => $request->cb_kota_asal,
+                        'id_kota_tujuan' => $request->cb_kota_tujuan,
+                        'kode_cabang' => $request->ed_cabang,
+                        'jenis' => 'OUTLET',
+                        'harga' => $request->harga_outlet,
+                        'waktu' => null,
+                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                    );
+            $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_outlet)->update($outlet);
+
+            }
+
+            $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_reguler)->update($regular);
+            $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_express)->update($express);
+        }
+    }
+          
         // if ($crud == 'N') {
 
         //     $regular = array(
@@ -285,6 +505,7 @@ class cabang_dokumen_Controller extends Controller
         }
         $result['crud']=$crud;
         echo json_encode($result);
+    
     }
     public function hapus_data (Request $request) {
         $hapus='';

@@ -727,7 +727,7 @@
 
       swal({
         title: "Apakah anda yakin?",
-        text: "Simpan Data Biaya Penerus!",
+        text: "Simpan Data Invoice!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -744,7 +744,7 @@
 
           $.ajax({
           url:baseUrl + '/sales/simpan_invoice',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()

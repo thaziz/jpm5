@@ -278,6 +278,7 @@ class do_kargo_Controller extends Controller
                          ->where('jt_group',1)
                          ->orWhere('jt_group',2)
                          ->orWhere('jt_group',3)
+                         ->orderBy('jt_id','ASC')
                          ->get();
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
@@ -407,23 +408,239 @@ class do_kargo_Controller extends Controller
     {
         if ($request->check == 'false') {
            $data = DB::table('tarif_cabang_kargo')
+                      ->join('jenis_tarif','jenis','=','jt_nama_tarif')
                       ->where('id_kota_asal',$request->asal)
                       ->where('id_kota_tujuan',$request->tujuan)
                       ->where('kode_cabang',$request->cabang_select)
                       ->where('kode_angkutan',$request->tipe_angkutan)
                       ->get();
-            $kontrak = 0;
-        }else {
-            $data = DB::table('kontrak')
-                      ->join('kontrak_d','nomor','=','nomor_kontrak')
+
+            $asal = DB::table('tarif_cabang_kargo')
+                      ->join('kota','id','=','id_kota_asal')
                       ->where('id_kota_asal',$request->asal)
                       ->where('id_kota_tujuan',$request->tujuan)
                       ->where('kode_cabang',$request->cabang_select)
-                      ->where('jenis','KARGO')
+                      ->where('kode_angkutan',$request->tipe_angkutan)
                       ->get();
+
+            $tujuan = DB::table('tarif_cabang_kargo')
+                      ->join('kota','id','=','id_kota_tujuan')
+                      ->where('id_kota_asal',$request->asal)
+                      ->where('id_kota_tujuan',$request->tujuan)
+                      ->where('kode_cabang',$request->cabang_select)
+                      ->where('kode_angkutan',$request->tipe_angkutan)
+                      ->get();
+            for ($i=0; $i < count($data); $i++) { 
+                $data[$i]->nama_asal = $asal[$i]->nama;
+                $data[$i]->nama_tujuan = $tujuan[$i]->nama;
+            }
+            $kontrak = 0;
+        }else {
+            $data = DB::table('kontrak_customer')
+                      ->join('kontrak_customer_d','kcd_id','=','kc_id')
+                      ->join('jenis_tarif','kcd_jenis_tarif','=','jt_id')
+                      ->where('kcd_kota_asal',$request->asal)
+                      ->where('kcd_kota_tujuan',$request->tujuan)
+                      ->where('kc_kode_cabang',$request->cabang_select)
+                      ->where('kcd_jenis','KARGO')
+                      ->get();
+            $asal = DB::table('kontrak_customer')
+                      ->join('kontrak_customer_d','kcd_id','=','kc_id')
+                      ->join('kota','id','=','kcd_kota_asal')
+                      ->where('kcd_kota_asal',$request->asal)
+                      ->where('kcd_kota_tujuan',$request->tujuan)
+                      ->where('kc_kode_cabang',$request->cabang_select)
+                      ->where('kcd_jenis','KARGO')
+                      ->get();
+            $tujuan = DB::table('kontrak_customer')
+                      ->join('kontrak_customer_d','kcd_id','=','kc_id')
+                      ->join('kota','id','=','kcd_kota_tujuan')
+                      ->where('kcd_kota_asal',$request->asal)
+                      ->where('kcd_kota_tujuan',$request->tujuan)
+                      ->where('kc_kode_cabang',$request->cabang_select)
+                      ->where('kcd_jenis','KARGO')
+                      ->get();
+
+            for ($i=0; $i < count($data); $i++) { 
+                $data[$i]->nama_asal = $asal[$i]->nama;
+                $data[$i]->nama_tujuan = $tujuan[$i]->nama;
+            }
             $kontrak = 1;
         }
 
         return view('sales.do_kargo.modal_tarif',compact('data','kontrak'));
+    }
+    public function nomor_do_kargo(request $request)
+    {
+        $bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+        $cabang= Auth::user()->kode_cabang;
+        $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
+                                        WHERE kode_cabang = '$cabang'
+                                        AND to_char(tanggal,'MM') = '$bulan'
+                                        AND jenis = 'KARGO'
+                                        AND to_char(tanggal,'YY') = '$tahun'");
+
+        $index = (integer)$cari_nota[0]->id + 1;
+        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+
+        $nota = 'KGO' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
+        return response()->json(['nota'=>$nota]);
+    }
+    public function pilih_tarif_kargo(request $request)
+    {
+        $data = DB::table('tarif_cabang_kargo')
+                  ->where('kode',$request->kode)
+                  ->first();
+        return response()->json(['data'=>$data]);
+    }
+    public function pilih_kontrak_kargo(request $request)
+    {
+        $data = DB::table('kontrak_customer_d')
+                  ->where('kcd_id',$request->kcd_id)
+                  ->where('kcd_dt',$request->kcd_dt)
+                  ->first();
+        return response()->json(['data'=>$data]);
+    }
+    public function save_do_kargo(request $request)
+    {
+       // dd($request->all());
+        $cari_do = DB::table('delivery_order')
+                      ->where('nomor',$request->nomor_do)
+                      ->first();
+        $tgl = str_replace('/', '-', $request->tanggal_do);
+        $tgl = Carbon::parse($tgl)->format('Y-m-d');
+        $awal = str_replace('/', '-', $request->ed_awal_shuttle);
+        $awal = Carbon::parse($awal)->format('Y-m-d');
+        $akhir = str_replace('/', '-', $request->ed_akhir_shuttle);
+        $akhir = Carbon::parse($akhir)->format('Y-m-d');
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->where('jt_id',$request->jenis_tarif_do)
+                         ->first();
+        $nopol = DB::table('kendaraan')
+                         ->where('id',$request->tipe_kendaraan)
+                         ->first();
+
+        if ($cari_do == null) {
+            $save_do = DB::table('delivery_order')
+                         ->insert([
+                                'nomor'                 => strtoupper($request->nomor_do),
+                                'tanggal'               => $tgl,
+                                'id_kota_asal'          => $request->asal_do,
+                                'id_kota_tujuan'        => $request->tujuan_do,
+                                'pendapatan'            => 'KARGO',
+                                'type_kiriman'          => 0,
+                                'jenis_pengiriman'      => $jenis_tarif->jt_nama_tarif,
+                                'kode_tipe_angkutan'    => $request->tipe_angkutan,
+                                'no_surat_jalan'        => strtoupper($request->surat_jalan),
+                                'nopol'                 => $nopol->nopol,
+                                'id_kendaraan'          => $request->tipe_kendaraan,
+                                'kode_subcon'           => strtoupper($request->nama_subcon),
+                                'kode_cabang'           => $request->cabang,
+                                'tarif_dasar'           => $request->harga_master,
+                                'kode_customer'         => $request->customer_do,
+                                'kode_marketing'        => $request->marketing,
+                                'company_name_pengirim' => strtoupper($request->company_pengirim),
+                                'nama_pengirim'         => strtoupper($request->nama_pengirim),
+                                'alamat_pengirim'       => strtoupper($request->alamat_pengirim),
+                                'kode_pos_pengirim'     => strtoupper($request->kode_pos_pengirim),
+                                'telpon_pengirim'       => strtoupper($request->telpon_pengirim),
+                                'company_name_penerima' => strtoupper($request->company_),
+                                'nama_penerima'         => strtoupper($request->nama_penerima),
+                                'alamat_penerima'       => strtoupper($request->alamat_penerima),
+                                'kode_pos_penerima'     => strtoupper($request->telpon_penerima),
+                                'telpon_penerima'       => strtoupper($request->telpon_penerima),
+                                'instruksi'             => strtoupper($request->intruksi_penerima),
+                                'deskripsi'             => strtoupper($request->deskripsi_penerima),
+                                'total'                 => $request->tarif_dasar,
+                                'total_net'             => $request->total,
+                                'diskon'                => filter_var($request->discount, FILTER_SANITIZE_NUMBER_INT),
+                                'jenis'                 => 'KARGO',
+                                'kontrak'               => $request->kcd_id,
+                                'kontrak_dt'            => $request->kcd_dt,
+                                'jumlah'                => $request->jumlah,
+                                'status_kendaraan'      => strtoupper($request->status_kendaraan),
+                                'driver'                => strtoupper($request->driver),
+                                'co_driver'             => strtoupper($request->co_driver),
+                                'jenis_tarif'           => $jenis_tarif->jt_nama_tarif,
+                                'ritase'                => strtoupper($request->ritase),
+                                'awal_shutle'           => strtoupper($awal),
+                                'akhir_shutle'          => strtoupper($akhir),
+                                'nomor_do_awal'         => strtoupper($request->nomor_do_awal),
+                                'kode_satuan'           => strtoupper($request->satuan),
+                                'acc_penjualan'         => $request->acc_penjualan
+                         ]);
+
+            return response()->json(['status'=>1]);
+
+        }else{
+
+
+            $bulan = Carbon::now()->format('m');
+            $tahun = Carbon::now()->format('y');
+            $cabang= $request->cabang;
+            $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
+                                            WHERE kode_cabang = '$cabang'
+                                            AND to_char(tanggal,'MM') = '$bulan'
+                                            AND jenis = 'KARGO'
+                                            AND to_char(tanggal,'YY') = '$tahun'");
+
+            $index = (integer)$cari_nota[0]->id + 1;
+            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+
+            $nota = 'KGO' . $cabang . $bulan . $tahun . $index;
+
+
+            $save_do = DB::table('delivery_order')
+                         ->insert([
+                                'nomor'                 => $nota,
+                                'tanggal'               => $tgl,
+                                'id_kota_asal'          => $request->asal_do,
+                                'id_kota_tujuan'        => $request->tujuan_do,
+                                'pendapatan'            => 'KARGO',
+                                'type_kiriman'          => 0,
+                                'jenis_pengiriman'      => $jenis_tarif->jt_nama_tarif,
+                                'kode_tipe_angkutan'    => $request->tipe_angkutan,
+                                'no_surat_jalan'        => strtoupper($request->surat_jalan),
+                                'nopol'                 => $nopol->nopol,
+                                'id_kendaraan'          => $request->tipe_kendaraan,
+                                'kode_subcon'           => strtoupper($request->nama_subcon),
+                                'kode_cabang'           => $request->cabang,
+                                'tarif_dasar'           => $request->harga_master,
+                                'kode_customer'         => $request->customer_do,
+                                'kode_marketing'        => $request->marketing,
+                                'company_name_pengirim' => strtoupper($request->company_pengirim),
+                                'nama_pengirim'         => strtoupper($request->nama_pengirim),
+                                'alamat_pengirim'       => strtoupper($request->alamat_pengirim),
+                                'kode_pos_pengirim'     => strtoupper($request->kode_pos_pengirim),
+                                'telpon_pengirim'       => strtoupper($request->telpon_pengirim),
+                                'company_name_penerima' => strtoupper($request->company_),
+                                'nama_penerima'         => strtoupper($request->nama_penerima),
+                                'alamat_penerima'       => strtoupper($request->nama_penerima),
+                                'kode_pos_penerima'     => strtoupper($request->telpon_penerima),
+                                'telpon_penerima'       => strtoupper($request->telpon_penerima),
+                                'instruksi'             => strtoupper($request->intruksi_penerima),
+                                'deskripsi'             => strtoupper($request->deskripsi_penerima),
+                                'total'                 => $request->tarif_dasar,
+                                'total_net'             => $request->total,
+                                'diskon'                => filter_var($request->discount, FILTER_SANITIZE_NUMBER_INT),
+                                'jenis'                 => 'KARGO',
+                                'kontrak'               => $request->kcd_id,
+                                'kontrak_dt'            => $request->kcd_dt,
+                                'jumlah'                => $request->jumlah,
+                                'status_kendaraan'      => strtoupper($request->status_kendaraan),
+                                'driver'                => strtoupper($request->driver),
+                                'co_driver'             => strtoupper($request->co_driver),
+                                'jenis_tarif'           => $jenis_tarif->jt_nama_tarif,
+                                'ritase'                => strtoupper($request->ritase),
+                                'awal_shutle'           => strtoupper($awal),
+                                'akhir_shutle'          => strtoupper($akhir),
+                                'nomor_do_awal'         => strtoupper($request->nomor_do_awal),
+                                'kode_satuan'           => strtoupper($request->satuan),
+                                'acc_penjualan'         => $request->acc_penjualan
+                         ]);
+            return response()->json(['nota'=>$nota,'status'=>2]);
+
+        }
     }
 }

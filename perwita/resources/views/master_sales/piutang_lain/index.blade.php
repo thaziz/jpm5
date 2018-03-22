@@ -18,7 +18,7 @@
                           <a> Master DO</a>
                         </li>
                         <li class="active">
-                            <strong> SALDO AWAL PIUTANG LAIN </strong>
+                            <strong> Saldo Awal Piutang Lain </strong>
                         </li>
 
                     </ol>

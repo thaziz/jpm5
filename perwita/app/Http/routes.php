@@ -79,7 +79,7 @@ Route::get('suratpermintaanpembelian/ajax_hargasupplier/{id}', 'PurchaseControll
 Route::post('suratpermintaanpembelian/ajax_jenisitem/', 'PurchaseController@ajax_jenisitem');
 Route::get('suratpermintaanpembelian/statusspp/{id}', 'PurchaseController@statusspp');
 Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@createPdfSpp');
-Route::post('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
+Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
 Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
@@ -727,6 +727,15 @@ Route::get('sales/tarif_penerus_default/hapus_data', 'tarif\penerus_default_Cont
 Route::get('master_sales/kontrak', 'master_sales\kontrak_Controller@index');
 Route::get('master_sales/kontrak_form', 'master_sales\kontrak_Controller@form');
 Route::get('master_sales/kontrak_set_nota', 'master_sales\kontrak_Controller@kontrak_set_nota');
+Route::get('master_sales/set_kode_akun_acc', 'master_sales\kontrak_Controller@set_kode_akun_acc');
+Route::get('master_sales/set_kode_akun_csf', 'master_sales\kontrak_Controller@set_kode_akun_csf');
+Route::post('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
+
+Route::get('master_sales/edit_kontrak/{id}', 'master_sales\kontrak_Controller@edit_kontrak');
+Route::post('master_sales/update_kontrak', 'master_sales\kontrak_Controller@update_kontrak');
+Route::get('master_sales/update_kontrak', 'master_sales\kontrak_Controller@update_kontrak');
+Route::get('master_sales/hapus_kontrak', 'master_sales\kontrak_Controller@hapus_kontrak');
+
 
 // end kontrak
 
@@ -757,6 +766,8 @@ Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data
 Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
 Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
 Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
+
+Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
 Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');
@@ -773,6 +784,10 @@ Route::get('sales/deliveryorderkargoform', 'sales\do_kargo_Controller@form');
 Route::get('sales/cari_nopol_kargo', 'sales\do_kargo_Controller@cari_nopol_kargo');
 Route::get('sales/nama_subcon', 'sales\do_kargo_Controller@nama_subcon');
 Route::get('sales/cari_kontrak_tarif', 'sales\do_kargo_Controller@cari_kontrak_tarif');
+Route::get('sales/nomor_do_kargo', 'sales\do_kargo_Controller@nomor_do_kargo');
+Route::get('sales/pilih_tarif_kargo', 'sales\do_kargo_Controller@pilih_tarif_kargo');
+Route::get('sales/pilih_kontrak_kargo', 'sales\do_kargo_Controller@pilih_kontrak_kargo');
+Route::get('sales/save_do_kargo', 'sales\do_kargo_Controller@save_do_kargo');
 
 
 

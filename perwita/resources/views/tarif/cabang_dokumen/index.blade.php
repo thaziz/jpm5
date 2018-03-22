@@ -115,6 +115,17 @@
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
+                                    <td>   
+                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" style="width:100%" i>
+                                            <option value="" selected="" disabled="">-- Pilih Provinsi tujuan --</option>
+                                        @foreach ($prov as $prov)
+                                            <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
                                  <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>
@@ -165,8 +176,6 @@
                                       <td class="pad">Harga</td>
                                       <td class="pad"><input type="text" name="harga_regular"></td>
                                   </tr>
-                                  <input type="hidden" name="id_reguler" id="id_reguler">
-                                  <input type="hidden" name="jenis_reguler">
                                   <tr>
                                       <td class="pad">Waktu/Estimasi</td>
                                       <td class="pad"><input type="text" name="waktu_regular"></td>
@@ -184,8 +193,6 @@
                                       <td class="pad">Harga</td>
                                       <td class="pad"><input type="text" name="harga_express"></td>
                                   </tr>
-                                  <input type="hidden" name="id_express" id="id_express">
-                                  <input type="hidden" name="jenis_express">
                                   <tr>
                                       <td class="pad">Waktu/Estimasi</td>
                                       <td class="pad"><input type="text" name="waktu_express"></td>
@@ -197,8 +204,6 @@
                                   <tr>
                                       <th style="padding: 7px; text-align: center;"  colspan="2">OUTLET</th>
                                   </tr>
-                                  <input type="hidden" name="id_outlet" id="id_outlet">
-                                  <input type="hidden" name="jenis_outlet">
                               </thead>
                               <tbody>
                                   <tr>
@@ -207,7 +212,19 @@
                                   </tr>
                               </tbody>
                           </table>
+                          <input type="hidden" name="id_reguler" id="id_reguler">
+                          <input type="hidden" name="jenis_reguler">
+                          <input type="hidden" name="id_express" id="id_express">
+                          <input type="hidden" name="jenis_express">
+                          <input type="hidden" name="id_outlet" id="id_outlet">
+                          <input type="hidden" name="jenis_outlet">
                           <input type="hidden" name="kodekota" id="kodekota">
+
+                          {{--  --}}
+                          <input type="hidden" name="id_reguler_edit">
+                          <input type="hidden" name="id_express_edit">
+                          <input type="hidden" name="id_outlet_edit">
+                          
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -250,6 +267,7 @@
 
     $(document).ready( function () {
         $('#table_data').DataTable({
+            
             "paging": true,
             "lengthChange": true,
             "searching": true,
@@ -307,16 +325,15 @@
                
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
+        $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
         $("#modal").modal("show");
     });
 
     $(document).on( "click",".btnedit", function() {
         var id=$(this).attr("id");
-        var kodekode0=$(this).data("kode0");
-        var kodekode1=$(this).data("kode1");
-        var kodekode2=$(this).data("kode2");
+        var tuju = $(this).data('tujuan');
         var value = {
-            id: id,kodekode0 : kodekode0,kodekode1 : kodekode1,kodekode2 : kodekode2
+            asal: id,tujuan :tuju
         };
         $.ajax(
         {
@@ -344,25 +361,29 @@
                 //
                
                 var gege = data[2];
-                alert(gege);
+                // alert(gege);
                 if (gege !== undefined) {
                   $("input[name='id_outlet']").val(data[2].kode);
                   $("input[name='harga_outlet']").val(data[2].harga);
                   $("input[name='jenis_outlet']").val(data[2].jenis);
+                  $("input[name='id_outlet_edit']").val(data[2].kode_detail);
                 }else if (gege === undefined){
                   $("input[name='id_outlet']").val('');
                   $("input[name='harga_outlet']").val('');
                   $("input[name='jenis_outlet']").val('');
-                  
+                  $("input[name='id_outlet_edit']").val('');
                 }
 
                   
+                $("input[name='id_reguler_edit']").val(data[0].kode_detail);
+                $("input[name='id_express_edit']").val(data[1].kode_detail);
 
 
                 $("input[name='ed_kode_old']").val(data[0].kode_sama);
                 $("select[name='cb_kota_asal']").val(data[0].id_kota_asal).trigger('chosen:updated');
                 $("select[name='cb_kota_tujuan']").val(data[0].id_kota_tujuan).trigger('chosen:updated');
                 $("select[name='ed_cabang']").val(data[0].kode_cabang).trigger('chosen:updated');
+                $("select[name='cb_provinsi_tujuan']").val(data[0].id_provinsi_cabdokumen).trigger('chosen:updated');
                 $("select[name='ed_acc_penjualan']").val(data[0].acc_penjualan).trigger('chosen:updated');
                 $("select[name='ed_csf_penjualan']").val(data[0].csf_penjualan).trigger('chosen:updated');
                 $("#modal").modal('show');

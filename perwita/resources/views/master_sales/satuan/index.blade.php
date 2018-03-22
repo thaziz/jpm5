@@ -18,7 +18,7 @@
                           <a> Master DO</a>
                         </li>
                         <li class="active">
-                            <strong> SATUAN </strong>
+                            <strong> Satuan </strong>
                         </li>
 
                     </ol>
