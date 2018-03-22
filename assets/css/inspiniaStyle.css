@@ -3522,9 +3522,11 @@ body.body-small .footer.fixed {
 }
 /*--Ari--*/
 .table > thead > tr > th  {
+
   border-bottom: 1px solid #DDDDDD;
   vertical-align: center;
   background-color: #107dac;
+
   
   color: white;
   text-align: center;
