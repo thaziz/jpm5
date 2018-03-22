@@ -58,7 +58,7 @@
                                     <div class="btn-group">
                                         <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
                                         <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
-                                        <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                        <a onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -134,38 +134,52 @@
     function tambahdata() {
         window.location.href = baseUrl + '/data-master/master-akun/create'
     }
-    function hapusData(id) {
 
-        $.ajax({
-            url: baseUrl + '/data-master/master-akun/delete/' + id,
-            type: 'get',
-            dataType: 'text',
-            //headers: {'X-XSRF-TOKEN': $_token},
-            success: function (response) {
-                if (response == 'sukses') {
-                    $('.alertBody').html('<div class="alert alert-success">' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                            'Data Berhasil Di Hapus' +
-                            '</div>');
-                    $('.alertBody').show();
-                    $('.alertBody').delay(4000).slideUp(300);
-                    $("#hapus" + id).remove();
-                } else if (response == 'gagal') {
-                    $('.alertBody').html('<div class="alert alert-danger">' +
-                            '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' +
-                            'Data Akun Sudah Digunakan' +
-                            '</div>');
-                    $('.alertBody').show();
-                    $('.alertBody').delay(4000).slideUp(300);
-                }
 
-            }
+
+
+    function hapus(id){
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+
+    function(){
+
+         $.ajax({
+          url:baseUrl + '/sales/hapus_do_kargo',
+          data:{id},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                         location.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
         });
-    }
-
-    $(document).on( "click",".btnhapus", function(){
-        if(!confirm("Hapus Data ?")) return false;
+       }
+      });
     });
+}
 
 
 </script>

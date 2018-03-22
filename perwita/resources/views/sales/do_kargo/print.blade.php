@@ -255,7 +255,7 @@
 		<div class="position-fixed">
 			<table class="inlineTable">
 				<td>
-					<img class="img" width="200" height="100" src="/jpm/perwita/img/logo_jpm.png">
+					<img class="img" width="200" height="100" src="{{ asset('assets/img/dboard/logo/logo_jpm.png') }}">
 				</td>
 			</table>
 			<table class="inlineTable sizebig textcenter" style="margin-bottom: 35px; margin-left: 15%;">
@@ -341,3 +341,6 @@
 </body>
 
 </html>
+<script type="text/javascript">
+	window.print();
+</script>
