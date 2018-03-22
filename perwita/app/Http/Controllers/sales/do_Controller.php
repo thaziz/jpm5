@@ -522,13 +522,15 @@ class do_Controller extends Controller
         $cabang = $request->input('cabang');
         $biaya_penerus = null;
         if ($tipe == 'DOKUMEN') {
+
             $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'  ";
             $data = collect(DB::select($sql));
 
-            if ($jenis == 'EXPRESS'){
+            if ($jenis == 'EXPRESS'){                
                 $sql_biaya_penerus = "SELECT tarif_express as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             } else if ($jenis == 'REGULER'){
+                
                 $sql_biaya_penerus = "SELECT tarif_reguler as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
