@@ -108,6 +108,17 @@
                                         </select>
                                     </td>
                                 </tr>
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
+                                    <td>   
+                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" style="width:100%" i>
+                                            <option value="" selected="" disabled="">-- Pilih Provinsi tujuan --</option>
+                                        @foreach ($prov as $prov)
+                                            <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>
