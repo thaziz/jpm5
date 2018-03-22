@@ -67,6 +67,7 @@
                     </div>
                 </form>
                 <form id="form_header" class="form-horizontal">
+                    <div>
                     <table class="table table-striped table-bordered table-hover">
                         <tbody>
                             <tr>
@@ -120,6 +121,8 @@
                                     <input type="text" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="{{ $data->keterangan or null }}" >
                                 </td>
                             </tr>
+                        </table>
+                        <table>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Jumlah</td>
                                 <td >

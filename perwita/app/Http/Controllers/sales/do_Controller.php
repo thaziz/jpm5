@@ -591,7 +591,7 @@ class do_Controller extends Controller
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
-                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
+                    ->where('keterangan', '=', 'Tarif <= 10 Kg')
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
 
@@ -613,10 +613,10 @@ class do_Controller extends Controller
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
-                    ->where('keterangan', '=', 'Tarif <= 10 Kg')
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
-
+dd($tarifAwal);
                 $tarifAwal = $tarifAwal[0]->harga;
 
                 $tarif = DB::table('tarif_cabang_kilogram')

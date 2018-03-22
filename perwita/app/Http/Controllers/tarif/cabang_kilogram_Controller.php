@@ -194,7 +194,7 @@ class cabang_kilogram_Controller extends Controller
                     'kode' => $kode_reguler,
                     'kode_sama_kilo' => $kode_sama,
                     'kode_detail_kilo' => $kode_detail,
-                    'keterangan' => 'Tarif Kg selanjutnya <= 10 kg',
+                    'keterangan' => 'Tarif Kg selanjutnya <= 10 Kg',
                     'harga' => $request->tarif10kg_reguler,
                     'id_kota_tujuan' => $id_provinsi_loop[$save],
                     //BAWAH SAMA SEMUA
@@ -516,7 +516,7 @@ class cabang_kilogram_Controller extends Controller
                     'kode' => $kode_reguler,
                     'kode_sama_kilo' => $kode_sama,
                     'kode_detail_kilo' => $kode_detail,
-                    'keterangan' => 'Tarif Kg selanjutnya <= 10 kg',
+                    'keterangan' => 'Tarif Kg selanjutnya <= 10 Kg',
                     'harga' => $request->tarif10kg_reguler,
                     //BAWAH SAMA SEMUA
                     'waktu' => $request->waktu_regular,

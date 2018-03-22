@@ -49,11 +49,13 @@ h5 {
 .nav > li.active > a {
   color: #ffffff;
 }
+/*--ari--*/
 .navbar-default .nav > li > a:hover,
 .navbar-default .nav > li > a:focus {
   background-color: rgba(0,0,0,0.2);
   color: white;
 }
+/*========*/
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
@@ -167,10 +169,12 @@ h5 {
 .pace-done .nav-header {
   transition: all 0.4s;
 }
+/*--ari--*/
 .nav > li.active {
   border-left: 4px solid #19aa8d;
   background: rgba(0,0,0,0.2);
 }
+/*=======*/
 .nav.nav-second-level > li.active {
   border: none;
 }
@@ -1585,7 +1589,7 @@ table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc,
 table.dataTable thead .sorting_asc_disabled,
 table.dataTable thead .sorting_desc_disabled {
-  background: #005b96;
+  background: #005b9a;
   vertical-align: middle;
 }
 /*------*/
@@ -3247,15 +3251,10 @@ body.tour-open .animated {
   padding: 15px 20px;
   border-bottom: 1px solid #e7eaec;
 }
+/*--ari--*/
 body {
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: linear-gradient(156deg, #212d38, #3472aa);
-background-size: 400% 400%;
-
--webkit-animation: gradientBreath 8s ease infinite;
--moz-animation: gradientBreath 8s ease infinite;
--o-animation: gradientBreath 8s ease infinite;
-animation: gradientBreath 8s ease infinite;
+  background-color:#384f5f;
 
   font-size: 13px;
   color: #676a6c;
@@ -3282,7 +3281,7 @@ animation: gradientBreath 8s ease infinite;
     50%{background-position:78% 100%}
     100%{background-position:23% 0%}
 }
-
+/*======*/
 html,
 body {
   height: 100%;
@@ -3536,9 +3535,8 @@ body.body-small .footer.fixed {
 
   border-bottom: 1px solid #DDDDDD;
   vertical-align: middle;
-  background-color: #107dac;
-
-  
+ 
+    background:#0191c8;
   color: white;
   text-align: center;
 }
@@ -3553,7 +3551,7 @@ body.body-small .footer.fixed {
   border-top: 1px solid #e7eaec;
   line-height: 1.42857;
   padding: 8px;
-  vertical-align: top;
+  vertical-align: middle;
 
 
 }
