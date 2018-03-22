@@ -3524,7 +3524,7 @@ body.body-small .footer.fixed {
 .table > thead > tr > th  {
 
   border-bottom: 1px solid #DDDDDD;
-  vertical-align: center;
+  vertical-align: middle;
   background-color: #107dac;
 
   
