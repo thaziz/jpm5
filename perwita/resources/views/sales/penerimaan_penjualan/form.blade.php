@@ -33,7 +33,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> PENERIMAAN PENJUALAN DETAIL
+                    <h5> KWITANSI
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
 
