@@ -713,7 +713,21 @@ class penerimaan_penjualan_Controller extends Controller
         return response()->json(['data'=>$data]);
         
     }
-
+    public function riwayat_invoice(request $request)
+    {
+        $data = DB::table('kwitansi')
+                  ->join('kwitansi_d','k_id','=','kd_id')
+                  ->where('kd_nomor_invoice',$request->i_nomor)
+                  ->get();
+        return view('sales.penerimaan_penjualan.tabel_riwayat',compact('data'));
+    }
+    public function riwayat_cn_dn(request $request)
+    {
+        $data = DB::table('cn_dn_penjualan')
+                  ->where('cd_invoice',$request->i_nomor)
+                  ->get();
+        return view('sales.penerimaan_penjualan.tabel_cn_dn',compact('data'));
+    }
 
 
 }
