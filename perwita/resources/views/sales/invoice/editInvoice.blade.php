@@ -642,7 +642,7 @@ function hitung_pajak_lain(){
                 pajak_total  = persen_fix * netto_total;
                 pajak_total  = pajak_total - netto_total;
                 $('.pph').val(accounting.formatMoney(pajak_total,"",2,'.',','));
-                hitung_pajak_lain();
+                // hitung_pajak_lain();
                 hitung_total_tagihan();
                 $('.simpan_btn').removeClass('disabled');
 
