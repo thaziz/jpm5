@@ -1292,7 +1292,6 @@
       case 'perbandingan_tahun':
         $("#tahun1").val("{{ $request["m"] }}");
         $("#tahun2").val("{{ $request["y"] }}");
-        alert("okee")
         break;
 
       default :
