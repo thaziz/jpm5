@@ -26,6 +26,9 @@
         .tabel_coba thead th{
             background: yellow;
         }
+        .kecil{
+            width: 207px;
+        }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -214,7 +217,7 @@
                                     <table id="table_data_biaya" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Nomor Invoice</th>
+                                                <th>Nomor</th>
                                                 <th>Nama Biaya</th>
                                                 <th>Jenis</th>
                                                 <th>Jumlah</th>
@@ -223,6 +226,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -318,7 +322,7 @@
                                                     </tr>
                                                     <tr>
                                                         <td>Akun Biaya</td>
-                                                        <td style="max-width: 200px">
+                                                        <td style="max-width: 200px" class="akun_biaya_td">
                                                             <select class="form-control biaya_admin chosen-select-width1">
                                                                 @foreach($akun as $val)
                                                                 <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
@@ -411,64 +415,50 @@
                                 <h4 class="modal-title">Edit Insert Biaya</h4>
                             </div>
                             <div class="modal-body">
-                                <form id="form_biaya" class="form-horizontal">
-                                    <table class="table table-bordered table-striped">
-                                        <tbody>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm">No Invoice</td>
-                                                <td>
-                                                    <select class="form-control modalinvoice" name="cb_invoice" id="cb_invoice" >
-                                                    </select>
-                                                    <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                                    <input type="hidden" class="form-control" name="ed_id_biaya" >
-                                                    <input type="hidden" class="form-control" name="crud_biaya" value="N">
-                                                    <input type="hidden" class="form-control" name="ed_nomor_penerimaan_penjualan" >
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm">Biaya</td>
-                                                <td>
-                                                    <select class="form-control biayamodal" name="cb_akun_biaya" >
-                                                    <option></option>
-                                                </td>
-                                                <td style="padding-top: 0.4cm">Jenis</td>
-                                                <td>
-                                                    <input type="text" name="ed_jenis_biaya" class="form-control" style="text-transform: uppercase" readonly="readonly" tabindex="-1">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm">Kode ACC</td>
-                                                <td>
-                                                    <input type="text" name="ed_kode_acc" class="form-control" style="text-transform: uppercase" readonly="readonly" tabindex="-1">
-                                                </td>
-                                                <td colspan="2">
-                                                    <input type="text" name="ed_acc" class="form-control" style="text-transform: uppercase" readonly="readonly" tabindex="-1">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm">Kode CSF</td>
-                                                <td>
-                                                    <input type="text" name="ed_kode_csf" class="form-control" style="text-transform: uppercase" readonly="readonly" tabindex="-1">
-                                                </td>
-                                                <td colspan="2">
-                                                    <input type="text" name="ed_csf" class="form-control" style="text-transform: uppercase" readonly="readonly" tabindex="-1">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm">Jumlah</td>
-                                                <td>
-                                                    <input type="text" class="form-control angka jumlahmodal" name="ed_jml_biaya" style="text-align:right" >
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm">Keterangan</td>
-                                                <td colspan="6">
-                                                    <input type="text" name="ed_keterangan_biaya" class="form-control keteranganmodal" style="text-transform: uppercase" >
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </form>
+                                <table class="table table-bordered table-striped">
+                                    <tr>
+                                        <td class="kecil">Nomor</td>
+                                        <td colspan="2">
+                                            <input type="text" readonly="" name="" class="m_sequence form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Kode Biaya</td>
+                                        <td colspan="2" class="akun_lain_td">
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">DEBET/KREDIT</td>
+                                        <td colspan="2">
+                                            <input type="text" readonly="" class="m_debet form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Kode ACC</td>
+                                        <td colspan="2" >
+                                            <input type="text" readonly="" class="m_acc form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Kode CSF</td>
+                                        <td colspan="2">
+                                            <input type="text" readonly="" class="m_csf form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Jumlah</td>
+                                        <td colspan="2">
+                                            <input style="text-align: right" type="text"  class="m_jumlah form-control">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Keterangan</td>
+                                        <td colspan="2">
+                                            <input type="text"  class="m_keterangan form-control">
+                                        </td>
+                                    </tr>
+                                </table>
 
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary" id="btnsave3">Save changes</button>
@@ -553,7 +543,24 @@ var table_data = $('#table_data').DataTable({
                     
                 })
 
-
+var table_data_biaya = $('#table_data_biaya').DataTable({
+                    searching:false,
+                    columnDefs: [
+                      {
+                         targets: 1 ,
+                         className: 'right'
+                      },
+                      {
+                         targets: 2,
+                         className: 'right'
+                      },
+                      {
+                         targets: 4,
+                         className: 'center'
+                      }
+                    ],
+                    
+                })
 
 //mengganti nota kwitansi
 function nota_kwitansi() {
@@ -583,8 +590,32 @@ $(document).ready(function(){
             location.reload();
         }
     });
+
+    $.ajax({
+        url:baseUrl+'/sales/akun_all',
+        data:{cabang},
+        success:function(response){
+            $('.akun_lain_td').html(response);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+    $.ajax({
+        url:baseUrl+'/sales/akun_biaya',
+        data:{cabang},
+        success:function(response){
+            $('.akun_biaya_td').html(response);
+
+        },
+        error:function(){
+            // location.reload();
+        }
+    });
     $('.angka').maskMoney({precision:0,thousands:'.'});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.'});
+    $('.m_jumlah').maskMoney({precision:0,thousands:'.'});
 });
 // check all
 
@@ -814,9 +845,28 @@ $('#btnsave2').click(function(){
         temp += i_bayar;
     })
     $('.total_jumlah_bayar').val(temp);
+    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('#modal_info').modal('hide');
 
 })
+// add biaya modal
+var count = 1;
+$('#btnadd_biaya').click(function(){
+    $('.m_sequence').val(count);
+    $('#modal_biaya').modal('show');
+})
+
+// save biaya lain
+$('#btnsave').click(function(){
+    
+        table_data_biaya.row.add([
+                '<>'+''
+            ]).draw();
+
+        $('#modal_biaya').modal('hide');
+    count+=1;  
+});
+
 </script>
 
 @endsection

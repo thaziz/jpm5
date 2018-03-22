@@ -966,6 +966,9 @@ Route::get('sales/cari_invoice', 'sales\penerimaan_penjualan_Controller@cari_inv
 Route::get('sales/append_invoice', 'sales\penerimaan_penjualan_Controller@append_invoice');
 Route::get('sales/riwayat_invoice', 'sales\penerimaan_penjualan_Controller@riwayat_invoice');
 Route::get('sales/riwayat_cn_dn', 'sales\penerimaan_penjualan_Controller@riwayat_cn_dn');
+Route::get('sales/akun_all', 'sales\penerimaan_penjualan_Controller@akun_all');
+Route::get('sales/auto_biaya', 'sales\penerimaan_penjualan_Controller@auto_biaya');
+Route::get('sales/akun_biaya', 'sales\penerimaan_penjualan_Controller@akun_biaya');
 Route::get('sales/datatable_kwitansi', 'sales\penerimaan_penjualan_Controller@datatable_kwitansi')->name('datatable_kwitansi');
 Route::get('sales/datatable_detail_invoice', 'sales\penerimaan_penjualan_Controller@datatable_detail_invoice')->name('datatable_detail_invoice');
 Route::get('sales/datatable_invoice', 'sales\penerimaan_penjualan_Controller@datatable_invoice')->name('datatable_invoice');

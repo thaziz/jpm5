@@ -587,6 +587,8 @@ class penerimaan_penjualan_Controller extends Controller
                   ->where('id_parrent','1001')
                   ->where('kode_cabang',$comp)
                   ->get();
+
+
         $tgl  = Carbon::now()->format('d/m/Y');
        
         return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl' ));
@@ -631,6 +633,21 @@ class penerimaan_penjualan_Controller extends Controller
         $nota = 'KWT' . $request->cabang . $bulan . $tahun . $index;
 
         return response()->json(['nota'=>$nota]);
+    }
+    public function akun_all(request $request)
+    {
+        $akun = DB::table('d_akun')
+                  ->where('kode_cabang',$request->cabang)
+                  ->get();
+        return view('sales.penerimaan_penjualan.akun_all',compact('akun'));
+    }
+
+    public function akun_biaya(request $request)
+    {
+        $akun = DB::table('d_akun')
+                  ->where('kode_cabang',$request->cabang)
+                  ->get();
+        return view('sales.penerimaan_penjualan.akun_all',compact('akun'));
     }
     public function cari_invoice(request $request)
     {   
@@ -728,6 +745,19 @@ class penerimaan_penjualan_Controller extends Controller
                   ->get();
         return view('sales.penerimaan_penjualan.tabel_cn_dn',compact('data'));
     }
+    public function auto_biaya(request $request)
+    {
 
+        $data = DB::table('d_akun')
+                  ->where('id_akun',$request->tes)
+                  ->first();
+
+        if ($data->akun_dka == 'D') {
+            $data->debet = 'DEBET';
+        }else{
+            $data->debet = 'KREDIT';
+        }
+        return response()->json(['data'=>$data]);  
+    }
 
 }

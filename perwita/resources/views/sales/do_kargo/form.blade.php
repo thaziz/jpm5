@@ -464,6 +464,9 @@ $(document).ready(function(){
         dataType:'json',
         success:function(data){
             $('.nomor_do').val(data.nota);
+        },
+        error:function(){
+            location.reload();
         }
     })
 })
