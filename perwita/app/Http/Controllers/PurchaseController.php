@@ -3359,8 +3359,7 @@ $indexakun=0;
 				$acc_biaya[$i] = $masteritem[0]->acc_hpp;
 				$acc_persediaan[$i] = $masteritem[0]->acc_persediaan;
 
-			dd($acc_biaya[$i]);
-			dd($acc_persediaan);
+		
 				$fatkurpembeliandt2->fpdt_accbiaya = $acc_biaya;
 				$fatkurpembeliandt2->fpdt_accbiaya = $acc_persediaan;
 
@@ -3407,7 +3406,7 @@ $indexakun=0;
 					]);																				
 
 			}
-dd('s');
+
 		return json_encode($idfp);
 	});
 	}
