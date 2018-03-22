@@ -57,10 +57,6 @@
       font-weight: bold;
     }
 
-    #bingkai td.child{
-      padding-left: 25px;
-    }
-
     #bingkai td.total{
       border-top: 2px solid #999;
       font-weight: 600;
@@ -882,7 +878,7 @@
 
                                       <tbody>
                                         <td style="border: 1px solid #ccc">
-                                          <table width="100%" style="border: 0px solid red" id="bingkai" border="">
+                                          <table width="100%" style="border: 0px solid red" id="bingkai" border="" class="tree">
                                               <?php $DatatotalAktiva = 0; $tot = 0;?>
                                               @foreach($data as $dataAktiva)
                                                 <?php 
@@ -905,18 +901,28 @@
                                                     @if($dataAktiva["jenis"] == "4")
                                                       <tr><td colspan="2">&nbsp;</td></tr>
                                                     @else
-                                                      <tr>
+                                                      <tr class="treegrid-{{ $dataAktiva['nomor_id'] }} treegrid-parent-{{ $dataAktiva['parrent'] }}" id="{{ $dataAktiva["nomor_id"] }}">
 
-                                                        <td class="{{ $header." ".$child." ".$total." ".$dataAktiva["parrent"] }} no-border" width="70%"> &nbsp;{{ $dataAktiva["nama_perkiraan"] }}</td>
+                                                        <?php
+                                                          $nama = (strlen($dataAktiva["nama_perkiraan"]) > 35) ? substr($dataAktiva["nama_perkiraan"], 0, 33)."..." : $dataAktiva["nama_perkiraan"];
+                                                        ?>
+
+                                                        <td class="{{ $header." ".$child." ".$total." ".$dataAktiva["parrent"] }} no-border" width="70%"> &nbsp;{{ $nama }}</td>
                                                         
                                                         @if($dataAktiva["jenis"] == 2)
                                                           <?php 
                                                             $show = ($dataAktiva["total"] < 0) ? "(".number_format($dataAktiva["total"]).")" : number_format($dataAktiva["total"]); 
                                                           ?>
 
-                                                          <td class="text-right {{ $total }}">{{ str_replace("-", "", $show) }}</td>
+                                                          <td class="text-right {{ $total }}" style="display: none;" id="tot-{{ $dataAktiva["nomor_id"] }}">{{ str_replace("-", "", $show) }}</td>
 
-                                                          {!! get_sub($data, $dataAktiva["nomor_id"], $data_akun) !!}
+                                                        @elseif($dataAktiva["jenis"] == 1)
+                                                          <?php 
+                                                            $show = ($total_in_header[$dataAktiva["nomor_id"]] < 0) ? "(".number_format($total_in_header[$dataAktiva["nomor_id"]]).")" : number_format($total_in_header[$dataAktiva["nomor_id"]]); 
+                                                          ?>
+
+                                                          <td class="text-right {{ $total }}" style="display: none;" id="tot-{{ $dataAktiva["nomor_id"] }}">{{ str_replace("-", "", $show) }}</td>
+                                                          
                                                         @elseif($dataAktiva["jenis"] == 3)
                                                           <?php 
                                                             $show = ($mydatatotal[$dataAktiva["nomor_id"]] < 0) ? "(".number_format($mydatatotal[$dataAktiva["nomor_id"]]).")" : number_format($mydatatotal[$dataAktiva["nomor_id"]]); 
@@ -925,6 +931,10 @@
                                                           <td class="text-right {{ $total }}">{{ str_replace("-", "", $show) }}</td>
                                                         @endif
                                                       </tr>
+                                                    @endif
+
+                                                    @if($dataAktiva["jenis"] == 2)
+                                                        {!! get_akun($data_akun, $dataAktiva["nomor_id"]) !!}
                                                     @endif
 
                                                   <?php 
@@ -953,7 +963,7 @@
 
                                       <tbody>
                                         <td style="border: 1px solid #ccc">
-                                          <table width="100%" style="border: 0px solid red" id="bingkai">
+                                          <table width="100%" style="border: 0px solid red" id="bingkai" class="tree">
                                             <tr>
                                               <?php $DatatotalPasiva = 0;?>
                                               @foreach($data as $dataAktiva)
@@ -977,15 +987,28 @@
                                                     @if($dataAktiva["jenis"] == "4")
                                                       <tr><td colspan="2">&nbsp;</td></tr>
                                                     @else
-                                                      <tr>
-                                                        <td class="{{ $header." ".$child." ".$total }} no-border" width="70%">{{ $dataAktiva["nama_perkiraan"] }}</td>
-                                                        @if($dataAktiva["jenis"] == 2)
+                                                      <tr class="treegrid-{{ $dataAktiva['nomor_id'] }} treegrid-parent-{{ $dataAktiva['parrent'] }}" id="{{ $dataAktiva["nomor_id"] }}">
 
+                                                        <?php
+                                                          $nama = (strlen($dataAktiva["nama_perkiraan"]) > 35) ? substr($dataAktiva["nama_perkiraan"], 0, 33)."..." : $dataAktiva["nama_perkiraan"];
+                                                        ?>
+
+                                                        <td class="{{ $header." ".$child." ".$total." ".$dataAktiva["parrent"] }} no-border" width="70%"> &nbsp;{{ $nama }}</td>
+                                                        
+                                                        @if($dataAktiva["jenis"] == 2)
                                                           <?php 
                                                             $show = ($dataAktiva["total"] < 0) ? "(".number_format($dataAktiva["total"]).")" : number_format($dataAktiva["total"]); 
                                                           ?>
 
-                                                          <td class="text-right {{ $total }}">{{ str_replace("-", "", $show) }}</td>
+                                                          <td class="text-right {{ $total }}" style="display: none;" id="tot-{{ $dataAktiva["nomor_id"] }}">{{ str_replace("-", "", $show) }}</td>
+
+                                                        @elseif($dataAktiva["jenis"] == 1)
+                                                          <?php 
+                                                            $show = ($total_in_header[$dataAktiva["nomor_id"]] < 0) ? "(".number_format($total_in_header[$dataAktiva["nomor_id"]]).")" : number_format($total_in_header[$dataAktiva["nomor_id"]]); 
+                                                          ?>
+
+                                                          <td class="text-right {{ $total }}" style="display: none;" id="tot-{{ $dataAktiva["nomor_id"] }}">{{ str_replace("-", "", $show) }}</td>
+                                                          
                                                         @elseif($dataAktiva["jenis"] == 3)
                                                           <?php 
                                                             $show = ($mydatatotal[$dataAktiva["nomor_id"]] < 0) ? "(".number_format($mydatatotal[$dataAktiva["nomor_id"]]).")" : number_format($mydatatotal[$dataAktiva["nomor_id"]]); 
@@ -994,6 +1017,10 @@
                                                           <td class="text-right {{ $total }}">{{ str_replace("-", "", $show) }}</td>
                                                         @endif
                                                       </tr>
+                                                    @endif
+
+                                                    @if($dataAktiva["jenis"] == 2)
+                                                        {!! get_akun($data_akun, $dataAktiva["nomor_id"]) !!}
                                                     @endif
 
                                                   <?php 
@@ -1085,10 +1112,10 @@
 
   $(document).ready(function(){
     //$("#tree").DataTable();
-<<<<<<< HEAD
+
    $(".tree").treegrid({
       treeColumn: 0,
-      initialState: "collapse",
+      initialState: "expanded",
     });
 
    $('.tree').treegrid('getAllNodes').on('collapse', function(){
@@ -1100,13 +1127,7 @@
      $id = $(this).attr("id");
      $("#tot-"+$id).fadeOut();
    });
-=======
-    $("#tree").treegrid({
-          treeColumn: 0,
-          initialState: "expanded",
 
-    });
->>>>>>> afacd3890c78d68508e32a6c86265d70b20060ea
 
     $("#show").val("{{ $throttle }}");
     $('body').removeClass('fixed-sidebar');
