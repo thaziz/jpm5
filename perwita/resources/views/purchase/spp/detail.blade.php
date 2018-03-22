@@ -40,7 +40,7 @@
                      </h5>
                     <div class="text-right">
                     
-                          <a class="btn btn-success" href="{{url('suratpermintaanpembelian')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
+                          <a class="btn btn-md btn-default" href="{{url('suratpermintaanpembelian')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
                     
                     </div>
                 </div>
@@ -149,23 +149,14 @@
                  
               <div class="wrapper wrapper-content animated fadeInRight">
                   <table border=0> 
-                  <tr>
-                    <td> &nbsp; </td>
-                  </tr>
-
-                  <tr>
-                    <td> &nbsp; </td>
-                  </tr>
-                  <tr>
-                    <td style="width:10px">
-                    </td>
+                 
 
                     @if($data['countcodt'] < 1)
 
                     <td>  <h4> Edit Data Barang ? </h4> </td>
                
                    <td> &nbsp; </td>
-                   <td>     <button class="btn btn-sm btn-primary edit" type="button"> Edit Data</button> </div> </td>
+                   <td>     <button class="btn btn-sm btn-info edit" type="button"> Edit Data</button> </div> </td>
                   </tr>
 
                   @endif
@@ -173,24 +164,24 @@
                   </table>
                 
                 <div class="box-body">
-                
-                <table id="hargatable" class="table table-bordered table-striped">
+                <br>
+                <table id="hargatable" class="table table-bordered">
                     <thead>
                      <tr>
-                        <th style="width:20px" rowspan="2"> No  </th>
-                        <th style="width:250px; text-align: center" rowspan="2"> Nama Barang</th>
-                        <th style="width:50px" rowspan="2"> Jumlah Permintaan </th>
+                        <td style="width:20px;vertical-align: center" rowspan="2"> No  </td>
+                        <td style="width:250px; text-align: center;vertical-align: center" rowspan="2"> Nama Barang</td>
+                        <td style="width:50px" rowspan="2"> Jumlah Permintaan </td>
                        <!--  <th style="width:50px" rowspan="2"> Jumlah Disetujui </th> -->
                       
                          @if($data['countkendaraan'] > 0)           
-                            <th rowspan="2"> Kendaraan </th>                         
+                            <td rowspan="2"> Kendaraan </td>                         
                          @endif
 
-                        <th style="width:50px" rowspan="2"> Stock Gudang </th>
-                        <th style="width:70px" rowspan="2"> Satuan </th>
+                        <td style="width:50px;vertical-align: center" rowspan="2"> Stock Gudang </td>
+                        <td style="width:70px;vertical-align: center" rowspan="2"> Satuan </td>
                       
                       
-                        <th style="width:500px; text-align: center" colspan="{{$data['count']}}"> Supplier </th>
+                        <td style="width:500px; text-align: center;vertical-align: center" colspan="{{$data['count']}}"> Supplier </td>
 
                     
                     </tr>
@@ -535,9 +526,6 @@
  
       })
 
-
-      
-   
 
 
 

@@ -162,10 +162,10 @@
 	          
 	            console.log('a');          
 	                var html2 = "<tr> <td>"+ n +" </td>" +
-	                                "<td>  "+data.terima[j].bt_notransaksi+" -"+data.terima[j].bt_id+"</td>" +
+	                                "<td>  "+data.terima[j].bt_notransaksi+"</td>" +
 									"<td>  "+data.terima[j].nama_supplier+" </td>" +
 									"<td> <span class='label label-info'> "+data.terima[j].bt_statuspenerimaan+" </span> </td>" + 
-									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terima[j].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i>"+data.terima[j].bt_id		+"</a> &nbsp;" +
+									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terima[j].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a> &nbsp;" +
 									"</td>";                        
 	                                  	                                  
 	                              html2 +=  "</tr>";

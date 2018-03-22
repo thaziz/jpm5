@@ -461,10 +461,12 @@ class PurchaseController extends Controller
 			for($j=0;$j<count($request->totbiaya);$j++){
 
 				$spptb = new spptb_purchase();
-			
-					$stringtb = $request->totbiaya[$j];
+				
+					$explode = explode("-" , $request->totbiaya[$j]);
+					$stringtb = $explode[0];	
 					$replacetb = str_replace(',', '', $stringtb);
 					
+					$sup = $explode[1];
 				$spptb->spptb_id = $idspptb;
 				$spptb->spptb_idspp = $spp->spp_id;
 				$spptb->spptb_supplier = $request->idsupplier[$j];
@@ -1169,7 +1171,7 @@ public function purchase_order() {
 		}
 		
 
-		return json_encode('sukses');
+		return json_encode($idpo);
 	}
 
 	public function detailpurchasekeuangan(Request $request){
