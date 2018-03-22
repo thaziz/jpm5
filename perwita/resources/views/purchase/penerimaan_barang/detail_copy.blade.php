@@ -494,7 +494,7 @@
           var form_data2 = $(this).serialize();
             swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Faktur Pembelian!",
+            text: "Simpan Data Penerimaan Barang!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",

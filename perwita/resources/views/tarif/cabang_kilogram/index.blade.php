@@ -120,6 +120,17 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
+                                    <td>   
+                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" style="width:100%" i>
+                                            <option value="" selected="" disabled="">-- Pilih Provinsi tujuan --</option>
+                                        @foreach ($prov as $prov)
+                                            <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">Acc Penjualan</td>
                                     <td>
                                         <select class="chosen-select-width"  name="cb_acc_penjualan" style="width:100%">
@@ -355,12 +366,10 @@
         $('input[name="tarif0kg_express"]').val('');
         $('input[name="tarif10kg_express"]').val('');
         $('input[name="tarif20kg_express"]').val('');
+        $('input[name="tarifkgsel_reguler"]').val('');
+        $('input[name="tarifkgsel_express"]').val('');
 
-
-                $('input[name="tarifkgsel_reguler"]').val('');
-        
-                $('input[name="tarifkgsel_express"]').val('');
-
+        $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
         $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
@@ -372,27 +381,10 @@
     });
 
     $(document).on( "click",".btnedit", function() {
-         var id=$(this).attr("id");
-         //
-        var id0=$(this).data("kode7");
-        var id1=$(this).data("kode6");
-        var id2=$(this).data("kode5");
-        var id3=$(this).data("kode4");
-        var id4=$(this).data("kode3");
-        var id5=$(this).data("kode2");
-        var id6=$(this).data("kode1");
-        var id7=$(this).data("kode0");
+        var id=$(this).attr("id");
+        var tujuan = $(this).data('tujuan'); 
         var value = {
-            id: id,
-
-            id0:id0,
-            id1:id1,
-            id2:id2,
-            id3:id3,
-            id4:id4,
-            id5:id5,
-            id6:id6,
-            id7:id7
+          asal : id , tujuan :tujuan 
         };
         $.ajax(
         {
@@ -450,6 +442,7 @@
                 $("select[name='cb_cabang']").val(data[0][0].kode_cabang).trigger('chosen:updated');
                 $("select[name='cb_acc_penjualan']").val(data[0][0].acc_penjualan).trigger('chosen:updated');
                 $("select[name='cb_csf_penjualan']").val(data[0][0].csf_penjualan).trigger('chosen:updated');
+                $("select[name='cb_provinsi_tujuan']").val(data[0][0].id_provinsi_cabkilogram).trigger('chosen:updated');
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
                 

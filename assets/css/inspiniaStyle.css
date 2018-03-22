@@ -49,11 +49,13 @@ h5 {
 .nav > li.active > a {
   color: #ffffff;
 }
+/*--ari--*/
 .navbar-default .nav > li > a:hover,
 .navbar-default .nav > li > a:focus {
-  background-color: #293846;
+  background-color: rgba(0,0,0,0.2);
   color: white;
 }
+/*========*/
 .nav .open > a,
 .nav .open > a:hover,
 .nav .open > a:focus {
@@ -73,6 +75,7 @@ h5 {
   background-color: transparent;
   border-color: #2f4050;
 }
+
 .navbar-top-links li {
   display: inline-block;
 }
@@ -166,10 +169,12 @@ h5 {
 .pace-done .nav-header {
   transition: all 0.4s;
 }
+/*--ari--*/
 .nav > li.active {
   border-left: 4px solid #19aa8d;
-  background: #293846;
+  background: rgba(0,0,0,0.2);
 }
+/*=======*/
 .nav.nav-second-level > li.active {
   border: none;
 }
@@ -1584,8 +1589,8 @@ table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc,
 table.dataTable thead .sorting_asc_disabled,
 table.dataTable thead .sorting_desc_disabled {
-  background: #005b96;
-  vertical-align: center;
+  background: #005b9a;
+  vertical-align: middle;
 }
 /*------*/
 .dataTables_wrapper {
@@ -3246,32 +3251,37 @@ body.tour-open .animated {
   padding: 15px 20px;
   border-bottom: 1px solid #e7eaec;
 }
+/*--ari--*/
 body {
   font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background-color: #2f4050;
+  background-color:#384f5f;
+
   font-size: 13px;
   color: #676a6c;
   overflow-x: hidden;
   
 }
-@-webkit-keyframes colorchange {
-      0% {
-        
-        background-color: red;
-      }
-      33.33%{
-        background-color: orange;
-      }
-
-      66.66%{
-        background-color: green;
-      }
-      
-      100% {
-        
-        background-color: blue;
-      }
-    }
+ @-webkit-keyframes gradientBreath {
+    0%{background-position:23% 0%}
+    50%{background-position:78% 100%}
+    100%{background-position:23% 0%}
+}
+@-moz-keyframes gradientBreath {
+    0%{background-position:23% 0%}
+    50%{background-position:78% 100%}
+    100%{background-position:23% 0%}
+}
+@-o-keyframes gradientBreath {
+    0%{background-position:23% 0%}
+    50%{background-position:78% 100%}
+    100%{background-position:23% 0%}
+}
+@keyframes gradientBreath {
+    0%{background-position:23% 0%}
+    50%{background-position:78% 100%}
+    100%{background-position:23% 0%}
+}
+/*======*/
 html,
 body {
   height: 100%;
@@ -3524,10 +3534,9 @@ body.body-small .footer.fixed {
 .table > thead > tr > th  {
 
   border-bottom: 1px solid #DDDDDD;
-  vertical-align: center;
-  background-color: #107dac;
-
-  
+  vertical-align: middle;
+ 
+    background:#0191c8;
   color: white;
   text-align: center;
 }
@@ -3542,7 +3551,7 @@ body.body-small .footer.fixed {
   border-top: 1px solid #e7eaec;
   line-height: 1.42857;
   padding: 8px;
-  vertical-align: top;
+  vertical-align: middle;
 
 
 }

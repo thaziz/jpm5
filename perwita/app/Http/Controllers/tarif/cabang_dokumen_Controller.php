@@ -72,15 +72,6 @@ class cabang_dokumen_Controller extends Controller
             }
             $kode_detailtambah1+1;  
          }
-         // return $kode_detailtambah1;
-        // if ($kode_detail == '') {
-        //     $kode_detail = 1;
-        // }else{
-        //     $kode_detail += 1;
-        // }
-
-         // return $kode_detailtambah1;
-         
         if ($kode_detail == '') {
             $kode_detail = 1;
         }else{

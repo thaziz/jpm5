@@ -461,10 +461,12 @@ class PurchaseController extends Controller
 			for($j=0;$j<count($request->totbiaya);$j++){
 
 				$spptb = new spptb_purchase();
-			
-					$stringtb = $request->totbiaya[$j];
+				
+					$explode = explode("-" , $request->totbiaya[$j]);
+					$stringtb = $explode[0];	
 					$replacetb = str_replace(',', '', $stringtb);
 					
+					$sup = $explode[1];
 				$spptb->spptb_id = $idspptb;
 				$spptb->spptb_idspp = $spp->spp_id;
 				$spptb->spptb_supplier = $request->idsupplier[$j];
@@ -1169,7 +1171,7 @@ public function purchase_order() {
 		}
 		
 
-		return json_encode('sukses');
+		return json_encode($idpo);
 	}
 
 	public function detailpurchasekeuangan(Request $request){
@@ -3024,7 +3026,7 @@ $indexakun=0;
 	}
 
 	public function savefakturpo(Request $request){
-		return DB::transaction(function() use ($request) {   
+		
 		/*dd($request->all());*/
 		$variable = $request->supplier_po;
 		$data = explode(",", $variable);
@@ -3323,7 +3325,8 @@ $indexakun=0;
 				$diskon = $request->disc_item_po;
 				$nominal = (float)$diskon / 100 * (float)$hargabarang;
 				$hargajadi = (float)$hargabarang - (float)$nominal;
-			
+				
+			//	return $hargajadi;
 				$lastidfpdt = fakturpembeliandt::max('fpdt_id');
 
 				if(isset($lastidfpdt)) {
@@ -3338,38 +3341,21 @@ $indexakun=0;
 
 				$harga = str_replace(',', '', $request->hpp[$i]);
 				$totalharga = str_replace(',', '', $request->totalharga[$i]);
-	
+				
 				$fatkurpembeliandt2 = new fakturpembeliandt();
 				$fatkurpembeliandt2->fpdt_id = $idfakturdt;
-				$fatkurpembeliandt2->fpdt_idfp = $idfp;
+				$fatkurpembeliandt2->fpdt_idfp = '1';
 				$fatkurpembeliandt2->fpdt_kodeitem = $request->item_po[$i];
 				$fatkurpembeliandt2->fpdt_qty = $request->qty[$i];
 				/*$fatkurpembeliandt->fpdt_gudang = $request->pb_gudang[$i];*/
 				$fatkurpembeliandt2->fpdt_harga =  $hargajadi;
-
 				$total = (float) $hargajadi * $request->qty[$i];
 
+				//return $total;
+
 				$fatkurpembeliandt2->fpdt_totalharga =  $total;
-				$fatkurpembeliandt2->fpdt_updatedstock =  $request->updatestock[$i];
-
-				$iditem = $request->item_po[$i];
-			//	return $iditem;
-				$masteritem =DB::select("select * from masteritem where kode_item = '$iditem'");
 				
-				$acc_biaya[$i] = $masteritem[0]->acc_hpp;
-				$acc_persediaan[$i] = $masteritem[0]->acc_persediaan;
 
-		
-				$fatkurpembeliandt2->fpdt_accbiaya = $acc_biaya;
-				$fatkurpembeliandt2->fpdt_accbiaya = $acc_persediaan;
-
-				if($request->flag == 'PO'){
-					$fatkurpembeliandt2->fpdt_idpo = $request->idpo[$i];				
-				}
-				else {
-					$fatkurpembeliandt2->fpdt_idfppo = $request->idpo[$i];
-	
-				}
 				$fatkurpembeliandt2->save();
 		}
 
@@ -3407,8 +3393,8 @@ $indexakun=0;
 
 			}
 
-		return json_encode($idfp);
-	});
+		return json_encode($idfaktur);
+	
 	}
 
 
@@ -5991,6 +5977,9 @@ public function kekata($x) {
 				$formfpg_bank->fpgb_norekening = $request->norekening;
 				$formfpg_bank->fpgb_norekening = $request->namabank;
 
+			}
+			if( $request->jenisbayarbank == 'TFAkun'){
+				$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
 			}
 			else {
 				$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];

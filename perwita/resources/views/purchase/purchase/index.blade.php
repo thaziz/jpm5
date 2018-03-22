@@ -131,9 +131,9 @@
 
                           </td>
                           <td> 
-                            <button class="btn btn-sm btn-danger" onclick="proseskeuangan({{$po->po_id}})" type="button" id="createmodal" data-toggle="modal" data-target="#myModal2"> PROSES  </button> &nbsp;
+                            <button class="btn btn-sm btn-danger" onclick="proseskeuangan({{$po->po_id}})" type="button" id="createmodal" data-toggle="modal" data-target="#myModal2"> PROSES  </button> &nbsp;  
                             @if($po->po_setujufinance != '')
-                              <span class='label label-warning labelukeuangan{{$po->po_id}}'> {{$po->po_setujufinance}}</span> @endif
+                              <span class='label label-warning '> {{$po->po_setujufinance}}</span> @endif
                             @if($po->po_setujufinance == 'DISETUJUI')
                             <button class="btn btn-sm btn-info print" type="button" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"> </i> </button>
                            @endif
@@ -204,8 +204,8 @@
                       </div>                      
                     
                       <div class="data-spp"> </div>
-                      <div class="hell"> </div>
-
+                      <!-- <div class="hell"> </div>
+ -->
                       <div class="col-sm-12">
                       <h4> Pihak Keuangan : </h4>
                         <table>
@@ -291,6 +291,8 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+  //$('.labelkeuangand').hide();
+
     tableDetail = $('.tbl-purchase').DataTable({
             responsive: true,
             searching: true,
@@ -352,10 +354,10 @@
       valsetuju = $('.textsetuju').val();
       keterangan = $('.keterangankeuangan').val();
       poid  = poid;
-   
+    
       string = $('.hell').text();
       idspp = string.split(",");
-
+      $('.labelkeuangand').show();
       url = baseUrl + '/purchaseorder/updatekeuangan';
       $.ajax({
         type : "POST",
@@ -366,7 +368,7 @@
            $('#myModal2').modal('hide');
             alertSuccess(); 
 
-            $('.labelkeuangan' + poid).val(valsetuju);
+            $('.labelkeuangan' + data).val(valsetuju);
         }
 
       })
