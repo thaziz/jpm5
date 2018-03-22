@@ -611,7 +611,7 @@
 
         }
 
-       hitung_pajak_ppn();
+       hitung_pajak_lain();
 
        hitung_total_tagihan();
    }
