@@ -1240,7 +1240,8 @@ public function update_invoice(request $request)
     $cari_invoice =DB::table('invoice')
                     ->where('i_nomor',$request->nota_invoice)
                     ->first();
-    if ($cari_invoice == null {
+
+    if ($cari_invoice == null ){
       return response()->json(['status'=>0,'pesan'=>'data tidak berhasil disimpan']);
     }else{
       return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);

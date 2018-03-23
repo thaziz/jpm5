@@ -235,7 +235,7 @@
                             </td>
                             <td>
                                 {{$val->dd_keterangan}}
-                                <input type="hidden" class="acc_penjualan" value="{{$val->dd_keterangan}}" name="akun[]">
+                                <input type="hidden" class="acc_penjualan" value="{{$val->id_acc_penjualan}}" name="akun[]">
                             </td>
                             <td>
                                 {{$val->id_jumlah}}
