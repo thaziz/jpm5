@@ -316,12 +316,12 @@
 				</tr>
 				@foreach ($detail as $row)
 				<tr>
-					<td class="bot right textcenter" height="25">{{$row->id}}</td>
-					<td class="bot right textcenter">{{$row->kode_item}}</td>
+					<td class="bot right textcenter" height="25">{{$row->dd_id}}</td>
+					<td class="bot right textcenter">{{$row->dd_kode_item}}</td>
 					<td class="bot right textcenter">{{$row->nama}}</td>
-					<td class="bot right textcenter">{{$row->keterangan}}</td>
-					<td class="bot right textcenter">{{ number_format($row->jumlah, 0, ",", ".") }} {{$row->kode_satuan}}</td>
-					<td class="bot textright">{{ number_format($row->total, 0, ",", ".") }}</td>
+					<td class="bot right textcenter">{{$row->dd_keterangan}}</td>
+					<td class="bot right textcenter">{{ number_format($row->dd_jumlah, 0, ",", ".") }} {{$row->dd_kode_satuan}}</td>
+					<td class="bot textright">{{ number_format($row->dd_total, 0, ",", ".") }}</td>
 				</tr>
                 @endforeach
 				
@@ -344,3 +344,6 @@
 </body>
 
 </html>
+<script>
+	window.print();
+</script>
