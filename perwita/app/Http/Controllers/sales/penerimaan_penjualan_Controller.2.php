@@ -763,7 +763,7 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function simpan_kwitansi(request $request)
     {
-        dd($request->all());
+        // dd($request->all());
 
   //       "nota" => "KWT001031800001"
   // "_token" => "HudTTW8lLdn0A3PICJCncwKkw7XN9pbjC04XjBLR"
@@ -846,8 +846,9 @@ class penerimaan_penjualan_Controller extends Controller
                                       'kd_nomor_invoice' => $request->i_nomor[$i],
                                       'kd_keterangan'    => $request->i_keterangan[$i],
                                       'kd_kode_biaya'    => $request->akun_biaya[$i],
-                                      'kd_jenis'         => $requ,
+                                      // 'kd_jenis'         => $requ,
                                       'kd_total_bayar'   => $request->i_bayar,
+                                      'kd_biaya_admin'   => $request->i_bayar,
                                  ])
             }
         }

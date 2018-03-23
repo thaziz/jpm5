@@ -235,7 +235,7 @@
                             </td>
                             <td>
                                 {{$val->dd_keterangan}}
-                                <input type="hidden" class="acc_penjualan" value="{{$val->dd_keterangan}}" name="akun[]">
+                                <input type="hidden" class="acc_penjualan" value="{{$val->id_acc_penjualan}}" name="akun[]">
                             </td>
                             <td>
                                 {{$val->id_jumlah}}
@@ -779,7 +779,7 @@ function hitung_pajak_lain(){
                     // $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
                     // $('#cb_pendapatan').attr('disabled',true);
                     ///////////////////////////////////////////
-                }else if (response.jenis == 'PAKET' || jenis == 'KARGO') {
+                }else if (response.jenis == 'PAKET' || response.jenis == 'KARGO') {
                     for(var i = 0 ; i < response.data.length;i++){
                         ///////////////////////////////////////
                         index_detail+=1;
@@ -851,7 +851,8 @@ function hitung_pajak_lain(){
 
     // SIMPAN DATA
     function simpan(){
-
+        var ed_pendapatan = $('#cb_pendapatan').val();
+        var ed_customer = $('#customer').val();
       swal({
         title: "Apakah anda yakin?",
         text: "Update Data Invoice!",
@@ -875,7 +876,9 @@ function hitung_pajak_lain(){
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
-               +'&'+$('.table_pajak :input').serialize(),
+               +'&'+$('.table_pajak :input').serialize()
+               +'&ed_pendapatan='+ed_pendapatan
+               +'&ed_customer='+ed_customer,
           success:function(response){
             
 
@@ -897,9 +900,9 @@ function hitung_pajak_lain(){
                     type: 'success',
                     text: "Data berhasil disimpan",
                     timer: 900,
-                   showConfirmButton: false
+                   showConfirmButton: true
                     },function(){
-                        location.reload();
+                        // location.reload();
                 });
              }
           },
