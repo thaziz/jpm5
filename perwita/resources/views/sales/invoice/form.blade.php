@@ -652,7 +652,7 @@
                     $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
                     $('#cb_pendapatan').attr('disabled',true);
                     ///////////////////////////////////////////
-                }else if (response.jenis == 'PAKET' || jenis == 'KARGO') {
+                }else if (response.jenis == 'PAKET' || response.jenis == 'KARGO') {
                     for(var i = 0 ; i < response.data.length;i++){
                         ///////////////////////////////////////
                         index_detail+=1;

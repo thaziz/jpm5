@@ -371,8 +371,8 @@ public function pajak_lain(request $request)
 }
 public function simpan_invoice(request $request)
 {
-  return DB::transaction(function() use ($request) {  
-    /*dd($request->all());*/
+  // return DB::transaction(function() use ($request) {  
+    // dd($request->all());
     $cabang=Auth::user()->kode_cabang;
     $do_awal        = str_replace('/', '-', $request->do_awal);
     $do_akhir       = str_replace('/', '-', $request->do_akhir);
@@ -455,6 +455,11 @@ public function simpan_invoice(request $request)
                                           'update_at'            =>  Carbon::now(),
                                           'i_pendapatan'         =>  $request->ed_pendapatan
                                      ]);
+
+            // $cari_no_invoice = DB::table('invoice')
+            //              ->where('i_nomor',$request->nota_invoice)
+            //              ->first();
+            //   dd($cari_no_invoice);
              for ($i=0; $i < count($request->do_detail); $i++) { 
 
                 $cari_id = DB::table('invoice_d')
@@ -491,6 +496,9 @@ public function simpan_invoice(request $request)
                                               'id_tipe'          => 'tidak tahu',
                                               'id_acc_penjualan' => $do->acc_penjualan
                                           ]);
+
+                
+
     $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
     $request->netto_detail =str_replace(',', '.', $request->netto_detail);
 
@@ -514,7 +522,11 @@ public function simpan_invoice(request $request)
                       /*$dataItem[$i]['netto_detail']=$request->netto_detail;  */              
                     
              }
+             // $tes = DB::table('invoice_d')
+             //             ->where('id_nomor_invoice',$request->nota_invoice)
+             //             ->get();
 
+             //    dd($tes);
 
       $Nilaijurnal=$this->groupJurnal($dataItem);
 
@@ -961,11 +973,11 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                  }else{
                      $cari_id += 1;
                  }
-                 $do = DB::table('delivery_orderd')
+                $do = DB::table('delivery_orderd')
                          ->join('delivery_order','nomor','=','dd_nomor')
                          ->where('dd_id',$request->do_id[$i])
                          ->first();
-
+                  // dd($request->do_id);
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
@@ -975,7 +987,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'create_at'        => Carbon::now(),
                                               'update_by'        => Auth::user()->m_name,
                                               'update_at'        => Carbon::now(),
-                                              'id_tgl_do'        => $do->tanggal,
+                                              'id_tgl_do'        => Carbon::parse($do->tanggal)->format('Y-m-d'),
                                               'id_jumlah'        => $request->dd_jumlah[$i],
                                               'id_keterangan'    => $do->dd_keterangan,
                                               'id_harga_satuan'  => $request->dd_harga[$i],
@@ -1076,11 +1088,11 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_nomor_do_dt'   => $request->do_id[$i]
                                           ]);
              }
-dd('d');
+// dd('d');
              return response()->json(['status' => 2,'nota'=>$nota]);
         }
     }
-    });
+    // });
         
 }
 
@@ -1216,7 +1228,15 @@ public function update_invoice(request $request)
                 ->delete();
 
     $this->simpan_invoice($request);
-    return response()->json(['status'=>1]);
+
+    $cari_invoice =DB::table('invoice')
+                    ->where('i_nomor',$request->nota_invoice)
+                    ->first();
+    if ($cari_invoice == null {
+      return response()->json(['status'=>0,'pesan'=>'data tidak berhasil disimpan']);
+    }else{
+      return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
+    }
 }
 
   //funngsi Thoriq
