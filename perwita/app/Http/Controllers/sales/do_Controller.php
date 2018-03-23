@@ -719,10 +719,39 @@ class do_Controller extends Controller
         }
 //============== End Kilogram =========================
         elseif ($tipe == 'KOLI'){
-            
+            //dd($request);
             $berat = $request->berat;
             $tarif = null;
             $biaya_penerus = null;
+            if ($berat < 10){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', DB::raw('(harga * '.$berat.') as harga'))
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kertas / Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->select('tarif_10express_kilo as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->select('tarif_10reguler_kilo as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->get();
+                }
+
+            } elseif ($berat < 20){
+
+            } elseif ($berat < 30){
+
+            } elseif ($berat > 30){
+
+            }
         }
     }
 
