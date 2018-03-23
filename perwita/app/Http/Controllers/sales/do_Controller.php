@@ -540,17 +540,16 @@ class do_Controller extends Controller
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
 
-            $jumlah_data = $data->count();
-            if ($jumlah_data > 0) {
+            if (count($biaya_penerus) > 0) {
                 $harga = collect(\DB::select($sql))->first();
                 $result['biaya_penerus'] = $biaya_penerus->harga;
                 $result['harga'] = $harga->harga;
-                $result['jumlah_data'] = $jumlah_data;
+                $result['jumlah_data'] = count($biaya_penerus);
                 $result['acc_penjualan'] = $data[0]->acc_penjualan;
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus->harga,
                     'harga' => $harga->harga,
-                    'jumlah_data' => $jumlah_data,
+                    'jumlah_data' => count($biaya_penerus),
                     'acc_penjualan' => $data[0]->acc_penjualan
                 ]);
             }
