@@ -162,8 +162,8 @@ class do_kertas_Controller extends Controller
             'dd_harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
             'dd_diskon' => filter_var($request->ed_diskon, FILTER_SANITIZE_NUMBER_INT),
             'dd_total' => filter_var($request->ed_total, FILTER_SANITIZE_NUMBER_INT),
-            'dd_id_kota_asal' => strtoupper($request->cb_kota_asal),
-            'dd_id_kota_tujuan' => strtoupper($request->cb_kota_tujuan),
+            'dd_id_kota_asal' => $request->cb_kota_asal,
+            'dd_id_kota_tujuan' => $request->cb_kota_tujuan,
             'dd_keterangan' => strtoupper($request->ed_keterangan),
             'dd_acc_penjualan'=>strtoupper($request->acc_penjualan),
         );
@@ -248,7 +248,7 @@ class do_kertas_Controller extends Controller
         $item = DB::select(" SELECT kode,nama,harga,kode_satuan,acc_penjualan FROM item ORDER BY nama ASC ");
         if ($nomor != null) {
             $data = DB::table('delivery_order')->where('nomor', $nomor)->first();
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor ='$nomor' "))->first();
+            $jml_detail = collect(\DB::select(" SELECT COUNT(dd_id) jumlah FROM delivery_orderd WHERE dd_nomor ='$nomor' "))->first();
         }else{
             $data = null;
             $jml_detail = 0;
@@ -263,8 +263,8 @@ class do_kertas_Controller extends Controller
         $head = collect(\DB::select("   SELECT d.nomor,d.tanggal,d.kode_customer,c.nama,c.alamat,c.telpon FROM delivery_order d
                                         LEFT JOIN customer c ON c.kode=d.kode_customer
                                         WHERE nomor='$nomor' "))->first();
-        $detail =DB::select("   SELECT d.*,i.nama FROM delivery_orderd d,item i
-                                WHERE i.kode=d.kode_item AND d.nomor='$nomor'  ORDER BY id");
+        $detail =DB::select("   SELECT d.*,i.dd_nama FROM delivery_orderd d,item i
+                                WHERE i.kode=d.dd_kode_item AND d.dd_nomor='$nomor'  ORDER BY id");
     
         return view('sales.do_kertas.print',compact('head','detail'));
     }

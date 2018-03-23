@@ -619,7 +619,11 @@ class do_kargo_Controller extends Controller
         if ($request->telpon_pengirim == '') {
             return response()->json(['status' => 3]);
         }
-
+        if ($request->dicount == null) {
+            $discount = 0;
+        }else{
+            $discount = $request->dicount;
+        }
 
 
 
@@ -649,15 +653,16 @@ class do_kargo_Controller extends Controller
                          ->insert([
                                 'nomor'                 => strtoupper($request->nomor_do),
                                 'tanggal'               => $tgl,
-                                'id_kota_asal'          => $request->asal_do,
-                                'id_kota_tujuan'        => $request->tujuan_do,
+                                'id_kota_asal'          => (int)$request->asal_do,
+                                'id_kota_tujuan'        => (int)$request->tujuan_do,
+                                'biaya_tambahan'        => 0,
                                 'pendapatan'            => 'KARGO',
                                 'type_kiriman'          => 0,
                                 'jenis_pengiriman'      => $jenis_tarif->jt_nama_tarif,
                                 'kode_tipe_angkutan'    => $request->tipe_angkutan,
                                 'no_surat_jalan'        => strtoupper($request->surat_jalan),
                                 'nopol'                 => $nopol->nopol,
-                                'id_kendaraan'          => $request->tipe_kendaraan,
+                                'id_kendaraan'          => (int)$request->tipe_kendaraan,
                                 'kode_subcon'           => strtoupper($request->nama_subcon),
                                 'kode_cabang'           => $request->cabang,
                                 'tarif_dasar'           => $request->harga_master,
@@ -677,7 +682,7 @@ class do_kargo_Controller extends Controller
                                 'deskripsi'             => strtoupper($request->deskripsi_penerima),
                                 'total'                 => $request->tarif_dasar,
                                 'total_net'             => $request->total,
-                                'diskon'                => filter_var($request->discount, FILTER_SANITIZE_NUMBER_INT),
+                                'diskon'                => filter_var($discount, FILTER_SANITIZE_NUMBER_INT),
                                 'jenis'                 => 'KARGO',
                                 'kontrak_cus'           => $request->kcd_id,
                                 'kontrak_cus_dt'        => $request->kcd_dt,
@@ -691,7 +696,7 @@ class do_kargo_Controller extends Controller
                                 'akhir_shutle'          => strtoupper($akhir),
                                 'nomor_do_awal'         => strtoupper($request->nomor_do_awal),
                                 'kode_satuan'           => strtoupper($request->satuan),
-                                'kontrak'               => $kontrak,
+                                // 'kontrak'               => $kontrak,
                                 'kode_tarif'            => $request->kode_tarif,
                                 'acc_penjualan'         => $request->acc_penjualan
                          ]);
@@ -748,7 +753,7 @@ class do_kargo_Controller extends Controller
                                 'deskripsi'             => strtoupper($request->deskripsi_penerima),
                                 'total'                 => $request->tarif_dasar,
                                 'total_net'             => $request->total,
-                                'diskon'                => filter_var($request->discount, FILTER_SANITIZE_NUMBER_INT),
+                                'diskon'                => filter_var($discount, FILTER_SANITIZE_NUMBER_INT),
                                 'jenis'                 => 'KARGO',
                                 'kontrak_cus'           => $request->kcd_id,
                                 'kontrak_cus_dt'        => $request->kcd_dt,
