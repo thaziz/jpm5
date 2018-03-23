@@ -371,8 +371,16 @@ public function pajak_lain(request $request)
 }
 public function simpan_invoice(request $request)
 {
-  // return DB::transaction(function() use ($request) {  
-    // dd($request->all());
+   return DB::transaction(function() use ($request) {  
+
+
+    $delete = DB::table('invoice')
+                ->where('i_nomor',$request->nota_invoice);
+                
+    if(count($delete->first())!=0){
+        $delete->delete();
+    }
+    $dataItem=[];
     $cabang=Auth::user()->kode_cabang;
     $do_awal        = str_replace('/', '-', $request->do_awal);
     $do_akhir       = str_replace('/', '-', $request->do_akhir);
@@ -527,7 +535,14 @@ public function simpan_invoice(request $request)
              //             ->get();
 
              //    dd($tes);
+$jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
+            if(count($jurnal->first())!=0){
+              $jurnal->delete();
+            }
 
+if(count($dataItem)==0){
+    return response()->json(['status' => 1,'display'=>0]);
+}
       $Nilaijurnal=$this->groupJurnal($dataItem);
 
             foreach ($Nilaijurnal as  $indexakun=> $dataJurnal) {  
@@ -646,10 +661,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
 
 
 
-            $jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
-            if(count($jurnal->first())!=0){
-              $jurnal->delete();
-            }else{
+            
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $id_jrdt=1;
                 foreach ($akun as $key => $data) {   
@@ -670,7 +682,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                         'jr_note'=> 'INVOICE',
                         ]);
             d_jurnal_dt::insert($jurnal_dt);
-           }
+           
 
 
 
@@ -781,6 +793,13 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                       $dataItem[$i]['pajak_lain']=$totalStlhDiskon*($request->pajak_lain/100);
              }
 
+$jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
+            if(count($jurnal->first())!=0){
+              $jurnal->delete();
+            }
+if(count($dataItem)==0){
+    return response()->json(['status' => 1,'display'=>0]);
+}
                $Nilaijurnal=$this->groupJurnal($dataItem);
 
             foreach ($Nilaijurnal as  $indexakun=> $dataJurnal) {  
@@ -899,10 +918,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
 
 
 
-            $jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
-            if(count($jurnal->first())!=0){
-              $jurnal->delete();
-            }else{
+            
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $id_jrdt=1;
                 foreach ($akun as $key => $data) {   
@@ -923,7 +939,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                         'jr_note'=> 'INVOICE',
                         ]);
             d_jurnal_dt::insert($jurnal_dt);
-           }
+           
 
 
              return response()->json(['status' => 2,'nota'=>$nota]);
@@ -1088,15 +1104,11 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_nomor_do_dt'   => $request->do_id[$i]
                                           ]);
              }
-<<<<<<< HEAD
 
-=======
-// dd('d');
->>>>>>> 3b3f2ab937899927207d70cefadc505fc13d8695
              return response()->json(['status' => 2,'nota'=>$nota]);
         }
     }
-    // });
+     });
         
 }
 
@@ -1234,22 +1246,19 @@ public function hapus_invoice(request $request)
 public function update_invoice(request $request)
 {
     // dd($request->all());
-    
-    $delete = DB::table('invoice')
-                ->where('i_nomor',$request->nota_invoice)
-                ->delete();
+   
 
-    $this->simpan_invoice($request);
-
+    return $this->simpan_invoice($request);
+/*
     $cari_invoice =DB::table('invoice')
                     ->where('i_nomor',$request->nota_invoice)
-                    ->first();
+                    ->first();*/
 
-    if ($cari_invoice == null ){
+    /*if ($cari_invoice == null ){
       return response()->json(['status'=>0,'pesan'=>'data tidak berhasil disimpan']);
     }else{
       return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
-    }
+    }*/
 }
 
   //funngsi Thoriq
