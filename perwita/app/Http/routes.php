@@ -1154,17 +1154,17 @@ Route::get('master_keuangan/neraca/excel/{throtle}', [
 
 Route::get('master_keuangan/neraca-detail/{throtle}', [
   'uses' => 'master_keuangan\laporan_keuangan_detail_controller@index_neraca',
-  'as'   => 'neraca.index'
+  'as'   => 'neraca_detail.index'
 ]);
 
 Route::get('master_keuangan/neraca-detail/print/{throtle}', [
   'uses' => 'master_keuangan\laporan_keuangan_detail_controller@print_pdf_neraca',
-  'as'   => 'neraca.pdf'
+  'as'   => 'neraca_detail.pdf'
 ]);
 
 Route::get('master_keuangan/neraca-detail/excel/{throtle}', [
   'uses' => 'master_keuangan\laporan_keuangan_detail_controller@print_excel_neraca',
-  'as'   => 'neraca.excel'
+  'as'   => 'neraca_detail.excel'
 ]);
 
 //endneraca_detail
