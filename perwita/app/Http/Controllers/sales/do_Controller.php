@@ -83,6 +83,7 @@ class do_Controller extends Controller
     public function save_data(Request $request)
     {
         return DB::transaction(function () use ($request) {
+            dd( $request->acc_penjualan);
             $simpan = '';
             $crud = $request->crud_h;
             $kota_asal = $request->cb_kota_asal;
@@ -161,7 +162,7 @@ class do_Controller extends Controller
                     $tanggal = date_create($tanggal);
                     $tanggal = date_format($tanggal, 'ym');
                     $sql = "	SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
-                            FROM delivery_order WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' AND jenis='PAKET' 
+                            FROM delivery_order WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' AND jenis='PAKET'
                             AND nomor LIKE '%PAK" . $kode_cabang . $tanggal . "%' ";
                     $list = collect(\DB::select($sql))->first();
                     if ($list->nomor == '') {
@@ -450,7 +451,7 @@ class do_Controller extends Controller
         $sql = "    SELECT d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
-                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan 
+                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
                     WHERE d.jenis='PAKET'
                     ORDER BY d.tanggal DESC LIMIT 1000 ";
 
@@ -474,7 +475,7 @@ class do_Controller extends Controller
 
             $jurnal_dt = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
                         FROM d_akun a join d_jurnal_dt jd
-                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in
                         (select j.jr_id from d_jurnal j where jr_ref='$nomor')"));
 
         } else {
@@ -526,11 +527,11 @@ class do_Controller extends Controller
             $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'  ";
             $data = collect(DB::select($sql));
 
-            if ($jenis == 'EXPRESS'){                
+            if ($jenis == 'EXPRESS'){
                 $sql_biaya_penerus = "SELECT tarif_express as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             } else if ($jenis == 'REGULER'){
-                
+
                 $sql_biaya_penerus = "SELECT tarif_reguler as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
@@ -540,17 +541,16 @@ class do_Controller extends Controller
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
 
-            $jumlah_data = $data->count();
-            if ($jumlah_data > 0) {
+            if (count($biaya_penerus) > 0) {
                 $harga = collect(\DB::select($sql))->first();
                 $result['biaya_penerus'] = $biaya_penerus->harga;
                 $result['harga'] = $harga->harga;
-                $result['jumlah_data'] = $jumlah_data;
+                $result['jumlah_data'] = count($biaya_penerus);
                 $result['acc_penjualan'] = $data[0]->acc_penjualan;
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus->harga,
                     'harga' => $harga->harga,
-                    'jumlah_data' => $jumlah_data,
+                    'jumlah_data' => count($biaya_penerus),
                     'acc_penjualan' => $data[0]->acc_penjualan
                 ]);
             }
@@ -720,9 +720,39 @@ class do_Controller extends Controller
         }
 //============== End Kilogram =========================
         elseif ($tipe == 'KOLI'){
+            //dd($request);
             $berat = $request->berat;
             $tarif = null;
             $biaya_penerus = null;
+            if ($berat < 10){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', DB::raw('(harga * '.$berat.') as harga'))
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kertas / Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->select('tarif_10express_kilo as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->select('tarif_10reguler_kilo as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->get();
+                }
+
+            } elseif ($berat < 20){
+
+            } elseif ($berat < 30){
+
+            } elseif ($berat > 30){
+
+            }
         }
     }
 
