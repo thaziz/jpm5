@@ -1213,10 +1213,18 @@ public function cari_do_edit_invoice(request $request)
 
 public function hapus_invoice(request $request)
 {
+  return DB::transaction(function() use ($request) {  
     $hapus = DB::table('invoice')
                ->where('i_nomor',$request->id)
                ->delete();
+
+
+    $jurnal=d_jurnal::where('jr_ref', $request->id)->where('jr_note','INVOICE');
+        if(count($jurnal->first())!=0){
+              $jurnal->delete();
+        }
     return 'berhasil';
+  });
 }
 
 public function update_invoice(request $request)

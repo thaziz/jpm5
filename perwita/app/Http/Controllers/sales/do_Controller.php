@@ -83,7 +83,6 @@ class do_Controller extends Controller
     public function save_data(Request $request)
     {
         return DB::transaction(function () use ($request) {
-            dd( $request->acc_penjualan);
             $simpan = '';
             $crud = $request->crud_h;
             $kota_asal = $request->cb_kota_asal;
@@ -726,34 +725,110 @@ class do_Controller extends Controller
             $biaya_penerus = null;
             if ($berat < 10){
                 $tarif = DB::table('tarif_cabang_koli')
-                    ->select('acc_penjualan', DB::raw('(harga * '.$berat.') as harga'))
+                    ->select('acc_penjualan', 'harga')
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
-                    ->where('keterangan', '=', 'Tarif Kertas / Kg')
+                    ->where('keterangan', '=', 'Tarif Koli < 10 Kg')
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
 
                 if ($jenis == 'EXPRESS'){
-                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
                         ->select('tarif_10express_kilo as tarif_penerus')
-                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kota_koli', '=', $tujuan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
-                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
-                        ->select('tarif_10reguler_kilo as tarif_penerus')
-                        ->where('id_kota_kilo', '=', $tujuan)
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->select('tarif_10reguler_koli as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
                         ->get();
                 }
-
             } elseif ($berat < 20){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli < 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
 
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->select('tarif_20express_kilo as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->select('tarif_20reguler_koli as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->get();
+                }
             } elseif ($berat < 30){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli < 30 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
 
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->select('tarif_30express_kilo as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->select('tarif_30reguler_koli as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->get();
+                }
             } elseif ($berat > 30){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli > 30 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
 
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->select('tarif_>30express_kilo as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->select('tarif_>30reguler_koli as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->get();
+                }
+            }
+
+            if ($tarif != null) {
+                if (count($biaya_penerus) < 1){
+                    $biaya_penerus = DB::table('tarif_penerus_default')
+                        ->select('harga as tarif_penerus')
+                        ->where('jenis', '=', $jenis)
+                        ->get();
+                }
+                return response()->json([
+                    'biaya_penerus' => $biaya_penerus[0]->tarif_penerus,
+                    'harga' => $tarif[0]->harga,
+                    'acc_penjualan' => $tarif[0]->acc_penjualan
+                ]);
+            }
+            else{
+                return response()->json([
+                    'status' => 'kosong'
+                ]);
             }
         }
+//======================= End Koli ================================
     }
 
     public function cetak_nota($nomor = null)
