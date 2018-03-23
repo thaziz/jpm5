@@ -647,7 +647,7 @@ class penerimaan_penjualan_Controller extends Controller
         $akun = DB::table('d_akun')
                   ->where('kode_cabang',$request->cabang)
                   ->get();
-        return view('sales.penerimaan_penjualan.akun_all',compact('akun'));
+        return view('sales.penerimaan_penjualan.akun_biaya',compact('akun'));
     }
     public function cari_invoice(request $request)
     {   
@@ -758,6 +758,10 @@ class penerimaan_penjualan_Controller extends Controller
             $data->debet = 'KREDIT';
         }
         return response()->json(['data'=>$data]);  
+    }
+    public function simpan_kwitansi(request $request)
+    {
+        dd($request->all());
     }
 
 }
