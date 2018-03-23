@@ -742,7 +742,7 @@
       function(){
             var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
             var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
-               alert(accPiutang);
+               // alert(accPiutang);
            $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

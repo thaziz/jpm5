@@ -69,7 +69,7 @@
                 </form>
                 <form id="form_header" class="form-horizontal">
                     <div class="col-sm-6">
-                    <table class="table table-striped table-bordered table-hover">
+                    <table class="table table-striped table-bordered table-hover tabel_header">
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="20">
@@ -100,19 +100,19 @@
                             <tr>
                                 <td style="padding-top: 0.4cm">Akun</td>
                                 <td colspan="3">
-                                    <select class="form-control chosen-select-width" name="cb_akun_h" >
-                                        <option value="1000001">Pilih - Akun</option>
+                                    <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
+                                        <option value="0">Pilih - Akun</option>
                                         @foreach($akun as $val)
                                         <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
                                         @endforeach
                                     </select>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="customer_tr">
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td >
                                     <select class="chosen-select-width"  name="cb_customer" id="cb_customer" style="width:100%" >
-                                        <option></option>
+                                        <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                         <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                     @endforeach
@@ -146,11 +146,11 @@
                         </table>
                         </div>
                         <div class="col-sm-6">
-                        <table class="table table-striped table-bordered table-hover">
+                        <table class="table table-striped table-bordered table-hover table_rincian">
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Total Bayar</td>
                                 <td colspan="3">
-                                    <input type="text" name="jumlah_bayar" class="form-control total_jumlah_bayar_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
+                                    <input type="text"  class="form-control total_jumlah_bayar_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
 
                                     <input type="hidden" name="jumlah_bayar" class="form-control total_jumlah_bayar" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
                                 </td>
@@ -159,19 +159,22 @@
                             <tr>
                                   <td style="width:120px; padding-top: 0.4cm">Total Debet (+)</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_debet" class="form-control ed_debet" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text"  class="form-control ed_debet_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="hidden" name="ed_debet" class="form-control ed_debet" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
                                 </td>
                             </tr>
                             <tr>
                                  <td style="width:120px; padding-top: 0.4cm">Total Kredit (-)</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_kredit" class="form-control ed_kredit" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text"  class="form-control ed_kredit_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="hidden" name="ed_kredit"  class="form-control ed_kredit" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Netto</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_netto" class="form-control ed_netto" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text"  class="form-control ed_netto_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="hidden" name="ed_netto" class="form-control ed_netto" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
                                 </td>
                             </tr>
                     </table>
@@ -202,6 +205,7 @@
                                             <tr>
                                                 <th>Nomor Invoice</th>
                                                 <th>Total Netto</th>
+                                                <th>Sisa Bayar</th>
                                                 <th>Jumlah Bayar</th>
                                                 <th>Keterangan</th>
                                                 <th>Aksi</th>
@@ -217,7 +221,7 @@
                                     <table id="table_data_biaya" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
-                                                <th>Nomor</th>
+                                                <th>No</th>
                                                 <th>Nama Biaya</th>
                                                 <th>Jenis</th>
                                                 <th>Jumlah</th>
@@ -419,7 +423,7 @@
                                     <tr>
                                         <td class="kecil">Nomor</td>
                                         <td colspan="2">
-                                            <input type="text" readonly="" name="" class="m_sequence form-control">
+                                            <input type="text" readonly="" name="" class="m_sequence form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>
@@ -431,31 +435,32 @@
                                     <tr>
                                         <td class="kecil">DEBET/KREDIT</td>
                                         <td colspan="2">
-                                            <input type="text" readonly="" class="m_debet form-control">
+                                            <input type="text" readonly="" class="m_debet form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="kecil">Kode ACC</td>
                                         <td colspan="2" >
-                                            <input type="text" readonly="" class="m_acc form-control">
+                                            <input type="text" readonly="" class="m_acc form-control input-sm">
+                                            <input type="hidden" readonly="" class="m_nama_akun form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="kecil">Kode CSF</td>
                                         <td colspan="2">
-                                            <input type="text" readonly="" class="m_csf form-control">
+                                            <input type="text" readonly="" class="m_csf form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="kecil">Jumlah</td>
                                         <td colspan="2">
-                                            <input style="text-align: right" type="text"  class="m_jumlah form-control">
+                                            <input style="text-align: right" type="text"  class="m_jumlah form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td class="kecil">Keterangan</td>
                                         <td colspan="2">
-                                            <input type="text"  class="m_keterangan form-control">
+                                            <input type="text"  class="m_keterangan form-control input-sm">
                                         </td>
                                     </tr>
                                 </table>
@@ -467,7 +472,68 @@
                         </div>
                     </div>
                 </div>
+                {{-- modal2 --}}
+                <div id="modal_edit_biaya" class="modal" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Edit Insert Biaya</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-bordered table-striped">
+                                    <tr>
+                                        <td class="kecil">Nomor</td>
+                                        <td colspan="2">
+                                            <input type="text" readonly="" name="" class="me_nomor form-control input-sm">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Kode Biaya</td>
+                                        <td colspan="2" class="akun_lain_td">
 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">DEBET/KREDIT</td>
+                                        <td colspan="2">
+                                            <input type="text" readonly="" class="me_debet form-control input-sm">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Kode ACC</td>
+                                        <td colspan="2" >
+                                            <input type="text" readonly="" class="me_acc form-control input-sm">
+                                            <input type="hidden" readonly="" class="me_nama_akun form-control input-sm">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Kode CSF</td>
+                                        <td colspan="2">
+                                            <input type="text" readonly="" class="me_csf form-control input-sm">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Jumlah</td>
+                                        <td colspan="2">
+                                            <input style="text-align: right" type="text"  class="me_jumlah form-control input-sm">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="kecil">Keterangan</td>
+                                        <td colspan="2">
+                                            <input type="text"  class="me_keterangan form-control input-sm">
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="update_biaya">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                   <!-- modal -->  
 
                 <div class="box-footer">
@@ -536,6 +602,10 @@ var table_data = $('#table_data').DataTable({
                          className: 'right'
                       },
                       {
+                         targets: 5,
+                         className: 'center'
+                      },
+                      {
                          targets: 4,
                          className: 'center'
                       }
@@ -547,16 +617,24 @@ var table_data_biaya = $('#table_data_biaya').DataTable({
                     searching:false,
                     columnDefs: [
                       {
-                         targets: 1 ,
-                         className: 'right'
-                      },
-                      {
-                         targets: 2,
-                         className: 'right'
-                      },
-                      {
-                         targets: 4,
+                         targets: 0 ,
                          className: 'center'
+                      },
+                      {
+                         targets: 1 ,
+                         className: 'left'
+                      },
+                      {
+                         targets: 3,
+                         className: 'right'
+                      },
+                      {
+                         targets: 5,
+                         className: 'center'
+                      },
+                      {
+                         targets: 3,
+                         className: 'left'
                       }
                     ],
                     
@@ -616,6 +694,7 @@ $(document).ready(function(){
     $('.angka').maskMoney({precision:0,thousands:'.'});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.'});
     $('.m_jumlah').maskMoney({precision:0,thousands:'.'});
+    $('.me_jumlah').maskMoney({precision:0,thousands:'.'});
 });
 // check all
 
@@ -623,6 +702,14 @@ $(document).ready(function(){
 
 // tambah invoice
 $('.tambah_invoice').click(function(){
+    if ($('#cb_akun_h').val() == '0') {
+        toastr.warning('Akun Harus Dipilih')
+        return 1
+    }
+    if ($('#cb_customer').val() == '0') {
+        toastr.warning('Customer Harus Dipilih')
+        return 1
+    }
     var cb_cabang = $('.cb_cabang').val();
     var cb_customer = $('#cb_customer').val();
 
@@ -667,6 +754,7 @@ $('#btnsave').click(function(){
                 table_data.row.add([
                         '<a onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
                         accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
+                        accounting.formatMoney(response.data[i].i_sisa_pelunasan, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_pelunasan+'">',
                         '<input type="text" readonly class="form-control i_bayar_text input-sm" value="0">'+
                         '<input type="hidden" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_biaya_admin input-sm" name="i_biaya_admin[]" value="0">'+
@@ -676,6 +764,7 @@ $('#btnsave').click(function(){
                     ]).draw();
 
                 $('#modal_invoice').modal('hide');
+                $('.customer_tr').addClass('disabled');
             }     
 
             $('.i_bayar').blur(function(){
@@ -696,7 +785,7 @@ $('#btnsave').click(function(){
 function hitung() {
     var angka         = $('.angka').val();
     var biaya_admin   = $('.jumlah_biaya_admin').val();
-    var sisa_terbayar = Math.round($('.sisa_terbayar').val()).toFixed(2);
+    var sisa_terbayar = $('.sisa_terbayar').val();
     sisa_terbayar     = parseFloat(sisa_terbayar);
     angka             = angka.replace(/[^0-9\-]+/g,"");
     biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
@@ -760,7 +849,7 @@ function histori(p){
                     $('.ed_jumlah_tagihan').val(accounting.formatMoney(i_tagihan,"",2,'.',','));
                     $('.jumlah_tagihan').val(i_tagihan);
 
-                    var jumlah_tagihan = Math.round($('.jumlah_tagihan').val()).toFixed(2);
+                    var jumlah_tagihan = $('.jumlah_tagihan').val();
                     jumlah_tagihan     = parseFloat(jumlah_tagihan);
                     var terbayar       = Math.round($('.terbayar').val()).toFixed(2)
                     terbayar           = parseFloat(terbayar);
@@ -801,10 +890,11 @@ function histori(p){
  
 //hapus detail
 function hapus_detail(o) {
-    var par = $(o).parents('tr');
-    var arr = $(par).find('.i_nomor')
+    var par = o.parentNode.parentNode;
+    var arr = $(par).find('.i_nomor').val();
     var index = array_simpan.indexOf(arr);
     array_simpan.splice(index,1);
+
     table_data.row(par).remove().draw(false);
 }
 
@@ -815,20 +905,24 @@ function hitung_bayar() {
         total_bayar = parseFloat(total_bayar);
 
     var ed_debet = Math.round($('.ed_debet').val()).toFixed(2);
-        ed_debet = parseFloat(ed_debet);
+        ed_debet = parseInt(ed_debet);
 
     var ed_kredit = Math.round($('.ed_kredit').val()).toFixed(2);
-        ed_kredit = parseFloat(ed_kredit);
+        ed_kredit = parseInt(ed_kredit);
 
     var total     = total_bayar + ed_debet - ed_kredit;
+    if (total < 0) {
+        total = 0;
+    }
     $('.ed_netto').val(total);
+    $('.ed_netto_text').val(accounting.formatMoney(total,"",2,'.',','));
     
 }
 
 // simpan perubahan
 $('#btnsave2').click(function(){
     var jumlah_bayar         = $('.jumlah_bayar').val();
-    var biaya_admin          = $('.biaya_admin').val();
+    var akun_biaya          = $('.akun_biaya').val();
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
     jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
@@ -837,7 +931,7 @@ $('#btnsave2').click(function(){
     $(par).find('.i_bayar_text').val(accounting.formatMoney(jumlah_bayar,"",2,'.',','));
     $(par).find('.i_bayar').val(jumlah_bayar);
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
-    $(par).find('.akun_biaya ').val(biaya_admin);
+    $(par).find('.akun_biaya ').val(akun_biaya);
     var temp = 0;
     $('.i_bayar').each(function(){
         var i_bayar = Math.round($(this).val()).toFixed(2);
@@ -846,6 +940,7 @@ $('#btnsave2').click(function(){
     })
     $('.total_jumlah_bayar').val(temp);
     $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    hitung_bayar();
     $('#modal_info').modal('hide');
 
 })
@@ -857,16 +952,178 @@ $('#btnadd_biaya').click(function(){
 })
 
 // save biaya lain
-$('#btnsave').click(function(){
-    
-        table_data_biaya.row.add([
-                '<>'+''
-            ]).draw();
+$('#btnsave3').click(function(){
+    var seq          = $('.m_sequence').val();
+    var akun_lain    = $('.akun_lain').val();
+    var m_acc        = $('.m_acc').val();
+    var m_csf        = $('.m_csf').val();
+    var m_debet      = $('.m_debet').val();
+    var m_jumlah     = $('.m_jumlah ').val();
+    m_jumlah         = m_jumlah.replace(/[^0-9\-]+/g,"");
+    var m_keterangan = $('.m_keterangan ').val();
+    var m_nama_akun  = $('.m_nama_akun').val();
+    var debet        = 0;
+    var kredit       = 0;
+    if (m_debet == 'DEBET') {
+        debet  = m_jumlah;
+        kredit = 0;
+    }else{
+        debet  = 0;
+        kredit = m_jumlah;
+    }
+
+    table_data_biaya.row.add([
+            '<p class="b_seq_text">'+seq+'</p>'+'<input type="hidden" class="b_flag_'+seq+'">',
+            '<p class="b_nama_akun_text">'+m_nama_akun+'</p>'+'<input type="hidden" class="b_kode_akun" value="'+m_acc+'" name="b_akun[]">',
+            '<p class="b_debet_text">'+m_debet+'</p>',
+            '<p class="b_jumlah_text">'+accounting.formatMoney(m_jumlah,"",2,'.',',')+'</p>'+
+            '<input type="hidden" class="b_jumlah" value="'+m_jumlah+'" name="b_jumlah[]">'+
+            '<input type="hidden" class="b_debet" value="'+debet+'" name="b_debet[]">'+
+            '<input type="hidden" class="b_kredit" value="'+kredit+'" name="b_kredit[]">',
+            '<p class="b_keterangan_text">'+m_keterangan+'</p>'+
+            '<input type="hidden" class="b_keterangan" value="'+m_keterangan+'" name="b_keterangan[]">',
+            '<button type="button" onclick="hapus_detail_biaya(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+            '<label class="fa fa-trash"><label></button>'+
+            '<button type="button" onclick="edit_detail_biaya(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
+            '<label class="fa fa-pencil"><label></button>'
+
+        ]).draw();
+    var temp = 0;    
+    var temp1 = 0; 
+
+    $('.b_debet').each(function(){
+        var deb = parseInt($(this).val());
+        temp += deb;
+    })  
+    $('.b_kredit').each(function(){
+        var deb = parseInt($(this).val());
+        temp1 += deb;
+    })  
+
+    $('.ed_debet').val(temp);
+    $('.ed_kredit').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    $('.m_acc').val('');
+    $('.m_csf').val('');
+    $('.m_debet').val('');
+    $('.m_jumlah ').val('');
+    $('.m_keterangan ').val('');
+    $('.m_nama_akun').val('');
+
+    hitung_bayar();
 
         $('#modal_biaya').modal('hide');
     count+=1;  
 });
+// hapus detail biaya
+function hapus_detail_biaya(p) {
+    var par = p.parentNode.parentNode;
+    table_data_biaya.row(par).remove().draw(false);
+    hitung_bayar();
+}
 
+function edit_detail_biaya(p) {
+    var par = p.parentNode.parentNode;
+    var b_seq = $('.b_seq_text').text();
+    var b_kode_akun = $('.b_kode_akun').val();
+    var b_debet_text = $('.b_debet_text').text();
+    var b_nama_akun_text = $('.b_nama_akun_text').text();
+    var b_jumlah = $('.b_jumlah').val();
+    var b_keterangan = $('.b_keterangan').val();
+
+
+    $('.me_nomor ').val(b_seq);
+    $('.akun_lain').val(b_kode_akun).trigger('chosen:updated');
+    $('.me_debet').val(b_debet_text);
+    $('.me_acc').val(b_kode_akun);
+    $('.me_csf').val(b_kode_akun);
+    $('.m_nama_akun').val(b_nama_akun_text);
+    $('.me_jumlah').val(b_jumlah);
+    $('.me_keterangan').val(b_keterangan);
+    $('#modal_edit_biaya').modal('show');
+}
+
+$('#update_biaya').click(function(){
+    var me_nomor = $('.me_nomor').val();
+    var par = $('.b_flag_'+me_nomor).parents('tr');
+    var akun_lain = $('.akun_lain').val();
+    var me_debet = $('.me_debet').val();
+    var me_acc = $('.me_acc').val();
+    var me_jumlah = $('.me_jumlah').val();
+    me_jumlah     = me_jumlah.replace(/[^0-9\-]+/g,"");
+
+    var me_keterangan = $('.me_keterangan').val();
+    var m_nama_akun = $('.m_nama_akun').val();
+    var debet        = 0;
+    var kredit       = 0;
+    console.log(par);
+    console.log(me_nomor);
+    $(par).find('.b_nama_akun_text').text(m_nama_akun);
+    $(par).find('.b_kode_akun').val(me_acc);
+    $(par).find('.b_debet_text').text(me_debet);
+    $(par).find('.b_debet_text').text(me_debet);
+    if (me_debet == 'DEBET') {
+        debet  = me_jumlah;
+        kredit = 0;
+    }else{
+        debet  = 0;
+        kredit = me_jumlah;
+    }
+    $(par).find('.b_jumlah_text').text(accounting.formatMoney(me_jumlah,"",2,'.',','));
+    $(par).find('.b_jumlah').val(me_jumlah);
+    $(par).find('.b_debet').val(debet);
+    $(par).find('.b_kredit').val(kredit);
+    $(par).find('.b_keterangan').val(me_keterangan);
+
+
+    $('#modal_edit_biaya').modal('hide');
+})
+// simpan
+$('#btnsimpan').click(function(){
+    swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data Kwitansi!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+
+               // alert(accPiutang);
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+          $.ajax({
+          url:baseUrl + '/sales/simpan_kwitansi',
+          type:'get',
+          dataType:'json',
+          data:$('.tabel_header :input').serialize()
+               +'&'+table_data.$('input').serialize()
+               +'&'+table_data_biaya.$('input').serialize()
+               +'&'+$('.table_rincian :input').serialize(),
+          success:function(response){
+          
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
+        });
+       }
+      });  
+     });
+})
 </script>
 
 @endsection

@@ -100,7 +100,7 @@
                                 </tr>
                                <tr>
                                    <td style="padding-top: 0.4cm">Tipe Kiriman</td>
-                                    <td><input type="text" name="ed_tipe" value="KILOGRAM" readonly="" class="form-control"></td>
+                                    <td><input type="text" name="ed_tipe" value="KOLI" readonly="" class="form-control"></td>
                                </tr>
                                <tr>
                                    <td style="padding-top: 0.4cm"> Provinsi </td>
@@ -294,19 +294,19 @@
               "type": "GET"
             },
             "columns": [
-            { "data": "id_tarif_kilogram", },
+            { "data": "id_tarif_koli", },
             // { "data": "provinsi_nama", },
             { "data": "kota_nama" },
             { "data": "kecamatan_nama" },  
-            { "data": "type_kilo" },  
-            { "data": "tarif_10reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_10express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_20reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_20express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
-            { "data": "tarif_30reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
-            { "data": "tarif_30express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
-            { "data": "tarif_>30reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
-            { "data": "tarif_>30express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "type_koli" },  
+            { "data": "tarif_10reguler_koli", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "tarif_10express_koli", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "tarif_20reguler_koli", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "tarif_20express_koli", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "tarif_30reguler_koli", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "tarif_30express_koli", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "tarif_>30reguler_koli", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "tarif_>30express_koli", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
             { "data": "button" },
             ]
         });
@@ -362,19 +362,19 @@
             {
                 console.log(data);
                 $("input[name='crud']").val('E');
-                $("input[name='ed_kode']").val(data[0].id_tarif_kilogram);
-                $("input[name='ed_kode_old']").val(data[0].id_increment_kilogram);
+                $("input[name='ed_kode']").val(data[0].id_tarif_koligram);
+                $("input[name='ed_kode_old']").val(data[0].id_increment_koligram);
                 
-                $("input[name='ed_10reguler']").val(data[0].tarif_10reguler_kilo);
-                $("input[name='ed_10express']").val(data[0].tarif_10express_kilo);
-                $("input[name='ed_20reguler']").val(data[0].tarif_20reguler_kilo);
-                $("input[name='ed_20express']").val(data[0].tarif_20express_kilo);
+                $("input[name='ed_10reguler']").val(data[0].tarif_10reguler_koli);
+                $("input[name='ed_10express']").val(data[0].tarif_10express_koli);
+                $("input[name='ed_20reguler']").val(data[0].tarif_20reguler_koli);
+                $("input[name='ed_20express']").val(data[0].tarif_20express_koli);
                 
                 $("input[name='ed_kode']").attr('readonly',true);
 
-                $("#provinsi").val(data[0].id_provinsi_kilo).trigger('chosen:updated');
-                $("#kota").val(data[0].id_kota_kilo).trigger('chosen:updated');
-                $("#kecamatan").val(data[0].id_kecamatan_kilo).trigger('chosen:updated');
+                $("#provinsi").val(data[0].id_provinsi_koli).trigger('chosen:updated');
+                $("#kota").val(data[0].id_kota_koli).trigger('chosen:updated');
+                $("#kecamatan").val(data[0].id_kecamatan_koli).trigger('chosen:updated');
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();

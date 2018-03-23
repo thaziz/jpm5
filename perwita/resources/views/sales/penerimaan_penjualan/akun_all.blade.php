@@ -30,6 +30,12 @@ $('.akun_lain').change(function(){
             $('.m_debet').val(response.data.debet);
             $('.m_acc').val(response.data.id_akun);
             $('.m_csf').val(response.data.id_akun);
+            $('.m_nama_akun').val(response.data.nama_akun);
+            
+            $('.me_debet').val(response.data.debet);
+            $('.me_acc').val(response.data.id_akun);
+            $('.me_csf').val(response.data.id_akun);
+            $('.m_nama_akun').val(response.data.nama_akun);
         }
     });
 })

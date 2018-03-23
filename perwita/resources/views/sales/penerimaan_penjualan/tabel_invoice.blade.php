@@ -30,6 +30,7 @@
                 array_simpan.push(temp);
             @endforeach
         @endif
+        console.log(array_simpan);
     $('#table_data_invoice').DataTable({
         processing: true,
         serverSide: true,

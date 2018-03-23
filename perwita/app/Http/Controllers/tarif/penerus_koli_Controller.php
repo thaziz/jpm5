@@ -64,16 +64,16 @@ class penerus_koli_Controller  extends Controller
     }
 
     public function save_data (Request $request) {
-        dd($request);
+        // dd($request);
 
-        $id_incremet = DB::table('tarif_penerus_koli')->select('id_incement_koli')->max('id_incement_koli');    
+        $id_incremet = DB::table('tarif_penerus_koli')->select('id_increment_koli')->max('id_increment_koli');    
         if ($id_incremet == '') {
             $id_incremet = 1;
         }else{
             $id_incremet += 1;
         }
 
-        $kode_id = DB::table('tarif_penerus_koli')->select('id_incement_koli')->max('id_incement_koli');    
+        $kode_id = DB::table('tarif_penerus_koli')->select('id_increment_koli')->max('id_increment_koli');    
         if ($kode_id == '') {
             $kode_id = 1;
         }else{
@@ -97,28 +97,29 @@ class penerus_koli_Controller  extends Controller
         if ($crud == 'N') {
 
            $data = array(
-                'id_increment_koli' => $kodeutama,
+                'id_tarif_koli' => $kodeutama,
                 'id_provinsi_koli'=> $request->ed_provinsi,
                 'id_kota_koli' =>$request->ed_kota,
                 'id_kecamatan_koli'=>$request->ed_kecamatan,
+                
                 'tarif_10reguler_koli'=>$request->ed_10_reguler,
-                'tarif_10express_koli'=>$request->ed_10_reguler,
+                'tarif_10express_koli'=>$request->ed_10_express,
 
                 'tarif_20reguler_koli'=>$request->ed_20_reguler,
-                'tarif_20express_koli'=>$request->ed_20_reguler,
+                'tarif_20express_koli'=>$request->ed_20_express,
 
                 'tarif_30reguler_koli'=>$request->ed_30_reguler,
-                'tarif_30express_koli'=>$request->ed_30_reguler,
+                'tarif_30express_koli'=>$request->ed_30_express,
 
                 'tarif_>30reguler_koli'=>$request->ed_lebih_30_reguler,
-                'tarif_>30express_koli'=>$request->ed_lebih_30_reguler,
+                'tarif_>30express_koli'=>$request->ed_lebih_30_express,
 
                 'type_koli' =>$request->ed_tipe,
 
-                'id_incement_koli'=>$id_incremet,
+                'id_increment_koli'=>$id_incremet,
 
             );
-
+           
             $simpan = DB::table('tarif_penerus_koli')->insert($data);
         }elseif ($crud == 'E') {
             $kode_sama = $request->ed_kode_old;
@@ -137,7 +138,7 @@ class penerus_koli_Controller  extends Controller
                 'tarif_20express_koli'=>$request->ed_20express,
                 'tarif_20reguler_koli'=>$request->ed_20reguler,
                 'type_koli' =>$request->ed_tipe,
-                'id_incement_koli'=>$request->ed_kode_old,
+                'id_increment_koli'=>$request->ed_kode_old,
 
             );
             $simpan = DB::table('tarif_penerus_koli')->where('id_increment_koli', $request->ed_kode)->update($data);
