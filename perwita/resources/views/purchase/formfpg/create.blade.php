@@ -82,7 +82,7 @@
 
                               <tr>
                                 <th> No FPG </th>
-                                <td> <input type='text' class='input-sm form-control nofpg' value="" name="nofpg">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type="hidden" class="valcabang" name="cabang"> </td>
+                                <td> <input type='text' class='input-sm form-control nofpg' value="" name="nofpg" readonly="">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type="hidden" class="valcabang" name="cabang"> </td>
                               </tr>
                               <tr>
                                 <th> Tanggal </th>
