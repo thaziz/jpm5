@@ -541,6 +541,7 @@ class do_Controller extends Controller
             }
 
             $jumlah_data = $data->count();
+            dd($jumlah_data);
             if ($jumlah_data > 0) {
                 $harga = collect(\DB::select($sql))->first();
                 $result['biaya_penerus'] = $biaya_penerus->harga;
