@@ -473,10 +473,16 @@
        netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
        netto_detail     = parseInt(netto_detail)/100;
 
-       diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
-       diskon2          = parseInt(diskon2)/100;
+       if (diskon2 == '') {
+            diskon2 = 0;
+        }
+       // diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
+       diskon2          = parseFloat(diskon2);
+       diskon2          = parseFloat(diskon2);
        hasil_netto      = parseFloat(netto_detail) - parseFloat(diskon2);
-
+       if (hasil_netto < 0) {
+        hasil_netto = 0;
+       }
         if (cb_jenis_ppn == 1) {
 
             var ppn = 0;
@@ -570,7 +576,9 @@
         var temp_diskon  = 0 ;
         var temp_diskon  = 0 ;
         var temp_diskon2 = $('.diskon2').val();
-        temp_diskon2     = temp_diskon2.replace(/[^0-9\.-]+/g,"");
+        if (temp_diskon2 == '') {
+            temp_diskon2 = 0;
+        }
         temp_diskon2     = parseFloat(temp_diskon2)
 
 
@@ -587,6 +595,9 @@
     
         netto = temp_total-(temp_diskon2+temp_diskon);
         netto_diskon1 = temp_total - temp_diskon;
+        if (netto_diskon1 < 0) {
+            netto_diskon1 =0;
+        }
         $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
