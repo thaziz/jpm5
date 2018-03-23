@@ -136,7 +136,7 @@ class cabang_kilogram_Controller extends Controller
                                 'jenis' => 'REGULER',
                                 'id_kota_asal' => $request->cb_kota_asal,
                                 'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                                'kode_cabang' => $request->cb_cabang,
+                                'kode_cabang' => $request->ed_cabang,
                                 'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                                 'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                             );
@@ -169,7 +169,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -202,7 +202,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -235,7 +235,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -268,7 +268,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -301,7 +301,7 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -332,7 +332,7 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -363,7 +363,7 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -394,7 +394,7 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -425,7 +425,7 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -460,7 +460,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -492,7 +492,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -523,7 +523,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );   
@@ -554,7 +554,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -584,7 +584,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -616,7 +616,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -649,7 +649,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -681,7 +681,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );   
@@ -713,7 +713,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -744,7 +744,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -807,7 +807,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -832,7 +832,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -857,7 +857,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );   
@@ -882,7 +882,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -907,7 +907,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -932,7 +932,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -957,7 +957,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -982,7 +982,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );   
@@ -1007,7 +1007,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -1031,7 +1031,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );

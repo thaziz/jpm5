@@ -8,6 +8,12 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+        .modal-dialog {
+    width: 900px;
+    margin: 30px auto;
+}.pad{
+        padding: 10px;
+    }
 </style>
 
 
@@ -61,9 +67,9 @@
                                 <th> < 10 Kg express </th>
                                 <th> < 20 reguler </th>
                                 <th> < 20 express </th>
+                                <th> < 30 reguler </th>
                                 <th> < 30 express </th>
-                                <th> < 30 express </th>
-                                <th> > 30 express </th>
+                                <th> > 30 reguler </th>
                                 <th> > 30 express </th>
                                 <th style="width:50px"> Aksi </th>
                             </tr>
@@ -134,25 +140,58 @@
                                 <input type="hidden" name="kode_kota">
                             </tbody>
                           </table>
-                          <table class="table table-striped table-bordered table-hover ">
-                              <tr>
-                                   <td style="padding-top: 0.4cm"> Tarif >= 10 Reguler</td>
-                                   <td><input type="text" class="form-control" name="ed_10reguler"></td>
-                               </tr>
-                               <tr>
-                                  <td style="padding-top: 0.4cm"> Tarif > 20 Reguler</td>
-                                   <td><input type="text" class="form-control" name="ed_20reguler"></td>
-                              </tr>
-                          </table>
-                          <table class="table table-striped table-bordered table-hover ">
-                              <tr>
-                                   <td style="padding-top: 0.4cm"> Tarif >= 10 Express</td>
-                                   <td><input type="text" class="form-control" name="ed_10express"></td>
-                               </tr>
-                              <tr>
-                                  <td style="padding-top: 0.4cm"> Tarif > 20 Express</td>
-                                   <td><input type="text" class="form-control" name="ed_20express"></td>
-                              </tr>
+                         <table class="table-striped table-bordered" width="48%"> 
+                              <thead>
+                                  <tr >
+                                      <th style="padding: 7px; text-align: center;"  colspan="2">REGULAR</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <input type="hidden" name="id_reguler" id="id_reguler">
+                                  <tr>
+                                      <td class="pad"> < 10 Kg reguler </td>
+                                      <td class="pad"><input type="text" name="ed_10_reguler"></td>
+                                  </tr>
+                                  <tr>
+                                      <td class="pad"> < 20 reguler </td>
+                                      <td class="pad"><input type="text" name="ed_20_reguler"></td>
+                                  </tr>
+                                  <tr>
+                                      <td class="pad"> < 30 reguler </td>
+                                      <td class="pad"><input type="text" name="ed_30_reguler"></td>
+                                  </tr>
+                                  <tr>
+                                      <td class="pad"> > 30 reguler </td>
+                                      <td class="pad"><input type="text" name="ed_lebih_30_reguler"></td>
+                                  </tr>
+                              </tbody>
+                          </table> 
+                          <table class="table-striped table-bordered" style="margin-left: 45%;margin-top: -214px;position: fixed;" width="48%"> 
+                              <thead>
+                                  <tr>
+                                      <th style="padding: 7px; text-align: center;"  colspan="2">EXPRESS</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <input type="hidden" name="id_express" id="id_express">
+
+                                  <tr>
+                                      <td class="pad"> < 10 Kg express </td>
+                                      <td class="pad"><input type="text" name="ed_10_express"></td>
+                                  </tr>
+                                   <tr>
+                                      <td class="pad"> < 20 express </td>
+                                      <td class="pad"><input type="text" name="ed_20_express"></td>
+                                  </tr>
+                                  <tr>
+                                      <td class="pad"> < 30 express </td>
+                                      <td class="pad"><input type="text" name="ed_30_express"></td>
+                                  </tr>
+                                  <tr>
+                                      <td class="pad"> > 30 express </td>
+                                      <td class="pad"><input type="text" name="ed_lebih_30_express"></td>
+                                  </tr>
+                              </tbody>
                           </table>
                         </form>
                       </div>
@@ -194,7 +233,7 @@
         $.ajax({
             type: "GET",
             data : {kota:prov},
-            url : baseUrl + "/sales/tarif_penerus_kilogram/get_kota",
+            url : baseUrl + "/sales/tarif_penerus_koli/get_kota",
             dataType:'json',
             success: function(data)
             {   
@@ -222,7 +261,7 @@
          $.ajax({
             type: "GET",
             data : {kecamatan:kot},
-            url : baseUrl + "/sales/tarif_penerus_kilogram/get_kec",
+            url : baseUrl + "/sales/tarif_penerus_koli/get_kec",
             dataType:'json',
             success: function(data)
             {   
@@ -251,7 +290,7 @@
             "pageLength": 10,
             "retrieve" : true,
             "ajax": {
-              "url" :  baseUrl + "/sales/tarif_penerus_kilogram/tabel",
+              "url" :  baseUrl + "/sales/tarif_penerus_koli/tabel",
               "type": "GET"
             },
             "columns": [
@@ -263,7 +302,11 @@
             { "data": "tarif_10reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "tarif_10express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "tarif_20reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_20express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "tarif_20express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "tarif_30reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "tarif_30express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "tarif_>30reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
+            { "data": "tarif_>30express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },  
             { "data": "button" },
             ]
         });
@@ -311,7 +354,7 @@
         };
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_penerus_kilogram/get_data",
+            url : baseUrl + "/sales/tarif_penerus_koli/get_data",
             type: "GET",
             data : value,
             dataType:'json',
@@ -347,7 +390,7 @@
     $(document).on("click","#btnsave",function(){
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_penerus_kilogram/save_data",
+            url : baseUrl + "/sales/tarif_penerus_koli/save_data",
             type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
@@ -395,7 +438,7 @@
         };
         $.ajax({
             type: "get",
-            url : baseUrl + "/sales/tarif_penerus_kilogram/hapus_data",
+            url : baseUrl + "/sales/tarif_penerus_koli/hapus_data",
             //dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)
