@@ -33,6 +33,14 @@
 
               <div class="box" id="seragam_box">
                 <div class="box-header">
+                @if(count($jurnal_dt)!=0)
+                    <div class="pull-right">
+                         <a onclick="lihatjurnal('{{$data->i_nomor or null}}','INVOICE')" class="btn-xs btn-primary" aria-hidden="true"> 
+                          <i class="fa  fa-eye"> </i>
+                           &nbsp;  Lihat Jurnal  
+                         </a> 
+                    </div>
+                @endif
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
@@ -908,7 +916,19 @@ function hitung_pajak_lain(){
      });
     }
 
-   
+   function lihatjurnal($ref,$note){
+
+          $.ajax({
+          url:baseUrl + '/data/jurnal/'+$ref+'/'+$note,
+          type:'get',
+          
+         
+          success:function(response){
+                $('#data-jurnal').html(response);
+                $('#jurnal').modal('show');
+              }
+        });
+   }
     
 </script>
 @endsection
