@@ -759,7 +759,12 @@
                +'&accPiutang='+accPiutang
                +'&pajak_lain='+pajak_lain,
           success:function(response){
-            
+             if (response.status =='gagal') {
+                
+                    toastr.warning(response.info)
+                
+             }
+
 
             if (response.status == 2) {
                 swal({

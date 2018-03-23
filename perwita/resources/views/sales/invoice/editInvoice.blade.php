@@ -218,15 +218,42 @@
                           @else
                           <tr>
                             <td>{{$i+1}}</td>
-                            <td>{{$val->i_nomor_do}}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>
+                                {{$val->id_nomor_do}}
+                                <input class="nomor_detail" type="hidden" value="{{$val->id_nomor_do}}" name="do_detail[]">
+                            </td>
+                            <td>
+                                {{$val->tanggal}}
+                            </td>
+                            <td>
+                                {{$val->dd_keterangan}}
+                                <input type="hidden" class="acc_penjualan" value="{{$val->dd_keterangan}}" name="akun[]">
+                            </td>
+                            <td>
+                                {{$val->id_jumlah}}
+                                <input type="hidden"  value="{{$val->id_jumlah}}" name="dd_jumlah[]">
+                            </td>
+                            <td>
+                                {{number_format($val->id_harga_satuan, 2, ",", ".")}}
+                                <input type="hidden" class="dd_harga" value="{{$val->id_harga_satuan}}" name="dd_harga[]">
+                            </td>
+                            <td>
+                                {{number_format($val->id_harga_bruto, 2, ",", ".")}}
+                                <input type="hidden" class="dd_total" value="{{$val->id_harga_bruto}}" name="dd_total[]">
+                            </td>
+                            <td>
+                                {{number_format($val->id_diskon, 2, ",", ".")}}
+                                <input class="dd_diskon" type="hidden" value="{{$val->id_diskon}}" name="dd_diskon[]">
+                            </td>
+                            <td>
+                                {{number_format($val->id_harga_netto, 2, ",", ".")}}
+                                <input type="hidden" class="harga_netto" value="{{$val->id_harga_netto}}" name="harga_netto[]">
+                            </td>
+                            <td>
+                                <button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus">
+                                    <label class="fa fa-trash"></label>
+                                </button>
+                            </td>
                           </tr>
                           @endif
                         @endforeach

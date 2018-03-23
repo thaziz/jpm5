@@ -248,7 +248,7 @@
 															<option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
 															<option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
 														</select>
-                                                         <input type="hidden" name="acc_penjualan" class="form-control"  value="{{ $do->acc_penjualan or null }}">
+                                                         <input type="" name="acc_penjualan" class="form-control"  value="{{ $do->acc_penjualan or null }}">
 													</td>
 													<td style="width:35%">
                                                         <input type="text" class="form-control jml_ppn" name="ed_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->biaya_komisi, 0, ",", ".") }}" @endif>
@@ -1032,7 +1032,7 @@
                 } else {
                     var harga = convertToRupiah(parseInt(data.harga));
                     var biaya = convertToRupiah(parseInt(data.biaya_penerus));
-                    var acc_penjualan = convertToRupiah(parseInt(data.acc_penjualan));
+                    var acc_penjualan = data.acc_penjualan;
                     $("input[name='ed_tarif_dasar']").val(harga);
                     $("input[name='ed_tarif_penerus']").val(biaya);
                     $("input[name='acc_penjualan']").val(acc_penjualan);

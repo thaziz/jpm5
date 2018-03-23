@@ -83,6 +83,7 @@ class do_Controller extends Controller
     public function save_data(Request $request)
     {
         return DB::transaction(function () use ($request) {
+            dd( $request->acc_penjualan);
             $simpan = '';
             $crud = $request->crud_h;
             $kota_asal = $request->cb_kota_asal;
