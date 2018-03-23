@@ -122,7 +122,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_cabang" id="ed_harga" style="text-align: right;">
+                                        <select  class="form-control d" name="ed_cabang" style="text-align: right;">
                                         
                                             <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
                                             @foreach ($cabang_default as $a)
@@ -324,15 +324,54 @@
 
     $(document).on("click","#btn_add",function(){
         $("input[name='crud']").val('N');
+      
+
+        $("input[name='id0']").val('');
+        $("input[name='id1']").val('');
+        $("input[name='id2']").val('');
+        $("input[name='id3']").val('');
+        $("input[name='id4']").val('');
+        $("input[name='id5']").val('');
+        $("input[name='id6']").val('');
+        $("input[name='id7']").val('');
+        //kode
+        $("input[name='kode0']").val('');
+        $("input[name='kode1']").val('');
+        $("input[name='kode2']").val('');
+        $("input[name='kode3']").val('');
+        $("input[name='kode4']").val('');
+        $("input[name='kode5']").val('');
+        $("input[name='kode6']").val('');
+        $("input[name='kode7']").val('');
+        //kode detail
+        //kode sama
+        $('input[name="waktu_regular"]').val('');
+        $('input[name="tarifkertas_reguler"]').val('');
+        $('input[name="tarif0kg_reguler"]').val('');
+        $('input[name="tarif10kg_reguler"]').val('');
+        $('input[name="tarif20kg_reguler"]').val('');
+        //reg
+        $('input[name="waktu_express"]').val('');
+        $('input[name="tarifkertas_express"]').val('');
+        $('input[name="tarif0kg_express"]').val('');
+        $('input[name="tarif10kg_express"]').val('');
+        $('input[name="tarif20kg_express"]').val('');
+        //expre
+        //
+        $("input[name='kode_sama_koli']").val('');
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
+        $("select[name='ed_csf_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='ed_acc_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='ed_cabang']").val('').trigger('chosen:updated');
         $("#modal").modal("show");
     });
 
     $(document).on( "click",".btnedit", function() {
         var id=$(this).attr("id");
+        var tujuan=$(this).data('tujuan');
         var value = {
-            id: id
+            asal: id,tujuan:tujuan
         };
         $.ajax(
         {
@@ -381,6 +420,9 @@
                 $("input[name='kode_sama_koli']").val(data[0].kode_sama_koli);
                 $("select[name='cb_kota_asal']").val(data[0].id_kota_asal).trigger('chosen:updated');
                 $("select[name='cb_kota_tujuan']").val(data[0].id_kota_tujuan).trigger('chosen:updated');
+                $("select[name='ed_csf_penjualan']").val(data[0].csf_penjualan).trigger('chosen:updated');
+                $("select[name='ed_acc_penjualan']").val(data[0].acc_penjualan).trigger('chosen:updated');
+                $("select[name='ed_cabang']").val(data[0].kode_cabang).trigger('chosen:updated');
                 $("#modal").modal('show');
 
             },

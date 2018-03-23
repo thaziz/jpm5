@@ -615,10 +615,10 @@ class do_Controller extends Controller
                     ->where('jenis', '=', $jenis)
                     ->where('id_kota_asal', '=', $asal)
                     ->where('id_kota_tujuan', '=', $tujuan)
-                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
+                    ->where('keterangan', '=', 'Tarif <= 10 Kg')
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
-dd($tarifAwal);
+
                 $tarifAwal = $tarifAwal[0]->harga;
 
                 $tarif = DB::table('tarif_cabang_kilogram')
@@ -717,6 +717,12 @@ dd($tarifAwal);
                     'status' => 'kosong'
                 ]);
             }
+        }
+//============== End Kilogram =========================
+        elseif ($tipe == 'KOLI'){
+            $berat = $request->berat;
+            $tarif = null;
+            $biaya_penerus = null;
         }
     }
 

@@ -139,7 +139,7 @@ class cabang_koli_Controller extends Controller
                 'jenis' => 'REGULER',
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_provinsi_cabkoli' => $request->cb_provinsi_tujuan,
-                'kode_cabang' => $request->cb_cabang,
+                'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
             );
@@ -172,7 +172,7 @@ class cabang_koli_Controller extends Controller
                 'jenis' => 'REGULER',
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_provinsi_cabkoli' => $request->cb_provinsi_tujuan,
-                'kode_cabang' => $request->cb_cabang,
+                'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
             );
@@ -205,7 +205,7 @@ class cabang_koli_Controller extends Controller
                 'jenis' => 'REGULER',
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_provinsi_cabkoli' => $request->cb_provinsi_tujuan,
-                'kode_cabang' => $request->cb_cabang,
+                'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
             );
@@ -237,7 +237,7 @@ class cabang_koli_Controller extends Controller
                 'jenis' => 'REGULER',
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_provinsi_cabkoli' => $request->cb_provinsi_tujuan,
-                'kode_cabang' => $request->cb_cabang,
+                'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
             );
@@ -270,7 +270,7 @@ class cabang_koli_Controller extends Controller
                 'jenis' => 'EXPRESS',
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_provinsi_cabkoli' => $request->cb_provinsi_tujuan,
-                'kode_cabang' => $request->cb_cabang,
+                'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
             );
@@ -302,7 +302,7 @@ class cabang_koli_Controller extends Controller
                 'jenis' => 'EXPRESS',
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_provinsi_cabkoli' => $request->cb_provinsi_tujuan,
-                'kode_cabang' => $request->cb_cabang,
+                'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
             );
@@ -333,7 +333,7 @@ class cabang_koli_Controller extends Controller
                 'jenis' => 'EXPRESS',
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_provinsi_cabkoli' => $request->cb_provinsi_tujuan,
-                'kode_cabang' => $request->cb_cabang,
+                'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
             );
@@ -364,7 +364,7 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkoli' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
+                    'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
@@ -390,6 +390,22 @@ class cabang_koli_Controller extends Controller
                if ($crud == 'N') {
               
               //auto number
+
+                if ($datadetailcount != 0) {
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
+
+                }else if ($datadetailcount == 0){
+                    $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                }
+
                $kertas_reguler = array(
                     'kode' => $kode_reguler,
                     'kode_sama_koli' => $kode_sama,
@@ -401,27 +417,25 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
-               if ($datadetailcount == 0) {
+               if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
+                }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-                }
-                // return $kode_utama;   
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                } 
                
                $tarif0_10reguler = array(
                     'kode' => $kode_reguler,
@@ -434,25 +448,24 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
-               if ($datadetailcount == 0) {
+               if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
+                }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
                 }
                
                $tarif10_20reguler = array(
@@ -466,27 +479,25 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );   
 
-               if ($datadetailcount == 0) {
+               if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
+                }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+                        }
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
                 }
-               
                $tarif20reguler = array(
                     'kode' => $kode_reguler,
                     'kode_sama_koli' => $kode_sama,
@@ -498,28 +509,27 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
             //end auto number REGULAR
 
             // AUTO NUMBER EXPRESS
-               if ($datadetailcount == 0) {
+              if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
+                }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
                 }
 
                 $kertas_express = array(
@@ -533,27 +543,25 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
-               if ($datadetailcount == 0) {
+               if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
+                }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
-                }
-                // return $kode_utama;   
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                } 
                
                $tarif0_10express = array(
                     'kode' => $kode_express,
@@ -566,25 +574,24 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
-               if ($datadetailcount == 0) {
+               if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
+                }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
                 }
                
                $tarif10_20express = array(
@@ -598,25 +605,24 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );   
 
-               if ($datadetailcount == 0) {
+               if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
+                }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
+                     if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;              
                 }
                
                $tarif20express = array(
@@ -630,9 +636,9 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
             // END AUTO EXPRESS
             //simpan DATA REGULER
@@ -646,8 +652,39 @@ class cabang_koli_Controller extends Controller
             $simpan = DB::table('tarif_cabang_koli')->insert($tarif10_20express);
             $simpan = DB::table('tarif_cabang_koli')->insert($tarif20express);
         }elseif ($crud == 'E') {
+
+
+            // dd($request);
+
+            $kode0 = $request->kode0; 
+            $kode1 = $request->kode1; 
+            $kode2 = $request->kode2; 
+            $kode3 = $request->kode3; 
+            $kode4 = $request->kode4; 
+            $kode5 = $request->kode5; 
+            $kode6 = $request->kode6; 
+            $kode7 = $request->kode7;  
+
+            $integer_kode0 =  (int)$kode0;
+            $integer_kode1 =  (int)$kode1;
+            $integer_kode2 =  (int)$kode2;
+            $integer_kode3 =  (int)$kode3;
+            $integer_kode4 =  (int)$kode4;
+            $integer_kode5 =  (int)$kode5;
+            $integer_kode6 =  (int)$kode6;
+            $integer_kode7 =  (int)$kode7;
+
+            if ($integer_kode0 < 10000) {
+                    $integer_kode0 = '0000'.$integer_kode0; 
+                }
+                if ($kodekota == '') {
+                    $kode0_edit = $request->id0;
+                }else{   
+                    $kode0_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_kode0;
+                }
+
             $kertas_reguler = array(
-                    'kode' => $request->id0,
+                    'kode' => $kode0_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode0,
                     'keterangan' => 'Tarif koli < 10 Kg',
@@ -657,30 +694,22 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
-               if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-                }
-                // return $kode_utama;   
+                if ($integer_kode1 < 10000) {
+                    $integer_kode1 = '0000'.$integer_kode1; 
+                } 
+                if ($kodekota == '') {
+                    $kode1_edit = $request->id1;
+                }else{   
+                    $kode1_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_kode1;
+                } 
                
                $tarif0_10reguler = array(
-                    'kode' => $request->id1,
+                    'kode' => $kode1_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode1,
                     'keterangan' => 'Tarif koli < 30 Kg',
@@ -690,29 +719,23 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
-               if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+               
+                if ($integer_kode2 < 10000) {
+                    $integer_kode2 = '0000'.$integer_kode2; 
+                } 
+                if ($kodekota == '') {
+                    $kode2_edit = $request->id2;
+                }else{   
+                    $kode2_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_kode2;
                 }
                
                $tarif10_20reguler = array(
-                    'kode' => $request->id2,
+                    'kode' => $kode2_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode2,
                     'keterangan' => 'Tarif koli < 30 Kg',
@@ -722,29 +745,23 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );   
 
-               if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+               if ($integer_kode3 < 10000) {
+                    $integer_kode3 = '0000'.$integer_kode3; 
+                } 
+                if ($kodekota == '') {
+                    $kode3_edit = $request->id3;
+                }else{   
+                    $kode3_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_kode3;
                 }
                
+               
                $tarif20reguler = array(
-                    'kode' => $request->id3,
+                    'kode' => $kode3_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode3,
                     'keterangan' => 'Tarif koli > 30 Kg',
@@ -754,32 +771,25 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
             //end auto number REGULAR
 
             // AUTO NUMBER EXPRESS
-               if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+               if ($integer_kode4 < 10000) {
+                    $integer_kode4 = '0000'.$integer_kode4; 
+                } 
+                if ($kodekota == '') {
+                    $kode4_edit = $request->id4;
+                }else{   
+                    $kode4_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_kode4;
                 }
 
                 $kertas_express = array(
-                    'kode' => $request->id4,
+                    'kode' => $kode4_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode4,
                     'keterangan' => 'Tarif koli < 10 Kg',
@@ -789,30 +799,23 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
 
-               if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-
+               if ($integer_kode5 < 10000) {
+                    $integer_kode5 = '0000'.$integer_kode5; 
+                } 
+                if ($kodekota == '') {
+                    $kode5_edit = $request->id5;
+                }else{   
+                    $kode5_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_kode5;
                 }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-                }
-                // return $kode_utama;   
+  
                
                $tarif0_10express = array(
-                    'kode' => $request->id5,
+                    'kode' => $kode5_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode5,
                     'keterangan' => 'Tarif koli < 20 Kg',
@@ -822,9 +825,9 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
                // dd($tarif0_10express);
 
@@ -855,9 +858,9 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );   
 
                if ($datadetailcount == 0) {
@@ -887,9 +890,9 @@ class cabang_koli_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->cb_cabang,
-                    'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
-                    'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'kode_cabang' => $request->ed_cabang,
+                    'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
+                    'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                 );
             $simpan = DB::table('tarif_cabang_koli')->where('kode', $request->id0)->update($kertas_reguler);
             $simpan = DB::table('tarif_cabang_koli')->where('kode', $request->id1)->update($tarif0_10reguler);
