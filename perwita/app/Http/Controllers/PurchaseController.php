@@ -5636,7 +5636,7 @@ public function kekata($x) {
 
 	public function getkodeakun(Request $request){
 		$id= $request->id;
-		$data['table'] = DB::select("select * from masterbank,masterbank_dt where mbdt_idmb = mb_id and mb_id = '$id'");
+		$data['table'] = DB::select("select * from masterbank,masterbank_dt where mbdt_idmb = mb_id and mb_id = '$id' order by mbdt_tglstatus desc ");
 
 		return json_encode($data);
 	}
@@ -5647,7 +5647,7 @@ public function kekata($x) {
 
 		for($i = 0; $i < count($mbid); $i++){
 			$mbid2 = $mbid[$i];		
-			$data['mbdt'][] = DB::select("select * from masterbank,masterbank_dt where mbdt_idmb = mb_id and mbdt_id = '$mbid2' ");
+			$data['mbdt'][] = DB::select("select * from masterbank,masterbank_dt where mbdt_idmb = mb_id and mbdt_id = '$mbid2'");
 
 		}
 		return json_encode($data);
@@ -5980,6 +5980,10 @@ public function kekata($x) {
 			}
 			if( $request->jenisbayarbank == 'TFAkun'){
 				$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
+				$formfpg_bank->fpgb_norektujuan = $request->tujuannorekbank[$j];
+				$formfpg_bank->fpgb_nmrekeningtujuan = $request->tujuannamabank[$j];
+				$formfpg_bank->fpgb_banktujuan = $request->tujuanidbank[$j];
+				$formfpg_bank->fpgb_nmbanktujuan = $request->tujuannamabank[$j];
 			}
 			else {
 				$formfpg_bank->fpgb_nocheckbg = $request->noseri[$j];
