@@ -719,6 +719,7 @@ class do_Controller extends Controller
         }
 //============== End Kilogram =========================
         elseif ($tipe == 'KOLI'){
+            dd($request);
             $berat = $request->berat;
             $tarif = null;
             $biaya_penerus = null;
