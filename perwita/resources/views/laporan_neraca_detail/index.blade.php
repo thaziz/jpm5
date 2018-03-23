@@ -73,7 +73,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
       <div class="col-lg-10">
-          <h2> Laporan Neraca </h2>
+          <h2> Laporan Neraca Detail</h2>
           <ol class="breadcrumb">
               <li>
                   <a>Home</a>
@@ -82,7 +82,7 @@
                   <a>Keuangan</a>
               </li>
               <li class="active">
-                  <strong> Laporan Neraca  </strong>
+                  <strong> Laporan Neraca Detail  </strong>
               </li>
 
           </ol>
@@ -158,7 +158,7 @@
             </td>
 
             <td width="14%">
-              <button class="btn btn-primary btn-sm" id="filter-rekap" data-throttle="{{ $throttle }}">Tampilkan Neraca Detail</button>
+              <button class="btn btn-primary btn-sm" id="filter-rekap" data-throttle="{{ $throttle }}">Tampilkan Rekapan Neraca</button>
             </td>
           </tr>
         </table>
@@ -181,7 +181,7 @@
                     @endif
 
                     <div class="ibox-tools">
-                        <a href="{{ route("neraca.pdf", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
+                       {{--  <a href="{{ route("neraca.pdf", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
                           <button class="btn btn-sm btn-primary">
                             <i class="fa fa-file-pdf-o"></i> &nbsp;Cetak PDF
                           </button>
@@ -191,7 +191,7 @@
                           <button class="btn btn-sm btn-primary">
                             <i class="fa fa-file-excel-o"></i> &nbsp;Cetak Excel
                           </button>
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -1388,37 +1388,6 @@
           return false;
         }
 
-        window.location = baseUrl+"/master_keuangan/neraca/"+$("#show").val()+"?m="+$("#bulan1").val()+"&y="+$("#bulan2").val();
-      }else if($("#show").val() == "perbandingan_tahun"){
-        if($("#tahun1").val() == "" || $("#tahun2").val() == ""){
-          alert("tahun 1 Dan tahun 2 Tidak Boleh Kosong");
-          return false;
-        }
-
-        window.location = baseUrl+"/master_keuangan/neraca/"+$("#show").val()+"?m="+$("#tahun1").val()+"&y="+$("#tahun2").val();
-      }else{
-        if($("#show").val() == "bulan" && $("#dateMonth").val() == "---" || $("#show").val() == "bulan" && $("#dateMonth").val() == ""){
-          alert("Pilih Bulan Terlebih Dahulu");
-          return false;
-        }else if($("#dateMonth").val() == "" || $("#dateYear").val() == ""){
-          alert("Bulan dan Tahun Tidak Boleh Kosong");
-          return false;
-        }
-
-        window.location = baseUrl+"/master_keuangan/neraca/"+$("#show").val()+"?m="+$("#dateMonth").val()+"&y="+$("#dateYear").val();
-      }
-      
-    })
-
-    $("#filter-rekap").click(function(evt){
-      evt.stopImmediatePropagation();
-
-      if($("#show").val() == "perbandingan_bulan"){
-        if($("#bulan1").val() == "" || $("#bulan2").val() == ""){
-          alert("Bulan 1 Dan Bulan 2 Tidak Boleh Kosong");
-          return false;
-        }
-
         window.location = baseUrl+"/master_keuangan/neraca-detail/"+$("#show").val()+"?m="+$("#bulan1").val()+"&y="+$("#bulan2").val();
       }else if($("#show").val() == "perbandingan_tahun"){
         if($("#tahun1").val() == "" || $("#tahun2").val() == ""){
@@ -1437,6 +1406,37 @@
         }
 
         window.location = baseUrl+"/master_keuangan/neraca-detail/"+$("#show").val()+"?m="+$("#dateMonth").val()+"&y="+$("#dateYear").val();
+      }
+      
+    })
+
+    $("#filter-rekap").click(function(evt){
+      evt.stopImmediatePropagation();
+
+      if($("#show").val() == "perbandingan_bulan"){
+        if($("#bulan1").val() == "" || $("#bulan2").val() == ""){
+          alert("Bulan 1 Dan Bulan 2 Tidak Boleh Kosong");
+          return false;
+        }
+
+        window.location = baseUrl+"/master_keuangan/neraca/"+$("#show").val()+"?m="+$("#bulan1").val()+"&y="+$("#bulan2").val();
+      }else if($("#show").val() == "perbandingan_tahun"){
+        if($("#tahun1").val() == "" || $("#tahun2").val() == ""){
+          alert("tahun 1 Dan tahun 2 Tidak Boleh Kosong");
+          return false;
+        }
+
+        window.location = baseUrl+"/master_keuangan/neraca/"+$("#show").val()+"?m="+$("#tahun1").val()+"&y="+$("#tahun2").val();
+      }else{
+        if($("#show").val() == "bulan" && $("#dateMonth").val() == "---" || $("#show").val() == "bulan" && $("#dateMonth").val() == ""){
+          alert("Pilih Bulan Terlebih Dahulu");
+          return false;
+        }else if($("#dateMonth").val() == "" || $("#dateYear").val() == ""){
+          alert("Bulan dan Tahun Tidak Boleh Kosong");
+          return false;
+        }
+
+        window.location = baseUrl+"/master_keuangan/neraca/"+$("#show").val()+"?m="+$("#dateMonth").val()+"&y="+$("#dateYear").val();
       }
       
     })

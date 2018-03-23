@@ -34,7 +34,7 @@
                             <td>'.$nama.'</td><td class="text-right" style="display:'.$show.'" id="tot-'.$idx.$akun["id_akun"].'">'.str_replace("-", "", $view).'</td>
                          </tr>';
 
-                $html = $html.get_akun($data_akun, $akun["id_akun"]);
+                $html = $html.get_akun($data_akun, $akun["id_akun"], $idx);
         	}
         }
 

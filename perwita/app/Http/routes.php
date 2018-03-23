@@ -1150,6 +1150,25 @@ Route::get('master_keuangan/neraca/excel/{throtle}', [
 
 //endneraca
 
+//neraca_detail
+
+Route::get('master_keuangan/neraca-detail/{throtle}', [
+  'uses' => 'master_keuangan\laporan_keuangan_detail_controller@index_neraca',
+  'as'   => 'neraca.index'
+]);
+
+Route::get('master_keuangan/neraca-detail/print/{throtle}', [
+  'uses' => 'master_keuangan\laporan_keuangan_detail_controller@print_pdf_neraca',
+  'as'   => 'neraca.pdf'
+]);
+
+Route::get('master_keuangan/neraca-detail/excel/{throtle}', [
+  'uses' => 'master_keuangan\laporan_keuangan_detail_controller@print_excel_neraca',
+  'as'   => 'neraca.excel'
+]);
+
+//endneraca_detail
+
 //laba rugi
 
 Route::get('master_keuangan/laba_rugi/{throttle}', [
