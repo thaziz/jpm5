@@ -763,43 +763,93 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function simpan_kwitansi(request $request)
     {
+        dd($request->all());
 
+  //       "nota" => "KWT001031800001"
+  // "_token" => "HudTTW8lLdn0A3PICJCncwKkw7XN9pbjC04XjBLR"
+  // "ed_tanggal" => "23/03/2018"
+  // "cb_jenis_pembayaran" => "T"
+  // "ed_jenis_pembayaran" => ""
+  // "cb_akun_h" => "100111001"
+  // "cb_customer" => "CS/EM/0019"
+  // "ed_customer" => ""
+  // "cb_cabang" => "001"
+  // "ed_cabang" => ""
+  // "ed_keterangan" => ""
+  // "i_nomor" => array:1 [▶]
+  // "i_tagihan" => array:1 [▶]
+  // "i_sisa" => array:1 [▶]
+  // "i_bayar" => array:1 [▶]
+  // "i_biaya_admin" => array:1 [▶]
+  // "akun_biaya" => array:1 [▶]
+  // "i_keterangan" => array:1 [▶]
+  // "b_akun" => array:1 [▶]
+  // "b_jumlah" => array:1 [▶]
+  // "b_debet" => array:1 [▶]
+  // "b_kredit" => array:1 [▶]
+  // "b_keterangan" => array:1 [▶]
+  // "jumlah_bayar" => "10000000"
+  // "ed_debet" => "105009"
+  // "ed_kredit" => "0"
+  // "ed_netto" => "10105009"
 
-        "nota" => "KWT001031800001"
-  "_token" => "HudTTW8lLdn0A3PICJCncwKkw7XN9pbjC04XjBLR"
-  "ed_tanggal" => "23/03/2018"
-  "cb_jenis_pembayaran" => "T"
-  "ed_jenis_pembayaran" => ""
-  "cb_akun_h" => "100111001"
-  "cb_customer" => "CS/EM/0019"
-  "ed_customer" => ""
-  "cb_cabang" => "001"
-  "ed_cabang" => ""
-  "ed_keterangan" => ""
-  "i_nomor" => array:1 [▶]
-  "i_tagihan" => array:1 [▶]
-  "i_sisa" => array:1 [▶]
-  "i_bayar" => array:1 [▶]
-  "i_biaya_admin" => array:1 [▶]
-  "akun_biaya" => array:1 [▶]
-  "i_keterangan" => array:1 [▶]
-  "b_akun" => array:1 [▶]
-  "b_jumlah" => array:1 [▶]
-  "b_debet" => array:1 [▶]
-  "b_kredit" => array:1 [▶]
-  "b_keterangan" => array:1 [▶]
-  "jumlah_bayar" => "10000000"
-  "ed_debet" => "105009"
-  "ed_kredit" => "0"
-  "ed_netto" => "10105009"
+        $tgl = str_replace('/', '-', $request->ed_tanggal);
+        $tgl = Carbon::parse($tgl)->format('Y-m-d');
+
         $cari_kwitansi = DB::table('kwitansi')
                            ->where('k_nomor',$request->nota)
                            ->first();
         if ($cari_kwitansi == null) {
+            $k_id = DB::table('kwitansi')
+                           ->max('k_id');
+            if ($k_id == null) {
+                $k_id = 1;
+            }else{
+                $k_id += 1;
+            }
             $save_kwitansi = DB::table('kwitansi')
                                ->insert([
-                                ' '
-                               ])
+                                'k_id' => $k_id,
+                                'k_nomor' => $request->nota,
+                                'k_tanggal'=> $tgl,
+                                'k_kode_customer' => $request->cb_customer,
+                                // 'k_kode_akun_kredit' =>,
+                                // 'k_kode_akun_debet' =>,
+                                'k_jumlah' => $request->jumlah_bayar,
+                                // 'k_terpakai' => ,
+                                // 'k_habis_terpakai'=>,
+                                'k_keterangan' => $request->ed_keterangan,
+                                'k_create_by' => Auth::user()->m_username,
+                                'k_update_by' => Auth::user()->m_username,
+                                'k_create_at' => Carbon::now(),
+                                'k_update_at' => Carbon::now(),
+                                'k_kode_cabang' => $request->cb_cabang,
+                                'k_jenis_pembayaran' => $request->cb_jenis_pembayaran,
+                                // 'k_nomor_posting' => ,
+                                // 'k_tgl_posting' =>,
+                                // 'k_posting' =>,
+                                'k_kredit' => $request->ed_debet,
+                                'k_debet' => $request->ed_kredit,
+                                'k_netto' => $request->ed_netto,
+                                'k_kode_akun'=> $request->cb_akun_h
+                               ]);
+            for ($i=0; $i < count($request->i_nomor); $i++) { 
+                $cari_invoice = DB::table('invoice')
+                                  ->where('i_nomor',$request->i_nomor[$i])
+                                  ->first();
+
+                $save_detail = DB::table('kwitansi_d')
+                                 ->insert([
+                                      'kd_id'            => $k_id,
+                                      'kd_dt'            => $i+1,
+                                      'kd_k_nomor'       => $request->nota,
+                                      'kd_nomor_invoice' => $request->i_nomor[$i],
+                                      'kd_keterangan'    => $request->i_keterangan[$i],
+                                      'kd_kode_biaya'    => $request->akun_biaya[$i],
+                                      'kd_jenis'         => $requ,
+                                      'kd_total_bayar'   => $request->i_bayar,
+                                 ])
+            }
         }
     }
 
