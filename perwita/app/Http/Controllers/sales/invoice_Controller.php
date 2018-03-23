@@ -1076,7 +1076,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_nomor_do_dt'   => $request->do_id[$i]
                                           ]);
              }
-dd('d');
+
              return response()->json(['status' => 2,'nota'=>$nota]);
         }
     }
