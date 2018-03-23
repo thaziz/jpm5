@@ -664,12 +664,14 @@ class penerimaan_penjualan_Controller extends Controller
         $temp  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
+                  ->where('i_sisa_pelunasan','!=',0)
                   ->where('i_kode_cabang',$request->cabang)
                   ->get();
 
         $temp1 = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
+                  ->where('i_sisa_pelunasan','!=',0)
                   ->where('i_kode_cabang',$request->cabang)
                   ->get();
 
@@ -761,7 +763,44 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function simpan_kwitansi(request $request)
     {
-        dd($request->all());
+
+
+        "nota" => "KWT001031800001"
+  "_token" => "HudTTW8lLdn0A3PICJCncwKkw7XN9pbjC04XjBLR"
+  "ed_tanggal" => "23/03/2018"
+  "cb_jenis_pembayaran" => "T"
+  "ed_jenis_pembayaran" => ""
+  "cb_akun_h" => "100111001"
+  "cb_customer" => "CS/EM/0019"
+  "ed_customer" => ""
+  "cb_cabang" => "001"
+  "ed_cabang" => ""
+  "ed_keterangan" => ""
+  "i_nomor" => array:1 [▶]
+  "i_tagihan" => array:1 [▶]
+  "i_sisa" => array:1 [▶]
+  "i_bayar" => array:1 [▶]
+  "i_biaya_admin" => array:1 [▶]
+  "akun_biaya" => array:1 [▶]
+  "i_keterangan" => array:1 [▶]
+  "b_akun" => array:1 [▶]
+  "b_jumlah" => array:1 [▶]
+  "b_debet" => array:1 [▶]
+  "b_kredit" => array:1 [▶]
+  "b_keterangan" => array:1 [▶]
+  "jumlah_bayar" => "10000000"
+  "ed_debet" => "105009"
+  "ed_kredit" => "0"
+  "ed_netto" => "10105009"
+        $cari_kwitansi = DB::table('kwitansi')
+                           ->where('k_nomor',$request->nota)
+                           ->first();
+        if ($cari_kwitansi == null) {
+            $save_kwitansi = DB::table('kwitansi')
+                               ->insert([
+                                ' '
+                               ])
+        }
     }
 
 }

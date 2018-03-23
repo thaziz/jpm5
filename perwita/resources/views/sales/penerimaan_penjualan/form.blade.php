@@ -758,7 +758,7 @@ $('#btnsave').click(function(){
                         '<input type="text" readonly class="form-control i_bayar_text input-sm" value="0">'+
                         '<input type="hidden" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_biaya_admin input-sm" name="i_biaya_admin[]" value="0">'+
-                        '<input type="hidden" readonly class="form-control akun_biaya input-sm" name="akun_biaya[]" value="0">',
+                        '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
                         '<input type="text" class="form-control input-sm" name="i_keterangan[]" value="">',
                         '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
                     ]).draw();
@@ -931,7 +931,7 @@ $('#btnsave2').click(function(){
     $(par).find('.i_bayar_text').val(accounting.formatMoney(jumlah_bayar,"",2,'.',','));
     $(par).find('.i_bayar').val(jumlah_bayar);
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
-    $(par).find('.akun_biaya ').val(akun_biaya);
+    $(par).find('.i_akun_biaya ').val(akun_biaya);
     var temp = 0;
     $('.i_bayar').each(function(){
         var i_bayar = Math.round($(this).val()).toFixed(2);
