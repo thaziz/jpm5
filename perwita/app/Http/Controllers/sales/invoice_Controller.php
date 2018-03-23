@@ -1086,9 +1086,10 @@ dd('d');
 
 
 public function edit_invoice($id)
-{
+{ 
+    // return $id;
 
-    $data = DB::table('invoice')
+   $data = DB::table('invoice')
               ->where('i_nomor',$id)
               ->first();
     $data_dt = DB::table('invoice_d')
