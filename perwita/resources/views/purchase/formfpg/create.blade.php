@@ -1552,7 +1552,8 @@
         $('.bank').prop('disabled' , true).trigger("liszt:updated");
           $('.bank').prop('disabled', true).trigger("chosen:updated");;
 
-
+        $('.metodebayar').attr('disabled' , true);
+        
         if(lengthbank > 1){
           $('.nominal').attr('readonly', true);
         }
