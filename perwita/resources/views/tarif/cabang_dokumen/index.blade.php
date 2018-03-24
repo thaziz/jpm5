@@ -45,10 +45,14 @@
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
 
                             </table>
-                        <div class="col-xs-6">
-
-
-
+                        <div class="col-xs-6 float-left">
+                          <table>
+                            <tr>
+                              <td><p style="background-color: red;width: 10px;height: 10px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
+                              <td><p> Hapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b></p></td>
+                            </tr>
+                          </table>
                         </div>
 
 
@@ -62,10 +66,11 @@
                                 <th style="width:15%"> Kode</th>
                                 <th> Asal </th>
                                 <th> Tujuan </th>
+                                {{-- <th> Provinsi Tujuan </th> --}}
                                 <th> Tarif </th>
                                 <th> Jenis </th>
                                 <th> Waktu (Hari) </th>
-                                <th style="width:50px"> Aksi </th>
+                                <th style="width:100px"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -285,6 +290,7 @@
             { "data": "kode" },
             { "data": "asal" },
             { "data": "tujuan" },
+            // { "data": "provinsi" },
             { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "jenis", },
             { "data": "waktu","sClass": "cssright" },
@@ -373,7 +379,7 @@
                   $("input[name='jenis_outlet']").val('');
                   $("input[name='id_outlet_edit']").val('');
                 }
-
+                
                   
                 $("input[name='id_reguler_edit']").val(data[0].kode_detail);
                 $("input[name='id_express_edit']").val(data[1].kode_detail);

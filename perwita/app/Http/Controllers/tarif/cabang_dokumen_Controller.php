@@ -10,12 +10,13 @@ use Auth;
 class cabang_dokumen_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        $sql = "    SELECT t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,
         kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
                     FROM tarif_cabang_dokumen t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabdokumen
                     ORDER BY t.kode_detail DESC ";
         
         $list = DB::select(DB::raw($sql));
@@ -24,14 +25,37 @@ class cabang_dokumen_Controller extends Controller
             $data[] = (array) $r;
         }
         $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
+       $datadetail = DB::table('tarif_cabang_dokumen')->get(); 
+        $te = '';
+         for ($dot=0; $dot <count($datadetail) ; $dot++) { 
+             $te =$te.' '.$datadetail[$dot]->id_provinsi_cabdokumen;
+         
+            $te =explode(' ', $te);
+              json_encode($te); 
+                
+                if ($te[$i] == null) {
+                                        
+                        foreach ($data as $key) {
+                            // add new button
+                            
+                            $data[$i]['button'] ='NJING ';
+                            $i++;
+                        }
+                }else{
+                    foreach ($data as $key) {
+                        // add new button
+                        
+                        $data[$i]['button'] =' <div class="btn-group">
+                                                    <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                                   
+                                                    <button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>                                   
+                                                </div> ';
+                        $i++;
+                    }
+                }
         }
+        
+    
         $datax = array('data' => $data);
         echo json_encode($datax);
     }
@@ -201,6 +225,7 @@ class cabang_dokumen_Controller extends Controller
       }
     }else{
         $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                     
                   
 
          if ($crud == 'N') {
@@ -218,8 +243,13 @@ class cabang_dokumen_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                     );
+
                 if ($datadetailcount == 0) {
                     $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama; 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1) {
                     $kode_detail += 1;
@@ -243,6 +273,10 @@ class cabang_dokumen_Controller extends Controller
                     );
                 if ($datadetailcount == 0) {
                     $kode_detail += 1;
+                     if ($kode_utama < 10000 ) {
+                        $kode_utama = '0000'.($kode_utama+1);
+                        }
+                    $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama; 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1) {
                     $kode_detail += 1;
