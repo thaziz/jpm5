@@ -834,10 +834,7 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_kode_akun'=> $request->cb_akun_h
                                ]);
             for ($i=0; $i < count($request->i_nomor); $i++) { 
-                $cari_invoice = DB::table('invoice')
-                                  ->where('i_nomor',$request->i_nomor[$i])
-                                  ->first();
-
+                
                 $save_detail = DB::table('kwitansi_d')
                                  ->insert([
                                       'kd_id'            => $k_id,
@@ -849,7 +846,17 @@ class penerimaan_penjualan_Controller extends Controller
                                       // 'kd_jenis'         => $requ,
                                       'kd_total_bayar'   => $request->i_bayar,
                                       'kd_biaya_admin'   => $request->i_bayar,
-                                 ])
+                                 ]);
+                $cari_invoice = DB::table('invoice')
+                                  ->where('i_nomor',$request->i_nomor[$i])
+                                  ->first();
+
+                $update_invoice = DB::table('invoice')
+                                    ->where('i_nomor',$request->i_nomor[$i])
+                                    ->update([
+                                        'i_sisa_pelunasan'
+                                    ])
+
             }
         }
     }
