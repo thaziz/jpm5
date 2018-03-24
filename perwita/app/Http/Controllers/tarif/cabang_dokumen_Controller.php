@@ -31,9 +31,9 @@ class cabang_dokumen_Controller extends Controller
              $te =$te.' '.$datadetail[$dot]->id_provinsi_cabdokumen;
          
             $te =explode(' ', $te);
-              json_encode($te); 
+              // json_encode($te); 
                 
-                if ($te[$i] == null) {
+                if ($te[$i] == '') {
                                         
                         foreach ($data as $key) {
                             // add new button
@@ -54,6 +54,9 @@ class cabang_dokumen_Controller extends Controller
                     }
                 }
         }
+
+
+        // maksudku ngene
         
     
         $datax = array('data' => $data);
