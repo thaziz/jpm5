@@ -159,15 +159,15 @@
                             <tr>
                                   <td style="width:120px; padding-top: 0.4cm">Total Debet (+)</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control ed_debet_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
-                                    <input type="hidden" name="ed_debet" class="form-control ed_debet" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text"  class="form-control ed_debet_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0" >
+                                    <input type="hidden" name="ed_debet" class="form-control ed_debet" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                 </td>
                             </tr>
                             <tr>
                                  <td style="width:120px; padding-top: 0.4cm">Total Kredit (-)</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control ed_kredit_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
-                                    <input type="hidden" name="ed_kredit"  class="form-control ed_kredit" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text"  class="form-control ed_kredit_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                    <input type="hidden" name="ed_kredit"  class="form-control ed_kredit" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                 </td>
                             </tr>
                             <tr>
@@ -338,7 +338,13 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td>Total</td>
+                                                        <td>Total Bayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="" style="text-align:right" class="total_bayar form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sisa</td>
                                                         <td colspan="3">
                                                             <input type="text" class="form-control ed_total"  readonly="readonly" style="text-align:right" tabindex="-1">
                                                             <input type="hidden" readonly="readonly" class="form-control total">
@@ -798,9 +804,12 @@ function hitung() {
     }
     $('.ed_jumlah_bayar').val(accounting.formatMoney(angka,"",2,'.',','));
     $('.jumlah_bayar').val(angka);
-
     $('.ed_total').val(accounting.formatMoney(total,"",2,'.',','))
     $('.total').val(total);
+    angka = parseInt(angka);
+    biaya_admin =parseInt(biaya_admin);
+    $('.total_bayar').val(accounting.formatMoney(angka+biaya_admin,"",2,'.',','))
+
 }
 
 
@@ -922,14 +931,16 @@ function hitung_bayar() {
 // simpan perubahan
 $('#btnsave2').click(function(){
     var jumlah_bayar         = $('.jumlah_bayar').val();
+    jumlah_bayar             = parseInt(jumlah_bayar);
     var akun_biaya          = $('.akun_biaya').val();
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
     jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+    jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
     var tes                  = [];
     var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
-    $(par).find('.i_bayar_text').val(accounting.formatMoney(jumlah_bayar,"",2,'.',','));
-    $(par).find('.i_bayar').val(jumlah_bayar);
+    $(par).find('.i_bayar_text').val(accounting.formatMoney(jumlah_bayar+jumlah_biaya_admin,"",2,'.',','));
+    $(par).find('.i_bayar').val(jumlah_bayar+jumlah_biaya_admin);
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
     var temp = 0;
@@ -938,6 +949,8 @@ $('#btnsave2').click(function(){
             i_bayar = parseFloat(i_bayar);
         temp += i_bayar;
     })
+
+
     $('.total_jumlah_bayar').val(temp);
     $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
     hitung_bayar();
@@ -1110,7 +1123,21 @@ $('#btnsimpan').click(function(){
                +'&'+table_data_biaya.$('input').serialize()
                +'&'+$('.table_rincian :input').serialize(),
           success:function(response){
-          
+            if (response.status == 1) {
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                   showConfirmButton: true
+                    },function(){
+                        // location.reload();
+                });
+            }else{
+                $('#nota_kwitansi').val(response.nota);
+                toastr.info('Nomor Kwitansi Telah Dirubah Menjadi '+response.nota);
+                $('#btnsimpan').click();
+            }
           },
           error:function(data){
             swal({

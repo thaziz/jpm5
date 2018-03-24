@@ -30,30 +30,7 @@
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
+             
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
                                     
@@ -100,7 +77,7 @@
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                     <td>
-                                        <input type="text" name="ed_nomor" class="form-control" style="text-transform: uppercase" >
+                                        <input type="text" name="ed_nomor" class="form-control ed_nomor" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_nomor_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
@@ -117,10 +94,10 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>   
-                                        <select class="chosen-select-width b"  name="cb_cabang" style="width:100%">
+                                        <select onchange="nota_um()" class="chosen-select-width b cb_cabang"  name="cb_cabang" style="width:100%">
                                             <option value="" ></option>
                                         @foreach ($cabang as $row)
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->kode }}"> {{ $row->kode }} - {{ $row->nama }} </option>
                                         @endforeach
                                         </select>
                                     </td>
@@ -131,7 +108,7 @@
 									<select class="chosen-select-width" name="cb_customer" >
 											<option value=""></option>
 										@foreach ($customer as $row)
-											<option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+											<option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
 										@endforeach
 										</select>
 									</td>
@@ -140,9 +117,6 @@
 									<td style="padding-top: 0.4cm">Jenis</td>
 									<td>
 										<select class="form-control" name="cb_jenis" >
-											<option value="T"> TUNAI/CASH </option>
-											<option value="C"> TRANSFER </option>
-											<option value="F"> CHEQUE/BG </option>
 											<option value="U"> UANG MUKA/DP </option>
 										</select>
 									</td>
@@ -232,6 +206,8 @@
                 $(selector).chosen(config[selector]);
             }
         $(".angka").maskMoney({thousands:'.', decimal:',', precision:-1});
+
+    
     });
 
     $(document).on("click","#btn_add",function(){
@@ -286,6 +262,18 @@
             }
         });
     });
+        function nota_um() {
+            var cb_cabang = $('.cb_cabang').val();
+
+            $.ajax({
+                url:baseUrl + '/sales/uang_muka_penjualan/nota_uang_muka',
+                data:{cb_cabang},
+                dataType:'json',
+                success:function(response){
+                    $('.ed_nomor').val(response.nota);
+                }
+            })
+        }
 
     $(document).on("click","#btnsave",function(){
         $.ajax(

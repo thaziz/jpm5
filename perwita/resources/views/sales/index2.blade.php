@@ -26,69 +26,6 @@
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                     <div class="box-body">
-                      <!-- <div class="form-group"> 
-                          <div class="form-group">
-                             <label for="bulan_id" class="col-sm-2 control-label">No SPP </label>
-                            <div class="col-sm-2">
-                              <input type="text" class="form-control">
-                            </div>
-                          </div>
-                       </div>
-
-                         <div class="form-group"> 
-                            <div class="form-group">
-                                   <label for="bulan_id" class="col-sm-2 control-label">Tanggal </label>
-                                      <div class="col-sm-2">
-                                        <div class="input-group date">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
-                                        </div>
-                                       </div> 
-                              </div>
-                          </div>
-
-
-                        <div class="form-group">
-                          <div class="form-group">
-                              <label for="bulan_id" class="col-sm-2 control-label"> Bagian </label>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control">
-                                </div>
-                          </div>
-                        </div>
-
-
-                        <div class="form-group">
-                          <div class="form-group">
-                              <label for="bulan_id" class="col-sm-2 control-label"> Tanggal di Butuhkan </label>
-                                <div class="col-sm-2">
-                                  <div class="input-group date">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
-                                  </div>
-                                </div> 
-                          </div>
-                        </div>
-
-                        <div class="form-group">
-                          <div class="form-group">
-                              <label for="bulan_id" class="col-sm-2 control-label"> Keperluan </label>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control">
-                                </div>
-                          </div>
-                        </div>
-
-                         <div class="form-group">
-                          <div class="form-group">
-                              <label for="bulan_id" class="col-sm-2 control-label"> Total Biaya </label>
-                                <div class="col-sm-2">
-                                  <input type="text" class="form-control">
-                                </div>
-                          </div>
-                        </div>
-                  </form>
- -->
-
-
                 <div class="row">
                     <div class="col-sm-10">
                     </div>

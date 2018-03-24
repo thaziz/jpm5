@@ -535,14 +535,16 @@ class penerimaan_penjualan_Controller extends Controller
     }
 
     public function cetak_nota($nomor=null) {
-        $head = collect(\DB::select(" SELECT c.*,p.* FROM penerimaan_penjualan p LEFT JOIN customer c ON c.kode=p.kode_customer WHERE p.nomor='$nomor' "))->first();
+        $head = DB::table('kwitansi')
+                  ->where('k_nomor',$nomor)
+                  ->first();
 
-        $detail = DB::select("  SELECT d.nomor_invoice,d.jumlah,d.keterangan,i.tanggal,i.total_tagihan FROM penerimaan_penjualan_d d, invoice i
-                                WHERE i.nomor=d.nomor_invoice AND d.nomor_penerimaan_penjualan='$nomor'
-                                UNION ALL
-                                SELECT NULL,d.jumlah,d.keterangan||'('||jenis||')',NULL,NULL FROM penerimaan_penjualan_biaya_d d, invoice i
-                                WHERE i.nomor=d.nomor_invoice AND d.nomor_penerimaan_penjualan='$nomor'");
-        $terbilang =$this->penyebut($head->jumlah);
+        $detail = DB::table('kwitansi')
+                    ->join('kwitansi_d','kd_id','k_id')
+                    ->join('invoice','kd_nomor_invoice','i_nomor')
+                    ->get();
+
+        $terbilang =$this->penyebut($head->k_jumlah);
         return view('sales.penerimaan_penjualan.print',compact('head','detail','terbilang'));
     }
 
@@ -763,35 +765,8 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function simpan_kwitansi(request $request)
     {
-        // dd($request->all());
 
-  //       "nota" => "KWT001031800001"
-  // "_token" => "HudTTW8lLdn0A3PICJCncwKkw7XN9pbjC04XjBLR"
-  // "ed_tanggal" => "23/03/2018"
-  // "cb_jenis_pembayaran" => "T"
-  // "ed_jenis_pembayaran" => ""
-  // "cb_akun_h" => "100111001"
-  // "cb_customer" => "CS/EM/0019"
-  // "ed_customer" => ""
-  // "cb_cabang" => "001"
-  // "ed_cabang" => ""
-  // "ed_keterangan" => ""
-  // "i_nomor" => array:1 [▶]
-  // "i_tagihan" => array:1 [▶]
-  // "i_sisa" => array:1 [▶]
-  // "i_bayar" => array:1 [▶]
-  // "i_biaya_admin" => array:1 [▶]
-  // "akun_biaya" => array:1 [▶]
-  // "i_keterangan" => array:1 [▶]
-  // "b_akun" => array:1 [▶]
-  // "b_jumlah" => array:1 [▶]
-  // "b_debet" => array:1 [▶]
-  // "b_kredit" => array:1 [▶]
-  // "b_keterangan" => array:1 [▶]
-  // "jumlah_bayar" => "10000000"
-  // "ed_debet" => "105009"
-  // "ed_kredit" => "0"
-  // "ed_netto" => "10105009"
+        return DB::transaction(function() use ($request) {  
 
         $tgl = str_replace('/', '-', $request->ed_tanggal);
         $tgl = Carbon::parse($tgl)->format('Y-m-d');
@@ -813,11 +788,7 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_nomor' => $request->nota,
                                 'k_tanggal'=> $tgl,
                                 'k_kode_customer' => $request->cb_customer,
-                                // 'k_kode_akun_kredit' =>,
-                                // 'k_kode_akun_debet' =>,
                                 'k_jumlah' => $request->jumlah_bayar,
-                                // 'k_terpakai' => ,
-                                // 'k_habis_terpakai'=>,
                                 'k_keterangan' => $request->ed_keterangan,
                                 'k_create_by' => Auth::user()->m_username,
                                 'k_update_by' => Auth::user()->m_username,
@@ -825,9 +796,6 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_update_at' => Carbon::now(),
                                 'k_kode_cabang' => $request->cb_cabang,
                                 'k_jenis_pembayaran' => $request->cb_jenis_pembayaran,
-                                // 'k_nomor_posting' => ,
-                                // 'k_tgl_posting' =>,
-                                // 'k_posting' =>,
                                 'k_kredit' => $request->ed_debet,
                                 'k_debet' => $request->ed_kredit,
                                 'k_netto' => $request->ed_netto,
@@ -835,17 +803,25 @@ class penerimaan_penjualan_Controller extends Controller
                                ]);
             for ($i=0; $i < count($request->i_nomor); $i++) { 
                 
+                $cari_invoice = DB::table('invoice')
+                                  ->where('i_nomor',$request->i_nomor[$i])
+                                  ->first();
+                if ($request->i_biaya_admin[$i] == '') {
+                    $i_biaya_admin[$i] = 0;
+                }else{
+                    $i_biaya_admin[$i] = $request->i_biaya_admin[$i];
+                }
                 $save_detail = DB::table('kwitansi_d')
                                  ->insert([
-                                      'kd_id'            => $k_id,
-                                      'kd_dt'            => $i+1,
-                                      'kd_k_nomor'       => $request->nota,
-                                      'kd_nomor_invoice' => $request->i_nomor[$i],
-                                      'kd_keterangan'    => $request->i_keterangan[$i],
-                                      'kd_kode_biaya'    => $request->akun_biaya[$i],
-                                      // 'kd_jenis'         => $requ,
-                                      'kd_total_bayar'   => $request->i_bayar,
-                                      'kd_biaya_admin'   => $request->i_bayar,
+                                      'kd_id'             => $k_id,
+                                      'kd_dt'             => $i+1,
+                                      'kd_k_nomor'        => $request->nota,
+                                      'kd_tanggal_invoice'=> $cari_invoice->i_tanggal,
+                                      'kd_nomor_invoice'  => $request->i_nomor[$i],
+                                      'kd_keterangan'     => $request->i_keterangan[$i],
+                                      'kd_kode_biaya'     => $request->akun_biaya[$i],
+                                      'kd_total_bayar'    => $request->i_bayar[$i] ,
+                                      'kd_biaya_lain'     => $i_biaya_admin[$i],
                                  ]);
                 $cari_invoice = DB::table('invoice')
                                   ->where('i_nomor',$request->i_nomor[$i])
@@ -854,11 +830,44 @@ class penerimaan_penjualan_Controller extends Controller
                 $update_invoice = DB::table('invoice')
                                     ->where('i_nomor',$request->i_nomor[$i])
                                     ->update([
-                                        'i_sisa_pelunasan'
-                                    ])
+                                        'i_sisa_pelunasan' => $cari_invoice->i_sisa_pelunasan - $request->i_bayar[$i],
+                                        'i_status'         => 'Approved',
+                                    ]);
+
+ 
+                $save_biaya = DB::table('kwitansi_biaya_d')
+                                 ->insert([
+                                      'kb_id' => $k_id,
+                                      'kb_dt'=> $i+1,
+                                      'kb_kode_akun' => $request->b_akun[$i],
+                                      'kb_kode_akun_acc' => $request->b_akun[$i],
+                                      'kb_kode_akun_csf' => $request->b_akun[$i],
+                                      'kb_jumlah' => $request->b_jumlah[$i],
+                                      'kb_keterangan' => $request->b_keterangan[$i],
+                                      'kb_debet'    => $request->b_debet[$i],
+                                      'kb_kredit'    => $request->b_kredit[$i],
+                                 ]);
 
             }
+
+            return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
+
+        }else{
+            $bulan = Carbon::now()->format('m');
+            $tahun = Carbon::now()->format('y');
+
+            $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
+                                            WHERE k_kode_cabang = '$request->cb_cabang'
+                                            AND to_char(k_tanggal,'MM') = '$bulan'
+                                            AND to_char(k_tanggal,'YY') = '$tahun'");
+            $index = (integer)$cari_nota[0]->id + 1;
+            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+            $nota = 'KWT' . $request->cb_cabang . $bulan . $tahun . $index;
+
+            return response()->json(['status'=>2,'pesan'=>'no nota telah ada','nota'=>$nota]);
         }
+    });
+
     }
 
 }

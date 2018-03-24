@@ -1308,13 +1308,9 @@
                             " href="{{ url('sales/nota_debet_kredit')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN/DN</a>
                             </li>
                             <li >
-                                <a class="sidebar master-perusahaan 
-
-                           {{--  {{Request::is('sales/deliveryordercabangtracking') ? 'active' : '' || 
-                            Request::is('sales/deliveryordercabangtracking/*') ? 'active' : ''}} 
-
-                            " href="{{ url('sales/deliveryordercabangtracking')}} --}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Uangmuka Penjualan (Belum)</a>
-                            </li>
+                                <a class="sidebar master-perusahaan {{Request::is('sales/uang_muka_penjualan') ? 'active' : '' || 
+                                Request::is('sales/index/*') ? 'uang_muka_penjualan' : ''}}" href="{{ url('sales/uang_muka_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Uang Muka Penjualan</a>
+                                </li> 
                              <li >
                                 <a class="sidebar master-perusahaan 
 
