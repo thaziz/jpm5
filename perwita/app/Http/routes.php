@@ -890,11 +890,9 @@ Route::post('sales/faktur_pajak/save_data', 'sales\faktur_pajak_Controller@save_
 
 // nota debet kredit
 Route::get('sales/nota_debet_kredit', 'sales\nota_debet_kredit_Controller@index');
-Route::get('sales/nota_debet_kredit/tabel', 'sales\nota_debet_kredit_Controller@table_data');
-Route::get('sales/nota_debet_kredit/get_data', 'sales\nota_debet_kredit_Controller@get_data');
-Route::post('sales/nota_debet_kredit/save_data', 'sales\nota_debet_kredit_Controller@save_data');
-Route::post('sales/nota_debet_kredit/hapus_data', 'sales\nota_debet_kredit_Controller@hapus_data');
-Route::get('sales/nota_debet_kredit_cari', 'sales\nota_debet_kredit_Controller@tampil_auto_complete');
+Route::get('sales/nota_debet_kredit/tabel', 'sales\nota_debet_kredit_Controller@table_data')->name('datatable_cn_dn');
+Route::get('sales/nota_debet_kredit/create', 'sales\nota_debet_kredit_Controller@create');
+
 // end nota debet kredit
 
 // uang muka penjualan 
