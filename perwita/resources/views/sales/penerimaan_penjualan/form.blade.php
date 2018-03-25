@@ -71,10 +71,16 @@
                     <div class="col-sm-6">
                     <table class="table table-striped table-bordered table-hover tabel_header">
                             <tr>
-                                <td style="width:px; padding-top: 0.4cm">Nomor</td>
+                                <td style="width:px; padding-top: 0.4cm">Nomor Kwitansi</td>
                                 <td colspan="20">
                                     <input type="text" name="nota" id="nota_kwitansi" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:px; padding-top: 0.4cm">Nomor Trans Bank</td>
+                                <td colspan="20">
+                                    <input type="text" name="nota_bank" id="nota_bank" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
                                 </td>
                             </tr>
                             <tr>
@@ -88,13 +94,13 @@
                             <tr>
                                 <td style="width:110px;">Jenis Pembayaran</td>
                                 <td colspan="20">
-                                    <select class="form-control" name="cb_jenis_pembayaran" >
+
+                                    <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
                                         <option value="F"> CHEQUE/BG </option>
                                         <option value="U"> UANG MUKA/DP </option>
                                     </select>
-                                    <input type="hidden" name="ed_jenis_pembayaran" value="" >
                                 </td>
                             </tr>
                             <tr>
@@ -675,6 +681,8 @@ $(document).ready(function(){
         }
     });
 
+    
+
     $.ajax({
         url:baseUrl+'/sales/akun_all',
         data:{cabang},
@@ -703,7 +711,21 @@ $(document).ready(function(){
     $('.me_jumlah').maskMoney({precision:0,thousands:'.'});
 });
 // check all
-
+function nota_tes(){
+    var cabang = $('.cb_cabang').val();
+    var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
+    $.ajax({
+        url:baseUrl+'/sales/nota_bank',
+        data:{cabang,cb_jenis_pembayaran},
+        dataType : 'json',
+        success:function(response){
+            $('#nota_bank').val(response.nota);
+        },
+        error:function(){
+        }
+    });
+}
+    
 
 
 // tambah invoice
