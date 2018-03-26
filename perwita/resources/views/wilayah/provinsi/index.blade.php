@@ -28,7 +28,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> PROVINSI
+                    <h5>
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">

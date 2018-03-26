@@ -462,12 +462,14 @@ class do_Controller extends Controller
     {
         $jurnal_dt = null;
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
         $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
         $kendaraan = DB::select(" SELECT nopol FROM kendaraan ");
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
         $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
             $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor='$nomor' "))->first();
@@ -481,7 +483,7 @@ class do_Controller extends Controller
             $do = null;
             $jml_detail = 0;
         }
-        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt'));
+        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan'));
     }
 
     public function form_update_status($nomor = null)
@@ -515,6 +517,7 @@ class do_Controller extends Controller
         //dd($request);
         $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
+        $kecamatan = $request->input('kecamatan');
         $pendapatan = $request->input('pendapatan');
         $tipe = $request->input('tipe');
         $jenis = $request->input('jenis');
@@ -523,20 +526,20 @@ class do_Controller extends Controller
         $biaya_penerus = null;
         if ($tipe == 'DOKUMEN') {
 
-            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'  ";
+            $sql = " SELECT harga,acc_penjualan FROM tarif_cabang_dokumen WHERE jenis='$jenis' AND id_kota_asal='$asal' AND id_kota_tujuan='$tujuan' AND kode_cabang='$cabang'";
             $data = collect(DB::select($sql));
 
             if ($jenis == 'EXPRESS'){
-                $sql_biaya_penerus = "SELECT tarif_express as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan'";
+                $sql_biaya_penerus = "SELECT tarif_express as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             } else if ($jenis == 'REGULER'){
 
-                $sql_biaya_penerus = "SELECT tarif_reguler as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan'";
+                $sql_biaya_penerus = "SELECT tarif_reguler as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
 
             if ($biaya_penerus == null){
-                $sql_biaya_penerus = "SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND cabang_default='$cabang' ";
+                $sql_biaya_penerus = "SELECT harga FROM tarif_penerus_default WHERE jenis='$jenis' AND tipe_kiriman='$tipe' AND cabang_default='$cabang'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
 
@@ -578,11 +581,13 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_10express_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_10reguler_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 }
 
@@ -600,11 +605,13 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_10express_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_10reguler_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 }
 
@@ -633,11 +640,13 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_20express_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_20reguler_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 }
 
@@ -655,11 +664,13 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_20express_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_20reguler_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 }
 
@@ -688,11 +699,13 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_20express_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_kilogram')
                         ->select('tarif_20reguler_kilo as tarif_penerus')
                         ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
                         ->get();
                 }
 
@@ -735,7 +748,7 @@ class do_Controller extends Controller
 
                 if ($jenis == 'EXPRESS'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_10express_kilo as tarif_penerus')
+                        ->select('tarif_10express_koli as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
@@ -756,13 +769,15 @@ class do_Controller extends Controller
 
                 if ($jenis == 'EXPRESS'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_20express_kilo as tarif_penerus')
+                        ->select('tarif_20express_koli as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
                         ->select('tarif_20reguler_koli as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 }
             } elseif ($berat < 30){
@@ -777,13 +792,15 @@ class do_Controller extends Controller
 
                 if ($jenis == 'EXPRESS'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_30express_kilo as tarif_penerus')
+                        ->select('tarif_30express_koli as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
                         ->select('tarif_30reguler_koli as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 }
             } elseif ($berat > 30){
@@ -798,13 +815,15 @@ class do_Controller extends Controller
 
                 if ($jenis == 'EXPRESS'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_>30express_kilo as tarif_penerus')
+                        ->select('tarif_>30express_koli as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
                         ->select('tarif_>30reguler_koli as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 }
             }

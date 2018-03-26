@@ -4,6 +4,32 @@
 
 @section('content')
 <style type="text/css">.dataTables_filter, .dataTables_info { display: none; }</style>
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2> TRACKING DELIVERY ORDER (DO) </h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Operasional</a>
+                        </li>
+                        <li>
+                          <a>Penjualan</a>
+                        </li>
+                        <li>
+                          <a>Transaksi Paket</a>
+                        </li>
+                        <li class="active">
+                            <strong> Tracking DO </strong>
+                        </li>
+
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >

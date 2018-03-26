@@ -91,9 +91,20 @@
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                                     <td colspan="5">
-                                                        <select class="chosen-select-width"  name="cb_kota_tujuan" style="width:100%" >
+                                                        <select class="chosen-select-width" id="kota" onchange="getKecamatan()" name="cb_kota_tujuan" style="width:100%" >
                                                             <option value=""></option>
                                                         @foreach ($kota as $row)
+                                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                                        @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Kecamatan Tujuan</td>
+                                                    <td colspan="5">
+                                                        <select class="form-control" id="kecamatan" name="cb_kecamatan_tujuan" style="width:100%" >
+                                                            <option value=""></option>
+                                                        @foreach ($kecamatan as $row)
                                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
                                                         @endforeach
                                                         </select>
@@ -248,7 +259,7 @@
 															<option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
 															<option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
 														</select>
-                                                         <input type="" name="acc_penjualan" class="form-control"  value="{{ $do->acc_penjualan or null }}">
+                                                         <input type="hidden" name="acc_penjualan" class="form-control"  value="{{ $do->acc_penjualan or null }}">
 													</td>
 													<td style="width:35%">
                                                         <input type="text" class="form-control jml_ppn" name="ed_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->biaya_komisi, 0, ",", ".") }}" @endif>
@@ -849,6 +860,7 @@
     
     $(document).on("click","#btn_cari_harga",function(){
         var kota_asal = $("select[name='cb_kota_asal']").val();
+        var kecamatan_tujuan = $("select[name='cb_kecamatan_tujuan']").val();
         var kota_tujuan = $("select[name='cb_kota_tujuan']").val();
         var pendapatan = $("select[name='pendapatan']").val();
         var type = $("select[name='type_kiriman']").val();
@@ -880,6 +892,27 @@
             return false;
         }else if (kota_tujuan == '') {
           Command: toastr["warning"]("Kota Tujuan harus diisi", "Peringatan !")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": true,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }else if (kecamatan_tujuan == '') {
+          Command: toastr["warning"]("Kecamatan Tujuan harus diisi", "Peringatan !")
 
             toastr.options = {
               "closeButton": false,
@@ -995,6 +1028,7 @@
             angkutan: $("select[name='cb_angkutan']").val(),
             cabang: $("select[name='cb_cabang']").val(),
             berat : $("input[name='ed_berat']").val(),
+            kecamatan : $("select[name='cb_kecamatan_tujuan']").val()
         };
         $.ajax(
         {
@@ -1080,7 +1114,7 @@
             $("#modal_dokumen").modal("show");
             $("#btn_pilih_item").focus();
         }
-               var kota_asal = $("select[name='cb_kota_asal']").val();
+        var kota_asal = $("select[name='cb_kota_asal']").val();
         var kota_tujuan = $("select[name='cb_kota_tujuan']").val();
         var pendapatan = $("select[name='pendapatan']").val();
         var type_kiriman = $("select[name='type_kiriman']").val();
@@ -1967,6 +2001,27 @@
 
     function setJmlPPN(){
 
+    }
+
+    function getKecamatan(){
+        var kota = $('#kota').val();
+        $.ajax({
+            type: "GET",
+            data : {kecamatan:kota},
+            url : baseUrl + "/sales/tarif_penerus_kilogram/get_kec",
+            dataType:'json',
+            success: function(data)
+            {   
+                var kecamatan = '<option value="" selected="" disabled="">-- Pilih Kecamatan --</option>';
+
+                $.each(data, function(i,n){
+                    kecamatan = kecamatan + '<option value="'+n.id+'">'+n.nama+'</option>';
+                });
+
+                $('#kecamatan').addClass('form-control chosen-select-width');
+                $('#kecamatan').html(kecamatan);
+            }
+        })
     }
 
 </script>

@@ -11,13 +11,22 @@
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Zona </h2>
+                    <h2> ZONA </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
                         </li>
+                        <li>
+                            <a>Master</a>
+                        </li>
+                        <li>
+                            <a>Master Penjualan</a>
+                        </li>
+                        <li>
+                            <a>Master DO</a>
+                        </li>
                         <li class="active">
-                            <strong> Zona </strong>
+                            <strong> ZONA </strong>
                         </li>
 
                     </ol>
@@ -32,7 +41,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> AGEN
+                    <h5> 
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
