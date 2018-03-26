@@ -34,6 +34,8 @@ class cabang_dokumen_Controller extends Controller
                                 $data[$i]['button'] =' <div class="btn-group">
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
 
+                                                        <button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+                                                            
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                    
                                                         </div> ';
                                 $i++;
@@ -92,6 +94,7 @@ class cabang_dokumen_Controller extends Controller
     }
 
     public function save_data (Request $request) {
+        // dd($request);
         $simpan='';
         $crud = $request->crud;
         $kode_sama = DB::table('tarif_cabang_dokumen')->select('kode_sama')->max('kode_sama');    
@@ -142,7 +145,8 @@ class cabang_dokumen_Controller extends Controller
               json_encode($id_provinsi_loop); 
      if ($request->cb_kota_tujuan == '' ) {  
       for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
-        $check = DB::table('tarif_cabang_dokumen')->where('id_kota_asal','=',$request->cb_kota_asal)->Wherein('id_kota_tujuan','=',$id_provinsi_loop[$save])->get();     
+        // return $id_provinsi_loop;
+        $check = DB::table('tarif_cabang_dokumen')->where('id_kota_asal','=',$request->cb_kota_asal)->where('id_kota_tujuan','=',$id_provinsi_loop[$save])->get();     
        $cek = count($check); 
          if ($cek > 1) {
            
@@ -150,7 +154,7 @@ class cabang_dokumen_Controller extends Controller
             $result['hasil_cek']=$hasil_cek;
             return json_encode($result);
             
-         }else{
+         }else if = {
 
           if ($crud =='N') {
 

@@ -52,33 +52,18 @@
                         <div class="col-xs- float-left">
                           <table>
                             <tr>
-                              <td style="padding-left: 20px;"><p style="background-color: red;width: 10px;height: 10px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
-                              <td><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+                              <td valign="top" style="padding-left: 20px;"><p style="background-color: red;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td valign="top"><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
                                                        
-                              <td style="padding-left: 50px;"><p style="background-color: purple;width: 10px;height: 10px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
-                              <td ><p>Menghapus Data <b>kota</b> Menuju <b>Kota</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+                              <td valign="top" style="padding-left: 50px;"><p style="background-color: purple;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td  valign="top"><p>Menghapus Data <b>kota</b> Menuju <b>Kota</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
 
-                              <td style="padding-left: 50px;"><p style="background-color: #595959;width: 10px;height: 10px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
-                              <td ><p>Menghapus data Tidak diperbolehkan</p></td>
+                              <td valign="top" style="padding-left: 50px;"><p style="background-color: #595959;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp; </p></td>
+                              <td  valign="top"><p>Menghapus data Tidak diperbolehkan</p></td>
                             </tr>
-                           
-                            <tr>
-                              <td>&nbsp;</td>
-                              <td>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td><p style="font-size: 12px;margin-top: -18px;">( Jika tabel Provinsi Tujuan <f style="color: red;";>Terisi</f> maka Data ketika insert <b>Kota</b> Menuju <b>Provinsi</b> )</p></td>
-                            
-                              <td>&nbsp;</td>
-                              <td>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td><p style="font-size: 12px; margin-top: -18px;">( Jika tabel Provinsi Tujuan <f style="color: red;";>Kosong</f> maka Data ketika insert <b>Kota</b> Menuju <b>Kota</b> )</p></td>
-
-                              <td>&nbsp;</td>
-                              <td>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td><p style="font-size: 12px; margin-top: -18px;">( Hanya Hak akses dengan otoritas tertinggi yang dapat menghapus )</p></td>
-                            </tr>
-
                           </table>
                         </div>
 
