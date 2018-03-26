@@ -100,7 +100,8 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-top: 0.4cm">Kecamatan Tujuan</td>
+                                                    {{-- <img src="{{ asset('assets/img/loading.gif') }}" style="display: block; margin-left: auto; margin-right: auto;" height="100" width="100"> --}}
+                                                    <td style="padding-top: 0.4cm" class="kecamatantujuanlabel">Kecamatan Tujuan</td>
                                                     <td colspan="5">
                                                         <select class="form-control" id="kecamatan" name="cb_kecamatan_tujuan" style="width:100%" >
                                                             <option value=""></option>
@@ -121,6 +122,7 @@
                                                             <option value="DOKUMEN">DOKUMEN</option>
                                                             <option value="KILOGRAM">KILOGRAM</option>
                                                             <option value="KOLI">KOLI</option>
+                                                            <option value="SEPEDAH">SEPEDAH</option>
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -560,8 +562,6 @@
     </div>
 </div>
 
-
-
 <div class="row" style="padding-bottom: 50px;"></div>
 
 
@@ -624,8 +624,6 @@
                   </div>
                 </div>
 @endif
-
-
 
 @endsection
 
@@ -835,6 +833,13 @@
             $("#berat").show();
             $("#jenis_kendaraan").hide();
         }else if ( type_kiriman =='KOLI') {
+            $("#surat_jalan").hide();
+            $("#dimensi").hide();
+            $("#nopol").hide();
+            $("#koli").show();
+            $("#berat").show();
+            $("#jenis_kendaraan").hide();
+        }else if ( type_kiriman =='SEPEDAH') {
             $("#surat_jalan").hide();
             $("#dimensi").hide();
             $("#nopol").hide();
@@ -1076,13 +1081,13 @@
                     }
                     hitung();
                 }
-                
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
                // swal("Error!", textStatus, "error");
             }
         });
+        
     });
 
 
