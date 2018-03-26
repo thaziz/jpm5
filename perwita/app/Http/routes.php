@@ -1132,8 +1132,6 @@ Route::get('master_keuangan/neraca/excel/{throtle}', [
 
 //endneraca
 
-<<<<<<< HEAD
-
 // neraca saldo
 Route::get('master_keuangan/neraca-saldo/{throtle}', [
   'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
@@ -1161,8 +1159,7 @@ Route::get('master_keuangan/neraca-detail/excel/{throtle}', [
 
 //endneraca_detail
 
-=======
->>>>>>> ba1b2b4d42cdf37456e3b6329528244fb94ed700
+
 //laba rugi
 
 Route::get('master_keuangan/laba_rugi/{throttle}', [
