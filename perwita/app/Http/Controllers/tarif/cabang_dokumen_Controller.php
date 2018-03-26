@@ -143,6 +143,7 @@ class cabang_dokumen_Controller extends Controller
         }
              $id_provinsi_loop =explode(' ', $id_provinsi_loop);
               json_encode($id_provinsi_loop); 
+              // dd($request);
      if ($request->cb_kota_tujuan == '' ) {  
       for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
         // return $id_provinsi_loop;
@@ -267,13 +268,13 @@ class cabang_dokumen_Controller extends Controller
         $kot2 = $request->cb_kota_tujuan;
         $cek_sendiri = DB::table('tarif_cabang_dokumen')->where('id_kota_asal','=',$kot1)->where('id_kota_tujuan','=',$kot2)->get();      
         $ngecek = count($cek_sendiri);
-        if ($ngecek > 1) {
-            $hasil_cek = 'Data Sudah ada di database !';
-            $result['hasil_cek']=$hasil_cek;
-            return json_encode($result);
-        }else{
+        
          if ($crud == 'N') {
-
+            if ($ngecek > 1) {
+                        $hasil_cek = 'Data Sudah ada di database !';
+                        $result['hasil_cek']=$hasil_cek;
+                        return json_encode($result);
+                    }else{
                     $regular = array(
                         'kode_sama' => $kode_sama,
                         'kode_detail'=>$kode_detail,
@@ -354,8 +355,8 @@ class cabang_dokumen_Controller extends Controller
             $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
             $simpan = DB::table('tarif_cabang_dokumen')->insert($express);
             
-
-        }elseif ($crud == 'E') {
+          }  
+        }else if ($crud == 'E') {
             // dd($request);   
                 
                 $id_reguler_edit = $request->id_reguler_edit;
@@ -457,7 +458,7 @@ class cabang_dokumen_Controller extends Controller
             $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_express)->update($express);
         }
      }
-    }
+    
      
         if($simpan == TRUE){
             $result['error']='';

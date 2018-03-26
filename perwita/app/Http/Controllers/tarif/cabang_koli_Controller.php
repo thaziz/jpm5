@@ -10,10 +10,11 @@ use Auth;
 class cabang_koli_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan  
+        $sql = "    SELECT t.id_provinsi_cabkoli,p.nama provinsi,t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan  
                     FROM tarif_cabang_koli t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkoli
                     ORDER BY t.kode_detail_koli DESC ";
         
         $list = DB::select(DB::raw($sql));
@@ -22,14 +23,53 @@ class cabang_koli_Controller extends Controller
             $data[] = (array) $r;
         }
         $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['kode_sama_koli'].'" name="'.$data[$i]['kode_sama_koli'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
-        }
+       
+                    foreach ($data as $key) {
+                        // add new button
+        
+                        if ($kodecabang = Auth::user()->m_level == 'ADMINISTRATOR'  ) {
+                            if ($data[$i]['id_provinsi_cabkoli'] == null || $data[$i]['id_provinsi_cabkoli'] == '') {
+                                $data[$i]['button'] =' <div class="btn-group">
+                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+
+                                                        <button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+                                                            
+                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                    
+                                                        </div> ';
+                                $i++;
+                                }
+                                else{
+                                $data[$i]['button'] =' <div class="btn-group">
+                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                                           
+                                                            <button type="button" id="'.$data[$i]['kode_sama_koli'].'" name="'.$data[$i]['kode_sama_koli'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+
+                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
+                                                        </div> ';
+                                $i++;
+                            }
+                        }else{
+                             if ($data[$i]['id_provinsi_cabkoli'] == null || $data[$i]['id_provinsi_cabkoli'] == '') {
+                                    $data[$i]['button'] =' <div class="btn-group">
+                                                            <button type="button" disabled="" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+
+                                                            <button type="button" disabled="" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                    
+                                                        </div> ';
+                                $i++;
+                                }
+                                else{
+                                $data[$i]['button'] =' <div class="btn-group">
+                                                            <button type="button" disabled="" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                                           
+                                                            <button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+
+                                                            <button type="button" disabled="" data-toggle="tooltip" title="Delete" style="color:white;" class="btn btn-purple btn-xs btndelete" ><i class="glyphicon glyphicon-trash"></i></button>                                   
+                                                        </div> ';
+                                $i++;
+                            }
+                        }
+                        
+                }
         $datax = array('data' => $data);
         echo json_encode($datax);
     }
@@ -142,6 +182,7 @@ class cabang_koli_Controller extends Controller
                 'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                'crud' => $crud,
             );
 
              if ($datadetailcount != 0) {
@@ -175,6 +216,7 @@ class cabang_koli_Controller extends Controller
                 'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                'crud' => $crud,
             );
 
            if ($datadetailcount != 0) {
@@ -208,6 +250,7 @@ class cabang_koli_Controller extends Controller
                 'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                'crud' => $crud,
             );
 
            if ($datadetailcount != 0) {
@@ -240,6 +283,7 @@ class cabang_koli_Controller extends Controller
                 'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                'crud' => $crud,
             );
         //---------------------------------- EXPRESS -----------------------------------//
 
@@ -273,6 +317,7 @@ class cabang_koli_Controller extends Controller
                 'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                'crud' => $crud,
             );
 
            if ($datadetailcount != 0) {
@@ -305,6 +350,7 @@ class cabang_koli_Controller extends Controller
                 'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                'crud' => $crud,
             );
 
            if ($datadetailcount != 0) {
@@ -336,6 +382,7 @@ class cabang_koli_Controller extends Controller
                 'kode_cabang' => $request->ed_cabang,
                 'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                 'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                'crud' => $crud,
             );
 
             if ($datadetailcount != 0) {
@@ -367,6 +414,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
         
@@ -420,6 +468,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
                if ($datadetailcount != 0) {
@@ -451,6 +500,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
                if ($datadetailcount != 0) {
@@ -482,6 +532,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );   
 
                if ($datadetailcount != 0) {
@@ -512,6 +563,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
             //end auto number REGULAR
@@ -546,6 +598,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
                if ($datadetailcount != 0) {
@@ -577,6 +630,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
                if ($datadetailcount != 0) {
@@ -608,6 +662,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );   
 
                if ($datadetailcount != 0) {
@@ -639,6 +694,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
             // END AUTO EXPRESS
             //simpan DATA REGULER
@@ -697,6 +753,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
                 if ($integer_kode1 < 10000) {
@@ -722,6 +779,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
                
@@ -748,6 +806,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );   
 
                if ($integer_kode3 < 10000) {
@@ -774,6 +833,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
             //end auto number REGULAR
@@ -802,6 +862,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
 
                if ($integer_kode5 < 10000) {
@@ -828,6 +889,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
                // dd($tarif0_10express);
 
@@ -861,6 +923,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );   
 
                if ($datadetailcount == 0) {
@@ -893,6 +956,7 @@ class cabang_koli_Controller extends Controller
                     'kode_cabang' => $request->ed_cabang,
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
+                    'crud' => $crud,
                 );
             $simpan = DB::table('tarif_cabang_koli')->where('kode', $request->id0)->update($kertas_reguler);
             $simpan = DB::table('tarif_cabang_koli')->where('kode', $request->id1)->update($tarif0_10reguler);
@@ -923,6 +987,21 @@ class cabang_koli_Controller extends Controller
         $hapus='';
         $id=$request->id;
         $hapus = DB::table('tarif_cabang_koli')->where('kode_sama_koli' ,'=', $id)->delete();
+        if($hapus == TRUE){
+            $result['error']='';
+            $result['result']=1;
+        }else{
+            $result['error']=$hapus;
+            $result['result']=0;
+        }
+        echo json_encode($result);
+    }
+    public function hapus_data_perkota (Request $request) {
+        // dd($request);
+        $hapus='';
+        $asal=$request->id;
+        $tujuan=$request->name;
+        $hapus = DB::table('tarif_cabang_koli')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->where('crud','!=','E')->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;

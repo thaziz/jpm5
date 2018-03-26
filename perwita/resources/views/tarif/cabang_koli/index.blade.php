@@ -14,6 +14,11 @@
 }
     .pad{
         padding: 10px;
+    }.btn-purple{
+      background-color: purple;
+    }
+    .btn-black{
+      background-color: black;
     }
 </style>
 
@@ -43,7 +48,22 @@
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
                             </table>
-                        <div class="col-xs-6">
+                         <div class="col-xs- float-left">
+                          <table>
+                            <tr>
+                              <td valign="top" style="padding-left: 20px;"><p style="background-color: red;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td valign="top"><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+                                                       
+                              <td valign="top" style="padding-left: 50px;"><p style="background-color: purple;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td  valign="top"><p>Menghapus Data <b>kota</b> Menuju <b>Kota</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+
+                              <td valign="top" style="padding-left: 50px;"><p style="background-color: #595959;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp; </p></td>
+                              <td  valign="top"><p>Menghapus data Tidak diperbolehkan</p></td>
+                            </tr>
+                          </table>
                         </div>
                         </div>
                     </form>
@@ -54,11 +74,12 @@
                                 <th style="width:70px"> Kode</th>
                                 <th> Asal </th>
                                 <th> Tujuan </th>
+                                <th> Provinsi Tujuan </th>
                                 <th> Tarif </th>
                                 <th> Jenis </th>
                                 <th> Waktu </th>
                                 <th> Keterangan </th>
-                                <th style="width:50px"> Aksi </th>
+                                <th style="width:100px"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -97,10 +118,10 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="hilang1">
                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td>
-                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" style="width:100%">
+                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" id="cb_kota_tujuan" style="width:100%">
                                              <option value="" selected="" disabled="">-- Pilih Kota tujuan --</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
@@ -108,10 +129,10 @@
                                         </select>
                                     </td>
                                 </tr>
-                                 <tr>
+                                 <tr id="hilang">
                                     <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
                                     <td>   
-                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" style="width:100%" i>
+                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
                                             <option value="" selected="" disabled="">-- Pilih Provinsi tujuan --</option>
                                         @foreach ($prov as $prov)
                                             <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
@@ -282,6 +303,17 @@
         // alert(idkota);
         var kotaid = $('#kodekota').val(idkota);
     })
+
+    $('#cb_kota_tujuan').change(function(){
+        $('#hilang').hide();
+        // alert('njing');
+
+    })
+    $('#cb_provinsi_tujuan').change(function(){
+        $('#hilang1').hide();
+    })
+
+
         $('input[name="ed_kode"]').attr('readonly',true);
     $(document).ready( function () {
         $('#table_data').DataTable({
@@ -302,6 +334,7 @@
             { "data": "kode" },
             { "data": "asal" },
             { "data": "tujuan" },
+            { "data": "provinsi" },
             { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "jenis", },
             { "data": "waktu", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
@@ -357,6 +390,9 @@
         $('input[name="tarif10kg_express"]').val('');
         $('input[name="tarif20kg_express"]').val('');
         //expre
+        $('#hilang').show();
+
+        $('#hilang1').show();
         //
         $("input[name='kode_sama_koli']").val('');
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
@@ -506,7 +542,40 @@
 
 
     });
+    $(document).on( "click",".btndelete_perkota", function() {
+        var name = $(this).attr("name");
+        var id = $(this).attr("id");
+        var tujuan = $(this).data("tujuan");
+        var asal = $(this).data("asal");
+        if(!confirm("Hapus Data " + asal +' menuju ke '+ tujuan + " ?")) return false;
+        var value = {
+            id: id,name:name,
+            _token: "{{ csrf_token() }}"
+        };
+        $.ajax({
+            type: "get",
+            url : baseUrl + "/sales/tarif_cabang_koli/hapus_data_perkota",
+            //dataType:"JSON",
+            data: value,
+            success: function(data, textStatus, jqXHR)
+            {
+                var data = jQuery.parseJSON(data);
+                if(data.result ==1){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload( null, false );
+                }else{
+                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
+                }
 
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+                swal("Error!", textStatus, "error");
+            }
+        });
+
+
+    });
 
 </script>
 @endsection
