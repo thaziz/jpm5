@@ -868,6 +868,7 @@
         var angkutan = $("select[name='cb_angkutan']").val();
         var cabang = $("select[name='cb_cabang']").val();
         var berat = $("input[name='ed_berat']").val();
+        
         $("input[name='ed_harga']").val(0);
               if (kota_asal == '') {
             Command: toastr["warning"]("Kota Asal harus diisi", "Peringatan !")
@@ -911,7 +912,7 @@
               "hideMethod": "fadeOut"
             }
             return false;
-        }else if (kecamatan_tujuan == '') {
+        }else if (kecamatan_tujuan == '' || kecamatan_tujuan == null) {
           Command: toastr["warning"]("Kecamatan Tujuan harus diisi", "Peringatan !")
 
             toastr.options = {
