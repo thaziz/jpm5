@@ -985,16 +985,14 @@ Route::get('sales/datatable_invoice', 'sales\penerimaan_penjualan_Controller@dat
 Route::get('sales/posting_pembayaran', 'sales\posting_pembayaran_Controller@index');
 Route::get('sales/posting_pembayaran_form/tampil_penerimaan_penjualan', 'sales\posting_pembayaran_Controller@tampil_penerimaan_penjualan');
 Route::get('sales/posting_pembayaran_form', 'sales\posting_pembayaran_Controller@form');
-Route::get('sales/posting_pembayaran_form/{nomor}/edit', 'sales\posting_pembayaran_Controller@form');
-Route::get('sales/posting_pembayaran_form/{nomor}/hapus_data', 'sales\posting_pembayaran_Controller@hapus_data');
-Route::get('sales/posting_pembayaran_form/tabel_data_detail', 'sales\posting_pembayaran_Controller@table_data_detail');
-Route::get('sales/posting_pembayaran/tabel', 'sales\posting_pembayaran_Controller@table_data');
-Route::get('sales/posting_pembayaran/get_data', 'sales\posting_pembayaran_Controller@get_data');
-Route::get('sales/posting_pembayaran/get_data_detail', 'sales\posting_pembayaran_Controller@get_data_detail');
-Route::post('sales/posting_pembayaran/save_data', 'sales\posting_pembayaran_Controller@save_data');
-Route::post('sales/posting_pembayaran/save_data_detail', 'sales\posting_pembayaran_Controller@save_data_detail');
-Route::post('sales/posting_pembayaran/hapus_data', 'sales\posting_pembayaran_Controller@hapus_data');
-Route::post('sales/posting_pembayaran/hapus_data_detail', 'sales\posting_pembayaran_Controller@hapus_data_detail');
+Route::get('sales/posting_pembayaran_form/nomor_posting', 'sales\posting_pembayaran_Controller@nomor_posting');
+Route::get('sales/posting_pembayaran_form/cari_kwitansi', 'sales\posting_pembayaran_Controller@cari_kwitansi');
+Route::get('sales/posting_pembayaran_form/cari_uang_muka', 'sales\posting_pembayaran_Controller@cari_uang_muka');
+Route::get('sales/posting_pembayaran_form/append', 'sales\posting_pembayaran_Controller@append');
+Route::get('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
+Route::get('sales/posting_pembayaran_edit/{id}', 'sales\posting_pembayaran_Controller@edit');
+Route::get('sales/posting_pembayaran_hapus', 'sales\posting_pembayaran_Controller@posting_pembayaran_hapus');
+
 
 //end penerimaan penjualan
 

@@ -4,8 +4,16 @@
 
 @section('content')
 <style type="text/css">
-      .id {display:none; }
-      .cssright { text-align: right; }
+        .id {display:none; }
+        .right { text-align: right; }
+
+        .disabled {
+            pointer-events: none;
+            opacity: 1;
+        }
+        .center{
+            text-align: center;
+        }
     </style>
 
 
@@ -17,6 +25,7 @@
                     <h5> POSTING PEMBAYARAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                     <a href="../sales/posting_pembayaran" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
 
                 </div>
                 <div class="ibox-content">
@@ -28,30 +37,7 @@
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
+                      
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
 
@@ -67,47 +53,60 @@
                     </div>
                 </form>
                 <form id="form_header" class="form-horizontal">
-                    <table class="table table-striped table-bordered table-hover">
+                    <div class="col-sm-6">
+                        <table class="table table-striped table-bordered table-hover table_header1">
                         <tbody>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">Nomor</td>
+                                <td style="width:120px; padding-top: 0.4cm">Nomor Posting</td>
                                 <td>
-                                    <input type="text" name="ed_nomor" id="ed_nomor" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" readonly="readonly" >
-                                    <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
-                                    <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                    <input type="hidden" class="form-control" name="crud_h" class="form-control" @if ($data === null) value="N" @else value="E" @endif>
+                                    <input type="text" readonly="" class="form-control input-sm nomor_posting" name="nomor_posting">
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td >
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control ed_tanggal" name="ed_tanggal" value="{{ $data->tanggal or  date('Y-m-d') }}">
                                     </div>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:110px;">Jenis Pembayaran</td>
+                                <td style="width:110px;">Jenis Posting</td>
                                 <td>
-                                    <select class="form-control" name="cb_jenis_pembayaran" >
-                                        <option value="T"> TUNAI/CASH </option>
+                                    <select class="form-control cb_jenis_pembayaran" name="cb_jenis_pembayaran" >
                                         <option value="C"> TRANSFER </option>
+                                        <option value="L"> LAIN-LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
+                                        <option value="F"> NOTA/BIAYA LAIN</option>
                                         <option value="U"> UANG MUKA/DP </option>
                                     </select>
-                                    <input type="hidden" name="ed_jenis_pembayaran" value="{{ $data->jenis_pembayaran or null }}" >
                                 </td>
+                            </tr>
+                            <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td>
-                                    <select class="form-control" name="cb_cabang" >
+                                    <select class="form-control cabang chosen-select-width" name="cb_cabang" >
                                     @foreach ($cabang as $row)
-                                        <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @if(Auth::user()->kode_cabang == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @else
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                        @endif
                                     @endforeach
                                     </select>
-                                    <input type="hidden" name="ed_cabang" value="{{ $data->kode_cabang or null }}" >
                                 </td>
                             </tr>
                             <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Customer</td>
+                                <td>
+                                    <select class="form-control customer chosen-select-width" name="customer" >
+                                    @foreach ($customer as $row)
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
+                                    @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+ {{--                            <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Kas / Bank</td>
                                 <td colspan="4">
                                     <select class="form-control" name="cb_kas_bank" >
@@ -118,36 +117,62 @@
                                     </select>
                                     <input type="hidden" name="ed_kas_bank" value="{{ $data->jenis_pembayaran or null }}" >
                                 </td>
-                            </tr>
+                            </tr> --}}
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="4" >
-                                    <input type="text" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="{{ $data->keterangan or null }}" >
+                                    <input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" value="{{ $data->keterangan or null }}" >
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:120px; padding-top: 0.4cm">Jumlah</td>
-                                <td colspan="4">
-                                    <input type="text" name="ed_jumlah" class="form-control angka" readonly="readonly" tabindex="-1" style="text-transform: uppercase; text-align: right" @if ($data === null) value="0" @else value="{{ number_format($data->jumlah, 0, ",", ".") }}" @endif>
+                                <td colspan="2">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-info " id="btn_kwitansi" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Kwitansi</button>
+                                        <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    </div>
+                    <div class="col-sm-6">
+                        <table class="table table_header2 table-striped table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <td style="width:120px; padding-top: 0.4cm">Nomor CEK/BG</td>
+                                <td>
+                                    <input type="text"  class="form-control input-sm nomor_cek" name="nomor_cek">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:110px;">Akun Bank</td>
+                                <td>
+                                    <select class="form-control cb_jenis_pembayaran" name="akun_bank" >
+                                        @foreach ($akun as $val)
+                                            <option value="{{$val->mb_id}}">{{$val->mb_nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                                    <tr>
+                                        <td style="width:120px; padding-top: 0.4cm">Jumlah</td>
+                                        <td colspan="4">
+                                    <input type="text" class="form-control ed_jumlah_text" readonly="readonly" style="text-align: right">
+                                    <input type="hidden" class="form-control ed_jumlah" name="ed_jumlah" readonly="readonly" style="text-align: right">
                                 </td>
                             </tr>
                             
                         </tbody>
                     </table>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Penerimaan</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
-                        </div>
                     </div>
                 </form>
                 <div class="box-body">
                   <table id="table_data" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th style="display:none;">id</th>
                             <th>Nomor Penerimaan</th>
                             <th>Jumlah</th>
+                            <th>Keterangan</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -167,22 +192,11 @@
                             </div>
                             <div class="modal-body">
                                 <form class="form-horizontal  kirim">
-                                    <table id="table_data_d" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Nomor Penerimaan</th>
-                                                <th>Tanggal</th>
-                                                <th style="width:20%">Jumlah</th>
-                                                <th>Aksi</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                                    
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" id="btnsave">Save changes</button>
+                                <button type="submit" class="btn btn-primary" id="append">Append</button>
                             </div>
                         </div>
                     </div>
@@ -214,274 +228,189 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    Number.prototype.format = function(n, x) {
-        var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
-        return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&.');
-    };
-    
-    $(document).ready( function () {
-        $("input[name='ed_tanggal']").focus();
-        $("select[name='cb_jenis_pembayaran']").val('{{ $data->jenis_pembayaran or ''  }}');
-        $("select[name='cb_cabang']").val('{{ $data->kode_cabang or ''  }}');
-        $jml_detail = {{ $jml_detail->jumlah  or 0}};
-        if ($jml_detail > 0){
-            $("input[name='ed_nomor']").attr('readonly','readonly');
-            $("select[name='cb_jenis_pembayaran']").attr('disabled','disabled');
-            $("select[name='cb_cabang']").attr('disabled','disabled');
-            $("input[name='ed_tanggal']").focus();
-        }else{
-            //$("input[name='ed_nomor']").focus();
+// datatable
+var array_simpan = [];
+
+var table_data = $('#table_data').DataTable({
+    paging:false,
+    searching:false,
+    columnDefs:[
+        {
+             targets: 3 ,
+             className: 'center'
+        },
+        {
+             targets: 1 ,
+             className: 'right'
+        },
+        {
+             targets: 2 ,
+             className: 'center'
+        },
+    ],
+});
+
+
+$(document).ready(function(){
+var cabang = $('.cabang').val();
+      $.ajax({
+        url  :baseUrl+'/sales/posting_pembayaran_form/nomor_posting',
+        data : {cabang},
+        success:function(data){
+          $('.nomor_posting').val(data.nota);
         }
-        var value ={
-                    jenis_pembayaran: function () { return $("input[name='ed_jenis_pembayaran']").val()},
-                    kode_cabang: function () { return $("input[name='ed_cabang']").val()},
-        };
+      })
+});
 
-        $('#table_data_d').DataTable({
-            "lengthChange": true,
-            "ordering": true,
-            "searching": false,
-            "paging": false,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-            "ajax": {
-            "url": baseUrl + "/sales/posting_pembayaran_form/tampil_penerimaan_penjualan",
-                "type": "GET",
-                "data" : value,
-            },
-            "columns": [
-            { "data": "nomor"},
-            { "data": "tanggal" },
-            { "data": "jumlah" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "button" },
-            ]
-        });
-
-        $('#table_data').DataTable({
-            "lengthChange": true,
-            "ordering": true,
-            "searching": false,
-            "paging": false,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-            "ajax": {
-                "url": baseUrl + "/sales/posting_pembayaran_form/tabel_data_detail",
-                "type": "GET",
-                "data" : { nomor : function () { return $('#ed_nomor').val()}},
-            },
-            "columns": [
-            { "data": "id" , render: $.fn.dataTable.render.number( '.'),"sClass": "id" },
-            { "data": "nomor_penerimaan_penjualan" },
-            { "data": "jumlah" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "button" },
-            ]
-        });
-        var config = {
-                '.chosen-select'           : {},
-                '.chosen-select-deselect'  : {allow_single_deselect:true},
-                '.chosen-select-no-single' : {disable_search_threshold:10},
-                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                '.chosen-select-width'     : {width:"100%",search_contains:true}
-                }
-            for (var selector in config) {
-                $(selector).chosen(config[selector]);
-            }
-        $(".angka").maskMoney({thousands:'.', decimal:',', precision:-1});
-    });
-
-    $("select[name='cb_jenis_pembayaran']").change(function(){
-        var data = $("select[name='cb_jenis_pembayaran']").val();
-        $("input[name='ed_jenis_pembayaran']").val(data);
-    });
-
-    $("select[name='cb_cabang']").change(function(){
-        var data = $("select[name='cb_cabang']").val();
-        $("input[name='ed_cabang']").val(data);
-    });
-
-    $(document).on("click","#btnadd",function(){
-        $.ajax(
-        {
-            url :  baseUrl + "/sales/posting_pembayaran/save_data",
-            type: "POST",
-            dataType:"JSON",
-            data : $('#form_header').serialize() ,
-            success: function(data, textStatus, jqXHR)
-            {
-                if(data.crud == 'N'){
-                    if(data.result != 1){
-                        alert("Gagal menyimpan data!");
-                    }else{
-                        $("input[name='ed_nomor']").val(data.nomor);
-                        $("input[name='ed_nomor_old']").val(data.nomor);
-                    }
-                }else if(data.crud == 'E'){
-                    if(data.result != 1){
-                        swal("Error","Can't update data, error : "+data.error,"error");
-                    }else{
-                        $("input[name='ed_nomor']").val(data.nomor);
-                        $("input[name='ed_nomor_old']").val(data.nomor);
-                    }
-                }else{
-                    swal("Error","invalid order","error");
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-               swal("Error!", textStatus, "error");
-            }
-        });
-        var table = $('#table_data_d').DataTable();
-        table.ajax.reload( null, false );
-        $("#modal").modal("show");
-    });
-
-    $(document).on("click","#btnsimpan",function(){
-        $.ajax(
-        {
-            url :  baseUrl + "/sales/posting_pembayaran/save_data",
-            type: "POST",
-            dataType:"JSON",
-            data : $('#form_header').serialize() ,
-            success: function(data, textStatus, jqXHR)
-            {
-                if(data.crud == 'N'){
-                    if(data.result != 1){
-                        alert("Gagal menyimpan data!");
-                    }else{
-                        window.location.href = baseUrl + '/sales/posting_pembayaran'
-                    }
-                }else if(data.crud == 'E'){
-                    if(data.result != 1){
-                        swal("Error","Can't update data, error : "+data.error,"error");
-                    }else{
-                        window.location.href = baseUrl + '/sales/posting_pembayaran'
-                    }
-                }else{
-                    swal("Error","invalid order","error");
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-               swal("Error!", textStatus, "error");
-            }
-        });
-    });
+$('#btn_kwitansi').click(function(){
+    var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
+    var cabang = $('.cabang').val();
+    var customer = $('.customer').val();
     
-
-    $(document).on("click","#btnsave",function(){
-        var nomor_penerimaan_penjualan = [];
-        var jumlah = [];
-        var nomor = $("input[name='ed_nomor']").val();
-        $(':checkbox:checked').each(function(i){
-          nomor_penerimaan_penjualan[i] = $(this).attr("id");
-          jumlah[i] = $("#ed_jumlah_" + nomor_penerimaan_penjualan[i]).val();
-        });
-        var nomor = $("input[name='ed_nomor']").val();
-        var value = {
-            nomor : nomor,
-            nomor_penerimaan_penjualan: nomor_penerimaan_penjualan,
-            jumlah: jumlah,
-            _token: "{{ csrf_token() }}"
-        };
-        $.ajax(
-        {
-            url : baseUrl + "/sales/posting_pembayaran/save_data_detail",
-            type: "POST",
-            dataType:"JSON",
-            data : value ,
-            success: function(data, textStatus, jqXHR)
-            {
-                if(data.result == 1){
-                    var table = $('#table_data').DataTable();
-                    table.ajax.reload( null, false );
-                    $("#modal").modal('hide');
-                    $("input[name='ed_jumlah']").val(data.jumlah);
-                    //$("input[name='ed_nomor']").attr('readonly','readonly');
-                    $("select[name='cb_cabang']").attr('disabled','disabled');
-                    $("select[name='cb_jenis_pembayaran']").attr('disabled','disabled');
-                    
-                    $("#btn_add").focus();
-                }else{
-                    alert("Gagal menyimpan data!");
-                }
-            },
-            
-        });
-    });
-
-    $(document).on( "click",".btndelete", function() {
-        var nomor = $("input[name='ed_nomor']").val();
-        var id = $(this).attr("id");
-        var nomor_penerimaan_penjualan = $(this).attr("name");
-        var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
-        var pajak = $("select[name='cb_pajak']").val();
-        if(!confirm("Hapus Data " +name+ " ?")) return false;
-        var value = {
-            id: id,
-            nomor: nomor,
-            nomor_penerimaan_penjualan: nomor_penerimaan_penjualan,
-            _token: "{{ csrf_token() }}"
-        };
+    if (cb_jenis_pembayaran != 'U') {
         $.ajax({
-            type: "POST",
-            url : baseUrl + "/sales/posting_pembayaran/hapus_data_detail",
-            dataType:"JSON",
-            data: value,
-            success: function(data, textStatus, jqXHR)
-            {
-                if(data.result ==1){
-                    var table = $('#table_data').DataTable();
-                    if (data.jml_detail == 0) {
-                        //$("input[name='ed_nomor']").removeAttr('readonly','readonly');
-                        $("select[name='cb_cabang']").removeAttr('disabled');
-                        $("select[name='cb_jenis_pembayaran']").removeAttr('disabled');
-                        
-                    }
-                   $("input[name='ed_jumlah']").val(data.jumlah);
-                    table.ajax.reload( null, false );
-                }else{
-                    //swal("Error","Data tidak bisa hapus : "+data.error,"error");
-                    alert('gagal menghapus data');
-                }
+            url  :baseUrl+'/sales/posting_pembayaran_form/cari_kwitansi',
+            data : {cabang,cb_jenis_pembayaran,customer,array_simpan},
+            success:function(data){
+              $('.kirim').html(data);
+              $('#modal').modal('show');
 
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-                swal("Error!", textStatus, "error");
             }
-        });
+        })
+    }else{
+        $.ajax({
+            url  :baseUrl+'/sales/posting_pembayaran_form/cari_uang_muka',
+            data : {cabang,cb_jenis_pembayaran,customer,array_simpan},
+            success:function(data){
+              $('.kirim').html(data);
+            }
+        })
+    }
+    
+})
+// check all
+function check_parent(){
+  var parent_check = $('.parent_box:checkbox:checked');
+  if (parent_check.length >0) {
+  console.log(parent_check.length);
 
+    table_modal_d.$('.tanda:checkbox').prop('checked',true);
+  }else if(parent_check.length==0) {
+    table_modal_d.$('.tanda:checkbox').removeAttr('checked');
+  }
 
+}
+function hitung() {
+    var temp = 0;
+    $('.d_netto').each(function(){
+        var temp1 = $(this).val();
+        temp1     = parseFloat(temp1);
+        temp     += temp1;
     });
+    $('.ed_jumlah_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_jumlah').val(temp);
+}
+$('#append').click(function(){
+    var cabang = $('.cabang').val();
+    var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
+    var nomor = [];
 
-    $(document).on( "click",".btninfo", function() {
-        var id = $(this).attr("id");
-        var value = {
-              nomor_penerimaan: id,
-            };
-        $.ajax(
-        {
-            url : baseUrl + "/sales/posting_pembayaran_form/tampil_riwayat_invoice",
-            type: "GET",
-            data : value,
-            success: function(data)
-            {
-                $("#table_data_riwayat_invoice").html(data);
-            }       
+    $('.tanda').each(function(){
+        var check = $(this).is(':checked');
+        if (check == true) {
+            var par   = $(this).parents('tr');
+            var inv   = $(par).find('.kwitansi_modal').val();
+            nomor.push(inv);
+            array_simpan.push(inv);
+
+        }  
+    })
+
+    $.ajax({
+        url  :baseUrl+'/sales/posting_pembayaran_form/append',
+        data : {nomor,cabang,nomor,cb_jenis_pembayaran},
+        dataType:'json',
+        success:function(data){
+            for (var i = 0; i < data.data.length; i++) {
+                table_data.row.add([
+                    data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
+                    accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
+                    '<input type="text" class="form-control d_keterangan" name="d_keterangan[]">',
+                    '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+                ]).draw();
+            }
+            $('#modal').modal('hide');
+            hitung();
+        }
+    })
+
+})
+
+function hapus_detail(o) {
+    var par = o.parentNode.parentNode;
+    var arr = $(par).find('.d_nomor_kwitansi').val();
+    var index = array_simpan.indexOf(arr);
+    array_simpan.splice(index,1);
+
+    table_data.row(par).remove().draw(false);
+}
+
+$('#btnsimpan').click(function(){
+    swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data Kwitansi!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+
+               // alert(accPiutang);
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+          $.ajax({
+          url:baseUrl + '/sales/posting_pembayaran_form/simpan_posting',
+          type:'get',
+          dataType:'json',
+          data:$('.table_header1 :input').serialize()
+               +'&'+$('.table_header2 :input').serialize()
+               +'&'+table_data.$('input').serialize(),
+          success:function(response){
+            if (response.status == 1) {
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                   showConfirmButton: true
+                    },function(){
+                        // location.reload();
+                });
+            }else{
+                $('#nota_kwitansi').val(response.nota);
+                toastr.info('Nomor Kwitansi Telah Dirubah Menjadi '+response.nota);
+                $('#btnsimpan').click();
+            }
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
         });
-        $("#modal_info").modal("show");
-    });
-
-
+       }
+      });  
+     });
+})
 
 </script>
 @endsection
