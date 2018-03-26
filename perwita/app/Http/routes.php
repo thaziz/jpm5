@@ -22,13 +22,13 @@ Route::get('/halaman_kosong', function(){
 });
 
 Route::group(['middleware' => 'guest'], function () {
-    
+
     Route::get('/', function () {
         return view('auth.login');
     })->name('index');
 
     Route::get('login', 'loginController@authenticate');
-    Route::post('login', 'loginController@authenticate');    
+    Route::post('login', 'loginController@authenticate');
 });
 /*Route::get('/', function(){
     return view('auth.login');
@@ -285,7 +285,7 @@ Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
 
 
 
-//PENDING 
+//PENDING
 Route::get('pending/index', 'pendingController@index');
 Route::get('pending_kas/index', 'pendingController@index_kas');
 Route::get('pending_kas/save_kas/{id}', 'pendingController@save_kas');
@@ -860,7 +860,7 @@ Route::get('sales/nota_debet_kredit/nomor_cn_dn', 'sales\nota_debet_kredit_Contr
 
 // end nota debet kredit
 
-// uang muka penjualan 
+// uang muka penjualan
 Route::get('sales/uang_muka_penjualan', 'sales\uang_muka_penjualan_Controller@index');
 Route::get('sales/uang_muka_penjualan/tabel', 'sales\uang_muka_penjualan_Controller@table_data');
 Route::get('sales/uang_muka_penjualan/nota_uang_muka', 'sales\uang_muka_penjualan_Controller@nota_uang_muka');
@@ -983,10 +983,10 @@ Route::group(["prefix" => "sales"], function(){
         'uses' => 'sales\DeliveryOrderController@redirectToAddForm',
         'as' => 'DelOrder.redirect'
   ]);
-  
+
   Route::post("/post-delivery-order", [
         'uses' => 'sales\DeliveryOrderController@store',
-        'as' => 'DelOrder.store' 
+        'as' => 'DelOrder.store'
   ]);
 
   Route::get("/edit/{id}/DO-tanpa-sales-order", [
@@ -1114,6 +1114,15 @@ Route::get('master_keuangan/neraca/excel/{throtle}', [
 ]);
 
 //endneraca
+
+
+// neraca saldo
+Route::get('master_keuangan/neraca-saldo/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
+  'as'   => 'eraca_saldo.index'
+]);
+// end neraca saldo
+
 
 //neraca_detail
 
