@@ -158,7 +158,7 @@
             </td>
 
             <td width="14%">
-              <button class="btn btn-primary btn-sm" id="filter-rekap" data-throttle="{{ $throttle }}">Tampilkan Rekapan Neraca</button>
+              <button class="btn btn-default btn-outline btn-sm" id="filter-rekap" data-throttle="{{ $throttle }}">Tampilkan Rekapan Neraca</button>
             </td>
           </tr>
         </table>
