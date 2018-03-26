@@ -22,13 +22,13 @@ Route::get('/halaman_kosong', function(){
 });
 
 Route::group(['middleware' => 'guest'], function () {
-    
+
     Route::get('/', function () {
         return view('auth.login');
     })->name('index');
 
     Route::get('login', 'loginController@authenticate');
-    Route::post('login', 'loginController@authenticate');    
+    Route::post('login', 'loginController@authenticate');
 });
 /*Route::get('/', function(){
     return view('auth.login');
@@ -285,7 +285,7 @@ Route::get('ikhtisar_kas/print/{id}', 'ikhtisarController@cetak');
 
 
 
-//PENDING 
+//PENDING
 Route::get('pending/index', 'pendingController@index');
 Route::get('pending_kas/index', 'pendingController@index_kas');
 Route::get('pending_kas/save_kas/{id}', 'pendingController@save_kas');
@@ -885,7 +885,7 @@ Route::post('sales/nota_debet_kredit/hapus_data', 'sales\nota_debet_kredit_Contr
 Route::get('sales/nota_debet_kredit_cari', 'sales\nota_debet_kredit_Controller@tampil_auto_complete');
 // end nota debet kredit
 
-// uang muka penjualan 
+// uang muka penjualan
 Route::get('sales/uang_muka_penjualan', 'sales\uang_muka_penjualan_Controller@index');
 Route::get('sales/uang_muka_penjualan/tabel', 'sales\uang_muka_penjualan_Controller@table_data');
 Route::get('sales/uang_muka_penjualan/get_data', 'sales\uang_muka_penjualan_Controller@get_data');
@@ -1000,10 +1000,10 @@ Route::group(["prefix" => "sales"], function(){
         'uses' => 'sales\DeliveryOrderController@redirectToAddForm',
         'as' => 'DelOrder.redirect'
   ]);
-  
+
   Route::post("/post-delivery-order", [
         'uses' => 'sales\DeliveryOrderController@store',
-        'as' => 'DelOrder.store' 
+        'as' => 'DelOrder.store'
   ]);
 
   Route::get("/edit/{id}/DO-tanpa-sales-order", [
@@ -1116,36 +1116,65 @@ Route::get('suratketerangankerjapengajuankpr', 'SuratController@pdf_suratketeran
 //neraca
 
 Route::get('master_keuangan/neraca/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@index_neraca',
+  'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca',
   'as'   => 'neraca.index'
 ]);
 
 Route::get('master_keuangan/neraca/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@print_pdf_neraca',
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca',
   'as'   => 'neraca.pdf'
 ]);
 
 Route::get('master_keuangan/neraca/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@print_excel_neraca',
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_excel_neraca',
   'as'   => 'neraca.excel'
 ]);
 
 //endneraca
 
+
+// neraca saldo
+Route::get('master_keuangan/neraca-saldo/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
+  'as'   => 'neraca_saldo.index'
+]);
+// end neraca saldo
+
+
+//neraca_detail
+
+Route::get('master_keuangan/neraca-detail/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca_detail@index_neraca',
+  'as'   => 'neraca_detail.index'
+]);
+
+Route::get('master_keuangan/neraca-detail/print/{throtle}', [
+  'uses' => 'master_keuanganlaporan\laporan_neraca_detailr@print_pdf_neraca',
+  'as'   => 'neraca_detail.pdf'
+]);
+
+Route::get('master_keuangan/neraca-detail/excel/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca_detail@print_excel_neraca',
+  'as'   => 'neraca_detail.excel'
+]);
+
+//endneraca_detail
+
+
 //laba rugi
 
 Route::get('master_keuangan/laba_rugi/{throttle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@index_laba_rugi',
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@index_laba_rugi',
   'as'   => 'laba_rugi.index'
 ]);
 
 Route::get('master_keuangan/laba_rugi/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@print_excel_laba_rugi',
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_excel_laba_rugi',
   'as'   => 'laba_rugi.excel'
 ]);
 
 Route::get('master_keuangan/laba_rugi/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@print_pdf_laba_rugi',
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_pdf_laba_rugi',
   'as'   => 'laba_rugi.pdf'
 ]);
 
@@ -1616,7 +1645,6 @@ Route::get('sales/tarif_penerus_kilogram/tabel', 'tarif\penerus_kilogram_Control
 Route::get('sales/tarif_penerus_kilogram/get_kota', 'tarif\penerus_kilogram_Controller@get_kota');
 Route::get('sales/tarif_penerus_kilogram/get_kec', 'tarif\penerus_kilogram_Controller@get_kec');
 
-
 // tarif cabang sepeda
 Route::get('sales/tarif_cabang_sepeda', 'tarif\cabang_sepeda_Controller@index');
 Route::get('sales/tarif_cabang_sepeda/tabel', 'tarif\cabang_sepeda_Controller@table_data');
@@ -1667,4 +1695,4 @@ Route::get('sales/tarif_penerus_default/tabel', 'tarif\penerus_default_Controlle
 Route::get('sales/tarif_penerus_default/get_data', 'tarif\penerus_default_Controller@get_data');
 Route::get('sales/tarif_penerus_default/save_data', 'tarif\penerus_default_Controller@save_data');
 Route::get('sales/tarif_penerus_default/hapus_data', 'tarif\penerus_default_Controller@hapus_data');
-// end tarif penerus penerus_default_Controller
+
