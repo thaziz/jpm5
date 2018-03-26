@@ -777,6 +777,10 @@ Route::get('sales/deliveryorderkargoform', 'sales\do_kargo_Controller@form');
 Route::get('sales/cari_nopol_kargo', 'sales\do_kargo_Controller@cari_nopol_kargo');
 Route::get('sales/nama_subcon', 'sales\do_kargo_Controller@nama_subcon');
 Route::get('sales/cari_kontrak_tarif', 'sales\do_kargo_Controller@cari_kontrak_tarif');
+Route::get('sales/nomor_do_kargo', 'sales\do_kargo_Controller@nomor_do_kargo');
+Route::get('sales/hapus_do_kargo', 'sales\do_kargo_Controller@hapus_do_kargo');
+Route::get('sales/pilih_kontrak_kargo', 'sales\do_kargo_Controller@pilih_kontrak_kargo');
+Route::get('sales/save_do_kargo', 'sales\do_kargo_Controller@save_do_kargo');
 
 
 

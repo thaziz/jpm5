@@ -388,16 +388,16 @@ class posting_pembayaran_Controller extends Controller
     public function posting_pembayaran_hapus(request $request)
     {
 
-       return  $cari_detail = DB::table('posting_pembayaran_d')
+        $cari_detail = DB::table('posting_pembayaran_d')
                          ->where('nomor_posting_pembayaran',$request->id)
                          ->get(); 
 
         for ($i=0; $i < count($cari_detail); $i++) { 
             $update = DB::table('kwitansi')
-                        ->where('k_nomor',$cari_detail->nomor_penerimaan_penjualan[$i])
+                        ->where('k_nomor',$cari_detail[$i]->nomor_penerimaan_penjualan)
                         ->update([
-                            'k_nomor_posting' => null,
-                            'k_tgl_posting'   => null,
+                            'k_nomor_posting' => '',
+                            'k_tgl_posting'   => '',
                         ]); 
         }
         $hapus = DB::table('posting_pembayaran')
