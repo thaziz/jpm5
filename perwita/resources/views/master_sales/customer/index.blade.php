@@ -4,13 +4,38 @@
 
 @section('content')
 
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2> CUSTOMER </h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Master</a>
+                        </li>
+                        <li>
+                            <a>Master Penjualan</a>
+                        </li>
+                        <li>
+                            <a>Master DO</a>
+                        </li>
+                        <li class="active">
+                            <strong> CUSTOMER </strong>
+                        </li>
 
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> CUSTOMER
+                    <h5> 
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
@@ -71,13 +96,12 @@
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                             <tbody>
                                 <tr>
-                                    <td hidden="" style="width:120px; padding-top: 0.4cm"  >Kode</td>
-                                    <td colspan="4">
+                                    <td style="width:120px; padding-top: 0.4cm;text-align: center;font-weight: bold;" colspan="4">Identitas Customer</td>
+                                    <td hidden="">
                                         <input type="hidden" name="ed_kode" class="form-control" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
-                                        
 
                                     </td>
                                 </tr>
@@ -85,7 +109,7 @@
                                     <td style="padding-top: 0.4cm">Nama</td>
                                     <td><input type="" class="form-control" name="ed_nama" style="text-transform: uppercase" ></td>
 
-                                      <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>
                                         <select class="chosen-select-width" name="cabang">
                                             <option value="0">Pilih - Cabang</option>
@@ -127,12 +151,15 @@
                                         </select>
                                     </td>
                                 </tr>
-                                
+                                <tr>
+                                    <td>Plafon</td>
+                                    <td colspan="3"><input type="text" class="form-control" name="ed_plafon"></td>
+                                </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kota</td>
                                     <td>
                                         <select class="chosen-select-width"  name="cb_kota" style="width:100%">
-                                            <option value=""></option>
+                                            <option value="">Pilih - kota</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
                                         @endforeach
@@ -140,10 +167,37 @@
                                     </td>
 
                                     <td style="padding-top: 0.4cm">Kode Bank</td>
-                                    <td><input type="text" class="form-control" name="ed_kode_bank" ></td>
+                                    <td>
+                                        <select class="form-control" name="ed_kode_bank" >
+                                            <option selected="" disabled="">Pilih - Bank</option>
+                                            @foreach ($bank as $bank)
+                                                <option value="{{ $bank->mb_kode }}">{{ $bank->mb_kode }} - {{ $bank->mb_nama }}</option>
+                                            @endforeach
+                                            
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="7" style="text-align: center;font-weight: bold;">PAJAK</td>
+                                    <td colspan="7" style="text-align: center;font-weight: bold;">Identitas Pajak</td>
+                                </tr>
+                                <tr>
+                                    <td> Nama </td>
+                                    <td><input type="text" class="form-control" name="nama_pajak"></td>
+
+                                    <td>Kota</td>
+                                    <td>
+                                         <select class="chosen-select-width"  name="kota_pajak" style="width:100%">
+                                            <option value="" >pilih - kota</option>
+                                        @foreach ($kota as $row)
+                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Alamat</td>
+                                    <td colspan="4"><input type="text" class="form-control" name="alamat_pajak" style="text-transform: uppercase" ></td>
+                                    
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">NPWP</td>
