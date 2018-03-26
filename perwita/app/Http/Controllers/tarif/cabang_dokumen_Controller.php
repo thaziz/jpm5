@@ -154,7 +154,7 @@ class cabang_dokumen_Controller extends Controller
             $result['hasil_cek']=$hasil_cek;
             return json_encode($result);
             
-         }else if = {
+         }else {
 
           if ($crud =='N') {
 
