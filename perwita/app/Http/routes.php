@@ -1133,12 +1133,13 @@ Route::get('master_keuangan/neraca/excel/{throtle}', [
 //endneraca
 
 // neraca saldo
-Route::get('master_keuangan/neraca-saldo/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
-  'as'   => 'eraca_saldo.index'
-]);
+
 // end neraca saldo
 
+Route::get('master_keuangan/neraca-saldo/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
+  'as'   => 'neraca_saldo.index'
+]);
 
 //neraca_detail
 
