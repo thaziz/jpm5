@@ -21,7 +21,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
-                       <a href="nota_debet_kredit/create">email me</a>
+                       <a class="btn btn-primary" href="nota_debet_kredit/create">Tambah data</a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -55,7 +55,7 @@
                             <th>Nomor</th>
                             <th>Tanggal</th>
                             <th>Nomor Invoice</th>
-							<th>Keterangan</th>
+							              <th>Keterangan</th>
                             <th>Debet</th>
                             <th>Kredit</th>
                             <th> Aksi </th>

@@ -607,16 +607,16 @@ class penerimaan_penjualan_Controller extends Controller
     public function datatable_kwitansi()
     {
         $cabang = Auth::user()->kode_cabang;
-        $data = DB::table('penerimaan_penjualan')
-                  ->where('kode_cabang',$cabang)
+        $data = DB::table('kwitansi')
+                  ->where('k_kode_cabang',$cabang)
                   ->get();
         $data = collect($data);
 
         return Datatables::of($data)
                         ->addColumn('tes', function ($data) {
                                    return     '<div class="btn-group">
-                                        <button type="button" onclick="hapus('.$data->nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
-                                        <button type="button" onclick="edit('.$data->nomor.')" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
+                                        <button type="button" onclick="hapus('.$data->k_nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                        <button type="button" onclick="edit('.$data->k_nomor.')" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
                                         </div>';
                             })
                         ->make(true);
@@ -636,6 +636,28 @@ class penerimaan_penjualan_Controller extends Controller
 
         return response()->json(['nota'=>$nota]);
     }
+    public function nota_bank(request $request)
+
+    {   if ($request->cb_jenis_pembayaran == 'C' || $request->cb_jenis_pembayaran == 'F') {
+            $bulan = Carbon::now()->format('m');
+
+            $tahun = Carbon::now()->format('y');
+
+            $cari_nota = DB::select("SELECT  substring(max(k_nomor),11) as id from kwitansi
+                                            WHERE k_kode_cabang = '$request->cabang'
+                                            AND to_char(k_tanggal,'MM') = '$bulan'
+                                            AND to_char(k_tanggal,'YY') = '$tahun'");
+            $index = (integer)$cari_nota[0]->id + 1;
+            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+            $nota = 'CRU' . $request->cabang . $bulan . $tahun . $index;
+
+            return response()->json(['nota'=>$nota]);
+        }else{
+            $nota = '';
+            return response()->json(['nota'=>$nota]);
+        }
+    }
+        
     public function akun_all(request $request)
     {
         $akun = DB::table('d_akun')
@@ -797,6 +819,7 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_kode_cabang' => $request->cb_cabang,
                                 'k_jenis_pembayaran' => $request->cb_jenis_pembayaran,
                                 'k_kredit' => $request->ed_debet,
+                                'k_nota_bank' => $request->nota_bank,
                                 'k_debet' => $request->ed_kredit,
                                 'k_netto' => $request->ed_netto,
                                 'k_kode_akun'=> $request->cb_akun_h
