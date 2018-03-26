@@ -1116,45 +1116,45 @@ Route::get('suratketerangankerjapengajuankpr', 'SuratController@pdf_suratketeran
 //neraca
 
 Route::get('master_keuangan/neraca/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@index_neraca',
+  'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca',
   'as'   => 'neraca.index'
 ]);
 
 Route::get('master_keuangan/neraca/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@print_pdf_neraca',
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca',
   'as'   => 'neraca.pdf'
 ]);
 
 Route::get('master_keuangan/neraca/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@print_excel_neraca',
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_excel_neraca',
   'as'   => 'neraca.excel'
 ]);
 
 //endneraca
 
+
 // neraca saldo
-
-// end neraca saldo
-
 Route::get('master_keuangan/neraca-saldo/{throtle}', [
   'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
   'as'   => 'neraca_saldo.index'
 ]);
+// end neraca saldo
+
 
 //neraca_detail
 
 Route::get('master_keuangan/neraca-detail/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_detail_controller@index_neraca',
+  'uses' => 'master_keuangan\laporan\laporan_neraca_detail@index_neraca',
   'as'   => 'neraca_detail.index'
 ]);
 
 Route::get('master_keuangan/neraca-detail/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_detail_controller@print_pdf_neraca',
+  'uses' => 'master_keuanganlaporan\laporan_neraca_detailr@print_pdf_neraca',
   'as'   => 'neraca_detail.pdf'
 ]);
 
 Route::get('master_keuangan/neraca-detail/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_detail_controller@print_excel_neraca',
+  'uses' => 'master_keuangan\laporan\laporan_neraca_detail@print_excel_neraca',
   'as'   => 'neraca_detail.excel'
 ]);
 
@@ -1164,17 +1164,17 @@ Route::get('master_keuangan/neraca-detail/excel/{throtle}', [
 //laba rugi
 
 Route::get('master_keuangan/laba_rugi/{throttle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@index_laba_rugi',
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@index_laba_rugi',
   'as'   => 'laba_rugi.index'
 ]);
 
 Route::get('master_keuangan/laba_rugi/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@print_excel_laba_rugi',
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_excel_laba_rugi',
   'as'   => 'laba_rugi.excel'
 ]);
 
 Route::get('master_keuangan/laba_rugi/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan_keuangan_controller@print_pdf_laba_rugi',
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_pdf_laba_rugi',
   'as'   => 'laba_rugi.pdf'
 ]);
 
