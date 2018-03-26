@@ -425,6 +425,7 @@
         $("select[name='ed_csf_penjualan']").val('').trigger('chosen:updated');
         $("select[name='ed_acc_penjualan']").val('').trigger('chosen:updated');
         $("select[name='ed_cabang']").val('').trigger('chosen:updated');
+        $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
         $("#modal").modal("show");
     });
 
@@ -477,6 +478,7 @@
                 $('input[name="tarif10kg_express"]').val(data[6].harga);
                 $('input[name="tarif20kg_express"]').val(data[7].harga);
                 //expre
+                $('#hilang').hide();
                 //
                 $("input[name='kode_sama_koli']").val(data[0].kode_sama_koli);
                 $("select[name='cb_kota_asal']").val(data[0].id_kota_asal).trigger('chosen:updated');
@@ -484,6 +486,7 @@
                 $("select[name='ed_csf_penjualan']").val(data[0].csf_penjualan).trigger('chosen:updated');
                 $("select[name='ed_acc_penjualan']").val(data[0].acc_penjualan).trigger('chosen:updated');
                 $("select[name='ed_cabang']").val(data[0].kode_cabang).trigger('chosen:updated');
+                
                 $("#modal").modal('show');
 
             },
