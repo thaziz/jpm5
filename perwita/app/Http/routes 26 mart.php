@@ -853,10 +853,6 @@ Route::post('sales/faktur_pajak/save_data', 'sales\faktur_pajak_Controller@save_
 Route::get('sales/nota_debet_kredit', 'sales\nota_debet_kredit_Controller@index');
 Route::get('sales/nota_debet_kredit/tabel', 'sales\nota_debet_kredit_Controller@table_data')->name('datatable_cn_dn');
 Route::get('sales/nota_debet_kredit/create', 'sales\nota_debet_kredit_Controller@create');
-Route::get('sales/nota_debet_kredit/cari_invoice', 'sales\nota_debet_kredit_Controller@cari_invoice');
-Route::get('sales/nota_debet_kredit/pilih_invoice', 'sales\nota_debet_kredit_Controller@pilih_invoice');
-Route::get('sales/nota_debet_kredit/simpan_cn_dn', 'sales\nota_debet_kredit_Controller@simpan_cn_dn');
-Route::get('sales/nota_debet_kredit/nomor_cn_dn', 'sales\nota_debet_kredit_Controller@nomor_cn_dn');
 
 // end nota debet kredit
 
@@ -926,7 +922,6 @@ Route::get('sales/fakturpajakform', function(){
 Route::get('sales/penerimaan_penjualan', 'sales\penerimaan_penjualan_Controller@index');
 Route::get('sales/penerimaan_penjualan_form', 'sales\penerimaan_penjualan_Controller@form');
 Route::get('sales/nota_kwitansi', 'sales\penerimaan_penjualan_Controller@nota_kwitansi');
-Route::get('sales/nota_bank', 'sales\penerimaan_penjualan_Controller@nota_bank');
 Route::get('sales/cari_invoice', 'sales\penerimaan_penjualan_Controller@cari_invoice');
 Route::get('sales/append_invoice', 'sales\penerimaan_penjualan_Controller@append_invoice');
 Route::get('sales/riwayat_invoice', 'sales\penerimaan_penjualan_Controller@riwayat_invoice');

@@ -371,8 +371,16 @@ public function pajak_lain(request $request)
 }
 public function simpan_invoice(request $request)
 {
-  return DB::transaction(function() use ($request) {  
-    /*dd($request->all());*/
+   return DB::transaction(function() use ($request) {  
+
+
+    $delete = DB::table('invoice')
+                ->where('i_nomor',$request->nota_invoice);
+                
+    if(count($delete->first())!=0){
+        $delete->delete();
+    }
+    $dataItem=[];
     $cabang=Auth::user()->kode_cabang;
     $do_awal        = str_replace('/', '-', $request->do_awal);
     $do_akhir       = str_replace('/', '-', $request->do_akhir);
@@ -443,6 +451,7 @@ public function simpan_invoice(request $request)
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
                                           'i_ppnrte'             =>  $ppn_persen,
+                                          'i_status'             =>  'Released',
                                           'i_ppnrp'              =>  $total_ppn,
                                           'i_kode_pajak'         =>  $request->pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
@@ -455,6 +464,11 @@ public function simpan_invoice(request $request)
                                           'update_at'            =>  Carbon::now(),
                                           'i_pendapatan'         =>  $request->ed_pendapatan
                                      ]);
+
+            // $cari_no_invoice = DB::table('invoice')
+            //              ->where('i_nomor',$request->nota_invoice)
+            //              ->first();
+            //   dd($cari_no_invoice);
              for ($i=0; $i < count($request->do_detail); $i++) { 
 
                 $cari_id = DB::table('invoice_d')
@@ -491,6 +505,9 @@ public function simpan_invoice(request $request)
                                               'id_tipe'          => 'tidak tahu',
                                               'id_acc_penjualan' => $do->acc_penjualan
                                           ]);
+
+                
+
     $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
     $request->netto_detail =str_replace(',', '.', $request->netto_detail);
 
@@ -514,8 +531,19 @@ public function simpan_invoice(request $request)
                       /*$dataItem[$i]['netto_detail']=$request->netto_detail;  */              
                     
              }
+             // $tes = DB::table('invoice_d')
+             //             ->where('id_nomor_invoice',$request->nota_invoice)
+             //             ->get();
 
+             //    dd($tes);
+$jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
+            if(count($jurnal->first())!=0){
+              $jurnal->delete();
+            }
 
+if(count($dataItem)==0){
+    return response()->json(['status' => 1,'display'=>0]);
+}
       $Nilaijurnal=$this->groupJurnal($dataItem);
 
             foreach ($Nilaijurnal as  $indexakun=> $dataJurnal) {  
@@ -634,10 +662,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
 
 
 
-            $jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
-            if(count($jurnal->first())!=0){
-              $jurnal->delete();
-            }else{
+            
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $id_jrdt=1;
                 foreach ($akun as $key => $data) {   
@@ -658,7 +683,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                         'jr_note'=> 'INVOICE',
                         ]);
             d_jurnal_dt::insert($jurnal_dt);
-           }
+           
 
 
 
@@ -692,6 +717,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_diskon1'            =>  $diskon1,
+                                          'i_status'             =>  'Released',
                                           'i_diskon2'            =>  $diskon2,
                                           'i_netto'              =>  $ed_total,
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
@@ -769,6 +795,13 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                       $dataItem[$i]['pajak_lain']=$totalStlhDiskon*($request->pajak_lain/100);
              }
 
+$jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
+            if(count($jurnal->first())!=0){
+              $jurnal->delete();
+            }
+if(count($dataItem)==0){
+    return response()->json(['status' => 1,'display'=>0]);
+}
                $Nilaijurnal=$this->groupJurnal($dataItem);
 
             foreach ($Nilaijurnal as  $indexakun=> $dataJurnal) {  
@@ -887,10 +920,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
 
 
 
-            $jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
-            if(count($jurnal->first())!=0){
-              $jurnal->delete();
-            }else{
+            
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $id_jrdt=1;
                 foreach ($akun as $key => $data) {   
@@ -911,7 +941,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                         'jr_note'=> 'INVOICE',
                         ]);
             d_jurnal_dt::insert($jurnal_dt);
-           }
+           
 
 
              return response()->json(['status' => 2,'nota'=>$nota]);
@@ -933,6 +963,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_total_tagihan'      =>  $total_tagihan,
                                           'i_sisa_pelunasan'     =>  $total_tagihan,
+                                          'i_status'             =>  'Released',
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_netto'              =>  $ed_total,
@@ -961,11 +992,11 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                  }else{
                      $cari_id += 1;
                  }
-                 $do = DB::table('delivery_orderd')
+                $do = DB::table('delivery_orderd')
                          ->join('delivery_order','nomor','=','dd_nomor')
                          ->where('dd_id',$request->do_id[$i])
                          ->first();
-
+                  // dd($request->do_id);
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
@@ -975,7 +1006,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'create_at'        => Carbon::now(),
                                               'update_by'        => Auth::user()->m_name,
                                               'update_at'        => Carbon::now(),
-                                              'id_tgl_do'        => $do->tanggal,
+                                              'id_tgl_do'        => Carbon::parse($do->tanggal)->format('Y-m-d'),
                                               'id_jumlah'        => $request->dd_jumlah[$i],
                                               'id_keterangan'    => $do->dd_keterangan,
                                               'id_harga_satuan'  => $request->dd_harga[$i],
@@ -1018,6 +1049,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_total_tagihan'      =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_sisa_pelunasan'     =>  $total_tagihan,
+                                          'i_status'             =>  'Released',
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,
                                           'i_netto'              =>  $ed_total,
@@ -1076,11 +1108,11 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_nomor_do_dt'   => $request->do_id[$i]
                                           ]);
              }
-dd('d');
+
              return response()->json(['status' => 2,'nota'=>$nota]);
         }
     }
-    });
+     });
         
 }
 
@@ -1218,13 +1250,19 @@ public function hapus_invoice(request $request)
 public function update_invoice(request $request)
 {
     // dd($request->all());
-    
-    $delete = DB::table('invoice')
-                ->where('i_nomor',$request->nota_invoice)
-                ->delete();
+   
 
-    $this->simpan_invoice($request);
-    return response()->json(['status'=>1]);
+    return $this->simpan_invoice($request);
+/*
+    $cari_invoice =DB::table('invoice')
+                    ->where('i_nomor',$request->nota_invoice)
+                    ->first();*/
+
+    /*if ($cari_invoice == null ){
+      return response()->json(['status'=>0,'pesan'=>'data tidak berhasil disimpan']);
+    }else{
+      return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
+    }*/
 }
 
   //funngsi Thoriq

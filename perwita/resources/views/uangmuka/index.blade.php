@@ -5,15 +5,24 @@
 @section('content')
 
 
-<div class="row wrapper border-bottom white-bg page-heading">
+<<div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Uang muka </h2>
+                    <h2> UANG MUKA PEMBELIAN </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
                         </li>
+                        <li>
+                            <a>Operasional</a>
+                        </li>
+                        <li>
+                          <a>Pembelian</a>
+                        </li>
+                        <li>
+                          <a>Transaksi Hutang</a>
+                        </li>
                         <li class="active">
-                            <strong> Uang muka </strong>
+                            <strong>Uang Muka Pembelian</strong>
                         </li>
 
                     </ol>
@@ -28,7 +37,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Voucher Hutang
+                    <h5> 
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                       <div class="text-right">

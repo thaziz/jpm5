@@ -5,116 +5,163 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
+use Auth;
+use Yajra\Datatables\Datatables;
+use carbon\Carbon;
 
 
 class nota_debet_kredit_Controller extends Controller
 {
     public function table_data () {
         //$cabang = strtoupper($request->input('kode_cabang'));
-		$sql = "	SELECT n.*, c.nama, i.netto,i.ppn,i.pph,i.total_tagihan FROM nota_debet_kredit  n
-					LEFT JOIN invoice i ON i.nomor=n.nomor_invoice
-					LEFT JOIN customer c ON c.kode=i.kode_customer";
+		$cabang = Auth::user()->kode_cabang;
+        $data = DB::table('cn_dn_penjualan')
+                  ->where('cd_kode_cabang',$cabang)
+                  ->get();
 
-					//WHERE kode_cabang = '$cabang' ";
+        $data = collect($data);
 
-        $list = DB::select(DB::raw($sql));
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['nomor'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['nomor'].'" name="'.$data[$i]['nomor_invoice'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
+        return Datatables::of($data)
+                        ->addColumn('tombol', function ($data) {
+                             return    '<div class="btn-group">
+                                        <button type="button" onclick="hapus('.$data->cd_nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                        <button type="button" onclick="edit('.$data->cd_nomor.')" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
+                                        </div>';
+                            })
+                        ->make(true);
+  
     }
 
-    public function get_data (Request $request) {
-        $id =$request->input('id');
-        $data = DB::table('nota_debet_kredit')->where('nomor', $id)->first();
-        echo json_encode($data);
+    public function create()
+    {
+
+        $cabang = DB::select(DB::raw(" SELECT * FROM cabang"));
+
+        $customer = DB::table('customer')
+                            ->get();
+
+        $cabang = DB::table('cabang')
+                    ->get();
+        $pajak = DB::table('pajak')
+                    ->get();
+
+        $akun  = DB::table('d_akun')
+                   // ->where('kode_cabang',$cabang)
+                   ->get();
+        return view('sales.nota_debet_kredit.create_cn_dn', compact('customer','cabang','pajak','akun'));
     }
-
-
-    public function save_data (Request $request) {
-        $simpan='';
-        $crud = $request->crud;
-         $data = array(
-                  'nomor' => strtoupper($request['ed_nomor']),
-                  'tanggal' => strtoupper($request['ed_tanggal']),
-                  'nomor_invoice' => strtoupper($request['ed_nomor_invoice']),
-                  'debet' => strtoupper($request['ed_debet']),
-                  'kredit' => strtoupper($request['ed_kredit']),
-                  'keterangan' => strtoupper($request['ed_keterangan']),
-                  'kode_cabang' => strtoupper($request['cb_cabang']),
-            );
-        
-        if ($crud == 'N') {
-            $simpan = DB::table('nota_debet_kredit')->insert($data);
-        }elseif ($crud == 'E') {
-            $simpan = DB::table('nota_debet_kredit')->where('nomor', $request->ed_nomor_old)->update($data);
-        }
-        if($simpan == TRUE){
-            $result['error']='';
-            $result['result']=1;
-        }else{
-            $result['error']=$data;
-            $result['result']=0;
-        }
-        $result['crud']=$crud;
-        echo json_encode($result);
-    }
-
-    public function hapus_data (Request $request) {
-        $hapus='';
-        $id=$request->id;
-        $hapus = DB::table('nota_debet_kredit')->where('nomor' ,'=', $id)->delete();
-        if($hapus == TRUE){
-            $result['error']='';
-            $result['result']=1;
-        }else{
-            $result['error']=$hapus;
-            $result['result']=0;
-        }
-        echo json_encode($result);
-    }
-
-	public function tampil_auto_complete(Request $request){
-		$cabang = strtoupper($request['cabang']);
-		$nomor = strtoupper($request['term']);
-		$results = array();
-        $queries = DB::select("	SELECT nomor,tanggal,c.nama,i.pendapatan,i.no_faktur_pajak,i.total_tagihan FROM  invoice i
-								LEFT JOIN customer c ON c.kode=i.kode_customer
-								WHERE i.kode_cabang='$cabang' AND nomor like '%".$nomor."%' LIMIT 100 ");
-        if ($queries == null){
-            $results[] = [ 'nomor' => null, 'label' => 'Tidak ditemukan data terkait'];
-        } else {
-
-            foreach ($queries as $query)
-            {
-                $results[] = [ 	'nomor' => $query->nomor,
-								'label' => $query->nomor,
-								'tanggal' => $query->tanggal,
-								'nama' => $query->nama,
-								'pendapatan' => $query->pendapatan,
-								'no_faktur_pajak' => $query->no_faktur_pajak,
-								'total_tagihan' => number_format($query->total_tagihan, 0, ",", "."),
-							];
-
-            }
-
-        }
-		return response()->json($results);
-	}
     public function index(){
         $cabang = DB::select(DB::raw(" SELECT * FROM cabang"));
         return view('sales.nota_debet_kredit.index', compact('cabang'));
     }
+    public function cari_invoice(request $request)
+    {
+        $data = DB::table('invoice')
+                  ->join('customer','kode','=','i_kode_customer')
+                  ->where('i_kode_cabang',$request->cabang)
+                  ->get();
+        return view('sales.nota_debet_kredit.tabel_cndn',compact('data'));
+    }
+    public function pilih_invoice(request $request)
+    {   
+        // dd($request->all());
+        $data = DB::table('invoice')
+                  ->join('customer','kode','=','i_kode_customer')
+                  ->where('i_nomor',$request->nomor)
+                  ->first();
 
+        return response()->json(['data'=>$data]);
+    }
+
+    public function simpan_cn_dn(request $request)
+    {
+        // dd($request->all());
+
+        $id=DB::table('cn_dn_penjualan')
+              ->max('cd_id');
+        if ($id == null) {
+            $id = 1;
+        }else{
+            $id+=1;
+        }
+
+        $cari_invoice = DB::table('invoice')
+                          ->where('i_nomor',$request->nomor_invoice)
+                          ->first();
+        $cari_aja = DB::table('cn_dn_penjualan')
+                          ->where('cd_nomor',$request->nomor_cn_dn)
+                          ->first();
+        if ($request->jenis_debet =='K') {
+            $kredit = $request->jumlah_biaya;
+            $debet  = 0;
+            $total  = $cari_invoice->i_total_tagihan - $kredit;
+        }else{
+            $kredit = 0;
+            $debet  = $request->jumlah_biaya;
+            $total  = $cari_invoice->i_total_tagihan + $debet;
+
+        }
+        if ($cari_aja == null) {
+            $save = DB::table('cn_dn_penjualan')
+                  ->insert([
+                      'cd_id'               => $id,
+                      'cd_tanggal'          => $request->tgl,
+                      'cd_kode_cabang'      => $request->cabang,
+                      'cd_invoice'          => $request->nomor_invoice,    
+                      'cd_tagihan_invoice'  => $cari_invoice->i_total_tagihan,
+                      'cd_debet'            => $debet,
+                      'cd_kredit'           => $kredit, 
+                      'cd_total'            => $total,
+                      'cd_keterangan'       => $request->keterangan_biaya,
+                      'cd_nomor'            => $request->nomor_cn_dn,
+                  ]);
+        }else{
+
+            $bulan = Carbon::now()->format('m');
+            $tahun = Carbon::now()->format('y');
+
+            $cari_nota = DB::select("SELECT  substring(max(cd_nomor),12) as id from cn_dn_penjualan
+                                            WHERE cd_kode_cabang = '$request->cabang'
+                                            AND to_char(cd_tanggal,'MM') = '$bulan'
+                                            AND to_char(cd_tanggal,'YY') = '$tahun'");
+
+            $index = (integer)$cari_nota[0]->id + 1;
+
+            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+            $nota = 'CDN' . $request->cabang . $bulan . $tahun . $index;
+
+            $save = DB::table('cn_dn_penjualan')
+                  ->insert([
+                      'cd_id'               => $id,
+                      'cd_tanggal'          => $request->tgl,
+                      'cd_kode_cabang'      => $request->cabang,
+                      'cd_invoice'          => $request->nomor_invoice,    
+                      'cd_tagihan_invoice'  => $cari_invoice->i_total_tagihan,
+                      'cd_debet'            => $debet,
+                      'cd_kredit'           => $kredit, 
+                      'cd_total'            => $total,
+                      'cd_keterangan'       => $request->keterangan_biaya,
+                      'cd_nomor'            => $nota,
+                  ]);
+        }
+        
+
+        return 'berhasil';
+          
+    }
+    public function nomor_cn_dn(request $request)
+    {   
+
+        $bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
+        $cari_nota = DB::select("SELECT  substring(max(cd_nomor),12) as id from cn_dn_penjualan
+                                        WHERE cd_kode_cabang = '$request->cabang'
+                                        AND to_char(cd_tanggal,'MM') = '$bulan'
+                                        AND to_char(cd_tanggal,'YY') = '$tahun'");
+        $index = (integer)$cari_nota[0]->id + 1;
+        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+        $nota = 'CDN' . $request->cabang . $bulan . $tahun . $index;
+        return response()->json(['nota'=>$nota]);
+    }
 }

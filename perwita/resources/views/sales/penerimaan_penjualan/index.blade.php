@@ -81,11 +81,11 @@ $(document).ready(function() {
         serverSide: true,
         ajax: '{{ route('datatable_kwitansi') }}',
         columns: [
-            {data: 'nomor', name: 'nomor'},
-            {data: 'tanggal', name: 'tanggal'},
-            {data: 'kode_customer', name: 'kode_customer'},
-            {data: 'jumlah', name: 'jumlah'},
-            {data: 'keterangan', name: 'keterangan'},
+            {data: 'k_nomor', name: 'k_nomor'},
+            {data: 'k_tanggal', name: 'k_tanggal'},
+            {data: 'k_kode_customer', name: 'k_kode_customer'},
+            {data: 'k_netto', name: 'k_netto'},
+            {data: 'k_keterangan', name: 'k_keterangan'},
             {data: 'tes', name: 'tes'}
         ]
     });

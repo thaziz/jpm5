@@ -88,6 +88,7 @@ class customer_Controller extends Controller
                 //pajak_alamat character varying(128),
                 //pajak_kota character varying(20),
                 'nama_pph23'  => strtoupper($request->cb_nama_pajak_23),
+                'kode_bank'  => strtoupper($request->ed_kode_bank),
                 'type_faktur_ppn'  => strtoupper($request->cb_type_faktur),
                 'acc_piutang' => strtoupper($request->ed_acc_piutang),
                 'csf_piutang' => strtoupper($request->ed_csf_piutang),
@@ -114,6 +115,7 @@ class customer_Controller extends Controller
                 //pajak_alamat character varying(128),
                 //pajak_kota character varying(20),
                 'nama_pph23'  => strtoupper($request->cb_nama_pajak_23),
+                'kode_bank'  => strtoupper($request->ed_kode_bank),
                 'type_faktur_ppn'  => strtoupper($request->cb_type_faktur),
                 'acc_piutang' => strtoupper($request->ed_acc_piutang),
                 'csf_piutang' => strtoupper($request->ed_csf_piutang),
@@ -154,10 +156,11 @@ class customer_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
-
+        $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
+        $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $cabang = DB::table('cabang')
                     ->get();
-        return view('master_sales.customer.index', compact('kota','cabang'));
+        return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan'));
     }
 
 }

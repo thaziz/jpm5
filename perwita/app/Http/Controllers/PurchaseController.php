@@ -4447,7 +4447,7 @@ public function kekata($x) {
 	public function createpelunasanbank() {
 		$data['bank'] = DB::select("select * from masterbank");
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%'");
+		$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%'");
 		return view('purchase/pelunasanhutangbank/create', compact('data'));
 	}
 
@@ -4470,7 +4470,7 @@ public function kekata($x) {
 	public function detailpelunasanbank($id) {
 		$data['bank'] = DB::select("select * from masterbank");
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['akun'] = DB::select("select * from d_akun");
+			$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%'");
 			$data['bbk'] = DB::select("select * from bukti_bank_keluar, cabang, masterbank where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbk_id = '$id'" );
 			$flag = $data['bbk'][0]->bbk_flag;
 			if($flag == 'CEKBG'){
@@ -4730,164 +4730,106 @@ public function kekata($x) {
 							'bbk_tgl' => $request->tglbbk
 						]);
 		$data['bbk'] = DB::select("select * from bukti_bank_keluar where bbk_id = '$idbbk'");
-		$dataallbbk['bbkasli'] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail where bbk_id = '$idbbk' and bbkd_idbbk = bbk_id");
+
+		if($request->flag == 'CEKBG'){
+				$dataallbbk['bbkasli'] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail where bbk_id = '$idbbk' and bbkd_idbbk = bbk_id");
 		$flag = $data['bbk'][0]->bbk_flag;
 		
-		for($j=0;$j< count($dataallbbk['bbkasli']); $j++){
+		
+
+		for($j=0;$j< count($dataallbbk['bbkasli']); $j++){ // NOT DI FPG
 			$datacheckbg = $dataallbbk['bbkasli'][$j]->bbkd_nocheck;
-			for($i = 0; $i < count($request->notransaksi); $i++){
-				
-				$nocheck = $request->notransaksi[$i];
-				if($datacheckbg != $nocheck){
-					$data['bbkd'] = DB::select("select * from bukti_bank_keluar_detail where bbkd_idbbk = '$idbbk' and bbkd_nocheck = '$datacheckbg '");
-					if(count($data['bbkd']) == 0){ // save
-							$bbkdt = new bukti_bank_keluar_dt();
-						
-							$lastidbbkd =  bukti_bank_keluar_dt::max('bbkd_id');
-							if(isset($lastidbbkd)) {
-									$idbbkd = $lastidbbkd;
-									$idbbkd = (int)$idbbkd + 1;
-							}
-							else {
-									$idbbkd = 1;
-							} 
+		
+			$dataasli['bbk'] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail where bbk_id = bbkd_idbbk and bbk_id = '$idbbk'");
+			$idfpg = $dataasli['bbk'][$j]->bbkd_idfpg;
+			$data['idfpg'] = DB::table('fpg_cekbank')
+				->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $datacheckbg]])
+				->update([
+					'fpgb_posting' => 'NOT',
+				]);
 
-							$bbkdt->bbkd_id = $idbbkd;
-							$bbkdt->bbkd_idbbk =$idbbk;
-							$bbkdt->bbkd_nocheck = $request->notransaksi[$i];
-							if($request->jatuhtempo[$i] != ''){
-								$bbkdt->bbkd_jatuhtempo = $request->jatuhtempo[$i];					
-							}
-							
-							$nominal = str_replace(',', '', $request->nominal[$i]);
-							$explode = explode("-", $request->supplier[$i]);
-							$idsupplier = $explode[0];
-							$bbkdt->bbkd_nominal = $nominal;
-							$bbkdt->bbkd_keterangan = $request->keterangan[$i];
-							$bbkdt->bbkd_bank = $request->idbank[$i];
-							$bbkdt->bbkd_supplier = $idsupplier;
-							$bbkdt->bbkd_tglfpg = $request->tgl[$i];
-							$bbkdt->bbkd_jenissup = $request->jenissup[$i];
-							$bbkdt->bbkd_idfpg = $request->idfpg[$i];
-							$bbkdt->save();
-
-
-							$idfpg = $request->idfpg[$i];
-							$data['idfpg'] = DB::table('fpg_cekbank')
-								->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
-								->update([
-									'fpgb_posting' => 'DONE',
-								]);
-
-							$dataallfpg = DB::select("select * from fpg, fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
-							for($x = 0; $x < count($dataallfpg); $x++){
-								$done = $dataallfpg[$x]->fpgb_posting;
-								if($done == 'DONE'){
-									$tempdone = $tempdone + 1;
-								}
-							} 
-
-							if($tempdone == count($dataallfpg)){
-								$data['idfpg'] = DB::table('fpg')
-								->where('idfpg' , $idfpg)
-								->update([
-									'fpg_posting' => 'DONE',
-								]);
-							}					
-				}
-				else { //delete
-					//DELETE
-					$dataasli2['bbkd'] = DB::select("select * from bukti_bank_keluar_detail where bbkd_idbbk = '$idbbk' and bbkd_nocheck = '$nocheck'");
-					if(count($dataasli2['bbkd']) == 0){
-
-
-
-					$dataasli['bbkd'] = DB::select("select * from bukti_bank_keluar_detail where bbkd_idbbk = '$idbbk' and bbkd_nocheck = '$datacheckbg'");
-
-						$idfpg = $dataasli['bbkd'][$j]->bbkd_idfpg;
-						$data['idfpg'] = DB::table('fpg_cekbank')
-							->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $datacheckbg]])
-							->update([
-								'fpgb_posting' => 'NOT',
-							]);
-
-						$dataallfpg = DB::select("select * from fpg, fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
-						for($x = 0; $x < count($dataallfpg); $x++){
-							$done = $dataallfpg[$x]->fpgb_posting;
-							if($done == 'DONE'){
-								$tempdone = $tempdone + 1;
-							}
-						} 
-
-						if($tempdone == count($dataallfpg)){
-							$data['idfpg'] = DB::table('fpg')
-							->where('idfpg' , $idfpg)
-							->update([
-								'fpg_posting' => 'DONE',
-							]);
-						}
-
-						DB::delete("DELETE from  bukti_bank_keluar_detail where bbkd_idbbk = '$idbbk' and bbkd_nocheck = '$datacheckbg'");
-					}
-				}
-				
-	
-				}						
-				else {
-					
-				}
 			
-			} //END FOR DATA TRANSAKSI
-			/*$dataasli['bbk'] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail where bbk_id = bbkd_idbbk and bbk_id = '$idbbk'");
-					for($kx = 0; $kx < count($dataasli['bbk']); $kx++){
-						$nocheckasli = $dataasli['bbk'][$kx]->bbkd_nocheck;
-						if($nocheckasli[$kx] == $request->notransaksi ){
-							// UPDATE HEADER	
-						}
-						else {
-							DB::delete("DELETE from  bukti_bank_keluar_detail where bbkd_idbbk = '$idbbk' and bbkd_nocheck = '$nocheckasli'");
-
-							$idfpg = $dataasli[$kx];
-							$data['idfpg'] = DB::table('fpg_cekbank')
-								->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
-								->update([
-									'fpgb_posting' => 'NOT',
-								]);
-
-							$dataallfpg = DB::select("select * from fpg, fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
-							for($x = 0; $x < count($dataallfpg); $x++){
-								$done = $dataallfpg[$x]->fpgb_posting;
-								if($done == 'DONE'){
-									$tempdone = $tempdone + 1;
-								}
-							} 
-
-							if($tempdone == count($dataallfpg)){
-								$data['idfpg'] = DB::table('fpg')
-								->where('idfpg' , $idfpg)
-								->update([
-									'fpg_posting' => 'DONE',
-								]);
-							}
-						}
-					}*/	
+			
+				$data['idfpg'] = DB::table('fpg')
+				->where('idfpg' , $idfpg)
+				->update([
+					'fpg_posting' => 'NOT',
+				]);
 			
 		}
 
-
+		DB::delete("DELETE from  bukti_bank_keluar_detail where bbkd_idbbk = '$idbbk'");
 		for($i = 0; $i < count($request->notransaksi); $i++){
+				
+				$nocheck = $request->notransaksi[$i];
 			
+					$data['bbkd'] = DB::select("select * from bukti_bank_keluar_detail where bbkd_idbbk = '$idbbk' and bbkd_nocheck = '$nocheck '");
+						
+								$bbkdt = new bukti_bank_keluar_dt();
+							
+								$lastidbbkd =  bukti_bank_keluar_dt::max('bbkd_id');
+								if(isset($lastidbbkd)) {
+										$idbbkd = $lastidbbkd;
+										$idbbkd = (int)$idbbkd + 1;
+								}
+								else {
+										$idbbkd = 1;
+								} 
+
+								$bbkdt->bbkd_id = $idbbkd;
+								$bbkdt->bbkd_idbbk =$idbbk;
+								$bbkdt->bbkd_nocheck = $request->notransaksi[$i];
+								if($request->jatuhtempo[$i] != ''){
+									$bbkdt->bbkd_jatuhtempo = $request->jatuhtempo[$i];					
+								}
+								
+								$nominal = str_replace(',', '', $request->nominal[$i]);
+								$explode = explode("-", $request->supplier[$i]);
+								$idsupplier = $explode[0];
+								$bbkdt->bbkd_nominal = $nominal;
+								$bbkdt->bbkd_keterangan = $request->keterangan[$i];
+								$bbkdt->bbkd_bank = $request->idbank[$i];
+								$bbkdt->bbkd_supplier = $idsupplier;
+								$bbkdt->bbkd_tglfpg = $request->tgl[$i];
+								$bbkdt->bbkd_jenissup = $request->jenissup[$i];
+								$bbkdt->bbkd_idfpg = $request->idfpg[$i];
+								$bbkdt->save();
+
+
+								$idfpg = $request->idfpg[$i];
+								$data['idfpg'] = DB::table('fpg_cekbank')
+									->where([['fpgb_idfpg', '=', $idfpg], ['fpgb_nocheckbg' , '=' , $request->notransaksi[$i]]])
+									->update([
+										'fpgb_posting' => 'DONE',
+									]);
+
+								$dataallfpg = DB::select("select * from fpg, fpg_cekbank where idfpg = '$idfpg' and fpgb_idfpg = idfpg");
+								for($x = 0; $x < count($dataallfpg); $x++){
+									$done = $dataallfpg[$x]->fpgb_posting;
+									if($done == 'DONE'){
+										$tempdone = $tempdone + 1;
+									}
+								} 
+
+								if($tempdone == count($dataallfpg)){
+									$data['idfpg'] = DB::table('fpg')
+									->where('idfpg' , $idfpg)
+									->update([
+										'fpg_posting' => 'DONE',
+									]);
+								}					
+					
+				}
+		} // END IF FLAG CEK BG
+		else { // DO SAVE BIAYA
+			DB::delete("DELETE from  bukti_bank_keluar_biaya where bbkb_idbbk = '$idbbk'");	
+			for($i = 0; $i < count($request->akun); $i++){		
 			// END IF DATA CEK BG
-		
+				
 				$noakun = $request->akun[$i];
-				$data['bbkb'] = DB::select("select * from bukti_bank_keluar_biaya where bbkb_idbbk = '$idbbk' and bbkb_akun = '$nocheck'");
+				$data['bbkb'] = DB::select("select * from bukti_bank_keluar_biaya where bbkb_idbbk = '$idbbk' and bbkb_akun = '$noakun'");
 
-					if(count($data['bbkb']) == 0) {
-
-					}
-					else {
-
-
+					
 					$bbkb = new bukti_bank_keluar_biaya();
 
 					$lastidbbkb =  bukti_bank_keluar_biaya::max('bbkb_id');
@@ -4907,8 +4849,11 @@ public function kekata($x) {
 					$bbkb->bbkb_nominal = $jumlah;
 					$bbkb->bbkb_keterangan = $request->keterangan[$i];
 					$bbkb->save();
-					}
-		} // END FOR LOOPING DATA TRANSAKSI
+			}
+	
+
+		}
+				
 	
 		return json_encode('sukses');
 	}

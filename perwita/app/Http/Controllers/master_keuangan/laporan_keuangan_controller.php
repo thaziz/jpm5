@@ -651,7 +651,7 @@ class laporan_keuangan_controller extends Controller
 
     public function print_excel_neraca(Request $request, $throttle){
 
-        // return json_encode($throttle);
+        return json_encode($throttle);
 
         if($throttle == "perbandingan_bulan"){
             $m1 = explode('/', $request["m"]); $m2 = explode('/', $request["y"]);

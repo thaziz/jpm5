@@ -120,7 +120,7 @@
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
-                              <input type="hidden" class="valkodebank" name="kodebank">
+                              <input type="text" class="valkodebank" name="kodebank">
                              </td>
                           </tr>
 
@@ -598,8 +598,8 @@
                
               $('.loading').css('display', 'none');
               length = arrtransaksi.length;
-              alert(length + 'length');
-              alert(arrtransaksi + 'arrtransaksi');
+             // alert(length + 'length');
+             // alert(arrtransaksi + 'arrtransaksi');
 
               $('.datacek').empty();
               databank = response.fpgbank;
@@ -756,8 +756,8 @@
           cekbg = $('.cekbg').val();
           cekbg2 =  cekbg.replace(/,/g, '');
           nominal2 = nominal.replace(/,/g,'');
-          alert(cekbg2);
-          alert(nominal2);
+         // alert(cekbg2);
+         // alert(nominal2);
           nilaicekbg = (parseInt(cekbg2) - parseInt(nominal2)).toFixed(2);
           $('.cekbg').val(addCommas(nilaicekbg));
           $('.total').val(addCommas(nilaicekbg));
@@ -765,11 +765,11 @@
           
           datacek = cek.toString();
           indexdata = arrtransaksi.indexOf(datacek);
-          alert(indexdata + 'indexdata');
+          //alert(indexdata + 'indexdata');
           if(indexdata > -1){
             arrtransaksi.splice(indexdata , 1);
           }
-          alert(arrtransaksi + 'arrtransaksi');
+        //  alert(arrtransaksi + 'arrtransaksi');
 
      //   alert(jQuery.type(arrtransaksi));
           parentbayar.remove();
@@ -781,8 +781,6 @@
           return this.id;
         }).toArray();
 
-        kodecabang = $('.kodebank').val();
-        $('.valkodebank').val(kodecabang);
 
         $('.loadingcek').css('display' , 'block');
          data = checked;
@@ -875,6 +873,10 @@
           nobbk = $('.nobbk').val();
           flag = $('.flag').val();
 
+          kodecabang = $('.kodebank').val();
+         // alert(kodecabang);
+          $('.valkodebank').val(kodecabang);
+
           if(flag == 'CEKBG'){
             toastr.info("Anda sudah mengisi form 'CEK BG' mohon untuk dilanjutkan :)");
           
@@ -895,7 +897,7 @@
           keterangan = $('.keteranganbiaya').val();
           nobbk = $('.nobbk').val();
 
-          rowHtml = "<tr class='transaksi"+$nmrbiaya+"'> <td>"+$nmrbiaya+"</td>" +
+          rowHtml = "<tr class='transaksi transaksi"+$nmrbiaya+"'> <td>"+$nmrbiaya+"</td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+idakun+"' name='akun[]' readonly> </td>" +
           "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]' readonly> </td>" +
@@ -941,7 +943,7 @@
                 }
               })
 
-              alert(jmlahval);
+              //alert(jmlahval);
               console.log(jmlahval + 'jmlahval');
 
               $('.total').val(addCommas(jmlahval));
@@ -956,7 +958,7 @@
             cek = $(this).data('cek');
             nominal = $(this).data('nominal');
             parentbayar = $('.transaksi'+id);
-            $('#datacek' + cek).show();
+        //    $('#datacek' + cek).show();
             biaya = $('.biaya').val();
             biaya2 =  biaya.replace(/,/g, '');
             nominal2 = nominal.replace(/,/g,'');

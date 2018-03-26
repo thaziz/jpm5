@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
+use Carbon\Carbon;
 
 
 class uang_muka_penjualan_Controller extends Controller
@@ -45,7 +46,8 @@ class uang_muka_penjualan_Controller extends Controller
 					'kode_customer' => strtoupper($request['cb_customer']),
 					'kode_cabang' => strtoupper($request['cb_cabang']),
 					'jumlah' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
-					'jenis' => strtoupper($request['cb_jenis']),
+                    'jenis' => strtoupper($request['cb_jenis']),
+					'status' => 'Released',
 					'keterangan' => strtoupper($request['ed_keterangan']),
             	);
         
@@ -83,6 +85,21 @@ class uang_muka_penjualan_Controller extends Controller
         $customer = DB::select(DB::raw(" SELECT kode,nama FROM customer ORDER BY nama ASC "));
         $cabang = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY nama ASC "));
         return view('sales.uang_muka_penjualan.index',compact('customer','cabang'));
+    }
+    public function nota_uang_muka(request $request)
+    {
+        $bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
+        $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from uang_muka_penjualan
+                                        WHERE kode_cabang = '$request->cb_cabang'
+                                        AND to_char(tanggal,'MM') = '$bulan'
+                                        AND to_char(tanggal,'YY') = '$tahun'");
+        $index = (integer)$cari_nota[0]->id + 1;
+        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+        $nota = 'UMP' . $request->cb_cabang . $bulan . $tahun . $index;
+
+        return response()->json(['nota'=>$nota]);
     }
 
 }
