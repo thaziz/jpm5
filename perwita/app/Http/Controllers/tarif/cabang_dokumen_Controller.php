@@ -10,7 +10,7 @@ use Auth;
 class cabang_dokumen_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        $sql = "    SELECT t.crud,t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,
         kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
                     FROM tarif_cabang_dokumen t
@@ -41,7 +41,19 @@ class cabang_dokumen_Controller extends Controller
                                 $i++;
                                 }
                                 else{
-                                $data[$i]['button'] =' <div class="btn-group">
+                                 if ($data[$i]['crud'] == 'E') {
+
+                                            $data[$i]['button'] =' <div class="btn-group">
+                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                                           
+                                                            <button type="button" disabled="" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+
+                                                             <button type="button" disabled="" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
+                                                        </div> ';
+                                            $i++;
+                                            
+                                        }else if(($data[$i]['crud'] == 'N')){
+                                                $data[$i]['button'] =' <div class="btn-group">
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
                                                            
                                                             <button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
@@ -49,6 +61,7 @@ class cabang_dokumen_Controller extends Controller
                                                              <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
                                                         </div> ';
                                 $i++;
+                                        }
                             }
                         }else{
                              if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdokumen'] == '') {

@@ -10,7 +10,7 @@ use Auth;
 class cabang_koli_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT t.id_provinsi_cabkoli,p.nama provinsi,t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan  
+        $sql = "    SELECT t.crud,t.id_provinsi_cabkoli,p.nama provinsi,t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan  
                     FROM tarif_cabang_koli t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
@@ -39,7 +39,19 @@ class cabang_koli_Controller extends Controller
                                 $i++;
                                 }
                                 else{
-                                $data[$i]['button'] =' <div class="btn-group">
+                                        if ($data[$i]['crud'] == 'E') {
+
+                                            $data[$i]['button'] =' <div class="btn-group">
+                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                                           
+                                                            <button type="button" disabled="" id="'.$data[$i]['kode_sama_koli'].'" name="'.$data[$i]['kode_sama_koli'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+
+                                                             <button type="button" disabled="" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
+                                                        </div> ';
+                                            $i++;
+                                            
+                                        }else if(($data[$i]['crud'] == 'N')){
+                                                $data[$i]['button'] =' <div class="btn-group">
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
                                                            
                                                             <button type="button" id="'.$data[$i]['kode_sama_koli'].'" name="'.$data[$i]['kode_sama_koli'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
@@ -47,6 +59,8 @@ class cabang_koli_Controller extends Controller
                                                              <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
                                                         </div> ';
                                 $i++;
+                                        }
+                                
                             }
                         }else{
                              if ($data[$i]['id_provinsi_cabkoli'] == null || $data[$i]['id_provinsi_cabkoli'] == '') {
@@ -893,24 +907,17 @@ class cabang_koli_Controller extends Controller
                 );
                // dd($tarif0_10express);
 
-               if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+               if ($integer_kode6 < 10000) {
+                    $integer_kode6 = '0000'.$integer_kode6; 
+                } 
+                if ($kodekota == '') {
+                    $kode6_edit = $request->id6;
+                }else{   
+                    $kode6_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_kode6;
                 }
                
                $tarif10_20express = array(
-                    'kode' => $request->id6,
+                    'kode' => $kode6_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode6,
                     'keterangan' => 'Tarif koli < 30 Kg',
@@ -926,24 +933,17 @@ class cabang_koli_Controller extends Controller
                     'crud' => $crud,
                 );   
 
-               if ($datadetailcount == 0) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
-
-                }
-                else if ($kode_detailtambah1 == $kode_detailtambah1 ) {
-                    $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                    }
-                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;
+               if ($integer_kode7 < 10000) {
+                    $integer_kode7 = '0000'.$integer_kode7; 
+                } 
+                if ($kodekota == '') {
+                    $kode7_edit = $request->id7;
+                }else{   
+                    $kode7_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_kode7;
                 }
                
                $tarif20express = array(
-                    'kode' => $request->id7,
+                    'kode' => $kode7_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode7,
                     'keterangan' => 'Tarif koli > 30 Kg',
@@ -986,7 +986,7 @@ class cabang_koli_Controller extends Controller
     public function hapus_data (Request $request) {
         $hapus='';
         $id=$request->id;
-        $hapus = DB::table('tarif_cabang_koli')->where('kode_sama_koli' ,'=', $id)->delete();
+        $hapus = DB::table('tarif_cabang_koli')->where('kode_sama_koli' ,'=', $id)->where('crud','!=','E')->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
