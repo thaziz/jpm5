@@ -504,7 +504,11 @@
                         {{Request::is('sales/tarif_penerus_sepeda') ? 'active' : '' ||
                          Request::is('sales/tarif_penerus_sepeda/*') ? 'active' : ''}} 
 
+<<<<<<< HEAD
+                        " href="{{ url('sales/tarif_penerus_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Koli</a>
+=======
                         " href="{{ url('sales/tarif_penerus_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus sepeda</a>
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                         </li>
                         
                     </ul>

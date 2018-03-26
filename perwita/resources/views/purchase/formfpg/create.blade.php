@@ -522,7 +522,7 @@
                                     <tr>
                                       <th> <h4> No Cheque / BG </h4> </th>
                                       <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank">
-
+                                      <input type="hidden" class="valjenisbayarbank" name="jenisbayarbank">
                                      </td>
                                       
                                       <th> Nominal </th>
@@ -753,7 +753,16 @@
       //MENDAPATKAN NO FPG
        cabang = $('.cabang').val();
         $('.valcabang').val(cabang);
-     
+      
+      //MENDAPATKAN JENISBAYAR
+      $('.metodebayar').change(function(){
+       val = $('.metodebayar:checked').val();
+        $('.valjenisbayarbank').val(val);       
+      })
+
+        valjenisbayar = $('.metodebayar:checked').val();
+        $('.valjenisbayarbank').val(valjenisbayar);
+
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
@@ -868,6 +877,7 @@
            $('.checkbgtf').show();
            $('.tujuanbank').hide();
            $('.tujuanbankacc').hide();
+            $('.transferbank').hide();
           }
       })
 
@@ -889,6 +899,7 @@
            $('.checkbgtf').show();
            $('.tujuanbank').hide();
            $('.tujuanbankacc').hide();
+            $('.transferbank').hide();
           }
       })
 
@@ -906,7 +917,10 @@
           $this = $(this);
            if ($this.is(":checked")) {
               $('.jenisbayarbankbgtf').prop({ disabled: true, checked: false }); 
-              $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false }); 
+              $('.jenisbayarbanktfacc').prop({ disabled: true, checked: false });
+                $('.tujuanbank').hide();
+                $('.tujuanbankacc').hide();
+                $('.transferbank').hide();
            }
            else {
               $('.jenisbayarbankbgtf').prop({ disabled: false, checked: false }); 
@@ -1553,7 +1567,7 @@
           $('.bank').prop('disabled', true).trigger("chosen:updated");;
 
         $('.metodebayar').attr('disabled' , true);
-        
+
         if(lengthbank > 1){
           $('.nominal').attr('readonly', true);
         }

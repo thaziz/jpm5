@@ -96,12 +96,21 @@
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                             <tbody>
                                 <tr>
+<<<<<<< HEAD
+                                    <td hidden="" style="width:120px; padding-top: 0.4cm"  >Kode</td>
+                                    <td colspan="4">
+=======
                                     <td style="width:120px; padding-top: 0.4cm;text-align: center;font-weight: bold;" colspan="4">Identitas Customer</td>
                                     <td hidden="">
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                                         <input type="hidden" name="ed_kode" class="form-control" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
+<<<<<<< HEAD
+                                        
+=======
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
 
                                     </td>
                                 </tr>
@@ -109,7 +118,11 @@
                                     <td style="padding-top: 0.4cm">Nama</td>
                                     <td><input type="" class="form-control" name="ed_nama" style="text-transform: uppercase" ></td>
 
+<<<<<<< HEAD
+                                      <td style="padding-top: 0.4cm">Cabang</td>
+=======
                                     <td style="padding-top: 0.4cm">Cabang</td>
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                                     <td>
                                         <select class="chosen-select-width" name="cabang">
                                             <option value="0">Pilih - Cabang</option>
@@ -152,6 +165,25 @@
                                     </td>
                                 </tr>
                                 <tr>
+<<<<<<< HEAD
+                                    <td style="padding-top: 0.4cm">Kota</td>
+                                    <td>
+                                        <select class="chosen-select-width"  name="cb_kota" style="width:100%">
+                                            <option value=""></option>
+                                        @foreach ($kota as $row)
+                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+
+                                    <td style="padding-top: 0.4cm">Kode Bank</td>
+                                    <td><input type="text" class="form-control" name="ed_kode_bank" ></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7" style="text-align: center;font-weight: bold;">PAJAK</td>
+                                </tr>
+                                <tr>
+=======
                                     <td>Plafon</td>
                                     <td colspan="3"><input type="text" class="form-control" name="ed_plafon"></td>
                                 </tr>
@@ -200,6 +232,7 @@
                                     
                                 </tr>
                                 <tr>
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                                     <td style="padding-top: 0.4cm">NPWP</td>
                                     <td><input type="text" class="form-control" name="ed_npwp" ></td>
 

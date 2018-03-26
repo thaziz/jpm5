@@ -115,11 +115,12 @@
                           <tr>
                             <td> Kode Bank </td>
                             <td>
-                              <select class="form-control kodebank" name="kodebank">
+                              <select class="form-control kodebank">
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
+                              <input type="text" class="valkodebank" name="kodebank">
                              </td>
                           </tr>
 
@@ -167,7 +168,7 @@
 
                           <tr>
                             <td>Keterangan </td>
-                            <td> <input type="text" class="input-sm form-control" name="keteranganheader">  </td>
+                            <td> <input type="text" class="input-sm form-control" name="keteranganheader" required=""> <input type="hidden" class="input-sm form-control flag" name="flag" required="">  </td>
                             <td>    </td>
                           </tr>
                           </table>
@@ -217,6 +218,11 @@
                                               <div class="panel-body">
                                                 <div class="row">
                                                  <div class="col-sm-6">
+
+                                                     <div class="loadingcek text-center" style="display: none;">
+                                        <img src="{{ asset('assets/image/loading1.gif') }}" width="100px">
+                                    </div>
+
                                                       <table class='table'>
                                                           <tr>
                                                               <th> No Check / BG </th>
@@ -381,6 +387,8 @@
                                   </div>
                                                 
                                   <div class="modal-body"> 
+                                    
+
                                     <table class="table table-bordered" id="tbl-cheuque">
                                       <thead>
                                         <tr> 
@@ -391,6 +399,11 @@
 
                                     </tbody>
                                     </table>
+
+                                    <div class="loading text-center" style="display: none;">
+                                        <img src="{{ asset('assets/image/loading1.gif') }}" width="100px">
+                                    </div>
+
                                   </div>
 
                                     <div class="modal-footer">
@@ -501,7 +514,12 @@
     });
 
      $('#formbbk').submit(function(event){
-       
+        
+     if($('tr.transaksi').length == 0 ){
+      toastr.info("Harap Input Data Transaksi :) ");
+      return false;
+     }
+     else {
        url : baseUrl + '/pelunasanhutangbank/simpan';
 
         event.preventDefault();
@@ -542,7 +560,7 @@
           }
         })
        });
-       
+       }
     })  
 
     arrtransaksi = [];
@@ -568,7 +586,7 @@
     
     $('.nocheck').click(function(){
         kodebank = $('.kodebank').val();
-
+         $('.loading').css('display', 'block');
      
 
         $.ajax({
@@ -577,9 +595,12 @@
           url : baseUrl + '/pelunasanhutangbank/nocheck',
           dataType : "json",
           success : function(response){
-
+               
+              $('.loading').css('display', 'none');
               length = arrtransaksi.length;
-              
+             // alert(length + 'length');
+             // alert(arrtransaksi + 'arrtransaksi');
+
               $('.datacek').empty();
               databank = response.fpgbank;
               $no = 1;
@@ -671,6 +692,7 @@
         nobbk = $('.nobbk').val();
         flag = $('.flag').val();
         idfpg = $('.idfpg').val();
+
       if(flag == 'BIAYA'){
         toastr.info("Anda sudah mengisi form 'biaya biaya' mohon untuk dilanjutkan :)");       
       }
@@ -697,14 +719,14 @@
       jenissup = $('.jenissup').val();
 
       row = "<tr class='transaksi bayar"+$nomr+"' id='datacek"+notransaksi+"'>" +
-          "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]'></td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]'></td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]'>" +
-          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value="+jatuhtempo+"> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value= "+accbank+"-"+namabank+" name='bank[]'> <input type='hidden' class='idbank' name='idbank[]' value='"+idbank+"'>  </td>" +
-          "<td style='text-align:right'> <input type='text' class='input-sm form-control' value= '"+addCommas(nominal)+"' name='nominal[]'> </td>" +
-          "<td><input type='text' class='input-sm form-control' value= '"+supplier+"-"+namasupplier+"' name='supplier[]'> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]'></td>" +
+          "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
+          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> </td>" +
+          "<td> <input type='text' class='input-sm form-control' value= "+accbank+"-"+namabank+" name='bank[]'> <input type='hidden' class='idbank' name='idbank[]' value='"+idbank+"' readonly>  </td>" +
+          "<td style='text-align:right'> <input type='text' class='input-sm form-control' value= '"+addCommas(nominal)+"' name='nominal[]' readonly> </td>" +
+          "<td><input type='text' class='input-sm form-control' value= '"+supplier+"-"+namasupplier+"' name='supplier[]' readonly> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]' readonly></td>" +
           "<td> <button class='btn btn-danger btn-sm removes-btn' type='button' data-id="+$nomr+" data-cek='"+notransaksi+"' data-nominal='"+nominal+"'><i class='fa fa-trash'></i></button> <input type='hidden' name='idfpg[]' value="+idfpg+">  </td> </tr>";
 
 
@@ -734,12 +756,22 @@
           cekbg = $('.cekbg').val();
           cekbg2 =  cekbg.replace(/,/g, '');
           nominal2 = nominal.replace(/,/g,'');
-          alert(cekbg2);
-          alert(nominal2);
-          nilaicekbg = parseInt(cekbg2) - parseInt(nominal2);
+         // alert(cekbg2);
+         // alert(nominal2);
+          nilaicekbg = (parseInt(cekbg2) - parseInt(nominal2)).toFixed(2);
           $('.cekbg').val(addCommas(nilaicekbg));
           $('.total').val(addCommas(nilaicekbg));
        //   parent.remove();
+          
+          datacek = cek.toString();
+          indexdata = arrtransaksi.indexOf(datacek);
+          //alert(indexdata + 'indexdata');
+          if(indexdata > -1){
+            arrtransaksi.splice(indexdata , 1);
+          }
+        //  alert(arrtransaksi + 'arrtransaksi');
+
+     //   alert(jQuery.type(arrtransaksi));
           parentbayar.remove();
       })
 
@@ -749,9 +781,12 @@
           return this.id;
         }).toArray();
 
+
+        $('.loadingcek').css('display' , 'block');
          data = checked;
          idfpgb = [];
          idfpg = [];
+
         for(z=0;z<data.length;z++){
           string = data[z].split(",");
           idfpgb.push(string[0]);    
@@ -764,6 +799,8 @@
             type : "post",
             dataType : "json",
             success : function (response){
+               $('.loadingcek').css('display' , 'none');
+
                 $('#myModal2').modal('hide');
                   $('.idfpg').val(response.fpg[0].idfpg);
                   $('.nofpg').val(response.fpg[0].fpg_nofpg);
@@ -836,6 +873,10 @@
           nobbk = $('.nobbk').val();
           flag = $('.flag').val();
 
+          kodecabang = $('.kodebank').val();
+         // alert(kodecabang);
+          $('.valkodebank').val(kodecabang);
+
           if(flag == 'CEKBG'){
             toastr.info("Anda sudah mengisi form 'CEK BG' mohon untuk dilanjutkan :)");
           
@@ -856,11 +897,11 @@
           keterangan = $('.keteranganbiaya').val();
           nobbk = $('.nobbk').val();
 
-          rowHtml = "<tr class='transaksi"+$nmrbiaya+"'> <td>"+$nmrbiaya+"</td>" +
+          rowHtml = "<tr class='transaksi transaksi"+$nmrbiaya+"'> <td>"+$nmrbiaya+"</td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+idakun+"' name='akun[]' readonly> </td>" +
           "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]' readonly> </td>" +
-          "<td> <input type='text' class='input-sm form-control jumlah' value='"+jumlah+"' name='jumlah[]' style='text-align:right' data-dk='"+dk+"'> </td>" +
+          "<td> <input type='text' class='input-sm form-control jumlah' value='"+jumlah+"' name='jumlah[]' style='text-align:right' data-dk='"+dk+"' readonly> </td>" +
           "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]' readonly></td>" +
           "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
 
@@ -902,7 +943,7 @@
                 }
               })
 
-              alert(jmlahval);
+              //alert(jmlahval);
               console.log(jmlahval + 'jmlahval');
 
               $('.total').val(addCommas(jmlahval));
@@ -917,7 +958,7 @@
             cek = $(this).data('cek');
             nominal = $(this).data('nominal');
             parentbayar = $('.transaksi'+id);
-            $('#datacek' + cek).show();
+        //    $('#datacek' + cek).show();
             biaya = $('.biaya').val();
             biaya2 =  biaya.replace(/,/g, '');
             nominal2 = nominal.replace(/,/g,'');

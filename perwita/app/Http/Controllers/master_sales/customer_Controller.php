@@ -158,11 +158,18 @@ class customer_Controller extends Controller
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
+<<<<<<< HEAD
+        $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
+        $cabang = DB::table('cabang')
+                    ->get();
+        return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan'));
+=======
         $bank = DB::select(DB::raw(" SELECT mb_kode,mb_nama,mb_id FROM masterbank ORDER BY mb_id ASC "));
         $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $cabang = DB::table('cabang')
                     ->get();
         return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan','bank'));
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
     }
 
 }

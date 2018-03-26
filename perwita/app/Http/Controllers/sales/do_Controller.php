@@ -514,7 +514,7 @@ class do_Controller extends Controller
 
     public function cari_harga(Request $request)
     {
-        //dd($request);
+        //dd($requesta);
         $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
         $kecamatan = $request->input('kecamatan');
@@ -543,7 +543,7 @@ class do_Controller extends Controller
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
 
-            if (count($biaya_penerus) > 0) {
+            if (count($data) > 0) {
                 $harga = collect(\DB::select($sql))->first();
                 $result['biaya_penerus'] = $biaya_penerus->harga;
                 $result['harga'] = $harga->harga;
@@ -625,7 +625,13 @@ class do_Controller extends Controller
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
 
-                $tarifAwal = $tarifAwal[0]->harga;
+                if (count($tarifAwal) > 1){
+                    $tarifAwal = $tarifAwal[0]->harga;
+                } else {
+                    return response()->json([
+                        'status' => 'kosong'
+                    ]);
+                }
 
                 $tarif = DB::table('tarif_cabang_kilogram')
                     ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 10))) as harga'))
@@ -684,7 +690,13 @@ class do_Controller extends Controller
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
 
-                $tarifAwal = $tarifAwal[0]->harga;
+                if (count($tarifAwal) > 1){
+                    $tarifAwal = $tarifAwal[0]->harga;
+                } else {
+                    return response()->json([
+                        'status' => 'kosong'
+                    ]);
+                }
 
                 $tarif = DB::table('tarif_cabang_kilogram')
                     ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 20))) as harga'))
