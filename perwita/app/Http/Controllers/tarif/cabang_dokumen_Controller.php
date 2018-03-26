@@ -10,7 +10,11 @@ use Auth;
 class cabang_dokumen_Controller extends Controller
 {
     public function table_data () {
+<<<<<<< HEAD
         $sql = "    SELECT t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+=======
+        $sql = "    SELECT t.crud,t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
         t.id_kota_tujuan,
         kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
                     FROM tarif_cabang_dokumen t
@@ -41,7 +45,23 @@ class cabang_dokumen_Controller extends Controller
                                 $i++;
                                 }
                                 else{
+<<<<<<< HEAD
                                 $data[$i]['button'] =' <div class="btn-group">
+=======
+                                 if ($data[$i]['crud'] == 'E') {
+
+                                            $data[$i]['button'] =' <div class="btn-group">
+                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                                           
+                                                            <button type="button" disabled="" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+
+                                                             <button type="button" disabled="" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
+                                                        </div> ';
+                                            $i++;
+                                            
+                                        }else if(($data[$i]['crud'] == 'N')){
+                                                $data[$i]['button'] =' <div class="btn-group">
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
                                                            
                                                             <button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
@@ -49,6 +69,10 @@ class cabang_dokumen_Controller extends Controller
                                                              <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
                                                         </div> ';
                                 $i++;
+<<<<<<< HEAD
+=======
+                                        }
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                             }
                         }else{
                              if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdokumen'] == '') {
@@ -143,6 +167,7 @@ class cabang_dokumen_Controller extends Controller
         }
              $id_provinsi_loop =explode(' ', $id_provinsi_loop);
               json_encode($id_provinsi_loop); 
+              // dd($request);
      if ($request->cb_kota_tujuan == '' ) {  
       for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
         // return $id_provinsi_loop;
@@ -267,13 +292,21 @@ class cabang_dokumen_Controller extends Controller
         $kot2 = $request->cb_kota_tujuan;
         $cek_sendiri = DB::table('tarif_cabang_dokumen')->where('id_kota_asal','=',$kot1)->where('id_kota_tujuan','=',$kot2)->get();      
         $ngecek = count($cek_sendiri);
+<<<<<<< HEAD
         if ($ngecek > 1) {
             $hasil_cek = 'Data Sudah ada di database !';
             $result['hasil_cek']=$hasil_cek;
             return json_encode($result);
         }else{
+=======
+        
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
          if ($crud == 'N') {
-
+            if ($ngecek > 1) {
+                        $hasil_cek = 'Data Sudah ada di database !';
+                        $result['hasil_cek']=$hasil_cek;
+                        return json_encode($result);
+                    }else{
                     $regular = array(
                         'kode_sama' => $kode_sama,
                         'kode_detail'=>$kode_detail,
@@ -354,8 +387,8 @@ class cabang_dokumen_Controller extends Controller
             $simpan = DB::table('tarif_cabang_dokumen')->insert($regular);
             $simpan = DB::table('tarif_cabang_dokumen')->insert($express);
             
-
-        }elseif ($crud == 'E') {
+          }  
+        }else if ($crud == 'E') {
             // dd($request);   
                 
                 $id_reguler_edit = $request->id_reguler_edit;
@@ -457,7 +490,11 @@ class cabang_dokumen_Controller extends Controller
             $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_express)->update($express);
         }
      }
+<<<<<<< HEAD
     }
+=======
+    
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
      
         if($simpan == TRUE){
             $result['error']='';

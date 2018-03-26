@@ -10,7 +10,11 @@ use Auth;
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
+<<<<<<< HEAD
         $sql = "    SELECT t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
+=======
+        $sql = "    SELECT t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                     FROM tarif_cabang_kilogram t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
@@ -23,19 +27,47 @@ class cabang_kilogram_Controller extends Controller
             $data[] = (array) $r;
         }
         $i=0;
+<<<<<<< HEAD
         foreach ($data as $key) {
             // add new button
             if ($kodecabang = Auth::user()->m_level == 'ADMINISTRATOR'  ) {
+=======
+       foreach ($data as $key) {
+                        // add new button
+        
+                        if ($kodecabang = Auth::user()->m_level == 'ADMINISTRATOR'  ) {
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                             if ($data[$i]['id_provinsi_cabkilogram'] == null || $data[$i]['id_provinsi_cabkilogram'] == '') {
                                 $data[$i]['button'] =' <div class="btn-group">
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
 
+<<<<<<< HEAD
+=======
+                                                        <button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+                                                            
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                    
                                                         </div> ';
                                 $i++;
                                 }
                                 else{
+<<<<<<< HEAD
                                 $data[$i]['button'] =' <div class="btn-group">
+=======
+                                        if ($data[$i]['crud'] == 'E') {
+
+                                            $data[$i]['button'] =' <div class="btn-group">
+                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                                           
+                                                            <button type="button" disabled="" id="'.$data[$i]['kode_sama_kilo'].'" name="'.$data[$i]['kode_sama_kilo'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+
+                                                             <button type="button" disabled="" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
+                                                        </div> ';
+                                            $i++;
+                                            
+                                        }else if(($data[$i]['crud'] == 'N')){
+                                                $data[$i]['button'] =' <div class="btn-group">
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
                                                            
                                                             <button type="button" id="'.$data[$i]['kode_sama_kilo'].'" name="'.$data[$i]['kode_sama_kilo'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
@@ -43,6 +75,11 @@ class cabang_kilogram_Controller extends Controller
                                                              <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
                                                         </div> ';
                                 $i++;
+<<<<<<< HEAD
+=======
+                                        }
+                                
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                             }
                         }else{
                              if ($data[$i]['id_provinsi_cabkilogram'] == null || $data[$i]['id_provinsi_cabkilogram'] == '') {
@@ -64,7 +101,12 @@ class cabang_kilogram_Controller extends Controller
                                 $i++;
                             }
                         }
+<<<<<<< HEAD
         }
+=======
+                        
+                }
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
         // return $data;
         $datax = array('data' => $data);
         echo json_encode($datax);
@@ -143,7 +185,11 @@ class cabang_kilogram_Controller extends Controller
          
     if ($request->cb_kota_tujuan == '') {
          for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
+<<<<<<< HEAD
             // return $id_provinsi_loop;
+=======
+            return $id_provinsi_loop;
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
           $check = DB::table('tarif_cabang_kilogram')->where('id_kota_asal','=',$request->cb_kota_asal)->Where('id_kota_tujuan','=',$id_provinsi_loop[$save])->get();     
         $cek = count($check); 
          if ($cek > 0) {
@@ -152,6 +198,10 @@ class cabang_kilogram_Controller extends Controller
             return json_encode($result);
             
          }else{ 
+<<<<<<< HEAD
+=======
+             //GEGE 
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
             if ($datadetailcount != 0) {
                     $kode_detail += 1;
                      if ($kode_utama < 10000 ) {
@@ -181,9 +231,13 @@ class cabang_kilogram_Controller extends Controller
                                 'jenis' => 'REGULER',
                                 'id_kota_asal' => $request->cb_kota_asal,
                                 'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                                'kode_cabang' => $request->ed_cabang,
+                                'kode_cabang' => $request->cb_cabang,
                                 'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                                 'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+<<<<<<< HEAD
+=======
+                                'crud'=>strtoupper($crud),
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                                 // 'id_provinsi_cabkilogram'=>
                             );
 
@@ -217,9 +271,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                if ($datadetailcount != 0) {
@@ -252,9 +307,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                if ($datadetailcount != 0) {
@@ -287,9 +343,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                  if ($datadetailcount != 0) {
@@ -322,9 +379,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_provinsi_cabkilogram' => $request->cb_provinsi_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
             //----------------------------------- EXPRESSSS ----------------------------------//
@@ -357,9 +415,10 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                 if ($datadetailcount != 0) {
@@ -390,9 +449,10 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                   if ($datadetailcount != 0) {
@@ -423,9 +483,10 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                 if ($datadetailcount != 0) {
@@ -456,8 +517,9 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
+                    'crud'=>strtoupper($crud),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
 
@@ -489,11 +551,12 @@ class cabang_kilogram_Controller extends Controller
                     'waktu' => $request->waktu_express,
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
-                    
+                    // end GEGE
               // END OF EXPRESS //
 
             //--------------------------------- SAVE REGULER --------------------------------------//   
@@ -535,9 +598,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                if ($datadetailcount != 0) {
@@ -568,9 +632,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                if ($datadetailcount != 0) {
@@ -600,9 +665,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );   
 
               if ($datadetailcount != 0) {
@@ -632,9 +698,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
                if ($datadetailcount != 0) {
                     $kode_detail += 1;
@@ -663,7 +730,7 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );
@@ -696,9 +763,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
               if ($datadetailcount == 0) {
@@ -730,9 +798,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
               if ($datadetailcount == 0) {
@@ -763,9 +832,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );   
 
                if ($datadetailcount == 0) {
@@ -796,9 +866,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
                if ($datadetailcount == 0) {
                     $kode_detail += 1;
@@ -828,9 +899,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
             //------------------------------------------- REGULER -------------------------------------------------/
@@ -893,9 +965,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                 if ($integer_kode1 < 10000) {
@@ -919,9 +992,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                 if ($integer_kode2 < 10000) {
@@ -945,9 +1019,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );   
 
                 if ($integer_kode3 < 10000) {
@@ -971,9 +1046,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                if ($integer_kode4 < 10000) {
@@ -997,9 +1073,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'REGULER',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
                //----------------------------------- EXPRESS --------------------------------------------------//
                 if ($integer_kode5 < 10000) {
@@ -1023,9 +1100,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                 if ($integer_kode6 < 10000) {
@@ -1049,9 +1127,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
                if ($integer_kode7 < 10000) {
@@ -1075,9 +1154,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );   
 
                if ($integer_kode8 < 10000) {
@@ -1101,9 +1181,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
                if ($integer_kode9 < 10000) {
                     $integer_kode9 = '0000'.$integer_kode9; 
@@ -1126,9 +1207,10 @@ class cabang_kilogram_Controller extends Controller
                     'jenis' => 'EXPRESS',
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
-                    'kode_cabang' => $request->ed_cabang,
+                    'kode_cabang' => $request->cb_cabang,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
+                    'crud'=>strtoupper($crud),
                 );
 
             $simpan = DB::table('tarif_cabang_kilogram')->where('kode', $request->id0)->update($kertas_reguler);

@@ -9,7 +9,7 @@
     <tbody>
         @foreach($data as $val)
             <tr>
-                <td>{{$val->kd_nomor_invoice}}</td>
+                <td>{{$val->k_nomor}}</td>
                 <td>{{$val->k_tanggal}}</td>
                 <td>
                     {{number_format($val->kd_total_bayar, 2, ",", ".")}}

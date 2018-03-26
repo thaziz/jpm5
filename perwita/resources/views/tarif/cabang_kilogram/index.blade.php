@@ -75,6 +75,7 @@
                         <div class="col-xs- float-left">
                           <table>
                             <tr>
+<<<<<<< HEAD
                               <td style="padding-left: 20px;"><p style="background-color: red;width: 10px;height: 10px">&nbsp;</p></td>
                               <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
                               <td><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
@@ -102,6 +103,20 @@
                               <td><p style="font-size: 12px; margin-top: -18px;">( Hanya Hak akses dengan otoritas tertinggi yang dapat menghapus )</p></td>
                             </tr>
 
+=======
+                              <td valign="top" style="padding-left: 20px;"><p style="background-color: red;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td valign="top"><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+                                                       
+                              <td valign="top" style="padding-left: 50px;"><p style="background-color: purple;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td  valign="top"><p>Menghapus Data <b>kota</b> Menuju <b>Kota</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+
+                              <td valign="top" style="padding-left: 50px;"><p style="background-color: #595959;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp; </p></td>
+                              <td  valign="top"><p>Menghapus data Tidak diperbolehkan</p></td>
+                            </tr>
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                           </table>
                         </div>
                         </div>
@@ -361,6 +376,10 @@
     })
   $('#cb_kota_tujuan').change(function(){
         $('#hilang').hide();
+<<<<<<< HEAD
+=======
+        // alert('aa');
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
 
     })
     $('#cb_provinsi_tujuan').change(function(){
@@ -502,6 +521,7 @@
                 $('input[name="tarif20kg_express"]').val(data[0][8].harga);
                 $('input[name="tarifkgsel_express"]').val(data[0][9].harga);
                 //expre
+                $('#hilang2').hide();
 
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("select[name='cb_kota_asal']").val(data[0][0].id_kota_asal).trigger('chosen:updated');

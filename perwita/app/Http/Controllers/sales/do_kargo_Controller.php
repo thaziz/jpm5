@@ -500,6 +500,7 @@ class do_kargo_Controller extends Controller
                   ->where('kcd_id',$request->kcd_id)
                   ->where('kcd_dt',$request->kcd_dt)
                   ->first();
+                  
         return response()->json(['data'=>$data]);
     }
     public function save_do_kargo(request $request)
