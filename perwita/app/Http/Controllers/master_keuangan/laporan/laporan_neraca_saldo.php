@@ -9,7 +9,9 @@ use App\Http\Controllers\Controller;
 
 class laporan_neraca_saldo extends Controller
 {
-    public function index_neraca_saldo(){
-      return "aa";
+    public function index_neraca_saldo(Request $request, $throttle){
+      return view("laporan_neraca_saldo.index")
+              ->withRequest($request)
+              ->withThrottle($throttle);
     }
 }
