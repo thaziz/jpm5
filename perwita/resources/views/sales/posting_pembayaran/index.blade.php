@@ -43,7 +43,7 @@
                     </h5>
 
                     <div class="text-right" style="">
-                       <button  type="button" style="margin-right :12px; width:110px" class="btn btn-success " id="btn_add_order" name="btnok"></i>Tambah Data</button>
+                       <a href="../sales/posting_pembayaran_form" class="btn btn-primary">Tambah Data</a>
                     </div>
                 </div>
                 <div class="ibox-content">

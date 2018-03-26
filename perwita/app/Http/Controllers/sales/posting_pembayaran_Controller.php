@@ -403,6 +403,7 @@ class posting_pembayaran_Controller extends Controller
         $hapus = DB::table('posting_pembayaran')
                    ->where('nomor',$request->id)
                    ->delete();
-        return response()->status(['pesan'=>'Data Berhasil Dihapus']);
+
+        return response()->json(['pesan'=>'Data Berhasil Dihapus']);
     }
 }
