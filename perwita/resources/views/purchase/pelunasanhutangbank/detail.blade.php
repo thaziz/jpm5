@@ -86,11 +86,12 @@
                           <tr>
                             <td> Kode Bank </td>
                             <td>
-                              <select class="form-control kodebank" name="kodebank">
+                              <select class="form-control " name="kodebank">
                                 @foreach($data['bank'] as $bank)
-                                  <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
+                                  <option value="{{$bank->mb_id}}" @if($data['bbk'][0]->bbk_kodebank == $bank->mb_id) selected="" @endif disabled>  {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
+                              <input type="hidden" class="kodebank" name='idbank' value="{{$data['bbk'][0]->bbk_kodebank}}">
                              </td>
                           </tr>
 
@@ -135,7 +136,7 @@
 
                           <tr>
                             <td>Keterangan </td>
-                            <td> <input type="text" class="input-sm form-control" name="keteranganheader">  </td>
+                            <td> <input type="text" class="input-sm form-control edit" name="keteranganheader" value="{{$data['bbk'][0]->bbk_keterangan}}">  </td>
                             <td> <input type="hidden" class="input-sm form-control flag" name="flag" value="{{$data['bbk'][0]->bbk_flag}}" readonly="">   </td>
                           </tr>
                           </table>
@@ -218,28 +219,27 @@
                                                         <th> Aksi </th>    
                                                       </tr>
                                                         @if($data['bbk'][0]->bbk_flag == 'CEKBG')
-                                                        <?php $n = 1 ?>
+                                                      
                                                         @for($i=0; $i < count($data['bbkd']) ; $i++)
-                                                          @for($j=0; $j < count($data['bbkd'][$i]); $j++)
-                                                        <tr class=data-<?php echo $n ?> id="hslbank">
-                                                         <td> <?php echo $n ?> </td>
-                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbk_nota}}" name="nofpg[]" readonly="">  </td>
-                                                         <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i][$j]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
-                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
-                                                         <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i][$j]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
-                                                         <td> <input type="text" class="form-control input-sm" name="idbank[]" value="{{$data['bbkd'][$i][$j]->mb_kode}}" readonly=""> </td>
-                                                         <td style="text-align: right"> <input type="text" class="form-control input-sm nominal2" value=" {{ number_format($data['bbkd'][$i][$j]->bbkd_nominal, 2) }}" name="nominal[]" readonly=""> </td>
-                                                         @if($data['bbkd'][$i][$j]->bbkd_jenissup == 'supplier')
-                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->nama_supplier}}" name="supplier[]" readonly=""> </td>
+                                                        
+                                                        <tr class=data-{{$i}} id="hslbank">
+                                                         <td> {{$i + 1}} </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbk_nota}}" name="nofpg[]" readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_idfpg}}" name="idfpg[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
+                                                         <td> <input type="text" class="form-control input-sm" name="idbank[]" value="{{$data['bbkd'][$i]->mb_kode}}" readonly=""> </td>
+                                                         <td style="text-align: right"> <input type="text" class="form-control input-sm nominal2" value=" {{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}" name="nominal[]" readonly=""> </td>
+                                                         @if($data['bbkd'][$i]->bbkd_jenissup == 'supplier')
+                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->nama_supplier}}" name="supplier[]" readonly=""> </td>
                                                          @else
-                                                           <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->nama}}" name="supplier[]" readonly=""> </td>
+                                                           <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->nama}}" name="supplier[]" readonly=""> </td>
                                                          @endif
                                                         
-                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_keterangan}}" name="keterangan[]" readonly=""> </td>
-                                                         <td> <button class="btn btn-danger btn-sm removes-btn" type="button" data-id=<?php echo $n ?> data-cek="{{$data['bbkd'][$i][$j]->bbkd_nocheck}}" data-nominal="{{ number_format($data['bbkd'][$i][$j]->bbkd_nominal, 2) }}"><i class="fa fa-trash"></i></button>  </td>
+                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_keterangan}}" name="keterangan[]" readonly=""> </td>
+                                                         <td> <button class="btn btn-danger btn-sm removes-btn" type="button" data-id={{$i}} data-cek="{{$data['bbkd'][$i]->bbkd_nocheck}}" data-nominal="{{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}"><i class="fa fa-trash"></i></button>  </td>
                                                         </tr>
-                                                          @endfor
-                                                          <?php $n++ ?>
+                                                        
                                                         @endfor
                                                       @endif
                                                     </table>
@@ -550,10 +550,11 @@
 
                     }
                     else {
+                     // alert('heo');
                       row = "<tr class='datacek"+databank[i].fpgb_nocheckbg+"' id='transaksi"+databank[i].fpgb_nocheckbg+"'> <td>"+$no+"</td> <td>"+databank[i].fpgb_nocheckbg+"</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
                      $no++;
                      tablecek.rows.add($(row)).draw(); 
-                    }
+                                       }
                       
                   }
                 }
@@ -627,7 +628,7 @@
         nofpg = $('.nofpg').val();
         nobbk = $('.nobbk').val();
         flag = $('.flag').val();
-          
+        idfpg = $('.idfpg').val(); 
       if(flag == 'BIAYA'){
         toastr.info("Anda sudah mengisi form 'biaya biaya' mohon untuk dilanjutkan :)");       
       }
@@ -648,11 +649,11 @@
       idbank = $('.idbank').val();
       jenissup = $('.jenissup').val();
 
-      row = "<tr class='transaksi data"+$nomr+" bayar"+$nomr+"' id='hslbank datacek"+notransaksi+" '>" +
+      row = "<tr class='transaksi data-"+$nomr+" bayar"+$nomr+"' id='hslbank datacek"+notransaksi+" '>" +
           "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
-          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> </td>" +
+          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> <input type='text' class='input-sm form-control' name='idfpg[]' value='"+idfpg+"' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value= "+accbank+" name='bank[]' readonly> <input type='hidden' class='idbank' name='idbank[]' value='"+idbank+"'>  </td>" +
           "<td style='text-align:right'> <input type='text' class='input-sm form-control nominal' value= '"+addCommas(nominal)+"' name='nominal[]' readonly> </td>" +
           "<td><input type='text' class='input-sm form-control' value= '"+supplier+"' name='supplier[]' readonly> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
@@ -680,7 +681,7 @@
       console.log(nilaicekbg + 'nilaicekbg');
 
 
-      $('.cekbg').val(addCommas(nilaic,ekbg));
+      $('.cekbg').val(addCommas(nilaicekbg));
       $('.total').val(addCommas(nilaicekbg));
       }
     })
@@ -715,7 +716,7 @@
           cekbg2 =  cekbg.replace(/,/g, '');
           nominal2 = nominal.replace(/,/g,'');
        
-          nilaicekbg = parseInt(cekbg2) - parseInt(nominal2);
+          nilaicekbg = parseInt(cekbg2) - parseInt(nominal2).toFixed();
           $('.cekbg').val(addCommas(nilaicekbg));
           $('.total').val(addCommas(nilaicekbg));
        //   parent.remove();
@@ -745,6 +746,7 @@
             success : function (response){
                 $('#myModal2').modal('hide');
                   $('.nofpg').val(response.fpg[0].fpg_nofpg);
+                  $('.idfpg').val(response.fpg[0].idfpg);
                   $('.nocheck').val(response.fpg[0].fpgb_nocheckbg);
                     $('.jatuhtempo').val(response.fpg[0].fpgb_jatuhtempo);
                     $('.nominal').val(addCommas(response.fpg[0].fpgb_nominal));
