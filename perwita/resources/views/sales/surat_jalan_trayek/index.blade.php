@@ -7,7 +7,32 @@
     .cssright { text-align: right; }
 </style>
 
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2> SURAT JALAN TRAYEK </h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Operasional</a>
+                        </li>
+                        <li>
+                            <a>Penjualan</a>
+                        </li>
+                        <li>
+                            <a>Transaksi Paket</a>
+                        </li>
+                        <li class="active">
+                            <strong> SURAT JALAN TRAYEK </strong>
+                        </li>
 
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >

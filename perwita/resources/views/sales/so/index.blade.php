@@ -4,14 +4,39 @@
 
 @section('content')
 
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2> SALES ORDER </h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Operasional</a>
+                        </li>
+                        <li>
+                            <a>Penjualan</a>
+                        </li>
+                        <li>
+                            <a>Transaksi Penjualan</a>
+                        </li>
+                        <li class="active">
+                            <strong> SALES ORDER </strong>
+                        </li>
 
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
 
-                    <h5 style="margin : 8px 5px 0 0"> SALES ORDER
+                    <h5 style="margin : 8px 5px 0 0"> 
                           <!-- {{Session::get('comp_year')}} -->
                     </h5>
 

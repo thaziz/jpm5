@@ -3,7 +3,7 @@
 @section('title', 'dashboard')
 
 @section("extra_styles")
-  
+
   <link href="{{ asset('assets/vendors/jsTree/style.min.css') }}" rel="stylesheet">
 
   <style>
@@ -116,13 +116,13 @@
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-              
+
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
                 <div class="box-body" style="min-height: 330px;">
 
-                  <table id="table" width="100%" class="table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
+                  <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
                     <thead>
                       <tr>
                         <th width="8%" style="padding:8px 0px" class="text-center">No</ht>
@@ -161,7 +161,7 @@
                                   <button class="btn btn-xs btn-primary aktifkan" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-check-square"></i></button>
                               </span>
                             @endif
-                            
+
                             @if($dataDesain->is_active != 1)
                               <span data-toggle="tooltip" data-placement="top" title="Hapus Desain">
                                   <button class="btn btn-xs btn-danger hapus" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-eraser"></i></button>
@@ -172,17 +172,17 @@
 
                         <?php $no++; ?>
                       @endforeach
-                      
+
                     </tbody>
-                    
-                   
+
+
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
-                  <div class="pull-right">  
-                    
+                  <div class="pull-right">
+
                     </div>
-                  </div><!-- /.box-footer --> 
+                  </div><!-- /.box-footer -->
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -267,8 +267,8 @@
                 </table>
               </div>
             </div>
-            
-            
+
+
             <div class="col-md-6" style="background: #f9f9f9;padding: 0px;height: 300px; overflow-y: scroll;">
               <table width="100%" class="table" style="font-size: 8pt;">
                 <thead>
@@ -279,11 +279,11 @@
                 </thead>
 
                 <tbody id="detail-wrapper">
-                  
+
                 </tbody>
               </table>
             </div>
- 
+
             <div class="col-md-12" id="listErrWrap" style="background: #fff;padding: 5px 10px;height: 100px; overflow-y: scroll; border: 1px solid #eee">
 
             </div>
@@ -375,7 +375,7 @@
             } else {
               $("#modal_tambah_akun .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
             }
-        } 
+        }
       });
     })
 
@@ -396,7 +396,7 @@
             } else {
               $("#modal_edit_akun .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
             }
-        } 
+        }
       });
     })
 
@@ -423,7 +423,7 @@
             }else {
               alert("ups. Gagal Loading. Data Gagal Diubah");
             }
-          } 
+          }
         })
       }
     })
@@ -451,7 +451,7 @@
             }else {
               alert("ups. Gagal Loading. Data Gagal Diubah");
             }
-          } 
+          }
         })
       }
     })
@@ -473,7 +473,7 @@
             } else {
               $("#modal_view .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
             }
-        } 
+        }
       });
     })
 
@@ -499,7 +499,7 @@
 
       //alert(1);
       $add = true; errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Berhasil Ditambahkan.</span>';
-      
+
       $("#detail-in-show .inSearch").each(function(){
         $id1 = $(this).text(); $id2 = $apply_id;
         $ambil = Math.min($id1.length, $id2.length);
@@ -569,7 +569,7 @@
 
       $("#detail-in-show").prepend($html);
       $("#listErrWrap").html(errList);
-      
+
     })
 
     $("#cek").click("#apply-detail", function(event){
@@ -584,7 +584,7 @@
 
       //alert(1);
       $add = true; errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Berhasil Ditambahkan.</span>';
-      
+
       $("#detail-in-show .inSearch").each(function(){
         $id1 = $(this).text(); $id2 = $apply_id;
         $ambil = Math.min($id1.length, $id2.length);
@@ -654,7 +654,7 @@
 
       $("#detail-in-show").prepend($html);
       $("#listErrWrap").html(errList);
-      
+
     })
   })
 
