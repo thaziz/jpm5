@@ -15,8 +15,39 @@
     .pad{
         padding: 10px;
     }
+     .btn-purple{
+      background-color: purple;
+    }
+    .btn-black{
+      background-color: black;
+    }
 </style>
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2> TARIF CABANG KILOGRAM </h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Master</a>
+                        </li>
+                        <li>
+                          <a> Master Penjualan</a>
+                        </li>
+                        <li>
+                          <a> Master Tarif</a>
+                        </li>
+                        <li class="active">
+                            <strong> Tarif Cabang Kilogram </strong>
+                        </li>
 
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -24,7 +55,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> TARIF CABANG KILOGRAM
+                    <h5> 
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
@@ -41,9 +72,22 @@
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
                             <div class="row">
-                                <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
-                            </table>
-                        <div class="col-xs-6">
+                        <div class="col-xs- float-left">
+                          <table>
+                            <tr>
+                              <td valign="top" style="padding-left: 20px;"><p style="background-color: red;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td valign="top"><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+                                                       
+                              <td valign="top" style="padding-left: 50px;"><p style="background-color: purple;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td  valign="top"><p>Menghapus Data <b>kota</b> Menuju <b>Kota</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+
+                              <td valign="top" style="padding-left: 50px;"><p style="background-color: #595959;width: 15px;height: 15px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp; </p></td>
+                              <td  valign="top"><p>Menghapus data Tidak diperbolehkan</p></td>
+                            </tr>
+                          </table>
                         </div>
                         </div>
                     </form>
@@ -58,7 +102,7 @@
                                 <th> Jenis </th>
                                 <th> Waktu </th>
                                 <th> Keterangan </th>
-                                <th style="width:50px"> Aksi </th>
+                                <th style="width:80px"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -108,10 +152,10 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="hilang2">
                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td>   
-                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" style="width:100%">
+                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" id="cb_kota_tujuan" style="width:100%">
                                              <option value="" selected="" disabled="">-- Pilih Kota tujuan --</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
@@ -119,10 +163,10 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="hilang">
                                     <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
                                     <td>   
-                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" style="width:100%" i>
+                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
                                             <option value="" selected="" disabled="">-- Pilih Provinsi tujuan --</option>
                                         @foreach ($prov as $prov)
                                             <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
@@ -298,8 +342,15 @@
     
   $('#cb_kota_asal').change(function(){
         var idkota = $('#cb_kota_asal :selected').data('kota');
-        alert(idkota);
         var kotaid = $('#kodekota').val(idkota);
+    })
+  $('#cb_kota_tujuan').change(function(){
+        $('#hilang').hide();
+        // alert('aa');
+
+    })
+    $('#cb_provinsi_tujuan').change(function(){
+        $('#hilang2').hide();
     })
     $(document).ready( function () {
         $('#table_data').DataTable({
@@ -368,7 +419,9 @@
         $('input[name="tarif20kg_express"]').val('');
         $('input[name="tarifkgsel_reguler"]').val('');
         $('input[name="tarifkgsel_express"]').val('');
+        $('#hilang').show();
 
+        $('#hilang2').show();
         $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
@@ -435,6 +488,7 @@
                 $('input[name="tarif20kg_express"]').val(data[0][8].harga);
                 $('input[name="tarifkgsel_express"]').val(data[0][9].harga);
                 //expre
+                $('#hilang2').hide();
 
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("select[name='cb_kota_asal']").val(data[0][0].id_kota_asal).trigger('chosen:updated');
@@ -484,7 +538,8 @@
                         swal("Error","Can't update customer data, error : "+data.error,"error");
                     }
                 }else{
-                    swal("Kode Tidak boleh sama !", 'periksa sekali lagi', "warning");
+                    // console.log(data.hasil_cek);
+                    swal(data.hasil_cek,'Cek sekali lagi',"warning");
                 }
             },
             error: function(jqXHR, textStatus, errorThrown)
@@ -495,9 +550,11 @@
     });
 
     $(document).on( "click",".btndelete", function() {
-        var name = $(this).attr("name");
+          var name = $(this).attr("name");
+        var prov = $(this).data("prov");
+        var asal = $(this).data("asal");
         var id = $(this).attr("id");
-        if(!confirm("Hapus Data " +name+ " ?")) return false;
+        if(!confirm("Hapus Data seluruh" + asal +' menuju ke '+ prov + " ?")) return false;
         var value = {
             id: id,
             _token: "{{ csrf_token() }}"
@@ -505,6 +562,40 @@
         $.ajax({
             type: "get",
             url : baseUrl + "/sales/tarif_cabang_kilogram/hapus_data",
+            //dataType:"JSON",
+            data: value,
+            success: function(data, textStatus, jqXHR)
+            {
+                var data = jQuery.parseJSON(data);
+                if(data.result ==1){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload( null, false );
+                }else{
+                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
+                }
+
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+                swal("Error!", textStatus, "error");
+            }
+        });
+
+
+    });
+    $(document).on( "click",".btndelete_perkota", function() {
+        var name = $(this).attr("name");
+        var id = $(this).attr("id");
+        var tujuan = $(this).data("tujuan");
+        var asal = $(this).data("asal");
+        if(!confirm("Hapus Data " + asal +' menuju ke '+ tujuan + " ?")) return false;
+        var value = {
+            id: id,name:name,
+            _token: "{{ csrf_token() }}"
+        };
+        $.ajax({
+            type: "get",
+            url : baseUrl + "/sales/tarif_cabang_kilogram/hapus_data_perkota",
             //dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)

@@ -7,13 +7,38 @@
     .cssright { text-align: right; }
 </style>
 
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2> KWITANSI </h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Operasional</a>
+                        </li>
+                        <li>
+                            <a>Penjualan</a>
+                        </li>
+                        <li>
+                            <a>Transaksi Penjualan</a>
+                        </li>
+                        <li class="active">
+                            <strong> KWITANSI </strong>
+                        </li>
 
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5 style="margin : 8px 5px 0 0"> PENERIMAAN PENJUALAN
+                    <h5 style="margin : 8px 5px 0 0">
                           <!-- {{Session::get('comp_year')}} -->
                     </h5>
 
@@ -81,11 +106,11 @@ $(document).ready(function() {
         serverSide: true,
         ajax: '{{ route('datatable_kwitansi') }}',
         columns: [
-            {data: 'nomor', name: 'nomor'},
-            {data: 'tanggal', name: 'tanggal'},
-            {data: 'kode_customer', name: 'kode_customer'},
-            {data: 'jumlah', name: 'jumlah'},
-            {data: 'keterangan', name: 'keterangan'},
+            {data: 'k_nomor', name: 'k_nomor'},
+            {data: 'k_tanggal', name: 'k_tanggal'},
+            {data: 'k_kode_customer', name: 'k_kode_customer'},
+            {data: 'k_netto', name: 'k_netto'},
+            {data: 'k_keterangan', name: 'k_keterangan'},
             {data: 'tes', name: 'tes'}
         ]
     });

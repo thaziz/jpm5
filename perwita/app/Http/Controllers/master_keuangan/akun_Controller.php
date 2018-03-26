@@ -152,7 +152,7 @@ class akun_Controller extends Controller
                 if($request->id_kota != 0)
                     $akun->id_provinsi = $request->id_kota;
             }
-           
+
             $akun->is_active = $request->is_active;
             //return json_encode($akun);
             if($akun->save()){
@@ -193,7 +193,7 @@ class akun_Controller extends Controller
                 return json_encode($response);
             }
         }
-        
+
     }
 
     public function edit($parrent){
@@ -218,7 +218,7 @@ class akun_Controller extends Controller
 
         if($akun->save()){
             return json_encode($response);
-        }       
+        }
     }
 
     public function hapus_data($id){

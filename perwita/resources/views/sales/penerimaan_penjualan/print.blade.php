@@ -283,17 +283,17 @@
 				<tr>
 					<td>No.Kwitansi</td>
 					<td>:</td>
-					<td>{{$head->nomor}}</td>
+					<td>{{$head->k_nomor}}</td>
 				</tr>
 				<tr>
 					<td>Tanggal</td>
 					<td>:</td>
-					<td>{{$head->tanggal}}</td>
+					<td>{{$head->k_tanggal}}</td>
 				</tr>
 				<tr>
 					<td>Kode.Cust.</td>
 					<td>:</td>
-					<td>{{$head->kode_customer}}</td>
+					<td>{{$head->k_kode_customer}}</td>
 				</tr>
 			</table>
 
@@ -326,11 +326,11 @@
 				@foreach ($detail as $row)
 				<tr>
 					<th height="25" style="text-align:right" class="textcenter bot right top"> {{$i++}}.&nbsp </th>
-					<td class="bot right"> {{$row->nomor_invoice}}</td>
-					<td class="bot right"> {{$row->tanggal}} </td>
-					<td style="text-align:left" class="bot right">&nbsp {{$row->keterangan}} </td>
-					<td style="text-align:right" class="bot right"> {{ number_format($row->total_tagihan, 2, ",", ".") }}&nbsp </td>
-					<td style="text-align:right" class="bot right">{{ number_format($row->jumlah, 2, ",", ".") }}&nbsp</td>
+					<td class="bot right"> {{$row->kd_nomor_invoice}}</td>
+					<td class="bot right"> {{$row->kd_tanggal_invoice}} </td>
+					<td style="text-align:left" class="bot right">&nbsp {{$row->kd_keterangan}} </td>
+					<td style="text-align:right" class="bot right"> {{ number_format($row->i_tagihan, 2, ",", ".") }}&nbsp </td>
+					<td style="text-align:right" class="bot right">{{ number_format($row->kd_jumlah, 2, ",", ".") }}&nbsp</td>
 				</tr>
 				@endforeach
 				
@@ -347,15 +347,15 @@
 		<table class="size margin-top10px inlineTable pull-right" width="32%" style="margin-right: 0px;padding-right: 0px;">
 			<tr>
 				<td width="20%">Jumlah</td>
-				<td width="50%" style="text-align:right" class="textright"> {{ number_format($head->netto, 2, ",", ".") }} </td>
+				<td width="50%" style="text-align:right" class="textright"> {{ number_format($head->k_netto, 2, ",", ".") }} </td>
 			</tr>
 			<tr>
 				<td>Biaya (D/K)</td>
-				<td style="text-align:right" class="textright">{{ number_format($head->debet+$head->kredit, 2, ",", ".") }}</td>
+				<td style="text-align:right" class="textright">{{ number_format($head->k_debet+$head->k_kredit, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td>Total</td>
-				<td class="textright">{{ number_format($head->jumlah, 2, ",", ".") }}</td>
+				<td class="textright">{{ number_format($head->k_jumlah, 2, ",", ".") }}</td>
 			</tr>
 		</table>
 		<div>

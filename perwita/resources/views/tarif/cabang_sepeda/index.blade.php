@@ -15,6 +15,18 @@
     .pad{
         padding: 10px;
     }
+    .form-control{
+      background-color: #FFFFFF;
+    background-image: none;
+    border: 1px solid #9da2a6;
+    border-radius: 1px;
+    color: inherit;
+    display: block;
+    padding: 6px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    width: 100%;
+    font-size: 14px;
+    }
     .btn-purple{
       background-color: purple;
     }
@@ -25,7 +37,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> TARIF CABANG DOKUMEN </h2>
+                    <h2> TARIF CABANG SEPEDA </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -40,7 +52,7 @@
                           <a> Master Tarif</a>
                         </li>
                         <li class="active">
-                            <strong> Tarif Cabang Dokumen </strong>
+                            <strong> Tarif Cabang Sepeda </strong>
                         </li>
 
                     </ol>
@@ -73,22 +85,39 @@
                         <div class="box-body">
 
                             <div class="row">
-                                
-                        <div class="col-xs- float-left">
+                                <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
+
+                            </table>
+                           <div class="col-xs- float-left">
                           <table>
                             <tr>
-                              <td valign="top" style="padding-left: 20px;"><p style="background-color: red;width: 15px;height: 15px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td valign="top"><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+                              <td style="padding-left: 20px;"><p style="background-color: red;width: 10px;height: 10px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
+                              <td><p> Menghapus Seluruh Data <b>kota</b> Menuju <b>Provinsi</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
                                                        
-                              <td valign="top" style="padding-left: 50px;"><p style="background-color: purple;width: 15px;height: 15px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td  valign="top"><p>Menghapus Data <b>kota</b> Menuju <b>Kota</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
+                              <td style="padding-left: 50px;"><p style="background-color: purple;width: 10px;height: 10px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
+                              <td ><p>Menghapus Data <b>kota</b> Menuju <b>Kota</b> <f style="color: red;";>*Kecuali</f> jika sudah di custom/edit</p></td>
 
-                              <td valign="top" style="padding-left: 50px;"><p style="background-color: #595959;width: 15px;height: 15px">&nbsp;</p></td>
-                              <td><p>&nbsp;&nbsp;&nbsp; </p></td>
-                              <td  valign="top"><p>Menghapus data Tidak diperbolehkan</p></td>
+                              <td style="padding-left: 50px;"><p style="background-color: #595959;width: 10px;height: 10px">&nbsp;</p></td>
+                              <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
+                              <td ><p>Menghapus data Tidak diperbolehkan</p></td>
                             </tr>
+                           
+                            <tr>
+                              <td>&nbsp;</td>
+                              <td>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td><p style="font-size: 12px;margin-top: -18px;">( Jika tabel Provinsi Tujuan <f style="color: red;";>Terisi</f> maka Data ketika insert <b>Kota</b> Menuju <b>Provinsi</b> )</p></td>
+                            
+                              <td>&nbsp;</td>
+                              <td>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td><p style="font-size: 12px; margin-top: -18px;">( Jika tabel Provinsi Tujuan <f style="color: red;";>Kosong</f> maka Data ketika insert <b>Kota</b> Menuju <b>Kota</b> )</p></td>
+
+                              <td>&nbsp;</td>
+                              <td>&nbsp;&nbsp;&nbsp;</p></td>
+                              <td><p style="font-size: 12px; margin-top: -18px;">( Hanya Hak akses dengan otoritas tertinggi yang dapat menghapus )</p></td>
+                            </tr>
+
                           </table>
                         </div>
 
@@ -146,10 +175,10 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr id="hilang2">
+                                <tr>
                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td>   
-                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" id="cb_kota_tujuan" style="width:100%" i>
+                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" style="width:100%" i>
                                             <option value="" selected="" disabled="">-- Pilih Kota tujuan --</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
@@ -157,11 +186,10 @@
                                         </select>
                                     </td>
                                 </tr>
-                            
-                                <tr id="hilang">
+                                <tr>
                                     <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
                                     <td>   
-                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
+                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" style="width:100%" i>
                                             <option value="" selected="" disabled="">-- Pilih Provinsi tujuan --</option>
                                         @foreach ($prov as $prov)
                                             <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
@@ -172,7 +200,7 @@
                                  <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_cabang" id="ed_harga" style="text-align: right;">
+                                        <select  class="chosen-select-width form-control d" name="ed_cabang" id="ed_harga" style="text-align: right;">
                                         
                                             <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
                                             @foreach ($cabang_default as $a)
@@ -184,7 +212,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Penjualan</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_acc_penjualan"  style="text-align: right;">
+                                        <select  class="chosen-select-width form-control d" name="ed_acc_penjualan"  style="text-align: right;">
                                         
                                             <option value="">-- Pilih Acc Penjualan Terlebih Dahulu --</option>
                                             @foreach ($accpenjualan as $b)
@@ -196,7 +224,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Csf Penjualan</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_csf_penjualan" style="text-align: right;">
+                                        <select  class="chosen-select-width form-control d" name="ed_csf_penjualan" style="text-align: right;">
                                         
                                             <option value="">-- Pilih Csf Penjualan Terlebih Dahulu --</option>
                                             @foreach ($csfpenjualan as $a)
@@ -208,65 +236,40 @@
                             </tbody>
                           </table>
                           
-                          <table class="table-striped table-bordered" > 
+                          <table class="table-striped table-bordered" width="100%"> 
                               <thead>
                                   <tr >
-                                      <th style="padding: 7px; text-align: center;"  colspan="2">REGULAR</th>
+                                      <th style="padding: 7px; text-align: center;"  colspan="4">REGULAR</th>
                                   </tr>
                               </thead>
                               <tbody>
                                   <tr>
-                                      <td class="pad">Harga</td>
-                                      <td class="pad"><input type="text" name="harga_regular"></td>
+                                      <td class="pad">Sepeda</td>
+                                      <td class="pad"><input type="text" class="form-control" name="sepeda_pancal"></td>
+                                      
+
+                                      <td class="pad">bebek/matik</td>
+                                      <td class="pad"><input type="text" class="form-control" name="bebek_matik"></td>
                                   </tr>
                                   <tr>
-                                      <td class="pad">Waktu/Estimasi</td>
-                                      <td class="pad"><input type="text" name="waktu_regular"></td>
+                                      <td class="pad" >laki/sport</td>
+                                      <td class="pad"><input type="text" class="form-control" name="laki_sport"></td>
+                                  
+                                      <td class="pad">moge</td>
+                                      <td class="pad"><input type="text" class="form-control" name="moge"></td>
+                                  </tr>
+                                  <tr>
+                                    <td class="pad">Waktu </td>
+                                      <td class="pad"><input type="text" class="form-control" name="waktu"></td>
                                   </tr>
                               </tbody>
                           </table> 
-                          <table class="table-striped table-bordered" style="margin-left: 300px; margin-top: -124px; position: fixed; " > 
-                              <thead>
-                                  <tr>
-                                      <th style="padding: 7px; text-align: center;"  colspan="2">EXPRESS</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr>
-                                      <td class="pad">Harga</td>
-                                      <td class="pad"><input type="text" name="harga_express"></td>
-                                  </tr>
-                                  <tr>
-                                      <td class="pad">Waktu/Estimasi</td>
-                                      <td class="pad"><input type="text" name="waktu_express"></td>
-                                  </tr>
-                              </tbody>
-                          </table>
-                          <table class="table-striped table-bordered" style="margin-left: 600px; margin-top: -124px; position: fixed; " > 
-                              <thead>
-                                  <tr>
-                                      <th style="padding: 7px; text-align: center;"  colspan="2">OUTLET</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  <tr>
-                                      <td class="pad">Harga</td>
-                                      <td class="pad"><input type="text" name="harga_outlet"></td>
-                                  </tr>
-                              </tbody>
-                          </table>
+                        
                           <input type="hidden" name="id_reguler" id="id_reguler">
                           <input type="hidden" name="jenis_reguler">
-                          <input type="hidden" name="id_express" id="id_express">
-                          <input type="hidden" name="jenis_express">
-                          <input type="hidden" name="id_outlet" id="id_outlet">
-                          <input type="hidden" name="jenis_outlet">
-                          <input type="hidden" name="kodekota" id="kodekota">
-
-                          {{--  --}}
                           <input type="hidden" name="id_reguler_edit">
-                          <input type="hidden" name="id_express_edit">
-                          <input type="hidden" name="id_outlet_edit">
+                          <input type="hidden" name="kodekota" id="kodekota">
+                          
                           
                         </form>
                       </div>
@@ -303,21 +306,11 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-  
-
-   $('#cb_kota_asal').change(function(){
+  $('#cb_kota_asal').change(function(){
         var idkota = $('#cb_kota_asal :selected').data('kota');
         var kotaid = $('#kodekota').val(idkota);
-
+        // alert('njing');
     })
-   $('#cb_kota_tujuan').change(function(){
-        $('#hilang').hide();
-
-    })
-    $('#cb_provinsi_tujuan').change(function(){
-        $('#hilang2').hide();
-    })
-
 
     $(document).ready( function () {
         $('#table_data').DataTable({
@@ -332,7 +325,7 @@
             "pageLength": 10,
             "retrieve" : true,
             "ajax": {
-              "url" :  baseUrl + "/sales/tarif_cabang_dokumen/tabel",
+              "url" :  baseUrl + "/sales/tarif_cabang_sepeda/tabel",
               "type": "GET"
             },
             "columns": [
@@ -344,7 +337,7 @@
             { "data": "jenis", },
             { "data": "waktu","sClass": "cssright" },
             //{ "data": "tipe" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "button",render: $.fn.dataTable.render.number( '.'),"sClass": "cssmid"  },
+            { "data": "button" },
             ]
         });
         var config = {
@@ -376,9 +369,6 @@
         $("input[name='jenis_reguler']").val('');
         $("input[name='jenis_express']").val('');
         $("input[name='jenis_outlet']").val('');
-        $('#hilang').show();
-
-        $('#hilang2').show();
        
                
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
@@ -395,7 +385,7 @@
         };
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_cabang_dokumen/get_data",
+            url : baseUrl + "/sales/tarif_cabang_sepeda/get_data",
             type: "GET",
             data : value,
             dataType:'json',
@@ -459,13 +449,12 @@
         console.log(data);
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_cabang_dokumen/save_data",
+            url : baseUrl + "/sales/tarif_cabang_sepeda/save_data",
             type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize(),
-            success: function(data, textStatus, jqXHR,hasil_cek)
+            success: function(data, textStatus, jqXHR)
             {
-              console.log(data);
                 if(data.crud == 'N'){
                     if(data.result == 1){
                         var table = $('#table_data').DataTable();
@@ -487,32 +476,27 @@
                         swal("Error","Can't update customer data, error : "+data.error,"error");
                     }
                 }else{
-                  console.log(data.hasil_cek);
-                    swal(data.hasil_cek,'Cek sekali lagi',"warning");
+                    swal("Error","invalid order","error");
                 }
             },
-            error: function(data,jqXHR, textStatus, errorThrown,hasil_cek)
+            error: function(jqXHR, textStatus, errorThrown)
             {
-
-               // console.log(hasil_cek);
-               swal("Terdapat Kesalahan!", data.hasil_cek, "warning");
+               swal("Kode Tidak boleh sama !", 'periksa sekali lagi', "warning");
             }
         });
     });
 
     $(document).on( "click",".btndelete", function() {
         var name = $(this).attr("name");
-        var prov = $(this).data("prov");
-        var asal = $(this).data("asal");
         var id = $(this).attr("id");
-        if(!confirm("Hapus Data seluruh" + asal +' menuju ke '+ prov + " ?")) return false;
+        if(!confirm("Hapus Data " +name+ " ?")) return false;
         var value = {
             id: id,
             _token: "{{ csrf_token() }}"
         };
         $.ajax({
             type: "get",
-            url : baseUrl + "/sales/tarif_cabang_dokumen/hapus_data",
+            url : baseUrl + "/sales/tarif_cabang_sepeda/hapus_data",
             //dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)
@@ -535,41 +519,6 @@
 
     });
     
-
-     $(document).on( "click",".btndelete_perkota", function() {
-        var name = $(this).attr("name");
-        var id = $(this).attr("id");
-        var tujuan = $(this).data("tujuan");
-        var asal = $(this).data("asal");
-        if(!confirm("Hapus Data " + asal +' menuju ke '+ tujuan + " ?")) return false;
-        var value = {
-            id: id,name:name,
-            _token: "{{ csrf_token() }}"
-        };
-        $.ajax({
-            type: "get",
-            url : baseUrl + "/sales/tarif_cabang_dokumen/hapus_data_perkota",
-            //dataType:"JSON",
-            data: value,
-            success: function(data, textStatus, jqXHR)
-            {
-                var data = jQuery.parseJSON(data);
-                if(data.result ==1){
-                    var table = $('#table_data').DataTable();
-                    table.ajax.reload( null, false );
-                }else{
-                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
-                }
-
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-                swal("Error!", textStatus, "error");
-            }
-        });
-
-
-    });
 
 </script>
 @endsection

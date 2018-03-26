@@ -76,6 +76,9 @@
                     /* tarif_cabang_koli */
                     Request::is('sales/tarif_cabang_koli') ? 'active' : '' || 
                     Request::is('sales/tarif_cabang_koli/*') ? 'active' : '' ||
+                    /* sepeda */
+                    Request::is('sales/tarif_cabang_sepeda') ? 'active' : '' || 
+                    Request::is('sales/tarif_cabang_sepeda/*') ? 'active' : '' ||
                     /* tarif_cabang_kargo */
                     Request::is('sales/tarif_cabang_kargo') ? 'active' : '' || 
                     Request::is('sales/tarif_cabang_kargo/*') ? 'active' : '' ||
@@ -307,6 +310,9 @@
                     /* tarif_cabang_koli */
                     Request::is('sales/tarif_cabang_koli') ? 'active' : '' || 
                     Request::is('sales/tarif_cabang_koli/*') ? 'active' : '' ||
+                     /* sepeda */
+                    Request::is('sales/tarif_cabang_sepeda') ? 'active' : '' || 
+                    Request::is('sales/tarif_cabang_sepeda/*') ? 'active' : '' ||
                     /* tarif_cabang_kargo */
                     Request::is('sales/tarif_cabang_kargo') ? 'active' : '' || 
                     Request::is('sales/tarif_cabang_kargo/*') ? 'active' : '' ||
@@ -395,6 +401,9 @@
                     /* tarif_cabang_koli */
                     Request::is('sales/tarif_cabang_koli') ? 'active' : '' || 
                     Request::is('sales/tarif_cabang_koli/*') ? 'active' : '' ||
+                     /* sepeda */
+                    Request::is('sales/tarif_cabang_sepeda') ? 'active' : '' || 
+                    Request::is('sales/tarif_cabang_sepeda/*') ? 'active' : '' ||
                     /* tarif_cabang_kargo */
                     Request::is('sales/tarif_cabang_kargo') ? 'active' : '' || 
                     Request::is('sales/tarif_cabang_kargo/*') ? 'active' : '' ||
@@ -442,6 +451,14 @@
                     Request::is('sales/tarif_cabang_kargo/*') ? 'active' : ''}} "
                          href="{{ url('sales/tarif_cabang_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kargo</a>
                         </li>
+                        <li >
+                            <a class="sidebar master-perusahaan 
+
+                        {{  /* sepeda */
+                    Request::is('sales/tarif_cabang_sepeda') ? 'active' : '' || 
+                    Request::is('sales/tarif_cabang_sepeda/*') ? 'active' : ''}} "
+                         href="{{ url('sales/tarif_cabang_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Sepeda</a>
+                        </li>
                         <br>
                         <li >
                             <a
@@ -478,6 +495,16 @@
                          Request::is('sales/tarif_penerus_koli/*') ? 'active' : ''}} 
 
                         " href="{{ url('sales/tarif_penerus_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Koli</a>
+                        </li>
+
+                        <li >
+                            <a
+                        class="sidebar master-perusahaan 
+
+                        {{Request::is('sales/tarif_penerus_sepeda') ? 'active' : '' ||
+                         Request::is('sales/tarif_penerus_sepeda/*') ? 'active' : ''}} 
+
+                        " href="{{ url('sales/tarif_penerus_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus sepeda</a>
                         </li>
                         
                     </ul>
@@ -1308,13 +1335,9 @@
                             " href="{{ url('sales/nota_debet_kredit')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN/DN</a>
                             </li>
                             <li >
-                                <a class="sidebar master-perusahaan 
-
-                           {{--  {{Request::is('sales/deliveryordercabangtracking') ? 'active' : '' || 
-                            Request::is('sales/deliveryordercabangtracking/*') ? 'active' : ''}} 
-
-                            " href="{{ url('sales/deliveryordercabangtracking')}} --}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Uangmuka Penjualan (Belum)</a>
-                            </li>
+                                <a class="sidebar master-perusahaan {{Request::is('sales/uang_muka_penjualan') ? 'active' : '' || 
+                                Request::is('sales/index/*') ? 'uang_muka_penjualan' : ''}}" href="{{ url('sales/uang_muka_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Uang Muka Penjualan</a>
+                                </li> 
                              <li >
                                 <a class="sidebar master-perusahaan 
 

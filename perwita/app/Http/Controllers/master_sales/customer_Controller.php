@@ -82,12 +82,14 @@ class customer_Controller extends Controller
                 'kota' => strtoupper($request->cb_kota),
                 'telpon' => strtoupper($request->ed_telpon),
                 'cabang' => $request->cabang,
-                //plafon numeric(20,4),
+                'plafon'=> strtoupper($request->ed_plafon),
                 'pajak_npwp' => strtoupper($request->ed_npwp),
-                //pajak_nama character varying(64),
-                //pajak_alamat character varying(128),
-                //pajak_kota character varying(20),
+                'pajak_npwp' => strtoupper($request->ed_npwp),
+                'pajak_nama' => strtoupper($request->nama_pajak),
+                'pajak_alamat'=>strtoupper($request->alamat_pajak) ,
+                'pajak_kota'=>strtoupper($request->kota_pajak) ,
                 'nama_pph23'  => strtoupper($request->cb_nama_pajak_23),
+                'kode_bank'  => strtoupper($request->ed_kode_bank),
                 'type_faktur_ppn'  => strtoupper($request->cb_type_faktur),
                 'acc_piutang' => strtoupper($request->ed_acc_piutang),
                 'csf_piutang' => strtoupper($request->ed_csf_piutang),
@@ -108,12 +110,13 @@ class customer_Controller extends Controller
                 'alamat' => strtoupper($request->ed_alamat),
                 'kota' => strtoupper($request->cb_kota),
                 'telpon' => strtoupper($request->ed_telpon),
-                //plafon numeric(20,4),
+                'plafon'=> strtoupper($request->ed_plafon),
                 'pajak_npwp' => strtoupper($request->ed_npwp),
-                //pajak_nama character varying(64),
-                //pajak_alamat character varying(128),
-                //pajak_kota character varying(20),
+                'pajak_nama' => strtoupper($request->nama_pajak),
+                'pajak_alamat'=>strtoupper($request->alamat_pajak) ,
+                'pajak_kota'=>strtoupper($request->kota_pajak) ,
                 'nama_pph23'  => strtoupper($request->cb_nama_pajak_23),
+                'kode_bank'  => strtoupper($request->ed_kode_bank),
                 'type_faktur_ppn'  => strtoupper($request->cb_type_faktur),
                 'acc_piutang' => strtoupper($request->ed_acc_piutang),
                 'csf_piutang' => strtoupper($request->ed_csf_piutang),
@@ -154,10 +157,12 @@ class customer_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
-
+        $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
+        $bank = DB::select(DB::raw(" SELECT mb_kode,mb_nama,mb_id FROM masterbank ORDER BY mb_id ASC "));
+        $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $cabang = DB::table('cabang')
                     ->get();
-        return view('master_sales.customer.index', compact('kota','cabang'));
+        return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan','bank'));
     }
 
 }

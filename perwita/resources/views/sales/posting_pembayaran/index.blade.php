@@ -7,18 +7,43 @@
     .cssright { text-align: right; }
 </style>
 
+<div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2> POSTING PEMBAYARAN </h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Operasional</a>
+                        </li>
+                        <li>
+                            <a>Penjualan</a>
+                        </li>
+                        <li>
+                            <a>Penerimaan Kwitansi</a>
+                        </li>
+                        <li class="active">
+                            <strong> POSTING PEMBAYARAN </strong>
+                        </li>
 
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5 style="margin : 8px 5px 0 0"> POSTING PEMBAYARAN
+                    <h5 style="margin : 8px 5px 0 0">
                           <!-- {{Session::get('comp_year')}} -->
                     </h5>
 
                     <div class="text-right" style="">
-                       <button  type="button" style="margin-right :12px; width:110px" class="btn btn-success " id="btn_add_order" name="btnok"></i>Tambah Data</button>
+                       <a href="../sales/posting_pembayaran_form" class="btn btn-primary">Tambah Data</a>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -50,8 +75,8 @@
                                 <td>{{ $row->keterangan }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <a href="{{ url('sales/posting_pembayaran_form/'.$row->nomor.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                        <a href="{{ url('sales/posting_pembayaran_form/'.$row->nomor.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                        <a onclick="edit('{{$row->nomor}}')" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        <a onclick="hapus('{{$row->nomor}}')" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
                                     </div>
                                 </td>
                             </tr>
@@ -105,20 +130,56 @@
     });
 
 
-    $(document).on("click","#btn_add_order",function(){
-        window.location.href = baseUrl + '/sales/posting_pembayaran_form'
+
+
+    function edit(id){
+        window.location.href = baseUrl + '/sales/posting_pembayaran_edit/'+id;
+
+    }
+
+
+    function hapus(id){
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+
+    function(){
+
+         $.ajax({
+          url:baseUrl + '/sales/posting_pembayaran_hapus',
+          data:{id},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                         location.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
     });
-
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
-
-
-    $(document).on( "click",".btnhapus", function(){
-        if(!confirm("Hapus Data ?")) return false;
-    });
-
+}
 
 </script>
 @endsection
