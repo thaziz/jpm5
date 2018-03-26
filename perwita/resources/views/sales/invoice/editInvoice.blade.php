@@ -711,7 +711,7 @@ function hitung_pajak_lain(){
         temp_diskon2     = parseFloat(temp_diskon2);
         
 
-        console.log(temp_diskon2);
+        // console.log(temp_diskon2);
 
         var netto = 0 ;
         $('.dd_total').each(function(){

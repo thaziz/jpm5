@@ -198,7 +198,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
                                 <td colspan="4">
-                                    <input type="text" name="diskon2" onblur="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
+                                    <input type="text" name="diskon2" onkeyup="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
@@ -602,7 +602,7 @@
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
-        $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
+        // $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
 
         hitung_pajak_ppn();
         hitung_pajak_lain();
