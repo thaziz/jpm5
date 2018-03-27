@@ -1,4 +1,3 @@
-
 @extends('main')
 
 
@@ -103,20 +102,7 @@
                               <td><p>&nbsp;&nbsp;&nbsp; : </p></td>
                               <td ><p>Menghapus data Tidak diperbolehkan</p></td>
                             </tr>
-                           
-                            <tr>
-                              <td>&nbsp;</td>
-                              <td>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td><p style="font-size: 12px;margin-top: -18px;">( Jika tabel Provinsi Tujuan <f style="color: red;";>Terisi</f> maka Data ketika insert <b>Kota</b> Menuju <b>Provinsi</b> )</p></td>
-                            
-                              <td>&nbsp;</td>
-                              <td>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td><p style="font-size: 12px; margin-top: -18px;">( Jika tabel Provinsi Tujuan <f style="color: red;";>Kosong</f> maka Data ketika insert <b>Kota</b> Menuju <b>Kota</b> )</p></td>
 
-                              <td>&nbsp;</td>
-                              <td>&nbsp;&nbsp;&nbsp;</p></td>
-                              <td><p style="font-size: 12px; margin-top: -18px;">( Hanya Hak akses dengan otoritas tertinggi yang dapat menghapus )</p></td>
-                            </tr>
 
                           </table>
                         </div>
@@ -391,7 +377,8 @@
             dataType:'json',
             success: function(data, textStatus, jqXHR)
             {
-                console.log(data);
+                console.log(data);  
+                
 
                 $("input[name='crud']").val('E');
                 //
@@ -497,6 +484,40 @@
         $.ajax({
             type: "get",
             url : baseUrl + "/sales/tarif_cabang_sepeda/hapus_data",
+            //dataType:"JSON",
+            data: value,
+            success: function(data, textStatus, jqXHR)
+            {
+                var data = jQuery.parseJSON(data);
+                if(data.result ==1){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload( null, false );
+                }else{
+                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
+                }
+
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+                swal("Error!", textStatus, "error");
+            }
+        });
+
+
+    });
+     $(document).on( "click",".btndelete_perkota", function() {
+        var name = $(this).attr("name");
+        var id = $(this).attr("id");
+        var tujuan = $(this).data("tujuan");
+        var asal = $(this).data("asal");
+        if(!confirm("Hapus Data " + asal +' menuju ke '+ tujuan + " ?")) return false;
+        var value = {
+            id: id,name:name,
+            _token: "{{ csrf_token() }}"
+        };
+        $.ajax({
+            type: "get",
+            url : baseUrl + "/sales/tarif_cabang_sepeda/hapus_data_perkota",
             //dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)

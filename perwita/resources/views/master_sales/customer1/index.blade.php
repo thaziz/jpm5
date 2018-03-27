@@ -12,10 +12,13 @@
                             <a>Home</a>
                         </li>
                         <li>
+                            <a>Master</a>
+                        </li>
+                        <li>
                             <a>Master Penjualan</a>
                         </li>
                         <li>
-                          <a> Master DO</a>
+                            <a>Master DO</a>
                         </li>
                         <li class="active">
                             <strong> CUSTOMER </strong>
@@ -24,8 +27,9 @@
                     </ol>
                 </div>
                 <div class="col-lg-2">
-             </div>
-</div>
+
+                </div>
+            </div>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
@@ -47,30 +51,7 @@
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
+                   
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
 
@@ -115,28 +96,47 @@
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                             <tbody>
                                 <tr>
-                                    <td style="width:120px; padding-top: 0.4cm">Kode</td>
-                                    <td>
-                                        <input type="text" name="ed_kode" class="form-control" style="text-transform: uppercase" >
+<<<<<<< HEAD
+                                    <td hidden="" style="width:120px; padding-top: 0.4cm"  >Kode</td>
+                                    <td colspan="4">
+=======
+                                    <td style="width:120px; padding-top: 0.4cm;text-align: center;font-weight: bold;" colspan="4">Identitas Customer</td>
+                                    <td hidden="">
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
+                                        <input type="hidden" name="ed_kode" class="form-control" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
-                                        <td style="padding-top: 0.4cm">Nama</td>
-                                        <td><input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" ></td>
+<<<<<<< HEAD
+                                        
+=======
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
+
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Alamat</td>
-                                    <td><input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" ></td>
-                                    <td style="padding-top: 0.4cm">Kota</td>
+                                    <td style="padding-top: 0.4cm">Nama</td>
+                                    <td><input type="" class="form-control" name="ed_nama" style="text-transform: uppercase" ></td>
+
+<<<<<<< HEAD
+                                      <td style="padding-top: 0.4cm">Cabang</td>
+=======
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
                                     <td>
-                                        <select class="chosen-select-width"  name="cb_kota" style="width:100%">
-                                            <option value=""></option>
-                                        @foreach ($kota as $row)
-                                            <option value="{{ $row->nama }}"> {{ $row->nama }} </option>
-                                        @endforeach
+                                        <select class="chosen-select-width" name="cabang">
+                                            <option value="0">Pilih - Cabang</option>
+                                            @foreach($cabang as $val)
+                                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                            @endforeach
                                         </select>
                                     </td>
+                                </tr>
+                                <input type="hidden" name="id_cus">
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Alamat</td>
+                                    <td colspan="4"><input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" ></td>
+                                    
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Telpon</td>
@@ -146,20 +146,98 @@
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Piutang</td>
-                                    <td><input type="text" class="form-control" name="ed_acc_piutang" style="text-transform: uppercase" ></td>
+                                    <td>
+                                        <select class="form-control chosen-select-width" name="ed_acc_piutang" style="text-transform: uppercase">
+                                            <option>Pilih - akun hutang</option>    
+                                            @foreach ($accpenjualan as $acc)
+                                                <option value="{{ $acc->id_akun }}">{{ $acc->id_akun }} - {{ $acc->nama_akun }}</option>    
+                                            @endforeach
+                                        </select>
+                                    </td>
                                     <td style="padding-top: 0.4cm">CSF Piutang</td>
-                                    <td><input type="text" class="form-control" name="ed_csf_piutang" style="text-transform: uppercase" ></td>
+                                    <td>
+                                        <select class="form-control chosen-select-width" name="ed_csf_piutang" style="text-transform: uppercase">
+                                            <option>Pilih - csf hutang</option>    
+                                            @foreach ($accpenjualan as $csf)
+                                                <option value="{{ $csf->id_akun }}">{{ $csf->id_akun }} - {{ $csf->nama_akun }}</option>    
+                                            @endforeach
+                                        </select>
+                                    </td>
                                 </tr>
-                                
                                 <tr>
+<<<<<<< HEAD
+                                    <td style="padding-top: 0.4cm">Kota</td>
+                                    <td>
+                                        <select class="chosen-select-width"  name="cb_kota" style="width:100%">
+                                            <option value=""></option>
+                                        @foreach ($kota as $row)
+                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+
                                     <td style="padding-top: 0.4cm">Kode Bank</td>
                                     <td><input type="text" class="form-control" name="ed_kode_bank" ></td>
-                                    <td style="padding-top: 0.4cm">NPWP</td>
-                                    <td><input type="text" class="form-control" name="ed_npwp" ></td>
                                 </tr>
                                 <tr>
+                                    <td colspan="7" style="text-align: center;font-weight: bold;">PAJAK</td>
+                                </tr>
+                                <tr>
+=======
+                                    <td>Plafon</td>
+                                    <td colspan="3"><input type="text" class="form-control" name="ed_plafon"></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Kota</td>
+                                    <td>
+                                        <select class="chosen-select-width"  name="cb_kota" style="width:100%">
+                                            <option value="">Pilih - kota</option>
+                                        @foreach ($kota as $row)
+                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+
+                                    <td style="padding-top: 0.4cm">Kode Bank</td>
+                                    <td>
+                                        <select class="form-control" name="ed_kode_bank" >
+                                            <option selected="" disabled="">Pilih - Bank</option>
+                                            @foreach ($bank as $bank)
+                                                <option value="{{ $bank->mb_kode }}">{{ $bank->mb_kode }} - {{ $bank->mb_nama }}</option>
+                                            @endforeach
+                                            
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="7" style="text-align: center;font-weight: bold;">Identitas Pajak</td>
+                                </tr>
+                                <tr>
+                                    <td> Nama </td>
+                                    <td><input type="text" class="form-control" name="nama_pajak"></td>
+
+                                    <td>Kota</td>
+                                    <td>
+                                         <select class="chosen-select-width"  name="kota_pajak" style="width:100%">
+                                            <option value="" >pilih - kota</option>
+                                        @foreach ($kota as $row)
+                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Alamat</td>
+                                    <td colspan="4"><input type="text" class="form-control" name="alamat_pajak" style="text-transform: uppercase" ></td>
+                                    
+                                </tr>
+                                <tr>
+>>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
+                                    <td style="padding-top: 0.4cm">NPWP</td>
+                                    <td><input type="text" class="form-control" name="ed_npwp" ></td>
+
                                     <td style="padding-top: 0.4cm">PPH 23</td>
-                                    <td colspan="3">
+                                    <td >
                                         <input type="checkbox" name="ck_pph23">
                                     </td>
                                 </tr>
@@ -177,7 +255,7 @@
                                         </select>
                                     </td>
                                     <td style="padding-top: 0.4cm">Tarif Pajak 23</td>
-                                    <td><input type="text" class="form-control" name="ed_tarif_pajak" style="text-align: right"></td>
+                                    <td><input type="text" class="form-control" name="pph master"  style="text-align: right"></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">PPN</td>
@@ -186,7 +264,7 @@
                                     </td>
                                     <td style="padding-top: 0.4cm">Type Faktur</td>
                                     <td>
-                                        <select class="select2_single form-control"  name="cb_type_faktur"  style="width: 100% !important;">
+                                        <select class="select2_single form-control"  name="pph master"   style="width: 100% !important;">
                                             <option></option>
                                             <option value="0">0</option>
                                             <option value="1">1</option>
@@ -282,6 +360,13 @@
         $("input[name='ed_acc_piutang']").val('');
         $("input[name='ed_csf_piutang']").val('');
         $("input[name='ed_syarat_kredit']").val('0');
+        $("input[name='cabang']").val('').trigger('chosen:updated');
+        $("input[name='ed_acc_piutang']").val('');
+        $("input[name='ed_csf_piutang']").val('');
+        $("input[name='ed_kode_bank']").val('');
+        $("input[name='ed_npwp']").val('');
+        $("#input[name='cek_pph23']").attr('checked', false); 
+        $("#input[name='cek_ppn']").attr('checked', false); 
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
     });
@@ -300,10 +385,12 @@
             success: function(data, textStatus, jqXHR)
             {
                 $("input[name='crud']").val('E');
+                $("input[name='id_cus']").val(data.id_cus);
                 $("input[name='ed_kode']").val(data.kode);
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("input[name='ed_nama']").val(data.nama);
-                $("input[name='ed_alamat']").val(data.nama);
+                $("input[name='cabang']").val(data.cabang).trigger('chosen:updated');
+                $("input[name='ed_alamat']").val(data.alamat);
                 $("input[name='ed_telpon']").val(data.telpon);
                 $("select[name='cb_kota']").val(data.kota).trigger('chosen:updated');
                 $("input[name='ed_npwp']").val(data.pajak_npwp);
@@ -311,6 +398,7 @@
                 $("select[name='cb_type_faktur']").val(data.type_faktur_ppn);
                 $("input[name='ed_acc_piutang']").val(data.acc_piutang);
                 $("input[name='ed_csf_piutang']").val(data.csf_piutang);
+                $("input[name='ed_kode_bank']").val(data.kode_bank);
                 $("input[name='ed_syarat_kredit']").val(data.syarat_kredit);
                 $("#modal").modal("show");
                 $("input[name='ed_kode']").focus();
@@ -323,36 +411,11 @@
     });
 
     $(document).on("click","#btnsave",function(){
-        /*
-        var kode_old = $("#ed_kode_old").val();
-        var kode = $("#ed_kode").val();
-        var kota = $("#ed_kota").val();
-        var provinsi = $("#cb_kota_asal").val();
-        var crud   = $("#crud").val();
-        if(id == '' || id == null ){
-            alert('Id harus di isi');
-            $("#ed_kode").focus();
-            return false;
-        }
-        if(provinsi == '' || provinsi == null ){
-            alert('provinsi harus di isi');
-            $("#cb_kota_asal").focus();
-            return false;
-        }
-        /*
-        value = {
-            id_old: id_old,
-            id: id,
-            provinsi: provinsi,
-            kota: kota.toUpperCase(),
-            crud: crud,
-            _token: "{{ csrf_token() }}",
-        };
-        */
+       
         $.ajax(
         {
             url : baseUrl + "/master_sales/customer/save_data",
-            type: "POST",
+            type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
