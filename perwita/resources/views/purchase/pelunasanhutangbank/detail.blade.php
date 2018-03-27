@@ -86,11 +86,12 @@
                           <tr>
                             <td> Kode Bank </td>
                             <td>
-                              <select class="form-control kodebank" name="kodebank">
+                              <select class="form-control " name="kodebank">
                                 @foreach($data['bank'] as $bank)
-                                  <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
+                                  <option value="{{$bank->mb_id}}" @if($data['bbk'][0]->bbk_kodebank == $bank->mb_id) selected="" @endif disabled>  {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
+                              <input type="hidden" class="kodebank" name='idbank' value="{{$data['bbk'][0]->bbk_kodebank}}">
                              </td>
                           </tr>
 
@@ -135,7 +136,7 @@
 
                           <tr>
                             <td>Keterangan </td>
-                            <td> <input type="text" class="input-sm form-control" name="keteranganheader">  </td>
+                            <td> <input type="text" class="input-sm form-control edit" name="keteranganheader" value="{{$data['bbk'][0]->bbk_keterangan}}">  </td>
                             <td> <input type="hidden" class="input-sm form-control flag" name="flag" value="{{$data['bbk'][0]->bbk_flag}}" readonly="">   </td>
                           </tr>
                           </table>
@@ -218,28 +219,27 @@
                                                         <th> Aksi </th>    
                                                       </tr>
                                                         @if($data['bbk'][0]->bbk_flag == 'CEKBG')
-                                                        <?php $n = 1 ?>
+                                                      
                                                         @for($i=0; $i < count($data['bbkd']) ; $i++)
-                                                          @for($j=0; $j < count($data['bbkd'][$i]); $j++)
-                                                        <tr class=data-<?php echo $n ?> id="hslbank">
-                                                         <td> <?php echo $n ?> </td>
-                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbk_nota}}" name="nofpg[]" readonly="">  </td>
-                                                         <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i][$j]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
-                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
-                                                         <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i][$j]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
-                                                         <td> <input type="text" class="form-control input-sm" name="idbank[]" value="{{$data['bbkd'][$i][$j]->mb_kode}}" readonly=""> </td>
-                                                         <td style="text-align: right"> <input type="text" class="form-control input-sm nominal2" value=" {{ number_format($data['bbkd'][$i][$j]->bbkd_nominal, 2) }}" name="nominal[]" readonly=""> </td>
-                                                         @if($data['bbkd'][$i][$j]->bbkd_jenissup == 'supplier')
-                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->nama_supplier}}" name="supplier[]" readonly=""> </td>
+                                                        
+                                                        <tr class=data-{{$i}} id="hslbank">
+                                                         <td> {{$i + 1}} </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbk_nota}}" name="nofpg[]" readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_idfpg}}" name="idfpg[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
+                                                         <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
+                                                         <td> <input type="text" class="form-control input-sm" name="idbank[]" value="{{$data['bbkd'][$i]->mb_kode}}" readonly=""> </td>
+                                                         <td style="text-align: right"> <input type="text" class="form-control input-sm nominal2" value=" {{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}" name="nominal[]" readonly=""> </td>
+                                                         @if($data['bbkd'][$i]->bbkd_jenissup == 'supplier')
+                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->nama_supplier}}"  readonly="">  <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->no_supplier}}" name="supplier[]" readonly=""> </td>
                                                          @else
-                                                           <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->nama}}" name="supplier[]" readonly=""> </td>
+                                                           <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->nama}}"  readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->kode}}" name="supplier[]" readonly="">  </td>
                                                          @endif
                                                         
-                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i][$j]->bbkd_keterangan}}" name="keterangan[]" readonly=""> </td>
-                                                         <td> <button class="btn btn-danger btn-sm removes-btn" type="button" data-id=<?php echo $n ?> data-cek="{{$data['bbkd'][$i][$j]->bbkd_nocheck}}" data-nominal="{{ number_format($data['bbkd'][$i][$j]->bbkd_nominal, 2) }}"><i class="fa fa-trash"></i></button>  </td>
+                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_keterangan}}" name="keterangan[]" readonly=""> </td>
+                                                         <td> <button class="btn btn-danger btn-sm removes-btn" type="button" data-id={{$i}} data-cek="{{$data['bbkd'][$i]->bbkd_nocheck}}" data-nominal="{{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}"><i class="fa fa-trash"></i></button>  </td>
                                                         </tr>
-                                                          @endfor
-                                                          <?php $n++ ?>
+                                                        
                                                         @endfor
                                                       @endif
                                                     </table>
@@ -249,7 +249,8 @@
                                           </div>
                                           <div id="tab-2" class="tab-pane">
                                               <div class="panel-body">
-                                                  
+                                                     <button class='btn btn-sm btn-info tambahdatabiaya' data-toggle="modal" data-target="#myModalBiaya" type="button">  <i class="fa fa-plus"> </i> Tambah Data Biaya </button>
+
                                                    <div class="col-sm-12">
                                                     <table class='table table-stripped table-bordered' id="tbl-biaya">
                                                       <tr>
@@ -263,14 +264,14 @@
                                                       </tr>
                                                       @if($data['bbk'][0]->bbk_flag == 'BIAYA')
                                                       @foreach($data['bbkd'] as $index=>$bbkd)
-                                                      <tr>
+                                                      <tr id="hslbiaya" class="databiaya transaksi{{$index + 1}}" data-biaya="{{$bbkd->bbkb_akun}}">
                                                         <td> {{$index + 1}} </td>
                                                         <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbk_nota}}" readonly=""> </td>
-                                                        <td> <input type="text" class="form-control input-sm" value="{{$bbkd->nama_akun}}" name="akun[]" readonly="">  </td>
+                                                        <td> <input type="text" class="form-control input-sm" value="{{$bbkd->nama_akun}}"  readonly=""> <input type='hidden' name="akun[]" value="{{$bbkd->bbkb_akun}}"> </td>
                                                         <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkb_dk}}" name="dk[]"> </td>
                                                         <td style='text-align: right'> <input type="text" class="form-control input-sm" value="{{ number_format($bbkd->bbkb_nominal, 2) }}" name="jumlah[]"> </td>
                                                         <td> <input type="text" class="form-control" value="{{$bbkd->bbkb_keterangan}}" name="keterangan[]"> </td>
-                                                        <td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="{{$index + 1}}" data-cek='"{{$bbkd->nama_akun}}"' data-nominal='"{{ number_format($bbkd->bbkb_nominal, 2) }}"'><i class='fa fa-trash'></i></button> </td>
+                                                        <td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="{{$index + 1}}" data-cek='"{{$bbkd->bbkb_akun}}"' data-nominal="{{ number_format($bbkd->bbkb_nominal, 2) }}"><i class='fa fa-trash'></i></button> </td>
                                                       </tr>
                                                       @endforeach
                                                       @endif
@@ -360,6 +361,66 @@
                     </div>
                  </div> <!--end modal -->
 
+                    <!-- Modal Biaya -->
+                       <div class="modal inmodal fade" id="myModalBiaya" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                       <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                        <h4 class="modal-title">Tambah Data Biaya </h4>     
+                                       </div>
+
+                                      <div class="modal-body">
+                                        
+                                                    <table class="table">
+                                                      <tr>
+                                                        <th> Acc Biaya </th>
+                                                        <td>
+                                                            <div class="col-sm-12">
+                                                            <select class="chosen-select-width form-control akun biaya">
+                                                               <option value='' selected="">
+                                                                Pilih Akun 
+                                                              </option>
+
+                                                              @foreach($data['akun'] as $akun)
+                                                              <option value="{{$akun->id_akun}},{{$akun->akun_dka}},{{$akun->nama_akun}}">
+                                                                {{$akun->nama_akun}}
+                                                              </option>
+                                                              @endforeach
+                                                             </select>
+                                                             </div>
+                                                        </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> D / K </th>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya"> </div> </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> Jumlah </th>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  jumlahaccount biaya" style="text-align: right"> </div> </td>
+                                                      </tr>
+
+                                                      <tr>
+                                                        <th> Keterangan </th>
+                                                        <td> <div class="col-sm-12"> <input type="text" class="input-sm form-control  keteranganbiaya biaya"> </div> </td>
+                                                      </tr>
+                                                    </table>
+                                                  
+                                            </div>      
+                                         
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="tmbhdatabiaya">Save changes</button>
+                          </div>
+                      </div>
+                     </div>
+                    </div>
+               
+                    <!-- End -->
+
+
                           <!-- MODAL -->
                             <div class="modal fade" id="myModal2" tabindex="-1" role="dialog"  aria-hidden="true">
                               <div class="modal-dialog" style="min-width: 1200px !important; min-height: 800px">
@@ -429,8 +490,10 @@
 <script type="text/javascript">
 
       $('.removes-btn').hide();
+      $('.remove-btn').hide();
       $('.tmbhdatacek').hide();
       $('.simpansukses').hide();
+      $('.tambahdatabiaya').hide();
 
       $('.flag').val();
          flag = $('.flag').val();
@@ -550,10 +613,11 @@
 
                     }
                     else {
+                     // alert('heo');
                       row = "<tr class='datacek"+databank[i].fpgb_nocheckbg+"' id='transaksi"+databank[i].fpgb_nocheckbg+"'> <td>"+$no+"</td> <td>"+databank[i].fpgb_nocheckbg+"</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
                      $no++;
                      tablecek.rows.add($(row)).draw(); 
-                    }
+                                       }
                       
                   }
                 }
@@ -627,7 +691,7 @@
         nofpg = $('.nofpg').val();
         nobbk = $('.nobbk').val();
         flag = $('.flag').val();
-          
+        idfpg = $('.idfpg').val(); 
       if(flag == 'BIAYA'){
         toastr.info("Anda sudah mengisi form 'biaya biaya' mohon untuk dilanjutkan :)");       
       }
@@ -648,12 +712,12 @@
       idbank = $('.idbank').val();
       jenissup = $('.jenissup').val();
 
-      row = "<tr class='transaksi data"+$nomr+" bayar"+$nomr+"' id='hslbank datacek"+notransaksi+" '>" +
+      row = "<tr class='transaksi data-"+$nomr+" bayar"+$nomr+"' id='hslbank datacek"+notransaksi+" '>" +
           "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
-          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value= "+accbank+" name='bank[]' readonly> <input type='hidden' class='idbank' name='idbank[]' value='"+idbank+"'>  </td>" +
+          "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> <input type='text' class='input-sm form-control' name='idfpg[]' value='"+idfpg+"' readonly> </td>" +
+          "<td> <input type='text' class='input-sm form-control' value= "+accbank+" name='bank[]' readonly> <input type='hidden' class='idbank' name='idbank[]' value='"+accbank+"'>  </td>" +
           "<td style='text-align:right'> <input type='text' class='input-sm form-control nominal' value= '"+addCommas(nominal)+"' name='nominal[]' readonly> </td>" +
           "<td><input type='text' class='input-sm form-control' value= '"+supplier+"' name='supplier[]' readonly> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]' readonly></td>" +
@@ -680,7 +744,7 @@
       console.log(nilaicekbg + 'nilaicekbg');
 
 
-      $('.cekbg').val(addCommas(nilaic,ekbg));
+      $('.cekbg').val(addCommas(nilaicekbg));
       $('.total').val(addCommas(nilaicekbg));
       }
     })
@@ -691,12 +755,13 @@
             cek = $(this).data('cek');
             nominal = $(this).data('nominal');
             parentbayar = $('.transaksi'+id);
-            $('#datacek' + cek).show();
-            biaya = $('.biaya').val();
+      
+            biaya = $('.totalbiaya').val();
             biaya2 =  biaya.replace(/,/g, '');
             nominal2 = nominal.replace(/,/g,'');
-            $('.biaya').val('')
-            nilaibiaya = parseInt(biaya2) - parseInt(nominal2).toFixed(2);
+           // alert(biaya2);
+           // alert(nominal2);
+            nilaibiaya = parseFloat(parseFloat(biaya2) - parseFloat(nominal2)).toFixed(2);
             $('.totalbiaya').val(addCommas(nilaibiaya));
             $('.total').val(addCommas(nilaibiaya));
          //   parent.remove();
@@ -715,7 +780,7 @@
           cekbg2 =  cekbg.replace(/,/g, '');
           nominal2 = nominal.replace(/,/g,'');
        
-          nilaicekbg = parseInt(cekbg2) - parseInt(nominal2);
+          nilaicekbg = parseFloat(parseFloat(cekbg2) - parseFloat(nominal2)).toFixed();
           $('.cekbg').val(addCommas(nilaicekbg));
           $('.total').val(addCommas(nilaicekbg));
        //   parent.remove();
@@ -745,6 +810,7 @@
             success : function (response){
                 $('#myModal2').modal('hide');
                   $('.nofpg').val(response.fpg[0].fpg_nofpg);
+                  $('.idfpg').val(response.fpg[0].idfpg);
                   $('.nocheck').val(response.fpg[0].fpgb_nocheckbg);
                     $('.jatuhtempo').val(response.fpg[0].fpgb_jatuhtempo);
                     $('.nominal').val(addCommas(response.fpg[0].fpgb_nominal));
@@ -807,45 +873,73 @@
         $(this).val(val);
       })
 
-      $nmrbiaya = 1;
-      totalbiaya = 0;
+     totalbiaya = 0;
+     $nomrbiayad = $('#hslbiaya').length;
+      $nmrbiaya = $nomrbiayad + 1;
+
+      arrdatabiaya = [];
       $('#tmbhdatabiaya').click(function(){
           akun = $('.akun').val();
+          variabel = akun.split(',');
+          idakun = variabel[0];
           nobbk = $('.nobbk').val();
           flag = $('.flag').val();
+        
 
+
+          $('.databiaya').each(function(){
+            biaya = $(this).data('biaya');
+            arrdatabiaya.push(biaya);
+          })
+
+          datatempbiaya = 0;
+          for(var x = 0; x < arrdatabiaya.length; x++){
+            if(idakun == arrdatabiaya[x]){
+              datatempbiaya = datatempbiaya + 1;
+            }
+          }
+
+          if(datatempbiaya != 0) {
+            toastr.info("Id Akun sudah ada pada data di bawah :)");
+            return false;
+          }
           if(flag == 'CEKBG'){
-            toastr.info("Anda sudah mengisi form 'CEK BG' mohon untuk dilanjutkan :)");
-          
+            toastr.info("Anda sudah mengisi form 'CEK BG' mohon untuk dilanjutkan :)");      
+            return false;    
           }
-          else if(akun == ''){
+          if(akun == ''){
             toastr.info("Mohon isi data akun bank");
+            return false;
           }
-          else if(nobbk == ''){
+          if(nobbk == ''){
             toastr.info("Mohon isi data cabang");
+            return false;
           }
           else {
+              $('#myModalBiaya').modal('hide');
             $('.flag').val('BIAYA');
           akun = $('.akun').val();
           string = akun.split(",");
           idakun = string[0];
+          nmakun = string[2];
           dk = string[1];
           jumlah = $('.jumlahaccount').val();
           keterangan = $('.keteranganbiaya').val();
           nobbk = $('.nobbk').val();
 
-          rowHtml = "<tr class='transaksi"+$nmrbiaya+"'> <td>"+$nmrbiaya+"</td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+idakun+"' name='akun[]'> </td>" +
-          "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+jumlah+"' name='jumlah[]'> </td>" +
-          "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]'></td>" +
+          rowHtml = "<tr class='databiaya transaksi"+$nmrbiaya+"' data-biaya="+idakun+"> <td>"+$nmrbiaya+"</td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"' readonly> </td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+nmakun+"' readonly> <input type='hidden' name='akun[]' value="+idakun+"> </td>" +
+          "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]' readonly> </td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+jumlah+"' name='jumlah[]' readonly> </td>" +
+          "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]' readonly></td>" +
           "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
 
           $('#tbl-biaya').append(rowHtml);
 
-
           $('.biaya').val('');
+          totalbiaya2 = $('.totalbiaya').val();
+          totalbiaya = totalbiaya2.replace(/,/g, '');
 
           jumlah2 = jumlah.replace(/,/g, '');
           totalbiaya = parseFloat(parseFloat(totalbiaya) + parseFloat(jumlah2)).toFixed(2);
@@ -856,28 +950,14 @@
           }
       })
 
-      $(document).on('click','.remove-btn',function(){
-            id = $(this).data('id');
-            cek = $(this).data('cek');
-            nominal = $(this).data('nominal');
-            parentbayar = $('.transaksi'+id);
-            $('#datacek' + cek).show();
-            biaya = $('.biaya').val();
-            biaya2 =  biaya.replace(/,/g, '');
-            nominal2 = nominal.replace(/,/g,'');
-            $('.biaya').val('')
-            nilaibiaya = parseInt(biaya2) - parseInt(nominal2).toFixed(2);
-            $('.totalbiaya').val(addCommas(nilaibiaya));
-            $('.total').val(addCommas(nilaibiaya));
-         //   parent.remove();
-            parentbayar.remove();
-          })
-
+   
 
       $('.ubahdata').click(function(){
         $('.removes-btn').show();
+        $('.remove-btn').show();
         $('.tmbhdatacek').show();
         $('.simpansukses').show();
+        $('.tambahdatabiaya').show();
       })
 </script>
 @endsection

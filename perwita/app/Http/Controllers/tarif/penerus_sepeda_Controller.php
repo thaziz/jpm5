@@ -7,10 +7,10 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Auth;
 
-class penerus_dokumen_Controller extends Controller
+class penerus_sepeda_Controller  extends Controller
 {
     public function table_data () {
-        $list = DB::table('tarif_penerus_dokumen')
+        $list = DB::table('tarif_penerus_sepeda')
         ->select(
             'provinsi.nama as provinsi_nama',
             'provinsi.id as provinsi_id',
@@ -21,14 +21,14 @@ class penerus_dokumen_Controller extends Controller
             'kecamatan.id as kecamatan_id',
             'kecamatan.nama as kecamatan_nama',
 
-            'id_tarif_dokumen','tarif_express','id_increment_dokumen','tarif_reguler','type')
+            'id_tarif_sepeda','sepeda','matik','moge','sport','id_increment_sepeda')
 
 
-        ->join('provinsi','tarif_penerus_dokumen.id_provinsi','=','provinsi.id')
+        ->join('provinsi','tarif_penerus_sepeda.id_provinsi_sepeda','=','provinsi.id')
 
-        ->join('kota','tarif_penerus_dokumen.id_kota','=','kota.id')
+        ->join('kota','tarif_penerus_sepeda.id_kota_sepeda','=','kota.id')
         
-        ->join('kecamatan','tarif_penerus_dokumen.id_kecamatan','=','kecamatan.id')
+        ->join('kecamatan','tarif_penerus_sepeda.id_kecamatan_sepeda','=','kecamatan.id')
 
         ->get();
         // return $list;
@@ -40,8 +40,8 @@ class penerus_dokumen_Controller extends Controller
         foreach ($data as $key) {
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id_increment_dokumen'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['id_tarif_dokumen'].'" name="'.$data[$i]['id_tarif_dokumen'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_tarif_sepeda'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_tarif_sepeda'].'" name="'.$data[$i]['id_tarif_sepeda'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                     </div> ';
             $i++;
         }
@@ -52,21 +52,21 @@ class penerus_dokumen_Controller extends Controller
     public function get_data (Request $request) {
         // dd($request);
         $id =$request->input('id');
-        $data = DB::table('tarif_penerus_dokumen')->where('id_increment_dokumen','=', $id)->get();
+        $data = DB::table('tarif_penerus_sepeda')->where('id_tarif_sepeda','=', $id)->get();
         echo json_encode($data);
     }
 
     public function save_data (Request $request) {
         // dd($request);
 
-        $id_incremet = DB::table('tarif_penerus_dokumen')->select('id_increment_dokumen')->max('id_increment_dokumen');    
+        $id_incremet = DB::table('tarif_penerus_sepeda')->select('id_increment_sepeda')->max('id_increment_sepeda');    
         if ($id_incremet == '') {
             $id_incremet = 1;
         }else{
             $id_incremet += 1;
         }
 
-        $kode_id = DB::table('tarif_penerus_dokumen')->select('id_increment_dokumen')->max('id_increment_dokumen');    
+        $kode_id = DB::table('tarif_penerus_sepeda')->select('id_increment_sepeda')->max('id_increment_sepeda');    
         if ($kode_id == '') {
             $kode_id = 1;
         }else{
@@ -90,39 +90,40 @@ class penerus_dokumen_Controller extends Controller
         if ($crud == 'N') {
 
            $data = array(
-                'id_tarif_dokumen' => $kodeutama,
-                'id_provinsi'=> $request->ed_provinsi,
-                'id_kota' =>$request->ed_kota,
-                'id_kecamatan'=>$request->ed_kecamatan,
-                'tarif_reguler'=>$request->ed_reguler,
-                'tarif_express'=>$request->ed_express,
-                'type' =>'DOKUMEN',
-                'id_increment_dokumen'=>$id_incremet,
-                'id_zona_dokumen'=>$request->ed_zona_reguler,
+                'id_tarif_sepeda' => $kodeutama,
+                'id_provinsi_sepeda'=> $request->ed_provinsi,
+                'id_kota_sepeda' =>$request->ed_kota,
+                'id_kecamatan_sepeda'=>$request->ed_kecamatan,
+                'sepeda'=>$request->sepeda,
+                'matik'=>$request->matik,
+                'sport'=>$request->sport,
+                'moge'=>$request->moge,
+                'id_increment_sepeda'=>$id_incremet,
 
             );
 
-            $simpan = DB::table('tarif_penerus_dokumen')->insert($data);
+            $simpan = DB::table('tarif_penerus_sepeda')->insert($data);
         }elseif ($crud == 'E') {
+            $kode_kota = $request->kode_kota;
             $kode_sama = $request->ed_kode_old;
             if ($kode_sama < 10000 ) {
             $kode_sama = '0000'.$kode_sama;
             }
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
-            $data = array(
-                'id_tarif_dokumen' => $kodeedit,
-                'id_provinsi'=> $request->ed_provinsi,
-                'id_kota' =>$request->ed_kota,
-                'id_kecamatan'=>$request->ed_kecamatan,
-                'tarif_reguler'=>$request->ed_reguler,
-                'tarif_express'=>$request->ed_express,
-                'type' =>'DOKUMEN',
-                'id_increment_dokumen'=>$request->ed_kode_old,
-                'id_zona_dokumen'=>$request->ed_zona_express,
+
+             $data = array(
+                'id_tarif_sepeda' => $kodeedit,
+                'id_provinsi_sepeda'=> $request->ed_provinsi,
+                'id_kota_sepeda' =>$request->ed_kota,
+                'id_kecamatan_sepeda'=>$request->ed_kecamatan,
+                'sepeda'=>$request->sepeda,
+                'matik'=>$request->matik,
+                'sport'=>$request->sport,
+                'moge'=>$request->moge,
+                'id_increment_sepeda'=>$kode_sama,
 
             );
-
-            $simpan = DB::table('tarif_penerus_dokumen')->where('id_tarif_dokumen', $request->ed_kode)->update($data);
+            $simpan = DB::table('tarif_penerus_sepeda')->where('id_tarif_sepeda', $request->ed_kode)->update($data);
         }
         if($simpan == TRUE){
             $result['error']='';
@@ -138,7 +139,7 @@ class penerus_dokumen_Controller extends Controller
     public function hapus_data (Request $request) {
         $hapus='';
         $id=$request->id;
-        $hapus = DB::table('tarif_penerus_dokumen')->where('id_tarif_dokumen' ,'=', $id)->delete();
+        $hapus = DB::table('tarif_penerus_sepeda')->where('id_tarif_sepeda' ,'=', $id)->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
@@ -152,12 +153,10 @@ class penerus_dokumen_Controller extends Controller
     public function index(){
         $provinsi = DB::select(DB::raw("SELECT id,nama FROM provinsi ORDER BY nama ASC"));
         
-        $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
+        $kota = DB::select(DB::raw(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC "));
         $kecamatan = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan ORDER BY nama ASC "));
-        $zona = DB::select(DB::raw(" SELECT id_zona,nama nama_zona,harga_zona FROM zona  "));
-
          // $kotakota = $this->get_kota();
-        return view('tarif.penerus_dokumen.index',compact('provinsi','kota','kecamatan','zona'));
+        return view('tarif.penerus_sepeda.index',compact('provinsi','kota','kecamatan'));
     }
 
 
@@ -168,6 +167,7 @@ class penerus_dokumen_Controller extends Controller
         return $kota1;
     }
     public function get_kec(Request $request){
+        // dd($request);
         $req_kec = $request->kecamatan; 
         $kecamatan = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan WHERE id_kota = $req_kec ORDER BY nama ASC "));
         return $kecamatan;

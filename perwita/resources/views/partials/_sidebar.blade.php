@@ -504,7 +504,9 @@
                         {{Request::is('sales/tarif_penerus_sepeda') ? 'active' : '' ||
                          Request::is('sales/tarif_penerus_sepeda/*') ? 'active' : ''}} 
 
+
                         " href="{{ url('sales/tarif_penerus_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus sepeda</a>
+
                         </li>
                         
                     </ul>

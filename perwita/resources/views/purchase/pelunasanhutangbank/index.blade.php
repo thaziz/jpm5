@@ -77,7 +77,7 @@
                         <td> {{$bbk->bbk_cekbg}} </td>
                         <td> {{$bbk->bbk_biaya}}  </td>
                         <td> {{$bbk->bbk_total}} </td>
-                        <td> <a class="btn btn-sm btn-info text-right" href={{url('pelunasanhutangbank/detailpelunasanbank/'.$bbk->bbk_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  </td>
+                        <td> <a class="btn btn-sm btn-success text-right" href={{url('pelunasanhutangbank/detailpelunasanbank/'.$bbk->bbk_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> &nbsp; <a class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'. $bbk->bbk_id.'')}}" type="button"> <i class="fa fa-print" aria-hidden="true"></i> </a>  </td>
                     </tr>
                     @endforeach
                    </tbody>

@@ -55,13 +55,42 @@
 
 
 
-                         <select class="form-control cabang" name="cabang">
-                            <option value=""> Pilih Data Cabang </option>
-                            @foreach($data['cabang'] as $cabang)
-                            <option value="{{$cabang->kode}}"> {{$cabang->nama}} </option>
-                            @endforeach
-                        </select>
+                         @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
+                         
+                              <select class='form-control chosen-select-width1 cabang' name="cabang">
+                                  <option value="">
+                                    Pilih-Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                  @endforeach
+                                 </select>
+                          
+                            @else
                         
+                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                                  <option value="">
+                                    Pilih Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    @if($cabang->kode == Auth::user()->kode_cabang)
+                                    <option selected="" value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @else
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @endif
+                                  @endforeach
+                                 </select>
+                          
+                            @endif
+                          <input type="hidden" class="valcabang" name="cabang">
                         </div>
 
                     <div class="col-sm-4">
@@ -189,6 +218,43 @@
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           }
         })
+
+    $('#createmodal').click(function(){
+       val = $('.cabang').val();
+       $('.valcabang').val(val);
+      $.ajax({
+        url : baseUrl + '/purchaseorder/getcabang',
+        data : {val},
+        dataType : "json",
+        type : "post",
+        success : function (response){
+              //tambah data ke table data po
+              console.log(response.spp.length);
+            var tableSPP = $('.tbl-purchase').DataTable();
+            tableSPP.clear().draw();
+            var n = 1;
+            for(var i = 0; i < response.spp.length; i++){   
+                 
+                var html2 = "<tr> <td>"+ n +" </td>" +
+                                "<td>"+response.spp[i].spp_nospp+"</td>" +
+                                "<td>"+response.spp[i].spp_tgldibutuhkan+"</td>" +
+                                "<td>"+response.spp[i].nama_supplier+"</td>"+
+                                "<td>"+response.spp[i].spp_cabang+"</td>"+
+                                "<td>"+response.spp[i].spp_tipe+"</td>" +
+                                "<td>"+response.spp[i].spp_keperluan+"</td>" +
+                                "<td> <div class='checkbox'> <input type='checkbox' id='"+response.spp[i].co_idspp+","+response.spp[i].idsup+","+response.spp[i].spp_lokasigudang+","+response.spp[i].spp_cabang+","+response.spp[i].spp_penerimaan+"' class='check' value='option1' aria-label='Single checkbox One'> <label> </label>"+
+                                "</div>"+
+                                "</td>";
+                                    
+                                  
+                              html2 += "</tr>";
+
+               tableSPP.rows.add($(html2)).draw();
+               n++;
+            }
+        }
+      })
+    })
 
     $('.cabang').change(function(){
       val = $(this).val();
@@ -531,8 +597,8 @@
                                 console.log(total);
                                 hasiltotal = total.replace(/,/g, '');
                                 
-                                hrgtotal = hrgtotal + parseInt(hasiltotal);
-                                hasilhrgtotal = hrgtotal.toFixed(2);
+                                hrgtotal = parseFloat(parseFloat(hrgtotal) + parseFloat(hasiltotal)).toFixed(2);
+                             //   hasilhrgtotal = hrgtotal.toFixed(2);
                                 $('.subtotal').val(addCommas(hasilhrgtotal));
                                 $('.total').val(addCommas(hasilhrgtotal));
                                    /* diskon = $('.hsldiskon').val();
@@ -813,6 +879,33 @@
 
               })
 
+
+              $('.jenisppn').change(function(){
+                  $this = $('.ppn').val();
+                  ppn = $('.ppn').val();
+                 if(jenisppn == 'E'){
+                      hargappn = parseFloat($this * parseFloat(subharga) / 100);
+                      ppnhar = hargappn.toFixed(2);
+                      $('.hargappn').val(addCommas(ppnhar));
+                      total = parseFloat(parseFloat(subharga) + parseFloat(ppnhar));
+                      numhar = total.toFixed(2);
+                      $('.total').val(addCommas(numhar));
+                     
+                    }
+                    else if(jenisppn == 'I'){
+                      hargappn = parseFloat(subharga * parseFloat(100) / (100 + $this) );
+                      hargappn2 = hargappn.toFixed(2);
+                      $('.hargappn').val(addCommas(hargappn2));
+                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                      $('.total').val(addCommas(total));
+                    }
+                    else if(jenisppn == 'T'){
+                         hargappn = parseFloat($this * parseFloat(subharga) / 100);
+                         ppnhar = hargappn.toFixed(2);
+                        $('.hargappn').val(addCommas(ppnhar));
+                        $('.total').val(addCommas(subharga));
+                    }
+              })
 
               $('.qtykirim').change(function(){
   

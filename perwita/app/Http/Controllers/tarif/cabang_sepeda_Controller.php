@@ -33,6 +33,8 @@ class cabang_sepeda_Controller extends Controller
                             if ($data[$i]['id_provinsi_cabsepeda'] == null || $data[$i]['id_provinsi_cabsepeda'] == '') {
                                 $data[$i]['button'] =' <div class="btn-group">
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                                                             
+                                                                <button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
 
                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                    
                                                         </div> ';
@@ -315,7 +317,7 @@ class cabang_sepeda_Controller extends Controller
                         'waktu' => $request->waktu,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
+                        // 'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
                         'crud'=>$crud,
                     );
             
@@ -346,7 +348,7 @@ class cabang_sepeda_Controller extends Controller
                         'waktu' => $request->waktu,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
+                        // 'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
                         'crud'=>$crud,
                     );
 
@@ -539,7 +541,7 @@ class cabang_sepeda_Controller extends Controller
     public function hapus_data (Request $request) {
         $hapus='';
         $id=$request->id;
-        $hapus = DB::table('tarif_cabang_sepeda')->where('kode_sama_sepeda' ,'=', $id)->delete();
+        $hapus = DB::table('tarif_penerus_sepeda')->where('kd_sepeda' ,'=', $id)->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
@@ -550,6 +552,22 @@ class cabang_sepeda_Controller extends Controller
         echo json_encode($result);
     }
 
+       public function hapus_data_perkota (Request $request) {
+        // dd($request);
+        $hapus='';
+        $asal=$request->id;
+        $tujuan=$request->name;
+        $hapus = DB::table('sales/tarif_penerus_sepeda/save_data')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->where('crud','!=','E')->delete();
+        if($hapus == TRUE){
+            $result['error']='';
+            $result['result']=1;
+        }else{
+            $result['error']=$hapus;
+            $result['result']=0;
+        }
+        echo json_encode($result);
+    }
+    
     public function index(){
 
         $kota = DB::select(DB::raw(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC "));
