@@ -960,9 +960,11 @@ $('#btnsave2').click(function(){
     jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
     var angka                = $('.angka').val();
     angka                    = angka.replace(/[^0-9\-]+/g,"");
+    angka                    = parseInt(angka);
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
     var tes                  = [];
     var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
+    console.log(angka);
     $(par).find('.i_bayar_text').val(accounting.formatMoney(angka+jumlah_biaya_admin,"",2,'.',','));
     $(par).find('.i_bayar').val(angka+jumlah_biaya_admin);
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);

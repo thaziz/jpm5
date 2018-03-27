@@ -863,11 +863,11 @@ class penerimaan_penjualan_Controller extends Controller
                     $cari_invoice = DB::table('invoice')
                                       ->where('i_nomor',$request->i_nomor[$i])
                                       ->first();
-
+                    return$hasil =  $cari_invoice->i_sisa_pelunasan - $request->i_bayar[$i];
                     $update_invoice = DB::table('invoice')
                                         ->where('i_nomor',$request->i_nomor[$i])
                                         ->update([
-                                            'i_sisa_pelunasan' => $cari_invoice->i_sisa_pelunasan - $request->i_bayar[$i],
+                                            'i_sisa_pelunasan' => $hasil,
                                             'i_status'         => 'Approved',
                                         ]);
                 }
@@ -889,10 +889,11 @@ class penerimaan_penjualan_Controller extends Controller
                                  ]);
 
             }
-            
+
             $memorial_array = array_sum($memorial_array);
             $save_kwitansi = DB::table('kwitansi')
-                               ->insert([
+                               ->where('k_id',$k_id)
+                               ->update([
                                 'k_jumlah_memorial' => $memorial_array
                                ]);
 

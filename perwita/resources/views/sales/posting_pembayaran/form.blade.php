@@ -294,9 +294,9 @@ function check_parent(){
   var parent_check = $('.parent_box:checkbox:checked');
   if (parent_check.length >0) {
 
-    table_modal_d.$('.tanda:checkbox').prop('checked',true);
+    table_modal_d.$('.tes:checkbox').prop('checked',true);
   }else if(parent_check.length==0) {
-    table_modal_d.$('.tanda:checkbox').removeAttr('checked');
+    table_modal_d.$('.tes:checkbox').removeAttr('checked');
   }
 
 }

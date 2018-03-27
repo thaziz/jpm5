@@ -16,7 +16,7 @@
                 </td>
                 <td>{{$val->tanggal}}</td>
                 <td align="right">{{number_format($val->jumlah, 2, ",", ".")}}</td>
-                <td align="center"><input type="checkbox" class="tanda" name="tanda"></td>
+                <td align="center"><input type="checkbox" class="tes" name="tanda"></td>
             </tr>
         @endforeach
     </tbody>
@@ -25,6 +25,6 @@
 <script type="text/javascript">
   var table_modal_d = $('#tabe_data_id').DataTable({
     ordering:false
-    
+
   });
 </script>
