@@ -120,7 +120,7 @@
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
-                              <input type="text" class="valkodebank" name="kodebank">
+                              <input type="hidden" class="valkodebank" name="kodebank">
                              </td>
                           </tr>
 
@@ -692,6 +692,11 @@
         nobbk = $('.nobbk').val();
         flag = $('.flag').val();
         idfpg = $('.idfpg').val();
+
+
+          kodecabang = $('.kodebank').val();
+         // alert(kodecabang);
+          $('.valkodebank').val(kodecabang);
 
       if(flag == 'BIAYA'){
         toastr.info("Anda sudah mengisi form 'biaya biaya' mohon untuk dilanjutkan :)");       
