@@ -564,6 +564,7 @@ class do_Controller extends Controller
         }
 //======================== End Dokumen =============================
         elseif ($tipe == 'KILOGRAM'){
+            //dd($request);
             $berat = $request->berat;
             $tarif = null;
             $biaya_penerus = null;
@@ -625,7 +626,7 @@ class do_Controller extends Controller
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
 
-                if (count($tarifAwal) > 1){
+                if (count($tarifAwal) > 0){
                     $tarifAwal = $tarifAwal[0]->harga;
                 } else {
                     return response()->json([
@@ -690,7 +691,7 @@ class do_Controller extends Controller
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
 
-                if (count($tarifAwal) > 1){
+                if (count($tarifAwal) > 0){
                     $tarifAwal = $tarifAwal[0]->harga;
                 } else {
                     return response()->json([
@@ -728,7 +729,12 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_default')
                         ->select('harga as tarif_penerus')
                         ->where('jenis', '=', $jenis)
+                        ->where('tipe_kiriman', '=', 'KILOGRAM')
                         ->get();
+
+                    if (count($biaya_penerus) < 1){
+                        $biaya_penerus = 0;
+                    }
                 }
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus[0]->tarif_penerus,
@@ -845,7 +851,12 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_default')
                         ->select('harga as tarif_penerus')
                         ->where('jenis', '=', $jenis)
+                        ->where('tipe_kiriman', '=', 'KOLI')
                         ->get();
+
+                    if (count($biaya_penerus) < 1){
+                        $biaya_penerus = 0;
+                    }
                 }
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus[0]->tarif_penerus,
@@ -889,7 +900,12 @@ class do_Controller extends Controller
                         $penerus = DB::table('tarif_penerus_default')
                             ->select('harga as tarif_penerus')
                             ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
                             ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus[0]->tarif_penerus = 0;
+                        }
                     }
 
                     if ($tarif != null) {
@@ -921,7 +937,12 @@ class do_Controller extends Controller
                         $penerus = DB::table('tarif_penerus_default')
                             ->select('harga as tarif_penerus')
                             ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
                             ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus[0]->tarif_penerus = 0;
+                        }
                     }
 
                     if ($tarif != null) {
@@ -953,7 +974,12 @@ class do_Controller extends Controller
                         $penerus = DB::table('tarif_penerus_default')
                             ->select('harga as tarif_penerus')
                             ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
                             ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus[0]->tarif_penerus = 0;
+                        }
                     }
 
                     if ($tarif != null) {
@@ -985,7 +1011,12 @@ class do_Controller extends Controller
                         $penerus = DB::table('tarif_penerus_default')
                             ->select('harga as tarif_penerus')
                             ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
                             ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus[0]->tarif_penerus = 0;
+                        }
                     }
 
                     if ($tarif != null) {
