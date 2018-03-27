@@ -283,6 +283,7 @@ $('#btn_kwitansi').click(function(){
             data : {cabang,cb_jenis_pembayaran,customer,array_simpan},
             success:function(data){
               $('.kirim').html(data);
+              $('#modal').modal('show');
             }
         })
     }
@@ -292,7 +293,6 @@ $('#btn_kwitansi').click(function(){
 function check_parent(){
   var parent_check = $('.parent_box:checkbox:checked');
   if (parent_check.length >0) {
-  console.log(parent_check.length);
 
     table_modal_d.$('.tanda:checkbox').prop('checked',true);
   }else if(parent_check.length==0) {
@@ -368,7 +368,6 @@ $('#btnsimpan').click(function(){
       },
       function(){
 
-               // alert(accPiutang);
            $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
