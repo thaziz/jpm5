@@ -126,7 +126,7 @@
                                                         </select>
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                <tr id="jenis_kiriman">
                                                     <td style="width:110px; padding-top: 0.4cm">Jenis Kiriman</td>
                                                     <td colspan="5">
                                                         <select class="form-control" name="jenis_kiriman" id="jenis_kiriman" >
@@ -879,6 +879,7 @@
             $("#jenis_kendaraan").hide();
             $("#jml_unit").show();
             $(".jenis_unit").show();
+            $("#jenis_kiriman").hide();
         }else if ( type_kiriman =='KERTAS') {
             $("#surat_jalan").show();
             $("#dimensi").hide();

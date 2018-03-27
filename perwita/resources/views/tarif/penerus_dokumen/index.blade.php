@@ -112,7 +112,15 @@
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Tipe Kiriman</td>
-                                    <td><input type="text" name="ed_tipe" value="DOKUMEN" readonly="" class="form-control"></td>
+                                    <td>{{-- <input type="text" value="DOKUMEN" readonly="" > --}}
+                                        <select  name="ed_tipe" class="form-control">
+                                          <option value="">Pilih - Tipe</option>
+                                          <option value="DOKUMEN">DOKUMEN</option>
+                                          <option value="KILOGRAM">KILOGRAM</option>
+                                          <option value="KOLI">KOLI</option>
+                                          <option value="SEPEDA">SEPEDA</option>
+                                        </select>
+                                    </td>
                                 </tr>
                                
                                <tr>

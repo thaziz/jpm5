@@ -12,6 +12,9 @@ class cabang_sepeda_Controller extends Controller
     public function table_data () {
         $sql = "    SELECT t.kode_sama_sepeda,t.id_provinsi_cabsepeda,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,
+
+        
+        
         kk.nama tujuan, t.harga, t.jenis, t.waktu
                     FROM tarif_cabang_sepeda t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
