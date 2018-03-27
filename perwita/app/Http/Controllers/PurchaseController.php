@@ -5101,7 +5101,6 @@ public function kekata($x) {
 		return json_encode($data);
 	}
 
-
 	public function updatefaktur(Request $request){
 		return DB::transaction(function() use ($request) { 
 		

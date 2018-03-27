@@ -286,11 +286,11 @@ class posting_pembayaran_Controller extends Controller
 
     public function cari_uang_muka(request $request)
     {
-        $data = DB::table('kwitansi')
-                  ->where('k_kode_cabang',$request->cabang)
-                  ->where('k_kode_customer',$request->customer)
+        $data = DB::table('uang_muka_penjualan')
+                  ->where('kode_cabang',$request->cabang)
+                  ->where('kode_customer',$request->customer)
                   ->get();
-        return view('sales.posting_pembayaran.table_kwitansi',compact('data'));
+        return view('sales.posting_pembayaran.table_uang_muka',compact('data'));
     }
     public function append(request $request)
     {   
