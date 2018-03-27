@@ -157,19 +157,47 @@
                           <table class="table table-striped table-bordered table-hover ">
                               <tr>
                                    <td style="padding-top: 0.4cm"> sepeda</td>
-                                   <td><input type="text" class="form-control" name="sepeda"></td>
+                                   <td>
+                                      <select class="form-control chosen-select-width" name="sepeda">
+                                            <option disabled="" selected="">Pilih - Zona</option>
+                                            @foreach ($zona as $d)
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                           @endforeach               
+                                        </select>
+                                   </td>
                                </tr>
                                <tr>
                                   <td style="padding-top: 0.4cm"> bebek/matik</td>
-                                   <td><input type="text" class="form-control" name="matik"></td>
+                                   <td>
+                                      <select class="form-control chosen-select-width" name="matik">
+                                            <option disabled="" selected="">Pilih - Zona</option>
+                                            @foreach ($zona as $d)
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                           @endforeach               
+                                        </select>
+                                   </td>
                               </tr>
                               <tr>
                                    <td style="padding-top: 0.4cm"> laki/sport</td>
-                                   <td><input type="text" class="form-control" name="sport"></td>
+                                   <td>
+                                        <select class="form-control chosen-select-width" name="sport">
+                                            <option disabled="" selected="">Pilih - Zona</option>
+                                            @foreach ($zona as $d)
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                           @endforeach               
+                                        </select>
+                                   </td>
                                </tr>
                               <tr>
                                   <td style="padding-top: 0.4cm"> moge</td>
-                                   <td><input type="text" class="form-control" name="moge"></td>
+                                   <td>
+                                       <select class="form-control chosen-select-width" name="moge">
+                                            <option disabled="" selected="">Pilih - Zona</option>
+                                            @foreach ($zona as $d)
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                           @endforeach               
+                                        </select>
+                                   </td>
                               </tr>
                           <input type="hidden" name="kode_kota" id="kodekota">
                           </table>
@@ -286,10 +314,10 @@
             { "data": "kota_nama" },
             { "data": "kecamatan_nama" },  
             // { "data": "type_kilo" },  
-            { "data": "sepeda", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "matik", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "sport", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "moge", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "spd", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "mtk", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "spr", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "mge", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
             ]
         });

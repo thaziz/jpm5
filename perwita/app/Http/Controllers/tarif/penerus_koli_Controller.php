@@ -28,6 +28,15 @@ class penerus_koli_Controller  extends Controller
             'tarif_30express_koli','tarif_30reguler_koli',
             'tarif_>30express_koli','tarif_>30reguler_koli',
 
+            'zo_10r.harga_zona as 10reguler',
+            'zo_10x.harga_zona as 10express',
+            'zo_20r.harga_zona as 20reguler',
+            'zo_20x.harga_zona as 20express',
+            'zo_30r.harga_zona as 30reguler',
+            'zo_30x.harga_zona as 30express',
+            'zo_>30r.harga_zona as lebih30reguler',
+            'zo_>30x.harga_zona as lebih30express',
+
             'id_tarif_koli','type_koli')
 
 
@@ -36,6 +45,19 @@ class penerus_koli_Controller  extends Controller
         ->join('kota','tarif_penerus_koli.id_kota_koli','=','kota.id')
         
         ->join('kecamatan','tarif_penerus_koli.id_kecamatan_koli','=','kecamatan.id')
+
+
+        ->join('zona as zo_10r','zo_10r.id_zona','=','tarif_penerus_koli.tarif_10reguler_koli')
+        ->join('zona as zo_10x','zo_10x.id_zona','=','tarif_penerus_koli.tarif_10express_koli')
+
+        ->join('zona as zo_20r','zo_20r.id_zona','=','tarif_penerus_koli.tarif_20reguler_koli')
+        ->join('zona as zo_20x','zo_20x.id_zona','=','tarif_penerus_koli.tarif_20express_koli')
+
+        ->join('zona as zo_30r','zo_30r.id_zona','=','tarif_penerus_koli.tarif_30reguler_koli')
+        ->join('zona as zo_30x','zo_30x.id_zona','=','tarif_penerus_koli.tarif_30express_koli')
+
+        ->join('zona as zo_>30r','zo_>30r.id_zona','=','tarif_penerus_koli.tarif_>30reguler_koli')
+        ->join('zona as zo_>30x','zo_>30x.id_zona','=','tarif_penerus_koli.tarif_>30express_koli')
 
         ->get();
         // return $list;
@@ -133,10 +155,17 @@ class penerus_koli_Controller  extends Controller
                 'id_provinsi_koli'=> $request->ed_provinsi,
                 'id_kota_koli' =>$request->ed_kota,
                 'id_kecamatan_koli'=>$request->ed_kecamatan,
-                'tarif_10reguler_koli'=>$request->ed_10reguler,
-                'tarif_10express_koli'=>$request->ed_10express,
-                'tarif_20express_koli'=>$request->ed_20express,
-                'tarif_20reguler_koli'=>$request->ed_20reguler,
+                'tarif_10reguler_koli'=>$request->ed_10_reguler,
+                'tarif_10express_koli'=>$request->ed_10_express,
+
+                'tarif_20reguler_koli'=>$request->ed_20_reguler,
+                'tarif_20express_koli'=>$request->ed_20_express,
+
+                'tarif_30reguler_koli'=>$request->ed_30_reguler,
+                'tarif_30express_koli'=>$request->ed_30_express,
+
+                'tarif_>30reguler_koli'=>$request->ed_lebih_30_reguler,
+                'tarif_>30express_koli'=>$request->ed_lebih_30_express,
                 'type_koli' =>$request->ed_tipe,
                 'id_increment_koli'=>$request->ed_kode_old,
 
@@ -173,8 +202,9 @@ class penerus_koli_Controller  extends Controller
         
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $kecamatan = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan ORDER BY nama ASC "));
+        $zona = DB::select(DB::raw(" SELECT id_zona,nama nama_zona,harga_zona FROM zona  "));
          // $kotakota = $this->get_kota();
-        return view('tarif.penerus_koli.index',compact('provinsi','kota','kecamatan'));
+        return view('tarif.penerus_koli.index',compact('provinsi','kota','kecamatan','zona'));
     }
 
 

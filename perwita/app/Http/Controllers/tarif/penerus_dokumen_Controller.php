@@ -104,7 +104,7 @@ class penerus_dokumen_Controller extends Controller
                 'id_kecamatan'=>$request->ed_kecamatan,
                 'tarif_reguler'=>$request->ed_reguler,
                 'tarif_express'=>$request->ed_express,
-                'type' =>'DOKUMEN',
+                'type' =>$request->ed_tipe,
                 'id_increment_dokumen'=>$id_incremet,
                 // 'id_zona_dokumen'=>$request->ed_zona_reguler,
             );
@@ -124,7 +124,7 @@ class penerus_dokumen_Controller extends Controller
                 'id_kecamatan'=>$request->ed_kecamatan,
                 'tarif_reguler'=>$request->ed_reguler,
                 'tarif_express'=>$request->ed_express,
-                'type' =>'DOKUMEN',
+                'type' =>$request->ed_tipe,
                 'id_increment_dokumen'=>$request->ed_kode_old,
                 // 'id_zona_dokumen'=>$request->ed_zona_express,
 
