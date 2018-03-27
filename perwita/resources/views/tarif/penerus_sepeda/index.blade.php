@@ -12,7 +12,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> TARIF PENERUS DOKUMEN </h2>
+                    <h2> TARIF PENERUS KILOGRAM </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -27,7 +27,7 @@
                           <a> Master Tarif</a>
                         </li>
                         <li class="active">
-                            <strong> Tarif Penerus Dokumen </strong>
+                            <strong> Tarif Penerus Kilogram </strong>
                         </li>
 
                     </ol>
@@ -77,13 +77,14 @@
                     <table id="table_data" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th style="width:100px"> Tarif Dokumen</th>
-                                <th> Provinsi </th>
+                                <th style="width:100px"> Tarif Kilogram</th>
+                                {{-- <th> Provinsi </th> --}}
                                 <th> Kota </th>
                                 <th> kecamatan </th>
-                                <th> type </th>
-                                <th> tarif reguler </th>
-                                <th> tarif express </th>
+                                <th> sepeda </th>
+                                <th> bebek/matik </th>
+                                <th> laki/sport </th>
+                                <th> moge </th>
                                 <th style="width:50px"> Aksi </th>
                             </tr>
                         </thead>
@@ -109,12 +110,12 @@
                                     <td><input type="text" name="ed_kode" class="form-control" placeholder="OTOMATIS"></td>
                                     <input type="hidden" name="ed_kode_old">
                                     <input type="hidden" name="crud">
+                                    
                                 </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Tipe Kiriman</td>
-                                    <td><input type="text" name="ed_tipe" value="DOKUMEN" readonly="" class="form-control"></td>
-                                </tr>
-                               
+                              {{--  <tr>
+                                   <td style="padding-top: 0.4cm">Tipe Kiriman</td>
+                                    <td><input type="text" name="ed_tipe" value="KILOGRAM" readonly="" class="form-control"></td>
+                               </tr> --}}
                                <tr>
                                    <td style="padding-top: 0.4cm"> Provinsi </td>
                                    <td>
@@ -133,7 +134,7 @@
                                         <select name="ed_kota" id="kota"  class="form-control">
                                             <option disabled="" selected="">-- --</option>  
                                             @foreach ($kota as $b)
-                                                <option value="{{ $b->id }}">{{ $b->nama }}</option>
+                                                <option value="{{ $b->id }}" data-kota="{{ $b->kode_kota }}">{{ $b->nama }}</option>
                                            @endforeach      
                                         </select>
                                     </td>
@@ -150,48 +151,28 @@
                                         </select>
                                     </td>
                                </tr>
-
-                               {{-- <tr>
-                                   <td style="padding-top: 0.4cm"> Tarif Reguler</td>
-                                   <td>
-                                         <select id="ed_reguler"  class="form-control chosen-select-width" name="ed_reguler">
-                                            <option disabled="" selected="">Pilih - Zona</option>
-                                            @foreach ($zona as $d)
-                                                <option value="{{ $d->harga_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
-                                           @endforeach               
-                                        </select>
-                                   </td>
-                               </tr>
-
-                               <tr>
-                                   <td style="padding-top: 0.4cm"> Tarif Express</td>
-                                   <td>
-                                        <select id="ed_express"  class="form-control chosen-select-width" name="ed_express">
-                                            <option disabled="" selected="">Pilih - Zona</option>
-                                            @foreach ($zona as $d)
-                                                <option value="{{ $d->harga_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
-                                           @endforeach               
-                                        </select>
-                                    </td>
-                               </tr>
- --}}
-                                <tr>
-                                   <td style="padding-top: 0.4cm"> Tarif Reguler</td>
-                                   <td><input type="text" name="ed_reguler" class="form-control"></td>
-                               </tr>
-                               <tr>
-                                   <td style="padding-top: 0.4cm"> Tarif Express</td>
-                                   <td><input type="text" name="ed_express" class="form-control"></td>
-                               </tr>
-                              
                                 <input type="hidden" name="kode_kota">
-                                <input type="hidden" name="ed_zona_reguler">
-                                <input type="hidden" name="ed_zona_express">
-
                             </tbody>
                           </table>
-
-
+                          <table class="table table-striped table-bordered table-hover ">
+                              <tr>
+                                   <td style="padding-top: 0.4cm"> sepeda</td>
+                                   <td><input type="text" class="form-control" name="sepeda"></td>
+                               </tr>
+                               <tr>
+                                  <td style="padding-top: 0.4cm"> bebek/matik</td>
+                                   <td><input type="text" class="form-control" name="matik"></td>
+                              </tr>
+                              <tr>
+                                   <td style="padding-top: 0.4cm"> laki/sport</td>
+                                   <td><input type="text" class="form-control" name="sport"></td>
+                               </tr>
+                              <tr>
+                                  <td style="padding-top: 0.4cm"> moge</td>
+                                   <td><input type="text" class="form-control" name="moge"></td>
+                              </tr>
+                          <input type="hidden" name="kode_kota" id="kodekota">
+                          </table>
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -227,23 +208,19 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-    $('#ed_reguler').change(function(){
-        var foreign1 = $(this).find(':selected').data('foreign');
-        $('input[name="ed_zona_reguler"]').val(foreign1);
+  $('#kota').change(function(){
+        var idkota = $('#kota :selected').data('kota');
+        var kotaid = $('#kodekota').val(idkota);
+        // alert(idkota);
     })
-    $('#ed_express').change(function(){
-        var foreign2 = $(this).find(':selected').data('foreign');
-        $('input[name="ed_zona_express"]').val(foreign2);
-
-    })
-
 
     $('#provinsi').change(function(){
+      
         var prov = $(this).find(':selected').val();
         $.ajax({
             type: "GET",
             data : {kota:prov},
-            url : baseUrl + "/sales/tarif_penerus_dokumen/get_kota",
+            url : baseUrl + "/sales/tarif_penerus_sepeda/get_kota",
             dataType:'json',
             success: function(data)
             {   
@@ -271,7 +248,7 @@
          $.ajax({
             type: "GET",
             data : {kecamatan:kot},
-            url : baseUrl + "/sales/tarif_penerus_dokumen/get_kec",
+            url : baseUrl + "/sales/tarif_penerus_sepeda/get_kec",
             dataType:'json',
             success: function(data)
             {   
@@ -300,17 +277,19 @@
             "pageLength": 10,
             "retrieve" : true,
             "ajax": {
-              "url" :  baseUrl + "/sales/tarif_penerus_dokumen/tabel",
+              "url" :  baseUrl + "/sales/tarif_penerus_sepeda/tabel",
               "type": "GET"
             },
             "columns": [
-            { "data": "id_tarif_dokumen", },
-            { "data": "provinsi_nama", },
+            { "data": "id_tarif_sepeda", },
+            // { "data": "provinsi_nama", },
             { "data": "kota_nama" },
             { "data": "kecamatan_nama" },  
-            { "data": "type" },  
-            { "data": "tarif_reguler", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_express", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            // { "data": "type_kilo" },  
+            { "data": "sepeda", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "matik", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "sport", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "moge", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
             ]
         });
@@ -332,16 +311,23 @@
         $('#test2').show();
         $("input[name='crud']").val('N');
         $("input[name='ed_kode_old']").val('');
-        $("input[name='ed_reguler']").val('');
-        $("input[name='ed_express']").val('');
+        
+
         $("input[name='ed_kode']").attr('readonly',true);
         $("input[name='ed_kode']").attr('');
 
-        $("#provinsi").val('').trigger('chosen:updated');
-        $("#kota").val('').trigger('chosen:updated');
-        $("#kecamatan").val('').trigger('chosen:updated');
+
+        $("input[name='sepeda']").val('');
+        $("input[name='matik']").val('');
+        $("input[name='sport']").val('');
+        $("input[name='moge']").val('');
+
+        $("#provinsi").val('');
+        $("#kota").val('');
+        $("#kecamatan").val('');
+
         $("#modal").modal("show");
-        $("input[name='cb_jenis']").focus();
+        
     });
 
     $(document).on( "click",".btnedit", function() {
@@ -351,7 +337,7 @@
         };
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_penerus_dokumen/get_data",
+            url : baseUrl + "/sales/tarif_penerus_sepeda/get_data",
             type: "GET",
             data : value,
             dataType:'json',
@@ -359,15 +345,19 @@
             {
                 console.log(data);
                 $("input[name='crud']").val('E');
-                $("input[name='ed_kode']").val(data[0].id_tarif_dokumen);
-                $("input[name='ed_kode_old']").val(data[0].id_increment_dokumen);
-                $("input[name='ed_reguler']").val(data[0].tarif_reguler);
-                $("input[name='ed_express']").val(data[0].tarif_express);
+                $("input[name='ed_kode']").val(data[0].id_tarif_sepeda);
+                $("input[name='ed_kode_old']").val(data[0].id_increment_sepeda);
+                
+                $("input[name='sepeda']").val(data[0].sepeda);
+                $("input[name='matik']").val(data[0].matik);
+                $("input[name='sport']").val(data[0].sport);
+                $("input[name='moge']").val(data[0].moge);
+                
                 $("input[name='ed_kode']").attr('readonly',true);
 
-                $("#provinsi").val(data[0].id_provinsi).trigger('chosen:updated');
-                $("#kota").val(data[0].id_kota).trigger('chosen:updated');
-                $("#kecamatan").val(data[0].id_kecamatan).trigger('chosen:updated');
+                $("#provinsi").val(data[0].id_provinsi_sepeda).trigger('chosen:updated');
+                $("#kota").val(data[0].id_kota_sepeda).trigger('chosen:updated');
+                $("#kecamatan").val(data[0].id_kecamatan_sepeda).trigger('chosen:updated');
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
@@ -383,7 +373,7 @@
     $(document).on("click","#btnsave",function(){
         $.ajax(
         {
-            url : baseUrl + "/sales/tarif_penerus_dokumen/save_data",
+            url : baseUrl + "/sales/tarif_penerus_sepeda/save_data",
             type: "get",
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
@@ -431,7 +421,7 @@
         };
         $.ajax({
             type: "get",
-            url : baseUrl + "/sales/tarif_penerus_dokumen/hapus_data",
+            url : baseUrl + "/sales/tarif_penerus_sepeda/hapus_data",
             //dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)
@@ -453,8 +443,7 @@
 
 
     });
-
- 
+    
 
 </script>
 @endsection

@@ -514,7 +514,7 @@ class do_Controller extends Controller
 
     public function cari_harga(Request $request)
     {
-        //dd($requesta);
+        //dd($request);
         $asal = $request->input('asal');
         $tujuan = $request->input('tujuan');
         $kecamatan = $request->input('kecamatan');
