@@ -860,6 +860,9 @@ class do_Controller extends Controller
             }
         }
 //======================= End Koli ================================
+        elseif ($tipe == 'SEPEDA'){
+            dd($requesta);
+        }
     }
 
     public function cetak_nota($nomor = null)
