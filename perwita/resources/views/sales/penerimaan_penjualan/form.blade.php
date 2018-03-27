@@ -96,6 +96,7 @@
                                 <td colspan="20">
 
                                     <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
+                                        <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
                                         <option value="F"> CHEQUE/BG </option>

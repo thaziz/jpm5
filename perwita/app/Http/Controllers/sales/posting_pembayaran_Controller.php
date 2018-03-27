@@ -297,12 +297,16 @@ class posting_pembayaran_Controller extends Controller
         // return $request->sall();
         if ($request->cb_jenis_pembayaran != 'U') {
 
+
             $data = DB::table('kwitansi')
                   ->whereIn('k_nomor',$request->nomor)
                   ->get();
 
-            $data = DB::table('kwitansi')
-                  ->whereIn('k_nomor',$request->nomor)
+            return response()->json(['data'=>$data]);
+        }else{
+
+            $data = DB::table('uang_muka_penjualan')
+                  ->whereIn('nomor',$request->nomor)
                   ->get();
 
             return response()->json(['data'=>$data]);
@@ -320,7 +324,6 @@ class posting_pembayaran_Controller extends Controller
             $akun        = DB::table('masterbank')
                              ->where('mb_id',$request->akun_bank)
                              ->first();
-
             if ($cari_posting == null) {
                 $save_posting = DB::table('posting_pembayaran')
                                   ->insert([
@@ -338,33 +341,47 @@ class posting_pembayaran_Controller extends Controller
                                       'jenis_pembayaran' => $request->cb_jenis_pembayaran,
                                       'kode_cabang' => $request->cb_cabang
                                   ]);
-                for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
-                    $id = DB::table('posting_pembayaran_d')
-                            ->max('id');
-                    if ($id == null) {
-                        $id = 1;
-                    }else{
-                        $id += 1;
-                    }
-                    $save_detail = DB::table('posting_pembayaran_d')
-                                     ->insert([
-                                        'id' => $id,
-                                        'nomor_posting_pembayaran' =>$request->nomor_posting,
-                                        'nomor_penerimaan_penjualan'=>$request->d_nomor_kwitansi[$i],
-                                        'jumlah' =>$request->d_netto[$i],
-                                        'create_by' =>Auth::user()->m_username,
-                                        'create_at' =>Carbon::now(),
-                                        'update_by'=>Auth::user()->m_username,
-                                        'update_at'=> Carbon::now(),
-                                     ]);
 
-                    $update_kwitansi = DB::table('kwitansi')
-                                         ->where('k_nomor',$request->d_nomor_kwitansi[$i])
-                                         ->update([
-                                            'k_nomor_posting'   => $request->nomor_posting,
-                                            'k_tgl_posting'     => $request->ed_tanggal,
+
+
+                    for ($i=0; $i < count($request->d_nomor_kwitansi); $i++) { 
+                        $id = DB::table('posting_pembayaran_d')
+                                ->max('id');
+                        if ($id == null) {
+                            $id = 1;
+                        }else{
+                            $id += 1;
+                        }
+                        $save_detail = DB::table('posting_pembayaran_d')
+                                         ->insert([
+                                            'id' => $id,
+                                            'nomor_posting_pembayaran' =>$request->nomor_posting,
+                                            'nomor_penerimaan_penjualan'=>$request->d_nomor_kwitansi[$i],
+                                            'jumlah' =>$request->d_netto[$i],
+                                            'create_by' =>Auth::user()->m_username,
+                                            'create_at' =>Carbon::now(),
+                                            'update_by'=>Auth::user()->m_username,
+                                            'update_at'=> Carbon::now(),
                                          ]);
-                }
+
+                        if ($request->cb_jenis_pembayaran != 'U') {
+
+
+                            $update_kwitansi = DB::table('kwitansi')
+                                                 ->where('k_nomor',$request->d_nomor_kwitansi[$i])
+                                                 ->update([
+                                                    'k_nomor_posting'   => $request->nomor_posting,
+                                                    'k_tgl_posting'     => $request->ed_tanggal,
+                                                 ]);
+                        }else{
+                            $update_kwitansi = DB::table('uang_muka_penjualan')
+                                                 ->where('nomor',$request->d_nomor_kwitansi[$i])
+                                                 ->update([
+                                                    'nomor_posting'   => $request->nomor_posting,
+                                                    'tgl_posting'     => $request->ed_tanggal,
+                                                 ]);
+                        }
+                    }
 
                 return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
 
@@ -381,7 +398,8 @@ class posting_pembayaran_Controller extends Controller
                 $nota = 'PST' . $request->cabang . $bulan . $tahun . $index;
 
                 return response()->json(['nota'=>$nota]);
-            }
+            }                  
+            
         });
     }
 

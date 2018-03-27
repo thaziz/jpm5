@@ -863,7 +863,13 @@ class penerimaan_penjualan_Controller extends Controller
                     $cari_invoice = DB::table('invoice')
                                       ->where('i_nomor',$request->i_nomor[$i])
                                       ->first();
-                    return$hasil =  $cari_invoice->i_sisa_pelunasan - $request->i_bayar[$i];
+                    $hasil =  $cari_invoice->i_sisa_pelunasan - $request->i_bayar[$i];
+                    // dd($hasil);
+
+                    if ($hasil < 0) {
+                        $hasil = 0;
+                    }
+                    
                     $update_invoice = DB::table('invoice')
                                         ->where('i_nomor',$request->i_nomor[$i])
                                         ->update([

@@ -294,9 +294,9 @@ function check_parent(){
   var parent_check = $('.parent_box:checkbox:checked');
   if (parent_check.length >0) {
 
-    table_modal_d.$('.tes:checkbox').prop('checked',true);
+    table_modal_d.$('.tanda:checkbox').prop('checked',true);
   }else if(parent_check.length==0) {
-    table_modal_d.$('.tes:checkbox').removeAttr('checked');
+    table_modal_d.$('.tanda:checkbox').removeAttr('checked');
   }
 
 }
@@ -311,10 +311,11 @@ function hitung() {
     $('.ed_jumlah').val(temp);
 }
 $('#append').click(function(){
+
     var cabang = $('.cabang').val();
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var nomor = [];
-
+if (cb_jenis_pembayaran != 'U') {
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
@@ -344,6 +345,36 @@ $('#append').click(function(){
         }
     })
 
+}else{
+    $('.tanda').each(function(){
+        var check = $(this).is(':checked');
+        if (check == true) {
+            var par   = $(this).parents('tr');
+            var inv   = $(par).find('.kwitansi_modal').val();
+            nomor.push(inv);
+            array_simpan.push(inv);
+
+        }  
+    })
+
+    $.ajax({
+        url  :baseUrl+'/sales/posting_pembayaran_form/append',
+        data : {nomor,cabang,nomor,cb_jenis_pembayaran},
+        dataType:'json',
+        success:function(data){
+            for (var i = 0; i < data.data.length; i++) {
+                table_data.row.add([
+                    data.data[i].nomor+'<input type="hidden" value="'+data.data[i].nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
+                    accounting.formatMoney(data.data[i].jumlah,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].jumlah+'" class="form-control d_netto" name="d_netto[]">',
+                    '<input type="text" class="form-control d_keterangan" name="d_keterangan[]">',
+                    '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+                ]).draw();
+            }
+            $('#modal').modal('hide');
+            hitung();
+        }
+    })
+}
 })
 
 function hapus_detail(o) {
