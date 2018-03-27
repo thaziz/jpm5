@@ -115,36 +115,36 @@
                               <label class="col-md-1"> Rp </label>
                               <div class="col-md-8">
                               <input type="text" class="input-sm  form-control subtotal" readonly="" value="{{number_format($po->po_subtotal, 2)}}" name="subtotal"> </div>
-
+                                <input type="hidden" class="input-sm  form-control subtotal2" readonly="" value="{{number_format($po->po_subtotal, 2)}}" name="subtotal"> 
                             </td>
                           </tr>
 
                         
-
+<!-- 
                           <tr>
                             <td> Diskon </td> <td> : </td> <td> <div class="col-md-3"> <input type="text" class=" input-sm  form-control diskon" readonly="" value="{{$po->po_diskon}}" name="diskon"> </div> <label class="col-md-2"> % </label> </td>
-                          </tr>
+                          </tr> -->
 
                           <tr>
                             <td> Jenis PPn </td> <td> : </td><td>
                               @if($po->po_jenisppn == 'E')
-                                <select class="form-control jenisppn" disabled="" name="jenisppn" style="width:120px">
+                                <select class="form-control jenisppn edit" disabled="" name="jenisppn" style="width:120px">
                                 <option value="I"> Include </option>
                                 <option value="T"> Tanpa </option>
-                                <option value="E" selected=""> Tanpa </option>
+                                <option value="E" selected=""> Exclude </option>
                                 </select>
                               @elseif($po->po_jenisppn == 'I')
-                                <select class="form-control jenisppn" disabled="" name="jenisppn" style="width:120px">
+                                <select class="form-control jenisppn edit" disabled="" name="jenisppn" style="width:120px">
                                 <option value="I" selected=""> Include </option>
                                 <option value="T"> Tanpa </option>
-                                <option value="E"> Tanpa </option>
+                                <option value="E"> Exclude </option>
                                 </select>
 
                               @else
-                               <select class="form-control jenisppn" disabled="" name="jenisppn" style="width:120px">
+                               <select class="form-control jenisppn edit" disabled="" name="jenisppn" style="width:120px">
                                 <option value="I"> Include </option>
                                 <option value="T" selected=""> Tanpa </option>
-                                <option value="E"> Tanpa </option>
+                                <option value="E"> Exclude </option>
                                 </select>
 
                               @endif
@@ -153,8 +153,8 @@
                           </tr>
                           
                           <tr>
-                            <td> PPn </td> <td> : </td> <td> <div class="col-md-3"> <input type="text" class="input-sm  form-control ppn" readonly="" value="{{$po->po_ppn}}" name="ppn"> </div> <label class="col-md-2"> % </label> </td> 
-
+                            
+                            <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control ppn" name="ppn" value="{{$po->po_ppn}}"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hargappn" readonly>   </div> </div> </td>
                           </tr>
 
 
@@ -328,6 +328,7 @@
      /* $('.cektb').html(tb);*/
       $('.supplier').attr('disabled', false);
       $('.catatan').attr('readonly', false);
+      $('.edit').attr('disabled' , false);
 
     })
       
@@ -359,79 +360,57 @@
             dikali = parseFloat(parseFloat(val * hargaperitem2)).toFixed(2);
 
             $('.totalharga' + id).val(addCommas(dikali));
-
+            jmlhhrg = 0;
             $('.totalharg').each(function(){
               var val2 = $(this).val();
              // alert(val2);
               val = val2.replace(/,/g, '');
               jmlhhrg = parseFloat(parseFloat(jmlhhrg) + parseFloat(val)).toFixed(2);
-            
+              $('.subtotal').val(addCommas(jmlhhrg));
+              $('.total').val(addCommas(jmlhhrg));
+                 /* diskon = $('.hsldiskon').val();
+                   hsldiskon = diskon.replace(/,/g, '');*/
+                 ppn = $('.hargappn').val();
+                 hslppn = ppn.replace(/,/g, '');
+         
+                 if(ppn != ''){
+                   /* if(diskon != '') {
+                      total = parseInt(hsltotal) + parseInt(hslppn) + parseInt(hsldiskon);
+                      console.log('total' + total);
+                      hasiltotal = total.toFixed(2);
+                      $('.total').val(addCommas(hasiltotal));
+                    } 
+                    else {*/
+                      total = parseInt(jmlhhrg) + parseInt(hslppn);
+                      console.log('total' + total);
+                      hasiltotal = total.toFixed(2);
+                      $('.total').val(addCommas(hasiltotal));
+                    /*}*/
+                 }
+                /* else if(diskon != '') {
+                    if(ppn != ''){
+                      total = parseInt(hsltotal) + parseInt(hslppn) + parseInt(hsldiskon);
+                      console.log('total' + total);
+                      hasiltotal = total.toFixed(2);
+                      $('.total').val(addCommas(hasiltotal));
+                    }
+                    else {
+                      console.log('1');
+                      total = parseInt(hsltotal) + parseInt(hsldiskon);
+                      console.log('hsltotal' + hsltotal);
+                      console.log('hsldiskon' + hsldiskon);
+                      console.log('total' + total);
+                      hasiltotal = total.toFixed(2);
+                      $('.total').val(addCommas(hasiltotal));
+                    }
+                 }*/
+                 else {
+              //    $('.subtotal').val(addCommas(hsltotal));
+              }
             })
 
 
-             $('.subtotal').val(addCommas(jmlhhrg));
-            jenisppn = $('.jenisppn').val();
-            disc = $('.diskon').val();
-            subharga = jmlhhrg;
-            diskon = (disc * parseInt(subharga)) / 100;
-            ppn = $('.ppn').val();
-            console.log(diskon);
-            if(diskon != ''){
-                if(jenisppn == 'E'){
-                hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
-                ppnhar = hargappn.toFixed(2);
-                $('.hargappn').val(addCommas(ppnhar));
-
-                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(diskon));
-                numhar = total.toFixed(2);
-                $('.total').val(addCommas(numhar));
-               console.log(numhar + 'numhar');
-               console.log(total + 'total');
-               console.log(hargappn + 'hargappn');
-              }
-              else if(jenisppn == 'I'){
-                hargappn = parseFloat(subharga * parseFloat(100) / 100 + ppn );
-                hargappn2 = hargappn2.toFixed(2);
-                $('.hargappn').val(addCommas(hargappn2));
-                total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(diskon)).toFixed(2);
-                $('.total').val(addCommas(total));
-              }
-              else if(jenisppn == 'T'){
-                   hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
-                   ppnhar = hargappn.toFixed(2);
-                  $('.hargappn').val(addCommas(ppnhar));
-                   total = parseFloat(subharga  - diskon).toFixed(2);
-                  $('.total').val(addCommas(total));
-              }
-            }
-            else {
-               if(jenisppn == 'E'){
-                         hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
-                         ppnhar = hargappn.toFixed(2);
-                        $('.hargappn').val(addCommas(ppnhar));
-                      total = parseFloat(parseFloat(subharga) + parseFloat(ppnhar));
-                      numhar = total.toFixed(2);
-                      $('.total').val(addCommas(numhar));
-                     
-                    }
-                    else if(jenisppn == 'I'){
-                      hargappn = parseFloat(subharga * parseFloat(100) / 100 + ppn );
-                      hargappn2 = hargappn2.toFixed(2);
-                      $('.hargappn').val(addCommas(hargappn2));
-                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                      $('.total').val(addCommas(total));
-                    }
-                    else if(jenisppn == 'T'){
-                         hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
-                         ppnhar = hargappn.toFixed(2);
-                        $('.hargappn').val(addCommas(ppnhar));
-                        $('.total').val(addCommas(subharga));
-                    }
-            } 
-            
-          
-
-
+    
         $('.save').attr('disabled', false);
       });
 
@@ -485,7 +464,7 @@
       $('.total').val(addCommas(numtotal));
     })
 
-      $('.diskon').change(function(){
+    /*  $('.diskon').change(function(){
           $('.save').attr('disabled', false);
                   $this = $(this).val();
                   subtotal =  $('.subtotal').val();
@@ -498,7 +477,7 @@
                   jenisppn = $('.jenisppn').val();
                /*   hargappn = (ppn * parseInt(subharga)) / 100;
 */
-                  if(ppn == ''){
+                  /*if(ppn == ''){
                     total = subharga - diskon;
                     numhar = Math.round(total).toFixed(2);
                     $('.total').val(addCommas(numhar));
@@ -528,18 +507,18 @@
                           $('.hargappn').val(addCommas(ppnhar));
                            total = parseFloat(subharga  - diskon).toFixed(2);
                           $('.total').val(addCommas(total));
-                      }
+                      }*/
                   /*  total = (subharga - diskon) + hargappn;
                     console.log(subharga-diskon);
                     console.log(hargappn);
                     numhar = Math.round(total).toFixed(2);
                     $('.total').val(addCommas(numhar));*/
-                  }
+                 /* }
                  }
-              })
+              })*/
 
               $('.ppn').change(function(){
-                  $('.save').attr('disabled', false);
+               $('.save').attr('disabled', false);
                 $this = $(this).val();
                 subtotal =  $('.subtotal').val();
                 subharga = subtotal.replace(/,/g, '');
@@ -547,62 +526,103 @@
              // ppn = angkappn.replace(/,/g, '');
              /*   hargappn = ($this * parseInt(subharga)) / 100;*/
                
-                disc = $('.diskon').val();
-                diskon = (disc * parseInt(subharga)) / 100;
+   /*             disc = $('.diskon').val();
+                diskon = (disc * parseInt(subharga)) / 100;*/
                 jenisppn = $('.jenisppn').val();
-
-                  if(disc == ''){
-                    if(jenisppn == 'E'){
-                             hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
-                             ppnhar = hargappn.toFixed(2);
-                            $('.hargappn').val(addCommas(ppnhar));
-                          total = parseFloat(parseFloat(subharga) + parseFloat(ppnhar));
-                          numhar = total.toFixed(2);
-                          $('.total').val(addCommas(numhar));
-                         
-                        }
-                        else if(jenisppn == 'I'){
-                          hargappn = parseFloat(subharga * parseFloat(100) / 100 + ppn );
-                          hargappn2 = hargappn2.toFixed(2);
-                          $('.hargappn').val(addCommas(hargappn2));
-                          total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                          $('.total').val(addCommas(total));
-                        }
-                        else if(jenisppn == 'T'){
-                             hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
-                             ppnhar = hargappn.toFixed(2);
-                            $('.hargappn').val(addCommas(ppnhar));
-                            $('.total').val(addCommas(subharga));
-                        }
-
-                  }
-                  else {
+                ppn = $(this).val();
                       if(jenisppn == 'E'){
+                        subharga = $('.subtotal').val();
+                        subharga = subharga.replace(/,/g, '');
                         hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
                         ppnhar = hargappn.toFixed(2);
                         $('.hargappn').val(addCommas(ppnhar));
-
-                        total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(diskon));
+                        total = parseFloat(parseFloat(subharga) + parseFloat(hargappn));
                         numhar = total.toFixed(2);
                         $('.total').val(addCommas(numhar));
-                        console.log(numhar);
                       }
                       else if(jenisppn == 'I'){
-                        hargappn = parseFloat(subharga * parseFloat(100) / 100 + ppn );
-                        hargappn2 = hargappn2.toFixed(2);
-                        $('.hargappn').val(addCommas(hargappn2));
-                        total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(diskon)).toFixed(2);
-                        $('.total').val(addCommas(total));
+                        subharga2 = $('.subtotal2').val();
+               
+                        subhrg = subharga2.replace(/,/g, '');
+                     
+                        hargappn = parseFloat(subhrg * 100) / (100 + parseFloat(ppn) );
+                
+                        hargappn2 = hargappn.toFixed(2);
+
+                        $('.subtotal').val(addCommas(hargappn2));
+
+                        ppnasli = parseFloat((parseFloat(ppn) / 100) * parseFloat(hargappn2)).toFixed(2);
+                        $('.hargappn').val(addCommas(ppnasli));
+                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli))
+                       // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                        $('.total').val(addCommas(hasiltotal));
                       }
                       else if(jenisppn == 'T'){
-                           hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
-                           ppnhar = hargappn.toFixed(2);
-                          $('.hargappn').val(addCommas(ppnhar));
-                           total = parseFloat(subharga  - diskon).toFixed(2);
+                          toastr.info('jenis ppn "Tanpa" , tidak ada perubahan yang dibuat :)');
+                            $(this).val('');
+                          
+                           total = parseFloat(subharga).toFixed(2);
                           $('.total').val(addCommas(total));
                       }
-                  }
+              })
 
+              $('.jenisppn').change(function(){
+                 $('.save').attr('disabled', false);
+                $this = $('.ppn').val();
+                subtotal =  $('.subtotal').val();
+                subharga = subtotal.replace(/,/g, '');
+
+             // ppn = angkappn.replace(/,/g, '');
+             /*   hargappn = ($this * parseInt(subharga)) / 100;*/
+               
+   /*             disc = $('.diskon').val();
+                diskon = (disc * parseInt(subharga)) / 100;*/
+                jenisppn = $('.jenisppn').val();
+                ppn = $('.ppn').val();
+
+                if(ppn == ''){
+
+                }
+                else {
+                  if(jenisppn == 'E'){
+                        subharga = $('.subtotal2').val();
+                        $('.subtotal').val(subharga);
+                        subharga = subharga.replace(/,/g, '');
+                        hargappn = parseFloat(ppn * parseFloat(subharga) / 100);
+                        ppnhar = hargappn.toFixed(2);
+                        $('.hargappn').val(addCommas(ppnhar));
+                        total = parseFloat(parseFloat(subharga) + parseFloat(hargappn));
+                        numhar = total.toFixed(2);
+                        $('.total').val(addCommas(numhar));
+                      }
+                      else if(jenisppn == 'I'){
+                        subharga2 = $('.subtotal2').val();
+                   
+                        subhrg = subharga2.replace(/,/g, '');
+                        hargappn = parseFloat(parseFloat(subhrg) * 100) / (100 + parseFloat(ppn) );
+                        hargappn2 = hargappn.toFixed(2);
+                    
+                        $('.subtotal').val(addCommas(hargappn2));
+
+                        ppnasli = parseFloat((parseFloat(ppn) / 100) * parseFloat(hargappn2)).toFixed(2);
+                    
+                        $('.hargappn').val(addCommas(ppnasli));
+                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli));
+                    
+                       // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                        $('.total').val(addCommas(hasiltotal));
+                      }
+
+                      else if(jenisppn == 'T'){
+                          subharga = $('.subtotal2').val();
+                          $('.subharga').val(subharga);
+                          toastr.info('jenis ppn "Tanpa" , tidak ada perubahan yang dibuat :)');
+                            $('.ppn').val('');
+                            $('.hargappn').val('');
+                            $('.total').val(subharga);
+                      }
+                }
+                      
               })
 
     $('.harga').change(function(){
