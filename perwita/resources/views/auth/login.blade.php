@@ -66,6 +66,12 @@
     <script type="text/javascript">
         var buttonLadda = $('.ladda-button-demo').ladda();
         var baseUrl = '{{ url('/') }}';
+
+        $("#password, #username").keyup(function(evt){
+            if(evt.keyCode == 13)
+                $(".ladda-button").click();
+        })
+
         $('.ladda-button').click(function(){
             if(validateForm()){
                 buttonLadda.ladda('start');
@@ -76,32 +82,13 @@
                     data        : $('#login-form').serialize(),
                     dataType    : 'JSON',
                     success     : function(response){
-                        //alert(response.content);
+                        
                         //console.log(response);
-                          if(response.status == 'sukses'){
-
-toastr.options.onShown = function() { window.location = baseUrl+'/dashboard';
-}
-
-
-				toastr.success(response.nama, "Selamat Datang,");
-
-
-
-                             //window.location = baseUrl+'/dashboard';
-                            ///alert('1');
-                           /* if(response.content == 'authenticate'){
-                               // alert('1');
-                                window.location = baseUrl+'/dashboard';
-                            }else if(response.content == 'gate 2'){
-                                //alert('2');
-                                window.location = baseUrl+'/login/comp-gate';
-                            }*/
+                        if(response.status == 'sukses'){
+                           window.location = baseUrl+'/dashboard';
                         }
                         else if(response.status == 'gagal'){
-                            $('.error-load').removeClass('hidden');
-                            $('.error-load small').text(response.content);
-                            toastr.error(response.content, "Gagal!");
+                            alert(response.content);
                             buttonLadda.ladda('stop');
                         }
                     },
