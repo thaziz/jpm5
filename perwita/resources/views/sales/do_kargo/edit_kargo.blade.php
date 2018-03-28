@@ -28,7 +28,7 @@
                     <h5> Delivery Order Kargo
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/deliveryorderkargo" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../deliveryorderkargo" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">

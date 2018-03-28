@@ -833,10 +833,10 @@ class do_kargo_Controller extends Controller
                     ->where('nomor', $id)
                     ->first();
 
-        $subcon_detail = DB::table('delivery_order')
+       return $subcon_detail = DB::table('delivery_order')
                     ->join('subcon','kode','=','kode_subcon')
                     ->where('nomor', $id)
-                    ->first();
+                    ->get();
         if ($subcon_detail != null) {
             $data->nama_subcon = $subcon->subcon_detail;
         }else{
