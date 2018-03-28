@@ -55,7 +55,7 @@
       </div>
 
       <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
-        <table border="0" width="100%" id="table_form">
+        <table border="0" width="95%" id="table_form">
           <tr>
             <th width="10%" class="text-center">Tampilkan : </th>
             <td width="25%">
@@ -66,8 +66,6 @@
               <select name="show" class="form-control" id="show" style="cursor: pointer;">
                 <option value="bulan">Laporan Bulanan</option>
                 <option value="tahun">Laporan Tahunan</option>
-                <option value="perbandingan_bulan">Perbandingan Bulanan</option>
-                <option value="perbandingan_tahun">Perbandingan Tahunan</option>
               </select>
 
             </td>
@@ -124,7 +122,7 @@
             </td>
 
             <td width="14%">
-              <button class="btn btn-default btn-outline btn-sm" id="filter-rekap" data-throttle="{{ $throttle }}">Tampilkan Neraca Detail</button>
+              
             </td>
           </tr>
         </table>
