@@ -101,7 +101,7 @@ Route::get('purchaseorder/print/{id}', 'PurchaseController@cetak');
 Route::post('purchaseorder/detailpurchasekeuangan', 'PurchaseController@detailpurchasekeuangan');
 Route::post('purchaseorder/updatekeuangan', 'PurchaseController@updatekeuangan');
 Route::post('purchaseorder/getcabang', 'PurchaseController@getcabang');
-Route::delete('purchaseorder/deletepurchase', 'PurchaseController@deletepurchase');
+Route::get('purchaseorder/deletepurchase/{id}', 'PurchaseController@deletepurchase');
 
 
 /*warehouse */
@@ -932,6 +932,7 @@ Route::get('sales/datatable_detail_invoice', 'sales\penerimaan_penjualan_Control
 Route::get('sales/datatable_invoice', 'sales\penerimaan_penjualan_Controller@datatable_invoice')->name('datatable_invoice');
 
 Route::get('sales/riwayat_invoice', 'sales\penerimaan_penjualan_Controller@riwayat_invoice');
+Route::get('sales/cari_um', 'sales\penerimaan_penjualan_Controller@cari_um');
 Route::get('sales/riwayat_cn_dn', 'sales\penerimaan_penjualan_Controller@riwayat_cn_dn');
 Route::get('sales/auto_biaya', 'sales\penerimaan_penjualan_Controller@auto_biaya');
 Route::get('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpan_kwitansi');
