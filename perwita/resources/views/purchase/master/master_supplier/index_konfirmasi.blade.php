@@ -29,6 +29,28 @@
             </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
+
+    <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-danger alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$data['belumdisetujui']}} DATA </b></h2> <h4 style='text-align:center'> Belum di Setujui</h4>
+      </div>
+    </div>
+
+     <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-warning alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$data['disetujui']}} DATA </b></h2> <h4 style='text-align:center'> Di Setujui</h4>
+      </div>
+    </div>
+
+     <div class="col-md-2" style="min-height: 100px">
+      <div class="alert alert-success alert-dismissable" style="animation: fadein 0.5s, fadeout 0.5s 2.5s;">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+        <h2 style='text-align:center'> <b> {{$data['tidakdisetujui']}} DATA </b></h2> <h4 style='text-align:center'> Tidak di Setujui</h4>
+      </div>
+    </div>
+
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
@@ -74,7 +96,7 @@
                     
                     <tbody>
 
-                    @foreach($data as $sp)
+                    @foreach($data['supp'] as $sp)
                     <tr>
                       <td> {{$sp->no_supplier}} </td>
                       <td style="width:5%"> {{$sp->nama_supplier}} </td>

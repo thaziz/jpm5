@@ -83,14 +83,8 @@
                         <td> {{$a->jarak_akir}} </td>
                         <td> {{$a->keterangan}} </td>
                         <td>
-                         
-                      
-
                            <button type="button" data-toggle="modal" data-target="#modal" id="edit" data-edit="{{ $a->id_zona }}"  onclick="editing(this.getAttribute('data-edit'))" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-
-
-
-                                        <button type="button" id="hapus" data-hapus="{{ $a->id_zona }}"  onclick="hapusing(this.getAttribute('data-hapus'))" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                           <button type="button" id="hapus" data-hapus="{{ $a->id_zona }}"  onclick="hapusing(this.getAttribute('data-hapus'))" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                         </td>
                       </tr>
                       @endforeach
@@ -120,13 +114,26 @@
                                         {{-- <input type="text" name="ed_kode" class="form-control" style="text-transform: uppercase" > --}}
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
+                                        <input type="hidden" name="increment_zona">
+                                        <input type="hidden" name="old_increment_zona">
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Nama</td>
                                     <td colspan="3">
-                                        <input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" >
+                                        <input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" readonly="" placeholder="OTOMATIS" >
+                                    </td>
+                                </tr><tr>
+                                    <td style="padding-top: 0.4cm">Tipe</td>
+                                    <td colspan="3">
+                                        <select name="tipe_zona" id="tipe_zona" class="form-control">
+                                          <option value="" selected="">Pilih - tipe</option>
+                                          <option value="DOKUMEN">DOKUMEN</option>
+                                          <option value="KILOGRAM">KILOGRAM</option>
+                                          <option value="KOLI">KOLI</option>
+                                          <option value="SEPEDA">SEPEDA</option>
+                                        </select>
                                     </td>
                                 </tr>
                                 <tr>
@@ -198,13 +205,20 @@
             }
       });
   }
+
+  // $('#tipe_zona').change(function(){
+  //         var tes = $('#tipe_zona :selected').val();
+  //         $('input[name="ed_nama"]').val('ZONA-'+{{ $id }} +' '+ tes);
+  // });
   function tambah (){
             $('input[name="crud"]').val('N');
-            $('input[name="ed_nama"]').val('{{ $nama }}');
+            $('input[name="ed_nama"]').val('');
             $('input[name="ed_harga"]').val('');
+            $('input[name="increment_zona"]').val();
             $('input[name="ed_jarakawal"]').val('');
             $('input[name="ed_jarakakir"]').val('');
             $('input[name="ed_keterangan"]').val('');
+            $('select[name="ed_keterangan"]').val('').trigger('chosen:updated');
     // alert(as);
   }
   function editing(anjay){
@@ -224,12 +238,13 @@
               $('input[name="ed_jarakawal"]').val(data[0].jarak_awal);
               $('input[name="ed_jarakakir"]').val(data[0].jarak_akir);
               $('input[name="ed_keterangan"]').val(data[0].keterangan);
+              $('input[name="ed_keterangan"]').val(data[0].tipe_zona).trigger('chosen:updated');
             }
           });
       }
       
    function hapusing(hapus){
-    alert('dd');
+    // alert('dd');
     var hapusdata = { id:hapus}
     $.ajax({
             url : baseUrl + "/sales/zona/hapus",

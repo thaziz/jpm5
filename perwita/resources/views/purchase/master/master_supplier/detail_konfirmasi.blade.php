@@ -37,7 +37,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="text-right">
-                        <a class="btn btn-danger" href="{{url('konfirmasisupplier/konfirmasisupplier')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
+                        <a class="btn btn-default" href="{{url('konfirmasisupplier/konfirmasisupplier')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
                     </div>
                 </div>
                 @foreach($data['master'] as $sup)

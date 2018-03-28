@@ -37,7 +37,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                    <div class="text-right">
-                  <a class="btn btn-success" href="{{url('purchaseorder/purchaseorder')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
+                  <a class="btn btn-default" href="{{url('purchaseorder/purchaseorder')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
                    </div>
                 </div>
 
@@ -45,7 +45,7 @@
                         <div class="row">
                <div class="col-xs-12">
             @foreach($data['po'] as $po)
-            <form method="post" action="{{url('purchaseorder/updatepurchase/'.$po->po_id.'')}}"  enctype="multipart/form-data" class="form-horizontal">   
+            <form method="post" action="{{url('purchaseorder/updatepurchase/'.$po->po_id.'')}}"  enctype="multipart/form-data" class="form-horizontal" id="savepurchase">   
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
@@ -56,7 +56,10 @@
                           <div class="col-xs-6">
 
                           <table  class="table">
-                      
+                          <tr>
+
+                            <td style="width:200px"> Cabang </td> <td style="width:20px"> : </td> <td> <div class="col-md-8"> <h3> {{$po->nama}} </h3> </div> </td>
+                          </tr>
                           <tr>
 
                             <td style="width:200px"> No PO </td> <td style="width:20px"> : </td> <td> <div class="col-md-8"> <h3> {{$po->po_no}} </h3> </div> </td>
@@ -237,9 +240,9 @@
                       @for ($i = 0; $i < count($data['podtbarang'][$k]); $i++)
                       <tr>
                        <td> {{$i + 1}} </td>
-                        <td> {{$data['podtbarang'][$k][$i]->nama_masteritem}} </td> <!-- nama masteritem -->
+                        <td> {{$data['podtbarang'][$k][$i]->nama_masteritem}} <input type='hidden' name='kodeitem[]' value="{{$data['podtbarang'][$k][$i]->kode_item}}"> </td> <!-- nama masteritem -->
 
-                        <td> {{$data['podtbarang'][$k][$i]->podt_approval}} <input type="hidden" class="qtyapproval{{$i}}" name="qtyapproval" value="{{$data['podtbarang'][$k][$i]->podt_approval}}"> </td> <!-- QTY disetujui -->
+                        <td> {{$data['podtbarang'][$k][$i]->podt_approval}} <input type="hidden" class="qtyapproval{{$i}}" name="qtyapproval[]" value="{{$data['podtbarang'][$k][$i]->podt_approval}}"> </td> <!-- QTY disetujui -->
                         
                         <td> <input type="text" class="form-control qtykirim" readonly="" value="{{$data['podtbarang'][$k][$i]->podt_qtykirim}}" name="qtykirim[]" data-id="{{$i}}{{$k}}"> <input type="hidden" class="status{{$i}}" name="statuskirim[]" value="{{$data['podtbarang'][$k][$i]->podt_statuskirim}}"> </td> <!-- qtykirim -->
                         
@@ -247,7 +250,7 @@
                         
                         <td> <input type="text" class="form-control totalharg totalharga{{$i}}{{$k}}" readonly="" value="{{number_format($data['podtbarang'][$k][$i]->podt_totalharga, 2)}}"  style='text-align: right' name="totalharga2[]">  </td> <!-- totalharga -->
                         
-                        <td> <select class="form-control lokasigudang" disabled="" name="lokasigudang[]"> @foreach($data['gudang'] as $gudang) <option value="{{$data['podtbarang'][$k][$i]->mg_id}}" @if($gudang->mg_id == $data['podtbarang'][$k][$i]->podt_lokasigudang) selected @endif> {{$gudang->mg_namagudang}}</option> @endforeach </select> </td> <!-- lokasi gudang -->
+                        <td> <select class="form-control lokasigudang" disabled="" name="lokasigudang[]"> @foreach($data['gudang'] as $gudang) <option value="{{$gudang->mg_id}}" @if($gudang->mg_id == $data['podtbarang'][$k][$i]->podt_lokasigudang) selected @endif> {{$gudang->mg_namagudang}}</option> @endforeach </select> </td> <!-- lokasi gudang -->
                         
                         <tr>
                       @endfor
@@ -291,6 +294,54 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+     $('#savepurchase').submit(function(){
+        if(!this.checkValidity() ) 
+          return false;
+        return true;
+    })
+
+    $('#savepurchase input').on("invalid" , function(){
+      this.setCustomValidity("Harap di isi :) ");
+    })
+
+    $('#savepurchase input').change(function(){
+      this.setCustomValidity("");
+    })
+
+     $('#savepurchase').submit(function(event){
+        event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Faktur Pembelian!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+                  
+        $.ajax({
+          type : "post",          
+          data : form_data2,
+          url : post_url2,
+          dataType : 'json',
+          success : function (response){
+          console.log(response);
+          alertSuccess(); 
+    //      window.location.href = baseUrl + "/purchaseorder/purchaseorder";   
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      })
+      })
+
     function addCommas(nStr) {
             nStr += '';
             x = nStr.split('.');
@@ -322,8 +373,8 @@
       $('.harga').attr('readonly', false);
       $('.diskon').attr('readonly', false);
       $('.ppn').attr('readonly', false);
-      tb = "<button class='btn btn-primary cek_tb' type='button'> Cek Total Biaya </button>"
-      simpan = "<button class='btn btn-success save' type='submit'> Simpan </button"
+      tb = "<button class='btn btn-primary cek_tb' type='button'> Cek Total Biaya </button>";
+      simpan = " <input type='submit'  class='simpan btn btn-success' value='Simpan'>"; 
       $('.simpan').html(simpan);
      /* $('.cektb').html(tb);*/
       $('.supplier').attr('disabled', false);
@@ -367,6 +418,7 @@
               val = val2.replace(/,/g, '');
               jmlhhrg = parseFloat(parseFloat(jmlhhrg) + parseFloat(val)).toFixed(2);
               $('.subtotal').val(addCommas(jmlhhrg));
+              $('.subtotal2').val(addCommas(jmlhhrg));
               $('.total').val(addCommas(jmlhhrg));
                  /* diskon = $('.hsldiskon').val();
                    hsldiskon = diskon.replace(/,/g, '');*/
@@ -461,6 +513,7 @@
       numtotal = Math.round(total).toFixed(2);
 
       $('.subtotal').val(addCommas(total));
+      $('.subtotal2').val(addCommas(total));
       $('.total').val(addCommas(numtotal));
     })
 
@@ -552,15 +605,16 @@
                         $('.subtotal').val(addCommas(hargappn2));
 
                         ppnasli = parseFloat((parseFloat(ppn) / 100) * parseFloat(hargappn2)).toFixed(2);
+
                         $('.hargappn').val(addCommas(ppnasli));
-                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli))
+                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
                        // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
                         $('.total').val(addCommas(hasiltotal));
                       }
                       else if(jenisppn == 'T'){
                           toastr.info('jenis ppn "Tanpa" , tidak ada perubahan yang dibuat :)');
                             $(this).val('');
-                          
+                            $('.hargappn').val('');
                            total = parseFloat(subharga).toFixed(2);
                           $('.total').val(addCommas(total));
                       }
@@ -607,7 +661,7 @@
                         ppnasli = parseFloat((parseFloat(ppn) / 100) * parseFloat(hargappn2)).toFixed(2);
                     
                         $('.hargappn').val(addCommas(ppnasli));
-                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli));
+                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
                     
                        // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
                         $('.total').val(addCommas(hasiltotal));

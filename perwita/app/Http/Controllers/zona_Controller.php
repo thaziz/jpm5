@@ -19,16 +19,9 @@ class zona_Controller extends Controller
     public function index(){
         // return 'a';
         $data = DB::table('zona')->get();
-        $id = DB::table('zona')->select('id_zona')->max('id_zona');    
-        if ($id == '') {
-            $id = 1;
-        }else{
-            $id += 1;
-        }
-        $nama= 'ZONA-'.$id;
-
-            
-       return view('zona.index',compact('data','nama'));
+        $id = DB::table('zona')->select('increment_zona','tipe_zona')->max('increment_zona');  
+        $cek= $id;
+       return view('zona.index',compact('data','nama','id','cek'));
     }	
     public function getdata(Request $request){
         // return 'a';
@@ -45,14 +38,37 @@ class zona_Controller extends Controller
         }else{
             $id += 1;
         }
+        $tipe = $request->tipe_zona;
+        $cek = DB::table('zona')->select('increment_zona','tipe_zona')->where('tipe_zona','=',$tipe)->get();
+        $cek = count($cek);
+        // gettype($cek)
+        if ($cek == 0) {
+            $cek = 1;
+        }else{
+            $cek += 1;
+        }  
+        
+        $cek = 'ZONA-'.$cek.' '.$tipe;
+        $increment_zona = DB::table('zona')->select('increment_zona','tipe_zona')->where('tipe_zona','=',$tipe)->get();
+        $increment_zona = count($increment_zona);
+        
+        if ($increment_zona == 0) {
+            $increment_zona = 1;
+        }else{
+            $increment_zona += 1;
+        }  
+        // return $increment_zona;
+
         if ($request->crud == 'N') {
         	$data = array(
 	                    'id_zona' =>$id,
-	                    'nama' =>$request->ed_nama,
+	                    'nama' =>$cek,
 	                    'keterangan' => $request->ed_keterangan,
 	                    'jarak_awal' => $request->ed_jarakawal,
 	                    'jarak_akir' => $request->ed_jarakakir,
-	                    'harga_zona' => $request->ed_harga,
+                        'harga_zona' => $request->ed_harga,
+	                    'tipe_zona' => $request->tipe_zona,
+                        'increment_zona'=>$increment_zona,
 	                );
             $simpan = DB::table('zona')->insert($data);
         }else{
@@ -62,7 +78,8 @@ class zona_Controller extends Controller
 	                    'keterangan' => $request->ed_keterangan,
 	                    'jarak_awal' => $request->ed_jarakawal,
 	                    'jarak_akir' => $request->ed_jarakakir,
-	                    'harga_zona' => $request->ed_harga,
+                        'harga_zona' => $request->ed_harga,
+	                    'tipe_zona' => $request->tipe_zona,
 	                );
            
            $simpan = DB::table('zona')->where('id_zona','=',$request->ed_kode_old)->update($data);

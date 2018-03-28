@@ -38,7 +38,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5> <span class="label label-info"> {{$sup->status}} </span>
                     <div class="text-right">
-                        <a class="btn btn-danger" href="{{url('mastersupplier/mastersupplier')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
+                        <a class="btn btn-default" href="{{url('mastersupplier/mastersupplier')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
                     </div>
                 </div>
                 

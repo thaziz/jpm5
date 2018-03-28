@@ -60,11 +60,51 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                   
 
-                  
+                       @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
+                            <tr>
+                            <td width="150px"> Cabang </td>
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' name="cabang">
+                                  <option value="">
+                                    Pilih-Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                  @endforeach
+                                 </select>
+                            </td>
+                            </tr>
+                            @else
+                            <tr>
+                            <td width="150px"> Cabang </td>
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                                  <option value="">
+                                    Pilih Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    @if($cabang->kode == Auth::user()->kode_cabang)
+                                    <option selected="" value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @else
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @endif
+                                  @endforeach
+                                 </select>
+                            </td>
+                            </tr>
+                            @endif
 
                       <tr>                      
                         <td> Nama Item </td>
-                        <td> <input type="text" class="form-control nama_item a" name="nama_item" required=""></td>
+                        <td> <input type="text" class="form-control nama_item a" name="nama_item" required=""> <input type="hidden" class="form-control" name="cabang" value="{{ Auth::user()->kode_cabang}}"> </td>
                       </tr>
 
                       <tr>
@@ -130,27 +170,9 @@
                         <td> Minimum Stock </td>
                         <td> <input type="number" class="form-control j" name="minimum_stock" required=""></td>
                       </tr>
+                      
                       <tr>
-                        <td>Kode Acc</td>
-                        <td> 
-                          <select required="" name="akun" class="form-control chosen-select-width">
-                            <option selected="true" disabled="" value="">--Pilih Terlebih dahulu--</option>
-                            @foreach($akun as $akun)
-                              <option value="{{ $akun->id_akun }}">{{ $akun->id_akun }} - {{ $akun->nama_akun }} </option>
-                            @endforeach
-                          </select>
-                        </td>
-                      </tr>
-
-                     
-<!-- 
-                      <tr>
-                        <td> Syarat Hari </td>
-                        <td> <input type="text" class="form-control" name="syarat_hari"></td>
-                      </tr> -->
-
-                      <tr>
-                        <td> Update Stock </td>
+                        <td class="updatestock"> Update Stock </td>
                         <td class="updatestock"> <select class="form-control k updatestock" name="update_stock" required=""> 
                           <option value='T'  selected="" > T </option>
                           <option value='Y' > Y </option>
@@ -160,13 +182,15 @@
 
                       <tr>
                         <td> Acc Persediaan </td>
-                        <td> <input type="text" class="form-control l" name="acc_persediaan"></td>
+                        <td> <select class="chosen-select-width l accpersediaan" name="acc_persediaan" id="accpersediaan"> <option value=""> Pilih Akun <!-- </option> <option value=""> Pilih Akun2 </option>  --></select> </td>
                       </tr>
                       <tr>
                         <td> Acc HPP </td>
-                        <td> <input type="text" class="form-control z" name="acc_hpp"></td>
+                        <td> 
+                            <select class="chosen-select-width z acchpp" name="acc_hpp" id="accpersediaan"> <option value=""> Pilih Akun <!-- </option> <option value=""> Pilih Akun2 </option>  --></select>
+                        </td>
                       </tr>
-                      <tr>
+                     <!--  <tr>
                         <td> Foto </td>
                         <td> 
                            <label title="Upload image file" for="upload-file-selector" class="btn btn-primary">
@@ -179,7 +203,7 @@
                         
                         </td>
 
-                      </tr>
+                      </tr> -->
                     </table>
                   </div>
 
@@ -241,6 +265,108 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+    clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+
+
+     $("#accpersediaan").chosen(config);
+  //    $(".kndraan").chosen(config);
+    })
+     },2000);
+    
+
+    $('.jenis_item').change(function(){
+           updatestock = $('.updatestock').val();
+          groupitem = $('.jenis_item').val();
+          cabang = $('.cabang').val();
+          $.ajax({
+            data : {updatestock,groupitem,cabang},
+            url : baseUrl + '/masteritem/getaccpersediaan',
+              dataType : "json",
+            type : "get",
+            success : function(response){
+              if(updatestock == 'Y') {
+                      arrItem = response.akun;
+                      $('.accpersediaan').empty();
+                      $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                        $.each(arrItem, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                        })
+                          $('.accpersediaan').trigger("chosen:updated");
+                      $('.accpersediaan').trigger("liszt:updated");
+
+              }
+              else {
+                  arrItem = response.akun;
+                      $('.acchpp').empty();
+                      $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                        $.each(arrItem, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                        })
+                      $('.acchpp').trigger("chosen:updated");
+                      $('.acchpp').trigger("liszt:updated"); 
+              }               
+            }
+
+          })
+    })
+
+
+    $('.updatestock').change(function(){
+       updatestock = $('.updatestock').val();
+          groupitem = $('.jenis_item').val();
+          $.ajax({
+            data : {updatestock,groupitem,cabang},
+            url : baseUrl + '/masteritem/getaccpersediaan',
+              dataType : "json",
+            type : "get",
+            success : function(response){
+              if(updatestock == 'Y') {
+                      arrItem = response.akun;
+                      $('.accpersediaan').empty();
+                      $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                        $.each(arrItem, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                        })
+                          $('.accpersediaan').trigger("chosen:updated");
+                      $('.accpersediaan').trigger("liszt:updated");
+                    $('.acchpp').empty();    
+              }
+              else {
+                  arrItem = response.akun;
+                      $('.accpersediaan').empty();
+                      $('.acchpp').empty();
+                      $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                        $.each(arrItem, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.acchpp').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                        })
+                      $('.acchpp').trigger("chosen:updated");
+                      $('.acchpp').trigger("liszt:updated"); 
+              }  
+            }
+          })
+    })
+
+
+   $('.accpersediaan').click(function(){
+         alert('lop');
+    })
 
     $('.date').datepicker({
         autoclose: true,
@@ -338,6 +464,7 @@
             if(val == ''){
 //              toastr.info('Qty satu harap diisi :) ');
                toastr.info('Qty satu harap diisi :)');
+               return false;
             }
           }
 
@@ -345,7 +472,7 @@
             val = $('.h').val();
             if(val = '') {
               toastr.info('Qty dua harap diisi :)');
-
+              return false;
              // toastr.info('Qty dua harap diisi :)');
             }
           }
@@ -432,18 +559,18 @@
             return false;
           }
           if (l == '') {
-            toastr.info('Acc Persediaan Harus Di isi');
+          /*  toastr.info('Acc Persediaan Harus Di isi');
             $('html,body').animate({scrollTop: $('.l').offset().top}, 200, function() {
              $('.l').focus();
             });
-            return false;
+            return false;*/
           }
           if (m == '') {
-            toastr.info('Acc HPP Harus Di isi');
+           /* toastr.info('Acc HPP Harus Di isi');
             $('html,body').animate({scrollTop: $('.z').offset().top}, 200, function() {
              $('.z').focus();
             });
-            return false;
+            return false;*/
           }
           if (n == '') {
             toastr.info('Foto Harus Di isi');
@@ -482,6 +609,8 @@
           }*/
          
         });
+        
+       
 
 
        $(".uploadGambar").on('change', function () {

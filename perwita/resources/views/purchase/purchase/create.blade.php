@@ -94,7 +94,7 @@
                         </div>
 
                     <div class="col-sm-4">
-                    <button type="button" class="btn btn-primary" id="createmodal" data-toggle="modal" data-target="#myModal5">
+                    <button type="button" class="btn btn-info" id="createmodal" data-toggle="modal" data-target="#myModal5">
                         Tambah Data SPP
                     </button>  
                     </div>
@@ -242,7 +242,7 @@
                                 "<td>"+response.spp[i].spp_cabang+"</td>"+
                                 "<td>"+response.spp[i].spp_tipe+"</td>" +
                                 "<td>"+response.spp[i].spp_keperluan+"</td>" +
-                                "<td> <div class='checkbox'> <input type='checkbox' id='"+response.spp[i].co_idspp+","+response.spp[i].idsup+","+response.spp[i].spp_lokasigudang+","+response.spp[i].spp_cabang+","+response.spp[i].spp_penerimaan+"' class='check' value='option1' aria-label='Single checkbox One'> <label> </label>"+
+                                "<td> <div class='checkbox'> <input type='checkbox' id='"+response.spp[i].co_idspp+","+response.spp[i].idsup+","+response.spp[i].spp_lokasigudang+","+response.spp[i].spp_cabang+","+response.spp[i].spp_penerimaan+","+response.spp[i].cotb_id+","+response.spp[i].co_id+"' class='check' value='option1' aria-label='Single checkbox One'> <label> </label>"+
                                 "</div>"+
                                 "</td>";
                                     
@@ -397,13 +397,13 @@
                     '<input type="hidden" value="'+response.spp[0][0].spp_penerimaan+'" name="spp_penerimaan"> </td> </tr>  </tr>' +
                     '<tr> <td> Catatan </td>  <td> : </td> <td> <div class="col-md-12"> <input type="text" class="form-control" name="catatan" required=""> </div> </td> </tr>' +
 
-                    '<tr> <td> Sub Total </td> <td> : </td> <td>  <label class="col-sm-1 col-sm-1 control-label"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control subtotal" readonly="" name="subtotal" style="text-align:right"> </div> </td>  </tr>' + // subtotal
+                    '<tr> <td> Sub Total </td> <td> : </td> <td>  <label class="col-sm-1 col-sm-1 control-label"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control subtotal" readonly="" name="subtotal" style="text-align:right"> <input type="text" class="form-control subtotal2" readonly="" style="text-align:right"> </div> </td>  </tr>' + // subtotal
 
                   /*  '<tr> <td> Discount </td> <td> : </td> <td> <div class="row"><div class="col-md-4"> <input type="text" class="form-control disc" name="diskon"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hsldiskon" readonly>   </div> </td> </tr>' + //diskon*/
 
                     '<tr> <td> Jenis PPn </td> <td> : </td> <td> <select class="form-control jenisppn" name="jenisppn">  <option value="T"> Tanpa </option> <option value="E"> Exclude </option> <option value="I"> Include </option> </select> </td> </tr>' + //jenisppn
 
-                    '<tr> <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control ppn" name="ppn"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hargappn" readonly>   </div> </div> </td> </tr>' + //ppn
+                    '<tr> <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-4"> <input type="number" class="form-control ppn" name="ppn"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hargappn" readonly>   </div> </div> </td> </tr>' + //ppn
 
                     '<tr> <td> Total </td> <td> : </td> <td> <label class="col-md-1"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control total" readonly="" name="total" style="text-align:right">  </div> </td> </tr> </table>'; //total
 
@@ -528,6 +528,7 @@
                           hrgtotal = hrgtotal + parseInt(hasiltotal);
                           hasilhrgtotal = hrgtotal.toFixed(2);
                           $('.subtotal').val(addCommas(hasilhrgtotal));
+                          $('.subtotal2').val(addCommas(hasilhrgtotal));
                           $('.total').val(addCommas(hasilhrgtotal));
                              /* diskon = $('.hsldiskon').val();
                                hsldiskon = diskon.replace(/,/g, '');*/
@@ -600,6 +601,7 @@
                                 hrgtotal = parseFloat(parseFloat(hrgtotal) + parseFloat(hasiltotal)).toFixed(2);
                              //   hasilhrgtotal = hrgtotal.toFixed(2);
                                 $('.subtotal').val(addCommas(hasilhrgtotal));
+                                $('.subtotal2').val(addCommas(hasilhrgtotal));
                                 $('.total').val(addCommas(hasilhrgtotal));
                                    /* diskon = $('.hsldiskon').val();
                                      hsldiskon = diskon.replace(/,/g, '');*/
@@ -767,7 +769,7 @@
               $('.jenisppn').change(function(){
                   ppn = $('.ppn').val();
                
-                  subtotal =  $('.subtotal').val();
+                  subtotal =  $('.subtotal2').val();
                   subharga = subtotal.replace(/,/g, '');
                   //subharga = 40000;
                   jenisppn = $('.jenisppn').val();
@@ -781,35 +783,39 @@
                       total = parseFloat(parseFloat(subharga) + parseFloat(ppnhar));
                       numhar = total.toFixed(2);
                       $('.total').val(addCommas(numhar));
-                     
+                      $('.subtotal').val(subtotal);
                     }
                     else if(jenisppn == 'I'){
-                  
-                      hargadpp = parseFloat((parseFloat(subharga) * 100) / (100 + parseFloat(ppn))).toFixed(2) ; 
-                  
-
-                      $('.subtotal').val(addCommas(hargadpp));
-                      subtotal = $('.subtotal').val();
-                      subharga = subtotal.replace(/,/g, '');
-                      hargappn = parseFloat((parseFloat(ppn) / 100) *  parseFloat(subharga)).toFixed(2);
+                      
+                        subharga2 = $('.subtotal2').val();
                
-                      $('.hargappn').val(addCommas(hargappn));
+                        subhrg = subharga2.replace(/,/g, '');
+                     
+                        hargappn = parseFloat(subhrg * 100) / (100 + parseFloat($this) );
+                
+                        hargappn2 = hargappn.toFixed(2);
 
-                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                      $('.total').val(addCommas(total));
+                        $('.subtotal').val(addCommas(hargappn2));
+
+                        ppnasli = parseFloat((parseFloat($this) / 100) * parseFloat(hargappn2)).toFixed(2);
+                        $('.hargappn').val(addCommas(ppnasli));
+                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli))
+                       // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                        $('.total').val(addCommas(hasiltotal));
                     }
                     else if(jenisppn == 'T'){
                          hargappn = parseFloat($this * parseFloat(subharga) / 100);
                          ppnhar = hargappn.toFixed(2);
                         $('.hargappn').val(addCommas(ppnhar));
                         $('.total').val(addCommas(subharga));
+                        $('.subtotal').val(subtotal);
                     }
                   }
               })
 
               $('.ppn').change(function(){
                 $this = $(this).val();
-                subtotal =  $('.subtotal').val();
+                subtotal =  $('.subtotal2').val();
                 subharga = subtotal.replace(/,/g, '');
                 jenisppn = $('.jenisppn').val();
 //                ppn = angkappn.replace(/,/g, '');
@@ -828,20 +834,36 @@
                       total = parseFloat(parseFloat(subharga) + parseFloat(ppnhar));
                       numhar = total.toFixed(2);
                       $('.total').val(addCommas(numhar));
+                      $('.subtotal').val(addCommas(numhar));
                      
                     }
                     else if(jenisppn == 'I'){
-                      hargappn = parseFloat(subharga * parseFloat(100) / (100 + $this) );
-                      hargappn2 = hargappn.toFixed(2);
-                      $('.hargappn').val(addCommas(hargappn2));
-                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                      $('.total').val(addCommas(total));
+                    
+
+                       subharga2 = $('.subtotal2').val();
+               
+                        subhrg = subharga2.replace(/,/g, '');
+                     
+                        hargappn = parseFloat(subhrg * 100) / (100 + parseFloat($this) );
+                
+                        hargappn2 = hargappn.toFixed(2);
+
+                        $('.subtotal').val(addCommas(hargappn2));
+
+                        ppnasli = parseFloat((parseFloat($this) / 100) * parseFloat(hargappn2)).toFixed(2);
+                        $('.hargappn').val(addCommas(ppnasli));
+                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
+                       // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                        $('.total').val(addCommas(hasiltotal));
+
                     }
                     else if(jenisppn == 'T'){
-                         hargappn = parseFloat($this * parseFloat(subharga) / 100);
-                         ppnhar = hargappn.toFixed(2);
-                        $('.hargappn').val(addCommas(ppnhar));
-                        $('.total').val(addCommas(subharga));
+
+                           toastr.info('jenis ppn "Tanpa" , tidak ada perubahan yang dibuat :)');
+                            $(this).val('');
+                            $('.hargappn').val('');
+                           total = parseFloat(subharga).toFixed(2);
+                          $('.total').val(addCommas(total));
                     }
                    
              
@@ -883,6 +905,13 @@
               $('.jenisppn').change(function(){
                   $this = $('.ppn').val();
                   ppn = $('.ppn').val();
+
+                  if(ppn == ''){
+
+                  }
+                  else {
+
+
                  if(jenisppn == 'E'){
                       hargappn = parseFloat($this * parseFloat(subharga) / 100);
                       ppnhar = hargappn.toFixed(2);
@@ -893,11 +922,21 @@
                      
                     }
                     else if(jenisppn == 'I'){
-                      hargappn = parseFloat(subharga * parseFloat(100) / (100 + $this) );
-                      hargappn2 = hargappn.toFixed(2);
-                      $('.hargappn').val(addCommas(hargappn2));
-                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
-                      $('.total').val(addCommas(total));
+                     subharga2 = $('.subtotal2').val();
+               
+                        subhrg = subharga2.replace(/,/g, '');
+                     
+                        hargappn = parseFloat(subhrg * 100) / (100 + parseFloat($this) );
+                
+                        hargappn2 = hargappn.toFixed(2);
+
+                        $('.subtotal').val(addCommas(hargappn2));
+
+                        ppnasli = parseFloat((parseFloat($this) / 100) * parseFloat(hargappn2)).toFixed(2);
+                        $('.hargappn').val(addCommas(ppnasli));
+                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
+                       // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                        $('.total').val(addCommas(hasiltotal));
                     }
                     else if(jenisppn == 'T'){
                          hargappn = parseFloat($this * parseFloat(subharga) / 100);
@@ -905,6 +944,7 @@
                         $('.hargappn').val(addCommas(ppnhar));
                         $('.total').val(addCommas(subharga));
                     }
+                  }
               })
 
               $('.qtykirim').change(function(){
