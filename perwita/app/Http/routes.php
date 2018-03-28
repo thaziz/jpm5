@@ -1626,6 +1626,7 @@ Route::get('sales/tarif_cabang_sepeda', 'tarif\cabang_sepeda_Controller@index');
 Route::get('sales/tarif_cabang_sepeda/tabel', 'tarif\cabang_sepeda_Controller@table_data');
 Route::get('sales/tarif_cabang_sepeda/get_data', 'tarif\cabang_sepeda_Controller@get_data');
 Route::get('sales/tarif_cabang_sepeda/save_data', 'tarif\cabang_sepeda_Controller@save_data');
+Route::get('sales/tarif_cabang_sepeda/hapus_data_perkota', 'tarif\cabang_sepeda_Controller@hapus_data_perkota');
 Route::get('sales/tarif_cabang_sepeda/hapus_data', 'tarif\cabang_sepeda_Controller@hapus_data');
 // end tarif cabang sepeda
 
@@ -1732,3 +1733,11 @@ Route::get('sales/tarif_penerus_sepeda/save_data', 'tarif\penerus_sepeda_Control
 Route::get('sales/tarif_penerus_sepeda/hapus_data', 'tarif\penerus_sepeda_Controller@hapus_data');
 Route::get('sales/tarif_penerus_sepeda/get_kota', 'tarif\penerus_sepeda_Controller@get_kota');
 Route::get('sales/tarif_penerus_sepeda/get_kec', 'tarif\penerus_sepeda_Controller@get_kec');
+
+
+
+Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@index');
+Route::get('master_sales/group_customer/tabel','master_sales\grup_customer_Controller@table_data');
+Route::get('master_sales/group_customer/get_data','master_sales\grup_customer_Controller@get_data');
+Route::get('master_sales/group_customer/save_data','master_sales\grup_customer_Controller@save_data');
+Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');

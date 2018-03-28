@@ -235,15 +235,6 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-    $('#ed_reguler').change(function(){
-        var foreign1 = $(this).find(':selected').data('foreign');
-        $('input[name="ed_zona_reguler"]').val(foreign1);
-    })
-    $('#ed_express').change(function(){
-        var foreign2 = $(this).find(':selected').data('foreign');
-        $('input[name="ed_zona_express"]').val(foreign2);
-
-    })
 
 
     $('#provinsi').change(function(){
