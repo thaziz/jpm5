@@ -29,6 +29,9 @@
         .kecil{
             width: 207px;
         }
+        .kanan{
+            margin-right: 20px;
+        }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -191,10 +194,11 @@
                         <div class="col-sm-7">
                             
                         </div>
-                        <div class="col-sm-5">
-                            <button type="button" class="btn btn-info tambah_invoice" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Invoice</button>
-                            <button type="button" class="btn btn-info " id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i>Add Biaya</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                        <div class="col-sm-12 ">
+                            <button type="button" class="btn btn-success kanan pull-right " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-info kanan pull-right " id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i>Tambah Uang Muka</button>
+                            <button type="button" class="btn btn-info kanan pull-right " id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i>Tambah Biaya</button>
+                            <button type="button" class="btn btn-info kanan pull-right tambah_invoice" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Invoice</button>
                         </div>
                     </div>
                 </form>
@@ -260,6 +264,7 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -429,66 +434,17 @@
                                                 </div>
                                             </div>
                                             <h3>Pembayaran</h3>
-                                            <div class="tabs-container">
-                                                <ul class="nav nav-tabs">
-                                                    <li class="active"><a data-toggle="tab" href="#pr">Pembayaran Reguler</a></li>
-                                                    <li class=""><a data-toggle="tab" href="#um">Pembayaran Uang Muka</a></li>
-                                                </ul>
-                                                <div class="tab-content ">
-                                                    <div id="pr" class="tab-pane active">
-                                                        <div class="panel-body pr">
-                                                            <table class="table  table-bordered table-striped">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td>Jumlah Bayar</td>
-                                                                        <td>
-                                                                            <input type="text" onkeyup="hitung()" class="form-control angka" name="ed_jml_bayar" style="text-align:right">
-                                                                            <input type="hidden" name="ed_jml_bayar_old" >
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div id="um" class="tab-pane">
-                                                        <div class="panel-body">
-                                                            <table style="font-size: 12px;"  class="table table-bordered table-striped">
-                                                                <tr>
-                                                                    <td>Seq</td>
-                                                                    <td colspan="2">Seq</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>No. UM</td>
-                                                                    <td><input type="text" readonly="" class="no_um form-control"></td>
-                                                                    <td>
-                                                                        <button type="button" class="btn btn-primary">
-                                                                            <i class="fa fa-search"> Cari</i>
-                                                                        </button>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Nominal UM</td>
-                                                                    <td colspan="2">
-                                                                        <input type="text" class="total_um form-control" name="">
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Jumlah Bayar</td>
-                                                                    <td colspan="2">
-                                                                        <input type="text" class="jumlah_bayar_um form-control" name="">
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>Keterangan</td>
-                                                                    <td colspan="2">
-                                                                        <input type="text" class="Keterangan_um form-control" name="">
-                                                                    </td>
-                                                                </tr>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <table class="table  table-bordered table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Jumlah Bayar</td>
+                                                        <td>
+                                                            <input type="text" onkeyup="hitung()" class="form-control angka" name="ed_jml_bayar" style="text-align:right">
+                                                            <input type="hidden" name="ed_jml_bayar_old" >
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </form>
@@ -626,6 +582,55 @@
                     </div>
                 </div>
                   <!-- modal -->  
+                  {{-- modal2 --}}
+                <div id="modal_um" class="modal" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Edit Insert Uang Muka</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table style="font-size: 12px;"  class="table table-bordered table-striped">
+                                    <tr>
+                                        <td>Seq</td>
+                                        <td colspan="2">Seq</td>
+                                    </tr>
+                                    <tr>
+                                        <td>No. UM</td>
+                                        <td><input type="text" readonly="" class="no_um form-control"></td>
+                                        <td width="100px" align="center">
+                                            <button type="button" class="btn btn-primary">
+                                                <i class="fa fa-search"> Cari</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nominal UM</td>
+                                        <td colspan="2">
+                                            <input type="text" style="text-align: right;" readonly="" class="total_um form-control" name="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jumlah Bayar</td>
+                                        <td colspan="2">
+                                            <input type="text" style="text-align: right;" class="jumlah_bayar_um form-control" name="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Keterangan</td>
+                                        <td colspan="2">
+                                            <input type="text" class="Keterangan_um form-control" name="">
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="update_biaya">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="box-footer">
                   <div class="pull-right">
@@ -1199,6 +1204,11 @@ $('#update_biaya').click(function(){
     $('#modal_edit_biaya').modal('hide');
 })
 // simpan
+
+$('#btnadd_um').click(function(){
+    $('#modal_um').modal('show');
+});
+
 $('#btnsimpan').click(function(){
     swal({
         title: "Apakah anda yakin?",
