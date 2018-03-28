@@ -592,7 +592,9 @@
         }else if (cb_jenis_ppn == 4) {
             var total_tagihan = netto_total-pph;
         }
-
+        if (total_tagihan < 0) {
+            total_tagihan = 0;
+        }
         $('.total_tagihan').val(accounting.formatMoney(total_tagihan,"",2,'.',','));
 
     }

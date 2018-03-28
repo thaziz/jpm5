@@ -62,6 +62,7 @@
                                 <th>Customer</th>
                                 <th>JT</th>
                                 <th>Tagihan </th>
+                                <th>Sisa Tagihan </th>
                                 <th>Keterangan </th>
                                 <th>No Faktur Pajak </th>
                                 <th style="width:10%"> Aksi </th>
@@ -75,6 +76,7 @@
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->i_jatuh_tempo }}</td>
                                 <td style="text-align:right"> {{ number_format($row->i_total_tagihan, 2, ",", ".") }} </td>
+                                <td style="text-align:right"> {{ number_format($row->i_sisa_pelunasan, 2, ",", ".") }} </td>
                                 <td>{{ $row->i_keterangan }}</td>
                                 <td>{{ $row->i_no_faktur_pajak }}</td>
                                 <td class="text-center">
