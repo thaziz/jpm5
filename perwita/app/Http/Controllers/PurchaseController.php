@@ -745,7 +745,7 @@ class PurchaseController extends Controller
 
 			$tempSupplier[] = DB::table("supplier")
 					  ->select("nama_supplier", "active")
-					  ->where("no_supplier", $detailSpp[$index]['sppd_supplier'])
+					  ->where("idsup", $detailSpp[$index]['sppd_supplier'])
 					  ->get();
 
 			$tempBarang[] = DB::table("masteritem")
@@ -2985,7 +2985,7 @@ $indexakun=0;
 
 		$datas['fakturs'] = DB::select("select * from faktur_pembeliandt , pembelian_order, faktur_pembelian, supplier, masteritem where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id' and fp_idsup = idsup and fpdt_kodeitem = kode_item and fpdt_idpo = po_id");
 		
-
+		dd($datas);
 		if($datas['fakturs'] == null){ //FP
 			$data['status'] = 'FP';			
 			$data['fakturdtpo'] = DB::select("select * from faktur_pembeliandt , faktur_pembelian, masteritem, supplier where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id' and fpdt_kodeitem = kode_item and fp_idsup = idsup");
