@@ -448,7 +448,7 @@
     $(document).on("click","#btnsave",function(){
        
      $ed_acc_piutang = $('#ed_acc_piutang').val();
-     $ed_acc_piutang = $('#ed_csf_piutang').val();
+     $ed_csf_piutang = $('#ed_csf_piutang').val();
         
        if ($ed_acc_piutang == '' || $ed_acc_piutang == null) 
         {
