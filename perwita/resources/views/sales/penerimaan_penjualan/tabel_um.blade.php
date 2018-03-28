@@ -4,6 +4,7 @@
             <th>Nomor Uang Muka</th>
             <th>Tanggal</th>
             <th>Total</th>
+            <th>Sisa</th>
             <th>Status Uang Muka</th>
         </tr>
     </thead>
@@ -19,6 +20,9 @@
             </td>
             <td class="right">
                 {{number_format($val->jumlah, 2, ",", ".")}}
+            </td>
+            <td class="right">
+                {{number_format($val->sisa_uang_muka, 2, ",", ".")}}
             </td>
             <td class="center">
                 {{$val->status_um}}

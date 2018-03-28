@@ -827,10 +827,10 @@ $(document).ready(function(){
             // location.reload();
         }
     });
-    $('.angka').maskMoney({precision:0,thousands:'.'});
-    $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.'});
-    $('.m_jumlah').maskMoney({precision:0,thousands:'.'});
-    $('.me_jumlah').maskMoney({precision:0,thousands:'.'});
+    $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
+    $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
+    $('.m_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
+    $('.me_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
 });
 // check all
 function nota_tes(){
@@ -935,10 +935,15 @@ $('#btnsave').click(function(){
 function hitung() {
     var angka         = $('.angka').val();
     var biaya_admin   = $('.jumlah_biaya_admin').val();
+    if (biaya_admin == '') {
+        biaya_admin = 0;
+    }else{
+        biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
+    }
+    console.log()
     var sisa_terbayar = $('.sisa_terbayar').val();
     sisa_terbayar     = parseFloat(sisa_terbayar);
     angka             = angka.replace(/[^0-9\-]+/g,"");
-    biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
     var total         = sisa_terbayar - angka - biaya_admin;
     if (total < 0) {
         total = 0;
@@ -951,7 +956,7 @@ function hitung() {
     $('.ed_total').val(accounting.formatMoney(total,"",2,'.',','))
     $('.total').val(total);
     angka = parseInt(angka);
-    biaya_admin =parseInt(biaya_admin);
+    biaya_admin = parseInt(biaya_admin);
     $('.total_bayar').val(accounting.formatMoney(angka+biaya_admin,"",2,'.',','))
 
 }
@@ -1074,15 +1079,25 @@ function hitung_bayar() {
     $('.ed_netto_text').val(accounting.formatMoney(total,"",2,'.',','));
     
 }
-
+$('.jumlah_biaya_admin').blur(function(){
+var ini = $(this).val();
+if (ini == '') {
+$(this).val(0);
+}
+});
 // simpan perubahan
 $('#btnsave2').click(function(){
     var jumlah_bayar         = $('.jumlah_bayar').val();
     jumlah_bayar             = parseInt(jumlah_bayar);
     var akun_biaya           = $('.akun_biaya').val();
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
-    jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
-    jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
+    if (jumlah_biaya_admin == '') {
+        jumlah_biaya_admin = 0;
+    }else{
+        jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+        jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
+    }
+    
     var angka                = $('.angka').val();
     angka                    = angka.replace(/[^0-9\-]+/g,"");
     angka                    = parseInt(angka);
@@ -1326,8 +1341,8 @@ function pilih_um(par) {
         dataType : 'json',
         success:function(response){
             $('.no_um').val(response.data.nomor);
-            $('.total_um_text').val(accounting.formatMoney(response.data.jumlah,"",2,'.',','));
-            $('.total_um').val(response.data.jumlah);
+            $('.total_um_text').val(accounting.formatMoney(response.data.sisa_uang_muka,"",2,'.',','));
+            $('.total_um').val(response.data.sisa_uang_muka);
             $('.status_um').val(response.data.status_um);
             $('#modal_cari_um').modal('hide');
 
@@ -1364,7 +1379,7 @@ var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
                       }
                     ],
 });
-$('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.'});
+$('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.',defaultZero: true});
 // $('.jumlah_bayar_um ').blur(function(){
 //     var jb =$(this).val();
 //     jb = jb.replace(/[^0-9]\-+/g,"");
