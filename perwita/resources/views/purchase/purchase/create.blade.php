@@ -397,7 +397,7 @@
                     '<input type="hidden" value="'+response.spp[0][0].spp_penerimaan+'" name="spp_penerimaan"> </td> </tr>  </tr>' +
                     '<tr> <td> Catatan </td>  <td> : </td> <td> <div class="col-md-12"> <input type="text" class="form-control" name="catatan" required=""> </div> </td> </tr>' +
 
-                    '<tr> <td> Sub Total </td> <td> : </td> <td>  <label class="col-sm-1 col-sm-1 control-label"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control subtotal" readonly="" name="subtotal" style="text-align:right"> <input type="text" class="form-control subtotal2" readonly="" style="text-align:right"> </div> </td>  </tr>' + // subtotal
+                    '<tr> <td> Sub Total </td> <td> : </td> <td>  <label class="col-sm-1 col-sm-1 control-label"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control subtotal" readonly="" name="subtotal" style="text-align:right"> <input type="hidden" class="form-control subtotal2" readonly="" style="text-align:right"> </div> </td>  </tr>' + // subtotal
 
                   /*  '<tr> <td> Discount </td> <td> : </td> <td> <div class="row"><div class="col-md-4"> <input type="text" class="form-control disc" name="diskon"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hsldiskon" readonly>   </div> </td> </tr>' + //diskon*/
 

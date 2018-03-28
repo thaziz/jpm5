@@ -3346,9 +3346,7 @@ $indexakun=0;
 											->where([['sm_po',$idpo_update],['sm_item' , $iditem_update2], ['sm_flag' , 'PBG']])
 											->update([
 												'sm_hpp' => $hargajadi,											
-											]);																									
-										
-								
+											]);												
 								}
 
 							}
@@ -5493,12 +5491,12 @@ public function kekata($x) {
 		$nofaktur = $data['faktur'][0]->fp_nofaktur;
 		if($flag == 'PO'){
 			
-				$ambilpo = DB::select("select * from faktur_pembelian, faktur_pembeliandt where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id'");
-				$countambilpo = count($ambilpo);
-
+				$data['ambilpo'] = DB::select("select * from faktur_pembelian, faktur_pembeliandt where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id'");
+				$countambilpo = count($data['ambilpo']);
 				for($i = 0; $i < $countambilpo; $i++){
-					$idpbpo = $ambilpo[$i]->fpdt_idpo;
+					$idpbpo = $data['ambilpo'][$i]->fpdt_idpo;
 						//UPDATE
+					//return json_encode($idpbpo);
 						$data['header7'] = DB::table('penerimaan_barang')
 						->where('pb_po' , $idpbpo)
 						->update([
@@ -5508,7 +5506,7 @@ public function kekata($x) {
 
 						//UPDATE PO
 						$data['header5'] = DB::table('pembelian_order')
-						->where('po_idfaktur' , $id)
+						->where([['po_idfaktur' , '=', $id] ,['po_id' , '=' , $idpbpo]])
 						->update([
 							'po_idfaktur' => null,
 							'po_updatefp' => 'T'
