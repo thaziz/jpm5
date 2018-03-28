@@ -250,7 +250,7 @@
 		<div class="position-fixed">
 			<table class="inlineTable">
 				<td>
-					<img class="img" width="150" height="80" src="/jpm/perwita/img/logo_jpm.png">
+					<img class="img" width="150" height="80" src="{{ asset('assets/img/dboard/logo/logo_jpm.png') }}">
 				</td>
 			</table>
 			<table class="inlineTable size" style="margin-bottom: 10px;" >
@@ -330,7 +330,7 @@
 					<td class="bot right"> {{$row->kd_tanggal_invoice}} </td>
 					<td style="text-align:left" class="bot right">&nbsp {{$row->kd_keterangan}} </td>
 					<td style="text-align:right" class="bot right"> {{ number_format($row->i_tagihan, 2, ",", ".") }}&nbsp </td>
-					<td style="text-align:right" class="bot right">{{ number_format($row->kd_jumlah, 2, ",", ".") }}&nbsp</td>
+					<td style="text-align:right" class="bot right">{{ number_format($row->kd_total_bayar, 2, ",", ".") }}&nbsp</td>
 				</tr>
 				@endforeach
 				
@@ -365,3 +365,6 @@
 </body>
 
 </html>
+<script>
+	window.print();
+</script>

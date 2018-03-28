@@ -299,8 +299,8 @@ public function cari_do_invoice(request $request)
             $data = $temp;
         }
     }
-    
-    $id = $request->id;
+    // return $data;
+   $id = $request->id;
     return view('sales.invoice.tableDo',compact('data','jenis','id'));
 }
 public function append_do(request $request)

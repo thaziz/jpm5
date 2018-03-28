@@ -536,12 +536,13 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function cetak_nota($nomor=null) {
         $head = DB::table('kwitansi')
+                  ->join('customer','kode','=','k_kode_customer')
                   ->where('k_nomor',$nomor)
                   ->first();
 
         $detail = DB::table('kwitansi')
-                    ->join('kwitansi_d','kd_id','k_id')
-                    ->join('invoice','kd_nomor_invoice','i_nomor')
+                    ->join('kwitansi_d','kd_id','=','k_id')
+                    ->join('invoice','kd_nomor_invoice','=','i_nomor')
                     ->get();
 
         $terbilang =$this->penyebut($head->k_jumlah);
@@ -614,10 +615,12 @@ class penerimaan_penjualan_Controller extends Controller
 
         return Datatables::of($data)
                         ->addColumn('tes', function ($data) {
-                                   return     '<div class="btn-group">
-                                        <button type="button" onclick="hapus('.$data->k_nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
-                                        <button type="button" onclick="edit('.$data->k_nomor.')" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
-                                        </div>';
+
+                           $string = (string)$data->k_nomor;
+                                   return '<div class="btn-group"><button type="button" onclick="edit(\''.$string.'\')" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i></button>
+                                   <button type="button" onclick="ngeprint(\''.$string.'\')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></button>
+                                        <button type="button" onclick="hapus(\''.$string.'\')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                         </div>';
                             })
                         ->make(true);
     }
@@ -893,6 +896,40 @@ class penerimaan_penjualan_Controller extends Controller
                                       'kb_debet'    => $request->b_debet[$i],
                                       'kb_kredit'    => $request->b_kredit[$i],
                                  ]);
+
+            }
+
+            for ($i=0; $i < count($request->m_um); $i++) { 
+                $save_biaya = DB::table('kwitansi_uang_muka')
+                                 ->insert([
+                                      'ku_id' => $k_id,
+                                      'ku_dt'=> $i+1,
+                                      // 'ku_kode_akun' => $request->b_akun[$i],
+                                      // 'ku_kode_akun_acc' => $request->b_akun[$i],
+                                      // 'ku_kode_akun_csf' => $request->b_akun[$i],
+                                      'ku_jumlah' => $request->jumlah_bayar_um[$i],
+                                      'ku_keterangan' => $request->m_Keterangan_um[$i],
+                                      'ku_kredit'    => $request->jumlah_bayar_um[$i],
+                                      'ku_nomor_um'    => $request->m_um[$i],
+                                      'ku_jenis'       => $request->m_status_um[$i]
+                                 ]);
+
+                $cari_um = DB::table('uang_muka_penjualan')
+                                      ->where('nomor',$request->m_um[$i])
+                                      ->first();
+                $hasil_um =  $cari_um->sisa_uang_muka - $request->jumlah_bayar_um[$i];
+                // dd($hasil);
+
+                if ($hasil_um < 0) {
+                    $hasil_um = 0;
+                }
+                
+                $update_invoice = DB::table('uang_muka_penjualan')
+                                    ->where('nomor',$request->m_um[$i])
+                                    ->update([
+                                        'sisa_uang_muka' => $hasil_um
+                                    ]);
+
 
             }
 

@@ -130,6 +130,10 @@ $(document).ready(function() {
         if(!confirm("Hapus Data ?")) return false;
     });
 
+    function ngeprint(id){
+        console.log(id);
+        window.open(baseUrl+'/sales/kwitansi/cetak_nota/'+id);
+    }
 
 </script>
 @endsection

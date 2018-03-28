@@ -128,7 +128,6 @@
                                         <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                     @endforeach
                                     </select>
-                                    <input type="hidden" name="ed_customer" value="{{ $data->kode_customer or null }}" >
                                 </td>
                                 
                             </tr>
@@ -145,7 +144,6 @@
                                         @endif
                                     @endforeach
                                     </select>
-                                    <input type="hidden" name="ed_cabang" value="" >
                                 </td>
                             </tr>
                             <tr>    
@@ -610,7 +608,9 @@
                                     </tr>
                                     <tr>
                                         <td>No. UM</td>
-                                        <td><input type="text" readonly="" class="no_um form-control"></td>
+                                        <td>
+                                            <input type="text" readonly="" class=" no_um form-control">
+                                        </td>
                                         <td width="100px" align="center">
                                             <button type="button" class="btn cari_um btn-primary">
                                                 <i class="fa fa-search"> Cari</i>
@@ -1243,7 +1243,32 @@ $('#update_biaya').click(function(){
     $(par).find('.b_debet').val(debet);
     $(par).find('.b_kredit').val(kredit);
     $(par).find('.b_keterangan').val(me_keterangan);
+    var temp = 0;    
+    var temp1 = 0; 
 
+    $('.b_debet').each(function(){
+        var deb = parseInt($(this).val());
+        temp += deb;
+    })  
+    $('.b_kredit').each(function(){
+        var deb = parseInt($(this).val());
+        temp1 += deb;
+    })  
+
+    $('.ed_debet').val(temp);
+    $('.ed_kredit').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    $('.m_acc').val('');
+    $('.m_csf').val('');
+    $('.m_debet').val('');
+    $('.m_jumlah ').val('');
+    $('.m_keterangan ').val('');
+    $('.m_nama_akun').val('');
+
+    hitung_bayar();
+    hitung_bayar();
 
     $('#modal_edit_biaya').modal('hide');
 })
@@ -1282,6 +1307,9 @@ $('#btnadd_um').click(function(){
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
+   $('.cari_um').removeClass('disabled');
+   
+
     $('.tabel_um :input').val('');
     $('.seq_um ').val(count_um);
 
@@ -1396,6 +1424,7 @@ $('#save_um').click(function(){
         }else{
 
             var par = $('.sequence_'+me_um_flag).parents('tr');
+      
             tabel_uang_muka.row(par).remove().draw();
 
             tabel_uang_muka.row.add([
@@ -1432,6 +1461,7 @@ $('#save_um').click(function(){
     }else{
         $('#modal_um').modal('hide');
     }
+    hitung_bayar();
 
 });
 
@@ -1444,6 +1474,7 @@ function edit_detail_um(p) {
    var seq_um            = $(par).find('.sequence').val();
    var m_status_um       = $(par).find('.m_status_um').val();
    var m_um_total        = $(par).find('.m_um_total').val();
+   var m_um              = $(par).find('.m_um').val();
    var m_um_jumlah_bayar = $(par).find('.m_um_jumlah_bayar').val();
    var m_Keterangan_um   = $(par).find('.m_Keterangan_um').val();
    $('.me_um_flag').val(seq_um);
@@ -1451,18 +1482,22 @@ function edit_detail_um(p) {
    $('.status_um').val(m_status_um);
    $('.total_um_text ').val(accounting.formatMoney(m_um_total,"",2,'.',','));
    $('.total_um ').val(m_um_total);
+   $('.no_um ').val(m_um);
 
    $('.jumlah_bayar_um  ').val(accounting.formatMoney(m_um_jumlah_bayar,"",0,'.',','));
    $('.Keterangan_um ').val(m_Keterangan_um);
-
+   $('.cari_um').addClass('disabled');
    $('#modal_um').modal('show');
 
+}
 
+function hapus_detail_um(o){
+    var par = o.parentNode.parentNode;
+    var arr = $(par).find('.m_um').val();
+    var index = simpan_um.indexOf(arr);
+    simpan_um.splice(index,1);
 
-
-
-
-
+    tabel_uang_muka.row(par).remove().draw(false);
 }
 
 $('#btnsimpan').click(function(){
@@ -1492,6 +1527,7 @@ $('#btnsimpan').click(function(){
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()
                +'&'+table_data_biaya.$('input').serialize()
+               +'&'+tabel_uang_muka.$('input').serialize()
                +'&'+$('.table_rincian :input').serialize(),
           success:function(response){
             if (response.status == 1) {

@@ -938,6 +938,7 @@ Route::get('sales/pilih_um', 'sales\penerimaan_penjualan_Controller@pilih_um');
 Route::get('sales/riwayat_cn_dn', 'sales\penerimaan_penjualan_Controller@riwayat_cn_dn');
 Route::get('sales/auto_biaya', 'sales\penerimaan_penjualan_Controller@auto_biaya');
 Route::get('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpan_kwitansi');
+Route::get('sales/kwitansi/cetak_nota/{id}', 'sales\penerimaan_penjualan_Controller@cetak_nota');
 
 //end penerimaan penjualan
 
