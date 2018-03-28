@@ -1014,7 +1014,7 @@ class PurchaseController extends Controller
 				$cotb->cotb_idco = $request->idco;
 
 			
-				$cotb->cotb_supplier =$request->datasup[$k];
+				$cotb->cotb_supplier =$request->datasupplier[$k];
 
 				$cotb->cotb_totalbiaya = $replacehrg;
 				$cotb->cotb_setuju = 'BELUM DI SETUJUI';
@@ -1092,14 +1092,15 @@ public function purchase_order() {
 				$idspp = $explode[0]; 
 				$nosupplier = $explode[1]; 
 				$gudang = $explode[2];
-				
+				$idcotb = $explode[5];
+				$idco = $explode[6];
 			if($gudang == 'null'){
-							$data['spp'][] = DB::select("select * from spp, spp_totalbiaya, confirm_order, confirm_order_tb, supplier , cabang where co_idspp = spp_id and spp_id = '$idspp' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup and active = 'AKTIF' and idsup = '$nosupplier' and cotb_supplier = '$nosupplier' and spptb_idspp = '$idspp' and spptb_supplier = cotb_supplier");
+							$data['spp'][] = DB::select("select * from spp, spp_totalbiaya, confirm_order, confirm_order_tb, supplier , cabang where co_idspp = spp_id and spp_id = '$idspp' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup and active = 'AKTIF' and idsup = '$nosupplier' and cotb_supplier = '$nosupplier' and spptb_idspp = '$idspp' and spptb_supplier = cotb_supplier and cotb_id = '$idcotb' and co_id = '$idco' and cotb_idco = co_id");
 			}	
 			else {
-							$data['spp'][] = DB::select("select * from mastergudang, spp, spp_totalbiaya, confirm_order, confirm_order_tb, supplier , cabang where co_idspp = spp_id and spp_id = '$idspp' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup and active = 'AKTIF' and idsup = '$nosupplier' and cotb_supplier = '$nosupplier' and spptb_idspp = '$idspp' and spptb_idspp = spp_id and spp_lokasigudang = mg_id and spptb_supplier = cotb_supplier");
+							$data['spp'][] = DB::select("select * from mastergudang, spp, spp_totalbiaya, confirm_order, confirm_order_tb, supplier , cabang where co_idspp = spp_id and spp_id = '$idspp' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup and active = 'AKTIF' and idsup = '$nosupplier' and cotb_supplier = '$nosupplier' and spptb_idspp = '$idspp' and spptb_idspp = spp_id and spp_lokasigudang = mg_id and spptb_supplier = cotb_supplier and cotb_id = '$idcotb' and co_id = '$idco' and cotb_idco = co_id");
 			}	
-			$data['codt'][] = DB::select("select * from confirm_order, masteritem,  confirm_order_dt , confirm_order_tb, spp where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item");
+			$data['codt'][] = DB::select("select * from confirm_order, masteritem,  confirm_order_dt , confirm_order_tb, spp where co_idspp = '$idspp' and codt_idco = co_id and cotb_idco = co_id and co_idspp = spp_id and codt_supplier = cotb_supplier and codt_supplier = '$nosupplier' and codt_kodeitem = kode_item and cotb_id = '$idcotb' and co_id = '$idco' ");
 		}
 		return json_encode($data);
 	}
@@ -1176,7 +1177,7 @@ public function purchase_order() {
 
 	public function detailpurchasekeuangan(Request $request){
 		$id = $request->poid;
-		$data['po'] = DB::select("select * from pembelian_order, supplier where po_id = '$id' and po_supplier = idsup and active = 'AKTIF'");
+		$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_id = '$id' and po_supplier = idsup and active = 'AKTIF' and po_cabang = kode");
 
 		$data['supplier'] = DB::select("select * from supplier where active='AKTIF'");
 
@@ -1210,7 +1211,7 @@ public function purchase_order() {
 	}
 
 	public function detailpurchase($id) {		
-		$data['po'] = DB::select("select * from pembelian_order, supplier where po_id = '$id' and po_supplier = idsup and active = 'AKTIF'");
+		$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_id = '$id' and po_supplier = idsup and active = 'AKTIF' and po_cabang = kode");
 
 		$data['supplier'] = DB::select("select * from supplier where active='AKTIF'");
 
@@ -1244,7 +1245,6 @@ public function purchase_order() {
 	}
 
 	public function updatepurchase($id, Request $request){
-	//	dd($request);
 
 		$updatepo = purchase_orderr::where('po_id', '=', $id);
 			$replacesubtotal = str_replace(',', '', $request->subtotal);
@@ -1268,23 +1268,33 @@ public function purchase_order() {
 			$status = 'TIDAK LENGKAP';
 		}
 
+		if($request->ppn != ''){
+			$updatepo->update([
+				'po_ppn' => $request->ppn,
+				'po_jenisppn' => $request->jenisppn
+			]);
+		}
+
+		if($request->diskon != ''){
+				$updatepo->update([
+					'po_diskon' => $request->diskon,
+				]);
+		}
+
 		$updatepo->update([
 			'po_catatan' => $request->catatan,
 			'po_bayar' => $request->bayar,
 			'po_supplier' => $request->supplier,
-			'po_diskon' => $request->diskon,
-			'po_ppn' => $request->ppn,
 			'po_subtotal' =>$replacesubtotal,
 			'po_totalharga' => $replacetotal,
 			'po_status' => $status,
-			'po_jenisppn' => $request->jenisppn,
 		]);			 	
 
 		for($j = 0; $j < count($request->statuskirim); $j++) {
 			$jumlahharga = str_replace(',', '', $request->jumlahharga[$j]);
 			$totalharga2 = str_replace(',', '', $request->totalharga2[$j]);
 
-			$updatepodt = purchase_orderdt::where('podt_idpo' , '=', $id);
+			$updatepodt = purchase_orderdt::where([['podt_idpo' , '=', $id],['podt_kodeitem' , '=' , $request->kodeitem[$j]]]);
 			$updatepodt->update([
 				'podt_qtykirim' => $request->qtykirim[$j],
 				'podt_supplier' => $request->supplier,
@@ -1295,7 +1305,7 @@ public function purchase_order() {
 			]);
 		}
 
-		return redirect('purchaseorder/purchaseorder');	
+		return json_encode('sukses');	
 	}
 
 	public function savepurchase(Request $request){
@@ -1473,7 +1483,21 @@ public function purchase_order() {
 	}
 
 
+	public function deletepurchase($id){
+		$data2 = purchase_orderr::find($id); 
+     	$data2->delete($data2);
+ 		
 
+ 		
+ 		$updatespptb = spptb_purchase::where('spptb_poid', '=' , $id );
+		$updatespptb->update([
+		 	'spptb_poid' => null
+	 		]);
+
+
+       	Session::flash('sukses', 'data item berhasil dihapus');
+        return redirect('suratpermintaanpembelian');
+	}
 
 	public function purchasedetail($id) {
 	/*	$id = ['13','14'];

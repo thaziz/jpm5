@@ -40,7 +40,7 @@
                      </h5>
                     <div class="text-right">
                     
-                          <a class="btn btn-success" href="{{url('konfirmasi_order/konfirmasi_order')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
+                          <a class="btn btn-default" href="{{url('konfirmasi_order/konfirmasi_order')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
                     
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                     <hr>
                     
                   @if($data['countcodt'] > 0)
-                     <table class="table table-bordered table-striped" id="hargatable">
+                     <table class="table table-bordered" id="hargatable">
                       <tr>
                         <td rowspan="2"  style="width:20px"> No </td>
                         <td rowspan="2"  style="width:200px"> Nama Barang </td>
@@ -266,10 +266,10 @@
                           <td data-suppliertotal="{{$spptb->spptb_supplier}}"> <div class='form-group'> <label class='col-sm-2 col-sm-2 control-label'> Rp </label> <div class='col-sm-8'> <input type='text' class='input-sm form-control totalbiaya'  value="{{number_format($spptb->spptb_totalbiaya, 2)}}" readonly="" > </div>  </div></td>
                           @endforeach
                         </tr>
-<!-- 
+
                         <tr>
                           <td> <div class="hsltb"> </div> </td>
-                        </tr> -->
+                        </tr>
                     </tbody>
                    
                   </table>
@@ -429,7 +429,7 @@
                   console.log(data_supplier);
               }
 
-
+                console.log()
               var harga = 0;
               var g = 0;
               var h = 1;
@@ -482,22 +482,18 @@
                 var arrkosong = [];
                      //PERULANGAN RESULT
                  var lengthsup = $('.supid').length;
-                 for(var p = 0; p < result.length; p++){
-                console.log('hmm');
-                console.log('hmm');
+            
                  for(var z =0; z < lengthsup; z++){
                    var datasup = $('.supplier' + z).data('supplier');
-                   console.log('yek');
-                   console.log(datasup + 'datasup');
-                   console.log(result[p].id + 'result');
-                    if(result[p].id != datasup ){
+               
+                    if(result[z].id != datasup ){
                       
                        var supplier1 = $('td[data-supplier="'+ datasup + '"]').index() + 1;
                        biaya2 = 0;
                        $('tr.totalbiaya').find("td").eq(supplier1).html(addCommas(biaya2))
                     }
                   }
-                }
+                
 
 
 
@@ -520,7 +516,7 @@
                       if(result[j].id == datasup) {
                         var supplier3 = $('td[data-supplier="'+ datasup + '"]').index() + 1;
                           var biaya = Math.round(result[j].totalharga).toFixed(2);
-                          var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="input-sm form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[j].id+ "," + result[j].totalharga +'">  <input type="hidden" name="datasupplier[]" value="'+datasup+'"> </div>  </div>';
+                          var tb = '<div class="form-group"> <label class="col-sm-2 col-sm-2 control-label"> Rp </label> <div class="col-sm-8"> <input type="text" class="input-sm form-control totalbiaya" name="bayar[]" value="'+addCommas(biaya)+'" readonly="" > <input type="hidden" name="tb[]" value="'+result[j].id+ "," + result[j].totalharga +'"> <input type="text" name="datasupplier[]" value="'+datasup+'"></div>  </div>';
                       
                           $('tr.totalbiaya').find("td").eq(supplier3).html(tb);
                       }

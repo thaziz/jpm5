@@ -1019,7 +1019,8 @@
    var nourutsup2 = 0;
    var urutsup = 1;
     $('#add-btn').click(function(){
-      
+      $('.cek_tb').attr('disabled', false);
+
       supplier = $('.suipl').val();
 
       console.log(supplier);
@@ -1050,7 +1051,7 @@
           rowStr += "<td> "+no+"</td>";
           rowStr += "<td>";
                    
-          rowStr += "<select  class='barang brg"+no+" form-control idbarang"+counterId+"' data-id='"+counterId+"' style='width: 100%;' name='idbarang[]' required style='width:80px' data-no='"+no+"'> "; //barang
+          rowStr += "<select  class='barang brg"+no+" form-control idbarang"+counterId+" input-sm' data-id='"+counterId+"' style='width: 100%;' name='idbarang[]' required data-no='"+no+"'> "; //barang
                     if(arrItem.length > 0) {
           rowStr += " <option value=''>  -- Pilih Barang -- </option> ";            
                      $.each(arrItem, function(i , obj) {
@@ -1063,7 +1064,7 @@
                       else{
           rowStr +=  "<option value=''> -- Data Kosong -- </option>";              
                       }
-          rowStr += "</select> <br> <div class='brgduplicate duplicate"+nourutbrg+"'> </div> <br>   </td>" +
+          rowStr += "</select> <br>  <div class='brgduplicate duplicate"+nourutbrg+"'> </div>   </td>" +
                     "<td> <input type='number' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required style='width:60px'> <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'>  </td>" + //qty
 
                     "<td> <div class='stock_gudang"+counterId+"'> </td>" + //stockgudang
@@ -1072,7 +1073,7 @@
 
                     "<td> <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' data-id='"+counterId+"' data-no='"+no+"'/> </td>"+ //harga
 
-                    "<td><select id='supselect' class='input-sm form-control select2 suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div>"+no+" </td>"; //supplier
+                    "<td><select id='supselect' class='input-sm form-control select2 suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
 
                   /*  "<td class='pembayaranken'> <div class='form-group'> <div class='col-sm-8'> <input type='text' class='form-control bayar"+counterId+"' name='bayar[]' data-id='"+counterId+"'> </div> <label class='col-sm-2 col-sm-2 control-label'> Hari </label></div></td>";*/ //bayar
 
@@ -1339,7 +1340,8 @@
      countersup = 0;
       //TAMBAHDATASUPPLIER
      $('#add-btn-supp').click(function(){
-              
+              $('.cek_tb').attr('disabled', false);
+
               var idtrsup = no - 1;
               var lastarr = arrnobrg.slice(-1)[0];
               val2 = $('.brg' + lastarr).val();
@@ -1387,7 +1389,7 @@
                       }) 
                 }
 
-      					rowSup  +="</select>"+idtrsup+" <br> </td>"; //supplier
+      					rowSup  +="</select><br> </td>"; //supplier
       					
       					rowSup +=  "<td> <button class='btn btn-sm btn-danger remove-btn' data-id='"+idtrsup+"' type='button'><i class='fa fa-trash'></i></button></td>";
       					rowSup += "</tr>";

@@ -440,7 +440,7 @@
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
         netto_detail     = parseInt(netto_detail)/100;
         diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
-        diskon2          = parseInt(diskon2)/100;
+        diskon2          = parseInt(diskon2);
 
         var ppn  = $('.ppn').val();
         ppn      = ppn.replace(/[^0-9\-]+/g,"");
@@ -448,6 +448,7 @@
 
         var pph  = $('.pph').val();
         pph      = pph.replace(/[^0-9\-]+/g,"");
+
         pph      = parseInt(pph)/100;
         if (cb_jenis_ppn == 1 || cb_jenis_ppn == 2 || cb_jenis_ppn == 0) {
             var total_tagihan = netto_total+ppn-pph;
@@ -673,7 +674,7 @@
                             response.data[i].tanggal,
                             response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].total+'" name="dd_harga[]">',
+                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
                             accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
                             accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',

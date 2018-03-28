@@ -101,6 +101,7 @@ Route::get('purchaseorder/print/{id}', 'PurchaseController@cetak');
 Route::post('purchaseorder/detailpurchasekeuangan', 'PurchaseController@detailpurchasekeuangan');
 Route::post('purchaseorder/updatekeuangan', 'PurchaseController@updatekeuangan');
 Route::post('purchaseorder/getcabang', 'PurchaseController@getcabang');
+Route::delete('purchaseorder/deletepurchase', 'PurchaseController@deletepurchase');
 
 
 /*warehouse */
@@ -380,6 +381,7 @@ Route::post('masteritem/saveitem', 'MasterPurchaseController@saveitem');
 Route::get('masteritem/edititem/{id}', 'MasterPurchaseController@edititem');
 Route::post('masteritem/updateitem/{id}', 'MasterPurchaseController@updateitem');
 Route::delete('masteritem/deleteitem/{id}', 'MasterPurchaseController@deleteitem');
+Route::get('masteritem/getaccpersediaan', 'MasterPurchaseController@getaccpersediaan');
 
 
 Route::get('masterbank/masterbank', 'MasterPurchaseController@masterbank');
@@ -418,6 +420,7 @@ Route::post('mastersupplier/updatesupplier/{id}', 'MasterPurchaseController@upda
 Route::delete('mastersupplier/deletesupplier/{id}', 'MasterPurchaseController@deletesupplier');
 Route::get('mastersupplier/detailsupplier/{id}', 'MasterPurchaseController@detailsupplier');
 Route::get('mastersupplier/createPdfMasterSupplier', 'MasterPurchaseController@createPdfMasterSupplier');
+Route::get('mastersupplier/getacchutang', 'MasterPurchaseController@getacchutang');
 
 
 
@@ -1552,7 +1555,7 @@ Route::get('master-transaksi/set-kota/{id_provinsi}', 'd_trans\master_transaksiC
 Route::get('data/jurnal/{ref}', 'sales\invoice_Controller@jurnal');
 //laporan invoicepenjualan
 Route::get('sales/laporaninvoicepenjualan','laporan_penjualan\laporaninvoiceController@index');
-Route::get('data/jurnal/{ref}/INVOICE', 'sales\invoice_Controller@jurnal');
+Route::get('data/jurnal/{ref}/{note}', 'jurnalController@lihatJurnal');
 
 //laporan Do
 Route::get('sales/laporandeliveryorder','laporan_penjualan\laporandoController@index');

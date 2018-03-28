@@ -88,7 +88,7 @@
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                        @if($row->kode == $data->i_kode_customer)
-                                        <option selected="" value="{{$row->kode}}"> {{$row->kode}} - {{$row->nama}} </option>
+                                        <option selected="" value="{{$row->kode}}"  data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} </option>
                                        @endif
                                     @endforeach
                                     </select>
@@ -352,9 +352,9 @@
                                         <option value="0"  >Pilih Pajak Lain-lain</option>
                                         @foreach($pajak as $val)
                                             @if($data->i_kode_pajak == $val->kode)
-                                                <option selected="" value="{{$val->kode}}">{{$val->nama}}</option>
+                                                <option selected="" value="{{$val->kode}}" data-pph="{{$val->nilai}}">{{$val->nama}}</option>
                                             @else
-                                                <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                                <option value="{{$val->kode}}" data-pph="{{$val->nilai}}">{{$val->nama}}</option>
                                             @endif
                                         @endforeach
                                     </select>
@@ -567,7 +567,7 @@
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
         netto_detail     = parseInt(netto_detail)/100;
         diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
-        diskon2          = parseInt(diskon2)/100;
+        diskon2          = parseInt(diskon2);
 
         var ppn  = $('.ppn').val();
         ppn      = ppn.replace(/[^0-9\-]+/g,"");
@@ -575,11 +575,18 @@
 
         var pph  = $('.pph').val();
         pph      = pph.replace(/[^0-9\-]+/g,"");
-        pph      = parseInt(pph)/100;
+        pph      = parseInt(pph);
+        if (pph != 0) {
+            pph      = pph/100;
+        }else{
+            pph = 0;
+        }
+
         if (cb_jenis_ppn == 1 || cb_jenis_ppn == 2 || cb_jenis_ppn == 0) {
             var total_tagihan = netto_total+ppn-pph;
         }else if (cb_jenis_ppn == 3 || cb_jenis_ppn == 5) {
             var total_tagihan = netto_detail-diskon2-pph;
+            console.log(total_tagihan);
         }else if (cb_jenis_ppn == 4) {
             var total_tagihan = netto_total-pph;
         }
@@ -711,11 +718,7 @@ function hitung_pajak_lain(){
         temp_diskon2     = parseFloat(temp_diskon2);
         
 
-<<<<<<< HEAD
         console.log(temp_diskon2);
-=======
-        // console.log(temp_diskon2);
->>>>>>> 91850290b399df749d2a5d574c336ac378babc9d
 
         var netto = 0 ;
         $('.dd_total').each(function(){
@@ -805,7 +808,7 @@ function hitung_pajak_lain(){
                             response.data[i].tanggal,
                             response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].total+'" name="dd_harga[]">',
+                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
                             accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
                             accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
@@ -868,6 +871,8 @@ function hitung_pajak_lain(){
 
     // SIMPAN DATA
     function simpan(){
+        var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
+        var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
         var ed_pendapatan = $('#cb_pendapatan').val();
         var ed_customer = $('#customer').val();
       swal({
@@ -895,7 +900,9 @@ function hitung_pajak_lain(){
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
                +'&ed_pendapatan='+ed_pendapatan
-               +'&ed_customer='+ed_customer,
+               +'&ed_customer='+ed_customer
+               +'&accPiutang='+accPiutang
+               +'&pajak_lain='+pajak_lain,
           success:function(response){
             
 
