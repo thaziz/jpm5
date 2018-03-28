@@ -890,6 +890,7 @@
                                             <td> <button type='button' class="btn btn-sm btn-danger"> Kembali </button> </td>
                                             <td> &nbsp; </td>
                                             <td> <div class="printpo"> </div></td>
+                                            <td> &nbsp; </td>
                                             <td> <button type="submit" class='btn btn-sm btn-success simpanpo'> Simpan Data </button> </td>
                                             </table>
 
@@ -1270,8 +1271,8 @@
       hasilppn = $('.hasilppn').val();
       netto = $('.nettohutang').val();
      
-      alert(jenisppn);
-      alert(hasilppn);
+      //alert(jenisppn);
+      //alert(hasilppn);
       if(hasilppn == 0.00){
         toastr.info("Hasil Nilai PPn anda 0 :)");
         return false;
