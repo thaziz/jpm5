@@ -204,7 +204,7 @@
                                     <tr>
                                         <td>Nama Subcon</td>
                                         <td colspan="3">
-                                            <input type="text" readonly="" value="{{$data->nama_subcon}}" class="nama_subcon_detail form-control input-sm">
+                                            <input type="text" readonly="" value="{{$subcon_detail->nama}}" class="nama_subcon_detail form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>

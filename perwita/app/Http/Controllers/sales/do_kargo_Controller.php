@@ -829,22 +829,17 @@ class do_kargo_Controller extends Controller
                          ->orWhere('jt_group',3)
                          ->orderBy('jt_id','ASC')
                          ->get();
-      return  $data = DB::table('delivery_order')
+        $data = DB::table('delivery_order')
                     ->where('nomor', $id)
-                    ->get();
+                    ->first();
 
         $subcon_detail = DB::table('delivery_order')
                     ->join('subcon','kode','=','kode_subcon')
                     ->where('nomor', $id)
                     ->first();
-        if ($subcon_detail != null) {
-            return $data->nama_subcon;
-            $data->nama_subcon = $subcon->subcon_detail;
-        }else{
-            $data->nama_subcon ='';
-        }
+
        
-        return view('sales.do_kargo.edit_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon'));
+        return view('sales.do_kargo.edit_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail'));
     }
 
     public function update_do_kargo(request $request)
