@@ -59,9 +59,47 @@
                           <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
 
                           <tr>
-                            <td> Pengajuan dari Cabang </td>
-                            <td> <select class="chosen-select-width" name="cabang"> <option value=""> -- Pilih Cabang -- </option> @foreach($data['cabang'] as $cbg) <option value="{{$cbg->kode}}"> {{$cbg->nama}} </option> @endforeach </select> </td>
-                          </tr>
+                             @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
+                            <tr>
+                             <td> Pengajuan dari Cabang </td>
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' name="cabang">
+                                  <option value="">
+                                    Pilih-Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                  @endforeach
+                                 </select>
+                            </td>
+                            </tr>
+                            @else
+                            <tr>
+                         <td> Pengajuan dari Cabang </td>
+                            <td>
+                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                                  <option value="">
+                                    Pilih Cabang
+                                  </option>
+
+                                  @foreach($data['cabang'] as $cabang)
+                                    @if($cabang->kode == Auth::user()->kode_cabang)
+                                    <option selected="" value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @else
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->nama}}
+                                    </option>
+                                    @endif
+                                  @endforeach
+                                 </select>
+                            </td>
+                            </tr>
+                            @endif
 
                          
 
@@ -70,7 +108,8 @@
                             Nama Supplier
                             </td>
                             <td>
-                               <input type="text" class="form-control" name="nama_supplier" >
+                               <input type="text" class="input-sm form-control" name="nama_supplier" >
+                               <input type="hidden" class="form-control" name="cabang" value="{{ Auth::user()->kode_cabang}}">
                             </td>
                           </tr>
 
@@ -78,7 +117,7 @@
                           <tr>
                             <td>    Alamat </td>
                             <td>
-                              <input type="text" class="form-control" name="alamat">
+                              <input type="text" class="input-sm form-control" name="alamat">
                             </td>
                           </tr>
 
@@ -99,7 +138,7 @@
                            <tr>
                             <td> Kota </td>
                             <td>
-                              <select class="form-control kota" name="kota">
+                              <select class="input-sm form-control kota" name="kota">
                               @foreach($data['kota'] as $kota)
                                 <option value="{{$kota->id}}"> {{$kota->nama}}</option>
                               @endforeach
@@ -114,7 +153,7 @@
                               Kode Pos
                             </td>
                             <td>
-                              <input type="text" class="form-control" name="kodepos">
+                              <input type="text" class="input-sm form-control" name="kodepos">
                             </td>
                           </tr>
 
@@ -123,19 +162,13 @@
                               No Telp / Fax
                             </td>
                             <td>
-                              <input type="number" class="form-control" name="notelp">
+                              <input type="number" class="input-sm form-control" name="notelp">
                             </td>
                           </tr>
 
-                          </table>
-
-                         </div>
-
-                         <div class="col-xs-6">
-                          <table border="0" class="table">
-                          <tr>
+                            <tr>
                             <td width="200px"> Nama Contact Person </td>
-                            <td> <input type="text" class="form-control" name="nm_cp">  </td>
+                            <td> <input type="text" class="input-sm form-control" name="nm_cp">  </td>
                           </tr>
 
                           <tr>
@@ -143,14 +176,21 @@
                             Nomor Contact Person
                             </td>
                             <td>
-                               <input type="number" class="form-control" name="number_cp">
+                               <input type="number" class="input-sm form-control" name="number_cp">
                             </td>
                           </tr>
+                          </table>
+
+                         </div>
+
+                         <div class="col-xs-6">
+                          <table border="0" class="table">
+                        
 
                           <tr>
                             <td>   Syarat Kredit  </td>
                             <td>
-                             <div class="form-group"> <div class="col-sm-8"> <input type="text" class="form-control" name="syarat_kredit"> </div> <label class="col-sm-2 col-sm-2 control-label"> Hari </label> </div>  
+                             <div class="form-group"> <div class="col-sm-8"> <input type="text" class="form-control input-sm" name="syarat_kredit"> </div> <label class="col-sm-2 col-sm-2 control-label"> Hari </label> </div>  
                             </td>
                           </tr>
 
@@ -173,21 +213,24 @@
                             </td>
                           </tr>
 
-
                           <tr>
-                            <td> NO NPWP </td>
-                            <td>
-                               <input type="number" class="form-control" name="npwp">
-                            </td>
-                          </tr>
+                            <td> Apakah Supplier ini termasuk PKP ? </td>
+                            <td> <select class="form-control pkp" name="pkp"><option value="Y"> Ya </option>  <option value="T"> Tidak </option> </select> </td>
+                          </tr>                       
 
                           <tr>
                             <td>
                               Acc Hutang Dagang
                             </td>
-                            <td> <input type="text" class="form-control" name="acc_hutangdagang"> </td>
+                            <td> <input type="text" class="form-control input-sm acc_hutangdagang" name="acc_hutangdagang"> </td>
                           </tr>
 
+                          <tr>
+                              <td style="width:300px"> Terikat Kontrak </td>
+                              <td>    <select class="form-control kontrak"  name="kontrak"> <option value="" selected>  -- Pilih -- </option> <option value="YA"> Ya </option> <option value="TIDAK"> Tidak </option> </select>
+                          <br> <div class="nokontrak"> </div>
+                           </td> </td>
+                          </tr>
                           </table>
 
                          </div>
@@ -195,12 +238,35 @@
 
                          <hr>
 
-                          <div class="col-xs-12">
+                          <div class="col-xs-12" class="pajak">
                           <hr>
                           <h4>  Informasi Pajak Supplier </h4>
                           <hr>
                           <table border="0" class="table">
                           <tr>
+                            <td class="pajak"> NO NPWP </td>
+                            <td>
+                               <input type="number" class="input-sm form-control pajak" name="npwp">
+                            </td>
+                          </tr>
+
+                        <tr>
+                          <td class="pajak"> Nama </td>
+                          <td> <input type="text" class="form-control input-sm pajak" name="namapajak"></td>
+                        </tr>
+
+                        <tr>
+                          <td class="pajak"> Telepon </td>
+                          <td> <input type="number" class="form-control input-sm pajak" name="telppajak"></td>
+                        
+                        </tr>
+
+                        <tr>
+                           <td class="pajak"> Alamat </td>
+                          <td> <input type="text" class="form-control input-sm pajak" name="alamatpajak"></td>
+                        
+                        </tr>
+                          <tr class="pajak">
                             <td style="width:100px">
                                No Seri Pajak Supplier 
                             </td>
@@ -240,12 +306,7 @@
                          </tr>
                    
 
-                          <tr>
-                              <td style="width:300px"> Terikat Kontrak </td>
-                              <td>    <select class="form-control kontrak"  name="kontrak"> <option value="" selected>  -- Pilih -- </option> <option value="YA"> Ya </option> <option value="TIDAK"> Tidak </option> </select>
-                    <br> <div class="nokontrak"> </div>
-                     </td> </td>
-                          </tr>
+                      
 
                           </table>
                          </div>
@@ -256,7 +317,7 @@
                             <h4> Data Barang </h4>
                           <hr>
 
-                          <button id="tmbh_data_barang" type="button" class="btn btn-success"> Tambah Data Barang </button>
+                          <button id="tmbh_data_barang" type="button" class="btn btn-success hslkontrak"> Tambah Data Barang </button>
                           <table class="table table-bordered table-striped tbl-item" id="addColumn">
                             <tr id="header-column">
                               <th> No </th>
@@ -316,13 +377,34 @@
             return x1 + x2;
     }
 
+  
+
+  
+
+    $('.pkp').change(function(){
+      val = $(this).val();
+      if(val == 'T'){
+        $('.pajak').hide();
+      }
+      else {
+        $('.pajak').show();
+      }
+    })
+
     $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
     
-
-     
+    cabang = $('.cabang').val();
+     $.ajax({
+      data :  {cabang},
+      url : baseUrl + '/mastersupplier/getacchutang',
+      dataType : 'json',
+      success : function(response){
+        $('.acc_hutangdagang').val(response[0].id_akun);
+      }
+     })
 
      $no = 0;
     $('#tmbh_data_barang').click(function(){

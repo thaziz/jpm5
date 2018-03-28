@@ -56,7 +56,11 @@
                           <form method="post" action="{{url('masteritem/updateitem/'.$item->kode_item .'')}}"  enctype="multipart/form-data" class="form-horizontal">
                           <table class="table" border="0">
                               <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
-                         
+                              <tr>        
+                                <td style="width:200px"> Cabang </td>
+                                <td> <input type="text" class="form-control "  value="{{$item->nama}}"> <input type="hidden" class="cabang" name="cabang" value="{{$item->kode}}"> </td>
+                              </tr>
+
                               <tr>        
                                 <td style="width:200px"> Nama Item </td>
                                 <td> <input type="text" class="form-control" name="nama_item" value="{{$item->nama_masteritem}}"></td>
@@ -64,7 +68,7 @@
 							  
                               <tr>
                                 <td> Group Item </td>
-                                <td> <select class="form-control" name="jenis_item"> 
+                                <td> <select class="form-control jenis_item" name="jenis_item"> 
                                 
                                     @foreach($data['jenisitem'] as $grupitem)
                                       <option value="{{$grupitem->kode_jenisitem}}" @if($grupitem->keterangan_jenisitem == $item->keterangan_jenisitem)  selected="" @endif> {{$grupitem->keterangan_jenisitem}} </option>
@@ -128,19 +132,11 @@
                             <td style="width:200px"> Minimum Stock </td>
                             <td> <input type="number" class="form-control" name="minimum_stock" required="" value="{{$item->minstock}}"></td>
                           </tr>
-                          <td>Kode Acc</td>
-                        <td> 
-                          <select required="" name="akun" class="form-control chosen-select-width">
-                            <option selected="true" disabled="" value="">--Pilih Terlebih dahulu--</option>
-                            @foreach($akun as $akun)
-                              <option value="{{ $akun->id_akun }}">{{ $akun->id_akun }} - {{ $akun->nama_akun }} </option>
-                            @endforeach
-                          </select>
-                        </td>
+                          
                       </tr>
                           <tr>
                             <td> Update Stock </td>
-                            <td> <select class="form-control" name="update_stock" required=""> 
+                            <td> <select class="form-control updatestock" name="update_stock" required=""> 
                               @if($item->updatestock == "T")
                                 <option value='T'  selected="" > T </option>
                                 <option value='Y'> Y </option>
@@ -154,7 +150,7 @@
 
                           <tr>
                             <td> Acc Persediaan </td>
-                            <td> <input type="text" class="form-control" name="acc_persediaan" value="{{$item->acc_persediaan}}"></td>
+                            <td> <select class="chosen-select-width l accpersediaan" name="acc_persediaan" id="accpersediaan"> <option value="{{$item->acc_persediaan}}"> {{$item->acc_persediaan}} </option> <!-- </option> <option value=""> Pilih Akun2 </option>  --></select> </td>
                           </tr>
 
                           <tr>
@@ -162,7 +158,7 @@
                             <td> <input type="text" class="form-control" name="acc_hpp" value="{{$item->acc_hpp}}"> </td>
                           </tr>
 
-                          <tr>
+                      <!--     <tr>
                             <td> Foto </td>
                              <td> 
                                &nbsp; &nbsp; 
@@ -174,7 +170,7 @@
                                 <div class="col-md-6 image-holder" style="padding:0px; padding-bottom: 20px;"> </div>
                             </td>
 
-                          </tr>
+                          </tr> -->
 						  </table>
                         </div>
 
@@ -234,6 +230,28 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+    clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+
+
+     $("#accpersediaan").chosen(config);
+  //    $(".kndraan").chosen(config);
+    })
+     },2000);
+
+
     $('.harga').change(function(){
        
                 var id = $(this).data('id');
@@ -242,6 +260,31 @@
          
                 $('.harga').val(addCommas(numhar));
             
+    })
+
+    $('.jenis_item').change(function(){
+          updatestock = $('.updatestock').val();
+          groupitem = $('.jenis_item').val();
+          cabang = $('.cabang').val();
+          $.ajax({
+            data : {updatestock,groupitem,cabang},
+            url : baseUrl + '/masteritem/getaccpersediaan',
+              dataType : "json",
+            type : "get",
+            success : function(response){
+              console.log(response);
+              arrItem = response.akun;
+                      $('.accpersediaan').empty();
+                      $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
+                        $.each(arrItem, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.accpersediaan').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+                        })
+                          $('.accpersediaan').trigger("chosen:updated");
+                 $('.accpersediaan').trigger("liszt:updated");
+                    
+            }
+          })
     })
 
     $('.date').datepicker({

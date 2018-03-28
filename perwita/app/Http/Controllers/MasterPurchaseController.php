@@ -59,7 +59,56 @@ class MasterPurchaseController extends Controller
 		return view('purchase/master/master_item/create', compact('data','akun'));
 	}
 
+	public function getaccpersediaan(Request $request){
+		$updatestock = $request->updatestock;
+		$groupitem = $request->groupitem;
+		$explode = explode(",", $groupitem);
+		$cabang = $request->cabang;
+		$idgrupitem = $explode[0];
+		//$updatestock = $explode[1];
+		if($updatestock == 'T'){
+			if($idgrupitem == 'P'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
+			}
+			else if($idgrupitem == 'S'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' or id_akun LIKE '5206%' or id_akun LIKE '5306%' and kode_cabang = '$cabang'");
+			}
+			else if($idgrupitem == 'A'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
+			}
+			else {
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '51%' or id_akun LIKE '52%' or id_akun LIKE '53%' or id_akun LIKE '61%'");
+			}
+		}
+		else if($updatestock == 'Y'){
+			if($idgrupitem == 'P'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '$cabang'");
+			}
+			else if($idgrupitem == 'S'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang'");
+			}
+			else if($idgrupitem == 'A'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1503%' and kode_cabang = '$cabang'");
+			}
+			else if($idgrupitem == 'L'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang'");
+
+			}
+			else {
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '15%'");
+			}
+		}
+		else {
+			$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '15%'");
+		}
+		
+
+		
+		return json_encode($data);
+	}
+
 	public function saveitem(Request $request) {
+		//dd($request);
 		$variable = explode(",", $request->jenis_item);
 		$jenisitem = $variable[0];
 
@@ -80,7 +129,7 @@ class MasterPurchaseController extends Controller
 		if($id) {
 			$string = explode("-",$id);
 			$jumlah = $string[1] + 1;
-			$iditem = $string[0] . '-' . $jumlah;
+		//	$iditem = $string[0] . '-' . $jumlah;
 
 		
 			$invID = str_pad($jumlah, 6, '0', STR_PAD_LEFT);
@@ -98,10 +147,11 @@ class MasterPurchaseController extends Controller
 		$masteritem->kode_item = $data['id'];
 		$masteritem->nama_masteritem = strtoupper(request()->nama_item);
 		$masteritem->iditem = $iditem;
-		$masteritem->comp_id = $comp_id;
+		$masteritem->comp_id = $request->cabang;
 		$masteritem->kode_akun = $request->akun;
 		$masteritem->minstock = strtoupper(request()->minimum_stock);
-		
+		 $masteritem->acc_persediaan = $request->acc_persediaan;
+        $masteritem->acc_hpp = $request->acc_hpp;
 		
 
 		$masteritem->jenisitem = $jenisitem ;
@@ -145,7 +195,7 @@ class MasterPurchaseController extends Controller
 		
 			
 
-		if($request->file('imageUpload') == ''){
+		/*if($request->file('imageUpload') == ''){
             return 'file kosong';
         }
         else{
@@ -169,9 +219,9 @@ class MasterPurchaseController extends Controller
             }
         }
 
-        	$masteritem->foto = $imgPath;
+        	$masteritem->foto = $imgPath; */
        		$masteritem->save();
-       		$file->move($path, $name);
+       	//	$file->move($path, $name);
        			
        		 return redirect('masteritem/masteritem');
 	} 
@@ -186,7 +236,6 @@ class MasterPurchaseController extends Controller
 		$data['item'] = DB::select("select * from masteritem, cabang, jenis_item where  masteritem.comp_id = cabang.kode and masteritem.kode_item = '$id' and masteritem.jenisitem = jenis_item.kode_jenisitem ORDER BY kode_item DESC");
 		
 
-
 		return view('purchase/master/master_item/edit',compact('data','akun'));
 	}
 
@@ -196,9 +245,9 @@ class MasterPurchaseController extends Controller
 		/*	dd($request);*/
 		$data = masterItemPurchase::find($id);
 		  $jenis  = $request->jenis_item;
-		$file = $request->file('imageUpload');
+		/*$file = $request->file('imageUpload');
         $imgPath = "";
-        $pathPic = $data->foto;        
+        $pathPic = $data->foto;      */  
 
         $iditem2=masterItemPurchase::where('jenisitem' , $jenis)->max('kode_item'); 
 
@@ -232,7 +281,7 @@ class MasterPurchaseController extends Controller
 
 
 
-        if($file != ""){
+      /*  if($file != ""){
 
             $childPath = 'img/item/'.$id;
             $path = $childPath;
@@ -261,7 +310,7 @@ class MasterPurchaseController extends Controller
            
             $data->foto = $pathPic;
         }
-
+*/
         $data->nama_masteritem = $request->nama_item;
     
 		$jenisitem = $request->jenis_item;
@@ -312,6 +361,7 @@ class MasterPurchaseController extends Controller
 		$data->kode_item = $iditem;
 
         $data->save();
+         return redirect('masteritem/masteritem');
 }
 
 	public function deleteitem($id) {
@@ -597,6 +647,13 @@ class MasterPurchaseController extends Controller
 		return view('purchase/master/master_supplier/index', compact('data'));
 	}
 	
+	public function getacchutang(Request $request) {
+		$cabang = $request->cabang;
+
+		$data = DB::select("select * from d_akun where id_akun LIKE '21011%' and kode_cabang = '$cabang'");
+
+		return json_encode($data);
+	}
 
 
 	public function createmastersupplier() {
@@ -688,6 +745,13 @@ class MasterPurchaseController extends Controller
 		}
 		else {
 			$mastersupplier->no_kontrak = '';
+
+		}
+
+		if($request->pkp == 'Y'){
+			$mastersupplier->namapajak = $request->namapajak;
+			$mastersupplier->telppajak = $request->telpajak;
+			$mastersupplier->alamatpajak = $request->alamatpajak;
 
 		}
 		$mastersupplier->save();
@@ -945,9 +1009,11 @@ class MasterPurchaseController extends Controller
 
 
 	public function konfirmasisupplier() {
-		$data = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id");
+		$data['supp'] = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id");
 
-
+		$data['disetujui'] = DB::table("supplier")->where('status' , '=' , 'SETUJU')->count();
+		$data['belumdisetujui'] = DB::table("supplier")->where('status' , '=' , 'BELUM DI SETUJUI')->count();
+		$data['tidakdisetujui'] = DB::table("supplier")->where('status' , '=' , 'TIDAK SETUJU')->count();
 		return view('purchase/master/master_supplier/index_konfirmasi', compact('data'));
 	}
 
