@@ -115,7 +115,15 @@
                                 </tr>
                                <tr>
                                    <td style="padding-top: 0.4cm">Tipe Kiriman</td>
-                                    <td><input type="text" name="ed_tipe" value="KILOGRAM" readonly="" class="form-control"></td>
+                                    <td>{{-- <input type="text" value="DOKUMEN" readonly="" > --}}
+                                        <select  name="ed_tipe" class="form-control">
+                                          <option value="">Pilih - Tipe</option>
+                                          <option value="DOKUMEN">DOKUMEN</option>
+                                          <option value="KILOGRAM">KILOGRAM</option>
+                                          <option value="KOLI">KOLI</option>
+                                          <option value="SEPEDA">SEPEDA</option>
+                                        </select>
+                                    </td>
                                </tr>
                                <tr>
                                    <td style="padding-top: 0.4cm"> Provinsi </td>
@@ -158,21 +166,49 @@
                           <table class="table table-striped table-bordered table-hover ">
                               <tr>
                                    <td style="padding-top: 0.4cm"> Tarif >= 10 Reguler</td>
-                                   <td><input type="text" class="form-control" name="ed_10reguler"></td>
+                                   <td>
+                                    <select  class="form-control" name="ed_10reguler">
+                                    <option disabled="" selected="">Pilih - Zona</option>
+                                            @foreach ($zona as $d)
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                           @endforeach  
+                                    </select>
+                                   </td>
                                </tr>
                                <tr>
                                   <td style="padding-top: 0.4cm"> Tarif > 20 Reguler</td>
-                                   <td><input type="text" class="form-control" name="ed_20reguler"></td>
+                                   <td>
+                                    <select  class="form-control" name="ed_20reguler">
+                                    <option disabled="" selected="">Pilih - Zona</option>
+                                            @foreach ($zona as $d)
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                           @endforeach  
+                                    </select>
+                                   </td>
                               </tr>
                           </table>
                           <table class="table table-striped table-bordered table-hover ">
                               <tr>
                                    <td style="padding-top: 0.4cm"> Tarif >= 10 Express</td>
-                                   <td><input type="text" class="form-control" name="ed_10express"></td>
+                                   <td>
+                                     <select  class="form-control" name="ed_10express">
+                                    <option disabled="" selected="">Pilih - Zona</option>
+                                            @foreach ($zona as $d)
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                           @endforeach  
+                                    </select>
+                                   </td>
                                </tr>
                               <tr>
                                   <td style="padding-top: 0.4cm"> Tarif > 20 Express</td>
-                                   <td><input type="text" class="form-control" name="ed_20express"></td>
+                                   <td>
+                                     <select  class="form-control" name="ed_20express">
+                                    <option disabled="" selected="">Pilih - Zona</option>
+                                            @foreach ($zona as $d)
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                           @endforeach  
+                                    </select>
+                                   </td>
                               </tr>
                           </table>
                         </form>
@@ -281,10 +317,10 @@
             { "data": "kota_nama" },
             { "data": "kecamatan_nama" },  
             { "data": "type_kilo" },  
-            { "data": "tarif_10reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_10express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_20reguler_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_20express_kilo", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "10reguler", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "10express", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "20reguler", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "20express", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
             ]
         });

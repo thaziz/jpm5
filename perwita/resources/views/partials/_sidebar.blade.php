@@ -113,6 +113,9 @@
                     Request::is('sales/zona') ? 'active' : '' || 
                     Request::is('sales/zona/*') ? 'active' : '' ||
                     /* Group item */
+                    Request::is('master_sales/group_customer') ? 'active' : '' || 
+                    Request::is('master_sales/group_customer/*') ? 'active' : '' ||
+                    /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
                     /* item */
@@ -346,6 +349,9 @@
                     Request::is('sales/zona') ? 'active' : '' || 
                     Request::is('sales/zona/*') ? 'active' : '' ||
                     /* Group item */
+                    Request::is('master_sales/group_customer') ? 'active' : '' || 
+                    Request::is('master_sales/group_customer/*') ? 'active' : '' ||
+                    /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
                     /* item */
@@ -504,7 +510,9 @@
                         {{Request::is('sales/tarif_penerus_sepeda') ? 'active' : '' ||
                          Request::is('sales/tarif_penerus_sepeda/*') ? 'active' : ''}} 
 
+
                         " href="{{ url('sales/tarif_penerus_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus sepeda</a>
+
                         </li>
                         
                     </ul>
@@ -530,6 +538,9 @@
                      /* Zona */
                     Request::is('sales/zona') ? 'active' : '' || 
                     Request::is('sales/zona/*') ? 'active' : '' ||
+                    /* Group item */
+                    Request::is('master_sales/group_customer') ? 'active' : '' || 
+                    Request::is('master_sales/group_customer/*') ? 'active' : '' ||
                     /* Group item */
                     Request::is('master_sales/grup_item') ? 'active' : '' || 
                     Request::is('master_sales/grup_item/*') ? 'active' : '' ||
@@ -602,6 +613,16 @@
                     Request::is('sales/zona/*') ? 'active' : ''}} 
 
                     " href="{{ url('sales/zona')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Zona</a>
+                    </li>
+                   
+                      <li >
+                        <a class="sidebar master-perusahaan 
+
+                    {{  /* Group item */
+                    Request::is('master_sales/group_customer') ? 'active' : '' || 
+                    Request::is('master_sales/group_customer/*') ? 'active' : ''}}
+
+                     " href="{{ url('master_sales/group_customer')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Group Customer</a>
                     </li>
                     <li >
                         <a class="sidebar master-perusahaan 

@@ -118,7 +118,7 @@ table, td, th {
 			<td>  {{$detail->bbkb_akun}}</td>
 			<td> {{$detail->bbkb_keterangan}}</td>
 			<td> {{$detail->bbkb_dk}}</td>
-			<td></td>
+			<td> {{ number_format($detail->bbkb_nominal, 2) }} </td>
 		</tr>
 		@endforeach
 		<tr>
@@ -243,7 +243,8 @@ table, td, th {
 			<td></td>
 		</tr>
 		<tr>
-			<td colspan="9" class="tebal top">Terbilang : </td>
+			<td colspan="9" class="tebal top">Terbilang : {{$data['terbilang']}} rupiah</td>
+
 		</tr>
 	</table>
 	@else
@@ -264,17 +265,19 @@ table, td, th {
 			<td width="65px" class="tebal">AK</td>
 
 		</tr>
+			@foreach($data['detail'] as $detail)
 		<tr>
-			<td class="blank"> </td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
+			<td colspan="2"> {{ Carbon\Carbon::parse($data['bbk'][0]->bbk_tgl)->format('d-M-Y ') }} </td>
+			<td> {{$detail->bbkd_nocheck}} </td>
+			<td>{{ number_format($detail->bbkd_nominal, 2) }} </td>
+			<td> {{$detail->mb_kode}} </td>
+			<td>  {{$detail->mb_kode}}</td>
+			<td> {{$detail->bbkd_keterangan}}</td>
+			<td> {{$detail->akun_dka}}</td>
+			<td> {{ number_format($detail->bbkd_nominal, 2) }} </td>
 		</tr>
+		@endforeach
 		<tr>
 			<td class="blank"></td>
 			<td></td>
@@ -397,7 +400,7 @@ table, td, th {
 			<td></td>
 		</tr>
 		<tr>
-			<td colspan="9" class="tebal top">Terbilang : </td>
+		<td colspan="9" class="tebal top">Terbilang : {{$data['terbilang']}} rupiah</td>
 		</tr>
 	</table>
 	@endif

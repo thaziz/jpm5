@@ -100,7 +100,8 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="padding-top: 0.4cm">Kecamatan Tujuan</td>
+                                                    {{-- <img src="{{ asset('assets/img/loading.gif') }}" style="display: block; margin-left: auto; margin-right: auto;" height="100" width="100"> --}}
+                                                    <td style="padding-top: 0.4cm" class="kecamatantujuanlabel">Kecamatan Tujuan</td>
                                                     <td colspan="5">
                                                         <select class="form-control" id="kecamatan" name="cb_kecamatan_tujuan" style="width:100%" >
                                                             <option value=""></option>
@@ -121,10 +122,11 @@
                                                             <option value="DOKUMEN">DOKUMEN</option>
                                                             <option value="KILOGRAM">KILOGRAM</option>
                                                             <option value="KOLI">KOLI</option>
+                                                            <option value="SEPEDA">SEPEDA</option>
                                                         </select>
                                                     </td>
                                                 </tr>
-                                                <tr>
+                                                <tr id="jenis_kiriman">
                                                     <td style="width:110px; padding-top: 0.4cm">Jenis Kiriman</td>
                                                     <td colspan="5">
                                                         <select class="form-control" name="jenis_kiriman" id="jenis_kiriman" >
@@ -165,6 +167,27 @@
                                                     <td style="padding-top: 0.4cm">Berat</td>
                                                     <td colspan="5">
                                                         <input type="text" class="form-control" name="ed_berat" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->berat, 0, ",", ".") }}" @endif>
+                                                    </td>
+                                                </tr>
+                                                <tr id="jml_unit">
+                                                    <td style="padding-top: 0.4cm">Jumlah Unit</td>
+                                                    <td colspan="5">
+                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" name="cb_jml_unit" style="text-align:right" @if ($do === null) value="1" @else value="{{ number_format($do->jml_unit, 0, ",", ".") }}" @endif>
+                                                    </td>
+                                                </tr>
+                                                <tr id="jenis_unit" class="jenis_unit">
+                                                    <td style="padding-top: 0.4cm">Jenis Unit</td>
+                                                    <td colspan="2" class="jenisunit">
+                                                        <select class="form-control jns_unit" name="cb_jenis_unit[]" >
+                                                            <option value="SEPEDA">SEPEDA</option>
+                                                            <option value="SPORT">MOTOR SPORT</option>
+                                                            <option value="BETIC">MOTOR BEBEK/MATIC</option>
+                                                            <option value="MOGE">MOGE</option>
+                                                        </select>
+                                                    </td>
+                                                    <td style="padding-top: 0.4cm">Berat Unit</td>
+                                                    <td colspan="2">
+                                                        <input type="text" class="form-control beratunit" name="cb_berat_unit[]" style="text-align:right" >
                                                     </td>
                                                 </tr>
                                                 <tr id="dimensi">
@@ -560,8 +583,6 @@
     </div>
 </div>
 
-
-
 <div class="row" style="padding-bottom: 50px;"></div>
 
 
@@ -625,8 +646,6 @@
                 </div>
 @endif
 
-
-
 @endsection
 
 
@@ -646,6 +665,8 @@
         $("#berat").hide();
         $("#jenis_kendaraan").hide();
         $("#komisi").hide();
+        $("#jml_unit").hide();
+        $(".jenis_unit").hide();
         $("select[name='cb_kota_asal']").val('{{ $do->id_kota_asal or ''  }}').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('{{ $do->id_kota_tujuan or ''  }}').trigger('chosen:updated');
         $("select[name='pendapatan']").val('{{ $do->pendapatan or 'PAKET'  }}').change();
@@ -820,6 +841,8 @@
             $("#koli").hide();
             $("#berat").hide();
             $("#jenis_kendaraan").hide();
+            $("#jml_unit").hide();
+            $(".jenis_unit").hide();
         }else if ( type_kiriman =='KARGO PAKET') {
             $("#surat_jalan").show();
             $("#dimensi").hide();
@@ -827,6 +850,8 @@
             $("#koli").hide();
             $("#berat").hide();
             $("#jenis_kendaraan").show();
+            $("#jml_unit").hide();
+            $(".jenis_unit").hide();
         }else if ( type_kiriman =='KILOGRAM') {
             $("#surat_jalan").hide();
             $("#dimensi").show();
@@ -834,6 +859,8 @@
             $("#koli").show();
             $("#berat").show();
             $("#jenis_kendaraan").hide();
+            $("#jml_unit").hide();
+            $(".jenis_unit").hide();
         }else if ( type_kiriman =='KOLI') {
             $("#surat_jalan").hide();
             $("#dimensi").hide();
@@ -841,6 +868,18 @@
             $("#koli").show();
             $("#berat").show();
             $("#jenis_kendaraan").hide();
+            $("#jml_unit").hide();
+            $(".jenis_unit").hide();
+        }else if ( type_kiriman =='SEPEDA') {
+            $("#surat_jalan").hide();
+            $("#dimensi").hide();
+            $("#nopol").hide();
+            $("#koli").hide();
+            $("#berat").hide();
+            $("#jenis_kendaraan").hide();
+            $("#jml_unit").show();
+            $(".jenis_unit").show();
+            $("#jenis_kiriman").hide();
         }else if ( type_kiriman =='KERTAS') {
             $("#surat_jalan").show();
             $("#dimensi").hide();
@@ -848,6 +887,8 @@
             $("#koli").hide();
             $("#berat").show();
             $("#jenis_kendaraan").hide();
+            $("#jml_unit").hide();
+            $(".jenis_unit").hide();
         }else if ( type_kiriman =='KARGO KERTAS') {
             $("#surat_jalan").show();
             $("#dimensi").hide();
@@ -855,6 +896,8 @@
             $("#koli").hide();
             $("#berat").hide();
             $("#jenis_kendaraan").show();
+            $("#jml_unit").hide();
+            $(".jenis_unit").hide();
         }
     });
     
@@ -868,6 +911,17 @@
         var angkutan = $("select[name='cb_angkutan']").val();
         var cabang = $("select[name='cb_cabang']").val();
         var berat = $("input[name='ed_berat']").val();
+        var jenis_sepeda;
+        var input = document.getElementsByClassName( 'jns_unit' ),
+        jenis_sepeda  = [].map.call(input, function( input ) {
+            return input.value;
+        });
+        var berat_sepeda;
+        var input = document.getElementsByClassName( 'beratunit' ),
+        berat_sepeda  = [].map.call(input, function( input ) {
+            return input.value;
+        });
+        console.log(berat_sepeda);
         
         $("input[name='ed_harga']").val(0);
               if (kota_asal == '') {
@@ -1029,7 +1083,9 @@
             angkutan: $("select[name='cb_angkutan']").val(),
             cabang: $("select[name='cb_cabang']").val(),
             berat : $("input[name='ed_berat']").val(),
-            kecamatan : $("select[name='cb_kecamatan_tujuan']").val()
+            kecamatan : $("select[name='cb_kecamatan_tujuan']").val(),
+            sepeda: jenis_sepeda,
+            berat_sepeda: berat_sepeda
         };
         $.ajax(
         {
@@ -1076,13 +1132,13 @@
                     }
                     hitung();
                 }
-                
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
                // swal("Error!", textStatus, "error");
             }
         });
+        
     });
 
 
@@ -2024,6 +2080,18 @@
             }
         })
     }
+
+    function setJml(){
+        var jumlah = $('.jmlunit').val();
+        $('.jenis_unit').remove();
+        var jenis = '<tr id="jenis_unit" class="jenis_unit"><td style="padding-top: 0.4cm">Jenis Unit</td><td colspan="2" class="jenisunit"><select class="form-control jns_unit" name="cb_jenis_unit[]" ><option value="SEPEDA">SEPEDA</option><option value="SPORT">MOTOR SPORT</option><option value="BETIC">MOTOR BEBEK/MATIC</option><option value="MOGE">MOGE</option></select></td><td style="padding-top: 0.4cm">Berat Unit</td><td colspan="2"><input type="text" class="form-control beratunit" name="cb_berat_unit[]" style="text-align:right" ></td></tr>';
+        for (var i = 0; i < jumlah; i++) {
+            $(jenis).insertAfter('#jml_unit');
+        }
+
+    }
+
+
 
 </script>
 @endsection

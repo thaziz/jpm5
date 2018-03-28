@@ -787,7 +787,7 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function simpan_kwitansi(request $request)
     {
-
+        // dd($request->all());
         return DB::transaction(function() use ($request) {  
 
         $tgl = str_replace('/', '-', $request->ed_tanggal);
@@ -824,40 +824,63 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_netto' => $request->ed_netto,
                                 'k_kode_akun'=> $request->cb_akun_h
                                ]);
+            $memorial_array = [];
             for ($i=0; $i < count($request->i_nomor); $i++) { 
-                
-                $cari_invoice = DB::table('invoice')
-                                  ->where('i_nomor',$request->i_nomor[$i])
-                                  ->first();
-                if ($request->i_biaya_admin[$i] == '') {
-                    $i_biaya_admin[$i] = 0;
-                }else{
-                    $i_biaya_admin[$i] = $request->i_biaya_admin[$i];
+                if ($request->i_bayar[$i] != 0) {
+                    $cari_invoice = DB::table('invoice')
+                                      ->where('i_nomor',$request->i_nomor[$i])
+                                      ->first();
+                    if ($request->i_biaya_admin[$i] == '') {
+                        $i_biaya_admin[$i] = 0;
+                    }else{
+                        $i_biaya_admin[$i] = $request->i_biaya_admin[$i];
+                    }
+
+                    $memorial = (float)$cari_invoice->i_sisa_pelunasan - (float)$request->i_bayar[$i];
+
+                    if ($memorial > 0) {
+                       $memorial = 0;
+                    }else if ($memorial<0) {
+                        $memorial = $memorial * -1;
+                    }
+
+                    array_push($memorial_array, $memorial);
+
+
+                    $save_detail = DB::table('kwitansi_d')
+                                     ->insert([
+                                          'kd_id'             => $k_id,
+                                          'kd_dt'             => $i+1,
+                                          'kd_k_nomor'        => $request->nota,
+                                          'kd_tanggal_invoice'=> $cari_invoice->i_tanggal,
+                                          'kd_nomor_invoice'  => $request->i_nomor[$i],
+                                          'kd_keterangan'     => $request->i_keterangan[$i],
+                                          'kd_kode_biaya'     => $request->akun_biaya[$i],
+                                          'kd_total_bayar'    => $request->i_bayar[$i] ,
+                                          'kd_biaya_lain'     => $i_biaya_admin[$i],
+                                          'kd_memorial'       => $memorial,
+                                     ]);
+                    $cari_invoice = DB::table('invoice')
+                                      ->where('i_nomor',$request->i_nomor[$i])
+                                      ->first();
+                    $hasil =  $cari_invoice->i_sisa_pelunasan - $request->i_bayar[$i];
+                    // dd($hasil);
+
+                    if ($hasil < 0) {
+                        $hasil = 0;
+                    }
+                    
+                    $update_invoice = DB::table('invoice')
+                                        ->where('i_nomor',$request->i_nomor[$i])
+                                        ->update([
+                                            'i_sisa_pelunasan' => $hasil,
+                                            'i_status'         => 'Approved',
+                                        ]);
                 }
-                $save_detail = DB::table('kwitansi_d')
-                                 ->insert([
-                                      'kd_id'             => $k_id,
-                                      'kd_dt'             => $i+1,
-                                      'kd_k_nomor'        => $request->nota,
-                                      'kd_tanggal_invoice'=> $cari_invoice->i_tanggal,
-                                      'kd_nomor_invoice'  => $request->i_nomor[$i],
-                                      'kd_keterangan'     => $request->i_keterangan[$i],
-                                      'kd_kode_biaya'     => $request->akun_biaya[$i],
-                                      'kd_total_bayar'    => $request->i_bayar[$i] ,
-                                      'kd_biaya_lain'     => $i_biaya_admin[$i],
-                                 ]);
-                $cari_invoice = DB::table('invoice')
-                                  ->where('i_nomor',$request->i_nomor[$i])
-                                  ->first();
 
-                $update_invoice = DB::table('invoice')
-                                    ->where('i_nomor',$request->i_nomor[$i])
-                                    ->update([
-                                        'i_sisa_pelunasan' => $cari_invoice->i_sisa_pelunasan - $request->i_bayar[$i],
-                                        'i_status'         => 'Approved',
-                                    ]);
+            }
 
- 
+            for ($i=0; $i < count($request->b_akun); $i++) { 
                 $save_biaya = DB::table('kwitansi_biaya_d')
                                  ->insert([
                                       'kb_id' => $k_id,
@@ -872,6 +895,13 @@ class penerimaan_penjualan_Controller extends Controller
                                  ]);
 
             }
+
+            $memorial_array = array_sum($memorial_array);
+            $save_kwitansi = DB::table('kwitansi')
+                               ->where('k_id',$k_id)
+                               ->update([
+                                'k_jumlah_memorial' => $memorial_array
+                               ]);
 
             return response()->json(['status'=>1,'pesan'=>'data berhasil disimpan']);
 

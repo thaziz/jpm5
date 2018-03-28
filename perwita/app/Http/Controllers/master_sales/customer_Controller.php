@@ -71,7 +71,12 @@ class customer_Controller extends Controller
 
         $simpan='';
         $crud = $request->crud;
-       
+       if ($request->ck_pph23 == null || $request->ck_pph23 == '') {
+           $request->ck_pph23 = false;
+       }
+       if ($request->ck_ppn == null || $request->ck_ppn == '') {
+           $request->ck_ppn = false;
+       }
         
         if ($crud == 'N') {
              $data = array(
@@ -84,9 +89,15 @@ class customer_Controller extends Controller
                 'cabang' => $request->cabang,
                 'plafon'=> strtoupper($request->ed_plafon),
                 'pajak_npwp' => strtoupper($request->ed_npwp),
-                'pajak_npwp' => strtoupper($request->ed_npwp),
+                'pajak_tarif' => strtoupper($request->pajak_tarif),
                 'pajak_nama' => strtoupper($request->nama_pajak),
                 'pajak_alamat'=>strtoupper($request->alamat_pajak) ,
+
+                'pajak_fax'=>strtoupper($request->fax_pajak) ,
+                'pajak_status'=>strtoupper($request->status_pajak) ,
+                'pajak_email'=>strtoupper($request->email_pajak) ,
+                'pajak_telpon'=>strtoupper($request->telp_pajak) ,
+
                 'pajak_kota'=>strtoupper($request->kota_pajak) ,
                 'nama_pph23'  => strtoupper($request->cb_nama_pajak_23),
                 'kode_bank'  => strtoupper($request->ed_kode_bank),
@@ -94,7 +105,9 @@ class customer_Controller extends Controller
                 'acc_piutang' => strtoupper($request->ed_acc_piutang),
                 'csf_piutang' => strtoupper($request->ed_csf_piutang),
                 'syarat_kredit' => strtoupper($request->ed_syarat_kredit),
-                //groups character varying(2),
+
+                'group_customer' =>strtoupper($request->group_customer),
+
                 'hold_id' => 'HL',
                 'comp_id' => 'EM',
                 'sub_comp_id'  => 1,
@@ -112,6 +125,7 @@ class customer_Controller extends Controller
                 'telpon' => strtoupper($request->ed_telpon),
                 'plafon'=> strtoupper($request->ed_plafon),
                 'pajak_npwp' => strtoupper($request->ed_npwp),
+                'pajak_tarif' => strtoupper($request->pajak_tarif),
                 'pajak_nama' => strtoupper($request->nama_pajak),
                 'pajak_alamat'=>strtoupper($request->alamat_pajak) ,
                 'pajak_kota'=>strtoupper($request->kota_pajak) ,
@@ -121,7 +135,11 @@ class customer_Controller extends Controller
                 'acc_piutang' => strtoupper($request->ed_acc_piutang),
                 'csf_piutang' => strtoupper($request->ed_csf_piutang),
                 'syarat_kredit' => strtoupper($request->ed_syarat_kredit),
-                //groups character varying(2),
+                'pajak_fax'=>strtoupper($request->fax_pajak) ,
+                'pajak_status'=>strtoupper($request->status_pajak) ,
+                'pajak_email'=>strtoupper($request->email_pajak) ,
+                'pajak_telpon'=>strtoupper($request->telp_pajak) ,
+                'group_customer' =>strtoupper($request->group_customer),
                 'hold_id' => 'HL',
                 'comp_id' => 'EM',
                 'sub_comp_id'  => 1,
@@ -158,11 +176,15 @@ class customer_Controller extends Controller
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
-        $bank = DB::select(DB::raw(" SELECT mb_kode,mb_nama,mb_id FROM masterbank ORDER BY mb_id ASC "));
+        $group_customer = DB::select(DB::raw(" SELECT group_id,group_nama FROM group_customer ORDER BY group_id ASC "));
+        $bank = DB::select(DB::raw(" SELECT id_akun, nama_akun, id_parrent, id_provinsi, akun_dka, is_active, 
+       tanggal_buat, terakhir_diupdate, kode_cabang, type_akun
+  FROM d_akun where nama_akun like '%KAS KECIL%' or nama_akun like '%KAS BESAR%'  or nama_akun like '%BANK%' order by nama_akun ASC;
+ "));
         $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $cabang = DB::table('cabang')
                     ->get();
-        return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan','bank'));
+        return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan','bank','group_customer'));
     }
 
 }

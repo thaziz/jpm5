@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 // use Datatables;
 
+use app\barang_terima;
+
 
 class PengeluaranBarangController extends Controller
 {
@@ -328,6 +330,7 @@ class PengeluaranBarangController extends Controller
 			$create_pbg = DB::table('pengeluaran_barang_gudang')
 						->insert([
 							'pbg_pbd_id' 	  => $request->pbd_id[$i],
+							'pbg_pb_id' 	  => $request->id,
 							'pbg_pbd_dt' 	  => $i+1,
 							'pbg_kode_gudang' => $request->nama_gudang[$i],
 							'pbg_pbd_qty' 	  => $request->jumlah_setuju[$i],

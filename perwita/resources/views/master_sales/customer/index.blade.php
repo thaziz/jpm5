@@ -106,7 +106,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Nama</td>
+                                    <td style="padding-top: 0.4cm">Nama Cus</td>
                                     <td><input type="" class="form-control" name="ed_nama" style="text-transform: uppercase" ></td>
 
                                     <td style="padding-top: 0.4cm">Cabang</td>
@@ -121,7 +121,7 @@
                                 </tr>
                                 <input type="hidden" name="id_cus">
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Alamat</td>
+                                    <td style="padding-top: 0.4cm">Alamat Cus</td>
                                     <td colspan="4"><input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" ></td>
                                     
                                 </tr>
@@ -130,26 +130,6 @@
                                     <td><input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" ></td>
                                     <td style="width:100px;">Syarat Kredit (Hari)</td>
                                     <td><input type="number" class="form-control" name="ed_syarat_kredit" style="text-transform: uppercase" style="text-align:right"></td>
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Acc Piutang</td>
-                                    <td>
-                                        <select class="form-control chosen-select-width" name="ed_acc_piutang" style="text-transform: uppercase">
-                                            <option>Pilih - akun hutang</option>    
-                                            @foreach ($accpenjualan as $acc)
-                                                <option value="{{ $acc->id_akun }}">{{ $acc->id_akun }} - {{ $acc->nama_akun }}</option>    
-                                            @endforeach
-                                        </select>
-                                    </td>
-                                    <td style="padding-top: 0.4cm">CSF Piutang</td>
-                                    <td>
-                                        <select class="form-control chosen-select-width" name="ed_csf_piutang" style="text-transform: uppercase">
-                                            <option>Pilih - csf hutang</option>    
-                                            @foreach ($accpenjualan as $csf)
-                                                <option value="{{ $csf->id_akun }}">{{ $csf->id_akun }} - {{ $csf->nama_akun }}</option>    
-                                            @endforeach
-                                        </select>
-                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Plafon</td>
@@ -171,9 +151,40 @@
                                         <select class="form-control" name="ed_kode_bank" >
                                             <option selected="" disabled="">Pilih - Bank</option>
                                             @foreach ($bank as $bank)
-                                                <option value="{{ $bank->mb_kode }}">{{ $bank->mb_kode }} - {{ $bank->mb_nama }}</option>
+                                                <option value="{{ $bank->id_akun }}">{{ $bank->id_akun }} - {{ $bank->nama_akun }}</option>
                                             @endforeach
                                             
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Groups</td>
+                                    <td colspan="3">
+                                        <select name="group_customer" class="chosen-select-width">
+                                            <option>Pilih - Group</option>
+                                            @foreach ($group_customer as $loop)
+                                                <option value="{{ $loop->group_id }}">{{ $loop->group_id }} - {{ $loop->group_nama }} </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Acc Piutang</td>
+                                    <td>
+                                        <select class="form-control chosen-select-width" name="ed_acc_piutang"  id="ed_acc_piutang" style="text-transform: uppercase">
+                                            <option value="">Pilih - akun hutang</option>    
+                                            @foreach ($accpenjualan as $acc)
+                                                <option value="{{ $acc->id_akun }}">{{ $acc->id_akun }} - {{ $acc->nama_akun }}</option>    
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    <td style="padding-top: 0.4cm">CSF Piutang</td>
+                                    <td>
+                                        <select class="form-control chosen-select-width" name="ed_csf_piutang" id="ed_csf_piutang"  style="text-transform: uppercase">
+                                            <option value="">Pilih - csf hutang</option>    
+                                            @foreach ($accpenjualan as $csf)
+                                                <option value="{{ $csf->id_akun }}">{{ $csf->id_akun }} - {{ $csf->nama_akun }}</option>    
+                                            @endforeach
                                         </select>
                                     </td>
                                 </tr>
@@ -208,6 +219,13 @@
                                         <input type="checkbox" name="ck_pph23">
                                     </td>
                                 </tr>
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">Telp</td>
+                                    <td><input type="text" class="form-control" name="telp_pajak" ></td>
+
+                                    <td style="padding-top: 0.4cm">Email</td>
+                                    <td><input type="text" class="form-control" name="email_pajak" ></td>
+                                </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Nama Pajak 23</td>
                                     <td>
@@ -222,7 +240,19 @@
                                         </select>
                                     </td>
                                     <td style="padding-top: 0.4cm">Tarif Pajak 23</td>
-                                    <td><input type="text" class="form-control" name="pph master"  style="text-align: right"></td>
+                                    <td><input type="text" class="form-control" name="pajak_tarif"  style="text-align: right"></td>
+                                </tr>
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">status</td>
+                                    <td>
+                                        <select class="select2_single form-control"  name="status_pajak"   style="width: 100% !important;">
+                                            <option>Pilih - Status</option>
+                                            <option value="AKTIF">Aktif</option>
+                                            <option value="NON-AKTID">Non-aktif</option>    
+                                        </select>
+                                    </td>
+                                    <td style="padding-top: 0.4cm">Fax</td>
+                                    <td> <input type="text" class="form-control" name="fax_pajak"></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">PPN</td>
@@ -231,7 +261,7 @@
                                     </td>
                                     <td style="padding-top: 0.4cm">Type Faktur</td>
                                     <td>
-                                        <select class="select2_single form-control"  name="pph master"   style="width: 100% !important;">
+                                        <select class="select2_single form-control"  name="cb_type_faktur"   style="width: 100% !important;">
                                             <option></option>
                                             <option value="0">0</option>
                                             <option value="1">1</option>
@@ -239,6 +269,7 @@
                                         </select>
                                     </td>
                                 </tr>
+                                
                             </tbody>
                           </table>
 
@@ -312,7 +343,12 @@
             }
     });
 
+
+
+
     $(document).on("click","#btn_add",function(){
+
+        
         $("input[name='crud']").val('N');
         $("input[name='ed_kode']").val('');
         $("input[name='ed_kode_old']").val('');
@@ -320,20 +356,29 @@
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_telpon']").val('');
         $("select[name='cb_kota']").val('').trigger('chosen:updated');
-        $("input[name='ed_pajak_npwp']").val('');
         $("select[name='cb_nama_pajak_23']").val('');
         $("select[name='cb_type_faktur']").val('');
         $("input[name='ed_alamat']").val('');
-        $("input[name='ed_acc_piutang']").val('');
-        $("input[name='ed_csf_piutang']").val('');
         $("input[name='ed_syarat_kredit']").val('0');
-        $("input[name='cabang']").val('').trigger('chosen:updated');
-        $("input[name='ed_acc_piutang']").val('');
-        $("input[name='ed_csf_piutang']").val('');
+        $("select[name='cabang']").val('').trigger('chosen:updated');
+        $("select[name='ed_acc_piutang']").val('').trigger('chosen:updated');
+        $("select[name='ed_csf_piutang']").val('').trigger('chosen:updated');
+        $("select[name='ed_kode_bank']").val('').trigger('chosen:updated');
         $("input[name='ed_kode_bank']").val('');
         $("input[name='ed_npwp']").val('');
-        $("#input[name='cek_pph23']").attr('checked', false); 
-        $("#input[name='cek_ppn']").attr('checked', false); 
+        
+        $("input[name='ed_plafon']").val('');
+        $("select[name='kota_pajak']").val('').trigger('chosen:updated');
+        $("input[name='nama_pajak']").val('');
+        $("input[name='pajak_tarif']").val('');
+        $("input[name='fax_pajak']").val('');
+        $("input[name='telp_pajak']").val('');
+        $("input[name='email_pajak']").val('');
+        $("select[name='group_customer']").val('').trigger('chosen:updated');
+        $("select[name='status_pajak']").val('').trigger('chosen:updated');
+        $("input[name='alamat_pajak']").val('');
+        $("input[name='ck_pph23']").attr('checked', false); 
+        $("input[name='ck_ppn']").attr('checked', false); 
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
     });
@@ -343,6 +388,7 @@
         var value = {
             id: id
         };
+        
         $.ajax(
         {
             url : baseUrl + "/master_sales/customer/get_data",
@@ -356,17 +402,39 @@
                 $("input[name='ed_kode']").val(data.kode);
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("input[name='ed_nama']").val(data.nama);
-                $("input[name='cabang']").val(data.cabang).trigger('chosen:updated');
+                $("select[name='cabang']").val(data.cabang).trigger('chosen:updated');
                 $("input[name='ed_alamat']").val(data.alamat);
                 $("input[name='ed_telpon']").val(data.telpon);
                 $("select[name='cb_kota']").val(data.kota).trigger('chosen:updated');
-                $("input[name='ed_npwp']").val(data.pajak_npwp);
                 $("select[name='cb_nama_pajak_23']").val(data.nama_pph23);
                 $("select[name='cb_type_faktur']").val(data.type_faktur_ppn);
-                $("input[name='ed_acc_piutang']").val(data.acc_piutang);
-                $("input[name='ed_csf_piutang']").val(data.csf_piutang);
-                $("input[name='ed_kode_bank']").val(data.kode_bank);
+                $("select[name='ed_acc_piutang']").val(data.acc_piutang).trigger('chosen:updated');
+                $("select[name='ed_csf_piutang']").val(data.csf_piutang).trigger('chosen:updated');
+                $("select[name='ed_kode_bank']").val(data.kode_bank).trigger('chosen:updated');
                 $("input[name='ed_syarat_kredit']").val(data.syarat_kredit);
+                $("input[name='ed_plafon']").val(data.plafon);
+                $("input[name='ed_npwp']").val(data.pajak_npwp);
+                $("select[name='kota_pajak']").val(data.pajak_kota).trigger('chosen:updated');
+                $("input[name='nama_pajak']").val(data.pajak_nama);
+                $("input[name='pajak_tarif']").val(data.pajak_tarif);
+                $("input[name='fax_pajak']").val(data.pajak_fax);
+                $("input[name='telp_pajak']").val(data.pajak_telpon);
+                $("input[name='email_pajak']").val(data.pajak_email);
+                $("select[name='group_customer']").val(data.group_customer).trigger('chosen:updated');
+                $("select[name='status_pajak']").val(data.pajak_status).trigger('chosen:updated');
+                // $("select[name='name='ed_faktur']").val(data.type_faktur_ppn);
+                // console.log(data.ppn);
+                if(data.ppn == true || data.ppn == 'true'){
+                    $("input[name='ck_ppn']").prop('checked', true);  
+                }else if (data.ppn == false || data.ppn == 'false') {
+                $("input[name='ck_ppn']").val('');
+                }
+                if(data.pph23 == true || data.pph23 == 'true'){
+                    $("input[name='ck_pph23']").prop('checked', true); 
+                }else if (data.pph23 == false || data.pph23 == 'false'){
+                $("input[name='ck_pph23']").val('');
+                }
+                $("input[name='alamat_pajak']").val(data.pajak_alamat);
                 $("#modal").modal("show");
                 $("input[name='ed_kode']").focus();
             },
@@ -379,6 +447,31 @@
 
     $(document).on("click","#btnsave",function(){
        
+     $ed_acc_piutang = $('#ed_acc_piutang').val();
+        console.log($('#ed_acc_piutang').val());
+       if ($ed_acc_piutang == '' || $ed_acc_piutang == null) 
+        {
+            Command: toastr["warning"]("Nama Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
         $.ajax(
         {
             url : baseUrl + "/master_sales/customer/save_data",

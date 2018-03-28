@@ -96,6 +96,7 @@
                                 <td colspan="20">
 
                                     <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
+                                        <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
                                         <option value="F"> CHEQUE/BG </option>
@@ -399,7 +400,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <table class="table table-bordered table-striped">
+                                            <table class="table  table-bordered table-striped">
                                                 <tbody>
                                                     <tr>
                                                         <td>Jumlah Bayar</td>
@@ -954,15 +955,19 @@ function hitung_bayar() {
 $('#btnsave2').click(function(){
     var jumlah_bayar         = $('.jumlah_bayar').val();
     jumlah_bayar             = parseInt(jumlah_bayar);
-    var akun_biaya          = $('.akun_biaya').val();
+    var akun_biaya           = $('.akun_biaya').val();
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
     jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
     jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
+    var angka                = $('.angka').val();
+    angka                    = angka.replace(/[^0-9\-]+/g,"");
+    angka                    = parseInt(angka);
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
     var tes                  = [];
     var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
-    $(par).find('.i_bayar_text').val(accounting.formatMoney(jumlah_bayar+jumlah_biaya_admin,"",2,'.',','));
-    $(par).find('.i_bayar').val(jumlah_bayar+jumlah_biaya_admin);
+    console.log(angka);
+    $(par).find('.i_bayar_text').val(accounting.formatMoney(angka+jumlah_biaya_admin,"",2,'.',','));
+    $(par).find('.i_bayar').val(angka+jumlah_biaya_admin);
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
     var temp = 0;

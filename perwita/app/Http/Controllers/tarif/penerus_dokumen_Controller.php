@@ -21,6 +21,11 @@ class penerus_dokumen_Controller extends Controller
             'kecamatan.id as kecamatan_id',
             'kecamatan.nama as kecamatan_nama',
 
+            // 'zo_r.nama_zona',
+            'zo_r.harga_zona as reguler',
+            'zo_x.harga_zona as express',
+
+
             'id_tarif_dokumen','tarif_express','id_increment_dokumen','tarif_reguler','type')
 
 
@@ -29,6 +34,9 @@ class penerus_dokumen_Controller extends Controller
         ->join('kota','tarif_penerus_dokumen.id_kota','=','kota.id')
         
         ->join('kecamatan','tarif_penerus_dokumen.id_kecamatan','=','kecamatan.id')
+
+        ->join('zona as zo_r','zo_r.id_zona','=','tarif_penerus_dokumen.tarif_reguler')
+        ->join('zona as zo_x','zo_x.id_zona','=','tarif_penerus_dokumen.tarif_express')
 
         ->get();
         // return $list;
@@ -96,10 +104,11 @@ class penerus_dokumen_Controller extends Controller
                 'id_kecamatan'=>$request->ed_kecamatan,
                 'tarif_reguler'=>$request->ed_reguler,
                 'tarif_express'=>$request->ed_express,
-                'type' =>'DOKUMEN',
+                'type' =>$request->ed_tipe,
                 'id_increment_dokumen'=>$id_incremet,
-
+                // 'id_zona_dokumen'=>$request->ed_zona_reguler,
             );
+
 
             $simpan = DB::table('tarif_penerus_dokumen')->insert($data);
         }elseif ($crud == 'E') {
@@ -115,8 +124,9 @@ class penerus_dokumen_Controller extends Controller
                 'id_kecamatan'=>$request->ed_kecamatan,
                 'tarif_reguler'=>$request->ed_reguler,
                 'tarif_express'=>$request->ed_express,
-                'type' =>'DOKUMEN',
+                'type' =>$request->ed_tipe,
                 'id_increment_dokumen'=>$request->ed_kode_old,
+                // 'id_zona_dokumen'=>$request->ed_zona_express,
 
             );
 
@@ -152,8 +162,10 @@ class penerus_dokumen_Controller extends Controller
         
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $kecamatan = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan ORDER BY nama ASC "));
+        $zona = DB::select(DB::raw(" SELECT id_zona,nama nama_zona,harga_zona FROM zona  "));
+
          // $kotakota = $this->get_kota();
-        return view('tarif.penerus_dokumen.index',compact('provinsi','kota','kecamatan'));
+        return view('tarif.penerus_dokumen.index',compact('provinsi','kota','kecamatan','zona'));
     }
 
 
@@ -164,7 +176,6 @@ class penerus_dokumen_Controller extends Controller
         return $kota1;
     }
     public function get_kec(Request $request){
-        // dd($request);
         $req_kec = $request->kecamatan; 
         $kecamatan = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan WHERE id_kota = $req_kec ORDER BY nama ASC "));
         return $kecamatan;
