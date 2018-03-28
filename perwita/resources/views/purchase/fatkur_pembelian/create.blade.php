@@ -382,17 +382,20 @@
                             <td> Discount </td>
                             <td>  <div class="col-xs-3"> <input type="text" class="form-control disc_item" name="diskon"> </div> <div class="col-xs-9"> <input type="text" class="form-control hasildiskon" style="text-align:right" readonly="" name="hasildiskon">  </div> </td>
                           </tr>
+                         
                           <tr>
+                            <td> DPP </th>
+                            <td>  <div class='col-xs-3'> Rp </div> <div class='col-xs-9'> <input type='text' class='form-control dpp' readonly="" name='dpp' style="text-align: right">  <input type='hidden' class='form-control dpp2' readonly="" style="text-align: right"></div> </td>
+                          </tr>
+
+                           <tr>
                              <td> Jenis PPn </td> 
                              <td> <div class='col-xs-4'> <select class='form-control jenisppn' name="jenisppn" style="width:100px"> <option value='T'> Tanpa </option> <option value='E'> Exclude </option> <option value="I"> Include </option>  </select>     </div>
                              <div clas="col-xs-8">  <button type="button" class="btn btn-primary" id="createmodal" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button>  </div> 
                                      
                               </td>
                           </tr>
-                          <tr>
-                            <td> DPP </th>
-                            <td>  <div class='col-xs-3'> Rp </div> <div class='col-xs-9'> <input type='text' class='form-control dpp' readonly="" name='dpp' style="text-align: right">  <input type='hidden' class='form-control dpp2' readonly="" style="text-align: right"></div> </td>
-                          </tr>
+
                           <tr>
                             <td> PPn % </td>
                             <td > <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputppn" name="inputppn"> </div>  <div class="col-md-8"> <input style='text-align: right' type="text" class="form-control hasilppn" readonly="" name="hasilppn"> </div>  </div> </td>
@@ -1083,6 +1086,8 @@
                 $('.aslinofaktur').val(nofaktur);
                 $('.nofaktur').val(nofaktur);
                 $('.no_faktur').val(nofaktur);
+
+                
           },
         })
 
