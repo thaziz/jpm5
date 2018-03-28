@@ -745,6 +745,7 @@ Route::get('sales/nomor_do_kargo', 'sales\do_kargo_Controller@nomor_do_kargo');
 Route::get('sales/hapus_do_kargo', 'sales\do_kargo_Controller@hapus_do_kargo');
 Route::get('sales/pilih_kontrak_kargo', 'sales\do_kargo_Controller@pilih_kontrak_kargo');
 Route::get('sales/save_do_kargo', 'sales\do_kargo_Controller@save_do_kargo');
+Route::get('sales/pilih_tarif_kargo', 'sales\do_kargo_Controller@pilih_tarif_kargo');
 
 
 
