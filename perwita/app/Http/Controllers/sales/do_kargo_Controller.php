@@ -829,9 +829,9 @@ class do_kargo_Controller extends Controller
                          ->orWhere('jt_group',3)
                          ->orderBy('jt_id','ASC')
                          ->get();
-        $data = DB::table('delivery_order')
+      return  $data = DB::table('delivery_order')
                     ->where('nomor', $id)
-                    ->first();
+                    ->get();
 
         $subcon_detail = DB::table('delivery_order')
                     ->join('subcon','kode','=','kode_subcon')
