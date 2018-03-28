@@ -101,7 +101,6 @@
                                         <option value="C"> TRANSFER </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
-                                        <option value="U"> UANG MUKA/DP </option>
                                     </select>
                                 </td>
                             </tr>
@@ -204,6 +203,7 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tab-1"> Detail Kwitansi</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-2">Detail Biaya</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3">Detail Uang Muka</a></li>
                         </ul>
                         <div class="tab-content ">
                             <div id="tab-1" class="tab-pane active">
@@ -239,6 +239,24 @@
                                         </thead>
                                         <tbody>
 
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="tab-3" class="tab-pane">
+                                <div class="panel-body">
+                                    <table id="table_data_biaya" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Biaya</th>
+                                                <th>Jenis</th>
+                                                <th>Jumlah</th>
+                                                <th>Keterangan</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
                                         </tbody>
                                     </table>
                                 </div>
@@ -304,6 +322,7 @@
                                                             <input type="hidden" readonly="readonly" class="form-control terbayar">
                                                         </td>
                                                     </tr>
+                                                    
                                                     <tr>
                                                         <td style="padding-top: 0.4cm">Nota Debet</td>
                                                         <td colspan="3">
@@ -330,6 +349,13 @@
                                                         <td colspan="3">
                                                             <input type="text"  class="form-control ed_jumlah_bayar" name="ed_jumlah_bayar" readonly="readonly" style="text-align:right" tabindex="-1">
                                                             <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-top: 0.4cm">Uang Muka</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="readonly" class="form-control uang_muka_text" style="text-align:right">
+                                                            <input type="hidden" readonly="readonly" class="form-control uang_muka">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -362,6 +388,7 @@
                                             </table>
                                         </div>
                                         <div class="col-md-7">
+                                            <h3>Riwayat</h3>
                                             <div class="tabs-container">
                                                 <ul class="nav nav-tabs">
                                                     <li class="active"><a data-toggle="tab" href="#tab-rk"> Riwayat Kwitansi</a></li>
@@ -401,17 +428,67 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <table class="table  table-bordered table-striped">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Jumlah Bayar</td>
-                                                        <td>
-                                                            <input type="text" onkeyup="hitung()" class="form-control angka" name="ed_jml_bayar" style="text-align:right">
-                                                            <input type="hidden" name="ed_jml_bayar_old" >
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            <h3>Pembayaran</h3>
+                                            <div class="tabs-container">
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active"><a data-toggle="tab" href="#pr">Pembayaran Reguler</a></li>
+                                                    <li class=""><a data-toggle="tab" href="#um">Pembayaran Uang Muka</a></li>
+                                                </ul>
+                                                <div class="tab-content ">
+                                                    <div id="pr" class="tab-pane active">
+                                                        <div class="panel-body pr">
+                                                            <table class="table  table-bordered table-striped">
+                                                                <tbody>
+                                                                    <tr>
+                                                                        <td>Jumlah Bayar</td>
+                                                                        <td>
+                                                                            <input type="text" onkeyup="hitung()" class="form-control angka" name="ed_jml_bayar" style="text-align:right">
+                                                                            <input type="hidden" name="ed_jml_bayar_old" >
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div id="um" class="tab-pane">
+                                                        <div class="panel-body">
+                                                            <table style="font-size: 12px;"  class="table table-bordered table-striped">
+                                                                <tr>
+                                                                    <td>Seq</td>
+                                                                    <td colspan="2">Seq</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>No. UM</td>
+                                                                    <td><input type="text" readonly="" class="no_um form-control"></td>
+                                                                    <td>
+                                                                        <button type="button" class="btn btn-primary">
+                                                                            <i class="fa fa-search"> Cari</i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Nominal UM</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="total_um form-control" name="">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Jumlah Bayar</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="jumlah_bayar_um form-control" name="">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Keterangan</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" class="Keterangan_um form-control" name="">
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>

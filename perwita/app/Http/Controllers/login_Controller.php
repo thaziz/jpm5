@@ -39,7 +39,6 @@ class login_Controller extends Controller {
                 'username' => 'required', // make sure the email is an actual email
                 'password' => 'required' // password can only be alphanumeric and has to be greater than 3 characters
             );
-
             $validator = Validator::make($request->all(), $rules);
             if ($validator->fails()) {
 
