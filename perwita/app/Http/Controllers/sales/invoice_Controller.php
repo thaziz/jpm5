@@ -266,7 +266,7 @@ public function cari_do_invoice(request $request)
             $data = $temp;
         }
     }else if ($request->cb_pendapatan == 'PAKET' || $jenis == 'KARGO') {
-        $temp = DB::table('delivery_order')
+       $temp = DB::table('delivery_order')
               ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
               ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','>=',$do_awal)
@@ -300,7 +300,7 @@ public function cari_do_invoice(request $request)
         }
     }
     
-
+    $id = $request->id;
     return view('sales.invoice.tableDo',compact('data','jenis','id'));
 }
 public function append_do(request $request)

@@ -441,6 +441,7 @@
             array_simpan.push("{{$val->id_nomor_do}}");
         @endforeach
     @endif
+    console.log(array_simpan);
     // chosen select
     var config = {
                    '.chosen-select'           : {},
@@ -527,6 +528,7 @@
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
         var cabang        = $('.cabang').val();
+        var id            = "{{$id}}";
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -542,7 +544,7 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang,id},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);
@@ -839,19 +841,23 @@ function hitung_pajak_lain(){
         var length = table_detail.page.info().recordsTotal;
         console.log(jenis);
         if (jenis == 'KORAN') {
-            var arr = $(par).find('.dd_id')
+            var arr = $(par).find('.dd_id').val();
+            var index = array_simpan.indexOf(arr);
+            array_simpan.splice(index,1);
+            table_detail.row(par).remove().draw(false);
+    console.log(arr);
+
+        }else if (jenis == 'PAKET' || jenis == 'KARGO'){
+            var arr = $(par).find('.nomor_detail').val();
             var index = array_simpan.indexOf(arr);
             array_simpan.splice(index,1);
             table_detail.row(par).remove().draw(false);
 
-        }else if (jenis == 'PAKET' || jenis == 'KARGO'){
-            var arr = $(par).find('.nomor_detail')
-            var index = array_simpan.indexOf(arr);
-            array_simpan.splice(index,1);
-            table_detail.row(par).remove().draw(false);
+    console.log(arr);
         }
 
 
+    console.log(array_simpan);
 
         hitung();
             

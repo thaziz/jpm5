@@ -177,14 +177,12 @@ class customer_Controller extends Controller
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $group_customer = DB::select(DB::raw(" SELECT group_id,group_nama FROM group_customer ORDER BY group_id ASC "));
-        $bank = DB::select(DB::raw(" SELECT id_akun, nama_akun, id_parrent, id_provinsi, akun_dka, is_active, 
-       tanggal_buat, terakhir_diupdate, kode_cabang, type_akun
-  FROM d_akun where nama_akun like '%KAS KECIL%' or nama_akun like '%KAS BESAR%'  or nama_akun like '%BANK%' order by nama_akun ASC;
- "));
+        $bank = DB::select(DB::raw(" SELECT id_akun, nama_akun, id_parrent, id_provinsi, akun_dka, is_active, tanggal_buat, terakhir_diupdate, kode_cabang, type_akun FROM d_akun where nama_akun like '%KAS KECIL%' or nama_akun like '%KAS BESAR%'  or nama_akun like '%BANK%' order by nama_akun ASC;
+         "));
         $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
-        $cabang = DB::table('cabang')
-                    ->get();
-        return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan','bank','group_customer'));
+        $cabang = DB::table('cabang')->get();   
+        $pajak = DB::table('pajak')->get();
+        return view('master_sales.customer.index', compact('kota','cabang','accpenjualan','csfpenjualan','bank','group_customer','pajak'));
     }
 
 }

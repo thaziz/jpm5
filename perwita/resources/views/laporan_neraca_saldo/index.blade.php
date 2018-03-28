@@ -14,6 +14,58 @@
     display: flex;
   }
 
+  #table_form input{
+      padding-left: 5px;
+    }
+
+    #table_form td,
+    #table_form th{
+      padding:10px 0px;
+    }
+
+    #tree th{
+      padding:5px;
+      border: 1px solid #ccc;
+      font-weight: 600;
+    }
+
+    #tree td.secondTree{
+      padding-left: 40px;
+    }
+
+    #tree td{
+      border: 0px;
+      padding: 5px;
+    }
+
+    #tree td.{
+      color:blue;
+    }
+
+    #tree td.highlight{
+      border-top:2px solid #aaa;
+      border-bottom: 2px solid #aaa;
+      color:#222;
+    }
+
+    #tree td.break{
+      padding: 10px 0px;
+      background: #eee;
+    }
+
+    #bingkai td.header{
+      font-weight: bold;
+    }
+
+    #bingkai td.total{
+      border-top: 2px solid #999;
+      font-weight: 600;
+    }
+
+    #bingkai td.no-border{
+      border: 0px;
+    }
+
    .headcol {
       position:sticky;
       left: 0;
@@ -66,8 +118,6 @@
               <select name="show" class="form-control" id="show" style="cursor: pointer;">
                 <option value="bulan">Laporan Bulanan</option>
                 <option value="tahun">Laporan Tahunan</option>
-                <option value="perbandingan_bulan">Perbandingan Bulanan</option>
-                <option value="perbandingan_tahun">Perbandingan Tahunan</option>
               </select>
 
             </td>
@@ -124,7 +174,7 @@
             </td>
 
             <td width="14%">
-              <button class="btn btn-default btn-outline btn-sm" id="filter-rekap" data-throttle="{{ $throttle }}">Tampilkan Neraca Detail</button>
+              
             </td>
           </tr>
         </table>
@@ -207,16 +257,42 @@
                                        @foreach($data as $akun)
                                           <tr>
                                              <td class="headcol"><span style="font-weight: 600"> ({{ $akun->id_akun }})</span> &nbsp;&nbsp; {{ $akun->nama_akun }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Saldo Awal (Debet)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right"data-toggle="tooltip" data-placement="top" title="Saldo Awal (Kredit)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Bank (Debet)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Bank (Kredit)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Kas (Debet)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Kas (Kredit)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Memorial (Debet)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Memorial (Kredit)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title=" Total Mutasi (Debet)">{{ number_format(20000000000, 2) }}</td>
-                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title=" Total Mutasi (Kredit)">{{ number_format(20000000000, 2) }}</td>
+
+                                             <?php
+                                                $saldo_kredit = number_format(0, 2); $saldo_debet = number_format(0, 2);
+
+                                                if($akun->akun_dka == 'D'){
+
+                                                    if($akun->saldo >= 0)
+                                                      $saldo_debet = number_format($akun->saldo, 2);
+                                                    else
+                                                      $saldo_kredit = '('.number_format(str_replace('-', '', $akun->saldo), 2).')';
+
+                                                }else if($akun->akun_dka == 'K'){
+
+                                                    if($akun->saldo <= 0)
+                                                      $saldo_debet = '('.number_format(str_replace('-', '', $akun->saldo), 2).')';
+                                                    else
+                                                      $saldo_kredit = number_format($akun->saldo, 2);
+
+                                                }
+                                             ?>
+
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Saldo Awal (Debet)">{{ $saldo_debet }}</td>
+                                             <td class="text-right"data-toggle="tooltip" data-placement="top" title="Saldo Awal (Kredit)">{{ $saldo_kredit }}</td>
+
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Bank (Debet)">{{ number_format(0, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Bank (Kredit)">{{ number_format(0, 2) }}</td>
+
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Kas (Debet)">{{ number_format(0, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Kas (Kredit)">{{ number_format(0, 2) }}</td>
+
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Memorial (Debet)">{{ number_format(0, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Memorial (Kredit)">{{ number_format(0, 2) }}</td>
+
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title=" Total Mutasi (Debet)">{{ number_format(0, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title=" Total Mutasi (Kredit)">{{ number_format(0, 2) }}</td>
+
                                           </tr>
                                        @endforeach
                                      </tbody>
