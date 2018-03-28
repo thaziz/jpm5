@@ -731,7 +731,9 @@ $('.save').click(function(){
   });  
  });
 });
-
+$('.reload').click(function(){
+    location.reload();
+});
 // ngeprint
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();
