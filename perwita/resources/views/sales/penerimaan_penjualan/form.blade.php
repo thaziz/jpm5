@@ -400,7 +400,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <table class="table table-bordered table-striped">
+                                            <table class="table  table-bordered table-striped">
                                                 <tbody>
                                                     <tr>
                                                         <td>Jumlah Bayar</td>
