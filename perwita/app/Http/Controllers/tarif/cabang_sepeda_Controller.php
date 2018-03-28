@@ -159,14 +159,14 @@ class cabang_sepeda_Controller extends Controller
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail_sepeda += 1;
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;            
                 }
                         $pancal = array(
                         'kode_sama_sepeda' =>$kode_sama_sepeda,
@@ -189,14 +189,14 @@ class cabang_sepeda_Controller extends Controller
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail_sepeda += 1;
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;            
                 }
 
             $matik = array(
@@ -222,14 +222,14 @@ class cabang_sepeda_Controller extends Controller
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;   
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail_sepeda += 1;
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;            
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;            
                 }
 
                      $sport = array(
@@ -253,14 +253,14 @@ class cabang_sepeda_Controller extends Controller
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;   
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail_sepeda += 1;
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;            
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;            
                 }
 
                      $moge = array(
@@ -299,14 +299,14 @@ class cabang_sepeda_Controller extends Controller
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail_sepeda += 1;
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;            
                 }
                         $pancal = array(
                         'kode_sama_sepeda' =>$kode_sama_sepeda,
@@ -329,14 +329,14 @@ class cabang_sepeda_Controller extends Controller
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail_sepeda += 1;
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;            
                 }
 
             $matik = array(
@@ -362,14 +362,14 @@ class cabang_sepeda_Controller extends Controller
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;   
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail_sepeda += 1;
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;            
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;            
                 }
 
                      $sport = array(
@@ -393,14 +393,14 @@ class cabang_sepeda_Controller extends Controller
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;   
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail_sepeda += 1;
                      if ($kode_utama < 10000 ) {
                         $kode_utama = '0000'.($kode_utama+1);
                         }
-                    $kode = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;            
+                    $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;            
                 }
 
                      $moge = array(
@@ -451,7 +451,7 @@ class cabang_sepeda_Controller extends Controller
                 if ($kodekota == '') {
                     $kode_reguler_edit = $request->id_reguler;
                 }else{   
-                    $kode_reguler_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_reg;
+                    $kode_reguler_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_reg;
                 }
 
 
@@ -459,14 +459,14 @@ class cabang_sepeda_Controller extends Controller
                 if ($kodekota == '') {
                     $kode_express_edit = $request->id_express;
                 }else{   
-                    $kode_express_edit = $kodekota.'/'.'D'.'E'.$kodecabang.$integer_exp;
+                    $kode_express_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_exp;
                 }
 
 
                 if ($kodekota == '') {
                     $kode_reguler_edit = $request->id_outlet;
                 }else{   
-                    $kode_outlet_edit = $kodekota.'/'.'D'.'O'.$kodecabang.$integer_out;
+                    $kode_outlet_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_out;
                 }
 
                 $regular = array(
