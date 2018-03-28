@@ -633,7 +633,7 @@
                                     <tr>
                                         <td>Jumlah Bayar</td>
                                         <td colspan="2">
-                                            <input type="text" style="text-align: right;" class="jumlah_bayar_um form-control" name="">
+                                            <input type="text" style="text-align: right;" class="jumlah_bayar_um form-control" value="0" name="">
                                         </td>
                                     </tr>
                                     <tr>
@@ -1348,41 +1348,90 @@ $('#save_um').click(function(){
     var seq_um    = $('.seq_um').val();
     var no_um     = $('.no_um').val();
     var total_um  = $('.total_um').val();
-    var status_um  = $('.status_um').val();
+    var status_um   = $('.status_um').val();
     var Keterangan_um  = $('.Keterangan_um').val();
     var jumlah_bayar_um   = $('.jumlah_bayar_um ').val();
+    var me_um_flag  = $('.me_um_flag').val();
     jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
+    if (jumlah_bayar_um == 0 ||  jumlah_bayar_um =='') {
+        toastr.warning('Jumlah Bayar Harus Diisi');
+        return 1;
+    }
+    if (Keterangan_um == 0) {
+        toastr.warning('Keterangan Harus Diisi');
+        return 1;
+    }
 
-    tabel_uang_muka.row.add([
-            seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
-            +'<input type="hidden" value="'+seq_um+'" class="sequence">',
-            no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
-            status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um">',
-            accounting.formatMoney(total_um,"",2,'.',',')+
-            '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
-             accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
-            '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
-            '<input type="text" readonly value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
-            '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-            '<label class="fa fa-trash"><label></button>'+
-            '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
-            '<label class="fa fa-pencil"><label></button>'
+    if (no_um != '') {
+        if (me_um_flag == '') {
+            tabel_uang_muka.row.add([
+                    seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
+                    +'<input type="hidden" value="'+seq_um+'" class="sequence">',
+                    no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
+                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um">',
+                    accounting.formatMoney(total_um,"",2,'.',',')+
+                    '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
+                     accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
+                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
+                    '<input type="text" readonly value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
+                    '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+                    '<label class="fa fa-trash"><label></button>'+
+                    '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
+                    '<label class="fa fa-pencil"><label></button>'
 
-        ]).draw();
-count_um++;
+                ]).draw();
+            count_um++;
+            simpan_um.push(no_um);
+            var temp = 0;
+            $('.m_um_jumlah_bayar').each(function(){
+                var temp1 = $(this).val();
+                temp1     = parseInt(temp1);
+                temp += temp1;
+            });
 
-var temp = 0;
-$('.m_um_jumlah_bayar').each(function(){
-    var temp1 = $(this).val();
-    temp1     = parseInt(temp1);
-    temp += temp1;
-});
+            $('.um').val(temp);
+            $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.tab_detail ul li .tab-3').trigger('click');
+            $('#modal_um').modal('hide');
+        }else{
 
-$('.um').val(temp);
-$('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
-$('.tab_detail ul li .tab-3').trigger('click');
-$('#modal_um').modal('hide');
+            var par = $('.sequence_'+me_um_flag).parents('tr');
+            tabel_uang_muka.row(par).remove().draw();
 
+            tabel_uang_muka.row.add([
+                    seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
+                    +'<input type="hidden" value="'+seq_um+'" class="sequence">',
+                    no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
+                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um">',
+                    accounting.formatMoney(total_um,"",2,'.',',')+
+                    '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
+                     accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
+                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
+                    '<input type="text" readonly value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
+                    '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+                    '<label class="fa fa-trash"><label></button>'+
+                    '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
+                    '<label class="fa fa-pencil"><label></button>'
+
+                ]).draw();
+
+            var temp = 0;
+            $('.m_um_jumlah_bayar').each(function(){
+                var temp1 = $(this).val();
+                temp1     = parseInt(temp1);
+                temp += temp1;
+            });
+
+            $('.um').val(temp);
+            $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.tab_detail ul li .tab-3').trigger('click');
+            $('#modal_um').modal('hide');
+
+
+        }
+    }else{
+        $('#modal_um').modal('hide');
+    }
 
 });
 
@@ -1397,12 +1446,13 @@ function edit_detail_um(p) {
    var m_um_total        = $(par).find('.m_um_total').val();
    var m_um_jumlah_bayar = $(par).find('.m_um_jumlah_bayar').val();
    var m_Keterangan_um   = $(par).find('.m_Keterangan_um').val();
+   $('.me_um_flag').val(seq_um);
    $('.seq_um').val(seq_um);
    $('.status_um').val(m_status_um);
    $('.total_um_text ').val(accounting.formatMoney(m_um_total,"",2,'.',','));
    $('.total_um ').val(m_um_total);
 
-   $('.jumlah_bayar_um  ').val(accounting.formatMoney(m_um_total,"",0,'.',','));
+   $('.jumlah_bayar_um  ').val(accounting.formatMoney(m_um_jumlah_bayar,"",0,'.',','));
    $('.Keterangan_um ').val(m_Keterangan_um);
 
    $('#modal_um').modal('show');

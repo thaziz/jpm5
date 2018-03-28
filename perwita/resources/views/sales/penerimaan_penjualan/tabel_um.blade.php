@@ -1,4 +1,4 @@
-<table id="table_cn_dn" class="table table-bordered table-hover table-striped">
+<table id="tabel_um_modal" class="table table-bordered table-hover table-striped">
     <thead>
         <tr>
             <th>Nomor Uang Muka</th>
@@ -27,3 +27,7 @@
         @endforeach
     </tbody>
 </table>
+
+<script>
+    $('#tabel_um_modal').DataTable();
+</script>

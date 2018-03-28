@@ -924,10 +924,36 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function cari_um(request $request)
     {
-        $data = DB::table('uang_muka_penjualan')
+        $temp = DB::table('uang_muka_penjualan')
                   ->where('kode_customer',$request->cb_customer)
+                  ->orWhere('status_um','NON CUSTOMER')
                   ->where('kode_cabang',$request->cb_cabang)
+                  ->where('sisa_uang_muka','!=',0)
+                  ->where('nomor_posting','!=',null)
                   ->get();
+
+        $temp1 = DB::table('uang_muka_penjualan')
+                  ->where('kode_customer',$request->cb_customer)
+                  ->orWhere('status_um','NON CUSTOMER')
+                  ->where('kode_cabang',$request->cb_cabang)
+                  ->where('sisa_uang_muka','!=',0)
+                  ->where('nomor_posting','!=',null)
+                  ->get();
+
+        if (isset($request->simpan_um)) {
+            for ($i=0; $i < count($temp1); $i++) { 
+                for ($a=0; $a < count($request->simpan_um); $a++) { 
+                    if ($request->simpan_um[$a] == $temp1[$i]->nomor) {
+                        unset($temp[$i]);
+                    }
+                }
+            }
+            $temp = array_values($temp);
+            $data = $temp;
+            
+        }else{
+            $data = $temp;
+        }
 
         return view('sales.penerimaan_penjualan.tabel_um',compact('data'));
     }
@@ -937,6 +963,7 @@ class penerimaan_penjualan_Controller extends Controller
                    ->where('nomor',$request->um)
                    ->orWhere('status_um','=','NON CUSTOMER')
                    ->first();
+
         return response()->json(['data'=>$data]);
     }
 
