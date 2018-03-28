@@ -31,14 +31,14 @@
                                                         @php
                                                         $totalDebit+=round(abs($value->jrdt_value));
                                                         @endphp
-                                                        {{number_format(abs($value->jrdt_value),0,',','.')}} 
+                                                        {{number_format(abs($value->jrdt_value),2,',','.')}} 
                                                     @endif
                                                 </td>
                                                 <td>@if($value->dk=='K') 
                                                     @php
-                                                        $totalKredit+=round(abs($value->jrdt_value));
+                                                        $totalKredit+=round(abs($value->jrdt_value),2);
                                                     @endphp
-                                                    {{number_format(abs($value->jrdt_value),0,',','.')}}
+                                                    {{number_format(abs($value->jrdt_value),2,',','.')}}
                                                      @endif
                                                 </td>
                                             <tr> 

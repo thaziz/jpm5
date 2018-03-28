@@ -14,66 +14,30 @@
     display: flex;
   }
 
-    #table_form input{
-      padding-left: 5px;
-    }
-
-    #table_form td,
-    #table_form th{
-      padding:10px 0px;
-    }
-
-    #tree th{
-      padding:5px;
-      border: 1px solid #ccc;
-      font-weight: 600;
-    }
-
-    #tree td.secondTree{
-      padding-left: 40px;
-    }
-
-    #tree td{
-      border: 0px;
-      padding: 5px;
-    }
-
-    #tree td.{
-      color:blue;
-    }
-
-    #tree td.highlight{
-      border-top:2px solid #aaa;
-      border-bottom: 2px solid #aaa;
-      color:#222;
-    }
-
-    #tree td.break{
-      padding: 10px 0px;
-      background: #eee;
-    }
-
-    #bingkai td.header{
-      font-weight: bold;
-    }
-
-    #bingkai td.total{
-      border-top: 2px solid #999;
-      font-weight: 600;
-    }
-
-    #bingkai td.no-border{
-      border: 0px;
-    }
+   .headcol {
+      position:sticky;
+      left: 0;
+      background: white;
+      border: 1px solid #eee;
+   }
 
   </style>
 @endsection
 
 @section('content')
 
+<div class="col-md-1" style="background: ; min-height: 30px; position: fixed; z-index: 1; bottom: 30px; right: 70px;">
+   <div class="col-md-6 text-center" id="scroll_left" style="background: white; padding: 5px; font-size: 10pt; color: #128ac6;box-shadow:2px 2px 10px #999;border:1px solid #eee; border-radius:5px; cursor: pointer;">
+      <i class="fa fa-arrow-left"></i>
+   </div>
+   <div class="col-md-6 text-center" id="scroll_right" style="background: white; padding: 5px; font-size: 10pt; color: #128ac6;box-shadow:2px 2px 10px #999;border:1px solid #eee; border-radius:5px; cursor: pointer;">
+      <i class="fa fa-arrow-right"></i>
+   </div>
+</div>
+
 <div class="row wrapper border-bottom white-bg page-heading">
       <div class="col-lg-10">
-          <h2> Laporan Neraca </h2>
+          <h2> Laporan Neraca Saldo </h2>
           <ol class="breadcrumb">
               <li>
                   <a>Home</a>
@@ -82,8 +46,10 @@
                   <a>Keuangan</a>
               </li>
               <li class="active">
-                  <strong> Laporan Neraca  </strong>
+                  <strong> Laporan Neraca Saldo</strong>
               </li>
+
+
 
           </ol>
       </div>
@@ -171,13 +137,13 @@
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
                     @if($throttle == "bulan")
-                      <h5> Menampilkan Neraca Periode Bulan {{ $request["m"]."/".$request["y"] }}</h5>
+                      <h5> Menampilkan Neraca Saldo Periode Bulan {{ $request["m"]."/".$request["y"] }}</h5>
                     @elseif($throttle == "tahun")
-                      <h5> Menampilkan Neraca Periode Tahun {{ $request["y"] }}</h5>
+                      <h5> Menampilkan Neraca Saldo Periode Tahun {{ $request["y"] }}</h5>
                     @elseif($throttle == "perbandingan_bulan")
-                      <h5> Menampilkan Perbandingan Neraca Bulan {{ $request["m"] }} Dan Bulan {{ $request["y"] }}</h5>
+                      <h5> Menampilkan Perbandingan Neraca Saldo Bulan {{ $request["m"] }} Dan Bulan {{ $request["y"] }}</h5>
                     @elseif($throttle == "perbandingan_tahun")
-                      <h5> Menampilkan Perbandingan Neraca Tahun {{ $request["m"] }} Dan Tahun {{ $request["y"] }}</h5>
+                      <h5> Menampilkan Perbandingan Neraca Saldo Tahun {{ $request["m"] }} Dan Tahun {{ $request["y"] }}</h5>
                     @endif
 
                     <div class="ibox-tools">
@@ -205,7 +171,58 @@
                         <div class="box-body" style="min-height: 330px;">
 
                               <div class="row-eq-height">
-                                aaa
+                                 
+                                 <div style="overflow-x: scroll;" id="content_scroll">
+                                   <table class="table table-bordered" style="font-size: 8pt; width: 1600px">
+
+                                     <thead class="text-center">
+                                       <tr>
+                                         <td rowspan="2" class="headcol">(kode) &nbsp;&nbsp; Nama</td>
+                                         <td colspan="2">Saldo Awal</td>
+                                         <td colspan="2">Mutasi Bank</td>
+                                         <td colspan="2">Mutasi Kas</td>
+                                         <td colspan="2">Mutasi Memorial</td>
+                                         <td colspan="2">Total Mutasi</td>
+                                       </tr>
+
+                                       <tr>
+                                         <td width="8%">Debet</td>
+                                         <td width="8%">Kredit</td>
+
+                                         <td width="8%">Debet</td>
+                                         <td width="8%">Kredit</td>
+
+                                         <td width="8%">Debet</td>
+                                         <td width="8%">Kredit</td>
+
+                                         <td width="8%">Debet</td>
+                                         <td width="8%">Kredit</td>
+
+                                         <td width="8%">Debet</td>
+                                         <td width="8%">Kredit</td>
+                                       </tr>
+                                     </thead>
+
+                                     <tbody>
+                                       @foreach($data as $akun)
+                                          <tr>
+                                             <td class="headcol"><span style="font-weight: 600"> ({{ $akun->id_akun }})</span> &nbsp;&nbsp; {{ $akun->nama_akun }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Saldo Awal (Debet)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right"data-toggle="tooltip" data-placement="top" title="Saldo Awal (Kredit)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Bank (Debet)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Bank (Kredit)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Kas (Debet)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Kas (Kredit)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Memorial (Debet)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title="Mutasi Memorial (Kredit)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title=" Total Mutasi (Debet)">{{ number_format(20000000000, 2) }}</td>
+                                             <td class="text-right" data-toggle="tooltip" data-placement="top" title=" Total Mutasi (Kredit)">{{ number_format(20000000000, 2) }}</td>
+                                          </tr>
+                                       @endforeach
+                                     </tbody>
+                                   </table>
+                                 </div>
+                                
                               </div>
 
                         </div><!-- /.box-body -->
@@ -255,55 +272,19 @@
   $(document).ready(function(){
     //$("#tree").DataTable();
 
-   $(".tree, .tree2, .tree3, .tree4").treegrid({
-      treeColumn: 0,
-      initialState: "expanded",
-    });
+    $("#scroll_right").click((e) => {
+      e.preventDefault();
+      $('#content_scroll').animate({
+          scrollLeft: "+=250px"
+      }, "fast");
+    })
 
-   $('.tree').treegrid('getAllNodes').on('collapse', function(){
-     $id = $(this).attr("id");
-     $("#tot-"+$id).fadeIn();
-   });
-
-   $('.tree').treegrid('getAllNodes').on('expand', function(){
-     $id = $(this).attr("id");
-     $("#tot-"+$id).fadeOut();
-   });
-
-
-
-   $('.tree2').treegrid('getAllNodes').on('collapse', function(){
-     $id = $(this).attr("id");
-     $("#tot-a2"+$id).fadeIn();
-   });
-
-   $('.tree2').treegrid('getAllNodes').on('expand', function(){
-     $id = $(this).attr("id");
-     $("#tot-a2"+$id).fadeOut();
-   });
-
-   if($("#filter").data("throttle") == "perbandingan_bulan" || $("#filter").data("throttle") == "perbandingan_tahun"){
-       $('.tree3').treegrid('getAllNodes').on('collapse', function(){
-         $id = $(this).attr("id");
-         $("#tot-a3"+$id).fadeIn();
-       });
-
-       $('.tree3').treegrid('getAllNodes').on('expand', function(){
-         $id = $(this).attr("id");
-         $("#tot-a3"+$id).fadeOut();
-       });
-
-       $('.tree4').treegrid('getAllNodes').on('collapse', function(){
-         $id = $(this).attr("id");
-         $("#tot-a4"+$id).fadeIn();
-       });
-
-       $('.tree4').treegrid('getAllNodes').on('expand', function(){
-         $id = $(this).attr("id");
-         $("#tot-a4"+$id).fadeOut();
-       });
-   }
-
+    $("#scroll_left").click((e) => {
+      e.preventDefault();
+      $('#content_scroll').animate({
+          scrollLeft: "-=250px"
+      }, "fast");
+    })
 
     $("#show").val("{{ $throttle }}");
     $('body').removeClass('fixed-sidebar');

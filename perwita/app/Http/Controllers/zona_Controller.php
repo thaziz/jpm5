@@ -64,7 +64,8 @@ class zona_Controller extends Controller
 	                    'jarak_akir' => $request->ed_jarakakir,
 	                    'harga_zona' => $request->ed_harga,
 	                );
-            $simpan = DB::table('zona')->where('id_zona','=',$request->ed_kode_old)->update($data);
+           
+           $simpan = DB::table('zona')->where('id_zona','=',$request->ed_kode_old)->update($data);
         }
 	    	
     }

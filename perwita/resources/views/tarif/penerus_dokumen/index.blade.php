@@ -112,7 +112,15 @@
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Tipe Kiriman</td>
-                                    <td><input type="text" name="ed_tipe" value="DOKUMEN" readonly="" class="form-control"></td>
+                                    <td>{{-- <input type="text" value="DOKUMEN" readonly="" > --}}
+                                        <select  name="ed_tipe" class="form-control">
+                                          <option value="">Pilih - Tipe</option>
+                                          <option value="DOKUMEN">DOKUMEN</option>
+                                          <option value="KILOGRAM">KILOGRAM</option>
+                                          <option value="KOLI">KOLI</option>
+                                          <option value="SEPEDA">SEPEDA</option>
+                                        </select>
+                                    </td>
                                 </tr>
                                
                                <tr>
@@ -151,13 +159,13 @@
                                     </td>
                                </tr>
 
-                               {{-- <tr>
+                               <tr>
                                    <td style="padding-top: 0.4cm"> Tarif Reguler</td>
                                    <td>
                                          <select id="ed_reguler"  class="form-control chosen-select-width" name="ed_reguler">
                                             <option disabled="" selected="">Pilih - Zona</option>
                                             @foreach ($zona as $d)
-                                                <option value="{{ $d->harga_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
                                            @endforeach               
                                         </select>
                                    </td>
@@ -169,24 +177,24 @@
                                         <select id="ed_express"  class="form-control chosen-select-width" name="ed_express">
                                             <option disabled="" selected="">Pilih - Zona</option>
                                             @foreach ($zona as $d)
-                                                <option value="{{ $d->harga_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
+                                                <option value="{{ $d->id_zona }}" data-foreign="{{ $d->id_zona }}">{{ $d->nama_zona }} - {{ $d->harga_zona }}</option>
                                            @endforeach               
                                         </select>
                                     </td>
                                </tr>
- --}}
-                                <tr>
+
+                               {{--  <tr>
                                    <td style="padding-top: 0.4cm"> Tarif Reguler</td>
                                    <td><input type="text" name="ed_reguler" class="form-control"></td>
                                </tr>
                                <tr>
                                    <td style="padding-top: 0.4cm"> Tarif Express</td>
                                    <td><input type="text" name="ed_express" class="form-control"></td>
-                               </tr>
+                               </tr> --}}
                               
                                 <input type="hidden" name="kode_kota">
-                                <input type="hidden" name="ed_zona_reguler">
-                                <input type="hidden" name="ed_zona_express">
+                               {{--  <input type="hidden" name="ed_zona_reguler">
+                                <input type="hidden" name="ed_zona_express"> --}}
 
                             </tbody>
                           </table>
@@ -227,15 +235,6 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-    $('#ed_reguler').change(function(){
-        var foreign1 = $(this).find(':selected').data('foreign');
-        $('input[name="ed_zona_reguler"]').val(foreign1);
-    })
-    $('#ed_express').change(function(){
-        var foreign2 = $(this).find(':selected').data('foreign');
-        $('input[name="ed_zona_express"]').val(foreign2);
-
-    })
 
 
     $('#provinsi').change(function(){
@@ -309,8 +308,8 @@
             { "data": "kota_nama" },
             { "data": "kecamatan_nama" },  
             { "data": "type" },  
-            { "data": "tarif_reguler", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "tarif_express", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "reguler", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "express", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
             ]
         });
@@ -361,8 +360,8 @@
                 $("input[name='crud']").val('E');
                 $("input[name='ed_kode']").val(data[0].id_tarif_dokumen);
                 $("input[name='ed_kode_old']").val(data[0].id_increment_dokumen);
-                $("input[name='ed_reguler']").val(data[0].tarif_reguler);
-                $("input[name='ed_express']").val(data[0].tarif_express);
+                $("select[name='ed_reguler']").val(data[0].tarif_reguler).trigger('chosen:updated');
+                $("select[name='ed_express']").val(data[0].tarif_express).trigger('chosen:updated');
                 $("input[name='ed_kode']").attr('readonly',true);
 
                 $("#provinsi").val(data[0].id_provinsi).trigger('chosen:updated');

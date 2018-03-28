@@ -393,7 +393,7 @@ public function simpan_invoice(request $request)
     $total_tagihan  = filter_var($request->total_tagihan, FILTER_SANITIZE_NUMBER_FLOAT)/100;
     $netto_total    = filter_var($request->netto_total, FILTER_SANITIZE_NUMBER_FLOAT)/100;
     $diskon1        = filter_var($request->diskon1, FILTER_SANITIZE_NUMBER_FLOAT)/100;
-    $diskon2        = filter_var($request->diskon2, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+    $diskon2        = filter_var($request->diskon2, FILTER_SANITIZE_NUMBER_FLOAT);
     $ed_total       = filter_var($request->ed_total, FILTER_SANITIZE_NUMBER_FLOAT)/100;
     $total_ppn      = filter_var($request->ppn, FILTER_SANITIZE_NUMBER_FLOAT)/100;
     $total_pph      = filter_var($request->pph, FILTER_SANITIZE_NUMBER_FLOAT)/100;
@@ -407,6 +407,14 @@ public function simpan_invoice(request $request)
     $ppn_persen='';
     $nilaiPpn='';
     $akunPPH='';
+    $d=[];
+
+
+    $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
+    $request->netto_detail =str_replace(',', '.', $request->netto_detail);
+
+    $request->diskon2 = str_replace(['Rp', '\\', '.', ' '], '', $request->diskon2);
+    $request->diskon2 =str_replace(',', '.', $request->diskon2);
 
     if ($request->cb_jenis_ppn == 1) {
         $ppn_type = 'pkp';
@@ -507,31 +515,40 @@ public function simpan_invoice(request $request)
                                               'id_acc_penjualan' => $do->acc_penjualan
                                           ]);
 
-                
+   
 
-    $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
-    $request->netto_detail =str_replace(',', '.', $request->netto_detail);
+    $diskonItem=round($request->diskon2*($request->harga_netto[$i]/$request->netto_detail),2);//diskon persen per item total
 
-    $request->diskon2 = str_replace(['Rp', '\\', '.', ' '], '', $request->diskon2);
-    $request->diskon2 =str_replace(',', '.', $request->diskon2);
-    $diskonItem=$request->diskon2*$request->harga_netto[$i]/$request->netto_detail;
-    $totalStlhDiskon=$request->harga_netto[$i]-$diskonItem;    
+    $d[$i]=round($request->netto_detail,2);//diskon persen per item total
+
+    $totalStlhDiskon=$request->harga_netto[$i]-$diskonItem;   
+
                       $dataItem[$i]['acc_penjualan']=$request->akun[$i];
                       $dataItem[$i]['dd_diskon']=$request->dd_diskon[$i]; //diskon per item                 
                       /*$dataItem[$i]['dd_total']=$request->dd_total[$i];//total per item sblm diskon*/
-                      if($request->cb_jenis_ppn== 3 || $request->cb_jenis_ppn== 5)//include
-                      $dataItem[$i]['harga_netto']=(($request->dd_total[$i]-$request->dd_diskon[$i]-$diskonItem)*100
+                      if($request->cb_jenis_ppn== 3 || $request->cb_jenis_ppn== 5){//include
+
+                      /*$dataItem[$i]['harga_netto']=((($request->dd_total[$i]-$request->dd_diskon[$i]-$diskonItem)*100)
+                                                  /(100+$ppn_persen))+$request->dd_diskon[$i]+$diskonItem;//total per item stlh diskon*/
+                                                  
+                      $dataItem[$i]['harga_netto']=(((($request->dd_total[$i]-$request->dd_diskon[$i])-$diskonItem)*100)
+
+
+
                                                   /(100+$ppn_persen))+$request->dd_diskon[$i]+$diskonItem;//total per item stlh diskon
-                      else {
+                     } else {
                         $dataItem[$i]['harga_netto']=$request->dd_total[$i];
                       
-                      }
+                      }                      
+                    /*  dd(((($request->dd_total[$i]-$request->dd_diskon[$i]-$diskonItem)*100)
+                                                  /(100+$ppn_persen))+$request->dd_diskon[$i]+$diskonItem);*/
                       $dataItem[$i]['diskon2']=$diskonItem;// presentase diskon global
                       $dataItem[$i]['ppn']=$totalStlhDiskon*$nilaiPpn;                      
-                      $dataItem[$i]['pajak_lain']=$totalStlhDiskon*($request->pajak_lain/100);
+                      $dataItem[$i]['pajak_lain']=$totalStlhDiskon*((int)$request->pajak_lain/100);
                       /*$dataItem[$i]['netto_detail']=$request->netto_detail;  */              
                     
              }
+             
              // $tes = DB::table('invoice_d')
              //             ->where('id_nomor_invoice',$request->nota_invoice)
              //             ->get();
@@ -608,7 +625,7 @@ if(count($dataItem)==0){
 
         if(count($akunDiskon)!=0){
                 $akun[$indexakun]['id_akun']=$akunDiskon->id_akun;
-                $akun[$indexakun]['value']=-(round($diskon1+$diskon2,2));
+                $akun[$indexakun]['value']=-(round($diskon1+$request->diskon2,2));
                 $akun[$indexakun]['dk']='D';
                 $indexakun++;
         }
@@ -642,6 +659,7 @@ if($request->cb_jenis_ppn!=4){
 
 
 if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lain!='undefined'){
+
           $akunPPH=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', '2305%')                                    

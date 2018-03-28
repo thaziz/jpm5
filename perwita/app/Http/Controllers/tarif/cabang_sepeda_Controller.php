@@ -10,8 +10,11 @@ use Auth;
 class cabang_sepeda_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT t.id_provinsi_cabsepeda,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        $sql = "    SELECT t.kode_sama_sepeda,t.id_provinsi_cabsepeda,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,
+
+        
+        
         kk.nama tujuan, t.harga, t.jenis, t.waktu
                     FROM tarif_cabang_sepeda t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
@@ -541,7 +544,7 @@ class cabang_sepeda_Controller extends Controller
     public function hapus_data (Request $request) {
         $hapus='';
         $id=$request->id;
-        $hapus = DB::table('tarif_penerus_sepeda')->where('kd_sepeda' ,'=', $id)->delete();
+        $hapus = DB::table('tarif_cabang_sepeda')->where('kode_sama_sepeda' ,'=', $id)->where('crud','!=','E')->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
@@ -557,7 +560,7 @@ class cabang_sepeda_Controller extends Controller
         $hapus='';
         $asal=$request->id;
         $tujuan=$request->name;
-        $hapus = DB::table('sales/tarif_penerus_sepeda/save_data')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->where('crud','!=','E')->delete();
+        $hapus = DB::table('tarif_cabang_sepeda')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->where('crud','!=','E')->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;

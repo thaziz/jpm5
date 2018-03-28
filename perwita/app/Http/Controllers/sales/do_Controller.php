@@ -564,6 +564,7 @@ class do_Controller extends Controller
         }
 //======================== End Dokumen =============================
         elseif ($tipe == 'KILOGRAM'){
+            //dd($request);
             $berat = $request->berat;
             $tarif = null;
             $biaya_penerus = null;
@@ -625,7 +626,7 @@ class do_Controller extends Controller
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
 
-                if (count($tarifAwal) > 1){
+                if (count($tarifAwal) > 0){
                     $tarifAwal = $tarifAwal[0]->harga;
                 } else {
                     return response()->json([
@@ -690,7 +691,7 @@ class do_Controller extends Controller
                     ->where('kode_cabang', '=', $cabang)
                     ->get();
 
-                if (count($tarifAwal) > 1){
+                if (count($tarifAwal) > 0){
                     $tarifAwal = $tarifAwal[0]->harga;
                 } else {
                     return response()->json([
@@ -728,7 +729,12 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_default')
                         ->select('harga as tarif_penerus')
                         ->where('jenis', '=', $jenis)
+                        ->where('tipe_kiriman', '=', 'KILOGRAM')
                         ->get();
+
+                    if (count($biaya_penerus) < 1){
+                        $biaya_penerus = 0;
+                    }
                 }
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus[0]->tarif_penerus,
@@ -845,7 +851,12 @@ class do_Controller extends Controller
                     $biaya_penerus = DB::table('tarif_penerus_default')
                         ->select('harga as tarif_penerus')
                         ->where('jenis', '=', $jenis)
+                        ->where('tipe_kiriman', '=', 'KOLI')
                         ->get();
+
+                    if (count($biaya_penerus) < 1){
+                        $biaya_penerus = 0;
+                    }
                 }
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus[0]->tarif_penerus,
@@ -860,6 +871,172 @@ class do_Controller extends Controller
             }
         }
 //======================= End Koli ================================
+        elseif ($tipe == 'SEPEDA'){
+
+            $jenisSepeda = $request->sepeda;
+            $beratSepeda = $request->berat_sepeda;
+            $totalHarga = null;
+            $biaya_penerus = null;
+            $acc_penjualan = null;
+
+            for ($i = 0; $i < count($jenisSepeda); $i++){
+
+                if ($jenisSepeda[$i] == 'SEPEDA'){
+                    $tarif = DB::table('tarif_cabang_sepeda')
+                        ->select('harga', 'acc_penjualan')
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('kode_cabang', '=', $cabang)
+                        ->where('jenis', '=', 'sepeda_pancal')
+                        ->get();
+
+                    $penerus = DB::table('tarif_penerus_sepeda')
+                        ->select('sepeda as tarif_penerus')
+                        ->where('id_kota_sepeda', '=', $tujuan)
+                        ->where('id_kecamatan_sepeda', '=', $kecamatan)
+                        ->get();
+
+                    if (count($penerus) < 1){
+                        $penerus = DB::table('tarif_penerus_default')
+                            ->select('harga as tarif_penerus')
+                            ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
+                            ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus[0]->tarif_penerus = 0;
+                        }
+                    }
+
+                    if ($tarif != null) {
+                        $totalHarga = $totalHarga + $tarif[0]->harga;
+                        $biaya_penerus = $biaya_penerus + $penerus[0]->tarif_penerus;
+                        $acc_penjualan = $tarif[0]->acc_penjualan;
+                    }
+                    else{
+                        return response()->json([
+                            'status' => 'kosong'
+                        ]);
+                    }
+                } elseif ($jenisSepeda[$i] == 'SPORT'){
+                    $tarif = DB::table('tarif_cabang_sepeda')
+                        ->select('harga', 'acc_penjualan')
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('kode_cabang', '=', $cabang)
+                        ->where('jenis', '=', 'laki_sport')
+                        ->get();
+
+                    $penerus = DB::table('tarif_penerus_sepeda')
+                        ->select('sport as tarif_penerus')
+                        ->where('id_kota_sepeda', '=', $tujuan)
+                        ->where('id_kecamatan_sepeda', '=', $kecamatan)
+                        ->get();
+
+                    if (count($penerus) < 1){
+                        $penerus = DB::table('tarif_penerus_default')
+                            ->select('harga as tarif_penerus')
+                            ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
+                            ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus[0]->tarif_penerus = 0;
+                        }
+                    }
+
+                    if ($tarif != null) {
+                        $totalHarga = $totalHarga + $tarif[0]->harga;
+                        $biaya_penerus = $biaya_penerus + $penerus[0]->tarif_penerus;
+                        $acc_penjualan = $tarif[0]->acc_penjualan;
+                    }
+                    else{
+                        return response()->json([
+                            'status' => 'kosong'
+                        ]);
+                    }
+                } elseif ($jenisSepeda[$i] == 'BETIC'){
+                    $tarif = DB::table('tarif_cabang_sepeda')
+                        ->select('harga', 'acc_penjualan')
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('kode_cabang', '=', $cabang)
+                        ->where('jenis', '=', 'bebek_matik')
+                        ->get();
+
+                    $penerus = DB::table('tarif_penerus_sepeda')
+                        ->select('matik as tarif_penerus')
+                        ->where('id_kota_sepeda', '=', $tujuan)
+                        ->where('id_kecamatan_sepeda', '=', $kecamatan)
+                        ->get();
+
+                    if (count($penerus) < 1){
+                        $penerus = DB::table('tarif_penerus_default')
+                            ->select('harga as tarif_penerus')
+                            ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
+                            ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus[0]->tarif_penerus = 0;
+                        }
+                    }
+
+                    if ($tarif != null) {
+                        $totalHarga = $totalHarga + $tarif[0]->harga;
+                        $biaya_penerus = $biaya_penerus + $penerus[0]->tarif_penerus;
+                        $acc_penjualan = $tarif[0]->acc_penjualan;
+                    }
+                    else{
+                        return response()->json([
+                            'status' => 'kosong'
+                        ]);
+                    }
+                } elseif ($jenisSepeda[$i] == 'MOGE'){
+                    $tarif = DB::table('tarif_cabang_sepeda')
+                        ->select('harga', 'acc_penjualan')
+                        ->where('id_kota_asal', '=', $asal)
+                        ->where('id_kota_tujuan', '=', $tujuan)
+                        ->where('kode_cabang', '=', $cabang)
+                        ->where('jenis', '=', 'moge')
+                        ->get();
+
+                    $penerus = DB::table('tarif_penerus_sepeda')
+                        ->select('moge as tarif_penerus')
+                        ->where('id_kota_sepeda', '=', $tujuan)
+                        ->where('id_kecamatan_sepeda', '=', $kecamatan)
+                        ->get();
+
+                    if (count($penerus) < 1){
+                        $penerus = DB::table('tarif_penerus_default')
+                            ->select('harga as tarif_penerus')
+                            ->where('jenis', '=', 'REGULER')
+                            ->where('tipe_kiriman', '=', 'SEPEDA')
+                            ->get();
+
+                        if (count($penerus) < 1){
+                            $penerus[0]->tarif_penerus = 0;
+                        }
+                    }
+
+                    if ($tarif != null) {
+                        $totalHarga = $totalHarga + $tarif[0]->harga;
+                        $biaya_penerus = $biaya_penerus + $penerus[0]->tarif_penerus;
+                        $acc_penjualan = $tarif[0]->acc_penjualan;
+                    }
+                    else{
+                        return response()->json([
+                            'status' => 'kosong'
+                        ]);
+                    }
+                }
+            }
+            return response()->json([
+                'biaya_penerus' => $biaya_penerus,
+                'harga' => $totalHarga,
+                'acc_penjualan' => $acc_penjualan
+            ]);
+        }
     }
 
     public function cetak_nota($nomor = null)

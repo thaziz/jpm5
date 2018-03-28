@@ -21,6 +21,12 @@ class penerus_kilogram_Controller  extends Controller
             'kecamatan.id as kecamatan_id',
             'kecamatan.nama as kecamatan_nama',
 
+            'zo_10r.harga_zona as 10reguler',
+            'zo_10x.harga_zona as 10express',
+            'zo_20r.harga_zona as 20reguler',
+            'zo_20x.harga_zona as 20express',
+
+
             'id_tarif_kilogram','tarif_10express_kilo','tarif_10reguler_kilo','tarif_20express_kilo','tarif_20reguler_kilo','id_increment_kilogram','type_kilo')
 
 
@@ -29,6 +35,14 @@ class penerus_kilogram_Controller  extends Controller
         ->join('kota','tarif_penerus_kilogram.id_kota_kilo','=','kota.id')
         
         ->join('kecamatan','tarif_penerus_kilogram.id_kecamatan_kilo','=','kecamatan.id')
+
+        ->join('zona as zo_10r','zo_10r.id_zona','=','tarif_penerus_kilogram.tarif_10reguler_kilo')
+
+        ->join('zona as zo_10x','zo_10x.id_zona','=','tarif_penerus_kilogram.tarif_10express_kilo')
+
+        ->join('zona as zo_20r','zo_20r.id_zona','=','tarif_penerus_kilogram.tarif_20reguler_kilo')
+
+        ->join('zona as zo_20x','zo_20x.id_zona','=','tarif_penerus_kilogram.tarif_20express_kilo')
 
         ->get();
         // return $list;
@@ -156,8 +170,10 @@ class penerus_kilogram_Controller  extends Controller
         
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $kecamatan = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan ORDER BY nama ASC "));
+        $zona = DB::select(DB::raw(" SELECT id_zona,nama nama_zona,harga_zona FROM zona  "));
+
          // $kotakota = $this->get_kota();
-        return view('tarif.penerus_kilogram.index',compact('provinsi','kota','kecamatan'));
+        return view('tarif.penerus_kilogram.index',compact('provinsi','kota','kecamatan','zona'));
     }
 
 
