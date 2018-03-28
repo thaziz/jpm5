@@ -690,6 +690,9 @@ Route::get('sales/kecamatan', function(){
 //kontrak customer
 Route::get('master_sales/kontrak', 'master_sales\kontrak_Controller@index');
 Route::get('master_sales/kontrak_form', 'master_sales\kontrak_Controller@form');
+Route::get('master_sales/edit_kontrak/{id}', 'master_sales\kontrak_Controller@edit_kontrak');
+Route::post('master_sales/save_kontrak', 'master_sales\kontrak_Controller@form');
+Route::post('master_sales/update_kontrak', 'master_sales\kontrak_Controller@update_kontrak');
 Route::get('master_sales/kontrak_set_nota', 'master_sales\kontrak_Controller@kontrak_set_nota');
 Route::get('master_sales/set_kode_akun_acc', 'master_sales\kontrak_Controller@set_kode_akun_acc');
 Route::get('master_sales/set_kode_akun_csf', 'master_sales\kontrak_Controller@set_kode_akun_csf');
@@ -746,6 +749,8 @@ Route::get('sales/hapus_do_kargo', 'sales\do_kargo_Controller@hapus_do_kargo');
 Route::get('sales/pilih_kontrak_kargo', 'sales\do_kargo_Controller@pilih_kontrak_kargo');
 Route::get('sales/save_do_kargo', 'sales\do_kargo_Controller@save_do_kargo');
 Route::get('sales/pilih_tarif_kargo', 'sales\do_kargo_Controller@pilih_tarif_kargo');
+Route::get('sales/edit_do_kargo/{id}', 'sales\do_kargo_Controller@edit_do_kargo');
+Route::get('sales/update_do_kargo', 'sales\do_kargo_Controller@update_do_kargo');
 
 
 
