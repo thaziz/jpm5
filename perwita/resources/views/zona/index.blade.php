@@ -83,14 +83,8 @@
                         <td> {{$a->jarak_akir}} </td>
                         <td> {{$a->keterangan}} </td>
                         <td>
-                         
-                      
-
                            <button type="button" data-toggle="modal" data-target="#modal" id="edit" data-edit="{{ $a->id_zona }}"  onclick="editing(this.getAttribute('data-edit'))" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-
-
-
-                                        <button type="button" id="hapus" data-hapus="{{ $a->id_zona }}"  onclick="hapusing(this.getAttribute('data-hapus'))" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                           <button type="button" id="hapus" data-hapus="{{ $a->id_zona }}"  onclick="hapusing(this.getAttribute('data-hapus'))" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                         </td>
                       </tr>
                       @endforeach
@@ -127,6 +121,17 @@
                                     <td style="padding-top: 0.4cm">Nama</td>
                                     <td colspan="3">
                                         <input type="text" class="form-control" name="ed_nama" style="text-transform: uppercase" >
+                                    </td>
+                                </tr><tr>
+                                    <td style="padding-top: 0.4cm">Tipe</td>
+                                    <td colspan="3">
+                                        <select name="tipe_zona" class="form-control">
+                                          <option value="" selected="">Pilih - tipe</option>
+                                          <option value="DOKUMEN">DOKUMEN</option>
+                                          <option value="KILOGRAM">KILOGRAM</option>
+                                          <option value="KOLI">KOLI</option>
+                                          <option value="SEPEDA">SEPEDA</option>
+                                        </select>
                                     </td>
                                 </tr>
                                 <tr>
