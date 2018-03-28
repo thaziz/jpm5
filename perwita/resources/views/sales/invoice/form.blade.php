@@ -674,7 +674,7 @@
                             response.data[i].tanggal,
                             response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].total+'" name="dd_harga[]">',
+                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
                             accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
                             accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
