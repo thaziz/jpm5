@@ -1580,7 +1580,7 @@ Route::get('master-transaksi/set-kota/{id_provinsi}', 'd_trans\master_transaksiC
 Route::get('data/jurnal/{ref}', 'sales\invoice_Controller@jurnal');
 //laporan invoicepenjualan
 Route::get('sales/laporaninvoicepenjualan','laporan_penjualan\laporaninvoiceController@index');
-Route::get('data/jurnal/{ref}/INVOICE', 'sales\invoice_Controller@jurnal');
+Route::get('data/jurnal/{ref}/{note}', 'jurnalController@lihatJurnal');
 
 //laporan Do
 Route::get('sales/laporandeliveryorder','laporan_penjualan\laporandoController@index');

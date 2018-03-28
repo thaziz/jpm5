@@ -13,6 +13,6 @@ class jurnalController extends Controller
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$ref' and jr_note='$note')"));
-    	 return view('blade',compact($jurnal_dt));
+    	 return view('jurnal',compact('jurnal_dt'));
     }
 }

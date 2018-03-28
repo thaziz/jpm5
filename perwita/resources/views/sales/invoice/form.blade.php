@@ -440,7 +440,7 @@
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
         netto_detail     = parseInt(netto_detail)/100;
         diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
-        diskon2          = parseInt(diskon2)/100;
+        diskon2          = parseInt(diskon2);
 
         var ppn  = $('.ppn').val();
         ppn      = ppn.replace(/[^0-9\-]+/g,"");
@@ -448,6 +448,7 @@
 
         var pph  = $('.pph').val();
         pph      = pph.replace(/[^0-9\-]+/g,"");
+
         pph      = parseInt(pph)/100;
         if (cb_jenis_ppn == 1 || cb_jenis_ppn == 2 || cb_jenis_ppn == 0) {
             var total_tagihan = netto_total+ppn-pph;
