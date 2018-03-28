@@ -101,7 +101,7 @@ Route::get('purchaseorder/print/{id}', 'PurchaseController@cetak');
 Route::post('purchaseorder/detailpurchasekeuangan', 'PurchaseController@detailpurchasekeuangan');
 Route::post('purchaseorder/updatekeuangan', 'PurchaseController@updatekeuangan');
 Route::post('purchaseorder/getcabang', 'PurchaseController@getcabang');
-Route::delete('purchaseorder/deletepurchase', 'PurchaseController@deletepurchase');
+Route::get('purchaseorder/deletepurchase/{id}', 'PurchaseController@deletepurchase');
 
 
 /*warehouse */
