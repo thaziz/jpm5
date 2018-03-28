@@ -213,8 +213,8 @@
                 <div class="box-body">
                     <div class="tabs-container tab_detail">
                         <ul class="nav nav-tabs">
-                            <li class="active"><a data-toggle="tab" href="#tab-1"> Detail Kwitansi</a></li>
-                            <li class=""><a data-toggle="tab" href="#tab-2">Detail Biaya</a></li>
+                            <li class="active"><a data-toggle="tab" class="tab-1" href="#tab-1"> Detail Kwitansi</a></li>
+                            <li class=""><a data-toggle="tab" class="tab-2" href="#tab-2">Detail Biaya</a></li>
                             <li class=""><a data-toggle="tab" class="tab-3" href="#tab-3">Detail Uang Muka</a></li>
                         </ul>
                         <div class="tab-content ">
@@ -600,7 +600,7 @@
                                 <h4 class="modal-title">Edit Insert Uang Muka</h4>
                             </div>
                             <div class="modal-body">
-                                <table style="font-size: 12px;"  class="table table-bordered table-striped">
+                                <table style="font-size: 12px;"  class="tabel_um table table-bordered table-striped">
                                     <tr>
                                         <td>Seq</td>
                                         <td colspan="2">
@@ -702,6 +702,8 @@
 <script type="text/javascript">
 //GLOBAL VARIABLE
 var array_simpan = [];
+var count_um = 1;
+
 // datepicker
 $('.ed_tanggal').datepicker({
     format:'dd/mm/yyyy',
@@ -846,29 +848,7 @@ function nota_tes(){
     });
 }
     
-// cari um
-$('.cari_um').click(function(){
-    if ($('#cb_akun_h').val() == '0') {
-        toastr.warning('Akun Harus Dipilih')
-        return 1
-    }
-    if ($('#cb_customer').val() == '0') {
-        toastr.warning('Customer Harus Dipilih')
-        return 1
-    }
-    var cb_cabang = $('.cb_cabang').val();
-    var cb_customer = $('#cb_customer').val();
 
-    $.ajax({
-        url:baseUrl + '/sales/cari_um',
-        data:{cb_cabang,cb_customer},
-        success:function(data){
-            $('.um_table').html(data);
-
-            $('#modal_cari_um').modal('show');       
-        }
-    })
-});
 
 // tambah invoice
 $('.tambah_invoice').click(function(){
@@ -946,7 +926,7 @@ $('#btnsave').click(function(){
             $(".i_bayar").focus(function() {
                  $(this).select();
             });
-
+        $('.tab_detail ul li .tab-1').trigger('click');
         }
     })
 });
@@ -1200,6 +1180,9 @@ $('#btnsave3').click(function(){
 
         $('#modal_biaya').modal('hide');
     count+=1;  
+
+$('.tab_detail ul li .tab-2').trigger('click');
+
 });
 // hapus detail biaya
 function hapus_detail_biaya(p) {
@@ -1264,8 +1247,32 @@ $('#update_biaya').click(function(){
 
     $('#modal_edit_biaya').modal('hide');
 })
-// simpan
 var simpan_um = [];
+
+// cari um
+$('.cari_um').click(function(){
+    if ($('#cb_akun_h').val() == '0') {
+        toastr.warning('Akun Harus Dipilih')
+        return 1
+    }
+    if ($('#cb_customer').val() == '0') {
+        toastr.warning('Customer Harus Dipilih')
+        return 1
+    }
+    var cb_cabang = $('.cb_cabang').val();
+    var cb_customer = $('#cb_customer').val();
+
+    $.ajax({
+        url:baseUrl + '/sales/cari_um',
+        data:{cb_cabang,cb_customer,simpan_um},
+        success:function(data){
+            $('.um_table').html(data);
+
+            $('#modal_cari_um').modal('show');       
+        }
+    })
+});
+// simpan
 $('#btnadd_um').click(function(){
     if ($('#cb_akun_h').val() == '0') {
         toastr.warning('Akun Harus Dipilih')
@@ -1275,6 +1282,11 @@ $('#btnadd_um').click(function(){
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
+    $('.tabel_um :input').val('');
+    $('.seq_um ').val(count_um);
+
+
+
     $('#modal_um').modal('show');
 });
 // pilih um
@@ -1332,7 +1344,6 @@ $('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.'});
 //         $(this).val(accounting.formatMoney($('.total_um ').val(),"",0,'.',','));
 //     }
 // });
-var count_um = 1;
 $('#save_um').click(function(){
     var seq_um    = $('.seq_um').val();
     var no_um     = $('.no_um').val();
@@ -1343,14 +1354,15 @@ $('#save_um').click(function(){
     jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
 
     tabel_uang_muka.row.add([
-            seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">',
+            seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
+            +'<input type="hidden" value="'+seq_um+'" class="sequence">',
             no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
-            status_um+'<input type="hidden" value="'+status_um+'" class="m_um">',
+            status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um">',
             accounting.formatMoney(total_um,"",2,'.',',')+
-            '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]>',
+            '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
              accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
             '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
-            '<input type="text" value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
+            '<input type="text" readonly value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
             '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
             '<label class="fa fa-trash"><label></button>'+
             '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
@@ -1358,7 +1370,6 @@ $('#save_um').click(function(){
 
         ]).draw();
 count_um++;
-$('.seq_um ').val(count_um);
 
 var temp = 0;
 $('.m_um_jumlah_bayar').each(function(){
@@ -1370,14 +1381,38 @@ $('.m_um_jumlah_bayar').each(function(){
 $('.um').val(temp);
 $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
 $('.tab_detail ul li .tab-3').trigger('click');
-    $('#modal_um').modal('hide');
+$('#modal_um').modal('hide');
+
+
 });
 
 
 
 // edit um
 function edit_detail_um(p) {
-    // body...
+
+   var par               = p.parentNode.parentNode;
+   var seq_um            = $(par).find('.sequence').val();
+   var m_status_um       = $(par).find('.m_status_um').val();
+   var m_um_total        = $(par).find('.m_um_total').val();
+   var m_um_jumlah_bayar = $(par).find('.m_um_jumlah_bayar').val();
+   var m_Keterangan_um   = $(par).find('.m_Keterangan_um').val();
+   $('.seq_um').val(seq_um);
+   $('.status_um').val(m_status_um);
+   $('.total_um_text ').val(accounting.formatMoney(m_um_total,"",2,'.',','));
+   $('.total_um ').val(m_um_total);
+
+   $('.jumlah_bayar_um  ').val(accounting.formatMoney(m_um_total,"",0,'.',','));
+   $('.Keterangan_um ').val(m_Keterangan_um);
+
+   $('#modal_um').modal('show');
+
+
+
+
+
+
+
 }
 
 $('#btnsimpan').click(function(){

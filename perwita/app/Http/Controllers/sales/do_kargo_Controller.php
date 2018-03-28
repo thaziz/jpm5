@@ -507,32 +507,32 @@ class do_kargo_Controller extends Controller
     {
        // dd($request->all());
         if ($request->nomor_do == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>$request->nomor_do]);
         }
 
         if ($request->tanggal_do == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>$request->tanggal_do]);
         }
 
         if ($request->customer_do == '0') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>$request->customer_do]);
         }
 
         if ($request->asal_do == 0) {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>$request->asal_do]);
         }
 
         if ($request->tujuan_do == 0) {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>$request->tujuan_do]);
         }
 
         if ($request->jenis_tarif_do == 0) {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>$request->jenis_tarif_do]);
         }
 
         if ($request->status_kendaraan == 'SUB') {
             if ($request->nama_subcon == 0) {
-                return response()->json(['status' => 3]);
+                return response()->json(['status' => 3,'get'=>$request->nama_subcon ]);
             }
         }
 
