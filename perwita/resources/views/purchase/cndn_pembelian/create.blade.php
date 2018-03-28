@@ -51,39 +51,13 @@
                   <div class="box-body">
                       <div class="row">
                       <div class="col-xs-6">
-                           <table border="0">
-                          <tr>
-                            <td width="150px">
-                              Pilihan :
-                            </td>
-                            <td>
-                               <select class="form-control"> <option value=""> Credit Nota </option> <option value=""> Debet Nota </option></select>
-                            </td>
-                          </tr>
-
-                          <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
+                          <table border="0" class="table">
                           <tr>
                             <td>   Tanggal </td>
                             <td>
                                <div class="input-group date">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
                               </div>
-                            </td>
-                          </tr>
-                          <tr>
-                          <td>
-                            &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-                            <td colspan="2">
-                              <hr>
                             </td>
                           </tr>
 
@@ -93,15 +67,7 @@
                             </td>
                           </tr>
 
-
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-
                             <td>
                               Tanggal
                             </td>
@@ -109,14 +75,6 @@
                                 <div class="input-group date">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
                               </div>
-
-                            </td>
-
-                          </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
                             </td>
                           </tr>
 
@@ -131,22 +89,10 @@
 
                           <tr>
                             <td>
-                              &nbsp;
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td>
                               Supplier
                             </td>
                             <td>
                               <input type="text" class="form-control">
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
                             </td>
                           </tr>
 
@@ -159,11 +105,6 @@
                             </td>
                           </tr>
 
-                          <tr>
-                            <td>
-                              &nbsp;
-                            </td>
-                          </tr>
 
                           <tr>
                             <td>
@@ -185,11 +126,6 @@
                             </td>
                           </tr>
 
-                          <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
 
                           <tr>
                             <td>   Acc Hutang </td>
@@ -197,12 +133,7 @@
                               <input type="text" class="form-control">
                             </td>
                           </tr>
-                          <tr>
-                          <td>
-                            &nbsp;
-                          </td>
-                          </tr>
-
+                        
                           <tr>
                             <td> Bruto </td>
                             <td>   <input type="text" class="form-control"> </td>
@@ -211,28 +142,14 @@
 
 
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-
                             <td>
                               DPP
                             </td>
                             <td>
                                 <input type="text" class="form-control"> 
-
-                            </td>
-
-                          </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
                             </td>
                           </tr>
+
 
                           <tr>
                             <td>
@@ -242,12 +159,7 @@
                               <select class="form-control"> <option value=""> </option> </select>
                             </td>
                           </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
-                            </td>
-                          </tr>
+                   
 
                           <tr>
                             <td>
@@ -259,23 +171,11 @@
                           </tr>
 
                           <tr>
-                            <td>
-                              &nbsp;
-                            </td>
-                          </tr>
-
-                          <tr>
                             <td> 
                               Netto
                             </td>
                             <td>
                               <input type="text" class="form-control">
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
                             </td>
                           </tr>
 
