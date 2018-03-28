@@ -32,6 +32,9 @@
         .kanan{
             margin-right: 20px;
         }
+        #table_cn_dn tbody tr{
+            cursor: pointer;
+        }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -61,8 +64,6 @@
 
                             </table>
                         <div class="col-xs-6">
-
-
 
                         </div>
 
@@ -588,7 +589,7 @@
                         </div>
                     </div>
                 </div>
-                  <!-- modal -->  
+                
                   {{-- modal um --}}
                 <div id="modal_um" class="modal" >
                     <div class="modal-dialog modal-lg">
@@ -617,7 +618,8 @@
                                     <tr>
                                         <td>Nominal UM</td>
                                         <td colspan="2">
-                                            <input type="text" style="text-align: right;" readonly="" class="total_um form-control" name="">
+                                            <input type="text" style="text-align: right;" readonly="" class="total_um_text form-control" name="">
+                                            <input type="hidden" style="text-align: right;" readonly="" class="total_um form-control" name="">
                                         </td>
                                     </tr>
                                     <tr>
@@ -640,8 +642,12 @@
                         </div>
                     </div>
                 </div>
-                {{-- cari um modal --}}
-                <div id="modal_cari_um" class="modal" >
+               
+                <div class="box-footer">
+                  <div class="pull-right">
+
+                     {{-- cari um modal --}}
+                <div id="modal_cari_um" class="modal">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -659,10 +665,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                  <div class="pull-right">
-
-
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->
             </div><!-- /.col -->
@@ -854,9 +856,9 @@ $('.cari_um').click(function(){
         url:baseUrl + '/sales/cari_um',
         data:{cb_cabang,cb_customer},
         success:function(data){
+            $('.um_table').html(data);
 
-
-            $('#modal_invoice').modal('show');       
+            $('#modal_cari_um').modal('show');       
         }
     })
 });
@@ -1253,7 +1255,7 @@ $('#update_biaya').click(function(){
     $('#modal_edit_biaya').modal('hide');
 })
 // simpan
-
+var simpan_um = [];
 $('#btnadd_um').click(function(){
     if ($('#cb_akun_h').val() == '0') {
         toastr.warning('Akun Harus Dipilih')
@@ -1265,7 +1267,31 @@ $('#btnadd_um').click(function(){
     }
     $('#modal_um').modal('show');
 });
+// pilih um
+function pilih_um(par) {
+    var um = $(par).find('.nomor_modal_um').val();
+    $.ajax({
+        url:baseUrl+'/sales/pilih_um',
+        data:{um,simpan_um},
+        dataType : 'json',
+        success:function(response){
+            $('.no_um').val(response.data.nomor);
+            $('.total_um_text').val(accounting.formatMoney(response.data.jumlah,"",2,'.',','));
+            $('.total_um').val(response.data.jumlah);
+            $('#modal_cari_um').modal('hide');
 
+        },
+        error:function(){
+        }
+    });
+
+}
+$('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.'});
+$('.jumlah_bayar_um ').keyup(function(){
+    if ($(this).val() > $('.total_um ').val()) {
+        $(this).val($('.total_um ').val());
+    }
+});
 $('#btnsimpan').click(function(){
     swal({
         title: "Apakah anda yakin?",
