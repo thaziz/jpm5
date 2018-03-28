@@ -167,6 +167,13 @@
                               
                             </tr>
                             <tr>
+                                  <td style="width:120px; padding-top: 0.4cm">Total Uang Muka (-)</td>
+                                <td colspan="3">
+                                    <input type="text"  class="form-control um_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0" >
+                                    <input type="hidden" name="um" class="form-control um" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                </td>
+                            </tr>
+                            <tr>
                                   <td style="width:120px; padding-top: 0.4cm">Total Debet (+)</td>
                                 <td colspan="3">
                                     <input type="text"  class="form-control ed_debet_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0" >
@@ -582,7 +589,7 @@
                     </div>
                 </div>
                   <!-- modal -->  
-                  {{-- modal2 --}}
+                  {{-- modal um --}}
                 <div id="modal_um" class="modal" >
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -594,13 +601,15 @@
                                 <table style="font-size: 12px;"  class="table table-bordered table-striped">
                                     <tr>
                                         <td>Seq</td>
-                                        <td colspan="2">Seq</td>
+                                        <td colspan="2">
+                                            <input type="text"  readonly="" class="seq_um form-control" name="" value="1">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>No. UM</td>
                                         <td><input type="text" readonly="" class="no_um form-control"></td>
                                         <td width="100px" align="center">
-                                            <button type="button" class="btn btn-primary">
+                                            <button type="button" class="btn cari_um btn-primary">
                                                 <i class="fa fa-search"> Cari</i>
                                             </button>
                                         </td>
@@ -625,13 +634,31 @@
                                     </tr>
                                 </table>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" id="update_biaya">Save changes</button>
+                                    <button type="submit" class="btn btn-primary" id="save_um">Save changes</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
+                {{-- cari um modal --}}
+                <div id="modal_cari_um" class="modal" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Edit Insert Uang Muka</h4>
+                            </div>
+                            <div class="modal-body ">
+                                <div class="um_table">
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="save_um">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="box-footer">
                   <div class="pull-right">
 
@@ -810,7 +837,29 @@ function nota_tes(){
     });
 }
     
+// cari um
+$('.cari_um').click(function(){
+    if ($('#cb_akun_h').val() == '0') {
+        toastr.warning('Akun Harus Dipilih')
+        return 1
+    }
+    if ($('#cb_customer').val() == '0') {
+        toastr.warning('Customer Harus Dipilih')
+        return 1
+    }
+    var cb_cabang = $('.cb_cabang').val();
+    var cb_customer = $('#cb_customer').val();
 
+    $.ajax({
+        url:baseUrl + '/sales/cari_um',
+        data:{cb_cabang,cb_customer},
+        success:function(data){
+
+
+            $('#modal_invoice').modal('show');       
+        }
+    })
+});
 
 // tambah invoice
 $('.tambah_invoice').click(function(){
@@ -1206,6 +1255,14 @@ $('#update_biaya').click(function(){
 // simpan
 
 $('#btnadd_um').click(function(){
+    if ($('#cb_akun_h').val() == '0') {
+        toastr.warning('Akun Harus Dipilih')
+        return 1
+    }
+    if ($('#cb_customer').val() == '0') {
+        toastr.warning('Customer Harus Dipilih')
+        return 1
+    }
     $('#modal_um').modal('show');
 });
 

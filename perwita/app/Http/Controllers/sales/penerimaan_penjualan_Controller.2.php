@@ -922,5 +922,14 @@ class penerimaan_penjualan_Controller extends Controller
     });
 
     }
+    public function cari_um(request $request)
+    {
+        $data = DB::table('uang_muka_penjualan')
+                  ->where('kode_customer',$request->cb_customer)
+                  ->where('kode_cabang',$request->cb_cabang)
+                  ->get();
+        
+        return view('sales.penerimaan_penjualan.tabel_um',compact('data'));
+    }
 
 }
