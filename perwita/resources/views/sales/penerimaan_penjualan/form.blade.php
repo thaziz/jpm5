@@ -99,6 +99,7 @@
                                         <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
+                                        <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                         <option value="U"> UANG MUKA/DP </option>
                                     </select>
