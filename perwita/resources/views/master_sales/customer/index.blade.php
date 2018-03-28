@@ -240,7 +240,14 @@
                                         </select>
                                     </td>
                                     <td style="padding-top: 0.4cm">Tarif Pajak 23</td>
-                                    <td><input type="text" class="form-control" name="pajak_tarif"  style="text-align: right"></td>
+                                    <td>
+                                        <select name="pajak_tarif" class="chosen-select-width">
+                                            <option value="" selected="">Pilih - pajak</option>
+                                            @foreach ($pajak as $pajak)
+                                                <option value="{{ $pajak->kode }}">{{ $pajak->kode }} - {{ $pajak->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
                                 </tr>
                                  <tr>
                                     <td style="padding-top: 0.4cm">status</td>
@@ -370,7 +377,7 @@
         $("input[name='ed_plafon']").val('');
         $("select[name='kota_pajak']").val('').trigger('chosen:updated');
         $("input[name='nama_pajak']").val('');
-        $("input[name='pajak_tarif']").val('');
+        $("select[name='pajak_tarif']").val('').trigger('chosen:updated');
         $("input[name='fax_pajak']").val('');
         $("input[name='telp_pajak']").val('');
         $("input[name='email_pajak']").val('');
@@ -416,7 +423,7 @@
                 $("input[name='ed_npwp']").val(data.pajak_npwp);
                 $("select[name='kota_pajak']").val(data.pajak_kota).trigger('chosen:updated');
                 $("input[name='nama_pajak']").val(data.pajak_nama);
-                $("input[name='pajak_tarif']").val(data.pajak_tarif);
+                $("select[name='pajak_tarif']").val(data.pajak_tarif).trigger('chosen:updated');
                 $("input[name='fax_pajak']").val(data.pajak_fax);
                 $("input[name='telp_pajak']").val(data.pajak_telpon);
                 $("input[name='email_pajak']").val(data.pajak_email);
