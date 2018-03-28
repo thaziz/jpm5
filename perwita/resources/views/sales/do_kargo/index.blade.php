@@ -164,6 +164,8 @@
 
 
     function hapus(id){
+    var nomor_do = id;
+        
         swal({
         title: "Apakah anda yakin?",
         text: "Hapus Data!",
@@ -175,7 +177,6 @@
         cancelButtonText: "Batal",
         closeOnConfirm: false
     },
-    var nomor_do = id;
     function(){
 
          $.ajax({
