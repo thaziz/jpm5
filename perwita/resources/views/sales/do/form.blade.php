@@ -126,7 +126,7 @@
                                                         </select>
                                                     </td>
                                                 </tr>
-                                                <tr id="jenis_kiriman">
+                                                <tr id="tr_jenis_kiriman">
                                                     <td style="width:110px; padding-top: 0.4cm">Jenis Kiriman</td>
                                                     <td colspan="5">
                                                         <select class="form-control" name="jenis_kiriman" id="jenis_kiriman" >
@@ -842,6 +842,7 @@
             $("#berat").hide();
             $("#jenis_kendaraan").hide();
             $("#jml_unit").hide();
+            $('#tr_jenis_kiriman').show();
             $(".jenis_unit").hide();
         }else if ( type_kiriman =='KARGO PAKET') {
             $("#surat_jalan").show();
@@ -851,6 +852,7 @@
             $("#berat").hide();
             $("#jenis_kendaraan").show();
             $("#jml_unit").hide();
+            $('#tr_jenis_kiriman').show();
             $(".jenis_unit").hide();
         }else if ( type_kiriman =='KILOGRAM') {
             $("#surat_jalan").hide();
@@ -860,6 +862,7 @@
             $("#berat").show();
             $("#jenis_kendaraan").hide();
             $("#jml_unit").hide();
+            $('#tr_jenis_kiriman').show();
             $(".jenis_unit").hide();
         }else if ( type_kiriman =='KOLI') {
             $("#surat_jalan").hide();
@@ -869,6 +872,7 @@
             $("#berat").show();
             $("#jenis_kendaraan").hide();
             $("#jml_unit").hide();
+            $('#tr_jenis_kiriman').show();
             $(".jenis_unit").hide();
         }else if ( type_kiriman =='SEPEDA') {
             $("#surat_jalan").hide();
@@ -879,7 +883,7 @@
             $("#jenis_kendaraan").hide();
             $("#jml_unit").show();
             $(".jenis_unit").show();
-            $("#jenis_kiriman").hide();
+            $("#tr_jenis_kiriman").hide();
         }else if ( type_kiriman =='KERTAS') {
             $("#surat_jalan").show();
             $("#dimensi").hide();
@@ -888,6 +892,7 @@
             $("#berat").show();
             $("#jenis_kendaraan").hide();
             $("#jml_unit").hide();
+            $('#tr_jenis_kiriman').show();
             $(".jenis_unit").hide();
         }else if ( type_kiriman =='KARGO KERTAS') {
             $("#surat_jalan").show();
@@ -896,6 +901,7 @@
             $("#koli").hide();
             $("#berat").hide();
             $("#jenis_kendaraan").show();
+            $('#tr_jenis_kiriman').show();
             $("#jml_unit").hide();
             $(".jenis_unit").hide();
         }
@@ -921,7 +927,6 @@
         berat_sepeda  = [].map.call(input, function( input ) {
             return input.value;
         });
-        console.log(berat_sepeda);
         
         $("input[name='ed_harga']").val(0);
               if (kota_asal == '') {
@@ -1087,6 +1092,7 @@
             sepeda: jenis_sepeda,
             berat_sepeda: berat_sepeda
         };
+        console.log(value);
         $.ajax(
         {
             url : baseUrl + "/sales/deliveryorderform/cari_harga",
