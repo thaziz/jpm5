@@ -448,10 +448,34 @@
     $(document).on("click","#btnsave",function(){
        
      $ed_acc_piutang = $('#ed_acc_piutang').val();
-        console.log($('#ed_acc_piutang').val());
+     $ed_csf_piutang = $('#ed_csf_piutang').val();
+        
        if ($ed_acc_piutang == '' || $ed_acc_piutang == null) 
         {
-            Command: toastr["warning"]("Nama Tidak boleh kosong", "Peringatan")
+            Command: toastr["warning"]("Akun Piutang Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+         if ($ed_csf_piutang == '' || $ed_csf_piutang == null) 
+        {
+            Command: toastr["warning"]("Csf Piutang Tidak boleh kosong", "Peringatan")
 
             toastr.options = {
               "closeButton": false,

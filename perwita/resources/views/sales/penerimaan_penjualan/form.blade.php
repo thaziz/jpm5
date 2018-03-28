@@ -29,6 +29,9 @@
         .kecil{
             width: 207px;
         }
+        .kanan{
+            margin-right: 20px;
+        }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -101,7 +104,6 @@
                                         <option value="C"> TRANSFER </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
-                                        <option value="U"> UANG MUKA/DP </option>
                                     </select>
                                 </td>
                             </tr>
@@ -192,10 +194,11 @@
                         <div class="col-sm-7">
                             
                         </div>
-                        <div class="col-sm-5">
-                            <button type="button" class="btn btn-info tambah_invoice" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Invoice</button>
-                            <button type="button" class="btn btn-info " id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i>Add Biaya</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                        <div class="col-sm-12 ">
+                            <button type="button" class="btn btn-success kanan pull-right " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-info kanan pull-right " id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i>Tambah Uang Muka</button>
+                            <button type="button" class="btn btn-info kanan pull-right " id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i>Tambah Biaya</button>
+                            <button type="button" class="btn btn-info kanan pull-right tambah_invoice" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Invoice</button>
                         </div>
                     </div>
                 </form>
@@ -204,6 +207,7 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tab-1"> Detail Kwitansi</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-2">Detail Biaya</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-3">Detail Uang Muka</a></li>
                         </ul>
                         <div class="tab-content ">
                             <div id="tab-1" class="tab-pane active">
@@ -242,6 +246,25 @@
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                            <div id="tab-3" class="tab-pane">
+                                <div class="panel-body">
+                                    <table id="table_data_biaya" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Biaya</th>
+                                                <th>Jenis</th>
+                                                <th>Jumlah</th>
+                                                <th>Keterangan</th>
+                                                <th>Aksi</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
                             </div>
                         </div>
                     </div>
@@ -304,6 +327,7 @@
                                                             <input type="hidden" readonly="readonly" class="form-control terbayar">
                                                         </td>
                                                     </tr>
+                                                    
                                                     <tr>
                                                         <td style="padding-top: 0.4cm">Nota Debet</td>
                                                         <td colspan="3">
@@ -330,6 +354,13 @@
                                                         <td colspan="3">
                                                             <input type="text"  class="form-control ed_jumlah_bayar" name="ed_jumlah_bayar" readonly="readonly" style="text-align:right" tabindex="-1">
                                                             <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-top: 0.4cm">Uang Muka</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="readonly" class="form-control uang_muka_text" style="text-align:right">
+                                                            <input type="hidden" readonly="readonly" class="form-control uang_muka">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -362,6 +393,7 @@
                                             </table>
                                         </div>
                                         <div class="col-md-7">
+                                            <h3>Riwayat</h3>
                                             <div class="tabs-container">
                                                 <ul class="nav nav-tabs">
                                                     <li class="active"><a data-toggle="tab" href="#tab-rk"> Riwayat Kwitansi</a></li>
@@ -401,6 +433,7 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                            <h3>Pembayaran</h3>
                                             <table class="table  table-bordered table-striped">
                                                 <tbody>
                                                     <tr>
@@ -549,6 +582,55 @@
                     </div>
                 </div>
                   <!-- modal -->  
+                  {{-- modal2 --}}
+                <div id="modal_um" class="modal" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Edit Insert Uang Muka</h4>
+                            </div>
+                            <div class="modal-body">
+                                <table style="font-size: 12px;"  class="table table-bordered table-striped">
+                                    <tr>
+                                        <td>Seq</td>
+                                        <td colspan="2">Seq</td>
+                                    </tr>
+                                    <tr>
+                                        <td>No. UM</td>
+                                        <td><input type="text" readonly="" class="no_um form-control"></td>
+                                        <td width="100px" align="center">
+                                            <button type="button" class="btn btn-primary">
+                                                <i class="fa fa-search"> Cari</i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Nominal UM</td>
+                                        <td colspan="2">
+                                            <input type="text" style="text-align: right;" readonly="" class="total_um form-control" name="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Jumlah Bayar</td>
+                                        <td colspan="2">
+                                            <input type="text" style="text-align: right;" class="jumlah_bayar_um form-control" name="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Keterangan</td>
+                                        <td colspan="2">
+                                            <input type="text" class="Keterangan_um form-control" name="">
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="update_biaya">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="box-footer">
                   <div class="pull-right">
@@ -1122,6 +1204,11 @@ $('#update_biaya').click(function(){
     $('#modal_edit_biaya').modal('hide');
 })
 // simpan
+
+$('#btnadd_um').click(function(){
+    $('#modal_um').modal('show');
+});
+
 $('#btnsimpan').click(function(){
     swal({
         title: "Apakah anda yakin?",

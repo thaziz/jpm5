@@ -71,8 +71,7 @@ class loginController extends Controller {
                      $dataInfo=['status'=>'sukses','nama'=>$user->m_name];            
                       return json_encode($dataInfo);
             } else {
-                $validator->getMessageBag()->add('login', 'Password atau Nama Salah.'); //manual validation                
-                return redirect('/')->withErrors($validator)->withInput();
+                return json_encode(["status" => "gagal", "content" => "ups . Kombinasi Username Dan Password Tidak Ditemukan"]);
             }
         }
     }
