@@ -51,7 +51,7 @@
                     
                 <div class="box-body">
                     
-                    <table border="0"> 
+                    <!-- <table border="0"> 
                     <tr>
                       <th> Lihat Master Item di Cabang : </th> <td> &nbsp; &nbsp;</td>
                         <td> <select class="form-control">
@@ -64,7 +64,7 @@
                             </select>
                         </td>
                     </tr>
-                    </table>
+                    </table> -->
 
                     <br>
                     <br>

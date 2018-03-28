@@ -131,12 +131,11 @@
 
                           </td>
                           <td> 
-                            <button class="btn btn-sm btn-danger" onclick="proseskeuangan({{$po->po_id}})" type="button" id="createmodal" data-toggle="modal" data-target="#myModal2"> PROSES  </button> &nbsp;  
+                            <button class="btn btn-sm btn-primary" onclick="proseskeuangan({{$po->po_id}})" type="button" id="createmodal" data-toggle="modal" data-target="#myModal2"> PROSES  </button> &nbsp;  
                             @if($po->po_setujufinance == '')
-                             <a href="#" class="btn btn-sm btn-danger" onclick="hapusData('{{$spp->spp_id}}')"> <i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
-                          {{ Form::open(['url'=>'purchaseorder/deletepurchase/'. $po->po_id, 'method' => 'delete', 'id' => $po->po_id ]) }}
-                          {{ Form::close() }} </div>
-                         
+                              <a title="Hapus" class="btn btn-danger" onclick="hapusData({{$po->po_id}})">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                              </a>
                             @endif
                             
                             @if($po->po_setujufinance != '')
@@ -382,23 +381,57 @@
 
     })
 
-    function hapusData(id){
    
-            swal({
-            title: "apa anda yakin?",
-                    text: "data yang dihapus tidak akan dapat dikembalikan",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: "Ya, Hapus!",
-                    closeOnConfirm: false,
-                    showLoaderOnConfirm: true
-            },
-                    function(){                        
-                    $('#' +id).submit();
-                    swal("Terhapus!", "Data Anda telah terhapus.", "success");
-                    });
-            }
+   function hapusData(id){
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Hapus Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+  },
+
+function(){
+     $.ajax({
+      url:baseUrl + '/purchaseorder/deletepurchase/'+id,
+      type:'get',
+      success:function(data){
+
+        if(data == "'sukses'"){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                     location.reload();
+          });
+        }else{
+         swal({
+        title: "Data Tidak Bisa Dihapus",
+                type: 'error',
+                timer: 1000,
+                showConfirmButton: false
+    });
+        }
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+  });
+}
 
     function proseskeuangan(id){
       var idspp = [];

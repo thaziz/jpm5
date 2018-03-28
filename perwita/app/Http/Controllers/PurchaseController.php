@@ -1484,19 +1484,37 @@ public function purchase_order() {
 
 
 	public function deletepurchase($id){
-		$data2 = purchase_orderr::find($id); 
-     	$data2->delete($data2);
- 		
+		/*DB::delete("DELETE from  pembelian_order where po_id = '$id'");*/
 
- 		
- 		$updatespptb = spptb_purchase::where('spptb_poid', '=' , $id );
+		$data2 = purchase_orderr::find($id); 
+		
+		$data['spptb'] = DB::select("select * from spp_totalbiaya where spptb_poid = '$id'");
+		
+
+		for ($j = 0; $j < count($data['spptb']); $j++){
+			$idspp = $data['spptb'][$j]->spptb_idspp;
+
+			$dataco = DB::select("select * from confirm_order where co_idspp = '$idspp'");
+			$idco = $dataco[$j]->co_id;
+			$idsupplier = $data['spptb'][$j]->spptb_supplier;
+			$data['header3'] = DB::table('confirm_order_tb')
+							->where([['cotb_idco', '=' , $idco],['cotb_supplier', '=' , $idsupplier]])
+							->update([
+								'cotb_setuju' => 'BELUM DI SETUJUI',
+								'cotb_timesetuju' => null,
+		
+							]); 
+
+			//return json_encode($idco . $idspp);			
+		}
+		//
+		$data2->delete($data2);
+			$updatespptb = spptb_purchase::where('spptb_poid', '=' , $id );
 		$updatespptb->update([
 		 	'spptb_poid' => null
 	 		]);
-
-
        	Session::flash('sukses', 'data item berhasil dihapus');
-        return redirect('suratpermintaanpembelian');
+        return json_encode('sukses');
 	}
 
 	public function purchasedetail($id) {

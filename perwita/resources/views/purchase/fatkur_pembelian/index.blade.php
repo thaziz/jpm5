@@ -269,7 +269,7 @@ function(){
       url:baseUrl + '/fakturpembelian/hapusfakturpembelian/'+id,
       type:'get',
       success:function(data){
-        if(data.status == '1'){
+        if(data == 'sukses'){
           swal({
           title: "Berhasil!",
                   type: 'success',
