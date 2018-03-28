@@ -3869,10 +3869,10 @@ $indexakun=0;
 			   }
 			   else {
 			   		$id_akun[$idx]['akun']=$request->acc_biaya[$idx];	
-			   }               
+			   }               			   
                $id_akun[$idx]['subtotal']=$subtotal;
-               $id_akun[$idx]['ppn']=$subtotal*$request->inputppn/100;
-               $id_akun[$idx]['pph']=$subtotal*$request->inputpph/100;
+               $id_akun[$idx]['ppn']=$subtotal*round((float)$request->inputppn/100);
+               $id_akun[$idx]['pph']=$subtotal*round((float)$request->inputpph/100);
         	   }        	   
 $Nilaijurnal=$this->groupJurnalFpItem($id_akun);
 $nilaiHutang=0;
@@ -3962,7 +3962,7 @@ if($request->jenisppn=='I'){
         } 
     }
 
-     if($request->accPph!=''){  
+     if($request->accPph!='' && $request->accPph!="undefined"){  
          $akunPPH=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPph.'%')                                 

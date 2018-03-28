@@ -402,7 +402,7 @@ public function simpan_invoice(request $request)
                          ->where('i_nomor',$request->nota_invoice)
                          ->first();
     // dd($request->all());
-
+    // dd($total_tagihan);
     $ppn_type='';
     $ppn_persen='';
     $nilaiPpn='';
