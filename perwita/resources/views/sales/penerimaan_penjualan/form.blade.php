@@ -211,11 +211,11 @@
                     </div>
                 </form>
                 <div class="box-body">
-                    <div class="tabs-container">
+                    <div class="tabs-container tab_detail">
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" href="#tab-1"> Detail Kwitansi</a></li>
                             <li class=""><a data-toggle="tab" href="#tab-2">Detail Biaya</a></li>
-                            <li class=""><a data-toggle="tab" href="#tab-3">Detail Uang Muka</a></li>
+                            <li class=""><a data-toggle="tab" class="tab-3" href="#tab-3">Detail Uang Muka</a></li>
                         </ul>
                         <div class="tab-content ">
                             <div id="tab-1" class="tab-pane active">
@@ -265,6 +265,7 @@
                                                 <th>Status Uang Muka</th>
                                                 <th>Jumlah</th>
                                                 <th>Nominal</th>
+                                                <th>Keterangan</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -603,6 +604,7 @@
                                     <tr>
                                         <td>Seq</td>
                                         <td colspan="2">
+                                            <input type="hidden" readonly="" name="" class="me_um_flag form-control input-sm">
                                             <input type="text"  readonly="" class="seq_um form-control" name="" value="1">
                                         </td>
                                     </tr>
@@ -1081,7 +1083,10 @@ function hitung_bayar() {
     var ed_kredit = Math.round($('.ed_kredit').val()).toFixed(2);
         ed_kredit = parseInt(ed_kredit);
 
-    var total     = total_bayar + ed_debet - ed_kredit;
+    var um        = Math.round($('.um').val()).toFixed(2);
+        um        = parseInt(um);
+
+    var total     = total_bayar + ed_debet - ed_kredit - um;
     if (total < 0) {
         total = 0;
     }
@@ -1293,33 +1298,88 @@ function pilih_um(par) {
 
 }
 var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
-
+     columnDefs: [  
+                      {
+                         targets: 0,
+                         className: 'center'
+                      },
+                      {
+                         targets: 4 ,
+                         className: 'center'
+                      },
+       
+                      {
+                         targets: 3,
+                         className: 'right'
+                      },
+                      {
+                      
+                         targets: 5,
+                         className: 'center'
+                      },
+                      {
+                      
+                         targets: 6,
+                         className: 'center'
+                      }
+                    ],
 });
 $('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.'});
-$('.jumlah_bayar_um ').keyup(function(){
-    if ($(this).val() > $('.total_um ').val()) {
-        $(this).val($('.total_um ').val());
-    }
-});
-
+// $('.jumlah_bayar_um ').blur(function(){
+//     var jb =$(this).val();
+//     jb = jb.replace(/[^0-9]\-+/g,"");
+//     if (jb > $('.total_um ').val()) {
+//         $(this).val(accounting.formatMoney($('.total_um ').val(),"",0,'.',','));
+//     }
+// });
+var count_um = 1;
 $('#save_um').click(function(){
     var seq_um    = $('.seq_um').val();
     var no_um     = $('.no_um').val();
     var total_um  = $('.total_um').val();
     var status_um  = $('.status_um').val();
+    var Keterangan_um  = $('.Keterangan_um').val();
     var jumlah_bayar_um   = $('.jumlah_bayar_um ').val();
     jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
 
     tabel_uang_muka.row.add([
             seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">',
-            no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um">',
+            no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
             status_um+'<input type="hidden" value="'+status_um+'" class="m_um">',
-            total_um+'<input type="hidden" value="'+accounting.formatMoney(total_um,"",2,'.',',')+'" class="m_um_total_text">'+
-            '<input type="hidden" value="'+total_um+'" class="m_um_total">',
-            total_um+'<input type="hidden" value="'+total_um+'" class="m_um">',
-        ])
+            accounting.formatMoney(total_um,"",2,'.',',')+
+            '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]>',
+             accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
+            '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
+            '<input type="text" value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
+            '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+            '<label class="fa fa-trash"><label></button>'+
+            '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
+            '<label class="fa fa-pencil"><label></button>'
 
+        ]).draw();
+count_um++;
+$('.seq_um ').val(count_um);
+
+var temp = 0;
+$('.m_um_jumlah_bayar').each(function(){
+    var temp1 = $(this).val();
+    temp1     = parseInt(temp1);
+    temp += temp1;
 });
+
+$('.um').val(temp);
+$('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
+$('.tab_detail ul li .tab-3').trigger('click');
+    $('#modal_um').modal('hide');
+});
+
+
+
+// edit um
+function edit_detail_um(p) {
+    // body...
+}
+
 $('#btnsimpan').click(function(){
     swal({
         title: "Apakah anda yakin?",
