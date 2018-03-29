@@ -1593,6 +1593,15 @@ Route::get('sales/laporaninvoicepenjualanperitem','laporan_penjualan\laporanpenj
 //laporan seluruhnya
 Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 });
+//LAPORAN PEMBELIAN
+Route::get('masteritem/masteritem/masteritem','LaporanPurchaseController@masteritemmaster');
+Route::get('mastergudang/mastergudang/mastergudang','LaporanPurchaseController@masteritemgudang');
+Route::get('mastersupplier/mastersupplier/mastersupplier','LaporanPurchaseController@mastersupplier');
+Route::get('masterbayarbank/masterbayarbank/masterbayarbank','LaporanPurchaseController@masterbayarbank');
+Route::get('masterkaskeluar/masterkaskeluar/masterkaskeluar','LaporanPurchaseController@masterkaskeluar');
+Route::get('masterfakturpembelian/masterfakturpembelian/masterfakturpembelian','LaporanPurchaseController@masterfakturpembelian');
+Route::get('masterpurchaseorder/masterpurchaseorder/masterpurchaseorder','LaporanPurchaseController@masterpurchaseorder');
+
 
 Route::get('logout', 'mMemberController@logout');
 
