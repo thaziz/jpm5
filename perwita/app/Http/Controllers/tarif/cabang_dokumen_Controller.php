@@ -48,7 +48,7 @@ class cabang_dokumen_Controller extends Controller
                                                            
                                                             <button type="button" disabled="" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
 
-                                                             <button type="button" disabled="" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
+                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
                                                         </div> ';
                                             $i++;
                                             
@@ -143,9 +143,7 @@ class cabang_dokumen_Controller extends Controller
         }
 
 
-        if ($kode_utama < 10000 ) {
-            $kode_utama = '0000'.$kode_utama;
-        }
+        
         $kodekota = $request->kodekota;
         $kodecabang = Auth::user()->kode_cabang;
 
@@ -177,16 +175,14 @@ class cabang_dokumen_Controller extends Controller
 
               if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
                 }
                         $regular = array(
@@ -207,17 +203,15 @@ class cabang_dokumen_Controller extends Controller
             
              if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;   
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;            
                 }
 
             $express = array(
@@ -240,16 +234,14 @@ class cabang_dokumen_Controller extends Controller
 
                if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama;            
                 }
 
@@ -279,17 +271,12 @@ class cabang_dokumen_Controller extends Controller
       }
   }
     }else{
-        $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
+                  
         $kot1 = $request->cb_kota_asal;
         $kot2 = $request->cb_kota_tujuan;
         $cek_sendiri = DB::table('tarif_cabang_dokumen')->where('id_kota_asal','=',$kot1)->where('id_kota_tujuan','=',$kot2)->get();      
         $ngecek = count($cek_sendiri);
 
-        if ($ngecek > 1) {
-            $hasil_cek = 'Data Sudah ada di database !';
-            $result['hasil_cek']=$hasil_cek;
-            return json_encode($result);
-        }else{
 
          if ($crud == 'N') {
             if ($ngecek > 1) {
@@ -297,6 +284,19 @@ class cabang_dokumen_Controller extends Controller
                         $result['hasil_cek']=$hasil_cek;
                         return json_encode($result);
                     }else{
+
+                if ($datadetailcount == 0) {
+                    $kode_detail += 1;
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama; 
+                }
+                else if ($kode_detailtambah1 == $kode_detailtambah1) {
+                    $kode_detail += 1;
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;    
+                }
                     $regular = array(
                         'kode_sama' => $kode_sama,
                         'kode_detail'=>$kode_detail,
@@ -314,17 +314,15 @@ class cabang_dokumen_Controller extends Controller
 
                 if ($datadetailcount == 0) {
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama; 
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama; 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1) {
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;    
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'D'.'E'.$kodecabang.$kode_utama;    
                 }
                 $express = array(
                         'kode_sama' => $kode_sama,
@@ -342,16 +340,14 @@ class cabang_dokumen_Controller extends Controller
                     );
                 if ($datadetailcount == 0) {
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama; 
                 }
                 else if ($kode_detailtambah1 == $kode_detailtambah1) {
                     $kode_detail += 1;
-                    if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                    $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_outlet = $kodekota.'/'.'D'.'O'.$kodecabang.$kode_utama; 
                 }
                 if ($request->harga_outlet != null) {
@@ -389,15 +385,12 @@ class cabang_dokumen_Controller extends Controller
                 $integer_out =  (int)$id_outlet_edit;
                 
                 
-                if ($integer_reg < 10000) {
-                    $integer_reg = '0000'.$integer_reg; 
-                }
-                if ($integer_exp < 10000) {
-                    $integer_exp = '0000'.$integer_exp; 
-                }
-                if ($integer_out < 10000) {
-                    $integer_out = '0000'.$integer_out; 
-                }
+                $integer_reg = $integer_reg;
+                $integer_reg = str_pad($integer_reg, 5,'0',STR_PAD_LEFT);
+                $integer_exp = $integer_exp;
+                $integer_exp = str_pad($integer_exp, 5,'0',STR_PAD_LEFT);
+                $integer_out = $integer_out;
+                $integer_out = str_pad($integer_out, 5,'0',STR_PAD_LEFT);
                 
                 if ($kodekota == '') {
                     $kode_reguler_edit = $request->id_reguler;
@@ -415,7 +408,7 @@ class cabang_dokumen_Controller extends Controller
 
 
                 if ($kodekota == '') {
-                    $kode_reguler_edit = $request->id_outlet;
+                    $kode_outlet_edit = $request->id_outlet;
                 }else{   
                     $kode_outlet_edit = $kodekota.'/'.'D'.'O'.$kodecabang.$integer_out;
                 }
@@ -434,9 +427,7 @@ class cabang_dokumen_Controller extends Controller
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
                    );
-                   if ($request->id_reguler_edit < 10000) {
-                    $request->id_reguler_edit = '0000'.$integer_exp; 
-                }
+                   
                 // return $regular;
                 $express = array(
                         'kode_sama' => $request->ed_kode_old,
@@ -455,10 +446,7 @@ class cabang_dokumen_Controller extends Controller
                
                    
                 if ($request->harga_outlet != null) {
-                     if ($request->id_reguler_edit < 10000) {
-                    $request->id_reguler_edit = '0000'.$integer_out; 
-                }
-                $outlet = array(
+                   $outlet = array(
                         'kode_sama' => $request->ed_kode_old,
                         'kode_detail'=>$request->id_outlet_edit,
                         'kode'=>$kode_outlet_edit,
@@ -474,12 +462,14 @@ class cabang_dokumen_Controller extends Controller
                     );
             $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_outlet)->update($outlet);
 
+            }else{
+                
             }
 
             $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_reguler)->update($regular);
             $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_express)->update($express);
         }
-     }
+     
 
     }
 

@@ -44,106 +44,80 @@
                 <div class="box-body">
                 
                 <div class="row">
+                <a id="totop" href="#" class="pull-right" style="margin-right: 20px;color: grey;" title="SCROLL KE BAWAH"><i class="fa-2x fa fa-arrow-circle-down"></i></a>
+
+                  <h3 style="text-align: center"> PT JAWA PRATAMA MANDIRI  <br> Laporan Register Rekap Kartu Hutang <br>
+                  {{-- Periode : July - 2017 --}}
+                </h3>
                 <div class="col-xs-6">
-                <table class="table table-bordered table-striped">
-                      <tr>
-                        <td style="width:120px"> Periode</td> <td> <div class="input-group date">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
-                          </div>
-                          <td>
-                              s/d
-                           </td>
+                   Dimulai :<div class="input-group">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                          <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
+                                              date" >
 
-                           <td>  <div class="input-group date">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="03/04/2014">
-                          </div></td>
-                           </td>  
-                      </tr>
-                    
-                      <tr>
-                        <td style="width:120px" rowspan="2"> Lihat Berdasarkan </td>
-                        <td> <a class="btn btn-warning" style="width:120px"> Kode Supplier </a>
-                        <td  colspan="2">
-                             <input type="text" class="form-control">
-                        </td>
-                      </tr>
-
-                      <tr>
-                          <td> <a class="btn btn-warning" style="width: 120px"> Acc Hutang </a></td>
-                          <td colspan="2"> <input type="text" class="form-control"></td>
-                      </tr>
-                      <br>
-                  </table>
-
+                              </div>  
+                      
+                      
+            
                 </div>
-                    <div class="col-xs-6">
-                    <br>
-                        <table class="table table-bordered table-striped">
-                            <tr>
-                                  <td style="width:120px"> Lihat Berdasarkan </td>
-                                  <td> <a class="btn btn-info" style="width:120px"> Rekap </a> &nbsp; &nbsp;  <a class="btn btn-info" style="width:120px"> Detail </a> </td>
-                                 
-                            </tr>
-                            <tr>
-                                   <td colspan="3" style="text-align: center"> <a class="btn btn-success" style="width:200px"> CETAK </a> </td>
-                            </tr>
-                        </table>
-                    </div>
+                <div class="col-xs-6">
+                   Diakhiri :  <div class="input-group">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                          <input type="text" class=" date form-control date_to date_range_filter
+                                              date" name="max" id="max" >
+                              </div>
                 </div>
-
-                  <hr>
+                
+               
 
                 <div class="col-xs-12">
-                    <br>
+                  <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-success" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> cari </a> </div>
+                
+                <div class="row pull-right " style="margin-top: -40px;    margin-right: 84px;"> &nbsp; &nbsp; <a class="btn btn-warning" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
 
-                <h3 style="text-align: center"> PT JAWA PRATAMA MANDIRI  <br> Laporan Register Rekap Kartu Hutang <br>
-                  Periode : July - 2017
-                </h3>
+                <div class="row pull-right" style="margin-top: -40px;    margin-right: 2px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
 
                   <br>
-               
-                  <table id="addColumn" class="table table-bordered table-striped tbl-item">
+                  <div class="hiddening">
+            <table id="addColumn" class="table table-bordered table-striped tbl-item" width="100%">
                     <thead>
                      <tr>
-                        <th style="width:10px;text-align:center"> No  </th>
-                        <th style="text-align:center"> Tanggal  </th>
-                        <th style="text-align:center"> Nomor Bukti  </th>
-                        <th style="text-align:center"> Keterangan  </th>
-                        <th style="text-align:center"> Debet  </th>
-                        <th style="text-align:center"> Kredit </th>
-                        <th style="text-align:center"> Saldo </th>
+                        <th style="text-align:center;height: 30px;" width= '3%'> No  </th>
+                        <th style="text-align:center" width="22%"> No Faktur  </th>
+                        <th style="text-align:center" width="12%"> Tanggal  </th>
+                        <th style="text-align:center" width="28%"> Keterangan  </th>
+                        <th style="text-align:center" width="12%"> DPP  </th>
+                        <th style="text-align:center" width="12%"> netto </th>
+                        <th style="text-align:center" width="12%"> netto </th>
                     </tr>
                    
                     </thead>
-                    
                     <tbody>
-                    <tr>
-                      <td> 1  </td>
-                      <td> 13 / 07 / 2015 </td>
-                      <td>  FB - 0018 / AP / 0717</td>
-                      <td>  Sistem Informasi Aplikasi Akuntansi Web </td>
-                      <td> Debet </td>
-                      <td> 0 </td>
-                      <td style="text-align: right"> Rp 36.015.000,00 </td>
+                      @foreach ($data as $index => $a)               
+                    <tr align="center">
+                      <td> {{ $index+1 }}  </td>
+                      <td> {{ $a->fp_nofaktur }}  </td>
+                      <td> {{ $a->fp_tgl }} </td>
+                      <td> {{ $a->fp_keterangan}} </td>
+                      <td style="text-align: right"> {{ number_format($a->fp_dpp,0,',','.') }} </td>
+                      <td style="text-align: right"> {{ number_format($a->fp_netto,0,',','.') }}</td>
+                      <td style="text-align: right"> {{ number_format($a->fp_netto,0,',','.') }} </td>
+                    </tr>
+                     @endforeach
+                     <tr style="border-top: none;">
+                      <td align="right" colspan="4">Total :</td>
+                      <td align="right">{{ number_format($debet,0,',','.') }}</td>
+                      <td align="right">{{ number_format($kredit,0,',','.') }}</td>
+                      <td align="right">{{ number_format($saldo,0,',','.') }}</td>
                     </tr>
                     
-                    <tr>
-                      <td colspan="4" style="text-align: center"> Total </td>
-                       <td style="text-align: right"> Rp 36.015.000,00 </td>
-                       <td> 0 </td>
-                        <td style="text-align: right"> Rp 36.015.000,00 </td>
-                    </tr>
-                    
-                    <tr>
-                        <td colspan="4" style="text-align: center"> Grand Total </td>
-                          <td style="text-align: right"> Rp 36.015.000,00 </td>
-                          <td> 0 </td>
-                          <td> </td>
-                    </tr>
-
+                
                     </tbody>
                    
                   </table>
+                  </div>
+                    <div id="anjay" class="col-md-12"></div>
+     
                   </div>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -157,6 +131,7 @@
         </div>
     </div>
 </div>
+</div>
 
 
 
@@ -169,29 +144,84 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+  function cari(){
+      lol = $('#min').val();
+       lolol = $('#max').val();
+$.ajax({
+   url : baseUrl + '/kartuhutangajax/kartuhutangajax',
+   type:'get',
+   data:{xox:lol,xoxx:lolol},
+   success:function(data){
+      $('.hiddening').css('display','none')
+      $('#anjay').html(data)
+   }
 
+});
+}
 
-
-    tableDetail = $('.tbl-item').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
-    });
-
-    $('.date').datepicker({
+   $('.date').datepicker({
         autoclose: true,
-        format: 'dd-mm-yyyy'
+        format: 'yyyy-mm-dd'
     });
-    
-    $no = 0;
-    $('.carispp').click(function(){
-      $no++;
-      $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
-    })
- 
-   
+         
+      function cetak(){
+       x = $('#min').val();
+       x1 = $('#max').val();
+
+
+
+      $.ajax({
+        data: {a:x,b:x1,c:'download'/*,d:z,e:z1,f:z2*/},
+        url: baseUrl + '/reportkartuhutang/reportkartuhutang',
+        type: "get",
+         complete : function(){
+        window.open(this.url,'_blank');
+        },     
+        success : function(data){
+        // window.open(this.data,'_blank');  
+        }
+      });
+    }
+    function excel(){
+       x = $('#min').val();
+       x1 = $('#max').val();
+
+
+
+      $.ajax({
+        data: {a:x,b:x1,c:'download'/*,d:z,e:z1,f:z2*/},
+        url: baseUrl + '/reportexcelkartuhutang/reportexcelkartuhutang',
+        type: "get",
+         complete : function(){
+        window.open(this.url,'_blank');
+        },     
+        success : function(data){
+        // window.open(this.data,'_blank');  
+        }
+      });
+    }
+   $('#totop').click(function(){
+    var body = $("html, body");
+    body.animate({scrollTop:$(document).height()}, 'fast');
+    return false;
+   })
 
 </script>
 @endsection
+
+
+
+
+    {{-- <tr>
+                      <td colspan="4" style="text-align: center"> Total </td>
+                       <td style="text-align: right"> Rp 36.015.000,00 </td>
+                       <td> 0 </td>
+                        <td style="text-align: right"> Rp 36.015.000,00 </td>
+                    </tr>
+                    
+                    <tr>
+                        <td colspan="4" style="text-align: center"> Grand Total </td>
+                          <td style="text-align: right"> Rp 36.015.000,00 </td>
+                          <td> 0 </td>
+                          <td> </td>
+                    </tr> --}}

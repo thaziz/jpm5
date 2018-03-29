@@ -181,6 +181,17 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Jenis</td>
+                                    <td>   
+                                        <select class="form-control e"  name="satuan" style="width:100%">
+                                            <option value="" selected="" disabled="">-- Pilih Kota jenis --</option>
+                                            @foreach ($satuan as $row)
+                                            <option value="{{ $row->kode }}"> {{$row->nama}} </option>
+                                             @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">Harga</td>
                                     <td><input type="text" class="form-control f" name="ed_harga" style="text-align: right;"></td>
                                 </tr>

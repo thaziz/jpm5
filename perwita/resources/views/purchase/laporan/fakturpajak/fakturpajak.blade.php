@@ -56,37 +56,11 @@
                   <table class="table table-bordered datatable table-striped">
                       <br>
                                                                                 
-                        <tr id="filter_col1" data-column="0">
-                           <th > Cari Nama BKK :  </th>
-                          <td >
-                            <input type="text" id="col0_filter" name="filter_cabang"  onkeyup="filterColumn()" value="" class="col-sm-12 asal form-control column_filter" placeholder="Pencarian.." >
-                          </td>
-                        
-                        
-                          <th> Pilih Laporan : </th>
-                          <td >
-                            <select class="form-control" onchange="location = this.value;">
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Master Item</option>
-                  <option value="/jpm/reportmasterdepartment/reportmasterdepartment">Laporan Data Department</option>
-                  <option value="/jpm/reportmastergudang/reportmastergudang" >Laporan Data Master Gudang</option>
-                  <option value="/jpm/reportmastersupplier/reportmastersupplier">Laporan Data Supplier</option>
-                  <option value="/jpm/reportspp/reportspp">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="/jpm/reportpo/reportpo">Laporan Data Order</option>
-                  <option value="/jpm/reportfakturpembelian/reportfakturpembelian">Laporan Data Faktur Pembelian</option>
-                  <option value="/jpm/buktikaskeluar/patty_cash">Laporan Data Patty Cash</option>
-                  <option value="/jpm/reportbayarkas/reportbayarkas" selected="" disabled="" style="background-color: #DDD; ">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="/jpm/reportbayarbank/reportbayarbank" >Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                  {{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Faktur vs Pelunasan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Analisa Usia Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Faktur Pajak Masukan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Uang Muka Pembelian</option> --}}
-                 </select>
-                          </td>
+                        <tr id="filter_col1">
+
                         </tr>
 
-                <tr>
+                    <tr>
                         <th> Dimulai : </th> 
                         <td>
                           <div class="input-group">
@@ -112,27 +86,42 @@
                   <table id="addColumn" class="table table_header table-bordered table-striped"> 
                     <thead>
                     <tr>
-                      <th  style="text-align: center"> No.</th>                      
-                      <th  style="text-align: center"> Nota BKK</th>
+                      <th  style="text-align: center"> No.</th> 
+                      <th  style="text-align: center"> No.Faktur</th>                                           
+                      <th  style="text-align: center"> Nota</th>
                       <th  style="text-align: center"> Tgl </th>
-                      <th  style="text-align: center"> jenis bayar </th>
-                      <th  style="text-align: center"> Akun kas - Akun hutang</th>
-                      <th  style="text-align: center"> keterangan</th>
-                      <th  style="text-align: center"> Status BKK </th>
+                      <th  style="text-align: center"> Masa pajak </th>
+                      <th  style="text-align: center"> PPN</th> 
+                      <th  style="text-align: center"> DPP</th>
+                      <th  style="text-align: center"> Hasil PPN</th>
+                      <th  style="text-align: center"> Jenis PPN </th>
                       <th  hidden=""></th>
                     </tr>
                     </thead>
                     <tbody>
                       @foreach ($array as $index => $element)
                     <tr>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_id }}"> {{ $index+1 }} </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_nota }}">  {{ $element->bkk_nota }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_tgl }}">  {{ $element->bkk_tgl }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_jenisbayar }}">  {{ $element->bkk_jenisbayar }} </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_akun_kas }}">  {{ $element->bkk_akun_kas }} - {{ $element->bkk_akun_hutang }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_keterangan }}">  {{ $element->bkk_keterangan }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_status }}">  {{ $element->bkk_status }} </td>
-                      <td hidden=""><input type="hidden" name="" value="{{ $element->bkk_akun_hutang }}"></td>
+                      <td><input type="hidden" name="" value="{{ $index+1 }}"> {{ $index+1 }} </td>
+                      <td><input type="hidden" name="" value="{{ $element->fp_nofaktur }}"> {{ $element->fp_nofaktur }} </td>
+                      <td><input type="hidden" name="" value="{{ $element->fpm_nota }}">  {{ $element->fpm_nota }}  </td>
+                      <td><input type="hidden" name="" value="{{ $element->fpm_tgl }}">  {{ $element->fpm_tgl }}  </td>
+                      <td><input type="hidden" name="" value="{{ $element->fpm_masapajak }}">  {{ $element->fpm_masapajak }} </td>
+                      <td><input type="hidden" name="" value="{{ $element->fpm_inputppn }}">  {{ $element->fpm_inputppn }}</td>
+                      <td><input type="hidden" name="" value="{{ $element->fpm_dpp }}">  {{ number_format($element->fpm_dpp,2,',','.') }}</td>
+                      <td><input type="hidden" name="" value="{{ $element->fpm_hasilppn  }}"> {{ number_format($element->fpm_hasilppn,2,',','.')  }}</td>
+                      <td><input type="hidden" name="" value="{{ $element->fpm_jenisppn }}">  
+                        @if ($element->fpm_jenisppn === 'E')
+                            Exclude
+                        @elseif ($element->fpm_jenisppn === 'I')
+                            Include
+                        @else
+                            Tanpa
+                        @endif
+                          
+                        
+                        
+                      </td>
+                      <td hidden=""><input type="hidden" name="" value=""></td>
 
                     </tr>
                     @endforeach
@@ -184,8 +173,8 @@
                /* messageTop: 'Hasil pencarian dari Nama : ',*/
                 text: ' Excel',
                 className:'excel',
-                title:'LAPORAN PELUNASAN HUTANG / PEMBAYARAN KAS',
-                filename:'BKK-'+a+b+c,
+                title:'LAPORAN FAKTUR PAJAK PEMASUKAN',
+                filename:'FAKTURPAJAKMASUK-'+a+b+c,
                 init: function(api, node, config) {
                 $(node).removeClass('btn-default'),
                 $(node).addClass('btn-warning'),
@@ -228,11 +217,11 @@
             var max = $('#max').datepicker("getDate");
             // console.log(max);
 
-            var startDate = new Date(data[2]);
+            var startDate = new Date(data[3]);
             // console.log(startDate);
             if (min == null || min == '' && max == null || max == '') { return true; }
             if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
+            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) { return true;}
             if (startDate <= max && startDate >= min) { return true; }
             return false;
         }
@@ -257,26 +246,24 @@
  
    
     function cetak(){
-      var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < asd.length; i++){
-           asw[i] =  $(asd[i][0]).val();
-       }
-       console.log(asw);
+       z = $('#min').val();
+       z1 = $('#max').val();
+       console.log(z);
+       console.log(z1);
 
 
       $.ajax({
-        data: {asw:asw,download:'download'},
-        url: baseUrl + '/masterkaskeluar/masterkaskeluar/masterkaskeluar',
+        data: {a:z,b:z1,c:'download'},
+        url: baseUrl + '/reportfakturpajakmasukan/reportfakturpajakmasukan',
         type: "get",
          complete : function(){
         window.open(this.url,'_blank');
         },     
         success : function(data){
+        // window.open(this.data,'_blank');  
         }
       });
     }
-   
 
 </script>
 @endsection
