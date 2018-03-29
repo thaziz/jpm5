@@ -70,10 +70,11 @@
                                     </select>
                                 </td>
                             </tr>
+                            @if(Auth()->user()->punyaAkses('Master Kontrak','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
-                                    <select class="form-control cabang chosen-select-width" disabled="" name="cabang" >
+                                    <select class="form-control cabang chosen-select-width"  name="cabang" >
                                       <option selected="" disabled="">- Pilih Cabang -</option>
                                       @foreach($cabang as $val)
                                       @if(Auth::user()->kode_cabang == $val->kode)
@@ -85,6 +86,23 @@
                                     </select>
                                 </td>
                             </tr>
+                            <tr class="disabled">
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td colspan="3">
+                                    <select class="form-control cabang chosen-select-width"  name="cabang" >
+                                      <option selected="" disabled="">- Pilih Cabang -</option>
+                                      @foreach($cabang as $val)
+                                      @if(Auth::user()->kode_cabang == $val->kode)
+                                      <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      @else
+                                      <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      @endif
+                                      @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            @else
+                            @endif
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
