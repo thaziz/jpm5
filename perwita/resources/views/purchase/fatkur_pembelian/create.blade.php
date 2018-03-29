@@ -91,7 +91,7 @@
                             <tr>
                             <td width="150px"> Cabang </td>
                             <td>
-                              <select class='form-control chosen-select-width1 cabang' name="cabang">
+                              <select class="form-control chosen-select-width1 cabang" name="cabang">
                                   <option value="">
                                     Pilih-Cabang
                                   </option>
@@ -4546,7 +4546,7 @@
     e.preventDefault();
 
    var cab = $('.cabang').val();
-
+   console.log(cab);
       $.ajax({
       url:baseUrl + '/fakturpembelian/notapenerusagen',
       data:'cab='+cab,
