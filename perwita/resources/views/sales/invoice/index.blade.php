@@ -151,6 +151,7 @@
 
     function edit(id){
         window.location.href = baseUrl + '/sales/edit_invoice/'+id;
+        
 
     }
 
