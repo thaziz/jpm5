@@ -145,8 +145,11 @@ $(document).ready(function() {
     });
 
     function ngeprint(id){
-        console.log(id);
         window.open(baseUrl+'/sales/kwitansi/cetak_nota/'+id);
+    }
+
+    function edit(id){
+        window.location.href = baseUrl +'/sales/edit_kwitansi/'+id
     }
 
     function hapus(id) {

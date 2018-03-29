@@ -1077,5 +1077,40 @@ class penerimaan_penjualan_Controller extends Controller
 
 
     }
+    public function edit_kwitansi($id)
+    {
+        $comp = Auth::user()->kode_cabang;
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
+        $akun = DB::table('d_akun')
+                  ->get();
+
+
+        $tgl  = Carbon::now()->format('d/m/Y');
+
+        $data = DB::table('kwitansi')
+                  ->where('k_nomor',$id)
+                  ->first();
+
+        $data_dt = DB::table('kwitansi')
+                     ->join('kwitansi_d','kd_id','=','k_id')
+                     ->where('k_nomor',$id)
+                     ->get();
+        $data_bl = DB::table('kwitansi')
+                     ->join('kwitansi_biaya_d','kb_id','=','k_id')
+                     ->where('k_nomor',$id)
+                     ->get();    
+
+        $data_um = DB::table('kwitansi')
+                     ->join('kwitansi_biaya_d','kb_id','=','k_id')
+                     ->where('k_nomor',$id)
+                     ->get();  
+        $akun_bank = DB::table('masterbank')
+                  ->get();     
+        return view('sales.penerimaan_penjualan.edit_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','data_bl','data_um'));
+    }
 
 }

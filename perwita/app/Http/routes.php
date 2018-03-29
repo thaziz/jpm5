@@ -965,6 +965,10 @@ Route::get('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpa
 Route::get('sales/kwitansi/cetak_nota/{id}', 'sales\penerimaan_penjualan_Controller@cetak_nota');
 Route::get('sales/hapus_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_kwitansi');
 
+Route::get('sales/edit_kwitansi/{id}', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');
+
+
+
 //end penerimaan penjualan
 
 //posting_pembayaran
@@ -978,6 +982,8 @@ Route::get('sales/posting_pembayaran_form/append', 'sales\posting_pembayaran_Con
 Route::get('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
 Route::get('sales/posting_pembayaran_edit/{id}', 'sales\posting_pembayaran_Controller@edit');
 Route::get('sales/posting_pembayaran_hapus', 'sales\posting_pembayaran_Controller@posting_pembayaran_hapus');
+
+
 
 
 //end penerimaan penjualan
