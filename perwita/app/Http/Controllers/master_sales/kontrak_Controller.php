@@ -174,6 +174,7 @@ class kontrak_Controller extends Controller
 
         $data_dt = DB::table('kontrak_customer_d')              
                   ->join('jenis_tarif','jt_id','=','kcd_jenis_tarif')
+                  ->join('tipe_angkutan','kode','=','kcd_kode_angkutan')
                   ->where('kcd_id',$id)
                   ->get();
         $asal    = DB::table('kontrak_customer_d')

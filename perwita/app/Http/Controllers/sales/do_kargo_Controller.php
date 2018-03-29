@@ -846,4 +846,16 @@ class do_kargo_Controller extends Controller
     {
        return $this->save_do_kargo($request);
     }
+    public function cari_kontrak(request $request)
+    {
+        $data = DB::table('kontrak_customer')
+                  ->where('kc_kode_customer',$request->customer_do)
+                  ->get();
+
+        if ($data != null) {
+            return response()->json(['status'=>1]);
+        }else{
+            return response()->json(['status'=>0]);
+        }
+    }
 }

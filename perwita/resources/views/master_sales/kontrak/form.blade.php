@@ -67,9 +67,7 @@
                                         @foreach($customer as $val)
                                         <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                         @endforeach
-
                                     </select>
-                                
                                 </td>
                             </tr>
                             <tr>
@@ -119,6 +117,7 @@
                             <th>Tujuan</th>
                             <th>Jenis Tarif</th>
                             <th>Satuan</th>
+                            <th>Tipe Angkutan</th>`
                             <th>Harga</th>
                             <th>Keterangan</th>
                             <th style="text-align: center;">Aksi</th>
@@ -421,6 +420,7 @@ var jenis_tarif_modal_text   = $('.jenis_tarif_modal option:selected').text();
 var acc_akun_modal_text      = $('.acc_akun_modal option:selected ').text();
 var csf_akun_modal_text      = $('.csf_akun_modal option:selected').text();
 var satuan_modal_text        = $('.satuan_modal option:selected').text();
+var tipe_angkutan_text       = $('.tipe_angkutan option:selected').text();
 
 var harga_modal              = $('.harga_modal').val();
 var keterangan_modal         = $('.keterangan_modal ').val();
@@ -433,7 +433,8 @@ var jenis_tarif_modal        = $('.jenis_tarif_modal').val();
 var acc_akun_modal           = $('.acc_akun_modal ').val();
 var csf_akun_modal           = $('.csf_akun_modal').val();
 var satuan_modal             = $('.satuan_modal').val();
-
+var tipe_angkutan            = $('.tipe_angkutan').val();
+console.log(harga_modal);
 kota_asal_modal_text   = kota_asal_modal_text.split('-');
 kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
 
@@ -443,6 +444,7 @@ kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
            jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
            '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
            satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+           tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
            '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
            '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
            '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
@@ -538,7 +540,7 @@ $('#btnsimpan').click(function(){
 
       $.ajax({
       url:baseUrl + '/master_sales/save_kontrak',
-      type:'get',
+      type:'post',
       data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang,
       success:function(response){
         swal({
@@ -548,7 +550,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   // location.reload();
+                   location.reload();
         });
       },
       error:function(data){
