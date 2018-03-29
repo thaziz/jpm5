@@ -705,11 +705,13 @@ Route::get('sales/kecamatan', function(){
 Route::get('master_sales/kontrak', 'master_sales\kontrak_Controller@index');
 Route::get('master_sales/kontrak_form', 'master_sales\kontrak_Controller@form');
 Route::get('master_sales/edit_kontrak/{id}', 'master_sales\kontrak_Controller@edit_kontrak');
-Route::post('master_sales/save_kontrak', 'master_sales\kontrak_Controller@form');
+Route::post('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
+Route::get('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
 Route::post('master_sales/update_kontrak', 'master_sales\kontrak_Controller@update_kontrak');
 Route::get('master_sales/kontrak_set_nota', 'master_sales\kontrak_Controller@kontrak_set_nota');
 Route::get('master_sales/set_kode_akun_acc', 'master_sales\kontrak_Controller@set_kode_akun_acc');
 Route::get('master_sales/set_kode_akun_csf', 'master_sales\kontrak_Controller@set_kode_akun_csf');
+Route::get('master_sales/hapus_kontrak', 'master_sales\kontrak_Controller@hapus_kontrak');
 
 // end kontrak
 
@@ -945,6 +947,7 @@ Route::get('sales/nota_kwitansi', 'sales\penerimaan_penjualan_Controller@nota_kw
 Route::get('sales/nota_bank', 'sales\penerimaan_penjualan_Controller@nota_bank');
 Route::get('sales/cari_invoice', 'sales\penerimaan_penjualan_Controller@cari_invoice');
 Route::get('sales/akun_biaya', 'sales\penerimaan_penjualan_Controller@akun_biaya');
+Route::get('sales/akun_bank', 'sales\penerimaan_penjualan_Controller@akun_bank');
 Route::get('sales/akun_all', 'sales\penerimaan_penjualan_Controller@akun_all');
 Route::get('sales/append_invoice', 'sales\penerimaan_penjualan_Controller@append_invoice');
 Route::get('sales/datatable_kwitansi', 'sales\penerimaan_penjualan_Controller@datatable_kwitansi')->name('datatable_kwitansi');
@@ -1580,6 +1583,8 @@ Route::get('data/jurnal/{ref}', 'sales\invoice_Controller@jurnal');
 //laporan invoicepenjualan
 Route::get('sales/laporaninvoicepenjualan','laporan_penjualan\laporaninvoiceController@index');
 Route::get('data/jurnal/{ref}/{note}', 'jurnalController@lihatJurnal');
+Route::get('data/jurnal-umum', 'jurnalController@lihatJurnalUmum');
+
 
 //laporan Do
 Route::get('sales/laporandeliveryorder','laporan_penjualan\laporandoController@index');

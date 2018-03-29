@@ -587,8 +587,6 @@ class penerimaan_penjualan_Controller extends Controller
         $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
         $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
         $akun = DB::table('d_akun')
-                  ->where('id_parrent','1001')
-                  ->where('kode_cabang',$comp)
                   ->get();
 
 
@@ -678,6 +676,13 @@ class penerimaan_penjualan_Controller extends Controller
                   ->where('kode_cabang',$request->cabang)
                   ->get();
         return view('sales.penerimaan_penjualan.akun_biaya',compact('akun'));
+    }
+
+    public function akun_bank(request $request)
+    {
+        $akun = DB::table('masterbank')
+                  ->get();
+        return view('sales.penerimaan_penjualan.akun_bank',compact('akun'));
     }
     public function cari_invoice(request $request)
     {   

@@ -134,6 +134,7 @@
             "autoWidth": false,
             "pageLength": 10,
             "retrieve" : true,
+            "order": [[ 1, "desc" ]],
             "columns": [
             { "data": "nomor" },
             { "data": "tanggal" },

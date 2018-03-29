@@ -196,6 +196,17 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td>Tipe Angkutan</td>
+                                <td>
+                                    <select name="tipe_angkutan" class="form-control tipe_angkutan chosen-select-width">
+                                        <option value="0">Pilih - Tipe Angkutan</option>
+                                        @foreach($tipe_angkutan as $val)
+                                            <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td>Harga</td>
                                 <td>
                                     <input class="form-control harga_modal" type="text" style="text-align: right">
@@ -318,7 +329,7 @@
             $('.acc_tr').html(response);
         },
         error:function(){
-            // location.reload();
+            location.reload();
         }
     });
 
@@ -329,7 +340,7 @@
             $('.csf_tr').html(response);
         },
         error:function(){
-            // location.reload();
+            location.reload();
         }
     });
 });
@@ -527,7 +538,7 @@ $('#btnsimpan').click(function(){
 
       $.ajax({
       url:baseUrl + '/master_sales/save_kontrak',
-      type:'POST',
+      type:'get',
       data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang,
       success:function(response){
         swal({
@@ -537,7 +548,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   location.reload();
+                   // location.reload();
         });
       },
       error:function(data){
