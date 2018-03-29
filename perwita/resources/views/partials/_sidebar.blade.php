@@ -664,14 +664,14 @@
 
                     " href="{{ url('master_sales/subcon')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Subcon</a>
                         </li>
-                    <li >
+                   {{--  <li >
                         <a class="sidebar master-perusahaan 
 
                     {{Request::is('master_sales/biaya') ? 'active' : '' || 
                     Request::is('master_sales/biaya/*') ? 'active' : ''}} 
 
                     " href="{{ url('master_sales/biaya')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Biaya</a>
-                    </li>
+                    </li> --}}
                     <li >
                         <a class="sidebar master-perusahaan 
 

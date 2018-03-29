@@ -211,6 +211,13 @@
                                     
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">Telp PIC</td>
+                                    <td><input type="text" class="form-control" name="telp_pajak" ></td>
+
+                                    <td style="padding-top: 0.4cm">Email PIC</td>
+                                    <td><input type="text" class="form-control" name="email_pajak" ></td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">NPWP</td>
                                     <td><input type="text" class="form-control" name="ed_npwp" ></td>
 
@@ -219,13 +226,7 @@
                                         <input type="checkbox" name="ck_pph23">
                                     </td>
                                 </tr>
-                                 <tr>
-                                    <td style="padding-top: 0.4cm">Telp PIC</td>
-                                    <td><input type="text" class="form-control" name="telp_pajak" ></td>
-
-                                    <td style="padding-top: 0.4cm">Email PIC</td>
-                                    <td><input type="text" class="form-control" name="email_pajak" ></td>
-                                </tr>
+                                 
                                 <tr>
                                     <td style="padding-top: 0.4cm">Nama Pajak 23</td>
                                     <td>
