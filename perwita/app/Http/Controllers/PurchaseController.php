@@ -211,7 +211,7 @@ class PurchaseController extends Controller
 	}
 
 	public function savespp(Request $request) {
-		//dd($request);
+		dd($request);
 			$nospp = $request->nospp;
 			$cabang = $request->comp;
 			$dataspp = DB::select("select * from spp where spp_nospp = '$nospp' and spp_cabang = '$cabang'");
