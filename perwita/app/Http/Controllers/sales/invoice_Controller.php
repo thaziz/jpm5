@@ -79,16 +79,31 @@ class invoice_Controller extends Controller
     }
 
 
-    public function cetak_nota($nomor=null) {
-        $head = collect(\DB::select(" SELECT c.*,i.* FROM invoice i LEFT JOIN customer c ON c.kode=i.kode_customer WHERE i.nomor='$nomor' "))->first();
-		$pendapatan = $head->pendapatan;
-		if ($pendapatan == 'KORAN'){
-        	$detail = DB::select(" SELECT *,nomor_do ||'-'||id_do AS nomor FROM invoice_d d WHERE d.nomor_invoice='$nomor' ");
-		}else{
-        	$detail = DB::select(" SELECT *,nomor_do AS nomor FROM invoice_d d WHERE d.nomor_invoice='$nomor' ");
-		}
-        $terbilang = $this->penyebut($head->total_tagihan);
-        return view('sales.invoice.print',compact('head','detail','terbilang'));
+    public function cetak_nota($id) {
+        $head = DB::table('invoice')
+                  ->join('customer','kode','=','i_kode_customer')
+                  ->where('i_nomor',$id)
+                  ->first();
+        $detail = DB::table('invoice_d')
+                    ->where('id_nomor_invoice',$id)
+                    ->get();
+        $counting = 90;
+        $hitung = 30;
+
+        if ($counting % 30 == 0) {
+          $hitung +=30;
+        }
+        return $hitung;
+        if ($counting < $hitung) {
+          $hitung =30 - $counting;
+          for ($i=0; $i < $hitung; $i++) { 
+            $push[$i]=' ';
+          }
+        }
+
+        // return $push;
+        $terbilang = $this->penyebut($head->i_total_tagihan);
+        return view('sales.invoice.print',compact('head','detail','terbilang','push'));
     }
 
     public function penyebut($nilai=null) {

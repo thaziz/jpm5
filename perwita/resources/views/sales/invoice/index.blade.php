@@ -81,8 +81,12 @@
                                 <td>{{ $row->i_no_faktur_pajak }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <button type="button" onclick="hapus('{{$row->i_nomor}}')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                         <button type="button" onclick="edit('{{$row->i_nomor}}')" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button>
+                                        <button type="button" onclick="ngeprint('{{$row->i_nomor}}')" class="btn btn-sm btn-warning"><i class="fa fa-print"></i></button>
+                                        <button type="button" onclick="hapus('{{$row->i_nomor}}')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                        
+                                        
+
                                     </div>
                                 </td>
                             </tr>
@@ -148,6 +152,10 @@
     function edit(id){
         window.location.href = baseUrl + '/sales/edit_invoice/'+id;
 
+    }
+
+    function ngeprint(id){
+        window.open(baseUrl+'/sales/cetak_nota/'+id);
     }
 
     function hapus(id){
