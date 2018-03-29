@@ -107,7 +107,7 @@
                                     <tr>
                                         <td>Kota Asal</td>
                                         <td>
-                                            <select name="asal_do" class="form-control asal_do chosen-select-width">
+                                            <select onchange="reseting()" name="asal_do" class="form-control asal_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Asal</option>
                                             @foreach($kota as $val)
                                                 <option value="{{$val->id}}">{{$val->id}}-{{$val->nama}}</option>
@@ -118,7 +118,7 @@
                                     <tr>
                                         <td>Kota Tujuan</td>
                                         <td>
-                                            <select name="tujuan_do" class="form-control tujuan_do chosen-select-width">
+                                            <select onchange="reseting()" name="tujuan_do" class="form-control tujuan_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Tujuan</option>
                                             @foreach($kota as $val)
                                                 <option value="{{$val->id}}">{{$val->id}}-{{$val->nama}}</option>
@@ -249,18 +249,12 @@
                                                 </button>
                                             </span>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="">
-                                            <button type="button" id="buat_kontrak_kustomer" class="btn btn-primary">
-                                                Buat Kontrak
-                                            </button>
-                                        </td>
                                         <td style="padding-top: 0.4cm">Satuan</td>
                                         <td>
-                                            <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
+                                            <input type="text" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
                                     </tr>
+
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
                                         <td>
@@ -540,6 +534,14 @@ function ganti_nota(argument) {
         dataType:'json',
         success:function(data){
             $('.nomor_do').val(data.nota);
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
             cari_nopol_kargo();
         },
         error:function(){
@@ -601,7 +603,6 @@ $('#btn_cari_tarif').click(function(){
         }
     })
 });
-
 //hitung
 $('.jumlah').focus(function(){
     $('.jumlah').select();
@@ -748,6 +749,7 @@ $('.save').click(function(){
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);
+                    // $('#seragam_box').addClass('disabled');
                        
             });
         }else{
@@ -786,17 +788,45 @@ function cari_kontrak() {
         dataType:'json',
         success:function(data){
             if (data.status == 1) {
-                $('.kontrak_tarif').attr('checked',true);
+                $('.kontrak_tarif').prop('checked',true);
+                $('.discount ').addClass('disabled')
+                $('.discount ').attr('readonly',true)
                 // $('.kontrak_td').addClass('disabled');
             }else{
-                $('.kontrak_tarif').attr('checked',false);
+                $('.kontrak_tarif').prop('checked',false);
                 // $('.kontrak_td').addClass('disabled');
+                $('.discount ').removeClass('disabled')
+                $('.discount ').attr('readonly',false)
             }
+
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
         },
         error:function(){
         }
     })
 }
+
+
+function reseting() {
+    $('.satuan').val('');
+    $('.tarif_dasar_text').val('');
+    $('.tarif_dasar').val('');
+    $('.harga_master').val('');
+    $('.harga_master').val('');
+    $('#kode_tarif').val('');
+    $('.kcd_id').val('');
+    $('.kcd_dt').val('');
+
+    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
+}
+
 // ngeprint
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();

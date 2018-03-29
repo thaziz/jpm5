@@ -9,7 +9,7 @@
 
 .disabled {
     pointer-events: none;
-    opacity: 1;
+    opacity: 0.7;
 }
 .center{
     text-align: center;
@@ -67,18 +67,31 @@
                                             <input type="hidden" name="nomor_print" class="nomor_print form-control input-sm">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="disabled">
                                         <td>Cabang</td>
                                         <td>
-                                            <select disabled="" class="form-control cabang_select">
-                                            @foreach($cabang as $val)
+
+                                            @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
+                                                <select onchange="ganti_nota()" class="form-control cabang_select">
+                                                @foreach($cabang as $val)
+                                                    @if(Auth()->user()->kode_cabang == $val->kode)
+                                                    <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    @else
+                                                    <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    @endif
+                                                @endforeach
+                                                </select>
+                                            @else
+                                                <select disabled="" class="form-control cabang_select">
+                                                @foreach($cabang as $val)
                                                 @if(Auth::user()->kode_cabang == $val->kode)
-                                                <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                 @else
-                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                 @endif
-                                            @endforeach
-                                            </select>
+                                                @endforeach
+                                                </select>
+                                            @endif
                                             <input type="hidden" name="cabang_input" class="cabang_input form-control input-sm">
                                         </td>
                                     </tr>
@@ -100,7 +113,7 @@
                                     <tr>
                                         <td>Kota Asal</td>
                                         <td>
-                                            <select name="asal_do" class="form-control asal_do chosen-select-width">
+                                            <select onchange="reseting()" name="asal_do" class="form-control asal_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Asal</option>
                                             @foreach($kota as $val)
                                                 @if($data->id_kota_asal == $val->id)
@@ -115,7 +128,7 @@
                                     <tr>
                                         <td>Kota Tujuan</td>
                                         <td>
-                                            <select name="tujuan_do" class="form-control tujuan_do chosen-select-width">
+                                            <select onchange="reseting()" name="tujuan_do" class="form-control tujuan_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Tujuan</option>
                                             @foreach($kota as $val)
                                                 @if($data->id_kota_tujuan == $val->id)
@@ -278,16 +291,12 @@
                                                 </button>
                                             </span>
                                         </td>
-                                        
-                                    </tr>
-                                    <tr>
-                                        <td class="">
-                                            
-                                        </td>
+
                                         <td style="padding-top: 0.4cm">Satuan</td>
                                         <td>
                                             <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
+                                        
                                     </tr>
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
@@ -646,6 +655,19 @@ function hitung() {
     $('.tarif_dasar').val(temp1);
 
 }
+
+function reseting() {
+    $('.satuan').val('');
+    $('.tarif_dasar_text').val('');
+    $('.tarif_dasar').val('');
+    $('.harga_master').val('');
+    $('.harga_master').val('');
+    $('#kode_tarif').val('');
+    $('.kcd_id').val('');
+    $('.kcd_dt').val('');
+
+    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
+}
 // jika menggunakan tarif
 function pilih_tarif(a) {
     var kode = $(a).find('.kode_tarif').val();
@@ -760,7 +782,8 @@ $('.save').click(function(){
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);
-                       
+                    // $('.tabel_pengirim').addClass('disabled');
+                    // $('.tabel_penerima').addClass('disabled');
             });
         }else{
             swal({
@@ -815,16 +838,24 @@ function cari_kontrak() {
         dataType:'json',
         success:function(data){
             if (data.status == 1) {
-                $('.kontrak_tarif').attr('checked',true);
+                $('.kontrak_tarif').prop('checked',true);
+                $('.discount ').addClass('disabled')
+                $('.discount ').attr('readonly',true)
                 // $('.kontrak_td').addClass('disabled');
             }else{
-                $('.kontrak_tarif').attr('checked',false);
+                $('.kontrak_tarif').prop('checked',false);
                 // $('.kontrak_td').addClass('disabled');
+                $('.discount ').removeClass('disabled');
+                $('.discount ').attr('readonly',false);
             }
+
+            reseting();
         },
         error:function(){
         }
     })
 }
+
+
 </script>
 @endsection
