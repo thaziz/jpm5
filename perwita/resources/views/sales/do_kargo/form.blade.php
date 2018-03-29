@@ -70,11 +70,15 @@
                                         <td>
                                             <select disabled="" class="form-control cabang_select">
                                             @foreach($cabang as $val)
+                                            @if(Auth::user()->punyaAkses('do_kargo','cabang'))
                                                 @if(Auth::user()->kode_cabang == $val->kode)
                                                 <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                 @else
                                                 <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                 @endif
+                                            @else
+                                                <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                            @endif
                                             @endforeach
                                             </select>
                                             <input type="hidden" name="cabang_input" class="cabang_input form-control input-sm">
