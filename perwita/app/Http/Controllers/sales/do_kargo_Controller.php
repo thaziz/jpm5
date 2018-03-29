@@ -658,11 +658,12 @@ class do_kargo_Controller extends Controller
         $nopol = DB::table('kendaraan')
                          ->where('id',$request->tipe_kendaraan)
                          ->first();
-        if ($request->kc_id != 0) {
+        if ($request->kcd_id != 0) {
             $kontrak = true;
         }else{
             $kontrak = false;
         }
+        
         if ($cari_do == null) {
         // return $discount;
 

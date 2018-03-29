@@ -86,7 +86,8 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr class="disabled">
+                            @else
+                             <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
                                     <select class="form-control cabang chosen-select-width"  name="cabang" >
@@ -101,7 +102,6 @@
                                     </select>
                                 </td>
                             </tr>
-                            @else
                             @endif
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>

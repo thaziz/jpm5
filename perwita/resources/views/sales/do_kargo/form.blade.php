@@ -249,18 +249,12 @@
                                                 </button>
                                             </span>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="">
-                                            <button type="button" id="buat_kontrak_kustomer" class="btn btn-primary">
-                                                Buat Kontrak
-                                            </button>
-                                        </td>
                                         <td style="padding-top: 0.4cm">Satuan</td>
                                         <td>
-                                            <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
+                                            <input type="text" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
                                     </tr>
+
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
                                         <td>
@@ -601,7 +595,6 @@ $('#btn_cari_tarif').click(function(){
         }
     })
 });
-
 //hitung
 $('.jumlah').focus(function(){
     $('.jumlah').select();
@@ -748,6 +741,7 @@ $('.save').click(function(){
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);
+                    // $('#seragam_box').addClass('disabled');
                        
             });
         }else{
@@ -786,11 +780,15 @@ function cari_kontrak() {
         dataType:'json',
         success:function(data){
             if (data.status == 1) {
-                $('.kontrak_tarif').attr('checked',true);
+                $('.kontrak_tarif').prop('checked',true);
+                $('.discount ').addClass('disabled')
+                $('.discount ').attr('readonly',true)
                 // $('.kontrak_td').addClass('disabled');
             }else{
-                $('.kontrak_tarif').attr('checked',false);
+                $('.kontrak_tarif').prop('checked',false);
                 // $('.kontrak_td').addClass('disabled');
+                $('.discount ').removeClass('disabled')
+                $('.discount ').attr('readonly',false)
             }
         },
         error:function(){
