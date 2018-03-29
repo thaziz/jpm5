@@ -81,7 +81,7 @@
                                 <td>{{ $row->total }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        <a href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
                                         <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
                                         <a onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></a>
                                     </div>
@@ -164,6 +164,8 @@
 
 
     function hapus(id){
+    var nomor_do = id;
+        
         swal({
         title: "Apakah anda yakin?",
         text: "Hapus Data!",
@@ -175,12 +177,11 @@
         cancelButtonText: "Batal",
         closeOnConfirm: false
     },
-
     function(){
 
          $.ajax({
           url:baseUrl + '/sales/hapus_do_kargo',
-          data:{id},
+          data:{nomor_do},
           type:'get',
           success:function(data){
               swal({

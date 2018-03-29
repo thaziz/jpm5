@@ -2,7 +2,11 @@
 <select name="tipe_kendaraan" class="form-control tipe_kendaraan chosen-select-width1 input-sm">
 	@if($status == 1)
 	@foreach($data as $val)
+		@if($nopol == $val->nopol)
+		<option selected="" value="{{$val->id}}">{{$val->nopol}}</option>
+		@else
 		<option value="{{$val->id}}">{{$val->nopol}}</option>
+		@endif
 	@endforeach
 	@else
 		<option value="0">Nopol Tidak Ditemukan</option>

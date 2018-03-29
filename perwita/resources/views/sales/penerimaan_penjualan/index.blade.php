@@ -5,6 +5,9 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .right{
+        text-align: right;
+        }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -105,6 +108,17 @@ $(document).ready(function() {
         processing: true,
         serverSide: true,
         ajax: '{{ route('datatable_kwitansi') }}',
+        columnDefs: [  
+          
+
+       
+                      {
+                         targets: 3,
+                         className: 'right'
+                      },
+
+
+                    ],
         columns: [
             {data: 'k_nomor', name: 'k_nomor'},
             {data: 'k_tanggal', name: 'k_tanggal'},
@@ -130,6 +144,53 @@ $(document).ready(function() {
         if(!confirm("Hapus Data ?")) return false;
     });
 
+    function ngeprint(id){
+        console.log(id);
+        window.open(baseUrl+'/sales/kwitansi/cetak_nota/'+id);
+    }
+
+    function hapus(id) {
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+
+    function(){
+
+         $.ajax({
+          url:baseUrl + '/sales/hapus_kwitansi',
+          data:{id},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                         location.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
+    });
+    }
 
 </script>
 @endsection

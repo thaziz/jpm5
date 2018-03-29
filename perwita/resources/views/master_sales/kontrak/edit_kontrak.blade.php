@@ -327,27 +327,27 @@
              }
 
 
-    $.ajax({
-        url:baseUrl +'/master_sales/set_kode_akun_acc',
-        data:{cabang},
-        success:function(response){
-            $('.acc_tr').html(response);
-        },
-        error:function(){
-            // location.reload();
-        }
-    });
+    // $.ajax({
+    //     url:baseUrl +'/master_sales/set_kode_akun_acc',
+    //     data:{cabang},
+    //     success:function(response){
+    //         $('.acc_tr').html(response);
+    //     },
+    //     error:function(){
+    //         // location.reload();
+    //     }
+    // });
 
-    $.ajax({
-        url:baseUrl +'/master_sales/set_kode_akun_csf',
-        data:{cabang},
-        success:function(response){
-            $('.csf_tr').html(response);
-        },
-        error:function(){
-            // location.reload();
-        }
-    });
+    // $.ajax({
+    //     url:baseUrl +'/master_sales/set_kode_akun_csf',
+    //     data:{cabang},
+    //     success:function(response){
+    //         $('.csf_tr').html(response);
+    //     },
+    //     error:function(){
+    //         // location.reload();
+    //     }
+    // });
 });
 
 $('#btnadd').click(function(){
