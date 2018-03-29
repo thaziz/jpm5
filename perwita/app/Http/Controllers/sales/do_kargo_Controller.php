@@ -395,7 +395,12 @@ class do_kargo_Controller extends Controller
         }else{  
             $status = 1;
         }
-        return view('sales.do_kargo.dropdown_nopol',compact('data','status'));
+        if (isset($request->nopol)) {
+            $nopol = $request->nopol;
+        }else{
+            $nopol = 0;
+        }
+        return view('sales.do_kargo.dropdown_nopol',compact('data','status','nopol'));
     }
     public function nama_subcon(request $request)
     {
@@ -503,135 +508,144 @@ class do_kargo_Controller extends Controller
                   
         return response()->json(['data'=>$data]);
     }
+
+    public function hapus_do_kargo(request $request)
+    {
+        $hapus_kargo = DB::table('delivery_order') 
+                         ->where('nomor',$request->nomor_do)
+                         ->delete();
+        return response()->json(['status'=>1]);
+    }
     public function save_do_kargo(request $request)
     {
        // dd($request->all());
+
         if ($request->nomor_do == '') {
-            return response()->json(['status' => 3,'get'=>$request->nomor_do]);
+            return response()->json(['status' => 3,'get'=>'$request->nomor_do']); 
         }
 
         if ($request->tanggal_do == '') {
-            return response()->json(['status' => 3,'get'=>$request->tanggal_do]);
+            return response()->json(['status' => 3,'get'=>'$request->tanggal_do']);
         }
 
         if ($request->customer_do == '0') {
-            return response()->json(['status' => 3,'get'=>$request->customer_do]);
+            return response()->json(['status' => 3,'get'=>'$request->customer_do']);
         }
 
         if ($request->asal_do == 0) {
-            return response()->json(['status' => 3,'get'=>$request->asal_do]);
+            return response()->json(['status' => 3,'get'=>'$request->asal_do']);
         }
 
         if ($request->tujuan_do == 0) {
-            return response()->json(['status' => 3,'get'=>$request->tujuan_do]);
+            return response()->json(['status' => 3,'get'=>'$request->tujuan_do']);
         }
 
         if ($request->jenis_tarif_do == 0) {
-            return response()->json(['status' => 3,'get'=>$request->jenis_tarif_do]);
+            return response()->json(['status' => 3,'get'=>'$request->jenis_tarif_do']);
         }
 
         if ($request->status_kendaraan == 'SUB') {
             if ($request->nama_subcon == 0) {
-                return response()->json(['status' => 3,'get'=>$request->nama_subcon ]);
+                return response()->json(['status' => 3,'get'=>'$request->nama_subcon' ]);
             }
         }
 
         if ($request->tipe_angkutan == 0) {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->tipe_angkutan' ]);
         }
 
         if ($request->tipe_kendaraan == 0) {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->tipe_kendaraan']);
         }
 
         if ($request->driver == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->driver']);
         }
 
         if ($request->co_driver == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->co_driver']);
         }
 
         if ($request->keterangan_detail == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->keterangan_detail']);
         }
 
         if ($request->ed_awal_shuttle == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->ed_awal_shuttle']);
         }
         if ($request->ed_akhir_shuttle == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->ed_akhir_shuttle']);
         }
         if ($request->satuan == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->satuan']);
         }
         if ($request->jumlah == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->jumlah']);
         }
         if ($request->acc_penjualan == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->acc_penjualan']);
         }
         if ($request->tarif_dasar == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->tarif_dasar']);
         }
         if ($request->harga_master == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->harga_master']);
         }
         if ($request->kode_tarif == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->kode_tarif']);
         }
         if ($request->kcd_id == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->kcd_id']);
         }
         if ($request->kcd_dt == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->kcd_dt']);
         }
         if ($request->company_ == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->company_']);
         }
         if ($request->nama_penerima == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->nama_penerima']);
         }
         if ($request->alamat_penerima == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->alamat_penerima']);
         }
         if ($request->kode_pos_penerima == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->kode_pos_penerima']);
         }
         if ($request->telpon_penerima == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->telpon_penerima']);
         }
         if ($request->deskripsi_penerima == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->deskripsi_penerima']);
         }
         if ($request->intruksi_penerima == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->intruksi_penerima']);
         }
         if ($request->nama_pengirim == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->nama_pengirim']);
         }
         if ($request->alamat_pengirim == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->alamat_pengirim']);
         }
         if ($request->kode_pos_pengirim == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->kode_pos_pengirim']);
         }
 
         if ($request->telpon_pengirim == '') {
-            return response()->json(['status' => 3]);
+            return response()->json(['status' => 3,'get'=>'$request->telpon_pengirim']);
         }
-        if ($request->dicount == null) {
-            $discount = 0;
-        }else{
-            $discount = $request->dicount;
-        }
+        
+        // dd($discount);
+        return DB::transaction(function() use ($request) {  
 
 
-
+        $this->hapus_do_kargo($request);
 
         $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->nomor_do)
                       ->first();
+
+           // dd('asd');    
         $tgl = str_replace('/', '-', $request->tanggal_do);
         $tgl = Carbon::parse($tgl)->format('Y-m-d');
         $awal = str_replace('/', '-', $request->ed_awal_shuttle);
@@ -650,6 +664,15 @@ class do_kargo_Controller extends Controller
             $kontrak = false;
         }
         if ($cari_do == null) {
+        // return $discount;
+
+        if ($request->discount == '' || $request->discount == 0) {
+            $discount = 0;
+        }else{
+            $discount = $request->discount;
+        }
+        // dd($discount);
+
             $save_do = DB::table('delivery_order')
                          ->insert([
                                 'nomor'                 => strtoupper($request->nomor_do),
@@ -697,11 +720,14 @@ class do_kargo_Controller extends Controller
                                 'akhir_shutle'          => strtoupper($akhir),
                                 'nomor_do_awal'         => strtoupper($request->nomor_do_awal),
                                 'kode_satuan'           => strtoupper($request->satuan),
-                                // 'kontrak'               => $kontrak,
+                                'kontrak'               => $kontrak,
                                 'kode_tarif'            => $request->kode_tarif,
+                                'keterangan_tarif'      => $request->keterangan_detail,
                                 'acc_penjualan'         => $request->acc_penjualan
                          ]);
-
+            $cari_do = DB::table('delivery_order')
+                      ->where('nomor',$request->nomor_do)
+                      ->first();
             return response()->json(['nota'=>strtoupper($request->nomor_do),'status'=>1]);
 
         }else{
@@ -721,6 +747,11 @@ class do_kargo_Controller extends Controller
 
             $nota = 'KGO' . $cabang . $bulan . $tahun . $index;
 
+            if ($request->discount == '' || $request->discount == 0) {
+                $discount = 0;
+            }else{
+                $discount = $request->discount;
+            }
 
             $save_do = DB::table('delivery_order')
                          ->insert([
@@ -775,12 +806,44 @@ class do_kargo_Controller extends Controller
             return response()->json(['nota'=>$nota,'status'=>2]);
 
         }
+        });
     }
-    public function hapus_do_kargo(request $request)
+    
+    public function edit_do_kargo($id)
     {
-        $hapus_kargo = DB::table('delivery_order') 
-                         ->where('nomor',$request->id)
-                         ->delete();
-        return response()->json(['status'=>1]);
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,tipe FROM customer ORDER BY nama ASC ");
+        $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k
+                                    LEFT JOIN subcon s ON s.kode=k.kode_subcon ");
+        $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
+        //$angkutan = DB::select(" SELECT kode,nama FROM angkutan ORDER BY nama ASC ");
+        $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
+        $subcon =DB::select("SELECT * FROM subcon");
+        $now = Carbon::now()->format('d/m/Y');
+        $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->where('jt_group',1)
+                         ->orWhere('jt_group',2)
+                         ->orWhere('jt_group',3)
+                         ->orderBy('jt_id','ASC')
+                         ->get();
+        $data = DB::table('delivery_order')
+                    ->where('nomor', $id)
+                    ->first();
+
+        $subcon_detail = DB::table('delivery_order')
+                    ->join('subcon','kode','=','kode_subcon')
+                    ->where('nomor', $id)
+                    ->first();
+
+       
+        return view('sales.do_kargo.edit_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail'));
+    }
+
+    public function update_do_kargo(request $request)
+    {
+       return $this->save_do_kargo($request);
     }
 }

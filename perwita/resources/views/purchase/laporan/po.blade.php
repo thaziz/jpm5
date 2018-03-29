@@ -71,7 +71,7 @@
                           <td >
                             <input type="text" id="col0_filter" name="filter_cabang"  onkeyup="filterColumn()" value="" class="col-sm-12 asal form-control column_filter" placeholder="Pencarian.." >
                           </td>
-                          <th > Cari Nama Perusahaan :  </th>
+                          <th > Cari Status Order :  </th>
                           <td >
                             <input type="text" id="col1_filter" name="filter_cabang"  onkeyup="filterColumn1()" value="" class="col-sm-12 asal form-control column_filter" placeholder="Pencarian.." >
                           </td>
@@ -121,29 +121,25 @@
                         <th> Tanggal di Butuhkan </th>
                         <th hidden=""> tgl</th>
                         <th> status </th>
- 
                     </tr>        
                     </thead>        
                     <tbody>
                     @foreach($cari as $index=>$data)
                     <tr>
-                    <td style="width: 5%; text-align: center">{{$index+1}}</td>
+                    <td style="width: 5%; text-align: center"> <input class="br"  type="hidden" name="pemohon[]" value="{{$data->po_id}}">{{$index+1}}</td>
                     <td>
-                      {{$data->nama}}
-                      <input class="br" hidden=""  type="text" name="pemohon[]" value="{{$data->nama}}">
-                    </td>
+                      <input class="br"  type="hidden" name="pemohon[]" value="{{$data->nama}}">{{ $data->nama }}</td>
                     <td>
 
-                      <input class="br" readonly="" hidden=""  type="text" name="spp[]" value="{{$data->po_no}}"></td>
+                      <input class="br" type="hidden" name="spp[]" value="{{$data->po_no}}">{{$data->po_no}}</td>
                     <td>
 
-                      <input class="br" readonly="" hidden="" type="text" name="butuh[]" value="{{$data->spp_tgldibutuhkan}}">
-                    </td>
+                      <input class="br"  type="hidden" name="butuh[]" value="{{$data->spp_tgldibutuhkan}}">{{$data->spp_tgldibutuhkan}}</td>
                     
                     <td hidden="">{{$data->created_at}}</td>
                     <td>
+                      <input class="br"  type="hidden" name="status[]" value="{{$data->spp_status}}">
                       {{$data->spp_status}}
-                      <!-- <input class="br" hidden=""   type="text" name="status[]" value="{{$data->spp_status}}"> -->
                     </td>      
                     </tr>  
                     @endforeach
@@ -173,14 +169,13 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-$(document).ready(function(){
   var d = new Date();
     var a = d.getDate();
     var b = d.getSeconds();
     var c = d.getMilliseconds();
     var tgl1 = '1/1/2018';
     var tgl2 = '2/2/2018';
-      $('#addColumn').DataTable({
+     var addColumn = $('#addColumn').DataTable({
     paging:true,
        dom: 'Bfrtip',
        buttons: [
@@ -206,6 +201,8 @@ $(document).ready(function(){
         ]
   });
 
+ 
+
   function filterColumn ( ) {
     $('#addColumn').DataTable().column(1).search(
         $('#col0_filter').val()
@@ -215,79 +212,13 @@ $(document).ready(function(){
     $('#addColumn').DataTable().column(5).search(
         $('#col1_filter').val()
     ).draw();    
-} 
-
-
-})
- ////
-           /* Custom filtering function which will search data in column four between two values */
-            var table;
-            $("#min").datepicker({format:"dd/mm/yyyy"});
-            $("#max").datepicker({format:"dd/mm/yyyy"});
-       function tgl(){
-         var tgl1   = $("#min").val();
-         var tgl2   = $("#max").val();
-          if(tgl1 != "" && tgl2 != ""){
-          $('.cetak').attr('disabled', false);
-          }
-
-            $(document).ready(function(){
-        $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#min').datepicker("getDate");
-            var max = $('#max').datepicker("getDate");
-            var startDate = new Date(data[4]);
-            if (min == null && max == null) { return true; }
-            if (min == null && startDate <= max) { return true;}
-            if(max == null && startDate >= min) {return true;}
-            if (startDate <= max && startDate >= min) { return true; }
-            return false;
-        }
-        );
-
-       
-            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-           
-
-            // Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max').change(function () {
-                table.draw();
-            });
-        });
-          }
+}
 
 
 
 
 /////////////////////////////////////////////////////////////////////////
-    function filterGlobal () {
-    $('.tbl-item').DataTable().search(
-        $('#global_filter').val(),
-        $('#global_regex').prop('checked'),
-        $('#global_smart').prop('checked')
-    ).draw();
-    }
-     
-    function filterColumn ( i ) {
-        $('.tbl-item').DataTable().column( i ).search(
-            $('#col'+i+'_filter').val(),
-            $('#col'+i+'_regex').prop('checked'),
-            $('#col'+i+'_smart').prop('checked')
-        ).draw();
-    }
-     
-    $(document).ready(function() {
-        $('.tbl-item').DataTable();
-     
-        $('input.global_filter').on( 'keyup click', function () {
-            filterGlobal();
-        } );
-     
-        $('input.column_filter').on( 'keyup click', function () {
-            filterColumn( $(this).parents('tr').attr('data-column') );
-        } );
-    } );
+  
 
     // table.on('search.dt', function() {
     //       //number of filtered rows
@@ -296,43 +227,36 @@ $(document).ready(function(){
                                            
     //     })    
 
-    function cetak(){
-      var cabang = $('#cabang').val();
-      var supplier = $('#supplier').val();
-      var barang = $('#barang').val();
-      var tgl1   = $("#min").val();
-      var tgl2   = $("#max").val();
+     function cetak(){
+    
+      var a = $('#a').val();
+      var b = $('#b').val();
+      var c = $('#c').val();
+      var d = $('#d').val();
+      var e = $('#e').val(); 
+      var f = $('#f').val();
+      var g = $('#g').val();
 
-          tgl1   = tgl1.replace('/','-');
-          tgl2   = tgl2.replace('/','-');
-          tgl1   = tgl1.replace('/','-');
-          tgl2   = tgl2.replace('/','-');
-          console.log(tgl1);
       var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
+       var asd = addColumn.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
-
-           asw[i] =  $(asd[i][2]).val();
-  
+           asw[i] =  $(asd[i][0]).val();
        }
+       console.log(asw);
 
-
-      $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
 
       $.ajax({
-        url: baseUrl + '/reportspp/tablepo',
-        data:  {asw:asw,tgl1:tgl1,tgl2:tgl2},
-        type: "POST",    
+        data: {asw:asw,download:'download'},
+        url: baseUrl + '/masterpurchaseorder/masterpurchaseorder/masterpurchaseorder',
+        type: "get",
+         complete : function(){
+        window.open(this.url,'_blank');
+        },     
         success : function(data){
-            var win = window.open();
-            win.document.write(data);
         }
       });
-    } 
+    }
+   
   
 
 </script>

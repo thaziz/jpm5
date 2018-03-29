@@ -536,12 +536,13 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function cetak_nota($nomor=null) {
         $head = DB::table('kwitansi')
+                  ->join('customer','kode','=','k_kode_customer')
                   ->where('k_nomor',$nomor)
                   ->first();
 
         $detail = DB::table('kwitansi')
-                    ->join('kwitansi_d','kd_id','k_id')
-                    ->join('invoice','kd_nomor_invoice','i_nomor')
+                    ->join('kwitansi_d','kd_id','=','k_id')
+                    ->join('invoice','kd_nomor_invoice','=','i_nomor')
                     ->get();
 
         $terbilang =$this->penyebut($head->k_jumlah);
@@ -610,14 +611,19 @@ class penerimaan_penjualan_Controller extends Controller
         $data = DB::table('kwitansi')
                   ->where('k_kode_cabang',$cabang)
                   ->get();
+        for ($i=0; $i < count($data); $i++) { 
+            $data[$i]->k_netto = number_format($data[$i]->k_netto, 2, ",", ".");
+        }
         $data = collect($data);
 
         return Datatables::of($data)
                         ->addColumn('tes', function ($data) {
-                                   return     '<div class="btn-group">
-                                        <button type="button" onclick="hapus('.$data->k_nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
-                                        <button type="button" onclick="edit('.$data->k_nomor.')" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
-                                        </div>';
+
+                           $string = (string)$data->k_nomor;
+                                   return '<div class="btn-group"><button type="button" onclick="edit(\''.$string.'\')" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i></button>
+                                   <button type="button" onclick="ngeprint(\''.$string.'\')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></button>
+                                        <button type="button" onclick="hapus(\''.$string.'\')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                         </div>';
                             })
                         ->make(true);
     }
@@ -896,6 +902,40 @@ class penerimaan_penjualan_Controller extends Controller
 
             }
 
+            for ($i=0; $i < count($request->m_um); $i++) { 
+                $save_biaya = DB::table('kwitansi_uang_muka')
+                                 ->insert([
+                                      'ku_id' => $k_id,
+                                      'ku_dt'=> $i+1,
+                                      // 'ku_kode_akun' => $request->b_akun[$i],
+                                      // 'ku_kode_akun_acc' => $request->b_akun[$i],
+                                      // 'ku_kode_akun_csf' => $request->b_akun[$i],
+                                      'ku_jumlah' => $request->jumlah_bayar_um[$i],
+                                      'ku_keterangan' => $request->m_Keterangan_um[$i],
+                                      'ku_kredit'    => $request->jumlah_bayar_um[$i],
+                                      'ku_nomor_um'    => $request->m_um[$i],
+                                      'ku_jenis'       => $request->m_status_um[$i]
+                                 ]);
+
+                $cari_um = DB::table('uang_muka_penjualan')
+                                      ->where('nomor',$request->m_um[$i])
+                                      ->first();
+                $hasil_um =  $cari_um->sisa_uang_muka - $request->jumlah_bayar_um[$i];
+                // dd($hasil);
+
+                if ($hasil_um < 0) {
+                    $hasil_um = 0;
+                }
+                
+                $update_invoice = DB::table('uang_muka_penjualan')
+                                    ->where('nomor',$request->m_um[$i])
+                                    ->update([
+                                        'sisa_uang_muka' => $hasil_um
+                                    ]);
+
+
+            }
+
             $memorial_array = array_sum($memorial_array);
             $save_kwitansi = DB::table('kwitansi')
                                ->where('k_id',$k_id)
@@ -924,10 +964,36 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function cari_um(request $request)
     {
-        $data = DB::table('uang_muka_penjualan')
+        $temp = DB::table('uang_muka_penjualan')
                   ->where('kode_customer',$request->cb_customer)
+                  ->orWhere('status_um','NON CUSTOMER')
                   ->where('kode_cabang',$request->cb_cabang)
+                  ->where('sisa_uang_muka','!=',0)
+                  ->where('nomor_posting','!=',null)
                   ->get();
+
+        $temp1 = DB::table('uang_muka_penjualan')
+                  ->where('kode_customer',$request->cb_customer)
+                  ->orWhere('status_um','NON CUSTOMER')
+                  ->where('kode_cabang',$request->cb_cabang)
+                  ->where('sisa_uang_muka','!=',0)
+                  ->where('nomor_posting','!=',null)
+                  ->get();
+
+        if (isset($request->simpan_um)) {
+            for ($i=0; $i < count($temp1); $i++) { 
+                for ($a=0; $a < count($request->simpan_um); $a++) { 
+                    if ($request->simpan_um[$a] == $temp1[$i]->nomor) {
+                        unset($temp[$i]);
+                    }
+                }
+            }
+            $temp = array_values($temp);
+            $data = $temp;
+            
+        }else{
+            $data = $temp;
+        }
 
         return view('sales.penerimaan_penjualan.tabel_um',compact('data'));
     }
@@ -937,7 +1003,74 @@ class penerimaan_penjualan_Controller extends Controller
                    ->where('nomor',$request->um)
                    ->orWhere('status_um','=','NON CUSTOMER')
                    ->first();
+
         return response()->json(['data'=>$data]);
+    }
+
+    public function hapus_kwitansi(request $request)
+    {
+        // dd($request->all());
+        $cari_kwitansi = DB::table('kwitansi')
+                         ->join('kwitansi_d','kd_id','=','k_id')
+                         ->leftjoin('kwitansi_uang_muka','ku_id','=','k_id')
+                         ->where('k_nomor',$request->id)
+                         ->get();
+        $invoice_nomor = [];
+        for ($i=0; $i < count($cari_kwitansi); $i++) { 
+            $cari_invoice = DB::table('invoice')
+                              ->where('i_nomor',$cari_kwitansi[$i]->kd_nomor_invoice)
+                              ->first();
+            $cari_um = DB::table('uang_muka_penjualan')
+                              ->where('nomor',$cari_kwitansi[$i]->ku_nomor_um)
+                              ->first();
+            $net1 = $cari_kwitansi[$i]->kd_total_bayar - $cari_kwitansi[$i]->kd_biaya_lain;
+
+            $hasil_invoice = $cari_invoice->i_sisa_pelunasan + $net1;
+
+            if ($cari_um != null) {
+               $hasil_um = $cari_um->sisa_uang_muka + $cari_kwitansi[$i]->ku_jumlah;
+                # code...
+                $update_um = DB::table('uang_muka_penjualan')
+                                 ->where('nomor',$cari_kwitansi[$i]->ku_nomor_um)
+                                 ->update([
+                                    'sisa_uang_muka'=>$hasil_um
+                                 ]);
+            }
+
+            $update_invoice = DB::table('invoice')
+                                 ->where('i_nomor',$cari_kwitansi[$i]->kd_nomor_invoice)
+                                 ->update([
+                                    'i_sisa_pelunasan'=>$hasil_invoice
+                                 ]);
+            // return $cari_invoice = DB::table('invoice')
+            //                   ->where('i_nomor',$cari_kwitansi[$i]->kd_nomor_invoice)
+            //                   ->get();
+
+            array_push($invoice_nomor, $cari_kwitansi[$i]->kd_nomor_invoice);
+        }
+        $hapus = DB::table('kwitansi')
+                    ->where('k_nomor',$request->id)
+                    ->delete();
+
+        for ($i=0; $i < count($invoice_nomor); $i++) { 
+            $cari_kwitansi = DB::table('kwitansi')
+                         ->join('kwitansi_d','kd_id','=','k_id')
+                         ->where('kd_nomor_invoice',$invoice_nomor[$i])
+                         ->get();
+            
+            if (count($cari_kwitansi) == 0) {
+                $update_invoice = DB::table('invoice')
+                                 ->where('i_nomor',$invoice_nomor[$i])
+                                 ->update([
+                                    'i_status'=> 'Released',
+                                 ]);
+            }
+
+        }
+
+        return response()->json(['status'=> 1]);
+
+
     }
 
 }

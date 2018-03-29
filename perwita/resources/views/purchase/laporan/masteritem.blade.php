@@ -69,23 +69,23 @@
                           <th> Pilih Laporan : </th>
                           <td >
                             <select class="form-control" onchange="location = this.value;">
-                  <option value="/jpm/reportmasteritem/reportmasteritem" selected="" disabled="" style="background-color: #DDD; ">Laporan Data Master Item</option>
-                  <option value="/jpm/reportmasterdepartment/reportmasterdepartment">Laporan Data Department</option>
-                  <option value="/jpm/reportmastergudang/reportmastergudang">Laporan Data Master Gudang</option>
-                  <option value="/jpm/reportmastersupplier/reportmastersupplier">Laporan Data Supplier</option>
-                  <option value="/jpm/reportspp/reportspp">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="/jpm/reportpo/reportpo">Laporan Data Order</option>
-                  <option value="/jpm/reportfakturpembelian/reportfakturpembelian">Laporan Data Faktur Pembelian</option>
-                  <option value="/jpm/buktikaskeluar/patty_cash">Laporan Data Patty Cash</option>
-                  <option value="/jpm/reportbayarkas/reportbayarkas">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                  {{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Faktur vs Pelunasan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Analisa Usia Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Faktur Pajak Masukan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Uang Muka Pembelian</option> --}}
-                 </select>
+                            <option value="/jpm/reportmasteritem/reportmasteritem" selected="" disabled="" style="background-color: #DDD; ">Laporan Data Master Item</option>
+                            <option value="/jpm/reportmasterdepartment/reportmasterdepartment">Laporan Data Department</option>
+                            <option value="/jpm/reportmastergudang/reportmastergudang">Laporan Data Master Gudang</option>
+                            <option value="/jpm/reportmastersupplier/reportmastersupplier">Laporan Data Supplier</option>
+                            <option value="/jpm/reportspp/reportspp">Laporan Data Surat Permintaan Pembelian</option>
+                            <option value="/jpm/reportpo/reportpo">Laporan Data Order</option>
+                            <option value="/jpm/reportfakturpembelian/reportfakturpembelian">Laporan Data Faktur Pembelian</option>
+                            <option value="/jpm/buktikaskeluar/patty_cash">Laporan Data Patty Cash</option>
+                            <option value="/jpm/reportbayarkas/reportbayarkas">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                            <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                            {{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
+                            <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>
+                            <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Faktur vs Pelunasan</option>
+                            <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Analisa Usia Hutang</option>
+                            <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Faktur Pajak Masukan</option>
+                            <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Uang Muka Pembelian</option> --}}
+                           </select>
                           </td>
                         </tr>
                     </table>
@@ -95,7 +95,7 @@
                   <hr>
                   
                   <div class="row"> &nbsp; &nbsp; 
-                    <a class="btn btn-info" href="{{ route('masterItem.ViewReport') }}">
+                    <a class="btn btn-info" onclick="cetak()" >
                         <i class="fa fa-print" aria-hidden="true"></i> Cetak 
                     </a> 
                   </div>
@@ -117,13 +117,27 @@
                     <tbody>
                       @for ($index = 0; $index < count($masterItem["namaItem"]); $index++)
                         <tr>
-                          <td align="center">{{ $index + 1 }}</td>
-                          <td align="center">{{ $masterItem["kodeItem"][$index] }}</td>
-                          <td align="center">{{ $masterItem["namaItem"][$index] }}</td>
-                          <td align="center">{{ $masterItem["groupItem"][$index] }}</td>
-                          <td align="center">{{ $masterItem["satuanItem"][$index] }}</td>
-                          <td align="center">{{ $masterItem["accStock"][$index] }}</td>
-                          <td align="center">{{ $masterItem["accHpp"][$index] }}</td>
+                          <td align="center">
+                           <input type="hidden" id="a" name="a[]" value="{{ $masterItem["kodeItem"][$index] }}">{{ $index + 1 }}</td>
+
+                          <td align="center">
+                            <input type="hidden" id="b" name="b[]" value="{{ $masterItem["kodeItem"][$index] }}">{{ $masterItem["kodeItem"][$index] }}</td>
+
+                          <td align="center">
+                           <input type="hidden" id="c" name="c[]" value="{{ $masterItem["namaItem"][$index] }}">{{ $masterItem["namaItem"][$index] }}</td>
+
+                          <td align="center">
+                            <input type="hidden" id="d" name="d[]" value="{{ $masterItem["groupItem"][$index] }}">{{ $masterItem["groupItem"][$index] }}</td>
+
+                          <td align="center">
+                           <input type="hidden" id="e" name="e[]" value="{{ $masterItem["satuanItem"][$index] }}">{{ $masterItem["satuanItem"][$index] }}</td>
+
+                          <td align="center">
+                           <input type="hidden" id="f" name="f[]" value="{{ $masterItem["accStock"][$index] }}">{{ $masterItem["accStock"][$index] }}</td>
+
+                          <td align="center">
+                           <input type="hidden" id="g" name="g[]" value="{{ $masterItem["accHpp"][$index] }}">{{ $masterItem["accHpp"][$index] }}</td>
+
                         </tr>
                       @endfor
                     </tbody>
@@ -163,7 +177,7 @@
     var tgl1 = '1/1/2018';
     var tgl2 = '2/2/2018';
 
-  $('#addColumn').DataTable({
+  var table = $('#addColumn').DataTable({
     ordering:'true',
 
        dom: 'Bfrtip',
@@ -209,7 +223,35 @@
       $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
     })
  
-   
+   function cetak(){
+    
+      var a = $('#a').val();
+      var b = $('#b').val();
+      var c = $('#c').val();
+      var d = $('#d').val();
+      var e = $('#e').val(); 
+      var f = $('#f').val();
+      var g = $('#g').val();
+
+      var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
+           asw[i] =  $(asd[i][1]).val();
+       }
+       console.log(asw);
+
+
+      $.ajax({
+        data: {asw:asw,download:'download'},
+        url: baseUrl + '/masteritem/masteritem/masteritem',
+        type: "get",
+         complete : function(){
+        window.location = /*baseUrl+'/'+*/this.url;
+        },     
+        success : function(data){
+        }
+      });
+    }
 
 </script>
 @endsection

@@ -1525,10 +1525,7 @@
                                     <a class="sidebar master-perusahaan {{Request::is('purchaseorder/purchaseorder') ? 'active' : '' || 
                                     Request::is('purchaseorder/purchaseorder/*') ? 'active' : ''}}" href="{{ url('purchaseorder/purchaseorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Purchase Order </a>
                                 </li>
-                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('uangmukapembelian/uangmukapembelian') ? 'active' : '' || 
-                                    Request::is('uangmukapembelian/uangmukapembelian/*') ? 'active' : ''}}" href="{{ url('uangmukapembelian/uangmukapembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Uang Muka Pembelian </a>
-                                </li>
+                          
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('returnpembelian/returnpembelian') ? 'active' : '' || 
                                     Request::is('returnpembelian/returnpembelian/*') ? 'active' : ''}}" href="{{ url('returnpembelian/returnpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Return Pembelian </a>
