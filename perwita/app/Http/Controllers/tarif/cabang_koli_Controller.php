@@ -123,11 +123,7 @@ class cabang_koli_Controller extends Controller
         }else{
             $kode_utama += 1;
         }
-
-        if ($kode_utama < 10000 ) {
-            $kode_utama = '0000'.$kode_utama;
-        }
-
+        
         $kode_detail = DB::table('tarif_cabang_koli')->select('kode_detail_koli')->max('kode_detail_koli');
         $datadetail = DB::table('tarif_cabang_koli')->select('kode_detail_koli','keterangan')->get();  
         $datadetailcount = count($datadetail);
@@ -165,19 +161,20 @@ class cabang_koli_Controller extends Controller
          for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
            //----------------------------- REGULER ---------------------------------------//
             if ($crud == 'N') {
-                
+                 
+
              if ($datadetailcount != 0) {
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    // return $kode_utama;
+
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
                 }
 
@@ -200,17 +197,15 @@ class cabang_koli_Controller extends Controller
             );
 
              if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
                 }
 
@@ -234,17 +229,15 @@ class cabang_koli_Controller extends Controller
             );
 
            if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
                 }
 
@@ -268,17 +261,15 @@ class cabang_koli_Controller extends Controller
             );
 
            if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
                 }
 
@@ -302,18 +293,16 @@ class cabang_koli_Controller extends Controller
         //---------------------------------- EXPRESS -----------------------------------//
 
          if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;            
                 }
 
           $kertas_express = array(
@@ -335,18 +324,16 @@ class cabang_koli_Controller extends Controller
             );
 
            if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;            
                 }
      
            $tarif0_10express = array(
@@ -368,18 +355,16 @@ class cabang_koli_Controller extends Controller
             );
 
            if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;            
                 }
         $tarif10_20express = array(
                 'kode' => $kode_express,
@@ -400,18 +385,17 @@ class cabang_koli_Controller extends Controller
             );
 
             if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                         $kode_detail += 1;
-                         if ($kode_utama < 10000 ) {
-                            $kode_utama = '0000'.($kode_utama+1);
-                            }
-                        $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
+                         $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                        $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;   
 
                     }else if ($datadetailcount == 0){
+                     
                         $kode_detail += 1;
-                         if ($kode_utama < 10000 ) {
-                            $kode_utama = '0000'.($kode_utama+1);
-                            }
-                        $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
+                         $kode_utama = $kode_utama+1;
+                         $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                        $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;            
                     }
            $tarif20express = array(
                     'kode' => $kode_express,
@@ -454,17 +438,15 @@ class cabang_koli_Controller extends Controller
               //auto number
 
                 if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
                 }
 
@@ -486,17 +468,15 @@ class cabang_koli_Controller extends Controller
                 );
 
                if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
                 } 
                
@@ -518,17 +498,15 @@ class cabang_koli_Controller extends Controller
                 );
 
                if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
                 }
                
@@ -550,17 +528,15 @@ class cabang_koli_Controller extends Controller
                 );   
 
                if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode_reguler = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
                 }
                $tarif20reguler = array(
@@ -584,18 +560,16 @@ class cabang_koli_Controller extends Controller
 
             // AUTO NUMBER EXPRESS
               if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;            
                 }
 
                 $kertas_express = array(
@@ -616,18 +590,16 @@ class cabang_koli_Controller extends Controller
                 );
 
                if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;            
                 } 
                
                $tarif0_10express = array(
@@ -648,18 +620,16 @@ class cabang_koli_Controller extends Controller
                 );
 
                if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;            
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;            
                 }
                
                $tarif10_20express = array(
@@ -680,18 +650,16 @@ class cabang_koli_Controller extends Controller
                 );   
 
                if ($datadetailcount != 0) {
+                     $kode_utama = $kode_utama+1;
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;   
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
                     $kode_detail += 1;
-                     if ($kode_utama < 10000 ) {
-                        $kode_utama = '0000'.($kode_utama+1);
-                        }
-                    $kode_express = $kodekota.'/'.'KO'.'R'.$kodecabang.$kode_utama;              
+                     $kode_utama = $kode_utama+1;
+                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                    $kode_express = $kodekota.'/'.'KO'.'E'.$kodecabang.$kode_utama;              
                 }
                
                $tarif20express = array(
@@ -744,9 +712,8 @@ class cabang_koli_Controller extends Controller
             $integer_kode6 =  (int)$kode6;
             $integer_kode7 =  (int)$kode7;
 
-            if ($integer_kode0 < 10000) {
-                    $integer_kode0 = '0000'.$integer_kode0; 
-                }
+                $integer_kode0 = $integer_kode0;
+                $integer_kode0 = str_pad($integer_kode0, 5,'0',STR_PAD_LEFT);
                 if ($kodekota == '') {
                     $kode0_edit = $request->id0;
                 }else{   
@@ -770,9 +737,8 @@ class cabang_koli_Controller extends Controller
                     'crud' => $crud,
                 );
 
-                if ($integer_kode1 < 10000) {
-                    $integer_kode1 = '0000'.$integer_kode1; 
-                } 
+                $integer_kode1 = $integer_kode1;
+                $integer_kode1 = str_pad($integer_kode1, 5,'0',STR_PAD_LEFT);
                 if ($kodekota == '') {
                     $kode1_edit = $request->id1;
                 }else{   
@@ -797,9 +763,8 @@ class cabang_koli_Controller extends Controller
                 );
 
                
-                if ($integer_kode2 < 10000) {
-                    $integer_kode2 = '0000'.$integer_kode2; 
-                } 
+                $integer_kode2 = $integer_kode2;
+                $integer_kode2 = str_pad($integer_kode2, 5,'0',STR_PAD_LEFT);
                 if ($kodekota == '') {
                     $kode2_edit = $request->id2;
                 }else{   
@@ -823,9 +788,8 @@ class cabang_koli_Controller extends Controller
                     'crud' => $crud,
                 );   
 
-               if ($integer_kode3 < 10000) {
-                    $integer_kode3 = '0000'.$integer_kode3; 
-                } 
+               $integer_kode3 = $integer_kode3;
+                $integer_kode3 = str_pad($integer_kode3, 5,'0',STR_PAD_LEFT);
                 if ($kodekota == '') {
                     $kode3_edit = $request->id3;
                 }else{   
@@ -853,13 +817,12 @@ class cabang_koli_Controller extends Controller
             //end auto number REGULAR
 
             // AUTO NUMBER EXPRESS
-               if ($integer_kode4 < 10000) {
-                    $integer_kode4 = '0000'.$integer_kode4; 
-                } 
+               $integer_kode4 = $integer_kode4;
+                $integer_kode4 = str_pad($integer_kode4, 5,'0',STR_PAD_LEFT);
                 if ($kodekota == '') {
                     $kode4_edit = $request->id4;
                 }else{   
-                    $kode4_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode4;
+                    $kode4_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode4;
                 }
 
                 $kertas_express = array(
@@ -879,13 +842,12 @@ class cabang_koli_Controller extends Controller
                     'crud' => $crud,
                 );
 
-               if ($integer_kode5 < 10000) {
-                    $integer_kode5 = '0000'.$integer_kode5; 
-                } 
+               $integer_kode5 = $integer_kode5;
+                $integer_kode5 = str_pad($integer_kode5, 5,'0',STR_PAD_LEFT);
                 if ($kodekota == '') {
                     $kode5_edit = $request->id5;
                 }else{   
-                    $kode5_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode5;
+                    $kode5_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode5;
                 }
   
                
@@ -907,13 +869,12 @@ class cabang_koli_Controller extends Controller
                 );
                // dd($tarif0_10express);
 
-               if ($integer_kode6 < 10000) {
-                    $integer_kode6 = '0000'.$integer_kode6; 
-                } 
+               $integer_kode6 = $integer_kode6;
+                $integer_kode6 = str_pad($integer_kode6, 5,'0',STR_PAD_LEFT); 
                 if ($kodekota == '') {
                     $kode6_edit = $request->id6;
                 }else{   
-                    $kode6_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode6;
+                    $kode6_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode6;
                 }
                
                $tarif10_20express = array(
@@ -933,13 +894,12 @@ class cabang_koli_Controller extends Controller
                     'crud' => $crud,
                 );   
 
-               if ($integer_kode7 < 10000) {
-                    $integer_kode7 = '0000'.$integer_kode7; 
-                } 
+               $integer_kode7 = $integer_kode7;
+                $integer_kode7 = str_pad($integer_kode7, 5,'0',STR_PAD_LEFT);
                 if ($kodekota == '') {
                     $kode7_edit = $request->id7;
                 }else{   
-                    $kode7_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode7;
+                    $kode7_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode7;
                 }
                
                $tarif20express = array(

@@ -68,22 +68,17 @@
                           <th> Pilih Laporan : </th>
                           <td >
                             <select class="form-control" onchange="location = this.value;">
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Master Item</option>
-                  <option value="/jpm/reportmasterdepartment/reportmasterdepartment">Laporan Data Department</option>
-                  <option value="/jpm/reportmastergudang/reportmastergudang">Laporan Data Master Gudang</option>
-                  <option value="/jpm/reportmastersupplier/reportmastersupplier" selected="" disabled="" style="background-color: #DDD; ">Laporan Data Supplier</option>
-                  <option value="/jpm/reportspp/reportspp">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="/jpm/reportpo/reportpo">Laporan Data Order</option>
-                  <option value="/jpm/reportfakturpembelian/reportfakturpembelian">Laporan Data Faktur Pembelian</option>
-                  <option value="/jpm/buktikaskeluar/patty_cash">Laporan Data Patty Cash</option>
-                  <option value="/jpm/reportbayarkas/reportbayarkas">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                  {{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Faktur vs Pelunasan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Analisa Usia Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Faktur Pajak Masukan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Uang Muka Pembelian</option> --}}
+                  <option selected="" disabled="">Pilih terlebih dahulu</option>
+                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
+                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
+                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
+                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
+                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
+                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
+                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
                  </select>
                           </td>
                         </tr>
@@ -99,7 +94,7 @@
                         </tr>
                     </table>
                   <div class="row"> &nbsp; &nbsp; 
-                    <a class="btn btn-info" href="{{ route('masterSupplier.ViewReport') }}"> 
+                    <a class="btn btn-info" onclick="cetak()"> 
                       <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> 
                     </div>
 
@@ -127,18 +122,18 @@
                     <tbody>
                       @for ($index = 0; $index < count($masterSupplier["nama"]); $index++)
                         <tr>
-                          <td align="center">{{ $index + 1 }}</td>
-                          <td align="center">{{ $masterSupplier["kode"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["nama"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["alamat"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["kota"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["provinsi"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["kodePos"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["telp"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["contPerson"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["kredit"][$index] }} Hari</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $index + 1 }}">{{ $index + 1 }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["kode"][$index] }}">{{ $masterSupplier["kode"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["nama"][$index] }}">{{ $masterSupplier["nama"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["alamat"][$index] }}">{{ $masterSupplier["alamat"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["kota"][$index] }}">{{ $masterSupplier["kota"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["provinsi"][$index] }}">{{ $masterSupplier["provinsi"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["kodePos"][$index] }}">{{ $masterSupplier["kodePos"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["telp"][$index] }}">{{ $masterSupplier["telp"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["contPerson"][$index] }}">{{ $masterSupplier["contPerson"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["kredit"][$index] }}">{{ $masterSupplier["kredit"][$index] }} Hari</td>
                          <!--  <td align="center"></td> -->
-                          <td align="center">{{ $masterSupplier["currency"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["currency"][$index] }}">{{ $masterSupplier["currency"][$index] }}</td>
                           <!-- <td align="center">{{ $masterSupplier["npwp"][$index] }}</td>
                           <td align="center">{{ $masterSupplier["hutang"][$index] }}</td> -->
                         </tr>
@@ -178,7 +173,7 @@
     var tgl1 = '1/1/2018';
     var tgl2 = '2/2/2018';
 
-  $('#addColumn').DataTable({
+  var table = $('#addColumn').DataTable({
       responsive: true,
             searching: true,
             //paging: false,
@@ -234,7 +229,40 @@ function filterColumn2 ( ) {
       $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
     })
  
-   
+    function cetak(){
+    
+      var a = $('#a').val();
+      var b = $('#b').val();
+      var c = $('#c').val();
+      var d = $('#d').val();
+
+      var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
+           asw[i] =  $(asd[i][1]).val();
+       }
+       console.log(asw);
+
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+      $.ajax({
+        data: {asw:asw,download:'download'},
+        url: baseUrl + '/mastersupplier/mastersupplier/mastersupplier',
+        type: "get",
+         complete : function(){
+        window.location = /*baseUrl+'/'+*/this.url;
+        },    
+        success : function(data){
+            
+        }
+
+      });
+    }
 
 </script>
 @endsection

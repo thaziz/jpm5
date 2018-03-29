@@ -45,6 +45,16 @@
 			  <div class="ibox-content">
                <div class="row">
             <div class="col-xs-12">
+
+ @if(count($jurnal_dt)!=0)
+                    <div class="pull-right">
+                         <a onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','FP ITEM')" class="btn-xs btn-primary" aria-hidden="true"> 
+                          <i class="fa  fa-eye"> </i>
+                           &nbsp;  Lihat Jurnal  
+                         </a> 
+                    </div>
+@endif
+
                <form method="post" action=""  enctype="multipart/form-data" class="form-horizontal" id="updatefp" >
               <div class="box" id="seragam_box">
                 <div class="box-header">
@@ -821,6 +831,9 @@
 
 <div class="row" style="padding-bottom: 50px;"> </div>
 
+
+<div id="data-jurnal">
+</div>
 
 @endsection
 
@@ -4575,5 +4588,24 @@ $('.ubah').click(function(){
 $('.edit').click(function(){
    $('.tampilpo').val('update');
 })
+
+
+function lihatjurnal($ref,$note){
+
+          $.ajax({
+          url:baseUrl +'/data/jurnal-umum',
+          type:'get',
+          data:'ref='+$ref
+               +'&note='+$note,
+          /* data: "{'ref':'" + $ref+ "', 'note':'" + $note+ "'}",
+*/
+          
+         
+          success:function(response){
+                $('#data-jurnal').html(response);
+                $('#jurnal').modal('show');
+              }
+        });
+   }
 </script>
 @endsection

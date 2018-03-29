@@ -85,7 +85,7 @@
                                     <tr>
                                         <td>Customer</td>
                                         <td>
-                                            <select class="form-control customer_do chosen-select-width" name="customer_do">
+                                            <select onchange="cari_kontrak()" class="form-control customer_do chosen-select-width" name="customer_do">
                                                 <option value="0">Pilih - Customer</option>
                                             @foreach($customer as $val)
                                                 @if($data->kode_customer == $val->kode)
@@ -259,7 +259,7 @@
                                         </td>
                                     </tr>
                                     <tr class="kontrak_tr">
-                                        <td>
+                                        <td class="kontrak_td disabled">
                                             <div class="checkbox checkbox-info checkbox-circle">
                                                 @if($data->kontrak == true)
                                                 <input checked="" onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
@@ -277,6 +277,12 @@
                                                     Search Tarif
                                                 </button>
                                             </span>
+                                        </td>
+                                        
+                                    </tr>
+                                    <tr>
+                                        <td class="">
+                                            
                                         </td>
                                         <td style="padding-top: 0.4cm">Satuan</td>
                                         <td>
@@ -798,5 +804,27 @@ cari_nopol_kargo();
    tujuan     =  tujuan.split('-');
    $('.kota_penerima').val(tujuan[1]);
 });
+
+// cari kontrak
+function cari_kontrak() {
+    var cabang      = $('.cabang_select').val();
+    var customer_do = $('.customer_do').val();
+     $.ajax({
+        url:baseUrl + '/sales/cari_kontrak',
+        data:{cabang,customer_do},
+        dataType:'json',
+        success:function(data){
+            if (data.status == 1) {
+                $('.kontrak_tarif').attr('checked',true);
+                // $('.kontrak_td').addClass('disabled');
+            }else{
+                $('.kontrak_tarif').attr('checked',false);
+                // $('.kontrak_td').addClass('disabled');
+            }
+        },
+        error:function(){
+        }
+    })
+}
 </script>
 @endsection

@@ -13,7 +13,7 @@ use App\masterSupplierPurchase;
 use Carbon\Carbon;
 use PDF;
 use DB;
-
+use Excel;
 
 class LaporanPurchaseController extends Controller
 {
@@ -32,20 +32,136 @@ class LaporanPurchaseController extends Controller
 			"masterItem" => $this->masterItemData()
 		]);
 	}
+	public function masteritemmaster(Request $request){
+		$dd = $request->asw;
+		$data = [];
+		for ($o=0; $o < count($dd); $o++) { 
+			$data1[$o] = DB::table('masteritem')->where('kode_item','=',$dd[$o])->get();	
+			$data2[$o] = $data1[$o][0];
+			}
+		// view()->share("masterItem", $this->masterItemData());
+			// return $data2;
+		 $d = date('y-h-d-is');
 
-	public function masterItemViewReport(Request $request)
+		if ($request->has('download')) {
+			$pdf = PDF::loadView('purchase/laporan/pdf/masteritem',compact('data2','masterItem'))->setPaper('a4','potrait'); 
+			return $pdf->stream('masteritem'.$d.'.pdf');
+		}else{
+			return view("purchase/laporan/pdf/masterItem",compact('data2'));
+		}
+	}public function masteritemgudang(Request $request){
+		$dd = $request->asw;
+		$data1 = [];
+		for ($o=0; $o < count($dd); $o++) { 
+			$data1[$o] = DB::table('mastergudang')->where('mg_id','=',$dd[$o])->get();
+			$data2[$o] = $data1[$o][0];
+			}
+		 $d = date('y-h-d-is');
+
+		if ($request->has('download')) {
+			$pdf = PDF::loadView('purchase/laporan/pdf/masterGudang',compact('data2'))->setPaper('a4','potrait'); 
+			return $pdf->stream('mastergudang'.$d.'.pdf');
+		}else{
+			return view("purchase/laporan/pdf/masterGudang",compact('data2'));
+		}
+	}public function mastersupplier(Request $request){
+		// dd($request);
+		$dd = $request->asw;
+		$data1 = [];
+		for ($o=0; $o < count($dd); $o++) { 
+			$data1[$o] = DB::table('supplier')->select('no_supplier','nama_supplier','alamat','kodepos','telp','contact_person','kota','propinsi','status','nama_cp','kot.id as kotid','prov.id as provid','kot.nama as kotnama','prov.nama as provnama','idcabang','syarat_kredit','currency')->join('provinsi as prov','prov.id','=','supplier.propinsi')->join('kota as kot','kot.id','=','supplier.kota')->where('no_supplier','=',$dd[$o])->get();
+			$data2[$o] = $data1[$o][0];
+			}
+			// return $data1;
+		 $d = date('y-h-d-is');
+		if ($request->has('download')) {
+			$pdf = PDF::loadView('purchase/laporan/pdf/masterSupplier',compact('data2'))->setPaper('a4','landscape'); 
+			return $pdf->stream('mastersupplier'.$d.'.pdf');
+		}else{
+			return view("purchase/laporan/pdf/masterSupplier",compact('data2'));
+		}
+	}public function masterbayarbank(Request $request){
+		// dd($request);
+		$dd = $request->asw;
+		$data1 = [];
+		for ($o=0; $o < count($dd); $o++) { 
+			$data1[$o] = DB::table('bukti_bank_keluar')->where('bbk_id','=',$dd[$o])->get();
+			$data2[$o] = $data1[$o][0];
+			}
+		 $d = date('y-h-d-is');
+
+		if ($request->has('download')) {
+			$pdf = PDF::loadView('purchase/laporan/pdf/masterbayarbank',compact('data2'))->setPaper('a4','potrait'); 
+			return $pdf->stream('masterbankkeluar'.$d.'.pdf');
+		}else{
+			return view("purchase/laporan/pdf/masterbayarbank",compact('data2'));
+		}
+	}public function masterkaskeluar(Request $request){
+		// dd($request);
+		$dd = $request->asw;
+		$data1 = [];
+		for ($o=0; $o < count($dd); $o++) { 
+			$data1[$o] = DB::table('bukti_kas_keluar')->where('bkk_id','=',$dd[$o])->get();
+			$data2[$o] = $data1[$o][0];
+			}
+		 $d = date('y-h-d-is');
+
+		if ($request->has('download')) {
+			$pdf = PDF::loadView('purchase/laporan/pdf/masterkaskeluar',compact('data2'))->setPaper('a4','potrait'); 
+			return $pdf->stream('masterkaskeluar'.$d.'.pdf');
+		}else{
+			return view("purchase/laporan/pdf/masterkaskeluar",compact('data2'));
+		}
+	}public function masterfakturpembelian(Request $request){
+		// dd($request);
+		$dd = $request->asw;
+		$data1 = [];
+		for ($o=0; $o < count($dd); $o++) { 
+			$data1[$o] = DB::table('faktur_pembelian')->where('fp_idfaktur','=',$dd[$o])->get();
+			$data2[$o] = $data1[$o][0];
+			}
+		 $d = date('y-h-d-is');
+
+		if ($request->has('download')) {
+			$pdf = PDF::loadView('purchase/laporan/pdf/masterfakturpembelian',compact('data2'))->setPaper('a4','potrait'); 
+			return $pdf->stream('masterkaskeluar'.$d.'.pdf');
+		}else{
+			return view("purchase/laporan/pdf/masterfakturpembelian",compact('data2'));
+		}
+	}public function masterpurchaseorder(Request $request){
+		// dd($request);
+		$dd = $request->asw;
+		$data1 = [];
+		for ($o=0; $o < count($dd); $o++) { 
+			$data1[$o] = DB::table('pembelian_order')->join('pembelian_orderdt','podt_idpo','=','po_id')
+					 ->join('spp','spp_id','=','podt_idspp')
+					 ->join('cabang','kode','=','spp_cabang')->where('pembelian_order.po_id','=',$dd[$o])->get();
+			$data2[$o] = $data1[$o][0];
+			}
+		 $d = date('y-h-d-is');
+
+		if ($request->has('download')) {
+			$pdf = PDF::loadView('purchase/laporan/pdf/masterpurchaseorder',compact('data2'))->setPaper('a4','potrait'); 
+			return $pdf->stream('masterkaskeluar'.$d.'.pdf');
+		}else{
+			return view("purchase/laporan/pdf/masterpurchaseorder",compact('data2'));
+		}
+	}
+
+	
+
+	/*public function masterItemViewReport(Request $request)
 	{
+
 		view()->share("masterItem", $this->masterItemData());
 
 		if ($request->has('download')) {
-			return $this->setPdf(
-				"purchase/laporan/pdf/masterItem",
-				"masterItem.pdf"
-			);
+			$pdf = PDF::loadView('purchase/laporan/pdf/masteritem',compact('data','masterItem'))->setPaper('a4','potrait'); 
+			return $pdf->stream('tabel.pdf');
 		}
 
 		return view("purchase/laporan/pdf/masterItem");
-	}
+	}*/
 
 
 	// Master Group Item
@@ -213,10 +329,11 @@ class LaporanPurchaseController extends Controller
 
 	public function reportpo() {
 
-		 $cari=DB::table('pembelian_order')			
+		/*return*/ $cari=DB::table('pembelian_order')->select('*')			
 					 ->join('pembelian_orderdt','podt_idpo','=','po_id')
 					 ->join('spp','spp_id','=','podt_idspp')
 					 ->join('cabang','kode','=','spp_cabang')
+					 // ->groupBy('pembelian_order.po_no')		
 					 ->get();
 
 		 return view('purchase/laporan/po',compact('cari'));
@@ -277,27 +394,225 @@ class LaporanPurchaseController extends Controller
 
 		return view('purchase/laporan/tablePO1');
     }
+    public function fakturpajakmasukan() {
+    	 $array = DB::select("SELECT * from fakturpajakmasukan inner join faktur_pembelian on fakturpajakmasukan.fpm_idfaktur = faktur_pembelian.fp_idfaktur");
+
+		 return view('purchase.laporan.fakturpajak.fakturpajak',compact('array'));
+	}
+	public function reportfakturpajakmasukan(Request $request) {
+	    $awal = $request->a;
+    	$akir = $request->b;
+    	if ($awal == '' && $akir == '') {
+    		$array = DB::select("SELECT * from fakturpajakmasukan inner join faktur_pembelian on fakturpajakmasukan.fpm_idfaktur = faktur_pembelian.fp_idfaktur");
+    	}
+    	elseif ($awal == '' && $akir == $akir) {
+	    	$array = DB::select("SELECT * from fakturpajakmasukan inner join faktur_pembelian on fakturpajakmasukan.fpm_idfaktur = faktur_pembelian.fp_idfaktur where fpm_tgl <= '$akir'");
+    	}
+    	elseif ($awal == $awal && $akir == '') {
+	    	$array = DB::select("SELECT * from fakturpajakmasukan inner join faktur_pembelian on fakturpajakmasukan.fpm_idfaktur = faktur_pembelian.fp_idfaktur where fpm_tgl >= '$awal'");
+    	}
+	    elseif ($awal == $awal && $akir == $akir) {
+	    	$array = DB::select("SELECT * from fakturpajakmasukan inner join faktur_pembelian on fakturpajakmasukan.fpm_idfaktur = faktur_pembelian.fp_idfaktur where fpm_tgl <= '$akir' AND fpm_tgl >= '$awal'");
+	    }
+    	 
+
+		 return view('purchase.laporan.pdf.masterfakturpembelian',compact('array'));
+	}
+	public function kartuhutang() {
+			  $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian) as debet ,
+			(select SUM(fp_netto) from faktur_pembelian) as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian) as saldo 
+			from faktur_pembelian as fp");
+			  
+			  foreach ($data as $key => $value) {
+			 	$debet = $value->debet;
+			 }
+			 foreach ($data as $key => $value) {
+			 	$kredit = $value->kredit;
+			 }
+			 foreach ($data as $key => $value) {
+			 	$saldo = $value->saldo;
+			 }
+		 return view('purchase/laporan/kartuhutang',compact('data','debet','kredit','saldo','awal','akir'));
+	}
+	public function reportkartuhutang(Request $request){
+		// dd($request);
+		$awal = $request->a;
+    	$akir = $request->b;
+    	if ($awal == '' && $akir == '') {
+    		 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian) as debet ,
+			(select SUM(fp_netto) from faktur_pembelian) as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian) as saldo 
+			from faktur_pembelian as fp");
+    	}
+    	elseif ($awal == '' && $akir == $akir) {
+	    	 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where fp_tgl <= '$akir' ) as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' ) as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' ) as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl <= '$akir'");
+    	}
+    	elseif ($awal == $awal && $akir == '') {
+	   		 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where  fp_tgl >= '$awal') as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where  fp_tgl >= '$awal') as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl >= '$awal') as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl >= '$awal'");
+    	}
+	    elseif ($awal == $awal && $akir == $akir) {
+	    	 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl <= '$akir' AND fp.fp_tgl >= '$awal'");
+	    }
+		 foreach ($data as $key => $value) {
+		 	$debet = $value->debet;
+		 }
+		 foreach ($data as $key => $value) {
+		 	$kredit = $value->kredit;
+		 }
+		 foreach ($data as $key => $value) {
+		 	$saldo = $value->saldo;
+		 }
+
+		 return view('purchase.laporan.pdf.masterFakturpajak',compact('data','debet','kredit','saldo','awal','akir'));
+	}
+	public function reportexcelkartuhutang(Request $request){
+		// dd($request);
+		$awal = $request->a;
+    	$akir = $request->b;
+    	if ($awal == '' && $akir == '') {
+    		 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian) as debet ,
+			(select SUM(fp_netto) from faktur_pembelian) as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian) as saldo 
+			from faktur_pembelian as fp");
+    	}
+    	elseif ($awal == '' && $akir == $akir) {
+	    	 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where fp_tgl <= '$akir' ) as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' ) as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' ) as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl <= '$akir'");
+    	}
+    	elseif ($awal == $awal && $akir == '') {
+	   		 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where  fp_tgl >= '$awal') as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where  fp_tgl >= '$awal') as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl >= '$awal') as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl >= '$awal'");
+    	}
+	    elseif ($awal == $awal && $akir == $akir) {
+	    	 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl <= '$akir' AND fp.fp_tgl >= '$awal'");
+	    }
+		 foreach ($data as $key => $value) {
+		 	$debet = $value->debet;
+		 }
+		 foreach ($data as $key => $value) {
+		 	$kredit = $value->kredit;
+		 }
+		 foreach ($data as $key => $value) {
+		 	$saldo = $value->saldo;
+		 }
+		 $date =  date('B'.'s'.'H');
+
+		 // return $anjay;
+		 Excel::create('Kartuhutang'.$date, function($excel) use ($data,$debet,$kredit,$saldo,$awal,$akir){
+
+				    $excel->sheet('New sheet', function($sheet) use ($data,$debet,$kredit,$saldo,$awal,$akir) {
+
+				        $sheet->loadView('purchase.laporan.excel.masterexcelkartuhutang')
+				        ->with('data',$data)
+				        ->with('debet',$debet)
+				        ->with('kredit',$kredit)
+				        ->with('saldo',$saldo)
+				        ->with('awal',$awal)
+				        ->with('akir',$akir);
+
+				    });
+
+				})->export('xls');
+
+		 // return view('purchase.laporan.pdf.masterFakturpajak',compact('data','debet','kredit','saldo','awal','akir'));
+	}
+	public function kartuhutangajax(Request $request){
+		// return 'a';
+		$awal = $request->xox;
+    	$akir = $request->xoxx;
+    	if ($awal == '' && $akir == '') {
+    		 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian) as debet ,
+			(select SUM(fp_netto) from faktur_pembelian) as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian) as saldo 
+			from faktur_pembelian as fp");
+    	}
+    	elseif ($awal == '' && $akir == $akir) {
+	    	 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where fp_tgl <= '$akir' ) as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' ) as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' ) as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl <= '$akir'");
+    	}
+    	elseif ($awal == $awal && $akir == '') {
+	   		 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where  fp_tgl >= '$awal') as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where  fp_tgl >= '$awal') as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl >= '$awal') as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl >= '$awal'");
+    	}
+	    elseif ($awal == $awal && $akir == $akir) {
+	    	 $data = DB::select("SELECT /*SUM(fp.fp_dpp) as debet,SUM(fp.fp_netto) as kredit,SUM(fp.fp_netto) as saldo*/ 
+			fp.fp_nofaktur,fp.fp_idfaktur,fp.fp_keterangan,fp.fp_dpp,fp_netto,fp.fp_netto,fp.fp_tgl,
+			(select SUM(fp_dpp) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as debet ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as kredit ,
+			(select SUM(fp_netto) from faktur_pembelian where fp_tgl <= '$akir' AND fp_tgl >= '$awal') as saldo 
+			from faktur_pembelian as fp where fp.fp_tgl <= '$akir' AND fp.fp_tgl >= '$awal'");
+	    }
+		  
+		 return view('purchase.laporan.kartuhutangajax',compact('data','debet','kredit','saldo','awal','akir'));
+
+	}
 
 
 	public function reportfakturpembelian() {
-		 return view('purchase/laporan/fakturpembelian');
+			$data =DB::table('faktur_pembelian')->get();
+		 return view('purchase/laporan/fakturpembelian',compact('data'));
 	}
 
 	public function reportbayarkas() {
-		 return view('purchase/laporan/bayarkas');
+		  $array = DB::table('bukti_kas_keluar')->get();
+		 return view('purchase/laporan/bayarkas',compact('array'));
 	}
 
 	public function reportbayarbank() {
-		 return view('purchase/laporan/bayarbank');
+		$array = DB::table('bukti_bank_keluar')->get();
+		 return view('purchase/laporan/bayarbank',compact('array'));
 	}
 
 	public function reportmutasihutang() {
 		 return view('purchase/laporan/mutasihutang');
 	}
 
-	public function reportkartuhutang() {
-		 return view('purchase/laporan/kartuhutang');
-	}
+	
 
 	public function reportfakturpelunasan() {
 		 return view('purchase/laporan/historisfaktur');
@@ -307,10 +622,7 @@ class LaporanPurchaseController extends Controller
 		 return view('purchase/laporan/analisausiahutang');
 	}
 
-	public function reportfakturpajakmasukan() {
-		 return view('purchase/laporan/fakturpajakmasukan');
-	}
-
+	
 	public function historisuangmukapembelian() {
 		 return view('purchase/laporan/historisuangmukapembelian');
 	}
@@ -386,6 +698,7 @@ class LaporanPurchaseController extends Controller
 
 		for ($index = 0; $index < count($data); $index++) { 
 			$masterGudang["nama"][] = $data[$index]["mg_namagudang"];
+			$masterGudang["id"][] = $data[$index]["mg_id"];	
 			$masterGudang["cabang"][] = $data[$index]["mg_cabang"];
 			$masterGudang["alamat"][] = $data[$index]["mg_alamat"];
 		}

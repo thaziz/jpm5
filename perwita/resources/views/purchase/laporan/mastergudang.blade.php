@@ -69,22 +69,17 @@
                           <th> Pilih Laporan : </th>
                           <td >
                             <select class="form-control" onchange="location = this.value;">
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Master Item</option>
-                  <option value="/jpm/reportmasterdepartment/reportmasterdepartment">Laporan Data Department</option>
-                  <option value="/jpm/reportmastergudang/reportmastergudang" selected="" disabled="" style="background-color: #DDD; ">Laporan Data Master Gudang</option>
-                  <option value="/jpm/reportmastersupplier/reportmastersupplier">Laporan Data Supplier</option>
-                  <option value="/jpm/reportspp/reportspp">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="/jpm/reportpo/reportpo">Laporan Data Order</option>
-                  <option value="/jpm/reportfakturpembelian/reportfakturpembelian">Laporan Data Faktur Pembelian</option>
-                  <option value="/jpm/buktikaskeluar/patty_cash">Laporan Data Patty Cash</option>
-                  <option value="/jpm/reportbayarkas/reportbayarkas">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                  {{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Faktur vs Pelunasan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Analisa Usia Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Faktur Pajak Masukan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Uang Muka Pembelian</option> --}}
+                  <option selected="" disabled="">Pilih terlebih dahulu</option>
+                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
+                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
+                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
+                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
+                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
+                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
+                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
                  </select>
                           </td>
                         </tr>
@@ -94,11 +89,11 @@
                 
 
                   <div class="row"> &nbsp; &nbsp; 
-                    <a class="btn btn-info" href="{{ route('masterGudang.ViewReport') }}">
+                    <a class="btn btn-info" onclick="cetak()">
                       <i class="fa fa-print" aria-hidden="true"></i> Cetak 
                     </a>
                   </div>
-
+                  <form id="anjay">
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
@@ -111,15 +106,16 @@
                     <tbody>
                       @for ($index = 0; $index < count($masterGudang["nama"]); $index++)
                         <tr>
-                          <td align="center">{{ $index + 1 }}</td>
-                          <td align="center">{{ $masterGudang["cabang"][$index] }}</td>
-                          <td align="center">{{ $masterGudang["nama"][$index] }}</td>
-                          <td align="center">{{ $masterGudang["alamat"][$index] }}</td>
+                          <td align="center"><input type="hidden" id="a" name="a[]" value="{{ $masterGudang["id"][$index] }}">{{ $index + 1 }}</td>
+                          <td align="center"><input type="hidden" id="b" name="b[]" value="{{ $masterGudang["cabang"][$index] }}">{{ $masterGudang["cabang"][$index] }}</td>
+                          <td align="center"><input type="hidden" id="c" name="c[]" value="{{ $masterGudang["cabang"][$index] }}">{{ $masterGudang["nama"][$index] }}</td>
+                          <td align="center"><input type="hidden" id="d" name="d[]" value="{{ $masterGudang["alamat"][$index] }}">{{ $masterGudang["alamat"][$index] }}</td>
                         </tr>
                       @endfor
                     </tbody>
                    
                   </table>
+                  </form>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   
@@ -153,7 +149,7 @@
     var tgl1 = '1/1/2018';
     var tgl2 = '2/2/2018';
 
-  $('#addColumn').DataTable({
+ var table = $('#addColumn').DataTable({
     paging:true,
        dom: 'Bfrtip',
        buttons: [
@@ -187,17 +183,45 @@
 
 
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'dd-mm-yyyy'
-    });
-    
-    $no = 0;
     $('.carispp').click(function(){
       $no++;
       $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
     })
- 
+   function cetak(){
+    
+      var a = $('#a').val();
+      var b = $('#b').val();
+      var c = $('#c').val();
+      var d = $('#d').val();
+
+      var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
+           asw[i] =  $(asd[i][0]).val();
+       }
+       console.log(asw);
+
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+      $.ajax({
+        data: {asw:asw,download:'download'},
+        url: baseUrl + '/mastergudang/mastergudang/mastergudang',
+        type: "get",
+         complete : function(){
+        window.open(this.url,'_blank');
+        },    
+        success : function(data){
+            
+        }
+
+      });
+    }
+
    
 
 </script>

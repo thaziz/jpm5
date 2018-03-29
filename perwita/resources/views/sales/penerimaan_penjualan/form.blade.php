@@ -66,9 +66,6 @@
                         <div class="col-xs-6">
 
                         </div>
-
-
-
                     </div>
                 </form>
                 <form id="form_header" class="form-horizontal">
@@ -110,12 +107,10 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Akun</td>
-                                <td colspan="3">
+                                <td colspan="3" class="td_akun_bank">
                                     <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
                                         <option value="0">Pilih - Akun</option>
-                                        @foreach($akun as $val)
-                                        <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
-                                        @endforeach
+                                    
                                     </select>
                                 </td>
                             </tr>
@@ -131,6 +126,23 @@
                                 </td>
                                 
                             </tr>
+                            @if(Auth::user()->punyaAkses('Kwitansi','cabang'))
+                            <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td colspan="20">
+                                    <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                        <option>Pilih - Cabang</option>
+                                    @foreach ($cabang as $row)
+                                        @if(Auth()->user()->kode_cabang == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @else
+                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @endif
+                                    @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            @else
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="20">
@@ -146,6 +158,7 @@
                                     </select>
                                 </td>
                             </tr>
+                            @endif
                             <tr>    
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
@@ -816,6 +829,7 @@ $(document).ready(function(){
         }
     });
 
+
     $.ajax({
         url:baseUrl+'/sales/akun_biaya',
         data:{cabang},
@@ -827,11 +841,74 @@ $(document).ready(function(){
             // location.reload();
         }
     });
+
+    $.ajax({
+        url:baseUrl+'/sales/akun_bank',
+        data:{cabang},
+        success:function(response){
+            $('.td_akun_bank').html(response);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
     $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.m_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.me_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
 });
+
+// ganti nota untuk admin
+    function ganti_nota(argument) {
+      var cabang = $('.cb_cabang').val();
+        $.ajax({
+        url:baseUrl+'/sales/nota_kwitansi',
+        data:{cabang},
+        dataType : 'json',
+        success:function(response){
+            $('#nota_kwitansi').val(response.nota);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+        $.ajax({
+            url:baseUrl+'/sales/akun_all',
+            data:{cabang},
+            success:function(response){
+                $('.akun_lain_td').html(response);
+            },
+            error:function(){
+                location.reload();
+            }
+        });
+
+        $.ajax({
+            url:baseUrl+'/sales/akun_biaya',
+            data:{cabang},
+            success:function(response){
+                $('.akun_biaya_td').html(response);
+
+            },
+            error:function(){
+                // location.reload();
+            }
+        });
+
+
+
+    $.ajax({
+        url:baseUrl+'/sales/akun_bank',
+        data:{cabang},
+        success:function(response){
+            $('.td_akun_bank').html(response);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+    }
 // check all
 function nota_tes(){
     var cabang = $('.cb_cabang').val();

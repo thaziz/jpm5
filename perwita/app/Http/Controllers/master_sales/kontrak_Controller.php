@@ -148,6 +148,7 @@ class kontrak_Controller extends Controller
                                 'kcd_kode_satuan'   => $request->satuan[$i],
                                 'kcd_type_tarif'    => $request->type_tarif[$i],
                                 'kcd_jenis_tarif'   => $request->jenis_tarif[$i],
+                                'kcd_kode_angkutan' => $request->tipe_angkutan[$i],
                                 'kcd_acc_penjualan' => $request->akun_acc[$i],
                                 'kcd_csf_penjualan' => $request->akun_csf[$i],
                                 'kcd_kode'          => $request->kontrak_nomor,
@@ -173,6 +174,7 @@ class kontrak_Controller extends Controller
 
         $data_dt = DB::table('kontrak_customer_d')              
                   ->join('jenis_tarif','jt_id','=','kcd_jenis_tarif')
+                  ->join('tipe_angkutan','kode','=','kcd_kode_angkutan')
                   ->where('kcd_id',$id)
                   ->get();
         $asal    = DB::table('kontrak_customer_d')
@@ -183,7 +185,7 @@ class kontrak_Controller extends Controller
                   ->join('kota','id','=','kcd_kota_tujuan')
                   ->where('kcd_id',$id)
                   ->get();
-
+                  
         for ($i=0; $i < count($data_dt); $i++) { 
             $data_dt[$i]->nama_asal = $asal[$i]->nama;
             $data_dt[$i]->nama_tujuan = $tujuan[$i]->nama;
@@ -255,6 +257,7 @@ class kontrak_Controller extends Controller
                                 'kcd_harga'         => filter_var($request->harga[$i], FILTER_SANITIZE_NUMBER_INT),
                                 'kcd_keterangan'    => $request->keterangan[$i],
                                 'kcd_kode_satuan'   => $request->satuan[$i],
+                                'kcd_kode_angkutan' => $request->tipe_angkutan[$i],
                                 'kcd_type_tarif'    => $request->type_tarif[$i],
                                 'kcd_jenis_tarif'   => $request->jenis_tarif[$i],
                                 'kcd_acc_penjualan' => $request->akun_acc[$i],

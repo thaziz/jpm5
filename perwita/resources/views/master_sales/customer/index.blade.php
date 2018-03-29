@@ -192,7 +192,7 @@
                                     <td colspan="7" style="text-align: center;font-weight: bold;">Identitas Pajak</td>
                                 </tr>
                                 <tr>
-                                    <td> Nama </td>
+                                    <td> Nama PIC</td>
                                     <td><input type="text" class="form-control" name="nama_pajak"></td>
 
                                     <td>Kota</td>
@@ -206,9 +206,16 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Alamat</td>
+                                    <td style="padding-top: 0.4cm">Alamat PIC</td>
                                     <td colspan="4"><input type="text" class="form-control" name="alamat_pajak" style="text-transform: uppercase" ></td>
                                     
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Telp PIC</td>
+                                    <td><input type="text" class="form-control" name="telp_pajak" ></td>
+
+                                    <td style="padding-top: 0.4cm">Email PIC</td>
+                                    <td><input type="text" class="form-control" name="email_pajak" ></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">NPWP</td>
@@ -219,13 +226,7 @@
                                         <input type="checkbox" name="ck_pph23">
                                     </td>
                                 </tr>
-                                 <tr>
-                                    <td style="padding-top: 0.4cm">Telp</td>
-                                    <td><input type="text" class="form-control" name="telp_pajak" ></td>
-
-                                    <td style="padding-top: 0.4cm">Email</td>
-                                    <td><input type="text" class="form-control" name="email_pajak" ></td>
-                                </tr>
+                                 
                                 <tr>
                                     <td style="padding-top: 0.4cm">Nama Pajak 23</td>
                                     <td>

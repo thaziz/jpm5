@@ -477,9 +477,9 @@ class do_kargo_Controller extends Controller
     }
     public function nomor_do_kargo(request $request)
     {
-        $bulan = Carbon::now()->format('m');
-        $tahun = Carbon::now()->format('y');
-        $cabang= Auth::user()->kode_cabang;
+        $bulan  = Carbon::now()->format('m');
+        $tahun  = Carbon::now()->format('y');
+        $cabang = $request->cabang;
         $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
                                         WHERE kode_cabang = '$cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
@@ -489,7 +489,7 @@ class do_kargo_Controller extends Controller
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
 
-        $nota = 'KGO' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
+        $nota = 'KGO' . $cabang . $bulan . $tahun . $index;
         return response()->json(['nota'=>$nota]);
     }
     public function pilih_tarif_kargo(request $request)
@@ -845,5 +845,17 @@ class do_kargo_Controller extends Controller
     public function update_do_kargo(request $request)
     {
        return $this->save_do_kargo($request);
+    }
+    public function cari_kontrak(request $request)
+    {
+        $data = DB::table('kontrak_customer')
+                  ->where('kc_kode_customer',$request->customer_do)
+                  ->get();
+
+        if ($data != null) {
+            return response()->json(['status'=>1]);
+        }else{
+            return response()->json(['status'=>0]);
+        }
     }
 }

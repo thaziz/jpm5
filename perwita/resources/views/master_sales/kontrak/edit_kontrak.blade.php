@@ -114,6 +114,7 @@
                             <th>Tujuan</th>
                             <th>Jenis Tarif</th>
                             <th>Satuan</th>
+                            <th>Tipe Angkutan</th>
                             <th>Harga</th>
                             <th>Keterangan</th>
                             <th style="text-align: center;">Aksi</th>
@@ -138,6 +139,10 @@
                             <td>
                                 {{$val->kcd_kode_satuan}}
                                 <input type="hidden" class="satuan" value="{{$val->kcd_kode_satuan}}" name="satuan[]">
+                            </td>
+                            <td>
+                                {{$val->nama}}
+                                <input type="hidden" class="tipe_angkutan" value="{{$val->kcd_kode_angkutan}}" name="satuan[]">
                             </td>
                             <td>
                                 <input type="text" class="harga form-control" style="text-align:right" value="{{number_format($val->kcd_harga,0, ".", ",")}}" name="harga[]">
@@ -220,6 +225,17 @@
                                         <option value="0">Pilih - Jenis Tarif</option>
                                         @foreach($jenis_tarif as $val)
                                         <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Tipe Angkutan</td>
+                                <td>
+                                    <select name="tipe_angkutan" class="form-control tipe_angkutan chosen-select-width">
+                                        <option value="0">Pilih - Tipe Angkutan</option>
+                                        @foreach($tipe_angkutan as $val)
+                                            <option value="{{$val->kode}}">{{$val->nama}}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -327,27 +343,27 @@
              }
 
 
-    // $.ajax({
-    //     url:baseUrl +'/master_sales/set_kode_akun_acc',
-    //     data:{cabang},
-    //     success:function(response){
-    //         $('.acc_tr').html(response);
-    //     },
-    //     error:function(){
-    //         // location.reload();
-    //     }
-    // });
+    $.ajax({
+        url:baseUrl +'/master_sales/set_kode_akun_acc',
+        data:{cabang},
+        success:function(response){
+            $('.acc_tr').html(response);
+        },
+        error:function(){
+            // location.reload();
+        }
+    });
 
-    // $.ajax({
-    //     url:baseUrl +'/master_sales/set_kode_akun_csf',
-    //     data:{cabang},
-    //     success:function(response){
-    //         $('.csf_tr').html(response);
-    //     },
-    //     error:function(){
-    //         // location.reload();
-    //     }
-    // });
+    $.ajax({
+        url:baseUrl +'/master_sales/set_kode_akun_csf',
+        data:{cabang},
+        success:function(response){
+            $('.csf_tr').html(response);
+        },
+        error:function(){
+            // location.reload();
+        }
+    });
 });
 
 $('#btnadd').click(function(){
@@ -426,6 +442,7 @@ var jenis_tarif_modal_text   = $('.jenis_tarif_modal option:selected').text();
 var acc_akun_modal_text      = $('.acc_akun_modal option:selected ').text();
 var csf_akun_modal_text      = $('.csf_akun_modal option:selected').text();
 var satuan_modal_text        = $('.satuan_modal option:selected').text();
+var tipe_angkutan_text       = $('.tipe_angkutan option:selected').text();
 
 var harga_modal              = $('.harga_modal').val();
 var keterangan_modal         = $('.keterangan_modal ').val();
@@ -437,6 +454,7 @@ var jenis_modal              = $('.jenis_modal').val();
 var jenis_tarif_modal        = $('.jenis_tarif_modal').val();
 var acc_akun_modal           = $('.acc_akun_modal ').val();
 var csf_akun_modal           = $('.csf_akun_modal').val();
+var tipe_angkutan            = $('.tipe_angkutan').val();
 var satuan_modal             = $('.satuan_modal').val();
 
 kota_asal_modal_text   = kota_asal_modal_text.split('-');
@@ -448,14 +466,14 @@ kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
            jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
            '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
            satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+           tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
            '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
-           '<input type="hidden" class="type_tarif_detail form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
+           '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
            '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
            '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
            '<label class="fa fa-trash"></label></button>'+
            '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
            '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
-      
     ]).draw();
   // console.log('asd');
 

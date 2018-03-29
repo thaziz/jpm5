@@ -161,10 +161,10 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="hilang2"> 
                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td>   
-                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" style="width:100%" i>
+                                        <select class="chosen-select-width c"  name="cb_kota_tujuan" id="cb_kota_tujuan" style="width:100%" i>
                                             <option value="" selected="" disabled="">-- Pilih Kota tujuan --</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
@@ -172,10 +172,10 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr id="hilang">
                                     <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
                                     <td>   
-                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" style="width:100%" i>
+                                        <select class="chosen-select-width c"  name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
                                             <option value="" selected="" disabled="">-- Pilih Provinsi tujuan --</option>
                                         @foreach ($prov as $prov)
                                             <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
@@ -251,10 +251,17 @@
                               </tbody>
                           </table> 
                         
-                          <input type="hidden" name="id_reguler" id="id_reguler">
-                          <input type="hidden" name="jenis_reguler">
-                          <input type="hidden" name="id_reguler_edit">
+                          <input type="hidden" name="id_sepeda" id="id_reguler">
+                          <input type="hidden" name="id_matik" id="id_express">
+                          <input type="hidden" name="id_sport" id="id_outlet">
+                          <input type="hidden" name="id_moge" id="id_outlet">
                           <input type="hidden" name="kodekota" id="kodekota">
+
+                          {{--  --}}
+                          <input type="hidden" name="id_sepeda_edit">
+                          <input type="hidden" name="id_matik_edit">
+                          <input type="hidden" name="id_sport_edit">
+                          <input type="hidden" name="id_moge_edit">
                           
                           
                         </form>
@@ -297,7 +304,13 @@
         var kotaid = $('#kodekota').val(idkota);
         // alert('njing');
     })
+    $('#cb_kota_tujuan').change(function(){
+        $('#hilang').hide();
 
+    })
+    $('#cb_provinsi_tujuan').change(function(){
+        $('#hilang2').hide();
+    })
     $(document).ready( function () {
         $('#table_data').DataTable({
             
@@ -356,7 +369,9 @@
         $("input[name='jenis_express']").val('');
         $("input[name='jenis_outlet']").val('');
        
-               
+         $('#hilang').show();
+
+          $('#hilang2').show();      
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
         $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
@@ -382,39 +397,39 @@
 
                 $("input[name='crud']").val('E');
                 //
-                $("input[name='id_reguler']").val(data[0].kode);
-                $("input[name='id_express']").val(data[1].kode);
+                $("input[name='id_sepeda']").val(data[0].kode);
+                $("input[name='id_matik']").val(data[1].kode);
+                $("input[name='id_sport']").val(data[2].kode);
                 //
-                $("input[name='harga_regular']").val(data[0].harga);
-                $("input[name='harga_express']").val(data[1].harga);
                 //
-                $("input[name='waktu_regular']").val(data[0].waktu);
-                $("input[name='waktu_express']").val(data[1].waktu);
+                $("input[name='waktu']").val(data[0].waktu);
                 //  
-                $("input[name='jenis_reguler']").val(data[0].jenis);
-                $("input[name='jenis_express']").val(data[1].jenis);
-                //
-               
+               $('#hilang').hide();
+               $('#hilang2').show();
                 var gege = data[2];
                 // alert(gege);
                 if (gege !== undefined) {
-                  $("input[name='id_outlet']").val(data[2].kode);
-                  $("input[name='harga_outlet']").val(data[2].harga);
-                  $("input[name='jenis_outlet']").val(data[2].jenis);
-                  $("input[name='id_outlet_edit']").val(data[2].kode_detail);
+                  $("input[name='id_moge']").val(data[3].kode);
+                  $("input[name='moge']").val(data[3].harga);
+                  $("input[name='id_moge_edit']").val(data[3].kode_detail_sepeda);
                 }else if (gege === undefined){
-                  $("input[name='id_outlet']").val('');
-                  $("input[name='harga_outlet']").val('');
-                  $("input[name='jenis_outlet']").val('');
+                  $("input[name='id_moge']").val('');
+                  $("input[name='moge']").val('');
                   $("input[name='id_outlet_edit']").val('');
                 }
                 
+                  $("input[name='sepeda_pancal']").val(data[0].harga);
+                  $("input[name='bebek_matik']").val(data[1].harga);
+                  $("input[name='laki_sport']").val(data[2].harga);
+
+
                   
-                $("input[name='id_reguler_edit']").val(data[0].kode_detail);
-                $("input[name='id_express_edit']").val(data[1].kode_detail);
+                $("input[name='id_matik_edit']").val(data[1].kode_detail_sepeda);
+                $("input[name='id_sport_edit']").val(data[2].kode_detail_sepeda);
+                $("input[name='id_sepeda_edit']").val(data[0].kode_detail_sepeda);
 
 
-                $("input[name='ed_kode_old']").val(data[0].kode_sama);
+                $("input[name='ed_kode_old']").val(data[0].kode_sama_sepeda);
                 $("select[name='cb_kota_asal']").val(data[0].id_kota_asal).trigger('chosen:updated');
                 $("select[name='cb_kota_tujuan']").val(data[0].id_kota_tujuan).trigger('chosen:updated');
                 $("select[name='ed_cabang']").val(data[0].kode_cabang).trigger('chosen:updated');

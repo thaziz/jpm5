@@ -31,11 +31,8 @@
 <body>
 	<div class="container">
 		<div class="wrapper-table">
-			<a id="button" class="btn btn-info" href="{{ route('masterItem.ViewReport', ['download' => 'pdf']) }}">
-	            <i class="fa fa-print" aria-hidden="true"></i> Download PDF 
-	        </a> 
 			<table border="1" class="table table-bordered" id="table-parent">
-				<tr>
+				{{-- <tr>
 					<td valign="middle" align="center" id="td-first">
 						<img src="{{ asset('/assets/img/dboard/logo/Capture.png') }}" alt="">
 					</td>
@@ -55,7 +52,7 @@
 							</tr>
 						</table>
 					</td>
-				</tr>
+				</tr> --}}
 
 				<tr>
 					<td colspan="3" style="padding: 0;">
@@ -70,17 +67,41 @@
 								<td valign="middle" align="center">Acc HP</td>
 							</tr>
 
-							@for ($index = 0; $index < count($masterItem["namaItem"]); $index++)
+							{{-- @for ($index = 0; $index < count($data2); $index++)
 								<tr>
-						          	<td align="center">{{ $index + 1 }}</td>
-						          	<td align="center">{{ $masterItem["kodeItem"][$index] }}</td>
-						          	<td align="center">{{ $masterItem["namaItem"][$index] }}</td>
-						          	<td align="center">{{ $masterItem["groupItem"][$index] }}</td>
-						          	<td align="center">{{ $masterItem["satuanItem"][$index] }}</td>
-						          	<td align="center">{{ $masterItem["accStock"][$index] }}</td>
-						          	<td align="center">{{ $masterItem["accHpp"][$index] }}</td>
+						          	<td align="center">{{ $data2[$index]->kode_item}}</td>
 						        </tr>
-							@endfor
+							@endfor --}}
+							{{-- <tr>
+								<td>1w</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+								<td>1</td>
+							</tr> --}}
+
+
+
+							@foreach ($data2 as $index => $element)
+							<tr>
+								<td>{{ $index+1 }}</td>
+								<td>{{ $element->kode_item }}</td>
+								<td>{{ $element->nama_masteritem }}</td>
+								<td>{{ $element->groupitem }}</td>
+								<td>{{ $element->unitstock }}</td>
+								<td>{{ $element->acc_persediaan }}</td>
+								<td>{{ $element->acc_hpp }}</td>
+
+							</tr>
+							@endforeach
+
+
+
+
+
+
 						</table>
 					</td>
 				</tr>
