@@ -31,7 +31,7 @@
   }
   .disabled {
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 1;
 }
 </style>
 <link href="{{asset('assets/css/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet">
@@ -86,8 +86,9 @@
                   <div class="box-body">
                   
                       <div class="col-xs-6">
+                        {{Auth::user()->PunyaAkses('Faktur Pembelian','cabang')}}
                          <table class="table head1">    
-                          @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
+                          @if(Auth::user()->PunyaAkses('Faktur Pembelian','cabang'))
                             <tr>
                             <td width="150px"> Cabang </td>
                             <td>
@@ -97,18 +98,22 @@
                                   </option>
 
                                   @foreach($data['cabang'] as $cabang)
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
+                                  @if(Auth()->user()->kode_cabang == $cabang->kode)
+                                    <option selected="" value="{{$cabang->kode}}">{{$cabang->nama}}</option>
+                                  }
+                                  }
+                                  @else
+                                    <option value="{{$cabang->kode}}">{{$cabang->nama}}</option>
+                                  @endif
                                   @endforeach
                                  </select>
                             </td>
                             </tr>
                             @else
-                            <tr>
+                            <tr class="disabled">
                             <td width="150px"> Cabang </td>
                             <td>
-                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                              <select class="form-control chosen-select-width1 cabang" disabled="" name="cabang">
                                   <option value="">
                                     Pilih Cabang
                                   </option>
