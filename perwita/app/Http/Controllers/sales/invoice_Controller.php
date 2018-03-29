@@ -87,14 +87,10 @@ class invoice_Controller extends Controller
         $detail = DB::table('invoice_d')
                     ->where('id_nomor_invoice',$id)
                     ->get();
-        $counting = 90;
-        $hitung = 30;
+        $counting = count($detail); 
+  
 
-        if ($counting % 30 == 0) {
-          $hitung +=30;
-        }
-        return $hitung;
-        if ($counting < $hitung) {
+        if ($counting < 30) {
           $hitung =30 - $counting;
           for ($i=0; $i < $hitung; $i++) { 
             $push[$i]=' ';
