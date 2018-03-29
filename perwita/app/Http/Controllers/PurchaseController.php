@@ -2982,10 +2982,10 @@ $indexakun=0;
 	public function detailfatkurpembelian($id) {
 			$data['faktur'] = DB::select("select * from faktur_pembelian,supplier,cabang where  fp_idsup = idsup and fp_idfaktur = '$id' and fp_comp = kode");
 		$data['fakturdt'] = DB::select("select * from faktur_pembelian,supplier,faktur_pembeliandt , masteritem, pembelian_order where fpdt_idfp = fp_idfaktur and fp_idsup = idsup and fpdt_kodeitem = kode_item and fp_idfaktur = '$id'");
-
+$jurnalRef=$data['faktur'][0]->fp_nofaktur;
 		$datas['fakturs'] = DB::select("select * from faktur_pembeliandt , pembelian_order, faktur_pembelian, supplier, masteritem where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id' and fp_idsup = idsup and fpdt_kodeitem = kode_item and fpdt_idpo = po_id");
 		
-		dd($datas);
+		
 		if($datas['fakturs'] == null){ //FP
 			$data['status'] = 'FP';			
 			$data['fakturdtpo'] = DB::select("select * from faktur_pembeliandt , faktur_pembelian, masteritem, supplier where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id' and fpdt_kodeitem = kode_item and fp_idsup = idsup");
@@ -3027,7 +3027,14 @@ $indexakun=0;
 		$data['jenisitem'] = masterJenisItemPurchase::all();
 	//	dd(count($data['fpm']));
 	//	dd($data);
-		return view('purchase/fatkur_pembelian/detail', compact('data'));
+
+		$jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+                        FROM d_akun a join d_jurnal_dt jd
+                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                        (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef')")); 
+
+
+		return view('purchase/fatkur_pembelian/detail', compact('data','jurnal_dt'));
 	}	
 
 	public function getbarang(Request $request){
@@ -3864,7 +3871,7 @@ $indexakun=0;
 
 			   foreach ($request->biaya as $idx => $value) {
 			   $biaya = str_replace(',', '', $value);			   
-			   $subtotal=$biaya-($biaya*$diskonJurnal/100);
+			   $subtotal=$biaya-($biaya*(float)$diskonJurnal/100);
 			   if($request->updatestock[0] == "Y"){
 			   		$id_akun[$idx]['akun']=$request->acc_persediaan[$idx];	
 			   }
@@ -3985,13 +3992,15 @@ if($request->jenisppn=='I'){
     
 
  			$id_jurnal=d_jurnal::max('jr_id')+1;
-                foreach ($akun as $key => $data) {   
-                        $id_jrdt=$key;
+ 			$key=1;
+                foreach ($akun as $data) {   
+                        
                         $jurnal_dt[$key]['jrdt_jurnal']=$id_jurnal;
-                        $jurnal_dt[$key]['jrdt_detailid']=$id_jrdt+1;
+                        $jurnal_dt[$key]['jrdt_detailid']=$key;
                         $jurnal_dt[$key]['jrdt_acc']=$data['id_akun'];
                         $jurnal_dt[$key]['jrdt_value']=$data['value'];
                         $jurnal_dt[$key]['jrdt_statusdk']=$data['dk'];
+                        $key++;
                 }
             d_jurnal::create([
                         'jr_id'=>$id_jurnal,
