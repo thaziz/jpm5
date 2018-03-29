@@ -2021,9 +2021,10 @@
               var idjenisbayar = $('.jenisbayar').val();
               var cabang = $('.cabang').val();
               $('.hsljenisbayar').val(idsup);
+              alert(idsup);
                $.ajax({
                   url : baseUrl + '/formfpg/changesupplier',
-                  data : {idsup, idjenisbayar},
+                  data : {idsup, idjenisbayar,cabang},
                   type : "get",
                   dataType : "json",
                   success : function(data) {
