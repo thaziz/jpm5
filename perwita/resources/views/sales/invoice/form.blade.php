@@ -58,10 +58,11 @@
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
                                 </td>
                             </tr>
-                            <tr>
+                            @if(Auth::user()->punyaAkses('Invoice Penjualan','cabang'))
+                            <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">
-                                        <select class="form-control chosen-select-width cabang chosen-disabled " disabled=""  name="cb_cabang">
+                                        <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -70,9 +71,24 @@
                                             @endif
                                         @endforeach
                                         </select>
-                                   
                                 </td>
                             </tr>
+                            @else
+                            <tr class="disabled">
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td colspan="4">
+                                        <select class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                        @foreach ($cabang as $row)
+                                            @if(Auth::user()->kode_cabang == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            @else
+                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            @endif
+                                        @endforeach
+                                        </select>
+                                </td>
+                            </tr>
+                            @endif
                             <tr>
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4">                                    
@@ -357,7 +373,18 @@
             }
         });
     });
-
+    // ganti nota untuk admin
+    function ganti_nota(argument) {
+      var cabang = $('.cabang').val();
+        $.ajax({
+            url:baseUrl+'/sales/nota_invoice',
+            data:{cabang},
+            dataType : 'json',
+            success:function(response){
+                $('#nota_invoice').val(response.nota);
+            }
+        });
+    }
     //ajax jatuh  tempo
    $('#customer').change(function(){
         var cus = $('#customer').val();
