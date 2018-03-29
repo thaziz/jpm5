@@ -3547,7 +3547,7 @@ $indexakun=0;
 
 		public function update_fp(Request $request){
 			return DB::transaction(function() use ($request) {   
-				dd($request->all());
+				
 		$diskonJurnal=$request->diskon;
 		$nofaktur = $request->nofakturitem;
 		$jumlahtotal = $request->jumlahtotal;
