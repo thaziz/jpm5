@@ -68,19 +68,28 @@
                                     <tr>
                                         <td>Cabang</td>
                                         <td>
-                                            <select disabled="" class="form-control cabang_select">
-                                            @foreach($cabang as $val)
-                                            @if(Auth::user()->punyaAkses('do_kargo','cabang'))
-                                                @if(Auth::user()->kode_cabang == $val->kode)
-                                                <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                                @else
-                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                                @endif
+
+                                            @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
+                                                <select onchange="ganti_nota()" class="form-control cabang_select">
+                                                @foreach($cabang as $val)
+                                                    @if(Auth()->user()->kode_cabang == $val->kode)
+                                                    <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    @else
+                                                    <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    @endif
+                                                @endforeach
+                                                </select>
                                             @else
-                                                <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                <select disabled="" class="form-control cabang_select">
+                                                @foreach($cabang as $val)
+                                                @if(Auth::user()->kode_cabang == $val->kode)
+                                                    <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @else
+                                                    <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @endif
+                                                @endforeach
+                                                </select>
                                             @endif
-                                            @endforeach
-                                            </select>
                                             <input type="hidden" name="cabang_input" class="cabang_input form-control input-sm">
                                         </td>
                                     </tr>
@@ -474,6 +483,7 @@ $(document).ready(function(){
         }
     })
 })
+
 //hide unhide subcon
 $('.status_kendaraan').change(function(){
     if ($(this).val() == 'SUB'){
@@ -510,6 +520,23 @@ function cari_nopol_kargo() {
         data:{status_kendaraan,nama_subcon,tipe_angkutan,cabang_select},
         success:function(data){
             $('.nopol_dropdown').html(data);
+        }
+    })
+}
+
+// ganti nota untuk admin
+function ganti_nota(argument) {
+   var cabang = $('.cabang_select').val();
+     $.ajax({
+        url:baseUrl + '/sales/nomor_do_kargo',
+        data:{cabang},
+        dataType:'json',
+        success:function(data){
+            $('.nomor_do').val(data.nota);
+            cari_nopol_kargo();
+        },
+        error:function(){
+            location.reload();
         }
     })
 }
@@ -642,8 +669,11 @@ function pilih_kontrak(a) {
             $('#kode_tarif').val(0);
             $('.acc_penjualan').val(response.data.kcd_acc_penjualan);
             $('.satuan').val(response.data.kcd_kode_satuan);
+            $('.tipe_angkutan ').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
             $('.jumlah').val(1);
             $('#modal_tarif').modal('hide');
+            cari_nopol_kargo();
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
             hitung();
 
         },
