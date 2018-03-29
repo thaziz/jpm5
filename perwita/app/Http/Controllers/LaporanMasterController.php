@@ -62,27 +62,4 @@ class LaporanMasterController extends Controller
 		return view('purchase/master/master_penjualan/laporan/tarifCabangKargo',compact('data','kota'));
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
  ?>
