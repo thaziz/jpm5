@@ -460,6 +460,7 @@ class do_Controller extends Controller
 
     public function form($nomor = null)
     {
+
         $jurnal_dt = null;
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
@@ -472,7 +473,8 @@ class do_Controller extends Controller
 
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor='$nomor' "))->first();
+
+            $jml_detail = collect(\DB::select(" SELECT COUNT(dd_id) jumlah FROM delivery_orderd WHERE dd_nomor='$nomor' "))->first();
 
             $jurnal_dt = collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
                         FROM d_akun a join d_jurnal_dt jd
