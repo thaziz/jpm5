@@ -42,6 +42,7 @@ class cabang_kargo_Controller extends Controller
     }
 
     public function save_data (Request $request) {
+        // dd($request);
         $simpan='';
         $crud = $request->crud;
           // KODE UTAMA
@@ -63,9 +64,8 @@ class cabang_kargo_Controller extends Controller
         }
         // return $kode_utama;
 
-        if ($kode_utama < 10000 ) {
-            $kode_utama = '0000'.$kode_utama;
-        }
+        $kode_utama = $kode_utama+1;
+        $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
         // return $kode_utama;
         //end
         //KODE 
@@ -105,8 +105,9 @@ class cabang_kargo_Controller extends Controller
 
         $jt_kode = DB::table('jenis_tarif')
                      ->where('jt_id',$request->cb_jenis)
-                     ->first();
-        $kodeutama = $kodekota.'/'.'D'.$jt_kode->jt_kode.$kodecabang.$kode_utama;
+                      ->first();
+        // return $request->cb_jenis;
+        /*return*/ $kodeutama = $kodekota.'/'.'KRG'.$jt_kode->jt_kode.$kodecabang.$kode_utama;
 
         $kodeutama = $kodeutama ;
         if ($crud == 'N') {
@@ -115,6 +116,7 @@ class cabang_kargo_Controller extends Controller
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_kota_tujuan' => $request->cb_kota_tujuan,
                 'jenis' => $request->cb_jenis,
+                'kode_satuan' => $request->satuan,
                 'kode_angkutan' => $request->cb_angkutan,
                 'kode_detail_kargo' => $kode_detail,
                 'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
@@ -139,6 +141,7 @@ class cabang_kargo_Controller extends Controller
                 'kode' => $kodeutama,
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_kota_tujuan' => $request->cb_kota_tujuan,
+                'kode_satuan' => $request->satuan,
                 'jenis' => $request->cb_jenis,
                 'kode_angkutan' => $request->cb_angkutan,
                 'kode_detail_kargo' => $request->ed_kode_old,
@@ -176,11 +179,12 @@ class cabang_kargo_Controller extends Controller
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC "));
         $angkutan = DB::select(DB::raw(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC "));
+        $satuan = DB::select(DB::raw(" SELECT kode,nama FROM satuan ORDER BY nama ASC "));
         $jenis_tarif = DB::table('jenis_tarif')
                          ->where('jt_group',1)
                          ->orWhere('jt_group',3)
                          ->get();
-        return view('tarif.cabang_kargo.index',compact('kota','angkutan','jenis_tarif'));
+        return view('tarif.cabang_kargo.index',compact('kota','angkutan','jenis_tarif','satuan'));
     }
 
 }

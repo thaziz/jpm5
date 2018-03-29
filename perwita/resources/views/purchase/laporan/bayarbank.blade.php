@@ -154,37 +154,33 @@
                           </td>
                         </tr>
                     </table>
-                  <div class="row"> &nbsp; &nbsp; <a class="btn btn-info anjay"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                  <div class="row"> &nbsp; &nbsp; <a class="btn btn-info anjay" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
 
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                     <tr>
+                        <th style="text-align: center">No</th>
                         <th  style="text-align: center"> No. BBK </th>
                         <th  style="text-align: center"> Tanggal </th>
                         <th   style="text-align: center"> Keterangan </th>
-
                         <th  style="text-align: center"> Cek / BG </th>
                         <th  style="text-align: center"> Biaya </th>
                         <th   style="text-align: center"> Total Bayar </th> 
-
                         <th  style="text-align: center;"> Flag</th>
-
-
                     </tr>
                     </thead>
                     
                     <tbody>
-                      @foreach ($array as $element)
-                        {{-- expr --}}
-                      
+                      @foreach ($array as $index => $element)
                     <tr>
-                      <td>{{ $element->bbk_nota  }}</td>
-                      <td>{{ $element->bbk_tgl  }}  </td>
-                      <td>{{ $element->bbk_keterangan  }}  </td>
-                      <td style="text-align: right">{{ $element->bbk_cekbg  }}  </td>
-                      <td style="text-align: right">{{ $element->bbk_biaya  }} </td>
-                      <td style="text-align: right">{{ $element->bbk_total  }} </td>
-                      <td >{{ $element->bbk_flag  }}  </td>
+                      <td><input type="hidden" name="" value="{{ $element->bbk_id}}">{{ $index +1}}</td>
+                      <td><input type="hidden" name="" value="{{ $element->bbk_nota  }}">{{ $element->bbk_nota  }}</td>
+                      <td><input type="hidden" name="" value="{{ $element->bbk_tgl  }}">{{ $element->bbk_tgl  }}  </td>
+                      <td><input type="hidden" name="" value="{{ $element->bbk_keterangan  }}">{{ $element->bbk_keterangan  }}  </td>
+                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->bbk_cekbg  }}">{{ $element->bbk_cekbg  }}  </td>
+                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->bbk_biaya  }}">{{ $element->bbk_biaya  }} </td>
+                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->bbk_total  }}">{{ $element->bbk_total  }} </td>
+                      <td ><input type="hidden" name="" value="{{ $element->bbk_flag  }}">{{ $element->bbk_flag  }}  </td>
                     </tr>
                   @endforeach
 
@@ -224,7 +220,7 @@
     var tgl1 = '1/1/2018';
     var tgl2 = '2/2/2018';
     console.log(tgl1);  
-    tableDetail = $('.tbl-item').DataTable({
+    table = $('.tbl-item').DataTable({
             responsive: true,
             searching: true,
             //paging: false,
@@ -272,7 +268,36 @@
       $no++;
       $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
     })
- 
+    
+    function cetak(){
+    
+      var a = $('#a').val();
+      var b = $('#b').val();
+      var c = $('#c').val();
+      var d = $('#d').val();
+      var e = $('#e').val(); 
+      var f = $('#f').val();
+      var g = $('#g').val();
+
+      var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
+           asw[i] =  $(asd[i][0]).val();
+       }
+       console.log(asw);
+
+
+      $.ajax({
+        data: {asw:asw,download:'download'},
+        url: baseUrl + '/masterbayarbank/masterbayarbank/masterbayarbank',
+        type: "get",
+         complete : function(){
+        window.open(this.url,'_blank');
+        },     
+        success : function(data){
+        }
+      });
+    }
    
 
 </script>

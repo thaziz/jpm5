@@ -101,30 +101,32 @@
                 <div class="col-xs-12">
                 
 
-                  <div class="row"> &nbsp; &nbsp; <a class="btn btn-info"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                  <div class="row"> &nbsp; &nbsp; <a class="btn btn-info" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
 
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
-                     <tr>
-                        <th style="width:10px"> No Faktur </th>
+                     <tr >
+                        <th>No.</th>
+                        <th style="width:10px;" > No Faktur </th>
                         <th> Tanggal </th>
                         <th> Discount </th>
                         <th> D P P </th>
                         <th> PPn </th>
                         <th> Pajak </th>
                         <th> Netto </th>
-                    </tr>
+                    </tr> 
                     </thead>
                     <tbody>
                       @foreach ($data as $index => $element)
                     <tr>
-                      <td> {{ $index+1 }} </td>
-                      <td> {{ $element->fp_tgl }}</td>
-                      <td style="text-align: right"> {{ $element->fp_discount }} </td>
-                      <td style="text-align: right"> {{ $element->fp_dpp }} </td>
-                      <td style="text-align: right"> {{ $element->fp_ppn }} </td>
-                      <td style="text-align: right"> {{ $element->fp_fakturpajak }} </td>
-                      <td style="text-align: right"> {{ $element->fp_netto }} </td>
+                      <td><input type="hidden" name="" value="{{ $element->fp_idfaktur }}"> {{ $index+1 }} </td>
+                      <td><input type="hidden" name="" value="{{ $element->fp_nofaktur }}"> {{ $element->fp_nofaktur }} </td>
+                      <td><input type="hidden" name="" value="{{ $element->fp_tgl }}"> {{ $element->fp_tgl }}</td>
+                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_discount }}"> {{ $element->fp_discount }} </td>
+                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_dpp }}"> {{ $element->fp_dpp }} </td>
+                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_ppn }}"> {{ $element->fp_ppn }} </td>
+                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_fakturpajak }}"> {{ $element->fp_fakturpajak }} </td>
+                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_netto }}"> {{ $element->fp_netto }} </td>
                     </tr>
                       @endforeach
 
@@ -174,7 +176,7 @@ $(document).ready(function(){
     var tgl1 = '1/1/2018';
     var tgl2 = '2/2/2018';
 
-  $('#addColumn').DataTable({
+ var table = $('#addColumn').DataTable({
     paging:true,
        dom: 'Bfrtip',
        buttons: [
@@ -188,7 +190,7 @@ $(document).ready(function(){
                 init: function(api, node, config) {
                 $(node).removeClass('btn-default'),
                 $(node).addClass('btn-warning'),
-                $(node).css({'margin-top': '-50px','margin-left': '1435px'})
+                $(node).css({'margin-top': '-50px','margin-left': '80px'})
                 },
                 exportOptions: {
                 modifier: {
@@ -207,7 +209,36 @@ $(document).ready(function(){
 } 
 
 
-     
+        function cetak(){
+    
+      var a = $('#a').val();
+      var b = $('#b').val();
+      var c = $('#c').val();
+      var d = $('#d').val();
+      var e = $('#e').val(); 
+      var f = $('#f').val();
+      var g = $('#g').val();
+
+      var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
+           asw[i] =  $(asd[i][0]).val();
+       }
+       console.log(asw);
+
+
+      $.ajax({
+        data: {asw:asw,download:'download'},
+        url: baseUrl + '/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian',
+        type: "get",
+         complete : function(){
+        window.open(this.url,'_blank');
+        },     
+        success : function(data){
+        }
+      });
+    }
+   
 
 </script>
 @endsection
