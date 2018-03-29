@@ -80,22 +80,18 @@
                           <th> Pilih Laporan : </th>
                           <td  colspan="4">
                             <select class="form-control" onchange="location = this.value;">
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Master Item</option>
-                  <option value="/jpm/reportmasterdepartment/reportmasterdepartment">Laporan Data Department</option>
-                  <option value="/jpm/reportmastergudang/reportmastergudang" >Laporan Data Master Gudang</option>
-                  <option value="/jpm/reportmastersupplier/reportmastersupplier">Laporan Data Supplier</option>
-                  <option value="/jpm/reportspp/reportspp">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="/jpm/reportpo/reportpo" selected="" disabled="" style="background-color: #DDD; ">Laporan Data Order</option>
-                  <option value="/jpm/reportfakturpembelian/reportfakturpembelian">Laporan Data Faktur Pembelian</option>
-                  <option value="/jpm/buktikaskeluar/patty_cash">Laporan Data Patty Cash</option>
-                  <option value="/jpm/reportbayarkas/reportbayarkas">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                  {{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Faktur vs Pelunasan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Analisa Usia Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Faktur Pajak Masukan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Uang Muka Pembelian</option> --}}
+                  
+                  <option selected="" disabled="">Pilih terlebih dahulu</option>
+                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
+                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
+                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
+                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
+                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
+                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
+                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
                  </select>
                           </td>
                         </tr>
