@@ -67,7 +67,7 @@
                                             <input type="hidden" name="nomor_print" class="nomor_print form-control input-sm">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="disabled">
                                         <td>Cabang</td>
                                         <td>
 
@@ -113,7 +113,7 @@
                                     <tr>
                                         <td>Kota Asal</td>
                                         <td>
-                                            <select name="asal_do" class="form-control asal_do chosen-select-width">
+                                            <select onchange="reseting()" name="asal_do" class="form-control asal_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Asal</option>
                                             @foreach($kota as $val)
                                                 @if($data->id_kota_asal == $val->id)
@@ -128,7 +128,7 @@
                                     <tr>
                                         <td>Kota Tujuan</td>
                                         <td>
-                                            <select name="tujuan_do" class="form-control tujuan_do chosen-select-width">
+                                            <select onchange="reseting()" name="tujuan_do" class="form-control tujuan_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Tujuan</option>
                                             @foreach($kota as $val)
                                                 @if($data->id_kota_tujuan == $val->id)
@@ -655,6 +655,19 @@ function hitung() {
     $('.tarif_dasar').val(temp1);
 
 }
+
+function reseting() {
+    $('.satuan').val('');
+    $('.tarif_dasar_text').val('');
+    $('.tarif_dasar').val('');
+    $('.harga_master').val('');
+    $('.harga_master').val('');
+    $('#kode_tarif').val('');
+    $('.kcd_id').val('');
+    $('.kcd_dt').val('');
+
+    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
+}
 // jika menggunakan tarif
 function pilih_tarif(a) {
     var kode = $(a).find('.kode_tarif').val();
@@ -835,10 +848,14 @@ function cari_kontrak() {
                 $('.discount ').removeClass('disabled');
                 $('.discount ').attr('readonly',false);
             }
+
+            reseting();
         },
         error:function(){
         }
     })
 }
+
+
 </script>
 @endsection
