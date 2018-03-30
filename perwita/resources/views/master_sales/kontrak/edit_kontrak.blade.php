@@ -91,7 +91,11 @@
                             <tr>
                                 <td>Aktif</td>
                                 <td colspan="3">
+                                    @if($data->kc_aktif == 'AKTIF')
                                     <input type="checkbox" name="ck_aktif" checked="">
+                                    @else
+                                    <input type="checkbox" name="ck_aktif">
+                                    @endif
                                 </td>
                             </tr>
                         </tbody>
@@ -142,7 +146,7 @@
                             </td>
                             <td>
                                 {{$val->nama}}
-                                <input type="hidden" class="tipe_angkutan" value="{{$val->kcd_kode_angkutan}}" name="satuan[]">
+                                <input type="hidden" class="tipe_angkutan" value="{{$val->kcd_kode_angkutan}}" name="tipe_angkutan[]">
                             </td>
                             <td>
                                 <input type="text" class="harga form-control" style="text-align:right" value="{{number_format($val->kcd_harga,0, ".", ",")}}" name="harga[]">

@@ -95,7 +95,7 @@
                                     </tr>
                                     <tr>
                                         <td>Customer</td>
-                                        <td>
+                                        <td class="customer_td">
                                             <select onchange="cari_kontrak()" class="form-control customer_do chosen-select-width" name="customer_do">
                                                 <option value="0">Pilih - Customer</option>
                                             @foreach($customer as $val)
@@ -548,6 +548,18 @@ function ganti_nota(argument) {
             location.reload();
         }
     })
+
+    $.ajax({
+        url:baseUrl +'/sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+    });
 }
 //nama subcon
 $('.nama_subcon').change(function(){
@@ -576,11 +588,14 @@ function centang() {
 $('.jenis_tarif_do').change(function(){
     if ($(this).val() == 9) {
         $('.kontrak_tr').attr('hidden',true);
-        $('.tarif_dasar').val(1);
+        $('.harga_master').val(1);
+        $('.discount ').attr('readonly',true);
+
     }else{      
         $('.kontrak_tr').attr('hidden',false);
         $('.jenis_tarif_temp').val($(this).val());
         $('.tarif_dasar').val(0);
+        $('.discount ').attr('readonly',false);
     }
 });
 
@@ -625,7 +640,7 @@ function hitung() {
     if (temp < 0) {
         temp = 0;
     }
-    
+        
     $('.total').val(temp);
     $('.total_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('.tarif_dasar_text').val(accounting.formatMoney(temp1,"",2,'.',','));
@@ -678,8 +693,15 @@ function pilih_kontrak(a) {
             $('#kode_tarif').val(0);
             $('.acc_penjualan').val(response.data.kcd_acc_penjualan);
             $('.satuan').val(response.data.kcd_kode_satuan);
-            $('.tipe_angkutan ').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
+            $('.tipe_angkutan').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
+            console.log($('.tipe_angkutan').val());
+            $('.asal_do').val(response.data.kcd_kota_asal).trigger('chosen:updated');
+            $('.tujuan_do').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
             $('.jumlah').val(1);
+            var tujuan =  $('.tujuan_do option:selected').text();
+   
+            tujuan     =  tujuan.split('-');
+            $('.kota_penerima').val(tujuan[1]);
             $('#modal_tarif').modal('hide');
             cari_nopol_kargo();
             toastr.info('Data Telah Dirubah Harap Periksa Kembali');

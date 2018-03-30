@@ -61,20 +61,15 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3">
-                                    <select class="chosen-select-width form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
-                                        <option selected="" disabled="">- Pilih Customer -</option>
-                                        @foreach($customer as $val)
-                                        <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                        @endforeach
-                                    </select>
+                                <td colspan="3" class="customer_td">
+                                    
                                 </td>
                             </tr>
                             @if(Auth()->user()->punyaAkses('Master Kontrak','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
-                                    <select class="form-control cabang chosen-select-width"  name="cabang" >
+                                    <select onchange="ganti_cus()" class="form-control cabang chosen-select-width"  name="cabang" >
                                       <option selected="" disabled="">- Pilih Cabang -</option>
                                       @foreach($cabang as $val)
                                       @if(Auth::user()->kode_cabang == $val->kode)
@@ -310,7 +305,7 @@
 
  $(document).ready( function () {
             
-    $('.harga_modal').maskMoney({precision:0});
+    $('.harga_modal').maskMoney({precision:0,thousands:'.'});
     var asd = $('.harga').maskMoney({thousands:'.', precision:0});
     var cabang = $('.cabang').val();
 
@@ -331,10 +326,9 @@
         dataType:'json',
         success:function(response){
             $('#ed_nomor').val(response.nota);
-            $('#ed_nomor').val(response.nota);
         },
         error:function(){
-            // location.reload();
+            location.reload();
         }
 
     })
@@ -360,7 +354,50 @@
             location.reload();
         }
     });
+
+    $.ajax({
+        url:baseUrl +'/master_sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+
 });
+
+
+ function ganti_cus() {
+    var cabang = $('.cabang').val();
+     $.ajax({
+        url:baseUrl +'/master_sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+      $.ajax({
+        url:baseUrl+'/master_sales/kontrak_set_nota',
+        data:{cabang},
+        dataType:'json',
+        success:function(response){
+            $('#ed_nomor').val(response.nota);
+            $('#ed_nomor').val(response.nota);
+        },
+        error:function(){
+            location.reload();
+        }
+
+    })
+ }
 
 $('#btnadd').click(function(){
 
@@ -376,7 +413,7 @@ $('#btnadd').click(function(){
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
 
-    var id_subcon                = $('.id_subcon').val();
+    var id_subcon                = $('#id_subcon').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var validasi                 = [];
 
@@ -568,7 +605,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   location.reload();
+                   location.reload();    
         });
       },
       error:function(data){

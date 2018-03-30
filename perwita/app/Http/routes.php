@@ -231,6 +231,8 @@ Route::get('master_subcon/tambahkontraksubcon', 'subconController@tambahkontraks
 Route::get('master_subcon/edit_subcon/{id}', 'subconController@edit_subcon');
 Route::get('master_subcon/update_subcon', 'subconController@update_subcon');
 Route::get('master_subcon/cek_hapus', 'subconController@cek_hapus');
+Route::get('master_subcon/nota_kontrak_subcon', 'subconController@nota_kontrak_subcon');
+Route::get('master_subcon/hapus_subcon', 'subconController@hapus_subcon');
 Route::get('master_subcon/save_subcon', 'subconController@save_subcon');
 Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontrak');
@@ -705,6 +707,7 @@ Route::get('sales/kecamatan', function(){
 //kontrak customer
 Route::get('master_sales/kontrak', 'master_sales\kontrak_Controller@index');
 Route::get('master_sales/kontrak_form', 'master_sales\kontrak_Controller@form');
+Route::get('master_sales/drop_cus', 'master_sales\kontrak_Controller@drop_cus');
 Route::get('master_sales/edit_kontrak/{id}', 'master_sales\kontrak_Controller@edit_kontrak');
 Route::post('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
 Route::get('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
@@ -769,6 +772,7 @@ Route::get('sales/save_do_kargo', 'sales\do_kargo_Controller@save_do_kargo');
 Route::get('sales/pilih_tarif_kargo', 'sales\do_kargo_Controller@pilih_tarif_kargo');
 Route::get('sales/edit_do_kargo/{id}', 'sales\do_kargo_Controller@edit_do_kargo');
 Route::get('sales/update_do_kargo', 'sales\do_kargo_Controller@update_do_kargo');
+Route::get('sales/drop_cus', 'sales\do_kargo_Controller@drop_cus');
 
 
 
@@ -845,6 +849,7 @@ Route::get('sales/pajak_lain', 'sales\invoice_Controller@pajak_lain');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
 Route::get('sales/edit_invoice/{i}', 'sales\invoice_Controller@edit_invoice');
 Route::get('sales/hapus_invoice', 'sales\invoice_Controller@hapus_invoice');
+Route::get('sales/cetak_nota/{id}', 'sales\invoice_Controller@cetak_nota');
 
 Route::get('sales/invoice_form/tabel_data_detail', 'sales\invoice_Controller@table_data_detail');
 Route::get('sales/invoice/tabel', 'sales\invoice_Controller@table_data');
@@ -965,6 +970,10 @@ Route::get('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpa
 Route::get('sales/kwitansi/cetak_nota/{id}', 'sales\penerimaan_penjualan_Controller@cetak_nota');
 Route::get('sales/hapus_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_kwitansi');
 
+Route::get('sales/edit_kwitansi/{id}', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');
+
+
+
 //end penerimaan penjualan
 
 //posting_pembayaran
@@ -978,6 +987,8 @@ Route::get('sales/posting_pembayaran_form/append', 'sales\posting_pembayaran_Con
 Route::get('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
 Route::get('sales/posting_pembayaran_edit/{id}', 'sales\posting_pembayaran_Controller@edit');
 Route::get('sales/posting_pembayaran_hapus', 'sales\posting_pembayaran_Controller@posting_pembayaran_hapus');
+
+
 
 
 //end penerimaan penjualan

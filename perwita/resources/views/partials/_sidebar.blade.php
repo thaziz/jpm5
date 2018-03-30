@@ -717,6 +717,7 @@
                " style="padding-left: 10%;">
                    <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Kontrak<span class="fa arrow"></span></a>
                    <ul class="nav nav-third-level">
+                @if(Auth::user()->PunyaAkses('Master Kontrak','aktif'))
                    <li >
                     <a class="sidebar master-perusahaan 
 
@@ -724,7 +725,8 @@
                     Request::is('master_sales/kontrak/*') ? 'active' : ''}} 
 
                    " href="{{ url('master_sales/kontrak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak Customer</a>
-                </li>
+                   </li>
+                @endif
              @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
@@ -1220,6 +1222,8 @@
 
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                             </li>
+
+                            @if(Auth::user()->PunyaAkses('Delivery Order','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1228,6 +1232,7 @@
 
                             " href="{{ url('sales/deliveryorderkargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) Kargo</a>
                             </li>
+
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1236,6 +1241,7 @@
 
                             " href="{{ url('sales/deliveryorderkertas')}}"><i class="fa fa-building" aria-hidden="true"></i>Delivery Order (DO) Koran</a>
                             </li>
+                            @endif
                              <li >
                                 <a class="sidebar master-perusahaan 
 

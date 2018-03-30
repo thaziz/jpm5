@@ -81,7 +81,55 @@ class penerus_koli_Controller  extends Controller
     public function get_data (Request $request) {
         // dd($request);
         $id =$request->input('id');
-        $data = DB::table('tarif_penerus_koli')->where('id_increment_koli','=', $id)->get();
+        $data = DB::table('tarif_penerus_koli')
+        ->select(
+            'provinsi.nama as provinsi_nama',
+            'provinsi.id as provinsi_id',
+
+            'kota.id as kota_id',
+            'kota.nama as kota_nama',
+            'kota.kode_kota as kota_kode',
+
+            'kecamatan.id as kecamatan_id',
+            'kecamatan.nama as kecamatan_nama',
+
+            'id_increment_koli',
+            
+            'tarif_10express_koli','tarif_10reguler_koli',
+            'tarif_20express_koli','tarif_20reguler_koli',
+            'tarif_30express_koli','tarif_30reguler_koli',
+            'tarif_>30express_koli as tarif_lbh30express_koli','tarif_>30reguler_koli as tarif_lbh30reguler_koli',
+
+            'zo_10r.harga_zona as 10reguler',
+            'zo_10x.harga_zona as 10express',
+            'zo_20r.harga_zona as 20reguler',
+            'zo_20x.harga_zona as 20express',
+            'zo_30r.harga_zona as 30reguler',
+            'zo_30x.harga_zona as 30express',
+            'zo_>30r.harga_zona as lebih30reguler',
+            'zo_>30x.harga_zona as lebih30express',
+
+            'id_tarif_koli','type_koli')
+
+
+        ->join('provinsi','tarif_penerus_koli.id_provinsi_koli','=','provinsi.id')
+
+        ->join('kota','tarif_penerus_koli.id_kota_koli','=','kota.id')
+        
+        ->join('kecamatan','tarif_penerus_koli.id_kecamatan_koli','=','kecamatan.id')
+
+
+        ->join('zona as zo_10r','zo_10r.id_zona','=','tarif_penerus_koli.tarif_10reguler_koli')
+        ->join('zona as zo_10x','zo_10x.id_zona','=','tarif_penerus_koli.tarif_10express_koli')
+
+        ->join('zona as zo_20r','zo_20r.id_zona','=','tarif_penerus_koli.tarif_20reguler_koli')
+        ->join('zona as zo_20x','zo_20x.id_zona','=','tarif_penerus_koli.tarif_20express_koli')
+
+        ->join('zona as zo_30r','zo_30r.id_zona','=','tarif_penerus_koli.tarif_30reguler_koli')
+        ->join('zona as zo_30x','zo_30x.id_zona','=','tarif_penerus_koli.tarif_30express_koli')
+
+        ->join('zona as zo_>30r','zo_>30r.id_zona','=','tarif_penerus_koli.tarif_>30reguler_koli')
+        ->join('zona as zo_>30x','zo_>30x.id_zona','=','tarif_penerus_koli.tarif_>30express_koli')->where('id_increment_koli','=', $id)->get();
         echo json_encode($data);
     }
 
@@ -102,9 +150,8 @@ class penerus_koli_Controller  extends Controller
             $kode_id += 1;
         }
 
-        if ($kode_id < 10000 ) {
-            $kode_id = '0000'.$kode_id;
-        }
+         $kode_id = $kode_id+1;
+            $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
         
         $kode_kota = $request->kode_kota;
         $kode_cabang = Auth::user()->kode_cabang;
@@ -144,14 +191,14 @@ class penerus_koli_Controller  extends Controller
            
             $simpan = DB::table('tarif_penerus_koli')->insert($data);
         }elseif ($crud == 'E') {
+            // dd($request);
             $kode_sama = $request->ed_kode_old;
-            if ($kode_sama < 10000 ) {
-            $kode_sama = '0000'.$kode_sama;
-            }
+             $kode_sama = $kode_sama+1;
+            $kode_sama = str_pad($kode_sama, 5,'0',STR_PAD_LEFT);
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
-
+            // return $kodeedit;
              $data = array(
-                'id_increment_koli' => $kodeedit,
+                'id_tarif_koli' => $kodeedit,
                 'id_provinsi_koli'=> $request->ed_provinsi,
                 'id_kota_koli' =>$request->ed_kota,
                 'id_kecamatan_koli'=>$request->ed_kecamatan,
@@ -170,7 +217,7 @@ class penerus_koli_Controller  extends Controller
                 'id_increment_koli'=>$request->ed_kode_old,
 
             );
-            $simpan = DB::table('tarif_penerus_koli')->where('id_increment_koli', $request->ed_kode)->update($data);
+            $simpan = DB::table('tarif_penerus_koli')->where('id_tarif_koli', $request->ed_kode_lama)->update($data);
         }
         if($simpan == TRUE){
             $result['error']='';

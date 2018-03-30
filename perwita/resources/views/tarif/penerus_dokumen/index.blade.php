@@ -364,9 +364,15 @@
                 $("select[name='ed_express']").val(data[0].tarif_express).trigger('chosen:updated');
                 $("input[name='ed_kode']").attr('readonly',true);
 
-                $("#provinsi").val(data[0].id_provinsi).trigger('chosen:updated');
-                $("#kota").val(data[0].id_kota).trigger('chosen:updated');
-                $("#kecamatan").val(data[0].id_kecamatan).trigger('chosen:updated');
+                $("#provinsi").val(data[0].provinsi_id).trigger('chosen:updated');
+                
+                $("input[name='kode_kota']").val(data[0].kota_kode);
+
+                $("select[name='ed_tipe']").val(data[0].type).trigger('chosen:update');
+
+
+                $("#kota").val(data[0].kota_id).trigger('chosen:updated');
+                $("#kecamatan").val(data[0].kecamatan_id).trigger('chosen:updated');
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
