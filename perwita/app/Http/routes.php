@@ -392,6 +392,7 @@ Route::post('masterbank/savemasterbank', 'MasterPurchaseController@savemasterban
 Route::post('masterbank/getkodeakunbank', 'MasterPurchaseController@getkodeakunbank');
 Route::get('masterbank/detailbank/{id}', 'MasterPurchaseController@detailbank');
 Route::delete('masterbank/deletebank/{id}', 'MasterPurchaseController@deletebank');
+Route::post('masterbank/updatemasterbank', 'MasterPurchaseController@updatemasterbank');
 
 
 

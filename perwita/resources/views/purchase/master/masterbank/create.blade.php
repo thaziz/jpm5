@@ -59,7 +59,23 @@
                       <br>
                       <br>
                       <table class="table">
+
+
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
+                        <tr>
+                          <td> Pengajuan dari Cabang : </td>
+                          <td>    <select class="form-control cabang" disabled="">
+                                  @foreach($data['cabang'] as $cabang) 
+                                    
+                                    <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif >{{$cabang->nama}}</option>                         
+                                  @endforeach
+                                 </select> 
+
+                                 <input type="hidden" class="valcabang" name="cabang">
+
+                                 </td>
+                        </tr>
+
                         <tr>
                           <td style="width:100px"> Kode Bank </td> 
                           <td>
@@ -74,7 +90,7 @@
                              <select class="form-control input-sm chosen-select-width bank" required="">
                              <option value="">  Pilih Bank  </option>
                                 @foreach($data['bank'] as $bank)
-                                 <option value="{{$bank->id_akun}},{{$bank->nama_akun}}"> {{$bank->nama_akun}} </option>  
+                                 <option value="{{$bank->id_akun}}">{{$bank->id_akun}} - {{$bank->nama_akun}}  </option>  
                                 @endforeach
                               </select>
                            
@@ -126,7 +142,7 @@
                         </td>
                         <td>
                           <div class="col-sm-2">
-                            <input type="text" class="input-sm form-control inputcek" name="sericek">
+                            <input type="text" class="input-sm form-control inputcek" name="sericek" style="text-transform: uppercase">
                           </div>
                           <div class="col-sm-1">
                             Tgl Buku 
@@ -280,6 +296,9 @@
        $(".bank").chosen(config);
     })
 
+
+    cabang = $('.cabang').val();
+    $('.valcabang').val(cabang);
 
     $('#submit').click(function(){
       val = $('#noseri').val();
@@ -844,7 +863,7 @@
 
 
   hasil = 0;
-  $('.urutcek').change(function(){
+  $('.urutcek').keyup(function(){
     val = $(this).val();
     if(val == ''){
     //  alert('Mohon isi val nya :)'); 
@@ -858,7 +877,7 @@
     }
   })
 
-  $('.urutbg').change(function(){
+  $('.urutbg').keyup(function(){
     val = $(this).val();
     if(val == ''){
       alert('Mohon isi val nya :)'); 

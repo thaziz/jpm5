@@ -7,7 +7,7 @@
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                   <br>
-                    <h3> Master Item</h3>
+                    <h3> Master Bank</h3>
                     <ol class="breadcrumb">
                         <li>
                             <a >Home</a>
@@ -74,7 +74,7 @@
                       <td> {{$bank->mb_accno}}</td>
                       <td> {{$bank->mb_namarekening}}</td>
                       <td>   <a class="btn btn-sm btn-success" href={{url('masterbank/detailbank/'. $bank->mb_id .'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a> &nbsp; 
-                       <a href="#" class="btn btn-danger" onclick="hapusData('{{ $bank->mb_id }}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></a>
+                       <a href="#" class="btn btn-sm btn-danger" onclick="hapusData('{{ $bank->mb_id }}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></a>
                                     {{ Form::open(['url'=>'masterbank/deletebank/'.$bank->mb_id, 'method' => 'delete', 'id' =>$bank->mb_id ]) }}
 
                                     {{ Form::close() }}     </td>
