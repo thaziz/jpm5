@@ -384,11 +384,16 @@
                 $("input[name='ed_20reguler']").val(data[0].tarif_20reguler_kilo);
                 $("input[name='ed_20express']").val(data[0].tarif_20express_kilo);
                 
+
+                $("input[name='kode_kota']").val(data[0].kota_kode);
+
+                $("select[name='ed_tipe']").val(data[0].type_kilo).trigger('chosen:update');
+
                 $("input[name='ed_kode']").attr('readonly',true);
 
-                $("#provinsi").val(data[0].id_provinsi_kilo).trigger('chosen:updated');
-                $("#kota").val(data[0].id_kota_kilo).trigger('chosen:updated');
-                $("#kecamatan").val(data[0].id_kecamatan_kilo).trigger('chosen:updated');
+                $("#provinsi").val(data[0].provinsi_id).trigger('chosen:updated');
+                $("#kota").val(data[0].kota_id).trigger('chosen:updated');
+                $("#kecamatan").val(data[0].kecamatan_id).trigger('chosen:updated');
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();

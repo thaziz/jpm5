@@ -17,6 +17,7 @@ class penerus_dokumen_Controller extends Controller
 
             'kota.id as kota_id',
             'kota.nama as kota_nama',
+            'kota.kode_kota as kota_kode',
 
             'kecamatan.id as kecamatan_id',
             'kecamatan.nama as kecamatan_nama',
@@ -60,12 +61,45 @@ class penerus_dokumen_Controller extends Controller
     public function get_data (Request $request) {
         // dd($request);
         $id =$request->input('id');
-        $data = DB::table('tarif_penerus_dokumen')->where('id_increment_dokumen','=', $id)->get();
+
+        // return $list;
+
+
+        $data = DB::table('tarif_penerus_dokumen')
+        ->select(
+            'provinsi.nama as provinsi_nama',
+            'provinsi.id as provinsi_id',
+
+            'kota.id as kota_id',
+            'kota.nama as kota_nama',
+            'kota.kode_kota as kota_kode',
+
+            'kecamatan.id as kecamatan_id',
+            'kecamatan.nama as kecamatan_nama',
+
+            // 'zo_r.nama_zona',
+            'zo_r.harga_zona as reguler',
+            'zo_x.harga_zona as express',
+
+
+            'id_tarif_dokumen','tarif_express','id_increment_dokumen','tarif_reguler','type')
+
+
+        ->join('provinsi','tarif_penerus_dokumen.id_provinsi','=','provinsi.id')
+
+        ->join('kota','tarif_penerus_dokumen.id_kota','=','kota.id')
+        
+        ->join('kecamatan','tarif_penerus_dokumen.id_kecamatan','=','kecamatan.id')
+
+        ->join('zona as zo_r','zo_r.id_zona','=','tarif_penerus_dokumen.tarif_reguler')
+        ->join('zona as zo_x','zo_x.id_zona','=','tarif_penerus_dokumen.tarif_express')
+        ->where('id_increment_dokumen','=', $id)
+        ->get();
         echo json_encode($data);
     }
 
     public function save_data (Request $request) {
-        // dd($request);
+        // dd($request);   
 
         $id_incremet = DB::table('tarif_penerus_dokumen')->select('id_increment_dokumen')->max('id_increment_dokumen');    
         if ($id_incremet == '') {
@@ -81,9 +115,8 @@ class penerus_dokumen_Controller extends Controller
             $kode_id += 1;
         }
 
-        if ($kode_id < 10000 ) {
-            $kode_id = '0000'.$kode_id;
-        }
+        $kode_id = $kode_id+1;
+        $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
         
         $kode_kota = $request->kode_kota;
         $kode_cabang = Auth::user()->kode_cabang;
@@ -113,9 +146,8 @@ class penerus_dokumen_Controller extends Controller
             $simpan = DB::table('tarif_penerus_dokumen')->insert($data);
         }elseif ($crud == 'E') {
             $kode_sama = $request->ed_kode_old;
-            if ($kode_sama < 10000 ) {
-            $kode_sama = '0000'.$kode_sama;
-            }
+            $kode_sama = $kode_sama+1;
+            $kode_sama = str_pad($kode_sama, 5,'0',STR_PAD_LEFT);
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
             $data = array(
                 'id_tarif_dokumen' => $kodeedit,

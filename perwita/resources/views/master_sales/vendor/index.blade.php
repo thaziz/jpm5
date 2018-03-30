@@ -184,7 +184,7 @@
                                         
                                     </td>
                                     <td>
-                                        <div class="checkbox">
+                                        <div >
                                             <label for="checkbox1"> <input type="checkbox" name="ck_status"> Pakai Angkutan </label>
                                         </div>  
                                     </td>

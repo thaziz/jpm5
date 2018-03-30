@@ -86,9 +86,8 @@ class penerus_sepeda_Controller  extends Controller
             $kode_id += 1;
         }
 
-        if ($kode_id < 10000 ) {
-            $kode_id = '0000'.$kode_id;
-        }
+         $kode_id = $kode_id+1;
+         $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
         
         $kode_kota = $request->kode_kota;
         $kode_cabang = Auth::user()->kode_cabang;
@@ -119,9 +118,9 @@ class penerus_sepeda_Controller  extends Controller
         }elseif ($crud == 'E') {
             $kode_kota = $request->kode_kota;
             $kode_sama = $request->ed_kode_old;
-            if ($kode_sama < 10000 ) {
-            $kode_sama = '0000'.$kode_sama;
-            }
+             $kode_sama = $kode_sama+1;
+            $kode_sama = str_pad($kode_sama, 5,'0',STR_PAD_LEFT);
+        
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
 
              $data = array(
