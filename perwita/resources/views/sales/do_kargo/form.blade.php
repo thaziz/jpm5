@@ -96,7 +96,7 @@
                                     <tr>
                                         <td>Customer</td>
                                         <td class="customer_td">
-                                            <select onchange="cari_kontrak()" class="form-control customer_do chosen-select-width" name="customer_do">
+                                            <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
                                                 <option value="0">Pilih - Customer</option>
                                             @foreach($customer as $val)
                                                 <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
@@ -549,17 +549,7 @@ function ganti_nota(argument) {
         }
     })
 
-    $.ajax({
-        url:baseUrl +'/sales/drop_cus',
-        data:{cabang},
-        success:function(data){
-            $('.customer_td').html(data);
-            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
-        },
-        error:function(){
-            location.reload();
-        }
-    });
+    
 }
 //nama subcon
 $('.nama_subcon').change(function(){
@@ -803,7 +793,7 @@ $('.reload').click(function(){
 // cari kontrak
 function cari_kontrak() {
     var cabang      = $('.cabang_select').val();
-    var customer_do = $('.customer_do').val();
+    var customer_do = $('.customer').val();
      $.ajax({
         url:baseUrl + '/sales/cari_kontrak',
         data:{cabang,customer_do},

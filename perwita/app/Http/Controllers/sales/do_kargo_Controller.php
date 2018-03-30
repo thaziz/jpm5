@@ -533,8 +533,8 @@ class do_kargo_Controller extends Controller
             return response()->json(['status' => 3,'get'=>'$request->tanggal_do']);
         }
 
-        if ($request->customer_do == '0') {
-            return response()->json(['status' => 3,'get'=>'$request->customer_do']);
+        if ($request->customer == '0') {
+            return response()->json(['status' => 3,'get'=>'$request->customer']);
         }
 
         if ($request->asal_do == 0) {
@@ -644,7 +644,6 @@ class do_kargo_Controller extends Controller
         return DB::transaction(function() use ($request) {  
 
 
-        $this->hapus_do_kargo($request);
 
         $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->nomor_do)
@@ -696,7 +695,7 @@ class do_kargo_Controller extends Controller
                                 'kode_subcon'           => strtoupper($request->nama_subcon),
                                 'kode_cabang'           => $request->cabang,
                                 'tarif_dasar'           => $request->harga_master,
-                                'kode_customer'         => $request->customer_do,
+                                'kode_customer'         => $request->customer,
                                 'kode_marketing'        => $request->marketing,
                                 'company_name_pengirim' => strtoupper($request->company_pengirim),
                                 'nama_pengirim'         => strtoupper($request->nama_pengirim),
@@ -729,7 +728,8 @@ class do_kargo_Controller extends Controller
                                 'kontrak'               => $kontrak,
                                 'kode_tarif'            => $request->kode_tarif,
                                 'keterangan_tarif'      => $request->keterangan_detail,
-                                'acc_penjualan'         => $request->acc_penjualan
+                                'acc_penjualan'         => $request->acc_penjualan,
+                                'status_do'             => 'Released'
                          ]);
             $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->nomor_do)
@@ -775,7 +775,7 @@ class do_kargo_Controller extends Controller
                                 'kode_subcon'           => strtoupper($request->nama_subcon),
                                 'kode_cabang'           => $request->cabang,
                                 'tarif_dasar'           => $request->harga_master,
-                                'kode_customer'         => $request->customer_do,
+                                'kode_customer'         => $request->customer,
                                 'kode_marketing'        => $request->marketing,
                                 'company_name_pengirim' => strtoupper($request->company_pengirim),
                                 'nama_pengirim'         => strtoupper($request->nama_pengirim),
@@ -807,7 +807,8 @@ class do_kargo_Controller extends Controller
                                 'kode_tarif'            => $request->kode_tarif,
                                 'kontrak'               => $kontrak,
                                 'kode_satuan'           => strtoupper($request->satuan),
-                                'acc_penjualan'         => $request->acc_penjualan
+                                'acc_penjualan'         => $request->acc_penjualan,
+                                'status_do'             => 'Released'
                          ]);
             return response()->json(['nota'=>$nota,'status'=>2]);
 
@@ -850,10 +851,13 @@ class do_kargo_Controller extends Controller
 
     public function update_do_kargo(request $request)
     {
+       $this->hapus_do_kargo($request);
+
        return $this->save_do_kargo($request);
     }
     public function cari_kontrak(request $request)
     {
+        // return $request->all();
         $data = DB::table('kontrak_customer')
                   ->where('kc_kode_customer',$request->customer_do)
                   ->get();
@@ -864,4 +868,6 @@ class do_kargo_Controller extends Controller
             return response()->json(['status'=>0]);
         }
     }
+
+  
 }

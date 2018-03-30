@@ -413,12 +413,12 @@ $('#btnadd').click(function(){
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
 
-    var id_subcon                = $('#id_subcon').val();
+    var customer                = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var validasi                 = [];
 
 
-    if (id_subcon != 0) {
+    if (customer != 0) {
         validasi.push(1);
     }else{
         validasi.push(0);

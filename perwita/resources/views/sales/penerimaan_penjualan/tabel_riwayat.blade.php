@@ -20,7 +20,7 @@
     </tbody>
 </table>
 <script type="text/javascript">
-    $('.riwayat').DataTable({
+    var table_riwayat = $('.riwayat').DataTable({
         searching:false,
     });
 </script>

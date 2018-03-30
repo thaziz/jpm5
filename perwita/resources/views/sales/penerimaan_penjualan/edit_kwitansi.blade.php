@@ -1,4 +1,4 @@
-@extends('main')
+    @extends('main')
 
 @section('title', 'dashboard')
 
@@ -46,7 +46,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
 
-                     <a href="../sales/penerimaan_penjualan" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../penerimaan_penjualan" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
 
                 </div>
                
@@ -97,43 +97,48 @@
                                 <td colspan="20">
 
                                     <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
+                                        @if($data->k_jenis_pembayaran == 'T')
+                                        <option value="0">Pilih - Pembayaran</option>
+                                        <option selected="" value="T"> TUNAI/CASH </option>
+                                        <option value="C"> TRANSFER </option>
+                                        <option value="B"> NOTA/BIAYA LAIN </option>
+                                        <option value="F"> CHEQUE/BG </option>
+                                        @elseif($data->k_jenis_pembayaran == 'C')
+                                        <option value="0">Pilih - Pembayaran</option>
+                                        <option value="T"> TUNAI/CASH </option>
+                                        <option selected="" value="C"> TRANSFER </option>
+                                        <option value="B"> NOTA/BIAYA LAIN </option>
+                                        <option value="F"> CHEQUE/BG </option>
+                                        @elseif($data->k_jenis_pembayaran == 'B')
+                                        <option value="0">Pilih - Pembayaran</option>
+                                        <option value="T"> TUNAI/CASH </option>
+                                        <option value="C"> TRANSFER </option>
+                                        <option selected="" value="B"> NOTA/BIAYA LAIN </option>
+                                        <option value="F"> CHEQUE/BG </option>
+                                        @elseif($data->k_jenis_pembayaran == 'F')
+                                        <option value="0">Pilih - Pembayaran</option>
+                                        <option value="T"> TUNAI/CASH </option>
+                                        <option value="C"> TRANSFER </option>
+                                        <option value="B"> NOTA/BIAYA LAIN </option>
+                                        <option selected="" value="F"> CHEQUE/BG </option>
+                                        @else
                                         <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
+                                        @endif
                                     </select>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Akun</td>
-                                <td colspan="3" class="td_akun_bank">
-                                    <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
-                                        <option value="0">Pilih - Akun</option>
-                                    
-                                    </select>
-                                </td>
-                            </tr>
-                            <tr class="customer_tr">
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td >
-                                    <select class="chosen-select-width"  name="cb_customer" id="cb_customer" style="width:100%" >
-                                        <option value="0">Pilih - Customer</option>
-                                    @foreach ($customer as $row)
-                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
-                                    @endforeach
-                                    </select>
-                                </td>
-                                
                             </tr>
                             @if(Auth::user()->punyaAkses('Kwitansi','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="20">
+                                <td class="disabled" colspan="20">
                                     <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option>Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
-                                        @if(Auth()->user()->kode_cabang == $row->kode)
+                                        @if($data->k_kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @else
                                             <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -145,11 +150,11 @@
                             @else
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="20">
-                                    <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                <td colspan="20" class="disabled"> 
+                                    <select class="cb_cabang form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option>Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
-                                        @if(Auth()->user()->kode_cabang == $row->kode)
+                                        @if($data->k_kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @else
                                             <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -159,6 +164,38 @@
                                 </td>
                             </tr>
                             @endif
+                            <tr class="disabled">
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td >
+                                    <select class="chosen-select-width"  name="cb_customer" id="cb_customer" style="width:100%" >
+                                        <option value="0">Pilih - Customer</option>
+                                    @foreach ($customer as $row)
+                                    @if($data->k_kode_customer == $row->kode)
+                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                    @else
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                    @endif
+                                    @endforeach 
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm">Akun</td>
+                                <td class="" colspan="3" class="">
+                                    <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
+                                        <option value="0">Pilih - Akun Bank</option>
+                                        @foreach($akun_bank as $val)
+                                        @if($data->k_kode_akun == $val->mb_kode)
+                                        <option selected="" value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                        @else
+                                        <option value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                        @endif
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            
+                            
                             <tr>    
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
@@ -799,24 +836,59 @@ function nota_kwitansi() {
             $('#ed_nomor').val(response.nota);
         }
     })
+
+
+    $.ajax({
+        url:baseUrl+'/sales/akun_bank',
+        data:{cabang},
+        success:function(response){
+            $('.td_akun_bank').html(response);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
 }
 
 //NOTA kwitansi
 $(document).ready(function(){
     var cabang = $('.cb_cabang').val();
-    // $.ajax({
-    //     url:baseUrl+'/sales/nota_kwitansi',
-    //     data:{cabang},
-    //     dataType : 'json',
-    //     success:function(response){
-    //         $('#nota_kwitansi').val(response.nota);
-    //     },
-    //     error:function(){
-    //         location.reload();
-    //     }
-    // });
+    $.ajax({
+        url:baseUrl+'/sales/nota_kwitansi',
+        data:{cabang},
+        dataType : 'json',
+        success:function(response){
+            $('#nota_kwitansi').val(response.nota);
+        },
+        error:function(){
+            location.reload();
+        }
 
-    
+
+    });
+
+    $.ajax({
+        url:baseUrl+'/sales/akun_bank',
+        data:{cabang},
+        success:function(response){
+            $('.td_akun_bank').html(response);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+    $.ajax({
+        url:baseUrl +'/sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            // toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+        });
 
     $.ajax({
         url:baseUrl+'/sales/akun_all',
@@ -842,16 +914,7 @@ $(document).ready(function(){
         }
     });
 
-    $.ajax({
-        url:baseUrl+'/sales/akun_bank',
-        data:{cabang},
-        success:function(response){
-            $('.td_akun_bank').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
+    
     $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.m_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
@@ -869,7 +932,7 @@ $(document).ready(function(){
             $('#nota_kwitansi').val(response.nota);
         },
         error:function(){
-            location.reload();
+            toastr.warning('terjadi Kesalahan');
         }
     });
 
@@ -880,7 +943,7 @@ $(document).ready(function(){
                 $('.akun_lain_td').html(response);
             },
             error:function(){
-                location.reload();
+            toastr.warning('terjadi Kesalahan');
             }
         });
 
@@ -896,6 +959,17 @@ $(document).ready(function(){
             }
         });
 
+        $.ajax({
+        url:baseUrl +'/sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+        });
 
 
     $.ajax({
@@ -933,12 +1007,12 @@ $('.tambah_invoice').click(function(){
         toastr.warning('Akun Harus Dipilih')
         return 1
     }
-    if ($('#cb_customer').val() == '0') {
+    if ($('#customer ').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
     var cb_cabang = $('.cb_cabang').val();
-    var cb_customer = $('#cb_customer').val();
+    var cb_customer = $('#customer ').val();
 
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
@@ -961,7 +1035,7 @@ $('#btnsave').click(function(){
 
     var nomor = [];
         
-    $('.child_check').each(function(){
+    table_invoice.$('.child_check').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
             var par   = $(this).parents('tr');
@@ -1052,7 +1126,7 @@ function histori(p){
         success:function(data){
             $('.riwayat_kwitansi').html(data);
             var temp = 0;
-            $('.kd_total_bayar').each(function(){
+            table_riwayat.$('.kd_total_bayar').each(function(){
                 temp += parseFloat($(this).val());
             });
             $('.ed_terbayar').val(accounting.formatMoney(temp,"",2,'.',','));
@@ -1066,11 +1140,11 @@ function histori(p){
                     $('.riwayat_cn_dn').html(data);
                     var temp = 0;
                     var temp1 = 0;
-                    $('.cd_debet').each(function(){
+                    table_cd.$('.cd_debet').each(function(){
                         temp += parseFloat($(this).val());
                     });
 
-                    $('.cd_kredit').each(function(){
+                    table_cd.$('.cd_kredit').each(function(){
                         temp1 += parseFloat($(this).val());
                     });
                     $('.ed_nota_debet').val(accounting.formatMoney(temp,"",2,'.',','));
@@ -1187,7 +1261,7 @@ $('#btnsave2').click(function(){
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
     var temp = 0;
-    $('.i_bayar').each(function(){
+    table_data.$('.i_bayar').each(function(){
         var i_bayar = Math.round($(this).val()).toFixed(2);
             i_bayar = parseFloat(i_bayar);
         temp += i_bayar;
@@ -1247,11 +1321,11 @@ $('#btnsave3').click(function(){
     var temp = 0;    
     var temp1 = 0; 
 
-    $('.b_debet').each(function(){
+    table_data_biaya.$('.b_debet').each(function(){
         var deb = parseInt($(this).val());
         temp += deb;
     })  
-    $('.b_kredit').each(function(){
+    table_data_biaya.$('.b_kredit').each(function(){
         var deb = parseInt($(this).val());
         temp1 += deb;
     })  
@@ -1338,11 +1412,11 @@ $('#update_biaya').click(function(){
     var temp = 0;    
     var temp1 = 0; 
 
-    $('.b_debet').each(function(){
+    table_data_biaya.$('.b_debet').each(function(){
         var deb = parseInt($(this).val());
         temp += deb;
     })  
-    $('.b_kredit').each(function(){
+    table_data_biaya.$('.b_kredit').each(function(){
         var deb = parseInt($(this).val());
         temp1 += deb;
     })  
@@ -1372,12 +1446,12 @@ $('.cari_um').click(function(){
         toastr.warning('Akun Harus Dipilih')
         return 1
     }
-    if ($('#cb_customer').val() == '0') {
+    if ($('#customer').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
     var cb_cabang = $('.cb_cabang').val();
-    var cb_customer = $('#cb_customer').val();
+    var cb_customer = $('#customer').val();
 
     $.ajax({
         url:baseUrl + '/sales/cari_um',
@@ -1395,7 +1469,7 @@ $('#btnadd_um').click(function(){
         toastr.warning('Akun Harus Dipilih')
         return 1
     }
-    if ($('#cb_customer').val() == '0') {
+    if ($('#customer').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
@@ -1503,7 +1577,7 @@ $('#save_um').click(function(){
             count_um++;
             simpan_um.push(no_um);
             var temp = 0;
-            $('.m_um_jumlah_bayar').each(function(){
+            tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
                 var temp1 = $(this).val();
                 temp1     = parseInt(temp1);
                 temp += temp1;
@@ -1537,7 +1611,7 @@ $('#save_um').click(function(){
                 ]).draw();
 
             var temp = 0;
-            $('.m_um_jumlah_bayar').each(function(){
+            tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
                 var temp1 = $(this).val();
                 temp1     = parseInt(temp1);
                 temp += temp1;
@@ -1593,6 +1667,7 @@ function hapus_detail_um(o){
 }
 
 $('#btnsimpan').click(function(){
+    var customer = $('#customer ').val();
     swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data Kwitansi!",
@@ -1620,7 +1695,8 @@ $('#btnsimpan').click(function(){
                +'&'+table_data.$('input').serialize()
                +'&'+table_data_biaya.$('input').serialize()
                +'&'+tabel_uang_muka.$('input').serialize()
-               +'&'+$('.table_rincian :input').serialize(),
+               +'&'+$('.table_rincian :input').serialize()
+               +'&customer='+customer,
           success:function(response){
             if (response.status == 1) {
                 swal({

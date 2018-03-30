@@ -696,11 +696,11 @@ class penerimaan_penjualan_Controller extends Controller
     {   
         // dd($request->all());
         // return $request->customer;
-        $temp  = DB::table('invoice')
+       $temp  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
-                  ->where('i_kode_customer',$request->customer)
-                  ->where('i_sisa_pelunasan','!=',0)
-                  ->where('i_kode_cabang',$request->cabang)
+                  // ->where('i_kode_customer',$request->customer)
+                  // ->where('i_sisa_pelunasan','!=',0)
+                  // ->where('i_kode_cabang',$request->cabang)
                   ->get();
 
         $temp1 = DB::table('invoice')
@@ -769,10 +769,19 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function riwayat_invoice(request $request)
     {
-        $data = DB::table('kwitansi')
+        
+        if (isset($request->id)) {
+            $data = DB::table('kwitansi')
+                  ->join('kwitansi_d','k_id','=','kd_id')
+                  ->where('kd_nomor_invoice',$request->i_nomor)
+                  ->where('k_nomor','!=',$request->id)
+                  ->get();
+        }else{
+            $data = DB::table('kwitansi')
                   ->join('kwitansi_d','k_id','=','kd_id')
                   ->where('kd_nomor_invoice',$request->i_nomor)
                   ->get();
+        }
         return view('sales.penerimaan_penjualan.tabel_riwayat',compact('data'));
     }
     public function riwayat_cn_dn(request $request)
@@ -820,7 +829,7 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_id' => $k_id,
                                 'k_nomor' => $request->nota,
                                 'k_tanggal'=> $tgl,
-                                'k_kode_customer' => $request->cb_customer,
+                                'k_kode_customer' => $request->customer,
                                 'k_jumlah' => $request->jumlah_bayar,
                                 'k_keterangan' => $request->ed_keterangan,
                                 'k_create_by' => Auth::user()->m_username,
@@ -1028,7 +1037,7 @@ class penerimaan_penjualan_Controller extends Controller
             $cari_um = DB::table('uang_muka_penjualan')
                               ->where('nomor',$cari_kwitansi[$i]->ku_nomor_um)
                               ->first();
-            $net1 = $cari_kwitansi[$i]->kd_total_bayar - $cari_kwitansi[$i]->kd_biaya_lain;
+            $net1 = $cari_kwitansi[$i]->kd_total_bayar;
 
             $hasil_invoice = $cari_invoice->i_sisa_pelunasan + $net1;
 
@@ -1109,7 +1118,8 @@ class penerimaan_penjualan_Controller extends Controller
                      ->where('k_nomor',$id)
                      ->get();  
         $akun_bank = DB::table('masterbank')
-                  ->get();     
+                  ->get();   
+
         return view('sales.penerimaan_penjualan.edit_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','data_bl','data_um'));
     }
 

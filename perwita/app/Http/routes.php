@@ -848,8 +848,10 @@ Route::get('sales/append_do', 'sales\invoice_Controller@append_do');
 Route::get('sales/pajak_lain', 'sales\invoice_Controller@pajak_lain');
 Route::get('sales/jatuh_tempo_customer', 'sales\invoice_Controller@jatuh_tempo_customer');
 Route::get('sales/edit_invoice/{i}', 'sales\invoice_Controller@edit_invoice');
+Route::get('sales/lihat_invoice/{i}', 'sales\invoice_Controller@lihat_invoice');
 Route::get('sales/hapus_invoice', 'sales\invoice_Controller@hapus_invoice');
 Route::get('sales/cetak_nota/{id}', 'sales\invoice_Controller@cetak_nota');
+Route::get('sales/drop_cus', 'sales\invoice_Controller@drop_cus');
 
 Route::get('sales/invoice_form/tabel_data_detail', 'sales\invoice_Controller@table_data_detail');
 Route::get('sales/invoice/tabel', 'sales\invoice_Controller@table_data');
