@@ -928,7 +928,7 @@ class MasterPurchaseController extends Controller
 
 		if($request->pkp == 'Y'){
 			$mastersupplier->namapajak = $request->namapajak;
-			$mastersupplier->telppajak = $request->telpajak;
+			$mastersupplier->telppajak = $request->telppajak;
 			$mastersupplier->alamatpajak = $request->alamatpajak;
 
 		}
@@ -993,7 +993,7 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function updatesupplier($id, Request $request) {
-		/*dd($request);*/
+		
 		/*	*/
 
 		if($request->iskontrak == 'tdkeditkontrak') {	
@@ -1023,7 +1023,12 @@ class MasterPurchaseController extends Controller
 			}
 			$data->save();
 
-			for($i=0; $i<count($request->brg); $i++){
+			if($data->kontrak == 'TIDAK'){
+				$idsupplier = $request->idsupplier;
+				DB::delete("DELETE from  itemsupplier where is_idsup = '$idsupplier'");	
+			}
+			else if($data->kontrak == 'YA'){
+				for($i=0; $i<count($request->brg); $i++){
 				
 				if(count($request->databarang) > 0) {
 					$iditemsup = itemsupplier::max('is_id');
@@ -1085,6 +1090,9 @@ class MasterPurchaseController extends Controller
 				}
 			}
 			}
+			}
+
+			
 		}
 		else{
 		/*	dd('tdksama');*/
