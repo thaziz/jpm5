@@ -25,7 +25,7 @@
     </tbody>
 </table>
 <script type="text/javascript">
-    $('.table_cn_dn').DataTable({
+ var  table_cd = $('.table_cn_dn').DataTable({
         searching:false,
     });
 </script>

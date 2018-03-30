@@ -64,7 +64,7 @@
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td colspan="3">
                                     <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
-                                    <input type="hidden" readonly="" name="id_subcon" id="id_subcon" value="{{$data->kc_kode_customer}}">
+                                    <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
                                 </td>
                             </tr>
                             <tr>
@@ -383,7 +383,7 @@ $('#btnadd').click(function(){
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
     var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
-    var id_subcon                = $('.id_subcon').val();
+    var customer                = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var validasi                 = [];
 

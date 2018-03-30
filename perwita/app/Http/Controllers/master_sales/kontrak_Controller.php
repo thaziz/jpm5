@@ -130,7 +130,7 @@ class kontrak_Controller extends Controller
                               ->insert([
                                 'kc_id'             => $id,
                                 'kc_tanggal'        => $tgl,
-                                'kc_kode_customer'  => $request->id_subcon,
+                                'kc_kode_customer'  => $request->customer,
                                 'kc_keterangan'     => $request->ed_keterangan,
                                 'kc_kode_cabang'    => $request->cabang,
                                 'kc_created_by'     => Auth::user()->m_username,
@@ -242,7 +242,7 @@ class kontrak_Controller extends Controller
                               ->update([
                                 'kc_id'             => $cari_kontrak->kc_id,
                                 'kc_tanggal'        => $tgl,
-                                'kc_kode_customer'  => $request->id_subcon,
+                                'kc_kode_customer'  => $request->customer,
                                 'kc_keterangan'     => $request->ed_keterangan,
                                 'kc_kode_cabang'    => $request->cabang,
                                 'kc_created_by'     => Auth::user()->m_username,
