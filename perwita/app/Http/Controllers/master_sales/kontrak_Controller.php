@@ -50,18 +50,21 @@ class kontrak_Controller extends Controller
         // $cabang = session::get('cabang');
         // $cabang = Auth::user()->kode_cabang;
         $customer = DB::table('customer')
+                      ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
                       ->where('cabang',$request->cabang)
+                      ->where('kc_kode_customer',null)
                       ->get();
         return view('master_sales.kontrak.dropdown_customer',compact('customer'));
     }
 
     public function kontrak_set_nota(request $request)
     {   
+
         $month    = Carbon::now()->format('m');
-        $year    = Carbon::now()->format('y');
-        $idfaktur =   DB::table('kontrak_customer')
-                         ->where('kc_kode_cabang' , $request->cabang)
-                         ->max('kc_nomor');
+        $year     = Carbon::now()->format('y');
+        $idfaktur = DB::table('kontrak_customer')
+                      ->where('kc_kode_cabang' , $request->cabang)
+                      ->max('kc_nomor');
         //  dd($nosppid);
             // return $idfaktur;
             if(isset($idfaktur)) {
@@ -69,11 +72,11 @@ class kontrak_Controller extends Controller
                 $idfaktur = $explode[2];
                 $idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
                 $idfaktur = str_replace('-', '', $idfaktur) ;
-                $string = (int)$idfaktur + 1;
-                $idfaktur = str_pad($string, 5, '0', STR_PAD_LEFT);
-            }
+                $string   = (int)$idfaktur + 1;
+                $idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
 
-            else {
+            }else{
+
                 $idfaktur = '001';
             }
 

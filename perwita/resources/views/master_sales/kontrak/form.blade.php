@@ -326,7 +326,6 @@
         dataType:'json',
         success:function(response){
             $('#ed_nomor').val(response.nota);
-            $('#ed_nomor').val(response.nota);
         },
         error:function(){
             location.reload();
@@ -366,6 +365,8 @@
             location.reload();
         }
     });
+
+
 });
 
 
@@ -382,6 +383,20 @@
             location.reload();
         }
     });
+
+      $.ajax({
+        url:baseUrl+'/master_sales/kontrak_set_nota',
+        data:{cabang},
+        dataType:'json',
+        success:function(response){
+            $('#ed_nomor').val(response.nota);
+            $('#ed_nomor').val(response.nota);
+        },
+        error:function(){
+            location.reload();
+        }
+
+    })
  }
 
 $('#btnadd').click(function(){
@@ -590,7 +605,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   // location.reload();    
+                   location.reload();    
         });
       },
       error:function(data){

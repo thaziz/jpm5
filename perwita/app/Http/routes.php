@@ -232,6 +232,7 @@ Route::get('master_subcon/edit_subcon/{id}', 'subconController@edit_subcon');
 Route::get('master_subcon/update_subcon', 'subconController@update_subcon');
 Route::get('master_subcon/cek_hapus', 'subconController@cek_hapus');
 Route::get('master_subcon/nota_kontrak_subcon', 'subconController@nota_kontrak_subcon');
+Route::get('master_subcon/hapus_subcon', 'subconController@hapus_subcon');
 Route::get('master_subcon/save_subcon', 'subconController@save_subcon');
 Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontrak');
@@ -770,6 +771,7 @@ Route::get('sales/save_do_kargo', 'sales\do_kargo_Controller@save_do_kargo');
 Route::get('sales/pilih_tarif_kargo', 'sales\do_kargo_Controller@pilih_tarif_kargo');
 Route::get('sales/edit_do_kargo/{id}', 'sales\do_kargo_Controller@edit_do_kargo');
 Route::get('sales/update_do_kargo', 'sales\do_kargo_Controller@update_do_kargo');
+Route::get('sales/drop_cus', 'sales\do_kargo_Controller@drop_cus');
 
 
 

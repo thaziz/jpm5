@@ -84,7 +84,7 @@
                             <a href="{{url('master_subcon/edit_subcon')}}/{{$val->ks_id}}" data-toggle="tooltip" title="" class="btn btn-warning btn-xs btnedit" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
                           @endif
                           @if(Auth::user()->PunyaAkses('Master subcon','hapus'))
-                            <a href="{{url('master_subcon/hapus_subcon')}}/{{$val->ks_id}}" data-toggle="tooltip" title="" class="btn btn-xs btn-danger btnhapus" data-original-title="Delete"><i class="fa fa-times"></i></a>
+                            <a onclick="hapus('{{$val->ks_id}}')" data-toggle="tooltip" title="" class="btn btn-xs btn-danger btnhapus" data-original-title="Delete"><i class="fa fa-times"></i></a>
                           @endif
                           </div>
                         </td>
@@ -122,5 +122,50 @@
 @section('extra_scripts')
 <script type="text/javascript">
 $('#addColumn').DataTable();
+
+
+
+function hapus(id){
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+
+    function(){
+
+         $.ajax({
+          url:baseUrl + '/master_subcon/hapus_subcon',
+          data:{id},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                         location.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
+    });
+}
 </script>
 @endsection

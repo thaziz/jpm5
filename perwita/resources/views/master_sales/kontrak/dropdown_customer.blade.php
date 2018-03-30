@@ -1,6 +1,6 @@
 
 <select class="chosen-select-width form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
-    <option selected="" disabled="">- Pilih Customer -</option>
+    <option selected="">- Pilih Customer -</option>
     @foreach($customer as $val)
     <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
     @endforeach
