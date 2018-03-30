@@ -24,6 +24,11 @@
 	color: #999;
 }
 
+.disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+
 .form_message {
 	width: 400px;
 	padding: 10px;

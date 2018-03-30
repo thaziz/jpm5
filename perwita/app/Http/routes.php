@@ -231,6 +231,7 @@ Route::get('master_subcon/tambahkontraksubcon', 'subconController@tambahkontraks
 Route::get('master_subcon/edit_subcon/{id}', 'subconController@edit_subcon');
 Route::get('master_subcon/update_subcon', 'subconController@update_subcon');
 Route::get('master_subcon/cek_hapus', 'subconController@cek_hapus');
+Route::get('master_subcon/nota_kontrak_subcon', 'subconController@nota_kontrak_subcon');
 Route::get('master_subcon/save_subcon', 'subconController@save_subcon');
 Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
 Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontrak');
@@ -704,6 +705,7 @@ Route::get('sales/kecamatan', function(){
 //kontrak customer
 Route::get('master_sales/kontrak', 'master_sales\kontrak_Controller@index');
 Route::get('master_sales/kontrak_form', 'master_sales\kontrak_Controller@form');
+Route::get('master_sales/drop_cus', 'master_sales\kontrak_Controller@drop_cus');
 Route::get('master_sales/edit_kontrak/{id}', 'master_sales\kontrak_Controller@edit_kontrak');
 Route::post('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
 Route::get('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');

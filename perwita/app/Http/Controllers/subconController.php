@@ -212,7 +212,7 @@ class subconController extends Controller
 	}
 
 	public function update_subcon(request $request){
-		// dd($request);
+		dd($request->all());
 		$request->ed_tanggal = str_replace('/', '-', $request->ed_tanggal);
 		$request->ed_mulai = str_replace('/', '-', $request->ed_mulai);
 		$request->ed_akhir = str_replace('/', '-', $request->ed_akhir);
@@ -222,27 +222,21 @@ class subconController extends Controller
 		}else{
 			$cek = 'NOT ACTIVE';
 		}
-	
-		$delete = DB::table('kontrak_subcon')
-				->where('ks_id',$request->id)
-				->delete();
 
 		$request->kontrak_nomor = str_replace(' ', '', $request->kontrak_nomor);
 		
 		$kontrak_subcon = DB::table('kontrak_subcon')
-							->insert([
-								'ks_id'			=>	$request->id,
-								'ks_nota'		=>	$request->kontrak_nomor,
+							->where('ks_id',$request->id)
+							->update([
 								'ks_tgl'		=>	Carbon::parse($request->ed_tanggal)->format('Y-m-d'),
 								'ks_tgl_mulai'	=>  Carbon::parse($request->ed_mulai)->format('Y-m-d'),
 								'ks_tgl_akhir'  =>	Carbon::parse($request->ed_akhir)->format('Y-m-d'),
-								'ks_cabang'		=>	$request->cab,
 								'ks_keterangan' =>	$request->ed_keterangan,
 								'ks_active'		=>	$cek,	
 								'ks_edit'		=>  'UNALLOWED',
-								'ks_nama'		=>	$request->id_subcon,
 								'updated_at'	=>	Carbon::now(),
-								'created_at'	=>	Carbon::now()
+								'created_at'	=>	Carbon::now(),
+								'updated_by'	=>  Auth::user()->m_username,
 							]);
 
 		 $delete = DB::table('kontrak_subcon_dt')
@@ -339,7 +333,7 @@ public function nota_kontrak_subcon(request $request)
 			$idfaktur = '001';
 		}
 
-		$nota = 'SC' . $month . $year . '/' . $request->cabang . '/' .  $idfaktur;
+		$nota = 'KSC' . $month . $year . '/' . $request->cabang . '/' .  $idfaktur;
 		return response()->json(['nota'=>$nota]);
 }
 }

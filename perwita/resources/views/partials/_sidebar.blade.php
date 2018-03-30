@@ -717,6 +717,7 @@
                " style="padding-left: 10%;">
                    <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Kontrak<span class="fa arrow"></span></a>
                    <ul class="nav nav-third-level">
+                @if(Auth::user()->PunyaAkses('Master Kontrak','aktif'))
                    <li >
                     <a class="sidebar master-perusahaan 
 
@@ -724,7 +725,8 @@
                     Request::is('master_sales/kontrak/*') ? 'active' : ''}} 
 
                    " href="{{ url('master_sales/kontrak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak Customer</a>
-                </li>
+                   </li>
+                @endif
              @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 

@@ -7,14 +7,15 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use carbon\carbon;
 use Auth;
-
+use Session;
 
 class kontrak_Controller extends Controller
 {
 
     public function index(){
-        $cabang =Auth::user()->kode_cabangl;
-        if (Auth::user()->m_level == 'ADMINISTRATOR') {
+        $cabang = session::get('cabang');
+        // $cabang = Auth::user()->kode_cabang;
+        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
             $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
                    ->get();
@@ -32,7 +33,6 @@ class kontrak_Controller extends Controller
     public function form($nomor=null){
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
-        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
         $tipe_angkutan = DB::select(" SELECT * FROM tipe_angkutan ORDER BY nama ASC ");
         $satuan = DB::table('satuan')
                          ->get();
@@ -44,6 +44,15 @@ class kontrak_Controller extends Controller
 
         
         return view('master_sales.kontrak.form',compact('kota','customer','data','cabang','satuan','tipe_angkutan','akun','now','now1','jenis_tarif'));
+    }
+    public function drop_cus(request $request)
+    {
+        // $cabang = session::get('cabang');
+        // $cabang = Auth::user()->kode_cabang;
+        $customer = DB::table('customer')
+                      ->where('cabang',$request->cabang)
+                      ->get();
+        return view('master_sales.kontrak.dropdown_customer',compact('customer'));
     }
 
     public function kontrak_set_nota(request $request)
