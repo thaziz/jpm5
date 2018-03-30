@@ -117,6 +117,7 @@
                                     <td style="padding-top: 0.4cm">Kode</td>
                                     <td><input type="text" name="ed_kode" class="form-control" placeholder="OTOMATIS"></td>
                                     <input type="hidden" name="ed_kode_old">
+                                    <input type="hidden" name="ed_kode_lama">
                                     <input type="hidden" name="crud">
                                     
                                 </tr>
@@ -224,7 +225,7 @@
                                   </tr>
                               </tbody>
                           </table> 
-                          <table class="table-striped table-bordered" style="margin-left: 45%;margin-top: -214px;position: fixed;" width="48%"> 
+                          <table class="table-striped table-bordered" style="margin-left: 45%;margin-top: -254px;position: fixed;" width="48%"> 
                               <thead>
                                   <tr>
                                       <th style="padding: 7px; text-align: center;"  colspan="2">EXPRESS</th>
@@ -448,19 +449,30 @@
             {
                 console.log(data);
                 $("input[name='crud']").val('E');
-                $("input[name='ed_kode']").val(data[0].id_tarif_koligram);
-                $("input[name='ed_kode_old']").val(data[0].id_increment_koligram);
+                $("input[name='ed_kode']").val(data[0].id_tarif_koli);
+                $("input[name='ed_kode_lama']").val(data[0].id_tarif_koli);
+                $("input[name='ed_kode_old']").val(data[0].id_increment_koli);
                 
-                $("input[name='ed_10reguler']").val(data[0].tarif_10reguler_koli);
-                $("input[name='ed_10express']").val(data[0].tarif_10express_koli);
-                $("input[name='ed_20reguler']").val(data[0].tarif_20reguler_koli);
-                $("input[name='ed_20express']").val(data[0].tarif_20express_koli);
+                $("select[name='ed_10_reguler']").val(data[0].tarif_10reguler_koli).trigger('chosen:updated');
+                $("select[name='ed_10_express']").val(data[0].tarif_10express_koli).trigger('chosen:updated');
+                $("select[name='ed_20_reguler']").val(data[0].tarif_20reguler_koli).trigger('chosen:updated');
+                $("select[name='ed_20_express']").val(data[0].tarif_20express_koli).trigger('chosen:updated');
+
+                $("select[name='ed_30_reguler']").val(data[0].tarif_30reguler_koli).trigger('chosen:updated');
+                $("select[name='ed_30_express']").val(data[0].tarif_30express_koli).trigger('chosen:updated');
                 
+                $("select[name='ed_lebih_30_reguler']").val(data[0].tarif_lbh30reguler_koli).trigger('chosen:updated');
+                $("select[name='ed_lebih_30_express']").val(data[0].tarif_lbh30express_koli).trigger('chosen:updated');
+
+                $("input[name='kode_kota']").val(data[0].kota_kode);
                 $("input[name='ed_kode']").attr('readonly',true);
 
-                $("#provinsi").val(data[0].id_provinsi_koli).trigger('chosen:updated');
-                $("#kota").val(data[0].id_kota_koli).trigger('chosen:updated');
-                $("#kecamatan").val(data[0].id_kecamatan_koli).trigger('chosen:updated');
+                $("#provinsi").val(data[0].provinsi_id).trigger('chosen:updated');
+                $("#kota").val(data[0].kota_id).trigger('chosen:updated');
+                $("#kecamatan").val(data[0].kecamatan_id).trigger('chosen:updated');
+
+                $("select[name='ed_tipe']").val(data[0].type_koli);
+
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();

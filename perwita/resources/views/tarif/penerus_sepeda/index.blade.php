@@ -376,16 +376,16 @@
                 $("input[name='ed_kode']").val(data[0].id_tarif_sepeda);
                 $("input[name='ed_kode_old']").val(data[0].id_increment_sepeda);
                 
-                $("input[name='sepeda']").val(data[0].sepeda);
-                $("input[name='matik']").val(data[0].matik);
-                $("input[name='sport']").val(data[0].sport);
-                $("input[name='moge']").val(data[0].moge);
+                $("select[name='sepeda']").val(data[0].sepeda).trigger('chosen:updated');
+                $("select[name='matik']").val(data[0].matik).trigger('chosen:updated');
+                $("select[name='sport']").val(data[0].sport).trigger('chosen:updated');
+                $("select[name='moge']").val(data[0].moge).trigger('chosen:updated');
                 
                 $("input[name='ed_kode']").attr('readonly',true);
 
-                $("#provinsi").val(data[0].id_provinsi_sepeda).trigger('chosen:updated');
-                $("#kota").val(data[0].id_kota_sepeda).trigger('chosen:updated');
-                $("#kecamatan").val(data[0].id_kecamatan_sepeda).trigger('chosen:updated');
+                $("#provinsi").val(data[0].id_provinsi_sepeda);
+                $("#kota").val(data[0].id_kota_sepeda);
+                $("#kecamatan").val(data[0].id_kecamatan_sepeda);
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
