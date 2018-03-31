@@ -1117,11 +1117,6 @@ class penerimaan_penjualan_Controller extends Controller
         $akun = DB::table('d_akun')
                   ->get();
 
-        return $data = DB::table('kwitansi')
-                  ->where('k_id',10100)
-                  ->orWhere('k_kode_akun',334343)
-                  ->orWhere('k_kode_customer','CS-001/0001')
-                  ->get();
 
         $tgl  = Carbon::now()->format('d/m/Y');
 
