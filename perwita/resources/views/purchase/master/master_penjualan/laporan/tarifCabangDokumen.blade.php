@@ -56,9 +56,9 @@
                            <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td colspan="2">
                           <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
-                            <option value="semua" > --Pilih Terlebih Dahulu--</option>
+                            <option value="" > --Pilih Terlebih Dahulu--</option>
                             @foreach ($kota1 as $asal)
-                                <option value="{{ $asal->asal }}">{{ $asal->asal }}</option>
+                                <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
                             @endforeach
                           </select>
                           </td>
@@ -68,9 +68,9 @@
                           <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
                           <td colspan="2"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="semua" > --Pilih Terlebih Dahulu--</option>
+                            <option value="" > --Pilih Terlebih Dahulu--</option>
                             @foreach ($kota as $tujuan)
-                                <option value="{{ $tujuan->tujuan }}">{{ $tujuan->tujuan }}</option>
+                                <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
                             @endforeach
                            </select>
                           </td>
@@ -92,8 +92,10 @@
                     <thead>
                      <tr>
                         <th align="center"> Kota Asal</th>
+                        <th align="center">id Kota Asal</th>
+                        <th align="center">id Kota Asal</th>
                         <th align="center"> Kota Tujuan</th>
-                        <th hidden="">kode</th>
+                        <th align="center">kode</th>
                         <th align="center"> jenis </th>
                         <th align="center"> Keterangan</th>
                         <th align="center"> Tarif</th>
@@ -102,9 +104,12 @@
                     <tbody>
                       @foreach($data as $val)
                       <tr>
+                        <td><input type="hidden" name="" value="{{$val->id_asal}}">{{$val->id_asal}}</td>
+                        <td><input type="hidden" name="" value="{{$val->id_tujuan}}">{{$val->id_tujuan}}</td>
+
                         <td><input type="hidden" name="" value="{{$val->asal}}">{{$val->asal}}</td>
                         <td><input type="hidden" name="" value="{{$val->tujuan}}">{{$val->tujuan}}</td>
-                        <td hidden=""><input type="hidden" name="" value="{{$val->kode}}">{{$val->kode}}</td>
+                        <td ><input type="hidden" name="" value="{{$val->kode}}">{{$val->kode}}</td>
                         <td align="center"><input type="hidden" name="" value="{{$val->jenis}}">{{$val->jenis}}</td>
                         <td align="center"><input type="hidden" name="" value="-">-</td>
                         <td><input type="hidden" name="" value="{{"Rp " . number_format($val->harga,2,",",".")}}">{{"Rp " . number_format($val->harga,2,",",".")}}</td>
@@ -193,16 +198,32 @@ var d = new Date();
        console.log(z);
        console.log(z1);
 
+      var asw=[];
+       var asd = addColumn.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
+
+           asw[i] =  $(asd[i][4]).val();
+  
+       }
+       console.log(asw);
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
 
       $.ajax({
-        data: {a:z,b:z1,c:'download'},
+        data: {a:asw,c:'download'},
         url: baseUrl + '/reportcabangdokumen/reportcabangdokumen',
-        type: "get",
-         complete : function(){
-        window.open(this.url,'_blank');
-        },     
+        type: "post",
+        //  complete : function(){
+        //   window.open(this.url,'_blank');
+        // }     
         success : function(data){
-        // window.open(this.data,'_blank');  
+        var win = window.open();
+            win.document.write(data);
         }
       });
     }

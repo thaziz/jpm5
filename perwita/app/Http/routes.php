@@ -529,7 +529,7 @@ Route::get('laporan_master_penjualan/tarif_cabang_kargo', 'LaporanMasterControll
 Route::get('sales/laporandeliveryorder','LaporanMasterController@deliveryorder');
 
 //KUMPULAN LAPORAN PDF
-Route::get('reportcabangdokumen/reportcabangdokumen', 'LaporanMasterController@reportcabangdokumen')->name('reportcabangdokumen');
+Route::post('reportcabangdokumen/reportcabangdokumen', 'LaporanMasterController@reportcabangdokumen')->name('reportcabangdokumen');
 Route::get('reportcabangkoli/reportcabangkoli', 'LaporanMasterController@reportcabangkoli')->name('reportcabangkoli');
 Route::get('reportcabangkargo/reportcabangkargo', 'LaporanMasterController@reportcabangkargo')->name('reportcabangkargo');
 Route::get('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoice')->name('reportinvoice');
