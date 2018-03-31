@@ -60,13 +60,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3">
-                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
-                                    <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
-                                </td>
-                            </tr>
+                            
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
@@ -80,6 +74,13 @@
                                       @endif
                                       @endforeach
                                     </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
+                                    <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
                                 </td>
                             </tr>
                             <tr>

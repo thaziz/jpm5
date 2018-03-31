@@ -59,12 +59,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3" class="customer_td">
-                                    
-                                </td>
-                            </tr>
+                            
                             @if(Auth()->user()->punyaAkses('Master Kontrak','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
@@ -98,6 +93,12 @@
                                 </td>
                             </tr>
                             @endif
+                            <tr>
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td colspan="3" class="customer_td">
+                                    
+                                </td>
+                            </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
