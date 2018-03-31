@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\sales;
 
 use App\biaya_penerus;
+use App\do_dt;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -82,7 +83,8 @@ class do_Controller extends Controller
 
     public function save_data(Request $request)
     {
-        return DB::transaction(function () use ($request) {
+        //dd($request);
+/*        return DB::transaction(function () use ($request) {
             $simpan = '';
             $crud = $request->crud_h;
             $kota_asal = $request->cb_kota_asal;
@@ -107,6 +109,7 @@ class do_Controller extends Controller
                 'nomor' => strtoupper($request->ed_nomor),
                 'tanggal' => $request->ed_tanggal,
                 'id_kota_asal' => $request->cb_kota_asal,
+                'id_kota_tujuan' => $request->cb_kota_tujuan,
                 'id_kota_tujuan' => $request->cb_kota_tujuan,
                 'pendapatan' => $request->pendapatan,
                 'type_kiriman' => $request->type_kiriman,
@@ -154,6 +157,7 @@ class do_Controller extends Controller
             $totalJurnal = $this->formatRP($request->ed_tarif_dasar) + $this->formatRP($request->ed_tarif_penerus) + $this->formatRP($request->ed_biaya_tambahan) - $this->formatRP($request->ed_diskon_h) + $this->formatRP($request->ed_biaya_komisi);
 
             if ($crud == 'N') {
+
                 //auto number
                 if ($data['nomor'] == '') {
                     $tanggal = strtoupper($request->ed_tanggal);
@@ -237,8 +241,6 @@ class do_Controller extends Controller
                     d_jurnal_dt::insert($jurnal_dt);
 
                 }
-
-
                 $simpan = DB::table('delivery_order')->insert($data);
             } elseif ($crud == 'E') {
                 if ($request->ed_nomor_old != $request->ed_nomor) {
@@ -347,7 +349,313 @@ class do_Controller extends Controller
             }
             $result['crud'] = $crud;
             echo json_encode($result);
-        });
+        });*/
+
+
+
+        DB::beginTransaction();
+        try {
+
+            $simpan = '';
+            $crud = $request->crud_h;
+            $kota_asal = $request->cb_kota_asal;
+            $jumlah = 1;
+            $jml_unit = null;
+            if ($request->type_kiriman == 'KILOGRAM' || $request->type_kiriman == 'KERTAS') {
+                $jumlah = filter_var($request->ed_berat, FILTER_SANITIZE_NUMBER_INT);
+                $kode_satuan = 'KG';
+            } else if ($request->type_kiriman == 'KOLI') {
+                $jumlah = filter_var($request->ed_koli, FILTER_SANITIZE_NUMBER_INT);
+                $kode_satuan = 'KOLI';
+            } else if ($request->type_kiriman == 'KARGO PAKET' || $request->type_kiriman == 'KARGO KERTAS') {
+                $kode_satuan = 'KARGO';
+            } else if ($request->type_kiriman == 'DOKUMEN') {
+                $kode_satuan = 'DOKUMEN';
+            } else if ($request->type_kiriman == 'SEPEDA') {
+                $kode_satuan = 'SEPEDA';
+            }
+
+            if ($request->acc_penjualan == '') {
+                $dataInfo = ['status' => 'gagal', 'info' => 'Akun Pada Master Item Belum Ada Atau Pencarian Harga Belum Di Lakukan'];
+                return json_encode($dataInfo);
+            }
+            
+            $data = array(
+                'nomor' => strtoupper($request->ed_nomor),
+                'tanggal' => $request->ed_tanggal,
+                'id_kota_asal' => $request->cb_kota_asal,
+                'id_kota_tujuan' => $request->cb_kota_tujuan,
+                'id_kecamatan_tujuan' => $request->cb_kecamatan_tujuan,
+                'pendapatan' => $request->pendapatan,
+                'type_kiriman' => $request->type_kiriman,
+                'jenis_pengiriman' => $request->jenis_kiriman,
+                'kode_tipe_angkutan' => $request->cb_angkutan,
+                'no_surat_jalan' => strtoupper($request->ed_surat_jalan),
+                'nopol' => strtoupper($request->cb_nopol),
+                'lebar' => filter_var($request->ed_lebar, FILTER_SANITIZE_NUMBER_INT),
+                'panjang' => filter_var($request->ed_panjang, FILTER_SANITIZE_NUMBER_INT),
+                'tinggi' => filter_var($request->ed_tinggi, FILTER_SANITIZE_NUMBER_INT),
+                'berat' => filter_var($request->ed_berat, FILTER_SANITIZE_NUMBER_INT),
+                'koli' => strtoupper($request->ed_koli),
+                'kode_outlet' => $request->cb_outlet,
+                'kode_cabang' => $request->cb_cabang,
+                'tarif_dasar' => filter_var($request->ed_tarif_dasar, FILTER_SANITIZE_NUMBER_INT),
+                'tarif_penerus' => filter_var($request->ed_tarif_penerus, FILTER_SANITIZE_NUMBER_INT),
+                'biaya_tambahan' => filter_var($request->ed_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
+                'biaya_komisi' => filter_var($request->ed_biaya_komisi, FILTER_SANITIZE_NUMBER_INT),
+                'kode_customer' => $request->cb_customer,
+                'kode_marketing' => $request->cb_marketing,
+                'ppn' => $request->ck_ppn,
+                'company_name_pengirim' => strtoupper($request->ed_company_name_pengirim),
+                'nama_pengirim' => strtoupper($request->ed_nama_pengirim),
+                'alamat_pengirim' => strtoupper($request->ed_alamat_pengirim),
+                'kode_pos_pengirim' => strtoupper($request->ed_kode_pos_pengirim),
+                'telpon_pengirim' => strtoupper($request->ed_telpon_pengirim),
+                'company_name_penerima' => strtoupper($request->ed_company_name_penerima),
+                'nama_penerima' => strtoupper($request->ed_nama_penerima),
+                'alamat_penerima' => strtoupper($request->ed_alamat_penerima),
+                'kode_pos_penerima' => strtoupper($request->ed_kode_pos_penerima),
+                'telpon_penerima' => strtoupper($request->ed_telpon_penerima),
+                'instruksi' => strtoupper($request->ed_instruksi),
+                'deskripsi' => strtoupper($request->ed_deskripsi),
+                'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
+                'total' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
+                'diskon' => filter_var($request->ed_diskon_h, FILTER_SANITIZE_NUMBER_INT),
+                'jenis' => 'PAKET',
+                'kode_satuan' => $kode_satuan,
+                'jumlah' => $jumlah,
+                'jenis_ppn' => $request->cb_jenis_ppn,
+                'acc_penjualan' => $request->acc_penjualan,
+
+                //'total_net' => filter_var($request->ed_total_net, FILTER_SANITIZE_NUMBER_INT),
+            );
+
+            if ($data['kode_satuan'] == "SEPEDA"){
+                $data['jenis_pengiriman'] = 'REGULER';
+                $jml_unit = $request->cb_jml_unit;
+            }
+
+            $totalJurnal = $this->formatRP($request->ed_tarif_dasar) + $this->formatRP($request->ed_tarif_penerus) + $this->formatRP($request->ed_biaya_tambahan) - $this->formatRP($request->ed_diskon_h) + $this->formatRP($request->ed_biaya_komisi);
+
+            if ($crud == 'N') {
+
+                //auto number
+                if ($data['nomor'] == '') {
+                    $tanggal = strtoupper($request->ed_tanggal);
+                    $kode_cabang = strtoupper($request->cb_cabang);
+                    $tanggal = date_create($tanggal);
+                    $tanggal = date_format($tanggal, 'ym');
+                    $sql = "	SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
+                            FROM delivery_order WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' AND jenis='PAKET'
+                            AND nomor LIKE '%PAK" . $kode_cabang . $tanggal . "%' ";
+                    $list = collect(\DB::select($sql))->first();
+                    if ($list->nomor == '') {
+                        //$data['nomor']='SJT-'.$kode_cabang.'-'.$tanggal.'-00001';
+                        $data['nomor'] = 'PAK' . $kode_cabang . $tanggal . '00001';
+                    } else {
+                        $kode = substr_replace('00000', $list->nomor, -strlen($list->nomor));
+                        $data['nomor'] = 'PAK' . $kode_cabang . $tanggal . $kode;
+                    }
+                }
+                // end auto number
+
+                if ($request->cb_customer == 'CS/001') {
+                    //$cabang=substr($request->cb_cabang,1);
+                    $valueJurnal = filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT);
+
+                    $cabang = $request->cb_cabang;
+                    $akunKas = master_akun::
+                    select('id_akun', 'nama_akun')
+                        ->where('id_akun', 'like', '1003%')
+                        ->where('kode_cabang', $cabang)
+                        ->orderBy('id_akun')
+                        ->first();
+
+                    $akunDana = master_akun::
+                    select('id_akun', 'nama_akun')
+                        ->where('id_akun', 'like', '%2001%')
+                        ->where('kode_cabang', $cabang)
+                        ->orderBy('id_akun')
+                        ->first();
+
+
+                    if (count($akunKas) == 0) {
+                        $dataInfo = ['status' => 'gagal', 'info' => 'Akun Kas Untuk Cabang Belum Tersedia'];
+                        return json_encode($dataInfo);
+
+                    } else if (count($akunDana) == 0) {
+                        $dataInfo = ['status' => 'gagal', 'info' => 'Akun Dana Untuk Cabang Belum Tersedia'];
+                        return json_encode($dataInfo);
+                    }
+
+
+                    $akun[0]['id_akun'] = $akunKas->id_akun;
+                    $akun[0]['value'] = $valueJurnal;
+                    $akun[0]['dk'] = 'D';
+
+
+                    $akun[1]['id_akun'] = $akunDana->id_akun;
+                    $akun[1]['value'] = $valueJurnal;
+                    $akun[1]['dk'] = 'K';
+
+
+                    $nomor = $data['nomor'];
+
+                    $id_jurnal = d_jurnal::max('jr_id') + 1;
+                    foreach ($akun as $key => $detailData) {
+                        $id_jrdt = $key;
+                        $jurnal_dt[$key]['jrdt_jurnal'] = $id_jurnal;
+                        $jurnal_dt[$key]['jrdt_detailid'] = $id_jrdt + 1;
+                        $jurnal_dt[$key]['jrdt_acc'] = $detailData['id_akun'];
+                        $jurnal_dt[$key]['jrdt_value'] = $detailData['value'];
+                        $jurnal_dt[$key]['jrdt_statusdk'] = $detailData['dk'];
+                    }
+
+                    d_jurnal::create([
+                        'jr_id' => $id_jurnal,
+                        'jr_year' => date('Y', strtotime($request->ed_tanggal)),
+                        'jr_date' => date('Y-m-d', strtotime($request->ed_tanggal)),
+                        'jr_detail' => 'DELIVERY ORDER' . ' ' . $request->type_kiriman,
+                        'jr_ref' => $nomor,
+                        'jr_note' => 'DELIVERY ORDER',
+                    ]);
+                    d_jurnal_dt::insert($jurnal_dt);
+
+                }
+                DB::table('delivery_order')->insert($data);
+                if ($data['kode_satuan'] == "SEPEDA"){
+                    for ($i = 0; $i < $jml_unit; $i++){
+                        $dt = new do_dt();
+                        $dt->id_do = $data['nomor'];
+                        $dt->id_do_dt = $i + 1;
+                        $dt->berat = $request->cb_berat_unit[$i];
+                        $dt->jenis = $request->cb_jenis_unit[$i];
+                        $dt->save();
+                    }
+                }
+
+            } elseif ($crud == 'E') {
+                if ($request->ed_nomor_old != $request->ed_nomor) {
+                    $nomor = $request->ed_nomor_old;
+                } else {
+                    $nomor = $request->ed_nomor;
+                }
+
+
+                if ($request->cb_customer == 'CS/001') {
+                    //$cabang=substr($request->cb_cabang,1);
+                    $valueJurnal = filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT);
+
+                    $cabang = $request->cb_cabang;
+                    $akunKas = master_akun::
+                    select('id_akun', 'nama_akun')
+                        ->where('id_akun', 'like', '1003%')
+                        ->where('kode_cabang', $cabang)
+                        ->orderBy('id_akun')
+                        ->first();
+
+                    $akunDana = master_akun::
+                    select('id_akun', 'nama_akun')
+                        ->where('id_akun', 'like', '%2001%')
+                        ->where('kode_cabang', $cabang)
+                        ->orderBy('id_akun')
+                        ->first();
+
+
+                    if (count($akunKas) == 0) {
+                        $dataInfo = ['status' => 'gagal', 'info' => 'Akun Kas Untuk Cabang Belum Tersedia'];
+                        return json_encode($dataInfo);
+
+                    } else if (count($akunDana) == 0) {
+                        $dataInfo = ['status' => 'gagal', 'info' => 'Akun Dana Untuk Cabang Belum Tersedia'];
+                        return json_encode($dataInfo);
+                    }
+
+
+                    $akun[0]['id_akun'] = $akunKas->id_akun;
+                    $akun[0]['value'] = $valueJurnal;
+                    $akun[0]['dk'] = 'D';
+
+
+                    $akun[1]['id_akun'] = $akunDana->id_akun;
+                    $akun[1]['value'] = $valueJurnal;
+                    $akun[1]['dk'] = 'K';
+
+
+                    $nomor = $nomor;
+                    $jurnal = d_jurnal::where('jr_ref', $nomor);
+
+                    if (count($jurnal->first()) == 0) {
+                        $id_jurnal = d_jurnal::max('jr_id') + 1;
+                        foreach ($akun as $key => $detailData) {
+                            $id_jrdt = $key;
+                            $jurnal_dt[$key]['jrdt_jurnal'] = $id_jurnal;
+                            $jurnal_dt[$key]['jrdt_detailid'] = $id_jrdt + 1;
+                            $jurnal_dt[$key]['jrdt_acc'] = $detailData['id_akun'];
+                            $jurnal_dt[$key]['jrdt_value'] = $detailData['value'];
+                            $jurnal_dt[$key]['jrdt_statusdk'] = $detailData['dk'];
+                        }
+
+                        d_jurnal::create([
+                            'jr_id' => $id_jurnal,
+                            'jr_year' => date('Y', strtotime($request->ed_tanggal)),
+                            'jr_date' => date('Y-m-d', strtotime($request->ed_tanggal)),
+                            'jr_detail' => 'DELIVERY ORDER' . ' ' . $request->type_kiriman,
+                            'jr_ref' => $nomor,
+                            'jr_note' => 'DELIVERY ORDER',
+                        ]);
+                        d_jurnal_dt::insert($jurnal_dt);
+
+                    } else {
+                        $deleteJurnal = d_jurnal_dt::where('jrdt_jurnal', $jurnal->first()->jr_id);
+                        $deleteJurnal->delete();
+                        foreach ($akun as $key => $detailData) {
+                            $id_jrdt = $key;
+                            $jurnal_dt[$key]['jrdt_jurnal'] = $jurnal->first()->jr_id;
+                            $jurnal_dt[$key]['jrdt_detailid'] = $id_jrdt + 1;
+                            $jurnal_dt[$key]['jrdt_acc'] = $detailData['id_akun'];
+                            $jurnal_dt[$key]['jrdt_value'] = $detailData['value'];
+                            $jurnal_dt[$key]['jrdt_statusdk'] = $detailData['dk'];
+                        }
+                        d_jurnal_dt::insert($jurnal_dt);
+                    }
+
+
+                }
+
+                if ($request->cb_customer != 'CS/001') {
+                    $jurnal = d_jurnal::where('jr_ref', $nomor)->first();
+                    if (count($jurnal) != 0)
+                        $jurnal->delete();
+                }
+
+                DB::table('delivery_order')->where('nomor', $nomor)->update($data);
+                if ($data['kode_satuan'] == "SEPEDA"){
+                    DB::table('delivery_order_dt')->where('id_do', '=', $nomor)->delete();
+                    for ($i = 0; $i < $jml_unit; $i++){
+                        $dt = new do_dt();
+                        $dt->id_do = $data['nomor'];
+                        $dt->id_do_dt = $i + 1;
+                        $dt->berat = $request->cb_berat_unit[$i];
+                        $dt->jenis = $request->cb_jenis_unit[$i];
+                        $dt->save();
+                    }
+                }
+            }
+
+            $result['crud'] = $crud;
+
+            DB::commit();
+            $result['error'] = '';
+            $result['result'] = 1;
+            echo json_encode($result);
+        } catch (\Exception $e) {
+            DB::rollback();
+            $result['error'] = $data;
+            $result['result'] = 0;
+            echo json_encode($e);
+        }
+
     }
 
     public function save_data_detail(Request $request)
@@ -447,7 +755,7 @@ class do_Controller extends Controller
 
     public function index()
     {
-        $sql = "    SELECT d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -470,7 +778,9 @@ class do_Controller extends Controller
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
         $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
-
+        $kec = null;
+        $do = null;
+        $do_dt = null;
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
 
@@ -481,11 +791,21 @@ class do_Controller extends Controller
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in
                         (select j.jr_id from d_jurnal j where jr_ref='$nomor')"));
 
+            $kec = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan WHERE id_kota = $do->id_kota_tujuan ORDER BY nama ASC "));
+
+            if ($do->type_kiriman == 'SEPEDA'){
+                $do_dt = DB::table('delivery_order_dt')
+                    ->select('*')
+                    ->where('id_do', '=', $nomor)
+                    ->get();
+            }
+
         } else {
             $do = null;
             $jml_detail = 0;
         }
-        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan'));
+//dd($do);
+        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt'));
     }
 
     public function form_update_status($nomor = null)
