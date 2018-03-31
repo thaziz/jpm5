@@ -480,6 +480,12 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Kecamatan</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="ed_kecamatan" readonly="readonly" tabindex="-1" required style="text-transform: uppercase">
+                                                    </td>
+                                                </tr>
+                                                <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
                                                     <td>
                                                         <input type="text" class="form-control kodepospenerima" name="ed_kode_pos_penerima"  style="text-transform: uppercase" value="{{ $do->kode_pos_penerima or null }}">
@@ -765,6 +771,8 @@
         $("input[name='ck_ppn']").attr('checked', {{ $do->ppn or null}});
         var data = $("select[name='cb_kota_tujuan'] option:selected").text();
         $("input[name='ed_kota']").val(data);
+        var datakec = $("select[name='cb_kecamatan_tujuan'] option:selected").text();
+        $("input[name='ed_kecamatan']").val(datakec);
         var jumlah = {{ $jml_detail->jumlah or '0'}};
         if (jumlah == 0 ) {
             $("#ed_nomor").focus();
@@ -908,6 +916,10 @@
     $("select[name='cb_kota_tujuan']").change(function(){
         var data = $("select[name='cb_kota_tujuan'] option:selected").text();
         $("input[name='ed_kota']").val(data);
+    });
+    $("select[name='cb_kecamatan_tujuan']").change(function(){
+        var data = $("select[name='cb_kecamatan_tujuan'] option:selected").text();
+        $("input[name='ed_kecamatan']").val(data);
     });
     
     $(document).on("click","#ck_ppn",function(){
