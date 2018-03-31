@@ -872,7 +872,6 @@ $(document).ready(function(){
             // location.reload();
         }
     });
-
     
     $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
@@ -1556,7 +1555,7 @@ $('#save_um').click(function(){
                     seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
                     +'<input type="hidden" value="'+seq_um+'" class="sequence">',
                     no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
-                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um">',
+                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um" name="status_um[]">',
                     accounting.formatMoney(total_um,"",2,'.',',')+
                     '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
                      accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+

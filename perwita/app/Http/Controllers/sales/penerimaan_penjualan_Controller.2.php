@@ -698,9 +698,9 @@ class penerimaan_penjualan_Controller extends Controller
         // return $request->customer;
        $temp  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
-                  // ->where('i_kode_customer',$request->customer)
-                  // ->where('i_sisa_pelunasan','!=',0)
-                  // ->where('i_kode_cabang',$request->cabang)
+                  ->where('i_kode_customer',$request->customer)
+                  ->where('i_sisa_pelunasan','!=',0)
+                  ->where('i_kode_cabang',$request->cabang)
                   ->get();
 
         $temp1 = DB::table('invoice')
@@ -901,6 +901,11 @@ class penerimaan_penjualan_Controller extends Controller
             }
 
             for ($i=0; $i < count($request->b_akun); $i++) { 
+                if ($request->b_debet[$i] != 0) {
+                    $jenis = 'D';
+                }else{
+                    $jenis = 'K';
+                }
                 $save_biaya = DB::table('kwitansi_biaya_d')
                                  ->insert([
                                       'kb_id' => $k_id,
@@ -910,6 +915,7 @@ class penerimaan_penjualan_Controller extends Controller
                                       'kb_kode_akun_csf' => $request->b_akun[$i],
                                       'kb_jumlah' => $request->b_jumlah[$i],
                                       'kb_keterangan' => $request->b_keterangan[$i],
+                                      'kb_jenis' => $jenis,
                                       'kb_debet'    => $request->b_debet[$i],
                                       'kb_kredit'    => $request->b_kredit[$i],
                                  ]);
@@ -928,6 +934,7 @@ class penerimaan_penjualan_Controller extends Controller
                                       'ku_keterangan' => $request->m_Keterangan_um[$i],
                                       'ku_kredit'    => $request->jumlah_bayar_um[$i],
                                       'ku_nomor_um'    => $request->m_um[$i],
+                                      'ku_status_um'    => $request->status_um[$i],
                                       'ku_jenis'       => $request->m_status_um[$i]
                                  ]);
 
@@ -1106,15 +1113,18 @@ class penerimaan_penjualan_Controller extends Controller
 
         $data_dt = DB::table('kwitansi')
                      ->join('kwitansi_d','kd_id','=','k_id')
+                     ->join('invoice','i_nomor','=','kd_nomor_invoice')
                      ->where('k_nomor',$id)
                      ->get();
         $data_bl = DB::table('kwitansi')
                      ->join('kwitansi_biaya_d','kb_id','=','k_id')
+                     ->join('d_akun','id_akun','=','kb_kode_akun')
                      ->where('k_nomor',$id)
                      ->get();    
 
         $data_um = DB::table('kwitansi')
-                     ->join('kwitansi_biaya_d','kb_id','=','k_id')
+                     ->join('kwitansi_uang_muka','ku_id','=','k_id')
+                     ->join('uang_muka_penjualan','nomor','=','ku_nomor_um')
                      ->where('k_nomor',$id)
                      ->get();  
         $akun_bank = DB::table('masterbank')

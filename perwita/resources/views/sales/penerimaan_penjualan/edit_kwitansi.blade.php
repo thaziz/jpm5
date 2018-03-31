@@ -167,7 +167,7 @@
                             <tr class="disabled">
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td >
-                                    <select class="chosen-select-width"  name="cb_customer" id="cb_customer" style="width:100%" >
+                                    <select class="chosen-select-width"  name="cb_customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                     @if($data->k_kode_customer == $row->kode)
@@ -199,7 +199,7 @@
                             <tr>    
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" value="{{$data->k_keterangan}}" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="" >
                                 </td>
                             </tr>
                         </table>
@@ -280,6 +280,34 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($data_dt as $val)
+                                            <tr>
+                                                <td>
+                                                    <a onclick="histori(this)">{{$val->kd_nomor_invoice}}</a>
+                                                    <input type="hidden" class="i_nomor i_flag_{{$val->kd_nomor_invoice}}" name="i_nomor[]" value="{{$val->kd_nomor_invoice}}">
+                                                </td>
+                                                <td>
+                                                    {{number_format($val->i_netto_detail, 2, ",", ".")}}
+                                                    <input type="hidden" class="i_tagihan" name="i_tagihan[]" value="{{$val->i_netto_detail}}">
+                                                </td>
+                                                <td>
+                                                    {{number_format($val->i_sisa_pelunasan+$val->kd_total_bayar, 2, ",", ".")}}
+                                                    <input type="hidden" class="i_sisa" name="i_sisa[]" value="{{$val->i_sisa_pelunasan+$val->kd_total_bayar}}">
+                                                </td>
+                                                <td align="left">
+                                                    <input type="text" readonly class="form-control i_bayar_text input-sm" value="{{number_format($val->kd_total_bayar, 2, ",", ".")}}" style="text-align: right">
+                                                    <input type="hidden" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="{{$val->kd_total_bayar}}">
+                                                    <input type="hidden" readonly class="form-control i_biaya_admin input-sm" name="i_biaya_admin[]" value="{{$val->kd_biaya_lain}}">
+                                                    <input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="{{$val->kd_kode_biaya}}}">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control input-sm" name="i_keterangan[]" value="{{$val->kd_keterangan}}">
+                                                </td>
+                                                <td>
+                                                    <a type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i>&nbsp;</button>
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -298,7 +326,43 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            @foreach($data_bl as $i=>$val)
+                                            <tr>
+                                                <td>
+                                                    <p class="b_seq_text">{{$i+1}}</p>
+                                                    <input type="hidden" class="b_flag_{{$i+1}}">
+                                                </td>
+                                                <td>
+                                                    <p class="b_nama_akun_text">{{$val->nama_akun}}</p>
+                                                    <input type="hidden" class="b_kode_akun" value="{{$val->kb_kode_akun}}" name="b_akun[]">
+                                                </td>
+                                                <td>
+                                                    @if($val->kb_jenis == 'D')
+                                                    <p class="b_debet_text">DEBET</p>
+                                                    @else
+                                                    <p class="b_debet_text">KREDIT</p>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <p class="b_jumlah_text">{{number_format($val->kb_jumlah, 2, ",", ".")}}</p>
+                                                    <input type="hidden" class="b_jumlah" value="{{$val->kb_jumlah}}" name="b_jumlah[]">
+                                                    <input type="hidden" class="b_debet" value="{{$val->kb_debet}}" name="b_debet[]">
+                                                    <input type="hidden" class="b_debet" value="{{$val->kb_kredit}}" name="b_debet[]">
+                                                </td>
+                                                <td>
+                                                    <p class="b_keterangan_text">{{$val->kb_keterangan}}</p>
+                                                    <input type="hidden" class="b_keterangan" value="{{$val->kb_keterangan}}" name="b_keterangan[]">
+                                                </td>
+                                                <td>
+                                                    <button type="button" onclick="hapus_detail_biaya(this)" class="btn btn-danger hapus btn-sm" title="hapus">
+                                                    <label class="fa fa-trash"><label>
+                                                    </button>
+                                                    <button type="button" onclick="edit_detail_biaya(this)" class="btn btn-warning hapus btn-sm" title="edit">
+                                                    <label class="fa fa-pencil"><label>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -318,6 +382,41 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($data_um as $i=>$val)
+                                            <tr>
+                                                <td>
+                                                    {{$i+1}}<input type="hidden" value="{{$i+1}}" class="sequence_{{$i+1}}">
+                                                    <input type="hidden" value="{{$i+1}}" class="sequence">
+                                                </td>
+                                                <td>
+                                                    {{$val->ku_nomor_um}}
+                                                    <input type="hidden" value="{{$val->ku_nomor_um}}" class="m_um" name="m_um[]">
+                                                </td>
+                                                <td>
+                                                    {{$val->ku_status_um}}
+                                                    <input type="hidden" value="{{$val->ku_status_um}}" class="m_status_um" name="status_um[]"> 
+                                                </td>
+                                                <td>
+                                                    {{number_format($val->jumlah, 2, ",", ".")}}
+                                                    <input type="hidden" value="{{$val->jumlah}}" class="m_um_total" name="m_um_total[]">
+                                                </td>
+                                                <td>
+                                                    {{number_format($val->kb_jumlah, 2, ",", ".")}}
+                                                    <input type="hidden" value="{{$val->kb_jumlah}}" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">
+                                                </td>
+                                                <td>
+                                                    <input type="text" readonly value="{{$val->ku_keterangan}}" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">
+                                                </td>
+                                                <td>
+                                                    <button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">
+                                                    <label class="fa fa-trash"><label>
+                                                    </button>
+                                                    <button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">
+                                                    <label class="fa fa-pencil"><label>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -327,7 +426,6 @@
                     </div>
                 </div>
                 <!-- /.box-body -->
-                
                 <!-- modal -->
                 <div id="modal_invoice" class="modal" >
                     <div class="modal-dialog modal-lg">
@@ -914,6 +1012,11 @@ $(document).ready(function(){
         }
     });
 
+    table_data.$('.i_nomor').each(function(){
+        array_simpan.push($(this).val());
+    })
+    console.log(array_simpan);
+
     
     $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
@@ -1035,7 +1138,7 @@ $('#btnsave').click(function(){
 
     var nomor = [];
         
-    table_invoice.$('.child_check').each(function(){
+    $('.child_check').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
             var par   = $(this).parents('tr');
@@ -1597,7 +1700,7 @@ $('#save_um').click(function(){
                     seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
                     +'<input type="hidden" value="'+seq_um+'" class="sequence">',
                     no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
-                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um">',
+                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um" name="status_um[]">',
                     accounting.formatMoney(total_um,"",2,'.',',')+
                     '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
                      accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
