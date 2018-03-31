@@ -14,7 +14,7 @@ class kontrak_Controller extends Controller
 
     public function index(){
         $cabang = session::get('cabang');
-        $jabatan = Auth::user()->m_level;
+        return$jabatan = Auth::user()->m_level;
         // $cabang = Auth::user()->kode_cabang;
         if ($jabatan == 'ADMINISTRATOR' || $jabatan == 'SUPERVISOR') {
             $data =  DB::table('kontrak_customer')
