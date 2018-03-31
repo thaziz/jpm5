@@ -14,10 +14,10 @@ class kontrak_Controller extends Controller
 
     public function index(){
         $cabang = session::get('cabang');
-        return$jabatan = Auth::user()->m_level;
+        $jabatan = Auth::user()->m_level;
         // $cabang = Auth::user()->kode_cabang;
         if ($jabatan == 'ADMINISTRATOR' || $jabatan == 'SUPERVISOR') {
-            $data =  DB::table('kontrak_customer')
+           return $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
                    ->get();
         }else{
