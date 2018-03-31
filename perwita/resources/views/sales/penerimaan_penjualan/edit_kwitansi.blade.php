@@ -850,6 +850,8 @@
 <script type="text/javascript">
 //GLOBAL VARIABLE
 var array_simpan = [];
+var array_edit = [];
+var array_harga = [];
 var count_um = 1;
 
 // datepicker
@@ -1014,8 +1016,12 @@ $(document).ready(function(){
 
     table_data.$('.i_nomor').each(function(){
         array_simpan.push($(this).val());
+        array_edit.push($(this).val());
     })
-    console.log(array_simpan);
+
+    table_data.$('.i_bayar').each(function(){
+        array_harga.push($(this).val());
+    })
 
     
     $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
@@ -1119,7 +1125,7 @@ $('.tambah_invoice').click(function(){
 
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
-        data:{cb_cabang,cb_customer,array_simpan},
+        data:{cb_cabang,cb_customer,array_simpan,array_edit,array_harga},
         success:function(data){
 
 
@@ -1222,10 +1228,11 @@ function histori(p){
     var i_sisa_pelunasan    = $(par).find('.i_sisa_pelunasan').val();
     var i_bayar             = $(par).find('.i_bayar ').val();
     var i_tagihan           = $(par).find('.i_tagihan ').val();
+    var id                  = "{{$id}}";
 
     $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
-        data:{i_nomor},
+        data:{i_nomor,id},
         success:function(data){
             $('.riwayat_kwitansi').html(data);
             var temp = 0;
