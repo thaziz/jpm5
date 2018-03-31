@@ -690,7 +690,9 @@ class penerimaan_penjualan_Controller extends Controller
         $customer     = $request->cb_customer;
         $customer     = $request->cb_customer;
         $array_simpan = $request->array_simpan;
-        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan'));
+        $array_edit   = $request->array_edit;
+        $array_harga  = $request->array_harga;
+        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan','array_edit','array_harga'));
     }
     public function datatable_detail_invoice(request $request)
     {   
@@ -737,9 +739,19 @@ class penerimaan_penjualan_Controller extends Controller
 
             $data = $temp;
         }
+        if (isset($request->array_edit)) {
+            for ($i=0; $i < count($data); $i++) { 
+                for ($a=0; $a < count($request->array_edit); $a++) { 
+                    if ($request->array_edit[$a] == $data[$i]->i_nomor) {
+                        $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_pelunasan+$request->array_harga[$a];
+                    }
+                }
+            }
+        }
+        
 
         $data = collect($data);
-
+        // return $data;
         return Datatables::of($data)
                         ->addColumn('tes', function ($data) {
                                    return     '<input type="checkbox" class="child_check">';
@@ -748,6 +760,7 @@ class penerimaan_penjualan_Controller extends Controller
                                 return  $data->i_nomor .'<input type="hidden" class="nomor_inv" value="'. $data->i_nomor .'" >';
                         })
                         ->addColumn('i_sisa', function ($data) {
+
                                 return number_format($data->i_sisa_pelunasan,2,',','.');
                         })
                         ->addColumn('i_tagihan', function ($data) {
