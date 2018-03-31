@@ -72,7 +72,7 @@
                           @foreach($data as $val)
                           <tr>
                             <td>
-                              {{$val->k_nomor}}
+                              <a onclick="detail('{{$val->k_nomor}}')">{{$val->k_nomor}}</a>
                             </td>
                             <td>
                               {{$val->k_tanggal}}
