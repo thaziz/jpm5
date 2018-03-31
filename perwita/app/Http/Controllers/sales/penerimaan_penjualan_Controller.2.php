@@ -340,7 +340,7 @@ class penerimaan_penjualan_Controller extends Controller
     public function simpan_kwitansi(request $request)
     {
         return DB::transaction(function() use ($request) {  
-            // dd($request->all());
+            // dd($request->id);
         $tgl = str_replace('/', '-', $request->ed_tanggal);
         $tgl = Carbon::parse($tgl)->format('Y-m-d');
 
@@ -355,6 +355,8 @@ class penerimaan_penjualan_Controller extends Controller
             }else{
                 $k_id += 1;
             }
+
+            
             $save_kwitansi = DB::table('kwitansi')
                                ->insert([
                                 'k_id' => $k_id,
@@ -387,7 +389,7 @@ class penerimaan_penjualan_Controller extends Controller
                     }else{
                         $i_biaya_admin[$i] = $request->i_biaya_admin[$i];
                     }
-
+          
                     $memorial = (float)$cari_invoice->i_sisa_pelunasan - (float)$request->i_bayar[$i];
 
                     if ($memorial > 0) {
