@@ -71,7 +71,7 @@
                         <tbody>
                             @foreach ($do as $row)
                             <tr>
-                                <td>{{ $row->nomor }}</td>
+                                <td><a href="{{ url('sales/detail_do_kargo')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
                                 <td>{{ $row->tanggal }}</td>
                                 <td>{{ $row->nama_pengirim }}</td>
                                 <td>{{ $row->nama_penerima }}</td>

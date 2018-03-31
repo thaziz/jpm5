@@ -618,6 +618,9 @@ if(count($dataItem)==0){
               DB::rollback();
               return json_encode($dataInfo);
         }
+
+        // return $cabang;
+        // return$request->accPiutang;
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
