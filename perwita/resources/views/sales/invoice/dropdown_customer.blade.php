@@ -1,5 +1,5 @@
 
-<select  class="chosen-select-width form-control customer"  name="id_subcon" id="customer" style="width:100%" >
+<select onchange="ganti()" class="chosen-select-width form-control customer cus_disabled"  name="id_subcon" id="customer" style="width:100%" >
     <option selected="">- Pilih Customer -</option>
     @foreach($customer as $val)
     <option value="{{$val->kode}}" data-accpiutang="{{$val->acc_piutang}}">{{$val->kode}} - {{$val->nama}}</option>

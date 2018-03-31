@@ -1222,6 +1222,8 @@
 
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                             </li>
+
+                            @if(Auth::user()->PunyaAkses('Delivery Order','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1230,6 +1232,7 @@
 
                             " href="{{ url('sales/deliveryorderkargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) Kargo</a>
                             </li>
+
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1238,6 +1241,7 @@
 
                             " href="{{ url('sales/deliveryorderkertas')}}"><i class="fa fa-building" aria-hidden="true"></i>Delivery Order (DO) Koran</a>
                             </li>
+                            @endif
                              <li >
                                 <a class="sidebar master-perusahaan 
 

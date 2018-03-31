@@ -393,11 +393,189 @@ class MasterPurchaseController extends Controller
 			}
 
 		$data['cabang'] = DB::select("select * from cabang");
-		$data['bank'] = DB::select("select * from d_akun where id_akun LIKE '10%' or id_akun LIKE '11%' and id_akun NOT IN (select mb_kode from masterbank)");
+		$data['bank'] = DB::select("select * from d_akun where  (id_akun LIKE '10%' or id_akun LIKE '11%') and id_akun NOT IN (select mb_kode from masterbank where mb_kode is NOT NULL) ") ;
 	//	dd($data);
 		return view('purchase/master/masterbank/create' , compact('data'));
 	}
 
+	public function updatemasterbank(Request $request){
+
+		//update di header
+		$data['header3'] = DB::table('masterbank')
+							->where('mb_id' , $request->mb_id)
+							->update([
+								'mb_nama' => $request->nmbank,
+								'mb_cabang' => $request->cabang,
+								'mb_alamat' => $request->alamat,
+								'mb_mshaktif' => $request->mshaktif,
+								'mb_namarekening' => $request->namarekening,
+								'mb_accno' => $request->norekening
+							]);
+
+		$tempdatafpg = 0;
+
+		/*$idbank = $request->mb_id;
+		for($hs = 0; $hs < count($request->noseridatabase); $hs++){
+			$datambdt['database'] = DB::select("select * from masterbank_dt where mb_id = '$idbank'");
+			for($hx = 0; $hx < count($datambdt['database']); $hx++){
+				$noseri = $datambdt['database'][$hx]->mbdt_noseri;
+				if($noseri){
+					DB::delete("DELETE from  masterbank_dt where mb_id = '$idbbk'");	
+				}
+			}
+		}
+
+
+		for($h = 0; $h < count($request->noseridatabase); $h++){
+			if($request->databasefpg[$h] != ' '){
+				$tempdatafpg = $tempdatafpg + 1;
+			}
+		}*/
+
+		
+			if($request->input == 'CEK'){
+				$banyaknyaseri = $request->nosericek;
+				for($i = 10; $i < count($banyaknyaseri);$i++){
+					$masterbankdt = new masterbank_dt();
+
+					$lastidbankdt = masterbank_dt::max('mbdt_id'); 				
+					if(isset($lastidbankdt)) {
+					
+							$idbankdt = $lastidbankdt;
+							$idbankdt = (int)$lastidbankdt + 1;
+						}
+						else {
+							$idbankdt = 1;
+						
+				 		}
+
+					$masterbankdt->mbdt_kodebank = $request->kodebank;
+					$masterbankdt->mbdt_noseri = $request->nosericek[$i];
+					$masterbankdt->mbdt_noseri = $request->nosericek[$i];
+					$masterbankdt->mbdt_id = $idbankdt;
+					$masterbankdt->mbdt_seri = $request->seri;
+					$masterbankdt->mbdt_idmb = $request->mb_id;
+					$masterbankdt->save();
+
+				}
+			}
+			else if($request->input == 'BG'){
+				$banyaknyaseri = $request->noseribg;
+				for($i = 10; $i < count($banyaknyaseri);$i++){
+					$masterbankdt = new masterbank_dt();
+
+					$lastidbankdt = masterbank_dt::max('mbdt_id'); 				
+					if(isset($lastidbankdt)) {
+					
+							$idbankdt = $lastidbankdt;
+							$idbankdt = (int)$lastidbankdt + 1;
+						}
+						else {
+							$idbankdt = 1;
+						
+						}
+
+					$masterbankdt->mbdt_kodebank = $request->kodebank;
+					$masterbankdt->mbdt_noseri = strtoupper($request->noseribg[$i]);
+					$masterbankdt->mbdt_noseri = strtoupper($request->noseribg[$i]);
+					$masterbankdt->mbdt_id = $idbankdt;
+					$masterbankdt->mbdt_seri = strtoupper($request->seri);
+					$masterbankdt->mbdt_idmb = $request->mb_id;
+					$masterbankdt->save();
+
+				}
+			}
+			else if($request->input = 'centangdua'){
+				$banyaknyasericek = $request->nosericek;
+				$countcek = count($banyaknyasericek);
+				$temp = 0;
+				
+				if($countcek % 25 == 0){
+					$temp = 0;
+				}else {
+					$temp = 1;
+				}
+
+				$banyaknyaseribg = $request->noseribg;
+				$countbg = count($banyaknyaseribg);
+				$temp2 = 0;
+				if($countbg % 25 == 0){
+					$temp2 = 0;
+				}
+				else {
+					$temp2 = 1;
+				} 
+
+				if($temp == 0){
+					$varcek = 0;
+				}
+				else {
+					$varcek = 10;
+				}
+
+				if($temp2 == 0){
+					$varbg = 0;
+				}
+				else {
+					$varbg = 10;
+				}
+
+			
+				for($i = $varcek; $i < count($banyaknyasericek);$i++){
+					$masterbankdt = new masterbank_dt();
+
+					$lastidbankdt = masterbank_dt::max('mbdt_id'); 				
+					if(isset($lastidbankdt)) {
+					
+							$idbankdt = $lastidbankdt;
+							$idbankdt = (int)$lastidbankdt + 1;
+						}
+						else {
+							$idbankdt = 1;
+						
+				 		}
+
+					$masterbankdt->mbdt_kodebank = $request->kodebank;
+					$masterbankdt->mbdt_noseri = strtoupper($request->nosericek[$i]);
+					$masterbankdt->mbdt_noseri = strtoupper($request->nosericek[$i]);
+					$masterbankdt->mbdt_id = $idbankdt;
+					$masterbankdt->mbdt_seri = $request->seri;
+					$masterbankdt->mbdt_idmb = $request->mb_id;
+					$masterbankdt->save();
+
+				}
+
+
+				$banyaknyaseribg = $request->noseribg;
+				for($i = $varbg; $i < count($banyaknyaseribg);$i++){
+					$masterbankdt = new masterbank_dt();
+
+					$lastidbankdt = masterbank_dt::max('mbdt_id'); 				
+					if(isset($lastidbankdt)) {
+					
+							$idbankdt = $lastidbankdt;
+							$idbankdt = (int)$lastidbankdt + 1;
+						}
+						else {
+							$idbankdt = 1;
+						
+						}
+
+					$masterbankdt->mbdt_kodebank = $request->kodebank;
+					$masterbankdt->mbdt_noseri = strtoupper($request->noseribg[$i]);
+					$masterbankdt->mbdt_noseri = strtoupper($request->noseribg[$i]);
+					$masterbankdt->mbdt_id = $idbankdt;
+					$masterbankdt->mbdt_seri = 'CEK&BG';
+					$masterbankdt->mbdt_idmb = $request->mb_id;
+					$masterbankdt->save();
+
+				}
+			}
+
+		
+
+		return json_encode('test');
+	}
 
 	public function detailbank($id){
 		$data['bank'] = DB::select("select * from masterbank  where mb_id = '$id'");
@@ -750,7 +928,7 @@ class MasterPurchaseController extends Controller
 
 		if($request->pkp == 'Y'){
 			$mastersupplier->namapajak = $request->namapajak;
-			$mastersupplier->telppajak = $request->telpajak;
+			$mastersupplier->telppajak = $request->telppajak;
 			$mastersupplier->alamatpajak = $request->alamatpajak;
 
 		}
@@ -815,7 +993,7 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function updatesupplier($id, Request $request) {
-		/*dd($request);*/
+		
 		/*	*/
 
 		if($request->iskontrak == 'tdkeditkontrak') {	
@@ -845,7 +1023,12 @@ class MasterPurchaseController extends Controller
 			}
 			$data->save();
 
-			for($i=0; $i<count($request->brg); $i++){
+			if($data->kontrak == 'TIDAK'){
+				$idsupplier = $request->idsupplier;
+				DB::delete("DELETE from  itemsupplier where is_idsup = '$idsupplier'");	
+			}
+			else if($data->kontrak == 'YA'){
+				for($i=0; $i<count($request->brg); $i++){
 				
 				if(count($request->databarang) > 0) {
 					$iditemsup = itemsupplier::max('is_id');
@@ -907,6 +1090,9 @@ class MasterPurchaseController extends Controller
 				}
 			}
 			}
+			}
+
+			
 		}
 		else{
 		/*	dd('tdksama');*/

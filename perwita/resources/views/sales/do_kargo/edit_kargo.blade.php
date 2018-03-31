@@ -562,15 +562,51 @@ function cari_nopol_kargo() {
     var nama_subcon      = $('.nama_subcon').val();
     var tipe_angkutan    = $('.tipe_angkutan').val();
     var cabang_select    = $('.cabang_select').val();
-    var nopol    = "{{$data->nopol}}"
     
     $.ajax({
         url:baseUrl + '/sales/cari_nopol_kargo',
-        data:{status_kendaraan,nama_subcon,tipe_angkutan,cabang_select,nopol},
+        data:{status_kendaraan,nama_subcon,tipe_angkutan,cabang_select},
         success:function(data){
             $('.nopol_dropdown').html(data);
         }
     })
+}
+
+// ganti nota untuk admin
+function ganti_nota(argument) {
+   var cabang = $('.cabang_select').val();
+     $.ajax({
+        url:baseUrl + '/sales/nomor_do_kargo',
+        data:{cabang},
+        dataType:'json',
+        success:function(data){
+            $('.nomor_do').val(data.nota);
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
+            cari_nopol_kargo();
+        },
+        error:function(){
+            location.reload();
+        }
+    })
+
+    $.ajax({
+        url:baseUrl +'/sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+    });
 }
 //nama subcon
 $('.nama_subcon').change(function(){
@@ -599,11 +635,14 @@ function centang() {
 $('.jenis_tarif_do').change(function(){
     if ($(this).val() == 9) {
         $('.kontrak_tr').attr('hidden',true);
-        $('.tarif_dasar').val(1);
+        $('.harga_master').val(1);
+        $('.discount ').attr('readonly',true);
+
     }else{      
         $('.kontrak_tr').attr('hidden',false);
         $('.jenis_tarif_temp').val($(this).val());
         $('.tarif_dasar').val(0);
+        $('.discount ').attr('readonly',false);
     }
 });
 
@@ -648,25 +687,12 @@ function hitung() {
     if (temp < 0) {
         temp = 0;
     }
-    
+        
     $('.total').val(temp);
     $('.total_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('.tarif_dasar_text').val(accounting.formatMoney(temp1,"",2,'.',','));
     $('.tarif_dasar').val(temp1);
 
-}
-
-function reseting() {
-    $('.satuan').val('');
-    $('.tarif_dasar_text').val('');
-    $('.tarif_dasar').val('');
-    $('.harga_master').val('');
-    $('.harga_master').val('');
-    $('#kode_tarif').val('');
-    $('.kcd_id').val('');
-    $('.kcd_dt').val('');
-
-    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
 }
 // jika menggunakan tarif
 function pilih_tarif(a) {
@@ -694,6 +720,7 @@ function pilih_tarif(a) {
         }
     })
 }
+
 //jika menggunakan kontrak
 
 function pilih_kontrak(a) {
@@ -829,33 +856,44 @@ cari_nopol_kargo();
 });
 
 // cari kontrak
-function cari_kontrak() {
-    var cabang      = $('.cabang_select').val();
-    var customer_do = $('.customer_do').val();
-     $.ajax({
-        url:baseUrl + '/sales/cari_kontrak',
-        data:{cabang,customer_do},
-        dataType:'json',
-        success:function(data){
-            if (data.status == 1) {
-                $('.kontrak_tarif').prop('checked',true);
-                $('.discount ').addClass('disabled')
-                $('.discount ').attr('readonly',true)
-                // $('.kontrak_td').addClass('disabled');
-            }else{
-                $('.kontrak_tarif').prop('checked',false);
-                // $('.kontrak_td').addClass('disabled');
-                $('.discount ').removeClass('disabled');
-                $('.discount ').attr('readonly',false);
-            }
+function pilih_kontrak(a) {
+    var kcd_id = $(a).find('.kcd_id').val();
+    var kcd_dt = $(a).find('.kcd_dt').val();
 
-            reseting();
+    $.ajax({
+        url:baseUrl + '/sales/pilih_kontrak_kargo',
+        data:{kcd_id,kcd_dt},
+        dataType:'json',
+        success:function(response){
+            $('.satuan').val(response.data.kcd_satuan);
+            $('.tarif_dasar_text').val(accounting.formatMoney(response.data.kcd_harga,"",2,'.',','));
+            $('.tarif_dasar').val(response.data.kcd_harga);
+            $('.harga_master').val(response.data.kcd_harga);
+            $('.kcd_id').val(response.data.kcd_id);
+            $('.kcd_dt').val(response.data.kcd_dt);
+            $('#kode_tarif').val(0);
+            $('.acc_penjualan').val(response.data.kcd_acc_penjualan);
+            $('.satuan').val(response.data.kcd_kode_satuan);
+            $('.tipe_angkutan').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
+            console.log($('.tipe_angkutan').val());
+            $('.asal_do').val(response.data.kcd_kota_asal).trigger('chosen:updated');
+            $('.tujuan_do').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
+            $('.jumlah').val(1);
+            var tujuan =  $('.tujuan_do option:selected').text();
+   
+            tujuan     =  tujuan.split('-');
+            $('.kota_penerima').val(tujuan[1]);
+            $('#modal_tarif').modal('hide');
+            cari_nopol_kargo();
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+            hitung();
+
         },
         error:function(){
+            toastr.warning('Terjadi Kesalahan');
         }
     })
 }
-
 
 </script>
 @endsection

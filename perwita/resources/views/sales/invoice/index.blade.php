@@ -54,7 +54,7 @@
                 <div class="box-header">
                 <div class="box-body">
 
-                    <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+                    <table style="font-size: 12px" id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
                         <thead>
                             <tr>
                                 <th>Nomor</th>
@@ -71,7 +71,7 @@
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td>{{ $row->i_nomor }}</td>
+                                <td><a onclick="lihat('{{ $row->i_nomor }}')">{{ $row->i_nomor }}</a></td>
                                 <td>{{ $row->i_tanggal }}</td>
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->i_jatuh_tempo }}</td>
@@ -80,11 +80,10 @@
                                 <td>{{ $row->i_keterangan }}</td>
                                 <td>{{ $row->i_no_faktur_pajak }}</td>
                                 <td class="text-center">
-                                    <div class="btn-group">
-                                        <button type="button" onclick="edit('{{$row->i_nomor}}')" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button>
-                                        <button type="button" onclick="ngeprint('{{$row->i_nomor}}')" class="btn btn-sm btn-warning"><i class="fa fa-print"></i></button>
-                                        <button type="button" onclick="hapus('{{$row->i_nomor}}')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-                                        
+                                    <div class="btn-group ">
+                                        <a  onclick="edit('{{$row->i_nomor}}')" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>
+                                        <a  onclick="ngeprint('{{$row->i_nomor}}')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></a>
+                                        <a  onclick="hapus('{{$row->i_nomor}}')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
                                         
 
                                     </div>
@@ -151,9 +150,11 @@
 
     function edit(id){
         window.location.href = baseUrl + '/sales/edit_invoice/'+id;
-        
-
     }
+    function lihat(id){
+        window.open(baseUrl + '/sales/lihat_invoice/'+id);
+    }
+
 
     function ngeprint(id){
         window.open(baseUrl+'/sales/cetak_nota/'+id);

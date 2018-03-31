@@ -95,6 +95,8 @@ class invoice_Controller extends Controller
           for ($i=0; $i < $hitung; $i++) { 
             $push[$i]=' ';
           }
+        }else{
+          $push = [];
         }
 
         // return $push;
@@ -218,7 +220,7 @@ public function nota_invoice(request $request){
 public function jatuh_tempo_customer(request $request)
 {
     $cus = DB::table('customer')
-             ->where('kode',$request->cus)
+             ->where('kode',$request->customer)
              ->first();
     $jt = $cus->syarat_kredit;
     $tgl = str_replace('/', '-' ,$request->tgl);
@@ -230,6 +232,14 @@ public function jatuh_tempo_customer(request $request)
                          'jt' =>$jt,
                          'tgl'=>$tgl
                        ]);
+}
+
+public function drop_cus(request $request)
+{
+  $customer = DB::table('customer')
+                      ->where('cabang',$request->cabang)
+                      ->get();
+  return view('sales.invoice.dropdown_customer',compact('customer'));
 }
 public function cari_do_invoice(request $request)
 {   
@@ -383,6 +393,8 @@ public function pajak_lain(request $request)
 }
 public function simpan_invoice(request $request)
 {
+
+  // dd($request->all());
    return DB::transaction(function() use ($request) {  
 
 
@@ -1524,4 +1536,34 @@ public function update_invoice(request $request)
       }
       return $groups;
   }
+
+    public function lihat_invoice($id)
+    {
+        $data = DB::table('invoice')
+              ->where('i_nomor',$id)
+              ->first();
+        $data_dt = DB::table('invoice_d')
+                  ->join('delivery_order','nomor','=','id_nomor_do')
+                  ->leftjoin('delivery_orderd','dd_id','=','id_nomor_do_dt')
+                  ->where('id_nomor_invoice',$id)
+                  ->get();
+
+        $customer = DB::table('customer')
+                    ->get();
+
+        $cabang   = DB::table('cabang')
+                    ->get();
+        $tgl      = Carbon::now()->format('d/m/Y');
+        $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
+
+        $pajak    = DB::table('pajak')
+                    ->get();
+
+        $jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+                            FROM d_akun a join d_jurnal_dt jd
+                            on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                            (select j.jr_id from d_jurnal j where jr_ref='$id' and jr_note='INVOICE')")); 
+
+        return view('sales.invoice.lihat_invoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt','jurnal_dt'));
+    }
 }

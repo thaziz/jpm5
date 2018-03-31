@@ -33,5 +33,5 @@
 </table>
 
 <script>
-    $('#tabel_um_modal').DataTable();
+    var table_um = $('#tabel_um_modal').DataTable();
 </script>

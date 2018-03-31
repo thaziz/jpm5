@@ -81,7 +81,7 @@
                                 <td>{{ $row->total }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <a href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        <a href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
                                         <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
                                         <a onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></a>
                                     </div>

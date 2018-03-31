@@ -326,7 +326,6 @@
         dataType:'json',
         success:function(response){
             $('#ed_nomor').val(response.nota);
-            $('#ed_nomor').val(response.nota);
         },
         error:function(){
             location.reload();
@@ -366,6 +365,8 @@
             location.reload();
         }
     });
+
+
 });
 
 
@@ -382,6 +383,20 @@
             location.reload();
         }
     });
+
+      $.ajax({
+        url:baseUrl+'/master_sales/kontrak_set_nota',
+        data:{cabang},
+        dataType:'json',
+        success:function(response){
+            $('#ed_nomor').val(response.nota);
+            $('#ed_nomor').val(response.nota);
+        },
+        error:function(){
+            location.reload();
+        }
+
+    })
  }
 
 $('#btnadd').click(function(){
@@ -398,12 +413,12 @@ $('#btnadd').click(function(){
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
 
-    var id_subcon                = $('#id_subcon').val();
+    var customer                = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var validasi                 = [];
 
 
-    if (id_subcon != 0) {
+    if (customer != 0) {
         validasi.push(1);
     }else{
         validasi.push(0);
@@ -590,7 +605,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   // location.reload();    
+                   location.reload();    
         });
       },
       error:function(data){

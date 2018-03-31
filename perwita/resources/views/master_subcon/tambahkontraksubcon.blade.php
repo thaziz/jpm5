@@ -71,9 +71,9 @@
                             </tr>
                             @if(Auth::user()->punyaAkses('Master subcon','cabang'))
                             <tr>
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td  style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
-                                    <select class="form-control cabang " name="cabang" >
+                                    <select onchange="ganti_nota()" class="form-control cabang " name="cabang" >
                                       @foreach($cabang as $val)
                                                 @if(Auth::user()->kode_cabang == $val->kode)
                                                 <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -283,7 +283,17 @@ $.ajax({
     })
 
 });
-
+function ganti_nota() {
+  var cabang = $('.cabang').val();
+$.ajax({
+        url:baseUrl + '/master_subcon/nota_kontrak_subcon',
+        data:{cabang},
+        dataType:'json',
+        success:function(data){
+            $('.ed_nomor').val(data.nota);
+        }
+    })
+}
 $('#btnadd').click(function(){
 
   $('.updt').attr('hidden',true);
@@ -405,6 +415,11 @@ function updt(){
 }
 
 $('#btnsimpan').click(function(){
+var count = datatable.page.info().recordsTotal;
+if (count == 0) {
+  toastr.info('Tidak Ada Data Periksa Kembali');
+  return 1;
+}
 var cabang = $('.cabang').val();
 
    swal({
