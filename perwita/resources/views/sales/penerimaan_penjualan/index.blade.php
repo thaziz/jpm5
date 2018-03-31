@@ -64,6 +64,7 @@
                                 <th>Tanggal </th>
                                 <th>Customer</th>
                                 <th>Jumlah</th>
+                                <th>Memorial</th>
                                 <th>Keterangan </th>
                                 <th style="width:8%"> Aksi </th>
                             </tr>
@@ -82,6 +83,9 @@
                             </td>
                             <td>
                               {{number_format($val->k_netto, 2, ",", ".")}}
+                            </td>
+                            <td align="right">
+                              {{number_format($val->k_jumlah_memorial, 2, ",", ".")}}
                             </td>
                             <td>
                               {{$val->k_keterangan}}

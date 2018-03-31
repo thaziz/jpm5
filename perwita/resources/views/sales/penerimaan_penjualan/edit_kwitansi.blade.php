@@ -289,8 +289,8 @@
                                                     <input type="hidden" class="i_nomor i_flag_{{$val->kd_nomor_invoice}}" name="i_nomor[]" value="{{$val->kd_nomor_invoice}}">
                                                 </td>
                                                 <td>
-                                                    {{number_format($val->i_netto_detail, 2, ",", ".")}}
-                                                    <input type="hidden" class="i_tagihan" name="i_tagihan[]" value="{{$val->i_netto_detail}}">
+                                                    {{number_format($val->i_total_tagihan, 2, ",", ".")}}
+                                                    <input type="hidden" class="i_tagihan" name="i_tagihan[]" value="{{$val->i_total_tagihan}}">
                                                 </td>
                                                 <td>
                                                     {{number_format($val->i_sisa_pelunasan+$val->kd_total_bayar, 2, ",", ".")}}
@@ -1363,16 +1363,17 @@ function histori(p){
 
                     var jumlah_tagihan = $('.jumlah_tagihan').val();
                     jumlah_tagihan     = parseFloat(jumlah_tagihan);
-                    var terbayar       = Math.round($('.terbayar').val()).toFixed(2)
+                    var terbayar       = $('.terbayar').val();
                     terbayar           = parseFloat(terbayar);
-                    var nota_debet     = Math.round($('.nota_debet').val()).toFixed(2);
+                    var nota_debet     = $('.nota_debet').val()
                     nota_debet         = parseFloat(nota_debet);
 
-                    var nota_kredit    = Math.round($('.nota_kredit').val()).toFixed(2);
+                    var nota_kredit    =$('.nota_kredit').val()
                     nota_kredit        = parseFloat(nota_kredit);
 
 
                     var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
+                    jumlah             = Math.round(jumlah).toFixed(2);
                     $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
                     $('.sisa_terbayar').val(jumlah);
 
