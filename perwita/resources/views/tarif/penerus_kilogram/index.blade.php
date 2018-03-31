@@ -345,14 +345,15 @@
         
 
         $("input[name='ed_kode']").attr('readonly',true);
-        $("input[name='ed_kode']").attr('');
+        $("input[name='ed_kode']").val('');
 
 
-        $("input[name='ed_10reguler']").val('');
-        $("input[name='ed_10express']").val('');
-        $("input[name='ed_20reguler']").val('');
-        $("input[name='ed_20express']").val('');
+        $("select[name='ed_10reguler']").val('').trigger('chosen:updated');
+        $("select[name='ed_10express']").val('').trigger('chosen:updated');
+        $("select[name='ed_20reguler']").val('').trigger('chosen:updated');
+        $("select[name='ed_20express']").val('').trigger('chosen:updated');
 
+        $("select[name='ed_tipe']").val('').trigger('chosen:update');
         $("#provinsi").val('');
         $("#kota").val('');
         $("#kecamatan").val('');
@@ -379,10 +380,10 @@
                 $("input[name='ed_kode']").val(data[0].id_tarif_kilogram);
                 $("input[name='ed_kode_old']").val(data[0].id_increment_kilogram);
                 
-                $("input[name='ed_10reguler']").val(data[0].tarif_10reguler_kilo);
-                $("input[name='ed_10express']").val(data[0].tarif_10express_kilo);
-                $("input[name='ed_20reguler']").val(data[0].tarif_20reguler_kilo);
-                $("input[name='ed_20express']").val(data[0].tarif_20express_kilo);
+                $("select[name='ed_10reguler']").val(data[0].tarif_10reguler_kilo).trigger('chosen:updated');
+                $("select[name='ed_10express']").val(data[0].tarif_10express_kilo).trigger('chosen:updated');
+                $("select[name='ed_20reguler']").val(data[0].tarif_20reguler_kilo).trigger('chosen:updated');
+                $("select[name='ed_20express']").val(data[0].tarif_20express_kilo).trigger('chosen:updated');
                 
 
                 $("input[name='kode_kota']").val(data[0].kota_kode);
@@ -407,6 +408,54 @@
     });
 
     $(document).on("click","#btnsave",function(){
+        $kota =$("#kota :selected").val();
+        $kec = $("#kecamatan :selected").val();
+
+        if($kota == ''){
+          Command: toastr["warning"]("Nama Kota Harus Di pilih", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "100",
+              "hideDuration": "500",
+              "timeOut": "3000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if($kec == ''){
+          Command: toastr["warning"]("Nama Kecamatan Harus Di pilih", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "100",
+              "hideDuration": "500",
+              "timeOut": "3000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+
         $.ajax(
         {
             url : baseUrl + "/sales/tarif_penerus_kilogram/save_data",

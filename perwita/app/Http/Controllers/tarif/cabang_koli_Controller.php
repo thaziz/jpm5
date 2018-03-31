@@ -91,7 +91,16 @@ class cabang_koli_Controller extends Controller
     public function get_data (Request $request) {
         $asal = $request->asal;
         $tujuan = $request->tujuan;
-        $data = DB::table('tarif_cabang_koli')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail_koli','ASC')->get();
+         $sql = "    SELECT k.kode_kota,t.kode_cabang,t.acc_penjualan,t.csf_penjualan,t.crud,t.id_provinsi_cabkoli,p.nama provinsi,t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan,t.harga, t.jenis, t.waktu, t.keterangan  
+                    FROM tarif_cabang_koli t
+                    LEFT JOIN kota k ON k.id=t.id_kota_asal 
+                    LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkoli
+                    where t.id_kota_asal = '$asal' AND t.id_kota_tujuan = '$tujuan'
+                    ORDER BY t.kode_detail_koli ASC ";
+        
+        $data = DB::select(DB::raw($sql));
+        // $data = DB::table('tarif_cabang_koli')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail_koli','ASC')->get();
         echo json_encode($data);
     }
 
@@ -693,6 +702,8 @@ class cabang_koli_Controller extends Controller
 
 
             // dd($request);
+             $kodekota = $request->kodekota;
+
 
             $kode0 = $request->kode0; 
             $kode1 = $request->kode1; 
@@ -713,12 +724,39 @@ class cabang_koli_Controller extends Controller
             $integer_kode7 =  (int)$kode7;
 
                 $integer_kode0 = $integer_kode0;
-                $integer_kode0 = str_pad($integer_kode0, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode0_edit = $request->id0;
-                }else{   
-                    $kode0_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode0;
-                }
+                $integer_kode0 = str_pad($integer_kode0, 5,'0',STR_PAD_LEFT); 
+                $kode0_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode0;
+
+                $integer_kode1 = $integer_kode1;
+                $integer_kode1 = str_pad($integer_kode1, 5,'0',STR_PAD_LEFT);
+                $kode1_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode1;
+
+                $integer_kode2 = $integer_kode2;
+                $integer_kode2 = str_pad($integer_kode2, 5,'0',STR_PAD_LEFT); 
+                $kode2_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode2;
+
+                $integer_kode3 = $integer_kode3;
+                $integer_kode3 = str_pad($integer_kode3, 5,'0',STR_PAD_LEFT);
+                $kode3_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode3;
+
+                $integer_kode4 = $integer_kode4;
+                $integer_kode4 = str_pad($integer_kode4, 5,'0',STR_PAD_LEFT);
+                $kode4_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode4;
+
+                $integer_kode5 = $integer_kode5;
+                $integer_kode5 = str_pad($integer_kode5, 5,'0',STR_PAD_LEFT);  
+                $kode5_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode5;
+
+                $integer_kode6 = $integer_kode6;
+                $integer_kode6 = str_pad($integer_kode6, 5,'0',STR_PAD_LEFT);   
+                $kode6_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode6;
+
+                $integer_kode7 = $integer_kode7;
+                $integer_kode7 = str_pad($integer_kode7, 5,'0',STR_PAD_LEFT);
+                $kode7_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode7;
+                
+                $prov = DB::table('kota')->select('id','id_provinsi')->where('id',$request->cb_kota_tujuan)->get();
+                $prov = $prov[0]->id_provinsi;
 
             $kertas_reguler = array(
                     'kode' => $kode0_edit,
@@ -735,16 +773,9 @@ class cabang_koli_Controller extends Controller
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                     'crud' => $crud,
-                );
+                    'id_provinsi_cabkoli' => $prov,
 
-                $integer_kode1 = $integer_kode1;
-                $integer_kode1 = str_pad($integer_kode1, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode1_edit = $request->id1;
-                }else{   
-                    $kode1_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode1;
-                } 
-               
+                );
                $tarif0_10reguler = array(
                     'kode' => $kode1_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
@@ -760,23 +791,14 @@ class cabang_koli_Controller extends Controller
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                     'crud' => $crud,
+                    'id_provinsi_cabkoli' => $prov,
                 );
-
-               
-                $integer_kode2 = $integer_kode2;
-                $integer_kode2 = str_pad($integer_kode2, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode2_edit = $request->id2;
-                }else{   
-                    $kode2_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode2;
-                }
-               
                $tarif10_20reguler = array(
                     'kode' => $kode2_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
                     'kode_detail_koli' => $request->kode2,
                     'keterangan' => 'Tarif koli < 30 Kg',
-                    'harga' => $request->tarif0kg_reguler,
+                    'harga' => $request->tarif10kg_reguler,
                     //BAWAH SAMA SEMUA
                     'waktu' => $request->waktu_regular,
                     'jenis' => 'REGULER',
@@ -786,17 +808,8 @@ class cabang_koli_Controller extends Controller
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                     'crud' => $crud,
+                    'id_provinsi_cabkoli' => $prov,
                 );   
-
-               $integer_kode3 = $integer_kode3;
-                $integer_kode3 = str_pad($integer_kode3, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode3_edit = $request->id3;
-                }else{   
-                    $kode3_edit = $kodekota.'/'.'KO'.'R'.$kodecabang.$integer_kode3;
-                }
-               
-               
                $tarif20reguler = array(
                     'kode' => $kode3_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
@@ -812,19 +825,9 @@ class cabang_koli_Controller extends Controller
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                     'crud' => $crud,
+                    'id_provinsi_cabkoli' => $prov,
                 );
-
-            //end auto number REGULAR
-
-            // AUTO NUMBER EXPRESS
-               $integer_kode4 = $integer_kode4;
-                $integer_kode4 = str_pad($integer_kode4, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode4_edit = $request->id4;
-                }else{   
-                    $kode4_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode4;
-                }
-
+               //EXPRESSSSSSSSSSSSSS
                 $kertas_express = array(
                     'kode' => $kode4_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
@@ -840,17 +843,8 @@ class cabang_koli_Controller extends Controller
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                     'crud' => $crud,
+                    'id_provinsi_cabkoli' => $prov,
                 );
-
-               $integer_kode5 = $integer_kode5;
-                $integer_kode5 = str_pad($integer_kode5, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode5_edit = $request->id5;
-                }else{   
-                    $kode5_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode5;
-                }
-  
-               
                $tarif0_10express = array(
                     'kode' => $kode5_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
@@ -866,17 +860,8 @@ class cabang_koli_Controller extends Controller
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                     'crud' => $crud,
+                    'id_provinsi_cabkoli' => $prov,
                 );
-               // dd($tarif0_10express);
-
-               $integer_kode6 = $integer_kode6;
-                $integer_kode6 = str_pad($integer_kode6, 5,'0',STR_PAD_LEFT); 
-                if ($kodekota == '') {
-                    $kode6_edit = $request->id6;
-                }else{   
-                    $kode6_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode6;
-                }
-               
                $tarif10_20express = array(
                     'kode' => $kode6_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
@@ -892,16 +877,8 @@ class cabang_koli_Controller extends Controller
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                     'crud' => $crud,
+                    'id_provinsi_cabkoli' => $prov,
                 );   
-
-               $integer_kode7 = $integer_kode7;
-                $integer_kode7 = str_pad($integer_kode7, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode7_edit = $request->id7;
-                }else{   
-                    $kode7_edit = $kodekota.'/'.'KO'.'E'.$kodecabang.$integer_kode7;
-                }
-               
                $tarif20express = array(
                     'kode' => $kode7_edit,
                     'kode_sama_koli' => $request->kode_sama_koli,
@@ -917,6 +894,7 @@ class cabang_koli_Controller extends Controller
                     'acc_penjualan' => strtoupper($request->ed_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->ed_csf_penjualan),
                     'crud' => $crud,
+                    'id_provinsi_cabkoli' => $prov,
                 );
             $simpan = DB::table('tarif_cabang_koli')->where('kode', $request->id0)->update($kertas_reguler);
             $simpan = DB::table('tarif_cabang_koli')->where('kode', $request->id1)->update($tarif0_10reguler);

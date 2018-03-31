@@ -116,12 +116,7 @@ class penerus_kilogram_Controller  extends Controller
         }
 
         $kode_id = DB::table('tarif_penerus_kilogram')->select('id_increment_kilogram')->max('id_increment_kilogram');    
-        if ($kode_id == '') {
-            $kode_id = 1;
-        }else{
-            $kode_id += 1;
-        }
-
+       
          $kode_id = $kode_id+1;
             $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
         
@@ -154,7 +149,6 @@ class penerus_kilogram_Controller  extends Controller
             $simpan = DB::table('tarif_penerus_kilogram')->insert($data);
         }elseif ($crud == 'E') {
             $kode_sama = $request->ed_kode_old;
-             $kode_sama = $kode_sama+1;
             $kode_sama = str_pad($kode_sama, 5,'0',STR_PAD_LEFT);
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
 

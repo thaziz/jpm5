@@ -63,7 +63,7 @@
                         </div>
 
 
-
+                        
                     </div>
                 </form>
                 <div class="box-body">
@@ -491,8 +491,130 @@
        
      $ed_acc_piutang = $('#ed_acc_piutang').val();
      $ed_csf_piutang = $('#ed_csf_piutang').val();
-        
-       if ($ed_acc_piutang == '' || $ed_acc_piutang == null) 
+     $plafon = $("input[name='ed_plafon']").val();
+     $nama_member = $("input[name='ed_nama']").val();
+     $alamat_member = $("input[name='ed_alamat']").val();
+     $nama_pajak = $("input[name='nama_pajak']").val();
+     $nama_pic = $("input[name='nama_pic']").val();
+     $alamat_pic = $("input[name='alamat_pic']").val();
+     $alamat_pajak = $("input[name='alamat_pajak']").val();
+     
+        if ($nama_member == '' || $nama_member == null) 
+        {
+            Command: toastr["warning"]("Nama Member Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($alamat_member == '' || $alamat_member == null) 
+        {
+            Command: toastr["warning"]("Alamat Member Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($plafon == '' || $plafon == null) 
+        {
+            Command: toastr["warning"]("Plafon Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($nama_pic == '' || $nama_pic == null) 
+        {
+            Command: toastr["warning"]("Nama PIC Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($alamat_pic == '' || $alamat_pic == null) 
+        {
+            Command: toastr["warning"]("Alamat PIC Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($ed_acc_piutang == '' || $ed_acc_piutang == null) 
         {
             Command: toastr["warning"]("Akun Piutang Tidak boleh kosong", "Peringatan")
 
@@ -518,7 +640,7 @@
          if ($ed_csf_piutang == '' || $ed_csf_piutang == null) 
         {
             Command: toastr["warning"]("Csf Piutang Tidak boleh kosong", "Peringatan")
-
+            
             toastr.options = {
               "closeButton": false,
               "debug": false,
@@ -538,6 +660,54 @@
             }
             return false;
         }
+        if ($nama_pajak == '' || $nama_pajak == null) 
+        {
+            Command: toastr["warning"]("Nama Pajak Tidak boleh kosong", "Peringatan")
+            
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($alamat_pajak == '' || $alamat_pajak == null) 
+        {
+            Command: toastr["warning"]("Alamat Pajak Tidak boleh kosong", "Peringatan")
+            
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        
+        
         $.ajax(
         {
             url : baseUrl + "/master_sales/customer/save_data",

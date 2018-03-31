@@ -368,6 +368,7 @@
         $("input[name='jenis_reguler']").val('');
         $("input[name='jenis_express']").val('');
         $("input[name='jenis_outlet']").val('');
+        $("input[name='kodekota']").val('');
        
          $('#hilang').show();
 
@@ -422,6 +423,7 @@
                   $("input[name='bebek_matik']").val(data[1].harga);
                   $("input[name='laki_sport']").val(data[2].harga);
 
+                $("input[name='kodekota']").val(data[0].kode_kota);
 
                   
                 $("input[name='id_matik_edit']").val(data[1].kode_detail_sepeda);

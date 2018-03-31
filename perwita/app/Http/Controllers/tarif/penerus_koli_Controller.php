@@ -144,12 +144,6 @@ class penerus_koli_Controller  extends Controller
         }
 
         $kode_id = DB::table('tarif_penerus_koli')->select('id_increment_koli')->max('id_increment_koli');    
-        if ($kode_id == '') {
-            $kode_id = 1;
-        }else{
-            $kode_id += 1;
-        }
-
          $kode_id = $kode_id+1;
             $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
         
@@ -193,7 +187,6 @@ class penerus_koli_Controller  extends Controller
         }elseif ($crud == 'E') {
             // dd($request);
             $kode_sama = $request->ed_kode_old;
-             $kode_sama = $kode_sama+1;
             $kode_sama = str_pad($kode_sama, 5,'0',STR_PAD_LEFT);
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
             // return $kodeedit;

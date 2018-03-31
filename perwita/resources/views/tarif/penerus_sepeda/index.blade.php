@@ -1,4 +1,4 @@
-
+  
 @extends('main')
 
 
@@ -342,13 +342,16 @@
         
 
         $("input[name='ed_kode']").attr('readonly',true);
-        $("input[name='ed_kode']").attr('');
+        $("input[name='ed_kode']").val('');
 
 
-        $("input[name='sepeda']").val('');
-        $("input[name='matik']").val('');
-        $("input[name='sport']").val('');
-        $("input[name='moge']").val('');
+        $("select[name='sepeda']").val('').trigger('chosen:updated');
+        $("select[name='matik']").val('').trigger('chosen:updated');
+        $("select[name='sport']").val('').trigger('chosen:updated');
+        $("select[name='moge']").val('').trigger('chosen:updated');
+        
+        $("input[name='kode_kota']").val('');
+        $("input[name='ed_kode']").attr('readonly',true);
 
         $("#provinsi").val('');
         $("#kota").val('');
@@ -382,10 +385,11 @@
                 $("select[name='moge']").val(data[0].moge).trigger('chosen:updated');
                 
                 $("input[name='ed_kode']").attr('readonly',true);
+                $("input[name='kode_kota']").val(data[0].kode_kota);
 
-                $("#provinsi").val(data[0].id_provinsi_sepeda);
-                $("#kota").val(data[0].id_kota_sepeda);
-                $("#kecamatan").val(data[0].id_kecamatan_sepeda);
+                $("#provinsi").val(data[0].provinsi_id);
+                $("#kota").val(data[0].kota_id);
+                $("#kecamatan").val(data[0].kecamatan_id);
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();

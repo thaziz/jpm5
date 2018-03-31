@@ -109,11 +109,7 @@ class penerus_dokumen_Controller extends Controller
         }
 
         $kode_id = DB::table('tarif_penerus_dokumen')->select('id_increment_dokumen')->max('id_increment_dokumen');    
-        if ($kode_id == '') {
-            $kode_id = 1;
-        }else{
-            $kode_id += 1;
-        }
+       
 
         $kode_id = $kode_id+1;
         $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);

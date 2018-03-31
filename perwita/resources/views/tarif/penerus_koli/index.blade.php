@@ -418,17 +418,27 @@
         
 
         $("input[name='ed_kode']").attr('readonly',true);
-        $("input[name='ed_kode']").attr('');
+        $("input[name='ed_kode']").val('');
 
 
-        $("input[name='ed_10reguler']").val('');
-        $("input[name='ed_10express']").val('');
-        $("input[name='ed_20reguler']").val('');
-        $("input[name='ed_20express']").val('');
+        $("select[name='ed_10_reguler']").val('').trigger('chosen:updated');
+        $("select[name='ed_10_express']").val('').trigger('chosen:updated');
+        $("select[name='ed_20_reguler']").val('').trigger('chosen:updated');
+        $("select[name='ed_20_express']").val('').trigger('chosen:updated');
+
+        $("select[name='ed_30_reguler']").val('').trigger('chosen:updated');
+        $("select[name='ed_30_express']").val('').trigger('chosen:updated');
+        
+        $("select[name='ed_lebih_30_reguler']").val('').trigger('chosen:updated');
+        $("select[name='ed_lebih_30_express']").val('').trigger('chosen:updated');
 
         $("#provinsi").val('');
         $("#kota").val('');
         $("#kecamatan").val('');
+
+        $("#provinsi").val('').trigger('chosen:updated');
+        $("#kota").val('').trigger('chosen:updated');
+        $("#kecamatan").val('').trigger('chosen:updated');
 
         $("#modal").modal("show");
         
@@ -486,6 +496,54 @@
     });
 
     $(document).on("click","#btnsave",function(){
+      $kota =$("#kota :selected").val();
+        $kec = $("#kecamatan :selected").val();
+
+        if($kota == ''){
+          Command: toastr["warning"]("Nama Kota Harus Di pilih", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "100",
+              "hideDuration": "500",
+              "timeOut": "3000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if($kec == ''){
+          Command: toastr["warning"]("Nama Kecamatan Harus Di pilih", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "100",
+              "hideDuration": "500",
+              "timeOut": "3000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+
         $.ajax(
         {
             url : baseUrl + "/sales/tarif_penerus_koli/save_data",

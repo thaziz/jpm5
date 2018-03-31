@@ -103,7 +103,18 @@ class cabang_dokumen_Controller extends Controller
         // dd($request);
         $asal = $request->asal;
         $tujuan = $request->tujuan;
-        return $data = DB::table('tarif_cabang_dokumen')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail','ASC')->get();
+        $sql = " SELECT t.kode_cabang,t.crud,t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        t.id_kota_tujuan,
+        kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
+                    FROM tarif_cabang_dokumen t
+                    LEFT JOIN kota k ON k.id=t.id_kota_asal 
+                    LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabdokumen
+                    where t.id_kota_asal = '$asal' AND t.id_kota_tujuan = '$tujuan'
+                    ORDER BY t.kode_detail ASC ";
+        
+        $data = DB::select(DB::raw($sql));
+        // $data = DB::table('tarif_cabang_dokumen')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail','ASC')->get();
 
         
         echo json_encode($data);
@@ -284,7 +295,8 @@ class cabang_dokumen_Controller extends Controller
                         $result['hasil_cek']=$hasil_cek;
                         return json_encode($result);
                     }else{
-
+                    $prov = DB::table('kota')->select('id','id_provinsi')->where('id',$request->cb_kota_tujuan)->get();
+                /*return*/ $prov = $prov[0]->id_provinsi;
                 if ($datadetailcount == 0) {
                     $kode_detail += 1;
                      $kode_utama = $kode_utama+1;
@@ -309,7 +321,9 @@ class cabang_dokumen_Controller extends Controller
                         'waktu' => $request->waktu_regular,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$prov,
                         'crud'=>$crud,
+
                     );
 
                 if ($datadetailcount == 0) {
@@ -336,7 +350,9 @@ class cabang_dokumen_Controller extends Controller
                         'waktu' => $request->waktu_express,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$prov,
                         'crud'=>$crud,
+
                     );
                 if ($datadetailcount == 0) {
                     $kode_detail += 1;
@@ -363,7 +379,9 @@ class cabang_dokumen_Controller extends Controller
                         'waktu' => null,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$prov,
                         'crud'=>$crud,
+
                     );
                 $simpan = DB::table('tarif_cabang_dokumen')->insert($outlet);
                 }else{
@@ -384,7 +402,9 @@ class cabang_dokumen_Controller extends Controller
                 $integer_exp =  (int)$id_express_edit;
                 $integer_out =  (int)$id_outlet_edit;
                 
-                
+                $prov = DB::table('kota')->select('id','id_provinsi')->where('id',$request->cb_kota_tujuan)->get();
+                $prov = $prov[0]->id_provinsi;
+
                 $integer_reg = $integer_reg;
                 $integer_reg = str_pad($integer_reg, 5,'0',STR_PAD_LEFT);
                 $integer_exp = $integer_exp;
@@ -392,26 +412,11 @@ class cabang_dokumen_Controller extends Controller
                 $integer_out = $integer_out;
                 $integer_out = str_pad($integer_out, 5,'0',STR_PAD_LEFT);
                 
-                if ($kodekota == '') {
-                    $kode_reguler_edit = $request->id_reguler;
-                }else{   
+                
                     $kode_reguler_edit = $kodekota.'/'.'D'.'R'.$kodecabang.$integer_reg;
-                }
-
-
-                // return $kode_reguler_edit;
-                if ($kodekota == '') {
-                    $kode_express_edit = $request->id_express;
-                }else{   
                     $kode_express_edit = $kodekota.'/'.'D'.'E'.$kodecabang.$integer_exp;
-                }
-
-
-                if ($kodekota == '') {
-                    $kode_outlet_edit = $request->id_outlet;
-                }else{   
                     $kode_outlet_edit = $kodekota.'/'.'D'.'O'.$kodecabang.$integer_out;
-                }
+                
 
                 $regular = array(
                         'kode_sama' => $request->ed_kode_old,
@@ -425,6 +430,7 @@ class cabang_dokumen_Controller extends Controller
                         'waktu' => $request->waktu_regular,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$prov,
                         'crud'=>$crud,
                    );
                    
@@ -441,6 +447,7 @@ class cabang_dokumen_Controller extends Controller
                         'waktu' => $request->waktu_express,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$prov,
                         'crud'=>$crud,
                     );
                
@@ -458,6 +465,7 @@ class cabang_dokumen_Controller extends Controller
                         'waktu' => null,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
+                        'id_provinsi_cabdokumen'=>$prov,
                         'crud'=>$crud,
                     );
             $simpan = DB::table('tarif_cabang_dokumen')->where('kode', $request->id_outlet)->update($outlet);
