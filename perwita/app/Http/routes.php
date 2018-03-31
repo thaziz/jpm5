@@ -712,6 +712,7 @@ Route::get('master_sales/edit_kontrak/{id}', 'master_sales\kontrak_Controller@ed
 Route::post('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
 Route::get('master_sales/save_kontrak', 'master_sales\kontrak_Controller@save_kontrak');
 Route::post('master_sales/update_kontrak', 'master_sales\kontrak_Controller@update_kontrak');
+Route::get('master_sales/update_kontrak', 'master_sales\kontrak_Controller@update_kontrak');
 Route::get('master_sales/kontrak_set_nota', 'master_sales\kontrak_Controller@kontrak_set_nota');
 Route::get('master_sales/set_kode_akun_acc', 'master_sales\kontrak_Controller@set_kode_akun_acc');
 Route::get('master_sales/set_kode_akun_csf', 'master_sales\kontrak_Controller@set_kode_akun_csf');

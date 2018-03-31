@@ -547,8 +547,7 @@ var id = $(par).find('.id_table').val();
 
 $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();
-    var customer= $('.customer').val();
-    
+    var customer= $('#customer').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Update Data Kontrak!",
@@ -568,7 +567,7 @@ $('#btnsimpan').click(function(){
 
       $.ajax({
       url:baseUrl + '/master_sales/update_kontrak',
-      type:'post',
+      type:'get',
       data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
       success:function(response){
         swal({
