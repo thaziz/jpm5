@@ -1,4 +1,4 @@
-@extends('main')
+    @extends('main')
 
 @section('title', 'dashboard')
 
@@ -46,7 +46,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
 
-                     <a href="../sales/penerimaan_penjualan" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../penerimaan_penjualan" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
 
                 </div>
                
@@ -70,25 +70,25 @@
                 </form>
                 <form id="form_header" class="form-horizontal">
                     <div class="col-sm-6">
-                    <table class="table table-striped table-bordered table-hover tabel_header">
+                    <table class="table table-striped table-bordered table-hover tabel_header disabled">
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor Kwitansi</td>
                                 <td colspan="20">
-                                    <input type="text" name="nota" id="nota_kwitansi" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota" value="{{$data->k_nomor}}" id="nota_kwitansi" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor Trans Bank</td>
                                 <td colspan="20">
-                                    <input type="text" name="nota_bank" id="nota_bank" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
+                                    <input type="text" value="{{$data->k_nota_bank}}" name="nota_bank" id="nota_bank" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="20">
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="ed_tanggal form-control col-xs-12" name="ed_tanggal" value="{{$tgl}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="ed_tanggal form-control col-xs-12" name="ed_tanggal" value="{{carbon\carbon::parse($data->k_tanggal)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                             </tr>
@@ -97,22 +97,48 @@
                                 <td colspan="20">
 
                                     <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
+                                        @if($data->k_jenis_pembayaran == 'T')
+                                        <option value="0">Pilih - Pembayaran</option>
+                                        <option selected="" value="T"> TUNAI/CASH </option>
+                                        <option value="C"> TRANSFER </option>
+                                        <option value="B"> NOTA/BIAYA LAIN </option>
+                                        <option value="F"> CHEQUE/BG </option>
+                                        @elseif($data->k_jenis_pembayaran == 'C')
+                                        <option value="0">Pilih - Pembayaran</option>
+                                        <option value="T"> TUNAI/CASH </option>
+                                        <option selected="" value="C"> TRANSFER </option>
+                                        <option value="B"> NOTA/BIAYA LAIN </option>
+                                        <option value="F"> CHEQUE/BG </option>
+                                        @elseif($data->k_jenis_pembayaran == 'B')
+                                        <option value="0">Pilih - Pembayaran</option>
+                                        <option value="T"> TUNAI/CASH </option>
+                                        <option value="C"> TRANSFER </option>
+                                        <option selected="" value="B"> NOTA/BIAYA LAIN </option>
+                                        <option value="F"> CHEQUE/BG </option>
+                                        @elseif($data->k_jenis_pembayaran == 'F')
+                                        <option value="0">Pilih - Pembayaran</option>
+                                        <option value="T"> TUNAI/CASH </option>
+                                        <option value="C"> TRANSFER </option>
+                                        <option value="B"> NOTA/BIAYA LAIN </option>
+                                        <option selected="" value="F"> CHEQUE/BG </option>
+                                        @else
                                         <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
+                                        @endif
                                     </select>
                                 </td>
                             </tr>
                             @if(Auth::user()->punyaAkses('Kwitansi','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="20">
+                                <td class="disabled" colspan="20">
                                     <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
-                                        @if(Auth()->user()->kode_cabang == $row->kode)
+                                        @if($data->k_kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @else
                                             <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -124,11 +150,11 @@
                             @else
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="20">
-                                    <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                <td colspan="20" class="disabled"> 
+                                    <select class="cb_cabang form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
-                                        @if(Auth()->user()->kode_cabang == $row->kode)
+                                        @if($data->k_kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @else
                                             <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -138,24 +164,33 @@
                                 </td>
                             </tr>
                             @endif
-                            <tr class="customer_tr">
+                            <tr class="disabled">
                                 <td style="padding-top: 0.4cm">Customer</td>
-                                <td class="customer_td">
-                                    <select class="chosen-select-width"  name="customer " id="customer " style="width:100%" >
+                                <td >
+                                    <select class="chosen-select-width"  name="cb_customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
+                                    @if($data->k_kode_customer == $row->kode)
+                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                    @else
                                         <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
-                                    @endforeach
+                                    @endif
+                                    @endforeach 
                                     </select>
                                 </td>
-                                
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Akun</td>
-                                <td colspan="3" class="td_akun_bank">
+                                <td class="" colspan="3" class="">
                                     <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
-                                        <option value="0">Pilih - Akun</option>
-                                    
+                                        <option value="0">Pilih - Akun Bank</option>
+                                        @foreach($akun_bank as $val)
+                                        @if($data->k_kode_akun == $val->mb_kode)
+                                        <option selected="" value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                        @else
+                                        <option value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                        @endif
+                                        @endforeach
                                     </select>
                                 </td>
                             </tr>
@@ -164,7 +199,7 @@
                             <tr>    
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" value="{{$data->k_keterangan}}" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="" >
                                 </td>
                             </tr>
                         </table>
@@ -216,12 +251,9 @@
                             
                         </div>
                         <div class="col-sm-12 ">
-                            <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
-                            <button type="button" class="btn btn-warning kanan pull-right print disabled" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
-                            <button type="button" class="btn btn-success kanan pull-right temp_1" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i> Simpan</button>
-                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i> Tambah Uang Muka</button>
-                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i> Tambah Biaya</button>
-                            <button type="button" class="btn btn-info kanan pull-right tambah_invoice temp_1" name="btnadd" ><i class="glyphicon glyphicon-plus"></i> Pilih Nomor Invoice</button>
+               
+                            <button type="button" class="btn btn-warning kanan pull-right print" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
+               
                         </div>
                     </div>
                 </form>
@@ -247,6 +279,34 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($data_dt as $val)
+                                            <tr>
+                                                <td>
+                                                    <p>{{$val->kd_nomor_invoice}}</p>
+                                                    <input type="hidden" class="i_nomor i_flag_{{$val->kd_nomor_invoice}}" name="i_nomor[]" value="{{$val->kd_nomor_invoice}}">
+                                                </td>
+                                                <td>
+                                                    {{number_format($val->i_netto_detail, 2, ",", ".")}}
+                                                    <input type="hidden" class="i_tagihan" name="i_tagihan[]" value="{{$val->i_netto_detail}}">
+                                                </td>
+                                                <td>
+                                                    {{number_format($val->i_sisa_pelunasan+$val->kd_total_bayar, 2, ",", ".")}}
+                                                    <input type="hidden" class="i_sisa" name="i_sisa[]" value="{{$val->i_sisa_pelunasan+$val->kd_total_bayar}}">
+                                                </td>
+                                                <td align="left">
+                                                    <input type="text" readonly class="form-control i_bayar_text input-sm" value="{{number_format($val->kd_total_bayar, 2, ",", ".")}}" style="text-align: right">
+                                                    <input type="hidden" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="{{$val->kd_total_bayar}}">
+                                                    <input type="hidden" readonly class="form-control i_biaya_admin input-sm" name="i_biaya_admin[]" value="{{$val->kd_biaya_lain}}">
+                                                    <input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="{{$val->kd_kode_biaya}}}">
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="form-control input-sm" name="i_keterangan[]" value="{{$val->kd_keterangan}}">
+                                                </td>
+                                                <td>
+                                                   -
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -265,7 +325,38 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            @foreach($data_bl as $i=>$val)
+                                            <tr>
+                                                <td>
+                                                    <p class="b_seq_text">{{$i+1}}</p>
+                                                    <input type="hidden" class="b_flag_{{$i+1}}">
+                                                </td>
+                                                <td>
+                                                    <p class="b_nama_akun_text">{{$val->nama_akun}}</p>
+                                                    <input type="hidden" class="b_kode_akun" value="{{$val->kb_kode_akun}}" name="b_akun[]">
+                                                </td>
+                                                <td>
+                                                    @if($val->kb_jenis == 'D')
+                                                    <p class="b_debet_text">DEBET</p>
+                                                    @else
+                                                    <p class="b_debet_text">KREDIT</p>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <p class="b_jumlah_text">{{number_format($val->kb_jumlah, 2, ",", ".")}}</p>
+                                                    <input type="hidden" class="b_jumlah" value="{{$val->kb_jumlah}}" name="b_jumlah[]">
+                                                    <input type="hidden" class="b_debet" value="{{$val->kb_debet}}" name="b_debet[]">
+                                                    <input type="hidden" class="b_kredit" value="{{$val->kb_kredit}}" name="b_kredit[]">
+                                                </td>
+                                                <td>
+                                                    <p class="b_keterangan_text">{{$val->kb_keterangan}}</p>
+                                                    <input type="hidden" class="b_keterangan" value="{{$val->kb_keterangan}}" name="b_keterangan[]">
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -285,6 +376,36 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @foreach($data_um as $i=>$val)
+                                            <tr>
+                                                <td>
+                                                    {{$i+1}}<input type="hidden" value="{{$i+1}}" class="sequence_{{$i+1}}">
+                                                    <input type="hidden" value="{{$i+1}}" class="sequence">
+                                                </td>
+                                                <td>
+                                                    {{$val->ku_nomor_um}}
+                                                    <input type="hidden" value="{{$val->ku_nomor_um}}" class="m_um" name="m_um[]">
+                                                </td>
+                                                <td>
+                                                    {{$val->ku_status_um}}
+                                                    <input type="hidden" value="{{$val->ku_status_um}}" class="m_status_um" name="m_status_um[]"> 
+                                                </td>
+                                                <td>
+                                                    {{number_format($val->jumlah, 2, ",", ".")}}
+                                                    <input type="hidden" value="{{$val->jumlah}}" class="m_um_total" name="m_um_total[]">
+                                                </td>
+                                                <td>
+                                                    {{number_format($val->ku_jumlah, 2, ",", ".")}}
+                                                    <input type="hidden" value="{{$val->ku_jumlah}}" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">
+                                                </td>
+                                                <td>
+                                                    <input type="text" readonly value="{{$val->ku_keterangan}}" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">
+                                                </td>
+                                                <td>
+                                                    -
+                                                </td>
+                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -294,7 +415,6 @@
                     </div>
                 </div>
                 <!-- /.box-body -->
-                
                 <!-- modal -->
                 <div id="modal_invoice" class="modal" >
                     <div class="modal-dialog modal-lg">
@@ -380,7 +500,6 @@
                                                             <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
                                                         </td>
                                                     </tr>
-                                         
                                                     <tr>
                                                         <td>Akun Biaya</td>
                                                         <td style="max-width: 200px" class="akun_biaya_td">
@@ -719,6 +838,7 @@ var array_um= [];
 var count_um = 1;
 var simpan_um = [];
 var harga_um = [];
+
 // datepicker
 $('.ed_tanggal').datepicker({
     format:'dd/mm/yyyy',
@@ -789,6 +909,33 @@ var table_data_biaya = $('#table_data_biaya').DataTable({
                     
                 })
 
+var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
+     columnDefs: [  
+                      {
+                         targets: 0,
+                         className: 'center'
+                      },
+                      {
+                         targets: 4 ,
+                         className: 'center'
+                      },
+       
+                      {
+                         targets: 3,
+                         className: 'right'
+                      },
+                      {
+                      
+                         targets: 5,
+                         className: 'center'
+                      },
+                      {
+                      
+                         targets: 6,
+                         className: 'center'
+                      }
+                    ],
+});
 //mengganti nota kwitansi
 function nota_kwitansi() {
     var cb_cabang = $('.cb_cabang').val();
@@ -814,23 +961,73 @@ function nota_kwitansi() {
         }
     });
 }
+//hitung total bayar
 
+function hitung_bayar() {
+
+    var temp = 0;
+    table_data.$('.i_bayar').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp += i_bayar;
+    })
+    $('.total_jumlah_bayar').val(temp);
+    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    var temp = 0;
+    tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
+        var temp1 = $(this).val();
+        temp1     = parseInt(temp1);
+        temp += temp1;
+    });
+
+    $('.um').val(temp);
+    $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    var temp = 0;    
+    var temp1 = 0; 
+
+    table_data_biaya.$('.b_debet').each(function(){
+        var deb = parseInt($(this).val());
+        temp += deb;
+    })  
+    table_data_biaya.$('.b_kredit').each(function(){
+        var deb = parseInt($(this).val());
+        temp1 += deb;
+    })  
+
+    $('.ed_debet').val(temp);
+    $('.ed_kredit').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    
+
+    
+
+    var total_bayar = Math.round($('.total_jumlah_bayar').val()).toFixed(2);
+        total_bayar = parseFloat(total_bayar);
+
+    var ed_debet = Math.round($('.ed_debet').val()).toFixed(2);
+        ed_debet = parseInt(ed_debet);
+
+    var ed_kredit = Math.round($('.ed_kredit').val()).toFixed(2);
+        ed_kredit = parseInt(ed_kredit);
+
+    var um        = Math.round($('.um').val()).toFixed(2);
+        um        = parseInt(um);
+
+    var total     = total_bayar + ed_debet - ed_kredit - um;
+    if (total < 0) {
+        total = 0;
+    }
+    console.log(total);
+    $('.ed_netto').val(total);
+    $('.ed_netto_text').val(accounting.formatMoney(total,"",2,'.',','));
+    
+}
 //NOTA kwitansi
 $(document).ready(function(){
     var cabang = $('.cb_cabang').val();
-    $.ajax({
-        url:baseUrl+'/sales/nota_kwitansi',
-        data:{cabang},
-        dataType : 'json',
-        success:function(response){
-            $('#nota_kwitansi').val(response.nota);
-        },
-        error:function(){
-            location.reload();
-        }
 
-
-    });
 
     $.ajax({
         url:baseUrl+'/sales/akun_bank',
@@ -878,11 +1075,30 @@ $(document).ready(function(){
             // location.reload();
         }
     });
+
+    table_data.$('.i_nomor').each(function(){
+        array_simpan.push($(this).val());
+        array_edit.push($(this).val());
+    })
+
+    table_data.$('.i_bayar').each(function(){
+        array_harga.push($(this).val());
+    })
+    tabel_uang_muka.$('.m_um').each(function(){
+        array_um.push($(this).val());
+        simpan_um.push($(this).val());
+    })
+
+    tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
+        harga_um.push($(this).val());
+    })
     
     $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.m_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.me_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
+    hitung_bayar();
+
 });
 
 // ganti nota untuk admin
@@ -989,7 +1205,7 @@ $('.tambah_invoice').click(function(){
 
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
-        data:{cb_cabang,cb_customer,array_simpan},
+        data:{cb_cabang,cb_customer,array_simpan,array_edit,array_harga},
         success:function(data){
 
 
@@ -1021,7 +1237,7 @@ $('#btnsave').click(function(){
 ///////////////////////////////////////////
     $.ajax({
         url:baseUrl + '/sales/append_invoice',
-        data:{nomor},
+        data:{nomor,array_edit,array_harga},
         dataType:'json',
         success:function(response){
             for(var i = 0; i < response.data.length;i++){
@@ -1092,10 +1308,11 @@ function histori(p){
     var i_sisa_pelunasan    = $(par).find('.i_sisa_pelunasan').val();
     var i_bayar             = $(par).find('.i_bayar ').val();
     var i_tagihan           = $(par).find('.i_tagihan ').val();
+    var id                  = "{{$id}}";
 
     $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
-        data:{i_nomor},
+        data:{i_nomor,id},
         success:function(data){
             $('.riwayat_kwitansi').html(data);
             var temp = 0;
@@ -1149,7 +1366,7 @@ function histori(p){
                     var i_bayar        = $(par).find('.i_bayar').val();
                     var biaya_admin    = $(par).find('.i_biaya_admin').val();
                     console.log(i_bayar);
-                    $('.angka').val(i_bayar-biaya_admin);
+                    $('.angka').val(parseInt(i_bayar)-parseInt(biaya_admin));
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
                     $('.jumlah_bayar').val(i_bayar);
                     $('.jumlah_biaya_admin ').val(biaya_admin);
@@ -1178,29 +1395,7 @@ function hapus_detail(o) {
     table_data.row(par).remove().draw(false);
 }
 
-//hitung total bayar
 
-function hitung_bayar() {
-    var total_bayar = Math.round($('.total_jumlah_bayar').val()).toFixed(2);
-        total_bayar = parseFloat(total_bayar);
-
-    var ed_debet = Math.round($('.ed_debet').val()).toFixed(2);
-        ed_debet = parseInt(ed_debet);
-
-    var ed_kredit = Math.round($('.ed_kredit').val()).toFixed(2);
-        ed_kredit = parseInt(ed_kredit);
-
-    var um        = Math.round($('.um').val()).toFixed(2);
-        um        = parseInt(um);
-
-    var total     = total_bayar + ed_debet - ed_kredit - um;
-    if (total < 0) {
-        total = 0;
-    }
-    $('.ed_netto').val(total);
-    $('.ed_netto_text').val(accounting.formatMoney(total,"",2,'.',','));
-    
-}
 $('.jumlah_biaya_admin').blur(function(){
 var ini = $(this).val();
 if (ini == '') {
@@ -1231,16 +1426,7 @@ $('#btnsave2').click(function(){
     $(par).find('.i_bayar').val(angka+jumlah_biaya_admin);
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
-    var temp = 0;
-    table_data.$('.i_bayar').each(function(){
-        var i_bayar = Math.round($(this).val()).toFixed(2);
-            i_bayar = parseFloat(i_bayar);
-        temp += i_bayar;
-    })
-
-
-    $('.total_jumlah_bayar').val(temp);
-    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    
     hitung_bayar();
     $('#modal_info').modal('hide');
 
@@ -1289,22 +1475,7 @@ $('#btnsave3').click(function(){
             '<label class="fa fa-pencil"><label></button>'
 
         ]).draw();
-    var temp = 0;    
-    var temp1 = 0; 
-
-    table_data_biaya.$('.b_debet').each(function(){
-        var deb = parseInt($(this).val());
-        temp += deb;
-    })  
-    table_data_biaya.$('.b_kredit').each(function(){
-        var deb = parseInt($(this).val());
-        temp1 += deb;
-    })  
-
-    $('.ed_debet').val(temp);
-    $('.ed_kredit').val(temp1);
-    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
-    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+    
 
     $('.m_acc').val('');
     $('.m_csf').val('');
@@ -1409,7 +1580,6 @@ $('#update_biaya').click(function(){
 
     $('#modal_edit_biaya').modal('hide');
 })
-var simpan_um = [];
 
 // cari um
 $('.cari_um').click(function(){
@@ -1426,7 +1596,7 @@ $('.cari_um').click(function(){
 
     $.ajax({
         url:baseUrl + '/sales/cari_um',
-        data:{cb_cabang,cb_customer,simpan_um},
+        data:{cb_cabang,cb_customer,simpan_um,array_um,harga_um},
         success:function(data){
             $('.um_table').html(data);
 
@@ -1459,7 +1629,7 @@ function pilih_um(par) {
     var um = $(par).find('.nomor_modal_um').val();
     $.ajax({
         url:baseUrl+'/sales/pilih_um',
-        data:{um,simpan_um},
+        data:{um,simpan_um,array_um,harga_um},
         dataType : 'json',
         success:function(response){
             $('.no_um').val(response.data[0].nomor);
@@ -1474,34 +1644,9 @@ function pilih_um(par) {
     });
 
 }
-var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
-     columnDefs: [  
-                      {
-                         targets: 0,
-                         className: 'center'
-                      },
-                      {
-                         targets: 4 ,
-                         className: 'center'
-                      },
-       
-                      {
-                         targets: 3,
-                         className: 'right'
-                      },
-                      {
-                      
-                         targets: 5,
-                         className: 'center'
-                      },
-                      {
-                      
-                         targets: 6,
-                         className: 'center'
-                      }
-                    ],
-});
+
 $('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.',defaultZero: true});
+
 $('.jumlah_bayar_um ').keyup(function(){
    var jumlah = $(this).val();
    jumlah     = jumlah.replace(/[^0-9\-]+/g,"");
@@ -1552,15 +1697,7 @@ $('#save_um').click(function(){
                 ]).draw();
             count_um++;
             simpan_um.push(no_um);
-            var temp = 0;
-            tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
-                var temp1 = $(this).val();
-                temp1     = parseInt(temp1);
-                temp += temp1;
-            });
-
-            $('.um').val(temp);
-            $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
+            
             $('.tab_detail ul li .tab-3').trigger('click');
             $('#modal_um').modal('hide');
         }else{
@@ -1586,12 +1723,6 @@ $('#save_um').click(function(){
 
                 ]).draw();
 
-            var temp = 0;
-            tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
-                var temp1 = $(this).val();
-                temp1     = parseInt(temp1);
-                temp += temp1;
-            });
 
             $('.um').val(temp);
             $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
@@ -1643,7 +1774,8 @@ function hapus_detail_um(o){
 }
 
 $('#btnsimpan').click(function(){
-    var customer = $('.customer').val();
+    var customer = $('#customer ').val();
+    var id       = "{{$id}}"
     swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data Kwitansi!",
@@ -1664,14 +1796,15 @@ $('#btnsimpan').click(function(){
             });
 
           $.ajax({
-          url:baseUrl + '/sales/simpan_kwitansi',
-          type:'post',
+          url:baseUrl + '/sales/update_kwitansi',
+          type:'get',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()
                +'&'+table_data_biaya.$('input').serialize()
                +'&'+tabel_uang_muka.$('input').serialize()
                +'&'+$('.table_rincian :input').serialize()
+               +'&id='+id
                +'&customer='+customer,
           success:function(response){
             if (response.status == 1) {
@@ -1682,9 +1815,9 @@ $('#btnsimpan').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        // location.reload();
                         $('.temp_1').addClass('disabled');
                         $('.print').removeClass('disabled');
+
                 });
             }else{
                 $('#nota_kwitansi').val(response.nota);
@@ -1704,13 +1837,12 @@ $('#btnsimpan').click(function(){
       });  
      });
 })
-
 $('.reload').click(function(){
     location.reload();
 })
 
 $('.print').click(function(){
-    var id = $('#nota_kwitansi').val();
+    var id = "{{$id}}"
 
     window.open('{{url("sales/kwitansi/cetak_nota")}}'+'/'+id);
 });

@@ -136,7 +136,7 @@
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td class="disabled" colspan="20">
                                     <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
-                                        <option>Pilih - Cabang</option>
+                                        <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if($data->k_kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -152,7 +152,7 @@
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="20" class="disabled"> 
                                     <select class="cb_cabang form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
-                                        <option>Pilih - Cabang</option>
+                                        <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if($data->k_kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -251,10 +251,12 @@
                             
                         </div>
                         <div class="col-sm-12 ">
-                            <button type="button" class="btn btn-success kanan pull-right " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
-                            <button type="button" class="btn btn-info kanan pull-right " id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i>Tambah Uang Muka</button>
-                            <button type="button" class="btn btn-info kanan pull-right " id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i>Tambah Biaya</button>
-                            <button type="button" class="btn btn-info kanan pull-right tambah_invoice" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Invoice</button>
+                            <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+                            <button type="button" class="btn btn-warning kanan pull-right print disabled" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
+                            <button type="button" class="btn btn-success kanan pull-right temp_1" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i> Simpan</button>
+                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i> Tambah Uang Muka</button>
+                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i> Tambah Biaya</button>
+                            <button type="button" class="btn btn-info kanan pull-right tambah_invoice temp_1" name="btnadd" ><i class="glyphicon glyphicon-plus"></i> Pilih Nomor Invoice</button>
                         </div>
                     </div>
                 </form>
@@ -347,7 +349,7 @@
                                                     <p class="b_jumlah_text">{{number_format($val->kb_jumlah, 2, ",", ".")}}</p>
                                                     <input type="hidden" class="b_jumlah" value="{{$val->kb_jumlah}}" name="b_jumlah[]">
                                                     <input type="hidden" class="b_debet" value="{{$val->kb_debet}}" name="b_debet[]">
-                                                    <input type="hidden" class="b_debet" value="{{$val->kb_kredit}}" name="b_debet[]">
+                                                    <input type="hidden" class="b_kredit" value="{{$val->kb_kredit}}" name="b_kredit[]">
                                                 </td>
                                                 <td>
                                                     <p class="b_keterangan_text">{{$val->kb_keterangan}}</p>
@@ -394,15 +396,15 @@
                                                 </td>
                                                 <td>
                                                     {{$val->ku_status_um}}
-                                                    <input type="hidden" value="{{$val->ku_status_um}}" class="m_status_um" name="status_um[]"> 
+                                                    <input type="hidden" value="{{$val->ku_status_um}}" class="m_status_um" name="m_status_um[]"> 
                                                 </td>
                                                 <td>
                                                     {{number_format($val->jumlah, 2, ",", ".")}}
                                                     <input type="hidden" value="{{$val->jumlah}}" class="m_um_total" name="m_um_total[]">
                                                 </td>
                                                 <td>
-                                                    {{number_format($val->kb_jumlah, 2, ",", ".")}}
-                                                    <input type="hidden" value="{{$val->kb_jumlah}}" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">
+                                                    {{number_format($val->ku_jumlah, 2, ",", ".")}}
+                                                    <input type="hidden" value="{{$val->ku_jumlah}}" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">
                                                 </td>
                                                 <td>
                                                     <input type="text" readonly value="{{$val->ku_keterangan}}" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">
@@ -509,13 +511,6 @@
                                                         <td colspan="3">
                                                             <input type="text"  class="form-control ed_jumlah_bayar" name="ed_jumlah_bayar" readonly="readonly" style="text-align:right" tabindex="-1">
                                                             <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style="padding-top: 0.4cm">Uang Muka</td>
-                                                        <td colspan="3">
-                                                            <input type="text" readonly="readonly" class="form-control uang_muka_text" style="text-align:right">
-                                                            <input type="hidden" readonly="readonly" class="form-control uang_muka">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -852,7 +847,10 @@
 var array_simpan = [];
 var array_edit = [];
 var array_harga = [];
+var array_um= [];
 var count_um = 1;
+var simpan_um = [];
+var harga_um = [];
 
 // datepicker
 $('.ed_tanggal').datepicker({
@@ -924,6 +922,33 @@ var table_data_biaya = $('#table_data_biaya').DataTable({
                     
                 })
 
+var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
+     columnDefs: [  
+                      {
+                         targets: 0,
+                         className: 'center'
+                      },
+                      {
+                         targets: 4 ,
+                         className: 'center'
+                      },
+       
+                      {
+                         targets: 3,
+                         className: 'right'
+                      },
+                      {
+                      
+                         targets: 5,
+                         className: 'center'
+                      },
+                      {
+                      
+                         targets: 6,
+                         className: 'center'
+                      }
+                    ],
+});
 //mengganti nota kwitansi
 function nota_kwitansi() {
     var cb_cabang = $('.cb_cabang').val();
@@ -949,23 +974,73 @@ function nota_kwitansi() {
         }
     });
 }
+//hitung total bayar
 
+function hitung_bayar() {
+
+    var temp = 0;
+    table_data.$('.i_bayar').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp += i_bayar;
+    })
+    $('.total_jumlah_bayar').val(temp);
+    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    var temp = 0;
+    tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
+        var temp1 = $(this).val();
+        temp1     = parseInt(temp1);
+        temp += temp1;
+    });
+
+    $('.um').val(temp);
+    $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    var temp = 0;    
+    var temp1 = 0; 
+
+    table_data_biaya.$('.b_debet').each(function(){
+        var deb = parseInt($(this).val());
+        temp += deb;
+    })  
+    table_data_biaya.$('.b_kredit').each(function(){
+        var deb = parseInt($(this).val());
+        temp1 += deb;
+    })  
+
+    $('.ed_debet').val(temp);
+    $('.ed_kredit').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    
+
+    
+
+    var total_bayar = Math.round($('.total_jumlah_bayar').val()).toFixed(2);
+        total_bayar = parseFloat(total_bayar);
+
+    var ed_debet = Math.round($('.ed_debet').val()).toFixed(2);
+        ed_debet = parseInt(ed_debet);
+
+    var ed_kredit = Math.round($('.ed_kredit').val()).toFixed(2);
+        ed_kredit = parseInt(ed_kredit);
+
+    var um        = Math.round($('.um').val()).toFixed(2);
+        um        = parseInt(um);
+
+    var total     = total_bayar + ed_debet - ed_kredit - um;
+    if (total < 0) {
+        total = 0;
+    }
+    console.log(total);
+    $('.ed_netto').val(total);
+    $('.ed_netto_text').val(accounting.formatMoney(total,"",2,'.',','));
+    
+}
 //NOTA kwitansi
 $(document).ready(function(){
     var cabang = $('.cb_cabang').val();
-    $.ajax({
-        url:baseUrl+'/sales/nota_kwitansi',
-        data:{cabang},
-        dataType : 'json',
-        success:function(response){
-            $('#nota_kwitansi').val(response.nota);
-        },
-        error:function(){
-            location.reload();
-        }
 
-
-    });
 
     $.ajax({
         url:baseUrl+'/sales/akun_bank',
@@ -1022,12 +1097,21 @@ $(document).ready(function(){
     table_data.$('.i_bayar').each(function(){
         array_harga.push($(this).val());
     })
+    tabel_uang_muka.$('.m_um').each(function(){
+        array_um.push($(this).val());
+        simpan_um.push($(this).val());
+    })
 
+    tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
+        harga_um.push($(this).val());
+    })
     
     $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.m_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
     $('.me_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
+    hitung_bayar();
+
 });
 
 // ganti nota untuk admin
@@ -1112,14 +1196,23 @@ function nota_tes(){
 
 // tambah invoice
 $('.tambah_invoice').click(function(){
-    if ($('#cb_akun_h').val() == '0') {
-        toastr.warning('Akun Harus Dipilih')
+    if ($('.cb_jenis_pembayaran ').val() == '0') {
+        toastr.warning('Jenis Pembayaran Harus Dipilih')
+        return 1
+    }
+    if ($('.cb_cabang').val() == '0') {
+        toastr.warning('Cabang Harus Dipilih')
         return 1
     }
     if ($('#customer ').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
+    if ($('#cb_akun_h').val() == '0') {
+        toastr.warning('Akun Harus Dipilih')
+        return 1
+    }
+    
     var cb_cabang = $('.cb_cabang').val();
     var cb_customer = $('#customer ').val();
 
@@ -1157,7 +1250,7 @@ $('#btnsave').click(function(){
 ///////////////////////////////////////////
     $.ajax({
         url:baseUrl + '/sales/append_invoice',
-        data:{nomor},
+        data:{nomor,array_edit,array_harga},
         dataType:'json',
         success:function(response){
             for(var i = 0; i < response.data.length;i++){
@@ -1284,11 +1377,11 @@ function histori(p){
                     $('.sisa_terbayar').val(jumlah);
 
                     var i_bayar        = $(par).find('.i_bayar').val();
+                    var biaya_admin    = $(par).find('.i_biaya_admin').val();
                     console.log(i_bayar);
-                    $('.angka').val(i_bayar);
+                    $('.angka').val(parseInt(i_bayar)-parseInt(biaya_admin));
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
                     $('.jumlah_bayar').val(i_bayar);
-                    var biaya_admin    = $(par).find('.i_biaya_admin').val();
                     $('.jumlah_biaya_admin ').val(biaya_admin);
                     var biaya_admin    = $(par).find('.akun_biaya').val();
                     $('.biaya_admin ').val(biaya_admin).trigger('chosen:updated');
@@ -1300,9 +1393,7 @@ function histori(p){
             })
         }
     })
-    
-    
-    
+  
 }
 
 
@@ -1317,29 +1408,7 @@ function hapus_detail(o) {
     table_data.row(par).remove().draw(false);
 }
 
-//hitung total bayar
 
-function hitung_bayar() {
-    var total_bayar = Math.round($('.total_jumlah_bayar').val()).toFixed(2);
-        total_bayar = parseFloat(total_bayar);
-
-    var ed_debet = Math.round($('.ed_debet').val()).toFixed(2);
-        ed_debet = parseInt(ed_debet);
-
-    var ed_kredit = Math.round($('.ed_kredit').val()).toFixed(2);
-        ed_kredit = parseInt(ed_kredit);
-
-    var um        = Math.round($('.um').val()).toFixed(2);
-        um        = parseInt(um);
-
-    var total     = total_bayar + ed_debet - ed_kredit - um;
-    if (total < 0) {
-        total = 0;
-    }
-    $('.ed_netto').val(total);
-    $('.ed_netto_text').val(accounting.formatMoney(total,"",2,'.',','));
-    
-}
 $('.jumlah_biaya_admin').blur(function(){
 var ini = $(this).val();
 if (ini == '') {
@@ -1370,16 +1439,7 @@ $('#btnsave2').click(function(){
     $(par).find('.i_bayar').val(angka+jumlah_biaya_admin);
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
-    var temp = 0;
-    table_data.$('.i_bayar').each(function(){
-        var i_bayar = Math.round($(this).val()).toFixed(2);
-            i_bayar = parseFloat(i_bayar);
-        temp += i_bayar;
-    })
-
-
-    $('.total_jumlah_bayar').val(temp);
-    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    
     hitung_bayar();
     $('#modal_info').modal('hide');
 
@@ -1428,22 +1488,7 @@ $('#btnsave3').click(function(){
             '<label class="fa fa-pencil"><label></button>'
 
         ]).draw();
-    var temp = 0;    
-    var temp1 = 0; 
-
-    table_data_biaya.$('.b_debet').each(function(){
-        var deb = parseInt($(this).val());
-        temp += deb;
-    })  
-    table_data_biaya.$('.b_kredit').each(function(){
-        var deb = parseInt($(this).val());
-        temp1 += deb;
-    })  
-
-    $('.ed_debet').val(temp);
-    $('.ed_kredit').val(temp1);
-    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
-    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+    
 
     $('.m_acc').val('');
     $('.m_csf').val('');
@@ -1548,7 +1593,6 @@ $('#update_biaya').click(function(){
 
     $('#modal_edit_biaya').modal('hide');
 })
-var simpan_um = [];
 
 // cari um
 $('.cari_um').click(function(){
@@ -1565,7 +1609,7 @@ $('.cari_um').click(function(){
 
     $.ajax({
         url:baseUrl + '/sales/cari_um',
-        data:{cb_cabang,cb_customer,simpan_um},
+        data:{cb_cabang,cb_customer,simpan_um,array_um,harga_um},
         success:function(data){
             $('.um_table').html(data);
 
@@ -1598,13 +1642,13 @@ function pilih_um(par) {
     var um = $(par).find('.nomor_modal_um').val();
     $.ajax({
         url:baseUrl+'/sales/pilih_um',
-        data:{um,simpan_um},
+        data:{um,simpan_um,array_um,harga_um},
         dataType : 'json',
         success:function(response){
-            $('.no_um').val(response.data.nomor);
-            $('.total_um_text').val(accounting.formatMoney(response.data.sisa_uang_muka,"",2,'.',','));
-            $('.total_um').val(response.data.sisa_uang_muka);
-            $('.status_um').val(response.data.status_um);
+            $('.no_um').val(response.data[0].nomor);
+            $('.total_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+            $('.total_um').val(response.data[0].sisa_uang_muka);
+            $('.status_um').val(response.data[0].status_um);
             $('#modal_cari_um').modal('hide');
 
         },
@@ -1613,41 +1657,21 @@ function pilih_um(par) {
     });
 
 }
-var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
-     columnDefs: [  
-                      {
-                         targets: 0,
-                         className: 'center'
-                      },
-                      {
-                         targets: 4 ,
-                         className: 'center'
-                      },
-       
-                      {
-                         targets: 3,
-                         className: 'right'
-                      },
-                      {
-                      
-                         targets: 5,
-                         className: 'center'
-                      },
-                      {
-                      
-                         targets: 6,
-                         className: 'center'
-                      }
-                    ],
-});
+
 $('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.',defaultZero: true});
-// $('.jumlah_bayar_um ').blur(function(){
-//     var jb =$(this).val();
-//     jb = jb.replace(/[^0-9]\-+/g,"");
-//     if (jb > $('.total_um ').val()) {
-//         $(this).val(accounting.formatMoney($('.total_um ').val(),"",0,'.',','));
-//     }
-// });
+
+$('.jumlah_bayar_um ').keyup(function(){
+   var jumlah = $(this).val();
+   jumlah     = jumlah.replace(/[^0-9\-]+/g,"");
+   jumlah     = parseFloat(jumlah);
+   var total_um  = $('.total_um ').val();
+   total_um   = parseFloat(total_um);
+
+   if (jumlah > total_um) {
+    jumlah = total_um;
+   }
+   $(this).val(accounting.formatMoney(jumlah,"",0,'.',','));
+});
 $('#save_um').click(function(){
     var seq_um    = $('.seq_um').val();
     var no_um     = $('.no_um').val();
@@ -1686,15 +1710,7 @@ $('#save_um').click(function(){
                 ]).draw();
             count_um++;
             simpan_um.push(no_um);
-            var temp = 0;
-            tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
-                var temp1 = $(this).val();
-                temp1     = parseInt(temp1);
-                temp += temp1;
-            });
-
-            $('.um').val(temp);
-            $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
+            
             $('.tab_detail ul li .tab-3').trigger('click');
             $('#modal_um').modal('hide');
         }else{
@@ -1720,12 +1736,6 @@ $('#save_um').click(function(){
 
                 ]).draw();
 
-            var temp = 0;
-            tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
-                var temp1 = $(this).val();
-                temp1     = parseInt(temp1);
-                temp += temp1;
-            });
 
             $('.um').val(temp);
             $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
@@ -1778,6 +1788,7 @@ function hapus_detail_um(o){
 
 $('#btnsimpan').click(function(){
     var customer = $('#customer ').val();
+    var id       = "{{$id}}"
     swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data Kwitansi!",
@@ -1798,14 +1809,15 @@ $('#btnsimpan').click(function(){
             });
 
           $.ajax({
-          url:baseUrl + '/sales/simpan_kwitansi',
-          type:'get',
+          url:baseUrl + '/sales/update_kwitansi',
+          type:'post',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()
                +'&'+table_data_biaya.$('input').serialize()
                +'&'+tabel_uang_muka.$('input').serialize()
                +'&'+$('.table_rincian :input').serialize()
+               +'&id='+id
                +'&customer='+customer,
           success:function(response){
             if (response.status == 1) {
@@ -1816,7 +1828,9 @@ $('#btnsimpan').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        // location.reload();
+                        $('.temp_1').addClass('disabled');
+                        $('.print').removeClass('disabled');
+
                 });
             }else{
                 $('#nota_kwitansi').val(response.nota);
@@ -1836,7 +1850,15 @@ $('#btnsimpan').click(function(){
       });  
      });
 })
+$('.reload').click(function(){
+    location.reload();
+})
 
+$('.print').click(function(){
+    var id = "{{$id}}"
+
+    window.open('{{url("sales/kwitansi/cetak_nota")}}'+'/'+id);
+});
 
 </script>
 

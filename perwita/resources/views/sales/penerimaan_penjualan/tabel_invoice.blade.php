@@ -25,6 +25,7 @@
         var customer = '{{$customer}}';
         var array_simpan = [];
         var array_edit = [];
+        var array_harga = [];
         @if(isset($array_simpan))
             @foreach($array_simpan as $i=>$val)
             var temp = "{{$array_simpan[$i]}}";
@@ -43,7 +44,7 @@
         @if(isset($array_harga))
             @foreach($array_harga as $i=>$val)
             var temp2 = "{{$array_harga[$i]}}";
-                array_edit.push(temp2);
+                array_harga.push(temp2);
             @endforeach
         @endif
 
