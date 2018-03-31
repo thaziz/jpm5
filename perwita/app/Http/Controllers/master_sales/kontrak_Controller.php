@@ -17,7 +17,7 @@ class kontrak_Controller extends Controller
         $jabatan = Auth::user()->m_level;
         // $cabang = Auth::user()->kode_cabang;
         if ($jabatan == 'ADMINISTRATOR' || $jabatan == 'SUPERVISOR') {
-           return $data =  DB::table('kontrak_customer')
+            $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
                    ->get();
         }else{
