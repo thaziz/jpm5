@@ -65,7 +65,7 @@
                                         <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
                                             @else
                                             <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                             @endif
