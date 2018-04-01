@@ -93,6 +93,117 @@ class do_kertas_Controller extends Controller
         
     }
 
+    public function save_do_kertas(request $request)
+    {
 
+        // dd($request->all());
+        return DB::transaction(function() use ($request) { 
+
+            $cari_do = DB::table('delivery_order')
+                      ->where('nomor',$request->ed_nomor)
+                      ->first();
+            $tgl = str_replace('/', '-', $request->ed_tanggal);
+            $tgl = carbon::parse($tgl)->format('Y-m-d');
+            if ($cari_do == null) {
+
+                $save_head = DB::table('delivery_order')
+                               ->insert([
+                                'nomor'             => $request->ed_nomor,
+                                'tanggal'           => $tgl,
+                                'kode_customer'     => $request->customer,
+                                'pendapatan'        => 'KORAN',
+                                'kode_cabang'       => $request->cb_cabang,
+                                'diskon'            => $request->ed_diskon_m,
+                                'total_net'         => $request->ed_total_m,
+                                'jenis'             => 'KORAN',
+                                'status_do'         => 'Released'
+                               ]);
+                for ($i=0; $i < count($request->d_kode_item); $i++) { 
+                    $id = DB::table('delivery_orderd')
+                            ->max('dd_id');
+                    if ($id != null) {
+                        $id+=1;
+                    }else{
+                        $id =1;
+                    }
+                    $save_detail = DB::table('delivery_orderd')
+                                 ->insert([
+                                    'dd_id' => $id,
+                                    'dd_nomor' => $request->ed_nomor,
+                                    'dd_nomor_dt' => $i+1,
+                                    'dd_kode_item' => strtoupper($request->d_kode_item[$i]),
+                                    'dd_kode_satuan' => strtoupper($request->d_satuan[$i]),
+                                    'dd_jumlah' => $request->d_jumlah[$i],
+                                    'dd_harga' => $request->d_harga[$i],
+                                    'dd_diskon' => $request->d_diskon[$i],
+                                    'dd_total' => $request->d_netto[$i],
+                                    'dd_id_kota_asal' => $request->d_asal[$i],
+                                    'dd_id_kota_tujuan' => $request->d_tujuan[$i],
+                                    'dd_keterangan' => strtoupper($request->d_keterangan[$i]),
+                                    'dd_acc_penjualan' => strtoupper($request->d_acc[$i]),
+
+                                 ]);
+                }
+                return response()->json(['status'=>1]);
+            }else{
+                $bulan  = Carbon::now()->format('m');
+                $tahun  = Carbon::now()->format('y');
+                $cabang = $request->cb_cabang;
+                $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
+                                                WHERE kode_cabang = '$cabang'
+                                                AND to_char(tanggal,'MM') = '$bulan'
+                                                AND jenis = 'KORAN'
+                                                AND to_char(tanggal,'YY') = '$tahun'");
+
+                $index = (integer)$cari_nota[0]->id + 1;
+                $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+
+                $nota = 'KTS' . $cabang . $bulan . $tahun . $index;
+
+                $save_head = DB::table('delivery_order')
+                               ->insert([
+                                'nomor'             => $nota,
+                                'tanggal'           => $tgl,
+                                'kode_customer'     => $request->customer,
+                                'pendapatan'        => 'KORAN',
+                                'diskon'            => $request->ed_diskon_m,
+                                'kode_cabang'       => $request->cb_cabang,
+                                'total_net'         => $request->ed_total_m,
+                                'jenis'             => 'KORAN',
+                                'status_do'         => 'Released'
+                               ]);
+                for ($i=0; $i < count($request->d_kode_item); $i++) { 
+                    $id = DB::table('delivery_orderd')
+                            ->max('dd_id');
+                    if ($id != null) {
+                        $id+=1;
+                    }else{
+                        $id =1;
+                    }
+                    $save_detail = DB::table('delivery_orderd')
+                                 ->insert([
+                                    'dd_id' => $id,
+                                    'dd_nomor' => $request->ed_nomor,
+                                    'dd_nomor_dt' => $i+1,
+                                    'dd_kode_item' => strtoupper($request->d_kode_item[$i]),
+                                    'dd_kode_satuan' => strtoupper($request->d_satuan[$i]),
+                                    'dd_jumlah' => $request->d_jumlah[$i],
+                                    'dd_harga' => $request->d_harga[$i],
+                                    'dd_diskon' => $request->d_diskon[$i],
+                                    'dd_total' => $request->d_netto[$i],
+                                    'dd_id_kota_asal' => $request->d_asal[$i],
+                                    'dd_id_kota_tujuan' => $request->d_tujuan[$i],
+                                    'dd_keterangan' => strtoupper($request->d_keterangan[$i]),
+                                    'dd_acc_penjualan' => strtoupper($request->d_acc[$i]),
+
+                                 ]);
+                }
+
+                    return response()->json(['nota'=>$nota,'status'=>2]);
+
+            }
+        });
+
+    }
 
 }
