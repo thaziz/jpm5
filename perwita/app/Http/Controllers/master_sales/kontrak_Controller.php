@@ -88,7 +88,6 @@ class kontrak_Controller extends Controller
     {   
        $data = DB::table('d_akun')
                  ->where('kode_cabang',$request->cabang)
-                 ->where('id_parrent','LIKE','%'.'13'.'%')
                  ->get();
        return view('master_sales.kontrak.acc_drop',compact('data'));
     }
@@ -96,7 +95,6 @@ class kontrak_Controller extends Controller
     {
        $data = DB::table('d_akun')
                  ->where('kode_cabang',$request->cabang)
-                 ->where('id_parrent','LIKE','%'.'13'.'%')
                  ->get();
        return view('master_sales.kontrak.csf_drop',compact('data'));
     }
