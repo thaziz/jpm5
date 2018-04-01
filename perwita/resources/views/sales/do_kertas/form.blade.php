@@ -205,13 +205,14 @@
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Diskon</td>
                                                 <td colspan="5">
-                                                    <input type="text" class="form-control ed_diskon" name="ed_diskon" style="text-align: right;">
+                                                    <input type="text" onkeyup="hitung()" class="form-control ed_diskon_modal" name="ed_diskon" style="text-align: right;" value="0">
                                                 </td>
                                             </tr>                               
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Netto</td>
                                                 <td colspan="5">
-                                                    <input type="text" class="form-control ed_netto" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
+                                                    <input type="text" class="form-control ed_netto_text" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
+                                                    <input type="hidden" class="form-control ed_netto" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
                                                 </td>
                                             </tr>
                                             <tr>
@@ -238,14 +239,14 @@
                                                 <td style="padding-top: 0.4cm">Keterangan</td>
                                                 <td colspan="5">   
                                                     <input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" >
-                                                <td>                                    
+                                                </td>                                    
                                             </tr>
                                         </tbody>
                                     </table>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" id="btnsave">Save changes</button>
+                                <button type="submit" class="btn btn-primary simpan_modal" onclick="simpan_modal()" id="btnsave">Save changes</button>
                             </div>
                         </div>
                     </div>
@@ -281,7 +282,7 @@ $('#table_data').DataTable();
 $('.date').datepicker({
         format:'dd/mm/yyyy'
 });
-$('.ed_diskon').maskMoney({precision:0,thousands:'.'});
+$('.ed_diskon_modal').maskMoney({precision:0,thousands:'.'});
 $(document).ready(function(){
     var cabang = $('.cabang').val();
     $.ajax({
@@ -357,12 +358,16 @@ function hitung() {
    ed_harga      = parseFloat(ed_harga);
    var ed_jumlah = $('.ed_jumlah').val();
    ed_jumlah     = parseInt(ed_jumlah);
-   var ed_diskon = $('.ed_diskon').val();
-   ed_diskon     = ed_diskon.replace(/[^0-9\-]+/g,"");
-   ed_jumlah     = parseInt(ed_jumlah);
+   var ed_diskon_modal = $('.ed_diskon_modal').val();
+   console.log(ed_diskon_modal);
+   ed_diskon_modal     = ed_diskon_modal.replace(/[^0-9\-]+/g,"");
+   ed_diskon_modal     = parseInt(ed_diskon_modal);
 
    $('.ed_total').val(ed_jumlah * ed_harga);
    $('.ed_total_text').val(accounting.formatMoney(ed_jumlah * ed_harga,"",2,'.',','));
+
+   $('.ed_netto').val(ed_jumlah * ed_harga - ed_diskon_modal);
+   $('.ed_netto_text').val(accounting.formatMoney(ed_jumlah * ed_harga - ed_diskon_modal,"",2,'.',','));
 }
 
 function cari_item() {
@@ -396,5 +401,20 @@ function cari_item() {
     })
 }
 
+
+function simpan_modal() {
+    if ($('.item ').val() == '0') {
+        toastr.warning('Item Harus Dipilih');
+        return 1;
+    }
+    if ($('.ed_jumlah').val() == '') {
+        toastr.warning('Jumlah Harus Diisi');
+        return 1;
+    }
+    if ($('.ed_keterangan').val() == '') {
+        toastr.warning('Keterangan Harus Diisi');
+        return 1;
+    }
+}
 </script>
 @endsection
