@@ -350,7 +350,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm; text-align:right">Pajak lain-lain</td>
                                 <td>
-                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="pajak_lain" id="pajak_lain" >
+                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="kode_pajak_lain" id="pajak_lain" >
                                         <option value="0"  >Pilih Pajak Lain-lain</option>
                                         @foreach($pajak as $val)
                                             @if($data->i_kode_pajak == $val->kode)
@@ -936,7 +936,6 @@ function hitung_pajak_lain(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        // location.reload();
                 });
              }
           },
