@@ -522,8 +522,6 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 
 
 Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@tabledokumen')->name('dokumen');
-Route::get('sales/laporaninvoicepenjualan','LaporanMasterController@invoice');
-Route::get('sales/laporandeliveryorder','LaporanMasterController@deliveryorder');
 
 
 //LAPORAN TARIF DENY INDEX
@@ -540,9 +538,17 @@ Route::post('reportcabangkargo/reportcabangkargo', 'LaporanMasterController@repo
 Route::post('reportcabangkilogram/reportcabangkilogram', 'LaporanMasterController@reportcabangkilogram')->name('reportcabangkilogram');
 Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@reportcabangsepeda')->name('reportcabangsepeda');
 //END OF LAPORAN PDF DENY INDEX
-
+//LAPORAN DELIVERY ORDER PAKET 
+Route::post('reportdeliveryorder/reportdeliveryorder','LaporanMasterController@reportdeliveryorder');
+Route::get('sales/laporandeliveryorder','LaporanMasterController@deliveryorder');
+//END OF DELIVERY ORDER PAKET
+//LAPORAN DELIVERY ORDER KARGO 
+Route::post('reportdeliveryorder/reportdeliveryorder_kargo','LaporanMasterController@reportdeliveryorder_kargo');
+Route::get('sales/laporandeliveryorder_kargo','LaporanMasterController@deliveryorder_kargo');
+//END OF DELIVERY ORDER KARGO
+//INVOICE
+Route::get('sales/laporaninvoicepenjualan','LaporanMasterController@invoice');
 Route::get('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoice')->name('reportinvoice');
-Route::get('reportdeliveryorder/reportdeliveryorder','LaporanMasterController@reportdeliveryorder');
 
 //*** END PEMBELIAN
 
@@ -1573,6 +1579,7 @@ Route::get('pjtki/create3', function(){
 Route::get('pjtki/edit3', function(){
         return view('pjtki.edit3');
        });
+//UPDATE STATUS ORDER PAKET DENY
 Route::get('updatestatus','update_o_Controller@index');
 Route::get('updatestatus/up1','update_o_Controller@up1');
 Route::get('updatestatus/up2','update_o_Controller@up2');
@@ -1581,6 +1588,20 @@ Route::get('updatestatus/store1','update_o_Controller@store1');
 Route::get('updatestatus/store2','update_o_Controller@store2');
 Route::get('updatestatus/data1/{nomor_do}','update_o_Controller@data1');
 Route::get('updatestatus/data2/{nomor}','update_o_Controller@data2');
+// END OF 
+
+
+// UPDATE STATUS KARGO DENY
+Route::get('updatestatus_kargo','update_kargo_Controller@index');
+Route::get('updatestatus_kargo/up1','update_kargo_Controller@up1');
+Route::get('updatestatus_kargo/up2','update_kargo_Controller@up2');
+Route::get('updatestatus_kargo/up2/autocomplete','update_kargo_Controller@autocomplete');
+Route::get('updatestatus_kargo/store1','update_kargo_Controller@store1');
+Route::get('updatestatus_kargo/store2','update_kargo_Controller@store2');
+Route::get('updatestatus_kargo/data1/{nomor_do}','update_kargo_Controller@data1');
+Route::get('updatestatus_kargo/data2/{nomor}','update_kargo_Controller@data2');
+//END OF
+
 
 
 //master transaksi
