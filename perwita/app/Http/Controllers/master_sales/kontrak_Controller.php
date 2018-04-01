@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use carbon\carbon;
 use Auth;
-
+use Session;
 
 class kontrak_Controller extends Controller
 {
 
     public function index(){
-        $cabang =Auth::user()->kode_cabangl;
-        if (Auth::user()->m_level == 'ADMINISTRATOR') {
+        $cabang = session::get('cabang');
+        $jabatan = Auth::user()->m_level;
+        // $cabang = Auth::user()->kode_cabang;
+        if ($jabatan == 'ADMINISTRATOR' || $jabatan == 'SUPERVISOR') {
             $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
                    ->get();
@@ -32,7 +34,6 @@ class kontrak_Controller extends Controller
     public function form($nomor=null){
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
-        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
         $tipe_angkutan = DB::select(" SELECT * FROM tipe_angkutan ORDER BY nama ASC ");
         $satuan = DB::table('satuan')
                          ->get();
@@ -45,14 +46,26 @@ class kontrak_Controller extends Controller
         
         return view('master_sales.kontrak.form',compact('kota','customer','data','cabang','satuan','tipe_angkutan','akun','now','now1','jenis_tarif'));
     }
+    public function drop_cus(request $request)
+    {
+        // $cabang = session::get('cabang');
+        // $cabang = Auth::user()->kode_cabang;
+        $customer = DB::table('customer')
+                      ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
+                      ->where('cabang',$request->cabang)
+                      ->where('kc_kode_customer',null)
+                      ->get();
+        return view('master_sales.kontrak.dropdown_customer',compact('customer'));
+    }
 
     public function kontrak_set_nota(request $request)
     {   
+
         $month    = Carbon::now()->format('m');
-        $year    = Carbon::now()->format('y');
-        $idfaktur =   DB::table('kontrak_customer')
-                         ->where('kc_kode_cabang' , $request->cabang)
-                         ->max('kc_nomor');
+        $year     = Carbon::now()->format('y');
+        $idfaktur = DB::table('kontrak_customer')
+                      ->where('kc_kode_cabang' , $request->cabang)
+                      ->max('kc_nomor');
         //  dd($nosppid);
             // return $idfaktur;
             if(isset($idfaktur)) {
@@ -60,11 +73,11 @@ class kontrak_Controller extends Controller
                 $idfaktur = $explode[2];
                 $idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
                 $idfaktur = str_replace('-', '', $idfaktur) ;
-                $string = (int)$idfaktur + 1;
-                $idfaktur = str_pad($string, 5, '0', STR_PAD_LEFT);
-            }
+                $string   = (int)$idfaktur + 1;
+                $idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
 
-            else {
+            }else{
+
                 $idfaktur = '001';
             }
 
@@ -75,7 +88,6 @@ class kontrak_Controller extends Controller
     {   
        $data = DB::table('d_akun')
                  ->where('kode_cabang',$request->cabang)
-                 ->where('id_parrent','LIKE','%'.'13'.'%')
                  ->get();
        return view('master_sales.kontrak.acc_drop',compact('data'));
     }
@@ -83,7 +95,6 @@ class kontrak_Controller extends Controller
     {
        $data = DB::table('d_akun')
                  ->where('kode_cabang',$request->cabang)
-                 ->where('id_parrent','LIKE','%'.'13'.'%')
                  ->get();
        return view('master_sales.kontrak.csf_drop',compact('data'));
     }
@@ -118,7 +129,7 @@ class kontrak_Controller extends Controller
                               ->insert([
                                 'kc_id'             => $id,
                                 'kc_tanggal'        => $tgl,
-                                'kc_kode_customer'  => $request->id_subcon,
+                                'kc_kode_customer'  => $request->customer,
                                 'kc_keterangan'     => $request->ed_keterangan,
                                 'kc_kode_cabang'    => $request->cabang,
                                 'kc_created_by'     => Auth::user()->m_username,
@@ -230,7 +241,7 @@ class kontrak_Controller extends Controller
                               ->update([
                                 'kc_id'             => $cari_kontrak->kc_id,
                                 'kc_tanggal'        => $tgl,
-                                'kc_kode_customer'  => $request->id_subcon,
+                                'kc_kode_customer'  => $request->customer,
                                 'kc_keterangan'     => $request->ed_keterangan,
                                 'kc_kode_cabang'    => $request->cabang,
                                 'kc_created_by'     => Auth::user()->m_username,

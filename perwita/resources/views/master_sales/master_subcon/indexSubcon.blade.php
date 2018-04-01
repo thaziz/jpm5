@@ -122,6 +122,6 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+$('.tbl-penerimabarang').DataTable();
 </script>
 @endsection

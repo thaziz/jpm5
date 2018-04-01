@@ -79,16 +79,29 @@ class invoice_Controller extends Controller
     }
 
 
-    public function cetak_nota($nomor=null) {
-        $head = collect(\DB::select(" SELECT c.*,i.* FROM invoice i LEFT JOIN customer c ON c.kode=i.kode_customer WHERE i.nomor='$nomor' "))->first();
-		$pendapatan = $head->pendapatan;
-		if ($pendapatan == 'KORAN'){
-        	$detail = DB::select(" SELECT *,nomor_do ||'-'||id_do AS nomor FROM invoice_d d WHERE d.nomor_invoice='$nomor' ");
-		}else{
-        	$detail = DB::select(" SELECT *,nomor_do AS nomor FROM invoice_d d WHERE d.nomor_invoice='$nomor' ");
-		}
-        $terbilang = $this->penyebut($head->total_tagihan);
-        return view('sales.invoice.print',compact('head','detail','terbilang'));
+    public function cetak_nota($id) {
+        $head = DB::table('invoice')
+                  ->join('customer','kode','=','i_kode_customer')
+                  ->where('i_nomor',$id)
+                  ->first();
+        $detail = DB::table('invoice_d')
+                    ->where('id_nomor_invoice',$id)
+                    ->get();
+        $counting = count($detail); 
+  
+
+        if ($counting < 30) {
+          $hitung =30 - $counting;
+          for ($i=0; $i < $hitung; $i++) { 
+            $push[$i]=' ';
+          }
+        }else{
+          $push = [];
+        }
+
+        // return $push;
+        $terbilang = $this->penyebut($head->i_total_tagihan);
+        return view('sales.invoice.print',compact('head','detail','terbilang','push'));
     }
 
     public function penyebut($nilai=null) {
@@ -207,7 +220,7 @@ public function nota_invoice(request $request){
 public function jatuh_tempo_customer(request $request)
 {
     $cus = DB::table('customer')
-             ->where('kode',$request->cus)
+             ->where('kode',$request->customer)
              ->first();
     $jt = $cus->syarat_kredit;
     $tgl = str_replace('/', '-' ,$request->tgl);
@@ -219,6 +232,14 @@ public function jatuh_tempo_customer(request $request)
                          'jt' =>$jt,
                          'tgl'=>$tgl
                        ]);
+}
+
+public function drop_cus(request $request)
+{
+  $customer = DB::table('customer')
+                      ->where('cabang',$request->cabang)
+                      ->get();
+  return view('sales.invoice.dropdown_customer',compact('customer'));
 }
 public function cari_do_invoice(request $request)
 {   
@@ -372,6 +393,8 @@ public function pajak_lain(request $request)
 }
 public function simpan_invoice(request $request)
 {
+
+  // dd($request->all());
    return DB::transaction(function() use ($request) {  
 
 
@@ -462,7 +485,7 @@ public function simpan_invoice(request $request)
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_status'             =>  'Released',
                                           'i_ppnrp'              =>  $total_ppn,
-                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_kode_pajak'         =>  $request->kode_pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
@@ -595,6 +618,9 @@ if(count($dataItem)==0){
               DB::rollback();
               return json_encode($dataInfo);
         }
+
+        // return $cabang;
+        // return$request->accPiutang;
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
@@ -1513,4 +1539,34 @@ public function update_invoice(request $request)
       }
       return $groups;
   }
+
+    public function lihat_invoice($id)
+    {
+        $data = DB::table('invoice')
+              ->where('i_nomor',$id)
+              ->first();
+        $data_dt = DB::table('invoice_d')
+                  ->join('delivery_order','nomor','=','id_nomor_do')
+                  ->leftjoin('delivery_orderd','dd_id','=','id_nomor_do_dt')
+                  ->where('id_nomor_invoice',$id)
+                  ->get();
+
+        $customer = DB::table('customer')
+                    ->get();
+
+        $cabang   = DB::table('cabang')
+                    ->get();
+        $tgl      = Carbon::now()->format('d/m/Y');
+        $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
+
+        $pajak    = DB::table('pajak')
+                    ->get();
+
+        $jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+                            FROM d_akun a join d_jurnal_dt jd
+                            on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                            (select j.jr_id from d_jurnal j where jr_ref='$id' and jr_note='INVOICE')")); 
+
+        return view('sales.invoice.lihat_invoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt','jurnal_dt'));
+    }
 }

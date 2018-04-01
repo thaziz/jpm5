@@ -125,9 +125,9 @@
                                
                                <tr>
                                    <td style="padding-top: 0.4cm"> Provinsi </td>
-                                   <td>
-                                       <select name="ed_provinsi" id="provinsi" class="form-control">
-                                           <option>-- Pilih Provinsi Terlebih dahulu --</option>
+                                   <td >
+                                       <select  name="ed_provinsi" id="provinsi" class="form-control">
+                                           <option selected="" disabled="">-- Pilih Provinsi --</option>
                                            @foreach ($provinsi as $a)
                                                 <option value="{{ $a->id }}">{{ $a->nama }}</option>
                                            @endforeach
@@ -138,8 +138,8 @@
                                <tr>
                                    <td style="padding-top: 0.4cm"> Kota </td>
                                    <td>
-                                        <select name="ed_kota" id="kota"  class="form-control">
-                                            <option disabled="" selected="">-- --</option>  
+                                        <select readonly   name="ed_kota" id="kota"  class="form-control">
+                                            <option disabled="" selected="">-</option>  
                                             @foreach ($kota as $b)
                                                 <option value="{{ $b->id }}">{{ $b->nama }}</option>
                                            @endforeach      
@@ -150,8 +150,8 @@
                                <tr>
                                    <td style="padding-top: 0.4cm"> kecamatan </td>
                                    <td>
-                                        <select name="ed_kecamatan" id="kecamatan"  class="form-control">
-                                            <option disabled="" selected="">-- --</option>
+                                        <select readonly name="ed_kecamatan" id="kecamatan"  class="form-control">
+                                            <option disabled="" selected="">-</option>
                                             @foreach ($kecamatan as $c)
                                                 <option value="{{ $c->id }}">{{ $c->nama }}</option>
                                            @endforeach               
@@ -253,12 +253,13 @@
                     kotakota = kotakota + '<option value="'+n.id+'" data-kota="'+n.kode_kota+'">'+n.nama+'</option>';
                  })
                 $('#kota').addClass('form-control'); 
+                $('#kota').attr('readonly',false); 
                 $('#kota').html(kotakota); 
                 $('#kota').change(function(){
                     var kode_kota = $(this).find(':selected').data('kota');
                     $('input[name="kode_kota"]').val(kode_kota);
                 })
-                $('#kecamatan').html('<option value="" selected="" disabled="">-- --</option>'); 
+                $('#kecamatan').html('<option value="" selected="" disabled=""></option>'); 
             }
         })
        
@@ -282,6 +283,8 @@
                  })
                 $('#kecamatan').addClass('form-control'); 
                 $('#kecamatan').html(kecamatan); 
+                $('#kecamatan').attr('readonly',false); 
+
             }
         })
     })
@@ -334,7 +337,13 @@
         $("input[name='ed_reguler']").val('');
         $("input[name='ed_express']").val('');
         $("input[name='ed_kode']").attr('readonly',true);
-        $("input[name='ed_kode']").attr('');
+        $("input[name='ed_kode']").val('');
+
+                $("select[name='ed_reguler']").val('').trigger('chosen:updated');
+
+                $("select[name='ed_express']").val('').trigger('chosen:updated');
+
+                $("select[name='ed_tipe']").val('').trigger('chosen:update');
 
         $("#provinsi").val('').trigger('chosen:updated');
         $("#kota").val('').trigger('chosen:updated');
@@ -364,9 +373,15 @@
                 $("select[name='ed_express']").val(data[0].tarif_express).trigger('chosen:updated');
                 $("input[name='ed_kode']").attr('readonly',true);
 
-                $("#provinsi").val(data[0].id_provinsi).trigger('chosen:updated');
-                $("#kota").val(data[0].id_kota).trigger('chosen:updated');
-                $("#kecamatan").val(data[0].id_kecamatan).trigger('chosen:updated');
+                $("#provinsi").val(data[0].provinsi_id).trigger('chosen:updated');
+                
+                $("input[name='kode_kota']").val(data[0].kota_kode);
+
+                $("select[name='ed_tipe']").val(data[0].type).trigger('chosen:update');
+
+
+                $("#kota").val(data[0].kota_id);
+                $("#kecamatan").val(data[0].kecamatan_id);
 
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
@@ -380,6 +395,54 @@
     });
 
     $(document).on("click","#btnsave",function(){
+        $kota =$("#kota :selected").val();
+        $kec = $("#kecamatan :selected").val();
+
+        if($kota == ''){
+          Command: toastr["warning"]("Nama Kota Harus Di pilih", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "100",
+              "hideDuration": "500",
+              "timeOut": "3000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if($kec == ''){
+          Command: toastr["warning"]("Nama Kecamatan Harus Di pilih", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "100",
+              "hideDuration": "500",
+              "timeOut": "3000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+
         $.ajax(
         {
             url : baseUrl + "/sales/tarif_penerus_dokumen/save_data",

@@ -59,12 +59,12 @@
                             <table border="0" class="table">
                               <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                               <tr>
-                                <input type="hidden" class="form-control" name="idsupplier" value="{{$sup->idsup}}" readonly="">
+                                <input type="hidden" class="form-control input-sm" name="idsupplier" value="{{$sup->idsup}}" readonly="">
                                 <td width="200px">
                                   Kode Supplier
                                 </td>
                                 <td>
-                                  <input type="text" class="form-control" name="nosupplier" value="{{$sup->no_supplier}}" readonly="">
+                                  <input type="text" class="form-control input-sm" name="nosupplier" value="{{$sup->no_supplier}}" readonly="">
                                 </td>
                                 </tr>
 
@@ -74,14 +74,14 @@
                                   Nama Supplier
                                   </td>
                                   <td width="400px">
-                                     <input type="text" class="form-control namasupplier" name="nama_supplier" value="{{$sup->nama_supplier}}" readonly="">
+                                     <input type="text" class="form-control input-sm namasupplier" name="nama_supplier" value="{{$sup->nama_supplier}}" readonly="">
                                   </td>
                               </tr>
 
                           <tr>
                             <td> Alamat </td>
                             <td>
-                              <input type="text" class="form-control alamat" name="alamat" value="{{$sup->alamat}}" readonly=""> 
+                              <input type="text" class="form-control input-sm alamat" name="alamat" value="{{$sup->alamat}}" readonly=""> 
                             </td>
                           </tr>
                           
@@ -131,7 +131,7 @@
                               Kode Pos
                             </td>
                             <td>
-                              <input type="text" class="form-control kodepos" name="kodepos" value="{{$sup->kodepos}}" readonly="">
+                              <input type="text" class="form-control kodepos input-sm" name="kodepos" value="{{$sup->kodepos}}" readonly="">
                             </td>
                           </tr>
 
@@ -141,10 +141,11 @@
                               No Telp / Fax
                             </td>
                             <td>
-                               <input type="text" class="form-control notelp" name="notelp" value="{{$sup->telp}}" readonly="">
+                               <input type="text" class="form-control notelp input-sm" name="notelp" value="{{$sup->telp}}" readonly="">
                             </td>
                           </tr>
 
+                        
 
                           <tr>
                             <td>  
@@ -152,7 +153,7 @@
                             </td>
 
                             <td>
-                                <span class="label label-info"> {{$sup->status}} </span>
+                                <span class="label label-info "> {{$sup->status}} </span>
                             </td>
                           </tr>
                       </table>                          
@@ -160,12 +161,12 @@
 
                     <div class="col-xs-6">
                       <table border="0" class="table">
-                        <tr>
+                          <tr>
                           <td width="200px">
-                             Contact Person
+                             Nomor Contact Person
                           </td>
                           <td width="300px">
-                            <input type="number" class="form-control cp" name="cp" value="{{$sup->contact_person}}" readonly="">
+                            <input type="number" class="form-control cp input-sm" name="cp" value="{{$sup->contact_person}}" readonly="">
                           </td>
                         </tr>
 
@@ -174,14 +175,14 @@
                              Nama Contact Person
                           </td>
                           <td width="300px">
-                            <input type="text" class="form-control nm_cp" name="nm_cp" value="{{$sup->nama_cp}}" readonly="">
+                            <input type="text" class="form-control nm_cp input-sm" name="nm_cp" value="{{$sup->nama_cp}}" readonly="">
                           </td>
                         </tr>
 
                         <tr>
                           <td>   Syarat Kredit  </td>
                           <td>
-                             <input type="text" class="form-control syaratkredit" name="syarat_kredit" value="{{$sup->syarat_kredit}}" readonly="">
+                             <input type="text" class="form-control syaratkredit input-sm" name="syarat_kredit" value="{{$sup->syarat_kredit}}" readonly="">
                           </td>
                         </tr>
 
@@ -189,7 +190,7 @@
                          <tr>
                           <td> Plafon Kredit </td>
                            <td>
-                             <input type="text" class="form-control plafonkredit" name="plafon_kredit" value="{{$sup->plafon}}" readonly="">
+                             <input type="text" class="form-control plafonkredit input-sm" name="plafon_kredit" value="{{$sup->plafon}}" readonly="">
                           </td>
                         </tr>
 
@@ -197,27 +198,23 @@
                          <tr>
                           <td> Mata Uang </td>
                           <td>
-                                <input type="text" class="form-control matauang" name="matauang" value="{{$sup->currency}}" readonly="">
+                                <input type="text" class="form-control matauang " name="matauang" value="{{$sup->currency}}" readonly="">
                           </td>
                         </tr>
 
-
-                        <tr>
-                          <td> NO NPWP </td>
-                          <td>
-                              <input type="text" class="form-control npwp" name="npwp" value="{{$sup->pajak_npwp}}" readonly="">
-                          </td>
-                        </tr>
+                         <tr>
+                            <td> Apakah Supplier ini termasuk PKP ? </td>
+                            <td> <select class="form-control pkp" name="pkp"><option value="Y"> Ya </option>  <option value="T"> Tidak </option> </select> </td>
+                          </tr>    
 
 
-                        <tr>
+                         <tr>
                           <td>
                             Acc Hutang Dagang
                           </td>
-                          <td> <input type="text" class="form-control acchutangdagang" name="acchutangdagang" readonly="" value="{{$sup->acc_hutang}}"> </td>
+                          <td> <input type="text" class="form-control acchutangdagang input-sm" name="acchutangdagang" readonly="" value="{{$sup->acc_hutang}}"> </td>
                         </tr>
-
-
+                         
                         <tr>
                           <td>
                             Terikat Kontrak
@@ -260,11 +257,41 @@
 
                      
 
-                      <div class="col-xs-12">
+
+
+                          
+
+                      <div class="col-xs-12" class="pajak">
                         <hr>
                         <b>  Informasi Pajak Supplier </b>
-                       <hr>
-                        <table border="0" class="table">
+                         <hr>
+                          <table border="0" class="table">
+
+                          
+                          <tr>
+                            <td> NO NPWP </td>
+                            <td>
+                                <input type="text" class="form-control npwp input-sm" name="npwp" value="{{$sup->pajak_npwp}}" readonly="">
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td class="pajak"> Nama </td>
+                            <td> <input type="text" class="form-control input-sm pajak" name="namapajak" value="{{$sup->namapajak}}"> </td>
+                          </tr>
+
+                          <tr>
+                            <td class="pajak"> Telepon </td>
+                            <td> <input type="number" class="form-control input-sm pajak" name="telppajak" value="{{$sup->telppajak}}"></td>
+                          
+                          </tr>
+
+                          <tr>
+                             <td class="pajak"> Alamat </td>
+                            <td> <input type="text" class="form-control input-sm pajak" name="alamatpajak" value="{{$sup->alamatpajak}}"></td>
+                          
+                          </tr>
+
                           <tr>
                             <td width="200px">
                                No Seri Pajak Supplier 
@@ -330,7 +357,7 @@
                       
 
                         <div class="col-xs-12">
-                            <th> <button class="btn btn-success edit" type="button"> Edit Data Barang ?  </button> </th>
+                            <th> <button class="btn btn-sm btn-info edit" type="button"> <i class="fa fa-pencil"> </i> Edit  </button> </th>
                         
                           <br>
                           @if($data['countitem'] > 0)      
@@ -413,6 +440,30 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+    $('#submit').click(function(){
+      var tr = $('tr#dataitem').length;
+      kontrak = $('.kontrak').val();
+      if(kontrak == 'YA'){
+              if(tr == 0){
+        toastr.info('jenis Supplier adalah Tidak Kontrak, Mohon Tambah Data Barang :) ');
+        return false;
+      }        
+      }
+
+    })
+
+     $('.pkp').change(function(){
+      val = $(this).val();
+      if(val == 'T'){
+        $('.pajak').hide();
+      }
+      else {
+        $('.pajak').show();
+      }
+    })
+
+
 //EDIT DATA
 $(function(){
   $('.edit').click(function(){
@@ -438,7 +489,8 @@ $(function(){
     $('.hrg').attr('readonly' , false);
     $('#idcabang').attr('disabled', false);
 
-    var rowBtn = '<button id="tmbh_data_barang" type="button" class="btn btn-success"> Tambah Data Barang </button>';
+
+    var rowBtn = '<button  id="tmbh_data_barang" type="button" class="btn btn-sm btn-success tmbhdatabarang"> <i class="fa fa-plus"> </i> &nbsp; Tambah Data Barang </button>';
 
     $('.btn-addbrg').html(rowBtn);
 
@@ -451,7 +503,7 @@ $(function(){
     $('#tmbh_data_barang').click(function(){
       $no++;
 
-      var rowBrg = '<tr id=item-'+$no+'>' +
+      var rowBrg = '<tr id=dataitem item-'+$no+'>' +
                     '<td> <b>' + $no +' </b> </td>' +               
                     '<td> <select class="form-control" name="brg[]">  @foreach($data['barang'] as $item) <option value="{{$item->kode_item}}"> {{$item->nama_masteritem}} </option> @endforeach </select>' +
                      '<td> <input type="text" class="form-control  hrg'+$no+'" id="harga" name="harga[]" data-id="'+$no+'"> </td>'+
@@ -487,7 +539,7 @@ $(function(){
 
 
     })
-
+    
   })
 })
 
@@ -537,7 +589,7 @@ $(function(){
                            "<hr>" +
                           "<h4> Data Barang </h4>" +
                           "<hr>" +
-                          "<button id='tmbh_data_barang' type='button' class='btn btn-success'> Tambah Data Barang </button>" +
+                          "<button id='tmbh_data_barang' type='button' class='btn btn-success btn-sm tmbhdatabarang'> <i class='fa fa-plus'> </i> Tambah Data Barang </button>" +
                           "<table class='table table-bordered table-striped tbl-item' id='addColumn'> " +
                           "<tr id='header-column'>" +
                               "<th> No </th>" +
@@ -557,7 +609,7 @@ $(function(){
                      
                     $no++;
 
-                    var rowBrg = "<tr id=item-"+$no+">" +
+                    var rowBrg = "<tr id=dataitem item-"+$no+">" +
                                   "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
                                   "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                                    "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
@@ -600,6 +652,7 @@ $(function(){
             else {
               $('.nokontrak').empty();
               $('.nokontrak2').empty();
+               $('.tmbhdatabarang').attr('disabled' , true);
             }
         })
 

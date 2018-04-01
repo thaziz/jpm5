@@ -65,9 +65,9 @@
                                         <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
                                             @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                             @endif
                                         @endforeach
                                         </select>
@@ -91,7 +91,7 @@
                             @endif
                             <tr>
                                 <td style="padding-top: 0.4cm" >Customer</td>
-                                <td colspan="4">                                    
+                                <td colspan="4" class="customer_td">                                    
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
@@ -109,7 +109,7 @@
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
-                                <td>
+                                <td class="disabled">
                                     <div class="input-group date">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" readonly="" class="ed_jatuh_tempo form-control" name="ed_jatuh_tempo" value="">
                                     </div>
@@ -165,7 +165,9 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
-                            <button type="button" class="btn btn-success " onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" onclick="ngeprint()" class="btn btn-warning print disabled" ><i class="glyphicon glyphicon-print"></i> Print</button>
+                            <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
                 </form>
@@ -214,7 +216,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
                                 <td colspan="4">
-                                    <input type="text" name="diskon2" onkeyup="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
+                                    <input type="number" name="diskon2" onkeyup="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
@@ -242,7 +244,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm; text-align:right">Pajak lain-lain</td>
                                 <td>
-                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="pajak_lain" id="pajak_lain" >
+                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="kode_pajak_lain" id="pajak_lain" >
                                         <option value="0"  >Pilih Pajak Lain-lain</option>
                                         @foreach($pajak as $val)
                                             <option value="{{$val->kode}}" data-pph="{{$val->nilai}}">{{$val->nama}}</option>
@@ -372,6 +374,19 @@
                 $('#nota_invoice').val(response.nota);
             }
         });
+
+        $.ajax({
+        url:baseUrl +'/sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            $('#customer').trigger('chosen:updated');
+            // toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+        });
     });
     // ganti nota untuk admin
     function ganti_nota(argument) {
@@ -384,20 +399,34 @@
                 $('#nota_invoice').val(response.nota);
             }
         });
+
+        $.ajax({
+        url:baseUrl +'/sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            $('#customer').trigger('chosen:updated');
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+        });
     }
     //ajax jatuh  tempo
-   $('#customer').change(function(){
-        var cus = $('#customer').val();
+   function ganti(){
+        var customer = $('#customer').val();
         var tgl = $('.tgl').val();
         $.ajax({
             url:baseUrl+'/sales/jatuh_tempo_customer',
-            data:{cus,tgl},
+            data:{customer,tgl},
             dataType : 'json',
             success:function(response){
                 $('.ed_jatuh_tempo').val(response.tgl);
+
             }
         });
-    });
+    }
 
    $('.tgl').change(function(){
         var cus = $('#customer').val();
@@ -412,9 +441,7 @@
         });
     });
 
-   $('.cus_disabled').change(function(){
-        $('.ed_customer').val($(this).val());
-   });
+
    $('#cb_pendapatan').change(function(){
         $('.ed_pendapatan').val($(this).val());
    })
@@ -612,11 +639,11 @@
 
 
         var netto = 0 ;
-        $('.dd_total').each(function(){
+        table_detail.$('.dd_total').each(function(){
             temp_total += parseFloat($(this).val());
         });
 
-        $('.dd_diskon').each(function(){
+        table_detail.$('.dd_diskon').each(function(){
             temp_diskon += parseFloat($(this).val());
         });
 
@@ -645,7 +672,7 @@
         var nomor_do = [];
         var cb_pendapatan = $('#cb_pendapatan').val();
         
-        $('.tanda').each(function(){
+        table_data_do.$('.tanda').each(function(){
             var check = $(this).is(':checked');
             if (check == true) {
                var par   = $(this).parents('tr');
@@ -712,7 +739,7 @@
 
                     hitung();
                     
-                    $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
+                    $('.customer_td').addClass('disabled');
                     $('#cb_pendapatan').attr('disabled',true);
                     /////////////////////////////////////
                 }
@@ -781,6 +808,7 @@
       function(){
             var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
             var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
+            var ed_customer=$("#customer").val(); 
                // alert(accPiutang);
            $.ajaxSetup({
             headers: {
@@ -790,13 +818,14 @@
 
           $.ajax({
           url:baseUrl + '/sales/simpan_invoice',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
                +'&accPiutang='+accPiutang
-               +'&pajak_lain='+pajak_lain,
+               +'&pajak_lain='+pajak_lain
+               +'&ed_customer='+ed_customer,
           success:function(response){
              if (response.status =='gagal') {
                 
@@ -822,10 +851,13 @@
                     title: "Berhasil!",
                     type: 'success',
                     text: "Data berhasil disimpan",
-                    timer: 900,
-                   showConfirmButton: false
+                    timer: 1000,
+                   showConfirmButton: true
                     },function(){
-                        location.reload();
+                        // location.reload();
+                        $('.simpan').addClass('disabled');
+                        $('.print').removeClass('disabled');
+
                 });
              }
           },
@@ -842,7 +874,12 @@
      });
     }
 
-   
-    
+   function ngeprint(){
+       var id = $('#nota_invoice').val();
+        window.open('{{url('sales/cetak_nota')}}'+'/'+id);
+    }
+    $('.reload').click(function(){
+    location.reload();
+})
 </script>
 @endsection

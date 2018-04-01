@@ -22,7 +22,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> INVOICE DETAIL
+                    <h5> EDIT INVOICE
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <a href="../invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
@@ -72,9 +72,9 @@
                                         <select class="form-control cabang disabled"  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if($data->i_kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
                                             @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                             @endif
                                         @endforeach
                                         </select>
@@ -159,6 +159,8 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan_btn" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" onclick="ngeprint()" class="btn btn-warning print " ><i class="glyphicon glyphicon-print"></i> Print</button>
+                            <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
                 </form>
@@ -293,7 +295,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
                                 <td colspan="4">
-                                    <input type="text" name="diskon2" onkeyup="hitung()"  value="{{$data->i_diskon2}}"   class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
+                                    <input type="number" name="diskon2" onkeyup="hitung()"  value="{{$data->i_diskon2}}"   class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
@@ -348,7 +350,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm; text-align:right">Pajak lain-lain</td>
                                 <td>
-                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="pajak_lain" id="pajak_lain" >
+                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="kode_pajak_lain" id="pajak_lain" >
                                         <option value="0"  >Pilih Pajak Lain-lain</option>
                                         @foreach($pajak as $val)
                                             @if($data->i_kode_pajak == $val->kode)
@@ -725,11 +727,11 @@ function hitung_pajak_lain(){
         console.log(temp_diskon2);
 
         var netto = 0 ;
-        $('.dd_total').each(function(){
+        table_detail.$('.dd_total').each(function(){
             temp_total += parseFloat($(this).val());
         });
 
-        $('.dd_diskon').each(function(){
+        table_detail.$('.dd_diskon').each(function(){
             temp_diskon += parseFloat($(this).val());
         });
 
@@ -756,7 +758,7 @@ function hitung_pajak_lain(){
         var nomor_do = [];
         var cb_pendapatan = $('#cb_pendapatan').val();
         
-        $('.tanda').each(function(){
+        table_data_do.$('.tanda').each(function(){
             var check = $(this).is(':checked');
             if (check == true) {
                var par   = $(this).parents('tr');
@@ -902,7 +904,7 @@ function hitung_pajak_lain(){
 
           $.ajax({
           url:baseUrl + '/sales/update_invoice',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
@@ -934,7 +936,6 @@ function hitung_pajak_lain(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        // location.reload();
                 });
              }
           },
@@ -964,6 +965,15 @@ function hitung_pajak_lain(){
               }
         });
    }
-    
+
+   function ngeprint(){
+       var id = $('#nota_invoice').val();
+        window.open('{{url('sales/cetak_nota')}}'+'/'+id);
+    }
+
+
+    $('.reload').click(function(){
+    location.reload();
+})
 </script>
 @endsection

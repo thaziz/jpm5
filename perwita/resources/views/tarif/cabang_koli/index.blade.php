@@ -479,6 +479,8 @@
                 $('input[name="tarif20kg_express"]').val(data[7].harga);
                 //expre
                 $('#hilang').hide();
+                $('#hilang1').show();
+                $("input[name='kodekota']").val(data[0].kode_kota);
                 //
                 $("input[name='kode_sama_koli']").val(data[0].kode_sama_koli);
                 $("select[name='cb_kota_asal']").val(data[0].id_kota_asal).trigger('chosen:updated');

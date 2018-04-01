@@ -12,529 +12,12 @@ use Yajra\Datatables\Datatables;
 
 class penerimaan_penjualan_Controller extends Controller
 {
-    public function table_data_detail (Request $request) {
-        $nomor = strtoupper($request->input('nomor'));
-        $sql = "   SELECT * FROM penerimaan_penjualan_d WHERE nomor_penerimaan_penjualan='$nomor'  ";
-        $list = DB::select(DB::raw($sql));
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nomor_invoice'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nomor_invoice'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
-    }
-
-    public function table_data_detail_biaya (Request $request) {
-        $nomor = strtoupper($request->input('nomor'));
-        $sql = "    SELECT ppbd.*,ab.nama nama_biaya FROM penerimaan_penjualan_biaya_d ppbd,akun_biaya ab
-                    WHERE ppbd.kode_biaya=ab.kode AND  ppbd.nomor_penerimaan_penjualan='$nomor'  ";
-        $list = DB::select(DB::raw($sql));
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            //<button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nomor_invoice'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit_biaya" ><i class="glyphicon glyphicon-pencil"></i></button>
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nomor_invoice'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete_biaya" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
-    }
-
-    public function get_data (Request $request) {
-        $id =$request->input('kode');
-        $data = DB::table('penerimaan_penjualan')->where('kode', $id)->first();
-        echo json_encode($data);
-    }
-
-    public function get_data_detail (Request $request) {
-        $id =$request->input('id');
-        $data = DB::table('penerimaan_penjualan_d')->where('id', $id)->first();
-        echo json_encode($data);
-    }
-
-    public function get_data_detail_biaya (Request $request) {
-        $id =$request->input('id');
-        $data = DB::table('penerimaan_penjualan_biaya_d')->where('id', $id)->first();
-        echo json_encode($data);
-    }
-
-    public function save_data (Request $request) {
-        $simpan='';
-        $crud = $request->crud_h;
-        $nomor_old = $request->ed_nomor_old;
-        $data = array(
-                'nomor' => strtoupper($request->ed_nomor),
-                'tanggal' => strtoupper($request->ed_tanggal),
-                'kode_cabang' => strtoupper($request->ed_cabang),
-                'kode_customer' => strtoupper($request->ed_customer),
-                'kode_akun' => strtoupper($request->cb_akun_h),
-                'jenis_pembayaran' => strtoupper($request->ed_jenis_pembayaran),
-                'keterangan' => strtoupper($request->ed_keterangan),
-                'jumlah' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
-            );
-
-        if ($crud == 'N' and $nomor_old =='') {
-            //auto number
-            if ($data['nomor'] ==''){
-                $tanggal = strtoupper($request->ed_tanggal);
-                $kode_cabang = strtoupper($request->ed_cabang);
-                $tanggal = date_create($tanggal);
-                $tanggal = date_format($tanggal,'ym');
-                $sql = "	SELECT CAST(MAX(SUBSTRING (nomor FROM '....$')) AS INTEGER) + 1 nomor
-                            FROM penerimaan_penjualan WHERE to_char(tanggal, 'YYMM')='$tanggal' AND kode_cabang='$kode_cabang' ";
-                $list = collect(\DB::select($sql))->first();
-                if ($list->nomor == ''){
-                    //$data['nomor']='SJT-'.$kode_cabang.'-'.$tanggal.'-00001';
-                    $data['nomor']='KWT'.$kode_cabang.$tanggal.'00001';
-                } else{
-                    $kode  = substr_replace('00000',$list->nomor,-strlen($list->nomor)); 
-                    $data['nomor']='KWT'.$kode_cabang.$tanggal.$kode;
-                }
-            }
-            // end auto number
-            $simpan = DB::table('penerimaan_penjualan')->insert($data);
-        } else {
-            $simpan = DB::table('penerimaan_penjualan')->where('nomor', $nomor_old)->update($data);
-        }
-        if($simpan == TRUE){
-            $result['error']='';
-            $result['result']=1;
-            $result['nomor']=$data['nomor'];
-        }else{
-            $result['error']=$data;
-            $result['result']=0;
-        }
-        $result['crud']=$crud;
-        echo json_encode($result);
-    }
-
-    public function hapus_data($nomor_penerimaan_penjualan=null){
-        $cek_data =DB::table('posting_pembayaran_d')->select('id')->where('nomor_penerimaan_penjualan', $nomor_penerimaan_penjualan)->first();
-        $pesan ='';
-        if ($cek_data->id !=NULL) {
-            $pesan='Nomor penerimaan penjualan '.$nomor_penerimaan_penjualan.' sudah di pakai pada posting pembayaran';
-            return view('sales.penerimaan_penjualan.pesan',compact('pesan'));
-        }else{
-            DB::beginTransaction();
-            DB::table('penerimaan_penjualan_d')->where('nomor_penerimaan_penjualan' ,'=', $nomor_penerimaan_penjualan)->delete();
-            DB::table('penerimaan_penjualan')->where('nomor' ,'=', $nomor_penerimaan_penjualan)->delete();
-            DB::commit();
-            return redirect('master_sales/penerimaan_penjualan');
-        }
-        
-    }
+    
     
 
-    public function save_data_detail (Request $request) {
-        $simpan='';
-        $nomor = strtoupper($request->nomor);
-        $hitung = count($request->nomor_invoice);
-        try {
-            DB::beginTransaction();
-            
-            for ($i=0; $i < $hitung; $i++) {
-                $nomor_invoice = strtoupper($request->nomor_invoice[$i]);
-                //$jumlah = filter_var($request->jumlah[$i], FILTER_SANITIZE_NUMBER_INT);
-                // if ($jumlah != 0 || $jumlah == '') {
-                //     $data = array(
-                //         'nomor_penerimaan_penjualan' => $nomor,
-                //         'nomor_invoice' => $nomor_invoice,
-                //         'jumlah' => $jumlah,
-                //     );
-                //     DB::table('penerimaan_penjualan_d')->insert($data);
-                //     DB::select(" UPDATE invoice SET jml_bayar_memorial=jml_bayar_memorial + '$jumlah' WHERE nomor='$nomor_invoice' ");
-                // }
-
-                $data = array(
-                    'nomor_penerimaan_penjualan' => $nomor,
-                    'nomor_invoice' => $nomor_invoice,
-                    //'jumlah' => $jumlah,
-                );
-                DB::table('penerimaan_penjualan_d')->insert($data);
-                //DB::select(" UPDATE invoice SET jml_bayar_memorial=jml_bayar_memorial + '$jumlah' WHERE nomor='$nomor_invoice' ");
-                
-            } 
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah,COALESCE(SUM(jumlah),0) ttl_jumlah FROM penerimaan_penjualan_d 
-                                                WHERE nomor_penerimaan_penjualan='$nomor' "))->first();
-            $data_h = array(
-                        'jumlah' => $jml_detail->ttl_jumlah,
-            );
-        
-//            $simpan = DB::table('penerimaan_penjualan')->where('nomor', $nomor)->update($data_h);
-            $success = true;
-        } catch (\Exception $e) {
-            $result['error']='gagal';
-            $result['result']=2;
-            $success = false;
-            DB::rollback();
-        }
-    
-        if ($success) {
-            DB::commit();
-            $result['error']='';
-            $result['result']=1;
-            $result['jml_detail']=$jml_detail->jumlah;
-            $result['ttl_jumlah']=number_format($jml_detail->ttl_jumlah, 0, ",", ".");    
-        }
-        echo json_encode($result);
-    }
-
-    public function save_data_detail2 (Request $request) {
-        $id = $request->id;
-        $jumlah = filter_var($request->jumlah, FILTER_SANITIZE_NUMBER_INT);
-        $jumlah_old = filter_var($request->jumlah_old, FILTER_SANITIZE_NUMBER_INT);
-        $jenis_pembayaran = strtoupper($request->jenis_pembayaran);
-        $keterangan = strtoupper($request->keterangan);
-        $nomor = strtoupper($request->nomor);
-        $nomor_invoice = strtoupper($request->nomor_invoice);
-        try {
-            DB::beginTransaction();
-            $data = array(
-                    'jumlah' => $jumlah,
-                    'keterangan' => $keterangan,
-                );
-    
-            DB::table('penerimaan_penjualan_d')->where('id', $id)->update($data);
-            if ($jenis_pembayaran == 'F') {
-                DB::select(" UPDATE invoice SET jml_bayar_memorial=jml_bayar_memorial -'$jumlah_old' + '$jumlah'  WHERE nomor='$nomor_invoice' ");
-            }else{
-                DB::select(" UPDATE invoice SET jml_bayar_memorial=jml_bayar_memorial -'$jumlah_old' + '$jumlah', jml_bayar=jml_bayar -'$jumlah_old' + '$jumlah'  WHERE nomor='$nomor_invoice' ");
-            }
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah,COALESCE(SUM(jumlah),0) ttl_jumlah
-                                                FROM penerimaan_penjualan_d 
-                                                WHERE nomor_penerimaan_penjualan='$nomor' "))->first();
-            $jml_kredit = collect(\DB::select(" SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                                                FROM penerimaan_penjualan_biaya_d 
-                                                WHERE nomor_penerimaan_penjualan='$nomor' AND jenis='K' "))->first();
-            $jml_debet = collect(\DB::select(" SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                                                FROM penerimaan_penjualan_biaya_d 
-                                                WHERE nomor_penerimaan_penjualan='$nomor' AND jenis='D' "))->first();
-            $data_h = array(
-                        'jumlah' => $jml_detail->ttl_jumlah,
-                        'debet' => $jml_debet->ttl_jumlah,
-                        'kredit' => $jml_kredit->ttl_jumlah,
-                        'netto' => $jml_detail->ttl_jumlah - $jml_debet->ttl_jumlah + $jml_kredit->ttl_jumlah,    
-            );
-            DB::table('penerimaan_penjualan')->where('nomor', $nomor)->update($data_h);
-            $success = true;
-        } catch (\Exception $e) {
-            $result['error']='gagal';
-            $result['result']=2;
-            $success = false;
-            DB::rollback();
-        }
-    
-        if ($success) {
-            DB::commit();
-            $result['error']='';
-            $result['result']=1;    
-            $result['jml_detail']=$jml_detail->jumlah;
-            $result['ttl_jumlah']=number_format($jml_detail->ttl_jumlah, 0, ",", ".");
-            $result['ttl_debet']=number_format($jml_debet->ttl_jumlah, 0, ",", ".");
-            $result['ttl_kredit']=number_format($jml_kredit->ttl_jumlah, 0, ",", ".");
-            $result['ttl_netto']=number_format($jml_detail->ttl_jumlah - $jml_debet->ttl_jumlah + $jml_kredit->ttl_jumlah, 0, ",", ".");    
-        }
-        echo json_encode($result);
-    }
-
-    public function save_data_detail_biaya (Request $request) {
-        $crud = $request->crud_biaya;
-        $id = $request->ed_id;
-        $jumlah = filter_var($request->ed_jml_biaya, FILTER_SANITIZE_NUMBER_INT);
-        $jenis = strtoupper($request->ed_jenis_biaya);
-        $kode_biaya = strtoupper($request->cb_akun_biaya);
-        $kode_akun_acc = strtoupper($request->ed_kode_acc);
-        $kode_akun_csf = strtoupper($request->ed_kode_csf);
-        $keterangan = strtoupper($request->ed_keterangan_biaya);
-        $nomor = strtoupper($request->ed_nomor_penerimaan_penjualan);
-        $nomor_invoice = strtoupper($request->cb_invoice);
-        $simpan ='';
-        
-        try {
-            DB::beginTransaction();
-            $data = array(
-                    'nomor_penerimaan_penjualan' => $nomor,
-                    'nomor_invoice' => $nomor_invoice,
-                    'kode_biaya' => $kode_biaya,
-                    'kode_akun_acc' => $kode_akun_acc,
-                    'kode_akun_csf' => $kode_akun_csf,
-                    'jumlah' => $jumlah,
-                    'jenis' => $jenis,
-                    'keterangan' => $keterangan,
-                );
-    
-            if ($crud == 'N') {
-                $simpan = DB::table('penerimaan_penjualan_biaya_d')->insert($data);
-            } else {
-                $simpan = DB::table('penerimaan_penjualan_de')->where('id', $id)->update($data);
-            }
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah,COALESCE(SUM(jumlah),0) ttl_jumlah
-                        FROM penerimaan_penjualan_d 
-                        WHERE nomor_penerimaan_penjualan='$nomor' "))->first();
-            $jml_kredit = collect(\DB::select(" SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                        FROM penerimaan_penjualan_biaya_d 
-                        WHERE nomor_penerimaan_penjualan='$nomor' AND jenis='K' "))->first();
-            $jml_debet = collect(\DB::select(" SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                        FROM penerimaan_penjualan_biaya_d 
-                        WHERE nomor_penerimaan_penjualan='$nomor' AND jenis='D' "))->first();
-            $data_h = array(
-                            'jumlah' => $jml_detail->ttl_jumlah,
-                            'debet' => $jml_debet->ttl_jumlah,
-                            'kredit' => $jml_kredit->ttl_jumlah,
-                            'netto' => $jml_detail->ttl_jumlah - $jml_debet->ttl_jumlah + $jml_kredit->ttl_jumlah,    
-                    );
-            DB::table('penerimaan_penjualan')->where('nomor', $nomor)->update($data_h);
-            $success = true;
-        } catch (\Exception $e) {
-            $result['error']='gagal';
-            $result['result']=2;
-            $success = false;
-            DB::rollback();
-        }
-    
-        if ($success) {
-            DB::commit();
-            $result['error']='';
-            $result['result']=1;
-            $result['ttl_jumlah']=number_format($jml_detail->ttl_jumlah, 0, ",", ".");
-            $result['ttl_debet']=number_format($jml_debet->ttl_jumlah, 0, ",", ".");
-            $result['ttl_kredit']=number_format($jml_kredit->ttl_jumlah, 0, ",", ".");
-            $result['ttl_netto']=number_format($jml_detail->ttl_jumlah - $jml_debet->ttl_jumlah + $jml_kredit->ttl_jumlah, 0, ",", ".");    
-        }
-        echo json_encode($result);
-    }
-
-    public function hapus_data_detail (Request $request) {
-        $hapus='';
-        $id=$request->id;
-        $nomor=$request->nomor;
-        $jenis_pembayaran = $request->jenis_pembayaran;
-        $data_invoice = collect(\DB::select(" SELECT * FROM penerimaan_penjualan_d  WHERE id='$id' "))->first();
-        $jumlah = $data_invoice->jumlah;
-        $nomor_invoice = $data_invoice->nomor_invoice;
-        $cek_data_biaya =collect(\DB::select("  SELECT id FROM penerimaan_penjualan_biaya_d 
-                                                WHERE nomor_penerimaan_penjualan='$nomor' AND nomor_invoice='$nomor_invoice' "))->first();
-        $cek_data =collect(\DB::select(" SELECT id FROM posting_pembayaran_d  WHERE nomor_penerimaan_penjualan='$nomor' "))->first();
-        if ($cek_data_biaya !=NULL) {
-            $result['result']='4';
-        }else if ($cek_data !=NULL) {
-            $result['result']='3';
-        }else{
-            try {
-                DB::beginTransaction();
-                if ($jenis_pembayaran == 'F') {
-                    DB::select(" UPDATE invoice SET jml_bayar_memorial=jml_bayar_memorial - '$jumlah' WHERE nomor='$nomor_invoice' ");
-                }else{
-                    DB::select(" UPDATE invoice SET jml_bayar_memorial=jml_bayar_memorial - '$jumlah',jml_bayar=jml_bayar - '$jumlah' WHERE nomor='$nomor_invoice' ");
-                }
-                
-                DB::table('penerimaan_penjualan_d')->where('id' ,'=', $id)->delete();
-                $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah,COALESCE(SUM(jumlah),0) ttl_jumlah FROM penerimaan_penjualan_d 
-                                                    WHERE nomor_penerimaan_penjualan='$nomor' "))->first();
-                $jml_kredit = collect(\DB::select(" SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                                                    FROM penerimaan_penjualan_biaya_d 
-                                                    WHERE nomor_penerimaan_penjualan='$nomor' AND jenis='K' "))->first();
-                $jml_debet = collect(\DB::select(" SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                                                    FROM penerimaan_penjualan_biaya_d 
-                                                    WHERE nomor_penerimaan_penjualan='$nomor' AND jenis='D' "))->first();
-                $data_h = array(
-                                'jumlah' => $jml_detail->ttl_jumlah,
-                                'debet' => $jml_debet->ttl_jumlah,
-                                'kredit' => $jml_kredit->ttl_jumlah,
-                                'netto' => $jml_detail->ttl_jumlah - $jml_debet->ttl_jumlah + $jml_kredit->ttl_jumlah,    
-                        );
-                DB::table('penerimaan_penjualan')->where('nomor', $nomor)->update($data_h);
-                $success = true;
-            } catch (\Exception $e) {
-                $result['error']='gagal';
-                $result['result']=2;
-                $success = false;
-                DB::rollback();
-            }
-        
-            if ($success) {
-                DB::commit();
-                $result['error']='';
-                $result['result']=1;
-                $result['jml_detail']=$jml_detail->jumlah;
-                $result['ttl_jumlah']=number_format($jml_detail->ttl_jumlah, 0, ",", ".");
-                $result['ttl_debet']=number_format($jml_debet->ttl_jumlah, 0, ",", ".");
-                $result['ttl_kredit']=number_format($jml_kredit->ttl_jumlah, 0, ",", ".");
-                $result['ttl_netto']=number_format($jml_detail->ttl_jumlah - $jml_debet->ttl_jumlah + $jml_kredit->ttl_jumlah, 0, ",", ".");    
-            }
-        }
-        echo json_encode($result);
-    }
-
-    public function hapus_data_detail_biaya (Request $request) {
-        $hapus='';
-        $id=$request->id;
-        $nomor=$request->nomor;
-        try {
-            DB::beginTransaction();
-            DB::table('penerimaan_penjualan_biaya_d')->where('id' ,'=', $id)->delete();
-            $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah,COALESCE(SUM(jumlah),0) ttl_jumlah FROM penerimaan_penjualan_d 
-                                                WHERE nomor_penerimaan_penjualan='$nomor' "))->first();
-            $jml_kredit = collect(\DB::select(" SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                                                FROM penerimaan_penjualan_biaya_d 
-                                                WHERE nomor_penerimaan_penjualan='$nomor' AND jenis='K' "))->first();
-            $jml_debet = collect(\DB::select("  SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                                                FROM penerimaan_penjualan_biaya_d 
-                                                WHERE nomor_penerimaan_penjualan='$nomor' AND jenis='D' "))->first();
-            $data_h = array(
-                            'jumlah' => $jml_detail->ttl_jumlah,
-                            'debet' => $jml_debet->ttl_jumlah,
-                            'kredit' => $jml_kredit->ttl_jumlah,
-                            'netto' => $jml_detail->ttl_jumlah + $jml_debet->ttl_jumlah - $jml_kredit->ttl_jumlah,    
-                    );
-            DB::table('penerimaan_penjualan')->where('nomor', $nomor)->update($data_h);
-            $success = true;
-        } catch (\Exception $e) {
-            $result['error']='gagal';
-            $result['result']=2;
-            $success = false;
-            DB::rollback();
-        }
-    
-        if ($success) {
-            DB::commit();
-            $result['error']='';
-            $result['result']=1;
-            $result['jml_detail']=$jml_detail->jumlah;
-            $result['ttl_jumlah']=number_format($jml_detail->ttl_jumlah, 0, ",", ".");
-            $result['ttl_debet']=number_format($jml_debet->ttl_jumlah, 0, ",", ".");
-            $result['ttl_kredit']=number_format($jml_kredit->ttl_jumlah, 0, ",", ".");
-            $result['ttl_netto']=number_format($jml_detail->ttl_jumlah - $jml_debet->ttl_jumlah + $jml_kredit->ttl_jumlah, 0, ",", ".");    
-        }
-        
-        echo json_encode($result);
-    }
-
- 
-
-    
-
-    public function tampil_invoice(Request $request) {
-       
-
-    }
-
-    public function tampil_riwayat_invoice(Request $request) {
-        $nomor = $request->nomor_invoice;
-        $sql = "    select i.nomor nomor_invoice,i.total_tagihan,pd.nomor_penerimaan_penjualan,pd.jumlah as jml_bayar, p.tanggal tgl_bayar,
-                    i.total_tagihan - sum(pd.jumlah) OVER (ORDER BY p.tanggal,pd.id) sisa_tagihan,pd.keterangan
-                    from invoice i,penerimaan_penjualan_d pd,penerimaan_penjualan p
-                    where i.nomor='$nomor' and pd.nomor_invoice=i.nomor and p.nomor=pd.nomor_penerimaan_penjualan ";
 
 
-        //$sql = "select * from penerimaan_penjualan_d";
-        $list = DB::select(DB::raw($sql));
-        $tabel_data = ' <table id="table_data_riwayat_invoice" class="table table-bordered table-striped">
-                        <thead>
-                            
-                            <tr>
-                                <td style="width:17%">Nomor Penerimaan</td>
-                                <td style="width:18%">Tanggal</th>
-                                <td style="width:10%">Jml Bayar</td>
-                                <td>Keterangan</td>
-                            </tr>
-                        </thead>
-                        <tbody>';
-        foreach ($list as $row) {
-            $tabel_data = $tabel_data.' <tr>
-                                                <td>'. $row->nomor_penerimaan_penjualan.'</td>    
-                                                <td>'. $row->tgl_bayar.'</td>
-                                                <td style="text-align:right">'.number_format($row->jml_bayar, 0, ",", ".").' </td>
-                                                <td>'. $row->keterangan.'</td>
-                                            </tr>';
-        };        
-        $tabel_data = $tabel_data.'</tbody> </table>';                    
-        // echo '  <table id="table_data_riwayat_invoice" class="table table-bordered table-striped">
-        //             <thead>
-                        
-        //                 <tr>
-        //                     <td>Nomor Penerimaan</td>
-        //                     <td>Tanggal</th>
-        //                     <td style="width:20%">Jml Bayar</td>
-        //                     <td style="width:20%">Sisa</td>
-        //                 </tr>
-        //             </thead>
-        //             <tbody>
-        //             <tr>
-        //                 <td colspan = "3" style="background-color: #ffff99;" >Jumlah Tagihan Nomor Invoice : '.$nomor.'</td>
-        //                 <td style="text-align:right; background-color: #ffff99;">'.number_format($total_tagihan, 0, ",", ".").' </td>
-        //             </tr>';
-        // foreach ($list as $row) {
-        //     echo '
-        //     <tr>
-        //         <td>'. $row->nomor_penerimaan_penjualan.'</td>    
-        //         <td>'. $row->tgl_bayar.'</td>
-        //         <td style="text-align:right">'.number_format($row->jml_bayar, 0, ",", ".").' </td>
-        //         <td style="text-align:right">'.number_format($row->sisa_tagihan, 0, ",", ".").' </td>
-        //     </tr>';
-        // }        
-        // echo '</tbody>
-        // </table>';    
-        // $data = DB::table('invoice')->where('nomor', $nomor)->first();
-        // echo json_encode($data);
-        $result['html']=$tabel_data;
-        $result['invoice']=DB::table('invoice')->where('nomor', $nomor)->first();
-        $result['penerimaan_penjualan_d']=DB::table('penerimaan_penjualan_d')->where('id', $request->id)->first();
-        $nomor_invoice = $result['penerimaan_penjualan_d']->nomor_invoice;
-        $nomor_penerimaan = $result['penerimaan_penjualan_d']->nomor_penerimaan_penjualan;
-        $jml_kredit = collect(\DB::select(" SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                                            FROM penerimaan_penjualan_biaya_d 
-                                            WHERE nomor_penerimaan_penjualan='$nomor_penerimaan' AND nomor_invoice='$nomor_invoice' AND jenis='K' "))->first();
-        $jml_debet = collect(\DB::select("  SELECT COALESCE(SUM(jumlah),0) ttl_jumlah
-                                            FROM penerimaan_penjualan_biaya_d 
-                                            WHERE nomor_penerimaan_penjualan='$nomor_penerimaan' AND nomor_invoice='$nomor_invoice' AND jenis='D' "))->first();
-		$nota_debet_kredit = collect(\DB::select("  SELECT COALESCE(SUM(debet),0) ttl_debet,COALESCE(SUM(kredit),0) ttl_kredit FROM nota_debet_kredit 
-                                            		WHERE nomor_invoice='$nomor_invoice' "))->first();
-		$result['ttl_nota_debet'] = $nota_debet_kredit->ttl_debet;
-		$result['ttl_nota_kredit'] = $nota_debet_kredit->ttl_kredit;
-        $result['total_biaya_kredit'] = $jml_kredit->ttl_jumlah;                                           
-        $result['total_biaya_debet'] = $jml_debet->ttl_jumlah;                                           
-        echo json_encode($result);
-
-    }
-
-    public function tampil_invoice_biaya(Request $request) {
-        $nomor = $request->nomor;
-        $sql = "SELECT nomor_invoice FROM penerimaan_penjualan_d WHERE  nomor_penerimaan_penjualan='$nomor' ";
-        $list = DB::select(DB::raw($sql));
-        $data_invoice = ' <select class="form-control" name="cb_invoice" id="cb_invoice" >';
-        foreach ($list as $row) {
-            $data_invoice = $data_invoice.' <option value="'.$row->nomor_invoice.'">'.$row->nomor_invoice.'</option>';
-        };
-        $result['html'] = $data_invoice.'</select>';           
-        echo json_encode($result);
-
-    }
-
-    public function get_data_akun_biaya(Request $request) {
-        $id =$request->input('kode');
-        $data = DB::table('akun_biaya')->where('kode', $id)->first();
-        echo json_encode($data);
-
-    }
-
-    public function cetak_nota($nomor=null) {
+    public function cetak_nota($nomor) {
         $head = DB::table('kwitansi')
                   ->join('customer','kode','=','k_kode_customer')
                   ->where('k_nomor',$nomor)
@@ -543,10 +26,20 @@ class penerimaan_penjualan_Controller extends Controller
         $detail = DB::table('kwitansi')
                     ->join('kwitansi_d','kd_id','=','k_id')
                     ->join('invoice','kd_nomor_invoice','=','i_nomor')
+                     ->where('k_nomor',$nomor)
                     ->get();
+        $counting = count($detail );
+        if ($counting < 30) {
+          $hitung =30 - $counting;
+          for ($i=0; $i < $hitung; $i++) { 
+            $push[$i]=' ';
+          }
+        }else{
+          $push = [];
+        }
 
-        $terbilang =$this->penyebut($head->k_jumlah);
-        return view('sales.penerimaan_penjualan.print',compact('head','detail','terbilang'));
+        $terbilang =$this->penyebut($head->k_netto);
+        return view('sales.penerimaan_penjualan.print',compact('head','detail','terbilang','push'));
     }
 
     public function penyebut($nilai=null) {
@@ -598,33 +91,26 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function index()
     {
-        
-        return view('sales.penerimaan_penjualan.index',compact('data'));
-    }
-
-
-    public function datatable_kwitansi()
-    {
-        $cabang = Auth::user()->kode_cabang;
-        $data = DB::table('kwitansi')
-                  ->where('k_kode_cabang',$cabang)
-                  ->get();
-        for ($i=0; $i < count($data); $i++) { 
-            $data[$i]->k_netto = number_format($data[$i]->k_netto, 2, ",", ".");
+        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+            $data = DB::table('kwitansi')
+                      ->join('customer','kode','=','k_kode_customer')
+                      ->get();
+            
+        }else{
+            $cabang = Auth::user()->kode_cabang;
+            $data = DB::table('kwitansi')
+                      ->join('customer','kode','=','k_kode_customer')
+                      ->where('k_kode_cabang',$cabang)
+                      ->get();
         }
-        $data = collect($data);
 
-        return Datatables::of($data)
-                        ->addColumn('tes', function ($data) {
+        
 
-                           $string = (string)$data->k_nomor;
-                                   return '<div class="btn-group"><button type="button" onclick="edit(\''.$string.'\')" class="btn btn-xs btn-primary"><i class="fa fa-pencil"></i></button>
-                                   <button type="button" onclick="ngeprint(\''.$string.'\')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></button>
-                                        <button type="button" onclick="hapus(\''.$string.'\')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
-                                         </div>';
-                            })
-                        ->make(true);
+        return view('sales.penerimaan_penjualan.index',compact('data'));
+        
     }
+
+
     public function nota_kwitansi(request $request)
     {
         $bulan = Carbon::now()->format('m');
@@ -690,25 +176,53 @@ class penerimaan_penjualan_Controller extends Controller
         $customer     = $request->cb_customer;
         $customer     = $request->cb_customer;
         $array_simpan = $request->array_simpan;
-        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan'));
+        $array_edit   = $request->array_edit;
+        $array_harga  = $request->array_harga;
+
+        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan','array_edit','array_harga'));
     }
     public function datatable_detail_invoice(request $request)
     {   
         // dd($request->all());
         // return $request->customer;
-        $temp  = DB::table('invoice')
+        $temp_1  = DB::table('invoice')
+                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->where('i_kode_customer',$request->customer)
+                  ->where('i_sisa_pelunasan','!=',0)
+                  ->where('i_kode_cabang',$request->cabang)
+                  ->get();
+        if (isset($request->array_edit)) {
+            $temp_2  = DB::table('invoice')
+                  ->leftjoin('kwitansi','k_nomor','=','i_nomor')
+                  ->whereIn('i_nomor',$request->array_edit)
+                  ->get();
+            $temp   = array_merge($temp_1,$temp_2);
+            $temp = array_map("unserialize", array_unique(array_map("serialize", $temp)));
+            $temp = array_values($temp);
+        }else{
+            $temp = $temp_1;
+        }
+       
+        
+
+        $temp1_1  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_pelunasan','!=',0)
                   ->where('i_kode_cabang',$request->cabang)
                   ->get();
 
-        $temp1 = DB::table('invoice')
+        if (isset($request->array_edit)) {
+            $temp1_2  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
-                  ->where('i_kode_customer',$request->customer)
-                  ->where('i_sisa_pelunasan','!=',0)
-                  ->where('i_kode_cabang',$request->cabang)
+                  ->whereIn('i_nomor',$request->array_edit)
                   ->get();
+            $temp1   = array_merge($temp1_1,$temp1_2);
+            $temp1 = array_map("unserialize", array_unique(array_map("serialize", $temp1)));
+            $temp1 = array_values($temp1);
+        }else{
+            $temp1 = $temp1_1;
+        }
 
                   
         for ($i=0; $i < count($temp1); $i++) { 
@@ -737,9 +251,17 @@ class penerimaan_penjualan_Controller extends Controller
 
             $data = $temp;
         }
+            for ($i=0; $i < count($data); $i++) { 
+                for ($a=0; $a < count($request->array_edit); $a++) { 
+                    if ($request->array_edit[$a] == $data[$i]->i_nomor) {
+                        $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_pelunasan+$request->array_harga[$a];
+                    }
+                }
+            }
+        
 
         $data = collect($data);
-
+        // return $data;
         return Datatables::of($data)
                         ->addColumn('tes', function ($data) {
                                    return     '<input type="checkbox" class="child_check">';
@@ -748,6 +270,7 @@ class penerimaan_penjualan_Controller extends Controller
                                 return  $data->i_nomor .'<input type="hidden" class="nomor_inv" value="'. $data->i_nomor .'" >';
                         })
                         ->addColumn('i_sisa', function ($data) {
+
                                 return number_format($data->i_sisa_pelunasan,2,',','.');
                         })
                         ->addColumn('i_tagihan', function ($data) {
@@ -764,15 +287,32 @@ class penerimaan_penjualan_Controller extends Controller
                   ->whereIn('i_nomor',$request->nomor)
                   ->get();
 
+        for ($i=0; $i < count($data); $i++) { 
+            for ($a=0; $a < count($request->array_edit); $a++) { 
+                if ($request->array_edit[$a] == $data[$i]->i_nomor) {
+                    $data[$i]->i_sisa_pelunasan = $data[$i]->i_sisa_pelunasan+$request->array_harga[$a];
+                }
+            }
+        }
+
         return response()->json(['data'=>$data]);
         
     }
     public function riwayat_invoice(request $request)
     {
-        $data = DB::table('kwitansi')
+        
+        if (isset($request->id)) {
+            $data = DB::table('kwitansi')
+                  ->join('kwitansi_d','k_id','=','kd_id')
+                  ->where('kd_nomor_invoice',$request->i_nomor)
+                  ->where('k_nomor','!=',$request->id)
+                  ->get();
+        }else{
+            $data = DB::table('kwitansi')
                   ->join('kwitansi_d','k_id','=','kd_id')
                   ->where('kd_nomor_invoice',$request->i_nomor)
                   ->get();
+        }
         return view('sales.penerimaan_penjualan.tabel_riwayat',compact('data'));
     }
     public function riwayat_cn_dn(request $request)
@@ -794,13 +334,13 @@ class penerimaan_penjualan_Controller extends Controller
         }else{
             $data->debet = 'KREDIT';
         }
+
         return response()->json(['data'=>$data]);  
     }
     public function simpan_kwitansi(request $request)
     {
-        // dd($request->all());
         return DB::transaction(function() use ($request) {  
-
+            // dd($request->id);
         $tgl = str_replace('/', '-', $request->ed_tanggal);
         $tgl = Carbon::parse($tgl)->format('Y-m-d');
 
@@ -815,23 +355,26 @@ class penerimaan_penjualan_Controller extends Controller
             }else{
                 $k_id += 1;
             }
+
+            
             $save_kwitansi = DB::table('kwitansi')
                                ->insert([
                                 'k_id' => $k_id,
                                 'k_nomor' => $request->nota,
                                 'k_tanggal'=> $tgl,
-                                'k_kode_customer' => $request->cb_customer,
+                                'k_kode_customer' => $request->customer,
                                 'k_jumlah' => $request->jumlah_bayar,
                                 'k_keterangan' => $request->ed_keterangan,
                                 'k_create_by' => Auth::user()->m_username,
                                 'k_update_by' => Auth::user()->m_username,
                                 'k_create_at' => Carbon::now(),
                                 'k_update_at' => Carbon::now(),
+                                'k_uang_muka' => $request->um,
                                 'k_kode_cabang' => $request->cb_cabang,
                                 'k_jenis_pembayaran' => $request->cb_jenis_pembayaran,
-                                'k_kredit' => $request->ed_debet,
+                                'k_kredit' => $request->ed_kredit,
+                                'k_debet' => $request->ed_debet,
                                 'k_nota_bank' => $request->nota_bank,
-                                'k_debet' => $request->ed_kredit,
                                 'k_netto' => $request->ed_netto,
                                 'k_kode_akun'=> $request->cb_akun_h
                                ]);
@@ -846,7 +389,7 @@ class penerimaan_penjualan_Controller extends Controller
                     }else{
                         $i_biaya_admin[$i] = $request->i_biaya_admin[$i];
                     }
-
+          
                     $memorial = (float)$cari_invoice->i_sisa_pelunasan - (float)$request->i_bayar[$i];
 
                     if ($memorial > 0) {
@@ -892,6 +435,11 @@ class penerimaan_penjualan_Controller extends Controller
             }
 
             for ($i=0; $i < count($request->b_akun); $i++) { 
+                if ($request->b_debet[$i] != 0) {
+                    $jenis = 'D';
+                }else{
+                    $jenis = 'K';
+                }
                 $save_biaya = DB::table('kwitansi_biaya_d')
                                  ->insert([
                                       'kb_id' => $k_id,
@@ -901,6 +449,7 @@ class penerimaan_penjualan_Controller extends Controller
                                       'kb_kode_akun_csf' => $request->b_akun[$i],
                                       'kb_jumlah' => $request->b_jumlah[$i],
                                       'kb_keterangan' => $request->b_keterangan[$i],
+                                      'kb_jenis' => $jenis,
                                       'kb_debet'    => $request->b_debet[$i],
                                       'kb_kredit'    => $request->b_kredit[$i],
                                  ]);
@@ -919,7 +468,8 @@ class penerimaan_penjualan_Controller extends Controller
                                       'ku_keterangan' => $request->m_Keterangan_um[$i],
                                       'ku_kredit'    => $request->jumlah_bayar_um[$i],
                                       'ku_nomor_um'    => $request->m_um[$i],
-                                      'ku_jenis'       => $request->m_status_um[$i]
+                                      'ku_status_um'    => $request->m_status_um[$i]
+                                      // 'ku_jenis'       => $request->m_status_um[$i]
                                  ]);
 
                 $cari_um = DB::table('uang_muka_penjualan')
@@ -969,21 +519,64 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function cari_um(request $request)
     {
-        $temp = DB::table('uang_muka_penjualan')
+        $temp_1 = DB::table('uang_muka_penjualan')
                   ->where('kode_customer',$request->cb_customer)
-                  ->orWhere('status_um','NON CUSTOMER')
+                  ->Where('status_um','CUSTOMER')
                   ->where('kode_cabang',$request->cb_cabang)
+                  ->where('sisa_uang_muka','!=',0)
+                  ->where('nomor_posting','!=',null)
+                  ->get();
+        $temp_2 = DB::table('uang_muka_penjualan')
+                  ->Where('status_um','NON CUSTOMER')
                   ->where('sisa_uang_muka','!=',0)
                   ->where('nomor_posting','!=',null)
                   ->get();
 
-        $temp1 = DB::table('uang_muka_penjualan')
+       
+        if (isset($request->array_um)) {
+            $temp_3 = DB::table('uang_muka_penjualan')
+                  ->whereIn('nomor',$request->array_um)
+                  ->Where('status_um','CUSTOMER')
+                  ->where('kode_cabang',$request->cb_cabang)
+                  ->where('nomor_posting','!=',null)
+                  ->get();
+            $temp   = array_merge($temp_1,$temp_2,$temp_3);
+            $temp = array_map("unserialize", array_unique(array_map("serialize", $temp)));
+            $temp = array_values($temp);
+        }else{
+            $temp   = array_merge($temp_1,$temp_2);
+            $temp = array_map("unserialize", array_unique(array_map("serialize", $temp)));
+            $temp = array_values($temp);
+        }
+        
+        $temp1_1 = DB::table('uang_muka_penjualan')
                   ->where('kode_customer',$request->cb_customer)
-                  ->orWhere('status_um','NON CUSTOMER')
+                  ->Where('status_um','CUSTOMER')
                   ->where('kode_cabang',$request->cb_cabang)
                   ->where('sisa_uang_muka','!=',0)
                   ->where('nomor_posting','!=',null)
                   ->get();
+        $temp1_2 = DB::table('uang_muka_penjualan')
+                  ->Where('status_um','NON CUSTOMER')
+                  ->where('sisa_uang_muka','!=',0)
+                  ->where('nomor_posting','!=',null)
+                  ->get();
+
+        if (isset($request->array_um)) {
+            $temp1_3 = DB::table('uang_muka_penjualan')
+                  ->whereIn('nomor',$request->array_um)
+                  ->Where('status_um','CUSTOMER')
+                  ->where('kode_cabang',$request->cb_cabang)
+                  ->where('nomor_posting','!=',null)
+                  ->get();
+            $temp1   = array_merge($temp1_1,$temp1_2,$temp1_3);
+            $temp1= array_map("unserialize", array_unique(array_map("serialize", $temp1)));
+            $temp1 = array_values($temp1);
+        }else{
+            $temp1   = array_merge($temp1_1,$temp1_2);
+            $temp1 = array_map("unserialize", array_unique(array_map("serialize", $temp1)));
+            $temp1 = array_values($temp1);
+        }
 
         if (isset($request->simpan_um)) {
             for ($i=0; $i < count($temp1); $i++) { 
@@ -1000,24 +593,41 @@ class penerimaan_penjualan_Controller extends Controller
             $data = $temp;
         }
 
+        for ($i=0; $i < count($data); $i++) { 
+            for ($a=0; $a < count($request->array_um); $a++) { 
+                if ($request->array_um[$a] == $data[$i]->nomor) {
+                    $data[$i]->sisa_uang_muka = $data[$i]->sisa_uang_muka+$request->harga_um[$a];
+                }
+            }
+        }
         return view('sales.penerimaan_penjualan.tabel_um',compact('data'));
     }
     public function pilih_um(request $request)
     {
         $data = DB::table('uang_muka_penjualan')
                    ->where('nomor',$request->um)
-                   ->orWhere('status_um','=','NON CUSTOMER')
-                   ->first();
+                   // ->orWhere('status_um','=','NON CUSTOMER')
+                   ->get();
+        for ($i=0; $i < count($data); $i++) { 
+            for ($a=0; $a < count($request->array_um); $a++) { 
+                if ($request->array_um[$a] == $data[$i]->nomor) {
+                    $data[$i]->sisa_uang_muka = $data[$i]->sisa_uang_muka+$request->harga_um[$a];
+                }
+            }
+        }
 
         return response()->json(['data'=>$data]);
     }
 
     public function hapus_kwitansi(request $request)
     {
-        // dd($request->all());
         $cari_kwitansi = DB::table('kwitansi')
                          ->join('kwitansi_d','kd_id','=','k_id')
-                         ->leftjoin('kwitansi_uang_muka','ku_id','=','k_id')
+                         ->where('k_nomor',$request->id)
+                         ->get();
+        // dd($cari_kwitansi);
+        $cari_um_kwitansi = DB::table('kwitansi')
+                         ->join('kwitansi_uang_muka','ku_id','=','k_id')
                          ->where('k_nomor',$request->id)
                          ->get();
         $invoice_nomor = [];
@@ -1025,34 +635,35 @@ class penerimaan_penjualan_Controller extends Controller
             $cari_invoice = DB::table('invoice')
                               ->where('i_nomor',$cari_kwitansi[$i]->kd_nomor_invoice)
                               ->first();
-            $cari_um = DB::table('uang_muka_penjualan')
-                              ->where('nomor',$cari_kwitansi[$i]->ku_nomor_um)
-                              ->first();
-            $net1 = $cari_kwitansi[$i]->kd_total_bayar - $cari_kwitansi[$i]->kd_biaya_lain;
+            $net1 = $cari_kwitansi[$i]->kd_total_bayar;
 
             $hasil_invoice = $cari_invoice->i_sisa_pelunasan + $net1;
-
-            if ($cari_um != null) {
-               $hasil_um = $cari_um->sisa_uang_muka + $cari_kwitansi[$i]->ku_jumlah;
-                # code...
-                $update_um = DB::table('uang_muka_penjualan')
-                                 ->where('nomor',$cari_kwitansi[$i]->ku_nomor_um)
-                                 ->update([
-                                    'sisa_uang_muka'=>$hasil_um
-                                 ]);
-            }
 
             $update_invoice = DB::table('invoice')
                                  ->where('i_nomor',$cari_kwitansi[$i]->kd_nomor_invoice)
                                  ->update([
                                     'i_sisa_pelunasan'=>$hasil_invoice
                                  ]);
-            // return $cari_invoice = DB::table('invoice')
-            //                   ->where('i_nomor',$cari_kwitansi[$i]->kd_nomor_invoice)
-            //                   ->get();
 
             array_push($invoice_nomor, $cari_kwitansi[$i]->kd_nomor_invoice);
         }
+        for ($i=0; $i < count($cari_um_kwitansi); $i++) { 
+   
+            $cari_um = DB::table('uang_muka_penjualan')
+                              ->where('nomor',$cari_um_kwitansi[$i]->ku_nomor_um)
+                              ->first();
+
+            if ($cari_um != null) {
+               $hasil_um = $cari_um->sisa_uang_muka + $cari_um_kwitansi[$i]->ku_jumlah;
+                # code...
+                $update_um = DB::table('uang_muka_penjualan')
+                                 ->where('nomor',$cari_um_kwitansi[$i]->ku_nomor_um)
+                                 ->update([
+                                    'sisa_uang_muka'=>$hasil_um
+                                 ]);
+            }
+        }
+
         $hapus = DB::table('kwitansi')
                     ->where('k_nomor',$request->id)
                     ->delete();
@@ -1076,6 +687,92 @@ class penerimaan_penjualan_Controller extends Controller
         return response()->json(['status'=> 1]);
 
 
+    }
+    public function edit_kwitansi($id)
+    {
+        $comp = Auth::user()->kode_cabang;
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
+        $akun = DB::table('d_akun')
+                  ->get();
+
+
+        $tgl  = Carbon::now()->format('d/m/Y');
+
+        $data = DB::table('kwitansi')
+                  ->where('k_nomor',$id)
+                  ->first();
+
+        $data_dt = DB::table('kwitansi')
+                     ->join('kwitansi_d','kd_id','=','k_id')
+                     ->join('invoice','i_nomor','=','kd_nomor_invoice')
+                     ->where('k_nomor',$id)
+                     ->get();
+        $data_bl = DB::table('kwitansi')
+                     ->join('kwitansi_biaya_d','kb_id','=','k_id')
+                     ->join('d_akun','id_akun','=','kb_kode_akun')
+                     ->where('k_nomor',$id)
+                     ->get();    
+
+        $data_um = DB::table('kwitansi')
+                     ->join('kwitansi_uang_muka','ku_id','=','k_id')
+                     ->join('uang_muka_penjualan','nomor','=','ku_nomor_um')
+                     ->where('k_nomor',$id)
+                     ->get();  
+        $akun_bank = DB::table('masterbank')
+                  ->get();   
+
+        return view('sales.penerimaan_penjualan.edit_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','data_bl','data_um'));
+    }
+    public function detail_kwitansi($id)
+    {
+        $comp = Auth::user()->kode_cabang;
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
+        $akun = DB::table('d_akun')
+                  ->get();
+
+
+        $tgl  = Carbon::now()->format('d/m/Y');
+
+        $data = DB::table('kwitansi')
+                  ->where('k_nomor',$id)
+                  ->first();
+
+        $data_dt = DB::table('kwitansi')
+                     ->join('kwitansi_d','kd_id','=','k_id')
+                     ->join('invoice','i_nomor','=','kd_nomor_invoice')
+                     ->where('k_nomor',$id)
+                     ->get();
+        $data_bl = DB::table('kwitansi')
+                     ->join('kwitansi_biaya_d','kb_id','=','k_id')
+                     ->join('d_akun','id_akun','=','kb_kode_akun')
+                     ->where('k_nomor',$id)
+                     ->get();    
+
+        $data_um = DB::table('kwitansi')
+                     ->join('kwitansi_uang_muka','ku_id','=','k_id')
+                     ->join('uang_muka_penjualan','nomor','=','ku_nomor_um')
+                     ->where('k_nomor',$id)
+                     ->get();  
+        $akun_bank = DB::table('masterbank')
+                  ->get();   
+
+        return view('sales.penerimaan_penjualan.detail_kwitansi',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','akun_bank','akun','tgl','id','data_dt','data_bl','data_um'));
+    }
+
+    public function update_kwitansi(request $request)
+    {
+        // dd($request->all());
+
+        $this->hapus_kwitansi($request);
+        return $this->simpan_kwitansi($request);
     }
 
 }

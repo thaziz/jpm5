@@ -104,10 +104,21 @@
                                                     <td style="padding-top: 0.4cm" class="kecamatantujuanlabel">Kecamatan Tujuan</td>
                                                     <td colspan="5">
                                                         <select class="form-control" id="kecamatan" name="cb_kecamatan_tujuan" style="width:100%" >
+                                                        @if($kec != null)
                                                             <option value=""></option>
-                                                        @foreach ($kecamatan as $row)
-                                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
-                                                        @endforeach
+                                                            @foreach ($kec as $row)
+                                                                @if($do->id_kecamatan_tujuan == $row->id)
+                                                                    <option value="{{ $row->id }}" selected> {{ $row->nama }} </option>
+                                                                @else
+                                                                    <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                                                @endif
+                                                            @endforeach
+                                                        @else
+                                                            <option value=""></option>
+                                                            @foreach ($kecamatan as $row)
+                                                                <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                                            @endforeach
+                                                        @endif
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -118,11 +129,35 @@
                                                         </select>
                                                     <td style="width:110px; padding-top: 0.4cm">Type Kiriman</td>
                                                     <td colspan="5">
-                                                        <select class="form-control"  name="type_kiriman" id="type_kiriman"  >
+                                                        <select class="form-control"  name="type_kiriman" id="type_kiriman">
+                                                        @if($do !== null)
+                                                            @if($do->type_kiriman == "DOKUMEN")
+                                                                <option value="DOKUMEN" selected>DOKUMEN</option>
+                                                                <option value="KILOGRAM">KILOGRAM</option>
+                                                                <option value="KOLI">KOLI</option>
+                                                                <option value="SEPEDA">SEPEDA</option>
+                                                            @elseif($do->type_kiriman == "KILOGRAM")
+                                                                <option value="DOKUMEN">DOKUMEN</option>
+                                                                <option value="KILOGRAM" selected>KILOGRAM</option>
+                                                                <option value="KOLI">KOLI</option>
+                                                                <option value="SEPEDA">SEPEDA</option>
+                                                            @elseif($do->type_kiriman == "KOLI")
+                                                                <option value="DOKUMEN">DOKUMEN</option>
+                                                                <option value="KILOGRAM">KILOGRAM</option>
+                                                                <option value="KOLI" selected>KOLI</option>
+                                                                <option value="SEPEDA">SEPEDA</option>
+                                                            @elseif($do->type_kiriman == "SEPEDA")
+                                                                <option value="DOKUMEN">DOKUMEN</option>
+                                                                <option value="KILOGRAM">KILOGRAM</option>
+                                                                <option value="KOLI">KOLI</option>
+                                                                <option value="SEPEDA" selected>SEPEDA</option>
+                                                            @endif
+                                                        @else
                                                             <option value="DOKUMEN">DOKUMEN</option>
                                                             <option value="KILOGRAM">KILOGRAM</option>
                                                             <option value="KOLI">KOLI</option>
                                                             <option value="SEPEDA">SEPEDA</option>
+                                                        @endif
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -130,8 +165,18 @@
                                                     <td style="width:110px; padding-top: 0.4cm">Jenis Kiriman</td>
                                                     <td colspan="5">
                                                         <select class="form-control" name="jenis_kiriman" id="jenis_kiriman" >
+                                                        @if($do !== null)
+                                                            @if($do->jenis_pengiriman == "REGULER")
+                                                                <option value="REGULER" selected>REGULER</option>
+                                                                <option value="EXPRESS">EXPRESS</option>
+                                                            @elseif($do->jenis_pengiriman == "EXPRESS")
+                                                                <option value="REGULER">REGULER</option>
+                                                                <option value="EXPRESS" selected>EXPRESS</option>
+                                                            @endif
+                                                        @else
                                                             <option value="REGULER">REGULER</option>
                                                             <option value="EXPRESS">EXPRESS</option>
+                                                        @endif
                                                         </select>
                                                     </td>
                                                 </tr>
@@ -172,9 +217,45 @@
                                                 <tr id="jml_unit">
                                                     <td style="padding-top: 0.4cm">Jumlah Unit</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" name="cb_jml_unit" style="text-align:right" @if ($do === null) value="1" @else value="{{ number_format($do->jml_unit, 0, ",", ".") }}" @endif>
+                                                        <input type="text" class="form-control jmlunit" onkeyup="setJml()" name="cb_jml_unit" style="text-align:right" @if ($do === null) value="1" @elseif($do !== null && isset($do_dt)) value="{{ count($do_dt) }}" @endif>
                                                     </td>
                                                 </tr>
+                                                @if(isset($do_dt))
+                                                @foreach($do_dt as $row)
+                                                <tr id="jenis_unit" class="jenis_unit">
+                                                    <td style="padding-top: 0.4cm">Jenis Unit</td>
+                                                    <td colspan="2" class="jenisunit">
+                                                        <select class="form-control jns_unit" name="cb_jenis_unit[]" >
+                                                            @if($row->jenis == "SEPEDA")
+                                                            <option value="SEPEDA" selected>SEPEDA</option>
+                                                            <option value="SPORT">MOTOR SPORT</option>
+                                                            <option value="BETIC">MOTOR BEBEK/MATIC</option>
+                                                            <option value="MOGE">MOGE</option>
+                                                            @elseif($row->jenis == "SPORT")
+                                                            <option value="SEPEDA">SEPEDA</option>
+                                                            <option value="SPORT" selected>MOTOR SPORT</option>
+                                                            <option value="BETIC">MOTOR BEBEK/MATIC</option>
+                                                            <option value="MOGE">MOGE</option>
+                                                            @elseif($row->jenis == "BETIC")
+                                                            <option value="SEPEDA">SEPEDA</option>
+                                                            <option value="SPORT">MOTOR SPORT</option>
+                                                            <option value="BETIC" selected>MOTOR BEBEK/MATIC</option>
+                                                            <option value="MOGE">MOGE</option>
+                                                            @elseif($row->jenis == "MOGE")
+                                                            <option value="SEPEDA">SEPEDA</option>
+                                                            <option value="SPORT">MOTOR SPORT</option>
+                                                            <option value="BETIC">MOTOR BEBEK/MATIC</option>
+                                                            <option value="MOGE" selected>MOGE</option>
+                                                            @endif
+                                                        </select>
+                                                    </td>
+                                                    <td style="padding-top: 0.4cm">Berat Unit</td>
+                                                    <td colspan="2">
+                                                        <input type="text" class="form-control beratunit" name="cb_berat_unit[]" style="text-align:right" value="{{ $row->berat }}">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                                @else
                                                 <tr id="jenis_unit" class="jenis_unit">
                                                     <td style="padding-top: 0.4cm">Jenis Unit</td>
                                                     <td colspan="2" class="jenisunit">
@@ -190,6 +271,7 @@
                                                         <input type="text" class="form-control beratunit" name="cb_berat_unit[]" style="text-align:right" >
                                                     </td>
                                                 </tr>
+                                                @endif
                                                 <tr id="dimensi">
                                                     <td style="padding-top: 0.4cm">Panjang</td>
                                                     <td>
@@ -395,6 +477,12 @@
                                                     <td style="width:110px; padding-top: 0.4cm">Kab/Kota</td>
                                                     <td>
                                                         <input type="text" class="form-control" name="ed_kota" readonly="readonly" tabindex="-1" required style="text-transform: uppercase">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Kecamatan</td>
+                                                    <td>
+                                                        <input type="text" class="form-control" name="ed_kecamatan" readonly="readonly" tabindex="-1" required style="text-transform: uppercase">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -683,6 +771,8 @@
         $("input[name='ck_ppn']").attr('checked', {{ $do->ppn or null}});
         var data = $("select[name='cb_kota_tujuan'] option:selected").text();
         $("input[name='ed_kota']").val(data);
+        var datakec = $("select[name='cb_kecamatan_tujuan'] option:selected").text();
+        $("input[name='ed_kecamatan']").val(datakec);
         var jumlah = {{ $jml_detail->jumlah or '0'}};
         if (jumlah == 0 ) {
             $("#ed_nomor").focus();
@@ -710,6 +800,9 @@
 
         //$("input[name='ed_harga'],input[name='ed_jumlah'],input[name='ed_biaya_penerus'],input[name='ed_diskon']").maskMoney({thousands:'.', decimal:',', precision:-1});
         $("input[name='ed_biaya_tambahan'],input[name='ed_biaya_komisi'],input[name='ed_diskon_h'],input[name='ed_berat']").maskMoney({thousands:'.', decimal:',', precision:-1});
+    @if($do != null)
+        $('#btn_cari_harga').click();
+    @endif
 
     });
 
@@ -823,6 +916,10 @@
     $("select[name='cb_kota_tujuan']").change(function(){
         var data = $("select[name='cb_kota_tujuan'] option:selected").text();
         $("input[name='ed_kota']").val(data);
+    });
+    $("select[name='cb_kecamatan_tujuan']").change(function(){
+        var data = $("select[name='cb_kecamatan_tujuan'] option:selected").text();
+        $("input[name='ed_kecamatan']").val(data);
     });
     
     $(document).on("click","#ck_ppn",function(){
@@ -1092,7 +1189,6 @@
             sepeda: jenis_sepeda,
             berat_sepeda: berat_sepeda
         };
-        console.log(value);
         $.ajax(
         {
             url : baseUrl + "/sales/deliveryorderform/cari_harga",

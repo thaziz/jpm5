@@ -211,7 +211,7 @@ class PurchaseController extends Controller
 	}
 
 	public function savespp(Request $request) {
-		//dd($request);
+	//	dd($request);
 			$nospp = $request->nospp;
 			$cabang = $request->comp;
 			$dataspp = DB::select("select * from spp where spp_nospp = '$nospp' and spp_cabang = '$cabang'");
@@ -1989,7 +1989,7 @@ return DB::transaction(function() use ($request) {
 				
 
 
-				$updatefaktur = fakturpembelian::where('fp_idfaktur' , '=' , $request_idfp);
+				$updatefaktur = fakturpembelian::where('fp_idfaktur' , '=' , $request->idfp);
 
 				$updatefaktur->update([
 				 	'fp_pending_status' => 'Approved',
@@ -2547,13 +2547,29 @@ $indexakun=0;
 		else if($flag == 'FP'){
 			$data['flag'] = 'FP';
 
-			$data['fp'] = DB::select("select * from faktur_pembelian, supplier where fp_idsup = idsup and fp_idfaktur = '$id' ");
 
-			$data['fpdt'] = DB::select("select * from faktur_pembelian, faktur_pembeliandt, masteritem where fpdt_kodeitem = kode_item and fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id'");
+			$data['cabang'] = DB::select("select * from cabang");
+		
+			$data['header'] = DB::select("select * from barang_terima , supplier where bt_id = '$id' and bt_supplier = idsup");
+
+			$idgudang = $data['header'][0]->bt_gudang;
+
+			$carigudang = DB::select("select * from mastergudang where mg_id = '$idgudang'");
+
+			$data['comp'] = $carigudang[0]->mg_cabang;
+
+			$idtransaksi = $data['header'][0]->bt_idtransaksi;
+
+			$flag = $data['header'][0]->bt_flag;
+
+			$data['fp'] = DB::select("select * from faktur_pembelian, supplier where fp_idsup = idsup and fp_idfaktur = '$idtransaksi' ");
+
+			$data['fpdt'] = DB::select("select * from faktur_pembelian, faktur_pembeliandt, masteritem where fpdt_kodeitem = kode_item and fpdt_idfp = fp_idfaktur and fp_idfaktur = '$idtransaksi'");
+			
 
 			for($z = 0; $z < count($data['fpdt']); $z++){
 				$kodeitem = $data['fpdt'][$z]->fpdt_kodeitem;
-				$data['sisa'][] = DB::select("select  fpdt_id, fpdt_kodeitem, fpdt_qty, fpdt_idfp, sum(pbdt_qty), nama_masteritem, string_agg(pbdt_status,',') as p from masteritem, faktur_pembeliandt LEFT OUTER JOIN penerimaan_barangdt on fpdt_kodeitem = pbdt_item and fpdt_idfp = pbdt_idfp where fpdt_idfp = '$id' and fpdt_kodeitem = '$kodeitem' and fpdt_kodeitem = kode_item group by nama_masteritem, fpdt_kodeitem , fpdt_qty, fpdt_idfp, fpdt_id");
+				$data['sisa'][] = DB::select("select  fpdt_id, fpdt_kodeitem, fpdt_qty, fpdt_idfp, sum(pbdt_qty), nama_masteritem, string_agg(pbdt_status,',') as p from masteritem, faktur_pembeliandt LEFT OUTER JOIN penerimaan_barangdt on fpdt_kodeitem = pbdt_item and fpdt_idfp = pbdt_idfp where fpdt_idfp = '$idtransaksi' and fpdt_kodeitem = '$kodeitem' and fpdt_kodeitem = kode_item group by nama_masteritem, fpdt_kodeitem , fpdt_qty, fpdt_idfp, fpdt_id");
  			}
 
  			for($z=0; $z < count($data['sisa']); $z++){				
@@ -2589,7 +2605,9 @@ $indexakun=0;
 					$status_fix = 'TIDAK LENGKAP';
 				}			
 			}
-			array_push($data['status'] , $status_fix);			
+			array_push($data['status'] , $status_fix);		
+
+		//	dd($data);	
 		}
 		}
 		$jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk

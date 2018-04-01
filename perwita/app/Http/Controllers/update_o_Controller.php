@@ -73,7 +73,7 @@ class update_o_Controller extends Controller
     }
 	public function store1(Request $request){
 		  // return $request->asw;
-      /* dd($request);*/
+    //    dd($request);
        $store = new updateso;
        $store->u_o_nomor=$request->a[0]['value'];
        $store->Status=$request->a[1]['value'];
@@ -102,9 +102,13 @@ class update_o_Controller extends Controller
        $store1->status=$request->b[1]['value'];
        $store1->save();
        }
+       // return 'a';
+       // return $request->asw;
         for ($i=0; $i<count($request->asw); $i++) {
           $data12 = $request->asw;
-        }
+        } 
+        $data12 = $data12;
+        // return $data12;
        /* dd($request);*/
        for ($i=0; $i<count($data12); $i++) {
         $update1 = array(
@@ -112,8 +116,7 @@ class update_o_Controller extends Controller
             );
         $simpan = DB::table('delivery_order')->where('nomor', $request->asw[$i])->update($update1);
        }
-       /*dd($update1);*/
-     
+       
         return response()->json([
                             'status' => 'berhasil',
                             'data' => $store,
@@ -122,7 +125,7 @@ class update_o_Controller extends Controller
 
 	}
 	public function store2(Request $request){
-				/*dd($request);*/
+				// dd($request);
 				// return $request->asw;
 
        $store = new updatesodo;

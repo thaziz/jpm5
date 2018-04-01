@@ -63,7 +63,7 @@
                         </div>
 
 
-
+                        
                     </div>
                 </form>
                 <div class="box-body">
@@ -85,18 +85,18 @@
                 </div><!-- /.box-body -->
                 <!-- modal -->
                 <div id="modal" class="modal" >
-                  <div class="modal-dialog modal-lg">
+                  <div class="modal-dialog modal-lg" style="width: 1200px;">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title">Insert Edit Item</h4>
                       </div>
-                      <div class="modal-body">
+                      <div class="modal-body" {{-- style="min-height: 1000px;" --}}>
                         <form class="form-horizontal kirim">
-                          <table id="table_data" class="table table-striped table-bordered table-hover">
+                          <table id="table_data" class="table table-striped table-bordered table-hover" style="width: 640px;">
                             <tbody>
                                 <tr>
-                                    <td style="width:120px; padding-top: 0.4cm;text-align: center;font-weight: bold;" colspan="4">Identitas Customer</td>
+                                    <td style="width:120px; padding-top: 0.4cm;text-align: center;font-weight: bold;" colspan="2">Identitas Customer</td>
                                     <td hidden="">
                                         <input type="hidden" name="ed_kode" class="form-control" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
@@ -106,9 +106,29 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Nama Cus</td>
+                                    <td style="padding-top: 0.4cm">Nama Member</td>
                                     <td><input type="" class="form-control" name="ed_nama" style="text-transform: uppercase" ></td>
-
+                                </tr>
+                                
+                                <input type="hidden" name="id_cus">
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Alamat Member</td>
+                                    <td colspan="1"><input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" ></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Telpon Member</td>
+                                    <td><input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" ></td>
+                                </tr>
+                                <tr>
+                                    <td style="width:100px;">Syarat Kredit (Hari)</td>
+                                    <td><input type="number" class="form-control" name="ed_syarat_kredit" style="text-transform: uppercase" style="text-align:right"></td>
+                                </tr>
+                                <tr>
+                                    <td>Plafon</td>
+                                    <td colspan="1"><input type="text" class="form-control" name="ed_plafon"></td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>
                                         <select class="chosen-select-width" name="cabang">
@@ -119,21 +139,16 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <input type="hidden" name="id_cus">
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Alamat Cus</td>
-                                    <td colspan="4"><input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" ></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Telpon</td>
-                                    <td><input type="text" class="form-control" name="ed_telpon" style="text-transform: uppercase" ></td>
-                                    <td style="width:100px;">Syarat Kredit (Hari)</td>
-                                    <td><input type="number" class="form-control" name="ed_syarat_kredit" style="text-transform: uppercase" style="text-align:right"></td>
-                                </tr>
-                                <tr>
-                                    <td>Plafon</td>
-                                    <td colspan="3"><input type="text" class="form-control" name="ed_plafon"></td>
+                                    <td>Groups</td>
+                                    <td colspan="1">
+                                        <select name="group_customer" class="chosen-select-width">
+                                            <option>Pilih - Group</option>
+                                            @foreach ($group_customer as $loop)
+                                                <option value="{{ $loop->group_id }}">{{ $loop->group_id }} - {{ $loop->group_nama }} </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kota</td>
@@ -145,7 +160,8 @@
                                         @endforeach
                                         </select>
                                     </td>
-
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">Kode Bank</td>
                                     <td>
                                         <select class="form-control" name="ed_kode_bank" >
@@ -157,16 +173,36 @@
                                         </select>
                                     </td>
                                 </tr>
+                                {{-- adasd --}}
+                                
+                                
+                                
+                            </tbody>
+                          </table>
+                          <table id="table_data" class="table table-striped table-bordered table-hover" style="width: 500px;margin-top: -550px;margin-left: 650px;">
+                              <tr>
+                                    <td colspan="2" style="text-align: center;font-weight: bold;">Identitas PIC</td>
+                                </tr>
                                 <tr>
-                                    <td>Groups</td>
-                                    <td colspan="3">
-                                        <select name="group_customer" class="chosen-select-width">
-                                            <option>Pilih - Group</option>
-                                            @foreach ($group_customer as $loop)
-                                                <option value="{{ $loop->group_id }}">{{ $loop->group_id }} - {{ $loop->group_nama }} </option>
-                                            @endforeach
-                                        </select>
-                                    </td>
+                                    <td> Nama PiC</td>
+                                    <td><input type="text" class="form-control" name="nama_pic"></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Alamat PIC</td>
+                                    <td ><input type="text" class="form-control" name="alamat_pic" style="text-transform: uppercase" ></td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Telp PIC</td>
+                                    <td><input type="text" class="form-control" name="telp_pic" ></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Email PIC</td>
+                                    <td><input type="text" class="form-control" name="email_pic" ></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Fax</td>
+                                    <td> <input type="text" class="form-control" name="fax_pic"></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Piutang</td>
@@ -178,6 +214,8 @@
                                             @endforeach
                                         </select>
                                     </td>
+                                </tr>
+                                <tr>
                                     <td style="padding-top: 0.4cm">CSF Piutang</td>
                                     <td>
                                         <select class="form-control chosen-select-width" name="ed_csf_piutang" id="ed_csf_piutang"  style="text-transform: uppercase">
@@ -189,10 +227,22 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <td style="padding-top: 0.4cm">status</td>
+                                    <td>
+                                        <select class="select2_single form-control"  name="status_pic"   style="width: 100% !important;">
+                                            <option>Pilih - Status</option>
+                                            <option value="AKTIF">Aktif</option>
+                                            <option value="NON-AKTID">Non-aktif</option>    
+                                        </select>
+                                    </td>
+                                </tr>
+                          </table>
+                          <table id="table_data" class="table table-striped table-bordered table-hover" style="margin-top: 100px;">
+                              <tr>
                                     <td colspan="7" style="text-align: center;font-weight: bold;">Identitas Pajak</td>
                                 </tr>
                                 <tr>
-                                    <td> Nama PIC</td>
+                                    <td> Nama Pajak</td>
                                     <td><input type="text" class="form-control" name="nama_pajak"></td>
 
                                     <td>Kota</td>
@@ -206,16 +256,8 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Alamat PIC</td>
-                                    <td colspan="4"><input type="text" class="form-control" name="alamat_pajak" style="text-transform: uppercase" ></td>
-                                    
-                                </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Telp PIC</td>
-                                    <td><input type="text" class="form-control" name="telp_pajak" ></td>
-
-                                    <td style="padding-top: 0.4cm">Email PIC</td>
-                                    <td><input type="text" class="form-control" name="email_pajak" ></td>
+                                    <td style="padding-top: 0.4cm">Alamat Pajak</td>
+                                    <td colspan="7"><input type="text" class="form-control" name="alamat_pajak" ></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">NPWP</td>
@@ -230,7 +272,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Nama Pajak 23</td>
                                     <td>
-                                        <select class="select2_single form-control"  name="cb_nama_pajak_23"  style="width: 100% !important;">
+                                        <select class="select2_single form-control"  name="cb_nama_pajak_23"  style="width: 100% !important; ">
                                             <option></option>
                                             <option value="PPH PS 23"> PPH PS 23</option>
                                             <option value="PPH PS 23 SEWA"> PPH PS 23 SEWA</option>
@@ -250,18 +292,7 @@
                                         </select>
                                     </td>
                                 </tr>
-                                 <tr>
-                                    <td style="padding-top: 0.4cm">status</td>
-                                    <td>
-                                        <select class="select2_single form-control"  name="status_pajak"   style="width: 100% !important;">
-                                            <option>Pilih - Status</option>
-                                            <option value="AKTIF">Aktif</option>
-                                            <option value="NON-AKTID">Non-aktif</option>    
-                                        </select>
-                                    </td>
-                                    <td style="padding-top: 0.4cm">Fax</td>
-                                    <td> <input type="text" class="form-control" name="fax_pajak"></td>
-                                </tr>
+                                 
                                 <tr>
                                     <td style="padding-top: 0.4cm">PPN</td>
                                     <td>
@@ -277,10 +308,7 @@
                                         </select>
                                     </td>
                                 </tr>
-                                
-                            </tbody>
                           </table>
-
                         </form>
                       </div>
                       <div class="modal-footer">
@@ -379,11 +407,14 @@
         $("select[name='kota_pajak']").val('').trigger('chosen:updated');
         $("input[name='nama_pajak']").val('');
         $("select[name='pajak_tarif']").val('').trigger('chosen:updated');
-        $("input[name='fax_pajak']").val('');
-        $("input[name='telp_pajak']").val('');
-        $("input[name='email_pajak']").val('');
+        $("input[name='nama_pic']").val('');
+        $("input[name='fax_pic']").val('');
+        $("input[name='alamat_pic']").val('');
+        $("input[name='telp_pic']").val('');
+        $("input[name='email_pic']").val('');
+        $("select[name='status_pic']").val('');
         $("select[name='group_customer']").val('').trigger('chosen:updated');
-        $("select[name='status_pajak']").val('').trigger('chosen:updated');
+        
         $("input[name='alamat_pajak']").val('');
         $("input[name='ck_pph23']").attr('checked', false); 
         $("input[name='ck_ppn']").attr('checked', false); 
@@ -421,15 +452,18 @@
                 $("select[name='ed_kode_bank']").val(data.kode_bank).trigger('chosen:updated');
                 $("input[name='ed_syarat_kredit']").val(data.syarat_kredit);
                 $("input[name='ed_plafon']").val(data.plafon);
+                $("select[name='group_customer']").val(data.group_customer).trigger('chosen:updated');
                 $("input[name='ed_npwp']").val(data.pajak_npwp);
                 $("select[name='kota_pajak']").val(data.pajak_kota).trigger('chosen:updated');
                 $("input[name='nama_pajak']").val(data.pajak_nama);
                 $("select[name='pajak_tarif']").val(data.pajak_tarif).trigger('chosen:updated');
-                $("input[name='fax_pajak']").val(data.pajak_fax);
-                $("input[name='telp_pajak']").val(data.pajak_telpon);
-                $("input[name='email_pajak']").val(data.pajak_email);
-                $("select[name='group_customer']").val(data.group_customer).trigger('chosen:updated');
-                $("select[name='status_pajak']").val(data.pajak_status).trigger('chosen:updated');
+
+                $("input[name='nama_pic']").val(data.pic_nama);
+                $("input[name='fax_pic']").val(data.pic_fax);
+                $("input[name='alamat_pic']").val(data.pic_alamat);
+                $("input[name='telp_pic']").val(data.pic_telpon);
+                $("input[name='email_pic']").val(data.pic_email);
+                $("select[name='status_pic']").val(data.pic_status);
                 // $("select[name='name='ed_faktur']").val(data.type_faktur_ppn);
                 // console.log(data.ppn);
                 if(data.ppn == true || data.ppn == 'true'){
@@ -457,8 +491,130 @@
        
      $ed_acc_piutang = $('#ed_acc_piutang').val();
      $ed_csf_piutang = $('#ed_csf_piutang').val();
-        
-       if ($ed_acc_piutang == '' || $ed_acc_piutang == null) 
+     $plafon = $("input[name='ed_plafon']").val();
+     $nama_member = $("input[name='ed_nama']").val();
+     $alamat_member = $("input[name='ed_alamat']").val();
+     $nama_pajak = $("input[name='nama_pajak']").val();
+     $nama_pic = $("input[name='nama_pic']").val();
+     $alamat_pic = $("input[name='alamat_pic']").val();
+     $alamat_pajak = $("input[name='alamat_pajak']").val();
+     
+        if ($nama_member == '' || $nama_member == null) 
+        {
+            Command: toastr["warning"]("Nama Member Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($alamat_member == '' || $alamat_member == null) 
+        {
+            Command: toastr["warning"]("Alamat Member Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($plafon == '' || $plafon == null) 
+        {
+            Command: toastr["warning"]("Plafon Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($nama_pic == '' || $nama_pic == null) 
+        {
+            Command: toastr["warning"]("Nama PIC Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($alamat_pic == '' || $alamat_pic == null) 
+        {
+            Command: toastr["warning"]("Alamat PIC Tidak boleh kosong", "Peringatan")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($ed_acc_piutang == '' || $ed_acc_piutang == null) 
         {
             Command: toastr["warning"]("Akun Piutang Tidak boleh kosong", "Peringatan")
 
@@ -484,7 +640,7 @@
          if ($ed_csf_piutang == '' || $ed_csf_piutang == null) 
         {
             Command: toastr["warning"]("Csf Piutang Tidak boleh kosong", "Peringatan")
-
+            
             toastr.options = {
               "closeButton": false,
               "debug": false,
@@ -504,6 +660,54 @@
             }
             return false;
         }
+        if ($nama_pajak == '' || $nama_pajak == null) 
+        {
+            Command: toastr["warning"]("Nama Pajak Tidak boleh kosong", "Peringatan")
+            
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if ($alamat_pajak == '' || $alamat_pajak == null) 
+        {
+            Command: toastr["warning"]("Alamat Pajak Tidak boleh kosong", "Peringatan")
+            
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        
+        
         $.ajax(
         {
             url : baseUrl + "/master_sales/customer/save_data",

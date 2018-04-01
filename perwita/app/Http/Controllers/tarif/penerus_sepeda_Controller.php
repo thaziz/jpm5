@@ -65,7 +65,42 @@ class penerus_sepeda_Controller  extends Controller
     public function get_data (Request $request) {
         // dd($request);
         $id =$request->input('id');
-        $data = DB::table('tarif_penerus_sepeda')->where('id_tarif_sepeda','=', $id)->get();
+         $data = DB::table('tarif_penerus_sepeda')
+        ->select(
+            'provinsi.nama as provinsi_nama',
+            'provinsi.id as provinsi_id',
+
+            'kota.id as kota_id',
+            'kota.nama as kota_nama',
+            'kota.kode_kota as kode_kota',
+
+            'kecamatan.id as kecamatan_id',
+            'kecamatan.nama as kecamatan_nama',
+
+            'zo_10r.harga_zona as spd',
+            'zo_10x.harga_zona as mtk',
+            'zo_20r.harga_zona as spr',
+            'zo_20x.harga_zona as mge',
+
+            'id_tarif_sepeda','sepeda','matik','moge','sport','id_increment_sepeda')
+
+
+        ->join('provinsi','tarif_penerus_sepeda.id_provinsi_sepeda','=','provinsi.id')
+
+        ->join('kota','tarif_penerus_sepeda.id_kota_sepeda','=','kota.id')
+        
+        ->join('kecamatan','tarif_penerus_sepeda.id_kecamatan_sepeda','=','kecamatan.id')
+
+        ->join('zona as zo_10r','zo_10r.id_zona','=','tarif_penerus_sepeda.sepeda')
+
+        ->join('zona as zo_10x','zo_10x.id_zona','=','tarif_penerus_sepeda.matik')
+
+        ->join('zona as zo_20r','zo_20r.id_zona','=','tarif_penerus_sepeda.sport')
+
+        ->join('zona as zo_20x','zo_20x.id_zona','=','tarif_penerus_sepeda.moge')
+        ->where('id_tarif_sepeda','=', $id)
+        ->get();
+        // $data = DB::table('tarif_penerus_sepeda')->get();
         echo json_encode($data);
     }
 
@@ -80,15 +115,10 @@ class penerus_sepeda_Controller  extends Controller
         }
 
         $kode_id = DB::table('tarif_penerus_sepeda')->select('id_increment_sepeda')->max('id_increment_sepeda');    
-        if ($kode_id == '') {
-            $kode_id = 1;
-        }else{
-            $kode_id += 1;
-        }
+        
 
-        if ($kode_id < 10000 ) {
-            $kode_id = '0000'.$kode_id;
-        }
+         $kode_id = $kode_id+1;
+         $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
         
         $kode_kota = $request->kode_kota;
         $kode_cabang = Auth::user()->kode_cabang;
@@ -117,11 +147,11 @@ class penerus_sepeda_Controller  extends Controller
 
             $simpan = DB::table('tarif_penerus_sepeda')->insert($data);
         }elseif ($crud == 'E') {
-            $kode_kota = $request->kode_kota;
+            // dd($request);
+           /*return*/ $kode_kota = $request->kode_kota;
             $kode_sama = $request->ed_kode_old;
-            if ($kode_sama < 10000 ) {
-            $kode_sama = '0000'.$kode_sama;
-            }
+            $kode_sama = str_pad($kode_sama, 5,'0',STR_PAD_LEFT);
+        
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
 
              $data = array(

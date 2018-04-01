@@ -25,42 +25,12 @@
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
 
                                 </table>
                              <div class="col-xs-6">
-
-
-
                         </div>
-
-
-
                     </div>
                 </form>
                 <form id="form_header" class="form-horizontal">

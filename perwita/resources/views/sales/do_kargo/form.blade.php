@@ -95,8 +95,8 @@
                                     </tr>
                                     <tr>
                                         <td>Customer</td>
-                                        <td>
-                                            <select onchange="cari_kontrak()" class="form-control customer_do chosen-select-width" name="customer_do">
+                                        <td class="customer_td">
+                                            <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
                                                 <option value="0">Pilih - Customer</option>
                                             @foreach($customer as $val)
                                                 <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
@@ -107,7 +107,7 @@
                                     <tr>
                                         <td>Kota Asal</td>
                                         <td>
-                                            <select name="asal_do" class="form-control asal_do chosen-select-width">
+                                            <select onchange="reseting()" name="asal_do" class="form-control asal_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Asal</option>
                                             @foreach($kota as $val)
                                                 <option value="{{$val->id}}">{{$val->id}}-{{$val->nama}}</option>
@@ -118,7 +118,7 @@
                                     <tr>
                                         <td>Kota Tujuan</td>
                                         <td>
-                                            <select name="tujuan_do" class="form-control tujuan_do chosen-select-width">
+                                            <select onchange="reseting()" name="tujuan_do" class="form-control tujuan_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Tujuan</option>
                                             @foreach($kota as $val)
                                                 <option value="{{$val->id}}">{{$val->id}}-{{$val->nama}}</option>
@@ -249,18 +249,12 @@
                                                 </button>
                                             </span>
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td colspan="2" class="">
-                                            <button type="button" id="buat_kontrak_kustomer" class="btn btn-primary">
-                                                Buat Kontrak
-                                            </button>
-                                        </td>
                                         <td style="padding-top: 0.4cm">Satuan</td>
                                         <td>
-                                            <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
+                                            <input type="text" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
                                     </tr>
+
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
                                         <td>
@@ -540,12 +534,22 @@ function ganti_nota(argument) {
         dataType:'json',
         success:function(data){
             $('.nomor_do').val(data.nota);
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
             cari_nopol_kargo();
         },
         error:function(){
             location.reload();
         }
     })
+
+    
 }
 //nama subcon
 $('.nama_subcon').change(function(){
@@ -574,11 +578,14 @@ function centang() {
 $('.jenis_tarif_do').change(function(){
     if ($(this).val() == 9) {
         $('.kontrak_tr').attr('hidden',true);
-        $('.tarif_dasar').val(1);
+        $('.harga_master').val(1);
+        $('.discount ').attr('readonly',true);
+
     }else{      
         $('.kontrak_tr').attr('hidden',false);
         $('.jenis_tarif_temp').val($(this).val());
         $('.tarif_dasar').val(0);
+        $('.discount ').attr('readonly',false);
     }
 });
 
@@ -589,9 +596,11 @@ $('#btn_cari_tarif').click(function(){
     var jenis_tarif = $('.jenis_tarif_do').val(); 
     var cabang_select = $('.cabang_select').val(); 
     var tipe_angkutan = $('.tipe_angkutan ').val(); 
+    var tipe_angkutan = $('.tipe_angkutan ').val(); 
+    var customer = $('.customer ').val(); 
     $.ajax({
         url:baseUrl + '/sales/cari_kontrak_tarif',
-        data:{check,asal,tujuan,jenis_tarif,cabang_select,tipe_angkutan },
+        data:{check,asal,tujuan,jenis_tarif,cabang_select,tipe_angkutan,customer },
         success:function(data){
             $('.modal_tarif').html(data);
             $('#modal_tarif').modal('show');
@@ -601,7 +610,6 @@ $('#btn_cari_tarif').click(function(){
         }
     })
 });
-
 //hitung
 $('.jumlah').focus(function(){
     $('.jumlah').select();
@@ -624,7 +632,7 @@ function hitung() {
     if (temp < 0) {
         temp = 0;
     }
-    
+        
     $('.total').val(temp);
     $('.total_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('.tarif_dasar_text').val(accounting.formatMoney(temp1,"",2,'.',','));
@@ -677,8 +685,15 @@ function pilih_kontrak(a) {
             $('#kode_tarif').val(0);
             $('.acc_penjualan').val(response.data.kcd_acc_penjualan);
             $('.satuan').val(response.data.kcd_kode_satuan);
-            $('.tipe_angkutan ').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
+            $('.tipe_angkutan').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
+            console.log($('.tipe_angkutan').val());
+            $('.asal_do').val(response.data.kcd_kota_asal).trigger('chosen:updated');
+            $('.tujuan_do').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
             $('.jumlah').val(1);
+            var tujuan =  $('.tujuan_do option:selected').text();
+   
+            tujuan     =  tujuan.split('-');
+            $('.kota_penerima').val(tujuan[1]);
             $('#modal_tarif').modal('hide');
             cari_nopol_kargo();
             toastr.info('Data Telah Dirubah Harap Periksa Kembali');
@@ -696,6 +711,7 @@ function pilih_kontrak(a) {
 
 $('.save').click(function(){
    var cabang = $('.cabang_select').val();
+   var customer = $('.customer').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Delivery Order!",
@@ -721,7 +737,8 @@ $('.save').click(function(){
            $('.tabel_detail :input').serialize()+'&'+
            $('.tabel_penerima :input').serialize()+'&'+
            $('.tabel_pengirim :input').serialize()
-           +'&cabang='+cabang,
+           +'&cabang='+cabang
+           +'&customer='+customer,
       success:function(response){
         if (response.status == 2) {
             swal({
@@ -748,6 +765,7 @@ $('.save').click(function(){
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);
+                    // $('#seragam_box').addClass('disabled');
                        
             });
         }else{
@@ -779,24 +797,52 @@ $('.reload').click(function(){
 // cari kontrak
 function cari_kontrak() {
     var cabang      = $('.cabang_select').val();
-    var customer_do = $('.customer_do').val();
+    var customer_do = $('.customer').val();
      $.ajax({
         url:baseUrl + '/sales/cari_kontrak',
         data:{cabang,customer_do},
         dataType:'json',
         success:function(data){
             if (data.status == 1) {
-                $('.kontrak_tarif').attr('checked',true);
+                $('.kontrak_tarif').prop('checked',true);
+                $('.discount ').addClass('disabled')
+                $('.discount ').attr('readonly',true)
                 // $('.kontrak_td').addClass('disabled');
             }else{
-                $('.kontrak_tarif').attr('checked',false);
+                $('.kontrak_tarif').prop('checked',false);
                 // $('.kontrak_td').addClass('disabled');
+                $('.discount ').removeClass('disabled')
+                $('.discount ').attr('readonly',false)
             }
+
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
         },
         error:function(){
         }
     })
 }
+
+
+function reseting() {
+    $('.satuan').val('');
+    $('.tarif_dasar_text').val('');
+    $('.tarif_dasar').val('');
+    $('.harga_master').val('');
+    $('.harga_master').val('');
+    $('#kode_tarif').val('');
+    $('.kcd_id').val('');
+    $('.kcd_dt').val('');
+
+    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
+}
+
 // ngeprint
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();

@@ -441,36 +441,34 @@ class do_kargo_Controller extends Controller
             }
             $kontrak = 0;
         }else {
-            $data = DB::table('kontrak_customer')
+           $data = DB::table('kontrak_customer')
                       ->join('kontrak_customer_d','kcd_id','=','kc_id')
                       ->join('jenis_tarif','kcd_jenis_tarif','=','jt_id')
-                      ->where('kcd_kota_asal',$request->asal)
-                      ->where('kcd_kota_tujuan',$request->tujuan)
+                      ->where('kc_kode_customer',$request->customer)
+                      // ->where('kcd_kota_tujuan',$request->tujuan)
                       ->where('kc_kode_cabang',$request->cabang_select)
                       ->where('kcd_jenis','KARGO')
+                      ->orderBy('kcd_id','ASC')
                       ->get();
-            $asal = DB::table('kontrak_customer')
-                      ->join('kontrak_customer_d','kcd_id','=','kc_id')
-                      ->join('kota','id','=','kcd_kota_asal')
-                      ->where('kcd_kota_asal',$request->asal)
-                      ->where('kcd_kota_tujuan',$request->tujuan)
-                      ->where('kc_kode_cabang',$request->cabang_select)
-                      ->where('kcd_jenis','KARGO')
-                      ->get();
-            $tujuan = DB::table('kontrak_customer')
-                      ->join('kontrak_customer_d','kcd_id','=','kc_id')
-                      ->join('kota','id','=','kcd_kota_tujuan')
-                      ->where('kcd_kota_asal',$request->asal)
-                      ->where('kcd_kota_tujuan',$request->tujuan)
-                      ->where('kc_kode_cabang',$request->cabang_select)
-                      ->where('kcd_jenis','KARGO')
+            $kota = DB::table('kota')
+
                       ->get();
 
-            for ($i=0; $i < count($data); $i++) { 
-                $data[$i]->nama_asal = $asal[$i]->nama;
-                $data[$i]->nama_tujuan = $tujuan[$i]->nama;
+
+            for ($i=0; $i < count($kota); $i++) { 
+                for ($a=0; $a < count($data); $a++) { 
+                    if ($data[$a]->kcd_kota_asal == $kota[$i]->id) {
+                        $data[$a]->nama_asal = $kota[$i]->nama;
+                    }
+
+                    if ($data[$a]->kcd_kota_tujuan == $kota[$i]->id) {
+                        $data[$a]->nama_tujuan = $kota[$i]->nama;
+                    }
+                }
+ 
             }
             $kontrak = 1;
+            // return $data;
         }
 
         return view('sales.do_kargo.modal_tarif',compact('data','kontrak'));
@@ -508,6 +506,13 @@ class do_kargo_Controller extends Controller
                   
         return response()->json(['data'=>$data]);
     }
+    public function drop_cus(request $request)
+    {
+        $customer = DB::table('customer')
+                      ->where('cabang',$request->cabang)
+                      ->get();
+        return view('master_sales.kontrak.dropdown_customer',compact('customer'));
+    }
 
     public function hapus_do_kargo(request $request)
     {
@@ -528,8 +533,8 @@ class do_kargo_Controller extends Controller
             return response()->json(['status' => 3,'get'=>'$request->tanggal_do']);
         }
 
-        if ($request->customer_do == '0') {
-            return response()->json(['status' => 3,'get'=>'$request->customer_do']);
+        if ($request->customer == '0') {
+            return response()->json(['status' => 3,'get'=>'$request->customer']);
         }
 
         if ($request->asal_do == 0) {
@@ -639,7 +644,6 @@ class do_kargo_Controller extends Controller
         return DB::transaction(function() use ($request) {  
 
 
-        $this->hapus_do_kargo($request);
 
         $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->nomor_do)
@@ -658,11 +662,12 @@ class do_kargo_Controller extends Controller
         $nopol = DB::table('kendaraan')
                          ->where('id',$request->tipe_kendaraan)
                          ->first();
-        if ($request->kc_id != 0) {
+        if ($request->kcd_id != 0) {
             $kontrak = true;
         }else{
             $kontrak = false;
         }
+        
         if ($cari_do == null) {
         // return $discount;
 
@@ -690,7 +695,7 @@ class do_kargo_Controller extends Controller
                                 'kode_subcon'           => strtoupper($request->nama_subcon),
                                 'kode_cabang'           => $request->cabang,
                                 'tarif_dasar'           => $request->harga_master,
-                                'kode_customer'         => $request->customer_do,
+                                'kode_customer'         => $request->customer,
                                 'kode_marketing'        => $request->marketing,
                                 'company_name_pengirim' => strtoupper($request->company_pengirim),
                                 'nama_pengirim'         => strtoupper($request->nama_pengirim),
@@ -723,7 +728,8 @@ class do_kargo_Controller extends Controller
                                 'kontrak'               => $kontrak,
                                 'kode_tarif'            => $request->kode_tarif,
                                 'keterangan_tarif'      => $request->keterangan_detail,
-                                'acc_penjualan'         => $request->acc_penjualan
+                                'acc_penjualan'         => $request->acc_penjualan,
+                                'status_do'             => 'Released'
                          ]);
             $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->nomor_do)
@@ -769,7 +775,7 @@ class do_kargo_Controller extends Controller
                                 'kode_subcon'           => strtoupper($request->nama_subcon),
                                 'kode_cabang'           => $request->cabang,
                                 'tarif_dasar'           => $request->harga_master,
-                                'kode_customer'         => $request->customer_do,
+                                'kode_customer'         => $request->customer,
                                 'kode_marketing'        => $request->marketing,
                                 'company_name_pengirim' => strtoupper($request->company_pengirim),
                                 'nama_pengirim'         => strtoupper($request->nama_pengirim),
@@ -801,7 +807,8 @@ class do_kargo_Controller extends Controller
                                 'kode_tarif'            => $request->kode_tarif,
                                 'kontrak'               => $kontrak,
                                 'kode_satuan'           => strtoupper($request->satuan),
-                                'acc_penjualan'         => $request->acc_penjualan
+                                'acc_penjualan'         => $request->acc_penjualan,
+                                'status_do'             => 'Released'
                          ]);
             return response()->json(['nota'=>$nota,'status'=>2]);
 
@@ -834,7 +841,7 @@ class do_kargo_Controller extends Controller
                     ->first();
 
         $subcon_detail = DB::table('delivery_order')
-                    ->join('subcon','kode','=','kode_subcon')
+                    ->leftjoin('subcon','kode','=','kode_subcon')
                     ->where('nomor', $id)
                     ->first();
 
@@ -844,10 +851,13 @@ class do_kargo_Controller extends Controller
 
     public function update_do_kargo(request $request)
     {
+       $this->hapus_do_kargo($request);
+
        return $this->save_do_kargo($request);
     }
     public function cari_kontrak(request $request)
     {
+        // return $request->all();
         $data = DB::table('kontrak_customer')
                   ->where('kc_kode_customer',$request->customer_do)
                   ->get();
@@ -858,4 +868,37 @@ class do_kargo_Controller extends Controller
             return response()->json(['status'=>0]);
         }
     }
+    public function detail_do_kargo($id)
+    {
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,tipe FROM customer ORDER BY nama ASC ");
+        $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k
+                                    LEFT JOIN subcon s ON s.kode=k.kode_subcon ");
+        $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
+        //$angkutan = DB::select(" SELECT kode,nama FROM angkutan ORDER BY nama ASC ");
+        $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
+        $subcon =DB::select("SELECT * FROM subcon");
+        $now = Carbon::now()->format('d/m/Y');
+        $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->where('jt_group',1)
+                         ->orWhere('jt_group',2)
+                         ->orWhere('jt_group',3)
+                         ->orderBy('jt_id','ASC')
+                         ->get();
+        $data = DB::table('delivery_order')
+                    ->where('nomor', $id)
+                    ->first();
+
+        $subcon_detail = DB::table('delivery_order')
+                    ->leftjoin('subcon','kode','=','kode_subcon')
+                    ->where('nomor', $id)
+                    ->first();
+
+       
+        return view('sales.do_kargo.detail_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail'));
+    }
+  
 }

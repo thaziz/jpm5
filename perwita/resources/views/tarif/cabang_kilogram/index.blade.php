@@ -98,6 +98,7 @@
                                 <th style="width:70px"> Kode</th>
                                 <th> Asal </th>
                                 <th> Tujuan </th>
+                                <th> Provinsi Tujuan </th>
                                 <th> Tarif </th>
                                 <th> Jenis </th>
                                 <th> Waktu </th>
@@ -371,6 +372,7 @@
             { "data": "kode" },
             { "data": "asal" },
             { "data": "tujuan" },
+            { "data": "provinsi" },
             { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "jenis", },
             { "data": "waktu", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
@@ -420,6 +422,7 @@
         $('input[name="tarifkgsel_reguler"]').val('');
         $('input[name="tarifkgsel_express"]').val('');
         $('#hilang').show();
+        $("input[name='kodekota']").val('');
 
         $('#hilang2').show();
         $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
@@ -429,6 +432,7 @@
         $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
         $("select[name='cb_acc_penjualan']").change();
         $("select[name='cb_csf_penjualan']").change();
+        $("select[name='cb_cabang']").val('').trigger('chosen:updated');
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
     });
@@ -489,6 +493,9 @@
                 $('input[name="tarifkgsel_express"]').val(data[0][9].harga);
                 //expre
                 $('#hilang').hide();
+                $('#hilang2').show();
+                $("input[name='kodekota']").val(data[0][0].kode_kota);
+                
 
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("select[name='cb_kota_asal']").val(data[0][0].id_kota_asal).trigger('chosen:updated');

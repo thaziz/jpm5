@@ -60,13 +60,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3">
-                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
-                                    <input type="hidden" readonly="" name="id_subcon" id="id_subcon" value="{{$data->kc_kode_customer}}">
-                                </td>
-                            </tr>
+                            
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
@@ -83,6 +77,13 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
+                                    <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
                                     <input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" value="{{$data->kc_keterangan}}" >
@@ -91,7 +92,11 @@
                             <tr>
                                 <td>Aktif</td>
                                 <td colspan="3">
+                                    @if($data->kc_aktif == 'AKTIF')
                                     <input type="checkbox" name="ck_aktif" checked="">
+                                    @else
+                                    <input type="checkbox" name="ck_aktif">
+                                    @endif
                                 </td>
                             </tr>
                         </tbody>
@@ -142,7 +147,7 @@
                             </td>
                             <td>
                                 {{$val->nama}}
-                                <input type="hidden" class="tipe_angkutan" value="{{$val->kcd_kode_angkutan}}" name="satuan[]">
+                                <input type="hidden" class="tipe_angkutan" value="{{$val->kcd_kode_angkutan}}" name="tipe_angkutan[]">
                             </td>
                             <td>
                                 <input type="text" class="harga form-control" style="text-align:right" value="{{number_format($val->kcd_harga,0, ".", ",")}}" name="harga[]">
@@ -379,12 +384,12 @@ $('#btnadd').click(function(){
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
     var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
-    var id_subcon                = $('.id_subcon').val();
+    var customer                = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var validasi                 = [];
 
 
-    if (id_subcon != 0) {
+    if (customer != 0) {
         validasi.push(1);
     }else{
         validasi.push(0);
@@ -542,6 +547,7 @@ var id = $(par).find('.id_table').val();
 
 $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();
+    var customer= $('#customer').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Update Data Kontrak!",
@@ -561,8 +567,8 @@ $('#btnsimpan').click(function(){
 
       $.ajax({
       url:baseUrl + '/master_sales/update_kontrak',
-      type:'post',
-      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang,
+      type:'get',
+      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
       success:function(response){
         swal({
         title: "Berhasil!",

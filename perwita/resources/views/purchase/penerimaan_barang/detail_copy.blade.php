@@ -70,7 +70,6 @@
                     <input type="hidden" class="flag" value="FP" name="flag">
                     <table border="0" class="table">
                     
-
                      <tr>
                         <input type="hidden" name="idfp" value="{{$data['fp'][0]->fp_idfaktur}}" class="idfp">
                         <input type="hidden" name="idsup" value="{{$data['fp'][0]->fp_idsup}}">
@@ -854,7 +853,7 @@
                       harga = $('.harga' + id).val();
                       harga2 = harga.replace(/,/g, '');
 
-                      biaya = parseFloat(harga2 * val);
+                      biaya = parseFloat(harga2 * val).toFixed(2);
                       $('.biaya' + id).val(addCommas(biaya)); 
 
 

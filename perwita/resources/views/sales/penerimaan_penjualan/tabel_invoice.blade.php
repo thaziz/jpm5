@@ -24,19 +24,37 @@
         var cabang   = '{{$cabang}}';
         var customer = '{{$customer}}';
         var array_simpan = [];
+        var array_edit = [];
+        var array_harga = [];
         @if(isset($array_simpan))
             @foreach($array_simpan as $i=>$val)
             var temp = "{{$array_simpan[$i]}}";
                 array_simpan.push(temp);
             @endforeach
         @endif
-        console.log(array_simpan);
-    $('#table_data_invoice').DataTable({
+
+        @if(isset($array_edit))
+            @foreach($array_edit as $i=>$val)
+            var temp1 = "{{$array_edit[$i]}}";
+                array_edit.push(temp1);
+            @endforeach
+        @endif
+
+
+        @if(isset($array_harga))
+            @foreach($array_harga as $i=>$val)
+            var temp2 = "{{$array_harga[$i]}}";
+                array_harga.push(temp2);
+            @endforeach
+        @endif
+
+
+    var table_invoice = $('#table_data_invoice').DataTable({
         processing: true,
         serverSide: true,
         ajax: {
             url:'{{ route('datatable_detail_invoice') }}',
-            data:{cabang,customer,array_simpan}
+            data:{cabang,customer,array_simpan,array_edit,array_harga}
         },
         columnDefs: [
           {
