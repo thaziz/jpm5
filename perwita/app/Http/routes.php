@@ -807,7 +807,9 @@ Route::get('sales/deliveryorderkargoform/{nomor}/nota', 'sales\do_kargo_Controll
 // delivery order kertas
 Route::get('sales/deliveryorderkertas', 'sales\do_kertas_Controller@index');
 Route::get('sales/deliveryorderkertas_form', 'sales\do_kertas_Controller@form');
-Route::get('sales/nota_do_kertas', 'sales\do_kertas_Controller@nota_do_kertas');
+Route::get('sales/nomor_do_kertas', 'sales\do_kertas_Controller@nomor_do_kertas');
+Route::get('sales/cari_customer_kertas', 'sales\do_kertas_Controller@cari_customer_kertas');
+Route::get('sales/cari_item', 'sales\do_kertas_Controller@cari_item');
 
 // end delivery order kertas
 

@@ -5,6 +5,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
+use Carbon\carbon;
+use Auth;
 
 
 class do_kertas_Controller extends Controller
@@ -34,7 +36,7 @@ class do_kertas_Controller extends Controller
         }else{
             $data = null;
             $jml_detail = 0;
-        }
+        }   
         return view('sales.do_kertas.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','item' ));
     }
 
@@ -51,7 +53,7 @@ class do_kertas_Controller extends Controller
         return view('sales.do_kertas.print',compact('head','detail'));
     }
 
-    public function nota_do_kertas(request $request)
+    public function nomor_do_kertas(request $request)
     {
         $bulan  = Carbon::now()->format('m');
         $tahun  = Carbon::now()->format('y');
@@ -68,6 +70,29 @@ class do_kertas_Controller extends Controller
         $nota = 'KTS' . $cabang . $bulan . $tahun . $index;
         return response()->json(['nota'=>$nota]);
     }
+
+    public function cari_customer_kertas(request $request)
+    {
+        $customer = DB::table('customer')
+                      ->where('kode',$request->customer)
+                      ->first();
+
+
+        return json_encode($customer);
+        
+    }
+
+    public function cari_item(request $request)
+    {
+        $data = DB::table('item')
+                  ->where('kode',$request->item)
+                  ->first();
+
+        
+        return json_encode($data);
+        
+    }
+
 
 
 }
