@@ -167,6 +167,7 @@
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                             <button type="button" onclick="ngeprint()" class="btn btn-warning print disabled" ><i class="glyphicon glyphicon-print"></i> Print</button>
+                            <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
                 </form>
@@ -877,6 +878,8 @@
        var id = $('#nota_invoice').val();
         window.open('{{url('sales/cetak_nota')}}'+'/'+id);
     }
-    
+    $('.reload').click(function(){
+    location.reload();
+})
 </script>
 @endsection
