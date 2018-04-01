@@ -65,9 +65,9 @@
                                         <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
                                             @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                             @endif
                                         @endforeach
                                         </select>
@@ -167,6 +167,7 @@
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                             <button type="button" onclick="ngeprint()" class="btn btn-warning print disabled" ><i class="glyphicon glyphicon-print"></i> Print</button>
+                            <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
                 </form>
@@ -243,7 +244,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm; text-align:right">Pajak lain-lain</td>
                                 <td>
-                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="pajak_lain" id="pajak_lain" >
+                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="kode_pajak_lain" id="pajak_lain" >
                                         <option value="0"  >Pilih Pajak Lain-lain</option>
                                         @foreach($pajak as $val)
                                             <option value="{{$val->kode}}" data-pph="{{$val->nilai}}">{{$val->nama}}</option>
@@ -877,6 +878,8 @@
        var id = $('#nota_invoice').val();
         window.open('{{url('sales/cetak_nota')}}'+'/'+id);
     }
-    
+    $('.reload').click(function(){
+    location.reload();
+})
 </script>
 @endsection

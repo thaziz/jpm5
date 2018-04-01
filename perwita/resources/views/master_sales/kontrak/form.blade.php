@@ -59,12 +59,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3" class="customer_td">
-                                    
-                                </td>
-                            </tr>
+                            
                             @if(Auth()->user()->punyaAkses('Master Kontrak','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
@@ -98,6 +93,12 @@
                                 </td>
                             </tr>
                             @endif
+                            <tr>
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td colspan="3" class="customer_td">
+                                    
+                                </td>
+                            </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
@@ -576,6 +577,7 @@ var id = $(par).find('.id_table').val();
 
 $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();
+    var customer= $('.customer').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Kontrak!",
@@ -596,7 +598,7 @@ $('#btnsimpan').click(function(){
       $.ajax({
       url:baseUrl + '/master_sales/save_kontrak',
       type:'post',
-      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang,
+      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
       success:function(response){
         swal({
         title: "Berhasil!",

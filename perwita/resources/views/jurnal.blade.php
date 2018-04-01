@@ -29,7 +29,7 @@
                                                 <td>{{$value->nama_akun}}</td>
                                                 <td> @if($value->dk=='D') 
                                                         @php
-                                                        $totalDebit+=round(abs($value->jrdt_value));
+                                                        $totalDebit+=round(abs($value->jrdt_value),2);
                                                         @endphp
                                                         {{number_format(abs($value->jrdt_value),2,',','.')}} 
                                                     @endif

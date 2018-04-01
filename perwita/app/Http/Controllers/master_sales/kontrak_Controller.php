@@ -14,8 +14,9 @@ class kontrak_Controller extends Controller
 
     public function index(){
         $cabang = session::get('cabang');
+        $jabatan = Auth::user()->m_level;
         // $cabang = Auth::user()->kode_cabang;
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if ($jabatan == 'ADMINISTRATOR' || $jabatan == 'SUPERVISOR') {
             $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
                    ->get();
@@ -87,7 +88,6 @@ class kontrak_Controller extends Controller
     {   
        $data = DB::table('d_akun')
                  ->where('kode_cabang',$request->cabang)
-                 ->where('id_parrent','LIKE','%'.'13'.'%')
                  ->get();
        return view('master_sales.kontrak.acc_drop',compact('data'));
     }
@@ -95,7 +95,6 @@ class kontrak_Controller extends Controller
     {
        $data = DB::table('d_akun')
                  ->where('kode_cabang',$request->cabang)
-                 ->where('id_parrent','LIKE','%'.'13'.'%')
                  ->get();
        return view('master_sales.kontrak.csf_drop',compact('data'));
     }

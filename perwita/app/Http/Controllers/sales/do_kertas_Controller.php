@@ -263,8 +263,8 @@ class do_kertas_Controller extends Controller
         $head = collect(\DB::select("   SELECT d.nomor,d.tanggal,d.kode_customer,c.nama,c.alamat,c.telpon FROM delivery_order d
                                         LEFT JOIN customer c ON c.kode=d.kode_customer
                                         WHERE nomor='$nomor' "))->first();
-        $detail =DB::select("   SELECT d.*,i.dd_nama FROM delivery_orderd d,item i
-                                WHERE i.kode=d.dd_kode_item AND d.dd_nomor='$nomor'  ORDER BY id");
+        $detail =DB::select("   SELECT d.*,i.nama FROM delivery_orderd d,item i
+                                WHERE i.kode=d.dd_kode_item AND d.dd_nomor='$nomor'  ORDER BY dd_id");
     
         return view('sales.do_kertas.print',compact('head','detail'));
     }

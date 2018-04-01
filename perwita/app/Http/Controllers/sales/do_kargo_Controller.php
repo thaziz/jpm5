@@ -444,7 +444,7 @@ class do_kargo_Controller extends Controller
            $data = DB::table('kontrak_customer')
                       ->join('kontrak_customer_d','kcd_id','=','kc_id')
                       ->join('jenis_tarif','kcd_jenis_tarif','=','jt_id')
-                      // ->where('kcd_kota_asal',$request->asal)
+                      ->where('kc_kode_customer',$request->customer)
                       // ->where('kcd_kota_tujuan',$request->tujuan)
                       ->where('kc_kode_cabang',$request->cabang_select)
                       ->where('kcd_jenis','KARGO')
@@ -841,7 +841,7 @@ class do_kargo_Controller extends Controller
                     ->first();
 
         $subcon_detail = DB::table('delivery_order')
-                    ->join('subcon','kode','=','kode_subcon')
+                    ->leftjoin('subcon','kode','=','kode_subcon')
                     ->where('nomor', $id)
                     ->first();
 
@@ -868,6 +868,37 @@ class do_kargo_Controller extends Controller
             return response()->json(['status'=>0]);
         }
     }
+    public function detail_do_kargo($id)
+    {
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,tipe FROM customer ORDER BY nama ASC ");
+        $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k
+                                    LEFT JOIN subcon s ON s.kode=k.kode_subcon ");
+        $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
+        //$angkutan = DB::select(" SELECT kode,nama FROM angkutan ORDER BY nama ASC ");
+        $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
+        $subcon =DB::select("SELECT * FROM subcon");
+        $now = Carbon::now()->format('d/m/Y');
+        $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->where('jt_group',1)
+                         ->orWhere('jt_group',2)
+                         ->orWhere('jt_group',3)
+                         ->orderBy('jt_id','ASC')
+                         ->get();
+        $data = DB::table('delivery_order')
+                    ->where('nomor', $id)
+                    ->first();
 
+        $subcon_detail = DB::table('delivery_order')
+                    ->leftjoin('subcon','kode','=','kode_subcon')
+                    ->where('nomor', $id)
+                    ->first();
+
+       
+        return view('sales.do_kargo.detail_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail'));
+    }
   
 }

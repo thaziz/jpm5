@@ -97,7 +97,7 @@
                                     </tr>
                                     <tr>
                                         <td>Customer</td>
-                                        <td>
+                                        <td class="disabled">
                                             <select onchange="cari_kontrak()" class="form-control customer_do chosen-select-width" name="customer_do">
                                                 <option value="0">Pilih - Customer</option>
                                             @foreach($customer as $val)
@@ -653,9 +653,11 @@ $('#btn_cari_tarif').click(function(){
     var jenis_tarif = $('.jenis_tarif_do').val(); 
     var cabang_select = $('.cabang_select').val(); 
     var tipe_angkutan = $('.tipe_angkutan ').val(); 
+    var tipe_angkutan = $('.tipe_angkutan ').val(); 
+    var customer = $('.customer_do').val(); 
     $.ajax({
         url:baseUrl + '/sales/cari_kontrak_tarif',
-        data:{check,asal,tujuan,jenis_tarif,cabang_select,tipe_angkutan },
+        data:{check,asal,tujuan,jenis_tarif,cabang_select,tipe_angkutan,customer },
         success:function(data){
             $('.modal_tarif').html(data);
             $('#modal_tarif').modal('show');
@@ -757,6 +759,7 @@ function pilih_kontrak(a) {
 
 $('.save').click(function(){
    var cabang = $('.cabang_select').val();
+   var customer = $('.customer_do').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Delivery Order!",
@@ -782,7 +785,8 @@ $('.save').click(function(){
            $('.tabel_detail :input').serialize()+'&'+
            $('.tabel_penerima :input').serialize()+'&'+
            $('.tabel_pengirim :input').serialize()
-           +'&cabang='+cabang,
+           +'&cabang='+cabang
+           +'&customer='+customer,
       success:function(response){
         if (response.status == 2) {
             swal({
@@ -838,6 +842,55 @@ $('.save').click(function(){
 $('.reload').click(function(){
     location.reload();
 });
+// cari kontrak
+function cari_kontrak() {
+    var cabang      = $('.cabang_select').val();
+    var customer_do = $('.customer_do').val();
+     $.ajax({
+        url:baseUrl + '/sales/cari_kontrak',
+        data:{cabang,customer_do},
+        dataType:'json',
+        success:function(data){
+            if (data.status == 1) {
+                $('.kontrak_tarif').prop('checked',true);
+                $('.discount ').addClass('disabled')
+                $('.discount ').attr('readonly',true)
+                // $('.kontrak_td').addClass('disabled');
+            }else{
+                $('.kontrak_tarif').prop('checked',false);
+                // $('.kontrak_td').addClass('disabled');
+                $('.discount ').removeClass('disabled')
+                $('.discount ').attr('readonly',false)
+            }
+
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
+        },
+        error:function(){
+        }
+    })
+}
+
+
+function reseting() {
+    $('.satuan').val('');
+    $('.tarif_dasar_text').val('');
+    $('.tarif_dasar').val('');
+    $('.harga_master').val('');
+    $('.harga_master').val('');
+    $('#kode_tarif').val('');
+    $('.kcd_id').val('');
+    $('.kcd_dt').val('');
+
+    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
+}
+
 // ngeprint
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();

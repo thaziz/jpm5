@@ -110,7 +110,7 @@
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="20">
                                     <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
-                                        <option>Pilih - Cabang</option>
+                                        <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if(Auth()->user()->kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -126,7 +126,7 @@
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="20">
                                     <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
-                                        <option>Pilih - Cabang</option>
+                                        <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if(Auth()->user()->kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -216,10 +216,12 @@
                             
                         </div>
                         <div class="col-sm-12 ">
-                            <button type="button" class="btn btn-success kanan pull-right " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
-                            <button type="button" class="btn btn-info kanan pull-right " id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i>Tambah Uang Muka</button>
-                            <button type="button" class="btn btn-info kanan pull-right " id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i>Tambah Biaya</button>
-                            <button type="button" class="btn btn-info kanan pull-right tambah_invoice" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor Invoice</button>
+                            <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
+                            <button type="button" class="btn btn-warning kanan pull-right print disabled" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
+                            <button type="button" class="btn btn-success kanan pull-right temp_1" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i> Simpan</button>
+                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i> Tambah Uang Muka</button>
+                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i> Tambah Biaya</button>
+                            <button type="button" class="btn btn-info kanan pull-right tambah_invoice temp_1" name="btnadd" ><i class="glyphicon glyphicon-plus"></i> Pilih Nomor Invoice</button>
                         </div>
                     </div>
                 </form>
@@ -711,8 +713,12 @@
 <script type="text/javascript">
 //GLOBAL VARIABLE
 var array_simpan = [];
+var array_edit = [];
+var array_harga = [];
+var array_um= [];
 var count_um = 1;
-
+var simpan_um = [];
+var harga_um = [];
 // datepicker
 $('.ed_tanggal').datepicker({
     format:'dd/mm/yyyy',
@@ -961,14 +967,23 @@ function nota_tes(){
 
 // tambah invoice
 $('.tambah_invoice').click(function(){
-    if ($('#cb_akun_h').val() == '0') {
-        toastr.warning('Akun Harus Dipilih')
+    if ($('.cb_jenis_pembayaran ').val() == '0') {
+        toastr.warning('Jenis Pembayaran Harus Dipilih')
+        return 1
+    }
+    if ($('.cb_cabang').val() == '0') {
+        toastr.warning('Cabang Harus Dipilih')
         return 1
     }
     if ($('#customer ').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
+    if ($('#cb_akun_h').val() == '0') {
+        toastr.warning('Akun Harus Dipilih')
+        return 1
+    }
+    
     var cb_cabang = $('.cb_cabang').val();
     var cb_customer = $('#customer ').val();
 
@@ -1118,25 +1133,26 @@ function histori(p){
 
                     var jumlah_tagihan = $('.jumlah_tagihan').val();
                     jumlah_tagihan     = parseFloat(jumlah_tagihan);
-                    var terbayar       = Math.round($('.terbayar').val()).toFixed(2)
+                    var terbayar       = $('.terbayar').val();
                     terbayar           = parseFloat(terbayar);
-                    var nota_debet     = Math.round($('.nota_debet').val()).toFixed(2);
+                    var nota_debet     = $('.nota_debet').val()
                     nota_debet         = parseFloat(nota_debet);
 
-                    var nota_kredit    = Math.round($('.nota_kredit').val()).toFixed(2);
+                    var nota_kredit    =$('.nota_kredit').val()
                     nota_kredit        = parseFloat(nota_kredit);
 
 
                     var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
+                    jumlah             = Math.round(jumlah).toFixed(2);
                     $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
                     $('.sisa_terbayar').val(jumlah);
 
                     var i_bayar        = $(par).find('.i_bayar').val();
+                    var biaya_admin    = $(par).find('.i_biaya_admin').val();
                     console.log(i_bayar);
-                    $('.angka').val(i_bayar);
+                    $('.angka').val(i_bayar-biaya_admin);
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
                     $('.jumlah_bayar').val(i_bayar);
-                    var biaya_admin    = $(par).find('.i_biaya_admin').val();
                     $('.jumlah_biaya_admin ').val(biaya_admin);
                     var biaya_admin    = $(par).find('.akun_biaya').val();
                     $('.biaya_admin ').val(biaya_admin).trigger('chosen:updated');
@@ -1148,9 +1164,7 @@ function histori(p){
             })
         }
     })
-    
-    
-    
+  
 }
 
 
@@ -1449,10 +1463,10 @@ function pilih_um(par) {
         data:{um,simpan_um},
         dataType : 'json',
         success:function(response){
-            $('.no_um').val(response.data.nomor);
-            $('.total_um_text').val(accounting.formatMoney(response.data.sisa_uang_muka,"",2,'.',','));
-            $('.total_um').val(response.data.sisa_uang_muka);
-            $('.status_um').val(response.data.status_um);
+            $('.no_um').val(response.data[0].nomor);
+            $('.total_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+            $('.total_um').val(response.data[0].sisa_uang_muka);
+            $('.status_um').val(response.data[0].status_um);
             $('#modal_cari_um').modal('hide');
 
         },
@@ -1489,13 +1503,18 @@ var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
                     ],
 });
 $('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.',defaultZero: true});
-// $('.jumlah_bayar_um ').blur(function(){
-//     var jb =$(this).val();
-//     jb = jb.replace(/[^0-9]\-+/g,"");
-//     if (jb > $('.total_um ').val()) {
-//         $(this).val(accounting.formatMoney($('.total_um ').val(),"",0,'.',','));
-//     }
-// });
+$('.jumlah_bayar_um ').keyup(function(){
+   var jumlah = $(this).val();
+   jumlah     = jumlah.replace(/[^0-9\-]+/g,"");
+   jumlah     = parseFloat(jumlah);
+   var total_um  = $('.total_um ').val();
+   total_um   = parseFloat(total_um);
+
+   if (jumlah > total_um) {
+    jumlah = total_um;
+   }
+   $(this).val(accounting.formatMoney(jumlah,"",0,'.',','));
+});
 $('#save_um').click(function(){
     var seq_um    = $('.seq_um').val();
     var no_um     = $('.no_um').val();
@@ -1647,7 +1666,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/simpan_kwitansi',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()
@@ -1665,6 +1684,8 @@ $('#btnsimpan').click(function(){
                    showConfirmButton: true
                     },function(){
                         // location.reload();
+                        $('.temp_1').addClass('disabled');
+                        $('.print').removeClass('disabled');
                 });
             }else{
                 $('#nota_kwitansi').val(response.nota);
@@ -1684,6 +1705,17 @@ $('#btnsimpan').click(function(){
       });  
      });
 })
+
+$('.reload').click(function(){
+    location.reload();
+})
+
+$('.print').click(function(){
+    var id = $('#nota_kwitansi').val();
+
+    window.open('{{url("sales/kwitansi/cetak_nota")}}'+'/'+id);
+});
+
 </script>
 
 @endsection

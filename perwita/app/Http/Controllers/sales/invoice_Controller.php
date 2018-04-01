@@ -485,7 +485,7 @@ public function simpan_invoice(request $request)
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_status'             =>  'Released',
                                           'i_ppnrp'              =>  $total_ppn,
-                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_kode_pajak'         =>  $request->kode_pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
@@ -618,6 +618,9 @@ if(count($dataItem)==0){
               DB::rollback();
               return json_encode($dataInfo);
         }
+
+        // return $cabang;
+        // return$request->accPiutang;
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
