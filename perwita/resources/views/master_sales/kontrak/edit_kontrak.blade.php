@@ -389,7 +389,7 @@ $('#btnadd').click(function(){
     var validasi                 = [];
 
 
-    if (id_subcon != 0) {
+    if (customer != 0) {
         validasi.push(1);
     }else{
         validasi.push(0);
