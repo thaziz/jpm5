@@ -125,7 +125,7 @@
                                 </tr>
                                 <input type="hidden" name="ed_id" class="form-control" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                        <input type="text" class="form-control" name="crud" class="form-control" >
+                                        <input type="hidden" class="form-control" name="crud" class="form-control" >
                                 <tr>
                                     <td style="padding-top: 0.4cm" id="test">Keterangan</td>
                                     <td id="test2">   
@@ -377,9 +377,10 @@
             $('#test2').show();
         $("input[name='crud']").val('N');
         $("input[name='ed_id']").val('');
-        $("input[name='ed_harga']").val(0);
         $("select[name='cb_jenis']").val('');
         $("select[name='cb_tipe_kiriman']").val('');
+        $("select[name='ed_harga']").val('');
+        $("select[name='ed_cabang']").val('');
         $("select[name='cb_keterangan']").val('');
         $("#modal").modal("show");
         $("input[name='cb_tipe_kiriman']").focus();
@@ -403,18 +404,19 @@
                 $("input[name='ed_id']").val(data.id);
                 $("select[name='ed_harga']").val(data.harga);
                 $("select[name='cb_jenis']").val(data.jenis);
+                $("select[name='ed_cabang']").val(data.cabang_default);
                 $("select[name='cb_tipe_kiriman']").val(data.tipe_kiriman);
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
                 if(data.tipe_kiriman == "KILOGRAM" || data.tipe_kiriman == 'KOLI' ){
                     $("select[name='cb_keterangan']").val(data.keterangan);
-                    alert('a');
+                    // alert('a');
                     $('#test2').show();
                     $('#test').show();
                 }else if(data.tipe_kiriman == "DOKUMEN" || data.tipe_kiriman == 'SEPEDA' ){
                     $('#test2').hide();
                     $('#test').hide();
-                    alert('b');
+                    // alert('b');
                 }
                 
             },
