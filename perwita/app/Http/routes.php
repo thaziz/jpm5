@@ -45,6 +45,7 @@ Route::get('purchase/suratpermintaanpembelian', function(){
         return view('purchase.spp.index');
 });
 
+Route::get('cabang/{cabang}', 'cabangController@cabang');
 //********SETTING********
 //pengguna
 Route::get('setting/pengguna', 'setting\pengguna_Controller@index');

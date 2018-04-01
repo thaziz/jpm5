@@ -11,15 +11,34 @@
                         <img alt="image" class="img-circle" src="{{ asset('assets/img/profile_small.jpg') }}" />
                     </span>
                     <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Ilham</strong>
-                            </span> <span class="text-muted text-xs block">Kelola Profil <b class="caret"></b></span> </span> </a>
-                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">
+                            {{ Auth::user()->m_name }}
+                        </strong>
+                            </span>                             
+                            {{-- <span class="text-muted text-xs block">Kelola Profil <b class="caret"></b></span>  --}}
+                        </span> 
+                        @if(Auth::user()->kode_cabang=='')
+                         <select onchange="pilihCabang()" id="kode-cabang" class="input-sm" style="color:#009aa9">
+                            @foreach( Session::get('userCabang') as $data )
+                                <option @if($data->kode==Session::get('cabang'))selected="" @endif value="{{$data->kode}}" >
+                                    {{$data->nama}}
+                                </option>
+                            @endforeach
+                        </select>
+                        @else
+                            <select disabled="" onchange="pilihCabang()" class="input-sm" style="color:#009aa9">
+                                <option>{{Session::get('namaCabang')}}</option>
+                            </select>
+                        @endif
+
+                    </a>
+                    {{-- <ul class="dropdown-menu animated fadeInRight m-t-xs">
 
                         <li><a href="contacts.html">Contacts</a></li>
                         <li><a href="mailbox.html">Mailbox</a></li>
                         <li class="divider"></li>
                         <li><a href="{{ url('logout') }}">Logout</a></li>
-                    </ul>
+                    </ul> --}}
                 </div>
                 <div class="logo-element" style="background:#f3f3f4;">
                     <img src="{{ asset('assets/img/dboard/logo/sublogo.png') }}" width="30px">
