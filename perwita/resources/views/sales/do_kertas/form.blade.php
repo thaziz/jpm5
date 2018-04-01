@@ -54,33 +54,37 @@
                                     </div>
                                 </td>
                             </tr>                        
-                            <tr>
+                           @if(Auth::user()->punyaAkses('Invoice Penjualan','cabang'))
+                            <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="3">
-                                    @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
-                                                <select onchange="ganti_nota()" class="form-control cabang_select">
-                                            @foreach($cabang as $val)
-                                                @if(Auth()->user()->kode_cabang == $val->kode)
-                                                <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                                @else
-                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                                @endif
-                                                @endforeach
-                                                </select>
-                                            @else
-                                                <select disabled="" class="form-control cabang_select">
-                                                @foreach($cabang as $val)
-                                                @if(Auth::user()->kode_cabang == $val->kode)
-                                                <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                                @else
-                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                                @endif
-                                            @endforeach
-                                                </select>
-                                    @endif
-                                    <input type="hidden" name="ed_cabang" value="{{ $data->kode_cabang or null }}" >
+                                <td colspan="4">
+                                    <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                    @foreach ($cabang as $row)
+                                        @if(Auth::user()->kode_cabang == $row->kode)
+                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
+                                        @else
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                        @endif
+                                    @endforeach
+                                    </select>
                                 </td>
                             </tr>
+                            @else
+                            <tr class="disabled">
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td colspan="4">
+                                    <select class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                    @foreach ($cabang as $row)
+                                        @if(Auth::user()->kode_cabang == $row->kode)
+                                        <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @else
+                                        <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @endif
+                                    @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            @endif
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Alamat</td>
                                 <td colspan="3">
