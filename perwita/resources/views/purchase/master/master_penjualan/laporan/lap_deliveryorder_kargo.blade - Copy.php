@@ -35,24 +35,17 @@
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                     <table class="table table-bordered datatable table-striped">
-                      <tr>
-                        <th> dari Tgl : </th> 
-                          <td> 
-                            <div class="input-group">
+                         <tr>
+                        <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                           <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
                                               date" onchange="tgl()">
 
-                            </div> 
-                          </td>  
-                          <th> sampai tgl : </th> 
-                            <td> 
-                              <div class="input-group">
-                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                      <input type="text" class=" date form-control date_to date_range_filter
-                                          date" name="max" id="max" onchange="tgl()" >
-                              </div> 
-                            </td>
+                              </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                          <input type="text" class=" date form-control date_to date_range_filter
+                                              date" name="max" id="max" onchange="tgl()" >
+                              </div> </td>
                       </tr>
                        <tr>
                         <th> Nama Pengirim : </th> 
@@ -69,7 +62,7 @@
                            <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td >
                           <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
-                            <option  disabled="" selected=""> --Pilih --</option>
+                            <option value="" disabled="" selected=""> --Pilih --</option>
                             @foreach ($kota1 as $asal)
                                 <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
                             @endforeach
@@ -79,7 +72,7 @@
                           <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option  disabled="" selected=""> --Pilih --</option>
+                            <option value="" disabled="" selected=""> --Pilih --</option>
                             @foreach ($kota as $tujuan)
                                 <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
                             @endforeach
@@ -90,7 +83,7 @@
                            <th style="width: 100px; padding-top: 16px"> Tipe </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option  disabled="" selected=""> --Pilih --</option>
+                            <option value="" disabled="" selected=""> --Pilih --</option>
                             <option value="DOKUMEN">DOKUMEN</option>
                             <option value="KILOGRAM">KILOGRAM</option>
                             <option value="KOLI">KOLI</option>
@@ -101,7 +94,7 @@
                            <th style="width: 100px; padding-top: 16px"> Jenis </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
-                            <option  disabled="" selected=""> --Pilih --</option>
+                            <option value="" disabled="" selected=""> --Pilih --</option>
                             <option value="REGULER">REGULER</option>
                             <option value="EXPRESS">EXPRESS</option>
                             <option value="OUTLET">OUTLET</option>
@@ -112,7 +105,7 @@
                            <th style="width: 100px; padding-top: 16px"> Status </th>
                           <td colspan="3"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn4()">
-                            <option  disabled="" selected=""> --Pilih --</option>
+                            <option value="" disabled="" selected=""> --Pilih --</option>
                             <option value="MANIFESTED">MANIFESTED</option>
                             <option value="TRANSIT">TRANSIT</option>
                             <option value="RECEIVED">RECEIVED</option>
@@ -210,8 +203,8 @@
 
     var table;
    
-      table = $('#addColumn').DataTable({
-        responsive: true,
+   table = $('#addColumn').DataTable( {
+      responsive: true,
               searching: true,
               //paging: false,
               "pageLength": 10,
@@ -223,8 +216,8 @@
                  /* messageTop: 'Hasil pencarian dari Nama : ',*/
                   text: ' Excel',
                   className:'excel',
-                  title:'LAPORAN DELIVERY ORDER',
-                  filename:'DO-'+a+b+c,
+                  title:'LAPORAN TARIF CABANG KOLI',
+                  filename:'CABANGKOLI-'+a+b+c,
                   init: function(api, node, config) {
                   $(node).removeClass('btn-default'),
                   $(node).addClass('btn-warning'),
@@ -239,13 +232,70 @@
               }
           ]
     });
-   function filterColumn () {
+     $('.date').datepicker({
+        autoclose: true,
+        format: 'yyyy-mm-dd'
+    });
+            $("#min").datepicker({format:"dd/mm/yyyy"});
+            $("#max").datepicker({format:"dd/mm/yyyy"});
+
+       function tgl(){
+         var tgl1   = $("#min").val();
+         var tgl2   = $("#max").val();
+          if(tgl1 != "" && tgl2 != ""){
+          }
+
+            $(document).ready(function(){
+        $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var min = $('#min').datepicker("getDate");
+            // console.log(min);
+            var max = $('#max').datepicker("getDate");
+            // console.log(max);
+
+            var startDate = new Date(data[3]);
+            // console.log(startDate);
+            if (min == null || min == '' && max == null || max == '') { return true; }
+            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
+            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
+            if (startDate <= max && startDate >= min) { return true; }
+            return false;
+        }
+        );
+            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+           
+
+            // Event listener to the two range filtering inputs to redraw on input
+            $('#min, #max').change(function () {
+                /*if($('#max').val() == '' || $('#max').val() == null ){
+                    $('#max').val(0);
+                }*/
+                table.draw();
+            });
+        });
+          }
+   
+ 
+    $(document).ready(function() {
+        $('.tbl-item').DataTable();
+     
+        $('input.global_filter').on( 'keyup click', function () {
+            filterGlobal();
+        } );
+     
+        $('input.column_filter').on( 'keyup click', function () {
+            filterColumn( $(this).parents('tr').attr('data-column') );
+        } );
+    } );
+
+    function filterColumn () {
     $('#addColumn').DataTable().column(0).search(
         $('.select-picker1').val()).draw();    
     }
     function filterColumn1 () {
         $('#addColumn').DataTable().column(1).search(
-        $('.select-picker2').val()).draw();    
+            $('.select-picker2').val()).draw();    
     }
     function filterColumn2 () {
         $('#addColumn').DataTable().column(10).search(
@@ -266,108 +316,27 @@
         table.column(5).search( this.value ).draw();
       });  
 
-   $minim = $('#min').val();
-   $maxim = $('#max').val();
-   $pene = $('#nama_pengirim').val();
-   $peng = $('#nama_penerima').val();
-   $seac1 = $('#select-picker1').val();
-   $seac2 = $('#select-picker2').val();
-   $seac3 = $('#select-picker3').val();
-   $seac4 = $('#select-picker4').val();
-
-   // if ($minim == '' || $minim == null 
-   //     && $maxim == '' || $maxim == null 
-   //     && $pene == '' || $pene == null 
-   //     && $peng == '' || $peng == null
-   //     && $seac1 == '' || $seac1 == null
-   //     && $seac2 == '' || $seac2 == null
-   //     && $seac3 == '' || $seac3 == null
-   //     && $seac4 == '' || $seac4 == null){
-   //    alert('asd');
-   // }else if($minim != '' || $minim != null 
-   //     && $maxim != '' || $maxim != null 
-   //     && $pene !='' || $pene !=null 
-   //     && $peng != '' || $peng != null
-   //     && $seac1 != '' || $seac1!= null
-   //     && $seac2 != '' || $seac2 != null
-   //     && $seac3 != '' || $seac3 != null
-   //     && $seac4 != '' || $seac4 != null){
-     $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-        });
-            $("#min").datepicker({format:"dd/mm/yyyy"});
-            $("#max").datepicker({format:"dd/mm/yyyy"});
-
-       function tgl(){
-         var tgl1   = $("#min").val();
-         var tgl2   = $("#max").val();
-          if(tgl1 != "" && tgl2 != ""){
-          }
-
-            $(document).ready(function(){
-        $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#min').datepicker("getDate");
-            // console.log(min);
-            var max = $('#max').datepicker("getDate");
-            // console.log(max);
-
-            var startDate = new Date(data[1]);
-            
-            if (min == null || min == '' && max == null || max == '') { return true; 
-            }
-            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;
-            }
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;
-            }
-            if (startDate <= max && startDate >= min) { return true; 
-            }
-            return false;
-        }
-        );
-
-       
-            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-           
-
-            // Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max').change(function () {
-                /*if($('#max').val() == '' || $('#max').val() == null ){
-                    $('#max').val(0);
-                }*/
-                table.draw();
-            });
-        });
-          }
-   
-
-    
-   // }
-   
-       
-
       function cetak(){
-          var asw=[];
-       var asd = addColumn.rows( { filter : 'applied'} ).data(); 
+      var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
 
            asw[i] =  $(asd[i][2]).val();
   
        }
-       console.log(asw);
 
       $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
       });
+
+
       $.ajax({
         data: {a:asw,c:'download'},
         url: baseUrl + '/reportdeliveryorder/reportdeliveryorder',
-        type: "get",
-        success : function(data){
+        type: "post",
+       success : function(data){
         var win = window.open();
             win.document.write(data);
         }
