@@ -1142,7 +1142,7 @@ function histori(p){
                     nota_kredit        = parseFloat(nota_kredit);
 
 
-                    var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;\
+                    var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
                     jumlah             = Math.round(jumlah).toFixed(2);
                     $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
                     $('.sisa_terbayar').val(jumlah);
