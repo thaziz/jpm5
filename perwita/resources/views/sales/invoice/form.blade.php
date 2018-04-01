@@ -67,7 +67,7 @@
                                             @if(Auth::user()->kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                             @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                             @endif
                                         @endforeach
                                         </select>
