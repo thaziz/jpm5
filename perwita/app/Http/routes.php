@@ -813,17 +813,10 @@ Route::get('sales/deliveryorderkargoform/{nomor}/nota', 'sales\do_kargo_Controll
 // delivery order kertas
 Route::get('sales/deliveryorderkertas', 'sales\do_kertas_Controller@index');
 Route::get('sales/deliveryorderkertas_form', 'sales\do_kertas_Controller@form');
-Route::get('sales/deliveryorderkertas_form/{nomor}/edit', 'sales\do_kertas_Controller@form');
-Route::get('sales/deliveryorderkertas_form/{nomor}/hapus_data', 'sales\do_kertas_Controller@hapus_data');
-Route::get('sales/deliveryorderkertas_form/tabel_data_detail', 'sales\do_kertas_Controller@table_data_detail');
-Route::get('sales/deliveryorderkertas/tabel', 'sales\do_kertas_Controller@table_data');
-Route::get('sales/deliveryorderkertas/get_data', 'sales\do_kertas_Controller@get_data');
-Route::get('sales/deliveryorderkertas/get_data_detail', 'sales\do_kertas_Controller@get_data_detail');
-Route::post('sales/deliveryorderkertas/save_data', 'sales\do_kertas_Controller@save_data');
-Route::post('sales/deliveryorderkertas/save_data_detail', 'sales\do_kertas_Controller@save_data_detail');
-Route::post('sales/deliveryorderkertas/hapus_data', 'sales\do_kertas_Controller@hapus_data');
-Route::post('sales/deliveryorderkertas/hapus_data_detail', 'sales\do_kertas_Controller@hapus_data_detail');
-Route::get('sales/deliveryorderkertas_form/{nomor}/nota', 'sales\do_kertas_Controller@cetak_nota');
+Route::get('sales/nomor_do_kertas', 'sales\do_kertas_Controller@nomor_do_kertas');
+Route::get('sales/cari_customer_kertas', 'sales\do_kertas_Controller@cari_customer_kertas');
+Route::get('sales/cari_item', 'sales\do_kertas_Controller@cari_item');
+
 // end delivery order kertas
 
 //update status order cabang
