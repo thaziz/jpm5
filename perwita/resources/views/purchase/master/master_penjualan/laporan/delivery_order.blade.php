@@ -210,32 +210,35 @@
 
     var table;
    
-   table = $('#addColumn').DataTable( {
-       dom: 'Bfrtip',
-       stateSave: true,
-       buttons: [
-          {
-                extend: 'excel',
-               /* messageTop: 'Hasil pencarian dari Nama : ',*/
-                text: ' Excel',
-                className:'excel',
-                title:'LAPORAN INVOCE',
-                filename:'INVOICE-'+a+b+c,
-                init: function(api, node, config) {
-                $(node).removeClass('btn-default'),
-                $(node).addClass('btn-warning'),
-                $(node).css({'margin-left': '80px','margin-top':'-50px'})
-                },
-                exportOptions: {
-                modifier: {
-                    page: 'all'
-                }
-            }
-            
-            }
-    ]
- 
-          });
+      table = $('#addColumn').DataTable({
+        responsive: true,
+              searching: true,
+              //paging: false,
+              "pageLength": 10,
+              "language": dataTableLanguage,
+         dom: 'Bfrtip',
+         buttons: [
+            {
+                  extend: 'excel',
+                 /* messageTop: 'Hasil pencarian dari Nama : ',*/
+                  text: ' Excel',
+                  className:'excel',
+                  title:'LAPORAN DELIVERY ORDER',
+                  filename:'DO-'+a+b+c,
+                  init: function(api, node, config) {
+                  $(node).removeClass('btn-default'),
+                  $(node).addClass('btn-warning'),
+                  $(node).css({'margin-top': '-50px','margin-left': '80px'})
+                  },
+                  exportOptions: {
+                  modifier: {
+                      page: 'all'
+                  }
+              }
+              
+              }
+          ]
+    });
    function filterColumn () {
     $('#addColumn').DataTable().column(0).search(
         $('.select-picker1').val()).draw();    
@@ -346,16 +349,27 @@
        
 
       function cetak(){
+          var asw=[];
+       var asd = addColumn.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
 
+           asw[i] =  $(asd[i][2]).val();
+  
+       }
+       console.log(asw);
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
       $.ajax({
-        data: {c:'download'},
+        data: {a:asw,c:'download'},
         url: baseUrl + '/reportdeliveryorder/reportdeliveryorder',
         type: "get",
-         complete : function(){
-        window.open(this.url,'_blank');
-        },     
         success : function(data){
-        // window.open(this.data,'_blank');  
+        var win = window.open();
+            win.document.write(data);
         }
       });
     }
