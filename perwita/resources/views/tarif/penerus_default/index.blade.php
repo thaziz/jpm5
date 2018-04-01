@@ -404,6 +404,7 @@
                 $("input[name='ed_id']").val(data.id);
                 $("select[name='ed_harga']").val(data.harga);
                 $("select[name='cb_jenis']").val(data.jenis);
+                $("select[name='id_zona_foreign']").val(data.id_zona_foreign);
                 $("select[name='ed_cabang']").val(data.cabang_default);
                 $("select[name='cb_tipe_kiriman']").val(data.tipe_kiriman);
                 $("#modal").modal('show');
