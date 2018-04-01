@@ -56,7 +56,7 @@
                            <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td colspan="2">
                           <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
-                            <option value="" > --Pilih Terlebih Dahulu--</option>
+                            <option value="" disabled="" selected=""> --Pilih --</option>
                             @foreach ($kota1 as $asal)
                                 <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
                             @endforeach
@@ -68,10 +68,21 @@
                           <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
                           <td colspan="2"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="" > --Pilih Terlebih Dahulu--</option>
+                            <option value="" disabled="" selected=""> --Pilih --</option>
                             @foreach ($kota as $tujuan)
                                 <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
                             @endforeach
+                           </select>
+                          </td>
+                        </tr>
+                        <tr>
+                           <th style="width: 100px; padding-top: 16px"> Jenis </th>
+                          <td colspan="2"> 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="REGULER">REGULER</option>
+                            <option value="EXPRESS">EXPRESS</option>
+                            <option value="OUTLET">OUTLET</option>
                            </select>
                           </td>
                         </tr>
@@ -91,28 +102,28 @@
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
+                        <th hidden="" align="center"> Kota Asal</th>
+                        <th hidden="" align="center">id Kota Asal</th>
                         <th align="center"> Kota Asal</th>
-                        <th align="center">id Kota Asal</th>
-                        <th align="center">id Kota Asal</th>
                         <th align="center"> Kota Tujuan</th>
                         <th align="center">kode</th>
-                        <th align="center"> jenis </th>
-                        <th align="center"> Keterangan</th>
+                        <th align="center"> Jenis </th>
+                        <th align="center"> Waktu </th>
                         <th align="center"> Tarif</th>
                     </tr>        
                     </thead>        
                     <tbody>
                       @foreach($data as $val)
                       <tr>
-                        <td><input type="hidden" name="" value="{{$val->id_asal}}">{{$val->id_asal}}</td>
-                        <td><input type="hidden" name="" value="{{$val->id_tujuan}}">{{$val->id_tujuan}}</td>
+                        <td hidden=""><input type="hidden" name="" value="{{$val->id_asal}}">{{$val->id_asal}}</td>
+                        <td hidden=""><input type="hidden" name="" value="{{$val->id_tujuan}}">{{$val->id_tujuan}}</td>
 
                         <td><input type="hidden" name="" value="{{$val->asal}}">{{$val->asal}}</td>
                         <td><input type="hidden" name="" value="{{$val->tujuan}}">{{$val->tujuan}}</td>
                         <td ><input type="hidden" name="" value="{{$val->kode}}">{{$val->kode}}</td>
                         <td align="center"><input type="hidden" name="" value="{{$val->jenis}}">{{$val->jenis}}</td>
-                        <td align="center"><input type="hidden" name="" value="-">-</td>
-                        <td><input type="hidden" name="" value="{{"Rp " . number_format($val->harga,2,",",".")}}">{{"Rp " . number_format($val->harga,2,",",".")}}</td>
+                        <td align="center"><input type="hidden" name="" value="{{$val->waktu}}">{{$val->waktu}}</td>
+                        <td align="right"><input type="hidden" name="" value="{{"Rp " . number_format($val->harga,2,",",".")}}">{{"Rp " . number_format($val->harga,2,",",".")}}</td>
                       </tr>
                       @endforeach
                     </tbody>       
@@ -187,17 +198,17 @@ var d = new Date();
             $('.select-picker2').val()
         ).draw();    
     }
+    function filterColumn2 () {
+        $('#addColumn').DataTable().column(5).search(
+            $('.select-picker3').val()
+        ).draw();    
+    }
     $('.select-picker1').change(function(){
       var anj = $(this).val();
       console.log(anj);
     });
 
       function cetak(){
-       z = $('.select-picker1 option:selected').val();
-       z1 = $('.select-picker2 option:selected').val();
-       console.log(z);
-       console.log(z1);
-
       var asw=[];
        var asd = addColumn.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
@@ -217,10 +228,7 @@ var d = new Date();
       $.ajax({
         data: {a:asw,c:'download'},
         url: baseUrl + '/reportcabangdokumen/reportcabangdokumen',
-        type: "post",
-        //  complete : function(){
-        //   window.open(this.url,'_blank');
-        // }     
+        type: "post",    
         success : function(data){
         var win = window.open();
             win.document.write(data);

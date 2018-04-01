@@ -520,18 +520,27 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 // Route::get('laporan_master_penjualan/tarif_cabang_kargo', 'LaporanMasterController@tarif_cabang_kargo');
 
 
- //LAPORAN TARIF
-Route::get('laporan_master_penjualan/tarif_cabang_dokumen', 'LaporanMasterController@tarif_cabang_dokumen');
+
 Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@tabledokumen')->name('dokumen');
-Route::get('laporan_master_penjualan/tarif_cabang_koli', 'LaporanMasterController@tarif_cabang_koli');
 Route::get('sales/laporaninvoicepenjualan','LaporanMasterController@invoice');
-Route::get('laporan_master_penjualan/tarif_cabang_kargo', 'LaporanMasterController@tarif_cabang_kargo');
 Route::get('sales/laporandeliveryorder','LaporanMasterController@deliveryorder');
 
-//KUMPULAN LAPORAN PDF
+
+//LAPORAN TARIF DENY INDEX
+Route::get('laporan_master_penjualan/tarif_cabang_dokumen', 'LaporanMasterController@tarif_cabang_dokumen');
+Route::get('laporan_master_penjualan/tarif_cabang_koli', 'LaporanMasterController@tarif_cabang_koli');
+Route::get('laporan_master_penjualan/tarif_cabang_kargo', 'LaporanMasterController@tarif_cabang_kargo');
+Route::get('laporan_master_penjualan/tarif_cabang_kilogram', 'LaporanMasterController@tarif_cabang_kilogram');
+Route::get('laporan_master_penjualan/tarif_cabang_sepeda', 'LaporanMasterController@tarif_cabang_sepeda');
+//END OF LAPORAN TARIF DENY INDEX
+//KUMPULAN LAPORAN PDF DENY INDEX
 Route::post('reportcabangdokumen/reportcabangdokumen', 'LaporanMasterController@reportcabangdokumen')->name('reportcabangdokumen');
-Route::get('reportcabangkoli/reportcabangkoli', 'LaporanMasterController@reportcabangkoli')->name('reportcabangkoli');
-Route::get('reportcabangkargo/reportcabangkargo', 'LaporanMasterController@reportcabangkargo')->name('reportcabangkargo');
+Route::post('reportcabangkoli/reportcabangkoli', 'LaporanMasterController@reportcabangkoli')->name('reportcabangkoli');
+Route::post('reportcabangkargo/reportcabangkargo', 'LaporanMasterController@reportcabangkargo')->name('reportcabangkargo');
+Route::post('reportcabangkilogram/reportcabangkilogram', 'LaporanMasterController@reportcabangkilogram')->name('reportcabangkilogram');
+Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@reportcabangsepeda')->name('reportcabangsepeda');
+//END OF LAPORAN PDF DENY INDEX
+
 Route::get('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoice')->name('reportinvoice');
 Route::get('reportdeliveryorder/reportdeliveryorder','LaporanMasterController@reportdeliveryorder');
 
@@ -1004,9 +1013,7 @@ Route::get('sales/laporansalesorder', function(){
 });
 
 //laporan delivery order
-Route::get('sales/laporandeliveryorder', function(){
-        return view('laporan_sales.do.index');
-});
+// Route::get('sales/laporandeliveryorder', 'LaporanMasterController@deliveryorder');
 
 Route::group(["prefix" => "sales"], function(){
 
@@ -1602,7 +1609,7 @@ Route::get('data/jurnal-umum', 'jurnalController@lihatJurnalUmum');
 
 
 //laporan Do
-Route::get('sales/laporandeliveryorder','laporan_penjualan\laporandoController@index');
+// Route::get('sales/laporandeliveryorder','laporan_penjualan\laporandoController@index');
 //laporan penjualan per item
 Route::get('sales/laporaninvoicepenjualanperitem','laporan_penjualan\laporanpenjualanperitemController@index');
 //laporan seluruhnya

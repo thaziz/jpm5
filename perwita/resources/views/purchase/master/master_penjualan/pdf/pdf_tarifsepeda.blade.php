@@ -5,17 +5,14 @@
 	}
 	table {
     border-collapse: collapse;
-}
+	}
 	table,th,td{
 		border :1px solid black;
 	}
 </style>
 
 <div class=" pembungkus">
-{{--   @if ()
-    expr
-  @endif --}}
-				 <table id="addColumn" width="100%" class="table table-bordered table-striped tbl-item">
+					<table id="addColumn" width="100%" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
                       <th align="center"> No.</th>
@@ -30,9 +27,9 @@
                     </tr>        
                     </thead>        
                     <tbody>
-                      @foreach($dat1  as$index=>$val)
+                      @foreach($dat1  as $index=>$val)
                       <tr style="font-size: 12px">
-                        <td>{{ $index  }}</td>
+                        <td>{{ $index }}</td>
                         <td>{{ $dat1[$index][0]->kode}}</td>  
                         <td>{{ $dat1[$index][0]->asal}}</td>
                         <td>{{ $dat1[$index][0]->tujuan}}</td>
@@ -40,15 +37,10 @@
                         <td>{{ $dat1[$index][0]->waktu}} (hari)</td>
                         <td>{{ $dat1[$index][0]->acc_pen}}</td>
                         <td>{{ $dat1[$index][0]->csf_pen}}</td>
-                        <td>{{"Rp " . number_format($dat1[$index][0]->tarif,2,",",".")}}</td>
+                        <td>{{"Rp " . number_format($dat1[$index][0]->harga,2,",",".")}}</td>
                       </tr>
                       @endforeach
                     </tbody>       
                   </table>
 
-
-
 </div>
-<script type="text/javascript">
-    window.print();
-</script>
