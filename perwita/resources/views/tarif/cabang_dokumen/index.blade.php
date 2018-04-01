@@ -184,7 +184,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Penjualan</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_acc_penjualan"  style="text-align: right;">
+                                        <select  class="form-control d chosen-select-width" name="ed_acc_penjualan"  style="text-align: right;">
                                         
                                             <option value="">-- Pilih Acc Penjualan Terlebih Dahulu --</option>
                                             @foreach ($accpenjualan as $b)
@@ -196,7 +196,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Csf Penjualan</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_csf_penjualan" style="text-align: right;">
+                                        <select  class="form-control d chosen-select-width" name="ed_csf_penjualan" style="text-align: right;">
                                         
                                             <option value="">-- Pilih Csf Penjualan Terlebih Dahulu --</option>
                                             @foreach ($csfpenjualan as $a)
@@ -432,9 +432,13 @@
                   $("input[name='id_outlet_edit']").val('');
                 }
                 
-                  
+                $('#hilang').hide();
+                $('#hilang2').show();
+                
                 $("input[name='id_reguler_edit']").val(data[0].kode_detail);
                 $("input[name='id_express_edit']").val(data[1].kode_detail);
+
+                $("input[name='kodekota']").val(data[0].kode_kota);
 
 
                 $("input[name='ed_kode_old']").val(data[0].kode_sama);

@@ -91,7 +91,16 @@ class cabang_kilogram_Controller extends Controller
     public function get_data (Request $request) {
         $asal = $request->asal;
         $tujuan = $request->tujuan;
-        $data = DB::table('tarif_cabang_kilogram')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail_kilo','ASC')->get();
+         $sql = "    SELECT t.kode_cabang,k.kode_kota,t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode,t.acc_penjualan,t.csf_penjualan, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
+                    FROM tarif_cabang_kilogram t
+                    LEFT JOIN kota k ON k.id=t.id_kota_asal 
+                    LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkilogram
+                    where t.id_kota_asal = '$asal' AND t.id_kota_tujuan = '$tujuan'
+                    ORDER BY t.kode_detail_kilo ASC ";
+        
+        $data = DB::select(DB::raw($sql));
+        // $data = DB::table('tarif_cabang_kilogram')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail_kilo','ASC')->get();
         echo json_encode([$data]);
             }
 
@@ -342,9 +351,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
 
             if ($datadetailcount != 0) {
                 $kode_detail += 1;
-                 if ($kode_utama < 10000 ) {
-                    $kode_utama = '0000'.($kode_utama+1);
-                    }
+                 $kode_utama = $kode_utama+1;
+$kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                 $kode_express = $kodekota.'/'.'KG'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
@@ -375,9 +383,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
 
                 if ($datadetailcount != 0) {
                 $kode_detail += 1;
-                 if ($kode_utama < 10000 ) {
-                    $kode_utama = '0000'.($kode_utama+1);
-                    }
+                 $kode_utama = $kode_utama+1;
+$kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                 $kode_express = $kodekota.'/'.'KG'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
@@ -408,9 +415,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
 
                   if ($datadetailcount != 0) {
                 $kode_detail += 1;
-                 if ($kode_utama < 10000 ) {
-                    $kode_utama = '0000'.($kode_utama+1);
-                    }
+                $kode_utama = $kode_utama+1;
+$kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                 $kode_express = $kodekota.'/'.'KG'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
@@ -441,9 +447,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
 
                 if ($datadetailcount != 0) {
                 $kode_detail += 1;
-                 if ($kode_utama < 10000 ) {
-                    $kode_utama = '0000'.($kode_utama+1);
-                    }
+                $kode_utama = $kode_utama+1;
+$kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                 $kode_express = $kodekota.'/'.'KG'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
@@ -474,9 +479,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
 
                 if ($datadetailcount != 0) {
                 $kode_detail += 1;
-                 if ($kode_utama < 10000 ) {
-                    $kode_utama = '0000'.($kode_utama+1);
-                    }
+                 $kode_utama = $kode_utama+1;
+$kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                 $kode_express = $kodekota.'/'.'KG'.'E'.$kodecabang.$kode_utama;   
 
                 }else if ($datadetailcount == 0){
@@ -854,6 +858,9 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
             }
         }
             elseif ($crud == 'E') {
+                // dd($request);
+                $kodekota = $request->kodekota;
+
                 $kode0 = $request->kode0; 
                 $kode1 = $request->kode1; 
                 $kode2 = $request->kode2; 
@@ -875,15 +882,51 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                 $integer_kode7 =  (int)$kode7;
                 $integer_kode8 =  (int)$kode8;
                 $integer_kode9 =  (int)$kode9;
-  
+        
+                $prov = DB::table('kota')->select('id','id_provinsi')->where('id',$request->cb_kota_tujuan)->get();
+                $prov = $prov[0]->id_provinsi;
 
                 $integer_kode0 = $integer_kode0;
                 $integer_kode0 = str_pad($integer_kode0, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode0_edit = $request->id0;
-                }else{   
-                    $kode0_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode0;
-                } 
+                $kode0_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode0; 
+
+                $integer_kode1 = $integer_kode1;
+                $integer_kode1 = str_pad($integer_kode1, 5,'0',STR_PAD_LEFT);
+                $kode1_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode1;
+                
+                $integer_kode2 = $integer_kode2;
+                $integer_kode2 = str_pad($integer_kode2, 5,'0',STR_PAD_LEFT);   
+                $kode2_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode2;
+                
+                $integer_kode3 = $integer_kode3;
+                $integer_kode3 = str_pad($integer_kode3, 5,'0',STR_PAD_LEFT); 
+                $kode3_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode3;
+                
+                $integer_kode4 = $integer_kode4;
+                $integer_kode4 = str_pad($integer_kode4, 5,'0',STR_PAD_LEFT);  
+                $kode4_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode4;
+                
+                $integer_kode5 = $integer_kode5;
+                $integer_kode5 = str_pad($integer_kode5, 5,'0',STR_PAD_LEFT);  
+                $kode5_edit = $kodekota.'/'.'KG'.'E'.$kodecabang.$integer_kode5;
+                
+                $integer_kode6= $integer_kode6;
+                $integer_kode6 = str_pad($integer_kode6, 5,'0',STR_PAD_LEFT);    
+                $kode6_edit = $kodekota.'/'.'KG'.'E'.$kodecabang.$integer_kode6;
+                
+                $integer_kode7 = $integer_kode7;
+                $integer_kode7 = str_pad($integer_kode7, 5,'0',STR_PAD_LEFT);   
+                $kode7_edit = $kodekota.'/'.'KG'.'E'.$kodecabang.$integer_kode7;
+                
+                $integer_kode8 = $integer_kode8;
+                $integer_kode8 = str_pad($integer_kode8, 5,'0',STR_PAD_LEFT);  
+                $kode8_edit = $kodekota.'/'.'KG'.'E'.$kodecabang.$integer_kode8;
+                
+                $integer_kode9 = $integer_kode9;
+                $integer_kode9 = str_pad($integer_kode9, 5,'0',STR_PAD_LEFT);   
+                $kode9_edit = $kodekota.'/'.'KG'.'E'.$kodecabang.$integer_kode9;
+
+
 
             $kertas_reguler = array(
                     'kode' => $kode0_edit,
@@ -901,16 +944,9 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
-                );
+                    'id_provinsi_cabkilogram'=>$prov,
 
-                $integer_kode1 = $integer_kode1;
-                $integer_kode1 = str_pad($integer_kode1, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode1_edit = $request->id1;
-                }else{   
-                    $kode1_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode1;
-                } 
-               
+                );
                $tarif0_10reguler = array(
                     'kode' => $kode1_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -927,16 +963,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
-                );
-
-                $integer_kode2 = $integer_kode2;
-                $integer_kode2 = str_pad($integer_kode2, 5,'0',STR_PAD_LEFT); 
-                if ($kodekota == '') {
-                    $kode2_edit = $request->id2;
-                }else{   
-                    $kode2_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode2;
-                }
-               
+                    'id_provinsi_cabkilogram'=>$prov,
+                );    
                $tarif10_20reguler = array(
                     'kode' => $kode2_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -953,16 +981,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
-                );   
-
-                $integer_kode3 = $integer_kode3;
-                $integer_kode3 = str_pad($integer_kode3, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode3_edit = $request->id3;
-                }else{   
-                    $kode3_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode3;
-                }
-               
+                    'id_provinsi_cabkilogram'=>$prov,
+                );    
                $tarif20reguler = array(
                     'kode' => $kode3_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -979,16 +999,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
+                    'id_provinsi_cabkilogram'=>$prov,
                 );
-
-               $integer_kode4 = $integer_kode4;
-                $integer_kode4 = str_pad($integer_kode4, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode4_edit = $request->id4;
-                }else{   
-                    $kode4_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode4;
-                }
-               
                $tarifkgselreguler = array(
                     'kode' => $kode4_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -1005,16 +1017,9 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
+                    'id_provinsi_cabkilogram'=>$prov,
                 );
                //----------------------------------- EXPRESS --------------------------------------------------//
-                $integer_kode5 = $integer_kode5;
-                $integer_kode5 = str_pad($integer_kode5, 5,'0',STR_PAD_LEFT);
-                if ($kodekota == '') {
-                    $kode5_edit = $request->id5;
-                }else{   
-                    $kode5_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode5;
-                }
-
                 $kertas_express = array(
                     'kode' => $kode5_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -1031,16 +1036,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
+                    'id_provinsi_cabkilogram'=>$prov,
                 );
-
-                $integer_kode6= $integer_kode6;
-                $integer_kode6 = str_pad($integer_kode6, 5,'0',STR_PAD_LEFT); 
-                 if ($kodekota == '') {
-                    $kode6_edit = $request->id6;
-                }else{   
-                    $kode6_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode6;
-                }  
-               
                $tarif0_10express = array(
                     'kode' => $kode6_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -1057,16 +1054,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
+                    'id_provinsi_cabkilogram'=>$prov,
                 );
-
-               $integer_kode7 = $integer_kode7;
-                $integer_kode7 = str_pad($integer_kode7, 5,'0',STR_PAD_LEFT); 
-                if ($kodekota == '') {
-                    $kode7_edit = $request->id7;
-                }else{   
-                    $kode7_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode7;
-                }
-               
                $tarif10_20express = array(
                     'kode' => $kode7_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -1083,17 +1072,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
+                    'id_provinsi_cabkilogram'=>$prov,
                 );   
-
-               if ($integer_kode8 < 10000) {
-                    $integer_kode8 = '0000'.$integer_kode8; 
-                } 
-                if ($kodekota == '') {
-                    $kode8_edit = $request->id8;
-                }else{   
-                    $kode8_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode8;
-                }
-               
                $tarif20express = array(
                     'kode' => $kode8_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -1110,16 +1090,8 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
+                    'id_provinsi_cabkilogram'=>$prov,
                 );
-               if ($integer_kode9 < 10000) {
-                    $integer_kode9 = '0000'.$integer_kode9; 
-                } 
-                if ($kodekota == '') {
-                    $kode9_edit = $request->id9;
-                }else{   
-                    $kode9_edit = $kodekota.'/'.'KG'.'R'.$kodecabang.$integer_kode9;
-                }
-               
                $tarifkgselexpress = array(
                     'kode' => $kode9_edit,
                     'kode_sama_kilo' => $request->kode_sama_kilo,
@@ -1136,6 +1108,7 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                     'crud'=>strtoupper($crud),
+                    'id_provinsi_cabkilogram'=>$prov,
                 );
 
             $simpan = DB::table('tarif_cabang_kilogram')->where('kode', $request->id0)->update($kertas_reguler);

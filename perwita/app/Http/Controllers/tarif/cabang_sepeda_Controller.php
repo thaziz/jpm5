@@ -104,7 +104,19 @@ class cabang_sepeda_Controller extends Controller
         // dd($request);
         $asal = $request->asal;
         $tujuan = $request->tujuan;
-        return $data = DB::table('tarif_cabang_sepeda')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail_sepeda','ASC')->get();
+        $sql = "    SELECT t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,k.kode_kota,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        t.id_kota_tujuan,
+
+        kk.nama tujuan, t.harga, t.jenis, t.waktu
+                    FROM tarif_cabang_sepeda t
+                    LEFT JOIN kota k ON k.id=t.id_kota_asal 
+                    LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabsepeda
+                    where t.id_kota_asal = '$asal' AND t.id_kota_tujuan = '$tujuan'
+                    ORDER BY t.kode_detail_sepeda ASC ";
+        
+        $data = DB::select(DB::raw($sql));
+        // return $data = DB::table('tarif_cabang_sepeda')->where('id_kota_asal', $asal)->where('id_kota_tujuan','=',$tujuan)->orderBy('kode_detail_sepeda','ASC')->get();
 
         
         echo json_encode($data);
@@ -121,11 +133,7 @@ class cabang_sepeda_Controller extends Controller
             $kode_sama_sepeda += 1;
         }
         $kode_utama = DB::table('tarif_cabang_sepeda')->select('kode_detail_sepeda')->max('kode_detail_sepeda');    
-        if ($kode_utama == '') {
-            $kode_utama = 1;
-        }else{
-            $kode_utama += 1;
-        }
+        
          $kode_detail_sepeda = DB::table('tarif_cabang_sepeda')->select('kode_detail_sepeda')->max('kode_detail_sepeda');
          $datadetail = DB::table('tarif_cabang_sepeda')->select('kode_detail_sepeda')->get();  
                $datadetailcount = count($datadetail);
@@ -137,11 +145,7 @@ class cabang_sepeda_Controller extends Controller
             }
             $kode_detail_sepedatambah1+1;  
          }
-        if ($kode_detail_sepeda == '') {
-            $kode_detail_sepeda = 1;
-        }else{
-            $kode_detail_sepeda += 1;
-        }
+        
 
 
         $kodekota = $request->kodekota;
@@ -443,37 +447,18 @@ class cabang_sepeda_Controller extends Controller
                 $integer_out = str_pad($integer_out, 5,'0',STR_PAD_LEFT);
                 $integer_sport = $integer_sport;
                 $integer_sport = str_pad($integer_sport, 5,'0',STR_PAD_LEFT);
-                
-                if ($kodekota == '') {
-                    $kode_reguler_edit = $request->id_sepeda;
-                }else{   
-                    $kode_reguler_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_reg;
-                }
-
-
-                // return $kode_reguler_edit;
-                if ($kodekota == '') {
-                    $kode_express_edit = $request->id_matik;
-                }else{   
-                    $kode_express_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_exp;
-                }
-
-
-                if ($kodekota == '') {
-                    $kode_outlet_edit = $request->id_moge;
-                }else{   
-                    $kode_outlet_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_out;
-                }
-
-                if ($kodekota == '') {
-                    $kode_sport_edit = $request->id_sport;
-                }else{   
-                    $kode_sport_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_sport;
-                }
+                 
+                $kode_reguler_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_reg; 
+                $kode_express_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_exp;  
+                $kode_outlet_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_out; 
+                $kode_sport_edit = $kodekota.'/'.'SPD'.''.$kodecabang.$integer_sport;
                 // return $kode_reguler_edit;
                 // return $kode_express_edit;
                 // return $kode_outlet_edit;
                 // return $kode_reguler_edit;
+                $prov = DB::table('kota')->select('id','id_provinsi')->where('id',$request->cb_kota_tujuan)->get();
+                $prov = $prov[0]->id_provinsi;
+
                 $sepedah = array(
                         'kode_sama_sepeda' => $request->ed_kode_old,
                         'kode_detail_sepeda'=>$request->id_sepeda_edit,
@@ -487,6 +472,7 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
+                        'id_provinsi_cabsepeda'=>$prov,
                    );
                    
                 // return $regular;
@@ -503,10 +489,8 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
+                        'id_provinsi_cabsepeda'=>$prov,
                     );
-               
-                   
-
                      $sport = array(
                         'kode_sama_sepeda' => $kode_sama_sepeda,
                         'kode_detail_sepeda'=>$request->id_sport_edit,
@@ -520,10 +504,11 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
+                        'id_provinsi_cabsepeda'=>$prov,
                     );
-                if ($request->harga_outlet == null || $request->harga_outlet == '') {
-                     
-                $moge = array(
+                        // return $request->moge; 
+                if ($request->moge != null || $request->moge != '') {
+                    $moge = array(
                         'kode_sama_sepeda' => $request->ed_kode_old,
                         'kode_detail_sepeda'=>$request->id_moge_edit,
                         'kode'=>$kode_outlet_edit,
@@ -536,24 +521,11 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
+                        'id_provinsi_cabsepeda'=>$prov,
                     );
             $simpan = DB::table('tarif_cabang_sepeda')->where('kode', $request->id_moge)->update($moge);
-            }else{
-                $moge = array(
-                        'kode_sama_sepeda' => $request->ed_kode_old,
-                        'kode_detail_sepeda'=>$request->id_moge_edit,
-                        'kode'=>$kode_outlet_edit,
-                        'id_kota_asal' => $request->cb_kota_asal,
-                        'id_kota_tujuan' => $request->cb_kota_tujuan,
-                        'kode_cabang' => $request->ed_cabang,
-                        'jenis' => 'moge',
-                        'harga' => $request->moge,
-                        'waktu' => $request->waktu,
-                        'acc_penjualan'=>$request->ed_acc_penjualan,
-                        'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'crud'=>$crud,
-                    );
-            $simpan = DB::table('tarif_cabang_sepeda')->where('kode', $request->id_moge)->update($moge);
+            }else if($request->moge == null || $request->moge == ''){ 
+                
             }
 
             $simpan = DB::table('tarif_cabang_sepeda')->where('kode', $request->id_matik)->update($matik);

@@ -263,7 +263,7 @@
 		border-right: 1px solid black;
 		border-left: 1px solid black;
 		border-top: 1px solid black;
-		min-height: 1000px;
+		min-height: 500px;
 	}
 
 	.borderlefttabel {
@@ -280,7 +280,7 @@
 		<div class="position-fixed">
 			<table class="inlineTable">
 				<td>
-					<img class="img" width="200" height="100" src="/jpm/perwita/img/logo_jpm.png">
+					<img class="img" width="200" height="100" src="{{ asset('assets/img/dboard/logo/logo_jpm.png') }}">
 				</td>
 			</table>
 			<table class="inlineTable size" style="margin-bottom: 10px;">
@@ -312,22 +312,22 @@
 				<tr>
 					<td>No.Faktur</td>
 					<td>:</td>
-					<td>{{$head->nomor}}</td>
+					<td>{{$head->i_nomor}}</td>
 				</tr>
 				<tr>
 					<td>Tanggal</td>
 					<td>:</td>
-					<td>{{$head->tanggal}}</td>
+					<td>{{$head->i_tanggal}}</td>
 				</tr>
 				<tr>
 					<td>Jatuh Tempo</td>
 					<td>:</td>
-					<td>{{$head->jatuh_tempo}}</td>
+					<td>{{$head->i_jatuh_tempo}}</td>
 				</tr>
 				<tr>
 					<td>Kode.Cust.</td>
 					<td>:</td>
-					<td>{{$head->kode_customer}}</td>
+					<td>{{$head->i_kode_customer}}</td>
 				</tr>
 			</table>
 
@@ -365,14 +365,27 @@
 				@foreach ($detail as $row)
 				<tr>
 					<td height="27" class="textright borderbottomtabel borderrighttabel">{{$i++}}.</td>
-					<td class="textleft borderbottomtabel borderrighttabel"> {{$row->nomor}} </td>
-					<td class="borderbottomtabel borderrighttabel"> {{$row->tgl_do}} </td>
-					<td class="textleft borderbottomtabel borderrighttabel"> {{$row->keterangan}} </td>
-					<td class="borderbottomtabel borderrighttabel"> {{$row->kuantum}} </td>
-					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->harga_satuan, 2, ",", ".") }} </td>
-					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->harga_bruto, 2, ",", ".") }} </td>
-					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->diskon, 2, ",", ".") }} </td>
-					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->harga_netto, 2, ",", ".") }} </td>
+					<td class="textleft borderbottomtabel borderrighttabel"> {{$row->id_nomor_do}} </td>
+					<td class="borderbottomtabel borderrighttabel"> {{$row->id_tgl_do}} </td>
+					<td class="textleft borderbottomtabel borderrighttabel"> {{$row->id_keterangan}} </td>
+					<td class="borderbottomtabel borderrighttabel"> {{$row->id_kuantum}} </td>
+					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_satuan, 2, ",", ".") }} </td>
+					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_bruto, 2, ",", ".") }} </td>
+					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_diskon, 2, ",", ".") }} </td>
+					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_netto, 2, ",", ".") }} </td>
+				</tr>
+				@endforeach
+				@foreach($push as $a => $val)
+				<tr>
+					<th height="25" style="text-align:right" class="textcenter bot right top"></th>
+					<td class="bot right"> </td>
+					<td class="bot right">  </td>
+					<td style="text-align:left" class="bot right">  </td>
+					<td style="text-align:right" class="bot right"> </td>
+					<td style="text-align:right" class="bot right"> </td>
+					<td style="text-align:left" class="bot right">  </td>
+					<td style="text-align:right" class="bot right"> </td>
+					<td style="text-align:right" class="bot right"> </td>
 				</tr>
 				@endforeach
 			</table>
@@ -392,8 +405,8 @@
 		<table class="size" width="100%">
 			<tr>
 				<td height="27" class="textleft borderrighttabel borderlefttabel borderbottomtabel bordertoptabel" width="78.2%">Terbilang : {{$terbilang}}</td>
-				<td class="textleft borderrighttabel borderbottomtabel bordertoptabel" width="9.1%">Total</td>
-				<td class="textright borderrighttabel borderbottomtabel bordertoptabel">{{ number_format($head->total, 2, ",", ".") }}</td>
+				<td class="textleft borderrighttabel borderbottomtabel bordertoptabel" width="11%">Total</td>
+				<td class="textright borderrighttabel borderbottomtabel bordertoptabel">{{ number_format($head->i_netto, 2, ",", ".") }}</td>
 			</tr>
 		</table>
 		</table>
@@ -402,38 +415,46 @@
 				<td class="borderrighttabel textleft" width="26%">Pendaftaran ditransfer ke :</td>
 				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.4%">&nbsp;</td>
-				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="9%">Discount</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->diskon, 2, ",", ".") }}</td>
+				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Discount</td>
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_diskon+$head->i_diskon2, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td class="borderrighttabel textleft" width="26%">Pt. Jawa Pratama Mandiri</td>
 				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.2%">&nbsp;</td>
-				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="9%">Netto</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->netto, 2, ",", ".") }}</td>
+				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Netto</td>
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_netto-$head->i_diskon+$head->i_diskon2, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td class="borderrighttabel textleft" width="26%">BCA KCP Bhayangkara Surabaya</td>
 				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.2%">&nbsp;</td>
-				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="9%">PPN</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->ppn, 2, ",", ".") }}</td>
+				@if($head->i_ppntpe == 'npkp')
+				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">PPN (IN)</td>
+				@else
+				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">PPN (EX)</td>
+				@endif
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_ppnrp, 2, ",", ".") }}</td>
+
 			</tr>
 			<tr>
 				<td class="borderrighttabel akirkanan textleft" width="26%">Jl.A. Yani Surabaya</td>
 				<td class="borderrighttabel underline textcenter" width="26%">OKKIE NESTIE</td>
 				<td class="borderrighttabel underline textcenter" width="26.2%">EKO YULI S.</td>
-				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="9%">PPh</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->pph, 2, ",", ".") }}</td>
+				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">PPh</td>
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_pajak_lain, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td class="borderrighttabel akirkanan textleft" width="26%">A/C : 61-.089797.9</td>
 				<td class="borderrighttabel textcenter" width="26%">(Finance Manager)</td>
 				<td class="borderrighttabel textcenter" width="26.2%" style="margin-bottom: 10px;">(Account Dept)</td>
-				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="9.1%">Jumlah</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->total_tagihan, 2, ",", ".") }}</td>
+				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Jumlah</td>
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_total_tagihan, 2, ",", ".") }}</td>
 			</tr>
 		</table>
 </body>
 
 </html>
+<script type="text/javascript">
+	window.print();
+</script>

@@ -66,7 +66,42 @@ class penerus_kilogram_Controller  extends Controller
     public function get_data (Request $request) {
         // dd($request);
         $id =$request->input('id');
-        $data = DB::table('tarif_penerus_kilogram')->where('id_tarif_kilogram','=', $id)->get();
+        $data = DB::table('tarif_penerus_kilogram')
+        ->select(
+            'provinsi.nama as provinsi_nama',
+            'provinsi.id as provinsi_id',
+
+            'kota.id as kota_id',
+            'kota.nama as kota_nama',
+            'kota.kode_kota as kota_kode',
+            
+            'kecamatan.id as kecamatan_id',
+            'kecamatan.nama as kecamatan_nama',
+
+            'zo_10r.harga_zona as 10reguler',
+            'zo_10x.harga_zona as 10express',
+            'zo_20r.harga_zona as 20reguler',
+            'zo_20x.harga_zona as 20express',
+
+
+            'id_tarif_kilogram','tarif_10express_kilo','tarif_10reguler_kilo','tarif_20express_kilo','tarif_20reguler_kilo','id_increment_kilogram','type_kilo')
+
+
+        ->join('provinsi','tarif_penerus_kilogram.id_provinsi_kilo','=','provinsi.id')
+
+        ->join('kota','tarif_penerus_kilogram.id_kota_kilo','=','kota.id')
+        
+        ->join('kecamatan','tarif_penerus_kilogram.id_kecamatan_kilo','=','kecamatan.id')
+
+        ->join('zona as zo_10r','zo_10r.id_zona','=','tarif_penerus_kilogram.tarif_10reguler_kilo')
+
+        ->join('zona as zo_10x','zo_10x.id_zona','=','tarif_penerus_kilogram.tarif_10express_kilo')
+
+        ->join('zona as zo_20r','zo_20r.id_zona','=','tarif_penerus_kilogram.tarif_20reguler_kilo')
+
+        ->join('zona as zo_20x','zo_20x.id_zona','=','tarif_penerus_kilogram.tarif_20express_kilo')
+        ->where('id_tarif_kilogram','=', $id)
+        ->get();
         echo json_encode($data);
     }
 
@@ -81,15 +116,9 @@ class penerus_kilogram_Controller  extends Controller
         }
 
         $kode_id = DB::table('tarif_penerus_kilogram')->select('id_increment_kilogram')->max('id_increment_kilogram');    
-        if ($kode_id == '') {
-            $kode_id = 1;
-        }else{
-            $kode_id += 1;
-        }
-
-        if ($kode_id < 10000 ) {
-            $kode_id = '0000'.$kode_id;
-        }
+       
+         $kode_id = $kode_id+1;
+            $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
         
         $kode_kota = $request->kode_kota;
         $kode_cabang = Auth::user()->kode_cabang;
@@ -120,9 +149,7 @@ class penerus_kilogram_Controller  extends Controller
             $simpan = DB::table('tarif_penerus_kilogram')->insert($data);
         }elseif ($crud == 'E') {
             $kode_sama = $request->ed_kode_old;
-            if ($kode_sama < 10000 ) {
-            $kode_sama = '0000'.$kode_sama;
-            }
+            $kode_sama = str_pad($kode_sama, 5,'0',STR_PAD_LEFT);
             $kodeedit = $kode_kota.'/'.$kode_cabang.'/'.$kode_sama;
 
              $data = array(

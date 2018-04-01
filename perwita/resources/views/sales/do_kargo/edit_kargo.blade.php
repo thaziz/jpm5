@@ -9,7 +9,7 @@
 
 .disabled {
     pointer-events: none;
-    opacity: 1;
+    opacity: 0.7;
 }
 .center{
     text-align: center;
@@ -67,25 +67,38 @@
                                             <input type="hidden" name="nomor_print" class="nomor_print form-control input-sm">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="disabled">
                                         <td>Cabang</td>
                                         <td>
-                                            <select disabled="" class="form-control cabang_select">
-                                            @foreach($cabang as $val)
+
+                                            @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
+                                                <select onchange="ganti_nota()" class="form-control cabang_select">
+                                                @foreach($cabang as $val)
+                                                    @if(Auth()->user()->kode_cabang == $val->kode)
+                                                    <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    @else
+                                                    <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    @endif
+                                                @endforeach
+                                                </select>
+                                            @else
+                                                <select disabled="" class="form-control cabang_select">
+                                                @foreach($cabang as $val)
                                                 @if(Auth::user()->kode_cabang == $val->kode)
-                                                <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                 @else
-                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                    <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                 @endif
-                                            @endforeach
-                                            </select>
+                                                @endforeach
+                                                </select>
+                                            @endif
                                             <input type="hidden" name="cabang_input" class="cabang_input form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Customer</td>
-                                        <td>
-                                            <select class="form-control customer_do chosen-select-width" name="customer_do">
+                                        <td class="disabled">
+                                            <select onchange="cari_kontrak()" class="form-control customer_do chosen-select-width" name="customer_do">
                                                 <option value="0">Pilih - Customer</option>
                                             @foreach($customer as $val)
                                                 @if($data->kode_customer == $val->kode)
@@ -100,7 +113,7 @@
                                     <tr>
                                         <td>Kota Asal</td>
                                         <td>
-                                            <select name="asal_do" class="form-control asal_do chosen-select-width">
+                                            <select onchange="reseting()" name="asal_do" class="form-control asal_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Asal</option>
                                             @foreach($kota as $val)
                                                 @if($data->id_kota_asal == $val->id)
@@ -115,7 +128,7 @@
                                     <tr>
                                         <td>Kota Tujuan</td>
                                         <td>
-                                            <select name="tujuan_do" class="form-control tujuan_do chosen-select-width">
+                                            <select onchange="reseting()" name="tujuan_do" class="form-control tujuan_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Tujuan</option>
                                             @foreach($kota as $val)
                                                 @if($data->id_kota_tujuan == $val->id)
@@ -259,7 +272,7 @@
                                         </td>
                                     </tr>
                                     <tr class="kontrak_tr">
-                                        <td>
+                                        <td class="kontrak_td disabled">
                                             <div class="checkbox checkbox-info checkbox-circle">
                                                 @if($data->kontrak == true)
                                                 <input checked="" onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
@@ -278,10 +291,12 @@
                                                 </button>
                                             </span>
                                         </td>
+
                                         <td style="padding-top: 0.4cm">Satuan</td>
                                         <td>
                                             <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
+                                        
                                     </tr>
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
@@ -547,15 +562,51 @@ function cari_nopol_kargo() {
     var nama_subcon      = $('.nama_subcon').val();
     var tipe_angkutan    = $('.tipe_angkutan').val();
     var cabang_select    = $('.cabang_select').val();
-    var nopol    = "{{$data->nopol}}"
     
     $.ajax({
         url:baseUrl + '/sales/cari_nopol_kargo',
-        data:{status_kendaraan,nama_subcon,tipe_angkutan,cabang_select,nopol},
+        data:{status_kendaraan,nama_subcon,tipe_angkutan,cabang_select},
         success:function(data){
             $('.nopol_dropdown').html(data);
         }
     })
+}
+
+// ganti nota untuk admin
+function ganti_nota(argument) {
+   var cabang = $('.cabang_select').val();
+     $.ajax({
+        url:baseUrl + '/sales/nomor_do_kargo',
+        data:{cabang},
+        dataType:'json',
+        success:function(data){
+            $('.nomor_do').val(data.nota);
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
+            cari_nopol_kargo();
+        },
+        error:function(){
+            location.reload();
+        }
+    })
+
+    $.ajax({
+        url:baseUrl +'/sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+    });
 }
 //nama subcon
 $('.nama_subcon').change(function(){
@@ -584,11 +635,14 @@ function centang() {
 $('.jenis_tarif_do').change(function(){
     if ($(this).val() == 9) {
         $('.kontrak_tr').attr('hidden',true);
-        $('.tarif_dasar').val(1);
+        $('.harga_master').val(1);
+        $('.discount ').attr('readonly',true);
+
     }else{      
         $('.kontrak_tr').attr('hidden',false);
         $('.jenis_tarif_temp').val($(this).val());
         $('.tarif_dasar').val(0);
+        $('.discount ').attr('readonly',false);
     }
 });
 
@@ -599,9 +653,11 @@ $('#btn_cari_tarif').click(function(){
     var jenis_tarif = $('.jenis_tarif_do').val(); 
     var cabang_select = $('.cabang_select').val(); 
     var tipe_angkutan = $('.tipe_angkutan ').val(); 
+    var tipe_angkutan = $('.tipe_angkutan ').val(); 
+    var customer = $('.customer_do').val(); 
     $.ajax({
         url:baseUrl + '/sales/cari_kontrak_tarif',
-        data:{check,asal,tujuan,jenis_tarif,cabang_select,tipe_angkutan },
+        data:{check,asal,tujuan,jenis_tarif,cabang_select,tipe_angkutan,customer },
         success:function(data){
             $('.modal_tarif').html(data);
             $('#modal_tarif').modal('show');
@@ -633,7 +689,7 @@ function hitung() {
     if (temp < 0) {
         temp = 0;
     }
-    
+        
     $('.total').val(temp);
     $('.total_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('.tarif_dasar_text').val(accounting.formatMoney(temp1,"",2,'.',','));
@@ -666,6 +722,7 @@ function pilih_tarif(a) {
         }
     })
 }
+
 //jika menggunakan kontrak
 
 function pilih_kontrak(a) {
@@ -702,6 +759,7 @@ function pilih_kontrak(a) {
 
 $('.save').click(function(){
    var cabang = $('.cabang_select').val();
+   var customer = $('.customer_do').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Delivery Order!",
@@ -727,7 +785,8 @@ $('.save').click(function(){
            $('.tabel_detail :input').serialize()+'&'+
            $('.tabel_penerima :input').serialize()+'&'+
            $('.tabel_pengirim :input').serialize()
-           +'&cabang='+cabang,
+           +'&cabang='+cabang
+           +'&customer='+customer,
       success:function(response){
         if (response.status == 2) {
             swal({
@@ -754,7 +813,8 @@ $('.save').click(function(){
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);
-                       
+                    // $('.tabel_pengirim').addClass('disabled');
+                    // $('.tabel_penerima').addClass('disabled');
             });
         }else{
             swal({
@@ -782,6 +842,55 @@ $('.save').click(function(){
 $('.reload').click(function(){
     location.reload();
 });
+// cari kontrak
+function cari_kontrak() {
+    var cabang      = $('.cabang_select').val();
+    var customer_do = $('.customer_do').val();
+     $.ajax({
+        url:baseUrl + '/sales/cari_kontrak',
+        data:{cabang,customer_do},
+        dataType:'json',
+        success:function(data){
+            if (data.status == 1) {
+                $('.kontrak_tarif').prop('checked',true);
+                $('.discount ').addClass('disabled')
+                $('.discount ').attr('readonly',true)
+                // $('.kontrak_td').addClass('disabled');
+            }else{
+                $('.kontrak_tarif').prop('checked',false);
+                // $('.kontrak_td').addClass('disabled');
+                $('.discount ').removeClass('disabled')
+                $('.discount ').attr('readonly',false)
+            }
+
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
+        },
+        error:function(){
+        }
+    })
+}
+
+
+function reseting() {
+    $('.satuan').val('');
+    $('.tarif_dasar_text').val('');
+    $('.tarif_dasar').val('');
+    $('.harga_master').val('');
+    $('.harga_master').val('');
+    $('#kode_tarif').val('');
+    $('.kcd_id').val('');
+    $('.kcd_dt').val('');
+
+    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
+}
+
 // ngeprint
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();
@@ -798,5 +907,46 @@ cari_nopol_kargo();
    tujuan     =  tujuan.split('-');
    $('.kota_penerima').val(tujuan[1]);
 });
+
+// cari kontrak
+function pilih_kontrak(a) {
+    var kcd_id = $(a).find('.kcd_id').val();
+    var kcd_dt = $(a).find('.kcd_dt').val();
+
+    $.ajax({
+        url:baseUrl + '/sales/pilih_kontrak_kargo',
+        data:{kcd_id,kcd_dt},
+        dataType:'json',
+        success:function(response){
+            $('.satuan').val(response.data.kcd_satuan);
+            $('.tarif_dasar_text').val(accounting.formatMoney(response.data.kcd_harga,"",2,'.',','));
+            $('.tarif_dasar').val(response.data.kcd_harga);
+            $('.harga_master').val(response.data.kcd_harga);
+            $('.kcd_id').val(response.data.kcd_id);
+            $('.kcd_dt').val(response.data.kcd_dt);
+            $('#kode_tarif').val(0);
+            $('.acc_penjualan').val(response.data.kcd_acc_penjualan);
+            $('.satuan').val(response.data.kcd_kode_satuan);
+            $('.tipe_angkutan').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
+            console.log($('.tipe_angkutan').val());
+            $('.asal_do').val(response.data.kcd_kota_asal).trigger('chosen:updated');
+            $('.tujuan_do').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
+            $('.jumlah').val(1);
+            var tujuan =  $('.tujuan_do option:selected').text();
+   
+            tujuan     =  tujuan.split('-');
+            $('.kota_penerima').val(tujuan[1]);
+            $('#modal_tarif').modal('hide');
+            cari_nopol_kargo();
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+            hitung();
+
+        },
+        error:function(){
+            toastr.warning('Terjadi Kesalahan');
+        }
+    })
+}
+
 </script>
 @endsection

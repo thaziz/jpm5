@@ -60,13 +60,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3">
-                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
-                                    <input type="hidden" readonly="" name="id_subcon" id="id_subcon" value="{{$data->kc_kode_customer}}">
-                                </td>
-                            </tr>
+                            
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
@@ -83,6 +77,13 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
+                                    <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
+                                </td>
+                            </tr>
+                            <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
                                     <input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" value="{{$data->kc_keterangan}}" >
@@ -91,7 +92,11 @@
                             <tr>
                                 <td>Aktif</td>
                                 <td colspan="3">
+                                    @if($data->kc_aktif == 'AKTIF')
                                     <input type="checkbox" name="ck_aktif" checked="">
+                                    @else
+                                    <input type="checkbox" name="ck_aktif">
+                                    @endif
                                 </td>
                             </tr>
                         </tbody>
@@ -114,6 +119,7 @@
                             <th>Tujuan</th>
                             <th>Jenis Tarif</th>
                             <th>Satuan</th>
+                            <th>Tipe Angkutan</th>
                             <th>Harga</th>
                             <th>Keterangan</th>
                             <th style="text-align: center;">Aksi</th>
@@ -138,6 +144,10 @@
                             <td>
                                 {{$val->kcd_kode_satuan}}
                                 <input type="hidden" class="satuan" value="{{$val->kcd_kode_satuan}}" name="satuan[]">
+                            </td>
+                            <td>
+                                {{$val->nama}}
+                                <input type="hidden" class="tipe_angkutan" value="{{$val->kcd_kode_angkutan}}" name="tipe_angkutan[]">
                             </td>
                             <td>
                                 <input type="text" class="harga form-control" style="text-align:right" value="{{number_format($val->kcd_harga,0, ".", ",")}}" name="harga[]">
@@ -374,12 +384,12 @@ $('#btnadd').click(function(){
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
     var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
-    var id_subcon                = $('.id_subcon').val();
+    var customer                = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var validasi                 = [];
 
 
-    if (id_subcon != 0) {
+    if (customer != 0) {
         validasi.push(1);
     }else{
         validasi.push(0);
@@ -437,6 +447,7 @@ var jenis_tarif_modal_text   = $('.jenis_tarif_modal option:selected').text();
 var acc_akun_modal_text      = $('.acc_akun_modal option:selected ').text();
 var csf_akun_modal_text      = $('.csf_akun_modal option:selected').text();
 var satuan_modal_text        = $('.satuan_modal option:selected').text();
+var tipe_angkutan_text       = $('.tipe_angkutan option:selected').text();
 
 var harga_modal              = $('.harga_modal').val();
 var keterangan_modal         = $('.keterangan_modal ').val();
@@ -448,6 +459,7 @@ var jenis_modal              = $('.jenis_modal').val();
 var jenis_tarif_modal        = $('.jenis_tarif_modal').val();
 var acc_akun_modal           = $('.acc_akun_modal ').val();
 var csf_akun_modal           = $('.csf_akun_modal').val();
+var tipe_angkutan            = $('.tipe_angkutan').val();
 var satuan_modal             = $('.satuan_modal').val();
 
 kota_asal_modal_text   = kota_asal_modal_text.split('-');
@@ -459,14 +471,14 @@ kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
            jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
            '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
            satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+           tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
            '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
-           '<input type="hidden" class="type_tarif_detail form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
+           '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
            '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
            '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
            '<label class="fa fa-trash"></label></button>'+
            '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
            '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
-      
     ]).draw();
   // console.log('asd');
 
@@ -535,6 +547,7 @@ var id = $(par).find('.id_table').val();
 
 $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();
+    var customer= $('#customer').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Update Data Kontrak!",
@@ -554,8 +567,8 @@ $('#btnsimpan').click(function(){
 
       $.ajax({
       url:baseUrl + '/master_sales/update_kontrak',
-      type:'post',
-      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang,
+      type:'get',
+      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
       success:function(response){
         swal({
         title: "Berhasil!",

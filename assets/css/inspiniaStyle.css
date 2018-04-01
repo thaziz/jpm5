@@ -65,6 +65,11 @@ h5 {
 .nav.navbar-top-links > li > a:focus {
   background-color: transparent;
 }
+
+.disabled {
+    pointer-events: none;
+    opacity: 1;
+}
 .nav > li > a i {
   margin-right: 6px;
 }

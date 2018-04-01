@@ -537,7 +537,7 @@ function(){
 
       $.ajax({
       url:baseUrl + '/biaya_penerus/save_penerus',
-      type:'get',
+      type:'POST',
       data: datatable.$('input').serialize()+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize(),
       success:function(data){
         if(data.status == '0'){

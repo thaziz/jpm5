@@ -333,6 +333,17 @@
 					<td style="text-align:right" class="bot right">{{ number_format($row->kd_total_bayar, 2, ",", ".") }}&nbsp</td>
 				</tr>
 				@endforeach
+				@foreach ($push as $row)
+				<tr>
+					<th height="25" style="text-align:right" class="textcenter bot right top">&nbsp;</th>
+					<td class="bot right">&nbsp;</td>
+					<td class="bot right"> &nbsp;</td>
+					<td style="text-align:left" class="bot right">&nbsp;</td>
+					<td style="text-align:right" class="bot right">&nbsp;</td>
+					<td style="text-align:right" class="bot right">&nbsp;</td>
+				</tr>
+				@endforeach
+				
 				
 			</table>
 		</div>
@@ -347,15 +358,23 @@
 		<table class="size margin-top10px inlineTable pull-right" width="32%" style="margin-right: 0px;padding-right: 0px;">
 			<tr>
 				<td width="20%">Jumlah</td>
-				<td width="50%" style="text-align:right" class="textright"> {{ number_format($head->k_netto, 2, ",", ".") }} </td>
+				<td width="50%" style="text-align:right" class="textright"> {{ number_format($head->k_jumlah, 2, ",", ".") }} </td>
 			</tr>
 			<tr>
-				<td>Biaya (D/K)</td>
-				<td style="text-align:right" class="textright">{{ number_format($head->k_debet+$head->k_kredit, 2, ",", ".") }}</td>
+				<td>Biaya Debit</td>
+				<td style="text-align:right" class="textright">{{ number_format($head->k_debet, 2, ",", ".") }}</td>
+			</tr>
+			<tr>
+				<td>Biaya Kredit</td>
+				<td style="text-align:right" class="textright">{{ number_format($head->k_kredit, 2, ",", ".") }}</td>
+			</tr>
+			<tr>
+				<td>Uang Muka</td>
+				<td style="text-align:right" class="textright">{{ number_format($head->k_uang_muka, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td>Total</td>
-				<td class="textright">{{ number_format($head->k_jumlah, 2, ",", ".") }}</td>
+				<td class="textright">{{ number_format($head->k_netto, 2, ",", ".") }}</td>
 			</tr>
 		</table>
 		<div>

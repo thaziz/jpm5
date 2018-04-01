@@ -47,7 +47,9 @@ class uang_muka_penjualan_Controller extends Controller
 					'kode_cabang' => strtoupper($request['cb_cabang']),
 					'jumlah' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
                     'jenis' => strtoupper($request['cb_jenis']),
-					'status' => 'Released',
+                    'status' => 'Released',
+                    'status_um' => 'CUSTOMER',
+					'sisa_uang_muka' => filter_var($request->ed_jumlah, FILTER_SANITIZE_NUMBER_INT),
 					'keterangan' => strtoupper($request['ed_keterangan']),
             	);
         

@@ -683,14 +683,14 @@
 
                     " href="{{ url('master_sales/subcon')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Subcon</a>
                         </li>
-                    <li >
+                   {{--  <li >
                         <a class="sidebar master-perusahaan 
 
                     {{Request::is('master_sales/biaya') ? 'active' : '' || 
                     Request::is('master_sales/biaya/*') ? 'active' : ''}} 
 
                     " href="{{ url('master_sales/biaya')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Biaya</a>
-                    </li>
+                    </li> --}}
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -736,6 +736,7 @@
                " style="padding-left: 10%;">
                    <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Kontrak<span class="fa arrow"></span></a>
                    <ul class="nav nav-third-level">
+                @if(Auth::user()->PunyaAkses('Master Kontrak','aktif'))
                    <li >
                     <a class="sidebar master-perusahaan 
 
@@ -743,7 +744,8 @@
                     Request::is('master_sales/kontrak/*') ? 'active' : ''}} 
 
                    " href="{{ url('master_sales/kontrak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak Customer</a>
-                </li>
+                   </li>
+                @endif
              @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
@@ -1239,6 +1241,8 @@
 
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                             </li>
+
+                            @if(Auth::user()->PunyaAkses('Delivery Order','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1247,6 +1251,7 @@
 
                             " href="{{ url('sales/deliveryorderkargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) Kargo</a>
                             </li>
+
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1255,6 +1260,7 @@
 
                             " href="{{ url('sales/deliveryorderkertas')}}"><i class="fa fa-building" aria-hidden="true"></i>Delivery Order (DO) Koran</a>
                             </li>
+                            @endif
                              <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1837,6 +1843,12 @@
                             /* kargo */
                             Request::is('laporan_master_penjualan/tarif_cabang_kargo') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_kargo/*') ? 'active' : ''||
+                             /* Kilogram */
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram/*') ? 'active' : ''||
+                            /* sepeda */
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda/*') ? 'active' : ''||
                             /* so */
                             Request::is('sales/laporansalesorder') ? 'active' : '' || 
                             Request::is('sales/laporansalesorder/*') ? 'active' : ''||
@@ -1929,6 +1941,12 @@
                             /* kargo */
                             Request::is('laporan_master_penjualan/tarif_cabang_kargo') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_kargo/*') ? 'active' : ''||
+                             /* Kilogram */
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram/*') ? 'active' : ''||
+                            /* sepeda */
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda/*') ? 'active' : ''||
                             /* so */
                             Request::is('sales/laporansalesorder') ? 'active' : '' || 
                             Request::is('sales/laporansalesorder/*') ? 'active' : ''||
@@ -1975,6 +1993,14 @@
                                     <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_kargo') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_kargo/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Kargo</a>
                                 </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Kilogram</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{ Request::is('laporan_master_penjualan/tarif_cabang_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Sepeda</a>
+                                </li>
                                {{--  <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporansalesorder') ? 'active' : '' || 
                             Request::is('sales/laporansalesorder/*') ? 'active' : ''}} " href="{{ url('sales/laporansalesorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Sales Order (SO)</a>
@@ -1983,14 +2009,14 @@
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                                 </li>
-                                <li >
+                         {{--        <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
                             Request::is('sales/laporaninvoicepenjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporaninvoicepenjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Penjualan</a>
                                 </li>
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualanperitem') ? 'active' : '' || 
                             Request::is('sales/laporaninvoicepenjualanperitem/*') ? 'active' : ''}} " href="{{ url('sales/laporaninvoicepenjualanperitem')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Penjualan Per Item</a>
-                                </li>
+                                </li> --}}
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporanfakturpajak') ? 'active' : '' || 
                             Request::is('sales/laporanfakturpajak/*') ? 'active' : ''}} " href="{{ url('sales/laporanfakturpajak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pajak</a>

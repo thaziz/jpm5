@@ -5,6 +5,13 @@
 @section('content')
 <style type="text/css">
       .id {display:none; }
+      .disabled {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+        .center{
+            text-align: center;
+        }
     </style>
 
 
@@ -56,10 +63,10 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="">
                                 <td style="padding-top: 0.4cm">Subcon</td>
                                 <td colspan="3">
-                                    <select class="chosen-select-width form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
+                                    <select class=" disabled form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
                                         <option disabled="">- Pilih Subcon -</option>
 
                                         @foreach($sub as $val)
@@ -74,10 +81,10 @@
                                 
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
-                                    <select class="form-control cabang" disabled="" name="cabang" >
+                                    <select class="form-control cabang" name="cabang" >
                                       @foreach($cabang as $val)
                                                 @if(Auth::user()->kode_cabang == $val->kode)
                                                 <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -320,11 +327,17 @@ $('#btnadd').click(function(){
 
 var datatable = $('#table_data').DataTable({
                       'paging':false,
-                      'searching':false
+                      'searching':false,
+                      columnDefs:[
+                      {
+                         targets: 6 ,
+                         className: 'center'
+                      },
+                      ]
                 });
 var count = 0;
 $(document).ready(function(){
-count = <?php echo count($subcon_dt)?>;
+count = <?php echo count($subcon_dt);?>;
 });
 function tambah(){
   
@@ -368,66 +381,8 @@ function tambah(){
 function hapus(p){
     var id_ksd = $('.id_ksd').val();
     var par  = p.parentNode.parentNode;
-   swal({
-    title: "Apakah anda yakin?",
-    text: "Hapus Data Terpilih!",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Ya, Hapus!",
-    cancelButtonText: "Batal",
-    closeOnConfirm: false
-  },
-  function(){
-       $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+    datatable.row(par).remove().draw(false);
 
-      $.ajax({
-        url:baseUrl+'/master_subcon/cek_hapus',
-        data: 'id='+id_ksd,
-      success:function(response){
-        
-        if (response.status == 1) {
-            swal({
-            title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil Dihapus",
-                    timer: 900,
-                    showConfirmButton: true
-                    },function(){
-                       // location.href='../buktikaskeluar/index';
-            });
-
-            datatable.row(par).remove().draw(false);
-
-        }else{
-            swal({
-                title: "Data Terikat Data Lain",
-                        type: 'error',
-                        timer: 900,
-                       showConfirmButton: true
-
-            });
-        }
-
-
-    },
-
-    error:function(data){
-        swal({
-        title: "Terjadi Kesalahan",
-                type: 'error',
-                timer: 900,
-               showConfirmButton: true
-
-    });
-   }
-  });  
- });
-  
 }
 
 function edit(p){

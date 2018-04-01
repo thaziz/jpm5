@@ -114,6 +114,8 @@
                                               <td>
                                                   <div class="input-group date" required="">
                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control" name="tgl_dibutuhkan" required="">
+
+                                                       <!--  <input type="hidden" class="valcabang" name="comp"> -->
                                                   </div>
                                               </td>  
                                           </tr>

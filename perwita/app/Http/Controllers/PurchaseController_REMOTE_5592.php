@@ -215,9 +215,7 @@ class PurchaseController extends Controller
 			$nospp = $request->nospp;
 			$cabang = $request->comp;
 			$dataspp = DB::select("select * from spp where spp_nospp = '$nospp' and spp_cabang = '$cabang'");
-			if(count($dataspp) == 0){
-
-			
+			if(count($dataspp) == 0){			
 
 			$lastid = spp_purchase::max('spp_id'); 
 			if(isset($lastid)) {

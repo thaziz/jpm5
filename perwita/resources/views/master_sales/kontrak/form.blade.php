@@ -59,23 +59,12 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3">
-                                    <select class="chosen-select-width form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
-                                        <option selected="" disabled="">- Pilih Customer -</option>
-                                        @foreach($customer as $val)
-                                        <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                        @endforeach
-
-                                    </select>
-                                
-                                </td>
-                            </tr>
+                            
+                            @if(Auth()->user()->punyaAkses('Master Kontrak','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
-                                    <select class="form-control cabang chosen-select-width" disabled="" name="cabang" >
+                                    <select onchange="ganti_cus()" class="form-control cabang chosen-select-width"  name="cabang" >
                                       <option selected="" disabled="">- Pilih Cabang -</option>
                                       @foreach($cabang as $val)
                                       @if(Auth::user()->kode_cabang == $val->kode)
@@ -85,6 +74,29 @@
                                       @endif
                                       @endforeach
                                     </select>
+                                </td>
+                            </tr>
+                            @else
+                             <tr class="disabled">
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td colspan="3">
+                                    <select class="form-control cabang chosen-select-width"  name="cabang" >
+                                      <option selected="" disabled="">- Pilih Cabang -</option>
+                                      @foreach($cabang as $val)
+                                      @if(Auth::user()->kode_cabang == $val->kode)
+                                      <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      @else
+                                      <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      @endif
+                                      @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            @endif
+                            <tr>
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td colspan="3" class="customer_td">
+                                    
                                 </td>
                             </tr>
                             <tr>
@@ -119,6 +131,7 @@
                             <th>Tujuan</th>
                             <th>Jenis Tarif</th>
                             <th>Satuan</th>
+                            <th>Tipe Angkutan</th>`
                             <th>Harga</th>
                             <th>Keterangan</th>
                             <th style="text-align: center;">Aksi</th>
@@ -293,7 +306,7 @@
 
  $(document).ready( function () {
             
-    $('.harga_modal').maskMoney({precision:0});
+    $('.harga_modal').maskMoney({precision:0,thousands:'.'});
     var asd = $('.harga').maskMoney({thousands:'.', precision:0});
     var cabang = $('.cabang').val();
 
@@ -314,10 +327,9 @@
         dataType:'json',
         success:function(response){
             $('#ed_nomor').val(response.nota);
-            $('#ed_nomor').val(response.nota);
         },
         error:function(){
-            // location.reload();
+            location.reload();
         }
 
     })
@@ -343,7 +355,50 @@
             location.reload();
         }
     });
+
+    $.ajax({
+        url:baseUrl +'/master_sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+
 });
+
+
+ function ganti_cus() {
+    var cabang = $('.cabang').val();
+     $.ajax({
+        url:baseUrl +'/master_sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+      $.ajax({
+        url:baseUrl+'/master_sales/kontrak_set_nota',
+        data:{cabang},
+        dataType:'json',
+        success:function(response){
+            $('#ed_nomor').val(response.nota);
+            $('#ed_nomor').val(response.nota);
+        },
+        error:function(){
+            location.reload();
+        }
+
+    })
+ }
 
 $('#btnadd').click(function(){
 
@@ -359,12 +414,12 @@ $('#btnadd').click(function(){
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
 
-    var id_subcon                = $('.id_subcon').val();
+    var customer                = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var validasi                 = [];
 
 
-    if (id_subcon != 0) {
+    if (customer != 0) {
         validasi.push(1);
     }else{
         validasi.push(0);
@@ -421,6 +476,7 @@ var jenis_tarif_modal_text   = $('.jenis_tarif_modal option:selected').text();
 var acc_akun_modal_text      = $('.acc_akun_modal option:selected ').text();
 var csf_akun_modal_text      = $('.csf_akun_modal option:selected').text();
 var satuan_modal_text        = $('.satuan_modal option:selected').text();
+var tipe_angkutan_text       = $('.tipe_angkutan option:selected').text();
 
 var harga_modal              = $('.harga_modal').val();
 var keterangan_modal         = $('.keterangan_modal ').val();
@@ -433,7 +489,8 @@ var jenis_tarif_modal        = $('.jenis_tarif_modal').val();
 var acc_akun_modal           = $('.acc_akun_modal ').val();
 var csf_akun_modal           = $('.csf_akun_modal').val();
 var satuan_modal             = $('.satuan_modal').val();
-
+var tipe_angkutan            = $('.tipe_angkutan').val();
+console.log(harga_modal);
 kota_asal_modal_text   = kota_asal_modal_text.split('-');
 kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
 
@@ -443,6 +500,7 @@ kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
            jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
            '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
            satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+           tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
            '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
            '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
            '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
@@ -519,6 +577,7 @@ var id = $(par).find('.id_table').val();
 
 $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();
+    var customer= $('.customer').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Kontrak!",
@@ -538,8 +597,8 @@ $('#btnsimpan').click(function(){
 
       $.ajax({
       url:baseUrl + '/master_sales/save_kontrak',
-      type:'get',
-      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang,
+      type:'post',
+      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
       success:function(response){
         swal({
         title: "Berhasil!",
@@ -548,7 +607,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   // location.reload();
+                   location.reload();    
         });
       },
       error:function(data){

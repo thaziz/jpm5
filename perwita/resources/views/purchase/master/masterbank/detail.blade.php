@@ -43,7 +43,7 @@
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-              
+               <form method="post" action="{{url('masterbank/updatemasterbank')}}"  enctype="multipart/form-data" class="form-horizontal" id="formId">
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 
@@ -84,12 +84,12 @@
                         </tr> 
                         <tr>
                           <td> Nama Bank </th>
-                          <td>  <input type="text" class="input-sm form-control" name="nmbank" required="" style="text-transform: uppercase" value="{{$banks->mb_nama}}"> </td>
+                          <td>  <input type="text" class="input-sm form-control edit2" name="nmbank" required="" style="text-transform: uppercase" value="{{$banks->mb_nama}}"> <input type="hidden" name="mb_id" value="{{$banks->mb_id}}"> </td>
                         </tr>
                         <tr>
                           <td> Cabang </td>
                           <td> 
-                            <input type="text" class="input-sm form-control" name="cabang" required="" style="text-transform: uppercase" value="{{$banks->mb_cabang}}" readonly="">
+                            <input type="text" class="input-sm form-control edit2" name="cabang" required="" style="text-transform: uppercase" value="{{$banks->mb_cabang}}" readonly="">
                           </td>
                         </tr>
                         </table>
@@ -101,21 +101,21 @@
                           <table class="table">
                         <tr>
                           <td> No Rekening </td>
-                          <td> <input type="text" class="input-sm form-control" name="norekening" required="" value="{{$banks->mb_accno}}" readonly=""></td>
+                          <td> <input type="text" class="input-sm form-control edit2" name="norekening" required="" value="{{$banks->mb_accno}}" readonly=""></td>
                         </tr>
                          <tr>
                           <td> Nama Rekening </td>
-                          <td> <input type="text" class="input-sm form-control" name="namarekening" required="" style="text-transform: uppercase" value="{{$banks->mb_namarekening}}" readonly=""></td>
+                          <td> <input type="text" class="input-sm form-control edit2" name="namarekening" required="" style="text-transform: uppercase" value="{{$banks->mb_namarekening}}" readonly=""></td>
                         </tr>
                         <tr>
                           <td> Alamat </td>
-                          <td> <input type="text" class="input-sm form-control" name="alamat" required="" style="text-transform: uppercase" value="{{$banks->mb_alamat}}" readonly=""></td>
+                          <td> <input type="text" class="input-sm form-control edit2" name="alamat" required="" style="text-transform: uppercase" value="{{$banks->mb_alamat}}" readonly=""></td>
                         </tr>
                       </table>
                       </div>
 
                       <div class="col-xs-12">
-                      <table class="table">
+                      <table class="table edit">
                        <tr>
                         <td>
                           <div class="checkbox">
@@ -126,9 +126,9 @@
                         <td>
                           <div class="col-sm-2">
                             @if($banks->mb_sericek == null)
-                              <input type="text" class="input-sm form-control inputcek" name="sericek" readonly=""> 
+                              <input type="text" class="input-sm form-control inputcek" name="sericek" style="text-transform: uppercase"> 
                             @else
-                              <input type="text" class="input-sm form-control inputcek" name="sericek" value="{{$banks->mb_sericek}}" readonly="">
+                              <input type="text" class="input-sm form-control inputcek" name="sericek" style="text-transform: uppercase">
                             @endif
                           </div>
                           <div class="col-sm-1">
@@ -138,11 +138,11 @@
                           <div class="col-sm-3">
                             @if($banks->mb_sericek == null)
                                <div class="input-group date" required="">
-                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control" name="tglbukucek" required="" id="tglbukucek" value="" disabled="">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control" name="tglbukucek" required="" id="tglbukucek" >
                               </div>
                             @else 
                                <div class="input-group date" required="">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control" name="tglbukucek" required="" id="tglbukucek" value="{{$banks->mb_tglbukucek}}" disabled="">
+                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control" name="tglbukucek" required="" id="tglbukucek">
                             </div>
                             @endif
                             
@@ -152,9 +152,9 @@
                           </div> 
                           <div class="col-sm-2">
                               @if($banks->mb_sericek == null)
-                                 <input type="number" class="input-sm form-control urutcek" name="awalseri" readonly="">
+                                 <input type="number" class="input-sm form-control urutcek" name="awalseri">
                               @else
-                                   <input type="number" class="input-sm form-control urutcek" name="awalseri" value="{{$banks->mb_sericekawal}}" readonly="">
+                                   <input type="number" class="input-sm form-control urutcek" name="awalseri">
                               @endif
 
                             
@@ -164,9 +164,9 @@
                           </div>
                           <div class="col-sm-2">
                             @if($banks->mb_sericek == null)
-                           <input type="text" class="input-sm form-control hasilurutcek" readonly="" name="akhirseri">
+                           <input type="text" class="input-sm form-control hasilurutcek"  name="akhirseri">
                            @else
-                           <input type="text" class="input-sm form-control hasilurutcek" readonly="" name="akhirseri" value="{{$banks->mb_sericekakhir}}">
+                           <input type="text" class="input-sm form-control hasilurutcek"  name="akhirseri" value="">
                            @endif
                           </div>
                         </td>
@@ -183,9 +183,9 @@
                         <td>
                           <div class="col-sm-2">
                              @if($banks->mb_seribg == null)
-                            <input type="text" class="input-sm form-control inputbg" name="seribg" style="text-transform: uppercase" readonly="">                              
+                            <input type="text" class="input-sm form-control inputbg" name="seribg" style="text-transform: uppercase">                              
                              @else
-                              <input type="text" class="input-sm form-control inputbg" name="seribg" style="text-transform: uppercase" value="{{$banks->mb_seribg}}" readonly="">
+                              <input type="text" class="input-sm form-control inputbg" name="seribg" style="text-transform: uppercase">
                              @endif
                           </div>
                           <div class="col-sm-1">
@@ -194,11 +194,11 @@
                           <div class="col-sm-3">
                              @if($banks->mb_seribg == null)
                             <div class="input-group date" required="">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tglbukubg" required="" id="tglbukubg" disabled="">
+                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tglbukubg" required="" id="tglbukubg" >
                             </div>
                             @else
                             <div class="input-group date" required="">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tglbukubg" required="" id="tglbukubg" value="{{$banks->mb_tglbukubg}}" disabled="">
+                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tglbukubg" required="" id="tglbukubg">
                             </div>
                             @endif
                           </div>
@@ -207,10 +207,10 @@
                           </div> 
                           <div class="col-sm-2">
                              @if($banks->mb_seribg == null)
-                               <input type="number" class="input-sm form-control urutbg" name="awalseri" readonly="">
+                               <input type="number" class="input-sm form-control urutbg" name="awalseri" >
 
                             @else
-                             <input type="number" class="input-sm form-control urutbg" name="awalseri" value="{{$banks->mb_seribgawal}}" readonly="">
+                             <input type="number" class="input-sm form-control urutbg" name="awalseri" >
 
                             @endif
                           </div> 
@@ -219,9 +219,9 @@
                           </div>
                           <div class="col-sm-2">
                              @if($banks->mb_seribg == null)                          
-                              <input type="text" class="input-sm form-control hasilurutbg "  name="akhirseri" readonly>
+                              <input type="text" class="input-sm form-control hasilurutbg "  name="akhirseri" >
                               @else
-                              <input type="text" class="input-sm form-control hasilurutbg "  name="akhirseri" readonly value="{{$banks->mb_seribgakhir}}">
+                              <input type="text" class="input-sm form-control hasilurutbg "  name="akhirseri">
                               @endif
                           </div>
                         </td>
@@ -230,7 +230,7 @@
                        <tr>
                         <td> Masih Aktif </td>
                         <td> <div class="col-sm-2">
-                              <select class="form-control" name="mshaktif" disabled="">
+                              <select class="form-control" name="mshaktif">
 
                                @if($banks->mb_mshaktif == 'Y')
                                 <option value="Y" selected="">
@@ -256,14 +256,19 @@
                       @endforeach
                       </div>
                   </div>
-                   <label class="label label-info"> No Seri Cek / BG </label>
+
+                    <label class="label label-info"> No Seri Cek / BG </label> &nbsp;
+                        <button class="btn btn-xs btn-warning ubah" type="button"> <i class="fa fa-pencil"> </i> &nbsp;  
+                         Edit Data </button> </td>
+                      </tr>
+                 
                    <br>
                    <br>
                     <div class="box">
                       <table class="table">
                 
-                      <tr>
-                        <td> <!-- <button class="btn  btn-success" id="buatseri" type="button"> Buat seri Cek / BG </button>  &nbsp; <button class="btn  btn-primary" type="button" id="hapusseri"> Hapus No Seri Cek / BG </button> --> </td>
+                      <tr class="edit">
+                        <td> <button class="btn btn-md btn-success" id="buatseri" type="button"> Buat seri Cek / BG </button>  &nbsp; <button class="btn btn-md  btn-primary" type="button" id="hapusseri"> Hapus No Seri Cek / BG </button> </td>
 
                         <td> </td>
                       </tr>
@@ -284,12 +289,12 @@
                         </thead>
                         <tbody>
                         @foreach($data['bankdt'] as $dt)
-                          <tr> 
+                          <tr class="datadatabase"> 
                             <td> <div class="checkbox"> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'> <label></label></div></td>
-                            <td> {{$dt->mb_kode}}</td>
-                            <td> {{$dt->mbdt_noseri}}</td>
+                            <td> {{$dt->mb_kode}} </td>
+                            <td> {{$dt->mbdt_noseri}}</td> <input type='hidden' class='noseridatabase' value='{{$dt->mbdt_noseri}}' name='noseridatabase[]'>
                             <td> {{$dt->mbdt_tglstatus}}</td>
-                            <td> {{$dt->mbdt_nofpg}}</td>
+                            <td > {{$dt->mbdt_nofpg}} <input type='hidden' class="databasefpg" value=" {{$dt->mbdt_nofpg}}" name="databasefpg[]"></td>
                             <td> {{$dt->mbdt_nobbk}}</td>
                             <td> </td>
                             <td> </td>
@@ -304,11 +309,10 @@
                 <div class="box-footer">
                   <div class="pull-right">
                   
-                    <a class="btn  btn-warning" href={{url('masterbank/masterbank')}}> Kembali </a>
-                   <input type="submit"  name="submit" value="Simpan" class="btn btn-success" id="submit">
+                    <a class="btn  btn-warning submit" href={{url('masterbank/masterbank')}}> Kembali </a>
+                   <input type="submit"  name="submit" value="Simpan" class="btn btn-success submit" id="submit">
                   </form>
-                    
-                    
+                  
                     </div>
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->
@@ -348,6 +352,14 @@
        $(".bank").chosen(config);
     })
 
+    $('.edit').hide();
+    $('.submit').hide();
+
+    $('.ubah').click(function(){
+      $('.edit').show();
+      $('.submit').show();
+      $('.edit2').attr('readonly' , false);
+    })
 
     $('#submit').click(function(){
       val = $('#noseri').val();
@@ -374,7 +386,7 @@
 
            swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Faktur Pembelian!",
+            text: "Simpan Data Master Bank!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -494,8 +506,41 @@
      var tableBank = $('#tbl-cek').DataTable();
 
   $('#hapusseri').click(function(){
+    arrdatafpg = [];
      var tableBank = $('#tbl-cek').DataTable();
-     var remove = tableBank.rows().remove().draw();
+     trdatabaru = $('tr.databaru').length;
+     alert(trdatabaru);
+     tempdfpg = 0;
+     if(trdatabaru == 0){
+      alert(trdatabaru);
+          $('.databasefpg').each(function(){
+            val = $(this).val();
+     //       alert(val);
+            arrdatafpg.push(val);
+          })
+
+  //        alert(count(arrdatafpg));
+
+        for($j= 0 ; $j < arrdatafpg.length; $j++){
+          alert(arrdatafpg[$j]);
+          if(arrdatafpg[$j] != " "){
+            tempdfpg = tempdfpg + 1;
+            alert(tempdfpg);
+          }
+        }
+
+        alert(tempdfpg);
+        if(tempdfpg == 0){
+        //  var remove = tableBank.rows('.datadatabase').remove().draw(false);
+        }
+        else {
+          toastr.info('Tidak bisa menghapus, DATA SERI sudah digunakan untuk transaksi FPG :)');
+          return false;
+        }
+     }
+     else {
+       var remove = tableBank.rows('.databaru').remove().draw(false);
+     }
      arrnourutcek = [];
      arrnourutbg = [];
    
@@ -508,20 +553,66 @@
  arrnourut2bg = [];
   $('#buatseri').click(function(){
     //alert(hel);
-    if($('#sericek').prop('checked') == true && $('#sericekbg').prop('checked') == true ) { // CEK DOUBLE
+      nosericek = $('.inputcek').val().toUpperCase();
+      noseribg = $('.inputbg').val().toUpperCase();
+      tempseri = 0;
 
+       urutcek = $('.urutcek').val();           
+       hasilurutcek = $('.hasilurutcek').val();
+
+      //BG
+      noseribg = $('.inputbg').val();
+      urutbg = $('.urutbg').val();           
+      hasilurutbg = $('.hasilurutbg').val();
+
+    $('.noseridatabase').each(function(){
+      $thisval = $(this).val();
+     
+      if(nosericek != " "){
+        for($h = urutcek; $h < hasilurutcek; $h++ ){
+        //   alert(nosericek+$h);
+          if(nosericek+$h == $thisval){
+          //  alert(nosericek+$h);
+           // alert($thisval);
+            tempseri = tempseri + 1;
+           
+          }
+        }
+      }
+      else if(noseribg != " "){
+    
+         for($h = urutbg; $h < hasilurutbg; $h++ ){
+          if(nosericek+$h == $thisval){
+            tempseri = tempseri + 1;
+           
+          }
+        }
+      }
+
+    })
+
+
+    alert(tempseri + 'tempseri');
+    if(tempseri > 0){
+      toastr.info('DATA SERI sudah digunakan, silahkan input data yang lain :)');
+      return false;
+    }
+
+
+    if($('#sericek').prop('checked') == true && $('#sericekbg').prop('checked') == true ) { // CEK DOUBLE
+      alert('double');
         var inputseri = '<input type="hidden" name="input" value="centangdua">';
         $('.inputseri').html(inputseri);
 
         //cek
         idbank = $('.idbank').val();
-        nosericek = $('.inputcek').val();
+        nosericek = $('.inputcek').val().toUpperCase();
         urutcek = $('.urutcek').val();           
         tglbukucek = $('#tglbukucek').val();
         hasilurutcek = $('.hasilurutcek').val();
 
         //BG
-        noseribg = $('.inputbg').val();
+        noseribg = $('.inputbg').val().toUpperCase();
         urutbg = $('.urutbg').val();           
         tglbukucek = $('#tglbukubg').val();
         hasilurutcek = $('.hasilurutbg').val();
@@ -571,12 +662,12 @@
           } //SELESAI PENGECEKAN INPUT
           else {
           idbank = $('.idbank').val();
-          nosericek = $('.inputcek').val();
+          nosericek = $('.inputcek').val().toUpperCase();
           urutcek = $('.urutcek').val();           
           tglbukucek = $('#tglbukucek').val();
           hasilurutcek = $('.hasilurutcek').val();
 
-          noseribg = $('.inputbg').val();
+          noseribg = $('.inputbg').val().toUpperCase();
           urutbg = $('.urutbg').val();           
           tglbukubg = $('#tglbukubg').val();
           hasilurutbg = $('.hasilurutbg').val();
@@ -635,12 +726,12 @@
           }
           else {
           idbank = $('.idbank').val();
-          nosericek = $('.inputcek').val();
+          nosericek = $('.inputcek').val().toUpperCase();
           urutcek = $('.urutcek').val();           
           tglbukucek = $('#tglbukucek').val();
           hasilurutcek = $('.hasilurutcek').val();
 
-          noseribg = $('.inputbg').val();
+          noseribg = $('.inputbg').val().toUpperCase();
           urutbg = $('.urutbg').val();           
           tglbukubg = $('#tglbukubg').val();
           hasilurutbg = $('.hasilurutbg').val();
@@ -650,12 +741,12 @@
           var n = 1;
         
           for(var i = urutcek; i < hasilurutcek; i++){ //ADD TABLE
-            var html2 = "<tr>" + 
+            var html2 = "<tr class='databaru' >" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                         "<label></label>" +
                         "</div></td>" +
                         "<td>"+idbank+"</td>" +
-                        "<td>"+nosericek+urutcek +" <input type='hidden' value="+nosericek+urutcek +" name='nosericek[]' id='noseri'> </td>" +
+                        "<td>"+nosericek+urutcek +" <input type='hidden' value="+nosericek+urutcek +" name='noseri[]' id='noseri'> </td>" +
                         "<td>"+tglbukubg+"</td>"+
                         "<td> </td>"+
                         "<td> </td>"+
@@ -674,12 +765,12 @@
 
 
             for(var j = urutbg; j < hasilurutbg; j++){ //LOOPING BG
-              var html3 = "<tr>" + 
+              var html3 = "<tr class='databaru'>" + 
                         "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                         "<label></label>" +
                         "</div></td>" +
                         "<td>"+idbank+"</td>" +
-                        "<td>"+noseribg+urutbg +" <input type='hidden' value="+noseribg+urutbg +" name='noseribg[]' id='noseri'></td>" +
+                        "<td>"+noseribg+urutbg +" <input type='hidden' value="+noseribg+urutbg +" name='noseri[]' id='noseri'></td>" +
                         "<td>"+tglbukubg+"</td>"+
                         "<td> </td>"+
                         "<td> </td>"+
@@ -699,7 +790,7 @@
     }
     else {
       if($("#sericek").prop('checked') == true ){ //SERI CEK
-
+		alert('sericek');
 
         var inputseri = '<input type="hidden" name="input" value="CEK">';
         $('.inputseri').html(inputseri);
@@ -707,7 +798,7 @@
 
 
             idbank = $('.idbank').val();
-            noseri = $('.inputcek').val();
+            noseri = $('.inputcek').val().toUpperCase();
             urutcek = $('.urutcek').val();           
             tglbukubg = $('#tglbukucek').val();
             hasilurutcek = $('.hasilurutcek').val();
@@ -761,7 +852,7 @@
                   }
                   else {
                    idbank = $('.idbank').val();
-                  noseri = $('.inputcek').val();
+                  noseri = $('.inputcek').val().toUpperCase();
                   urutcek = $('.urutcek').val();           
                   tglbukubg = $('#tglbukucek').val();
                   hasilurutcek = $('.hasilurutcek').val();
@@ -771,7 +862,8 @@
                   var n = 1;
                 
                   for(var i = urutcek; i < hasilurutcek; i++){ //ADD TABLE
-                    var html2 = "<tr>" + 
+                    alert(urutcek);
+                    var html2 = "<tr class='databaru'>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
                                 "</div></td>" +
@@ -798,12 +890,12 @@
           }
 
       if($('#sericekbg').prop('checked') == true){ ////SERI BG
-
+	alert('true');
            var inputseri = '<input type="hidden" name="input" value="BG">';
         $('.inputseri').html(inputseri);
 
         idbank = $('.idbank').val();
-        noseribg = $('.inputbg').val();
+        noseribg = $('.inputbg').val().toUpperCase();
         urutbg = $('.urutbg').val();
 
         tglbukubg = $('#tglbukubg').val();
@@ -826,7 +918,7 @@
                 else {
                  // alert('masuk');
                   idbank = $('.idbank').val();
-                  noseribg = $('.inputbg').val();
+                  noseribg = $('.inputbg').val().toUpperCase();
                   urutbg = $('.urutbg').val();           
                   tglbukubg = $('#tglbukubg').val();
                   hasilurutbg = $('.hasilurutbg').val();
@@ -859,7 +951,7 @@
                   }
                   else {
                    idbank = $('.idbank').val();
-                  noseribg = $('.inputbg').val();
+                  noseribg = $('.inputbg').val().toUpperCase();
                   urutbg = $('.urutbg').val();           
                   tglbukubg = $('#tglbukubg').val();
                   hasilurutbg = $('.hasilurutbg').val();
@@ -867,9 +959,10 @@
                   var tableBank = $('#tbl-cek').DataTable();
                 
                   var n = 1;
-                
+                  alert(urutbg);
+                  alert(hasilurutbg);
                   for(var i = urutbg; i < hasilurutbg; i++){ //ADD TABLE
-                    var html2 = "<tr>" + 
+                    var html2 = "<tr class='databaru'>" + 
                                 "<td><div class='checkbox'> <input type='checkbox' class='rusak'  aria-label='Single checkbox One'>" +
                                 "<label></label>" +
                                 "</div></td>" +
@@ -941,9 +1034,10 @@
  $('.date').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',
-      //  endDate: 'today'
+        endDate: 'today'
 
-    })
+    }).datepicker("setDate", "0");;
+    
     
     $('.bank').change(function(){
         val = $(this).val();

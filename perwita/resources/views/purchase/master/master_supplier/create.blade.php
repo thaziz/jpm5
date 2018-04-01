@@ -190,7 +190,7 @@
                           <tr>
                             <td>   Syarat Kredit  </td>
                             <td>
-                             <div class="form-group"> <div class="col-sm-8"> <input type="text" class="form-control input-sm" name="syarat_kredit"> </div> <label class="col-sm-2 col-sm-2 control-label"> Hari </label> </div>  
+                             <div class="form-group"> <div class="col-sm-8"> <input type="number" class="form-control input-sm" name="syarat_kredit"> </div> <label class="col-sm-2 col-sm-2 control-label"> Hari </label> </div>  
                             </td>
                           </tr>
 
@@ -317,7 +317,7 @@
                             <h4> Data Barang </h4>
                           <hr>
 
-                          <button id="tmbh_data_barang" type="button" class="btn btn-success hslkontrak"> Tambah Data Barang </button>
+                          <button id="tmbh_data_barang" type="button" class="btn btn-sm btn-primary hslkontrak"> <i class="fa fa-plus"> </i> Tambah Data Barang </button>
                           <table class="table table-bordered table-striped tbl-item" id="addColumn">
                             <tr id="header-column">
                               <th> No </th>
@@ -379,7 +379,17 @@
 
   
 
-  
+    $('#submit').click(function(){
+      var tr = $('tr#dataitem').length;
+      kontrak = $('.kontrak').val();
+      if(kontrak == 'YA'){
+              if(tr == 0){
+        toastr.info('jenis Supplier adalah Tidak Kontrak, Mohon Tambah Data Barang :) ');
+        return false;
+      }        
+      }
+
+    })
 
     $('.pkp').change(function(){
       val = $(this).val();
@@ -411,7 +421,7 @@
        
       $no++;
 
-      var rowBrg = "<tr id=item-"+$no+">" +
+      var rowBrg = "<tr id=dataitem item-"+$no+">" +
                     "<td> <b>" + $no +"</b> </td>" +               
                     "<td> <select class='form-control' name='idbarang[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
                      "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
@@ -462,6 +472,7 @@
             }
             else {
               $('.nokontrak').empty();
+              $('.hslkontrak').attr('disabled' , true);
             }
         })
 
