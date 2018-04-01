@@ -126,7 +126,7 @@
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                     </div>
                 </form>
-                <div class="box-body">
+                <div class="box-body col-sm-">
                 <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -211,29 +211,10 @@
     var table;
    
    table = $('#addColumn').DataTable( {
-       dom: 'Bfrtip',
-       stateSave: true,
-       buttons: [
-          {
-                extend: 'excel',
-               /* messageTop: 'Hasil pencarian dari Nama : ',*/
-                text: ' Excel',
-                className:'excel',
-                title:'LAPORAN INVOCE',
-                filename:'INVOICE-'+a+b+c,
-                init: function(api, node, config) {
-                $(node).removeClass('btn-default'),
-                $(node).addClass('btn-warning'),
-                $(node).css({'margin-left': '80px','margin-top':'-50px'})
-                },
-                exportOptions: {
-                modifier: {
-                    page: 'all'
-                }
-            }
-            
-            }
-    ]
+      dom: 'Bfrtip',
+        buttons: [
+             { extend: 'excel', className: 'btn' }
+        ]
  
           });
    function filterColumn () {
@@ -296,48 +277,48 @@
             $("#min").datepicker({format:"dd/mm/yyyy"});
             $("#max").datepicker({format:"dd/mm/yyyy"});
 
-       function tgl(){
-         var tgl1   = $("#min").val();
-         var tgl2   = $("#max").val();
-          if(tgl1 != "" && tgl2 != ""){
-          }
+       // function tgl(){
+       //   var tgl1   = $("#min").val();
+       //   var tgl2   = $("#max").val();
+       //    if(tgl1 != "" && tgl2 != ""){
+       //    }
 
-            $(document).ready(function(){
-        $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#min').datepicker("getDate");
-            // console.log(min);
-            var max = $('#max').datepicker("getDate");
-            // console.log(max);
+       //      $(document).ready(function(){
+       //  $.fn.dataTable.ext.search.push(
+       //  function (settings, data, dataIndex) {
+       //      var min = $('#min').datepicker("getDate");
+       //      // console.log(min);
+       //      var max = $('#max').datepicker("getDate");
+       //      // console.log(max);
 
-            var startDate = new Date(data[1]);
+       //      var startDate = new Date(data[1]);
             
-            if (min == null || min == '' && max == null || max == '') { return true; 
-            }
-            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;
-            }
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;
-            }
-            if (startDate <= max && startDate >= min) { return true; 
-            }
-            return false;
-        }
-        );
+       //      if (min == null || min == '' && max == null || max == '') { return true; 
+       //      }
+       //      if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;
+       //      }
+       //      if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;
+       //      }
+       //      if (startDate <= max && startDate >= min) { return true; 
+       //      }
+       //      return false;
+       //  }
+       //  );
 
        
-            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+       //      $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+       //      $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
            
 
-            // Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max').change(function () {
-                /*if($('#max').val() == '' || $('#max').val() == null ){
-                    $('#max').val(0);
-                }*/
-                table.draw();
-            });
-        });
-          }
+       //      // Event listener to the two range filtering inputs to redraw on input
+       //      $('#min, #max').change(function () {
+       //          /*if($('#max').val() == '' || $('#max').val() == null ){
+       //              $('#max').val(0);
+       //          }*/
+       //          table.draw();
+       //      });
+       //  });
+       //    }
    
 
     
