@@ -1017,6 +1017,9 @@
                     /* Update Status order */
                     Request::is('updatestatus') ? 'active' : '' || 
                     Request::is('updatestatus/*') ? 'active' : '' ||
+                    /* Update Status order kargo*/
+                    Request::is('updatestatus_kargo') ? 'active' : '' || 
+                    Request::is('updatestatus_kargo/*') ? 'active' : '' ||
                     /* Tracking DO */
                     Request::is('sales/deliveryordercabangtracking') ? 'active' : '' || 
                     Request::is('sales/deliveryordercabangtracking/*') ? 'active' : '' ||
@@ -1176,7 +1179,9 @@
                             /* Update Status order */
                             Request::is('updatestatus') ? 'active' : '' || 
                             Request::is('updatestatus/*') ? 'active' : '' ||
-                            /* Tracking DO */
+                            /* Tracking DO *//* Update Status order kargo*/
+                            Request::is('updatestatus_kargo') ? 'active' : '' || 
+                            Request::is('updatestatus_kargo/*') ? 'active' : '' ||
                             Request::is('sales/deliveryordercabangtracking') ? 'active' : '' || 
                             Request::is('sales/deliveryordercabangtracking/*') ? 'active' : '' ||
                             /* Surat jalan By Trayek */
@@ -1313,6 +1318,8 @@
 
                             Request::is('updatestatus') ? 'active' : '' || 
                                 Request::is('updatestatus/*') ? 'active' : ''||
+                            Request::is('updatestatus_kargo') ? 'active' : '' || 
+                                Request::is('updatestatus_kargo/*') ? 'active' : ''||
                             Request::is('sales/deliveryordercabangtracking') ? 'active' : '' || 
                                 Request::is('sales/deliveryordercabangtracking/*') ? 'active' : ''||
                             Request::is('sales/surat_jalan_trayek') ? 'active' : '' || 
@@ -1322,7 +1329,7 @@
                                     }}
 
                                   " style="border-left:none;">
-                                    <a  href="#" style="font-size: 96%" > Transaksi Paket <span class="fa arrow"></span></a>
+                                    <a  href="#" style="font-size: 96%" > Transaksi Status  <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
                                 <li>
 
@@ -1332,7 +1339,15 @@
                             {{Request::is('updatestatus') ? 'active' : '' || 
                             Request::is('updatestatus/*') ? 'active' : ''}} 
 
-                            " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Order</a>
+                            " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Paket</a>
+                            </li>
+                              <li >
+                            <a class="sidebar master-perusahaan 
+
+                            {{ Request::is('updatestatus_kargo') ? 'active' : '' || 
+                                Request::is('updatestatus_kargo/*') ? 'active' : ''}} 
+
+                            " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Kargo</a>
                             </li>
                             <li >
                                 <a class="sidebar master-perusahaan 

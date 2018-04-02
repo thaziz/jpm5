@@ -342,14 +342,15 @@ class LaporanMasterController extends Controller
 
 	public function deliveryorder_koran(){
 		// return 'a';
-		return $data =DB::table('delivery_order as do')
+		$data =DB::table('delivery_order as do')
 						->select('do.*','dk.*')
 						->join('delivery_orderd as dk','do.nomor','=','dk.dd_nomor')
 						->get();
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$sat = DB::table('satuan')->get();
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
-		return view('purchase/master/master_penjualan/laporan/lap_deliveryorder_kargo',compact('data','kota','kota1','ket'));
+		return view('purchase/master/master_penjualan/laporan/lap_deliveryorder_koran',compact('data','kota','kota1','ket','sat'));
 	}
 	public function reportdeliveryorder_koran(Request $request){
 		// return 'a';
