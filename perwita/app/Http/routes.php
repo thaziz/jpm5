@@ -365,8 +365,7 @@ Route::post('formfpg/deletedetailformfpg', 'PurchaseController@deletedetailformf
 Route::post('formfpg/deletedetailbankformfpg', 'PurchaseController@deletedetailbankformfpg');
 Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
 Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
-=======
-  <?php
+
 
   /*
     |--------------------------------------------------------------------------
@@ -732,7 +731,6 @@ Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
   Route::post('formfpg/deletedetailbankformfpg', 'PurchaseController@deletedetailbankformfpg');
   Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
   Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
->>>>>>> 83ee6753088586ac5dd0cb96d1578473bb018e25
 
 
   Route::get('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan', 'PurchaseController@pelaporanfakturpajakmasukan');
@@ -1801,7 +1799,6 @@ Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
       'as'    => 'desain_laba_rugi.view'
     ]);
 
-<<<<<<< HEAD
 // End Desain Laba Rugi
 
 // penerimaan
@@ -2226,7 +2223,7 @@ Route::get('master_sales/group_customer/tabel','master_sales\grup_customer_Contr
 Route::get('master_sales/group_customer/get_data','master_sales\grup_customer_Controller@get_data');
 Route::get('master_sales/group_customer/save_data','master_sales\grup_customer_Controller@save_data');
 Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');
-=======
+// =======
   // End Desain Laba Rugi
 
   // penerimaan
@@ -2650,4 +2647,3 @@ Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_
   Route::get('master_sales/group_customer/get_data','master_sales\grup_customer_Controller@get_data');
   Route::get('master_sales/group_customer/save_data','master_sales\grup_customer_Controller@save_data');
   Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');
->>>>>>> 83ee6753088586ac5dd0cb96d1578473bb018e25
