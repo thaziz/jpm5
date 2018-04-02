@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\mMember;
 use App\d_comp_coa;
 use App\d_comp_trans;
-use App\d_comp;
+use App\cabang;
+
 use Validator;
 use Carbon\Carbon;
 use Session;
@@ -60,14 +61,24 @@ class loginController extends Controller {
 //               
             if ($user && $user->m_passwd == sha1(md5('passwordAllah').$req->password)) {
 
-               // Auth::login($user); //set login
+                 // Auth::login($user); //set login
                 
                  $user1=mMember::find($user->m_id);
                  $user1=$user->update([
                      'm_lastlogin'=>Carbon::now(),
                  ]);              
+                 if($user->kode_cabang==''){
+                    $cabang=cabang::get();
+                    session::set('userCabang',$cabang);
+                 }else{
+                    $cabang=cabang::where('kode',$user->kode_cabang)->first();                                        
+                    session::set('cabang',$cabang->kode);
+                    session::set('namaCabang',$cabang->nama);
+
+                 }
 
                     Auth::login($user);
+
                      $dataInfo=['status'=>'sukses','nama'=>$user->m_name];            
                       return json_encode($dataInfo);
             } else {

@@ -222,8 +222,26 @@
                             <td>
                               Acc Hutang Dagang
                             </td>
-                            <td> <input type="text" class="form-control input-sm acc_hutangdagang" name="acc_hutangdagang"> </td>
+                            <td> 
+                            <select class="form-control chosen-select-width1 acc_hutangdagang" name="acc_hutangdagang">
+                              <option value=""> Pilih Id Akun
+                              </option>
+                            </select>
+                             </td>
                           </tr>
+
+                          <tr>
+                            <td>
+                              Acc Cash Flow
+                            </td>
+                            <td> 
+                            <select class="form-control chosen-select-width1 acc_csf" name="acc_csf">
+                              <option value=""> Pilih Id Akun
+                              </option>
+                            </select>
+                             </td>
+                          </tr>
+
 
                           <tr>
                               <td style="width:300px"> Terikat Kontrak </td>
@@ -377,14 +395,33 @@
             return x1 + x2;
     }
 
-  
+   clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+
+
+      $(".acc_hutangdagang").chosen(config);
+      $(".acc_csf").chosen(config);
+    })
+     },2000);
 
     $('#submit').click(function(){
       var tr = $('tr#dataitem').length;
       kontrak = $('.kontrak').val();
       if(kontrak == 'YA'){
               if(tr == 0){
-        toastr.info('jenis Supplier adalah Tidak Kontrak, Mohon Tambah Data Barang :) ');
+        toastr.info('jenis Supplier adalah  Kontrak, Mohon Tambah Data Barang :) ');
         return false;
       }        
       }
@@ -412,8 +449,33 @@
       url : baseUrl + '/mastersupplier/getacchutang',
       dataType : 'json',
       success : function(response){
-        $('.acc_hutangdagang').val(response[0].id_akun);
-      }
+
+     
+
+        $('.acc_hutangdagang').empty();
+          $('.acc_hutangdagang').append(" <option value=''>  -- Pilih id akun -- </option> ");
+            $.each(response, function(i , obj) {
+      //        console.log(obj.is_kodeitem);
+              $('.acc_hutangdagang').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+            })
+              $('.acc_hutangdagang').trigger("chosen:updated");
+          $('.acc_hutangdagang').trigger("liszt:updated");
+
+
+           $('.acc_csf').empty();
+          $('.acc_csf').append(" <option value=''>  -- Pilih id akun -- </option> ");
+            $.each(response, function(i , obj) {
+      //        console.log(obj.is_kodeitem);
+              $('.acc_csf').append("<option value="+obj.id_akun+"> <h5> "+obj.id_akun+" - "+obj.nama_akun+" </h5> </option>");
+            })
+              $('.acc_csf').trigger("chosen:updated");
+          $('.acc_csf').trigger("liszt:updated");
+
+         
+
+         }
+
+
      })
 
      $no = 0;

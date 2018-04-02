@@ -917,6 +917,7 @@ class MasterPurchaseController extends Controller
 		$mastersupplier->kontrak = $request->kontrak;
 		$mastersupplier->nama_cp = $request->nm_cp;
 		$mastersupplier->acc_hutang = $request->acc_hutangdagang;
+		$mastersupplier->acc_csf = $request->acc_csf;
 		$mastersupplier->active = $statusactive;
 		if($request->kontrak == 'YA') {
 			$mastersupplier->no_kontrak = strtoupper($request->nokontrak);
@@ -987,13 +988,13 @@ class MasterPurchaseController extends Controller
 			$data['item'] = masterItemPurchase::all();
 				$data['kota'] = master_kota::all();
 		$data['provinsi'] = master_provinsi::all();
-	/*	dd($data);
-*/
+//		dd($data);
+
 		return view('purchase/master/master_supplier/detail', compact('data'));
 	}
 
 	public function updatesupplier($id, Request $request) {
-		
+	/*	dd($request);*/
 		/*	*/
 
 		if($request->iskontrak == 'tdkeditkontrak') {	
@@ -1020,6 +1021,13 @@ class MasterPurchaseController extends Controller
 			$data->kontrak = strtoupper($request->kontrak);
 			if($request->nokontrak != '') {
 				$data->no_kontrak = strtoupper($request->nokontrak);
+			}
+
+			if($request->pkp == 'Y'){
+				$data->namapajak = $request->namapajak;
+				$data->telppajak = $request->telppajak;
+				$data->alamatpajak = $request->alamatpajak;
+
 			}
 			$data->save();
 
