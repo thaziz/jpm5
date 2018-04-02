@@ -398,19 +398,33 @@
         }
       var a = $('#voucher_hutang').serialize();
 
-      
+       event.preventDefault();
+         
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Uang Muka!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false
+          },
+          function(){
         $.ajax({
           url : baseUrl + '/voucherhutang/store1',
           type:"get",
           data: a,
-          dataType : 'json',
-          success : function (response){
-            alert(response);
-            console.log(response);
-           //   alertSuccess(); 
-              //  window.location.href = baseUrl + "/uangmuka"; 
+          dataType :'json',
+         success : function (response){
+              alertSuccess(); 
+                window.location.href = baseUrl + "/voucherhutang/voucherhutang"; 
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
           }
         })
+      })
     }
     
 

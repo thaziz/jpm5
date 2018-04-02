@@ -75,28 +75,19 @@ class v_hutangController extends Controller
    
 
         $anj = DB::table('v_hutang')->max('v_id');
+
        if ($anj == '' ) {
          $anj=1;
+       //  return json_encode('kosong');
        }
        else{
           $anj+=1;
+       // return json_encode('tdk kosong');
        }
 
-         /* $save = DB::table('v_hutang')
-            ->insert([
-              'v_id'         => $anj,
-              'v_nomorbukti'         => $request->nobukti,
-              'v_tgl'        => $request->tgl,
-              'v_tempo'    => $request->tempo,
-              'v_supid'      => $request->suppilername,
-              'v_keterangan'   => $request->ket,
-              'v_hasil'      => $request->total,
-              'v_pelunasan'      => $request->total,
-              'vc_comp'       => $request->cabang,
-            ]);*/
 
         $store1 = new v_hutang;
-        $store1->v_id  = $anj;
+        $store1->v_id  = 6;
         $store1->v_nomorbukti =$request->nobukti;
         $store1->v_tgl =$request->tgl;
         $store1->v_tempo =$request->tempo;
@@ -106,8 +97,8 @@ class v_hutangController extends Controller
         $store1->v_pelunasan =$request->total;
 
         $store1->vc_comp = $request->cabang;
-
-        $store1->save();
+     //   return json_encode($request->suppilername);
+       $store1->save();
 
      //   return json_encode($request->nobukti);
          $anj = DB::table('v_hutangd')->max('vd_no');
@@ -188,11 +179,11 @@ class v_hutangController extends Controller
 
 
     public function getnota(Request $request){
-      $cabang = $request->cabang;
+      $cabang = $request->comp;
       
       $vc = DB::select("select * from v_hutang where vc_comp = '$cabang' order by v_id desc limit 1");
 
-      //return $idbbk;
+//      return $vc;
       if(count($vc) > 0) {
       
         $explode = explode("/", $vc[0]->v_nomorbukti);
