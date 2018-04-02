@@ -14,14 +14,15 @@ use DB;
 use Validator;
 use App\Http\Controllers\Controller;
 
-class update_o_Controller extends Controller
+class update_kargo_Controller extends Controller
 {
 	public function index(){
-		return view('updatestatus.index');
+    // return'a';
+		return view('updatestatus_kargo.index');
 	}
 	public function up1(){
     $data = DB::table('surat_jalan_trayek')->limit(1000)->get();
-		return view('updatestatus/up1',compact('data'));
+		return view('updatestatus_kargo/up1',compact('data'));
 	}
   public function data1(Request $request , $nomor_do){
       /*dd($nomor_do);*/
@@ -48,15 +49,15 @@ class update_o_Controller extends Controller
 
 	public function up2(){
     $nodo = DB::table('delivery_order')->orderBy('tanggal','DESC')->limit(5000)->get();
-		return view('updatestatus/up2',compact('nodo'));
+		return view('updatestatus_kargo/up2',compact('nodo'));
 	}
   public function autocomplete(Request $request){
-  
+  // return 'a';
         $term = $request->term;
         
         $results = array();
         $queries = DB::table('delivery_order')
-            ->where('delivery_order.nomor', 'like', '%PAK%')
+            ->where('delivery_order.nomor', 'like', '%KGO%')  
             ->where('delivery_order.nomor', 'like', '%'.$term.'%')
             ->take(10)->get();
 

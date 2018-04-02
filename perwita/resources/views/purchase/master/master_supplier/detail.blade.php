@@ -204,7 +204,12 @@
 
                          <tr>
                             <td> Apakah Supplier ini termasuk PKP ? </td>
-                            <td> <select class="form-control pkp" name="pkp"><option value="Y"> Ya </option>  <option value="T"> Tidak </option> </select> </td>
+                            <td> @if($sup->nama_cp != '')
+                                  <select class="form-control pkp" name="pkp"><option value="Y" selected=""> Ya </option>  <option value="T"> Tidak </option> </select>
+                                  @else 
+                                      <select class="form-control pkp" name="pkp"><option value="Y" selected=""> Ya </option>  <option value="T" selected=""> Tidak </option> </select>    
+                                 @endif
+                             </td>
                           </tr>    
 
 
@@ -359,6 +364,9 @@
                         <div class="col-xs-12">
                             <th> <button class="btn btn-sm btn-info edit" type="button"> <i class="fa fa-pencil"> </i> Edit  </button> </th>
                         
+						
+						
+						
                           <br>
                           @if($data['countitem'] > 0)      
                             <table class="table" border=0>  
@@ -375,6 +383,7 @@
                           </tr>
                           </table>
 
+                         
                           <table class='table table-stripped table-bordered' id="addColumn">
                            
                             <tr>
@@ -386,24 +395,40 @@
                             </tr>
 
                             @foreach($data['item_supplier'] as $index=>$item)
-                            <tr id="item-{{$index}}"> 
+                            <tr id="dataitem item-{{$index}}" class="dataitem item-{{$index}}"> 
                               <td> {{$index + 1}} <input type="hidden" name="iditemsup[]" value="{{$item->is_id}}"> </td>
                               <td> 
-                              <select class="form-control brg" disabled="" name="brg[]">
+                              <select class="form-control brg tablebarang" disabled="" name="brg[]">
                                @foreach($data['barang'] as $brg) 
                                  <option value="{{$brg->kode_item}}" @if($item->is_kodeitem == $brg->kode_item) selected="" @endif>  {{$brg->nama_masteritem}} </option>
                                 @endforeach
                               </select>
 
                               </td>
-                              <td> <input type="text" class="form-control hrg harga{{$index}}" value=" {{number_format($item->is_harga, 2)}}" readonly="" name="harga[]"> </td>
+                              <td> <input type="text" class="form-control hrg harga{{$index}} tablebarang" value=" {{number_format($item->is_harga, 2)}}" readonly="" name="harga[]"> </td>
 
-                              <td> <select class="form-control"> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>
-                              <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i>  </a> </td>
+                              <td> <select class="form-control tablebarang" name="updatestock[]"> <option value="Y"> Ya </option> <option value="T"> Tidak </option> </select> </td>
+                              <td> <a class="btn btn-danger removes-btn" data-id="{{$index}}"> <i class="fa fa-trash"> </i> </a> </td>
                             </tr>
                             @endforeach
-                          </table>
+              \\						            </table>
+						  
+						            @else
+						              <div class="tablebarang">
+                              <td> <div class="btn-addbrg"> </div> </td>
+                              <table class='table table-stripped table-bordered' id="addColumn">                          
+                                <tr>
+                                  <th style="width:50px"> No </th>
+                                  <th style="width:250px"> Barang </th>
+                                  <th> Harga </th>
+                                  <th> Update Stock </th>
+                                  <th> </th>
+                                </tr>
+                              </table>
+                          </div>
+						  
                           @endif
+                         
                         </div>
 
                         <div class="tambahbarang"> </div>
@@ -441,17 +466,28 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-    $('#submit').click(function(){
-      var tr = $('tr#dataitem').length;
+    $('.simpandata').click(function(){
+      
+      var tr = $('tr.dataitem').length;
+     // alert(tr);
       kontrak = $('.kontrak').val();
       if(kontrak == 'YA'){
+      //       RRRZ(kontrak);
               if(tr == 0){
-        toastr.info('jenis Supplier adalah Tidak Kontrak, Mohon Tambah Data Barang :) ');
+        toastr.info('jenis Supplier adalah Kontrak, Mohon Tambah Data Barang :) ');
         return false;
       }        
       }
 
     })
+
+    pkp = $('.pkp').val();
+    if(pkp == 'Y'){
+        $('.pajak').show();
+    }
+    else {
+        $('.pajak').hide();
+    }
 
      $('.pkp').change(function(){
       val = $(this).val();
@@ -497,21 +533,22 @@ $(function(){
     var rowdelete = '<input type="submit" id="submit" name="submit" value="PERBARUI" class="btn btn-success">';
 
     $('.simpandata').html(rowdelete);
-
-
-      $no = 0;
+    
+      $notable = $('tr#dataitem').length;
+     $no = $notable + 1;
     $('#tmbh_data_barang').click(function(){
-      $no++;
+                     
+    $no++;
 
-      var rowBrg = '<tr id=dataitem item-'+$no+'>' +
-                    '<td> <b>' + $no +' </b> </td>' +               
-                    '<td> <select class="form-control" name="brg[]">  @foreach($data['barang'] as $item) <option value="{{$item->kode_item}}"> {{$item->nama_masteritem}} </option> @endforeach </select>' +
-                     '<td> <input type="text" class="form-control  hrg'+$no+'" id="harga" name="harga[]" data-id="'+$no+'"> </td>'+
-                    '<td> <a class="btn btn-danger removes-btn" data-id='+ $no +'> <i class="fa fa-trash"> </i>  </a> </td>' +
-                    ' </tr>';
+    var rowBrg = "<tr id='dataitem item-"+$no+"' class='item-"+$no+"'>" +
+                  "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
+                  "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
+                   "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
+                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a>"+$no+"</td>" +
+                  "</tr>";   
 
-     $("#addColumn").append(rowBrg);
-
+   $("#addColumn").append(rowBrg);
 
      $(function(){
             $('.hrg' + $no).change(function(){
@@ -525,29 +562,72 @@ $(function(){
                 $this.val(addCommas(numhar));
 
             })
-        }) 
-
-     
+        })      
 
         $(document).on('click','.removes-btn',function(){
+    //      alert('hei')
               var id = $(this).data('id');
-       //       alert(id);
-              var parent = $('#item-'+id);
+    
+              var parent = $('.item-'+id);
 
              parent.remove();
           })
 
 
     })
-    
+
   })
 })
 
-  //hapus
+
+
+   $notable = $('tr#dataitem').length;
+     $no = $notable + 1;
+    $('#tmbh_data_barang').click(function(){
+                     
+    $no++;
+
+    var rowBrg = "<tr id='dataitem item-"+$no+"' class='item-"+$no+"'>" +
+                  "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
+                  "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
+                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
+                   "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
+                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a></td>" +
+                  "</tr>";   
+
+   $("#addColumn").append(rowBrg);
+
+     $(function(){
+            $('.hrg' + $no).change(function(){
+                var id = $(this).data('id');
+
+                harga = $(this).val();
+                $this = $(this);
+                
+                numhar = Math.round(harga).toFixed(2);
+         
+                $this.val(addCommas(numhar));
+
+            })
+        })      
+
+        $(document).on('click','.removes-btn',function(){
+    //      alert('hei')
+              var id = $(this).data('id');
+    
+              var parent = $('.item-'+id);
+
+             parent.remove();
+          })
+
+
+    })
+
+ 
    $(document).on('click','.removes-btn',function(){
               var id = $(this).data('id');
-              alert(id);
-              var parent = $('#item-'+id);
+             // alert(id);
+              var parent = $('.item-'+id);
              parent.remove();
    })
   
@@ -583,85 +663,41 @@ $(function(){
             if(data == "YA") {
                 var rowContract = '<div class="form-group"> <label class="col-sm-1"> No </label> <div class="col-sm-10"> <input type="text" class="form-control" name="nokontrak" required=""> </div> </div>';
                 $('.nokontrak').html(rowContract);   
+                $('.tmbhdatabarang').attr('disabled' , false);
+                $('.tablebarang').show();
+                
+           
 
-
-                rowBarang = "<div class='col-xs-12'>" +
-                           "<hr>" +
-                          "<h4> Data Barang </h4>" +
-                          "<hr>" +
-                          "<button id='tmbh_data_barang' type='button' class='btn btn-success btn-sm tmbhdatabarang'> <i class='fa fa-plus'> </i> Tambah Data Barang </button>" +
-                          "<table class='table table-bordered table-striped tbl-item' id='addColumn'> " +
-                          "<tr id='header-column'>" +
-                              "<th> No </th>" +
-                              "<th> Barang </th>" +
-                              "<th> Harga </th>" +
-                              "<th> Update Stock </th>" +
-                              "<th> </th>"
-                          
-                              "<th> </th>" +
-                            "</tr>" +
-                          "</table>" +
-                         "</div>";
-                $('.tambahbarang').html(rowBarang);
-
-                  $no = 0;
-                  $('#tmbh_data_barang').click(function(){
-                     
-                    $no++;
-
-                    var rowBrg = "<tr id=dataitem item-"+$no+">" +
-                                  "<td> <b>" + $no +"</b> <input type='hidden' value='databarang' name='databarang[]'> </td>" +               
-                                  "<td> <select class='form-control' name='brg[]'>  @foreach($data['item'] as $item) <option value={{$item->kode_item}}> {{$item->nama_masteritem}} </option> @endforeach </select>" +
-                                   "<td> <input type='text' class='form-control  hrg"+$no+"' id='harga' name='harga[]' data-id='"+$no+"'> </td>" +
-                                   "<td> <select class='form-control' name='updatestock[]'> <option value='Y'> Ya </option> <option value='T'> Tidak </option> </select> </td>" +
-                                  "<td> <a class='btn btn-danger removes-btn' data-id='"+ $no +"'> <i class='fa fa-trash'> </i>  </a> </td>" +
-                                  "</tr>";
-
-                      /*var rowBrg = "<tr> <td colspan='4'> <select class='form-control'> <option value=''> Ana </option> <option value=''> Arief </option> </select> </td> </tr>";*/
-
-                   $("#addColumn").append(rowBrg);
-
-                   $(function(){
-                          $('.hrg' + $no).change(function(){
-                              var id = $(this).data('id');
-
-                              harga = $(this).val();
-                              $this = $(this);
-                              
-                              numhar = Math.round(harga).toFixed(2);
-                       
-                              $this.val(addCommas(numhar));
-
-                          })
-                      }) 
-
-                   
-
-                      $(document).on('click','.removes-btn',function(){
-                            var id = $(this).data('id');
-                     //       alert(id);
-                            var parent = $('#item-'+id);
-
-                           parent.remove();
-                        })
-
-
-                  })
+               
 
             }
             else {
               $('.nokontrak').empty();
               $('.nokontrak2').empty();
                $('.tmbhdatabarang').attr('disabled' , true);
+               $('.tablebarang').hide();
+               $('#addColumn').attr('disabled' , true);
+              
             }
         })
 
-    
+       
+                   
+
+        $(document).on('click','.removes-btn',function(){
+              var id = $(this).data('id');
+       //       alert(id);
+              var parent = $('#item-'+id);
+
+             parent.remove();
+          })
 
 
   var nokontrak = $('#nokontrak').val();
   console.log('nokontrak' + nokontrak);
 
+
+//$('.tablebarang').hide();
    var row= "<input type='hidden' name='iskontrak' value='tdkeditkontrak' >";
      $('.editkontrak').html(row);
 
