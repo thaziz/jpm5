@@ -48,7 +48,6 @@
 	}
 
 	function cek_periode(){
-		return 'a';
 		$data = DB::table("d_periode_keuangan")->where("bulan", date("m"))->where("tahun", date("Y"))->select("*")->get();
 
 		return count($data);

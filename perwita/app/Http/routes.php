@@ -550,6 +550,10 @@ Route::get('sales/laporandeliveryorder','LaporanMasterController@deliveryorder')
 Route::post('reportdeliveryorder/reportdeliveryorder_kargo','LaporanMasterController@reportdeliveryorder_kargo');
 Route::get('sales/laporandeliveryorder_kargo','LaporanMasterController@deliveryorder_kargo');
 //END OF DELIVERY ORDER KARGO
+//LAPORAN DELIVERY ORDER KARGO 
+Route::post('reportdeliveryorder/reportdeliveryorder_koran','LaporanMasterController@reportdeliveryorder_koran');
+Route::get('sales/laporandeliveryorder_koran','LaporanMasterController@deliveryorder_koran');
+//END OF DELIVERY ORDER KARGO
 //INVOICE
 Route::get('sales/laporaninvoicepenjualan','LaporanMasterController@invoice');
 Route::get('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoice')->name('reportinvoice');
@@ -1178,6 +1182,21 @@ Route::get('master_keuangan/neraca/excel/{throtle}', [
 ]);
 
 //endneraca
+
+
+// periode_keuangan
+  
+  Route::post('master_keuangan/periode_keuangan/tambah', [
+    'uses' => 'master_keuangan\periode_keuangan_controller@make',
+    'as'   => 'periode_keuangan.tambah'
+  ]);
+
+  Route::post('master_keuangan/periode_keuangan/setting', [
+    'uses' => 'master_keuangan\periode_keuangan_controller@setting',
+    'as'   => 'periode_keuangan.setting'
+  ]);
+
+// end
 
 
 // neraca saldo
@@ -1842,7 +1861,6 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_Controller@get
   Route::get('master_sales/group_customer/get_data','master_sales\grup_customer_Controller@get_data');
   Route::get('master_sales/group_customer/save_data','master_sales\grup_customer_Controller@save_data');
   Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');
-=======
 // End Desain Laba Rugi
 
 // penerimaan
@@ -2076,7 +2094,6 @@ Route::get('data/jurnal-umum', 'jurnalController@lihatJurnalUmum');
 Route::get('sales/laporaninvoicepenjualanperitem','laporan_penjualan\laporanpenjualanperitemController@index');
 //laporan seluruhnya
 Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
-});
 //LAPORAN PEMBELIAN
 Route::get('masteritem/masteritem/masteritem','LaporanPurchaseController@masteritemmaster');
 Route::get('mastergudang/mastergudang/mastergudang','LaporanPurchaseController@masteritemgudang');
