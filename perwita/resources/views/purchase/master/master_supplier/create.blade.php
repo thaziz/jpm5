@@ -1,4 +1,4 @@
-@extends('main')
+;@extends('main')
 
 @section('title', 'dashboard')
 
@@ -55,52 +55,12 @@
                           <div class="col-xs-6">
 
                           <table border="0" class="table">
+                          
+
 
                           <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
 
-                          <tr>
-                             @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
-                            <tr>
-                             <td> Pengajuan dari Cabang </td>
-                            <td>
-                              <select class='form-control chosen-select-width1 cabang' name="cabang">
-                                  <option value="">
-                                    Pilih-Cabang
-                                  </option>
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                  @endforeach
-                                 </select>
-                            </td>
-                            </tr>
-                            @else
-                            <tr>
-                         <td> Pengajuan dari Cabang </td>
-                            <td>
-                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
-                                  <option value="">
-                                    Pilih Cabang
-                                  </option>
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    @if($cabang->kode == Auth::user()->kode_cabang)
-                                    <option selected="" value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @else
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @endif
-                                  @endforeach
-                                 </select>
-                            </td>
-                            </tr>
-                            @endif
-
+                    
                          
 
                           <tr>
@@ -109,7 +69,7 @@
                             </td>
                             <td>
                                <input type="text" class="input-sm form-control" name="nama_supplier" >
-                               <input type="hidden" class="form-control" name="cabang" value="{{ Auth::user()->kode_cabang}}">
+                            
                             </td>
                           </tr>
 
