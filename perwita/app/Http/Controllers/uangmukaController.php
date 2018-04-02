@@ -86,6 +86,34 @@ class uangmukaController extends Controller
 		
 		return view('uangmuka.ajax',compact('data','a','supli'));
 	}
+
+
+	public function getnota(Request $request){
+		$cabang = $request->cabang;
+		
+
+		$um = DB::select("select * from d_uangmuka where um_comp = '$cabang' order by um_id desc limit 1");
+
+		//return $idbbk;
+		if(count($um) > 0) {
+		
+			$explode = explode("/", $um[0]->um_nomorbukti);
+			$idnota = $explode[2];
+		
+
+			$idnota = (int)$idnota + 1;
+			$data['idum'] = str_pad($idnota, 3, '0', STR_PAD_LEFT);
+			
+		}
+
+		else {
+	
+			$data['idum'] = '001';
+		}
+
+		return json_encode($data);
+	}
+
 	public function create(Request $request){
 		 
 

@@ -305,6 +305,7 @@ Route::get('voucherhutang/editvoucherhutang/{v_id}', 'v_hutangController@editvou
 Route::get('voucherhutang/updatevoucherhutang/{v_id}', 'v_hutangController@updatevoucherhutang');
 Route::get('voucherhutang/hapusvoucherhutang/{v_id}', 'v_hutangController@hapusvoucherhutang');
 Route::get('voucherhutang/print_voucherhutang/{v_id}', 'v_hutangController@cetakvoucherhutang');
+Route::get('voucherhutang/getnota', 'v_hutangController@getnota');
 
 
 Route::get('returnpembelian/returnpembelian', 'PurchaseController@returnpembelian');
@@ -1647,6 +1648,7 @@ Route::get('master-transaksi/set-kota/{id_provinsi}', 'd_trans\master_transaksiC
   Route::Get('uangmuka/hapusuangmuka/{um_id}','uangmukaController@hapus');
   Route::get('uangmuka/edituangmuka/{um_id}','uangmukaController@edit');
      Route::get('uangmuka/print_uangmuka/{um_id}','uangmukaController@cetak');
+     Route::get('uangmuka/getnota','uangmukaController@getnota');
   //End of uangmuka
 
 

@@ -63,7 +63,7 @@
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label> Cabang  </label>
-                          <select class="form-control disabled" name="cabang">
+                          <select class="form-control disabled cabang" name="cabang">
                             @foreach($cabang as $cabang)
                             <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
                             @endforeach
@@ -76,10 +76,10 @@
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label>Nomor Bukti :</label>
-                          <input type="text" name="nobukti" readonly="" value="{{$no_bukti}}" class="form-control bukti a" style="text-transform: uppercase" >
-                             @if($errors->has('nobukti'))
+                          <input type="text" name="nobukti" readonly="" class="form-control bukti a" style="text-transform: uppercase" >
+                           <!--   @if($errors->has('nobukti'))
                                 <small style="color: #ed5565">{{ $errors->first('nobukti')}}</small>
-                            @endif
+                            @endif -->
                         </div>
                         </div> 
                         <p></p>
@@ -165,6 +165,49 @@
    $('.jumlah').maskMoney({thousands:'.',precision:0,prefix:'Rp.'});
 
 });
+
+      
+
+
+      var comp = $('.cabang').val();
+        $.ajax({    
+            type :"get",
+            data : {comp},
+            url : baseUrl + '/uangmuka/getnota',
+           dataType : 'json',
+            success : function(data){
+            
+                var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+
+              
+                 nota = 'UM' + month + year2 + '/' + comp + '/' +  data.idum;
+                console.log(nota);
+                $('.bukti').val(nota);
+            }
+        })
+
+    
+
 
         cabang = $('.cabang').val();
         $('.valcabang').val(cabang);
