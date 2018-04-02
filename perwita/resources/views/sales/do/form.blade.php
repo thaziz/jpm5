@@ -356,20 +356,20 @@
                                                         <input type="text" class="form-control" name="ed_biaya_komisi" id="biaya_komisi" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->biaya_komisi, 0, ",", ".") }}" @endif>
                                                     </td>
                                                 </tr>
-												<tr>
-													<td style="width:110px; padding-top: 0.4cm; ">Jenis PPN</td>
-													<td>
-														<select class="form-control" name="cb_jenis_ppn" id="cb_jenis_ppn" onchange="setJmlPPN()">
-															<option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
-															<option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
-															<option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
-														</select>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm; ">Jenis PPN</td>
+                                                    <td>
+                                                        <select class="form-control" name="cb_jenis_ppn" id="cb_jenis_ppn" onchange="setJmlPPN()">
+                                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                                        </select>
                                                          <input type="hidden" name="acc_penjualan" class="form-control"  value="{{ $do->acc_penjualan or null }}">
-													</td>
-													<td style="width:35%">
+                                                    </td>
+                                                    <td style="width:35%">
                                                         <input type="text" class="form-control jml_ppn" name="ed_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->biaya_komisi, 0, ",", ".") }}" @endif>
-													</td>
-												</tr>
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Total</td>
                                                     <td colspan="2" id="div_kom">
@@ -848,10 +848,10 @@
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
             ppn =Math.round(parseFloat(total) * parseFloat(0.1));
-			total = total + ppn;
+            total = total + ppn;
         }else if (jenis_ppn == 2) {
             ppn =Math.round(parseFloat(total) * parseFloat(0.01));
-			total = total + ppn;
+            total = total + ppn;
         }else if (jenis_ppn == 4) {
             ppn =0;
         }else if (jenis_ppn == 3) {
@@ -864,7 +864,7 @@
       //  if ($("input[name='ck_ppn']").is(':checked') ) {
       //      total = parseFloat(total) + parseFloat(ppn);
       //  }
-		$("input[name='ed_jml_ppn']").val(ppn.format());
+        $("input[name='ed_jml_ppn']").val(ppn.format());
         $("input[name='ed_total_h']").val(total.format());
     }
 
@@ -1614,10 +1614,10 @@
                     alert(data.info);
                     return false;
                 }
-				if(data.terpakai == 1){
-					alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
-					return false;
-				}
+                if(data.terpakai == 1){
+                    alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
+                    return false;
+                }
                 if(data.crud == 'N'){
                     if(data.result != 1){
                         alert("Gagal menyimpan data!");
@@ -1626,10 +1626,10 @@
                         $("input[name='ed_nomor_old']").val(nomor);
                     }
                 }else if(data.crud == 'E'){
-					if(data.terpakai == 1){
-						alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
-						return false;
-					}else if(data.result != '1'){
+                    if(data.terpakai == 1){
+                        alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
+                        return false;
+                    }else if(data.result != '1'){
                         swal("Error","Can't update data, error : "+data.error,"error");
                     }else{
                         var nomor = $("input[name='ed_nomor']").val();
@@ -1972,10 +1972,10 @@
                     alert(data.info);
                     return false;
                 }
-				if(data.terpakai == 1){
-					alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
-					return false;
-				}
+                if(data.terpakai == 1){
+                    alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
+                    return false;
+                }
                 if(data.crud == 'N'){
                     if(data.result != 1){
                         alert("Gagal menyimpan data!");
@@ -2039,10 +2039,10 @@
                     alert(data.info);
                     return false;
                 }
-				if(data.terpakai == 1){
-					alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
-					return false;
-				}
+                if(data.terpakai == 1){
+                    alert('Nomor Do sudah terpakai. Data tidak bisa di edit');
+                    return false;
+                }
                 if(data.crud == 'N'){
                     if(data.result != 1){
                         alert("Gagal menyimpan data!");
