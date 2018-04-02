@@ -81,7 +81,7 @@
                             </tr>
                             <tr>
                                 <td>Customer</td>
-                                <td class="customer_td">
+                                <td class="customer_td disabled">
                                     <select onchange="cari_customer()" class="form-control customer chosen-select-width" name="customer">
                                         <option value="0">Pilih - Customer</option>
                                     @foreach($customer as $val)
