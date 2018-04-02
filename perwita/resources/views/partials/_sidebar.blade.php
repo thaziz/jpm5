@@ -10,16 +10,14 @@
                 <div class="dropdown profile-element"> <span>
                         <img alt="image" class="img-circle" src="{{ asset('assets/img/profile_small.jpg') }}" />
                     </span>
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Ilham</strong>
-                            </span> <span class="text-muted text-xs block">Kelola Profil <b class="caret"></b></span> </span> </a>
-                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                    
+                    {{-- <ul class="dropdown-menu animated fadeInRight m-t-xs">
 
                         <li><a href="contacts.html">Contacts</a></li>
                         <li><a href="mailbox.html">Mailbox</a></li>
                         <li class="divider"></li>
                         <li><a href="{{ url('logout') }}">Logout</a></li>
-                    </ul>
+                    </ul> --}}
                 </div>
                 <div class="logo-element" style="background:#f3f3f4;">
                     <img src="{{ asset('assets/img/dboard/logo/sublogo.png') }}" width="30px">
@@ -1017,6 +1015,9 @@
                     /* Update Status order */
                     Request::is('updatestatus') ? 'active' : '' || 
                     Request::is('updatestatus/*') ? 'active' : '' ||
+                    /* Update Status order kargo*/
+                    Request::is('updatestatus_kargo') ? 'active' : '' || 
+                    Request::is('updatestatus_kargo/*') ? 'active' : '' ||
                     /* Tracking DO */
                     Request::is('sales/deliveryordercabangtracking') ? 'active' : '' || 
                     Request::is('sales/deliveryordercabangtracking/*') ? 'active' : '' ||
@@ -1176,7 +1177,9 @@
                             /* Update Status order */
                             Request::is('updatestatus') ? 'active' : '' || 
                             Request::is('updatestatus/*') ? 'active' : '' ||
-                            /* Tracking DO */
+                            /* Tracking DO *//* Update Status order kargo*/
+                            Request::is('updatestatus_kargo') ? 'active' : '' || 
+                            Request::is('updatestatus_kargo/*') ? 'active' : '' ||
                             Request::is('sales/deliveryordercabangtracking') ? 'active' : '' || 
                             Request::is('sales/deliveryordercabangtracking/*') ? 'active' : '' ||
                             /* Surat jalan By Trayek */
@@ -1313,6 +1316,8 @@
 
                             Request::is('updatestatus') ? 'active' : '' || 
                                 Request::is('updatestatus/*') ? 'active' : ''||
+                            Request::is('updatestatus_kargo') ? 'active' : '' || 
+                                Request::is('updatestatus_kargo/*') ? 'active' : ''||
                             Request::is('sales/deliveryordercabangtracking') ? 'active' : '' || 
                                 Request::is('sales/deliveryordercabangtracking/*') ? 'active' : ''||
                             Request::is('sales/surat_jalan_trayek') ? 'active' : '' || 
@@ -1322,7 +1327,7 @@
                                     }}
 
                                   " style="border-left:none;">
-                                    <a  href="#" style="font-size: 96%" > Transaksi Paket <span class="fa arrow"></span></a>
+                                    <a  href="#" style="font-size: 96%" > Transaksi Status  <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
                                 <li>
 
@@ -1332,7 +1337,15 @@
                             {{Request::is('updatestatus') ? 'active' : '' || 
                             Request::is('updatestatus/*') ? 'active' : ''}} 
 
-                            " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Order</a>
+                            " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Paket</a>
+                            </li>
+                              <li >
+                            <a class="sidebar master-perusahaan 
+
+                            {{ Request::is('updatestatus_kargo') ? 'active' : '' || 
+                                Request::is('updatestatus_kargo/*') ? 'active' : ''}} 
+
+                            " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Kargo</a>
                             </li>
                             <li >
                                 <a class="sidebar master-perusahaan 

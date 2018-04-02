@@ -18,7 +18,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Laporan Invoice Penjualan
+                    <h5> Laporan DO Koran
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -47,64 +47,21 @@
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                       <tr>
-                        <th> Nama Pengirim : </th> 
-                          <td> 
-                                <input id="nama_pengirim" type="text" class="form-control ">
-                          </td>  
-                          <th> Nama Penerima : </th> 
-                            <td> 
-                                <input id="nama_penerima" type="text" class="form-control" >
-                            </td>
-                      </tr>
-
-                        <tr >
-                           <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
-                          <td >
-                          <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($kota1 as $asal)
-                                <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
-                            @endforeach
-                          </select>
-                          </td>
-                        
-                          <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($kota as $tujuan)
-                                <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
-                            @endforeach
-                           </select>
-                          </td>
-                        </tr>
                         <tr>
-                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
+                            <th style="width: 100px; padding-top: 16px"> Satuan </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="DOKUMEN">DOKUMEN</option>
-                            <option value="KILOGRAM">KILOGRAM</option>
-                            <option value="KOLI">KOLI</option>
-                            <option value="SEPEDA">SEPEDA</option>
-                           </select>
-                          </td>
-                        
-                           <th style="width: 100px; padding-top: 16px"> Jenis </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="REGULER">REGULER</option>
-                            <option value="EXPRESS">EXPRESS</option>
-                            <option value="OUTLET">OUTLET</option>
+                            @foreach ($sat as $sat)
+                              <option value="{{ $sat->kode }}">{{ $sat->kode }} - {{ $sat->nama }}</option>
+                            @endforeach
                            </select>
                           </td>
                         </tr>
                         <tr>
                            <th style="width: 100px; padding-top: 16px"> Status </th>
                           <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn4()">
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
                             <option value="MANIFESTED">MANIFESTED</option>
                             <option value="TRANSIT">TRANSIT</option>
@@ -123,49 +80,19 @@
                 <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th hidden=""></th>
-                            <th hidden=""></th>
+                        
                             <th> No DO</th>
                             <th> Tanggal </th>
-                            <th> Pengirim </th>
-                            <th> Penerima </th>
-                            <th> Kota Asal </th>
-                            <th> Kota Tujuan </th>
-                            <th> Kec Tujuan </th>
-                            <th> Pendapatan </th>
-                            <th> Tipe </th>
-                            <th> Jenis </th>
+                            <th> Customer </th>
                             <th> Status </th>
-                            <th> Tarif Dasar </th>
-                            <th> Tarif Penerus </th>
-                            <th> Biaya Tambabahan </th>
-                            <th> diskon </th>
-                            <th> Tarif Keseluruhan </th>
+                            <th> Diskon</th>
+                            <th> Total net </th>
+                            <th> Status do </th>
+                            <th> Status </th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($data as $row)
-                        <tr>
-                            <td hidden="">{{ $row->kaid }}</td>
-                            <td hidden="">{{ $row->ktid }}</td>
-                            <td><input type="hidden" name="" value="{{ $row->nomor }}">{{ $row->nomor }}</td>
-                            <td>{{ $row->tanggal }}</td>
-                            <td>{{ $row->nama_pengirim }}</td>
-                            <td>{{ $row->nama_penerima }}</td>
-                            <td>{{ $row->asal }}</td>
-                            <td>{{ $row->tujuan }}</td>
-                            <td>{{ $row->kecamatan }}</td>
-                            <td>{{ $row->pendapatan }}</td>
-                            <td>{{ $row->type_kiriman }}</td>
-                            <td>{{ $row->jenis_pengiriman }}</td>
-                            <td>{{ $row->status }}</td>
-                            <td align="right">{{ number_format($row->tarif_dasar,0,',','.')  }}</td>
-                            <td align="right">{{ number_format($row->tarif_penerus,0,',','.') }}</td>
-                            <td align="right">{{ number_format($row->biaya_tambahan,0,',','.') }}</td>
-                            <td align="right">{{ number_format($row->diskon,0,',','.')}}</td>
-                            <td align="right">{{ number_format($row->total,0,',','.') }}</td>
-                        </tr>
-                        @endforeach
+                      
                     </tbody>
 
                   </table>
