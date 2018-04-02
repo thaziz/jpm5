@@ -15,8 +15,11 @@ use Validator;
 class saldo_akun_controller extends Controller
 {
     public function index(){
+        
+        if(cek_periode() == 0)
+            return view("keuangan.err.err_periode");
 
-    	$data = master_akun_saldo::where("tahun", "=", date("Y"))->get();
+    	$data = master_akun_saldo::where("tahun", "=", date("Y"))->where("bulan", "=", date("m"))->get();
 
     	//return date("Y");
 
