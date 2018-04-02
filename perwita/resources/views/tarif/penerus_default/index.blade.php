@@ -100,20 +100,6 @@
                         <form class="form-horizontal kirim">
                           <table class="table table-striped table-bordered table-hover ">
                             <tbody>
-                                
-                                <tr>
-                                    <td style="padding-top: 0.4cm">Jenis</td>
-                                    <td>   
-                                        <select class="form-control a"  name="cb_jenis" id="cb_jenis" style="width:100%">
-                                            <option value="" selected="" disabled="">-- Pilih jenis --</option>
-                                            <option value="REGULER">REGULER</option>
-                                            <option value="EXPRESS">EXPRESS</option>
-                                        </select>
-                                        <input type="hidden" name="ed_id" class="form-control" style="text-transform: uppercase" >
-                                        <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                        <input type="hidden" class="form-control" name="crud" class="form-control" >
-                                    </td>
-                                </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Tipe Kiriman</td>
                                     <td>   
@@ -122,9 +108,24 @@
                                             <option value="DOKUMEN">DOKUMEN</option>
                                             <option value="KILOGRAM">KILOGRAM</option>
                                             <option value="KOLI">KOLI</option>
+                                            <option value="SEPEDA">SEPEDA</option>
                                         </select>
                                     </td>
                                 </tr>
+                                <tr id="hilangjenis">
+                                    <td style="padding-top: 0.4cm">Jenis</td>
+                                    <td id="jenissep">   
+                                        <select class="form-control a"  name="cb_jenis" id="cb_jenis" style="width:100%">
+                                            <option value="" selected="" disabled="">-- Pilih jenis --</option>
+                                            <option value="REGULER">REGULER</option>
+                                            <option value="EXPRESS">EXPRESS</option>
+                                        </select>
+                                        
+                                    </td>
+                                </tr>
+                                <input type="hidden" name="ed_id" class="form-control" style="text-transform: uppercase" >
+                                        <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
+                                        <input type="hidden" class="form-control" name="crud" class="form-control" >
                                 <tr>
                                     <td style="padding-top: 0.4cm" id="test">Keterangan</td>
                                     <td id="test2">   
@@ -204,30 +205,113 @@
 
     $('#ed_harga').change(function(){
         var hargafind = $(this).find(':selected').data('id');
-        alert(hargafind);
+        // alert(hargafind);
         $('input[name="id_zona_foreign"]').val(hargafind);
 
     });
-
-
     $('#cb_tipe_kiriman').change(function(){
+    var tipe = $('#cb_tipe_kiriman').find(':selected').val();
+   
+    if (tipe == 'SEPEDA') {
+            $('#cb_keterangan').hide();
+            $('#test2').html('<input tipe="text" name="cb_keterangan" class="form-control">');
+
+            $('#jenissep').html(' <select class="form-control b"  name="cb_jenis" id="cb_jenis" style="width:100%">'+
+                                            '<option value="" selected="" disabled="">-- Pilih kiriman --</option>'+
+                                           '<option value="sepeda">SEPEDA</option>'+
+                                           '<option value="bebek_matik">BEBEK/MATIK</option>'+
+                                           '<option value="laki_sport">Laki/SPORT</option>'+
+                                           '<option value="moge">MOGE</option>'+
+                                        '</select>');
+            $('#test').hide();
+            $('#test2').hide();
+        }
+
+    if(tipe == 'KILOGRAM'){
+            $('#test').show();
+            $('#test2').show();
+            $('#test2').html('<select class="form-control c"  name="cb_keterangan" id="cb_keterangan" style="width:100%">'+'<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+'<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
+                                                        '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>'+'</select>');
+            // $('#hilangjenis').show();
+            $('#jenissep').html(' <select class="form-control b"  name="cb_jenis" id="cb_jenis" style="width:100%">'+
+                                            '<option value="" selected="" disabled="">-- Pilih kiriman --</option>'+
+                                          ' <option value="REGULER">REGULER</option>'+
+                                           ' <option value="EXPRESS">EXPRESS</option>'+
+                                        '</select>');
+    }
+    if(tipe == 'DOKUMEN'){
+            $('#test').hide();
+            $('#test2').hide();
+            $('#test2').html('<input tipe="text" name="cb_keterangan" class="form-control">');
+          $('#jenissep').html(' <select class="form-control b"  name="cb_jenis" id="cb_jenis" style="width:100%">'+
+                                            '<option value="" selected="" disabled="">-- Pilih kiriman --</option>'+
+                                          ' <option value="REGULER">REGULER</option>'+
+                                           ' <option value="EXPRESS">EXPRESS</option>'+
+                                           ' <option value="OUTLET">OUTLET</option>'+
+                                        '</select>');
+    }
+    if(tipe == 'KOLI'){
+            $('#test').show();
+            $('#test2').show();
+            $('#test2').html(' <select class="form-control c"  name="cb_keterangan" id="cb_keterangan" style="width:100%">'+
+                                            '<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+
+                                            '<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
+                                            '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>'+
+                                            '<option value="TARIF 20 KG SAMPAI 30 KG">TARIF 20 KG SAMPAI 30 KG</option>'+
+                                            '<option value="TARIF DI ATAS 30 KG">TARIF DI ATAS 30 KG</option>'+
+                                        '</select>');
+           $('#jenissep').html(' <select class="form-control b"  name="cb_jenis" id="cb_jenis" style="width:100%">'+
+                                            '<option value="" selected="" disabled="">-- Pilih kiriman --</option>'+
+                                          ' <option value="REGULER">REGULER</option>'+
+                                           ' <option value="EXPRESS">EXPRESS</option>'+
+                                        '</select>');
+    }
+    })
+    
+
+    $('#cb_jenis').change(function(){
         var jenis = $('#cb_jenis').find(':selected').val();
-        var tipe = $(this).find(':selected').val();
+        var tipe = $('#cb_tipe_kiriman').find(':selected').val();
         // alert(abc);
+        alert(jenis); alert(tipe);
+        if(tipe == 'DOKUMEN' && jenis == 'REGULER') {
+           
+        $('#test2').html('<input tipe="text" name="cb_keterangan" class="form-control">');
+        }else if (jenis == 'EXPRESS' && tipe == 'DOKUMEN') {
+            
+            $('#test2').html('<input tipe="text" name="cb_keterangan" class="form-control">');
+        }
+
+        if (tipe == 'SEPEDA') {
+            $('#cb_keterangan').hide();
+            $('#test2').html('<input tipe="text" name="cb_keterangan" class="form-control">');
+
+            $('#hilangjenis').hide();
+            $('#test').show();
+            $('#test2').show();
+        }
+
         if (jenis == 'REGULER' && tipe == 'KILOGRAM') {
             $('#cb_keterangan').html('<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+'<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
                                                         '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>');
 
-            $('#test').show();
+            
             $('#test2').show();
         }else if (jenis == 'EXPRESS' && tipe == 'KILOGRAM') {
             $('#cb_keterangan').html('<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+'<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
                                                         '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>');
 
             $('#test').show();
-            $('#test2').show();
+            $('#test2').html('<select class="form-control c"  name="cb_keterangan" id="cb_keterangan" style="width:100%">'+
+                                            '<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+
+                                            '<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
+                                            '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>'+
+                                            '<option value="TARIF 20 KG SAMPAI 30 KG">TARIF 20 KG SAMPAI 30 KG</option>'+
+                                            '<option value="TARIF DI ATAS 30 KG">TARIF DI ATAS 30 KG</option>'+
+                                        '</select>');
         }
-        else if (jenis == 'REGULER' && tipe == 'KOLI') {
+
+        if (jenis == 'REGULER' && tipe == 'KOLI') {
             $('#cb_keterangan').html('<option value="" selected="" disabled="">-- Pilih keterangan --</option>'+
                                                         '<option value="TARIF 0 KG SAMPAI 10 KG">TARIF 0 KG SAMPAI 10 KG</option>'+
                                                         '<option value="TARIF 10 KG SAMPAI 20 KG">TARIF 10 KG SAMPAI 20 KG</option>'+
@@ -247,13 +331,8 @@
             $('#test').show();
             $('#test2').show();
         }
-        else if (jenis == 'REGULER' && tipe == 'DOKUMEN') {
-            $('#test').hide();
-            $('#test2').hide();
-        }else if (jenis == 'EXPRESS' && tipe == 'DOKUMEN') {
-            $('#test').hide();
-            $('#test2').hide();
-        }
+
+        
         
     })
 
@@ -298,12 +377,13 @@
             $('#test2').show();
         $("input[name='crud']").val('N');
         $("input[name='ed_id']").val('');
-        $("input[name='ed_harga']").val(0);
         $("select[name='cb_jenis']").val('');
         $("select[name='cb_tipe_kiriman']").val('');
+        $("select[name='ed_harga']").val('');
+        $("select[name='ed_cabang']").val('');
         $("select[name='cb_keterangan']").val('');
         $("#modal").modal("show");
-        $("input[name='cb_jenis']").focus();
+        $("input[name='cb_tipe_kiriman']").focus();
     });
 
     $(document).on( "click",".btnedit", function() {
@@ -319,14 +399,26 @@
             dataType:'json',
             success: function(data, textStatus, jqXHR)
             {
+                console.log(data)
                 $("input[name='crud']").val('E');
                 $("input[name='ed_id']").val(data.id);
-                $("input[name='ed_harga']").val(data.harga);
+                $("select[name='ed_harga']").val(data.harga);
                 $("select[name='cb_jenis']").val(data.jenis);
+                $("select[name='id_zona_foreign']").val(data.id_zona_foreign);
+                $("select[name='ed_cabang']").val(data.cabang_default);
                 $("select[name='cb_tipe_kiriman']").val(data.tipe_kiriman);
-                $("select[name='cb_keterangan']").val(data.keterangan);
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
+                if(data.tipe_kiriman == "KILOGRAM" || data.tipe_kiriman == 'KOLI' ){
+                    $("select[name='cb_keterangan']").val(data.keterangan);
+                    // alert('a');
+                    $('#test2').show();
+                    $('#test').show();
+                }else if(data.tipe_kiriman == "DOKUMEN" || data.tipe_kiriman == 'SEPEDA' ){
+                    $('#test2').hide();
+                    $('#test').hide();
+                    // alert('b');
+                }
                 
             },
             error: function(jqXHR, textStatus, errorThrown)
@@ -337,32 +429,7 @@
     });
 
     $(document).on("click","#btnsave",function(){
-        /*
-        var kode_old = $("#ed_kode_old").val();
-        var kode = $("#ed_kode").val();
-        var kota = $("#ed_kota").val();
-        var provinsi = $("#cb_kota_asal").val();
-        var crud   = $("#crud").val();
-        if(id == '' || id == null ){
-            alert('Id harus di isi');
-            $("#ed_kode").focus();
-            return false;
-        }
-        if(provinsi == '' || provinsi == null ){
-            alert('provinsi harus di isi');
-            $("#cb_kota_asal").focus();
-            return false;
-        }
-        /*
-        value = {
-            id_old: id_old,
-            id: id,
-            provinsi: provinsi,
-            kota: kota.toUpperCase(),
-            crud: crud,
-            _token: "{{ csrf_token() }}",
-        };
-        */
+
        
         $.ajax(
         {

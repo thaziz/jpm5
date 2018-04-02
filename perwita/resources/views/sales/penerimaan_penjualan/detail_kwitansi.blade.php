@@ -70,7 +70,7 @@
                 </form>
                 <form id="form_header" class="form-horizontal">
                     <div class="col-sm-6">
-                    <table class="table table-striped table-bordered table-hover tabel_header">
+                    <table class="table table-striped table-bordered table-hover tabel_header disabled">
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor Kwitansi</td>
                                 <td colspan="20">
@@ -251,12 +251,9 @@
                             
                         </div>
                         <div class="col-sm-12 ">
-                            <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
-                            <button type="button" class="btn btn-warning kanan pull-right print disabled" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
-                            <button type="button" class="btn btn-success kanan pull-right temp_1" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i> Simpan</button>
-                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i> Tambah Uang Muka</button>
-                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i> Tambah Biaya</button>
-                            <button type="button" class="btn btn-info kanan pull-right tambah_invoice temp_1" name="btnadd" ><i class="glyphicon glyphicon-plus"></i> Pilih Nomor Invoice</button>
+               
+                            <button type="button" class="btn btn-warning kanan pull-right print" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
+               
                         </div>
                     </div>
                 </form>
@@ -306,7 +303,7 @@
                                                     <input type="text" class="form-control input-sm" name="i_keterangan[]" value="{{$val->kd_keterangan}}">
                                                 </td>
                                                 <td>
-                                                    <a type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i>&nbsp;</button>
+                                                   -
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -356,12 +353,7 @@
                                                     <input type="hidden" class="b_keterangan" value="{{$val->kb_keterangan}}" name="b_keterangan[]">
                                                 </td>
                                                 <td>
-                                                    <button type="button" onclick="hapus_detail_biaya(this)" class="btn btn-danger hapus btn-sm" title="hapus">
-                                                    <label class="fa fa-trash"><label>
-                                                    </button>
-                                                    <button type="button" onclick="edit_detail_biaya(this)" class="btn btn-warning hapus btn-sm" title="edit">
-                                                    <label class="fa fa-pencil"><label>
-                                                    </button>
+                                                    -
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -410,12 +402,7 @@
                                                     <input type="text" readonly value="{{$val->ku_keterangan}}" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">
                                                 </td>
                                                 <td>
-                                                    <button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">
-                                                    <label class="fa fa-trash"><label>
-                                                    </button>
-                                                    <button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">
-                                                    <label class="fa fa-pencil"><label>
-                                                    </button>
+                                                    -
                                                 </td>
                                             </tr>
                                             @endforeach
@@ -599,7 +586,7 @@
                                     </div>
                                 </form>
                                 <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" id="btnsave2">Simpan</button>
+                                    {{-- <button type="submit" class="btn btn-primary" id="btnsave2">Simpan</button> --}}
                                 </div>
                             </div>
                         </div>
@@ -1811,7 +1798,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/update_kwitansi',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()

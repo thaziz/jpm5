@@ -421,7 +421,7 @@
         $('input[name="tarif20kg_express"]').val('');
         $('input[name="tarifkgsel_reguler"]').val('');
         $('input[name="tarifkgsel_express"]').val('');
-        $('#hilang').hi();
+        $('#hilang').show();
         $("input[name='kodekota']").val('');
 
         $('#hilang2').show();

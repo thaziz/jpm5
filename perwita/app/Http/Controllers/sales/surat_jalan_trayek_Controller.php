@@ -180,7 +180,7 @@ class surat_jalan_trayek_Controller extends Controller
                         FROM delivery_order d
                         LEFT JOIN kota k ON k.id=d.id_kota_asal
                         LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
-                        WHERE NOT EXISTS (SELECT * FROM surat_jalan_trayek_d sjd WHERE d.nomor=sjd.nomor_do )
+                        -- WHERE NOT EXISTS (SELECT * FROM surat_jalan_trayek_d sjd WHERE d.nomor=sjd.nomor_do )
                         AND d.id_kota_tujuan='$id_kota' AND d.kode_cabang='$kode_cabang' " ;
             $i++;
             if ($i==$jml_kota) {
@@ -188,8 +188,9 @@ class surat_jalan_trayek_Controller extends Controller
             }
             $sql1 =$sql1.$sql.$union_all ;
         }
-        //dd($sql1);
+        // dd($sql1);
         $list = DB::select(DB::raw($sql1));
+        
         $data = array();
         foreach ($list as $r) {
             $data[] = (array) $r;

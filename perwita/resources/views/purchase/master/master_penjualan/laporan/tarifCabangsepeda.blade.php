@@ -10,7 +10,7 @@
   th{
         text-align: center !important;
       }
-        .excel:before{
+   .excel:before{
     content: "\f02f"; 
     font-family: FontAwesome;
 
@@ -21,6 +21,7 @@
     font-family: FontAwesome;
 
   }
+  
 </style>
 
 <div class="return">
@@ -47,7 +48,7 @@
                     
                 <div class="col-xs-12">
 
-                   <table class="table table-bordered datatable table-striped">
+                <table class="table table-bordered datatable table-striped">
                       <br>
                                                                                 
                         <tr >
@@ -55,7 +56,7 @@
                           <td colspan="2">
                           <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($kota1 as $asal)
+                            @foreach ($kota1 as $asal)  
                                 <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
                             @endforeach
                           </select>
@@ -74,39 +75,17 @@
                           </td>
                         </tr>
                         <tr>
-                           <th style="width: 100px; padding-top: 16px"> Angkutan </th>
+                           <th style="width: 100px; padding-top: 16px"> Jenis </th>
                           <td colspan="2"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($ang as $ang)  
-                            <option value="{{ $ang->nama}}" > {{ $ang->nama}}</option>
-                            @endforeach
+                            <option value="sepeda_pancal">SEPEDA</option>
+                            <option value="bebek_matik">BEBEK/MATIK</option>
+                            <option value="laki_sport">LAKI/SPORT</option>
+                            <option value="moge">MOGE</option>
                            </select>
                           </td>
                         </tr>
-                        <tr>
-                           <th style="width: 100px; padding-top: 16px"> Satuan </th>
-                          <td colspan="2"> 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($sat as $sat)  
-                            <option value="{{ $sat->nama  }}" > {{ $sat->nama  }}</option>
-                            @endforeach
-                           </select>
-                          </td>
-                        </tr>
-                        <tr>
-                           <th style="width: 100px; padding-top: 16px"> Jenis Tarif </th>
-                          <td colspan="2"> 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn4()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($jt as $jt)  
-                            <option value="{{ $jt->jt_nama_tarif  }}" > {{ $jt->jt_nama_tarif  }}</option>
-                            @endforeach
-                           </select>
-                          </td>
-                        </tr>
-                        
                     </table>
                     <hr>
                     <div class="row"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
@@ -122,30 +101,26 @@
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
-                       <th hidden="" align="center"> Kota Asal</th>
+                        <th hidden="" align="center"> Kota Asal</th>
                         <th hidden="" align="center">id Kota Asal</th>
                         <th align="center"> Kode</th>
                         <th align="center"> Kota Asal</th>
                         <th align="center"> Kota Tujuan</th>
-                        <th align="center"> Angkutan </th>
-                        <th align="center"> Satuan </th>
+                        <th align="center"> Jenis </th>
                         <th align="center"> Waktu </th>
-                        <th align="center"> Jenis Tarif</th>
-                        <th align="center"> Harga</th>
+                        <th align="center"> Tarif</th>
                     </tr>        
                     </thead>        
                     <tbody>
-                      @foreach($data as $val)
+                      @foreach($data as $index => $val)
                       <tr>
-                       <td hidden="">{{$val->id_asal}}</td>
+                        <td hidden="">{{$val->id_asal}}</td>
                         <td hidden="">{{$val->id_tujuan}}</td>
-                        <td><input type="hidden" name="" value="{{ $val->kode }}">{{$val->kode}}</td>
+                        <td><input type="hidden" name="" value="{{$val->kode}}">{{$val->kode}}</td>
                         <td>{{$val->asal}}</td>
                         <td>{{$val->tujuan}}</td>
-                        <td align="center">{{$val->angkutan}}</td>
-                        <td align="center">{{$val->satuan}}</td>
+                        <td align="center">{{$val->jenis}}</td>
                         <td align="center">{{$val->waktu}}</td>
-                        <td align="center">{{$val->jenis_tarif}}</td>
                         <td align="right">{{"Rp " . number_format($val->harga,2,",",".")}}</td>
                       </tr>
                       @endforeach
@@ -157,7 +132,7 @@
                 </div><!-- /.box-footer --> 
               </div><!-- /.box -->
             </div><!-- /.col -->
-          </div><!-- /.row -->
+          </div><!-- /.row -->  
                 </div>
             </div>
         </div>
@@ -175,7 +150,13 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-      var d = new Date();
+  var table;
+
+     table = $(document).ready(function(){
+    
+
+  });
+ var d = new Date();
       var a = d.getDate();
       var b = d.getSeconds();
       var c = d.getMilliseconds();
@@ -211,9 +192,8 @@
               }
           ]
     });
-
-
- function filterColumn () {
+    
+         function filterColumn () {
     $('#addColumn').DataTable().column(0).search(
         $('.select-picker1').val()
     ).draw();    
@@ -223,24 +203,18 @@
             $('.select-picker2').val()
         ).draw();    
     }
-    function filterColumn2 () {
+    function filterColumn2() {
         $('#addColumn').DataTable().column(5).search(
             $('.select-picker3').val()
         ).draw();    
     }
-    function filterColumn3 () {
-        $('#addColumn').DataTable().column(6).search(
-            $('.select-picker4').val()
-        ).draw();    
-    }
-    function filterColumn4 () {
-        $('#addColumn').DataTable().column(8).search(
-            $('.select-picker5').val()
-        ).draw();    
-    }
+    
+    $('.select-picker1').change(function(){
+      var anj = $(this).val();
+      console.log(anj);
+    });
 
-
-     function cetak(){
+      function cetak(){
       var asw=[];
        var asd = addColumn.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
@@ -248,6 +222,7 @@
            asw[i] =  $(asd[i][2]).val();
   
        }
+       console.log(asw);
 
       $.ajaxSetup({
         headers: {
@@ -258,14 +233,15 @@
 
       $.ajax({
         data: {a:asw,c:'download'},
-        url: baseUrl + '/reportcabangkargo/reportcabangkargo',
+        url: baseUrl + '/reportcabangsepeda/reportcabangsepeda',
         type: "post",
-        success : function(data){
+         success : function(data){
         var win = window.open();
             win.document.write(data);
         }
       });
     }
+
 
 
 

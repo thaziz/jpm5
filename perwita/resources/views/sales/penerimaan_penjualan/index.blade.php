@@ -64,12 +64,53 @@
                                 <th>Tanggal </th>
                                 <th>Customer</th>
                                 <th>Jumlah</th>
+                                <th>Memorial</th>
                                 <th>Keterangan </th>
                                 <th style="width:8%"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
-
+                          @foreach($data as $val)
+                          <tr>
+                            <td>
+                              <a onclick="detail('{{$val->k_nomor}}')">{{$val->k_nomor}}</a>
+                            </td>
+                            <td>
+                              {{$val->k_tanggal}}
+                            </td>
+                            <td>
+                              {{$val->nama}}
+                            </td>
+                            <td>
+                              {{number_format($val->k_netto, 2, ",", ".")}}
+                            </td>
+                            <td align="right">
+                              {{number_format($val->k_jumlah_memorial, 2, ",", ".")}}
+                            </td>
+                            <td>
+                              {{$val->k_keterangan}}
+                            </td>
+                            <td>
+                              <div class="btn-group">
+                              @if(Auth::user()->punyaAkses('Kwitansi','ubah'))
+                                <button type="button" onclick="edit('{{$val->k_nomor}}')" class="btn btn-xs btn-primary">
+                                  <i class="fa fa-pencil"></i>
+                                </button>
+                              @endif
+                              @if(Auth::user()->punyaAkses('Kwitansi','print'))
+                                <button type="button" onclick="ngeprint('{{$val->k_nomor}}')" class="btn btn-xs btn-warning">
+                                  <i class="fa fa-print"></i>
+                                </button>
+                              @endif
+                              @if(Auth::user()->punyaAkses('Kwitansi','hapus'))
+                                <button type="button" onclick="hapus('{{$val->k_nomor}}')" class="btn btn-xs btn-danger">
+                                  <i class="fa fa-trash"></i>
+                                </button>
+                              @endif
+                              </div>
+                            </td>
+                          </tr>
+                          @endforeach
                         </tbody>
 
                     </table>
@@ -105,13 +146,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('.tabel_data').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '{{ route('datatable_kwitansi') }}',
         columnDefs: [  
           
-
-       
                       {
                          targets: 3,
                          className: 'right'
@@ -119,14 +155,7 @@ $(document).ready(function() {
 
 
                     ],
-        columns: [
-            {data: 'k_nomor', name: 'k_nomor'},
-            {data: 'k_tanggal', name: 'k_tanggal'},
-            {data: 'k_kode_customer', name: 'k_kode_customer'},
-            {data: 'k_netto', name: 'k_netto'},
-            {data: 'k_keterangan', name: 'k_keterangan'},
-            {data: 'tes', name: 'tes'}
-        ]
+
     });
 });
 
@@ -194,6 +223,8 @@ $(document).ready(function() {
       });
     });
     }
-
+    function detail(id) {
+      window.location.href = baseUrl +'/sales/detail_kwitansi/'+id
+    }
 </script>
 @endsection

@@ -485,7 +485,7 @@ public function simpan_invoice(request $request)
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_status'             =>  'Released',
                                           'i_ppnrp'              =>  $total_ppn,
-                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_kode_pajak'         =>  $request->kode_pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
@@ -537,7 +537,11 @@ public function simpan_invoice(request $request)
                                               'id_tipe'          => 'tidak tahu',
                                               'id_acc_penjualan' => $do->acc_penjualan
                                           ]);
-
+                $update_do = DB::table('delivery_order')
+                                   ->where('nomor',$request->do_detail[$i])
+                                   ->update([
+                                    'status_do'=>'Approved'
+                                   ]);
    
 
     $diskonItem=round($request->diskon2*($request->harga_netto[$i]/$request->netto_detail),2);//diskon persen per item total
@@ -618,6 +622,9 @@ if(count($dataItem)==0){
               DB::rollback();
               return json_encode($dataInfo);
         }
+
+        // return $cabang;
+        // return$request->accPiutang;
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
@@ -814,6 +821,11 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_tipe'          => 'tidak tahu',
                                               'id_acc_penjualan' => $do->acc_penjualan
                                           ]);
+                    $update_do = DB::table('delivery_order')
+                                   ->where('nomor',$request->do_detail[$i])
+                                   ->update([
+                                    'status_do'=>'Approved'
+                                   ]);
 
     $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
     $request->netto_detail =str_replace(',', '.', $request->netto_detail);
@@ -1062,6 +1074,11 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_acc_penjualan' => $do->dd_acc_penjualan,
                                               'id_nomor_do_dt'   => $request->do_id[$i]
                                           ]);
+                  $update_do = DB::table('delivery_order')
+                                   ->where('nomor',$request->do_detail[$i])
+                                   ->update([
+                                    'status_do'=>'Approved'
+                                   ]);
 
                                           $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
     $request->netto_detail =str_replace(',', '.', $request->netto_detail);
@@ -1323,6 +1340,11 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_acc_penjualan' => $do->dd_acc_penjualan,
                                               'id_nomor_do_dt'   => $request->do_id[$i]
                                           ]);
+                  $update_do = DB::table('delivery_order')
+                                   ->where('nomor',$request->do_detail[$i])
+                                   ->update([
+                                    'status_do'=>'Approved'
+                                   ]);
 
     $request->netto_detail = str_replace(['Rp', '\\', '.', ' '], '', $request->netto_detail);
     $request->netto_detail =str_replace(',', '.', $request->netto_detail);
@@ -1471,10 +1493,39 @@ public function cari_do_edit_invoice(request $request)
 public function hapus_invoice(request $request)
 {
   return DB::transaction(function() use ($request) {  
+
+    $cari = DB::table('invoice')
+               ->join('invoice_d','id_nomor_invoice','=','i_nomor')
+               ->where('i_nomor',$request->id)
+               ->get();
+    $temp = [];
+    for ($i=0; $i < count($cari); $i++) { 
+      $update_do = DB::table('delivery_order')
+                 ->where('nomor',$cari[$i]->id_nomor_do)
+                 ->update([
+                  'status_do'=>'Released'
+                 ]);
+      $temp[$i] = $cari[$i]->id_nomor_do;
+    }
+    
+
     $hapus = DB::table('invoice')
                ->where('i_nomor',$request->id)
                ->delete();
 
+    for ($i=0; $i < $temp; $i++) { 
+      $cari_do = DB::table('invoice_d')
+                   ->where('id_nomor_do',$temp[$i])
+                   ->first();
+      if ($cari_do != null) {
+        $update_do = DB::table('delivery_order')
+                 ->where('nomor',$temp[$i])
+                 ->update([
+                  'status_do'=>'Approved'
+                 ]);
+      }
+    }
+    
 
     $jurnal=d_jurnal::where('jr_ref', $request->id)->where('jr_note','INVOICE');
         if(count($jurnal->first())!=0){

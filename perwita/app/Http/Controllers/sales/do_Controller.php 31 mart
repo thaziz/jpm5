@@ -867,19 +867,14 @@ class do_Controller extends Controller
 
             if (count($data) > 0) {
                 $harga = collect(\DB::select($sql))->first();
-                if ($biaya_penerus == null) {
-                	$result['biaya_penerus'] = 0;
-                	$result['jumlah_data'] = 0;
-                } else {
-                	$result['biaya_penerus'] = $biaya_penerus->harga;
-                	$result['jumlah_data'] = count($biaya_penerus);
-                }
+                $result['biaya_penerus'] = $biaya_penerus->harga;
                 $result['harga'] = $harga->harga;
+                $result['jumlah_data'] = count($biaya_penerus);
                 $result['acc_penjualan'] = $data[0]->acc_penjualan;
                 return response()->json([
-                    'biaya_penerus' => $result['biaya_penerus'],
+                    'biaya_penerus' => $biaya_penerus->harga,
                     'harga' => $harga->harga,
-                    'jumlah_data' => $result['jumlah_data'],
+                    'jumlah_data' => count($biaya_penerus),
                     'acc_penjualan' => $data[0]->acc_penjualan
                 ]);
             }
@@ -1061,12 +1056,10 @@ class do_Controller extends Controller
 
                     if (count($biaya_penerus) < 1){
                         $biaya_penerus = 0;
-                    } else {
-                    	$biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                     }
                 }
                 return response()->json([
-                    'biaya_penerus' => $biaya_penerus,
+                    'biaya_penerus' => $biaya_penerus[0]->tarif_penerus,
                     'harga' => $tarif[0]->harga,
                     'acc_penjualan' => $tarif[0]->acc_penjualan
                 ]);
@@ -1185,12 +1178,10 @@ class do_Controller extends Controller
 
                     if (count($biaya_penerus) < 1){
                         $biaya_penerus = 0;
-                    } else {
-                    	$biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                     }
                 }
                 return response()->json([
-                    'biaya_penerus' => $biaya_penerus,
+                    'biaya_penerus' => $biaya_penerus[0]->tarif_penerus,
                     'harga' => $tarif[0]->harga,
                     'acc_penjualan' => $tarif[0]->acc_penjualan
                 ]);
@@ -1361,9 +1352,6 @@ class do_Controller extends Controller
                         ]);
                     }
                 }
-            }
-            if ($biaya_penerus == null) {
-            	$biaya_penerus = 0;
             }
             return response()->json([
                 'biaya_penerus' => $biaya_penerus,

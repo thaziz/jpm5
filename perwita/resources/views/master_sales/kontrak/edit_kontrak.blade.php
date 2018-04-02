@@ -60,13 +60,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3">
-                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
-                                    <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
-                                </td>
-                            </tr>
+                            
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">
@@ -80,6 +74,13 @@
                                       @endif
                                       @endforeach
                                     </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
+                                    <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
                                 </td>
                             </tr>
                             <tr>
@@ -388,7 +389,7 @@ $('#btnadd').click(function(){
     var validasi                 = [];
 
 
-    if (id_subcon != 0) {
+    if (customer != 0) {
         validasi.push(1);
     }else{
         validasi.push(0);
@@ -546,6 +547,7 @@ var id = $(par).find('.id_table').val();
 
 $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();
+    var customer= $('#customer').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Update Data Kontrak!",
@@ -565,8 +567,8 @@ $('#btnsimpan').click(function(){
 
       $.ajax({
       url:baseUrl + '/master_sales/update_kontrak',
-      type:'post',
-      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang,
+      type:'get',
+      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
       success:function(response){
         swal({
         title: "Berhasil!",

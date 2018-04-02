@@ -1,4 +1,4 @@
- @extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 
@@ -28,7 +28,7 @@
                     <h5> Delivery Order Kargo
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/deliveryorderkargo" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../deliveryorderkargo" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -38,10 +38,12 @@
                 </div><!-- /.box-header -->
                         <div class="col-sm-12">
                             <form class="col-sm-6"> 
-                                <table class="table table-bordered tabel_header table-striped"> 
+                                <table class="table table-bordered tabel_header table-striped disabled"> 
                                     <tr>
                                         <td style="width: 150px;">Nomor</td>
-                                        <td><input type="text" name="nomor_do" class="nomor_do form-control input-sm"></td>
+                                        <td>
+                                            <input type="text" name="nomor_do" value="{{$data->nomor}}" class="nomor_do form-control input-sm">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Tanggal</td>
@@ -65,7 +67,7 @@
                                             <input type="hidden" name="nomor_print" class="nomor_print form-control input-sm">
                                         </td>
                                     </tr>
-                                    <tr>
+                                    <tr class="disabled">
                                         <td>Cabang</td>
                                         <td>
 
@@ -95,13 +97,13 @@
                                     </tr>
                                     <tr>
                                         <td>Customer</td>
-                                        <td class="customer_td">
-                                            <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
-                                                <option value="0">Pilih - Customer</option>
+                                        <td >
+                                        
                                             @foreach($customer as $val)
-                                                <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
+                                                @if($data->kode_customer == $val->kode)
+                                                <input type="text" readonly="" class="form-control" value="{{$val->nama}}">
+                                                @endif
                                             @endforeach
-                                            </select>
                                         </td>
                                     </tr>
                                     <tr>
@@ -110,7 +112,11 @@
                                             <select onchange="reseting()" name="asal_do" class="form-control asal_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Asal</option>
                                             @foreach($kota as $val)
+                                                @if($data->id_kota_asal == $val->id)
+                                                <option selected="" value="{{$val->id}}">{{$val->id}}-{{$val->nama}}</option>
+                                                @else
                                                 <option value="{{$val->id}}">{{$val->id}}-{{$val->nama}}</option>
+                                                @endif
                                             @endforeach
                                             </select>
                                         </td>
@@ -121,7 +127,11 @@
                                             <select onchange="reseting()" name="tujuan_do" class="form-control tujuan_do chosen-select-width">
                                                 <option value="0">Pilih - Kota Tujuan</option>
                                             @foreach($kota as $val)
+                                                @if($data->id_kota_tujuan == $val->id)
+                                                <option selected="" value="{{$val->id}}">{{$val->id}}-{{$val->nama}}</option>
+                                                @else
                                                 <option value="{{$val->id}}">{{$val->id}}-{{$val->nama}}</option>
+                                                @endif
                                             @endforeach
                                             </select>
                                         </td>
@@ -131,7 +141,11 @@
                                         <td>
                                             <select name="jenis_tarif_do" onchange="cari_nopol_kargo()" class="form-control jenis_tarif_do chosen-select-width">
                                             @foreach($jenis_tarif as $val)
+                                                @if($data->jenis_tarif == $val->jt_nama_tarif)
                                                 <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                                @else
+                                                <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                                @endif
                                             @endforeach
                                             </select>
                                             <input type="hidden" class="jenis_tarif_temp">
@@ -141,8 +155,13 @@
                                         <td>Status Kendaraan</td>
                                         <td>
                                             <select name="status_kendaraan" onchange="cari_nopol_kargo()" class="form-control status_kendaraan chosen-select-width">
-                                                <option value="OWN">OWN</option>
+                                                @if($data->status_kendaraan == 'OWN')
+                                                <option selected="" value="OWN">OWN</option>
                                                 <option value="SUB">SUB</option>
+                                                @else
+                                                <option value="OWN">OWN</option>
+                                                <option selected value="SUB">SUB</option>
+                                                @endif
                                             </select>
                                         </td>
                                     </tr>
@@ -152,7 +171,11 @@
                                             <select name="nama_subcon" onchange="cari_nopol_kargo()" class="form-control nama_subcon chosen-select-width">
                                                 <option value="0">Pilih - Subcon</option>
                                                 @foreach($subcon as $i=>$val)
-                                                <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @if($data->kode_subcon == $val->kode)
+                                                <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @else
+                                                <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @endif
                                                 @endforeach
                                             </select>
                                         </td>
@@ -163,7 +186,11 @@
                                             <select name="tipe_angkutan" onchange="cari_nopol_kargo()" class="form-control tipe_angkutan chosen-select-width">
                                                 <option value="0">Pilih - Tipe Angkutan</option>
                                                 @foreach($tipe_angkutan as $val)
-                                                    <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                                @if($data->kode_tipe_angkutan == $val->kode)
+                                                <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @else
+                                                <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                @endif
                                                 @endforeach
                                             </select>
                                         </td>
@@ -171,7 +198,7 @@
                                 </table>
                             </form>
                             <form class="col-sm-6" style="margin-bottom: 80px">
-                                <table class="table table-bordered table-striped tabel_detail">
+                                <table class="table table-bordered table-striped tabel_detail disabled">
                                     <tr>
                                         <td>Nopol</td>
                                         <td class="nopol_dropdown" colspan="2">
@@ -185,29 +212,36 @@
                                     </tr>
                                     <tr>
                                         <td>Nama Subcon</td>
-                                        <td colspan="3"><input type="text" readonly="" class="nama_subcon_detail form-control input-sm"></td>
+                                        <td colspan="3">
+                                            <input type="text" readonly="" value="{{$subcon_detail->nama}}" class="nama_subcon_detail form-control input-sm">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Driver</td>
-                                        <td colspan="3"><input type="text" name="driver" class="driver form-control input-sm"></td>
+                                        <td colspan="3"><input type="text" value="{{$data->driver}}"  name="driver" class="driver form-control input-sm"></td>
                                     </tr>
                                     <tr>
                                         <td>Co Driver</td>
-                                        <td colspan="3"><input type="text" name="co_driver" class="co_driver form-control input-sm"></td>
+                                        <td colspan="3"><input type="text" value="{{$data->co_driver}}"  name="co_driver" class="co_driver form-control input-sm"></td>
                                     </tr>
                                     <tr>
                                         <td>Ritase</td>
                                         <td colspan="3">
                                             <select name="ritase" class="form-control ritase chosen-select-width input-sm">
-                                                <option value="driver">Driver</option>
+                                                @if($data->ritase =='DRIVER')
+                                                <option selected="" value="driver">Driver</option>
                                                 <option value="driver_co">Driver & Co driver</option>
+                                                @else
+                                                <option  value="driver">Driver</option>
+                                                <option selected="" value="driver_co">Driver & Co driver</option>
+                                                @endif
                                             </select>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Keterangan</td>
                                         <td colspan="3">
-                                            <input type="text" name="keterangan_detail" class="keterangan_detail form-control">
+                                            <input type="text" name="keterangan_detail" value="{{$data->keterangan_tarif}}" class="keterangan_detail form-control">
                                         </td>
                                     </tr>
                                     <tr>
@@ -219,7 +253,7 @@
                                                         <span class="input-group-addon">
                                                             <i class="fa fa-calendar"></i>
                                                         </span>
-                                                        <input type="text" class="form-control ed_awal_shuttle" name="ed_awal_shuttle" value="{{$now}}">
+                                                        <input type="text" class="form-control ed_awal_shuttle" name="ed_awal_shuttle" value="{{carbon\carbon::parse($data->awal_shutle)->format('d/m/Y')}}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
@@ -227,7 +261,7 @@
                                                         <span class="input-group-addon">
                                                             <i class="fa fa-calendar"></i>
                                                         </span>
-                                                        <input type="text" class="form-control ed_akhir_shuttle" name="ed_akhir_shuttle" value="{{$bulan_depan}}">
+                                                        <input type="text" class="form-control ed_akhir_shuttle" name="ed_akhir_shuttle" value="{{carbon\carbon::parse($data->akhir_shutle)->format('d/m/Y')}}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -236,7 +270,11 @@
                                     <tr class="kontrak_tr">
                                         <td class="kontrak_td disabled">
                                             <div class="checkbox checkbox-info checkbox-circle">
+                                                @if($data->kontrak == true)
+                                                <input checked="" onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                @else
                                                 <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                @endif
                                                 <label>
                                                     Kontrak
                                                 </label>
@@ -244,44 +282,45 @@
                                         </td>
                                         <td style="padding-bottom: 0.1cm">
                                             <span class="input-group-btn">
-                                                <button type="button" id="btn_cari_tarif" class="btn btn-primary">
+                                           {{--      <button type="button" id="btn_cari_tarif" class="btn btn-primary">
                                                     Search Tarif
-                                                </button>
+                                                </button> --}}
                                             </span>
                                         </td>
+
                                         <td style="padding-top: 0.4cm">Satuan</td>
                                         <td>
-                                            <input type="text" readonly="readonly" class="form-control satuan" name="satuan" value="">
+                                            <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
+                                        
                                     </tr>
-
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
                                         <td>
-                                            <input type="text" onkeyup="hitung()" class="form-control jumlah" name="jumlah" style="text-align:right" value="0">
-                                            <input type="hidden" readonly="readonly" class="form-control acc_penjualan" name="acc_penjualan" value="">
+                                            <input type="text" onkeyup="hitung()" class="form-control jumlah" name="jumlah" style="text-align:right" value="{{$data->jumlah}}">
+                                            <input type="hidden" readonly="readonly" value="{{$data->acc_penjualan}}" class="form-control acc_penjualan" name="acc_penjualan" value="">
                                         </td>
                                         <td>Tarif Dasar</td>
                                         <td>
-                                            <input type="text" class="form-control tarif_dasar_text" style="text-align:right" readonly="readonly" value="0">
-                                            <input type="hidden" class="form-control tarif_dasar" name="tarif_dasar" style="text-align:right" readonly="readonly" value="0">
-                                            <input type="hidden" name="harga_master" class="harga_master" >
-                                            <input type="hidden" id="kode_tarif" name="kode_tarif">
-                                            <input type="hidden" class="kcd_id" name="kcd_id">
-                                            <input type="hidden" class="kcd_dt" name="kcd_dt">
+                                            <input type="text" class="form-control tarif_dasar_text" style="text-align:right" readonly="readonly" value="{{number_format($data->total, 2, ",", ".")}}">
+                                            <input type="hidden" class="form-control tarif_dasar" name="tarif_dasar" style="text-align:right" readonly="readonly" value="{{$data->total}}">
+                                            <input type="hidden" name="harga_master" class="harga_master" value="{{$data->tarif_dasar}}" >
+                                            <input type="hidden" id="kode_tarif" name="kode_tarif" value="{{$data->kode_tarif}}">
+                                            <input type="hidden" class="kcd_id" name="kcd_id" value="{{$data->kontrak_cus}}">
+                                            <input type="hidden" class="kcd_dt" name="kcd_dt" value="{{$data->kontrak_cus_dt}}">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Discount</td>
                                         <td colspan="3">
-                                            <input type="text" onkeyup="hitung()" value="0" name="discount" class=" form-control discount input-sm">
+                                            <input type="text" onkeyup="hitung()" value="{{number_format($data->diskon, 0, ",", ".")}}" name="discount" class=" form-control discount input-sm">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Total</td>
                                         <td colspan="3">
-                                            <input type="text" readonly="" value="0" class="total_text form-control total input-sm">
-                                            <input type="hidden" readonly="" value="0" name="total" class=" form-control total input-sm">
+                                            <input type="text" readonly="" value="{{number_format($data->total_net, 2, ",", ".")}}" class="total_text form-control total input-sm">
+                                            <input type="hidden" readonly="" value="{{$data->total_net}}" name="total" class=" form-control total input-sm">
                                         </td>
                                     </tr>
                                 </table>
@@ -289,7 +328,7 @@
                         </div>
                         <div class="col-sm-12" >
                             <form class="col-sm-6">
-                                <table class="table table-bordered table-striped tabel_pengirim">
+                                <table class="table table-bordered table-striped tabel_pengirim disabled">
                                     <tr>
                                         <td align="center" colspan="2">
                                             <h3>Data Pengirim</h3>
@@ -301,7 +340,11 @@
                                             <select name="marketing" class="form-control marketing chosen-select-width">
                                                     <option value="0">Pilih - Marketing</option>
                                                 @foreach($marketing as $val)
-                                                    <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                                @if($data->kode_marketing == $val->kode)
+                                                    <option selected="" value="{{$val->kode}}">{{$val->nama}}</option>
+                                                @else
+                                                    <option  value="{{$val->kode}}">{{$val->nama}}</option>
+                                                @endif
                                                 @endforeach
                                             </select>
                                         </td>
@@ -309,51 +352,41 @@
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Company Name</td>
                                         <td>
-                                            <input type="text" name="company_pengirim" class="company_pengirim form-control">
+                                            <input type="text" name="company_pengirim" value="{{$data->company_name_pengirim}}" class="company_pengirim form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Nama</td>
                                         <td>
-                                            <input type="text" name="nama_pengirim" class="nama_pengirim form-control">
+                                            <input type="text" name="nama_pengirim" value="{{$data->nama_pengirim}}" class="nama_pengirim form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Alamat</td>
                                         <td>
-                                            <input type="text" name="alamat_pengirim" class="alamat_pengirim form-control">
+                                            <input type="text" name="alamat_pengirim" value="{{$data->alamat_pengirim}}" class="alamat_pengirim form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
                                         <td>
-                                            <input type="text" name="kode_pos_pengirim" class="kode_pos_pengirim form-control">
+                                            <input type="text" name="kode_pos_pengirim" value="{{$data->kode_pos_pengirim}}" class="kode_pos_pengirim form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Telpon</td>
                                         <td>
-                                            <input type="text" name="telpon_pengirim" class="telpon_pengirim form-control">
+                                            <input type="text" name="telpon_pengirim"  value="{{$data->telpon_pengirim}}" class="telpon_pengirim form-control">
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td colspan="2">
-                                            <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
-                                                <i class="fa fa-print"> Print</i>
-                                            </button>
-                                            <button type="button" class="pull-right btn btn-primary save">
-                                                <i class="fa fa-save"> Simpan</i>
-                                            </button>
-                                            <button type="button" class="pull-right btn btn-warning reload" style="margin-right: 30px">
-                                                <i class="fa fa-refresh"> Reload</i>
-                                            </button>
-                                            
-                                        </td>
-                                    </tr>
+                            
                                 </table>
+                                <button type="button" class="pull-right btn btn-danger ngeprint" style="margin-left: 30px">
+                                    <i class="fa fa-print"> Print</i>
+                                </button>
                             </form>
-                            <form class="col-sm-6">
-                                <table class="table table-bordered table-striped tabel_penerima">
+                            <form class="col-sm-6"> 
+                                <table class="table table-bordered table-striped tabel_penerima disabled">
                                     <tr>
                                         <td align="center" colspan="2">
                                             <h3>Data Penerima</h3>
@@ -362,49 +395,49 @@
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Company Name</td>
                                         <td>
-                                            <input type="text" name="company_" class="company_penerim form-control">
+                                            <input type="text" value="{{$data->company_name_penerima}}" name="company_" class="company_penerim form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Nama</td>
                                         <td>
-                                            <input type="text" name="nama_penerima" class="nama_penerima form-control">
+                                            <input type="text" value="{{$data->nama_penerima}}" name="nama_penerima" class="nama_penerima form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Alamat</td>
                                         <td>
-                                            <input type="text" name="alamat_penerima" class="alamat_penerima form-control">
+                                            <input type="text" value="{{$data->alamat_penerima}}" name="alamat_penerima" class="alamat_penerima form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Kab/Kota</td>
                                         <td>
-                                            <input type="text" readonly="" name="kota_penerima" class="kota_penerima form-control">
+                                            <input type="text" readonly="" value="" name="kota_penerima" class="kota_penerima form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
                                         <td>
-                                            <input type="text" name="kode_pos_penerima" class="kode_pos_penerima form-control">
+                                            <input type="text" name="kode_pos_penerima" value="{{$data->kode_pos_penerima}}" class="kode_pos_penerima form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Telpon</td>
                                         <td>
-                                            <input type="text" name="telpon_penerima" class="telpon_penerima form-control">
+                                            <input type="text" name="telpon_penerima" value="{{$data->telpon_penerima}}" class="telpon_penerima form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Deskripsi</td>
                                         <td>
-                                            <input type="text" name="deskripsi_penerima" class="deskripsi_penerima form-control">
+                                            <input type="text" name="deskripsi_penerima" value="{{$data->deskripsi}}" class="deskripsi_penerima form-control">
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="width:110px; padding-top: 0.4cm">Intruksi</td>
                                         <td>
-                                            <input type="text" name="intruksi_penerima" class="intruksi_penerima form-control">
+                                            <input type="text" name="intruksi_penerima" value="{{$data->instruksi}}" class="intruksi_penerima form-control">
                                         </td>
                                     </tr>
                                 </table>
@@ -472,19 +505,19 @@ $(document).ready(function(){
    $('.jenis_tarif_do').val(jenis_tarif_do);
    $('.jenis_tarif_temp').val(jenis_tarif_do);
    $('.discount').maskMoney({precision:0,thousands:'.'});
-   $.ajax({
-        url:baseUrl + '/sales/nota_do_kertas',
-        data:{cabang},
-        dataType:'json',
-        success:function(data){
-            $('.nomor_do').val(data.nota);
-        },
-        error:function(){
-            location.reload();
-        }
-    })
-})
+   // $.ajax({
+   //      url:baseUrl + '/sales/nomor_do_kargo',
+   //      data:{cabang},
+   //      dataType:'json',
+   //      success:function(data){
+   //          $('.nomor_do').val(data.nota);
+   //      },
+   //      error:function(){
+   //          location.reload();
+   //      }
+   //  })
 
+})
 //hide unhide subcon
 $('.status_kendaraan').change(function(){
     if ($(this).val() == 'SUB'){
@@ -549,7 +582,17 @@ function ganti_nota(argument) {
         }
     })
 
-    
+    $.ajax({
+        url:baseUrl +'/sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+        },
+        error:function(){
+            location.reload();
+        }
+    });
 }
 //nama subcon
 $('.nama_subcon').change(function(){
@@ -597,7 +640,7 @@ $('#btn_cari_tarif').click(function(){
     var cabang_select = $('.cabang_select').val(); 
     var tipe_angkutan = $('.tipe_angkutan ').val(); 
     var tipe_angkutan = $('.tipe_angkutan ').val(); 
-    var customer = $('.customer ').val(); 
+    var customer = $('.customer_do').val(); 
     $.ajax({
         url:baseUrl + '/sales/cari_kontrak_tarif',
         data:{check,asal,tujuan,jenis_tarif,cabang_select,tipe_angkutan,customer },
@@ -665,6 +708,7 @@ function pilih_tarif(a) {
         }
     })
 }
+
 //jika menggunakan kontrak
 
 function pilih_kontrak(a) {
@@ -685,18 +729,8 @@ function pilih_kontrak(a) {
             $('#kode_tarif').val(0);
             $('.acc_penjualan').val(response.data.kcd_acc_penjualan);
             $('.satuan').val(response.data.kcd_kode_satuan);
-            $('.tipe_angkutan').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
-            console.log($('.tipe_angkutan').val());
-            $('.asal_do').val(response.data.kcd_kota_asal).trigger('chosen:updated');
-            $('.tujuan_do').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
             $('.jumlah').val(1);
-            var tujuan =  $('.tujuan_do option:selected').text();
-   
-            tujuan     =  tujuan.split('-');
-            $('.kota_penerima').val(tujuan[1]);
             $('#modal_tarif').modal('hide');
-            cari_nopol_kargo();
-            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
             hitung();
 
         },
@@ -711,7 +745,6 @@ function pilih_kontrak(a) {
 
 $('.save').click(function(){
    var cabang = $('.cabang_select').val();
-   var customer = $('.customer').val();
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Delivery Order!",
@@ -730,15 +763,14 @@ $('.save').click(function(){
         });
 
       $.ajax({
-      url:baseUrl + '/sales/save_do_kargo',
+      url:baseUrl + '/sales/update_do_kargo',
       type:'get',
       dataType:'json',
       data:$('.tabel_header :input').serialize()+'&'+
            $('.tabel_detail :input').serialize()+'&'+
            $('.tabel_penerima :input').serialize()+'&'+
            $('.tabel_pengirim :input').serialize()
-           +'&cabang='+cabang
-           +'&customer='+customer,
+           +'&cabang='+cabang,
       success:function(response){
         if (response.status == 2) {
             swal({
@@ -765,8 +797,8 @@ $('.save').click(function(){
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);
-                    // $('#seragam_box').addClass('disabled');
-                       
+                    // $('.tabel_pengirim').addClass('disabled');
+                    // $('.tabel_penerima').addClass('disabled');
             });
         }else{
             swal({
@@ -797,7 +829,7 @@ $('.reload').click(function(){
 // cari kontrak
 function cari_kontrak() {
     var cabang      = $('.cabang_select').val();
-    var customer_do = $('.customer').val();
+    var customer_do = $('.customer_do').val();
      $.ajax({
         url:baseUrl + '/sales/cari_kontrak',
         data:{cabang,customer_do},
@@ -845,9 +877,60 @@ function reseting() {
 
 // ngeprint
 $('.ngeprint').click(function(){
-    var print = $('.nomor_print').val();
+    var print = $('.nomor_do').val();
 
     window.open('{{ url('sales/deliveryorderkargoform')}}'+'/'+print+'/nota');
 })
+
+$(document).ready(function(){
+cari_nopol_kargo();
+
+ var tujuan =  $('.tujuan_do option:selected').text();
+   
+
+   tujuan     =  tujuan.split('-');
+   $('.kota_penerima').val(tujuan[1]);
+});
+
+// cari kontrak
+function pilih_kontrak(a) {
+    var kcd_id = $(a).find('.kcd_id').val();
+    var kcd_dt = $(a).find('.kcd_dt').val();
+
+    $.ajax({
+        url:baseUrl + '/sales/pilih_kontrak_kargo',
+        data:{kcd_id,kcd_dt},
+        dataType:'json',
+        success:function(response){
+            $('.satuan').val(response.data.kcd_satuan);
+            $('.tarif_dasar_text').val(accounting.formatMoney(response.data.kcd_harga,"",2,'.',','));
+            $('.tarif_dasar').val(response.data.kcd_harga);
+            $('.harga_master').val(response.data.kcd_harga);
+            $('.kcd_id').val(response.data.kcd_id);
+            $('.kcd_dt').val(response.data.kcd_dt);
+            $('#kode_tarif').val(0);
+            $('.acc_penjualan').val(response.data.kcd_acc_penjualan);
+            $('.satuan').val(response.data.kcd_kode_satuan);
+            $('.tipe_angkutan').val(response.data.kcd_kode_angkutan).trigger('chosen:updated');
+            console.log($('.tipe_angkutan').val());
+            $('.asal_do').val(response.data.kcd_kota_asal).trigger('chosen:updated');
+            $('.tujuan_do').val(response.data.kcd_kota_tujuan).trigger('chosen:updated');
+            $('.jumlah').val(1);
+            var tujuan =  $('.tujuan_do option:selected').text();
+   
+            tujuan     =  tujuan.split('-');
+            $('.kota_penerima').val(tujuan[1]);
+            $('#modal_tarif').modal('hide');
+            cari_nopol_kargo();
+            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+            hitung();
+
+        },
+        error:function(){
+            toastr.warning('Terjadi Kesalahan');
+        }
+    })
+}
+
 </script>
 @endsection

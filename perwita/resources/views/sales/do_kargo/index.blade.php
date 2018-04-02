@@ -69,21 +69,39 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($do as $row)
+                            @foreach ($data as $row)
                             <tr>
-                                <td>{{ $row->nomor }}</td>
+                                <td><a href="{{ url('sales/detail_do_kargo')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
                                 <td>{{ $row->tanggal }}</td>
                                 <td>{{ $row->nama_pengirim }}</td>
                                 <td>{{ $row->nama_penerima }}</td>
-                                <td>{{ $row->asal }}</td>
-                                <td>{{ $row->tujuan }}</td>
+                                @foreach($kota as $val)
+                                    @if($val->id == $row->id_kota_tujuan)
+                                    <td>{{ $val->nama }}</td>
+                                    @endif
+                                @endforeach
+                                @foreach($kota as $val)
+                                    @if($val->id == $row->id_kota_asal)
+                                    <td>{{ $val->nama }}</td>
+                                    @endif
+                                @endforeach
                                 <td>{{ $row->status }}</td>
                                 <td>{{ $row->total }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <a href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                        <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
-                                        <a onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></a>
+                                         @if(Auth::user()->punyaAkses('Delivery Order','ubah'))
+                                            @if($row->status_do == 'Released')
+                                                <a href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                            @endif
+                                        @endif
+                                        @if(Auth::user()->punyaAkses('Delivery Order','print'))
+                                            <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
+                                        @endif
+                                        @if(Auth::user()->punyaAkses('Delivery Order','hapus'))
+                                            @if($row->status_do == 'Released')
+                                                <a onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></a>
+                                            @endif
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
