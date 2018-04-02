@@ -9,6 +9,12 @@
   .textright{
     text-align: right;
   }
+
+
+   .disabled {
+    pointer-events: none;
+    opacity: 1;
+  }
 </style>
 <form class="form-horizontal" id="voucher_hutang">
             <div class="row wrapper border-bottom white-bg page-heading">
@@ -55,6 +61,20 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                         <div class="row">
+
+                         <div class="form-group">
+                         <div class="col-sm-8 col-sm-offset-2">
+                          <label> Cabang  </label>
+                          <select class="form-control disabled" name="cabang">
+                            @foreach($cabang as $cabang)
+                            <option value="{{$cabang->kode}}" @if($semua->um_comp == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
+                            @endforeach
+                          </select> 
+                         
+                        </div>
+                        </div> 
+
+
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <input type="hidden" name="um_id" id="um_id" value="{{$semua->um_id}}">
@@ -218,16 +238,38 @@
          
             
     function simpan (){
+
       var a = $('#voucher_hutang').serialize();
       var b = $('#um_id').val();
-      $.ajax({
-        url : baseUrl + "/uangmuka/update/"+ b,
-        type:'get',
-        data: a,
-        success:function(response){
-          window.location = ('/jpm/uangmuka')
-        }
-      })
+     
+       event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Uang Muka!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false
+          },
+          function(){
+        $.ajax({
+          url :baseUrl + "/uangmuka/update/"+ b,
+          type:'get',
+          data: a,
+          
+          success : function (response){
+              alertSuccess(); 
+                window.location.href = baseUrl + "/uangmuka"; 
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
 
     }
     function change_sup (){

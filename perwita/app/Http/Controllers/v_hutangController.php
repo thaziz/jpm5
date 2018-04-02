@@ -86,6 +86,7 @@ class v_hutangController extends Controller
         $store1->v_keterangan=$request->ket;
         $store1->v_hasil=$request->total;
         $store1->v_pelunasan=$request->total;
+        $store1->vc_comp=$request->cabang;
         $store1->save();
 
        for ($i=0; $i <count($request->accountid); $i++) {
@@ -149,8 +150,10 @@ class v_hutangController extends Controller
 
        $nofp = 'VC' . $month . $year . '/' . 'C001' . '/' .  $maxid;
 
+       $cabang = DB::select("select * from cabang");
+
       $akun = DB::select("select * from d_akun where kode_cabang = 'C001'");
-      return view('purchase/voucher_hutang/create',compact('akunselect','data','sup','nofp', 'akun'));
+      return view('purchase/voucher_hutang/create',compact('akunselect','data','sup','nofp', 'akun', 'cabang'));
     }
     public function editvoucherhutang($v_id) {
        $data1= v_hutang::findOrfail($v_id);
@@ -161,6 +164,31 @@ class v_hutangController extends Controller
       return view('purchase/voucher_hutang/edit',compact('akunselect','data1','suping','data','sup','a','b','c','d','e','f','g'));
     }
 
+
+    public function getnota(Request $request){
+      $cabang = $request->cabang;
+      
+      $vc = DB::select("select * from v_hutang where vc_comp = '$cabang' order by v_id desc limit 1");
+
+      //return $idbbk;
+      if(count($vc) > 0) {
+      
+        $explode = explode("/", $vc[0]->v_nomorbukti);
+        $idnota = $explode[2];
+      
+
+        $idnota = (int)$idnota + 1;
+        $data['idvc'] = str_pad($idnota, 3, '0', STR_PAD_LEFT);
+        
+      }
+
+      else {
+    
+        $data['idvc'] = '001';
+      }
+
+      return json_encode($data);
+  }
 
 
     public function updatevoucherhutang(Request $request,$v_id){

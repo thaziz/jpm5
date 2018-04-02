@@ -917,6 +917,7 @@ class MasterPurchaseController extends Controller
 		$mastersupplier->kontrak = $request->kontrak;
 		$mastersupplier->nama_cp = $request->nm_cp;
 		$mastersupplier->acc_hutang = $request->acc_hutangdagang;
+		$mastersupplier->acc_csf = $request->acc_csf;
 		$mastersupplier->active = $statusactive;
 		if($request->kontrak == 'YA') {
 			$mastersupplier->no_kontrak = strtoupper($request->nokontrak);
