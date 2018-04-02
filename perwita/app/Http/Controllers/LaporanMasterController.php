@@ -338,6 +338,45 @@ class LaporanMasterController extends Controller
 	}
 // END OF DELIVERY ORDER LAPORAN KARGO(DO)
 
+	//START DELIVERY ORDER LAPORAN KORAN(DO)
+
+	public function deliveryorder_koran(){
+		// return 'a';
+		return $data =DB::table('delivery_order as do')
+						->select('do.*','dk.*')
+						->join('delivery_orderd as dk','do.nomor','=','dk.dd_nomor')
+						->get();
+		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+		return view('purchase/master/master_penjualan/laporan/lap_deliveryorder_kargo',compact('data','kota','kota1','ket'));
+	}
+	public function reportdeliveryorder_koran(Request $request){
+		// return 'a';
+		$data = $request->a;	
+   		// dd($data[0]);
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat); $i++) { 
+		
+		$dat1[$i] = DB::table('delivery_order as do')
+						->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+						->join('kota as ka','do.id_kota_asal','=','ka.id')
+						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->where('nomor','=',$dat[$i])
+						->get();
+			}
+        // dd($dat1);
+		return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_koran',compact('dat1'));
+		
+	}
+// END OF DELIVERY ORDER LAPORAN KORAN(DO)
 
    }
 ?>
