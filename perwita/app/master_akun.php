@@ -44,12 +44,18 @@ class master_akun extends Model
                   <td class="text-center dka">'.$dka.'</td>
                   
                   <td class="text-center">';
-                     $saldo = ($this->cekSaldo($dataSubAkun->id_akun) == "???") ? "???" : number_format($this->cekSaldo($dataSubAkun->id_akun)->saldo_akun);
 
-                     $cek = $cek.'
-                        <span data-toggle="tooltip" data-placement="top" title="Saldo Pembukaan '.$dataSubAkun->nama_akun.' Bulan Ini Rp. '.$saldo.'">
+                     if($this->cekSaldo($dataSubAkun->id_akun)->saldo_akun != null){
+                         $cek = $cek.'
+                           <span data-toggle="tooltip" data-placement="top" title="Saldo Pembukaan '.$dataSubAkun->nama_akun.' Bulan Ini Rp. '.number_format($this->cekSaldo($dataSubAkun->id_akun)->saldo_akun).'">
                               <button class="btn btn-xs btn-default"><i class="fa fa-exclamation fa-fw"></i></button>
-                        </span>';
+                           </span>';
+                     }else{
+                        $cek = $cek.'
+                           <span data-toggle="tooltip" data-placement="top" title="Tambahkan Akun Di '.$dataSubAkun->nama_akun.'">
+                              <button data-parrent="'.$dataSubAkun->id_akun.'" data-toggle="modal" data-target="#modal_tambah_akun" class="btn btn-xs btn-primary tambahAkun"><i class="fa fa-folder-open fa-fw"></i></button>
+                           </span>';
+                     }
 
 
             $cek = $cek.'<span data-toggle="tooltip" data-placement="top" title="Edit Akun '.$dataSubAkun->nama_akun.'">

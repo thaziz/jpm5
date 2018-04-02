@@ -20,7 +20,7 @@ class akun_Controller extends Controller
         if(cek_periode() == 0)
             return view("keuangan.err.err_periode");
 
-        $data = master_akun::whereNull("id_parrent")->get();
+        $data = master_akun::whereNull("id_parrent")->orderBy("id_akun")->get();
         //return json_encode($data);
         return view("keuangan.master_akun.index")->withData($data);
         //return $data;
