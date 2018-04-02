@@ -767,6 +767,7 @@ Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
 Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
 Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
 
+
 Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
@@ -775,6 +776,8 @@ Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_Controller@ha
 Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller@form_update_status');
 Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
 Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
+
+
 
 //end delivery order
 

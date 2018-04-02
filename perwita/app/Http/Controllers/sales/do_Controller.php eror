@@ -852,11 +852,11 @@ class do_Controller extends Controller
             $data = collect(DB::select($sql));
 
             if ($jenis == 'EXPRESS'){
-                $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_express WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
+                $sql_biaya_penerus = "SELECT tarif_express as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             } else if ($jenis == 'REGULER'){
 
-                $sql_biaya_penerus = "SELECT harga_zona as harga FROM tarif_penerus_dokumen join zona on id_zona = tarif_reguler WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
+                $sql_biaya_penerus = "SELECT tarif_reguler as harga FROM tarif_penerus_dokumen WHERE type='$tipe' and id_kota='$tujuan' and id_kecamatan='$kecamatan'";
                 $biaya_penerus = collect(DB::select($sql_biaya_penerus))->first();
             }
 
