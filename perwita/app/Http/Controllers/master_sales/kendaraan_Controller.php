@@ -77,6 +77,7 @@ class kendaraan_Controller extends Controller
                 'tgl_perolehan' => strtoupper($request->ed_tgl_perolehan),
                 'keterangan' => strtoupper($request->ed_keterangan),
                 'kode_cabang' => strtoupper($request->cb_cabang),
+                'kode_subcon' => strtoupper($request->cb_subcon),
             );
         
         if ($crud == 'N') {
@@ -114,7 +115,7 @@ class kendaraan_Controller extends Controller
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
-        $subcon =DB::select("SELECT kode,nama FROM tipe_angkutan");
+        $subcon =DB::select("SELECT kode,nama FROM subcon");
         if ($id != null) {
             $data = DB::table('kendaraan')->where('id', $id)->first();
         }else{

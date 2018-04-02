@@ -815,7 +815,7 @@ Route::get('sales/deliveryorderkargoform/{nomor}/hapus_data', 'sales\do_kargo_Co
 Route::post('sales/deliveryorderkargoform/hapus_data_detail', 'sales\do_kargo_Controller@hapus_data_detail');
 Route::get('sales/deliveryorderkargoform/{nomor}/update_status', 'sales\do_kargo_Controller@form_update_status');
 Route::post('sales/deliveryorderkargoform/save_update_status', 'sales\do_kargo_Controller@save_update_status');
-Route::get('sales/deliveryorderkargoform/{nomor}/nota', 'sales\do_kargo_Controller@cetak_nota');
+Route::get('sales/deliveryorderkargoform/nota/{nomor}', 'sales\do_kargo_Controller@cetak_nota');
 
 //end delivery order kargo
 

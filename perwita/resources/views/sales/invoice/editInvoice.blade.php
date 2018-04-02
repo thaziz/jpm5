@@ -159,7 +159,6 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan_btn" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
-                            <button type="button" onclick="ngeprint()" class="btn btn-warning print " ><i class="glyphicon glyphicon-print"></i> Print</button>
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
@@ -830,7 +829,9 @@ function hitung_pajak_lain(){
                     /////////////////////////////////////
                 }
 
-                $('#modal_do').modal('hide');                   
+                $('#modal_do').modal('hide');  
+                toastr.info('Tekan simpan untuk menyimpan semua data');
+
             },
             error:function(){
                 $('#modal_do').modal('hide');                   
@@ -936,6 +937,7 @@ function hitung_pajak_lain(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
+                        window.location="../invoice"
                 });
              }
           },
@@ -974,6 +976,18 @@ function hitung_pajak_lain(){
 
     $('.reload').click(function(){
     location.reload();
+})
+
+    $('#cb_pendapatan').change(function(){
+    if ($(this).val() == 'KARGO') {
+        $('#cb_jenis_ppn').val(1);
+    }
+    if ($(this).val() == 'PAKET') {
+        $('#cb_jenis_ppn').val(3);
+    }
+    if ($(this).val() == 'KORAN') {
+        $('#cb_jenis_ppn').val(1);
+    }
 })
 </script>
 @endsection

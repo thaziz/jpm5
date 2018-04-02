@@ -1,8 +1,4 @@
-<select class="form-control akun_biaya chosen-select-width1">
-    @foreach($akun as $val)
-    <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
-    @endforeach
-</select>
+
 
 <script>
 var config2 = {

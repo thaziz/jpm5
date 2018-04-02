@@ -91,15 +91,15 @@
                                     <div class="btn-group">
                                          @if(Auth::user()->punyaAkses('Delivery Order','ubah'))
                                             @if($row->status_do == 'Released')
-                                                <a href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                                <a type="button" href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
                                             @endif
                                         @endif
                                         @if(Auth::user()->punyaAkses('Delivery Order','print'))
-                                            <a href="{{ url('sales/deliveryorderkargoform/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
+                                            <button type="button" onclick="print('{{$row->nomor}}')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>
                                         @endif
                                         @if(Auth::user()->punyaAkses('Delivery Order','hapus'))
                                             @if($row->status_do == 'Released')
-                                                <a onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></a>
+                                                <button type="button" onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>
                                             @endif
                                         @endif
                                     </div>
@@ -179,7 +179,9 @@
     }
 
 
-
+    function print(id) {
+        window.open("{{url('sales/deliveryorderkargoform/nota')}}"+'/'+id);
+    }
 
     function hapus(id){
     var nomor_do = id;

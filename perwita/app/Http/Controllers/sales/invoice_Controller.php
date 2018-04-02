@@ -55,10 +55,18 @@ class invoice_Controller extends Controller
 
 
     public function index(){
-      $comp = Auth::user()->kode_cabang;
-        $data = DB::table('invoice')
-                  ->join('customer','i_kode_customer','=','kode')
-                  ->where('i_kode_cabang',$comp)
+     $cabang = auth::user()->kode_cabang;
+        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+            $data = DB::table('invoice')
+                      ->join('customer','kode','=','i_kode_customer')
+                      ->get();
+        }else{
+            $data = DB::table('invoice')
+                      ->join('customer','kode','=','i_kode_customer')
+                      ->where('i_kode_cabang',$cabang)
+                      ->get();
+        }
+        $kota = DB::table('kota')
                   ->get();
         return view('sales.invoice.index',compact('data'));
     }
@@ -99,9 +107,19 @@ class invoice_Controller extends Controller
           $push = [];
         }
 
+        $update_status = DB::table('invoice')
+                           ->where('i_nomor',$id)
+                           ->update([
+                            'i_statusprint'=>'Printed'
+                           ]);
+
         // return $push;
         $terbilang = $this->penyebut($head->i_total_tagihan);
-        return view('sales.invoice.print',compact('head','detail','terbilang','push'));
+        if ($head->i_pendapatan == 'PAKET') {
+          return view('sales.invoice.print',compact('head','detail','terbilang','push'));
+        }else{
+          return view('sales.invoice.print_1',compact('head','detail','terbilang','push'));
+        }
     }
 
     public function penyebut($nilai=null) {
@@ -405,7 +423,7 @@ public function simpan_invoice(request $request)
         $delete->delete();
     }
     $dataItem=[];
-    $cabang=Auth::user()->kode_cabang;
+    $cabang=$request->cb_cabang;
     $do_awal        = str_replace('/', '-', $request->do_awal);
     $do_akhir       = str_replace('/', '-', $request->do_akhir);
     $ed_jatuh_tempo = str_replace('/', '-', $request->ed_jatuh_tempo);
@@ -489,8 +507,9 @@ public function simpan_invoice(request $request)
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
-                                          'i_kode_cabang'        =>  Auth::user()->kode_cabang,
+                                          'i_kode_cabang'        =>  $cabang,
                                           'create_by'            =>  Auth::user()->m_name,
+                                          'i_statusprint'        =>  'Released',
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
                                           'update_at'            =>  Carbon::now(),
@@ -602,12 +621,14 @@ if(count($dataItem)==0){
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
                   ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
-                  ->first();                   
+                  ->first();       
+
         if(count($acc)!=0){
         $akun[$indexakun]['id_akun']=$acc->id_akun;
         $akun[$indexakun]['value']=round($dataJurnal['totalInvoice'],2);
         $akun[$indexakun]['dk']='K';
-        $indexakun++;              
+        $indexakun++;   
+
         }
         else{
             $dataInfo=['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Belum Tersedia'];
@@ -768,6 +789,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_diskon1'            =>  $diskon1,
                                           'i_status'             =>  'Released',
                                           'i_diskon2'            =>  $diskon2,
+                                          'i_statusprint'        =>  'Released',
                                           'i_netto'              =>  $ed_total,
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
@@ -777,7 +799,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
-                                          'i_kode_cabang'        =>  Auth::user()->kode_cabang,
+                                          'i_kode_cabang'        =>  $cabang,
                                           'create_by'            =>  Auth::user()->m_name,
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
@@ -892,7 +914,7 @@ if(count($dataItem)==0){
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
-                  // ->where('kode_cabang',$cabang)
+                  ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                    
 
@@ -1025,11 +1047,12 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_ppntpe'             =>  $ppn_type,
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_ppnrp'              =>  $total_ppn,
+                                          'i_statusprint'        =>  'Released',
                                           'i_kode_pajak'         =>  $request->pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
-                                          'i_kode_cabang'        =>  Auth::user()->kode_cabang,
+                                          'i_kode_cabang'        =>  $cabang,
                                           'create_by'            =>  Auth::user()->m_name,
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
@@ -1121,6 +1144,8 @@ if(count($dataItem)==0){
               DB::rollback();
               return json_encode($dataInfo);
         }
+
+        return $dataJurnal['acc_penjualan'];
        $acc=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
@@ -1149,7 +1174,7 @@ if(count($dataItem)==0){
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
-                  // ->where('kode_cabang',$cabang)
+                  ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                    
 
@@ -1288,13 +1313,14 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_netto'              =>  $ed_total,
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
+                                          'i_statusprint'        =>  'Released',
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_ppnrp'              =>  $total_ppn,
                                           'i_kode_pajak'         =>  $request->pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
-                                          'i_kode_cabang'        =>  Auth::user()->kode_cabang,
+                                          'i_kode_cabang'        =>  $cabang,
                                           'create_by'            =>  Auth::user()->m_name,
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
