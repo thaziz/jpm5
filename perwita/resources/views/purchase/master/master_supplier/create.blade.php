@@ -384,7 +384,7 @@
       kontrak = $('.kontrak').val();
       if(kontrak == 'YA'){
               if(tr == 0){
-        toastr.info('jenis Supplier adalah Tidak Kontrak, Mohon Tambah Data Barang :) ');
+        toastr.info('jenis Supplier adalah  Kontrak, Mohon Tambah Data Barang :) ');
         return false;
       }        
       }
