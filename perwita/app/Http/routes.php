@@ -1176,6 +1176,21 @@ Route::get('master_keuangan/neraca/excel/{throtle}', [
 //endneraca
 
 
+// periode_keuangan
+  
+  Route::post('master_keuangan/periode_keuangan/tambah', [
+    'uses' => 'master_keuangan\periode_keuangan_controller@make',
+    'as'   => 'periode_keuangan.tambah'
+  ]);
+
+  Route::post('master_keuangan/periode_keuangan/setting', [
+    'uses' => 'master_keuangan\periode_keuangan_controller@setting',
+    'as'   => 'periode_keuangan.setting'
+  ]);
+
+// end
+
+
 // neraca saldo
 Route::get('master_keuangan/neraca-saldo/{throtle}', [
   'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
