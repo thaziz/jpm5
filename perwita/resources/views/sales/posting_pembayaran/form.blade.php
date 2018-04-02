@@ -82,20 +82,37 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr class="disabled">
+                             @if(Auth::user()->punyaAkses('Posting Penjualan','cabang'))
+                            <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td>
-                                    <select class="form-control cabang chosen-select-width" name="cb_cabang" >
-                                    @foreach ($cabang as $row)
-                                        @if(Auth::user()->kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                        @else
+                                <td colspan="4">
+                                        <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                        @foreach ($cabang as $row)
+                                            @if(Auth::user()->kode_cabang == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
+                                            @else
                                             <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
-                                        @endif
-                                    @endforeach
-                                    </select>
+                                            @endif
+                                        @endforeach
+                                        </select>
                                 </td>
                             </tr>
+                            @else
+                            <tr class="disabled">
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td colspan="4">
+                                        <select class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                        @foreach ($cabang as $row)
+                                            @if(Auth::user()->kode_cabang == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            @else
+                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            @endif
+                                        @endforeach
+                                        </select>
+                                </td>
+                            </tr>
+                            @endif
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Customer</td>
                                 <td>
