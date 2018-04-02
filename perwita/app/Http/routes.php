@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> parent of 4875ce0... asdsd
+
 <?php
 
 /*
@@ -49,10 +46,7 @@ Route::get('purchase/suratpermintaanpembelian', function(){
         return view('purchase.spp.index');
 });
 
-<<<<<<< HEAD
-=======
 Route::get('cabang/{cabang}', 'cabangController@cabang');
->>>>>>> parent of 4875ce0... asdsd
 //********SETTING********
 //pengguna
 Route::get('setting/pengguna', 'setting\pengguna_Controller@index');
@@ -313,10 +307,8 @@ Route::get('voucherhutang/editvoucherhutang/{v_id}', 'v_hutangController@editvou
 Route::get('voucherhutang/updatevoucherhutang/{v_id}', 'v_hutangController@updatevoucherhutang');
 Route::get('voucherhutang/hapusvoucherhutang/{v_id}', 'v_hutangController@hapusvoucherhutang');
 Route::get('voucherhutang/print_voucherhutang/{v_id}', 'v_hutangController@cetakvoucherhutang');
-<<<<<<< HEAD
 Route::get('voucherhutang/getnota', 'v_hutangController@getnota');
-=======
->>>>>>> parent of 4875ce0... asdsd
+
 
 
 Route::get('returnpembelian/returnpembelian', 'PurchaseController@returnpembelian');
@@ -375,7 +367,6 @@ Route::post('formfpg/deletedetailformfpg', 'PurchaseController@deletedetailformf
 Route::post('formfpg/deletedetailbankformfpg', 'PurchaseController@deletedetailbankformfpg');
 Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
 Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
-<<<<<<< HEAD
 
 
   /*
@@ -2028,10 +2019,8 @@ Route::get('master-transaksi/set-kota/{id_provinsi}', 'd_trans\master_transaksiC
   Route::Get('uangmuka/hapusuangmuka/{um_id}','uangmukaController@hapus');
   Route::get('uangmuka/edituangmuka/{um_id}','uangmukaController@edit');
      Route::get('uangmuka/print_uangmuka/{um_id}','uangmukaController@cetak');
-<<<<<<< HEAD
      Route::get('uangmuka/getnota','uangmukaController@getnota');
-=======
->>>>>>> parent of 4875ce0... asdsd
+
   //End of uangmuka
 
 
@@ -2238,9 +2227,7 @@ Route::get('master_sales/group_customer','master_sales\grup_customer_Controller@
 Route::get('master_sales/group_customer/tabel','master_sales\grup_customer_Controller@table_data');
 Route::get('master_sales/group_customer/get_data','master_sales\grup_customer_Controller@get_data');
 Route::get('master_sales/group_customer/save_data','master_sales\grup_customer_Controller@save_data');
-<<<<<<< HEAD
 Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');
-// =======
   // End Desain Laba Rugi
 
   // penerimaan
@@ -2664,6 +2651,4 @@ Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_
   Route::get('master_sales/group_customer/get_data','master_sales\grup_customer_Controller@get_data');
   Route::get('master_sales/group_customer/save_data','master_sales\grup_customer_Controller@save_data');
   Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');
-=======
 Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');
->>>>>>> parent of 4875ce0... asdsd
