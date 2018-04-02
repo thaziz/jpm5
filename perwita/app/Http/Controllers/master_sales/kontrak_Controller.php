@@ -87,14 +87,14 @@ class kontrak_Controller extends Controller
     public function set_kode_akun_acc(request $request)
     {   
        $data = DB::table('d_akun')
-                 ->where('kode_cabang',$request->cabang)
+                 // ->where('kode_cabang',$request->cabang)
                  ->get();
        return view('master_sales.kontrak.acc_drop',compact('data'));
     }
      public function set_kode_akun_csf(request $request)
     {
        $data = DB::table('d_akun')
-                 ->where('kode_cabang',$request->cabang)
+                 // ->where('kode_cabang',$request->cabang)
                  ->get();
        return view('master_sales.kontrak.csf_drop',compact('data'));
     }

@@ -628,7 +628,7 @@ if(count($dataItem)==0){
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                    
 
@@ -892,7 +892,7 @@ if(count($dataItem)==0){
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                    
 
@@ -1149,7 +1149,7 @@ if(count($dataItem)==0){
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                    
 
