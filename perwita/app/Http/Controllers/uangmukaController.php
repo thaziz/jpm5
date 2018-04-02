@@ -63,7 +63,7 @@ class uangmukaController extends Controller
 }
 
 	public function index(){
-		$data = DB::table('d_uangmuka')
+		$data = DB::table('d_uangmuka')->orderBy('um_id', 'DESC')
 				->get();
 		return view('uangmuka.index',compact('data'));
 	}
@@ -72,7 +72,7 @@ class uangmukaController extends Controller
 		$utama = $request->an;
 		
 		if ($utama == 'supplier') {
-			$data = DB::table('supplier')->select('no_supplier','nama_supplier')->get();
+			$data = DB::table('supplier')->select('no_supplier','nama_supplier')->where([['status' , '=' , 'SETUJU'],['active' , '=', 'AKTIF']])->get();
 			$supli = 'supplier';
 		}
 		elseif ($utama == 'agen') {
@@ -123,7 +123,7 @@ class uangmukaController extends Controller
 
 	    $sup = $request->suppliering;
 
-		$lel = DB::table('supplier')->select('no_supplier','nama_supplier')->get();
+		$lel = DB::table('supplier')->select('no_supplier','nama_supplier')->where([['status' , '=' , 'SETUJU'],['active' , '=', 'AKTIF']])->get();
 		return view('uangmuka.create',compact('data','no_bukti', 'cabang'));
 	}
 	public function store(Request $request){
@@ -151,7 +151,8 @@ class uangmukaController extends Controller
 	$simpan->um_sisapelunasan=$request->jumlah;
 	$simpan->save();
 
-	return redirect('uangmuka');
+	return json_encode('sukses');
+
 	}
 	public function edit($um_id){
 
@@ -160,11 +161,11 @@ class uangmukaController extends Controller
 		$a = DB::table('supplier')->Select('no_supplier','nama_supplier');	
 		$b = DB::table('agen')->select('kode','nama');
 		$c = DB::table('subcon')->select('kode','nama');
-
+		$cabang = DB::select("select * from cabang");
 		$data = $a->union($b)->union($c)->get();
 
 
-		return view('uangmuka.edit',compact('data','semua','selectop'));
+		return view('uangmuka.edit',compact('data','semua','selectop','cabang'));
 	}
 	public function hapus ($um_id){
 		DB::table('d_uangmuka')->where('um_id',$um_id)->delete();
@@ -218,6 +219,8 @@ class uangmukaController extends Controller
 			$g = $value->um_jumlah;
 		}
 		$terbilang = $this->terbilang($g,$style=3);
-		return view('uangmuka.print_uangmuka',compact('data','a','b','c1','c2','c3','c4','d','e','f','g','h','i','j','k','l','terbilang'));
+		/*return view('uangmuka.print_uangmuka',compact('data','a','b','c1','c2','c3','c4','d','e','f','g','h','i','j','k','l','terbilang'));*/
+
+		return json_encode('sukses');
 	}
 }

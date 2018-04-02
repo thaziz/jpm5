@@ -9,6 +9,11 @@
   .textright{
     text-align: right;
   }
+
+   .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
 </style>
 <form class="form-horizontal" id="voucher_hutang">
             <div class="row wrapper border-bottom white-bg page-heading">
@@ -58,13 +63,13 @@
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label> Cabang  </label>
-                          <select class="form-control" disabled="">
+                          <select class="form-control disabled" name="cabang">
                             @foreach($cabang as $cabang)
                             <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
                             @endforeach
                           </select> 
 
-                          <input type="hidden" class="valcabang" name="cabang">
+                         
                         </div>
                         </div> 
 
@@ -198,14 +203,35 @@
             
     function simpan (){
       var a = $('#voucher_hutang').serialize();
-      $.ajax({
-        url : baseUrl + "/uangmuka/store",
-        type:'get',
-        data: a,
-        success:function(response){
-          window.location = ('/jpm/uangmuka')
-        }
-      })
+
+       event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Uang Muka!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false
+          },
+          function(){
+        $.ajax({
+          url : baseUrl + "/uangmuka/store",
+          type:'get',
+          data: a,
+          
+          success : function (response){
+              alertSuccess(); 
+                window.location.href = baseUrl + "/uangmuka"; 
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
 
     }
 
