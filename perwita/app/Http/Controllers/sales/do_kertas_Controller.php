@@ -16,13 +16,11 @@ class do_kertas_Controller extends Controller
         $cabang = auth::user()->kode_cabang;
         if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
             $data = DB::table('delivery_order')
-                      ->join('delivery_orderd','dd_nomor','=','nomor')
                       ->join('customer','kode','=','kode_customer')
                       ->where('jenis','KORAN')
                       ->get();
         }else{
             $data = DB::table('delivery_order')
-                      ->join('delivery_orderd','dd_nomor','=','nomor')
                       ->join('customer','kode','=','kode_customer')
                       ->where('jenis','KORAN')
                       ->where('kode_cabang',$cabang)
