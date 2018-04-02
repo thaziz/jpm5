@@ -542,6 +542,10 @@ Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@re
 Route::post('reportdeliveryorder/reportdeliveryorder','LaporanMasterController@reportdeliveryorder');
 Route::get('sales/laporandeliveryorder','LaporanMasterController@deliveryorder');
 //END OF DELIVERY ORDER PAKET
+//LAPORAN DELIVERY ORDER KORAN 
+Route::post('reportdeliveryorder/reportdeliveryorder_koran','LaporanMasterController@reportdeliveryorder_koran');
+Route::get('sales/laporandeliveryorder_koran','LaporanMasterController@deliveryorder_koran');
+//END OF DELIVERY ORDER KORAN
 //LAPORAN DELIVERY ORDER KARGO 
 Route::post('reportdeliveryorder/reportdeliveryorder_kargo','LaporanMasterController@reportdeliveryorder_kargo');
 Route::get('sales/laporandeliveryorder_kargo','LaporanMasterController@deliveryorder_kargo');
