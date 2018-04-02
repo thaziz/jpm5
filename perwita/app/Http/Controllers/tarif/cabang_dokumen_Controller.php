@@ -511,7 +511,7 @@ class cabang_dokumen_Controller extends Controller
         $hapus='';
         $asal=$request->id;
         $tujuan=$request->name;
-        $hapus = DB::table('tarif_cabang_dokumen')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->where('crud','!=','E')->delete();
+        $hapus = DB::table('tarif_cabang_dokumen')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
