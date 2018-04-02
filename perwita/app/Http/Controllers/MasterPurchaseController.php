@@ -835,6 +835,7 @@ class MasterPurchaseController extends Controller
 
 
 	public function createmastersupplier() {
+		
 		$data['cabang'] = master_cabang::all();
 		$data['kota'] = master_kota::all();
 		$data['provinsi'] = master_provinsi::all();

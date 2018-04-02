@@ -9,6 +9,11 @@
   .textright{
     text-align: right;
   }
+
+   .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
 </style>
 <form class="form-horizontal" id="voucher_hutang">
             <div class="row wrapper border-bottom white-bg page-heading">
@@ -337,7 +342,7 @@
        var h1 = $(".h").val();
 
         if(a1 == '' || a1 == null ){
-            alert('Nomor Bukti harus di isi');
+            toastr.info('Nomor Bukti harus di isi');
              $('html,body').animate({scrollTop: $('.a').offset().top}, 200, function() {
               $(".a").focus();
          });
@@ -346,21 +351,21 @@
           $(".simpan").attr('disabled',false);
         }
          if(b1 == '' || b1 == null ){
-            alert('Tanggal harus di isi');
+            toastr.info('Tanggal harus di isi');
              $('html,body').animate({scrollTop: $('.b').offset().top}, 200, function() {
               $(".b").focus();
          });
             return false;
         }
          if(c1 == '' || c1 == null ){
-            alert('Tempo harus di isi');
+            toastr.info('Tempo harus di isi');
              $('html,body').animate({scrollTop: $('.c').offset().top}, 200, function() {
               $(".c").focus();
          });
             return false;
         }
          if(d1 == '' || d1 == null ){
-            alert('Supplier harus di isi');
+            toastr.info('Supplier harus di isi');
              $('html,body').animate({scrollTop: $('.d').offset().top}, 200, function() {
               $(".d").focus();
          });
@@ -371,7 +376,7 @@
             return false;
         }*/
         if(f1 == '' || f1 == null ){
-            alert('Account Biaya harus di isi');
+            toastr.info('Account Biaya harus di isi');
              $('html,body').animate({scrollTop: $('.f').offset().top}, 200, function() {
               $(".f").focus();
          });
@@ -385,22 +390,27 @@
             return false;
         }*/
         if(h1 == '' || h1 == null ){
-            alert('nominal harus di isi');
+            toastr.info('nominal harus di isi');
              $('html,body').animate({scrollTop: $('.h').offset().top}, 200, function() {
               $(".h").focus();
          });
             return false;
         }
       var a = $('#voucher_hutang').serialize();
-      $.ajax({
-        url : baseUrl + "/voucherhutang/createvoucherhutang/store1",
-        type:'get',
-        data: a,
-        success:function(response){
-          window.location = ('/jpm/voucherhutang/voucherhutang')
-        }
-      })
 
+      
+        $.ajax({
+          url : baseUrl + '/voucherhutang/store1',
+          type:"get",
+          data: a,
+          dataType : 'json',
+          success : function (response){
+            alert(response);
+            console.log(response);
+           //   alertSuccess(); 
+              //  window.location.href = baseUrl + "/uangmuka"; 
+          }
+        })
     }
     
 

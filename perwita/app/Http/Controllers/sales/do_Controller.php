@@ -1077,7 +1077,7 @@ class do_Controller extends Controller
                 } else {
                     $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                 }
-                
+
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus,
                     'harga' => $tarif[0]->harga,
@@ -1108,12 +1108,14 @@ class do_Controller extends Controller
 
                 if ($jenis == 'EXPRESS'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_10express_koli as tarif_penerus')
+                        ->join('zona', 'id_zona', '=', 'tarif_10express_koli')
+                        ->select('harga_zona as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_10reguler_koli as tarif_penerus')
+                        ->join('zona', 'id_zona', '=', 'tarif_10reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->get();
                 }
@@ -1129,13 +1131,15 @@ class do_Controller extends Controller
 
                 if ($jenis == 'EXPRESS'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_20express_koli as tarif_penerus')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_koli')
+                        ->select('harga_zona as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_20reguler_koli as tarif_penerus')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
@@ -1152,13 +1156,15 @@ class do_Controller extends Controller
 
                 if ($jenis == 'EXPRESS'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_30express_koli as tarif_penerus')
+                        ->join('zona', 'id_zona', '=', 'tarif_30express_koli')
+                        ->select('harga_zona as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_30reguler_koli as tarif_penerus')
+                        ->join('zona', 'id_zona', '=', 'tarif_30reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
@@ -1175,13 +1181,15 @@ class do_Controller extends Controller
 
                 if ($jenis == 'EXPRESS'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_>30express_koli as tarif_penerus')
+                        ->join('zona', 'id_zona', '=', 'tarif_>30express_koli')
+                        ->select('harga_zona as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
                 } elseif ($jenis == 'REGULER'){
                     $biaya_penerus = DB::table('tarif_penerus_koli')
-                        ->select('tarif_>30reguler_koli as tarif_penerus')
+                        ->join('zona', 'id_zona', '=', 'tarif_>30reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
                         ->where('id_kota_koli', '=', $tujuan)
                         ->where('id_kecamatan_koli', '=', $kecamatan)
                         ->get();
@@ -1201,6 +1209,8 @@ class do_Controller extends Controller
                     } else {
                     	$biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                     }
+                } else {
+                    $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                 }
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus,
