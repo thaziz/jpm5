@@ -114,7 +114,7 @@ class mMemberController extends Controller {
         $use = $user->update([
             'm_lastlogout' => Carbon::now(),
         ]);
-
+        Session::flush();
         Auth::logout();
         Session::forget('key');
         return Redirect('/');

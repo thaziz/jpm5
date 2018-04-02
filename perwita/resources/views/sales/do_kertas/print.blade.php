@@ -314,9 +314,9 @@
 					<th class="textcenter bot right top"width="15%">Harga</th>
 					
 				</tr>
-				@foreach ($detail as $row)
+				@foreach ($detail as $i=> $row)
 				<tr>
-					<td class="bot right textcenter" height="25">{{$row->dd_id}}</td>
+					<td class="bot right textcenter" height="25">{{$i+1}}</td>
 					<td class="bot right textcenter">{{$row->dd_kode_item}}</td>
 					<td class="bot right textcenter">{{$row->nama}}</td>
 					<td class="bot right textcenter">{{$row->dd_keterangan}}</td>

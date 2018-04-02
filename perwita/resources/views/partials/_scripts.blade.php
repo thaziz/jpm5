@@ -176,6 +176,21 @@
     
    // setTimeout(function(){ alert("Hello"); }, 3000);
 
+   function pilihCabang(){
+    var kodeCabang=$('#kode-cabang').val();
+        $.ajax({
+                    url         : baseUrl+'/cabang/'+kodeCabang,
+                    type        : 'get',
+                    success     :function(response){                        
+                        location.reload();
+                        
+                    },
+                    error       : function(){
+                        swal("Error", "Server Sedang Mengalami Masalah", "error");
+                    }
+                });
+   }
+
 
 
 

@@ -881,6 +881,7 @@ function hitung_pajak_lain(){
 
     // SIMPAN DATA
     function simpan(){
+        var id  = "{{$id}}"
         var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
         var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
         var ed_pendapatan = $('#cb_pendapatan').val();
@@ -912,7 +913,8 @@ function hitung_pajak_lain(){
                +'&ed_pendapatan='+ed_pendapatan
                +'&ed_customer='+ed_customer
                +'&accPiutang='+accPiutang
-               +'&pajak_lain='+pajak_lain,
+               +'&pajak_lain='+pajak_lain
+               +'&id='+id,
           success:function(response){
             
 

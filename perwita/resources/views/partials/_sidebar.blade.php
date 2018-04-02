@@ -10,16 +10,14 @@
                 <div class="dropdown profile-element"> <span>
                         <img alt="image" class="img-circle" src="{{ asset('assets/img/profile_small.jpg') }}" />
                     </span>
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                        <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Ilham</strong>
-                            </span> <span class="text-muted text-xs block">Kelola Profil <b class="caret"></b></span> </span> </a>
-                    <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                    
+                    {{-- <ul class="dropdown-menu animated fadeInRight m-t-xs">
 
                         <li><a href="contacts.html">Contacts</a></li>
                         <li><a href="mailbox.html">Mailbox</a></li>
                         <li class="divider"></li>
                         <li><a href="{{ url('logout') }}">Logout</a></li>
-                    </ul>
+                    </ul> --}}
                 </div>
                 <div class="logo-element" style="background:#f3f3f4;">
                     <img src="{{ asset('assets/img/dboard/logo/sublogo.png') }}" width="30px">
