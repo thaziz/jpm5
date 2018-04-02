@@ -746,6 +746,8 @@ $('.reload').click(function(){
                    showConfirmButton: true
                     },function(){
                     toastr.warning('No invoice telah diganti menjadi ' + response.nota)
+                    $('#btnsimpan').addClass('disabled');
+                        $('#print').removeClass('disabled');
                 });
              }
 
@@ -759,7 +761,7 @@ $('.reload').click(function(){
                     },function(){
                         // location.reload();
                         $('#btnsimpan').addClass('disabled');
-                        $('.print').removeClass('disabled');
+                        $('#print').removeClass('disabled');
 
                 });
              }

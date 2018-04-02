@@ -13,13 +13,21 @@ class do_kertas_Controller extends Controller
 {
     
     public function index(){
-        $sql = "    SELECT d.nomor, d.tanggal, c.nama nama_customer, d.diskon,d.total
-                    FROM delivery_order d
-                    LEFT JOIN customer c ON c.kode=d.kode_customer
-                    WHERE d.jenis='KORAN'
-                    ORDER BY d.tanggal DESC LIMIT 1000 ";
-
-        $data =  DB::select($sql);
+        $cabang = auth::user()->kode_cabang;
+        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+            $data = DB::table('delivery_order')
+                      ->join('delivery_orderd','dd_nomor','=','nomor')
+                      ->join('customer','kode','=','kode_customer')
+                      ->where('jenis','KORAN')
+                      ->get();
+        }else{
+            $data = DB::table('delivery_order')
+                      ->join('delivery_orderd','dd_nomor','=','nomor')
+                      ->join('customer','kode','=','kode_customer')
+                      ->where('jenis','KORAN')
+                      ->where('kode_cabang',$cabang)
+                      ->get();
+        }
         return view('sales.do_kertas.index',compact('data'));
     }
 
@@ -183,7 +191,7 @@ class do_kertas_Controller extends Controller
                     $save_detail = DB::table('delivery_orderd')
                                  ->insert([
                                     'dd_id' => $id,
-                                    'dd_nomor' => $request->ed_nomor,
+                                    'dd_nomor' => $nota,
                                     'dd_nomor_dt' => $i+1,
                                     'dd_kode_item' => strtoupper($request->d_kode_item[$i]),
                                     'dd_kode_satuan' => strtoupper($request->d_satuan[$i]),
@@ -205,5 +213,12 @@ class do_kertas_Controller extends Controller
         });
 
     }
+    public function hapus_do_kertas(request $request)
+    {
+        $hapus = DB::table('delivery_order')
+                   ->where('nomor',$request->nomor_do)
+                   ->delete();
 
+        return response()->json(['status'=>1]);
+    }
 }

@@ -68,16 +68,26 @@
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td>{{ $row->nomor }}</td>
+                                <td><a href="{{ url('sales/detail_do_kertas')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
                                 <td>{{ $row->tanggal }}</td>
-                                <td>{{ $row->nama_customer }}</td>
+                                <td>{{ $row->nama }}</td>
                                 <td style="text-align:right"> {{ number_format($row->diskon, 0, ",", ".") }} </td>
-                                <td style="text-align:right"> {{ number_format($row->total, 0, ",", ".") }} </td>
+                                <td style="text-align:right"> {{ number_format($row->total_net, 0, ",", ".") }} </td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <a href="{{ url('sales/deliveryorderkertas_form/'.$row->nomor.'/nota') }}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
-                                        <a href="{{ url('sales/deliveryorderkertas_form/'.$row->nomor.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                        <a href="{{ url('sales/deliveryorderkertas_form/'.$row->nomor.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                        @if(Auth::user()->punyaAkses('Delivery Order','ubah'))
+                                            @if($row->status_do == 'Released')
+                                            <a href="{{ url('sales/deliveryorderkertas_form/edit') }}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                            @endif
+                                        @endif
+                                        @if(Auth::user()->punyaAkses('Delivery Order','print'))
+                                            <a href="{{ url('sales/cetak_nota_kertas') }}/{{$row->nomor}}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
+                                        @endif
+                                        @if(Auth::user()->punyaAkses('Delivery Order','hapus'))
+                                            @if($row->status_do == 'Released')
+                                            <a onclick="hapus('{{$row->nomor}}')" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                            @endif
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
@@ -141,10 +151,50 @@
     });
 
 
-    $(document).on( "click",".btnhapus", function(){
-        if(!confirm("Hapus Data ?")) return false;
+    
+
+    function hapus(id){
+    var nomor_do = id;
+        
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+    function(){
+
+         $.ajax({
+          url:baseUrl + '/sales/hapus_do_kertas',
+          data:{nomor_do},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                         location.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
     });
-
-
+}
 </script>
 @endsection

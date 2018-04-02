@@ -816,8 +816,9 @@ Route::get('sales/deliveryorderkertas_form', 'sales\do_kertas_Controller@form');
 Route::get('sales/nomor_do_kertas', 'sales\do_kertas_Controller@nomor_do_kertas');
 Route::get('sales/cari_customer_kertas', 'sales\do_kertas_Controller@cari_customer_kertas');
 Route::get('sales/cari_item', 'sales\do_kertas_Controller@cari_item');
-Route::get('sales/cetak_nota_kertas', 'sales\do_kertas_Controller@cetak_nota');
+Route::get('sales/cetak_nota_kertas/{id}', 'sales\do_kertas_Controller@cetak_nota');
 Route::get('sales/save_do_kertas', 'sales\do_kertas_Controller@save_do_kertas');
+Route::get('sales/hapus_do_kertas', 'sales\do_kertas_Controller@hapus_do_kertas');
 
 // end delivery order kertas
 
