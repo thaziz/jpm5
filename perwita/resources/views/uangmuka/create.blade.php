@@ -18,7 +18,7 @@
 <form class="form-horizontal" id="voucher_hutang">
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Voucher Hutang </h2>
+                    <h2> Uang Muka Pembelian </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -30,7 +30,7 @@
                           <a> Transaksi Purchase</a>
                         </li>
                         <li class="active">
-                            <strong> Voucher Hutang </strong>
+                            <strong> Uang Muka Pembelian </strong>
                         </li>
 
                     </ol>
@@ -248,8 +248,7 @@
       var a = $('#voucher_hutang').serialize();
 
        event.preventDefault();
-          var post_url2 = $(this).attr("action");
-          var form_data2 = $(this).serialize();
+         
             swal({
             title: "Apakah anda yakin?",
             text: "Simpan Data Uang Muka!",

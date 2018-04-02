@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> 6649bda9028d50f4cffb2183180c9e96bd995e0f
 <?php
 
 /*
@@ -303,12 +299,13 @@ Route::post('pending/save', 'pendingController@save')->name('save_pending');
 // VOucher hutang
 Route::get('voucherhutang/voucherhutang', 'v_hutangController@voucherhutang');
 Route::get('voucherhutang/createvoucherhutang', 'v_hutangController@createvoucherhutang');
-Route::get('voucherhutang/createvoucherhutang/store1', 'v_hutangController@store1');
+Route::get('voucherhutang/store1', 'v_hutangController@simpan');
 Route::get('voucherhutang/detailvoucherhutang/{v_id}', 'v_hutangController@detailvoucherhutang');
 Route::get('voucherhutang/editvoucherhutang/{v_id}', 'v_hutangController@editvoucherhutang');
 Route::get('voucherhutang/updatevoucherhutang/{v_id}', 'v_hutangController@updatevoucherhutang');
 Route::get('voucherhutang/hapusvoucherhutang/{v_id}', 'v_hutangController@hapusvoucherhutang');
 Route::get('voucherhutang/print_voucherhutang/{v_id}', 'v_hutangController@cetakvoucherhutang');
+Route::get('voucherhutang/getnota', 'v_hutangController@getnota');
 
 
 Route::get('returnpembelian/returnpembelian', 'PurchaseController@returnpembelian');
@@ -322,6 +319,7 @@ Route::get('cndnpembelian/detailcndnpembelian', 'PurchaseController@detailcndnpe
 Route::get('uangmukapembelian/uangmukapembelian', 'PurchaseController@uangmukapembelian');
 Route::get('uangmukapembelian/createuangmukapembelian', 'PurchaseController@createuangmukapembelian');
 Route::get('uangmukapembelian/detailuangmukapembelian', 'PurchaseController@detailuangmukapembelian');
+
 
 
 
@@ -1653,6 +1651,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_Controller@get
     Route::Get('uangmuka/hapusuangmuka/{um_id}','uangmukaController@hapus');
     Route::get('uangmuka/edituangmuka/{um_id}','uangmukaController@edit');
        Route::get('uangmuka/print_uangmuka/{um_id}','uangmukaController@cetak');
+       Route::get('uangmuka/getnota','uangmukaController@getnota');
     //End of uangmuka
 
 

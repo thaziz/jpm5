@@ -67,28 +67,56 @@ class v_hutangController extends Controller
     }     
     return $hasil;
 }
-    public function store1(Request $request){
-      if ($nomorbukti == null || $nomorbukti == '') {
-       $nomorbukti = DB::table('v_hutang')->select('v_nomorbukti')->get();
-       $anj = DB::table('v_hutang')->max('v_id');
+  
+  
+    public function simpan(Request $request){
+
+
+   
+
+        $anj = DB::table('v_hutang')->max('v_id');
        if ($anj == '' ) {
          $anj=1;
        }
        else{
           $anj+=1;
        }
+
+         /* $save = DB::table('v_hutang')
+            ->insert([
+              'v_id'         => $anj,
+              'v_nomorbukti'         => $request->nobukti,
+              'v_tgl'        => $request->tgl,
+              'v_tempo'    => $request->tempo,
+              'v_supid'      => $request->suppilername,
+              'v_keterangan'   => $request->ket,
+              'v_hasil'      => $request->total,
+              'v_pelunasan'      => $request->total,
+              'vc_comp'       => $request->cabang,
+            ]);*/
+
         $store1 = new v_hutang;
-        $store1->v_id=$anj;
-        $store1->v_nomorbukti=$request->nobukti;
-        $store1->v_tgl=$request->tgl;
-        $store1->v_tempo=$request->tempo;
-        $store1->v_supid=$request->suppilername;
-        $store1->v_keterangan=$request->ket;
-        $store1->v_hasil=$request->total;
-        $store1->v_pelunasan=$request->total;
-        $store1->vc_comp=$request->cabang;
+        $store1->v_id  = $anj;
+        $store1->v_nomorbukti =$request->nobukti;
+        $store1->v_tgl =$request->tgl;
+        $store1->v_tempo =$request->tempo;
+        $store1->v_supid =$request->suppilername;
+        $store1->v_keterangan =$request->ket;
+        $store1->v_hasil =$request->total;
+        $store1->v_pelunasan =$request->total;
+
+        $store1->vc_comp = $request->cabang;
+
         $store1->save();
 
+     //   return json_encode($request->nobukti);
+         $anj = DB::table('v_hutangd')->max('vd_no');
+       if ($anj == '' ) {
+         $anj=1;
+       }
+       else{
+          $anj+=1;
+       }
        for ($i=0; $i <count($request->accountid); $i++) {
         $idbaru = vd_hutang::max('vd_id');       
         $store2 = new vd_hutang;
@@ -98,22 +126,16 @@ class v_hutangController extends Controller
         $store2->vd_nominal=$request->nominal[$i];
         $store2->vd_id=$idbaru+1;
         $store2->save();
-}
-
-        
-          
-
-        return response()->json([
+    }
+       /* return response()->json([
                             'status' => 'berhasil',
                             'data' => $store1,
             
-                    ]);
+                    ]);*/
 
-      }
-      else{
-        return redirect('voucherhutang.voucherhutang');
-      }
+        return json_encode('sukses');
     }
+
     public function voucherhutang() {
       $data = DB::table('v_hutang')->get();
      // dd($data);

@@ -1,4 +1,4 @@
-@extends('main')
+;@extends('main')
 
 @section('title', 'dashboard')
 
@@ -60,18 +60,17 @@
 
                           <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
 
-                          <tr>
-                            <td> Cabang </td>
-                            <td>
-                              
-                          <select class="form-control disabled cabang" name="cabang">
-                            @foreach($cabang as $cabang)
-                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
+                        
+                         <tr>
+                          <td> Cabang </td>
+                          <td>  <select class="form-control disabled cabang" name="cabang">
+                            @foreach($data['cabang'] as $cabang)
+                            <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                             @endforeach
-                          </select> </td>
+                          </select> 
+                          </td>
+                         </tr>
 
-
-                            </tr>
                          
 
                           <tr>
