@@ -1838,7 +1838,6 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_Controller@get
   Route::get('master_sales/group_customer/get_data','master_sales\grup_customer_Controller@get_data');
   Route::get('master_sales/group_customer/save_data','master_sales\grup_customer_Controller@save_data');
   Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');
-=======
 // End Desain Laba Rugi
 
 // penerimaan
@@ -2072,7 +2071,6 @@ Route::get('data/jurnal-umum', 'jurnalController@lihatJurnalUmum');
 Route::get('sales/laporaninvoicepenjualanperitem','laporan_penjualan\laporanpenjualanperitemController@index');
 //laporan seluruhnya
 Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
-});
 //LAPORAN PEMBELIAN
 Route::get('masteritem/masteritem/masteritem','LaporanPurchaseController@masteritemmaster');
 Route::get('mastergudang/mastergudang/mastergudang','LaporanPurchaseController@masteritemgudang');
