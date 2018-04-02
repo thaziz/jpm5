@@ -115,16 +115,16 @@ class uangmukaController extends Controller
 
 		$no_bukti = 'UM'.'-'.$month.$year.'/'.'C001'.'/'.$maxid;
 
-		$a = DB::table('supplier')->Select('no_supplier','nama_supplier');	
+		$a = DB::table('supplier')->Select('no_supplier','nama_supplier')->where([['status' , '=' , 'SETUJU'],['active' , '=', 'AKTIF']]);	
 		$b = DB::table('agen')->select('kode','nama');
 		$c = DB::table('subcon')->select('kode','nama');
-
+		$cabang = DB::select("select * from cabang");
 		$data = $a->union($b)->union($c)->get();
 
 	    $sup = $request->suppliering;
 
 		$lel = DB::table('supplier')->select('no_supplier','nama_supplier')->get();
-		return view('uangmuka.create',compact('data','no_bukti'));
+		return view('uangmuka.create',compact('data','no_bukti', 'cabang'));
 	}
 	public function store(Request $request){
 
@@ -147,7 +147,7 @@ class uangmukaController extends Controller
 	$simpan->um_jumlah=$request->jumlah;
 	$simpan->um_supplier=$request->supplier;
 	$simpan->um_jenissup=$request->jenissub;
-	$simpan->um_comp='C001';
+	$simpan->um_comp=$request->cabang;
 	$simpan->um_sisapelunasan=$request->jumlah;
 	$simpan->save();
 

@@ -57,6 +57,19 @@
                         <div class="row">
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
+                          <label> Cabang  </label>
+                          <select class="form-control" disabled="">
+                            @foreach($cabang as $cabang)
+                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
+                            @endforeach
+                          </select> 
+
+                          <input type="hidden" class="valcabang" name="cabang">
+                        </div>
+                        </div> 
+
+                        <div class="form-group">
+                         <div class="col-sm-8 col-sm-offset-2">
                           <label>Nomor Bukti :</label>
                           <input type="text" name="nobukti" readonly="" value="{{$no_bukti}}" class="form-control bukti a" style="text-transform: uppercase" >
                              @if($errors->has('nobukti'))
@@ -147,6 +160,9 @@
    $('.jumlah').maskMoney({thousands:'.',precision:0,prefix:'Rp.'});
 
 });
+
+        cabang = $('.cabang').val();
+        $('.valcabang').val(cabang);
 
         $("#suppilerid").change(function(){
         var abc = $(this).find(':selected').data('nama');
