@@ -80,7 +80,7 @@
                 <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                        
+                          <th>No</th>
                             <th> No DO</th>
                             <th> Tanggal </th>
                             <th> Customer </th>
@@ -88,12 +88,24 @@
                             <th> Diskon</th>
                             <th> Total net </th>
                             <th> Status do </th>
-                            <th> Status </th>
+                            
                         </tr>
                     </thead>
+                      @foreach ($data as $e)
                     <tbody>
                       
+                        <tr>
+                        {{-- <td>{{ $index+1 }}</td> --}}
+                        {{-- <td>{{ $e->nomor }}</td>
+                        <td>{{ $e->tanggal }}</td>
+                        <td>{{ $e->kode_customer }}</td>
+                        <td>{{ $e->status }}</td>
+                        <td>{{ $e->total_net }}</td>
+                        <td>{{ $e->status_do }}</td> --}}
+                        </tr>
+
                     </tbody>
+                      @endforeach
 
                   </table>
                 </div><!-- /.box-body -->

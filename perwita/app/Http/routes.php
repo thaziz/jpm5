@@ -1778,6 +1778,7 @@
   Route::get('sales/tarif_cabang_kargo/get_data', 'tarif\cabang_kargo_Controller@get_data');
   Route::get('sales/tarif_cabang_kargo/save_data', 'tarif\cabang_kargo_Controller@save_data');
   Route::get('sales/tarif_cabang_kargo/hapus_data', 'tarif\cabang_kargo_Controller@hapus_data');
+  Route::get('sales/tarif_cabang_kargo/hapus_data_perkota', 'tarif\cabang_kargo_Controller@hapus_data_perkota');
   // end tarif cabang kargo
 
   // tarif penerus default
