@@ -13,6 +13,7 @@ use DB;
 use Dompdf\Dompdf;
 use PDF;
 use Excel;
+use Session;
 
 class laporan_neraca extends Controller
 {
@@ -359,7 +360,29 @@ class laporan_neraca extends Controller
 
           // return json_encode($mydatatotal);
 
-          return view("laporan_neraca.index")->withData($data)->withMydatatotal($mydatatotal)->withRequest($request)->withThrottle($throttle)->withData_akun($data_akun)->withTotal_in_header($total_in_header);
+          $ses = 0;
+
+          if($throttle == "bulan"){
+              $cek = DB::table("d_periode_keuangan")->where("bulan", $request["m"])->where("tahun", $request["y"])->select("*")->get();
+
+              if(count($cek) == 0){
+                $ses = [
+                    "info" => "Periode Bulan Yang Dipilih Belum Dibuat. Semua Nilai Neraca Akan Menjadi 0..",
+                    
+                ];
+              }
+          }else if($throttle == "tahun"){
+              $cek = DB::table("d_periode_keuangan")->where("tahun", $request["y"])->select("*")->get();
+
+              if(count($cek) == 0){
+                $ses = [
+                    "info" => "Periode Tahun Yang Dipilih Belum Dibuat. Semua Nilai Neraca Akan Menjadi 0..",
+                    
+                ];
+              }
+          }
+
+          return view("laporan_neraca.index")->withData($data)->withMydatatotal($mydatatotal)->withRequest($request)->withThrottle($throttle)->withData_akun($data_akun)->withTotal_in_header($total_in_header)->withSes($ses);
       }
   }
 

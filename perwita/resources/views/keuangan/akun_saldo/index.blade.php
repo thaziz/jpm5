@@ -106,7 +106,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body" style="min-height: 330px;">
                 
-                  <table id="table" width="100%" class="table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
+                  <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
                     <thead>
                       <tr>
                         <th width="18%" rowspan="2" style="padding:8px 0px" class="text-center">Kode Akun</ht>
@@ -144,7 +144,7 @@
                           		@endif
                           	@endif
 
-                          	<td class="text-center">{{ $tipe }}</td>
+                          	<td class="text-center">{{ $dataAkun->akun->akun_dka }}</td>
                           	<td class="text-right">{{ number_format($debet,2) }}</td>
                           	<td class="text-right">{{ number_format($kredit,2) }}</td>
 

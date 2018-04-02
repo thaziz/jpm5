@@ -1243,6 +1243,10 @@
   $(document).ready(function(){
     //$("#tree").DataTable();
 
+    @if($ses != 0)
+        alert("{{ $ses["info"] }}")
+    @endif
+
    $(".tree, .tree2, .tree3, .tree4").treegrid({
       treeColumn: 0,
       initialState: "expanded",
@@ -1294,8 +1298,6 @@
 
 
     $("#show").val("{{ $throttle }}");
-    $('body').removeClass('fixed-sidebar');
-    $("body").toggleClass("mini-navbar");
 
     $('#dateYear').datepicker( {
         format: "yyyy",
