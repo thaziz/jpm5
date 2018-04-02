@@ -8,6 +8,15 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+      .pad{
+        padding: 10px;
+    }
+    .btn-purple{
+      background-color: purple;
+    }
+    .btn-black{
+      background-color: black;
+    }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -109,7 +118,7 @@
                                 <th> Angkutan </th>
                                 <th> Tarif </th>
                                 <th> Waktu (Hari) </th>
-                                <th style="width:50px"> Aksi </th>
+                                <th style="width:80px"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -462,6 +471,41 @@
         $.ajax({
             type: "get",
             url : baseUrl + "/sales/tarif_cabang_kargo/hapus_data",
+            //dataType:"JSON",
+            data: value,
+            success: function(data, textStatus, jqXHR)
+            {
+                var data = jQuery.parseJSON(data);
+                if(data.result ==1){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload( null, false );
+                }else{
+                    swal("Error","Data tidak bisa hapus : "+data.error,"error");
+                }
+
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+                swal("Error!", textStatus, "error");
+            }
+        });
+
+
+    });
+
+     $(document).on( "click",".btndelete_perkota", function() {
+        var name = $(this).attr("name");
+        var id = $(this).attr("id");
+        var tujuan = $(this).data("tujuan");
+        var asal = $(this).data("asal");
+        if(!confirm("Hapus Data " + asal +' menuju ke '+ tujuan + " ?")) return false;
+        var value = {
+            id: id,name:name,
+            _token: "{{ csrf_token() }}"
+        };
+        $.ajax({
+            type: "get",
+            url : baseUrl + "/sales/tarif_cabang_kargo/hapus_data_perkota",
             //dataType:"JSON",
             data: value,
             success: function(data, textStatus, jqXHR)

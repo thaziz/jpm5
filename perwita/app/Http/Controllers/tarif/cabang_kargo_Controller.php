@@ -30,6 +30,8 @@ class cabang_kargo_Controller extends Controller
             $data[$i]['button'] = ' <div class="btn-group">
                                         <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
                                         <button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button> 
+
                                     </div> ';
             $i++;
         }
@@ -233,7 +235,22 @@ class cabang_kargo_Controller extends Controller
     public function hapus_data (Request $request) {
         $hapus='';
         $id=$request->id;
-        $hapus = DB::table('tarif_cabang_kargo')->where('kode' ,'=', $id)->delete();
+        $hapus = DB::table('tarif_cabang_kargo')->where('kode' ,'=', $id)->where('crud','!=','E')->delete();
+        if($hapus == TRUE){
+            $result['error']='';
+            $result['result']=1;
+        }else{
+            $result['error']=$hapus;
+            $result['result']=0;
+        }
+        echo json_encode($result);
+    }
+    public function hapus_data_perkota (Request $request) {
+        // dd($request);
+        $hapus='';
+        $asal=$request->id;
+        $tujuan=$request->name;
+        $hapus = DB::table('tarif_cabang_kargo')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
