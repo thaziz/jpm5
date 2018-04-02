@@ -41,4 +41,16 @@
 		return $html;
 	}
 
+	function get_periode(){
+		$data = DB::table("d_periode_keuangan")->select("*")->orderBy("bulan", 'asc')->get();
+
+		return $data;
+	}
+
+	function cek_periode(){
+		$data = DB::table("d_periode_keuangan")->where("bulan", date("m"))->where("tahun", date("Y"))->select("*")->get();
+
+		return count($data);
+	}
+
 ?>

@@ -31,23 +31,8 @@
                     <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Setting</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li class="sidebar {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }} ">
-                            <a href="{{ url('setting/pengguna')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengguna</a>
+                            <a href="{{ url('setting/pengguna')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Pengguna</a>
                         </li>
-
-                        <li>
-                                <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li>
-                                        <a href="#" id="setting_periode"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tambah Periode</a>
-                                    </li>
-
-                                    <li>
-                                        <a href="#" id="option_periode"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Setting Periode</a>
-                                    </li>
-
-                                </ul>
-                            </li>
-
                     </ul>
                 </li>
                 <!-- end Setting -->
@@ -1257,7 +1242,7 @@
                             " href="{{ url('sales/deliveryorderkertas')}}"><i class="fa fa-building" aria-hidden="true"></i>Delivery Order (DO) Koran</a>
                             </li>
                             @endif
-                          {{--    <li >
+                             <li >
                                 <a class="sidebar master-perusahaan 
 
                                 {{Request::is('sales/salesorder') ? 'active' : '' || 
@@ -1265,7 +1250,7 @@
 
                                 " href="{{ url('sales/salesorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Sales Order (SO)</a>
                             </li>
-                          --}}
+                         
                             <!--
                             <li class="sidebar master-perusahaan {{Request::is('sales/deliveryorder') ? 'active' : ''}} ">
                                 <a href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
@@ -1851,12 +1836,6 @@
                             /* do */
                             Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder/*') ? 'active' : ''||
-                             /* do kargo */
-                            Request::is('sales/laporandeliveryorder_kargo') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_kargo/*') ? 'active' : ''||
-                            /* do koran*/
-                            Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : '' ||
                             /* penjualan */
                             Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
                             Request::is('sales/laporaninvoicepenjualan/*') ? 'active' : ''||
@@ -1955,12 +1934,6 @@
                             /* do */
                             Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder/*') ? 'active' : ''||
-                            /* do kargo */
-                            Request::is('sales/laporandeliveryorder_kargo') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_kargo/*') ? 'active' : ''||
-                            /* do koran*/
-                            Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : '' ||
                             /* penjualan */
                             Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
                             Request::is('sales/laporaninvoicepenjualan/*') ? 'active' : ''||
@@ -2015,15 +1988,7 @@
                                 </li> --}}
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Paket</a>
-                                </li>
-                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_koran')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Koran</a>
-                                </li>
-                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_kargo') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_kargo/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Kargo</a>
+                            Request::is('sales/laporandeliveryorder/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                                 </li>
                          {{--        <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
@@ -2199,40 +2164,37 @@
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
 
-                                {{-- <li >
+                                <li >
                                     <a class="sidebar master-perusahaan {{Request::is('reportmasteritem/reportmasteritem') ? 'active' : '' || 
                             Request::is('reportmasteritem/reportmasteritem/*') ? 'active' : ''}}"  href={{url('reportmasteritem/reportmasteritem')}}><i class="fa fa-folder-open-o" aria-hidden="true"></i> Arus Kas/Bank</a>
-                                </li> --}}
+                                </li>
 
-                                {{-- <li >
+                                <li >
                                     <a class="sidebar master-perusahaan {{Request::is('reportmastergroupitem/reportmastergroupitem') ? 'active' : '' || 
                             Request::is('reportmastergroupitem/reportmastergroupitem/*') ? 'active' : ''}}" href="{{url('reportmastergroupitem/reportmastergroupitem')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Buku Besar</a>
-                                </li> --}}
-
-                                <li>
-                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/laba_rugi') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-laba-rugi/*') ? 'active' : ''}} " href="{{ route("laba_rugi.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laba Rugi</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan  {{Request::is('master-keuangan/laporan-laba-rugi') ? 'active' : '' || 
+                            Request::is('master-keuangan/laporan-laba-rugi/*') ? 'active' : ''}} " href="{{url('master-keuangan/laporan-laba-rugi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laba Rugi</a>
                                 </li>
 
                                 <li >
-                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Neraca </a>
+                                    <a class="sidebar master-perusahaan  {{Request::is('master-keuangan/laporan-neraca') ? 'active' : '' || 
+                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{url('master-keuangan/laporan-neraca')}}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Neraca </a>
                                 </li>
-
                                 <li >
-                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca-saldo') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca_saldo.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Neraca Saldo</a>
-                                </li>
-                                {{-- <li >
                                     <a class="sidebar master-perusahaan  {{Request::is('laporan-neraca/index') ? 'active' : '' || 
                             Request::is('laporan-neraca/index/*') ? 'active' : ''}}" href="{{url('laporan-neraca/index')}}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Neraca1 </a>
-                                </li> --}}
+                                </li>
                             </ul>
                         </li>
                         <!-- end Laporan keuangan -->
                     </ul>
 
                 </li>
+
+                
+                
                 
                
 

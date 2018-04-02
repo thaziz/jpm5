@@ -107,17 +107,15 @@
         //alert(baseUrl);
 
         $(document).ready(function() {
-            //console.log(tour._options.steps[tour.getCurrentStep()]);
-            // setTimeout(function() {
-            //     toastr.options = {
-            //         closeButton: true,
-            //         progressBar: true,
-            //         showMethod: 'slideDown',
-            //         timeOut: 4000
-            //     };
-            //     toastr.success('Responsive Admin Theme', 'Welcome to INSPINIA');
+           $("#setting_periode").click(function(evt){
+                evt.preventDefault();
+                $("#modal_periode").modal("show");
+           })
 
-            // }, 1300);
+           $("#option_periode").click(function(evt){
+                evt.preventDefault();
+                $("#modal_option_periode").modal("show");
+           })
         });
 
         function alertSuccess(message){

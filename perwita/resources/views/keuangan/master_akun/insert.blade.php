@@ -27,7 +27,8 @@
                 Sebagai
               </td>
               <td>
-                <select name="sebagai" id="sebagai" disabled="">
+                <input type="hidden" readonly name="sebagai" value="2">
+                <select id="sebagai" disabled="" class="form-control" style="width: 80%;">
                   <option value="1">Header</option>
                   <option value="2" selected>Sub Akun Dari</option>
                 </select>

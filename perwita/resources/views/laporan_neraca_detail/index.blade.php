@@ -1294,8 +1294,6 @@
 
 
     $("#show").val("{{ $throttle }}");
-    $('body').removeClass('fixed-sidebar');
-    $("body").toggleClass("mini-navbar");
 
     $('#dateYear').datepicker( {
         format: "yyyy",
