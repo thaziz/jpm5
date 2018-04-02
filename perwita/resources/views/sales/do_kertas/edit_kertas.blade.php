@@ -25,7 +25,7 @@
                     <h5> DO KERTAS
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/deliveryorderkertas" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../deliveryorderkertas" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                      
                 </div>
                 <div class="ibox-content">
@@ -51,44 +51,27 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_nomor" id="ed_nomor" class="form-control" readonly="readonly" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
-                                    <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
+                                    <input type="text" name="ed_nomor" id="ed_nomor" class="form-control" readonly="readonly" style="text-transform: uppercase" value="{{ $data->nomor}}" >
+
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                    <input type="hidden" class="form-control" name="ed_tampil" >
-                                    <input type="hidden" class="form-control" name="crud_h" class="form-control" @if ($data === null) value="N" @else value="E" @endif>
+
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
                                     <div class="input-group date" style="width: 100%">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{carbon\carbon::now()->format('d/m/Y')}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{carbon\carbon::parse($data->tanggal)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                             </tr>                        
-                           @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
-                            <tr class="">
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="4">
-                                    <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
-                                    @foreach ($cabang as $row)
-                                        @if(Auth::user()->kode_cabang == $row->kode)
-                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
-                                        @else
-                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
-                                        @endif
-                                    @endforeach
-                                    </select>
-                                </td>
-                            </tr>
-                            @else
                             <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">
                                     <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                     @foreach ($cabang as $row)
-                                        @if(Auth::user()->kode_cabang == $row->kode)
-                                        <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @if($data->kode_cabang == $row->kode)
+                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                         @else
                                         <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @endif
@@ -96,14 +79,15 @@
                                     </select>
                                 </td>
                             </tr>
-                            @endif
                             <tr>
                                 <td>Customer</td>
                                 <td class="customer_td">
                                     <select onchange="cari_customer()" class="form-control customer chosen-select-width" name="customer">
                                         <option value="0">Pilih - Customer</option>
                                     @foreach($customer as $val)
-                                        <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
+                                        @if($data->kode_customer == $val->kode)
+                                        <option selected="" value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
+                                        @endif
                                     @endforeach
                                     </select>
                                 </td>
@@ -117,15 +101,15 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Diskon</td>
                                 <td colspan="3">
-                                    <input type="text" class="form-control ed_diskon_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0">
-                                    <input type="hidden" class="form-control ed_diskon_m" name="ed_diskon_m" readonly="readonly" tabindex="-1"  style="text-align:right" value="0">
+                                    <input type="text" class="form-control ed_diskon_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="{{number_format($data->diskon, 2, ",", ".")}}">
+                                    <input type="hidden" class="form-control ed_diskon_m" name="ed_diskon_m" readonly="readonly" tabindex="-1"  style="text-align:right" value="{{$data->diskon}}">
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Total</td>
                                 <td colspan="3">
-                                    <input type="text" class="form-control ed_total_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0" >
-                                    <input type="hidden" class="form-control ed_total_m" name="ed_total_m" readonly="readonly" tabindex="-1"  style="text-align:right" >
+                                    <input type="text" class="form-control ed_total_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="{{number_format($data->total_net, 2, ",", ".")}}" >
+                                    <input type="hidden" class="form-control ed_total_m" name="ed_total_m" readonly="readonly" tabindex="-1"  style="text-align:right" value="{{$data->total_net}}" >
                                      
                                 </td>
                             </tr>
@@ -134,7 +118,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " onclick="tambah_kertas()"><i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success disabled" onclick="simpan()" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-success" onclick="simpan()" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                             <button type="button" class="btn btn-warning disabled" onclick="ngeprint()" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i>Print</button>
                             <button type="button" class="btn btn-danger reload" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i>reload</button>
                         </div>
@@ -338,34 +322,6 @@ $('.date').datepicker({
 
 
 $('.ed_diskon_modal').maskMoney({precision:0,thousands:'.'});
-$(document).ready(function(){
-    var cabang = $('.cabang').val();
-    $.ajax({
-        url:baseUrl + '/sales/nomor_do_kertas',
-        data:{cabang},
-        dataType:'json',
-        success:function(data){
-            $('#ed_nomor').val(data.nota);
-        },
-        error:function(){
-            // location.reload();
-        }
-    })
-
-    $.ajax({
-        url:baseUrl + '/sales/nomor_do_kertas',
-        data:{cabang},
-        dataType:'json',
-        success:function(data){
-            $('#ed_nomor').val(data.nota);
-        },
-        error:function(){
-            // location.reload();
-        }
-    })
-   
-     
-});
 
 function ganti_nota(){
     var cabang = $('.cabang').val();
@@ -397,8 +353,77 @@ function cari_customer() {
         }
     })
 }
+$(document).ready(function(){
+    cari_customer();
+});
 var count = 1;
+@foreach($data_dt as $val)
+    @foreach($item as $i)
+        @if ($i->kode == $val->dd_kode_item)
+        var temp = "{{$i->nama}}" 
+        @endif
+    @endforeach
 
+    @foreach($kota as $i)
+        @if ($i->id == $val->dd_id_kota_asal)
+        var temp1 = "{{$i->nama}}" 
+        @endif
+
+        @if ($i->id == $val->dd_id_kota_tujuan)
+        var temp2 = "{{$i->nama}}" 
+        @endif
+    @endforeach
+
+
+var dd_diskon = "{{$val->dd_diskon}}";
+var dd_harga = "{{$val->dd_harga}}";
+var dd_total = "{{$val->dd_total}}";
+var dd_kode_satuan = "{{$val->dd_kode_satuan}}";
+var dd_jumlah = "{{$val->dd_jumlah}}";
+var dd_id_kota_asal = "{{$val->dd_id_kota_asal}}";
+var dd_id_kota_tujuan = "{{$val->dd_id_kota_tujuan}}";
+var dd_kode_item = "{{$val->dd_kode_item}}";
+var dd_acc_penjualan = "{{$val->dd_acc_penjualan}}";
+var dd_keterangan = "{{$val->dd_keterangan}}";
+console.log(dd_id_kota_asal);
+table_detail.row.add({
+        'id':'<p class="id_text">'+count+'</p>'+
+        '<input type="hidden" class="id_'+count+' id" value="'+count+'">'+
+        '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+dd_diskon+'">'+
+        '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+dd_harga+'">'+
+        '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+dd_total+'">'+
+        '<input type="hidden" readonly name="d_satuan[]" class="form-control d_satuan" value="'+dd_kode_satuan+'">'+
+        '<input type="hidden" readonly name="d_jumlah[]" class="form-control d_jumlah" value="'+dd_jumlah+'">'+
+        '<input type="hidden" readonly name="d_asal[]" class="form-control d_asal" value="'+dd_id_kota_asal+'">'+
+        '<input type="hidden" readonly name="d_tujuan[]" class="form-control d_tujuan" value="'+dd_id_kota_tujuan+'">',
+
+        'Kode Item':'<p class="kode_item_text">'+dd_kode_item+'</p>'+
+        '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+dd_kode_item+'">'+
+        '<input type="hidden" name="d_acc[]" class="d_acc" value="'+dd_acc_penjualan+'">',
+
+        'Nama Item':'<p class="nama_item">'+temp+'</p>',
+
+        'Asal':'<p class="asal_text">'+temp1+'</p>',
+
+        'Tujuan':'<p class="tujuan_text">'+temp2+'</p>',
+
+        'Keterangan':'<input type="text" readonly name="d_keterangan[]" class="form-control d_keterangan" value="'+dd_keterangan+'">',
+
+        'Aksi':'<a onclick="edit_detail(this)" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></a>'+
+        '<a onclick="hapus_detail(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>',
+
+        'jumlah':'<input type="text" readonly  class="form-control d_jumlah_text" value="'+dd_jumlah+'">',
+
+        'satuan':'<input type="text" readonly  class="form-control d_satuan_text" value="'+dd_kode_satuan+'">',
+
+        'harga':'<input type="text" readonly  class="form-control d_harga_text" value="'+accounting.formatMoney(dd_harga,"",2,'.',',')+'">',
+
+        'diskon':'<input type="text" readonly class="form-control d_diskon_text" value="'+accounting.formatMoney(dd_diskon,"",2,'.',',')+'">',
+
+        'netto':'<input type="text" readonly  class="form-control d_netto_text" value="'+accounting.formatMoney(dd_total,"",2,'.',',')+'">',
+        }).draw();
+count+=1;
+@endforeach
 function tambah_kertas() {
     var customer = $('.customer').val();
     if (customer == '0') {
@@ -574,8 +599,8 @@ if (old_id == '') {
         table_detail.row(par).remove().draw(false);
 
         table_detail.row.add({
-        'id':'<p class="id_text">'+count+'</p>'+
-        '<input type="hidden" class="id_'+count+' id" value="'+count+'">'+
+        'id':'<p class="id_text">'+id+'</p>'+
+        '<input type="hidden" class="id_'+id+' id" value="'+id+'">'+
         '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+ed_diskon+'">'+
         '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+ed_harga+'">'+
         '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+ed_netto+'">'+
@@ -616,6 +641,7 @@ if (old_id == '') {
 
     hitung_all();
 }
+
 function format ( d ) {
     // console.log(d);
     // `d` is the original data object for the row
@@ -707,8 +733,8 @@ function edit_detail(p) {
 }
 
 function ngeprint(){
-       var id = $('#ed_nomor').val();
-        window.open('{{url('sales/cetak_nota_kertas')}}'+'/'+id);
+   var id = $('#ed_nomor').val();
+    window.open('{{url('sales/cetak_nota_kertas')}}'+'/'+id);
 }
 
 $('.reload').click(function(){
@@ -718,7 +744,7 @@ $('.reload').click(function(){
 
 // SIMPAN DATA
     function simpan(){
-
+        var id = "{{$id}}";
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data DO!",
@@ -739,11 +765,12 @@ $('.reload').click(function(){
             });
 
           $.ajax({
-          url:baseUrl + '/sales/save_do_kertas',
+          url:baseUrl + '/sales/update_do_kertas',
           type:'post',
           dataType:'json',
           data:$('.table_header :input').serialize()
-               +'&'+table_detail.$('input').serialize(),
+               +'&'+table_detail.$('input').serialize()
+               +'&id='+id,
           success:function(response){
              if (response.status =='gagal') {
                 

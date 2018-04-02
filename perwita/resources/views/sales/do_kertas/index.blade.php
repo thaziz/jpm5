@@ -77,7 +77,7 @@
                                     <div class="btn-group">
                                         @if(Auth::user()->punyaAkses('Delivery Order','ubah'))
                                             @if($row->status_do == 'Released')
-                                            <a href="{{ url('sales/deliveryorderkertas_form/edit') }}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                            <a href="{{ url('sales/edit_do_kertas') }}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
                                             @endif
                                         @endif
                                         @if(Auth::user()->punyaAkses('Delivery Order','print'))
@@ -154,7 +154,6 @@
     
 
     function hapus(id){
-    var nomor_do = id;
         
         swal({
         title: "Apakah anda yakin?",
@@ -171,7 +170,7 @@
 
          $.ajax({
           url:baseUrl + '/sales/hapus_do_kertas',
-          data:{nomor_do},
+          data:{id},
           type:'get',
           success:function(data){
               swal({

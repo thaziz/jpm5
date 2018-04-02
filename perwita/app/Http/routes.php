@@ -818,7 +818,12 @@ Route::get('sales/cari_customer_kertas', 'sales\do_kertas_Controller@cari_custom
 Route::get('sales/cari_item', 'sales\do_kertas_Controller@cari_item');
 Route::get('sales/cetak_nota_kertas/{id}', 'sales\do_kertas_Controller@cetak_nota');
 Route::get('sales/save_do_kertas', 'sales\do_kertas_Controller@save_do_kertas');
+Route::post('sales/save_do_kertas', 'sales\do_kertas_Controller@save_do_kertas');
 Route::get('sales/hapus_do_kertas', 'sales\do_kertas_Controller@hapus_do_kertas');
+Route::get('sales/edit_do_kertas/{id}', 'sales\do_kertas_Controller@edit_do_kertas');
+Route::get('sales/update_do_kertas', 'sales\do_kertas_Controller@update_do_kertas');
+Route::post('sales/update_do_kertas', 'sales\do_kertas_Controller@update_do_kertas');
+Route::get('sales/detail_do_kertas/{id}', 'sales\do_kertas_Controller@detail_do_kertas');
 
 // end delivery order kertas
 

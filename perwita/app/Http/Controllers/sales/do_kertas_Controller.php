@@ -214,9 +214,58 @@ class do_kertas_Controller extends Controller
     public function hapus_do_kertas(request $request)
     {
         $hapus = DB::table('delivery_order')
-                   ->where('nomor',$request->nomor_do)
+                   ->where('nomor',$request->id)
                    ->delete();
 
         return response()->json(['status'=>1]);
+    }
+
+    public function edit_do_kertas($id)
+    {
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+        $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
+        $item = DB::select(" SELECT kode,nama,harga,kode_satuan,acc_penjualan FROM item ORDER BY nama ASC ");
+ 
+
+        $data = DB::table('delivery_order')
+                  ->where('nomor',$id)
+                  ->first();
+
+        $data_dt = DB::table('delivery_order')
+                  ->join('delivery_orderd','dd_nomor','=','nomor')
+                  ->where('nomor',$id)
+                  ->get();
+
+        return view('sales.do_kertas.edit_kertas',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','item','id','data_dt'));
+    }
+    public function update_do_kertas(request $request)
+    {
+        $this->hapus_do_kertas($request);
+        return $this->save_do_kertas($request);
+    }
+
+    public function detail_do_kertas($id)
+    {
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+        $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
+        $item = DB::select(" SELECT kode,nama,harga,kode_satuan,acc_penjualan FROM item ORDER BY nama ASC ");
+ 
+
+        $data = DB::table('delivery_order')
+                  ->where('nomor',$id)
+                  ->first();
+
+        $data_dt = DB::table('delivery_order')
+                  ->join('delivery_orderd','dd_nomor','=','nomor')
+                  ->where('nomor',$id)
+                  ->get();
+
+        return view('sales.do_kertas.detail_kertas',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','item','id','data_dt'));
     }
 }
