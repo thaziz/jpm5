@@ -1539,7 +1539,7 @@ public function update_invoice(request $request)
 {
     // dd($request->all());
    
-    $this->hapus_invoice($request);
+
     return $this->simpan_invoice($request);
 /*
     $cari_invoice =DB::table('invoice')

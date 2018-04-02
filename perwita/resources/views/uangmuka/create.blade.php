@@ -9,6 +9,11 @@
   .textright{
     text-align: right;
   }
+
+   .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
 </style>
 <form class="form-horizontal" id="voucher_hutang">
             <div class="row wrapper border-bottom white-bg page-heading">
@@ -57,11 +62,24 @@
                         <div class="row">
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
+                          <label> Cabang  </label>
+                          <select class="form-control disabled cabang" name="cabang">
+                            @foreach($cabang as $cabang)
+                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
+                            @endforeach
+                          </select> 
+
+                         
+                        </div>
+                        </div> 
+
+                        <div class="form-group">
+                         <div class="col-sm-8 col-sm-offset-2">
                           <label>Nomor Bukti :</label>
-                          <input type="text" name="nobukti" readonly="" value="{{$no_bukti}}" class="form-control bukti a" style="text-transform: uppercase" >
-                             @if($errors->has('nobukti'))
+                          <input type="text" name="nobukti" readonly="" class="form-control bukti a" style="text-transform: uppercase" >
+                           <!--   @if($errors->has('nobukti'))
                                 <small style="color: #ed5565">{{ $errors->first('nobukti')}}</small>
-                            @endif
+                            @endif -->
                         </div>
                         </div> 
                         <p></p>
@@ -148,6 +166,52 @@
 
 });
 
+      
+
+
+      var comp = $('.cabang').val();
+        $.ajax({    
+            type :"get",
+            data : {comp},
+            url : baseUrl + '/uangmuka/getnota',
+           dataType : 'json',
+            success : function(data){
+            
+                var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+
+              
+                 nota = 'UM' + month + year2 + '/' + comp + '/' +  data.idum;
+                console.log(nota);
+                $('.bukti').val(nota);
+            }
+        })
+
+    
+
+
+        cabang = $('.cabang').val();
+        $('.valcabang').val(cabang);
+
         $("#suppilerid").change(function(){
         var abc = $(this).find(':selected').data('nama');
         var def = $('.suppilername').val(abc);
@@ -182,14 +246,35 @@
             
     function simpan (){
       var a = $('#voucher_hutang').serialize();
-      $.ajax({
-        url : baseUrl + "/uangmuka/store",
-        type:'get',
-        data: a,
-        success:function(response){
-          window.location = ('/jpm/uangmuka')
-        }
-      })
+
+       event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Uang Muka!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false
+          },
+          function(){
+        $.ajax({
+          url : baseUrl + "/uangmuka/store",
+          type:'get',
+          data: a,
+          
+          success : function (response){
+              alertSuccess(); 
+                window.location.href = baseUrl + "/uangmuka"; 
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
 
     }
 

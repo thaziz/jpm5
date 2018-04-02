@@ -91,7 +91,7 @@
                             @endif
                             <tr>
                                 <td style="padding-top: 0.4cm" >Customer</td>
-                                <td colspan="4" class="customer_td">                                    
+                                <td colspan="4" class="">                                    
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
