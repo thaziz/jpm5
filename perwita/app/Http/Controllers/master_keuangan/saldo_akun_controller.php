@@ -19,7 +19,7 @@ class saldo_akun_controller extends Controller
         if(cek_periode() == 0)
             return view("keuangan.err.err_periode");
 
-    	$data = master_akun_saldo::where("tahun", "=", date("Y"))->where("bulan", "=", date("m"))->get();
+    	$data = master_akun_saldo::where("tahun", "=", date("Y"))->where("bulan", "=", date("m"))->whereNotNull("saldo_akun")->get();
 
     	//return date("Y");
 
