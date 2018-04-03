@@ -897,6 +897,8 @@ Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@pen
 // end invoice
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
+Route::get('sales/invoice_pembetulan_create', 'sales\invoice_pembetulan_controller@invoice_pembetulan_create');
+Route::get('sales/cari_invoice', 'sales\invoice_pembetulan_controller@cari_invoice');
 
 // update faktur pajak
 
