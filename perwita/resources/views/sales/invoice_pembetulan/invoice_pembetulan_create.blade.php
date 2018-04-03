@@ -22,7 +22,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> INVOICE DETAIL
+                    <h5> INVOICE PEMBETULAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <a href="../sales/invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
@@ -95,7 +95,7 @@
                                 </td>
                             </tr>
                             
-                            <tr>
+                            <tr class="disabled">
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="5" class="">                                    
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
@@ -121,7 +121,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Pendapatan</td>
                                 <td colspan="5">
                                     <select class="form-control"  name="cb_pendapatan" id="cb_pendapatan" >
@@ -252,6 +252,18 @@
                                 <td style="padding-top: 0.4cm; text-align:right">Total Tagihan</td>
                                 <td colspan="4">
                                     <input type="text" name="total_tagihan" class="form-control total_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                </td>
+                            </tr>
+                             <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Sisa Tagihan</td>
+                                <td colspan="4">
+                                    <input type="text" name="sisa_tagihan" class="form-control sisa_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Selisih Tagihan</td>
+                                <td colspan="4">
+                                    <input type="text" name="selisih_tagihan" class="form-control selisih_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" value="0">
                                 </td>
                             </tr>
                         </tbody>
@@ -389,9 +401,7 @@
    var index_detail = 1;
     // pilih_invoice
     function pilih_invoice(a) {
-        var par = a.parentNode.parentNode;
-        var id  = $(par).find('.i_nomor_invoice').val();
-
+        var id  = $(a).find('.i_nomor_invoice').val();
         $.ajax({
             url:baseUrl+'/sales/pilih_invoice_pembetulan',
             data:{id},
@@ -404,7 +414,11 @@
                 $('.ed_jatuh_tempo').val(data.data.jt);
                 $('#cb_pendapatan').val(data.data.i_pendapatan);
                 $('.ed_keterangan').val(data.data.i_keterangan);
-
+                $('.pajak_lain').val(data.data.i_kode_pajak);
+                $('#cb_jenis_ppn').val(data.data.i_jenis_ppn);
+                $('.diskon2').val(data.data.i_diskon2);
+                $('.sisa_tagihan').val( accounting.formatMoney(data.data.i_sisa_pelunasan, "", 2, ".",','));
+                table_detail.clear().draw();
                 console.log(data.data[i]);
                 if (data.data.i_pendapatan == 'KORAN') {
 
@@ -427,6 +441,8 @@
                         index_detail++;
                     }
                 }else{
+                    for(var i = 0 ; i < data.data_dt.length;i++){
+
                         table_detail.row.add([
                             index_detail,
                             data.data_dt[i][0].nomor+'<input class="nomor_detail" type="hidden" value="'+data.data_dt[i][0].nomor+'" name="do_detail[]">',
@@ -436,12 +452,12 @@
                             accounting.formatMoney(data.data_dt[i][0].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].tarif_dasar+'" name="dd_harga[]">',
                             accounting.formatMoney(data.data_dt[i][0].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+data.data_dt[i][0].total+'" name="dd_total[]">',
                             accounting.formatMoney(data.data_dt[i][0].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].diskon+'" name="dd_diskon[]">',
-                            accounting.formatMoney(data.data_dt[i][0].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+data.data_dt[i][0].harga_netto+'" name="harga_netto[]">',
+                            accounting.formatMoney(data.data_dt[i][0].total_net, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+data.data_dt[i][0].total_net+'" name="harga_netto[]">',
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);
                         index_detail++;
-
+                    }
                 }
 
                 hitung();
