@@ -69,7 +69,7 @@
                                 Lokasi Cabang
                               </td>
                               <td>
-                                <select class="form-control chosen-select-width5 cabang_head" onchange="getGudang()">
+                                <select class="form-control chosen-select-width5" onchange="getGudang()">
                                   <option value="">- Pilih - Cabang -</option>
                                   @foreach($cabang as $val)
                                   <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -83,8 +83,12 @@
                               Lokasi Gudang
                             </td>
                             <td>
-                              <select class="form-control" id="selectgudang">
-                                
+                              <select class="form-control cabang_head" id="selectgudang">
+                                @if(Session::get('cabang') != '000')
+                                  @foreach($gudang as $data)
+                                    <option value="{{ $data->mg_id }}">{{ $data->mg_namagudang }}</option>
+                                  @endforeach
+                                @endif
                               </select>
                             </td>
                           </tr>
@@ -93,12 +97,6 @@
                             <td>   <div class="input-group date">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="{{$now}}" name="tgl">
                               </div>  </td>
-                          </tr>
-                          <tr>
-                            <td colspan="2" align="right">
-                              <a class="btn btn-warning" href={{url('stockopname/stockopname')}}> Kembali </a>
-                              <input type="button" name="submit" value="Simpan"  class="btn btn-success simpan">
-                            </td>
                           </tr>
 
                           </table>
@@ -161,6 +159,10 @@
                       <br>
 
                     </div>
+                    <div style="float: right; margin-right: 0px;">                      
+                        <a class="btn btn-warning" href={{url('stockopname/stockopname')}}> Kembali </a>
+                        <input type="button" name="submit" value="Simpan"  class="btn btn-success simpan">
+                    </div>
                     </form>
 
              
@@ -196,6 +198,12 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+  @if (Session::get('cabang') != '000')
+  $( document ).ready(function() {
+    cabang();
+  });
+  @endif
 
 
     $('.date').datepicker({
