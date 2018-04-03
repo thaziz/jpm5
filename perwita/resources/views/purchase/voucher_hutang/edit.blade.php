@@ -19,11 +19,9 @@
                         <li class="active">
                             <strong> Voucher Hutang </strong>
                         </li>
-
                     </ol>
                 </div>
                 <div class="col-lg-2">
-
                 </div>
             </div>
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -48,10 +46,20 @@
                 <div class="box-body">
                   
                         <div class="row">
+
+                         <div class="form-group">
+                         <div class="col-sm-8 col-sm-offset-2">
+                          <label> Cabang :</label>
+                          <input type="text" name="cabang" class="form-control bukti" value="{{$data1->vc_comp}}" style="text-transform: uppercase" readonly="" >
+                        </div>
+                        </div> 
+
+
+
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label>Nomor Bukti :</label>
-                          <input type="text" name="nobukti" class="form-control bukti" value="{{ $data1->v_nomorbukti }}" style="text-transform: uppercase" >
+                          <input type="text" name="nobukti" class="form-control bukti" value="{{ $data1->v_nomorbukti }}" style="text-transform: uppercase" readonly="">
                         </div>
                         </div> 
                         <p></p>
@@ -253,14 +261,33 @@
     function simpan (){
       var a = $('#idhidden').val();
       var b = $('#voucher_hutang').serialize();
-      console.log(a);
-      $.ajax({
-        url : baseUrl + "/voucherhutang/updatevoucherhutang/"+a,
-        type:'get',
-        data: b,
-        success:function(response){
-            window.location = ('/jpm/voucherhutang/voucherhutang')
-        }
+  
+         event.preventDefault();
+         
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Voucher Hutang!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false
+          },
+          function(){
+        $.ajax({
+          url : baseUrl + "/voucherhutang/updatevoucherhutang/"+a,
+          type:"get",
+          data: b,
+        
+         success : function (response){
+              alertSuccess(); 
+                window.location.href = baseUrl + "/voucherhutang/voucherhutang"; 
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
       })
 
     }

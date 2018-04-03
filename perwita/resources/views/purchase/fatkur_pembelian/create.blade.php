@@ -86,53 +86,17 @@
                   <div class="box-body">
                   
                       <div class="col-xs-6">
-                        {{Auth::user()->PunyaAkses('Faktur Pembelian','cabang')}}
+                       
                          <table class="table head1">    
-                          @if(Auth::user()->PunyaAkses('Faktur Pembelian','cabang'))
-                            <tr>
-                            <td width="150px"> Cabang </td>
-                            <td>
-                              <select class="form-control chosen-select-width1 cabang" name="cabang">
-                                  <option value="">
-                                    Pilih-Cabang
-                                  </option>
-
-                                  @foreach($data['cabang'] as $cabang)
-                                  @if(Auth()->user()->kode_cabang == $cabang->kode)
-                                    <option selected="" value="{{$cabang->kode}}">{{$cabang->nama}}</option>
-                                  }
-                                  }
-                                  @else
-                                    <option value="{{$cabang->kode}}">{{$cabang->nama}}</option>
-                                  @endif
-                                  @endforeach
-                                 </select>
-                            </td>
+                           <tr>
+                              <td> Cabang </td>
+                              <td>  <select class="form-control disabled cabang" name="cabang">
+                                    @foreach($data['cabang'] as $cabang)
+                                          <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                    @endforeach
+                                    </select> 
+                               </td>
                             </tr>
-                            @else
-                            <tr class="disabled">
-                            <td width="150px"> Cabang </td>
-                            <td>
-                              <select class="form-control chosen-select-width1 cabang" disabled="" name="cabang">
-                                  <option value="">
-                                    Pilih Cabang
-                                  </option>
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    @if($cabang->kode == Auth::user()->kode_cabang)
-                                    <option selected="" value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @else
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @endif
-                                  @endforeach
-                                 </select>
-                            </td>
-                            </tr>
-                            @endif
 
 
                           <tr>
@@ -278,7 +242,7 @@
                             <select class="form-control chosen-select gudang" name="gudang" required="">
                                 <option value=""> -- Pilih Gudang -- </option>
                               @foreach($data['gudang'] as $gudang)
-                                <option value="{{$gudang->mg_id}},{{$gudang->mg_namagudang}}"> {{$gudang->mg_namagudang}} </option>
+                                <option value="{{$gudang->mg_id}}"> {{$gudang->mg_namagudang}} </option>
                               @endforeach  
                             </select></td>
                           </tr>
@@ -352,9 +316,9 @@
                        <div class='pull-right' style='margin-right:20px'>
                        <table border="0">
                         <tr>
-                          <td><button type='button' class='btn btn-warning clear'> Bersihkan Data </button></td>
+                          <td><button type='button' class='btn btn-sm btn-warning clear'> Bersihkan Data </button></td>
                           <td> &nbsp; </td>
-                          <td> <button type='submit' class='btn btn-success tbmh-data-item'> Tambah Data Item  </button></td>
+                          <td> <button type='submit' class='btn btn-sm btn-success tbmh-data-item'> <i class="fa fa-book"> </i> Tambah Data Item  </button></td>
                         </tr>
                        </table>
                         </form>
@@ -396,7 +360,7 @@
                            <tr>
                              <td> Jenis PPn </td> 
                              <td> <div class='col-xs-4'> <select class='form-control jenisppn' name="jenisppn" style="width:100px"> <option value='T'> Tanpa </option> <option value='E'> Exclude </option> <option value="I"> Include </option>  </select>     </div>
-                             <div clas="col-xs-8">  <button type="button" class="btn btn-primary" id="createmodal" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button>  </div> 
+                             <div clas="col-xs-8">  <button type="button" class="btn btn-sm btn-primary" id="createmodal" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button>  </div> 
                                      
                               </td>
                           </tr>
@@ -854,7 +818,7 @@
 
 
                                               <td> Jenis PPn </td>
-                                              <td>  <div class="col-xs-4">  <select class='form-control jenisppn_po' name="jenisppn_po"> <option value='T'> Tanpa </option> <option value='E'> Exclude </option> <option value="I"> Include </option>  </select> </div> <div class="col-xs-6"> &nbsp;  <button type="button" class="btn btn-primary" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button> </div> </td>
+                                              <td>  <div class="col-xs-4">  <select class='form-control jenisppn_po' name="jenisppn_po"> <option value='T'> Tanpa </option> <option value='E'> Exclude </option> <option value="I"> Include </option>  </select> </div> <div class="col-xs-6"> &nbsp;  <button type="button" class="btn btn-primary btn-sm" id="createmodal_pajakpo" data-toggle="modal" data-target="#myModal2">  Faktur Pajak </button> </div> </td>
                                             </tr>
                                             <tr>
                                               <td> DPP </td>
@@ -1795,6 +1759,12 @@
         jenisppn = $('.jenisppn').val();
         numeric2 = dpp.replace(/,/g,'');
 
+      if(val == ''){
+          toastr.info('silahkan pilih pajak pphh :)');
+          return false;
+      }
+      else {
+
 
       if($('.hasilppn').val() != '') { //ppn  tidak kosong
           if($('.jenisppn').val() == 'E'){
@@ -1837,7 +1807,7 @@
           netto2 = hslnetto.toFixed(2);
           $('.nettohutang').val(addCommas(netto2));
       }
-
+      }
     })
 
 
@@ -2384,27 +2354,27 @@
           var  row = "<tr id='data-item-"+nourut+"'> <td>"+nourut+"</td>"+
                   "<td> <select class='form-control barangitem brg-"+nourut+"' data-id="+nourut+" disabled>  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}},{{$brg->harga}},{{$brg->nama_masteritem}},{{$brg->acc_persediaan}},{{$brg->acc_hpp}}'>{{$brg->nama_masteritem}}</option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
 
-                  "<td> <input type='text' class='form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
+                  "<td> <input type='text' class='input-sm form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
                   "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem'> </td>"+ //qty
                   
-                  "<td> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}},{{$gudang->mg_namagudang}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
+                  "<td> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
 
-                  "<td> <input type='text' class='form-control hargaitem hargaitem"+nourut+"' value='"+ addCommas(harga)+"' name='harga[]' data-id="+nourut+"></td>"+ //harga
+                  "<td> <input type='text' class='input-sm form-control hargaitem hargaitem"+nourut+"' value='"+ addCommas(harga)+"' name='harga[]' data-id="+nourut+"></td>"+ //harga
 
-                  "<td> <input type='text' class='form-control totalbiayaitem totalbiayaitem"+nourut+"' value='"+ amount+"' name='totalharga[]' readonly> </td>"+ //total harga
+                  "<td> <input type='text' class='input-sm form-control totalbiayaitem totalbiayaitem"+nourut+"' value='"+ amount+"' name='totalharga[]' readonly> </td>"+ //total harga
 
              
 
                   "<td> <input type='text' class='form-control updatestockitem updatestockitem"+nourut+"' value='"+updatestock+"'  name='updatestock[]' readonly> </td>"+ // updatestock
                        "<td> <input type='text' class='form-control diskonitem2 diskonitem2"+nourut+"' value='"+diskon+"' name='diskonitem[]' data-id="+nourut+"> </td>" + //diskon
 
-                  "<td>  <input type='text' class='form-control biayaitem biayaitem"+nourut+"' value='"+biaya+"'  name='biaya[]' readonly> </td>"+ //biaya
+                  "<td>  <input type='text' class='input-sm form-control biayaitem biayaitem"+nourut+"' value='"+biaya+"'  name='biaya[]' readonly> </td>"+ //biaya
 
-                  "<td> <input type='text' class='form-control acc_biayaitem acc_biayaitem"+nourut+"' value='"+acc_biaya+"' name='acc_biaya[]' readonly> </td>"+ //acc_biaya
+                  "<td> <input type='text' class='input-sm form-control acc_biayaitem acc_biayaitem"+nourut+"' value='"+acc_biaya+"' name='acc_biaya[]' readonly> </td>"+ //acc_biaya
 
-                  "<td> <input type='text' class='form-control acc_persediaanitem acc_persediaanitem"+nourut+"' value='"+acc_persediaan+"' name='acc_persediaan[]' readonly> </td>"+ //acc_persediaan
+                  "<td> <input type='text' class='input-sm form-control acc_persediaanitem acc_persediaanitem"+nourut+"' value='"+acc_persediaan+"' name='acc_persediaan[]' readonly> </td>"+ //acc_persediaan
 
-                  "<td> <input type='text' class='form-control keteranganitem keteranganitem"+nourut+"' value='"+keterangan+"'  name='keteranganitem[]'>  <input type='hidden' name='penerimaan[]' class='penerimaan' value='"+penerimaan+"'></td>" +
+                  "<td> <input type='text' class='input-sm form-control keteranganitem keteranganitem"+nourut+"' value='"+keterangan+"'  name='keteranganitem[]'>  <input type='hidden' name='penerimaan[]' class='penerimaan' value='"+penerimaan+"'></td>" +
                   
                   "<td class='edit"+nourut+"'> <button class='btn btn-sm btn-danger removes-btn' data-id='"+nourut+"' type='button'> <i class='fa fa-trash'></i> </button> "+
                   " </td> </tr>"; 
@@ -2435,7 +2405,7 @@
 
                  // alert(item);
                  $('.brg-'+nourut).val(item);
-
+                  $('.gudangitem'+nourut).val(gudang);
                  //pembersihan value
                  //pembersihan data
                 $('.item').prop('selectedIndex',0);

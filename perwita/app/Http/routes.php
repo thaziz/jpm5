@@ -115,9 +115,10 @@ Route::get('penerimaanbarang/ajaxtampilterima', 'PurchaseController@ajax_tampilt
 Route::get('penerimaanbarang/changeqtyterima', 'PurchaseController@changeqtyterima');
 Route::post('penerimaanbarang/updatepenerimaanbarang', 'PurchaseController@updatepenerimaanbarang');
 Route::get('penerimaanbarang/penerimaanbarang/createPDF/{id}', 'PurchaseController@createPdfTerimaBarang');
-Route::get('penerimaanbarang/penerimaanbarang/createPDF/{id}', 'PurchaseController@createPdfTerimaBarang');
+Route::get('penerimaanbarang/penerimaanbarang/cetak/{id}', 'PurchaseController@cetakterimabarang');
 Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
+Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
 
 
 

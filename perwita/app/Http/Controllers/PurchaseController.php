@@ -1601,6 +1601,17 @@ public function purchase_order() {
 		return json_encode($data);
 	}
 
+	public function valgudang(Request $request){
+		$idcabang = $request->cabang;
+		$data['gudang'] = DB::select("select * from mastergudang where mg_cabang = '$idcabang'");
+
+
+		$idgudang = $data['gudang'][0]->mg_id;
+		$data['terima'] = DB::select("select * from barang_terima, supplier where bt_gudang = '$idgudang' and bt_supplier = idsup");
+
+		return json_encode($data);
+	}
+
 	public function savepenerimaan(Request $request){
 return DB::transaction(function() use ($request) {   
 
@@ -1683,6 +1694,7 @@ return DB::transaction(function() use ($request) {
 			$penerimaanbarang->pb_suratjalan = $request->suratjalan;
 			$penerimaanbarang->pb_supplier = $request->idsup;
 			$penerimaanbarang->pb_gudang = $request->gudang;
+			$penerimaanbarang->pb_terimadari = $request->diterimadari;
 			
 			$penerimaanbarang->save();
 
@@ -1985,6 +1997,7 @@ return DB::transaction(function() use ($request) {
 				$penerimaanbarang->pb_suratjalan = $request->suratjalan;
 				$penerimaanbarang->pb_supplier = $request->idsup;
 				$penerimaanbarang->pb_gudang = $request->gudang;
+				$penerimaanbarang->pb_terimadari = $request->diterimadari;
 				$penerimaanbarang->save();
 				
 
@@ -1996,6 +2009,7 @@ return DB::transaction(function() use ($request) {
 			 	]);	
 
 
+				
 				for($i = 0 ; $i < count($request->qtyterima); $i++ ){
 					$penerimaanbarangdt = new penerimaan_barangdt();
 			
@@ -2174,7 +2188,16 @@ return DB::transaction(function() use ($request) {
 					'pb_status' => $statuspb,
 					/*'pb_totaljumlah' => $jmlhrg, */
 				]);	
-		
+				
+				$query4 = barang_terima::where([['bt_idtransaksi' , '=' , $request->idfp], ['bt_flag' , '=' , 'FP']]);
+				$query4->update([
+					'bt_statuspenerimaan' => $statuspb,
+				]);
+
+				$query4 = fakturpembelian::where('fp_idfaktur' , '=' , $request->idfp);
+				$query4->update([
+					'fp_terimabarang' => 'SUDAH',
+				]);
 		
 		
 		}
@@ -2653,6 +2676,44 @@ $indexakun=0;
 
 	}
 
+
+	public function cetakterimabarang($id){
+		
+		$string = explode(",", $id);
+		$flag = $string[1];
+		$id = $string[0];
+
+		
+		if($flag == 'PO'){
+			
+			$idpo =$id;	
+			
+			$data['judul'] = DB::select("select *  from penerimaan_barang  where  pb_po = '$idpo'");
+			for($i = 0 ; $i < count($data['judul']); $i++){
+				$idlpb = $data['judul'][$i]->pb_lpb;
+				$idpb = $data['judul'][$i]->pb_id;
+
+				$data['barang'][] = DB::select("select * from penerimaan_barangdt , pembelian_orderdt, masteritem, spp where pbdt_po = podt_idpo and pbdt_po = '$idpo'  and podt_kodeitem = pbdt_item and podt_kodeitem = kode_item and pbdt_item = kode_item and pbdt_idspp = podt_idspp and pbdt_idpb ='$idpb' and pbdt_idspp = spp_id");
+			}
+		}
+		else if($flag == 'FP') {
+			
+			$idfp = $id;
+
+			$data['judul'] = DB::select("select * from penerimaan_barang, faktur_pembelian where pb_fp = '$idfp' and pb_fp = fp_idfaktur");
+			
+			for($c=0; $c < count($data['judul']); $c++){
+				$idlpb = $data['judul'][$c]->pb_lpb;
+				$idpb = $data['judul'][$c]->pb_id;
+
+				$data['barang'][] = DB::select("select * from penerimaan_barangdt , faktur_pembelian, faktur_pembeliandt, masteritem where fpdt_idfp = pbdt_idfp and pbdt_idfp = '$idfp'  and fpdt_kodeitem = pbdt_item and fpdt_kodeitem = kode_item and pbdt_item = kode_item  and pbdt_idfp ='$idfp' and fpdt_idfp = fp_idfaktur and fp_idfaktur = '$idfp' and pbdt_idpb ='$idpb'  ");
+			}
+		}
+			
+	//	dd($data);
+		return view('purchase/penerimaan_barang/createPDF', compact('data'));
+	}
+
 	public function ajaxpenerimaan(Request $request){
 
 		$flag = $request->flag;
@@ -2991,7 +3052,7 @@ $indexakun=0;
 
 		$data['jenisitem'] = masterJenisItemPurchase::all();			        
 		$data['cabang'] = DB::select("select * from cabang"); 
-		
+		//dd($data);
 	
 		return view('purchase/fatkur_pembelian/create', compact('data'));
 	}

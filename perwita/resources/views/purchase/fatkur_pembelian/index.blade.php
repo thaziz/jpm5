@@ -115,12 +115,12 @@
 
                          <td align="center"> 
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
-                            <a title="Edit" class="btn btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
+                            <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
                             <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             </a> 
                             @endif
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
-                            <a title="Hapus" class="btn btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
+                            <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus({{$faktur->fp_idfaktur}})">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                             </a> 
                             @endif
@@ -130,16 +130,16 @@
                          <td align="center">-</td>
                         @endif
                        @else
-                        <td align="center"> <a title="Edit" class="btn btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
+                        <td align="center"> <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
                           @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
-                          <a title="Hapus" class="btn btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
+                          <a title="Hapus" class="btn btn-sm btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
                             <i class="fa fa-trash" aria-hidden="true"></i>
                           </a> 
                           @else
                             @if($faktur->fp_status == 'Approved')
                            
                             @else
-                              <a title="Hapus" class="btn btn-success" onclick="hapusData({{$faktur->fp_idfaktur}})">
+                              <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$faktur->fp_idfaktur}})">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                               </a>
                             @endif
