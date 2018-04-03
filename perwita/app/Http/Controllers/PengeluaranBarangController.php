@@ -814,4 +814,11 @@ class PengeluaranBarangController extends Controller
 				  ->get();
 		return view('purchase/stock_opname/beritaacara',compact('data','tgl'));
 	}
+
+    public function get_gudang(Request $request){
+//dd($request);
+        $req_gudang = $request->gudang;
+        $mastergudang = DB::select(DB::raw(" SELECT mg_id,mg_namagudang,mg_cabang FROM mastergudang WHERE mg_cabang = '$req_gudang' ORDER BY mg_namagudang ASC "));
+        return $mastergudang;
+    }
 }
