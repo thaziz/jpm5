@@ -895,6 +895,8 @@ Route::post('sales/invoice/hapus_data_detail', 'sales\invoice_Controller@hapus_d
 Route::get('sales/invoice_form/{nomor}/nota', 'sales\invoice_Controller@cetak_nota');
 Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@penyebut');
 // end invoice
+// invoice pembetulan
+Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
 
 // update faktur pajak
 
