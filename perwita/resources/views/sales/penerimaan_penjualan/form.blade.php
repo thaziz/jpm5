@@ -181,13 +181,6 @@
                               
                             </tr>
                             <tr>
-                                  <td style="width:120px; padding-top: 0.4cm">Total Uang Muka (-)</td>
-                                <td colspan="3">
-                                    <input type="text"  class="form-control um_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0" >
-                                    <input type="hidden" name="um" class="form-control um" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
-                                </td>
-                            </tr>
-                            <tr>
                                   <td style="width:120px; padding-top: 0.4cm">Total Debet (+)</td>
                                 <td colspan="3">
                                     <input type="text"  class="form-control ed_debet_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0" >
