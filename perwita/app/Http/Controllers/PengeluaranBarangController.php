@@ -65,7 +65,12 @@ class PengeluaranBarangController extends Controller
 					->get();
 		$item   = DB::table('masteritem')
 					->get();
-		return view('purchase/pengeluaran_barang/create',compact('pb','now','cabang','item'));
+
+        $gudang = DB::table('mastergudang')
+            ->get();
+        $kodecabang = session::get('cabang');
+        $namacabang = DB::select(" SELECT nama FROM cabang WHERE kode = '$kodecabang' ");
+        return view('purchase/pengeluaran_barang/create', compact('pb','now','cabang','item','gudang','kodecabang','namacabang'));
 	}
 
 	public function detail() {
