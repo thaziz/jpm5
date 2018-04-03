@@ -759,15 +759,15 @@ Route::get('sales/deliveryordercabangtracking/table','trackingdoController@getda
 Route::get('sales/deliveryordercabangtracking/autocomplete','trackingdoController@autocomplete');
 Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoController@getdata');
 // delivery order
-Route::get('sales/deliveryorder', 'sales\do_controller@index');
-Route::get('sales/deliveryorderform', 'sales\do_controller@form');
-Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
-Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
-Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
-Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
-Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
-Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
-Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
+Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
+Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
+Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
+Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
+Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
+Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
+Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
+Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
 
 Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
@@ -1164,6 +1164,10 @@ Route::get('suratketerangankerjapengajuankpr', 'SuratController@pdf_suratketeran
 
 //********KEUANGAN********
 
+Route::get('master_keuangan/err_cek', function(){
+  return view('keuangan.err.err_laporan');
+});
+
 //neraca
 
 Route::get('master_keuangan/neraca/{throtle}', [
@@ -1254,6 +1258,7 @@ Route::get('master_keuangan/kelompok_akun/get_data', 'master_keuangan\kelompok_a
 Route::post('master_keuangan/kelompok_akun/save_data', 'master_keuangan\kelompok_akun_Controller@save_data');
 Route::post('master_keuangan/kelompok_akun/hapus_data', 'master_keuangan\kelompok_akun_Controller@hapus_data');
 // end kelompok akun
+
 //saldo akun
 
 Route::get('master_keuangan/saldo_akun', [
@@ -1272,6 +1277,15 @@ Route::post('master_keuangan/saldo_akun/save_data', [
 ]);
 
 //end saldo akun
+
+//saldo piutang
+
+Route::get('master_keuangan/saldo_piutang', [
+  'uses' => 'master_keuangan\saldo_piutang_controller@index',
+  'as'   => 'saldo_piutang.index'
+]);
+
+//end saldo piutang
 
 // jurnal_umum
 Route::get('keuangan/jurnal_umum', [
