@@ -275,17 +275,17 @@
 				<tr>
                     <td style="width:80px">Nomor</td>
                     <td >:</td>
-                    <td >{{$nota->nomor}}</td>
+                    <td >{{$nota[0]->nomor}}</td>
                 </tr>
                 <tr>
                     <td style="width:50px">Tanggal</td>
                     <td >:</td>
-                    <td >{{$nota->tanggal}}</td>
+                    <td >{{$nota[0]->tanggal}}</td>
                 </tr>
                 <tr>
                     <td style="width:100px">Kode Customer</td>
                     <td >:</td>
-                    <td >{{$nota->kode_customer}}</td>
+                    <td >{{$nota[0]->nama_customer}}</td>
                 </tr>
 			</table>
 
@@ -294,11 +294,11 @@
 					<td>Kepada Yth </td>
 				</tr>
 				<tr>
-                    <td>{{$nota->nama_penerima}}</td>
-					<td>{{$nota->alamat_penerima}}</td>
+                    <td>{{$nota[0]->nama_penerima}}</td>
+					<td>{{$nota[0]->alamat_penerima}}</td>
 				</tr>
 				<tr>
-					<td>Telpon : {{$nota->telpon_penerima}}</td>
+					<td>Telpon : {{$nota[0]->telpon_penerima}}</td>
 				</tr>
 			</table>
 		</div>
@@ -316,9 +316,9 @@
 				<tr>
 					<td class="bot right textcenter" height="25">1</td>
 					<td class="bot right textcenter">KARGO</td>
-					<td class="bot right textcenter">PENGIRIMAN KARGO KE {{$nota->tujuan}} {{$nota->nopol}}</td>
-					<td class="bot right textcenter">{{ number_format($nota->jumlah, 0, ",", ".") }} {{$nota->kode_satuan}}</td>
-					<td class="bot textright">{{ number_format($nota->total, 0, ",", ".") }}</td>
+					<td class="bot right textcenter">PENGIRIMAN KARGO DARI {{$nota[0]->asal}} KE {{$nota[0]->tujuan}} {{$nota[0]->nopol}}</td>
+					<td class="bot right textcenter">{{ number_format($nota[0]->jumlah, 0, ",", ".") }} {{$nota[0]->kode_satuan}}</td>
+					<td class="bot textright">{{ number_format($nota[0]->total, 0, ",", ".") }}</td>
 				</tr>
                 
 				

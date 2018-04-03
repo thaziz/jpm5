@@ -77,8 +77,22 @@
             </tr>
             <tr>
               <td>Cabang Penyedia</td>
+              <td><select class="form-control cabang_penyedia" name="cabang_penyedia" readonly> 
+                <option value="{{$kodecabang}}">{{$kodecabang}} - {{$namacabang[0]->nama}} </option>
+                 <!--  @foreach($cabang as $val)
+                    @if('$val->kode' == '001')
+                      <option selected="" value="$val->kode">{{$val->kode}} - {{$val->nama}}</option>
+                    @else
+                      <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                    @endif
+                  @endforeach -->
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Cabang Bagian Peminta</td>
               <td>
-                <select class="form-control cabang_penyedia" name="cabang_penyedia"> 
+                <select class="form-control cabang_peminta" id="cabang" name="cabang_peminta" onchange="getCabang()"> 
                   @foreach($cabang as $val)
                     @if('$val->kode' == '001')
                       <option selected="" value="$val->kode">{{$val->kode}} - {{$val->nama}}</option>
@@ -90,17 +104,12 @@
               </td>
             </tr>
             <tr>
-              <td>Cabang Bagian Peminta</td>
+              <td>Data Gudang</td>
               <td>
-                <select class="form-control cabang_peminta" name="cabang_peminta"> 
-                  @foreach($cabang as $val)
-                    @if('$val->kode' == '001')
-                      <option selected="" value="$val->kode">{{$val->kode}} - {{$val->nama}}</option>
-                    @else
-                      <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                    @endif
-                  @endforeach
+                <select class="form-control gudang_peminta" id="gudang" name="gudang_peminta" style="width:100%" >
+                      
                 </select>
+
               </td>
             </tr>
             <tr>
@@ -256,6 +265,8 @@ function append(p){
   var par = $(this).parents('tr');
 
 
+
+
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
     data:'id='+id,
@@ -300,6 +311,32 @@ function remove_append(p){
 
   $(par).remove();
 }
+
+$(document).ready(function(){
+  getCabang();
+});
+
+ function getCabang(){
+
+        var cabang = $('#cabang').val();
+        $.ajax({
+            type: "GET",
+            data : {gudang: cabang},
+            url : baseUrl + "/pengeluaranbarang/createpengeluaranbarang/get_gudang",
+            dataType:'json',
+            success: function(data)
+            {   
+              var kecamatan = '<option value="" selected="" disabled="">-- Pilih Gudang --</option>';
+
+              $.each(data, function(i,n){
+                    kecamatan = kecamatan + '<option value="'+n.mg_id+'">'+n.mg_namagudang+'</option>';
+              });
+
+              $('#gudang').addClass('form-control chosen-select-width');
+              $('#gudang').html(kecamatan);
+            }
+        })
+    }
 
  $('.cari_stock').change(function(){
   var id = $(this).val();

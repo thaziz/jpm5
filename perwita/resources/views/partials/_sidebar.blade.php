@@ -951,6 +951,15 @@
 
                         " href="{{ url('master_keuangan/saldo_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Akun</a>
                         </li>
+
+                        <li >
+                            <a class="sidebar master-perusahaan 
+
+                        {{ Request::is('master_keuangan/saldo_piutang') ? 'active' : '' || 
+                            Request::is('master_keuangan/saldo_piutang/*') ? 'active' : ''}} 
+
+                        " href="{{ url('master_keuangan/saldo_piutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
+                        </li>
                          
                         <li >
                             <a class="sidebar master-perusahaan 

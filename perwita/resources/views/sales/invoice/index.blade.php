@@ -65,6 +65,7 @@
                                 <th>Sisa Tagihan </th>
                                 <th>Keterangan </th>
                                 <th>No Faktur Pajak </th>
+                                <th>Status Print</th>
                                 <th style="width:10%"> Aksi </th>
                             </tr>
                         </thead>
@@ -79,11 +80,28 @@
                                 <td style="text-align:right"> {{ number_format($row->i_sisa_pelunasan, 2, ",", ".") }} </td>
                                 <td>{{ $row->i_keterangan }}</td>
                                 <td>{{ $row->i_no_faktur_pajak }}</td>
+                                <td>
+                                    @if($row->i_statusprint == 'Released')
+                                    <label class="label label-warning">{{$row->i_statusprint}}</label>
+                                    @else
+                                    <label class="label label-success">{{$row->i_statusprint}}</label>
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     <div class="btn-group ">
+                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','ubah'))
+                                        @if($row->i_statusprint == 'Released')
                                         <a  onclick="edit('{{$row->i_nomor}}')" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>
+                                        @endif
+                                        @endif
+                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','print'))
                                         <a  onclick="ngeprint('{{$row->i_nomor}}')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></a>
+                                        @endif
+                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','hapus'))
+                                        @if($row->i_statusprint == 'Released')
                                         <a  onclick="hapus('{{$row->i_nomor}}')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
+                                        @endif
+                                        @endif
                                         
 
                                     </div>
@@ -158,6 +176,7 @@
 
     function ngeprint(id){
         window.open(baseUrl+'/sales/cetak_nota/'+id);
+        location.reload();
     }
 
     function hapus(id){
