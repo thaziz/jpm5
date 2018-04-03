@@ -419,7 +419,8 @@
                             accounting.formatMoney(data.data_dt[i][0].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].dd_harga+'" name="dd_harga[]">',
                             accounting.formatMoney(data.data_dt[i][0].dd_total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+data.data_dt[i][0].dd_total+'" name="dd_total[]">',
                             accounting.formatMoney(data.data_dt[i][0].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].dd_diskon+'" name="dd_diskon[]">',
-                            accounting.formatMoney(data.data_dt[i][0].dd_total, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+data.data_dt[i][0].dd_total+'" name="harga_netto[]">',
+                            accounting.formatMoney(data.data_dt[i][0].dd_total-data.data_dt[i][0].dd_diskon, "", 2, ".",',')+
+                            '<input type="hidden" class="harga_netto" value="'+(data.data_dt[i][0].dd_total-data.data_dt[i][0].dd_diskon)+'" name="harga_netto[]">',
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);
@@ -760,7 +761,7 @@
                             accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
                             accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_total+'" name="dd_total[]">',
                             accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
-                            accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].dd_total+'" name="harga_netto[]">',
+                            accounting.formatMoney(response.data[i].dd_total-response.data[i].dd_diskon, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+(response.data[i].dd_total-response.data[i].dd_diskon)+'" name="harga_netto[]">',
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);
