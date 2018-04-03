@@ -91,21 +91,20 @@
                             
                         </tr>
                     </thead>
-                      @foreach ($data as $e)
                     <tbody>
-                      
+                      @foreach ($data as $index =>$e)
                         <tr>
-                        {{-- <td>{{ $index+1 }}</td> --}}
-                        {{-- <td>{{ $e->nomor }}</td>
+                        <td>{{ $index+1 }}</td>
+                        <td>{{ $e->nomor }}</td>
                         <td>{{ $e->tanggal }}</td>
                         <td>{{ $e->kode_customer }}</td>
                         <td>{{ $e->status }}</td>
+                        <td>{{ $e->diskon }}</td>
                         <td>{{ $e->total_net }}</td>
-                        <td>{{ $e->status_do }}</td> --}}
+                        <td>{{ $e->status_do }}</td>
                         </tr>
-
-                    </tbody>
                       @endforeach
+                    </tbody>
 
                   </table>
                 </div><!-- /.box-body -->
