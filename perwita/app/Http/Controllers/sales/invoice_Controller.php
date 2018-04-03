@@ -270,7 +270,7 @@ public function cari_do_invoice(request $request)
     $id = '0';
     if ($request->cb_pendapatan == 'KORAN') {
 
-      $temp = DB::table('delivery_order')
+  $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
@@ -1145,7 +1145,7 @@ if(count($dataItem)==0){
               return json_encode($dataInfo);
         }
 
-        return $dataJurnal['acc_penjualan'];
+        // return $dataxJurnal['acc_penjualan'];
        $acc=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
@@ -1174,7 +1174,7 @@ if(count($dataItem)==0){
       $akunPiutang=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                    
 

@@ -129,6 +129,7 @@ Route::get('pengeluaranbarang/createpengeluaranbarang', 'PengeluaranBarangContro
 Route::get('pengeluaranbarang/save_pengeluaran', 'PengeluaranBarangController@save_pengeluaran');
 Route::get('pengeluaranbarang/update_pengeluaran/{id}', 'PengeluaranBarangController@update_pengeluaran');
 Route::get('pengeluaranbarang/hapus/{id}', 'PengeluaranBarangController@hapus');
+Route::get('pengeluaranbarang/createpengeluaranbarang/get_gudang','PengeluaranBarangController@get_gudang');
 // konfirmasi pengeluaran barang
 Route::get('konfirmasipengeluaranbarang/konfirmasipengeluaranbarang' , 'PengeluaranBarangController@konfirmpengeluaranbarang');
 Route::get('konfirmasipengeluaranbarang/detailkonfirmasipengeluaranbarang/{id}' , 'PengeluaranBarangController@detailkonfirmpengeluaranbarang');
@@ -337,7 +338,7 @@ Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
 Route::get('bankkaslain/detailbankkaslain', 'PurchaseController@detailbankkaslain');
 
-Route::get('mutasi_stock/mutasi_stock', 'PurchaseController@mutasistock');
+Route::get('mutasi_stock/mutasi_stock', 'StockMutController@index');
 Route::get('mutasi_stock/createmutasi_stock', 'PurchaseController@createmutasistock');
 Route::get('mutasi_stock/detailmutasi_stock', 'PurchaseController@detailmutasistock');
 

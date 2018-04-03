@@ -219,8 +219,6 @@
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                             <button type="button" class="btn btn-warning kanan pull-right print disabled" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
                             <button type="button" class="btn btn-success kanan pull-right temp_1" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i> Simpan</button>
-                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i> Tambah Uang Muka</button>
-                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i> Tambah Biaya</button>
                             <button type="button" class="btn btn-info kanan pull-right tambah_invoice temp_1" name="btnadd" ><i class="glyphicon glyphicon-plus"></i> Pilih Nomor Invoice</button>
                         </div>
                     </div>
@@ -384,17 +382,17 @@
                                                     <tr>
                                                         <td>Akun Biaya</td>
                                                         <td style="max-width: 200px" class="">
-                                                            <select class="form-control akun_biaya" id="akun_biaya">
-                                                                <option value="0" data-accJenis ="0" data-biaya ="0">Non-Biaya</option>
+                                                            <select onchange="akun_biaya1()" class="form-control akun_biaya" id="akun_biaya">
+                                                                <option value="0" data-jenis ="D" data-biaya ="0">Non-Biaya</option>
                                                                 @foreach($akun_biaya as $val)
                                                                 <option value="{{$val->kode}}" data-biaya ="{{$val->acc_biaya}}" data-jenis ="{{$val->jenis}}">{{$val->kode}} - {{$val->nama}}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
                                                         <td colspan="2">
-                                                            <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control">
-                                                            <input type="hidden" class="jenis_biaya">
-                                                            <input type="hidden" class="akun_acc_biaya">
+                                                            <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control" value="0">
+                                                            <input type="hidden" class="jenis_biaya " value="D">
+                                                            <input type="hidden" class="akun_acc_biaya" value="0">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1035,7 +1033,8 @@ $('#btnsave').click(function(){
                         accounting.formatMoney(response.data[i].i_sisa_pelunasan, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_pelunasan+'">',
                         '<input type="text" readonly class="form-control i_bayar_text input-sm" value="0">'+
                         '<input type="hidden" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
-                        '<input type="hidden" readonly class="form-control i_biaya_admin input-sm" name="i_biaya_admin[]" value="0">'+
+                        '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="0">'+
+                        '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
                         '<input type="text" class="form-control input-sm" name="i_keterangan[]" value="">',
                         '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
@@ -1059,16 +1058,16 @@ $('#btnsave').click(function(){
     })
 });
 
-$('.akun_biaya').change(function(){
-   var jenis =  $(this).find(':selected').data('jenis');
-   var biaya =  $(this).find(':selected').data('biaya');
+function akun_biaya1(){
+   var jenis =  $('.akun_biaya').find(':selected').data('jenis');
+   var biaya =  $('.akun_biaya').find(':selected').data('biaya');
    console.log(jenis);
    $('.jenis_biaya').val('');
    $('.akun_acc_biaya').val('');
    $('.jenis_biaya').val(jenis);
    $('.akun_acc_biaya').val(biaya);
    $('.jumlah_biaya_admin').val('');
-});
+}
 
 // hitung total
 function hitung() {
@@ -1093,13 +1092,20 @@ function hitung() {
     if (total < 0) {
         total = 0;
     }
+
+    if (angka > sisa_terbayar) {
+        $('.akun_biaya').val('B3').trigger('chosen:updated');
+        akun_biaya1();
+        var jenis         = $('.jenis_biaya').val();
+        var akun_acc_biaya= $('.akun_acc_biaya').val();
+    }
     $('.ed_jumlah_bayar').val(accounting.formatMoney(angka,"",2,'.',','));
     $('.jumlah_bayar').val(angka);
 
     $('.ed_total').val(accounting.formatMoney(total,"",2,'.',','))
     $('.total').val(total);
     angka = parseInt(angka);
-        console.log(biaya_admin);
+  
     
     if (jenis == 'D') {
         $('.total_bayar').val(accounting.formatMoney(angka+biaya_admin,"",2,'.',','))
@@ -1107,7 +1113,7 @@ function hitung() {
         var hasil = angka-sisa_terbayar;
         if (hasil <0) {
             hasil = 0;
-        }
+    }
         $('.jumlah_biaya_admin').val(accounting.formatMoney(hasil,"",0,'.',','))
         console.log(angka)
         $('.total_bayar').val(accounting.formatMoney(angka-biaya_admin,"",2,'.',','))
@@ -1178,7 +1184,9 @@ function histori(p){
                     $('.sisa_terbayar').val(jumlah);
 
                     var i_bayar        = $(par).find('.i_bayar').val();
-                    var biaya_admin    = $(par).find('.i_biaya_admin').val();
+                    var i_debet    = $(par).find('.i_debet').val();
+                    var i_kredit    = $(par).find('.i_kredit').val();
+                    var biaya_admin = parseInt(i_debet)+parseInt(i_kredit);
                     console.log(i_bayar);
                     $('.angka').val(i_bayar);
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
@@ -1260,10 +1268,14 @@ $('#btnsave2').click(function(){
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
     var tes                  = [];
     var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
-    console.log(angka);
+    var jumlah_biaya         = 0;
+    if (jenis == 'K') {
+        $(par).find('.i_kredit').val(jumlah_biaya_admin);
+    }else{
+        $(par).find('.i_debet').val(jumlah_biaya_admin);
+    }
     $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
     $(par).find('.i_bayar').val(angka);
-    $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
     var temp = 0;
     table_data.$('.i_bayar').each(function(){
@@ -1273,10 +1285,17 @@ $('#btnsave2').click(function(){
     })
 
     var temp1 = 0;
-    table_data.$('.i_biaya_admin').each(function(){
+    table_data.$('.i_debet').each(function(){
         var i_bayar = Math.round($(this).val()).toFixed(2);
             i_bayar = parseFloat(i_bayar);
         temp1 += i_bayar;
+    })
+
+    var temp2 = 0;
+    table_data.$('.i_kredit').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp2 += i_bayar;
     })
 
 
@@ -1286,6 +1305,9 @@ $('#btnsave2').click(function(){
     $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('.ed_debet').val(temp1);
     $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    $('.ed_kredit').val(temp2);
+    $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
     hitung_bayar();
     $('#modal_info').modal('hide');
 
