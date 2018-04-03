@@ -1312,6 +1312,14 @@
 
                             " href="{{ url('sales/invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice </a>
                             </li>
+                            <li >
+                                <a class="sidebar master-perusahaan 
+
+                            {{Request::is('sales/invoice_pembetulan') ? 'active' : '' || 
+                            Request::is('sales/invoice_pembetulan/*') ? 'active' : ''}} 
+
+                            " href="{{ url('sales/invoice_pembetulan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice Pembetulan</a>
+                            </li>
                             <!--
                             <li class="sidebar master-perusahaan {{Request::is('sales/fakturpajak') ? 'active' : ''}} ">
                                 <a href="{{ url('sales/fakturpajak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pajak</a>
