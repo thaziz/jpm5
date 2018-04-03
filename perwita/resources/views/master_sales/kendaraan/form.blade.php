@@ -103,7 +103,7 @@
                                 <td style="width:110px; padding-top: 0.4cm">Subcon</td>
                                 <td colspan="3">
                                     <select class="form-control" name="cb_subcon" >
-                                    <option></option>
+                                        <option value="0">NON SUBCON</option>
                                     @foreach ($subcon as $row)
                                         <option value="{{$row->kode}}">{{$row->nama}}</option>
                                     @endforeach

@@ -1,8 +1,21 @@
-  @extends('main')
+ @extends('main')
 
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+  .textcenter{
+    text-align: center;
+  }
+  .textright{
+    text-align: right;
+  }
+
+  .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
@@ -60,48 +73,15 @@
                                           
                                           <tr>
                                               
-                                           
-                                                @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
-                                                    <tr>
-                                                    <td width="150px"> Cabang </td>
-                                                    <td>
-                                                      <select class='form-control chosen-select-width1 cabang' name="cabang">
-                                                          <option value="">
-                                                            Pilih-Cabang
-                                                          </option>
-
-                                                          @foreach($data['cabang'] as $cabang)
-                                                            <option value="{{$cabang->kode}}">
-                                                              {{$cabang->nama}}
-                                                            </option>
-                                                          @endforeach
-                                                         </select>
-                                                    </td>
-                                                    </tr>
-                                                    @else
-                                                    <tr>
-                                                    <td width="150px"> Cabang </td>
-                                                    <td>
-                                                      <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
-                                                          <option value="">
-                                                            Pilih Cabang
-                                                          </option>
-
-                                                          @foreach($data['cabang'] as $cabang)
-                                                            @if($cabang->kode == Auth::user()->kode_cabang)
-                                                            <option selected="" value="{{$cabang->kode}}">
-                                                              {{$cabang->nama}}
-                                                            </option>
-                                                            @else
-                                                            <option value="{{$cabang->kode}}">
-                                                              {{$cabang->nama}}
-                                                            </option>
-                                                            @endif
-                                                          @endforeach
-                                                         </select>
-                                                    </td>
-                                                    </tr>
-                                                    @endif
+                                             <tr>
+                                              <td> Cabang </td>
+                                              <td>  <select class="form-control disabled cabang" name="cabang">
+                                                @foreach($data['cabang'] as $cabang)
+                                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                                @endforeach
+                                              </select> 
+                                              </td>
+                                             </tr>
                                               
                                           </tr>
 

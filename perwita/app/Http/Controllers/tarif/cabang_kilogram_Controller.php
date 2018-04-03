@@ -970,7 +970,7 @@ $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     'kode_sama_kilo' => $request->kode_sama_kilo,
                     'kode_detail_kilo' => $request->kode2,
                     'keterangan' => 'Tarif Kg selanjutnya <= 10 Kg',
-                    'harga' => $request->tarif0kg_reguler,
+                    'harga' => $request->tarif10kg_reguler,
                     //BAWAH SAMA SEMUA
                     'crud'=>$crud,
                     'waktu' => $request->waktu_regular,

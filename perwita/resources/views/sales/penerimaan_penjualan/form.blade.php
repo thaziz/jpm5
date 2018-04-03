@@ -2,7 +2,7 @@
 
 @section('title', 'dashboard')
 
-@section('content')
+@section('content')customer
 <style type="text/css">
       .id {display:none; }
       .cssright { text-align: right; }
@@ -107,15 +107,15 @@
                             </tr>
                             @if(Auth::user()->punyaAkses('Kwitansi','cabang'))
                             <tr>
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td> 
                                 <td colspan="20">
                                     <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if(Auth()->user()->kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                         @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                         @endif
                                     @endforeach
                                     </select>
@@ -129,22 +129,22 @@
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if(Auth()->user()->kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                         @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                         @endif
                                     @endforeach
                                     </select>
                                 </td>
                             </tr>
                             @endif
-                            <tr class="customer_tr">
+                            <tr class="">
                                 <td style="padding-top: 0.4cm">Customer</td>
-                                <td class="customer_td">
-                                    <select class="chosen-select-width"  name="customer " id="customer " style="width:100%" >
+                                <td class="">
+                                    <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
-                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
                                     @endforeach
                                     </select>
                                 </td>
@@ -383,15 +383,18 @@
                                          
                                                     <tr>
                                                         <td>Akun Biaya</td>
-                                                        <td style="max-width: 200px" class="akun_biaya_td">
-                                                            <select class="form-control biaya_admin chosen-select-width1">
-                                                                @foreach($akun as $val)
-                                                                <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+                                                        <td style="max-width: 200px" class="">
+                                                            <select class="form-control akun_biaya" id="akun_biaya">
+                                                                <option value="0" data-accJenis ="0" data-biaya ="0">Non-Biaya</option>
+                                                                @foreach($akun_biaya as $val)
+                                                                <option value="{{$val->kode}}" data-biaya ="{{$val->acc_biaya}}" data-jenis ="{{$val->jenis}}">{{$val->kode}} - {{$val->nama}}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
                                                         <td colspan="2">
                                                             <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control">
+                                                            <input type="hidden" class="jenis_biaya">
+                                                            <input type="hidden" class="akun_acc_biaya">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -730,7 +733,8 @@ var config1 = {
                    '.chosen-select-deselect'  : {allow_single_deselect:true},
                    '.chosen-select-no-single' : {disable_search_threshold:10},
                    '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                   '.chosen-select-width1'     : {width:"100%"}
+                   '.chosen-select-width1'     : {width:"100%"},
+                   'parser_config': { copy_data_attributes: true }
                  }
     for (var selector in config1) {
       $(selector).chosen(config1[selector]);
@@ -975,7 +979,7 @@ $('.tambah_invoice').click(function(){
         toastr.warning('Cabang Harus Dipilih')
         return 1
     }
-    if ($('#customer ').val() == '0') {
+    if ($('.customer ').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
@@ -985,7 +989,7 @@ $('.tambah_invoice').click(function(){
     }
     
     var cb_cabang = $('.cb_cabang').val();
-    var cb_customer = $('#customer ').val();
+    var cb_customer = $('.customer').val();
 
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
@@ -1055,16 +1059,33 @@ $('#btnsave').click(function(){
     })
 });
 
+$('.akun_biaya').change(function(){
+   var jenis =  $(this).find(':selected').data('jenis');
+   var biaya =  $(this).find(':selected').data('biaya');
+   console.log(jenis);
+   $('.jenis_biaya').val('');
+   $('.akun_acc_biaya').val('');
+   $('.jenis_biaya').val(jenis);
+   $('.akun_acc_biaya').val(biaya);
+   $('.jumlah_biaya_admin').val('');
+});
+
 // hitung total
 function hitung() {
     var angka         = $('.angka').val();
     var biaya_admin   = $('.jumlah_biaya_admin').val();
+    var jenis         = $('.jenis_biaya').val();
+    var akun_acc_biaya= $('.akun_acc_biaya').val();
+
     if (biaya_admin == '') {
         biaya_admin = 0;
     }else{
         biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
     }
-    console.log()
+    biaya_admin = parseInt(biaya_admin);
+    
+        console.log(biaya_admin);
+    
     var sisa_terbayar = $('.sisa_terbayar').val();
     sisa_terbayar     = parseFloat(sisa_terbayar);
     angka             = angka.replace(/[^0-9\-]+/g,"");
@@ -1072,16 +1093,25 @@ function hitung() {
     if (total < 0) {
         total = 0;
     }
-    if (angka > sisa_terbayar) {
-        angka = sisa_terbayar;
-    }
     $('.ed_jumlah_bayar').val(accounting.formatMoney(angka,"",2,'.',','));
     $('.jumlah_bayar').val(angka);
+
     $('.ed_total').val(accounting.formatMoney(total,"",2,'.',','))
     $('.total').val(total);
     angka = parseInt(angka);
-    biaya_admin = parseInt(biaya_admin);
-    $('.total_bayar').val(accounting.formatMoney(angka+biaya_admin,"",2,'.',','))
+        console.log(biaya_admin);
+    
+    if (jenis == 'D') {
+        $('.total_bayar').val(accounting.formatMoney(angka+biaya_admin,"",2,'.',','))
+    }else if(jenis == 'K'){
+        var hasil = angka-sisa_terbayar;
+        if (hasil <0) {
+            hasil = 0;
+        }
+        $('.jumlah_biaya_admin').val(accounting.formatMoney(hasil,"",0,'.',','))
+        console.log(angka)
+        $('.total_bayar').val(accounting.formatMoney(angka-biaya_admin,"",2,'.',','))
+    }
 
 }
 
@@ -1150,7 +1180,7 @@ function histori(p){
                     var i_bayar        = $(par).find('.i_bayar').val();
                     var biaya_admin    = $(par).find('.i_biaya_admin').val();
                     console.log(i_bayar);
-                    $('.angka').val(i_bayar-biaya_admin);
+                    $('.angka').val(i_bayar);
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
                     $('.jumlah_bayar').val(i_bayar);
                     $('.jumlah_biaya_admin ').val(biaya_admin);
@@ -1214,6 +1244,9 @@ $('#btnsave2').click(function(){
     jumlah_bayar             = parseInt(jumlah_bayar);
     var akun_biaya           = $('.akun_biaya').val();
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
+    var jenis                = $('.jenis_biaya').val();
+    var akun_acc_biaya       = $('.akun_acc_biaya').val();
+
     if (jumlah_biaya_admin == '') {
         jumlah_biaya_admin = 0;
     }else{
@@ -1228,8 +1261,8 @@ $('#btnsave2').click(function(){
     var tes                  = [];
     var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
     console.log(angka);
-    $(par).find('.i_bayar_text').val(accounting.formatMoney(angka+jumlah_biaya_admin,"",2,'.',','));
-    $(par).find('.i_bayar').val(angka+jumlah_biaya_admin);
+    $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
+    $(par).find('.i_bayar').val(angka);
     $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
     var temp = 0;
@@ -1239,9 +1272,20 @@ $('#btnsave2').click(function(){
         temp += i_bayar;
     })
 
+    var temp1 = 0;
+    table_data.$('.i_biaya_admin').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp1 += i_bayar;
+    })
+
+
+
 
     $('.total_jumlah_bayar').val(temp);
     $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_debet').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
     hitung_bayar();
     $('#modal_info').modal('hide');
 
@@ -1418,12 +1462,12 @@ $('.cari_um').click(function(){
         toastr.warning('Akun Harus Dipilih')
         return 1
     }
-    if ($('#customer').val() == '0') {
+    if ($('.customer').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
     var cb_cabang = $('.cb_cabang').val();
-    var cb_customer = $('#customer').val();
+    var cb_customer = $('.customer').val();
 
     $.ajax({
         url:baseUrl + '/sales/cari_um',
@@ -1441,7 +1485,7 @@ $('#btnadd_um').click(function(){
         toastr.warning('Akun Harus Dipilih')
         return 1
     }
-    if ($('#customer').val() == '0') {
+    if ($('.customer').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }

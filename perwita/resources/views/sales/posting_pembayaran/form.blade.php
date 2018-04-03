@@ -82,7 +82,7 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr class="disabled">
+                            <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td>
                                     <select class="form-control cabang chosen-select-width" name="cb_cabang" >

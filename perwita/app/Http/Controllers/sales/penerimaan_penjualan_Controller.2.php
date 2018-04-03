@@ -78,14 +78,16 @@ class penerimaan_penjualan_Controller extends Controller
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
         $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
-        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,cabang FROM customer ORDER BY nama ASC ");
         $akun = DB::table('d_akun')
                   ->get();
 
+        $akun_biaya = DB::table('akun_biaya')
+                  ->get();
 
         $tgl  = Carbon::now()->format('d/m/Y');
        
-        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl' ));
+        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl','akun_biaya' ));
     }
 
 
@@ -158,8 +160,7 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function akun_biaya(request $request)
     {
-        $akun = DB::table('d_akun')
-                  ->where('kode_cabang',$request->cabang)
+        $akun = DB::table('akun_biaya')
                   ->get();
         return view('sales.penerimaan_penjualan.akun_biaya',compact('akun'));
     }

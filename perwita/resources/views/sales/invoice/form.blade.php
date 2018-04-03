@@ -95,7 +95,7 @@
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
-                                        <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} </option>
+                                        <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->cabang}} </option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -166,7 +166,6 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
-                            <button type="button" onclick="ngeprint()" class="btn btn-warning print disabled" ><i class="glyphicon glyphicon-print"></i> Print</button>
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
@@ -290,7 +289,7 @@
                             </form>
                           </div>
                           <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary" id="btnsave">Save changes</button>
+                            <button type="submit" class="btn btn-primary" id="btnsave">Append</button>
                           </div>
                     </div>
                   </div>
@@ -406,7 +405,8 @@
         success:function(data){
             $('.customer_td').html(data);
             $('#customer').trigger('chosen:updated');
-            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+            // toastr.info('Data Telah Dirubah Harap Periksa Kembali');
+
         },
         error:function(){
             location.reload();
@@ -751,6 +751,7 @@
             }
 
         })
+        toastr.info('Tekan simpan untuk menyimpan semua data');
    });
    // hapus detail
    function hapus_detail(o) {
@@ -854,7 +855,7 @@
                     timer: 1000,
                    showConfirmButton: true
                     },function(){
-                        // location.reload();
+                        window.location='../sales/invoice';
                         $('.simpan').addClass('disabled');
                         $('.print').removeClass('disabled');
 
@@ -880,6 +881,18 @@
     }
     $('.reload').click(function(){
     location.reload();
+})
+
+$('#cb_pendapatan').change(function(){
+    if ($(this).val() == 'KARGO') {
+        $('#cb_jenis_ppn').val(1);
+    }
+    if ($(this).val() == 'PAKET') {
+        $('#cb_jenis_ppn').val(3);
+    }
+    if ($(this).val() == 'KORAN') {
+        $('#cb_jenis_ppn').val(1);
+    }
 })
 </script>
 @endsection

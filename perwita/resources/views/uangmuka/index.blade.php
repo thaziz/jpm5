@@ -5,7 +5,7 @@
 @section('content')
 
 
-<<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> UANG MUKA PEMBELIAN </h2>
                     <ol class="breadcrumb">

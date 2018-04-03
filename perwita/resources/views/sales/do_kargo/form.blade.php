@@ -17,6 +17,9 @@
 .tabel_tarif tbody tr{
     cursor: pointer;
 }
+.form-control{
+    text-transform: uppercase;
+}
 </style>
 
 
@@ -41,7 +44,7 @@
                                 <table class="table table-bordered tabel_header table-striped"> 
                                     <tr>
                                         <td style="width: 150px;">Nomor</td>
-                                        <td><input type="text" name="nomor_do" class="nomor_do form-control input-sm"></td>
+                                        <td><input style="text-transform: uppercase;" type="text" name="nomor_do" class="nomor_do form-control input-sm"></td>
                                     </tr>
                                     <tr>
                                         <td>Tanggal</td>
@@ -99,7 +102,7 @@
                                             <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
                                                 <option value="0">Pilih - Customer</option>
                                             @foreach($customer as $val)
-                                                <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
+                                                <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}-{{$val->cabang}}</option>
                                             @endforeach
                                             </select>
                                         </td>
@@ -142,7 +145,7 @@
                                         <td>
                                             <select name="status_kendaraan" onchange="cari_nopol_kargo()" class="form-control status_kendaraan chosen-select-width">
                                                 <option value="OWN">OWN</option>
-                                                <option value="SUB">SUB</option>
+                                                <option value="SUB">SUBCON</option>
                                             </select>
                                         </td>
                                     </tr>
@@ -188,26 +191,26 @@
                                         <td colspan="3"><input type="text" readonly="" class="nama_subcon_detail form-control input-sm"></td>
                                     </tr>
                                     <tr>
-                                        <td>Driver</td>
-                                        <td colspan="3"><input type="text" name="driver" class="driver form-control input-sm"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Co Driver</td>
-                                        <td colspan="3"><input type="text" name="co_driver" class="co_driver form-control input-sm"></td>
-                                    </tr>
-                                    <tr>
                                         <td>Ritase</td>
                                         <td colspan="3">
-                                            <select name="ritase" class="form-control ritase chosen-select-width input-sm">
+                                            <select  name="ritase" class="form-control ritase chosen-select-width input-sm">
                                                 <option value="driver">Driver</option>
                                                 <option value="driver_co">Driver & Co driver</option>
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr class="driver_tr">
+                                        <td>Driver</td>
+                                        <td colspan="3"><input type="text" name="driver" class="driver form-control input-sm"></td>
+                                    </tr>
+                                    <tr class="co_driver_tr" hidden="">
+                                        <td>Co Driver</td>
+                                        <td colspan="3"><input type="text" name="co_driver" class="co_driver form-control input-sm"></td>
+                                    </tr>
                                     <tr>
                                         <td>Keterangan</td>
                                         <td colspan="3">
-                                            <input type="text" name="keterangan_detail" class="keterangan_detail form-control">
+                                            <input type="text" name="keterangan_detail" style="text-transform: uppercase;" class="keterangan_detail form-control">
                                         </td>
                                     </tr>
                                     <tr>
@@ -280,7 +283,7 @@
                                     <tr>
                                         <td>Total</td>
                                         <td colspan="3">
-                                            <input type="text" readonly="" value="0" class="total_text form-control total input-sm">
+                                            <input type="text" readonly="" value="0" class="total_text form-control  input-sm">
                                             <input type="hidden" readonly="" value="0" name="total" class=" form-control total input-sm">
                                         </td>
                                     </tr>
@@ -338,9 +341,9 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
+                             {{--                <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
                                                 <i class="fa fa-print"> Print</i>
-                                            </button>
+                                            </button> --}}
                                             <button type="button" class="pull-right btn btn-primary save">
                                                 <i class="fa fa-save"> Simpan</i>
                                             </button>
@@ -515,12 +518,67 @@ function cari_nopol_kargo() {
     var nama_subcon      = $('.nama_subcon').val();
     var tipe_angkutan    = $('.tipe_angkutan').val();
     var cabang_select    = $('.cabang_select').val();
+    $('.nama_subcon_detail').val('');
     
     $.ajax({
         url:baseUrl + '/sales/cari_nopol_kargo',
         data:{status_kendaraan,nama_subcon,tipe_angkutan,cabang_select},
         success:function(data){
             $('.nopol_dropdown').html(data);
+        }
+    })
+}
+function reseting() {
+    $('.satuan').val('');
+    $('.tarif_dasar_text').val('');
+    $('.tarif_dasar').val('');
+    $('.harga_master').val('');
+    $('.harga_master').val('');
+    $('#kode_tarif').val('');
+    $('.kcd_id').val('');
+    $('.kcd_dt').val('');
+    $('.total_text').val('0');
+    $('.total').val('0');
+
+    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
+}
+// cari kontrak
+function cari_kontrak() {
+    var cabang      = $('.cabang_select').val();
+    var customer_do = $('.customer').val();
+     $.ajax({
+        url:baseUrl + '/sales/cari_kontrak',
+        data:{cabang,customer_do},
+        dataType:'json',
+        success:function(data){
+            if (data.status == 1) {
+                $('.kontrak_tarif').prop('checked',true);
+                $('.discount ').addClass('disabled')
+                $('.discount ').attr('readonly',true)
+                // $('.kontrak_td').addClass('disabled');
+            }else{
+                $('.kontrak_tarif').prop('checked',false);
+                // $('.kontrak_td').addClass('disabled');
+                $('.discount ').removeClass('disabled')
+                $('.discount ').attr('readonly',false)
+            }
+
+            $('.company_pengirim').val(data.data.nama);
+            $('.nama_pengirim').val(data.data.nama);
+            $('.alamat_pengirim').val(data.data.alamat);
+            $('.telpon_pengirim').val(data.data.telpon);
+
+            $('.satuan').val('');
+            $('.tarif_dasar_text').val('');
+            $('.tarif_dasar').val('');
+            $('.harga_master').val('');
+            $('.harga_master').val('');
+            $('#kode_tarif').val('');
+            $('.kcd_id').val('');
+            $('.kcd_dt').val('');
+            reseting();
+        },
+        error:function(){
         }
     })
 }
@@ -543,6 +601,8 @@ function ganti_nota(argument) {
             $('.kcd_id').val('');
             $('.kcd_dt').val('');
             cari_nopol_kargo();
+            cari_kontrak();
+            reseting();
         },
         error:function(){
             location.reload();
@@ -761,7 +821,7 @@ $('.save').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                       // location.reload();
+                       window.location.href='../sales/deliveryorderkargo';
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);
@@ -794,54 +854,19 @@ $('.save').click(function(){
 $('.reload').click(function(){
     location.reload();
 });
-// cari kontrak
-function cari_kontrak() {
-    var cabang      = $('.cabang_select').val();
-    var customer_do = $('.customer').val();
-     $.ajax({
-        url:baseUrl + '/sales/cari_kontrak',
-        data:{cabang,customer_do},
-        dataType:'json',
-        success:function(data){
-            if (data.status == 1) {
-                $('.kontrak_tarif').prop('checked',true);
-                $('.discount ').addClass('disabled')
-                $('.discount ').attr('readonly',true)
-                // $('.kontrak_td').addClass('disabled');
-            }else{
-                $('.kontrak_tarif').prop('checked',false);
-                // $('.kontrak_td').addClass('disabled');
-                $('.discount ').removeClass('disabled')
-                $('.discount ').attr('readonly',false)
-            }
-
-            $('.satuan').val('');
-            $('.tarif_dasar_text').val('');
-            $('.tarif_dasar').val('');
-            $('.harga_master').val('');
-            $('.harga_master').val('');
-            $('#kode_tarif').val('');
-            $('.kcd_id').val('');
-            $('.kcd_dt').val('');
-        },
-        error:function(){
-        }
-    })
-}
 
 
-function reseting() {
-    $('.satuan').val('');
-    $('.tarif_dasar_text').val('');
-    $('.tarif_dasar').val('');
-    $('.harga_master').val('');
-    $('.harga_master').val('');
-    $('#kode_tarif').val('');
-    $('.kcd_id').val('');
-    $('.kcd_dt').val('');
-
-    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
-}
+$('.ritase').change(function(){
+    var ini = $(this).val();
+    console.log(ini);
+    if (ini == 'driver') {
+        $('.driver_tr').attr('hidden',false);
+        $('.co_driver_tr').attr('hidden',true);
+    }else{
+        $('.driver_tr').attr('hidden',false);
+        $('.co_driver_tr').attr('hidden',false);
+    }
+});
 
 // ngeprint
 $('.ngeprint').click(function(){
