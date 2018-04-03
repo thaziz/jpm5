@@ -3,6 +3,7 @@
     <tr>
         <th align="center">No</th>
         <th>Nomor Invoice</th>
+        <th>Customer</th>
         <th>Tgl Invoice</th>
         <th>Keterangan</th>
         <th>Harga Netto</th>
@@ -17,6 +18,7 @@
             {{$val->i_nomor}}
             <input type="hidden" class="i_nomor_invoice">
         </td>
+        <td>{{$val->nama}}</td>
         <td>{{$val->i_tanggal}}</td>
         <td>{{$val->i_keterangan}}</td>
         <td align="right">{{number_format($val->i_netto, 2, ",", ".")}}</td>
