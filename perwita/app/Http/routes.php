@@ -898,9 +898,10 @@ Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@pen
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
 Route::get('sales/invoice_pembetulan_create', 'sales\invoice_pembetulan_controller@invoice_pembetulan_create');
-Route::get('sales/cari_invoice', 'sales\invoice_pembetulan_controller@cari_invoice');
+Route::get('sales/cari_invoice_pembetulan', 'sales\invoice_pembetulan_controller@cari_invoice_pembetulan');
+Route::get('sales/pilih_invoice_pembetulan', 'sales\invoice_pembetulan_controller@pilih_invoice_pembetulan');
 
-// update faktur pajak
+// update faktur 
 
 Route::get('sales/faktur_pajak', 'sales\faktur_pajak_Controller@index');
 Route::get('sales/faktur_pajak_cari', 'sales\faktur_pajak_Controller@tampil_auto_complete');
