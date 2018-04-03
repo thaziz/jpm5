@@ -427,7 +427,7 @@ Route::delete('mastersupplier/deletesupplier/{id}', 'MasterPurchaseController@de
 Route::get('mastersupplier/detailsupplier/{id}', 'MasterPurchaseController@detailsupplier');
 Route::get('mastersupplier/createPdfMasterSupplier', 'MasterPurchaseController@createPdfMasterSupplier');
 Route::get('mastersupplier/getacchutang', 'MasterPurchaseController@getacchutang');
-
+Route::get('mastersupplier/getnosupplier', 'MasterPurchaseController@getnosupplier');
 
 
 

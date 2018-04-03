@@ -60,17 +60,29 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                         <div class="row">
-
+                        @if(session::get('cabang') != 000)
                          <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label> Cabang  </label>
-                          <select class="form-control disabled cabang" name="cabang">
+                          <select class="form-control chosen-select-width disabled cabang" name="cabang">
                             @foreach($cabang as $cabang)
                             <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
                             @endforeach
                           </select>                          
                         </div>
-                        </div>  
+                        </div>
+                        @else
+                          <div class="form-group">
+                         <div class="col-sm-8 col-sm-offset-2">
+                          <label> Cabang  </label>
+                          <select class="form-control cabang" name="cabang">
+                            @foreach($cabang as $cabang)
+                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
+                            @endforeach
+                          </select>                          
+                        </div>
+                        </div>
+                        @endif  
 
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
@@ -180,6 +192,7 @@
                  }
 
             $('.suppilerid').chosen(config2); 
+            $('.cabang').chosen(config2);
             },0);
 
 
@@ -427,6 +440,45 @@
       })
     }
     
+
+      $('.cabang').change(function(){
+              var comp = $('.cabang').val();
+          $.ajax({    
+              type :"get",
+              data : {comp},
+              url : baseUrl + '/voucherhutang/getnota',
+             dataType : 'json',
+              success : function(data){
+              
+                  var d = new Date();
+                  
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
+
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
+
+                  console.log(d);
+
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+
+                
+                   nota = 'VC' + month + year2 + '/' + comp + '/' +  data.idvc;
+                  console.log(nota);
+                  $('.bukti').val(nota);
+              }
+          })
+      })
 
       var comp = $('.cabang').val();
         $.ajax({    

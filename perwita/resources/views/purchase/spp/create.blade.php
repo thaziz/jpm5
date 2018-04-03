@@ -75,11 +75,21 @@
                                               
                                              <tr>
                                               <td> Cabang </td>
-                                              <td>  <select class="form-control disabled cabang" name="cabang">
-                                                @foreach($data['cabang'] as $cabang)
+                                              <td>  
+                                              @if(Session::get('cabang') != 000)
+                                              <select class="form-control disabled cabang" name="cabang">
+                                                  @foreach($data['cabang'] as $cabang)
                                                 <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                                                 @endforeach
-                                              </select> 
+                                              </select>
+                                              @else
+                                                <select class="form-control cabang" name="cabang">
+                                                  @foreach($data['cabang'] as $cabang)
+                                                  <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                                  @endforeach
+                                                </select> 
+                                              @endif
+                                              
                                               </td>
                                              </tr>
                                               

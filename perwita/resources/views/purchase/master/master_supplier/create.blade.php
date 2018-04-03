@@ -1,4 +1,4 @@
-;@extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 
@@ -61,17 +61,30 @@
                           <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
 
                         
-                         <tr>
+                          <tr>
                           <td> Cabang </td>
-                          <td>  <select class="form-control disabled cabang" name="cabang">
-                            @foreach($data['cabang'] as $cabang)
+                          <td>  
+                          @if(Session::get('cabang') != 000)
+                          <select class="form-control disabled cabang" name="cabang">
+                              @foreach($data['cabang'] as $cabang)
                             <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                             @endforeach
-                          </select> 
+                          </select>
+                          @else
+                            <select class="form-control cabang" name="cabang">
+                              @foreach($data['cabang'] as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              @endforeach
+                            </select> 
+                          @endif
+                          
                           </td>
                          </tr>
 
-                         
+                          <tr>
+                            <td> No Supplier </td>
+                            <td> <input type="text" class="form-control input-sm nosupplier" name="nosupplier" readonly=""></td>
+                          </tr>
 
                           <tr>
                             <td width="200px">
@@ -108,7 +121,7 @@
                            <tr>
                             <td> Kota </td>
                             <td>
-                              <select class="input-sm form-control kota" name="kota">
+                              <select class="input-sm form-control chosen-select-width kota" name="kota">
                               @foreach($data['kota'] as $kota)
                                 <option value="{{$kota->id}}"> {{$kota->nama}}</option>
                               @endforeach
@@ -167,10 +180,8 @@
                            <tr>
                             <td> Plafon Kredit </td>
                              <td>
-                                <select class="form-control" name="plafon">
-                                  <option value="YA"> Ya </option>
-                                  <option value="TIDAK"> Tidak </option>
-                                </select>
+                               <input type="text" class="input-sm form-control plafon" name="Plafon">
+
                             </td>
                           </tr>
 
@@ -182,11 +193,7 @@
 
                             </td>
                           </tr>
-
-                          <tr>
-                            <td> Apakah Supplier ini termasuk PKP ? </td>
-                            <td> <select class="form-control pkp" name="pkp"><option value="Y"> Ya </option>  <option value="T"> Tidak </option> </select> </td>
-                          </tr>                       
+                   
 
                           <tr>
                             <td>
@@ -226,6 +233,16 @@
 
                          <hr>
 
+                         <div class="col-xs-6">
+                         <table class="table">
+
+                          <tr>
+                            <td style="width:200px"><b>  Apakah Supplier ini termasuk PKP ? </b> </td>
+                            <td> <select class="form-control pkp" name="pkp"><option value="Y"> Ya </option>  <option value="T"> Tidak </option> </select> </td>
+                          </tr>    
+                         </table>
+                         </div>
+
                           <div class="col-xs-12" class="pajak">
                           <hr>
                           <h4>  Informasi Pajak Supplier </h4>
@@ -234,24 +251,24 @@
                           <tr>
                             <td class="pajak"> NO NPWP </td>
                             <td>
-                               <input type="number" class="input-sm form-control pajak" name="npwp">
+                               <input type="number" class="input-sm form-control pajak isipajak" name="npwp">
                             </td>
                           </tr>
 
                         <tr>
                           <td class="pajak"> Nama </td>
-                          <td> <input type="text" class="form-control input-sm pajak" name="namapajak"></td>
+                          <td> <input type="text" class="form-control input-sm pajak isipajak" name="namapajak"></td>
                         </tr>
 
                         <tr>
                           <td class="pajak"> Telepon </td>
-                          <td> <input type="number" class="form-control input-sm pajak" name="telppajak"></td>
+                          <td> <input type="number" class="form-control input-sm pajak isipajak" name="telppajak"></td>
                         
                         </tr>
 
                         <tr>
                            <td class="pajak"> Alamat </td>
-                          <td> <input type="text" class="form-control input-sm pajak" name="alamatpajak"></td>
+                          <td> <input type="text" class="form-control input-sm pajak isipajak" name="alamatpajak"></td>
                         
                         </tr>
                           <tr class="pajak">
@@ -260,7 +277,7 @@
                             </td>
                          
                             <td>
-                               <input type="number" class="form-control" name="seripajak">
+                               <input type="number" class="form-control pajak isipajak" name="seripajak">
                             </td>
                             
 
@@ -365,6 +382,82 @@
             return x1 + x2;
     }
 
+      $('.cabang').change(function(){
+         cabang = $('.cabang').val();
+      $.ajax({
+          type : "get",
+          data : {cabang},
+          url : baseUrl + '/mastersupplier/getnosupplier',
+          dataType : 'json',
+          success : function (response){     
+  
+               var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'SP' + '-' + cabang + '/'  + response.idsupplier ;
+              
+                $('.nosupplier').val(nofaktur);
+
+                
+          },
+        })
+      })
+
+      cabang = $('.cabang').val();
+      $.ajax({
+          type : "get",
+          data : {cabang},
+          url : baseUrl + '/mastersupplier/getnosupplier',
+          dataType : 'json',
+          success : function (response){     
+  
+               var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofaktur = 'SP' + '-' + cabang + '/'  + response.idsupplier ;
+              
+                $('.nosupplier').val(nofaktur);
+
+                
+          },
+        })
+
    clearInterval(reset);
     var reset =setInterval(function(){
      $(document).ready(function(){
@@ -383,19 +476,38 @@
 
       $(".acc_hutangdagang").chosen(config);
       $(".acc_csf").chosen(config);
+      $('.cabang').chosen(config);
     })
      },2000);
 
     $('#submit').click(function(){
       var tr = $('tr#dataitem').length;
       kontrak = $('.kontrak').val();
+      pkp = $('.pkp').val();
+     
+      temppkp = 0;
       if(kontrak == 'YA'){
-              if(tr == 0){
+        if(tr == 0){
         toastr.info('jenis Supplier adalah  Kontrak, Mohon Tambah Data Barang :) ');
         return false;
-      }        
+        }        
       }
-
+  
+      else if(pkp == 'Y'){
+        $('.isipajak').each(function(){
+          val = $(this).val();
+      
+          if(val == ''){
+              temppkp = temppkp + 1;
+          }
+         
+        })
+       
+        if(temppkp != 0 ){
+          toastr.info('Mohon lengkapi data informasi pajak supplier :)');
+          return false;
+        }
+      }
     })
 
     $('.pkp').change(function(){
@@ -471,7 +583,7 @@
 
                 harga = $(this).val();
                 $this = $(this);
-                
+               
                 numhar = Math.round(harga).toFixed(2);
          
                 $this.val(addCommas(numhar));
@@ -528,8 +640,8 @@
                   $.each(data, function(key, value) {
                     $('select[name="kota"]').append('<option value="'+ key +'">'+ value +'</option>')
                   })
-
-
+                $('.kota').trigger("chosen:updated");
+                 $('.kota').trigger("liszt:updated");
                 }
               });
 
@@ -537,7 +649,15 @@
              })
          })
   
-   
+    $('.plafon').change(function(){
+
+               val = $(this).val();
+      
+               val = accounting.formatMoney(val, "", 2, ",",'.');
+               $(this).val(val);
+
+            
+    })
 
 </script>
 @endsection

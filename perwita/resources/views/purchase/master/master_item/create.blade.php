@@ -60,47 +60,25 @@
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                   
 
-                       @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
-                            <tr>
-                            <td width="150px"> Cabang </td>
-                            <td>
-                              <select class='form-control chosen-select-width1 cabang' name="cabang">
-                                  <option value="">
-                                    Pilih-Cabang
-                                  </option>
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                  @endforeach
-                                 </select>
-                            </td>
-                            </tr>
-                            @else
-                            <tr>
-                            <td width="150px"> Cabang </td>
-                            <td>
-                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
-                                  <option value="">
-                                    Pilih Cabang
-                                  </option>
-
-                                  @foreach($data['cabang'] as $cabang)
-                                    @if($cabang->kode == Auth::user()->kode_cabang)
-                                    <option selected="" value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @else
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @endif
-                                  @endforeach
-                                 </select>
-                            </td>
-                            </tr>
-                            @endif
+                       <tr>
+                        <td> Cabang </td>
+                        <td>  
+                        @if(Session::get('cabang') != 000)
+                        <select class="form-control disabled chosen-select-width cabang" name="cabang">
+                            @foreach($data['cabang'] as $cabang)
+                          <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                          @endforeach
+                        </select>
+                        @else
+                          <select class="form-control cabang" name="cabang">
+                            @foreach($data['cabang'] as $cabang)
+                            <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                            @endforeach
+                          </select> 
+                        @endif
+                        
+                        </td>
+                       </tr>
 
                       <tr>                      
                         <td> Nama Item </td>
@@ -282,6 +260,7 @@
 
 
      $("#accpersediaan").chosen(config);
+     $('.cabang').chosen(config);
   //    $(".kndraan").chosen(config);
     })
      },2000);
