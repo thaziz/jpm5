@@ -1405,33 +1405,37 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
 public function edit_invoice($id)
 { 
     // return $id;
-
-   $data = DB::table('invoice')
+    if (auth::user()->punyaAkses('Invoice Penjualan','ubah')) {
+      $data = DB::table('invoice')
               ->where('i_nomor',$id)
-              ->first();
-    $data_dt = DB::table('invoice_d')
-              ->join('delivery_order','nomor','=','id_nomor_do')
-              ->leftjoin('delivery_orderd','dd_id','=','id_nomor_do_dt')
-              ->where('id_nomor_invoice',$id)
-              ->get();
-
-    $customer = DB::table('customer')
+                ->first();
+      $data_dt = DB::table('invoice_d')
+                ->join('delivery_order','nomor','=','id_nomor_do')
+                ->leftjoin('delivery_orderd','dd_id','=','id_nomor_do_dt')
+                ->where('id_nomor_invoice',$id)
                 ->get();
 
-    $cabang   = DB::table('cabang')
-                ->get();
-    $tgl      = Carbon::now()->format('d/m/Y');
-    $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
+      $customer = DB::table('customer')
+                  ->get();
 
-    $pajak    = DB::table('pajak')
-                ->get();
+      $cabang   = DB::table('cabang')
+                  ->get();
+      $tgl      = Carbon::now()->format('d/m/Y');
+      $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
 
-    $jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
-                        FROM d_akun a join d_jurnal_dt jd
-                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
-                        (select j.jr_id from d_jurnal j where jr_ref='$id' and jr_note='INVOICE')")); 
+      $pajak    = DB::table('pajak')
+                  ->get();
 
-    return view('sales.invoice.editInvoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt','jurnal_dt'));
+      $jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+                          FROM d_akun a join d_jurnal_dt jd
+                          on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                          (select j.jr_id from d_jurnal j where jr_ref='$id' and jr_note='INVOICE')")); 
+
+      return view('sales.invoice.editInvoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt','jurnal_dt'));
+    }else{
+      return redirect()->back();
+    }
+   
 }
 public function cari_do_edit_invoice(request $request)
 {

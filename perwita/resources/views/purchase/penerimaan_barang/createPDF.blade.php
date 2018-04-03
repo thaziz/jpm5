@@ -205,12 +205,12 @@
         <table>
           <tr>
             <td valign="top" class=" textleft" width="25%">No. LPB</td>
-            <td valign="top" width="8%">:</td>
+            <td valign="top" width="8%">: </td>
             <td valign="top">
                 <table width="100%"> 
                     <tr>  
                       <td class="hiden">  
-                          &nbsp; {{ $data["nomor_LPB"] }}
+                     {{$data['judul']['0']->pb_lpb}}
                       </td>
                     </tr>
                 </table>
@@ -226,7 +226,7 @@
                <table width="100%"> 
                     <tr>  
                       <td class="hiden">  
-                          &nbsp; {{ $data["date"] }}
+                          &nbsp;  {{ Carbon\Carbon::parse($data['judul']['0']->pb_date)->format('d-M-Y ') }}
                       </td>
                     </tr>
                 </table>
@@ -239,17 +239,17 @@
    <table width="100%" class="bot">
      <tr class="bot">
        <td class="textleft" valign="top" width="15%">Diterima Dari</td>
-       <td valign="top" width="2%">:</td>
-       <td valign="top" width="35%">{{ $data["dari"] }}</td>
-       {{-- kedua --}}
+       <td valign="top" width="2%">: </td>
+       <td valign="top" width="35%"> {{$data['judul']['0']->pb_terimadari}}</td>
+     
        <td class="textleft" valign="top" width="15%">Nomor PO</td>
-       <td valign="top" width="2%">:</td>
-       <td valign="top">{{ $data["nomor_SJ"] }}</td>
+       <td valign="top" width="2%">: </td>
+       <td valign="top"> {{$data['judul']['0']->fp_nofaktur}}</td>
      </tr>
      <tr >
        <td class="textleft" valign="top" width="15%">Nomor SJ</td>
-       <td valign="top" width="2%">:</td>
-       <td valign="top" width="35%">{{ $data["nomor_PO"] }}</td>
+       <td valign="top" width="2%">: </td>
+       <td valign="top" width="35%">  {{$data['judul']['0']->pb_suratjalan}} </td>
        <td>&nbsp;</td>
        <td></td>
        <td></td>
@@ -270,22 +270,27 @@
        <td width="10%" class="right botdouble textcenter">Harga Satuan</td>
        <td class="botdouble textcenter">Jumlah</td>
      </tr>
-     <span hidden="true">{{ $Quantity = 0 }}</span>
-     <span hidden="true">{{ $total = 0 }}</span>
-     @for ($i = 0; $i < count($data["barang"]); $i++)
-       <tr>
-         <td class="right bot" align="center">&nbsp; {{ $i + 1 }}</td>
-         <td class="right bot" align="center">{{ $data["barang"][$i] }}</td>
-         <td class="right bot" align="center">{{ $data["unitstock"][$i] }}</td>
-         <td class="right bot" align="center">{{ $data["quantity"][$i] }}</td>
-         <td class="right bot" align="right">Rp {{ number_format($data["hargaSatuan"][$i], 2, ",", ".") }}</td>
-         <td class="bot" align="right">Rp {{ number_format($data["hargaTotal"][$i], 2, ",", ".") }}</td>
-         <span hidden="true">{{ $Quantity += $data["quantity"][$i] }}</span>
-         <span hidden="true" align="right">{{ $total += $data["hargaTotal"][$i] }}</span>
-       </tr>
-     @endfor
+     <span hidden="true"></span>
+     <span hidden="true"></span>
 
-     @for ($i = 0; $i < 11; $i++)
+        <?php $n = 1; ?>
+       @for($i = 0; $i < count($data['barang']); $i++) 
+
+        @for($j = 0; $j < count($data['barang'][$i]); $j++)
+           <tr>
+           <td class="right bot" align="center">&nbsp; <?php echo $n ?></td>
+           <td class="right bot" align="center"> {{$data['barang'][$i][$j]->nama_masteritem}}</td>
+           <td class="right bot" align="center"> {{$data['barang'][$i][$j]->unitstock}} </td>
+           <td class="right bot" align="center"> {{$data['barang'][$i][$j]->pbdt_qty}}</td>
+           <td class="right bot" align="right">Rp {{ number_format($data['barang'][$i][$j]->pbdt_hpp, 2) }} </td>
+           <td class="bot" align="right">Rp {{ number_format($data['barang'][$i][$j]->pbdt_totalharga, 2) }} </td>
+           <span hidden="true"></span>
+           <span hidden="true" align="right"></span>
+       </tr>
+            <?php $n++ ?>
+        @endfor
+      @endfor
+      
       <tr>
          <td class="right bot" height="20px"></td>
          <td class="right bot"></td>
@@ -296,14 +301,13 @@
          <span hidden="true"></span>
          <span hidden="true"></span>
        </tr>
-     @endfor
-       
+  
      <tr class="botdouble topdouble">
        <th class="right bot textcenter" colspan="2">JUMLAH</th>
        <td class="right bot grey" style="background-color: #d8d8d8 !important; "></td>
-       <td class="right bot" align="center">{{ $Quantity }}</td>
+       <td class="right bot" align="center"></td>
        <td class="right bot grey" style="background-color: #d8d8d8 !important;"></td>
-       <td class="bot" align="right">Rp {{ number_format($total, 2, ",", ".") }}</td>
+       <td class="bot" align="right">Rp </td>
      </tr>
    </table>
    <table width="100%">

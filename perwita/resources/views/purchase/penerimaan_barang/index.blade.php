@@ -54,10 +54,10 @@
 
 							<div class="box-body">  
 							<div class="row">
-								<div class="col-sm-3">
+								<div class="col-sm-4">
 									<table class="table" border="0">
 										<tr>
-											<td> Gudang : </td>
+											<td style="width:100px"> Gudang : <input type="hidden" class="cabang" name="cabang" value="{{session::get('cabang')}}"> </td>
 											<td>
 												<select class="form-control gudang">
 														<option value=""> Pilih Gudang </option>
@@ -134,6 +134,44 @@
             "pageLength": 10,
             "language": dataTableLanguage,
     });
+
+    cabang = $('.cabang').val();
+    $.ajax({
+    	url : baseUrl + '/penerimaanbarang/valgudang',
+    	data :{cabang},
+    	type : "GET",
+    	dataType : 'json',
+    	success : function(response){
+
+    		   $('.gudang').empty();
+                  $('.gudang').append(" <option value=''>  -- Pilih Gudang -- </option> ");
+	            $.each(response.gudang, function(i , obj) {
+	      //        console.log(obj.is_kodeitem);
+	              $('.gudang').append("<option value="+obj.mg_id+"> <h5> "+obj.mg_namagudang+" </h5> </option>");
+	            })
+                    
+
+    		var tablepenerimaan = $('#addColumn').DataTable();
+            tablepenerimaan.clear().draw();            	
+									
+            var n = 1;
+            for(var j = 0; j < data.terima.length; j++){   
+	          
+	            console.log('a');          
+	                var html2 = "<tr> <td>"+ n +" </td>" +
+	                                "<td>  "+data.terima[j].bt_notransaksi+"</td>" +
+									"<td>  "+data.terima[j].nama_supplier+" </td>" +
+									"<td> <span class='label label-info'> "+data.terima[j].bt_statuspenerimaan+" </span> </td>" + 
+									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terima[j].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a> &nbsp;" +
+									"</td>";                        
+	                                  	                                  
+	                              html2 +=  "</tr>";
+
+	               tablepenerimaan.rows.add($(html2)).draw();
+	               n++;
+	            }
+    	}
+    })
 
     $('.date').datepicker({
         autoclose: true,

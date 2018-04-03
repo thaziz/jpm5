@@ -10,6 +10,10 @@ use App\Http\Controllers\Controller;
 class saldo_piutang_controller extends Controller
 {
     public function index(){
-    	return view("saldo_piutang");
+    	return view("keuangan.saldo_piutang.index");
+    }
+
+    public function add(){
+    	return view("keuangan.saldo_piutang.insert");
     }
 }

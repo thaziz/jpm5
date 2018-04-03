@@ -115,9 +115,10 @@ Route::get('penerimaanbarang/ajaxtampilterima', 'PurchaseController@ajax_tampilt
 Route::get('penerimaanbarang/changeqtyterima', 'PurchaseController@changeqtyterima');
 Route::post('penerimaanbarang/updatepenerimaanbarang', 'PurchaseController@updatepenerimaanbarang');
 Route::get('penerimaanbarang/penerimaanbarang/createPDF/{id}', 'PurchaseController@createPdfTerimaBarang');
-Route::get('penerimaanbarang/penerimaanbarang/createPDF/{id}', 'PurchaseController@createPdfTerimaBarang');
+Route::get('penerimaanbarang/penerimaanbarang/cetak/{id}', 'PurchaseController@cetakterimabarang');
 Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
+Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
 
 
 
@@ -427,7 +428,7 @@ Route::delete('mastersupplier/deletesupplier/{id}', 'MasterPurchaseController@de
 Route::get('mastersupplier/detailsupplier/{id}', 'MasterPurchaseController@detailsupplier');
 Route::get('mastersupplier/createPdfMasterSupplier', 'MasterPurchaseController@createPdfMasterSupplier');
 Route::get('mastersupplier/getacchutang', 'MasterPurchaseController@getacchutang');
-
+Route::get('mastersupplier/getnosupplier', 'MasterPurchaseController@getnosupplier');
 
 
 
@@ -894,8 +895,13 @@ Route::post('sales/invoice/hapus_data_detail', 'sales\invoice_Controller@hapus_d
 Route::get('sales/invoice_form/{nomor}/nota', 'sales\invoice_Controller@cetak_nota');
 Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@penyebut');
 // end invoice
+// invoice pembetulan
+Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
+Route::get('sales/invoice_pembetulan_create', 'sales\invoice_pembetulan_controller@invoice_pembetulan_create');
+Route::get('sales/cari_invoice_pembetulan', 'sales\invoice_pembetulan_controller@cari_invoice_pembetulan');
+Route::get('sales/pilih_invoice_pembetulan', 'sales\invoice_pembetulan_controller@pilih_invoice_pembetulan');
 
-// update faktur pajak
+// update faktur 
 
 Route::get('sales/faktur_pajak', 'sales\faktur_pajak_Controller@index');
 Route::get('sales/faktur_pajak_cari', 'sales\faktur_pajak_Controller@tampil_auto_complete');
@@ -1284,6 +1290,11 @@ Route::post('master_keuangan/saldo_akun/save_data', [
 Route::get('master_keuangan/saldo_piutang', [
   'uses' => 'master_keuangan\saldo_piutang_controller@index',
   'as'   => 'saldo_piutang.index'
+]);
+
+Route::get('master_keuangan/saldo_piutang/add/{parrent}', [
+  'uses' => 'master_keuangan\saldo_piutang_controller@add',
+  'as'   => 'saldo_piutang.add'
 ]);
 
 //end saldo piutang

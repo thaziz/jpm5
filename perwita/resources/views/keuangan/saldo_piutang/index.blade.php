@@ -56,7 +56,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
       <div class="col-lg-10">
-          <h2> Master Akun </h2>
+          <h2> Saldo Piutang </h2>
           <ol class="breadcrumb">
               <li>
                   <a>Home</a>
@@ -65,7 +65,7 @@
                   <a>Keuangan</a>
               </li>
               <li class="active">
-                  <strong> Saldo Awal Akun  </strong>
+                  <strong> Saldo Awal Piutang </strong>
               </li>
 
           </ol>
@@ -93,7 +93,7 @@
                         </button> --}}
 
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="10" data-toggle="modal" data-target="#modal_tambah_akun">
-                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Saldo Awal Akun
+                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Saldo Piutang
                         </button>
                     </div>
                 </div>
@@ -145,11 +145,11 @@
 
  <!-- modal -->
 <div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog">
+  <div class="modal-dialog" style="width: 60%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Tambah Data Saldo Awal Akun</h4>
+        <h4 class="modal-title">Form Tambah Data Saldo Piutang</h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">
@@ -196,14 +196,14 @@
         alert("{{ Session::get('sukses') }}")
     @endif
 
-    tableDetail = $('.tbl-penerimabarang').DataTable({
-          responsive: true,
-          searching: true,
-          sorting: true,
-          paging: true,
-          //"pageLength": 10,
-          "language": dataTableLanguage,
-    });
+    // tableDetail = $('.tbl-penerimabarang').DataTable({
+    //       responsive: true,
+    //       searching: true,
+    //       sorting: true,
+    //       paging: true,
+    //       //"pageLength": 10,
+    //       "language": dataTableLanguage,
+    // });
 
     $(".tambahAkun").on("click", function(){
       $("#modal_tambah_akun .modal-header .parrent").val($(this).data("parrent"));
@@ -218,7 +218,7 @@
     $("#modal_tambah_akun").on("shown.bs.modal", function(e){
       //alert($("#modal_tambah_akun .modal-header .parrent").val())
 
-      $.ajax(baseUrl+"/master_keuangan/saldo_akun/add/"+$("#modal_tambah_akun .modal-header .parrent").val(), {
+      $.ajax(baseUrl+"/master_keuangan/saldo_piutang/add/"+$("#modal_tambah_akun .modal-header .parrent").val(), {
          timeout: 5000,
          dataType: "html",
          success: function (data) {

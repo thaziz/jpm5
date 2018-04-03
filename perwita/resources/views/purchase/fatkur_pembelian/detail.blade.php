@@ -303,7 +303,7 @@
 
                         <!-- qty -->
                         
-                        <td> <select class="form-control gudangitem gudangitem{{$index + 1}}" name="gudang[]" disabled=""> @foreach($data['gudang'] as $gudang)  <option value="{{$gudang->mg_id}}" @if($fakturdt->fpdt_gudang == $gudang->mg_id) selected @endif> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td> <!-- gudang -->
+                        <td> <select class="form-control gudangheader edit gudangitem gudangitem{{$index + 1}}" name="gudang[]" disabled=""> @foreach($data['gudang'] as $gudang)  <option value="{{$gudang->mg_id}}" @if($fakturdt->fpdt_gudang == $gudang->mg_id) selected @endif> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td> <!-- gudang -->
 
                         <td> <input type='text' class='form-control hargaitem hargaitem{{$index + 1}} edit' value="{{ number_format($fakturdt->fpdt_harga, 2)}}" name="harga[]" data-id="{{$index + 1}}" readonly=""></td><!-- "+ //harga -->
 
@@ -342,7 +342,7 @@
                         <input type="hidden" value="ITEM" name="flag">
                          <input type="hidden" value="{{$fakturdt->fpdt_groupitem}}" class="grupitem" name="grupitem">
                          <input type="hidden" value="{{$fakturdt->fpdt_updatedstock}}" class="updatedstock">
-                         <input type="hidden" value="{{$fakturdt->fpdt_gudang}}" class="gudangheader">
+                       <!--   <input type="hidden" value="{{$fakturdt->fpdt_gudang}}" class="gudangheader"> -->
                       </table>
                       @else
                        <button class="btn btn-sm btn-success tmbh-po" type="button" id="createmodal_po" data-toggle="modal" data-target="#myModal2" ><i class="fa fa-book">&nbsp; Tambah Data PO </i></button>
@@ -4582,6 +4582,7 @@ $('.ubah').click(function(){
    $('.simpanupdate').show();
    $('#createmodal_pajakpo').show();
    $('#createmodal_tt').show();
+   $('.simpanupdate').attr('disabled', false);
     
 })
 
