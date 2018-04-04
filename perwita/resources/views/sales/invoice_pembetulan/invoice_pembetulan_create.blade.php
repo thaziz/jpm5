@@ -847,15 +847,26 @@
    // hapus detail
    function hapus_detail(o) {
         var jenis = $('#cb_pendapatan').val();
-        var total_tagihan = $('.total_tagihan').val();
-        var sisa_tagihan  = $('.sisa_tagihan').val();
-        total_tagihan     = total_tagihan.replace(/[^0-9\-]+/g,"");
-        sisa_tagihan      = sisa_tagihan.replace(/[^0-9\-]+/g,"");
-        total_tagihan     = parseFloat(total_tagihan)/100;
-        sisa_tagihan      = parseFloat(sisa_tagihan)/100;
-        console.log(total_tagihan);
+        var netto_detail = $('.netto_detail').val();
+        var terbayar  = $('.terbayar').val();
+        netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
+        terbayar      = terbayar.replace(/[^0-9\-]+/g,"");
+        netto_detail     = parseFloat(netto_detail)/100;
+        terbayar      = parseFloat(terbayar)/100;
+        
+        
 
         var par = $(o).parents('tr');
+        var harga_netto = $(par).find('.harga_netto').val();
+        harga_netto      = parseFloat(harga_netto);
+        netto_detail   = netto_detail - harga_netto;
+
+        
+        if ((netto_detail - terbayar) < 0) {
+            toastr.warning('Data Tidak Bisa Dihapus');
+            return 1;
+        }
+
         var length = table_detail.page.info().recordsTotal;
 
         if (jenis == 'KORAN') {

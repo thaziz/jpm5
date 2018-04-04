@@ -40,12 +40,12 @@
   }
 
 </style>
-<div class="wrapper wrapper-content animated fadeInRight">
+<div class="wrapper wrapper-content animated fadeInRight" style="font-size: 12px ">
   <div class="row">
     <div class="col-lg-12" >
       <div class="ibox float-e-margins">
         <div class="ibox-title">
-          <h5> Tambah Data
+          <h5> CN/DN PENJUALAN
             {{Session::get('comp_year')}}
 
           </h5>
@@ -60,6 +60,7 @@
                 </div><!-- /.box-header -->
                 <div class="col-sm-12">
                   <div class="col-sm-6">
+                    <h3></h3>
                     <table class="table borderless tabel_header1">
                       <tr>
                         <td>Nomor CN/DN</td> 
@@ -87,6 +88,24 @@
                           </div>
                         </td>
                       </tr>
+                      @if(Auth::user()->punyaAkses('CN DN Penjualan','cabang'))
+                      <tr>
+                        <td>
+                          Cabang
+                        </td>
+                        <td class="">
+                          <select class="form-control cabang chosen-select-width" name="cabang">
+                          @foreach($cabang as $val)
+                            @if(Auth::user()->kode_cabang == $val->kode)
+                              <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                            @else
+                              <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                            @endif
+                          @endforeach
+                        </select>
+                        </td>
+                      </tr>
+                      @else
                       <tr>
                         <td>
                           Cabang
@@ -103,31 +122,18 @@
                         </select>
                         </td>
                       </tr>
+                      @endif
                       <tr>
-                        <td>Invoice</td> 
-                        <td><input type="text" class="form-control nomor_invoice" name="nomor_invoice"></td>
-                      </tr>
-                      <tr>
-                        <td>Tanggal Invoice</td>
-                        <td>
-                           <div class="input-group date">
-                              <span class="input-group-addon">
-                                <i class="fa fa-calendar"></i>
-                              </span>
-                              <input type="text" class="form-control tgl disabled"  readonly="" value="">
-                          </div>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Jumlah Invoice</td> 
-                        <td>
-                          <input type="text" readonly="" style="text-align: right;" class="form-control jumlah_invoice_text">
-                          <input type="hidden" readonly="" style="text-align: right;" class="form-control jumlah_invoice" name="jumlah_invoice">
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Customer</td> 
-                        <td><input type="text" readonly=""  class="form-control customer" ></td>
+                          <td style="padding-top: 0.4cm" >Customer</td>
+                          <td colspan="5" class="">                                    
+                              <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
+                                  <option value="0">Pilih - Customer</option>
+                              @foreach ($customer as $row)
+                                  <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->cabang}} </option>
+                              @endforeach
+                              </select>
+                              <input type="hidden" class="ed_customer" name="ed_customer" value="" >
+                          </td>
                       </tr>
                       <tr>
                         <td>Keterangan</td> 
@@ -136,111 +142,149 @@
                     </table>
                   </div>
                   <div class="col-sm-6">
-                    <table class="table borderless table_data" style="margin-bottom: 200px;">
-                      <h4>Detail Pembiayaan</h4>
-                      <tr>
-                        <td>Akun</td>
-                        <td>
-                          <select class="form-control jenis_cd chosen-select-width" name="jenis_cd">
-                            @foreach($akun as $val)
-                            @if(Auth::user()->kode_cabang == $val->kode_cabang)
-                              <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>}
-                            @endif
-                            @endforeach
-                        </select>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Jumlah</td> 
-                        <td>
-                          <input type="text" style="text-align: right;" onkeyup="hitung(this.value)" class="form-control jumlah_biaya" value="0">
-                          <input type="hidden" style="text-align: right;" class="form-control jumlah_biaya1" name="jumlah_biaya" value="0">
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>keterangan</td>
-                        <td><input type="text" class="form-control keterangan_biaya" name="keterangan_biaya"></td>
-                      </tr>
-                      <tr>
-                        <td colspan="2">
-                          <input type="button" onclick="simpan()" id="submit" name="submit" value="simpan" class="btn pull-right btn-success">
-                        </td>
-                      </tr>
-                    </table>
-                    {{-- <table class="table borderless table-hover table_pajak">
+                    
+                    <table class="table borderless table-hover table_pajak ">
                         <tbody>
                             <tr>
-                                <td>Tagihan Invoice</td>
+                                <td>Jumlah DPP</td>
                                 <td colspan="4">
                                     <input type="text" value="0" class="form-control ed_total_text" readonly="readonly" style="text-align:right">
                                     <input type="hidden" value="0" name="ed_total" class="form-control ed_total" readonly="readonly" style="text-align:right">
                                 </td>
                             </tr>
                             <tr>
-                                <td>Debet</td>
+                                <td>Jumlah PPN</td>
                                 <td colspan="4">
                                     <input type="text" class="form-control debet_text" readonly="readonly" style="text-align:right" value="0">
                                     <input type="hidden" name="debet" class="form-control debet" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" value="0">
                                 </td>
                             </tr>
                             <tr>
-                                <td>Kredit</td>
+                                <td>Jumlah PPH23</td>
                                 <td colspan="4">
                                     <input type="text" class="form-control kredit_text" readonly="readonly" style="text-align:right" value="0">
                                     <input type="hidden" name="kredit" class="form-control kredit" readonly="readonly" style="text-align:right" value="0">
                                 </td>
                             </tr>
                             <tr>
-                                <td>Netto DPP</td>
+                                <td>Jumlah Nota</td>
                                 <td colspan="4">
                                     <input type="text" class="form-control netto_total_text" readonly="readonly" style="text-align:right" >
                                     <input type="hidden" name="netto_total" class="form-control netto_total" readonly="readonly" tabindex="-1" style="text-align:right" >
                                 </td>
                             </tr>
-                            <tr>
-                                <td>Jenis PPN</td>
-                                <td>
-                                    <select class="form-control" name="cb_jenis_ppn" onchange="hitung_pajak_ppn()" id="cb_jenis_ppn" >
-                                        <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
-                                        <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
-                                        <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
-                                        <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
-                                        <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
-                                    </select>
-                                </td>
-                                <td>PPN</td>
-                                <td>
-                                    <input type="text" name="ppn" class="form-control ppn" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Pajak lain-lain</td>
-                                <td>
-                                    <select onchange="hitung_pajak_lain()" class="pajak_lain form-control" name="pajak_lain" id="pajak_lain" >
-                                        <option value="0"  >Pilih Pajak Lain-lain</option>
-                                        @foreach($pajak as $val)
-                                            <option value="{{$val->kode}}" data-pph="{{$val->nilai}}">{{$val->nama}}</option>
-                                        @endforeach
-                                    </select>
-                                </td>
-                                <td>PPH</td>
-                                <td>
-                                    <input type="text" name="pph" class="pph form-control" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" >
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Total Tagihan</td>
-                                <td colspan="4">
-                                    <input type="text" name="total_tagihan" class="form-control total_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
-                                </td>
-                            </tr>
-                            <tr>
-                              <td align="right" colspan="5">
-                                 <input type="submit" id="submit" name="submit" value="simpan" class="btn btn-success">
-                              </td>
-                            </tr>
                         </tbody>
-                    </table>  --}}
+                    </table> 
+                  </div>
+                  <div class="col-sm-12">
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-rk">Invoice</a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-cn">Lain</a></li>
+                        </ul>
+                        <div class="tab-content ">
+                            <div id="tab-rk" class="tab-pane active">
+                                <div class="panel-body riwayat_kwitansi">
+                                  <div class="col-sm-6">
+                                    <table class="table riwayat borderless">
+                                        <tr>
+                                          <td>Nomor Invoice</td>
+                                          <td><input type="text" name="nomor_invoice" class="nomor_invoice form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Tanggal Invoice</td>
+                                          <td><input type="text" readonly="" name="tgl_invoice" class="tgl_invoice form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Jatuh tempo</td>
+                                          <td><input type="text" readonly="" name="jatuh_tempo" class="jatuh_tempo form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>DPP</td>
+                                          <td><input type="text" readonly="" style="text-align: right" name="dpp" class="dpp_awal form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>PPN</td>
+                                          <td><input type="text" readonly="" style="text-align: right" name="ppn" class="ppn_awal form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>PPH 23</td>
+                                          <td><input type="text" readonly="" name="pph" style="text-align: right" class="pph_awal form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Netto</td>
+                                          <td><input type="text" readonly="" name="netto_awal" style="text-align: right" class="netto_awal form-control"></td>
+                                        </tr>
+                                    </table>
+                                  </div>
+                                  <div class="col-sm-6">
+                                    <table class="table riwayat  borderless">
+                                        <tr>
+                                          <td>Terbayar</td>
+                                          <td><input type="text" name="terbayar" readonly="" style="text-align: right" class="terbayar form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Nota Debet</td>
+                                          <td><input type="text" name="nota_debet" class="nota_debet form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Sisa Terbayar</td>
+                                          <td><input type="text" name="sisa_terbayar" class="sisa_terbayar form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>DPP</td>
+                                          <td><input type="text" name="dpp_akhir" class="dpp_akhir form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>PPN</td>
+                                          <td><input type="text" name="ppn_akhir" class="ppn_akhir form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>PPH 23</td>
+                                          <td><input type="text" name="pph_akhir" class="pph_akhir form-control"></td>
+                                        </tr>
+                                        <tr>
+                                          <td>Jumlah N/D</td>
+                                          <td><input type="text" name="netto_akhir" class="netto_akhir form-control"></td>
+                                        </tr>
+                                    </table>
+                                  </div>
+                                </div>
+                            </div>
+                            <div id="tab-cn" class="tab-pane">
+                                <div class="panel-body riwayat_cn_dn">
+                                    <table id="table_cn_dn" class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Nomor CN/DN</th>
+                                                <th>Tanggal</th>
+                                                <th>Jml Kredit</th>
+                                                <th>Jml Kredit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="col-sm-12">
+                      <table class="table table_detail">
+                        <thead>
+                          <tr>
+                            <th>Seq</th>
+                            <th>Nomor Invoice</th>
+                            <th>DPP</th>
+                            <th>PPN</th>
+                            <th>PPH23</th>
+                            <th>Jumlah</th>
+                          </tr> 
+                        </thead>
+                        
+                      </table>
+                    </div>
                   </div>
                 </div>
                 <div class="box-footer">
@@ -292,6 +336,7 @@
         }
       })
     })
+    $('.table_detail').DataTable();
 
     $('.date').datepicker({
         autoclose: true,
@@ -487,18 +532,103 @@
         dataType:'json',
         success:function(data){
           $('.nomor_invoice').val(data.data.i_nomor);
-          $('.tgl').val(data.data.i_tanggal);
-          $('.jumlah_invoice_text').val(accounting.formatMoney(data.data.i_total_tagihan,"",2,'.',','));
-          $('.jumlah_invoice').val(data.data.i_total_tagihan);
-          $('.customer').val(data.data.nama);
-          $('.ed_total').val(data.data.i_total_tagihan);
-          $('.ed_total_text').val(accounting.formatMoney(data.data.i_total_tagihan,"",2,'.',','));
-          $('.ed_total').val(data.data.i_total_tagihan);
-          hitung();
+          $('.tgl_invoice').val(data.data.i_tanggal);
+          $('.jatuh_tempo').val(data.data.i_jatuh_tempo);
+          $('.dpp_awal').val(accounting.formatMoney(data.data.i_netto_detail,"",2,'.',','));
+          $('.ppn_awal').val(accounting.formatMoney(data.data.i_ppnrp,"",2,'.',','));
+          $('.pph_awal').val(accounting.formatMoney(data.data.i_pajak_lain,"",2,'.',','));
+          $('.netto_awal').val(accounting.formatMoney(data.data.i_total_tagihan,"",2,'.',','));
+          $('.terbayar').val(accounting.formatMoney(data.data.i_total_tagihan - data.data.i_sisa_pelunasan,"",2,'.',','));
+          
           $('#modal_cd').modal('hide');
         }
       })
     }
+
+    function histori(p){
+    var par                 = $(p).parents('tr');
+    var i_nomor             = $(par).find('.i_nomor').val();
+    var i_sisa_pelunasan    = $(par).find('.i_sisa_pelunasan').val();
+    var i_bayar             = $(par).find('.i_bayar ').val();
+    var i_tagihan           = $(par).find('.i_tagihan ').val();
+
+    $.ajax({
+        url:baseUrl + '/sales/riwayat_invoice',
+        data:{i_nomor},
+        success:function(data){
+            $('.riwayat_kwitansi').html(data);
+            var temp = 0;
+            table_riwayat.$('.kd_total_bayar').each(function(){
+                temp += parseFloat($(this).val());
+            });
+            $('.ed_terbayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.terbayar').val(temp);
+
+
+            $.ajax({
+                url:baseUrl + '/sales/riwayat_cn_dn',
+                data:{i_nomor},
+                success:function(data){
+                    $('.riwayat_cn_dn').html(data);
+                    var temp = 0;
+                    var temp1 = 0;
+                    table_cd.$('.cd_debet').each(function(){
+                        temp += parseFloat($(this).val());
+                    });
+
+                    table_cd.$('.cd_kredit').each(function(){
+                        temp1 += parseFloat($(this).val());
+                    });
+                    $('.ed_nota_debet').val(accounting.formatMoney(temp,"",2,'.',','));
+                    $('.nota_debet').val(temp);
+
+                    $('.ed_nota_kredit').val(accounting.formatMoney(temp1,"",2,'.',','));
+                    $('.nota_kredit').val(temp1);
+
+
+                    $('.ed_nomor_invoice').val(i_nomor);
+                    $('.ed_jumlah_tagihan').val(accounting.formatMoney(i_tagihan,"",2,'.',','));
+                    $('.jumlah_tagihan').val(i_tagihan);
+
+                    var jumlah_tagihan = $('.jumlah_tagihan').val();
+                    jumlah_tagihan     = parseFloat(jumlah_tagihan);
+                    var terbayar       = $('.terbayar').val();
+                    terbayar           = parseFloat(terbayar);
+                    var nota_debet     = $('.nota_debet').val()
+                    nota_debet         = parseFloat(nota_debet);
+
+                    var nota_kredit    =$('.nota_kredit').val()
+                    nota_kredit        = parseFloat(nota_kredit);
+
+
+                    var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
+                    jumlah             = Math.round(jumlah).toFixed(2);
+                    $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
+                    $('.sisa_terbayar').val(jumlah);
+
+                    var i_bayar        = $(par).find('.i_bayar').val();
+                    var i_debet    = $(par).find('.i_debet').val();
+                    var i_kredit    = $(par).find('.i_kredit').val();
+                    var biaya_admin = parseInt(i_debet)+parseInt(i_kredit);
+                    console.log(i_bayar);
+                    $('.angka').val(i_bayar);
+                    $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
+                    $('.jumlah_bayar').val(i_bayar);
+                    $('.jumlah_biaya_admin ').val(biaya_admin);
+                    var biaya_admin    = $(par).find('.akun_biaya').val();
+                    $('.biaya_admin ').val(biaya_admin).trigger('chosen:updated');
+
+
+                    hitung();
+                    $('#modal_info').modal('show');
+                }
+            })
+        }
+    })
+  
+}
+
+
    function simpan(){
        
       swal({
