@@ -500,6 +500,8 @@ Route::get('presentase/hapus', 'MasterPenerusController@hapus')->name('hapusPers
 Route::get('presentase/update/{kode}/{nama}/{persen}', 'MasterPenerusController@presentase_update');
 
 
+//*** END PEMBELIAN
+
 //Laporan
 Route::get('reportspp/reportspp', 'LaporanPurchaseController@reportspp');
 Route::POST('reportspp/table', 'LaporanPurchaseController@tablespp')->name('tabel');
@@ -529,21 +531,21 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@tabledokumen')->name('dokumen');
 
 
-//LAPORAN TARIF DENY INDEX
+//LAPORAN TARIF
 Route::get('laporan_master_penjualan/tarif_cabang_dokumen', 'LaporanMasterController@tarif_cabang_dokumen');
 Route::get('laporan_master_penjualan/tarif_cabang_koli', 'LaporanMasterController@tarif_cabang_koli');
 Route::get('laporan_master_penjualan/tarif_cabang_kargo', 'LaporanMasterController@tarif_cabang_kargo');
 Route::get('laporan_master_penjualan/tarif_cabang_kilogram', 'LaporanMasterController@tarif_cabang_kilogram');
 Route::get('laporan_master_penjualan/tarif_cabang_sepeda', 'LaporanMasterController@tarif_cabang_sepeda');
-//END OF LAPORAN TARIF DENY INDEX
+//END OF LAPORAN TARIF
 
-//KUMPULAN LAPORAN PDF DENY INDEX
+//LAPORAN TARIF PDF
 Route::post('reportcabangdokumen/reportcabangdokumen', 'LaporanMasterController@reportcabangdokumen')->name('reportcabangdokumen');
 Route::post('reportcabangkoli/reportcabangkoli', 'LaporanMasterController@reportcabangkoli')->name('reportcabangkoli');
 Route::post('reportcabangkargo/reportcabangkargo', 'LaporanMasterController@reportcabangkargo')->name('reportcabangkargo');
 Route::post('reportcabangkilogram/reportcabangkilogram', 'LaporanMasterController@reportcabangkilogram')->name('reportcabangkilogram');
 Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@reportcabangsepeda')->name('reportcabangsepeda');
-//END OF LAPORAN PDF DENY INDEX
+//END OF LAPORAN TARIF PDF
 
 //LAPORAN DELIVERY ORDER PAKET 
 Route::post('reportdeliveryorder/reportdeliveryorder','LaporanMasterController@reportdeliveryorder');
@@ -555,10 +557,10 @@ Route::post('reportdeliveryorder/reportdeliveryorder_kargo','LaporanMasterContro
 Route::get('sales/laporandeliveryorder_kargo','LaporanMasterController@deliveryorder_kargo');
 //END OF DELIVERY ORDER KARGO
 
-//LAPORAN DELIVERY ORDER KARGO 
+//LAPORAN DELIVERY ORDER KORAN 
 Route::post('reportdeliveryorder/reportdeliveryorder_koran','LaporanMasterController@reportdeliveryorder_koran');
 Route::get('sales/laporandeliveryorder_koran','LaporanMasterController@deliveryorder_koran');
-//END OF DELIVERY ORDER KARGO
+//END OF DELIVERY ORDER KORAN
 
 //LAPORAN INVOICE
 Route::get('sales/laporan_invoice','LaporanMasterController@invoice');
@@ -570,7 +572,27 @@ Route::get('sales/laporan_kwitansi','LaporanMasterController@kwitansi');
 Route::post('reportkwitansi/reportkwitansi', 'LaporanMasterController@reportkwitansi')->name('reportkwitansi');
 //END OF LAPORAN KWITANSI
 
-//*** END PEMBELIAN
+//LAPORAN INVOICE LAIN
+Route::get('sales/laporan_invoice_lain','LaporanMasterController@invoice_lain');
+Route::post('reportinvoicelain/reportinvoicelain', 'LaporanMasterController@reportinvoice_lain')->name('reportinvoice_lain');
+//END OF LAPORAN INVOICE LAIN
+
+//LAPORAN CN/DN 
+Route::get('sales/laporan_cndn','LaporanMasterController@kwitansi');
+Route::post('reportcndn/reportcndn', 'LaporanMasterController@reportcndn')->name('reportcndn');
+//END OF LAPORAN CN/DN
+
+//LAPORAN UANG MUKA PENJUALAN 
+Route::get('sales/laporan_uangmuka_penjualan','LaporanMasterController@uangmuka');
+Route::post('reportuangmukapenjualan/reportuangmukapenjualan', 'LaporanMasterController@reportuangmuka')->name('reportuangmuka');
+//END OF LAPORAN UANG MUKA PENJUALAN
+
+//LAPORAN POSTING BAYAR PENJUALAN
+Route::get('sales/laporan_posting_bayar','LaporanMasterController@posting_bayar');
+Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@reportposting_bayar')->name('reportposting_bayar');
+//END OF LAPORAN BAYAR PENJUALAN
+
+
 
 
 

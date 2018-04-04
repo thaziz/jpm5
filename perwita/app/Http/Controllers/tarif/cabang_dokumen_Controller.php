@@ -427,15 +427,7 @@ class cabang_dokumen_Controller extends Controller
             
            
 
-            if($simpan == TRUE){
-                $result['error']='';
-                $result['result']=1;
-            }else{
-                $result['error']='error';
-                $result['result']=0;
-            }
-            $result['crud']=$crud;
-            echo json_encode($result);
+            echo json_encode('sukses');
 
 
         }
