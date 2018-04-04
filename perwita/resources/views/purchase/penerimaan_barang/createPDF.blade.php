@@ -244,7 +244,13 @@
      
        <td class="textleft" valign="top" width="15%">Nomor PO</td>
        <td valign="top" width="2%">: </td>
-       <td valign="top"> {{$data['judul']['0']->fp_nofaktur}}</td>
+       <td valign="top"> 
+          @if($data['flag'] == 'FP')
+          {{$data['judul']['0']->fp_nofaktur}}
+          @else if ($data['flag'] == 'PO'  )
+          {{$data['judul']['0']->po_no}}
+          @endif
+       </td>
      </tr>
      <tr >
        <td class="textleft" valign="top" width="15%">Nomor SJ</td>
