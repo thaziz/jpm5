@@ -248,10 +248,10 @@
                               Gudang
                             </td>
                             <td>
-                            <select class="form-control chosen-select gudang" name="gudang" required="">
+                            <select class="form-control gudang chosen-select-width " name="gudang" required="" novalidate>
                                 <option value=""> -- Pilih Gudang -- </option>
                               @foreach($data['gudang'] as $gudang)
-                                <option value="{{$gudang->mg_id}}"> {{$gudang->mg_namagudang}} </option>
+                                <option value="{{$gudang->mg_id}}"> {{$gudang->mg_id}} </option>
                               @endforeach  
                             </select></td>
                           </tr>
@@ -1317,6 +1317,7 @@
                  }
 
       $('.idsup').chosen(config2); 
+      $('.gudang').chosen(config2); 
     
     })
   
@@ -2338,9 +2339,10 @@
           var qty = $('.qty').val();
           var gudang = $('.gudang').val();
           var harga = $('.harga').val();
-         
-          var string2 = gudang.split(",");
-          nmgudang = string2[1];
+          var idsup = $('.idsup').val();
+          
+
+        
           var amount = $('.amount').val();
           var diskon = $('.diskon').val();
           var biaya = $('.biaya').val();
@@ -2419,11 +2421,12 @@
                  //pembersihan data
                 $('.item').prop('selectedIndex',0);
                 $('.qty').val('');
-                $('.gudang').val('');
+           
                 $('.harga').val('');
                 $('.amount').val('');
                 $('.biaya').val('');
                 $('.acc_biaya').val('');
+                $('.acc_persediaan').val('');
                 $('.keterangan').val('');
                 $('.diskon').val('');
                 $('.hasildiskonitem').val('');
