@@ -709,7 +709,7 @@
 
 
         var netto = 0 ;
-        table_detail.$('.dd_total').each(function(){
+        table_detail.$('.harga_netto').each(function(){
             temp_total += parseFloat($(this).val());
         });
 
