@@ -1230,7 +1230,7 @@
                     $("input[name='ed_tarif_penerus']").val(biaya);
                     $("input[name='acc_penjualan']").val(acc_penjualan);
                     if (data.jumlah_data == 0){
-                        alert('Harga tidak ditemukan');
+                        alert('Tarif penerus tidak ditemukan');
                     }
                     hitung();
                 }
