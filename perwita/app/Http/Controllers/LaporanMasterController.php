@@ -345,6 +345,7 @@ class LaporanMasterController extends Controller
 		$data =DB::table('delivery_order as do')
 						->select('do.*','dk.*')
 						->join('delivery_orderd as dk','do.nomor','=','dk.dd_nomor')
+						->where('do.nomor','like','%KTS%')
 						->get();
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
@@ -366,10 +367,8 @@ class LaporanMasterController extends Controller
         for ($i=1; $i <count($dat); $i++) { 
 		
 		$dat1[$i] = DB::table('delivery_order as do')
-						->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-						->join('kota as ka','do.id_kota_asal','=','ka.id')
-						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->select('do.*','dk.*')
+						->join('delivery_orderd as dk','do.nomor','=','dk.dd_nomor')
 						->where('nomor','=',$dat[$i])
 						->get();
 			}
@@ -379,5 +378,73 @@ class LaporanMasterController extends Controller
 	}
 // END OF DELIVERY ORDER LAPORAN KORAN(DO)
 
+   // START INVOICE
+
+	public function invoice(){
+		// return 'a';
+		$data = DB::table('invoice')->get();
+		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$cus = DB::table('customer')->get();
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+		return view('purchase/master/master_penjualan/laporan/lap_invoice',compact('data','kota','kota1','ket','cus'));
+	}
+		public function reportinvoice(Request $request){
+		// return 'a';
+		$data = $request->a;	
+   		// dd($data[0]);
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat); $i++) { 
+		
+		$dat1[$i] = DB::table('invoice')->get();
+			}
+        // dd($dat1);
+		return view('purchase/master/master_penjualan/pdf/pdf_invoice',compact('dat1'));
+		
+	}
+
+
+	// END OF INVOICE
+
+	//START KWITANSI
+
+		public function kwitansi(){
+		// return 'a';
+		$data = DB::table('kwitansi')->join('customer','customer.kode','=','kwitansi.k_kode_customer')->get();
+		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$cus = DB::table('customer')->get();
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+		return view('purchase/master/master_penjualan/laporan/lap_kwitansi',compact('data','kota','kota1','ket','cus'));
+	}
+		public function reportkwitansi(Request $request){
+		// return 'a';
+		$data = $request->a;	
+   		// dd($data[0]);
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat); $i++) { 
+		
+		$dat1[$i] = DB::table('kwitansi')->join('customer','customer.kode','=','kwitansi.k_kode_customer')->get();
+			}
+        // dd($dat1);
+		return view('purchase/master/master_penjualan/pdf/pdf_kwitansi',compact('dat1'));
+		
+	}
+
+	// END OF KWITANSI
+
+//========================== GARIS KERJAS MABRO ===================================//
    }
 ?>

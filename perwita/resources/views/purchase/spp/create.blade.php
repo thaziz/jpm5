@@ -1057,7 +1057,7 @@
           rowStr +=  "<option value=''> -- Data Kosong -- </option>";              
                       }
           rowStr += "</select> <br>  <div class='brgduplicate duplicate"+nourutbrg+"'> </div>   </td>" +
-                    "<td> <input type='number' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required style='width:60px'> <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'>  </td>" + //qty
+                    "<td> <input type='number' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required > <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'>  </td>" + //qty
 
                     "<td> <div class='stock_gudang"+counterId+"'> </td>" + //stockgudang
 

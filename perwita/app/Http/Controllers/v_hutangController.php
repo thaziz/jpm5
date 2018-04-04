@@ -165,7 +165,7 @@ class v_hutangController extends Controller
 
        $cabang = DB::select("select * from cabang");
 
-      $akun = DB::select("select * from d_akun where kode_cabang = 'C001'");
+      $akun = DB::select("select * from d_akun");
       return view('purchase/voucher_hutang/create',compact('akunselect','data','sup','nofp', 'akun', 'cabang'));
     }
     public function editvoucherhutang($v_id) {
