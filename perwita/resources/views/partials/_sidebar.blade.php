@@ -411,16 +411,9 @@
                     Request::is('master_sales/saldoawalpiutanglain/*') ? 'active' : '' ||
                     /* Nomor seri pajak */
                     Request::is('master_sales/nomorseripajak') ? 'active' : '' || 
-                    Request::is('master_sales/nomorseripajak/*') ? 'active' : '' ||
+                    Request::is('master_sales/nomorseripajak/*') ? 'active' : '' 
                  /*=================  END OF MASTER DO ==================*/
-                  /*================= sub MASTER KONTRAK ================= */
-                    /* Kontrak */
-                    Request::is('master_sales/kontrak') ? 'active' : '' || 
-                    Request::is('master_sales/kontrak/*') ? 'active' : '' ||
-                    /* subcon */
-                    Request::is('master_subcon/subcon') ? 'active' : '' || 
-                    Request::is('master_subcon/subcon/*') ? 'active' : '' 
-                 /*=============== End of sub MASTER KONTRAK ============ */
+               
 
                 }}
 
@@ -698,14 +691,14 @@
 
                     " href="{{ url('master_sales/subcon')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Subcon</a>
                         </li>
-                   {{--  <li >
+                    <li >
                         <a class="sidebar master-perusahaan 
 
                     {{Request::is('master_sales/biaya') ? 'active' : '' || 
                     Request::is('master_sales/biaya/*') ? 'active' : ''}} 
 
                     " href="{{ url('master_sales/biaya')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Biaya</a>
-                    </li> --}}
+                    </li>
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -733,46 +726,6 @@
                        </ul>
                    </li>
 
-               <li class="
-               
-               {{
-
-                 /*================= sub MASTER KONTRAK ================= */
-                    /* Kontrak */
-                    Request::is('master_sales/kontrak') ? 'active' : '' || 
-                    Request::is('master_sales/kontrak/*') ? 'active' : '' ||
-                    /* subcon */
-                    Request::is('master_subcon/subcon') ? 'active' : '' || 
-                    Request::is('master_subcon/subcon/*') ? 'active' : '' 
-                 /*=============== End of sub MASTER KONTRAK ============ */
-
-               }}
-
-               " style="padding-left: 10%;">
-                   <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Kontrak<span class="fa arrow"></span></a>
-                   <ul class="nav nav-third-level">
-                @if(Auth::user()->PunyaAkses('Master Kontrak','aktif'))
-                   <li >
-                    <a class="sidebar master-perusahaan 
-
-                   {{Request::is('master_sales/kontrak') ? 'active' : '' || 
-                    Request::is('master_sales/kontrak/*') ? 'active' : ''}} 
-
-                   " href="{{ url('master_sales/kontrak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak Customer</a>
-                   </li>
-                @endif
-             @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
-                <li >
-                    <a class="sidebar master-perusahaan 
-
-                    {{Request::is('master_subcon/subcon') ? 'active' : '' || 
-                    Request::is('master_subcon/subcon/*') ? 'active' : ''}} 
-
-                " href="{{ url('master_subcon/subcon')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak SUBCON</a>
-                </li>
-                @endif
-                   </ul>
-               </li>
             </ul>
         </li>
                   
@@ -806,8 +759,16 @@
                             Request::is('presentase/index/*') ? 'active' : '' ||
                             /* Master Departement */
                             Request::is('bbm/index') ? 'active' : '' || 
-                            Request::is('bbm/index/*') ? 'active' : '' 
+                            Request::is('bbm/index/*') ? 'active' : '' ||
                             /*========== END OF MASTER BIAYA PENERUS =========*/ 
+                            /*================= sub MASTER KONTRAK ================= */
+                            /* Kontrak */
+                            Request::is('master_sales/kontrak') ? 'active' : '' || 
+                            Request::is('master_sales/kontrak/*') ? 'active' : '' ||
+                            /* subcon */
+                            Request::is('master_subcon/subcon') ? 'active' : '' || 
+                            Request::is('master_subcon/subcon/*') ? 'active' : '' 
+                            /*=============== End of sub MASTER KONTRAK ============ */
 
                          }}
 
@@ -904,6 +865,46 @@
                         @endif
                            </ul>
                        </li>
+                       <li class="
+               
+               {{
+
+                 /*================= sub MASTER KONTRAK ================= */
+                    /* Kontrak */
+                    Request::is('master_sales/kontrak') ? 'active' : '' || 
+                    Request::is('master_sales/kontrak/*') ? 'active' : '' ||
+                    /* subcon */
+                    Request::is('master_subcon/subcon') ? 'active' : '' || 
+                    Request::is('master_subcon/subcon/*') ? 'active' : '' 
+                 /*=============== End of sub MASTER KONTRAK ============ */
+
+               }}
+
+               " >
+                   <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Kontrak<span class="fa arrow"></span></a>
+                   <ul class="nav nav-third-level">
+                @if(Auth::user()->PunyaAkses('Master Kontrak','aktif'))
+                   <li >
+                    <a class="sidebar master-perusahaan 
+
+                   {{Request::is('master_sales/kontrak') ? 'active' : '' || 
+                    Request::is('master_sales/kontrak/*') ? 'active' : ''}} 
+
+                   " href="{{ url('master_sales/kontrak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak Customer</a>
+                   </li>
+                @endif
+             @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
+                <li >
+                    <a class="sidebar master-perusahaan 
+
+                    {{Request::is('master_subcon/subcon') ? 'active' : '' || 
+                    Request::is('master_subcon/subcon/*') ? 'active' : ''}} 
+
+                " href="{{ url('master_subcon/subcon')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak SUBCON</a>
+                </li>
+                @endif
+                   </ul>
+               </li>
                         </ul>
                         </li>
                 
@@ -1908,6 +1909,12 @@
                             /* do koran*/
                             Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : '' ||
+                            /* invoice */
+                            Request::is('sales/laporan_invoice') ? 'active' : '' || 
+                            Request::is('sales/laporan_invoice/*') ? 'active' : ''||
+                            /* Kwitansi */
+                            Request::is('sales/laporan_kwitansi') ? 'active' : '' || 
+                            Request::is('sales/laporan_kwitansi/*') ? 'active' : ''||
                             /* penjualan */
                             Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
                             Request::is('sales/laporaninvoicepenjualan/*') ? 'active' : ''||
@@ -2012,6 +2019,12 @@
                             /* do koran*/
                             Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : '' ||
+                             /* invoice */
+                            Request::is('sales/laporan_invoice') ? 'active' : '' || 
+                            Request::is('sales/laporan_invoice/*') ? 'active' : ''||
+                            /* Kwitansi */
+                            Request::is('sales/laporan_kwitansi') ? 'active' : '' || 
+                            Request::is('sales/laporan_kwitansi/*') ? 'active' : ''||
                             /* penjualan */
                             Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
                             Request::is('sales/laporaninvoicepenjualan/*') ? 'active' : ''||
@@ -2075,6 +2088,14 @@
                                  <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_kargo') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder_kargo/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Kargo</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_invoice') ? 'active' : '' || 
+                            Request::is('sales/laporan_invoice/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_kwitansi') ? 'active' : '' || 
+                            Request::is('sales/laporan_kwitansi/*') ? 'active' : ''}} " href="{{ url('sales/laporan_kwitansi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kwitansi</a>
                                 </li>
                          {{--        <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 

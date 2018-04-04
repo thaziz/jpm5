@@ -48,7 +48,7 @@
                               </div> </td>
                       </tr>
                         <tr>
-                            <th style="width: 100px; padding-top: 16px"> Satuan </th>
+                          {{--   <th style="width: 100px; padding-top: 16px"> Satuan </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
@@ -57,16 +57,14 @@
                             @endforeach
                            </select>
                           </td>
-
-                          <th style="width: 100px; padding-top: 16px"> Status </th>
-                          <td> 
+ --}}
+                           <th style="width: 100px; padding-top: 16px"> Customer </th>
+                          <td colspan="3"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="MANIFESTED">MANIFESTED</option>
-                            <option value="TRANSIT">TRANSIT</option>
-                            <option value="RECEIVED">RECEIVED</option>
-                            <option value="DELIVERED">DELIVERED</option>
-                            <option value="DELIVERED OK">DELIVERED OK</option>
+                            <option selected="">- Pilih Customer -</option>
+                            @foreach ($cus as $c)
+                              <option value="{{ $c->nama }}" >{{ $c->kode }} - {{ $c->nama }}</option>
+                            @endforeach
                            </select>
                           </td>
                         </tr>
@@ -81,14 +79,15 @@
                     <thead>
                         <tr>
                           
-                            <th> No DO</th>
+                            <th> No Kwitansi</th>
                             <th> Tanggal </th>
                             <th> Customer </th>
-                            <th> Satuan </th>
-                            <th> Status </th>
-                            <th> Diskon</th>
-                            <th> Total net </th>
-                            <th> Status do </th>
+                            <th> Ttl Bayar</th>
+                            <th> Uang M(-) </th>
+                            <th> Debet(+) </th>
+                            <th> Kredit(-) </th>
+                            <th> Netto </th>
+                            <th> bank </th>
                             
                         </tr>
                     </thead>
@@ -96,14 +95,15 @@
                       @foreach ($data as $index =>$e)
                         <tr>
                         
-                        <td><input type="hidden" value="{{ $e->nomor }}" name="nomor">{{ $e->nomor }}</td>
-                        <td>{{ $e->tanggal }}</td>
-                        <td>{{ $e->kode_customer }}</td>
-                        <td>{{ $e->kode_satuan }}</td>
-                        <td>{{ $e->status }}</td>
-                        <td>{{ $e->diskon }}</td>
-                        <td>{{ $e->total_net }}</td>
-                        <td>{{ $e->status_do }}</td>
+                        <td><input type="hidden" value="{{ $e->k_nomor }}" name="nomor">{{ $e->k_nomor }}</td>
+                        <td>{{ $e->k_tanggal }}</td>
+                        <td>{{ $e->nama }}</td>
+                        <td align="right">{{ number_format($e->k_jumlah,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->k_uang_muka,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->k_debet,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->k_kredit,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->k_netto,0,',','.') }}</td>
+                        <td >{{ $e->k_nota_bank }}</td>
                         </tr>
                       @endforeach
                     </tbody>
@@ -230,12 +230,12 @@
     } );
 
     
-    function filterColumn1 () {
-        $('#addColumn').DataTable().column(3).search(
-            $('.select-picker3').val()).draw();    
-    }
+    // function filterColumn1 () {
+    //     $('#addColumn').DataTable().column(3).search(
+    //         $('.select-picker3').val()).draw();    
+    // }
     function filterColumn2 () {
-        $('#addColumn').DataTable().column(4).search(
+        $('#addColumn').DataTable().column(2).search(
             $('.select-picker5').val()).draw(); 
      }
      

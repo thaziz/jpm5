@@ -36,7 +36,9 @@
                      </h5>
                      <div class="text-right">
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
+                            <a href="{{ url('/master_sales/biaya') }}" class="btn btn-warning"><i class="glyphicon glyphicon-print"></i>LAPORAN</a>
                     </div>
+
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -47,30 +49,6 @@
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
                                     <tbody>
@@ -88,7 +66,7 @@
                     </div>
                 </form>
                 <div class="box-body">
-                  <table id="seragam_table" class="table table-bordered table-striped">
+                  <table id="table_data" class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th> Kode</th>
@@ -96,49 +74,25 @@
                             <th> D/K </th>
                             <th> Account </th>
                             <th> Cash FLow </th>
-                            <th> Aksi </th>
+                            <th width="50"> Aksi </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>0000001</td>
-                            <td>Biaya 1</td>
-                            <td>D</td>
-                            <td>10001</td>
-                            <td>10002</td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" name="button" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></button>
-                                    <button type="button" name="button" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btndelete"><i class="fa fa-times"></i></a></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>0000002</td>
-                            <td>Biaya 2</td>
-                            <td>D</td>
-                            <td>11001</td>
-                            <td>10202</td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" name="button" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></button>
-                                    <button type="button" name="button" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btndelete"><i class="fa fa-times"></i></a></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>0000003</td>
-                            <td>Biaya 3</td>
-                            <td>D</td>
-                            <td>10301</td>
-                            <td>12002</td>
-                            <td>
-                                <div class="btn-group">
-                                    <button type="button" name="button" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></button>
-                                    <button type="button" name="button" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btndelete"><i class="fa fa-times"></i></a></button>
-                                </div>
-                            </td>
-                        </tr>
+                        @foreach ($data as $e)
+                       <tr>
+                           <td>{{ $e->b_kode }}</td>
+                           <td>{{ $e->b_nama }}</td>
+                           <td>{{ $e->b_debet_kredit }}</td>
+                           <td>{{ $e->b_acc_hutang }}</td>
+                           <td>{{ $e->b_csf_hutang }}</td>
+                           <td>
+                            <div class="btn-group">
+                                    <button type="button" id="{{ $e->b_kode }}" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>                       
+                                    <button type="button" id="{{ $e->b_kode }}" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                            </div>
+                           </td>
+                       </tr>
+                       @endforeach
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
@@ -151,43 +105,44 @@
                         <h4 class="modal-title">Insert Edit Biaya</h4>
                       </div>
                       <div class="modal-body">
-                        <form class="form-horizontal">
-                          <table id="table_data" class="table table-striped table-bordered table-hover">
-                            <tbody>
+                        <form class="form-horizontal kirim" id="kirim">
+                          <table class="table table-striped table-bordered table-hover">
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
-                                    <td>
-                                        <input type="text" class="form-control" id="edkode" >
-                                    </td>
+                                    <td><input type="text" class="form-control" name="ed_kode" id="edkode" ></td>
+                                    
                                 </tr>
+                                <input type="hidden" class="form-control" name="ed_kode_old" id="edkode_old" >
+                                <input type="hidden" class="form-control" name="crud" id="crud" >
                                 <tr>
                                     <td style="padding-top: 0.4cm">Nama</td>
-                                    <td><input type="text" class="form-control" id="edsatuan"></td>
+                                    <td><input type="text" class="form-control" name="ed_nama" id="ed_nama"></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Debet/Kredit</td>
                                     <td>
-                                        <select class="select2_single form-control"  id="cbitem"  style="width: 100% !important;">
-                                            <option>D</option>
-                                            <option>K</option>
+                                        <select class=" form-control" name="ed_dk" id=ed_dk"  style="width: 100% !important;">
+                                            <option selected="">- Pilih -</option>
+                                            <option value="D">D</option>
+                                            <option value="K">K</option>
                                         </select>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kode Accounting</td>
-                                    <td><input type="text" class="form-control" id="edsatuan"></td>
+                                    <td><input type="text" class="form-control" name="ed_acc" id="ed_acc"></td>
                                 </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kode Cash Flow</td>
-                                    <td><input type="text" class="form-control" id="edjumlah" ></td>
+                                    <td><input type="text" class="form-control" name="ed_csf" id="ed_csf" ></td>
                                 </tr>
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Default</td>
                                     <td>
-                                        <input type="checkbox" id="checkbox1">
+                                        <input type="checkbox" name="checkbox1" id="checkbox1">
                                     </td>
                                 </tr>
-                            </tbody>
+                        
                           </table>
                         </form>
                       </div>
@@ -223,12 +178,123 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+    $(document).ready( function () {
+    $('#table_data').DataTable();
+} );
     $(document).on("click","#btn_add",function(){
         $("#modal").modal("show");
+        $('#crud').val('N');
+        $('#edkode').val('');
+        $('#ed_nama').val('');
+        $('#ed_acc').val('');
+        $('#ed_csf').val('');
+        $('select[name="ed_dk"]').val('');
+        $("input[name='checkbox1']").val('');
     });
-    $(document).on( "click",".btnedit", function() {
+    $(document).on("click",".btnedit", function() {
         $("#modal").modal("show");
+        $('#btnsave').attr('id','btnupdate');
+        var id=$(this).attr("id");
+        var value = {
+            id: id
+        };
+        var crud_edit = 'E';
+        $('#crud').val('E');
+        $.ajax(
+        {
+            url : baseUrl + "/master_sales/biaya/edit_data",
+            type: "get",
+            dataType:"JSON",
+            data :value,
+            success: function(data, textStatus, jqXHR)
+            {
+                console.log(data);
+              
+                    
+                    $('#edkode_old').val(data.b_kode);
+                    $('#edkode').val(data.b_kode);
+                    $('#ed_nama').val(data.b_nama);
+                    $('#ed_acc').val(data.b_acc_hutang);
+                    $('#ed_csf').val(data.b_csf_hutang);
+                    $('select[name="ed_dk"]').val(data.b_debet_kredit);
+
+                    if(data.b_default == true || data.b_default == 'TRUE'){
+                    $("input[name='checkbox1']").prop('checked', true);  
+                    }else if (data.b_default == false || data.b_default == 'TRUE') {
+                    $("input[name='checkbox1']").val('');
+                    }                   
+                
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+               swal("Error!", textStatus, "error");
+            }
+        });
     });
+
+
+    $(document).on("click","#btnsave",function(){
+        
+        $.ajax(
+        {
+            url : baseUrl + "/master_sales/biaya/save_data",
+            type: "get",
+            dataType:"JSON",
+            data : $('.kirim').serialize() ,
+            success: function(data, textStatus, jqXHR)
+            {
+                console.log(data);
+                if(data.crud == 'N'){
+                    if(data.result == 1){
+                        $("#modal").modal('hide');
+                        $("#btn_add").focus();
+                        location.reload();
+                    }else{
+                        alert("Gagal menyimpan data!");
+                    }
+                }else{
+                    swal("Error","invalid order","error");
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+               swal("Error!", textStatus, "error");
+            }
+        });
+    });
+
+    $(document).on("click","#btnupdate",function(){
+        
+        $.ajax(
+        {
+            url : baseUrl + "/master_sales/biaya/update_data",
+            type: "get",
+            dataType:"JSON",
+            data : $('.kirim').serialize() ,
+            success: function(data, textStatus, jqXHR)
+            {
+                console.log(data);
+                if(data.crud == 'E'){
+                    if(data.result == 1){                        
+                        $("#modal").modal('hide');
+                        $("#btn_add").focus();
+                        location.reload();
+                    }else{
+                        alert("Gagal menyimpan data!");
+                }
+
+
+            }else{
+                    alert('err');
+                }          
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+               swal("Error!", textStatus, "error");
+            }
+        });
+    });
+
     $(document).on( "click",".btndelete", function() {
         if(!confirm("Hapus Data ?")) return false;
     });

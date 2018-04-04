@@ -57,6 +57,7 @@
                      </h5>
                      <div class="text-right">
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
+                       <a href="{{ url('/laporan_master_penjualan/tarif_cabang_kargo') }}" class="btn btn-warning"><i class="glyphicon glyphicon-print"></i>Laporan</a>
                     </div>
                 </div>
                 <div class="ibox-content">
