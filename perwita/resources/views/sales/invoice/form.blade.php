@@ -346,6 +346,22 @@
           {
              targets: 9,
              className: 'center'
+          },
+          {
+             targets: 5,
+             className: 'center'
+          },
+          {
+             targets: 6,
+             className: 'center'
+          },
+          {
+             targets: 7,
+             className: 'center'
+          },
+          {
+             targets: 9,
+             className: 'center'
           }
        ]
 
