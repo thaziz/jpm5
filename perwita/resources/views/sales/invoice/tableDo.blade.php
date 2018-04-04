@@ -23,7 +23,7 @@
                         <input type="hidden" value="{{$val->dd_nomor}}" class="nomor_do" name="nomor_do">
                     </td>
                     <td>{{$val->tanggal}}</td>
-                    <td>{{$val->dd_total}}</td>
+                    <td align="right">{{number_format($val->dd_total, 2, ",", ".")}}</td>
                     <td align="center">
                         <input class="tanda" type="checkbox"  name="tanda">
                     </td>
@@ -55,7 +55,7 @@
                         <input type="hidden" value="{{$val->nomor}}" class="nomor_do" name="nomor_do">
                     </td>
                     <td>{{$val->tanggal}}</td>
-                    <td align="right"> {{number_format($val->total, 2, ",", ".")}}</td>
+                    <td align="right"> {{number_format($val->total_net, 2, ",", ".")}}</td>
                     <td align="center">
                         <input class="tanda" type="checkbox"  name="tanda">
                     </td>
