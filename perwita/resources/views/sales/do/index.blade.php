@@ -162,7 +162,8 @@
         window.location.href = baseUrl + '/data-master/master-akun/create'
     }
     function hapusData(id) {
-
+alert('ac');
+return false;
         $.ajax({
             url: baseUrl + '/data-master/master-akun/delete/' + id,
             type: 'get',

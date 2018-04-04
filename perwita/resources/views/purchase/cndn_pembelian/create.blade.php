@@ -52,6 +52,12 @@
                       <div class="row">
                       <div class="col-xs-6">
                           <table border="0" class="table">
+                          
+                          <tr>
+                            <td> Nota </td>
+                            <td> <input type='text' class="form-control input-sm" name="nota">  </td>
+                          </tr>
+
                           <tr>
                             <td>   Tanggal </td>
                             <td>
@@ -105,13 +111,28 @@
                             </td>
                           </tr>
 
-
                           <tr>
                             <td>
-                              Acc. CNN
+                              Acc. Hutang Dagang
                             </td>
                             <td> <input type="text" class="form-control"> </td>
                           </tr>
+
+                          <tr>
+                            <td>
+                              Acc. CN / DN
+                            </td>
+                            <td> <input type="text" class="form-control"> </td>
+                          </tr>
+
+
+                          <tr>
+                            <td>
+                              Acc. PPn
+                            </td>
+                            <td> <input type="text" class="form-control"> </td>
+                          </tr>
+
                           </table>
                       </div>
 
