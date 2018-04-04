@@ -119,6 +119,7 @@ Route::get('penerimaanbarang/penerimaanbarang/cetak/{id}', 'PurchaseController@c
 Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
 Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
+Route::get('penerimaanbarang/hapusdatapenerimaan', 'PurchaseController@hapusdatapenerimaan');
 
 
 
