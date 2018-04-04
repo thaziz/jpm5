@@ -733,9 +733,11 @@ Route::post('sales/kota/hapus_data', 'wilayah\kota_Controller@hapus_data');
 // end kota
 
 //kecamatan
-Route::get('sales/kecamatan', function(){
-        return view('kota.kecamatan.index');
-});
+Route::get('sales/kecamatan', 'wilayah\kecamatan_Controller@index');
+Route::get('sales/kecamatan/tabel', 'wilayah\kecamatan_Controller@table_data');
+Route::get('sales/kecamatan/get_data', 'wilayah\kecamatan_Controller@get_data');
+Route::post('sales/kecamatan/save_data', 'wilayah\kecamatan_Controller@save_data');
+Route::post('sales/kecamatan/hapus_data', 'wilayah\kecamatan_Controller@hapus_data');
 
 
 
