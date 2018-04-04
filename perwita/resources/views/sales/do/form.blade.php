@@ -1229,6 +1229,26 @@
                     $("input[name='ed_tarif_dasar']").val(harga);
                     $("input[name='ed_tarif_penerus']").val(biaya);
                     $("input[name='acc_penjualan']").val(acc_penjualan);
+                    if (biaya == 0 || biaya == '0' || biaya == null || biaya == '') {
+                        Command: toastr["warning"]("Zona/Penerus tidak ditemukan, periksa tujuan anda", "Peringatan !")
+                        toastr.options = {
+                          "closeButton": false,
+                          "debug": true,
+                          "newestOnTop": false,
+                          "progressBar": true,
+                          "positionClass": "toast-top-right",
+                          "preventDuplicates": false,
+                          "onclick": null,
+                          "showDuration": "300",
+                          "hideDuration": "1000",
+                          "timeOut": "5000",
+                          "extendedTimeOut": "1000",
+                          "showEasing": "swing",
+                          "hideEasing": "linear",
+                          "showMethod": "fadeIn",
+                          "hideMethod": "fadeOut"
+                        }
+                    }
                     if (data.jumlah_data == 0){
                         alert('Tarif penerus tidak ditemukan');
                     }

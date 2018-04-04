@@ -1266,13 +1266,15 @@ class do_Controller extends Controller
                             ->get();
 
                         if (count($penerus) < 1){
-                            $penerus[0]->tarif_penerus = 0;
+                            $penerus = 0;
+                        } else {
+                            $penerus = $penerus[0]->tarif_penerus;
                         }
                     }
 
                     if ($tarif != null) {
                         $totalHarga = $totalHarga + $tarif[0]->harga;
-                        $biaya_penerus = $biaya_penerus + $penerus[0]->tarif_penerus;
+                        $biaya_penerus = $biaya_penerus + $penerus;
                         $acc_penjualan = $tarif[0]->acc_penjualan;
                     }
                     else{
