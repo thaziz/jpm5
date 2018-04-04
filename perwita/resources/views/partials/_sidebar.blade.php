@@ -1912,6 +1912,18 @@
                             /* invoice */
                             Request::is('sales/laporan_invoice') ? 'active' : '' || 
                             Request::is('sales/laporan_invoice/*') ? 'active' : ''||
+                            /* invoice lain */
+                            Request::is('sales/laporan_invoice_lain') ? 'active' : '' || 
+                            Request::is('sales/laporan_invoice_lain/*') ? 'active' : ''||
+                            /* laporan_cndn */
+                            Request::is('sales/laporan_cndn') ? 'active' : '' || 
+                            Request::is('sales/laporan_cndn/*') ? 'active' : ''||
+                            /* laporan_uangmuka_penjualan */
+                            Request::is('sales/laporan_uangmuka_penjualan') ? 'active' : '' || 
+                            Request::is('sales/laporan_uangmuka_penjualan/*') ? 'active' : ''||
+                            /* laporan_posting_bayar */
+                            Request::is('sales/laporan_posting_bayar') ? 'active' : '' || 
+                            Request::is('sales/laporan_posting_bayar/*') ? 'active' : ''||
                             /* Kwitansi */
                             Request::is('sales/laporan_kwitansi') ? 'active' : '' || 
                             Request::is('sales/laporan_kwitansi/*') ? 'active' : ''||
@@ -2022,6 +2034,18 @@
                              /* invoice */
                             Request::is('sales/laporan_invoice') ? 'active' : '' || 
                             Request::is('sales/laporan_invoice/*') ? 'active' : ''||
+                            /* invoice lain */
+                            Request::is('sales/laporan_invoice_lain') ? 'active' : '' || 
+                            Request::is('sales/laporan_invoice_lain/*') ? 'active' : ''||
+                            /* laporan_cndn */
+                            Request::is('sales/laporan_cndn') ? 'active' : '' || 
+                            Request::is('sales/laporan_cndn/*') ? 'active' : ''||
+                            /* laporan_uangmuka_penjualan */
+                            Request::is('sales/laporan_uangmuka_penjualan') ? 'active' : '' || 
+                            Request::is('sales/laporan_uangmuka_penjualan/*') ? 'active' : ''||
+                            /* laporan_posting_bayar */
+                            Request::is('sales/laporan_posting_bayar') ? 'active' : '' || 
+                            Request::is('sales/laporan_posting_bayar/*') ? 'active' : ''||
                             /* Kwitansi */
                             Request::is('sales/laporan_kwitansi') ? 'active' : '' || 
                             Request::is('sales/laporan_kwitansi/*') ? 'active' : ''||
@@ -2094,8 +2118,24 @@
                             Request::is('sales/laporan_invoice/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice</a>
                                 </li>
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_kwitansi') ? 'active' : '' || 
-                            Request::is('sales/laporan_kwitansi/*') ? 'active' : ''}} " href="{{ url('sales/laporan_kwitansi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kwitansi</a>
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_invoice_lain') ? 'active' : '' || 
+                            Request::is('sales/laporan_invoice_lain/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice_lain')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice Lain</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_cndn') ? 'active' : '' || 
+                            Request::is('sales/laporan_cndn/*') ? 'active' : ''}} " href="{{ url('sales/laporan_cndn')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN/DN</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_uangmuka_penjualan') ? 'active' : '' || 
+                            Request::is('sales/laporan_uangmuka_penjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporan_uangmuka_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Uangmuka</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_invoice') ? 'active' : '' || 
+                            Request::is('sales/laporan_invoice/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Posting Bayar</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_posting_bayar') ? 'active' : '' || 
+                            Request::is('sales/laporan_posting_bayar/*') ? 'active' : ''}} " href="{{ url('sales/laporan_posting_bayar')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kwitansi</a>
                                 </li>
                          {{--        <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
