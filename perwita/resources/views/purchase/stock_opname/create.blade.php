@@ -69,7 +69,7 @@
                                 Lokasi Cabang
                               </td>
                               <td>
-                                <select class="form-control chosen-select-width5" onchange="getGudang()">
+                                <select class="form-control chosen-select-width5 cabangselect" onchange="getGudang()">
                                   <option value="">- Pilih - Cabang -</option>
                                   @foreach($cabang as $val)
                                   <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -83,7 +83,7 @@
                               Lokasi Gudang
                             </td>
                             <td>
-                              <select class="form-control cabang_head" id="selectgudang">
+                              <select class="form-control cabang_head" id="selectgudang" onchange="cabang()">
                                 @if(Session::get('cabang') != '000')
                                   @foreach($gudang as $data)
                                     <option value="{{ $data->mg_id }}">{{ $data->mg_namagudang }}</option>
@@ -345,7 +345,7 @@ $('.simpan').click(function(){
 });
 
 function getGudang(){
-  var val = $('.cabang_head').val();
+  var val = $('.cabangselect').val();
   $.ajax({
       type: "GET",
       data : {gudang: val},
