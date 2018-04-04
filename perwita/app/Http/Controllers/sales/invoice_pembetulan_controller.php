@@ -48,13 +48,13 @@ class invoice_pembetulan_controller extends Controller
 
  	public function cari_invoice_pembetulan(request $request)
  	{
- 		$data = DB::table('invoice')
+ 		   $data = DB::table('invoice')
  				  ->join('customer','kode','=','i_kode_customer')
 	              ->where('i_kode_cabang',$request->cabang)
 	              ->where('i_sisa_pelunasan','!=',0)
 	              ->get();
 
-         return view('sales.invoice_pembetulan.tabel_invoice',compact('data'));
+        return view('sales.invoice_pembetulan.tabel_invoice',compact('data'));
     	
  	}
 

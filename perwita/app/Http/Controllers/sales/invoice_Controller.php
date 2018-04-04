@@ -261,7 +261,6 @@ public function drop_cus(request $request)
 }
 public function cari_do_invoice(request $request)
 {   
-    
     $do_awal = str_replace('/', '-' ,$request->do_awal);
     $do_akhir = str_replace('/', '-' ,$request->do_akhir);
     $do_awal = Carbon::parse($do_awal)->format('Y-m-d');
@@ -270,7 +269,7 @@ public function cari_do_invoice(request $request)
     $id = '0';
     if ($request->cb_pendapatan == 'KORAN') {
 
-  $temp = DB::table('delivery_order')
+    $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
@@ -795,7 +794,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_ppntpe'             =>  $ppn_type,
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_ppnrp'              =>  $total_ppn,
-                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_kode_pajak'         =>  $request->kode_pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
@@ -1048,7 +1047,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_ppnrp'              =>  $total_ppn,
                                           'i_statusprint'        =>  'Released',
-                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_kode_pajak'         =>  $request->kode_pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
@@ -1316,7 +1315,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_statusprint'        =>  'Released',
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_ppnrp'              =>  $total_ppn,
-                                          'i_kode_pajak'         =>  $request->pajak_lain,
+                                          'i_kode_pajak'         =>  $request->kode_pajak_lain,
                                           'i_pajak_lain'         =>  $total_pph,
                                           'i_tagihan'            =>  $total_tagihan,
                                           'i_kode_customer'      =>  $request->ed_customer,
@@ -1543,7 +1542,7 @@ public function hapus_invoice(request $request)
                ->where('i_nomor',$request->id)
                ->delete();
 
-    for ($i=0; $i < $temp; $i++) { 
+    for ($i=0; $i < count($temp); $i++) { 
       $cari_do = DB::table('invoice_d')
                    ->where('id_nomor_do',$temp[$i])
                    ->first();

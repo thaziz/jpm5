@@ -2351,3 +2351,6 @@ Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_
 
 // stock mutasi
 Route::get('mutasi_stock/mutasi_stock','StockMutController@index');
+
+// diskon penjualan
+Route::get('master_sales/diskonpenjualan' , 'PengeluaranBarangController@detailstockopname');
