@@ -2327,3 +2327,5 @@ Route::get('master_sales/group_customer/get_data','master_sales\grup_customer_Co
 Route::get('master_sales/group_customer/save_data','master_sales\grup_customer_Controller@save_data');
 Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_Controller@hapus_data');
 
+// stock mutasi
+Route::get('mutasi_stock/mutasi_stock','StockMutController@index');
