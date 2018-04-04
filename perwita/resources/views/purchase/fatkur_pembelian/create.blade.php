@@ -250,9 +250,7 @@
                             <td>
                             <select class="form-control gudang chosen-select-width " name="gudang" required="" novalidate>
                                 <option value=""> -- Pilih Gudang -- </option>
-                              @foreach($data['gudang'] as $gudang)
-                                <option value="{{$gudang->mg_id}}"> {{$gudang->mg_id}} </option>
-                              @endforeach  
+                        
                             </select></td>
                           </tr>
                           
@@ -1026,6 +1024,46 @@
          $('.inputfakturpajakmasukan').val('edit');
   })
 
+   cabang = $('.cabang').val();
+    $.ajax({
+      url : baseUrl + '/penerimaanbarang/valgudang',
+      data :{cabang},
+      type : "GET",
+      dataType : 'json',
+      success : function(response){
+        //  alert('hell');
+           $('.gudang').empty();
+                  $('.gudang').append(" <option value=''>  -- Pilih Gudang -- </option> ");
+              $.each(response.gudang, function(i , obj) {
+        //        console.log(obj.is_kodeitem);
+                $('.gudang').append("<option value="+obj.mg_id+"> <h5> "+obj.mg_namagudang+" </h5> </option>");
+                $('.gudang').trigger("chosen:updated");
+                 $('.gudang').trigger("liszt:updated");
+              })
+      }
+    })
+
+    $('.cabang').change(function(){
+       cabang = $('.cabang').val();
+        $.ajax({
+          url : baseUrl + '/penerimaanbarang/valgudang',
+          data :{cabang},
+          type : "GET",
+          dataType : 'json',
+          success : function(response){
+              alert('hell');
+               $('.gudang').empty();
+                      $('.gudang').append(" <option value=''>  -- Pilih Gudang -- </option> ");
+                  $.each(response.gudang, function(i , obj) {
+            //        console.log(obj.is_kodeitem);
+                    $('.gudang').append("<option value="+obj.mg_id+"> <h5> "+obj.mg_namagudang+" </h5> </option>");
+                    $('.gudang').trigger("chosen:updated");
+                     $('.gudang').trigger("liszt:updated");
+                  })
+          }
+        })
+
+    })
 
   //MENDAPATKAN NO FAKTUR
       cabang = $('.cabang').val();
