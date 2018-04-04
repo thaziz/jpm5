@@ -21,7 +21,14 @@ class laporan_neraca extends Controller
 
   public function index_neraca(Request $request, $throttle){
       if($throttle == "perbandingan_bulan"){
+
           $m1 = explode('/', $request["m"]); $m2 = explode('/', $request["y"]);
+
+          if(cek_periode($m1[0], $m1[1], true) == 0){
+              return view("keuangan.err.err_laporan")->withMessage("Periode Bulan ".$m1[0]."/".$m1[1]." Belum Dibuat. Laporan Tidak Bisa Ditampilkan..");
+          }else if(cek_periode($m2[0], $m2[1], true) == 0){
+              return view("keuangan.err.err_laporan")->withMessage("Periode Bulan ".$m2[0]."/".$m2[1]." Belum Dibuat. Laporan Tidak Bisa Ditampilkan..");
+          }
 
           // return json_encode($m1);
 
@@ -148,6 +155,12 @@ class laporan_neraca extends Controller
 
       }else if($throttle == "perbandingan_tahun"){
           // return json_encode($m1);
+
+          if(cek_periode(null, $request["m"], false) == 0){
+              return view("keuangan.err.err_laporan")->withMessage("Periode Tahun ".$request["m"]." Belum Dibuat. Laporan Tidak Bisa Ditampilkan..");
+          }else if(cek_periode(null, $request["y"], false) == 0){
+              return view("keuangan.err.err_laporan")->withMessage("Periode Tahun ".$request["y"]." Belum Dibuat. Laporan Tidak Bisa Ditampilkan..");
+          }
 
           $datat1 = []; $datat2 = []; $no = 0; $request = $request->all(); $data_akun1 = []; $data_akun2 = []; $total_in_header1 = []; $total_in_header2 = [];
 
@@ -362,24 +375,10 @@ class laporan_neraca extends Controller
 
           $ses = 0;
 
-          if($throttle == "bulan"){
-              $cek = DB::table("d_periode_keuangan")->where("bulan", $request["m"])->where("tahun", $request["y"])->select("*")->get();
-
-              if(count($cek) == 0){
-                $ses = [
-                    "info" => "Periode Bulan Yang Dipilih Belum Dibuat. Semua Nilai Neraca Akan Menjadi 0..",
-                    
-                ];
-              }
-          }else if($throttle == "tahun"){
-              $cek = DB::table("d_periode_keuangan")->where("tahun", $request["y"])->select("*")->get();
-
-              if(count($cek) == 0){
-                $ses = [
-                    "info" => "Periode Tahun Yang Dipilih Belum Dibuat. Semua Nilai Neraca Akan Menjadi 0..",
-                    
-                ];
-              }
+          if($throttle == "bulan" && cek_periode($request["m"], $request["y"]) == 0){
+              return view("keuangan.err.err_laporan")->withMessage("Periode Bulan ".$request["m"]."/".$request["y"]." Belum Dibuat. Laporan Tidak Bisa Ditampilkan..");
+          }else if($throttle == "tahun" && cek_periode(null, $request["y"], false) == 0){
+              return view("keuangan.err.err_laporan")->withMessage("Periode Tahun ".$request["y"]." Belum Dibuat. Laporan Tidak Bisa Ditampilkan..");
           }
 
           return view("laporan_neraca.index")->withData($data)->withMydatatotal($mydatatotal)->withRequest($request)->withThrottle($throttle)->withData_akun($data_akun)->withTotal_in_header($total_in_header)->withSes($ses);

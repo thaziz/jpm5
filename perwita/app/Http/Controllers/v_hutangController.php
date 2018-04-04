@@ -87,7 +87,7 @@ class v_hutangController extends Controller
 
 
         $store1 = new v_hutang;
-        $store1->v_id  = 6;
+        $store1->v_id  = $anj;
         $store1->v_nomorbukti =$request->nobukti;
         $store1->v_tgl =$request->tgl;
         $store1->v_tempo =$request->tempo;
@@ -173,7 +173,8 @@ class v_hutangController extends Controller
        $sup = DB::table('supplier')
               ->get();
        $akunselect = DB::table('d_akun')->get();
-       $data = DB::table('v_hutangd')->join('v_hutang','v_hutangd.vd_no','=','v_hutang.v_id')->join('supplier','supplier.no_supplier','=','v_hutang.v_supid')->where('vd_no','=',$v_id)->where('status','=','SETUJU')->where('active','=','ACTIF')->get();
+       $data = DB::select("select * from v_hutang , v_hutangd, supplier where vd_no = v_id and v_supid = no_supplier and active = 'AKTIF'");
+   //    dd($data);
       return view('purchase/voucher_hutang/edit',compact('akunselect','data1','suping','data','sup','a','b','c','d','e','f','g'));
     }
 
@@ -207,7 +208,7 @@ class v_hutangController extends Controller
     public function updatevoucherhutang(Request $request,$v_id){
     
             $this->hapusvoucherhutang($v_id);
-            $this->store1($request);
+            $this->simpan($request);
 
     }
 

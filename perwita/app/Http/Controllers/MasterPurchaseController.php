@@ -828,7 +828,7 @@ class MasterPurchaseController extends Controller
 	public function getacchutang(Request $request) {
 		$cabang = $request->cabang;
 
-		$data = DB::select("select * from d_akun where id_akun LIKE '21011%' and kode_cabang = '$cabang'");
+		$data = DB::select("select * from d_akun where id_akun LIKE '21%' and kode_cabang = '$cabang'");
 
 		return json_encode($data);
 	}
@@ -857,9 +857,37 @@ class MasterPurchaseController extends Controller
 	}
 
 
-	public function savesupplier(Request $request) {
-		$mastersupplier = new masterSupplierPurchase();
+	public function getnosupplier (Request $request){
+		$cabang = $request->cabang;
+		
 
+		$supplier = DB::select("select * from supplier where idcabang = '$cabang' order by idsup desc limit 1");
+		//return $fpg;
+		
+		if(count($supplier) > 0) {
+	//		return $fpg[0]->fpg_nofpg;
+			$explode = explode("/", $supplier[0]->no_supplier);
+			$idsupplier1 = $explode[2];
+		
+
+			$idsupplier = (int)$idsupplier1 + 1;
+			$data['idsupplier'] = str_pad($idsupplier, 6, '0', STR_PAD_LEFT);
+			
+		}
+
+		else {
+	
+			$data['idsupplier'] = '000001';
+		}
+
+		return json_encode($data);
+	
+	}
+
+	public function savesupplier(Request $request) {
+	//	dd($request);
+		$mastersupplier = new masterSupplierPurchase();
+		$cabang = $request->cabang;
 	/*	dd($request);*/
 		$idsupplier=masterSupplierPurchase::max('no_supplier'); 
 	/*	dd($idsupplier);*/
@@ -874,7 +902,7 @@ class MasterPurchaseController extends Controller
 			$jumlah = $string[1] + 1;
 			
 			$invID = str_pad($jumlah, 6, '0', STR_PAD_LEFT);
-			$no_supplier = 'SP/EM/' . $invID;
+			$no_supplier = 'SP/' . $cabang .'/' . $invID;
 			
 		}
 		else {
@@ -895,8 +923,10 @@ class MasterPurchaseController extends Controller
 		$status = 'BELUM DI SETUJUI';
 		$statusactive = 'AKTIF';
 
+		$replaceplafon = str_replace(',', '', $request->Plafon);
+
 		$mastersupplier->idsup = $idsup;
-		$mastersupplier->no_supplier = $no_supplier;
+		$mastersupplier->no_supplier = $request->nosupplier;
 		$mastersupplier->nama_supplier = strtoupper($request->nama_supplier);
 		$mastersupplier->alamat = strtoupper($request->alamat);
 		$mastersupplier->kota = strtoupper($request->kota);
@@ -905,7 +935,7 @@ class MasterPurchaseController extends Controller
 		$mastersupplier->propinsi = strtoupper($request->provinsi);
 		$mastersupplier->contact_person = strtoupper($request->number_cp);
 		$mastersupplier->syarat_kredit = strtoupper($request->syarat_kredit);
-		$mastersupplier->plafon = strtoupper($request->plafon);
+		$mastersupplier->plafon = $replaceplafon;
 		$mastersupplier->currency = strtoupper($request->matauang);
 		$mastersupplier->pajak_npwp = strtoupper($request->npwp);
 		$mastersupplier->ppn =strtoupper( $request->pajak_ppn);
@@ -1029,6 +1059,13 @@ class MasterPurchaseController extends Controller
 				$data->telppajak = $request->telppajak;
 				$data->alamatpajak = $request->alamatpajak;
 
+			}
+			else {
+				$data->namapajak = null;
+				$data->telppajak = null;
+				$data->alamatpajak = null;
+				$data->noseri_pajak = null;
+				$data->pajak_npwp = null;
 			}
 			$data->save();
 

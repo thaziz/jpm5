@@ -22,7 +22,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> INVOICE DETAIL
+                    <h5> INVOICE PEMBETULAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <a href="../sales/invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
@@ -51,18 +51,11 @@
                     <table class="table table_header table-striped table-bordered table-hover">
 
                         <tbody>
-                            <tr>
-                                <td style="width:120px; padding-top: 0.4cm">Nomor</td>
-                                <td colspan="3">
-                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
-                                    <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
-                                </td>
-                            </tr>
                             @if(Auth::user()->punyaAkses('Invoice Penjualan','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="4">
-                                        <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                <td colspan="5">
+                                        <select class="form-control chosen-select-width cabang "  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
                                             <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
@@ -76,7 +69,7 @@
                             @else
                             <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="4">
+                                <td colspan="5">
                                         <select class="form-control chosen-select-width cabang "  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
@@ -90,8 +83,21 @@
                             </tr>
                             @endif
                             <tr>
+                                <td style="width:120px; padding-top: 0.4cm">Nomor</td>
+                                <td colspan="3" >
+                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
+                                </td>
+                                <td colspan="1" width="15%" align="center">
+                                    <button type="button" class="btn btn-primary cari_invoice">
+                                        <i class="fa fa-search"> cari invoice</i>
+                                    </button>
+                                </td>
+                            </tr>
+                            
+                            <tr class="disabled">
                                 <td style="padding-top: 0.4cm" >Customer</td>
-                                <td colspan="4" class="">                                    
+                                <td colspan="5" class="">                                    
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
@@ -103,21 +109,21 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
-                                <td >
+                                <td width="40%">
                                     <div class="input-group date">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl" name="tgl" value="{{$tgl}}">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
-                                <td class="disabled">
-                                    <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" readonly="" class="ed_jatuh_tempo form-control" name="ed_jatuh_tempo" value="">
+                                <td colspan="2" class="disabled" width="40%">
+                                    <div class="input-group date" style="width: 100%">
+                                        <span  class="input-group-addon"><i class="fa fa-calendar"></i></span><input  type="text" readonly="" class="ed_jatuh_tempo form-control" name="ed_jatuh_tempo" value="">
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Pendapatan</td>
-                                <td colspan="3">
+                                <td colspan="5">
                                     <select class="form-control"  name="cb_pendapatan" id="cb_pendapatan" >
                                         <option value="0">Pilih - Pendapatan</option>
                                         <option value="PAKET">PAKET</option>
@@ -126,23 +132,10 @@
                                     </select>
                                     <input type="hidden" class="ed_pendapatan" name="ed_pendapatan" value="" >
                                 </td>
-                                <td style="width:110px; padding-top: 0.4cm;display:none" >Type Kiriman</td>
-                                <td style="display:none;>
-                                    <select class="form-control"  name="type_kiriman" id="type_kiriman"  >
-                                        <option></option>
-                                        <option value="KARGO KERTAS">KARGO KERTAS</option>
-                                        <option value="KERTAS">KERTAS</option>
-                                        <option value="DOKUMEN">DOKUMEN</option>
-                                        <option value="KARGO PAKET">KARGO PAKET</option>
-                                        <option value="KILOGRAM">KILOGRAM</option>
-                                        <option value="KOLI">KOLI</option>
-                                    </select>
-                                    <input type="hidden" name="ed_type_kiriman" value="{{ $data->type_kiriman or null }}" >
-                                </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
-                                <td colspan="4">
+                                <td colspan="5">
                                     <input type="text" name="ed_keterangan" placeholder="harap diisi" class="form-control ed_keterangan" style="text-transform: uppercase" value="" >
                                 </td>
                             </tr>
@@ -153,9 +146,9 @@
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="do_awal form-control" name="do_awal" value="{{$tgl1}}">
                                     </div>
                                 </td>
-                                <td style="padding-top: 0.4cm">Tgl DO Sampai</td>
-                                <td>
-                                    <div class="input-group date">
+                                <td  style="padding-top: 0.4cm">Tgl DO Sampai</td>
+                                <td colspan="2">
+                                    <div class="input-group date" style="width: 100%">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="do_akhir form-control" name="do_akhir" value="{{$tgl}}">
                                     </div>
                                 </td>
@@ -261,6 +254,18 @@
                                     <input type="text" name="total_tagihan" class="form-control total_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
                             </tr>
+                             <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Sisa Tagihan</td>
+                                <td colspan="4">
+                                    <input type="text" name="sisa_tagihan" class="form-control sisa_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Selisih Tagihan</td>
+                                <td colspan="4">
+                                    <input type="text" name="selisih_tagihan" class="form-control selisih_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" value="0">
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </form>
@@ -275,6 +280,37 @@
                       <div class="modal-body">
                             <form class="form-horizontal  kirim">
                                 <table id="table_data_do" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Nomor Order</th>
+                                            <th>Tgl Order</th>
+                                            <th>Jumlah</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="btnsave">Append</button>
+                          </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- modal invoice-->
+                <div id="modal_invoice" class="modal" >
+                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Pilih Nomor Invoice</h4>
+                      </div>
+                      <div class="modal-body">
+                            <form class="form-horizontal  modal_invoice">
+                                <table  class="table table-bordered modal-hover table-striped">
                                     <thead>
                                         <tr>
                                             <th>Nomor Order</th>
@@ -350,6 +386,88 @@
        ]
 
     });
+    // cari invoice
+    $('.cari_invoice').click(function(){
+        var cabang = $('.cabang').val();
+        $.ajax({
+            url:baseUrl+'/sales/cari_invoice_pembetulan',
+            data:{cabang},
+            success:function(response){
+                $('.modal_invoice').html(response);
+                $('#modal_invoice').modal('show');
+            }
+        });
+    });
+   var index_detail = 1;
+    // pilih_invoice
+    function pilih_invoice(a) {
+        var id  = $(a).find('.i_nomor_invoice').val();
+        $.ajax({
+            url:baseUrl+'/sales/pilih_invoice_pembetulan',
+            data:{id},
+            dataType:'json',
+            success:function(data){
+                $('#nota_invoice').val(data.data.i_nomor);
+                $('#customer').val(data.data.i_kode_customer).trigger('chosen:updated');
+                $('#customer').val(data.data.i_kode_customer).trigger('chosen:updated');
+                $('.tgl').val(data.data.tgl);
+                $('.ed_jatuh_tempo').val(data.data.jt);
+                $('#cb_pendapatan').val(data.data.i_pendapatan);
+                $('.ed_keterangan').val(data.data.i_keterangan);
+                $('.pajak_lain').val(data.data.i_kode_pajak);
+                $('#cb_jenis_ppn').val(data.data.i_jenis_ppn);
+                $('.diskon2').val(data.data.i_diskon2);
+                $('.sisa_tagihan').val( accounting.formatMoney(data.data.i_sisa_pelunasan, "", 2, ".",','));
+                table_detail.clear().draw();
+                console.log(data.data[i]);
+                if (data.data.i_pendapatan == 'KORAN') {
+
+                for(var i = 0 ; i < data.data_dt.length;i++){
+                        index_detail+=1;
+                        table_detail.row.add([
+                            index_detail,
+                            data.data_dt[i][0].dd_nomor+'<input type="hidden" value="'+data.data_dt[i][0].dd_nomor+'" name="do_detail[]">',
+                            data.data_dt[i][0].tanggal+'<input type="hidden" class="dd_id" value="'+data.data_dt[i][0].dd_id+'" name="do_id[]">',
+                            data.data_dt[i][0].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+data.data_dt[i][0].acc_penjualan+'" name="akun[]">',
+                            data.data_dt[i][0].dd_jumlah+'<input type="hidden" value="'+data.data_dt[i][0].dd_jumlah+'" name="dd_jumlah[]">',
+                            accounting.formatMoney(data.data_dt[i][0].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].dd_harga+'" name="dd_harga[]">',
+                            accounting.formatMoney(data.data_dt[i][0].dd_total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+data.data_dt[i][0].dd_total+'" name="dd_total[]">',
+                            accounting.formatMoney(data.data_dt[i][0].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].dd_diskon+'" name="dd_diskon[]">',
+                            accounting.formatMoney(data.data_dt[i][0].dd_total-data.data_dt[i][0].dd_diskon, "", 2, ".",',')+
+                            '<input type="hidden" class="harga_netto" value="'+(data.data_dt[i][0].dd_total-data.data_dt[i][0].dd_diskon)+'" name="harga_netto[]">',
+                            '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+
+                        ]).draw(false);
+                        index_detail++;
+                    }
+                }else{
+                    for(var i = 0 ; i < data.data_dt.length;i++){
+
+                        table_detail.row.add([
+                            index_detail,
+                            data.data_dt[i][0].nomor+'<input class="nomor_detail" type="hidden" value="'+data.data_dt[i][0].nomor+'" name="do_detail[]">',
+                            data.data_dt[i][0].tanggal,
+                            data.data_dt[i][0].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+data.data_dt[i][0].acc_penjualan+'" name="akun[]">',
+                            data.data_dt[i][0].jumlah+'<input type="hidden" value="'+data.data_dt[i][0].jumlah+'" name="dd_jumlah[]">',
+                            accounting.formatMoney(data.data_dt[i][0].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].tarif_dasar+'" name="dd_harga[]">',
+                            accounting.formatMoney(data.data_dt[i][0].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+data.data_dt[i][0].total+'" name="dd_total[]">',
+                            accounting.formatMoney(data.data_dt[i][0].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].diskon+'" name="dd_diskon[]">',
+                            accounting.formatMoney(data.data_dt[i][0].total_net, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+data.data_dt[i][0].total_net+'" name="harga_netto[]">',
+                            '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+
+                        ]).draw(false);
+                        index_detail++;
+                    }
+                }
+
+                hitung();
+
+
+
+                $('#modal_invoice').modal('hide');
+            }
+        });
+    }
 
     //date picker
     $('.tgl').datepicker({
@@ -363,56 +481,8 @@
         format:'dd/mm/yyyy',
     });
     //ajax cari nota
-    $(document).ready(function(){
-        var cabang = $('.cabang').val();
-        $.ajax({
-            url:baseUrl+'/sales/nota_invoice',
-            data:{cabang},
-            dataType : 'json',
-            success:function(response){
-                $('#nota_invoice').val(response.nota);
-            }
-        });
 
-        $.ajax({
-        url:baseUrl +'/sales/drop_cus',
-        data:{cabang},
-        success:function(data){
-            $('.customer_td').html(data);
-            $('#customer').trigger('chosen:updated');
-            // toastr.info('Data Telah Dirubah Harap Periksa Kembali');
-        },
-        error:function(){
-            location.reload();
-        }
-        });
-    });
-    // ganti nota untuk admin
-    function ganti_nota(argument) {
-      var cabang = $('.cabang').val();
-        $.ajax({
-            url:baseUrl+'/sales/nota_invoice',
-            data:{cabang},
-            dataType : 'json',
-            success:function(response){
-                $('#nota_invoice').val(response.nota);
-            }
-        });
 
-        $.ajax({
-        url:baseUrl +'/sales/drop_cus',
-        data:{cabang},
-        success:function(data){
-            $('.customer_td').html(data);
-            $('#customer').trigger('chosen:updated');
-            // toastr.info('Data Telah Dirubah Harap Periksa Kembali');
-
-        },
-        error:function(){
-            location.reload();
-        }
-        });
-    }
     //ajax jatuh  tempo
    function ganti(){
         var customer = $('#customer').val();
@@ -665,7 +735,6 @@
 
    
    // untuk mengirim yang di check ke controller dengan ajax
-   var index_detail = 0;
    $('#btnsave').click(function(){
 
         var nomor_dt = [];
@@ -706,9 +775,9 @@
                             response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
                             accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
-                            accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_total+'" name="dd_total[]">',
+                            accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_total+'" name="dd_total[]">',
                             accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
-                            accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+                            accounting.formatMoney(response.data[i].dd_total-response.data[i].dd_diskon, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+(response.data[i].dd_total-response.data[i].dd_diskon)+'" name="harga_netto[]">',
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);

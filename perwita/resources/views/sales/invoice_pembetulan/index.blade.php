@@ -9,7 +9,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> DELIVERY ORDER KARGO </h2>
+                    <h2> INVOICE </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -24,7 +24,7 @@
                             <a>Transaksi Penjualan</a>
                         </li>
                         <li class="active">
-                            <strong> DO KARGO </strong>
+                            <strong> INVOICE </strong>
                         </li>
 
                     </ol>
@@ -38,7 +38,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5 style="margin : 8px 5px 0 0"> DELIVERY ORDER KARGO
+                    <h5 style="margin : 8px 5px 0 0"> 
                           <!-- {{Session::get('comp_year')}} -->
                     </h5>
 
@@ -54,54 +54,56 @@
                 <div class="box-header">
                 <div class="box-body">
 
-                    <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+                    <table style="font-size: 12px" id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
                         <thead>
                             <tr>
-                                <th> No DO</th>
-                                <th> Tanggal </th>
-                                <th> Pengirim </th>
-                                <th> Penerima </th>
-                                <th> Kota Asal </th>
-                                <th> Kota Tujuan </th>
-                                <th> Status </th>
-                                <th> Tarif </th>
-                                <th style="width:110px"> Aksi </th>
+                                <th>Nomor</th>
+                                <th>Tanggal </th>
+                                <th>Customer</th>
+                                <th>JT</th>
+                                <th>Tagihan </th>
+                                <th>Sisa Tagihan </th>
+                                <th>Keterangan </th>
+                                <th>No Faktur Pajak </th>
+                                <th>Status Print</th>
+                                <th style="width:10%"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td><a href="{{ url('sales/detail_do_kargo')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
-                                <td>{{ $row->tanggal }}</td>
-                                <td>{{ $row->nama_pengirim }}</td>
-                                <td>{{ $row->nama_penerima }}</td>
-                                @foreach($kota as $val)
-                                    @if($val->id == $row->id_kota_tujuan)
-                                    <td>{{ $val->nama }}</td>
+                                <td><a onclick="lihat('{{ $row->ip_nomor }}')">{{ $row->ip_nomor }}</a></td>
+                                <td>{{ $row->ip_tanggal }}</td>
+                                <td>{{ $row->nama }}</td>
+                                <td>{{ $row->ip_jatuh_tempo }}</td>
+                                <td style="text-align:right"> {{ number_format($row->ip_total_tagihan, 2, ",", ".") }} </td>
+                                <td style="text-align:right"> {{ number_format($row->ip_sisa_pelunasan, 2, ",", ".") }} </td>
+                                <td>{{ $row->ip_keterangan }}</td>
+                                <td>{{ $row->ip_no_faktur_pajak }}</td>
+                                <td>
+                                    @if($row->ip_statusprint == 'Released')
+                                    <label class="label label-warning">{{$row->ip_statusprint}}</label>
+                                    @else
+                                    <label class="label label-success">{{$row->ip_statusprint}}</label>
                                     @endif
-                                @endforeach
-                                @foreach($kota as $val)
-                                    @if($val->id == $row->id_kota_asal)
-                                    <td>{{ $val->nama }}</td>
-                                    @endif
-                                @endforeach
-                                <td>{{ $row->status }}</td>
-                                <td>{{ $row->total }}</td>
+                                </td>
                                 <td class="text-center">
-                                    <div class="btn-group">
-                                         @if(Auth::user()->punyaAkses('Delivery Order','ubah'))
-                                            @if($row->status_do == 'Released')
-                                                <a type="button" href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
-                                            @endif
+                                    <div class="btn-group ">
+                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','ubah'))
+                                        @if($row->ip_statusprint == 'Released')
+                                        <a  onclick="edit('{{$row->ip_nomor}}')" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>
                                         @endif
-                                        @if(Auth::user()->punyaAkses('Delivery Order','print'))
-                                            <button type="button" onclick="print('{{$row->nomor}}')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>
                                         @endif
-                                        @if(Auth::user()->punyaAkses('Delivery Order','hapus'))
-                                            @if($row->status_do == 'Released')
-                                                <button type="button" onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>
-                                            @endif
+                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','print'))
+                                        <a  onclick="ngeprint('{{$row->ip_nomor}}')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></a>
                                         @endif
+                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','hapus'))
+                                        @if($row->ip_statusprint == 'Released')
+                                        <a  onclick="hapus('{{$row->ip_nomor}}')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
+                                        @endif
+                                        @endif
+                                        
+
                                     </div>
                                 </td>
                             </tr>
@@ -151,41 +153,33 @@
             "autoWidth": false,
             "pageLength": 10,
             "retrieve" : true,
-            "columns": [
-            { "data": "nomor" },
-            { "data": "tanggal" },
-            { "data": "nama_pengirim" },
-            { "data": "nama_penerima" },
-            { "data": "asal" },
-            { "data": "tujuan" },
-            { "data": "status" },
-            { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "button" },
-            ]
       });
     });
 
 
     $(document).on("click","#btn_add_order",function(){
-        window.location.href = baseUrl + '/sales/deliveryorderkargoform'
+        window.location.href = baseUrl + '/sales/invoice_pembetulan_create'
     });
 
     $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
-    function tambahdata() {
-        window.location.href = baseUrl + '/data-master/master-akun/create'
+
+    function edit(id){
+        window.location.href = baseUrl + '/sales/edit_invoice/'+id;
+    }
+    function lihat(id){
+        window.open(baseUrl + '/sales/lihat_invoice/'+id);
     }
 
 
-    function print(id) {
-        window.open("{{url('sales/deliveryorderkargoform/nota')}}"+'/'+id);
+    function ngeprint(id){
+        window.open(baseUrl+'/sales/cetak_nota/'+id);
+        location.reload();
     }
 
     function hapus(id){
-    var nomor_do = id;
-        
         swal({
         title: "Apakah anda yakin?",
         text: "Hapus Data!",
@@ -197,11 +191,12 @@
         cancelButtonText: "Batal",
         closeOnConfirm: false
     },
+
     function(){
 
          $.ajax({
-          url:baseUrl + '/sales/hapus_do_kargo',
-          data:{nomor_do},
+          url:baseUrl + '/sales/hapus_invoice',
+          data:{id},
           type:'get',
           success:function(data){
               swal({

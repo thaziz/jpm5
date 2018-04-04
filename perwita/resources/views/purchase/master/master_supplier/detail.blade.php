@@ -90,7 +90,7 @@
                               Pengajuan dari Cabang
                             </td>
                             <td>
-                              <select class="chosen-select-width" name="idcabang" >
+                              <select class="chosen-select-width ubah" name="idcabang" disabled="">
                               @foreach($data['cabang'] as $cbg) 
                                  <option value="{{$cbg->kode}}" @if($cbg->kode == $sup->idcabang) selected="" @endif>  {{$cbg->nama}} </option>
                               @endforeach
@@ -104,7 +104,7 @@
                               Provinsi
                             </td>
                             <td>
-                              <select class="chosen-select-width" name="provinsi">
+                              <select class="chosen-select-width provinsi ubah" name="provinsi" disabled="">
                               @foreach($data['provinsi'] as $provinsi)
                                       <option value="{{$provinsi->id}}" @if($provinsi->id == $sup->propinsi) selected="" @endif> {{$provinsi->nama}} </option> 
                               @endforeach
@@ -117,7 +117,7 @@
                            <tr>
                             <td> Kota </td>
                             <td>
-                               <select class="form-control kota" name="kota">
+                               <select class="form-control kota chosen-select-width ubah" name="kota" disabled="">
                               @foreach($data['kota'] as $kota)
                                 <option value="{{$kota->id}}" @if($kota->id == $sup->kota)  selected="" @endif> {{$kota->nama}} </option>
                               @endforeach
@@ -131,7 +131,7 @@
                               Kode Pos
                             </td>
                             <td>
-                              <input type="text" class="form-control kodepos input-sm" name="kodepos" value="{{$sup->kodepos}}" readonly="">
+                              <input type="text" class="form-control kodepos input-sm ubah" name="kodepos" value="{{$sup->kodepos}}" readonly="">
                             </td>
                           </tr>
 
@@ -175,7 +175,7 @@
                              Nama Contact Person
                           </td>
                           <td width="300px">
-                            <input type="text" class="form-control nm_cp input-sm" name="nm_cp" value="{{$sup->nama_cp}}" readonly="">
+                            <input type="text" class="form-control nm_cp input-sm ubah" name="nm_cp" value="{{$sup->nama_cp}}" readonly="">
                           </td>
                         </tr>
 
@@ -202,15 +202,7 @@
                           </td>
                         </tr>
 
-                         <tr>
-                            <td> Apakah Supplier ini termasuk PKP ? </td>
-                            <td> @if($sup->nama_cp != '')
-                                  <select class="form-control pkp" name="pkp"><option value="Y" selected=""> Ya </option>  <option value="T"> Tidak </option> </select>
-                                  @else 
-                                      <select class="form-control pkp" name="pkp"><option value="Y" selected=""> Ya </option>  <option value="T" selected=""> Tidak </option> </select>    
-                                 @endif
-                             </td>
-                          </tr>    
+                    
 
 
                          <tr>
@@ -262,7 +254,19 @@
 
                      
 
-
+                       <div class="col-xs-6">
+                            <table class="table">
+                            <tr>
+                            <td> <b> Apakah Supplier ini termasuk PKP ? </b> </td>
+                            <td> @if($sup->namapajak != '')
+                                  <select class="form-control pkp ubah" name="pkp" readonly=""><option value="Y" selected=""> Ya </option>  <option value="T"> Tidak </option> </select>
+                                  @else 
+                                      <select class="form-control pkp" name="pkp"><option value="Y" selected=""> Ya </option>  <option value="T" selected=""> Tidak </option> </select>    
+                                 @endif
+                             </td>
+                          </tr>   
+                            </table>
+                       </div>
 
                           
 
@@ -274,38 +278,38 @@
 
                           
                           <tr>
-                            <td> NO NPWP </td>
+                            <td class="pajak"> NO NPWP </td>
                             <td>
-                                <input type="text" class="form-control npwp input-sm" name="npwp" value="{{$sup->pajak_npwp}}" readonly="">
+                                <input type="text" class="form-control npwp input-sm pajak isipajak" name="npwp" value="{{$sup->pajak_npwp}}" readonly="">
                             </td>
                           </tr>
 
                           <tr>
                             <td class="pajak"> Nama </td>
-                            <td> <input type="text" class="form-control input-sm pajak" name="namapajak" value="{{$sup->namapajak}}"> </td>
+                            <td> <input type="text" class="form-control input-sm pajak isipajak" name="namapajak" value="{{$sup->namapajak}}"> </td>
                           </tr>
 
                           <tr>
                             <td class="pajak"> Telepon </td>
-                            <td> <input type="number" class="form-control input-sm pajak" name="telppajak" value="{{$sup->telppajak}}"></td>
+                            <td> <input type="number" class="form-control input-sm pajak isipajak" name="telppajak" value="{{$sup->telppajak}}"></td>
                           
                           </tr>
 
                           <tr>
                              <td class="pajak"> Alamat </td>
-                            <td> <input type="text" class="form-control input-sm pajak" name="alamatpajak" value="{{$sup->alamatpajak}}"></td>
+                            <td> <input type="text" class="form-control input-sm pajak isipajak" name="alamatpajak" value="{{$sup->alamatpajak}}"></td>
                           
                           </tr>
 
                           <tr>
-                            <td width="200px">
+                            <td width="200px" class="pajak">
                                No Seri Pajak Supplier 
                             </td>
-                            <td>
-                                 <input type="text" class="form-control seripajak" name="noseri" value="{{$sup->noseri_pajak}}" readonly="">
+                            <td class="pajak">
+                                 <input type="text" class="form-control seripajak pajak isipajak" name="noseri" value="{{$sup->noseri_pajak}}" readonly="">
                                
                           
-                                 <td>  <div class='checkbox checkbox-info checkbox-circle'>
+                                 <td class="pajak">  <div class='checkbox checkbox-info checkbox-circle'>
                                   @if($sup->ppn != '') 
                                   <input id='pajak_ppn' type='checkbox' name='pajak_ppn' checked="" disabled="">
                                   @else 
@@ -319,7 +323,7 @@
                              
 
                              
-                                 <td> 
+                                 <td class="pajak"> 
                                   <div class="checkbox checkbox-info checkbox-circle">
                                     @if($sup->pph23 != '') 
                                      <input id="pajak_pph" type="checkbox" name="pajak_pph" checked="" disabled="">
@@ -331,7 +335,7 @@
                                     </label>
                                 </div>
 
-                                <td>
+                                <td class="pajak">
                                 <div class="checkbox checkbox-info checkbox-circle">
                                    @if($sup->pph26 != '')
                                   <input id="pajak_26" type="checkbox" name="pajak_26" checked="" disabled="">
@@ -471,12 +475,30 @@
       var tr = $('tr.dataitem').length;
      // alert(tr);
       kontrak = $('.kontrak').val();
+      pkp = $('.pkp').val();
+     
+      temppkp = 0;
       if(kontrak == 'YA'){
       //       RRRZ(kontrak);
               if(tr == 0){
         toastr.info('jenis Supplier adalah Kontrak, Mohon Tambah Data Barang :) ');
         return false;
       }        
+      }
+       else if(pkp == 'Y'){
+        $('.isipajak').each(function(){
+          val = $(this).val();
+      
+          if(val == ''){
+              temppkp = temppkp + 1;
+          }
+         
+        })
+       
+        if(temppkp != 0 ){
+          toastr.info('Mohon lengkapi data informasi pajak supplier :)');
+          return false;
+        }
       }
 
     })
@@ -504,7 +526,7 @@
 $(function(){
   $('.edit').click(function(){
     $('.namasupplier').attr('readonly' , false);
-        $('.alamat').attr('readonly' , false);
+    $('.alamat').attr('readonly' , false);
     $('.provinsi').attr('readonly' , false);
     $('.kota').attr('readonly' , false);
     $('.kodepos').attr('readonly' , false);
@@ -524,6 +546,10 @@ $(function(){
     $('.brg').attr('disabled' , false);
     $('.hrg').attr('readonly' , false);
     $('#idcabang').attr('disabled', false);
+    $('.ubah').attr('readonly' , false);
+    $('.ubah').attr('disabled' , false);
+
+
 
 
     var rowBtn = '<button  id="tmbh_data_barang" type="button" class="btn btn-sm btn-success tmbhdatabarang"> <i class="fa fa-plus"> </i> &nbsp; Tambah Data Barang </button>';
@@ -579,6 +605,42 @@ $(function(){
   })
 })
 
+  
+
+   $(function(){
+            $('.provinsi').change(function(){
+               var provinsi = $(this).val();
+               $.ajax({
+                url : baseUrl + '/mastersupplier/ajaxkota/' + provinsi,
+                type : "GET",
+                dataType : "json",
+                success : function(data) {
+                  /*$('.kota').val(data);*/
+                  console.log(data);
+
+                  $('select[name="kota"]').empty();
+
+                  $.each(data, function(key, value) {
+                    $('select[name="kota"]').append('<option value="'+ key +'">'+ value +'</option>')
+                  })
+                $('.kota').trigger("chosen:updated");
+                 $('.kota').trigger("liszt:updated");
+                }
+              });
+
+             
+             })
+         })
+  
+    $('.plafon').change(function(){
+
+               val = $(this).val();
+      
+               val = accounting.formatMoney(val, "", 2, ",",'.');
+               $(this).val(val);
+
+            
+    })
 
 
    $notable = $('tr#dataitem').length;
@@ -716,6 +778,28 @@ $(function(){
     }
   })
 
+  clearInterval(reset);
+    var reset =setInterval(function(){
+     $(document).ready(function(){
+      var config = {
+                '.chosen-select'           : {},
+                '.chosen-select-deselect'  : {allow_single_deselect:true},
+                '.chosen-select-no-single' : {disable_search_threshold:10},
+                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-width'     : {width:"95%"}
+                }
+
+             for (var selector in config) {
+               $(selector).chosen(config[selector]);
+             }
+
+
+      $(".acc_hutangdagang").chosen(config);
+      $(".acc_csf").chosen(config);
+      $('.cabang').chosen(config);
+      $('.kota').chosen(config);
+    })
+     },2000);
  
 </script>
 @endsection

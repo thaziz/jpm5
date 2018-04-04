@@ -1243,10 +1243,6 @@
   $(document).ready(function(){
     //$("#tree").DataTable();
 
-    @if($ses != 0)
-        alert("{{ $ses["info"] }}")
-    @endif
-
    $(".tree, .tree2, .tree3, .tree4").treegrid({
       treeColumn: 0,
       initialState: "expanded",

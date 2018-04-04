@@ -64,7 +64,7 @@
                 @endif
 
                     <div class="col-xs-12">
-
+                    <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
                     <!-- KONTEN PAKE FP -->
                     @if($data['flag'] == 'FP')
                     <input type="hidden" class="flag" value="FP" name="flag">
@@ -97,6 +97,11 @@
                       <tr>
                         <th class="suratjalan" style="width:200px"> No Surat Jalan </th>
                         <td style="width:400px"> <input type="text" class="form-control suratjalan" name="suratjalan">  </td>
+                      </tr>
+
+                      <tr>
+                        <th class="suratjalan" style="width:200px"> Diterima dari </th>
+                        <td style="width:400px"> <input type="text" class="form-control diterimadari" name="diterimadari">  </td>
                       </tr>
 
                       <tr>
@@ -251,6 +256,10 @@
                           <td style="width:400px"> <input type="text" class="form-control suratjalan" name="suratjalan">  </td>
                          </tr>
 
+                           <tr>
+                        <th class="suratjalan" style="width:200px"> Diterima dari </th>
+                        <td style="width:400px"> <input type="text" class="form-control diterimadari" name="diterimadari">  </td>
+                      </tr>
 
                          <tr>
                           <th class="tgl suratjalan"> Tanggal di Terima </th>
@@ -499,7 +508,7 @@
             confirmButtonColor: "#DD6B55",
             confirmButtonText: "Ya, Simpan!",
             cancelButtonText: "Batal",
-            closeOnConfirm: false
+            closeOnConfirm: true
           },
           function(){
         $.ajax({
@@ -520,7 +529,7 @@
                 });
              }
              else  if(response.status == 'gagal') {
-                alert(response.info);
+                //alert(response.info);
              }
           },
           error : function(){
@@ -620,7 +629,7 @@
         val = parseInt($(this).val());
         qtykirim = $('.qtykirim' + id).val();
         if(val < qtykirim){
-          alert('Qty Sampling harus lebih besar daripada qty kirim :)');
+          toastr.info('Qty Sampling harus lebih besar daripada qty kirim :)');
           $(this).val('');
         }
       })
@@ -654,17 +663,22 @@
               console.log('ok');
             var qtykirim = [];
             var qtyditerima = [];
-            
+            $noajax = 1;
+            $notable = 1;
            /* var judulpenerimaan = "<h4> Data Penerimaan Barang </h4>";
             $('.judul').html(judulpenerimaan);*/
 
             for(var j = 0 ; j < response.judul.length; j++) {
             console.log(j);
               $no = 1;
-            var rowtampil = "<br> <br> <table class='table'> <tr> <td style='width:200px'> No LPB </td> <td> : </td> <td>" + response.judul[j].pb_lpb + "</td> </tr>" + //no lpb
-                            "<tr> <td> No Surat Jalan </td> <td> : </td> <td>"+ response.judul[j].pb_suratjalan +"</td> </tr>" +
-                            "<tr> <td> Tgl di Terima </td> <td style='width:20px'> :</td> <td>"+ response.judul[j].pb_date + "</td>  </tr> " +
-                            "<tr> <td> Status Penerimaan Barang </td> <td> </td> <td> "+response.judul[j].pb_status+" </div> </td> </tr>" +
+            var rowtampil = "<br> <br> <table class='table'>" +
+                              "<tr> <td style='width:200px'> No LPB </td> <td> : </td> <td>" + response.judul[j].pb_lpb + "</td> </tr>" + //no lpb
+                            "<tr> <td> No Surat Jalan </td> <td> : </td> <td>"+ response.judul[j].pb_suratjalan +"</td> </tr>" + // surat jalan
+                            "<tr> <td> Tgl di Terima </td> <td style='width:20px'> :</td> <td>"+ response.judul[j].pb_date + "</td>  </tr> " + // tgl
+                            "<tr> <td> Status Penerimaan Barang </td> <td> </td> <td> "+response.judul[j].pb_status+" </div> </td> </tr>" + //status
+                            "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" + //terimadari
+                            "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_po+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_po+"> <i class='fa fa-trash'> </i>  Hapus </a> </td> </tr>" +
+                  "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
                             "</table>";
                 rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No SPP </th> </tr>"; // judul
 
@@ -673,29 +687,242 @@
                   console.log(x);
                         rowtampil += "<tr> <td style='width:20px'>"+ $no +"</td>" + 
                                 "<td> "+ response.barang[j][x].nama_masteritem +"</td>" +// no
-                              "<td>" + response.barang[j][x].unitstock + "</td>" +
-                              "<td style='text-right'>Rp " + addCommas(response.barang[j][x].podt_jumlahharga)  + "</td>";
+                              "<td>" + response.barang[j][x].unitstock + "</td>" + //satuan
+                              "<td style='text-right'>Rp " + addCommas(response.barang[j][x].podt_jumlahharga) +" <input type='hidden' class='harga"+$noajax+"' value='"+response.barang[j][x].podt_jumlahharga+"'></td>";
                            
                                  
-                               rowtampil +=    "<td style='text-right'>Rp " + addCommas(response.barang[j][x].pbdt_totalharga) + "</td>" +
+                               rowtampil +=    "<td style='text-right'> <input class='input-sm form-control biaya2"+$notable+" biaya"+$noajax+"' value='"+response.barang[j][x].pbdt_totalharga+"' readonly> </td>" +
                                  
-                                "<td>"+ response.barang[j][x].podt_qtykirim +"</td>" +
-                                "<td>"+ response.barang[j][x].pbdt_qty +"</td>"+
+                                "<td>"+ response.barang[j][x].podt_qtykirim +"</td>" + // qty po
+                                "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima2[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-spp="+response.barang[j][x].spp_id+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled> </td>"+ // qtypb
+
+                                 "<input type='hidden' class='status2"+$notable+" status4"+$noajax+"' value='"+response.barang[j][x].pbdt_status+"'> " +
+                                "<input type='hidden' value='"+response.barang[j][x].podt_qtykirim+"' class='qtykirim2"+$noajax+"' data-id="+$noajax+" name='qtydikirim2[]'>" +
+                                "<input type='hidden' value='"+response.barang[j][x].pbdt_qty+"' class='qtyterima3"+$noajax+"' data-id="+$noajax+"> "+
+                                "<input type='hidden' class='kodeitem4"+$noajax+" kodeitem2"+$notable+"' value="+response.barang[j][x].kode_item+">" +
+                                "<input type='hidden' class='idpbdt"+$noajax+" idpbdt2"+$notable+"' value="+response.barang[j][x].pbdt_id+">" +
+                                "<input type='hidden' class='idpb2"+$notable+"' value="+response.barang[j][x].pbdt_idpb+">" +
+
                                 "<td>"+ response.barang[j][x].spp_nospp +"</td> </tr>";
                           qtykirim.push(response.barang[j][x].podt_qtykirim);
                          qtyditerima.push(response.barang[j][x].pbdt_qty);
-                      $no++;
+                       $no++;
+                       $noajax++;
                       var sisa = parseInt(response.barang[j][x].podt_qtykirim) - parseInt(response.barang[j][x].pbdt_qty);
                   }
                      
                      rowtampil += "<br> <br>";
                    var lengthjudul = 0;
-                   $('.tampildata').append(rowtampil);                                 
-                  
-                 /* $('tr#'+ response.barang[j][x].spp_nospp).*/
+                   $('.tampildata').append(rowtampil);  
+$notable++;				   
+                  }
 
-                }
-         
+
+                  $('.hapusdata').click(function(){
+                       id = $(this).data('id');
+                       idtransaksi = $(this).data('idtransaksi');
+                       flag = 'PO';
+                       swal({
+                        title: "Apakah anda yakin?",
+                        text: "Hapus Data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        showLoaderOnConfirm: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ya, Hapus!",
+                        cancelButtonText: "Batal",
+                        closeOnConfirm: true
+                      },
+                      function(){
+                        $.ajax({
+                         
+                          type : "get",
+                          url : baseUrl + '/penerimaanbarang/hapusdatapenerimaan',
+                          data : {id,idtransaksi,flag},
+                          dataType : 'json',
+                          success : function(response){
+                                
+                                  if(response == 'sukses'){
+                                  swal({
+                                  title: "Berhasil!",
+                                          type: 'success',
+                                          text: "Data Berhasil Dihapus",
+                                          timer: 2000,
+                                          showConfirmButton: true
+                                          },function(){
+                                             location.reload();
+                                  });
+                                }else{
+                                 swal({
+                                title: "Data Tidak Bisa Dihapus",
+                                        type: 'error',
+                                        timer: 1000,
+                                        showConfirmButton: false
+                            });
+                                }
+                          },
+                            error:function(data){
+
+                              swal({
+                              title: "Terjadi Kesalahan",
+                                      type: 'error',
+                                      timer: 2000,
+                                      showConfirmButton: false
+                          });
+                         }
+                        })
+                      })
+                      
+                  })
+
+                 /* $('tr#'+ response.barang[j][x].spp_nospp).*/
+                  $('.editdata').click(function(){
+                id = $(this).data('id');
+                noajax = $(this).data('ajax');
+                $('.qtyreceive3' + id).attr('disabled' , false);
+                $('.suratjalan' + id).attr('readonly' , false);
+                simpan4 = "<button class='btn btn-xs btn-success simpan4' data-id='"+id+"' type='button'> <i class='fa fa-check'> </i> Simpan </button>";
+                $('.simpan2' + id).html(simpan4);
+
+
+                $('.simpan4').click(function(){
+                  id = $(this).data('id');
+                  suratjalan = $('.suratjalan' + id).val();
+                  arrqty = [];
+                  $('.qtyreceive3' + id).each(function(){
+                    val = $(this).val();
+                    arrqty.push(val);
+                  })                  
+                  idpb = $('.idpb2' + id).val();
+                //  idpb = response.pbdt[0].pbdt_idpb;
+                  arridpbdt = [];
+                  $('.idpbdt2' + id).each(function(){
+                    val = $(this).val();
+                    arridpbdt.push(val);
+                  })
+
+                  arrstatus = [];
+                  $('.status2' + id).each(function(){
+                    val = $(this).val();
+                    arrstatus.push(val);
+                  })
+
+                  arrkodeitem = [];
+                  $('.kodeitem2' + id).each(function(){
+                    val = $(this).val();
+                    arrkodeitem.push(val);
+                  })
+
+                  arrharga = [];
+                  $('.biaya2' + id).each(function(){
+                    val = $(this).val();
+                    arrharga.push(val);
+                  })
+                  idpbdt = $('.idpbdt2' + id).val();
+                  status = $('.status2' + id).val();
+                  kodeitem = $('.kodeitem2' + id).val();
+                  flag = $('.flag').val();
+                  if(flag == 'FP'){
+                    iddetail = $('.idfp').val();
+                  }
+                  else if(flag == 'PO'){
+                    iddetail = $('.idpo').val();
+                  }
+
+                  $.ajax({
+                      type : "post",
+                      url : baseUrl + '/penerimaanbarang/updatepenerimaanbarang',
+                      data : {arrqty, arrstatus, arrkodeitem, idpb, suratjalan, arridpbdt, arrharga,iddetail,flag},
+                      dataType : 'json',
+                      success : function(response){
+                         alertSuccess(); 
+                          location.reload();
+                         $('.qtyreceive2').attr('disabled', 'true');
+                         $('.suratjalan' + id).attr('readonly' , true);
+                      }
+
+                  })
+
+                })
+              }) // end edit
+
+
+                    $('.qtyreceive2').change(function(){
+                      val = $(this).val();
+                      id = $(this).data('id');
+                      kodeitem = $(this).data('kodeitem');
+                      idpbdt = $(this).data('idpbdt');
+                      rowidpbdt = "<input type='text' value="+idpbdt+" >";
+                      
+                      $('.idpbdt').val(idpbdt);
+                      console.log(kodeitem);
+                      sppid = $(this).data('spp');
+                 
+                      //appendkodeitem
+                      qtykirim = $('.qtykirim2' + id).val();
+                      qtyterima = $('.qtyterima3' + id).val();
+                      $('.kodeitem4' + id).val(kodeitem);
+                      
+                      
+                      harga = $('.harga' + id).val();
+                      harga2 = harga.replace(/,/g, '');
+
+                      biaya = parseFloat(harga2 * val).toFixed(2);
+                      $('.biaya' + id).val(addCommas(biaya)); 
+
+
+                      po_id = $('.po_id').val();
+                      idspp = sppid;
+                      flag = $('.flag').val();
+                      urlterima = baseUrl + '/penerimaanbarang/changeqtyterima';
+                       $.ajax({    
+                          type :"get",
+                          data : {kodeitem, po_id, idspp, flag, idfp},
+                          url : urlterima,
+                          dataType:'json',
+                          success : function(response){
+                         // alert('ley');
+                            lengthresp = response.pbdt.length;
+                            qty = 0;
+                            for(var i = 0; i < lengthresp; i++) {
+                              qty = qty + response.pbdt[i].pbdt_qty
+                            }
+
+                            console.log(qtyterima + 'qtyterima');
+
+                            hasilqty = parseInt((parseInt(val) + parseInt(qty)) - parseInt(qtyterima));
+                            console.log('hasilqty');
+                            console.log(hasilqty + 'hasilqty');
+                            console.log(qtykirim + 'qtykirim');
+                            
+                            if(parseInt(hasilqty) > parseInt(qtykirim)) {
+                              toastr.info('tidak bisa mengisi angka di atas jumlah angka yang diterima dari yang dikirim :) ');
+                              kosong = '';
+                             $('.status4' + id).val('');
+                             $('.qtyterima2' + id).val('');
+                      //       alert('hei');
+                            }
+
+
+                            qtykirim = $('.qtykirim2' + id).val();
+                       //     hasilterima = parseInt(qty) + parseInt(val) - ;
+                            console.log(qty + 'qty');
+                            console.log(val + 'val');
+                            if(qtykirim == hasilqty){
+
+                               status = "<input type='text' class='status2"+$noajax+"' name='status2[]' value='LENGKAP'> ";
+                               $('.status4' + id).val('LENGKAP');
+                            }
+                            else {
+                             /*  status = "TIDAK LENGKAP";*/
+                                status = "<input type='text' class='status2"+$noajax+"' name='status2[]' value='TIDAK LENGKAP'> ";
+                               $('.status4' + id).val('TIDAK LENGKAP');
+                            }
+
+                          }
+                      })
+                }) 
+
           }
           else {
             console.log('else');
@@ -731,7 +958,9 @@
 									"<tr> <td> No Surat Jalan </td> <td> : </td> <td> <input type='text' class='input-sm form-control suratjalan"+$notable+"' value="+response.judul[j].pb_suratjalan+" readonly></td> </tr>" +
 									"<tr> <td> Tgl di Terima </td> <td style='width:20px'> :</td> <td>"+ response.judul[j].pb_date + "</td>  </tr> " +
 									"<tr> <td> Status Penerimaan Barang </td> <td> </td> <td> "+response.judul[j].pb_status+" </div> </td> </tr>" +
-                  "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+"> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
+                  "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" +
+                  "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_fp+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_fp+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> </tr>" +
+                  "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
 									"</table>";
 						rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FP </th> </tr>"; // judul
 
@@ -762,6 +991,63 @@
 						   $('.tampildata').append(rowtampil); 
                $notable++;                                
 						}
+
+                $('.hapusdata').click(function(){
+                       id = $(this).data('id');
+                       idtransaksi = $(this).data('idtransaksi');
+                       flag = 'FP';
+                       swal({
+                        title: "Apakah anda yakin?",
+                        text: "Hapus Data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        showLoaderOnConfirm: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ya, Hapus!",
+                        cancelButtonText: "Batal",
+                        closeOnConfirm: true
+                      },
+                      function(){
+                        $.ajax({
+                         
+                          type : "get",
+                          url : baseUrl + '/penerimaanbarang/hapusdatapenerimaan',
+                          data : {id,idtransaksi,flag},
+                          dataType : 'json',
+                          success : function(response){
+                                
+                                  if(response == 'sukses'){
+                                  swal({
+                                  title: "Berhasil!",
+                                          type: 'success',
+                                          text: "Data Berhasil Dihapus",
+                                          timer: 2000,
+                                          showConfirmButton: true
+                                          },function(){
+                                             location.reload();
+                                  });
+                                }else{
+                                 swal({
+                                title: "Data Tidak Bisa Dihapus",
+                                        type: 'error',
+                                        timer: 1000,
+                                        showConfirmButton: false
+                            });
+                                }
+                          },
+                            error:function(data){
+
+                              swal({
+                              title: "Terjadi Kesalahan",
+                                      type: 'error',
+                                      timer: 2000,
+                                      showConfirmButton: false
+                          });
+                         }
+                        })
+                      })
+                      
+                  })
 
               $('.editdata').click(function(){
                 id = $(this).data('id');
@@ -831,6 +1117,9 @@
                   })
 
                 })
+
+
+
               })
 
               $('.qtyreceive2').change(function(){
@@ -849,7 +1138,7 @@
                       qtyterima = $('.qtyterima3' + id).val();
                       $('.kodeitem4' + id).val(kodeitem);
                       
-                      
+                      console.log(qtykirim + 'qtykirim');
                       harga = $('.harga' + id).val();
                       harga2 = harga.replace(/,/g, '');
 
@@ -990,7 +1279,7 @@
 
 
       if(parseInt(val) > parseInt(qtykirim)){
-        alert("diharapkan mengisi angka di bawah angka jumlah dikirim :) ");
+        toastr.info("diharapkan mengisi angka di bawah angka jumlah dikirim :) ");
         kosong = " ";
         $(this).val(kosong);
       }
@@ -1020,7 +1309,7 @@
             hasilqty = parseInt(val) + parseInt(qty);
             
             if(hasilqty > qtykirim) {
-              alert('tidak bisa mengisi angka di bawah jumlah angka yang diterima dari yang dikirim :) ');
+              toastr.info('tidak bisa mengisi angka di bawah jumlah angka yang diterima dari yang dikirim :) ');
               kosong = '';
               $('#qtyterima' + id ).val(kosong);
               $('.jmlhkirim' + id).empty();

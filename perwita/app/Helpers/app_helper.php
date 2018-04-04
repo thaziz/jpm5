@@ -47,8 +47,19 @@
 		return $data;
 	}
 
-	function cek_periode(){
-		$data = DB::table("d_periode_keuangan")->where("bulan", date("m"))->where("tahun", date("Y"))->select("*")->get();
+	function cek_periode($month = null, $year = null, $withMonth = true){
+		if($month == null)
+			$month = date('m');
+
+		if($year == null)
+			$year = date('Y');
+
+
+		if($withMonth)
+			$data = DB::table("d_periode_keuangan")->where("bulan", $month)->where("tahun", $year)->select("*")->get();
+		else
+			$data = DB::table("d_periode_keuangan")->where("tahun", $year)->select("*")->get();
+		
 
 		return count($data);
 	}
