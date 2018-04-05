@@ -1169,6 +1169,14 @@ public function purchase_order() {
 				$barangterima->bt_cabangpo = $nopo[0]->po_cabang;
 				$barangterima->save();
 			}
+
+			else if($setujukeuangan == 'DITOLAK' || $setujukeuangan == 'DIREVISI'){
+				$data['bt'] = DB::select("select * from barang_terima where bt_idtransaksi = '$idpo' and bt_flag = 'PO' ");
+				if(count($data['bt']) > 0){
+					DB::delete("DELETE from  barang_terima  where bt_idtransaksi = '$idpo' and bt_flag = 'PO'");
+				}
+
+			}
 		}
 		
 
@@ -1204,7 +1212,8 @@ public function purchase_order() {
 
 		$data['countbrg'] = count($idspp);
  		
- 		
+ 		$data['bt'] = DB::select("select * from barang_terima where bt_idtransaksi = '$id' and bt_flag = 'PO' and bt_statuspenerimaan != 'BELUM DI TERIMA'");
+
 	//	dd($data);
 
 		return json_encode($data);
@@ -1702,7 +1711,7 @@ public function purchase_order() {
 			$penerimaanbarang->pb_gudang = $request->gudang;
 			$penerimaanbarang->pb_terimadari = $request->diterimadari;
 			$penerimaanbarang->create_by = $request->username;
-			$penerimaanbarang->pb_acchutangsupplier = $request->acchutangsupplierpo;
+			$penerimaanbarang->pb_acchutangdagang = $request->acchutangsupplierpo;
 			
 			$penerimaanbarang->save();
 

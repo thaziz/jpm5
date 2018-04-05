@@ -47,8 +47,8 @@
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                        <tr>
-                          {{--   <th style="width: 100px; padding-top: 16px"> Satuan </th>
+                        {{-- <tr>
+                            <th style="width: 100px; padding-top: 16px"> Satuan </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
@@ -56,14 +56,14 @@
                               <option value="{{ $sat->kode }}">{{ $sat->kode }} - {{ $sat->nama }}</option>
                             @endforeach
                            </select>
-                          </td>
- --}}
-                           <th style="width: 100px; padding-top: 16px"> Customer </th>
+                          </td> --}}
+
+                          <th style="width: 100px; padding-top: 16px"> Customer </th>
                           <td colspan="3"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
                             <option selected="">- Pilih Customer -</option>
                             @foreach ($cus as $c)
-                              <option value="{{ $c->nama }}" >{{ $c->kode }} - {{ $c->nama }}</option>
+                              <option value="{{ $c->kode }}" >{{ $c->kode }} - {{ $c->nama }}</option>
                             @endforeach
                            </select>
                           </td>
@@ -78,32 +78,27 @@
                 <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                          
-                            <th> No Kwitansi</th>
+                            <th> No.</th>
+                            <th> Nomor </th>
                             <th> Tanggal </th>
-                            <th> Customer </th>
-                            <th> Ttl Bayar</th>
-                            <th> Uang M(-) </th>
-                            <th> Debet(+) </th>
-                            <th> Kredit(-) </th>
-                            <th> Netto </th>
-                            <th> bank </th>
-                            
+                            <th> akun(K) </th>
+                            <th> akun(D) </th>
+                            <th> Keterangan </th>
+                            <th> Jenis Pembayaran </th>
+                            <th> jumlah</th>
                         </tr>
                     </thead>
                     <tbody>
                       @foreach ($data as $index =>$e)
                         <tr>
-                        
-                        <td><input type="hidden" value="{{ $e->k_nomor }}" name="nomor">{{ $e->k_nomor }}</td>
-                        <td>{{ $e->k_tanggal }}</td>
-                        <td>{{ $e->nama }}</td>
-                        <td align="right">{{ number_format($e->k_jumlah,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_uang_muka,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_debet,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_kredit,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_netto,0,',','.') }}</td>
-                        <td >{{ $e->k_nota_bank }}</td>
+                        <td>{{ $index+1 }}</td>
+                        <td><input type="hidden" value="{{ $e->nomor }}" name="nomor">{{ $e->nomor }}</td>
+                        <td>{{ $e->tanggal }}</td>
+                        <td>{{ $e->kode_akun_kredit }}</td>
+                        <td>{{ $e->kode_akun_debet }}</td>
+                        <td>{{ $e->keterangan }}</td>
+                        <td>{{ $e->jenis_pembayaran }}</td>
+                        <td align="right">{{ number_format($e->jumlah,0,',','.') }}</td>
                         </tr>
                       @endforeach
                     </tbody>
@@ -172,6 +167,7 @@
               }
           ]
     });
+
      $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
@@ -230,12 +226,9 @@
     } );
 
     
-    // function filterColumn1 () {
-    //     $('#addColumn').DataTable().column(3).search(
-    //         $('.select-picker3').val()).draw();    
-    // }
+   
     function filterColumn2 () {
-        $('#addColumn').DataTable().column(2).search(
+        $('#addColumn').DataTable().column(3).search(
             $('.select-picker5').val()).draw(); 
      }
      
@@ -245,7 +238,7 @@
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
 
-           asw[i] =  $(asd[i][0]).val();
+           asw[i] =  $(asd[i][1]).val();
   
        }
 
@@ -258,7 +251,7 @@
 
       $.ajax({
         data: {a:asw,c:'download'},
-        url: baseUrl + '/reportkwitansi/reportkwitansi',
+        url: baseUrl + '/reportposting_bayar/reportposting_bayar',
         type: "post",
        success : function(data){
         var win = window.open();

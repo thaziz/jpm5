@@ -4,7 +4,7 @@
 
 @section('content')
 <style type="text/css" media="screen">
-    .center{
+        .center{
         text-align: center;
         }
        .right{
@@ -54,10 +54,9 @@
                         <tr>
                             <th>Nomor</th>
                             <th>Tanggal</th>
-                            <th>Nomor Invoice</th>
+                            <th>Customer</th>
 							              <th>Keterangan</th>
-                            <th>Debet</th>
-                            <th>Kredit</th>
+                            <th>Nominal</th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -99,25 +98,21 @@
         columns: [
             {data: 'cd_nomor', name: 'cd_nomor'},
             {data: 'cd_tanggal', name: 'cd_tanggal'},
-            {data: 'cd_invoice', name: 'cd_invoice'},
+            {data: 'nama', name: 'nama'},
             {data: 'cd_keterangan', name: 'cd_keterangan'},
-            {data: 'cd_debet', name: 'cd_debet'},
-            {data: 'cd_kredit', name: 'cd_kredit'},
-            {data: 'tombol', name: 'tombol'},
+            {data: 'hasil', name: 'hasil'},
+            {data: 'tombol', name: 'tombol'}
         ],
         columnDefs: [
+              {
+                 targets: 5,
+                 className: 'center'
+              },
               {
                  targets: 4,
                  className: 'right'
               },
-              {
-                 targets: 5,
-                 className: 'right'
-              },
-              {
-                 targets: 6,
-                 className: 'center'
-              }
+              
             ],
     });
     });
