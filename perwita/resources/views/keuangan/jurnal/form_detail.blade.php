@@ -1,5 +1,5 @@
 <div class="col-md-6">
-  <table id="table_form" width="100%" border="0">
+  <table class="table-form" width="100%" border="0">
     <tbody>
       <tr>
         <td colspan="3" class="text-center" style="vertical-align: middle;padding: 5px; background: #eee;"><button class="btn btn-success btn-xs add_row pull-left" data-table="debet"><i class="fa fa-plus"></i></button> &nbsp;Debet</td>
@@ -9,14 +9,14 @@
         @if($dataDetail1->trdt_accstatusdk == "D")
           <tr>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-left" width="45%">
-              <select name="nama_akun_debet[]" style="width:90%">
+              <select name="nama_akun_debet[]" style="width:100%" class="form-control chosen-select">
                 @foreach($akun as $dataAkun)
                   <?php $able = ($dataAkun->id_akun == $dataDetail1->trdt_acc) ? "selected" : ""; ?>
                   <option value="{{ $dataAkun->id_akun }}" {{ $able }}>{{ $dataAkun->nama_akun }}</option>
                 @endforeach
               </select>
             </td>
-            <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" name="debet[]" value="0" class="currency debet" style="width: 90%"></td>
+            <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" name="debet[]" value="0" class="currency debet form-control" style="width: 100%"></td>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="10%">
               <button class="btn btn-danger btn-xs delete_row"><i class="fa fa-eraser"></i></button></td>
           </tr>
@@ -29,7 +29,7 @@
         <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: middle;" class="text-center" width="45%">
           Total Debet
         </td>
-        <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" value="0" class="currency" id="total_debet" name="total_debet" style="width: 90%" readonly></td>
+        <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" value="0" class="currency form-control" id="total_debet" name="total_debet" style="width: 100%" readonly></td>
         <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="10%"></td>
       </tr>
     </tfoot>
@@ -47,14 +47,14 @@
         @if($dataDetail1->trdt_accstatusdk == "K")
           <tr>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-left" width="45%">
-              <select name="nama_akun_kredit[]" style="width:90%">
+              <select name="nama_akun_kredit[]" style="width:100%" class="form-control chosen-select">
                 @foreach($akun as $dataAkun)
                   <?php $able = ($dataAkun->id_akun == $dataDetail1->trdt_acc) ? "selected" : ""; ?>
                   <option value="{{ $dataAkun->id_akun }}" {{ $able }}>{{ $dataAkun->nama_akun }}</option>
                 @endforeach
               </select>
             </td>
-            <td id="inputmask" style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" name="kredit[]" value="0" class="currency kredit" style="width: 90%"></td>
+            <td id="inputmask" style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" name="kredit[]" value="0" class="currency kredit form-control" style="width: 90%"></td>
             <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="10%">
               <button class="btn btn-danger btn-xs delete_row"><i class="fa fa-eraser"></i></button></td>
           </tr>
@@ -67,7 +67,7 @@
         <td style="border-bottom: 1px solid #eee;padding: 5px;vertical-align: middle;" class="text-center" width="45%">
           Total Kredit
         </td>
-        <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" value="0" name="total_kredit" class="currency" id="total_kredit" style="width: 90%" readonly></td>
+        <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="45%"><input type="text" value="0" name="total_kredit" class="currency form-control" id="total_kredit" style="width: 90%" readonly></td>
         <td style="border-bottom: 1px solid #eee;padding: 5px;" class="text-center" width="10%"></td>
       </tr>
     </tfoot>
@@ -83,6 +83,8 @@
 
 <script>
   $(document).ready(function(){
+
+    $(".chosen-select").chosen({width: '100%'});
 
     $.fn.maskFunc = function(){
       $('.currency').inputmask("currency", {
