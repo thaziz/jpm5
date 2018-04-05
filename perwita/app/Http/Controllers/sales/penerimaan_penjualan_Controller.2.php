@@ -318,8 +318,9 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function riwayat_cn_dn(request $request)
     {
-        $data = DB::table('cn_dn_penjualan')
-                  ->where('cd_invoice',$request->i_nomor)
+       $data = DB::table('cn_dn_penjualan')
+                  ->join('cn_dn_penjualan_d','cd_id','=','cdd_id')
+                  ->where('cdd_nomor_invoice',$request->i_nomor)
                   ->get();
         return view('sales.penerimaan_penjualan.tabel_cn_dn',compact('data'));
     }
