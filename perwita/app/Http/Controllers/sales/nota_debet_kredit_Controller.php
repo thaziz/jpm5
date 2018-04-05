@@ -53,6 +53,17 @@ class nota_debet_kredit_Controller extends Controller
                         ->addColumn('hasil', function ($data) {
                              return number_format($data->cd_total, 2, ",", ".");
                             })
+                        ->addColumn('debet', function ($data) {
+                              if ($data->cd_jenis == 'D') {
+                                $debet = $data->cd_dpp + $data->cd_ppn;
+                              }else{
+                                $debet = 0;
+                              }
+                              return number_format($debet, 2, ",", ".");
+                            })
+                        ->addColumn('kredit', function ($data) {
+                             return number_format($data->cd_total, 2, ",", ".");
+                            })
                         ->make(true);
     }
 
@@ -129,12 +140,14 @@ class nota_debet_kredit_Controller extends Controller
         $nota_debet  = DB::table('cn_dn_penjualan_d')
                         ->join('cn_dn_penjualan','cdd_id','=','cd_id')
                         ->where('cdd_nomor_invoice',$request->nomor)
+                        ->where('cd_nomor',$request->nomor_cn_dn)
                         ->where('cd_jenis','D')
                         ->get();
 
         $nota_kredit = DB::table('cn_dn_penjualan_d')
                         ->join('cn_dn_penjualan','cdd_id','=','cd_id')
                         ->where('cdd_nomor_invoice',$request->nomor)
+                        ->where('cd_nomor',$request->nomor_cn_dn)
                         ->where('cd_jenis','K')
                         ->get();
 
@@ -172,7 +185,7 @@ class nota_debet_kredit_Controller extends Controller
     public function simpan_cn_dn(request $request)
     {
         // dd($request->all());
-
+      // dd($request->all());
         $cari_nota = DB::table('cn_dn_penjualan')
                        ->where('cd_nomor',$request->nomor_cn_dn)
                        ->first();
@@ -206,6 +219,7 @@ class nota_debet_kredit_Controller extends Controller
                         'cd_acc'        => $cari_acc->acc_biaya,
                         'cd_csf'        => $cari_acc->csf_biaya,
                         'cd_keterangan' => $request->keterangan,
+                        'cd_jenis_biaya'=> $request->akun_biaya,
                         'created_at'    => carbon::now(),
                         'updated_at'    => carbon::now(),
                         'created_by'    => Auth::user()->m_username,
@@ -277,39 +291,58 @@ class nota_debet_kredit_Controller extends Controller
     }
     public function edit($id)
     {
-      
-        $cabang = DB::select(DB::raw(" SELECT * FROM cabang"));
+      if (Auth::user()->punyaAkses('CN DN Penjualan','ubah')) {
+          $cabang = DB::select(DB::raw(" SELECT * FROM cabang"));
 
-        $customer = DB::table('customer')
-                            ->get();
+          $customer = DB::table('customer')
+                              ->get();
 
-        $cabang = DB::table('cabang')
-                    ->get();
-        $pajak = DB::table('pajak')
-                    ->get();
-
-        $akun  = DB::table('d_akun')
-                   // ->where('kode_cabang',$cabang)
-                   ->get();
-
-        $pajak    = DB::table('pajak')
+          $cabang = DB::table('cabang')
+                      ->get();
+          $pajak = DB::table('pajak')
                       ->get();
 
-        $akun_biaya    = DB::table('akun_biaya')
-                      ->get();
+          $akun  = DB::table('d_akun')
+                     // ->where('kode_cabang',$cabang)
+                     ->get();
 
-        $data = DB::table('cn_dn_penjualan')
-                  ->where('cd_nomor',$id)
-                  ->get();
+          $pajak    = DB::table('pajak')
+                        ->get();
 
-        $data_dt = DB::table('cn_dn_penjualan_d')
-                  ->join('cn_dn_penjualan','cd_id','=','cdd_id')
-                  ->join('invoice','i_nomor','=','cdd_nomor_invoice')
-                  ->where('cd_nomor',$id)
-                  ->get();
+          $akun_biaya    = DB::table('akun_biaya')
+                        ->get();
 
-        return view('sales.nota_debet_kredit.edit_cn_dn', compact('customer','cabang','pajak','akun','pajak','akun_biaya','data','data_dt'));
+          $data = DB::table('cn_dn_penjualan')
+                    ->where('cd_nomor',$id)
+                    ->first();
 
+          $data_dt = DB::table('cn_dn_penjualan_d')
+                    ->join('cn_dn_penjualan','cd_id','=','cdd_id')
+                    ->join('invoice','i_nomor','=','cdd_nomor_invoice')
+                    ->where('cd_nomor',$id)
+                    ->get();
+
+          return view('sales.nota_debet_kredit.edit_cn_dn', compact('customer','cabang','pajak','akun','pajak','akun_biaya','data','data_dt'));
+      }else{
+
+        return redirect()->back();
+      }
+       
+
+    }
+
+    public function hapus_cn_dn(request $request)
+    {
+      $hapus_cn_dn = DB::table('cn_dn_penjualan')
+                       ->where('cd_nomor',$request->nomor_cn_dn)
+                       ->delete();
+      return response()->json(['status'=>1]);
+    }
+
+    public function update_cn_dn(request $request)
+    {
+      $this->hapus_cn_dn($request);
+      return $this->simpan_cn_dn($request);
     }
 
 

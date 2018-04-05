@@ -258,7 +258,7 @@
                                           <td>DPP</td>
                                           <td colspan="3"><input type="text" style="text-align: right" name="dpp_akhir" onkeyup="hitung_jumlah()" value="0,00"  class="dpp_akhir form-control"></td>
                                         </tr>
-                                        <tr class="ppn_td disabled">
+                                        <tr class="ppn_td">
                                             <td >Jenis PPN</td>
                                             <td >
                                                 <select class="form-control jenis_ppn_akhir" onchange="hitung_pajak_ppn()"  >
@@ -491,7 +491,7 @@
           temp3 += ini;
         })
         $('.jumlah_pph').val(accounting.formatMoney(temp3,"",2,'.',','));
-        var temp = temp1+temp2-temp3;
+        var temp = temp1+temp2+temp3;
         
         $('.jumlah_nota').val(accounting.formatMoney(temp,"",2,'.',','));
 
@@ -499,13 +499,13 @@
 
      function hitung() {
       var jenis_cd      = $('.jenis_cd').val();
-      if (jenis_cd == 'K') {
-        $('.ppn_td').addClass('disabled');
-        $('.pph_td').removeClass('disabled');
-      }else{
-        $('.pph_td').addClass('disabled');
-        $('.ppn_td').removeClass('disabled');
-      }
+      // if (jenis_cd == 'K') {
+      //   $('.ppn_td').addClass('disabled');
+      //   $('.pph_td').removeClass('disabled');
+      // }else{
+      //   $('.pph_td').addClass('disabled');
+      //   $('.ppn_td').removeClass('disabled');
+      // }
       var terbayar      = $('.terbayar').val();
       var nota_debet    = $('.nota_debet').val();
       var nota_kredit   = $('.nota_kredit').val();
@@ -545,11 +545,12 @@
       pph_akhir         = parseFloat(pph_akhir)/100;
 
       if (jenis_cd == 'K') {
-        var hasil = sisa_terbayar - dpp_akhir + ppn_akhir - pph_akhir;
+        var hasil = dpp_akhir + ppn_akhir - pph_akhir;
       }else{
-        var hasil = sisa_terbayar + dpp_akhir + ppn_akhir - pph_akhir;
+        var hasil = dpp_akhir + ppn_akhir - pph_akhir;
       }
 
+      $('.netto_akhir').val(accounting.formatMoney(hasil,"",2,'.',','));
       $('.netto_akhir').val(accounting.formatMoney(hasil,"",2,'.',','));
     }
 
@@ -687,8 +688,8 @@
           $('.pph_awal').val(accounting.formatMoney(data.data.i_pajak_lain,"",2,'.',','));
           $('.netto_awal').val(accounting.formatMoney(data.data.i_total_tagihan,"",2,'.',','));
           $('.terbayar').val(accounting.formatMoney(data.data.i_total_tagihan - data.data.i_sisa_pelunasan,"",2,'.',','));
-          $('.nota_debet').val(accounting.formatMoney(data.data.D,"",2,'.',','));
-          $('.nota_kredit').val(accounting.formatMoney(data.data.K,"",2,'.',','));
+          $('.nota_debet').val(accounting.formatMoney(data.D,"",2,'.',','));
+          $('.nota_kredit').val(accounting.formatMoney(data.K,"",2,'.',','));
           hitung();
           $('#modal_cd').modal('hide');
         }
@@ -734,7 +735,7 @@
           '<p class="d_dpp_text">'+dpp+'</p>'+'<input type="hidden" class="d_dpp" value="'+dpp+'" name="d_dpp[]">',
 
           '<p class="d_ppn_text">'+ppn_akhir+'</p>'+
-          '<input type="hidden" value="'+pph_akhir+'" class="d_ppn" name="d_ppn[]">'+
+          '<input value="'+ppn_akhir+'"  type="hidden" class="d_ppn" name="d_ppn[]">'+
           '<input type="hidden" class="d_jenis_ppn" value="'+jenis_ppn_akhir+'" name="d_jenis_ppn[]">'+
           '<input type="hidden" class="d_pajak_lain" value="'+pajak_lain_akhir+'" name="d_pajak_lain[]">',
 
@@ -811,7 +812,7 @@
 
      $('.nomor_invoice').val(d_nomor);
      pilih_invoice1();
-
+     toastr.info('Edit Data Berhasil Diinisialisasi');
    }
 
    function hapus(a) {
@@ -821,6 +822,15 @@
      array_simpan.splice(index,1);
      table_detail.row(par).remove().draw(false);
      hitung_total_tagihan();
+
+     var val  = 0;
+     $('d_nomor').each(function(){
+      val += 1;
+     });
+     if (val == 0) {
+        $('.jenis_td').removeClass('disabled');
+        $('.akun_biaya_td').removeClass('disabled');
+     }
 
    }
 
