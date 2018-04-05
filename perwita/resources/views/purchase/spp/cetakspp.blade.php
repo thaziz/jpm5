@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -114,7 +116,8 @@ div.bottom
           </td> 
           @endforeach
         </tr>
-
+          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+           <input type="hidden" name="idspp" value="{{$data['spp'][0]->spp_id}}" class="idspp">
 		 @foreach($data['sppdt_barang'] as $idbarang=>$sppd)                 
                       <tr class="brg{{$idbarang}} barang" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$sppd->sppd_kodeitem}}" >
                         <td>  {{$idbarang + 1}} </td>
@@ -349,11 +352,17 @@ div.bottom
 
 </div>
 
-@section('page-script')
- <script type="text/javascript">
+@section('extra_scripts')
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js">
     var baseurl = {!! json_encode(url('/')) !!}
- 	alert(baseurl);
-	      
+    alert('helo');
+    alert('hai');
+    alert(baseurl);
+	
+	cabang = $('.idspp').val();
+	alert(cabang); 
+
+
 </script>
 @section('extra_scripts')
 
