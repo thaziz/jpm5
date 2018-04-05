@@ -80,11 +80,13 @@ class nota_debet_kredit_Controller extends Controller
                   ->join('customer','kode','=','i_kode_customer')
                   ->where('i_kode_cabang',$request->cabang)
                   ->where('i_kode_customer',$request->customer)
+                  ->where('i_sisa_pelunasan','!=',0)
                   ->get();
 
         $temp1 = DB::table('invoice')
                   ->join('customer','kode','=','i_kode_customer')
                   ->where('i_kode_cabang',$request->cabang)
+                  ->where('i_sisa_pelunasan','!=',0)
                   ->where('i_kode_customer',$request->customer)
                   ->get();
 
