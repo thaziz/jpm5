@@ -4,7 +4,7 @@
 
 @section('content')
 <style type="text/css" media="screen">
-    .center{
+        .center{
         text-align: center;
         }
        .right{
@@ -105,13 +105,14 @@
         ],
         columnDefs: [
               {
+                 targets: 5,
+                 className: 'center'
+              },
+              {
                  targets: 4,
                  className: 'right'
               },
-              {
-                 targets: 5,
-                 className: 'right'
-              }
+              
             ],
     });
     });

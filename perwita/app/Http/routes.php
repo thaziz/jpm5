@@ -52,6 +52,12 @@ Route::get('setting/pengguna/tabel', 'setting\pengguna_Controller@table_data');
 Route::get('setting/pengguna/get_data', 'setting\pengguna_Controller@get_data');
 Route::post('setting/pengguna/save_data', 'setting\pengguna_Controller@save_data');
 Route::post('setting/pengguna/hapus_data', 'setting\pengguna_Controller@hapus_data');
+
+Route::post('setting/groupbaru', 'setting\groupController@groupbaru');
+
+Route::get('setting/daftarmenu', 'setting\groupController@daftarmenu');
+Route::get('setting/createdaftarmenu', 'setting\groupController@createdaftarmenu');
+Route::post('setting/savedaftarmenu', 'setting\groupController@savedaftarmenu');
 // end pengguna
 
 //hak_akses
@@ -315,9 +321,13 @@ Route::get('returnpembelian/returnpembelian', 'PurchaseController@returnpembelia
 Route::get('returnpembelian/createreturnpembelian', 'PurchaseController@createreturnpembelian');
 Route::get('returnpembelian/detailreturnpembelian', 'PurchaseController@detailreturnpembelian');
 
-Route::get('cndnpembelian/cndnpembelian', 'PurchaseController@cndnpembelian');
-Route::get('cndnpembelian/createcndnpembelian', 'PurchaseController@createcndnpembelian');
-Route::get('cndnpembelian/detailcndnpembelian', 'PurchaseController@detailcndnpembelian');
+Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
+Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');
+Route::get('cndnpembelian/detailcndnpembelian', 'cndnController@detailcndnpembelian');
+Route::get('cndnpembelian/getnota', 'cndnController@getnota');
+Route::get('cndnpembelian/getfaktur', 'cndnController@getfaktur');
+Route::get('cndnpembelian/getsupplier', 'cndnController@getsupplier');
+Route::get('cndnpembelian/hslfaktur', 'cndnController@hslfaktur');
 
 Route::get('uangmukapembelian/uangmukapembelian', 'PurchaseController@uangmukapembelian');
 Route::get('uangmukapembelian/createuangmukapembelian', 'PurchaseController@createuangmukapembelian');
