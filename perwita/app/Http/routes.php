@@ -1360,6 +1360,11 @@ Route::get('master_keuangan/saldo_piutang/add/{parrent}', [
   'as'   => 'saldo_piutang.add'
 ]);
 
+Route::post('master_keuangan/saldo_piutang/save', [
+  'uses' => 'master_keuangan\saldo_piutang_controller@save',
+  'as'   => 'saldo_piutang.save'
+]);
+
 //end saldo piutang
 
 // jurnal_umum
