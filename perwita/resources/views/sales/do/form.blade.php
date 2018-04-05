@@ -100,7 +100,6 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    {{-- <img src="{{ asset('assets/img/loading.gif') }}" style="display: block; margin-left: auto; margin-right: auto;" height="100" width="100"> --}}
                                                     <td style="padding-top: 0.4cm" class="kecamatantujuanlabel">Kecamatan Tujuan</td>
                                                     <td colspan="5">
                                                         <select class="form-control" id="kecamatan" name="cb_kecamatan_tujuan" style="width:100%" >
@@ -211,7 +210,7 @@
                                                 <tr id="berat">
                                                     <td style="padding-top: 0.4cm">Berat</td>
                                                     <td colspan="5">
-                                                        <input type="text" class="form-control" name="ed_berat" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->berat, 0, ",", ".") }}" @endif>
+                                                        <input onkeyup="BeratDefault()" type="text" class="form-control" name="ed_berat" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->berat, 0, ",", ".") }}" @endif>
                                                     </td>
                                                 </tr>
                                                 <tr id="jml_unit">
@@ -1229,8 +1228,28 @@
                     $("input[name='ed_tarif_dasar']").val(harga);
                     $("input[name='ed_tarif_penerus']").val(biaya);
                     $("input[name='acc_penjualan']").val(acc_penjualan);
+                    if (biaya == 0 || biaya == '0' || biaya == null || biaya == '') {
+                        Command: toastr["warning"]("Zona/Penerus tidak ditemukan, periksa tujuan anda", "Peringatan !")
+                        toastr.options = {
+                          "closeButton": false,
+                          "debug": true,
+                          "newestOnTop": false,
+                          "progressBar": true,
+                          "positionClass": "toast-top-right",
+                          "preventDuplicates": false,
+                          "onclick": null,
+                          "showDuration": "300",
+                          "hideDuration": "1000",
+                          "timeOut": "5000",
+                          "extendedTimeOut": "1000",
+                          "showEasing": "swing",
+                          "hideEasing": "linear",
+                          "showMethod": "fadeIn",
+                          "hideMethod": "fadeOut"
+                        }
+                    }
                     if (data.jumlah_data == 0){
-                        alert('Harga tidak ditemukan');
+                        alert('Tarif penerus tidak ditemukan');
                     }
                     hitung();
                 }
@@ -1916,7 +1935,7 @@
               "hideMethod": "fadeOut"
             }
             return false;
-        }else if (namapenerima == '') {
+        }else if (namapenerima == '' || namapenerima == null) {
             Command: toastr["warning"]("Nama Penerima harus diisi", "Peringatan !")
 
             toastr.options = {
@@ -1939,6 +1958,27 @@
                         return false;
         }else if (alamarpenerima == '') {
            Command: toastr["warning"]("Alamat Penerima harus diisi", "Peringatan !")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": true,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        } else if (teleponpenerima == '') {
+           Command: toastr["warning"]("No Telepon Penerima harus diisi", "Peringatan !")
 
             toastr.options = {
               "closeButton": false,
@@ -2193,7 +2233,32 @@
 
     }
 
+    function BeratDefault(){
+        var berat = $("input[name='ed_berat']").val();
+        if (berat > 50) {
+            Command: toastr["warning"]("Maksimal berat KOLI yang dilayani 50 Kg", "Peringatan !")
 
+            toastr.options = {
+              "closeButton": false,
+              "debug": true,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            $("input[name='ed_berat']").val(1);
+            return false;
+        }
+    }
 
 </script>
 @endsection

@@ -249,21 +249,27 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Total Tagihan</td>
+                                <td style="padding-top: 0.4cm; text-align:right">Tagihan Awal</td>
+                                <td colspan="4">
+                                    <input type="text" name="tagihan_awal" class="form-control tagihan_awal" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Tagihan Revisi</td>
                                 <td colspan="4">
                                     <input type="text" name="total_tagihan" class="form-control total_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
                             </tr>
-                             <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Sisa Tagihan</td>
+                            <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Terbayar</td>
                                 <td colspan="4">
-                                    <input type="text" name="sisa_tagihan" class="form-control sisa_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                    <input type="text" name="terbayar" class="form-control terbayar" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
                             </tr>
-                            <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Selisih Tagihan</td>
+                             <tr>
+                                <td style="padding-top: 0.4cm; text-align:right">Sisa Pembayaran</td>
                                 <td colspan="4">
-                                    <input type="text" name="selisih_tagihan" class="form-control selisih_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" value="0">
+                                    <input type="text" name="sisa_tagihan" class="form-control sisa_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
                             </tr>
                         </tbody>
@@ -417,6 +423,7 @@
                 $('.pajak_lain').val(data.data.i_kode_pajak);
                 $('#cb_jenis_ppn').val(data.data.i_jenis_ppn);
                 $('.diskon2').val(data.data.i_diskon2);
+                $('.tagihan_awal').val(accounting.formatMoney(data.data.i_total_tagihan, "", 2, ".",','));
                 $('.sisa_tagihan').val( accounting.formatMoney(data.data.i_sisa_pelunasan, "", 2, ".",','));
                 table_detail.clear().draw();
                 console.log(data.data[i]);
@@ -431,7 +438,7 @@
                             data.data_dt[i][0].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+data.data_dt[i][0].acc_penjualan+'" name="akun[]">',
                             data.data_dt[i][0].dd_jumlah+'<input type="hidden" value="'+data.data_dt[i][0].dd_jumlah+'" name="dd_jumlah[]">',
                             accounting.formatMoney(data.data_dt[i][0].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].dd_harga+'" name="dd_harga[]">',
-                            accounting.formatMoney(data.data_dt[i][0].dd_total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+data.data_dt[i][0].dd_total+'" name="dd_total[]">',
+                            accounting.formatMoney(data.data_dt[i][0].dd_harga * data.data_dt[i][0].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+data.data_dt[i][0].dd_harga * data.data_dt[i][0].dd_jumlah+'" name="dd_total[]">',
                             accounting.formatMoney(data.data_dt[i][0].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].dd_diskon+'" name="dd_diskon[]">',
                             accounting.formatMoney(data.data_dt[i][0].dd_total-data.data_dt[i][0].dd_diskon, "", 2, ".",',')+
                             '<input type="hidden" class="harga_netto" value="'+(data.data_dt[i][0].dd_total-data.data_dt[i][0].dd_diskon)+'" name="harga_netto[]">',
@@ -439,6 +446,7 @@
 
                         ]).draw(false);
                         index_detail++;
+                        array_simpan.push(data.data_dt.dd_id);
                     }
                 }else{
                     for(var i = 0 ; i < data.data_dt.length;i++){
@@ -457,6 +465,8 @@
 
                         ]).draw(false);
                         index_detail++;
+                        array_simpan.push(data.data_dt.nomor);
+
                     }
                 }
 
@@ -524,6 +534,7 @@
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
         var cabang        = $('.cabang').val();
+        var id          = $('#nota_invoice').val();
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -539,7 +550,7 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang,id},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);
@@ -560,20 +571,20 @@
         var netto_total  = $('.netto_total').val();
         var netto_detail = $('.netto_detail').val();
         netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
-        netto_total      = parseInt(netto_total)/100;
+        netto_total      = parseFloat(netto_total)/100;
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
-        netto_detail     = parseInt(netto_detail)/100;
+        netto_detail     = parseFloat(netto_detail)/100;
         diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
-        diskon2          = parseInt(diskon2);
+        diskon2          = parseFloat(diskon2);
 
         var ppn  = $('.ppn').val();
         ppn      = ppn.replace(/[^0-9\-]+/g,"");
-        ppn      = parseInt(ppn)/100;
+        ppn      = parseFloat(ppn)/100;
 
         var pph  = $('.pph').val();
         pph      = pph.replace(/[^0-9\-]+/g,"");
 
-        pph      = parseInt(pph)/100;
+        pph      = parseFloat(pph)/100;
         if (cb_jenis_ppn == 1 || cb_jenis_ppn == 2 || cb_jenis_ppn == 0) {
             var total_tagihan = netto_total+ppn-pph;
         }else if (cb_jenis_ppn == 3 || cb_jenis_ppn == 5) {
@@ -584,6 +595,16 @@
 
         $('.total_tagihan').val(accounting.formatMoney(total_tagihan,"",2,'.',','))
 
+        var total_tagihan = $('.tagihan_awal').val();
+        var sisa_tagihan  = $('.sisa_tagihan').val();
+        total_tagihan     = total_tagihan.replace(/[^0-9\-]+/g,"");
+        sisa_tagihan      = sisa_tagihan.replace(/[^0-9\-]+/g,"");
+        total_tagihan     = parseFloat(total_tagihan)/100;
+        sisa_tagihan      = parseFloat(sisa_tagihan)/100;
+        // selisih_tagihan      = parseFloat(selisih_tagihan)/100;
+
+        $('.terbayar').val(accounting.formatMoney(total_tagihan-sisa_tagihan,"",2,'.',','));
+        // $('.selisih_tagihan').val(accounting.formatMoney(total_tagihan-sisa_tagihan,"",2,'.',','));
     }
 
 
@@ -709,7 +730,7 @@
 
 
         var netto = 0 ;
-        table_detail.$('.harga_netto').each(function(){
+        table_detail.$('.dd_total').each(function(){
             temp_total += parseFloat($(this).val());
         });
 
@@ -728,6 +749,7 @@
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         // $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
+
 
         hitung_pajak_ppn();
         hitung_pajak_lain();
@@ -775,7 +797,7 @@
                             response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
                             accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
-                            accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_total+'" name="dd_total[]">',
+                            accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
                             accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
                             accounting.formatMoney(response.data[i].dd_total-response.data[i].dd_diskon, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+(response.data[i].dd_total-response.data[i].dd_diskon)+'" name="harga_netto[]">',
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
@@ -825,7 +847,26 @@
    // hapus detail
    function hapus_detail(o) {
         var jenis = $('#cb_pendapatan').val();
+        var netto_detail = $('.netto_detail').val();
+        var terbayar  = $('.terbayar').val();
+        netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
+        terbayar      = terbayar.replace(/[^0-9\-]+/g,"");
+        netto_detail     = parseFloat(netto_detail)/100;
+        terbayar      = parseFloat(terbayar)/100;
+        
+        
+
         var par = $(o).parents('tr');
+        var harga_netto = $(par).find('.harga_netto').val();
+        harga_netto      = parseFloat(harga_netto);
+        netto_detail   = netto_detail - harga_netto;
+
+        
+        if ((netto_detail - terbayar) < 0) {
+            toastr.warning('Data Tidak Bisa Dihapus');
+            return 1;
+        }
+
         var length = table_detail.page.info().recordsTotal;
 
         if (jenis == 'KORAN') {
@@ -840,6 +881,9 @@
             array_simpan.splice(index,1);
             table_detail.row(par).remove().draw(false);
         }
+
+        // var sisa = 0 - total_tagihan;
+        // $('.selisih_tagihan').val(accounting.formatMoney(sisa, "", 2, ".",','));
 
         if (length == 1) {
             
@@ -864,6 +908,23 @@
 
     // SIMPAN DATA
     function simpan(){
+    var total_tagihan = $('.total_tagihan').val();
+    var sisa_tagihan  = $('.sisa_tagihan').val();
+    var selisih_tagihan  = $('.selisih_tagihan').val();
+    total_tagihan     = total_tagihan.replace(/[^0-9\-]+/g,"");
+    sisa_tagihan      = sisa_tagihan.replace(/[^0-9\-]+/g,"");
+    selisih_tagihan      = selisih_tagihan.replace(/[^0-9\-]+/g,"");
+    total_tagihan     = parseFloat(total_tagihan)/100;
+    sisa_tagihan      = parseFloat(sisa_tagihan)/100;
+    selisih_tagihan      = parseFloat(selisih_tagihan)/100;
+    if (selisih_tagihan < 0) {
+       selisih_tagihan = selisih_tagihan * -1;
+    }
+
+    if (selisih_tagihan > selisih_tagihan) {
+        toastr.warning('Sisa Tagihan Kurang Dari 0, Tidak Dapat Mengurangi Tagihan');
+        return 1;
+    }
 
       swal({
         title: "Apakah anda yakin?",

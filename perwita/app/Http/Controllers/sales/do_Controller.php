@@ -458,7 +458,7 @@ class do_Controller extends Controller
                     }
                 }
                 // end auto number
-
+//====== untuk non customer
                 if ($request->cb_customer == 'CS/001') {
                     //$cabang=substr($request->cb_cabang,1);
                     $valueJurnal = filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT);
@@ -732,24 +732,31 @@ class do_Controller extends Controller
 
     public function hapus_data($nomor = null)
     {
-        $cek_data_invoice = DB::table('invoice_d')->select('id')->where('nomor_do', $nomor)->first();
-        $cek_data_surat_jalan = DB::table('surat_jalan_trayek_d')->select('id')->where('nomor_do', $nomor)->first();
-        $pesan = '';
-        if ($cek_data_invoice != NULL) {
-            $pesan = 'Nomor DO ' . $nomor . ' sudah di pakai pada invoice';
-            return view('sales.do.pesan', compact('pesan'));
-        } else if ($cek_data_surat_jalan != NULL) {
-            $pesan = 'Nomor DO ' . $nomor . ' sudah di pakai pada surat jalan';
-            return view('sales.do.pesan', compact('pesan'));
-        } else {
-            DB::beginTransaction();
-            DB::table('delivery_orderd')->where('nomor', '=', $nomor)->delete();
-            DB::table('delivery_order')->where('nomor', '=', $nomor)->delete();
-            d_jurnal::where('jr_ref', $nomor)->delete();
+        try {
+            $cek_data_invoice = DB::table('invoice_d')->select('id_id')->where('id_nomor_do', $nomor)->first();
+            $cek_data_surat_jalan = DB::table('surat_jalan_trayek_d')->select('id')->where('nomor_do', $nomor)->first();
+            $pesan = '';
+            if ($cek_data_invoice != NULL) {
+                $pesan = 'Nomor DO ' . $nomor . ' sudah di pakai pada invoice';
+                return view('sales.do.pesan', compact('pesan'));
+            } else if ($cek_data_surat_jalan != NULL) {
+                $pesan = 'Nomor DO ' . $nomor . ' sudah di pakai pada surat jalan';
+                return view('sales.do.pesan', compact('pesan'));
+            } else {
+                DB::table('delivery_orderd')->where('dd_nomor', '=', $nomor)->delete();
+                DB::table('delivery_order')->where('nomor', '=', $nomor)->delete();
+                d_jurnal::where('jr_ref', $nomor)->delete();
+            }
+
             DB::commit();
             return redirect('sales/deliveryorder');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'gagal',
+                'data' => $e
+            ]);
         }
-
     }
 
 
@@ -1259,13 +1266,15 @@ class do_Controller extends Controller
                             ->get();
 
                         if (count($penerus) < 1){
-                            $penerus[0]->tarif_penerus = 0;
+                            $penerus = 0;
+                        } else {
+                            $penerus = $penerus[0]->tarif_penerus;
                         }
                     }
 
                     if ($tarif != null) {
                         $totalHarga = $totalHarga + $tarif[0]->harga;
-                        $biaya_penerus = $biaya_penerus + $penerus[0]->tarif_penerus;
+                        $biaya_penerus = $biaya_penerus + $penerus;
                         $acc_penjualan = $tarif[0]->acc_penjualan;
                     }
                     else{

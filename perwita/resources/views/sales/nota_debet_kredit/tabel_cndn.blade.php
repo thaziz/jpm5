@@ -5,6 +5,7 @@
            <th>Tanggal</th>
            <th>Customer</th>
            <th>Jumlah</th>
+           <th>Sisa</th>
         </tr>
     </thead>
     <tbody>
@@ -14,7 +15,12 @@
         <td>{{$val->i_tanggal}}</td>
         <td>{{$val->nama}}</td>
         <td style="text-align: right">{{number_format($val->i_total_tagihan, 2, ",", ".")}}</td>
+        <td style="text-align: right">{{number_format($val->i_sisa_pelunasan, 2, ",", ".")}}</td>
       </tr>
       @endforeach
     </tbody>
 </table>
+
+<script>
+  $('#table_data_do').DataTable();
+</script>

@@ -817,9 +817,11 @@ class BiayaPenerusController extends Controller
 
 			$year =Carbon::now()->format('y'); 
 			$month =Carbon::now()->format('m'); 
+			$mon =Carbon::now(); 
 
-			 $idfaktur =   fakturpembelian::where('fp_comp' , $request->cab)
+			$idfaktur =   fakturpembelian::where('fp_comp' , $request->cab)
 											->where('fp_nofaktur','LIKE','%'.'O-0'.'%')
+											->where('created_at','>=',$mon)
 											->max('fp_nofaktur');
 		//	dd($nosppid);
 			if(isset($idfaktur)) {

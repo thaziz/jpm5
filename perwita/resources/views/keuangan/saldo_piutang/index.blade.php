@@ -11,41 +11,6 @@
       overflow-y: scroll;
     }
 
-    #table{
-      width: 100%;
-    }
-
-    #table td{
-      padding: 8px 20px;
-    }
-
-    #table_form{
-      border:0px solid black;
-      width: 100%;
-    }
-
-    #table_form input{
-      padding-left: 5px;
-    }
-
-    #table_form td{
-      padding: 10px 0px 0px 0px;
-      vertical-align: top;
-    }
-
-    .error-badge{
-      color:#ed5565;
-      font-weight: 600;
-    }
-
-    .error-badge small{
-      display: none;
-    }
-
-    #table_form .right_side{
-      padding-left: 10px;
-    }
-
     .modal-open{
       overflow: inherit;
     }
@@ -109,15 +74,10 @@
                   <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
                     <thead>
                       <tr>
-                        <th width="18%" rowspan="2" style="padding:8px 0px" class="text-center">Kode Akun</ht>
-                        <th width="35%" rowspan="2" style="padding:8px 0px" class="text-center">Nama Akun</th>
-                        <th rowspan="2" style="padding:8px 0px" class="text-center">Jenis</th>
-                        <th colspan="2" style="padding:8px 0px" class="text-center">Saldo</th>
-                      </tr>
-
-                      <tr>
-                        <th width="20%" style="padding:8px 0px" class="text-center">Debet</ht>
-                        <th style="padding:8px 0px" class="text-center">Kredit</th>
+                        <th width="18%" rowspan="2" style="padding:8px 0px" class="text-center">Kode Customer</ht>
+                        <th width="35%" rowspan="2" style="padding:8px 0px" class="text-center">Nama Customer</th>
+                        <th style="padding:8px 0px" class="text-center">Saldo Piutang</th>
+                        <th style="padding:8px 0px" class="text-center">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -145,7 +105,7 @@
 
  <!-- modal -->
 <div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog" style="width: 60%">
+  <div class="modal-dialog" style="width: 80%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
