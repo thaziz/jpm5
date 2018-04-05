@@ -47,8 +47,8 @@
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                        <tr>
-                          {{--   <th style="width: 100px; padding-top: 16px"> Satuan </th>
+                        {{-- <tr>
+                            <th style="width: 100px; padding-top: 16px"> Satuan </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
@@ -56,14 +56,14 @@
                               <option value="{{ $sat->kode }}">{{ $sat->kode }} - {{ $sat->nama }}</option>
                             @endforeach
                            </select>
-                          </td>
- --}}
-                           <th style="width: 100px; padding-top: 16px"> Customer </th>
+                          </td> --}}
+
+                          <th style="width: 100px; padding-top: 16px"> Customer </th>
                           <td colspan="3"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
                             <option selected="">- Pilih Customer -</option>
                             @foreach ($cus as $c)
-                              <option value="{{ $c->nama }}" >{{ $c->kode }} - {{ $c->nama }}</option>
+                              <option value="{{ $c->kode }}" >{{ $c->kode }} - {{ $c->nama }}</option>
                             @endforeach
                            </select>
                           </td>
@@ -79,31 +79,35 @@
                     <thead>
                         <tr>
                           
-                            <th> No Kwitansi</th>
+                            <th> No Inv</th>
                             <th> Tanggal </th>
+                            <th> Jatuh Tempo </th>
                             <th> Customer </th>
-                            <th> Ttl Bayar</th>
-                            <th> Uang M(-) </th>
-                            <th> Debet(+) </th>
-                            <th> Kredit(-) </th>
-                            <th> Netto </th>
-                            <th> bank </th>
-                            
+                            <th> Total </th>
+                            <th> Diskon Do </th>
+                            <th> Netto detil</th>
+                            <th> Diskon Inv </th>
+                            <th> Netto DPP </th>
+                            <th> PPN </th>
+                            <th> PPH </th>
+                            <th> Total Tagihan </th>
                         </tr>
                     </thead>
                     <tbody>
                       @foreach ($data as $index =>$e)
                         <tr>
-                        
-                        <td><input type="hidden" value="{{ $e->k_nomor }}" name="nomor">{{ $e->k_nomor }}</td>
-                        <td>{{ $e->k_tanggal }}</td>
-                        <td>{{ $e->nama }}</td>
-                        <td align="right">{{ number_format($e->k_jumlah,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_uang_muka,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_debet,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_kredit,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_netto,0,',','.') }}</td>
-                        <td >{{ $e->k_nota_bank }}</td>
+                        <td><input type="hidden" value="{{ $e->i_nomor }}" name="nomor">{{ $e->i_nomor }}</td>
+                        <td>{{ $e->i_tanggal }}</td>
+                        <td>{{ $e->i_jatuh_tempo }}</td>
+                        <td>{{ $e->i_kode_customer }}</td>
+                        <td align="right">{{ number_format($e->i_total,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->i_diskon1,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->i_netto,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->i_diskon2,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->i_netto_detail,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->i_ppnrp,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->i_pajak_lain,0,',','.') }}</td>
+                        <td align="right">{{ number_format($e->i_total_tagihan,0,',','.') }}</td>
                         </tr>
                       @endforeach
                     </tbody>
@@ -172,6 +176,7 @@
               }
           ]
     });
+
      $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
@@ -230,12 +235,9 @@
     } );
 
     
-    // function filterColumn1 () {
-    //     $('#addColumn').DataTable().column(3).search(
-    //         $('.select-picker3').val()).draw();    
-    // }
+   
     function filterColumn2 () {
-        $('#addColumn').DataTable().column(2).search(
+        $('#addColumn').DataTable().column(3).search(
             $('.select-picker5').val()).draw(); 
      }
      
@@ -258,7 +260,7 @@
 
       $.ajax({
         data: {a:asw,c:'download'},
-        url: baseUrl + '/reportkwitansi/reportkwitansi',
+        url: baseUrl + '/reportinvoice/reportinvoice',
         type: "post",
        success : function(data){
         var win = window.open();

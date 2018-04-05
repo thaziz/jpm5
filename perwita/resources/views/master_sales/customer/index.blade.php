@@ -102,7 +102,7 @@
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
-
+                                        
                                     </td>
                                 </tr>
                                 <tr>
