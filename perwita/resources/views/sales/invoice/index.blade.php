@@ -195,7 +195,7 @@
     function(){
 
          $.ajax({
-          url:baseUrl + '/sales/hapus_invoice',
+          url:baseUrl + '/sales/hapus_cn_dn',
           data:{id},
           type:'get',
           success:function(data){
