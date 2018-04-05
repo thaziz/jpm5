@@ -61,9 +61,9 @@
                           <th style="width: 100px; padding-top: 16px"> Customer </th>
                           <td colspan="3"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option selected="">- Pilih Customer -</option>
+                            <option selected="" value="">- Pilih Customer -</option>
                             @foreach ($cus as $c)
-                              <option value="{{ $c->kode }}" >{{ $c->kode }} - {{ $c->nama }}</option>
+                              <option value="{{ $c->nama }}" >{{ $c->kode }} - {{ $c->nama }}</option>
                             @endforeach
                            </select>
                           </td>
@@ -78,36 +78,27 @@
                 <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                          
-                            <th> No Inv</th>
+                            <th> No.</th>
+                            <th> No Inv Lain</th>
                             <th> Tanggal </th>
                             <th> Jatuh Tempo </th>
                             <th> Customer </th>
-                            <th> Total </th>
-                            <th> Diskon Do </th>
-                            <th> Netto detil</th>
-                            <th> Diskon Inv </th>
-                            <th> Netto DPP </th>
-                            <th> PPN </th>
-                            <th> PPH </th>
+                            <th> Keterangan </th>
                             <th> Total Tagihan </th>
+                       
                         </tr>
                     </thead>
                     <tbody>
                       @foreach ($data as $index =>$e)
                         <tr>
-                        <td><input type="hidden" value="{{ $e->i_nomor }}" name="nomor">{{ $e->i_nomor }}</td>
-                        <td>{{ $e->i_tanggal }}</td>
-                        <td>{{ $e->i_jatuh_tempo }}</td>
-                        <td>{{ $e->i_kode_customer }}</td>
-                        <td align="right">{{ number_format($e->i_total,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_diskon1,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_netto,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_diskon2,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_netto_detail,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_ppnrp,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_pajak_lain,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_total_tagihan,0,',','.') }}</td>
+                          <td>{{ $index+1 }}</td>
+                        <td><input type="hidden" value="{{ $e->nomor }}" name="nomor">{{ $e->nomor }}</td>
+                        <td>{{ $e->tanggal }}</td>
+                        <td>{{ $e->jatuh_tempo }}</td>
+                        <td>{{ $e->nama }}</td>
+                        <td>{{ $e->keterangan }}</td>
+                        <td align="right">{{ number_format($e->total_tagihan,0,',','.') }}</td>
+                  
                         </tr>
                       @endforeach
                     </tbody>
@@ -160,8 +151,8 @@
                  /* messageTop: 'Hasil pencarian dari Nama : ',*/
                   text: ' Excel',
                   className:'excel',
-                  title:'LAPORAN TARIF CABANG KOLI',
-                  filename:'CABANGKOLI-'+a+b+c,
+                  title:'LAPORAN INVOICE LAIN',
+                  filename:'INVOICE_LAIN-'+a+b+c,
                   init: function(api, node, config) {
                   $(node).removeClass('btn-default'),
                   $(node).addClass('btn-warning'),
@@ -198,7 +189,7 @@
             var max = $('#max').datepicker("getDate");
             // console.log(max);
 
-            var startDate = new Date(data[1]);
+            var startDate = new Date(data[2]);
             // console.log(startDate);
             if (min == null || min == '' && max == null || max == '') { return true; }
             if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
@@ -237,7 +228,7 @@
     
    
     function filterColumn2 () {
-        $('#addColumn').DataTable().column(3).search(
+        $('#addColumn').DataTable().column(4).search(
             $('.select-picker5').val()).draw(); 
      }
      
@@ -247,7 +238,7 @@
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
 
-           asw[i] =  $(asd[i][0]).val();
+           asw[i] =  $(asd[i][1]).val();
   
        }
 
@@ -260,7 +251,7 @@
 
       $.ajax({
         data: {a:asw,c:'download'},
-        url: baseUrl + '/reportinvoice/reportinvoice',
+        url: baseUrl + '/reportinvoicelain/reportinvoicelain',
         type: "post",
        success : function(data){
         var win = window.open();
