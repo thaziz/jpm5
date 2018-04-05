@@ -86,6 +86,7 @@ Route::post('suratpermintaanpembelian/ajax_jenisitem/', 'PurchaseController@ajax
 Route::get('suratpermintaanpembelian/statusspp/{id}', 'PurchaseController@statusspp');
 Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@createPdfSpp');
 Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
+Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetakspp');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
 Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
@@ -992,12 +993,16 @@ Route::post('sales/faktur_pajak/save_data', 'sales\faktur_pajak_Controller@save_
 
 // nota debet kredit
 Route::get('sales/nota_debet_kredit', 'sales\nota_debet_kredit_Controller@index');
+Route::get('sales/nota_debet_kredit/edit/{id}', 'sales\nota_debet_kredit_Controller@edit');
 Route::get('sales/nota_debet_kredit/tabel', 'sales\nota_debet_kredit_Controller@table_data')->name('datatable_cn_dn');
 Route::get('sales/nota_debet_kredit/create', 'sales\nota_debet_kredit_Controller@create');
 Route::get('sales/nota_debet_kredit/cari_invoice', 'sales\nota_debet_kredit_Controller@cari_invoice');
 Route::get('sales/nota_debet_kredit/pilih_invoice', 'sales\nota_debet_kredit_Controller@pilih_invoice');
-Route::get('sales/nota_debet_kredit/simpan_cn_dn', 'sales\nota_debet_kredit_Controller@simpan_cn_dn');
+Route::post('sales/nota_debet_kredit/simpan_cn_dn', 'sales\nota_debet_kredit_Controller@simpan_cn_dn');
 Route::get('sales/nota_debet_kredit/nomor_cn_dn', 'sales\nota_debet_kredit_Controller@nomor_cn_dn');
+Route::get('sales/nota_debet_kredit/riwayat', 'sales\nota_debet_kredit_Controller@riwayat');
+Route::post('sales/nota_debet_kredit/update_cn_dn', 'sales\nota_debet_kredit_Controller@update_cn_dn');
+Route::get('sales/nota_debet_kredit/hapus_cn_dn', 'sales\nota_debet_kredit_Controller@hapus_cn_dn');
 
 // end nota debet kredit
 
@@ -1377,6 +1382,11 @@ Route::get('master_keuangan/saldo_piutang', [
 Route::get('master_keuangan/saldo_piutang/add/{parrent}', [
   'uses' => 'master_keuangan\saldo_piutang_controller@add',
   'as'   => 'saldo_piutang.add'
+]);
+
+Route::post('master_keuangan/saldo_piutang/save', [
+  'uses' => 'master_keuangan\saldo_piutang_controller@save',
+  'as'   => 'saldo_piutang.save'
 ]);
 
 //end saldo piutang

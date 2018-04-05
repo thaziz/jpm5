@@ -73,6 +73,8 @@ class invoice_Controller extends Controller
 
     public function form(){
         $customer = DB::table('customer')
+                      ->where('nama','!=','NON MEMBER')
+                      ->where('nama','!=','NON CUSTOMER')
                       ->get();
 
         $cabang   = DB::table('cabang')

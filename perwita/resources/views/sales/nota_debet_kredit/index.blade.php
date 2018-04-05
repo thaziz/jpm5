@@ -56,7 +56,9 @@
                             <th>Tanggal</th>
                             <th>Customer</th>
 							              <th>Keterangan</th>
-                            <th>Nominal</th>
+                            <th>Jenis</th>
+                            <th>Debet</th>
+                            <th>Kredit</th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -100,22 +102,79 @@
             {data: 'cd_tanggal', name: 'cd_tanggal'},
             {data: 'nama', name: 'nama'},
             {data: 'cd_keterangan', name: 'cd_keterangan'},
-            {data: 'hasil', name: 'hasil'},
+            {data: 'cd_jenis', name: 'cd_jenis'},
+            {data: 'debet', name: 'debet'},
+            {data: 'kredit', name: 'kredit'},
             {data: 'tombol', name: 'tombol'}
         ],
         columnDefs: [
               {
-                 targets: 5,
+                 targets: 4,
                  className: 'center'
               },
               {
-                 targets: 4,
+                 targets: 5,
                  className: 'right'
+              },
+              {
+                 targets: 6,
+                 className: 'right'
+              },
+              {
+                 targets: 7,
+                 className: 'center'
               },
               
             ],
     });
     });
 
+    function edit(a){
+      window.location.href = "nota_debet_kredit/edit/"+a;
+    }
+
+        function hapus(id){
+          var nomor_cn_dn = id;
+        swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+    },
+
+    function(){
+
+         $.ajax({
+          url:baseUrl + '/sales/hapus_invoice',
+          data:{nomor_cn_dn},
+          type:'get',
+          success:function(data){
+              swal({
+              title: "Berhasil!",
+                      type: 'success',
+                      text: "Data Berhasil Dihapus",
+                      timer: 2000,
+                      showConfirmButton: true
+                      },function(){
+                         location.reload();
+              });
+          },
+          error:function(data){
+
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+        });
+       }
+      });
+    });
+}
     </script>
 @endsection
