@@ -53,6 +53,14 @@
                             <a href="{{ url('setting/pengguna')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengguna</a>
                         </li>
 
+                       <!--   <li class="sidebar {{Request::is('setting/groupbaru') ? 'active' : '' || Request::is('setting/groupbaru/*') ? 'active' : '' }} ">
+                            <a href="{{ url('setting/groupbaru')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Group Baru </a>
+                        </li> -->
+
+                       <!--  <li class="sidebar {{Request::is('setting/daftarmenu') ? 'active' : '' || Request::is('setting/daftarmenu/*') ? 'active' : '' }} ">
+                            <a href="{{ url('setting/daftarmenu')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Daftar Menu </a>
+                        </li> -->
+
                         <li>
                                 <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
                                 <ul class="nav nav-third-level">
@@ -2137,12 +2145,12 @@
                             Request::is('sales/laporan_uangmuka_penjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporan_uangmuka_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Uangmuka</a>
                                 </li>
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_invoice') ? 'active' : '' || 
-                            Request::is('sales/laporan_invoice/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Posting Bayar</a>
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_posting_bayar') ? 'active' : '' || 
+                            Request::is('sales/laporan_posting_bayar/*') ? 'active' : ''}} " href="{{ url('sales/laporan_posting_bayar')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Posting Bayar</a>
                                 </li>
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_posting_bayar') ? 'active' : '' || 
-                            Request::is('sales/laporan_posting_bayar/*') ? 'active' : ''}} " href="{{ url('sales/laporan_posting_bayar')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kwitansi</a>
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_kwitansi') ? 'active' : '' || 
+                            Request::is('sales/laporan_kwitansi/*') ? 'active' : ''}} " href="{{ url('sales/laporan_kwitansi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kwitansi</a>
                                 </li>
                          {{--        <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 

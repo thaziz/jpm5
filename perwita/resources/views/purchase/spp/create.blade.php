@@ -1,4 +1,4 @@
- @extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 
@@ -69,13 +69,15 @@
                                           <tr>
                                             <td width="200px"> Kode SPP </td>
                                             <td> <input type='text' class="input-sm form-control nospp" readonly="" name="nospp"></td>
+                                            <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                                           </tr>
                                           
                                           <tr>
                                               
                                              <tr>
                                               <td> Cabang </td>
-                                              <td>  
+                                              <td>                                              
+
                                               @if(Session::get('cabang') != 000)
                                               <select class="form-control disabled cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
@@ -125,7 +127,7 @@
                                             Bagian / Department
                                           </td>
                                           <td>
-                                            <select class="chosen-select-width" name="bagian">
+                                            <select class="chosen-select-width" name="bagian" required="">
                                               <option value> -- Pilih Bagian / Departmen -- </option>
                                               @foreach($data['department'] as $department)
                                                 <option value="{{$department->kode_department}}"> {{$department->nama_department}} </option>
@@ -153,7 +155,7 @@
                                             <label></label>
                                             </td> -->
 
-                                        <td id="tdstock">  <select class="form-control updatestock" name="updatestock"  id="updatestock"> <option value="" selected=""> - Pilih - </option> <option value="Y"> Ya </option> <option value="T"> TIDAK </option> </select></td>
+                                        <td id="tdstock">  <select class="form-control updatestock" name="updatestock"  id="updatestock"> <option value="Y"> Ya </option> <option value="T"> TIDAK </option> </select></td>
                                       </tr>
 
 
@@ -167,6 +169,8 @@
                                       <td> <input type="text" class="input-sm form-control" name="keterangan">  </td>
                                     </tr>
                                   </table>
+
+                                  
                                </div>
                                
                                <div class="col-md-6">
@@ -177,13 +181,24 @@
                                  
                                 
                                </div>
-                         
+                                <br>
+                                <br>
+                                <br>
+                                 <br>
+                                 <br>
+                                 <br>
+                                 <br>
+                                 <br>
+                                  <div class="loadingjenis" style="display: none">  <img src="{{ asset('assets/image/loading1.gif') }}" width="50px"> </div>
+
                                 <div class="col-md-12">
                                  <hr>
-                                 <h3> Data Barang </h3>
+                                 <h3> Data Barang  </h3>
+
+
                                 <hr>
 
-                                <div class="table-responsive">
+                                 
                                   <table id="table-data" class="table table-bordered">
                                   <tr class="header-table">
                                       <th style="width:20px"> No  </th>
@@ -214,7 +229,7 @@
                                
 
                                  </table>
-                                </div>
+                              
                                 </div>
                            
            
@@ -272,11 +287,18 @@
     $('.simpan').click(function(){
       kuantitas = $('.kuantitas').val();
       harga = $('.hrga').val();
-
+       cabang = $('.cabang').val();
+      // alert(cabang);
       if(kuantitas  == "undefined" && harga == "undefined" ){
          toastr.info('Harap Buat data SPP ');
         return false;
       }
+       
+        if(cabang == ''){
+          toastr.info('Cabang harap diisi :)');
+          return false;
+        }
+     
     })
 
     $('.date').datepicker({
@@ -284,7 +306,7 @@
         format: 'dd-MM-yyyy',
         endDate: 'today'
 
-    }).datepicker("setDate", "0");;
+    }).datepicker("setDate", "0");
     
     
     
@@ -363,6 +385,9 @@
                 }
 
                
+            },
+            error : function(){
+                location.reload();
             }
         })
 
@@ -420,10 +445,11 @@
     $('.updatestock').change(function(){
       val = $(this).val();
     
-
+      $('.loadingjenis').css('display' , 'block');
       jnsitem = $('.jenisitem').val();
       variable = jnsitem.split(",");
       jenisitem = variable[0];
+      penerimaan = variable[1];
 
       if(jenisitem == ''){
         toastr.info('Harap pilih Group Item terlebih dahulu :)');
@@ -462,7 +488,7 @@
             $("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
             $("<th class='kendaraan'> </th>").insertAfter($('.kolomtghpembayaran'));
 
-            $("<td class='kendaraan'> <select class='form-control kendaraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id_vhc}}> {{$kndraan->vhccde}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
+            $("<td class='kendaraan'> <select class='form-control kendaraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan->nopol}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
             
            //  $("rowColom").insertAfter("#pembayaran");
         }
@@ -487,10 +513,13 @@
           updatestock = $(this).val();
           $.ajax({    
             type :"post",
-            data : {jenisitem,updatestock},
+            data : {jenisitem,updatestock,penerimaan},
             url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
             dataType:'json',
             success : function(data){
+            $('.loadingjenis').css('display' , 'none');
+
+
                arrItem = data;
                   
                   if(arrItem.length > 0) {
@@ -499,6 +528,8 @@
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
                           $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+"> <h5> "+obj.nama_masteritem+" </h5> </option>");
+                           $('.barang').trigger("chosen:updated");
+                           $('.barang').trigger("liszt:updated");
                         })
                     }
                   else{
@@ -506,7 +537,9 @@
                      //   toastr.info('kosong');
                          $('.barang').empty();
                         var rowKosong = "<option value=''> -- Data Kosong --</option>";
-                       $('.barang').append(rowKosong);             
+                       $('.barang').append(rowKosong);  
+                        $('.barang').trigger("chosen:updated");
+                      $('.barang').trigger("liszt:updated");           
                   }
                 }
             
@@ -884,9 +917,117 @@
 
       var arrItem = [];
           
+       $('.jenisitem').change(function(){
+      val = $('.updatestock').val();
+    
+      $('.loadingjenis').css('display' , 'block');
+      jnsitem = $('.jenisitem').val();
+      variable = jnsitem.split(",");
+      jenisitem = variable[0];
+      penerimaan = variable[1];
 
-   $(function(){
+      if(jenisitem == ''){
+        toastr.info('Harap pilih Group Item terlebih dahulu :)');
+          $('#updatestock option').prop('selected', function(){
+            return this.defaultSelected;
+         })
+      }
+
+      else if(jenisitem == 'S') {
+      
+        valupdatestock = val;
+          if(val == 'Y') {
+         valupdatestock = val;
+                $('.kendaraan').remove();
+               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
+                           "</select> </td>";
+              $('.lokasigudang').html(rowgudang);
+          }
+          else if(val == 'T') {
+           
+             valupdatestock = val;
+            $('.lokasigudang').empty();
+            $('.header-table').find($('.kendaraan')).remove();
+            var rowColom = "<th class='kendaraan' style='width:100px'> Kendaraan </th>";
+             
+
+             var colomBarang = "<td class='kendaraan'> Barang </td>";
+             var colomSupplier = "<td class='kendaraan'> Supplier </td>";
+
+            /*  $('.addbarang td:eq(6)').append(colomBarang);
+              $('.data-supplier td:eq(6)').append(colomSupplier);*/
+
+            //$('.header-table th:eq(6)').append(rowColom);
+
+            $("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
+            $("<th class='kendaraan'> </th>").insertAfter($('.kolomtghpembayaran'));
+
+            $("<td class='kendaraan'> <select class='form-control kendaraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan->nopol}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
+            
+           //  $("rowColom").insertAfter("#pembayaran");
+        }
+      }
+    
+      else {
+         if(val == 'Y') {
+           valupdatestock = val;
+                $('.kendaraan').remove();
+               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
+                           "</select> </td>";
+              $('.lokasigudang').html(rowgudang);
+          }
+          else {
+             valupdatestock = val;
+             $('.lokasigudang').empty();
+          }
+      }
+
+     
+          updatestock = $('.updatestock').val();
+          $.ajax({    
+            type :"post",
+            data : {jenisitem,updatestock,penerimaan},
+            url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
+            dataType:'json',
+            success : function(data){
+            $('.loadingjenis').css('display' , 'none');
+
+
+               arrItem = data;
+                  
+                  if(arrItem.length > 0) {
+                      $('.barang').empty();
+                      $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                        $.each(arrItem, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+"> <h5> "+obj.nama_masteritem+" </h5> </option>");
+                           $('.barang').trigger("chosen:updated");
+                           $('.barang').trigger("liszt:updated");
+                        })
+                    }
+                  else{
+                     
+                     //   toastr.info('kosong');
+                         $('.barang').empty();
+                        var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                       $('.barang').append(rowKosong);  
+                        $('.barang').trigger("chosen:updated");
+                      $('.barang').trigger("liszt:updated");           
+                  }
+                }
+            
+          })
+        
+      
+
+
+    })
+  /* $(function(){
       $('.jenisitem').change(function(){
+              val = $('.updatestock').val();
+              $('.loadingjenis').css('display', 'block');
               var jnsitem = $(this).val();
               var variable = jnsitem.split(",");
               var jenisitem = variable[0];
@@ -906,6 +1047,7 @@
               var updatestock = $('.updatestock').val();
 
               if(jenisitem == 'S' && updatestock == 'T'){
+                 $('.loadingjenis').css('display', 'block');
                     valupdatestock = val;
               $('.lokasigudang').empty();
               $('.header-table').find($('.kendaraan')).remove();
@@ -920,12 +1062,13 @@
 
               //$('.header-table th:eq(6)').append(rowColom);
 
-              $("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
+              /*$("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
               $("<th class='kendaraan'> </th>").insertAfter($('.kolomtghpembayaran'));
 
-              $("<td class='kendaraan'> <select class='form-control kendaraan kndraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id_vhc}}> {{$kndraan->vhccde}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
+              $("<td class='kendaraan'> <select class='form-control kendaraan kndraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan-> nopol}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
               }
-
+              
+            
               if(penerimaan == 'T'){
                  $('tr#trstock').hide();
                  valupdatestock = 'J';
@@ -936,7 +1079,8 @@
                 data : {jenisitem,updatestock,penerimaan},
                 dataType : "json",
                 success : function(data) {
-              //    console.log(data);
+                  $('.loadingjenis').css('display' , 'none');
+                  
                   arrItem = data;
                   console.log('arrItem' + arrItem);
 
@@ -947,13 +1091,17 @@
                         //  console.log(obj.is_kodeitem);
                           $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+">"+obj.nama_masteritem+"</option>");
                         })
+                         $('.barang').trigger("chosen:updated");
+                         $('.barang').trigger("liszt:updated");
                     }
                   else{
                      
                      //   toastr.info('kosong');
                          $('.barang').empty();
                         var rowKosong = "<option value=''> -- Data Kosong --</option>";
-                       $('.barang').append(rowKosong);             
+                       $('.barang').append(rowKosong); 
+                          $('.barang').trigger("chosen:updated");
+                         $('.barang').trigger("liszt:updated");            
                   }
                 }
               })
@@ -964,7 +1112,8 @@
                 $('td#trstock').show();
 
                 if(updatestock != '') {
-              var string = val.split(",");
+
+             
               $.ajax({
                 url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
                 type : "post",
@@ -974,7 +1123,7 @@
               //    console.log(data);
                   arrItem = data;
                   console.log('arrItem' + arrItem);
-
+                  $('.loadingjenis').css('display', 'none');
                   if(arrItem.length > 0) {
                       $('.barang').empty();
                       $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
@@ -982,13 +1131,17 @@
                         //  console.log(obj.is_kodeitem);
                           $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+">"+obj.nama_masteritem+"</option>");
                         })
+                         $('.barang').trigger("chosen:updated");
+                         $('.barang').trigger("liszt:updated");
                     }
                   else{
                      
                      //   toastr.info('kosong');
                          $('.barang').empty();
                         var rowKosong = "<option value=''> -- Data Kosong --</option>";
-                       $('.barang').append(rowKosong);             
+                       $('.barang').append(rowKosong);   
+                          $('.barang').trigger("chosen:updated");
+                         $('.barang').trigger("liszt:updated");          
                   }
                 }
               })
@@ -996,7 +1149,7 @@
            }
             
      })
-    })
+    })*/
 
 
 
@@ -1043,7 +1196,7 @@
           rowStr += "<td> "+no+"</td>";
           rowStr += "<td>";
                    
-          rowStr += "<select  class='barang brg"+no+" form-control idbarang"+counterId+" input-sm' data-id='"+counterId+"' style='width: 100%;' name='idbarang[]' required data-no='"+no+"'> "; //barang
+          rowStr += "<select  class='chosen-select-width barang brg"+no+" form-control idbarang"+counterId+" input-sm' data-id='"+counterId+"' style='width: 100%;' name='idbarang[]' required data-no='"+no+"'> "; //barang
                     if(arrItem.length > 0) {
           rowStr += " <option value=''>  -- Pilih Barang -- </option> ";            
                      $.each(arrItem, function(i , obj) {
@@ -1057,25 +1210,25 @@
           rowStr +=  "<option value=''> -- Data Kosong -- </option>";              
                       }
           rowStr += "</select> <br>  <div class='brgduplicate duplicate"+nourutbrg+"'> </div>   </td>" +
-                    "<td> <input type='number' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required > <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'>  </td>" + //qty
+                    "<td> <input type='number' class='input-sm form-control kuantitas qty"+counterId+"' name='qty[]' data-id='"+no+"' required > <input type='hidden' class='qty_request' name='qty_request[]' value='"+no+"'>  <br> <div> </div> </td>" + //qty
 
-                    "<td> <div class='stock_gudang"+counterId+"'> </td>" + //stockgudang
+                    "<td> <div class='stock_gudang"+counterId+"'> <br> <br> <div> </div> </td>" + //stockgudang
 
-                    "<td> <div class='satuan"+counterId+"'> </td>"+ //satuan
+                    "<td> <div class='satuan"+counterId+"'>  <br> <br> <div> </div> </td>"+ //satuan
 
-                    "<td> <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' data-id='"+counterId+"' data-no='"+no+"'/> </td>"+ //harga
+                    "<td> <input type='text' class='input-sm form-control hrga hargabrg"+no+" harga"+counterId+"' name='harga[]' data-id='"+counterId+"' data-no='"+no+"'/> <br> <div> </div> </td>"+ //harga
 
-                    "<td><select id='supselect' class='input-sm form-control select2 suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
+                    "<td> <select id='supselect' class='input-sm form-control select2 suipd suipl sup"+no+" supplier"+counterId+" datasup"+nourutbrg+"' data-id='"+counterId+"' style='width: 100%;' data-no='"+no+"' name='supplier[]' required=> <option value=''> -- Pilih Data Supplier -- </option> </select> <br> <div class='supduplicate supduplicate"+no+"'> </div> </td>"; //supplier
 
                   /*  "<td class='pembayaranken'> <div class='form-group'> <div class='col-sm-8'> <input type='text' class='form-control bayar"+counterId+"' name='bayar[]' data-id='"+counterId+"'> </div> <label class='col-sm-2 col-sm-2 control-label'> Hari </label></div></td>";*/ //bayar
 
 
           if(valupdatestock == 'T' && jenisitem == 'S' ){
-            rowStr += "<td class='kendaraan'> <select class='chosen-select-width form-control' name='kendaraan[]'> @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id_vhc}}> {{$kndraan->vhccde}} - {{$kndraan->merk}} </option> @endforeach </select> </td>";
+            rowStr += "<td class='kendaraan'> <select class='chosen-select-width form-control' name='kendaraan[]'> @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan->nopol}} - {{$kndraan->merk}} </option> @endforeach </select> <br> <div> </div> </td>";
           }
 
           if(no != 1) {
-           rowStr += "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+no+"' type='button'><i class='fa fa-trash'></i></button></td>";
+           rowStr += "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+no+"' type='button'><i class='fa fa-trash'></i></button> <br> <div> </div></td>";
           } 
 
        
@@ -1197,6 +1350,7 @@
               var hrgbrg = string[2];
              // alert(nobarang);
               console.log(valbarang);
+             $('.loadingjenis').css('display' , 'block');
 
              // toastr.info(kodeitem);
               $.ajax({
@@ -1204,6 +1358,7 @@
                 type : "GET",
                 dataType : "json",
                 success : function(data) {
+              $('.loadingjenis').css('display' , 'none');
                 
                   arrSupid = data.supplier; //terikat kontrak
 
@@ -1333,6 +1488,7 @@
       //TAMBAHDATASUPPLIER
      $('#add-btn-supp').click(function(){
               $('.cek_tb').attr('disabled', false);
+      $('.loadingjenis').css('display' , 'block');
 
               var idtrsup = no - 1;
               var lastarr = arrnobrg.slice(-1)[0];
@@ -1357,7 +1513,8 @@
                 type : "GET",
                 dataType : "json",
                 success : function(data) {
-  					
+      $('.loadingjenis').css('display' , 'none');
+  					 
   					    hasilsupp = data.supplier //terikat kontrak
                 hasilmaster = data.mastersupplier // tdkterikatkontrak
 				

@@ -52,6 +52,12 @@ Route::get('setting/pengguna/tabel', 'setting\pengguna_Controller@table_data');
 Route::get('setting/pengguna/get_data', 'setting\pengguna_Controller@get_data');
 Route::post('setting/pengguna/save_data', 'setting\pengguna_Controller@save_data');
 Route::post('setting/pengguna/hapus_data', 'setting\pengguna_Controller@hapus_data');
+
+Route::post('setting/groupbaru', 'setting\groupController@groupbaru');
+
+Route::get('setting/daftarmenu', 'setting\groupController@daftarmenu');
+Route::get('setting/createdaftarmenu', 'setting\groupController@createdaftarmenu');
+Route::post('setting/savedaftarmenu', 'setting\groupController@savedaftarmenu');
 // end pengguna
 
 //hak_akses
@@ -80,6 +86,7 @@ Route::post('suratpermintaanpembelian/ajax_jenisitem/', 'PurchaseController@ajax
 Route::get('suratpermintaanpembelian/statusspp/{id}', 'PurchaseController@statusspp');
 Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@createPdfSpp');
 Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
+Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetakspp');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
 Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
@@ -139,10 +146,19 @@ Route::get('konfirmasipengeluaranbarang/printing/{id}' , 'PengeluaranBarangContr
 Route::get('konfirmasipengeluaranbarang/approve' , 'PengeluaranBarangController@approve');
 Route::post('konfirmasipengeluaranbarang/approve' , 'PengeluaranBarangController@approve');
 //stock opname
+/*Route::get('stockopname/stockopname' , 'PengeluaranBarangController@stockopname');
+Route::get('stockopname/cari_sm/{id}' , 'PengeluaranBarangController@cari_sm');
+Route::get('stockopname/berita_acara/{id}' , 'PengeluaranBarangController@berita_acara');
+Route::get('stockopname/createstockopname' , 'StockOpnameController@createstockopname');
+Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstockopname');
+Route::get('stockopname/save_stock_opname' , 'PengeluaranBarangController@save_stock_opname');
+Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detailstockopname');*/
+//stock opname
 Route::get('stockopname/stockopname' , 'PengeluaranBarangController@stockopname');
 Route::get('stockopname/cari_sm/{id}' , 'PengeluaranBarangController@cari_sm');
 Route::get('stockopname/berita_acara/{id}' , 'PengeluaranBarangController@berita_acara');
 Route::get('stockopname/createstockopname' , 'StockOpnameController@createstockopname');
+Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstockopname');
 Route::get('stockopname/save_stock_opname' , 'PengeluaranBarangController@save_stock_opname');
 Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detailstockopname');
 
@@ -315,9 +331,13 @@ Route::get('returnpembelian/returnpembelian', 'PurchaseController@returnpembelia
 Route::get('returnpembelian/createreturnpembelian', 'PurchaseController@createreturnpembelian');
 Route::get('returnpembelian/detailreturnpembelian', 'PurchaseController@detailreturnpembelian');
 
-Route::get('cndnpembelian/cndnpembelian', 'PurchaseController@cndnpembelian');
-Route::get('cndnpembelian/createcndnpembelian', 'PurchaseController@createcndnpembelian');
-Route::get('cndnpembelian/detailcndnpembelian', 'PurchaseController@detailcndnpembelian');
+Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
+Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');
+Route::get('cndnpembelian/detailcndnpembelian', 'cndnController@detailcndnpembelian');
+Route::get('cndnpembelian/getnota', 'cndnController@getnota');
+Route::get('cndnpembelian/getfaktur', 'cndnController@getfaktur');
+Route::get('cndnpembelian/getsupplier', 'cndnController@getsupplier');
+Route::get('cndnpembelian/hslfaktur', 'cndnController@hslfaktur');
 
 Route::get('uangmukapembelian/uangmukapembelian', 'PurchaseController@uangmukapembelian');
 Route::get('uangmukapembelian/createuangmukapembelian', 'PurchaseController@createuangmukapembelian');
@@ -538,7 +558,7 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
 Route::get('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPurchaseController@reportfakturpajakmasukan');
 //==================================== LAPORAN PEMBELIAN BERAKIR ========================================//
 
-//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIE JAMI//
+//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJAMI//
 
 //_____$$$$_________$$$$
 //___$$$$$$$$_____$$$$$$$$
@@ -973,12 +993,16 @@ Route::post('sales/faktur_pajak/save_data', 'sales\faktur_pajak_Controller@save_
 
 // nota debet kredit
 Route::get('sales/nota_debet_kredit', 'sales\nota_debet_kredit_Controller@index');
+Route::get('sales/nota_debet_kredit/edit/{id}', 'sales\nota_debet_kredit_Controller@edit');
 Route::get('sales/nota_debet_kredit/tabel', 'sales\nota_debet_kredit_Controller@table_data')->name('datatable_cn_dn');
 Route::get('sales/nota_debet_kredit/create', 'sales\nota_debet_kredit_Controller@create');
 Route::get('sales/nota_debet_kredit/cari_invoice', 'sales\nota_debet_kredit_Controller@cari_invoice');
 Route::get('sales/nota_debet_kredit/pilih_invoice', 'sales\nota_debet_kredit_Controller@pilih_invoice');
-Route::get('sales/nota_debet_kredit/simpan_cn_dn', 'sales\nota_debet_kredit_Controller@simpan_cn_dn');
+Route::post('sales/nota_debet_kredit/simpan_cn_dn', 'sales\nota_debet_kredit_Controller@simpan_cn_dn');
 Route::get('sales/nota_debet_kredit/nomor_cn_dn', 'sales\nota_debet_kredit_Controller@nomor_cn_dn');
+Route::get('sales/nota_debet_kredit/riwayat', 'sales\nota_debet_kredit_Controller@riwayat');
+Route::post('sales/nota_debet_kredit/update_cn_dn', 'sales\nota_debet_kredit_Controller@update_cn_dn');
+Route::get('sales/nota_debet_kredit/hapus_cn_dn', 'sales\nota_debet_kredit_Controller@hapus_cn_dn');
 
 // end nota debet kredit
 
@@ -2382,4 +2406,5 @@ Route::get('master_sales/group_customer/hapus_data','master_sales\grup_customer_
 Route::get('mutasi_stock/mutasi_stock','StockMutController@index');
 
 // diskon penjualan
-Route::get('master_sales/diskonpenjualan' , 'PengeluaranBarangController@detailstockopname');
+Route::get('master_sales/diskonpenjualan' , 'DiskonPenjualanController@index');
+Route::get('master_sales/diskonpenjualan/getAkun' , 'DiskonPenjualanController@getAkun');
