@@ -38,11 +38,8 @@
                         <div class="box-body">
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
-
-                            </table>
+                                </table>
                         <div class="col-xs-6">
-
-
 
                         </div>
                     </div>
@@ -360,7 +357,7 @@
              className: 'center'
           },
           {
-             targets: 9,
+             targets: 8,
              className: 'center'
           }
        ]
@@ -500,26 +497,26 @@
    // Menghitung pajak
 
 
-   function hitung_total_tagihan(){
+function hitung_total_tagihan(){
         var cb_jenis_ppn = $('#cb_jenis_ppn').val();
         var diskon2      = $('.diskon2').val();
         var netto_total  = $('.netto_total').val();
         var netto_detail = $('.netto_detail').val();
         netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
-        netto_total      = parseInt(netto_total)/100;
+        netto_total      = parseFloat(netto_total)/100;
         netto_detail     = netto_detail.replace(/[^0-9\-]+/g,"");
-        netto_detail     = parseInt(netto_detail)/100;
+        netto_detail     = parseFloat(netto_detail)/100;
         diskon2          = diskon2.replace(/[^0-9\-]+/g,"");
-        diskon2          = parseInt(diskon2);
+        diskon2          = parseFloat(diskon2);
 
         var ppn  = $('.ppn').val();
         ppn      = ppn.replace(/[^0-9\-]+/g,"");
-        ppn      = parseInt(ppn)/100;
+        ppn      = parseFloat(ppn)/100;
 
         var pph  = $('.pph').val();
         pph      = pph.replace(/[^0-9\-]+/g,"");
 
-        pph      = parseInt(pph)/100;
+        pph      = parseFloat(pph)/100;
         if (cb_jenis_ppn == 1 || cb_jenis_ppn == 2 || cb_jenis_ppn == 0) {
             var total_tagihan = netto_total+ppn-pph;
         }else if (cb_jenis_ppn == 3 || cb_jenis_ppn == 5) {
@@ -530,6 +527,7 @@
 
         $('.total_tagihan').val(accounting.formatMoney(total_tagihan,"",2,'.',','))
 
+   
     }
 
 
@@ -655,7 +653,7 @@
 
 
         var netto = 0 ;
-        table_detail.$('.harga_netto').each(function(){
+        table_detail.$('.dd_total').each(function(){
             temp_total += parseFloat($(this).val());
         });
 
@@ -722,9 +720,9 @@
                             response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
                             accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
-                            accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_total+'" name="dd_total[]">',
+                            accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
                             accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
-                            accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+                            accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].dd_total+'" name="harga_netto[]">',
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);

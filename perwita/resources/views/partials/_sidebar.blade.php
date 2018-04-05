@@ -667,14 +667,21 @@
 
                     " href="{{ url('master_sales/item')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Item</a>
                     </li>
+
                     <li >
-                        <a class="sidebar master-perusahaan 
+                    <a class="sidebar master-perusahaan 
 
                     {{Request::is('master_sales/komisi') ? 'active' : '' || 
                     Request::is('master_sales/komisi/*') ? 'active' : ''}} 
 
                     " href="{{ url('master_sales/komisi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Diskon</a>
                     </li>
+
+                    <li >
+                        <a class="sidebar master-perusahaan {{Request::is('master_sales/diskonpenjualan') ? 'active' : '' || Request::is('master_sales/diskonpenjualan/*') ? 'active' : ''}}" href="{{ url('master_sales/diskonpenjualan')}}">
+                            <i class="fa fa-folder-open-o" aria-hidden="true"></i>Diskon Penjualan</a>
+                    </li>
+
                     <li >
                         <a class="sidebar master-perusahaan 
 

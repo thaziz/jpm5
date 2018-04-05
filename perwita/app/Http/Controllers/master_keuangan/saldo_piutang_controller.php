@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use DB;
+
 class saldo_piutang_controller extends Controller
 {
     public function index(){
@@ -14,6 +16,8 @@ class saldo_piutang_controller extends Controller
     }
 
     public function add(){
-    	return view("keuangan.saldo_piutang.insert");
+    	$cust = DB::table('customer')->select("kode", "nama", "alamat")->get();
+    	return view("keuangan.saldo_piutang.insert")
+    		   ->withCust($cust);
     }
 }
