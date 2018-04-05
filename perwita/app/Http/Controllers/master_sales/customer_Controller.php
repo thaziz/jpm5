@@ -53,10 +53,8 @@ class customer_Controller extends Controller
              
 
                $request->cabang;
-               // return $kodekode;
-               if ($kodekode < 1000) {
-                  $kodekode = '000'.$kodekode;
-                }
+               
+              $kodekode = str_pad($kodekode, 5, '0', STR_PAD_LEFT);
                  $kodekode =  /*$kodecabang.*/'CS-'.$request->cabang.'/'.$kodekode;
         }else{
            $kodekode = $request->ed_kode;
