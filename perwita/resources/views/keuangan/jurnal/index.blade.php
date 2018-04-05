@@ -109,7 +109,7 @@
                 </div><!-- /.box-header -->
                 <div class="box-body" style="min-height: 330px;">
                 
-                  <table id="table" width="100%" class="table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
+                  <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
                     <thead>
                       <tr>
                         <th width="15%" style="padding:8px 0px" class="text-center">Tahun Jurnal</ht>
