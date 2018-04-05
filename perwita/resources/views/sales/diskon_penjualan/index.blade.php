@@ -111,7 +111,7 @@
                   <tr>
                     <td class=""><strong>Diskon</strong></td>
                     <td colspan="5">
-                        <input id="demo1" type="text" value="55" name="demo1">
+                        <input class="form-control" id="demo1" type="text" value="55" name="demo1">
                     </td>
                   </tr>
                 </table>
@@ -148,8 +148,7 @@ $(document).ready( function () {
     $("input[name='demo1']").TouchSpin({
         min: 0,
         max: 100,
-        step: 0.1,
-        decimals: 2,
+        step: 5,
         boostat: 5,
         maxboostedstep: 10,
         postfix: '%'
