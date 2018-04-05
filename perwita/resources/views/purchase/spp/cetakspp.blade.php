@@ -141,7 +141,7 @@ div.bottom
                        
                         	
                         		
-                        	 	<td> {{$data['po'][0]->po_no}} </td>
+                        	 	<td>  </td>
                         	
                         	
                         

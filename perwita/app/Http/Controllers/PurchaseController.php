@@ -4160,9 +4160,11 @@ foreach ($Nilaijurnal as  $indexakun=> $dataJurnal) {
       
 }  
 
+
+	$acchutangdagang = substr($request->acchutangdagang, 0,5);
   $akunHutang=master_akun::
                   select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$request->acchutangdagang.'%')                                    
+                  ->where('id_akun','like', ''.$acchutangdagang.'%')                                    
                   ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                    

@@ -155,7 +155,7 @@
                                             <label></label>
                                             </td> -->
 
-                                        <td id="tdstock">  <select class="form-control updatestock" name="updatestock"  id="updatestock"> <option value="" selected=""> - Pilih - </option> <option value="Y"> Ya </option> <option value="T"> TIDAK </option> </select></td>
+                                        <td id="tdstock">  <select class="form-control updatestock" name="updatestock"  id="updatestock"> <option value="Y"> Ya </option> <option value="T"> TIDAK </option> </select></td>
                                       </tr>
 
 
@@ -288,7 +288,7 @@
       kuantitas = $('.kuantitas').val();
       harga = $('.hrga').val();
        cabang = $('.cabang').val();
-       alert(cabang);
+      // alert(cabang);
       if(kuantitas  == "undefined" && harga == "undefined" ){
          toastr.info('Harap Buat data SPP ');
         return false;
@@ -449,6 +449,7 @@
       jnsitem = $('.jenisitem').val();
       variable = jnsitem.split(",");
       jenisitem = variable[0];
+      penerimaan = variable[1];
 
       if(jenisitem == ''){
         toastr.info('Harap pilih Group Item terlebih dahulu :)');
@@ -512,7 +513,7 @@
           updatestock = $(this).val();
           $.ajax({    
             type :"post",
-            data : {jenisitem,updatestock},
+            data : {jenisitem,updatestock,penerimaan},
             url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
             dataType:'json',
             success : function(data){
@@ -916,10 +917,116 @@
 
       var arrItem = [];
           
+       $('.jenisitem').change(function(){
+      val = $('.updatestock').val();
+    
+      $('.loadingjenis').css('display' , 'block');
+      jnsitem = $('.jenisitem').val();
+      variable = jnsitem.split(",");
+      jenisitem = variable[0];
+      penerimaan = variable[1];
 
-   $(function(){
-      $('.jenisitem').change(function(){
+      if(jenisitem == ''){
+        toastr.info('Harap pilih Group Item terlebih dahulu :)');
+          $('#updatestock option').prop('selected', function(){
+            return this.defaultSelected;
+         })
+      }
+
+      else if(jenisitem == 'S') {
       
+        valupdatestock = val;
+          if(val == 'Y') {
+         valupdatestock = val;
+                $('.kendaraan').remove();
+               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
+                           "</select> </td>";
+              $('.lokasigudang').html(rowgudang);
+          }
+          else if(val == 'T') {
+           
+             valupdatestock = val;
+            $('.lokasigudang').empty();
+            $('.header-table').find($('.kendaraan')).remove();
+            var rowColom = "<th class='kendaraan' style='width:100px'> Kendaraan </th>";
+             
+
+             var colomBarang = "<td class='kendaraan'> Barang </td>";
+             var colomSupplier = "<td class='kendaraan'> Supplier </td>";
+
+            /*  $('.addbarang td:eq(6)').append(colomBarang);
+              $('.data-supplier td:eq(6)').append(colomSupplier);*/
+
+            //$('.header-table th:eq(6)').append(rowColom);
+
+            $("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
+            $("<th class='kendaraan'> </th>").insertAfter($('.kolomtghpembayaran'));
+
+            $("<td class='kendaraan'> <select class='form-control kendaraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan->nopol}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
+            
+           //  $("rowColom").insertAfter("#pembayaran");
+        }
+      }
+    
+      else {
+         if(val == 'Y') {
+           valupdatestock = val;
+                $('.kendaraan').remove();
+               var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
+                              "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
+                           "</select> </td>";
+              $('.lokasigudang').html(rowgudang);
+          }
+          else {
+             valupdatestock = val;
+             $('.lokasigudang').empty();
+          }
+      }
+
+     
+          updatestock = $('.updatestock').val();
+          $.ajax({    
+            type :"post",
+            data : {jenisitem,updatestock,penerimaan},
+            url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
+            dataType:'json',
+            success : function(data){
+            $('.loadingjenis').css('display' , 'none');
+
+
+               arrItem = data;
+                  
+                  if(arrItem.length > 0) {
+                      $('.barang').empty();
+                      $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                        $.each(arrItem, function(i , obj) {
+                  //        console.log(obj.is_kodeitem);
+                          $('.barang').append("<option value="+obj.kode_item+","+obj.unitstock+","+obj.harga+"> <h5> "+obj.nama_masteritem+" </h5> </option>");
+                           $('.barang').trigger("chosen:updated");
+                           $('.barang').trigger("liszt:updated");
+                        })
+                    }
+                  else{
+                     
+                     //   toastr.info('kosong');
+                         $('.barang').empty();
+                        var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                       $('.barang').append(rowKosong);  
+                        $('.barang').trigger("chosen:updated");
+                      $('.barang').trigger("liszt:updated");           
+                  }
+                }
+            
+          })
+        
+      
+
+
+    })
+  /* $(function(){
+      $('.jenisitem').change(function(){
+              val = $('.updatestock').val();
               $('.loadingjenis').css('display', 'block');
               var jnsitem = $(this).val();
               var variable = jnsitem.split(",");
@@ -940,6 +1047,7 @@
               var updatestock = $('.updatestock').val();
 
               if(jenisitem == 'S' && updatestock == 'T'){
+                 $('.loadingjenis').css('display', 'block');
                     valupdatestock = val;
               $('.lokasigudang').empty();
               $('.header-table').find($('.kendaraan')).remove();
@@ -954,15 +1062,13 @@
 
               //$('.header-table th:eq(6)').append(rowColom);
 
-              $("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
+              /*$("<th class='kendaraan' style='width:100px'> Kendaraan </th>").insertAfter($('.kolompembayaran'));
               $("<th class='kendaraan'> </th>").insertAfter($('.kolomtghpembayaran'));
 
               $("<td class='kendaraan'> <select class='form-control kendaraan kndraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan-> nopol}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
               }
-              else {
-                $('.kendaraan').hide();
-              }
-
+              
+            
               if(penerimaan == 'T'){
                  $('tr#trstock').hide();
                  valupdatestock = 'J';
@@ -1006,7 +1112,8 @@
                 $('td#trstock').show();
 
                 if(updatestock != '') {
-              var string = val.split(",");
+
+             
               $.ajax({
                 url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
                 type : "post",
@@ -1016,7 +1123,7 @@
               //    console.log(data);
                   arrItem = data;
                   console.log('arrItem' + arrItem);
-
+                  $('.loadingjenis').css('display', 'none');
                   if(arrItem.length > 0) {
                       $('.barang').empty();
                       $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
@@ -1042,7 +1149,7 @@
            }
             
      })
-    })
+    })*/
 
 
 
