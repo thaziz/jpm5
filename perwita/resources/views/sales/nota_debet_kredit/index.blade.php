@@ -56,7 +56,9 @@
                             <th>Tanggal</th>
                             <th>Customer</th>
 							              <th>Keterangan</th>
-                            <th>Nominal</th>
+                            <th>Jenis</th>
+                            <th>Debet</th>
+                            <th>Kredit</th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -100,17 +102,27 @@
             {data: 'cd_tanggal', name: 'cd_tanggal'},
             {data: 'nama', name: 'nama'},
             {data: 'cd_keterangan', name: 'cd_keterangan'},
-            {data: 'hasil', name: 'hasil'},
+            {data: 'cd_jenis', name: 'cd_jenis'},
+            {data: 'debet', name: 'debet'},
+            {data: 'kredit', name: 'kredit'},
             {data: 'tombol', name: 'tombol'}
         ],
         columnDefs: [
               {
-                 targets: 5,
+                 targets: 4,
                  className: 'center'
               },
               {
-                 targets: 4,
+                 targets: 5,
                  className: 'right'
+              },
+              {
+                 targets: 6,
+                 className: 'right'
+              },
+              {
+                 targets: 7,
+                 className: 'center'
               },
               
             ],

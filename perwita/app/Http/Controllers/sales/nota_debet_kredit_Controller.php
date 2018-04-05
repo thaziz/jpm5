@@ -55,14 +55,19 @@ class nota_debet_kredit_Controller extends Controller
                             })
                         ->addColumn('debet', function ($data) {
                               if ($data->cd_jenis == 'D') {
-                                $debet = $data->cd_dpp + $data->cd_ppn;
+                                $debet = $data->cd_dpp + $data->cd_ppn - $data->cd_ppn;
                               }else{
                                 $debet = 0;
                               }
                               return number_format($debet, 2, ",", ".");
                             })
                         ->addColumn('kredit', function ($data) {
-                             return number_format($data->cd_total, 2, ",", ".");
+                             if ($data->cd_jenis == 'K') {
+                                $kredit = $data->cd_dpp + $data->cd_ppn - $data->cd_ppn;
+                              }else{
+                                $kredit = 0;
+                              }
+                              return number_format($kredit, 2, ",", ".");
                             })
                         ->make(true);
     }
@@ -140,14 +145,14 @@ class nota_debet_kredit_Controller extends Controller
         $nota_debet  = DB::table('cn_dn_penjualan_d')
                         ->join('cn_dn_penjualan','cdd_id','=','cd_id')
                         ->where('cdd_nomor_invoice',$request->nomor)
-                        ->where('cd_nomor',$request->nomor_cn_dn)
+                        ->where('cd_nomor','!=',$request->nomor_cn_dn)
                         ->where('cd_jenis','D')
                         ->get();
 
         $nota_kredit = DB::table('cn_dn_penjualan_d')
                         ->join('cn_dn_penjualan','cdd_id','=','cd_id')
                         ->where('cdd_nomor_invoice',$request->nomor)
-                        ->where('cd_nomor',$request->nomor_cn_dn)
+                        ->where('cd_nomor','!=',$request->nomor_cn_dn)
                         ->where('cd_jenis','K')
                         ->get();
 

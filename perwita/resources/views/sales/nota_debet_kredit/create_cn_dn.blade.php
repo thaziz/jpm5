@@ -296,10 +296,20 @@
                                           </td>
                                         </tr>
                                         <tr>
+                                          <td>Total Sisa Piutang</td>
+                                          <td colspan="3">
+                                            <input type="text" readonly="" style="text-align: right" name="sisa_piutang" class="sisa_piutang form-control">
+                                          </td>
+                                        </tr>
+                                        <tr>
                                           <td colspan="4" >
                                             <div class="pull-right">
                                               <button onclick="append()" class="btn btn-default pull-right">
                                                 <i class="fa fa-plus"> Append</i>
+                                              </button>
+
+                                              <button style="margin-right: 10px" onclick="cancel()" class="btn btn-default pull-right ">
+                                                <i class="fa fa-close"> Cancel</i>
                                               </button>
                                             </div>
                                           </td>
@@ -546,12 +556,13 @@
 
       if (jenis_cd == 'K') {
         var hasil = dpp_akhir + ppn_akhir - pph_akhir;
+        $('.sisa_piutang').val(accounting.formatMoney(sisa_terbayar - hasil,"",2,'.',','))
       }else{
         var hasil = dpp_akhir + ppn_akhir - pph_akhir;
+        $('.sisa_piutang').val(accounting.formatMoney(sisa_terbayar + hasil,"",2,'.',','))
       }
 
-      $('.netto_akhir').val(accounting.formatMoney(hasil,"",2,'.',','));
-      $('.netto_akhir').val(accounting.formatMoney(hasil,"",2,'.',','));
+        $('.netto_akhir').val(accounting.formatMoney(hasil,"",2,'.',','));
     }
 
    
@@ -691,6 +702,7 @@
           $('.nota_debet').val(accounting.formatMoney(data.D,"",2,'.',','));
           $('.nota_kredit').val(accounting.formatMoney(data.K,"",2,'.',','));
           hitung();
+          hitung_jumlah();
           $('#modal_cd').modal('hide');
         }
       })
@@ -714,6 +726,15 @@
 
     var count = 1;
    function append() {
+    var sisa = $('.sisa_piutang').val();
+    sisa = sisa.replace(/[^0-9\-]+/g,"");
+    sisa = parseFloat(sisa);
+
+
+    if(sisa < 0){
+        toastr.warning('Sisa Piutang Tidak Boleh Minus');
+        return 1;
+      }
      var nomor_invoice    = $('.nomor_invoice').val(); 
      var dpp              = $('.dpp_akhir').val(); 
      var ppn_akhir        = $('.ppn_akhir').val(); 
@@ -816,6 +837,10 @@
    }
 
    function hapus(a) {
+     if ($('.nomor_invoice').val()!='') {
+      toastr.warning('Tidak Bisa Menghapus saat Dalam Tahap Edit/Create Data');
+      return 1;
+    }
      var par   = $(a).parents('tr');
      var arr   = $(par).find('.d_nomor').val();
      var index = array_simpan.indexOf(arr);
@@ -836,6 +861,9 @@
 
 
    function simpan(){
+
+
+
        
       swal({
         title: "Apakah anda yakin?",
@@ -856,7 +884,7 @@
 
           $.ajax({
           url:baseUrl + '/sales/nota_debet_kredit/simpan_cn_dn',
-          type:'get',
+          type:'post',
           data:$('.tabel_header1 :input').serialize()
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize(),
@@ -884,7 +912,10 @@
      });
     }
 
-   
+   function cancel() {
+      $('.riwayat input').val('');
+    
+   }
 
 </script>
 @endsection

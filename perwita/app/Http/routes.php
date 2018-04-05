@@ -998,10 +998,10 @@ Route::get('sales/nota_debet_kredit/tabel', 'sales\nota_debet_kredit_Controller@
 Route::get('sales/nota_debet_kredit/create', 'sales\nota_debet_kredit_Controller@create');
 Route::get('sales/nota_debet_kredit/cari_invoice', 'sales\nota_debet_kredit_Controller@cari_invoice');
 Route::get('sales/nota_debet_kredit/pilih_invoice', 'sales\nota_debet_kredit_Controller@pilih_invoice');
-Route::get('sales/nota_debet_kredit/simpan_cn_dn', 'sales\nota_debet_kredit_Controller@simpan_cn_dn');
+Route::post('sales/nota_debet_kredit/simpan_cn_dn', 'sales\nota_debet_kredit_Controller@simpan_cn_dn');
 Route::get('sales/nota_debet_kredit/nomor_cn_dn', 'sales\nota_debet_kredit_Controller@nomor_cn_dn');
 Route::get('sales/nota_debet_kredit/riwayat', 'sales\nota_debet_kredit_Controller@riwayat');
-Route::get('sales/nota_debet_kredit/update_cn_dn', 'sales\nota_debet_kredit_Controller@update_cn_dn');
+Route::post('sales/nota_debet_kredit/update_cn_dn', 'sales\nota_debet_kredit_Controller@update_cn_dn');
 Route::get('sales/nota_debet_kredit/hapus_cn_dn', 'sales\nota_debet_kredit_Controller@hapus_cn_dn');
 
 // end nota debet kredit
