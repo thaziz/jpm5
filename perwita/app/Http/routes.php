@@ -538,7 +538,7 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
 Route::get('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPurchaseController@reportfakturpajakmasukan');
 //==================================== LAPORAN PEMBELIAN BERAKIR ========================================//
 
-//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIE JAMI//
+//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJAMI//
 
 //_____$$$$_________$$$$
 //___$$$$$$$$_____$$$$$$$$

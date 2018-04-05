@@ -238,7 +238,7 @@
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
 
-           asw[i] =  $(asd[i][0]).val();
+           asw[i] =  $(asd[i][1]).val();
   
        }
 
@@ -251,7 +251,7 @@
 
       $.ajax({
         data: {a:asw,c:'download'},
-        url: baseUrl + '/reportinvoice/reportinvoice',
+        url: baseUrl + '/reportposting_bayar/reportposting_bayar',
         type: "post",
        success : function(data){
         var win = window.open();

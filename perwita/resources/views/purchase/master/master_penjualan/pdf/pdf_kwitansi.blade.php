@@ -17,30 +17,35 @@
   @endif --}}
            <table id="addColumn" width="100%" class="table table-bordered table-striped">
                     <thead>
-                        <tr> 
-                            <th> No</th>
-                            <th> No DO</th>
+                        <tr>
+                            <th> no.</th> 
+                            <th> No Kwitansi</th>
                             <th> Tanggal </th>
-                            <th> Customer</th>
-                            <th> Satuan </th>
-                            <th> Status </th>
-                            <th> Diskon </th>
-                            <th> Total </th>
+                            <th> Customer </th>
+                            <th> Ttl Bayar</th>
+                            <th> Uang M(-) </th>
+                            <th> Debet(+) </th>
+                            <th> Kredit(-) </th>
+                            <th> Netto </th>
+                            <th> bank </th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($dat1 as $index=>$val)
                         <tr>
                           <td>{{ $index }}</td>
-                          <td>{{ $dat1[$index][0]->nomor }}</td>
-                          <td>{{ $dat1[$index][0]->tanggal }}</td>
-                          <td>{{ $dat1[$index][0]->kode_customer }}</td>
-                          <td>{{ $dat1[$index][0]->kode_satuan }}</td>
-                          <td>{{ $dat1[$index][0]->status }}</td>
-                          <td align="right">{{ number_format( $dat1[$index][0]->diskon,0,',','.') }}</td>
-                          <td align="right">{{ number_format( $dat1[$index][0]->total_net,0,',','.') }}</td>
+                          <td>{{ $dat1[$index][0]->k_nomor }}</td>
+                          <td>{{ $dat1[$index][0]->k_tanggal }}</td>
+                          <td>{{ $dat1[$index][0]->nama }}</td>
+                          <td align="right">{{ number_format( $dat1[$index][0]->k_jumlah,0,',','.') }}</td>
+                          <td align="right">{{ number_format( $dat1[$index][0]->k_uang_muka,0,',','.') }}</td>
+                          <td align="right">{{ number_format( $dat1[$index][0]->k_debet,0,',','.') }}</td>
+                          <td align="right">{{ number_format( $dat1[$index][0]->k_kredit,0,',','.') }}</td>
+                          <td align="right">{{ number_format( $dat1[$index][0]->k_netto,0,',','.') }}</td>
+                          <td>{{ $dat1[$index][0]->k_nota_bank }}</td>
                         </tr>
                         @endforeach
+
                     </tbody>
 
                   </table>
