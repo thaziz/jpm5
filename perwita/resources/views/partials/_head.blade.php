@@ -43,4 +43,6 @@
     <link href="{{ asset('assets/css/dboard.css') }}" rel="stylesheet">
     <!-- AUtocomplete -->
     <link href="{{ asset('assets/vendors/autocomplete/autocomplete.css')}}" rel="stylesheet">
+    <!-- Touchspin -->
+    <link href="{{ asset('assets/vendors/touchspin/touchspin.css')}}" rel="stylesheet">
     

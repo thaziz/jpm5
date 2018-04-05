@@ -56,6 +56,8 @@
     <script src="{{ asset('assets/js/chosen/chosen.jquery.js') }}"></script>
     <!-- mask money -->
     <script src="{{ asset('assets/js/jquery.maskMoney.js') }}"></script>
+    <!-- touchspin -->
+    <script src="{{ asset('assets/vendors/touchspin/touchspin.js') }}"></script>
     {{-- Auto Complete --}}
     
     
