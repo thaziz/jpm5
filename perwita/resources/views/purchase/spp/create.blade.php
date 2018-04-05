@@ -919,7 +919,7 @@
 
    $(function(){
       $('.jenisitem').change(function(){
-      
+              val = $('.updatestock').val();
               $('.loadingjenis').css('display', 'block');
               var jnsitem = $(this).val();
               var variable = jnsitem.split(",");
@@ -940,6 +940,7 @@
               var updatestock = $('.updatestock').val();
 
               if(jenisitem == 'S' && updatestock == 'T'){
+                 $('.loadingjenis').css('display', 'block');
                     valupdatestock = val;
               $('.lokasigudang').empty();
               $('.header-table').find($('.kendaraan')).remove();
@@ -959,10 +960,8 @@
 
               $("<td class='kendaraan'> <select class='form-control kendaraan kndraan' name='kendaraan[]'>  @foreach($data['kendaraan'] as $kndraan) <option value={{$kndraan->id}}> {{$kndraan-> nopol}} - {{$kndraan->merk}} </option> @endforeach  </select> </td>").insertAfter($('.pembayaranken'))
               }
-              else {
-                $('.kendaraan').hide();
-              }
-
+              
+            
               if(penerimaan == 'T'){
                  $('tr#trstock').hide();
                  valupdatestock = 'J';
@@ -1007,17 +1006,17 @@
 
                 if(updatestock != '') {
 
+             
               $.ajax({
                 url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
                 type : "post",
                 data : {jenisitem,updatestock,penerimaan},
                 dataType : "json",
                 success : function(data) {
-                    $('.loadingjenis').css('display' , 'none');
               //    console.log(data);
                   arrItem = data;
                   console.log('arrItem' + arrItem);
-
+                  $('.loadingjenis').css('display', 'none');
                   if(arrItem.length > 0) {
                       $('.barang').empty();
                       $('.barang').append(" <option value=''>  -- Pilih Barang -- </option> ");
