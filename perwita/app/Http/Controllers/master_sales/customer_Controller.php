@@ -115,9 +115,15 @@ class customer_Controller extends Controller
             );
             $simpan = DB::table('customer')->insert($data);
         }elseif ($crud == 'E') {
+
+              $request->cabang;
+               
+              $kodekode = str_pad($request->id_cus, 5, '0', STR_PAD_LEFT);
+              $kodekode =  /*$kodecabang.*/'CS-'.$request->cabang.'/'.$kodekode;
+
              $data = array(
-                'id_cus'=>$idcuskode,
-                'kode' => strtoupper($request->ed_kode),
+                'id_cus'=>$request->id_cus,
+                'kode' => $kodekode,
                 'nama' => strtoupper($request->ed_nama),
                 'alamat' => strtoupper($request->ed_alamat),
                 'kota' => strtoupper($request->cb_kota),
