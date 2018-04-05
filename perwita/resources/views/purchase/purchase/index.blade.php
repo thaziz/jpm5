@@ -375,6 +375,7 @@
             alertSuccess(); 
 
             $('.labelkeuangan' + data).val(valsetuju);
+             location.reload();
         }
 
       })
@@ -447,14 +448,17 @@ function(){
             $('.data-spp').empty();
           if(data.po[0].po_setujufinance != null  ){
             $('.datakeuangan').show();
-              $('#buttongetid').attr('disabled' , true);
+            //  $('#buttongetid').attr('disabled' , true);
             dataHtml = "<b> Pihak Keuangan : </b>";
-            if(data.po[0].po_setujufinance == 'DISETUJUI'){
-              dataHtml +=  "<span class='label label-info'>"+data.po[0].po_setujufinance+"</span>";
-            }
-            else {
-               dataHtml += "<span class='label label-info'>"+data.po[0].po_setujufinance+"</span> &nbsp; <i class='fa fa-pencil' id='editkeuangan'> </i><br>";
-            }
+            
+              if(data.bt.length > 0){
+                 dataHtml += "<span class='label label-info'>"+data.po[0].po_setujufinance+"</span>";
+                 $('#buttongetid').attr('disabled' , true);
+              }
+              else {
+                dataHtml += "<span class='label label-info'>"+data.po[0].po_setujufinance+"</span> &nbsp; <button class='btn btn-xs btn-default'> <i class='fa fa-pencil' id='editkeuangan'> </i> </button<br>"; 
+
+              }
           
 
             if(data.po[0].po_setujufinance == null  ){
@@ -483,7 +487,7 @@ function(){
              $('#editkeuangan').click(function(){
                if(data.po[0].po_setujufinance == 'DITOLAK' || $idpbpo.length != 0){
              //   alert('if');
-                  $('#buttongetid').attr('disabled' , true);
+                //  $('#buttongetid').attr('disabled' , true);
                     $('.checkbox7').prop('disabled' , false);
                     $('.keterangankeuangan').attr('readonly', false);
                 }

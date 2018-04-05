@@ -1098,7 +1098,7 @@
 //                console.log('year' + year);
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
-                 nofaktur = 'FP' + month1 + year2 + '/' + cabang + '/' + a + '-' + response.idfaktur ;
+                 nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.idfaktur ;
                 $('.aslinofaktur').val(nofaktur);
                 $('.nofaktur').val(nofaktur);
                 $('.no_faktur').val(nofaktur);

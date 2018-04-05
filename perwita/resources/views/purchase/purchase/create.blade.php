@@ -56,7 +56,7 @@
 
 
                         <tr>
-                          <td> Cabang </td>
+                         
                           <td>  
                           @if(Session::get('cabang') != 000)
                           <select class="form-control disabled cabang" name="cabang">

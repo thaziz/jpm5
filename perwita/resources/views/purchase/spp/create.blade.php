@@ -1,4 +1,4 @@
- @extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 
@@ -284,7 +284,7 @@
         format: 'dd-MM-yyyy',
         endDate: 'today'
 
-    }).datepicker("setDate", "0");;
+    }).datepicker("setDate", "0");
     
     
     
