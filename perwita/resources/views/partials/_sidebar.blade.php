@@ -57,9 +57,9 @@
                             <a href="{{ url('setting/groupbaru')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Group Baru </a>
                         </li>
 
-                        <li class="sidebar {{Request::is('setting/daftarmenu') ? 'active' : '' || Request::is('setting/daftarmenu/*') ? 'active' : '' }} ">
+                       <!--  <li class="sidebar {{Request::is('setting/daftarmenu') ? 'active' : '' || Request::is('setting/daftarmenu/*') ? 'active' : '' }} ">
                             <a href="{{ url('setting/daftarmenu')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Daftar Menu </a>
-                        </li>
+                        </li> -->
 
                         <li>
                                 <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
