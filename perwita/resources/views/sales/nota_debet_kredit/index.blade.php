@@ -117,5 +117,8 @@
     });
     });
 
+    function edit(a){
+      window.location.href = "nota_debet_kredit/edit/"+a;
+    }
     </script>
 @endsection
