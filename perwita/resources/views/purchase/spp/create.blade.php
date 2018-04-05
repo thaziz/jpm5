@@ -1006,13 +1006,14 @@
                 $('td#trstock').show();
 
                 if(updatestock != '') {
-              var string = val.split(",");
+
               $.ajax({
                 url : baseUrl + '/suratpermintaanpembelian/ajax_jenisitem',
                 type : "post",
                 data : {jenisitem,updatestock,penerimaan},
                 dataType : "json",
                 success : function(data) {
+                    $('.loadingjenis').css('display' , 'none');
               //    console.log(data);
                   arrItem = data;
                   console.log('arrItem' + arrItem);
