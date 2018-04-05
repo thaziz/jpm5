@@ -118,7 +118,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Simpan</button>
+                <button class="ladda-button ladda-button-demo btn btn-primary"  data-style="zoom-in">Submit</button>
             </div>
         </div>
     </div>

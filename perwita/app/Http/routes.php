@@ -2397,3 +2397,4 @@ Route::get('mutasi_stock/mutasi_stock','StockMutController@index');
 
 // diskon penjualan
 Route::get('master_sales/diskonpenjualan' , 'DiskonPenjualanController@index');
+Route::get('master_sales/diskonpenjualan/getAkun' , 'DiskonPenjualanController@getAkun');

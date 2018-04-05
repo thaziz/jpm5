@@ -17,16 +17,36 @@ class DiskonPenjualanController extends Controller
             ->select('dc_cabang', 'nama', 'dc_diskon', 'm_name')
             ->get();
 
-        $cabang = DB::table('cabang')
-            ->select('kode', 'nama')
+        $status = Session::get('cabang');
+
+        $akun = DB::table('d_akun')
+            ->select('id_akun', 'nama_akun')
+            ->where('id_akun', 'like', '5298%')
             ->get();
 
-        return view('sales/diskon_penjualan/index', compact('data', 'cabang'));
+        if ($status == '000'){
+            $cabang = DB::table('cabang')
+                ->select('kode', 'nama')
+                ->get();
+
+        } else {
+            $cabang = DB::table('cabang')
+                ->select('kode', 'nama')
+                ->where('kode', '=', $status)
+                ->get();
+
+        }
+
+        return view('sales/diskon_penjualan/index', compact('data', 'cabang', 'akun'));
     }
 
     public function create()
     {
-
         return view('sales/diskon_penjualan/create');
+    }
+
+    public function getAkun(Request $request)
+    {
+
     }
 }
