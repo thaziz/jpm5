@@ -664,8 +664,8 @@
           $('.pph_awal').val(accounting.formatMoney(data.data.i_pajak_lain,"",2,'.',','));
           $('.netto_awal').val(accounting.formatMoney(data.data.i_total_tagihan,"",2,'.',','));
           $('.terbayar').val(accounting.formatMoney(data.data.i_total_tagihan - data.data.i_sisa_pelunasan,"",2,'.',','));
-          $('.nota_debet').val(accounting.formatMoney(data.data.D,"",2,'.',','));
-          $('.nota_kredit').val(accounting.formatMoney(data.data.K,"",2,'.',','));
+          $('.nota_debet').val(accounting.formatMoney(data.D,"",2,'.',','));
+          $('.nota_kredit').val(accounting.formatMoney(data.K,"",2,'.',','));
           hitung();
           $('#modal_cd').modal('hide');
         }
