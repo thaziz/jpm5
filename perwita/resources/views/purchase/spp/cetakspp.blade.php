@@ -101,7 +101,7 @@ div.bottom
              @endif
 			<td rowspan="2" width="10px">Satuan</td>
 			<td colspan="{{$data['count']}}" width="200">Harga untuk masing-masing suplier</td>
-			<td rowspan="2" width="65px">NO. PO</td>
+			<!-- <td rowspan="2" width="65px">NO. PO</td> -->
 			<td rowspan="2" width="170px">Keterangan</td>
 		</tr>
 		
@@ -115,8 +115,7 @@ div.bottom
           @endforeach
         </tr>
 
-		 @foreach($data['sppdt_barang'] as $idbarang=>$sppd)
-                 
+		 @foreach($data['sppdt_barang'] as $idbarang=>$sppd)                 
                       <tr class="brg{{$idbarang}} barang" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$sppd->sppd_kodeitem}}" >
                         <td>  {{$idbarang + 1}} </td>
                         <td> 
@@ -141,7 +140,7 @@ div.bottom
                        
                         	
                         		
-                        	 	<td>  </td>
+                        	 <!-- 	<td>  </td> -->
                         	
                         	
                         
@@ -154,122 +153,134 @@ div.bottom
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
+		</tr>
+
+		<tr>
+			<td class="blank"></td>
+			<td></td>
+			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>  </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
+			
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+	
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>   </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>  </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>  </td>                       
+                         @endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                <td>  </td>                       
+           		@endif
 			<td></td>
 			<td></td>
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td class="blank"></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td rowspan="3" class="tebal">Catatan : </td>
@@ -315,5 +326,92 @@ div.bottom
 	<div class="bottom" style="float: right;">JPM/FR/PURC/01-02-Januari 2017-00</div>
 
 </div>
+
+@section('page-script')
+<script type="text/javascript">
+		var baseUrl = window.location.origin;
+	    var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
+        var idspp = $('.idspp').serialize();
+       
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        console.log(idspp);
+        $.ajax({     
+          type :"get",
+          data : idspp,
+          url : url,
+          dataType:'json',
+          success : function(data){
+         
+              $('#hargatable').each(function(){    
+                      for(var n=0;n<data.sppdt_barang.length;n++){
+                       var kodebrg =  $('.brg'+ n).data("kodeitem");
+                       console.log('kodebrg');
+                       console.log(kodebrg);
+                          for(var i = 0 ; i <data.sppdt.length;i++){
+                            if(kodebrg == data.sppdt[i].sppd_kodeitem) {
+                               for(var j =0; j < data.spptb.length; j++){
+                                if(data.sppdt[i].sppd_supplier == data.spptb[j].spptb_supplier) {
+                                    console.log(data.sppdt[i].sppd_supplier + 'supplier');
+                                        if(data.sppdt[i].sppd_kendaraan != null) {
+                                          var row = $('td[data-supplier="'+ data.sppdt[i].sppd_supplier + '"]').index() + 6;
+                                        }
+                                        else {
+                                         var row = $('td[data-supplier="'+ data.sppdt[i].sppd_supplier + '"]').index() + 5; 
+                                        }
+                                        var column = $('td', this).eq(row);
+                                        var tampilharga = '<div class="form-group">' +
+                                                          '<label class="col-sm-1 control-label"> @ </label>' +
+                                                           '<label class="col-sm-1 control-label"> Rp </label>' + 
+                                                            '<div class="col-xs-6">';
+                                        
+                                        tampilharga += '<input type="text" class="form-control hrg harga'+i+'"  readonly="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'"> </div>';
+
+                                        tampilharga += '<input type="hidden" name="itembarang[]" value="'+arritem[n]+''+','+''+n+'" >';
+                                        
+                                        tampilharga += '<div class="tampilsupplier'+j+'"> <input type="hidden" name="idsuplier[]" value='+data.spptb[j].spptb_supplier+'> </div>';
+
+                                        tampilharga += '<div class="tampilsyaratkredit'+j+'"> <input type="hidden" name="syaratkredit[]" value='+data.sppdt[i].sppd_bayar+'> </div>';
+
+                                        tampilharga += '<input type="hidden" name="idsppd[]" value='+data.sppdt[i].sppd_idsppdetail+'>';
+                                      tampilharga +=  '<div class="disetujui'+i+'" data-id="'+i+'"> </div>  <div class="btlsetuju'+i+'" data-id="'+i+'" data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+'> </div> </div> </div> ';
+
+                                        $('tr.brg'+n).find("td").eq(row).html(tampilharga);  
+                                }
+
+                                }
+                              }  
+
+
+
+                            }
+                      }
+
+                                $('.hrg').each(function(){
+                                  $(this).change(function(){
+                                     var id = $(this).data('id');
+                                      harga = $(this).val();
+                                      numhar = Math.round(harga).toFixed(2);
+                                      $('.harga' + id).val(addCommas(numhar));
+                                  })
+                                })
+
+                 })
+                
+
+              
+             }
+
+        })
+ 
+     
+</script>
+@section('extra_scripts')
+
 </body>
+
+
 </html>
