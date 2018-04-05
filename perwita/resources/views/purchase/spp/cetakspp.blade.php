@@ -101,7 +101,7 @@ div.bottom
              @endif
 			<td rowspan="2" width="10px">Satuan</td>
 			<td colspan="{{$data['count']}}" width="200">Harga untuk masing-masing suplier</td>
-			<td rowspan="2" width="65px">NO. PO</td>
+			<!-- <td rowspan="2" width="65px">NO. PO</td> -->
 			<td rowspan="2" width="170px">Keterangan</td>
 		</tr>
 		
@@ -115,8 +115,7 @@ div.bottom
           @endforeach
         </tr>
 
-		 @foreach($data['sppdt_barang'] as $idbarang=>$sppd)
-                 
+		 @foreach($data['sppdt_barang'] as $idbarang=>$sppd)                 
                       <tr class="brg{{$idbarang}} barang" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$sppd->sppd_kodeitem}}" >
                         <td>  {{$idbarang + 1}} </td>
                         <td> 
@@ -141,7 +140,7 @@ div.bottom
                        
                         	
                         		
-                        	 	<td>  </td>
+                        	 <!-- 	<td>  </td> -->
                         	
                         	
                         
@@ -154,122 +153,156 @@ div.bottom
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
+			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
+			<td></td>
+		</tr>
+
+		<tr>
+			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>  </td>                       
+                         @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
+			
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+	
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>    </td>                       
+                         @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>   </td>                       
+                         @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                            <td>  </td>                       
+                         @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                <td>  </td>                       
+             @endif
 			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td class="blank"></td>
 			<td></td>
 			<td></td>
+			   @if($data['countkendaraan'] > 0) 
+                <td>  </td>                       
+           		@endif
 			<td></td>
+		 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-		</tr>
-		<tr>
-			<td class="blank"></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+		
 		</tr>
 		<tr>
 			<td rowspan="3" class="tebal">Catatan : </td>
@@ -315,5 +348,16 @@ div.bottom
 	<div class="bottom" style="float: right;">JPM/FR/PURC/01-02-Januari 2017-00</div>
 
 </div>
+
+@section('page-script')
+ <script type="text/javascript">
+      var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
+ 	alert(url);
+	      
+</script>
+@section('extra_scripts')
+
 </body>
+
+
 </html>
