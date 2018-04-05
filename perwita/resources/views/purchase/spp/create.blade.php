@@ -155,7 +155,7 @@
                                             <label></label>
                                             </td> -->
 
-                                        <td id="tdstock">  <select class="form-control updatestock" name="updatestock"  id="updatestock"> <option value="" selected=""> - Pilih - </option> <option value="Y"> Ya </option> <option value="T"> TIDAK </option> </select></td>
+                                        <td id="tdstock">  <select class="form-control updatestock" name="updatestock"  id="updatestock"> <option value="Y"> Ya </option> <option value="T"> TIDAK </option> </select></td>
                                       </tr>
 
 
@@ -288,7 +288,7 @@
       kuantitas = $('.kuantitas').val();
       harga = $('.hrga').val();
        cabang = $('.cabang').val();
-       alert(cabang);
+      // alert(cabang);
       if(kuantitas  == "undefined" && harga == "undefined" ){
          toastr.info('Harap Buat data SPP ');
         return false;
