@@ -132,7 +132,7 @@
                           &nbsp;
                       @endif
                           <div class="col-md-3">
-                          <a class="btn btn-sm btn-success" href="{{url('suratpermintaanpembelian/createPDF/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a>  </div> </div>
+                          <a class="btn btn-sm btn-success" href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a>  </div> </div>
                       </td>
                       
                     </tr>

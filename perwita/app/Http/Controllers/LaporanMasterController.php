@@ -436,7 +436,7 @@ class LaporanMasterController extends Controller
 		json_encode($dat);
         for ($i=1; $i <count($dat); $i++) { 
 		
-		$dat1[$i] = DB::table('kwitansi')->join('customer','customer.kode','=','kwitansi.k_kode_customer')->where('kb_id','=',$dat[$i])->get();
+		$dat1[$i] = DB::table('kwitansi')->join('customer','customer.kode','=','kwitansi.k_kode_customer')->where('k_nomor','=',$dat[$i])->get();
 			}
         // dd($dat1);
 		return view('purchase/master/master_penjualan/pdf/pdf_kwitansi',compact('dat1'));
@@ -482,7 +482,7 @@ class LaporanMasterController extends Controller
 
 		public function cndn(){
 		// return 'a';
-		$data = DB::table('cn_dn_penjualan')->join('invoice','invoice.i_nomor','=','cn_dn_penjualan.cd_invoice')->get();
+		$data = DB::table('cn_dn_penjualan')->join('cn_dn_penjualan_d','cn_dn_penjualan_d.cdd_nomor_invoice','=','cn_dn_penjualan.cd_nomor')->join('customer','cn_dn_penjualan.cd_customer','=','customer.kode')->get();
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
@@ -555,6 +555,7 @@ class LaporanMasterController extends Controller
 		// return 'a';
 		$data = $request->a;	
    		// dd($data[0]);
+   		// dd($request);
    		$dat = '';
 		for ($save=0; $save <count($data) ; $save++) { 
 			$dat = $dat.','.$data[$save];

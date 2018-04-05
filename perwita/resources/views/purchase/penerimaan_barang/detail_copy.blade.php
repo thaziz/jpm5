@@ -242,7 +242,7 @@
                         <th style="width:200px"> Supplier </th>
                         <td style="width:400px"> <h3> {{$data['po'][0]->nama_supplier}} </h3> </td>
                       
-                        <input type="hidden" name="acchutangsupplierpo" value="{{$data['po'][0]->acc_hutang}}">
+                        <input type="text" name="acchutangsupplierpo" value="{{$data['po'][0]->acc_hutang}}"> {{$data['po'][0]->acc_hutang}} 'test'
                         <input type="hidden" name="ppn_po" value="{{$data['po'][0]->po_ppn}}">
                         <input type="hidden" name="diskon_po" value="{{$data['po'][0]->po_diskon}}">
                         <input type="hidden" name="gudang" value="{{$data['header'][0]->bt_gudang}}">

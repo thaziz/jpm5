@@ -3,7 +3,12 @@
 @section('title', 'dashboard')
 
 @section('content')
-
+<style type="text/css">
+  .disabled {
+    pointer-events: none;
+    opacity: 1;
+  }
+</style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Stock Opname </h2>
@@ -18,7 +23,7 @@
                           <a> Warehouse Purchase</a>
                         </li>
                         <li class="active">
-                            <strong> Detail Stock Opname </strong>
+                            <strong> Create Stock Opname </strong>
                         </li>
 
                     </ol>
@@ -33,7 +38,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Detail Stock Gudang
+                    <h5> Membuat Laporan Stok Opname
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -51,115 +56,108 @@
                   <div class="box-body">
                       <div class="row">
                       <div class="col-xs-6">
-                           <table border="0">
+                           <table border="0" class="header table">
+                            <tr>
+                              <td>No Stock Opname</td>
+                              <td>
+                                <input type="text" readonly="" value="{{$pb}}" class="so form-control" name="so">
+                              </td>
+                            </tr>
+                            @if(Session::get('cabang') == '000')
+                            <tr>
+                              <td width="150px">
+                                Lokasi Cabang
+                              </td>
+                              <td>
+                                <input type="text" readonly="" value="{{Session::get('cabang')}} - {{$namacabang[0]->nama}}" 
+                                class="so form-control" name="so">
+                              </td>
+                            </tr>
+                            @endif
                           <tr>
                             <td width="150px">
                               Lokasi Gudang
                             </td>
                             <td>
-                              Spare Part Kendaraan
+                              <input type="text" readonly="" value="{{ $mastergudang[0]->mg_namagudang }}" 
+                               class="so form-control" name="so">
                             </td>
                           </tr>
-
-
-                          <tr>
-                            <td> &nbsp; </td>
-                          </tr>
-
                           <tr>
                             <td> Bulan </td>
-                            <td>  Januari  </td>
-                          </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
-                            </td>
-                          </tr>
-
-                          <tr>
-                            <td> Status </td>
-                            <td>  Sesuai</td>
-                            <td> &nbsp; </td>
-                            <td> <a class="btn btn-danger"  href={{url('stockopname/beritaacarastockopname')}}> Buat Berita Acara Stock Opname </a> </td>
-
+                            <td>   <div class="input-group date">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="{{Carbon\Carbon::parse($data[0]->so_bulan)->format('d-M-Y')}}" disabled readonly>
+                              </div>  </td>
                           </tr>
 
                           </table>
+
                       </div>
 
                     
                       </div>
 
                       <hr>
-
-                      <h4> Detail Stock Opname </h4>
                       
-                      <hr>
-
+                      <h4> Detail Barang </h4>
+                      <br>
+                       <!-- <a class="btn btn-success" id="tmbh_data_barang"> Tambah Data </a> -->
+                       <br>
                       <div class="table-responsive">
-                      <table class="table table-bordered table-striped tbl-penerimabarang" id="addColumn">
+                      <table class="table table-bordered  tbl-penerimabarang" id="addColumn">
                       <tr>
-                        <td rowspan="2">
+                        <th rowspan="2" style="text-align: center;">
                           No
-                        </td>
-                          <td rowspan="2">
+                        </th>
+                          <th rowspan="2" style="text-align: center;">
                             Nama Barang
-                          </td>
+                          </th>
 
-                          <td rowspan="2">
+                          <th rowspan="2" style="text-align: center;">
                            Satuan
-                          </td>
+                          </th>
 
-                          <td colspan="2">
+                          <th colspan="2" style="text-align: center;">
                           Stock Barang
-                          </td>
+                          </th>
                           
-                          <td colspan="2">
+                          <th colspan="2" style="text-align: center;">
                           Jumlah Selisih
-                          </td>
+                          </th>
 
-                          <td rowspan="2">
+                          <th rowspan="2" style="text-align: center;" >
                           Keterangan
-                          </td>
-
-                          
+                          </th>
                       </tr>
                       <tr>
-                        <td width="150px"> Fisik Barang </td>
-                        <td width="150px"> Sesuai KS </td>
-                        <td width="70px"> + </td>
-                        <td width="70px"> - </td>
+                        <th width="100" style="text-align: center;"> Stock sistem </th>
+                        <th width="100" style="text-align: center;"> Stock Real </th>
+                        <th width="150" style="text-align: center;">Status Barang</th>
+                        <th width="100px" style="text-align: center;">Jumlah Status</th>
                       </tr>
 
-                      <tbody>
+                      <tbody class="append">
+                        @foreach($detail as $index=>$val)
                           <tr>
-                          <td>
-                          Barang 1
-                          </td>
-                          <td>
-                            Pcs
-                          </td>
-                          <td>
-                            20 Pcs
-                          </td>
-                          <td>
-                            17 Pcs
-                          </td>
-                          <td>
-                            -
-                          </td>
-                          <td>
-                            3 Pcs
-                          </td>
-                          <td>
-                            -
-                          </td>
-                          <td>
-                            Barang hilang
-                          </td>
-
+                              <td align="center">
+                              {{$index+1}}
+                              </td><td align="left">
+                              {{$val->nama_masteritem}}
+                              </td><td align="left">
+                              {{$val->unitstock}}
+                              </td><td align="right">
+                              {{round($val->sod_jumlah_stock)}}
+                              </td><td align="right">
+                              {{round($val->sod_jumlah_real)}}
+                              </td><td align="left">
+                              {{$val->sod_status}}
+                              </td><td align="right">
+                              {{round($val->sod_jumlah_status)}}
+                              </td><td align="left">
+                              {{$val->sod_keterangan}}
+                              </td>
                           </tr>
+                        @endforeach 
                       </tbody>
                       </table>
                       </div>
@@ -176,14 +174,9 @@
 
                 <div class="box-footer">
                   <div class="pull-right">
-                  
-                    <a class="btn btn-warning" href={{url('purchase/stockopname')}}> Kembali </a>
-                   <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-success">
-         
-                    
-                    
-                    </div>
-                  </div><!-- /.box-footer -->
+					<input id="submit" name="submit" value="Apply Stock Opname" class="btn btn-info" type="submit">
+                  </div>
+                </div><!-- /.box-footer -->
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->
@@ -205,45 +198,170 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+  @if (Session::get('cabang') != '000')
+  $( document ).ready(function() {
+    cabang();
+  });
+  @endif
+
 
     $('.date').datepicker({
-        autoclose: true,
-        format: 'month'
+      format: "MM",
+
+      // minViewMode: "months"
     });
-    
-
-     $no = 0;
-    $('#tmbh_data_barang').click(function(){
-         $no++;
-     $("#addColumn").append('<tr id=item-'+$no+'> <td> <b>' + $no +' </b> </td>' + 
-      /* nama barang*/    '<td> <select class="form-control"> <option value=""> Oli </option> <option value=""> Solar </option>  </select> </td>' + 
-      /* satuan  */       '<td>  </td>' +
-      /* fisik barang  */  '<td> <input type="text" class="form-control"> </td>' +
-      /* sistem */    '<td>  </td>'  +
-      /* + */          '<td> <input type="text" class="form-control"> </td>' +
-      /* - */          '<td> <input type="text" class="form-control"> </td>' +
-                        '<td> <input type="text" class="form-control"> </td>' +
-                   '<td><a class="btn btn-danger removes-btn" data-id='+ $no +'> <i class="fa fa-trash"> </i>  </a> </td>' +
-                
-      '</tr>');+ 
 
 
+    var config1 = {
+               '.chosen-select'           : {},
+               '.chosen-select-deselect'  : {allow_single_deselect:true},
+               '.chosen-select-no-single' : {disable_search_threshold:10},
+               '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+               '.chosen-select-width5'     : {width:"100% !important"}
+             }
 
-
-        $(document).on('click','.removes-btn',function(){
-              var id = $(this).data('id');
-       //       alert(id);
-              var parent = $('#item-'+id);
-
-             parent.remove();
-          })
-
-
-    })
-
-    
-  
+    for (var selector in config1) {
+               $(selector).chosen(config1[selector]);
+              }  
    
+   function cabang(){
+    var val = $('.cabang_head').val();
+    
+    $.ajax({
+      url:baseUrl + '/stockopname/cari_sm/' + val,
+      success:function(response){
+        $('.append').html('');
+
+        var count = response.data;
+        console.log(count.length);
+        if (count.length != 0) {
+        for(var i = 0 ; i<count.length; i++){
+          var tot = i+1;
+          var append = '<tr><td align="center">'
+                       +tot
+                       +'<input type="hidden" name="id_stock[]" value="'+response.data[i].sg_id+'">'
+                       +'</td>'
+                       +'<td>'+response.data[i].nama_masteritem
+                       +'<input type="hidden" value="'+response.data[i].sg_item+'" name="sg_item[]">'
+                       +'</td>'
+                       +'<td align="center">'+response.data[i].unitstock+'</td>'
+                       +'<td><input type="text" readonly value="'+response.data[i].sg_qty+'" class="form-control fisik" name="stock[]"></td>'
+                       +'<td><input type="number" class="form-control real" onkeyup="status(this)" name="real[]"></td>'
+                       +'<td>'
+                       +'<select class="form-control status disabled" name="status[]">'
+                       +'<option value="lebih">Lebih</option>'
+                       +'<option value="kurang">Kurang</option>'
+                       +'<option value="sama">Sama</option>'
+                       +'</select>'
+                       +'</td>'
+                       +'<td><input type="number" readonly class="form-control val_status" name="val_status[]"></td>'
+                       +'<td><input type="text" class="form-control keterangan" name="keterangan[]"></td></tr>'
+          $('.append').append(append);
+        }
+      }else{
+         var append = '<tr><td align="center" colspan="12">Data Tidak Ada</tr>'
+          $('.append').append(append);
+      }
+      },
+      error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+   }
+
+function status(p){
+  var par = p.parentNode.parentNode;
+  var val = parseInt(p.value);
+  var ss  = parseInt($(par).find('.fisik').val());
+
+  if (val == ss) {
+    $(par).find('.status').val('sama');
+    $(par).find('.val_status').val('0');
+  } else if (val > ss) {
+    $(par).find('.status').val('lebih');
+
+    var temp = val - ss ;
+
+    $(par).find('.val_status').val(temp);
+  } else if (val < ss) {
+    $(par).find('.status').val('kurang');
+
+    var temp = ss - val ;
+    $(par).find('.val_status').val(temp);
+
+  }
+  // console.log(val);
+}
+
+$('.simpan').click(function(){
+  var val = $('.cabang_head').val();
+   swal({
+    title: "Apakah anda yakin?",
+    text: "Setujui Data!",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, setujui!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: true
+
+   
+  },
+  function(){
+       $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+  $.ajax({
+    url:baseUrl + '/stockopname/save_stock_opname',
+    data: $('.header :input').serialize()+'&'+$('#addColumn :input').serialize()+'&cabang='+val,
+    success:function(){
+      $('.confirm').click(function(){
+        console.log('asd');
+        $(this).addClass('disabled');
+      });
+
+      swal({
+            title: "Berhasil!",
+            type: 'success',
+            text: "Data berhasil disimpan",
+            timer: 900,
+            showConfirmButton: true
+            },function(){
+               location.href='../stockopname/stockopname';
+                   // location.href='../subcon';
+                     
+            });
+
+    },
+    error:function(){
+
+    }
+  });  
+ });
+});
+
+function getGudang(){
+  var val = $('.cabangselect').val();
+  $.ajax({
+      type: "GET",
+      data : {gudang: val},
+      url : baseUrl + "/pengeluaranbarang/createpengeluaranbarang/get_gudang",
+      dataType:'json',
+      success: function(data)
+      {   
+        var gudang = '<option value="" selected="" disabled="">-- Pilih Gudang --</option>';
+
+        $.each(data, function(i,n){
+              gudang = gudang + '<option value="'+n.mg_id+'">'+n.mg_namagudang+'</option>';
+        });
+
+        $('#selectgudang').html(gudang);
+      }
+  })
+}
 
 </script>
 @endsection
