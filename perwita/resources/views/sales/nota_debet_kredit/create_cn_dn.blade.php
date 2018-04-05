@@ -351,7 +351,25 @@
                 </div>
                 <div class="box-footer">
                   {{-- MODAL --}}
-                  <div id="histori" class="modal" >
+                  <div id="modal_cd" class="modal" >
+                      <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Invoice</h4>
+                            </div>
+                            <div class="modal-body cn_dn_modal">
+                                
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary" id="update_biaya">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                  </div>
+
+                  {{-- MODAL --}}
+                  <div id="riwayat" class="modal" >
                       <div class="modal-dialog modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -827,7 +845,7 @@
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        window.location.href='../sales/nota_debet_kredit';
+                        window.location.href='../nota_debet_kredit';
                 });
           },
           error:function(data){

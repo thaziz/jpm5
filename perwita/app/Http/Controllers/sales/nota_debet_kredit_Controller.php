@@ -14,22 +14,36 @@ class nota_debet_kredit_Controller extends Controller
 {
     public function table_data () {
         //$cabang = strtoupper($request->input('kode_cabang'));
-		$cabang = Auth::user()->kode_cabang;
-        $data = DB::table('cn_dn_penjualan')
-                  ->where('cd_kode_cabang',$cabang)
-                  ->get();
+    		$cabang = Auth::user()->kode_cabang;
+
+        if (Auth::user()->punyaAkses('CN DN Penjualan','all')) {
+          $data = DB::table('cn_dn_penjualan')
+                      ->join('customer','kode','=','cd_customer')
+                      ->get();
+
+        }else{
+          $data = DB::table('cn_dn_penjualan')
+                      ->join('customer','kode','=','cd_customer')
+                      ->where('cd_kode_cabang',$cabang)
+                      ->get();
+        }
+
+      
 
         $data = collect($data);
 
         return Datatables::of($data)
                         ->addColumn('tombol', function ($data) {
                              return    '<div class="btn-group">
-                                        <button type="button" onclick="hapus('.$data->cd_nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
                                         <button type="button" onclick="edit('.$data->cd_nomor.')" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
+                                        <button type="button" onclick="hapus('.$data->cd_nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
+                                       
                                         </div>';
                             })
+                        ->addColumn('hasil', function ($data) {
+                             return number_format($data->cd_total, 2, ",", ".");
+                            })
                         ->make(true);
-  
     }
 
     public function create()
