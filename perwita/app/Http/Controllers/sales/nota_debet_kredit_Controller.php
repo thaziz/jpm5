@@ -34,12 +34,22 @@ class nota_debet_kredit_Controller extends Controller
 
         return Datatables::of($data)
                         ->addColumn('tombol', function ($data) {
-                             return    '<div class="btn-group">
-                                        <button type="button" onclick="edit('.$data->cd_nomor.')" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
-                                        <button type="button" onclick="hapus('.$data->cd_nomor.')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></button>
-                                       
-                                        </div>';
-                            })
+                              $div_1  =   '<div class="btn-group">';
+                              if (Auth::user()->punyaAkses('CN DN Penjualan','ubah')) {
+                              $div_2  = '<button type="button" onclick="edit(\''.$data->cd_nomor.'\')" class="btn btn-xs btn-warning">'.
+                                        '<i class="fa fa-pencil"></i></button>';
+                              }else{
+                                $div_2 = '';
+                              }
+                              if (Auth::user()->punyaAkses('CN DN Penjualan','hapus')) {
+                              $div_3  = '<button type="button" onclick="hapus(\''.$data->cd_nomor.'\')" class="btn btn-xs btn-danger">'.
+                                        '<i class="fa fa-trash"></i></button>';
+                              }else{
+                                $div_3 = '';
+                              }
+                              $div_4   = '</div>';
+                              return $div_1 . $div_2 . $div_3 . $div_4;
+                            })  
                         ->addColumn('hasil', function ($data) {
                              return number_format($data->cd_total, 2, ",", ".");
                             })
@@ -130,15 +140,31 @@ class nota_debet_kredit_Controller extends Controller
 
         $jumlah_debet  = [];
         $jumlah_kredit = [];
-        for ($i=0; $i < count($nota_debet); $i++) { 
-          $jumlah_debet[$i] = $nota_debet[$i]->cdd_netto_akhir;
-        }
-        for ($i=0; $i < count($nota_kredit); $i++) { 
-          $jumlah_kredit[$i] = $nota_kredit[$i]->cdd_netto_akhir;
+
+        if ($nota_debet != null) {
+          for ($i=0; $i < count($nota_debet); $i++) { 
+            $temp = $nota_debet[$i]->cdd_dpp_akhir+$nota_debet[$i]->cdd_ppn_akhir-$nota_debet[$i]->cdd_pph_akhir;
+            array_push($jumlah_debet, $temp);
+          }
+            $jumlah_debet = array_sum($jumlah_debet);
+
+        }else{
+          $jumlah_debet = 0;
         }
 
-        $jumlah_debet = array_sum($jumlah_debet);
-        $jumlah_kredit = array_sum($jumlah_kredit);
+        if ($nota_kredit != null) {
+          for ($i=0; $i < count($nota_kredit); $i++) { 
+            $temp = $nota_kredit[$i]->cdd_dpp_akhir+ $nota_kredit[$i]->cdd_ppn_akhir- $nota_kredit[$i]->cdd_pph_akhir;
+            array_push($jumlah_kredit, $temp);
+          }
+            $jumlah_kredit = array_sum($jumlah_kredit);
+
+        }else{
+          $jumlah_kredit = 0;
+        }
+        
+        
+
 
         return response()->json(['data'=>$data,'D'=>$jumlah_debet,'K'=>$jumlah_kredit]);
     }
@@ -201,6 +227,9 @@ class nota_debet_kredit_Controller extends Controller
                             'cdd_ppn_awal'        => $cari_invoice->i_ppnrp,
                             'cdd_pph_awal'        => $cari_invoice->i_pajak_lain,
                             'cdd_netto_awal'      => $cari_invoice->i_total_tagihan,
+                            'cdd_jenis_ppn'       => $request->d_jenis_ppn[$i],
+                            'cdd_jenis_pajak'     => $request->d_pajak_lain[$i],
+                            'cdd_netto_awal'      => $cari_invoice->i_total_tagihan,
                             'cdd_dpp_akhir'       => filter_var($request->d_dpp[$i], FILTER_SANITIZE_NUMBER_INT)/100,
                             'cdd_ppn_akhir'       => filter_var($request->d_ppn[$i], FILTER_SANITIZE_NUMBER_INT)/100,
                             'cdd_pph_akhir'       => filter_var($request->d_pph[$i], FILTER_SANITIZE_NUMBER_INT)/100,
@@ -230,4 +259,58 @@ class nota_debet_kredit_Controller extends Controller
         $nota = 'CDN' . $request->cabang . $bulan . $tahun . $index;
         return response()->json(['nota'=>$nota]);
     }
+    public function riwayat(request $request)
+    {
+      $cd   =  DB::table('cn_dn_penjualan_d')
+                  ->join('cn_dn_penjualan','cd_id','=','cdd_id')
+                  ->join('invoice','i_nomor','=','cdd_nomor_invoice')
+                  ->where('cdd_nomor_invoice',$request->nomor)
+                  ->where('cd_nomor','!=',$request->id)
+                  ->get();
+
+      $kwitansi =  DB::table('kwitansi')
+                  ->join('kwitansi_d','k_id','=','kd_id')
+                  ->where('kd_nomor_invoice',$request->nomor)
+                  ->get();
+
+      return view('sales.nota_debet_kredit.riwayat',compact('cd','kwitansi'));
+    }
+    public function edit($id)
+    {
+      
+        $cabang = DB::select(DB::raw(" SELECT * FROM cabang"));
+
+        $customer = DB::table('customer')
+                            ->get();
+
+        $cabang = DB::table('cabang')
+                    ->get();
+        $pajak = DB::table('pajak')
+                    ->get();
+
+        $akun  = DB::table('d_akun')
+                   // ->where('kode_cabang',$cabang)
+                   ->get();
+
+        $pajak    = DB::table('pajak')
+                      ->get();
+
+        $akun_biaya    = DB::table('akun_biaya')
+                      ->get();
+
+        $data = DB::table('cn_dn_penjualan')
+                  ->where('cd_nomor',$id)
+                  ->get();
+
+        $data_dt = DB::table('cn_dn_penjualan_d')
+                  ->join('cn_dn_penjualan','cd_id','=','cdd_id')
+                  ->join('invoice','i_nomor','=','cdd_nomor_invoice')
+                  ->where('cd_nomor',$id)
+                  ->get();
+
+        return view('sales.nota_debet_kredit.edit_cn_dn', compact('customer','cabang','pajak','akun','pajak','akun_biaya','data','data_dt'));
+
+    }
+
+
 }

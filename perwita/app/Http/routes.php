@@ -993,12 +993,14 @@ Route::post('sales/faktur_pajak/save_data', 'sales\faktur_pajak_Controller@save_
 
 // nota debet kredit
 Route::get('sales/nota_debet_kredit', 'sales\nota_debet_kredit_Controller@index');
+Route::get('sales/nota_debet_kredit/edit/{id}', 'sales\nota_debet_kredit_Controller@edit');
 Route::get('sales/nota_debet_kredit/tabel', 'sales\nota_debet_kredit_Controller@table_data')->name('datatable_cn_dn');
 Route::get('sales/nota_debet_kredit/create', 'sales\nota_debet_kredit_Controller@create');
 Route::get('sales/nota_debet_kredit/cari_invoice', 'sales\nota_debet_kredit_Controller@cari_invoice');
 Route::get('sales/nota_debet_kredit/pilih_invoice', 'sales\nota_debet_kredit_Controller@pilih_invoice');
 Route::get('sales/nota_debet_kredit/simpan_cn_dn', 'sales\nota_debet_kredit_Controller@simpan_cn_dn');
 Route::get('sales/nota_debet_kredit/nomor_cn_dn', 'sales\nota_debet_kredit_Controller@nomor_cn_dn');
+Route::get('sales/nota_debet_kredit/riwayat', 'sales\nota_debet_kredit_Controller@riwayat');
 
 // end nota debet kredit
 

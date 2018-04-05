@@ -709,6 +709,41 @@
       })
     })
 
+    @foreach ($data_dt as $val)
+     var nomor_invoice = "{{$val->cdd_nomor_invoice}}";
+     var dpp           = "{{$val->cdd_dpp_akhir}}";
+
+     table_detail.row.add([
+
+          table_detail.row.add([
+
+          '<a onclick="histori(this)" class="d_nomor_text">'+accounting.formatMoney(data.data.K,"",2,'.',',')+'</a>'+
+          '<input type="hidden" class="d_nomor d_nomor_'+nomor_invoice+'" value="'+nomor_invoice+'" name="d_nomor[]">',
+
+          '<p class="d_dpp_text">'+dpp+'</p>'+'<input type="hidden" class="d_dpp" value="'+dpp+'" name="d_dpp[]">',
+
+          '<p class="d_ppn_text">'+ppn_akhir+'</p>'+
+          '<input type="hidden" value="'+pph_akhir+'" class="d_ppn" name="d_ppn[]">'+
+          '<input type="hidden" class="d_jenis_ppn" value="'+jenis_ppn_akhir+'" name="d_jenis_ppn[]">'+
+          '<input type="hidden" class="d_pajak_lain" value="'+pajak_lain_akhir+'" name="d_pajak_lain[]">',
+
+          '<p class="d_pph_text">'+pph_akhir+'</p>'+'<input type="hidden" class="d_pph" value="'+pph_akhir+'" name="d_pph[]">',
+
+          '<p class="d_netto_text">'+netto_akhir+'</p>'+
+          '<input type="hidden" class="d_netto" value="'+netto_akhir+'" name="d_netto[]">',
+
+          '<div class="btn-group ">'+
+          '<a  onclick="edit(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+          '<a  onclick="hapus(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+          '</div>',
+        ]).draw();
+        ]).draw();
+        array_simpan.push(nomor_invoice);
+        $('.jenis_td').addClass('disabled');
+        $('.akun_biaya_td').addClass('disabled');
+        $('.cabang_td').addClass('disabled');
+        $('.customer_td').addClass('disabled');
+   @endforeach
 
 
     var count = 1;
