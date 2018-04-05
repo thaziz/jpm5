@@ -2316,9 +2316,11 @@ $indexakun=0;
 	    	$totalHutang=$totalHutang+$dataJurnal['subtotal'];
 	}            
 
+
+	$acchutang = substr($request->acchutangsupplierpo, 0,-5);
                $akunHutang=master_akun::
                   select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$request->acchutangsupplierpo.'%')                                    
+                  ->where('id_akun','like', ''.$acchutang.'%')                                    
                   ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();  

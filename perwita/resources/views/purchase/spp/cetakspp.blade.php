@@ -157,7 +157,9 @@ div.bottom
                             <td>    </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 		</tr>
 
@@ -169,7 +171,9 @@ div.bottom
                             <td>    </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 		
 		</tr>
@@ -181,7 +185,9 @@ div.bottom
                             <td>  </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 		
 			
@@ -194,7 +200,9 @@ div.bottom
                             <td>    </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 		
 		</tr>
@@ -206,7 +214,9 @@ div.bottom
                             <td>    </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 			
 		</tr>
@@ -218,7 +228,9 @@ div.bottom
                             <td>    </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 	
 		</tr>
@@ -230,7 +242,9 @@ div.bottom
                             <td>    </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 		
 		</tr>
@@ -242,7 +256,9 @@ div.bottom
                             <td>   </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 		
 		</tr>
@@ -254,7 +270,9 @@ div.bottom
                             <td>  </td>                       
                          @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 			
 		</tr>
@@ -263,10 +281,12 @@ div.bottom
 			<td></td>
 			<td></td>
 			   @if($data['countkendaraan'] > 0) 
-                            <td>  </td>                       
-                         @endif
+                <td>  </td>                       
+             @endif
 			<td></td>
-			<td></td>
+			 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 		
 		</tr>
@@ -278,7 +298,9 @@ div.bottom
                 <td>  </td>                       
            		@endif
 			<td></td>
-			<td></td>
+		 @foreach($data['spptb'] as $index=>$spptb)
+                                <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier" data-tbsupplier="{{$spptb->spptb_supplier}}"> </td>
+                            @endforeach
 			<td></td>
 		
 		</tr>
@@ -328,86 +350,10 @@ div.bottom
 </div>
 
 @section('page-script')
-<script type="text/javascript">
-		var baseUrl = window.location.origin;
-	    var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
-        var idspp = $('.idspp').serialize();
-       
-        $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        console.log(idspp);
-        $.ajax({     
-          type :"get",
-          data : idspp,
-          url : url,
-          dataType:'json',
-          success : function(data){
-         
-              $('#hargatable').each(function(){    
-                      for(var n=0;n<data.sppdt_barang.length;n++){
-                       var kodebrg =  $('.brg'+ n).data("kodeitem");
-                       console.log('kodebrg');
-                       console.log(kodebrg);
-                          for(var i = 0 ; i <data.sppdt.length;i++){
-                            if(kodebrg == data.sppdt[i].sppd_kodeitem) {
-                               for(var j =0; j < data.spptb.length; j++){
-                                if(data.sppdt[i].sppd_supplier == data.spptb[j].spptb_supplier) {
-                                    console.log(data.sppdt[i].sppd_supplier + 'supplier');
-                                        if(data.sppdt[i].sppd_kendaraan != null) {
-                                          var row = $('td[data-supplier="'+ data.sppdt[i].sppd_supplier + '"]').index() + 6;
-                                        }
-                                        else {
-                                         var row = $('td[data-supplier="'+ data.sppdt[i].sppd_supplier + '"]').index() + 5; 
-                                        }
-                                        var column = $('td', this).eq(row);
-                                        var tampilharga = '<div class="form-group">' +
-                                                          '<label class="col-sm-1 control-label"> @ </label>' +
-                                                           '<label class="col-sm-1 control-label"> Rp </label>' + 
-                                                            '<div class="col-xs-6">';
-                                        
-                                        tampilharga += '<input type="text" class="form-control hrg harga'+i+'"  readonly="" data-id="'+i+'" name="harga[]" value="'+addCommas(data.sppdt[i].sppd_harga)+'" data-brg="'+n+'" id="hrga'+i+'" data-hrgsupplier="'+data.sppdt[i].sppd_supplier+'"> </div>';
-
-                                        tampilharga += '<input type="hidden" name="itembarang[]" value="'+arritem[n]+''+','+''+n+'" >';
-                                        
-                                        tampilharga += '<div class="tampilsupplier'+j+'"> <input type="hidden" name="idsuplier[]" value='+data.spptb[j].spptb_supplier+'> </div>';
-
-                                        tampilharga += '<div class="tampilsyaratkredit'+j+'"> <input type="hidden" name="syaratkredit[]" value='+data.sppdt[i].sppd_bayar+'> </div>';
-
-                                        tampilharga += '<input type="hidden" name="idsppd[]" value='+data.sppdt[i].sppd_idsppdetail+'>';
-                                      tampilharga +=  '<div class="disetujui'+i+'" data-id="'+i+'"> </div>  <div class="btlsetuju'+i+'" data-id="'+i+'" data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+'> </div> </div> </div> ';
-
-                                        $('tr.brg'+n).find("td").eq(row).html(tampilharga);  
-                                }
-
-                                }
-                              }  
-
-
-
-                            }
-                      }
-
-                                $('.hrg').each(function(){
-                                  $(this).change(function(){
-                                     var id = $(this).data('id');
-                                      harga = $(this).val();
-                                      numhar = Math.round(harga).toFixed(2);
-                                      $('.harga' + id).val(addCommas(numhar));
-                                  })
-                                })
-
-                 })
-                
-
-              
-             }
-
-        })
- 
-     
+ <script type="text/javascript">
+      var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
+ 	alert(url);
+	      
 </script>
 @section('extra_scripts')
 
