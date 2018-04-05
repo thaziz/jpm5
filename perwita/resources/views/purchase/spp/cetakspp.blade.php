@@ -351,8 +351,8 @@ div.bottom
 
 @section('page-script')
  <script type="text/javascript">
-      var url = baseUrl + '/konfirmasi_order/ajax_confirmorderdt';
- 	alert(url);
+    var baseurl = {!! json_encode(url('/')) !!}
+ 	alert(baseurl);
 	      
 </script>
 @section('extra_scripts')
