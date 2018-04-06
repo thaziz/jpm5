@@ -127,7 +127,7 @@
                             <td>
                               <select class="form-control chosen-select-width jenisbayar2" name="supplier">
                                 @foreach($data['supplier'] as $supplier)
-                                  <option value="{{$supplier->idsup}}"> {{$supplier->nama_supplier}} </option>
+                                  <option value="{{$supplier->idsup}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}} </option>
                                 @endforeach
                               </select>
                             </td>
@@ -160,7 +160,7 @@
                               DPP
                             </td>
                             <td style="text-align: right">
-                                <input type="text" class="form-control input-sm"> 
+                                <input type="text" class="form-control input-sm dpp"> 
                             </td>
                           </tr>
 
@@ -170,7 +170,7 @@
                               Jenis PPn
                             </td>
                             <td>
-                              <select class="form-control">
+                              <select class="form-control jenisppn">
                                 <option value="T"> Tanpa </option>
                                 <option value="E"> Exclude </option>
                                 <option value="I"> Input </option>
@@ -184,7 +184,7 @@
                               PPn
                             </td>
                             <td style="text-align: right">
-                              <input type="text" class="form-control input-sm">
+                              <input type="text" class="form-control input-sm hasilppn" name="hasilppn">
                             </td>
                           </tr>
 
@@ -193,13 +193,19 @@
                               PPH
                             </td>
                             <td style="text-align: right">
-                              <input type="text" class="form-control input-sm">
+                             <select class="form-control pph">
+                                @foreach($data['pph'] as $pph)
+                                  <option value="{{$pph->kode}}">
+                                    {{$pph->nama}}
+                                  </option>
+                                @endforeach
+                             </select>
                             </td>
                           </tr>
 
                           <tr>
                             <td> Nilai PPh </td>
-                            <td> </td>
+                            <td> <input type="" class="form-control nilaipph" name="nilaipph">  </td>
                           </tr>
 
                           <tr>
@@ -207,7 +213,7 @@
                               Netto
                             </td>
                             <td style="text-align: right">
-                              <input type="text" class="form-control input-sm">
+                              <input type="text" class="form-control input-sm netto" name="netto">
                             </td>
                           </tr>
                           </table>
@@ -552,6 +558,8 @@ jenisbayar2 = $('.jenisbayar2').val();
           success : function(response){
             $('#myModal5').modal('toggle');
             faktur = response.faktur
+
+            $('.jenis')
 
             for(i = 0; i < faktur.length; i++ ){
               $nomor++;

@@ -1941,6 +1941,10 @@
       masapajak = $('.masapajak_faktur').val(jatuhtempo_po);
       $('.tglfaktur_pajak').val(tanggal);
 
+      if(hasilppn == 0.00){
+        toastr.info("Hasil Nilai PPn anda 0 :)");
+        return false;
+      }
       if(inputppn == '' && hasilppn == ''){
         toastr.info("Anda belum mengisi data PPN :)");
         return false;
@@ -2561,13 +2565,15 @@
           }
           else if(jenisppn == 'T') {
             if(pph == '' ){
-             
-              
+              $('.inputppn_po').val('');
+              $('.hasilppn_po').val('');
               $('.nettohutang_po').val(dpp);
               $('.dpp_po').val(dpp);
             }
 
             else{
+               $('.inputppn_po').val('');
+              $('.hasilppn_po').val('');
                total = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)).toFixed(2);
               $('.nettohutang_po').val(addCommas(total));
               $('.dpp_po').val(dpp);
@@ -2673,6 +2679,8 @@
 
                       hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                       hsl = hasilnetto.toFixed(2);
+                       $('.inputppn_po').val('');
+                       $('.hasilppn_po').val('');
                       $('.nettohutang_po').val(addCommas(hsl));
                       $('.dpp_po').val(addCommas(numeric2));
                   
@@ -2712,6 +2720,8 @@
                     else {
                       hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                       hsl = hasilnetto.toFixed(2);
+                       $('.inputppn_po').val('');
+                      $('.hasilppn_po').val('');
                       $('.nettohutang_po').val(addCommas(hsl));
                       $('.dpp_po').val(addCommas(numeric2));
                     }
@@ -2748,6 +2758,8 @@
                  
                         hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
                         hsl = hasilnetto.toFixed(2);
+                         $('.inputppn_po').val('');
+                         $('.hasilppn_po').val('');
                         $('.nettohutang_po').val(addCommas(hsl));
                           $('.dpp_po').val(addCommas(numeric2));
                       }
@@ -2778,8 +2790,10 @@
 
                         hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                         hsl = hasilnetto.toFixed(2);
+                         $('.inputppn_po').val('');
+                         $('.hasilppn_po').val('');
                         $('.nettohutang_po').val(addCommas(hsl));
-                          $('.dpp_po').val(addCommas(numeric2));
+                        $('.dpp_po').val(addCommas(numeric2));
                     
                     }
                   }
@@ -2787,6 +2801,8 @@
                 else {
                     $('.nettohutang_po').val(addCommas(numeric2));
                     $('.dpp_po').val(addCommas(numeric2));
+                     $('.inputppn_po').val('');
+                     $('.hasilppn_po').val('');
                 }// END PPN
 
          
@@ -2888,6 +2904,8 @@
 
                       hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                       hsl = hasilnetto.toFixed(2);
+                       $('.inputppn_po').val('');
+                       $('.hasilppn_po').val('');
                       $('.nettohutang_po').val(addCommas(hsl));
                       $('.dpp_po').val(addCommas(numeric2));
                   
@@ -2927,6 +2945,8 @@
                     else {
                       hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                       hsl = hasilnetto.toFixed(2);
+                       $('.inputppn_po').val('');
+                       $('.hasilppn_po').val('');
                       $('.nettohutang_po').val(addCommas(hsl));
                       $('.dpp_po').val(addCommas(numeric2));
                     }
@@ -2965,6 +2985,8 @@
                         hsl = hasilnetto.toFixed(2);
                         $('.nettohutang_po').val(addCommas(hsl));
                           $('.dpp_po').val(addCommas(numeric2));
+                          $('.inputppn_po').val('');
+                         $('.hasilppn_po').val('');
                       }
                   }
                   else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
@@ -2994,14 +3016,17 @@
                         hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                         hsl = hasilnetto.toFixed(2);
                         $('.nettohutang_po').val(addCommas(hsl));
-                          $('.dpp_po').val(addCommas(numeric2));
-                    
+                        $('.dpp_po').val(addCommas(numeric2));
+                        $('.inputppn_po').val('');
+                        $('.hasilppn_po').val('');
                     }
                   }
                 } 
                 else {
                     $('.nettohutang_po').val(addCommas(numeric2));
                     $('.dpp_po').val(addCommas(numeric2));
+                    $('.inputppn_po').val('');
+                    $('.hasilppn_po').val('');
                 }// END PPN
 
          
@@ -3077,6 +3102,8 @@
               hsl = hasilnetto.toFixed(2);
               $('.nettohutang_po').val(addCommas(hsl));
               $('.dpp_po').val(addCommas(numeric2));
+              $('.inputppn_po').val('');
+              $('.hasilppn_po').val('');
           
           }
         }
@@ -3123,6 +3150,8 @@
               hsl = hasilnetto.toFixed(2);
               $('.nettohutang_po').val(addCommas(hsl));
               $('.dpp_po').val(addCommas(numeric2));
+              $('.inputppn_po').val('');
+              $('.hasilppn_po').val('');
             }
           }
         }
@@ -3154,7 +3183,9 @@
                 hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
                 hsl = hasilnetto.toFixed(2);
                 $('.nettohutang_po').val(addCommas(hsl));
-                  $('.dpp_po').val(addCommas(numeric2));
+                $('.dpp_po').val(addCommas(numeric2));
+                $('.inputppn_po').val('');
+                $('.hasilppn_po').val('');
               }
           }
           else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
@@ -3184,8 +3215,9 @@
                 hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
                 hsl = hasilnetto.toFixed(2);
                 $('.nettohutang_po').val(addCommas(hsl));
-                  $('.dpp_po').val(addCommas(numeric2));
-            
+                $('.dpp_po').val(addCommas(numeric2));
+                $('.inputppn_po').val('');
+                $('.hasilppn_po').val('');
             }
           }
         } 
@@ -3193,6 +3225,8 @@
        
           $('.nettohutang_po').val(addCommas(numeric2));
             $('.dpp_po').val(addCommas(numeric2));
+             $('.inputppn_po').val('');
+           $('.hasilppn_po').val('');
         }
     })  
   
