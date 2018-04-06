@@ -522,7 +522,25 @@ Route::get('presentase/update/{kode}/{nama}/{persen}', 'MasterPenerusController@
 
 //*** END PEMBELIAN
 
-
+//Laporan
+Route::get('reportspp/reportspp', 'LaporanPurchaseController@reportspp');
+Route::POST('reportspp/table', 'LaporanPurchaseController@tablespp')->name('tabel');
+Route::get('reportpo/reportpo', 'LaporanPurchaseController@reportpo');
+Route::post('reportspp/tablepo', 'LaporanPurchaseController@tablepo')->name('tabel1');
+Route::get('reportmasteritem/reportmasteritem', 'LaporanPurchaseController@reportmasteritem');
+Route::get('reportmastergroupitem/reportmastergroupitem', 'LaporanPurchaseController@reportmastergroupitem');
+Route::get('reportmasterdepartment/reportmasterdepartment', 'LaporanPurchaseController@reportmasterdepartment');
+Route::get('reportmastergudang/reportmastergudang', 'LaporanPurchaseController@reportmastergudang');
+Route::get('reportmastersupplier/reportmastersupplier', 'LaporanPurchaseController@reportmastersupplier');
+Route::get('reportfakturpembelian/reportfakturpembelian', 'LaporanPurchaseController@reportfakturpembelian');
+Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');
+Route::get('reportbayarbank/reportbayarbank', 'LaporanPurchaseController@reportbayarbank');
+Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
+Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
+Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
+Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
+Route::get('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPurchaseController@reportfakturpajakmasukan');
+Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
 // Route::get('laporan_master_penjualan/tarif_cabang_dokumen', 'LaporanMasterController@tarif_cabang_dokumen');
 // Route::get('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@tabledokumen')->name('dokumen');
 // Route::get('laporan_master_penjualan/tarif_cabang_koli', 'LaporanMasterController@tarif_cabang_koli');
@@ -534,100 +552,13 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
 
 //===================================== LAPORAN PEMBELIAN BERAWAL =======================================// 
 
-  //LAPORAN MASTER ITEM
-  Route::get('masteritem/masteritem/masteritem','LaporanPembelianController@lap_masteritem');
-  Route::post('reportmasteritem/reportmasteritem', 'LaporanPembelianController@report_masteritem');
-  //END OF
-
-  //LAPORAN MASTER GUDANG
-  Route::get('mastergudang/mastergudang/mastergudang','LaporanPembelianController@lap_mastergudang');
-  Route::post('reportmastergudang/reportmastergudang', 'LaporanPembelianController@report_mastergudang');
-  //END OF
-
-  //LAPORAN MASTER SUPPLIER
-  Route::get('mastersupplier/mastersupplier/mastersupplier','LaporanPembelianController@lap_mastersupplier');
-  Route::post('reportmastersupplier/reportmastersupplier', 'LaporanPembelianController@report_mastersupplier');
-  //END OF
-
-  //LAPORAN SPP
-  Route::get('spp/spp/spp', 'LaporanPembelianController@lap_spp');
-  Route::post('reportspp/reportspp', 'LaporanPembelianController@report_spp');
-  //END OF
-
-  //LAPORAN PURCHASEORDER
-  Route::get('masterpo/masterpo/masterpo','LaporanPembelianController@lap_po');
-  Route::post('reportpo/reportpo', 'LaporanPembelianController@report_po');
-  //END OF
-
-  //LAPORAN MASTER BAYAR BANK
-  Route::get('masterbayarbank/masterbayarbank/masterbayarbank','LaporanPembelianController@lap_masterbayarbank');
-  Route::post('reportbayarbank/reportbayarbank', 'LaporanPembelianController@report_bayarbank');
-  //END OF 
-
-  //LAPORAN MASTER KAS KELUAR
-  Route::get('masterkaskeluar/masterkaskeluar/masterkaskeluar','LaporanPembelianController@lap_masterkaskeluar');
-  Route::post('report_kaskeluar/report_kaskeluar', 'LaporanPembelianController@report_bayarkas');
-  //END OF
-
-  //LAPORAN FAKTUR PEMBELIAN
-  Route::get('masterfakturpembelian/masterfakturpembelian/masterfakturpembelian','LaporanPembelianController@lap_fakturpembelian');
-  Route::post('reportfakturpembelian/reportfakturpembelian', 'LaporanPembelianController@report_fakturpembelian');
-  //END OF
-
-  //LAPORAN KARTU HUTANG
-  Route::get('kartuhutang/kartuhutang', 'LaporanPembelianControlle@kartuhutang');
-  Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPembelianControlle@reportkartuhutang');
-  Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPembelianControlle@reportexcelkartuhutang');
-  //END OF
-
-  //LAPORAN MASTER GROUP ITEM
-  Route::get('reportmastergroupitem/reportmastergroupitem', 'LaporanPembelianControlle@reportmastergroupitem');
-  //END OF
-
-  //LAPORAN PAJAK MASUKAN
-  Route::get('fakturpajakmasukan/fakturpajakmasukan', 'LaporanPembelianController@lap_fakturpajakmasukan');
-  Route::post('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPembelianController@report_fakturpajakmasukan');
-  //END OF 
-
- 
 
 
 
-
-
-//================================    BELUM SELESAI    ========================================//
-Route::get('reportmasterdepartment/reportmasterdepartment', 'LaporanPurchaseController@reportmasterdepartment');
-Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
-Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
-Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
-Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
-Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
-Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
-//===========================================================================================================================
-
-
-
-
-
-
-
-
+Route::get('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPurchaseController@reportfakturpajakmasukan');
 //==================================== LAPORAN PEMBELIAN BERAKIR ========================================//
 
-
-
-
-
-
-
-
-
 //-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJAMI//
-
-
-
-
-
 
 //_____$$$$_________$$$$
 //___$$$$$$$$_____$$$$$$$$
@@ -641,14 +572,6 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 //__________$$$$$$$
 //____________$$$
 //_____________$
-
-
-
-
-
-
-
-
 
 //=================================== LAPORAN PENJUALAN BERAWAL =========================================//
 
@@ -1867,12 +1790,34 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   //laporan seluruhnya
   Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
   });
-
+  //LAPORAN PEMBELIAN
+  Route::get('masteritem/masteritem/masteritem','LaporanPurchaseController@masteritemmaster');
+  Route::get('mastergudang/mastergudang/mastergudang','LaporanPurchaseController@masteritemgudang');
+  Route::get('mastersupplier/mastersupplier/mastersupplier','LaporanPurchaseController@mastersupplier');
+  Route::get('masterbayarbank/masterbayarbank/masterbayarbank','LaporanPurchaseController@masterbayarbank');
+  Route::get('masterkaskeluar/masterkaskeluar/masterkaskeluar','LaporanPurchaseController@masterkaskeluar');
+  Route::get('masterfakturpembelian/masterfakturpembelian/masterfakturpembelian','LaporanPurchaseController@masterfakturpembelian');
+  Route::get('masterpurchaseorder/masterpurchaseorder/masterpurchaseorder','LaporanPurchaseController@masterpurchaseorder');
 
 
   Route::get('logout', 'mMemberController@logout');
 
 
+  //pembelian
+  Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');
+  Route::get('reportbayarbank/reportbayarbank', 'LaporanPurchaseController@reportbayarbank');
+  Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
+  Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
+  Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
+  Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
+
+  Route::get('fakturpajakmasukan/fakturpajakmasukan', 'LaporanPurchaseController@fakturpajakmasukan');
+  Route::get('kartuhutang/kartuhutang', 'LaporanPurchaseController@kartuhutang');
+
+  Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
+
+  Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
+  Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPurchaseController@reportexcelkartuhutang');
 
 
   Route::get('invoiceprint','sales\invoice_Controller@checkinvoice');
@@ -2268,28 +2213,34 @@ Route::get('sales/laporaninvoicepenjualanperitem','laporan_penjualan\laporanpenj
 //laporan seluruhnya
 Route::get('sales/laporan','laporanutamaController@seluruhlaporan');
 //LAPORAN PEMBELIAN
-
+Route::get('masteritem/masteritem/masteritem','LaporanPurchaseController@masteritemmaster');
+Route::get('mastergudang/mastergudang/mastergudang','LaporanPurchaseController@masteritemgudang');
+Route::get('mastersupplier/mastersupplier/mastersupplier','LaporanPurchaseController@mastersupplier');
+Route::get('masterbayarbank/masterbayarbank/masterbayarbank','LaporanPurchaseController@masterbayarbank');
+Route::get('masterkaskeluar/masterkaskeluar/masterkaskeluar','LaporanPurchaseController@masterkaskeluar');
+Route::get('masterfakturpembelian/masterfakturpembelian/masterfakturpembelian','LaporanPurchaseController@masterfakturpembelian');
+Route::get('masterpurchaseorder/masterpurchaseorder/masterpurchaseorder','LaporanPurchaseController@masterpurchaseorder');
 
 
 Route::get('logout', 'mMemberController@logout');
 
 
-// //pembelian
-// Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');
-// Route::get('reportbayarbank/reportbayarbank', 'LaporanPurchaseController@reportbayarbank');
-// Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
-// Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
-// Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
-// Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
+//pembelian
+Route::get('reportbayarkas/reportbayarkas', 'LaporanPurchaseController@reportbayarkas');
+Route::get('reportbayarbank/reportbayarbank', 'LaporanPurchaseController@reportbayarbank');
+Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
+Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
+Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
+Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
 
-// Route::get('fakturpajakmasukan/fakturpajakmasukan', 'LaporanPurchaseController@fakturpajakmasukan');
-// Route::get('kartuhutang/kartuhutang', 'LaporanPurchaseController@kartuhutang');
+Route::get('fakturpajakmasukan/fakturpajakmasukan', 'LaporanPurchaseController@fakturpajakmasukan');
+Route::get('kartuhutang/kartuhutang', 'LaporanPurchaseController@kartuhutang');
 
-// Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
+Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
 
-// Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
-// Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPurchaseController@reportexcelkartuhutang');
-// Route::get('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPurchaseController@reportfakturpajakmasukan');
+Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
+Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPurchaseController@reportexcelkartuhutang');
+Route::get('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPurchaseController@reportfakturpajakmasukan');
 
 
 Route::get('invoiceprint','sales\invoice_Controller@checkinvoice');

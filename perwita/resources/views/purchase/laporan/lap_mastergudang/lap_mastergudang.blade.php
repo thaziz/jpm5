@@ -55,7 +55,7 @@
                 </div><!-- /.box-header -->
                     
                 <div class="box-body">
-                  <h3 style="text-align: center"> PT JAWA PRATAMA MANDIRI  <br> JL. KARAH AGUNG NO 45 SURABAYA</h3>
+                 {{--  <h3 style="text-align: center"> PT JAWA PRATAMA MANDIRI  <br> JL. KARAH AGUNG NO 45 SURABAYA</h3> --}}
                     <table class="table table-bordered datatable table-striped">
                       <br>
                                                                                 
@@ -69,51 +69,42 @@
                           <th> Pilih Laporan : </th>
                           <td >
                             <select class="form-control" onchange="location = this.value;">
-                  <option selected="" disabled="">Pilih terlebih dahulu</option>
-                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
-                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
-                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
-                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
-                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
-                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
-                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
-                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                 </select>
+                            <option selected="" disabled="">Pilih terlebih dahulu</option>
+                            <option value="{{ url('/masteritem/masteritem/masteritem') }}" >Laporan Data Master Item</option>
+                            {{-- <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option> --}}
+                            <option value="{{ url('/mastergudang/mastergudang/mastergudang') }}" >Laporan Data Master Gudang</option>
+                            <option value="{{ url('/mastersupplier/mastersupplier/mastersupplier') }}" >Laporan Data Supplier</option>
+                            <option value="{{ url('/spp/spp/spp') }}" selected="" disabled="">Laporan Data Surat Permintaan Pembelian</option>
+                            <option value="{{ url('/masterpo/masterpo/masterpo') }}">Laporan Data Order</option>
+                            <option value="{{ url('/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                            <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                            <option value="{{ url('/masterkaskeluar/masterkaskeluar/masterkaskeluar') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                            <option value="{{ url('/masterbayarbank/masterbayarbank/masterbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                           </select>
                           </td>
                         </tr>
                     </table>
-                   
-                
-                
-
-                  <div class="row"> &nbsp; &nbsp; 
-                    <a class="btn btn-info" onclick="cetak()">
-                      <i class="fa fa-print" aria-hidden="true"></i> Cetak 
-                    </a>
-                  </div>
+                    <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                   <form id="anjay">
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
-                        <th width="10%">NO</th>
-                        <th width="20%">Kode Cabang</th>
-                        <th width="20%">Nama Cabang</th>
-                        <th width="50%">Alamat</th>
+                        <th width="10%"> No</th>
+                        <th width="20%"> Kode </th>
+                        <th width="20%"> Nama </th>
+                        <th width="50%"> Alamat</th>
                     </tr>
                     </thead>
                     <tbody>
-                      @for ($index = 0; $index < count($masterGudang["nama"]); $index++)
+                      @foreach ($data as $index => $e) 
                         <tr>
-                          <td align="center"><input type="hidden" id="a" name="a[]" value="{{ $masterGudang["id"][$index] }}">{{ $index + 1 }}</td>
-                          <td align="center"><input type="hidden" id="b" name="b[]" value="{{ $masterGudang["cabang"][$index] }}">{{ $masterGudang["cabang"][$index] }}</td>
-                          <td align="center"><input type="hidden" id="c" name="c[]" value="{{ $masterGudang["cabang"][$index] }}">{{ $masterGudang["nama"][$index] }}</td>
-                          <td align="center"><input type="hidden" id="d" name="d[]" value="{{ $masterGudang["alamat"][$index] }}">{{ $masterGudang["alamat"][$index] }}</td>
+                          <td align="center">{{ $index + 1 }}</td>
+                          <td align="center"><input type="hidden" value="{{ $e->mg_id }}">{{ $e->mg_id }}</td>
+                          <td align="center">{{ $e->mg_namagudang }}</td>
+                          <td align="center">{{ $e->mg_alamat }}</td>
                         </tr>
-                      @endfor
+                      @endforeach
                     </tbody>
-                   
                   </table>
                   </form>
                 </div><!-- /.box-body -->
@@ -146,8 +137,6 @@
     var a = d.getDate();
     var b = d.getSeconds();
     var c = d.getMilliseconds();
-    var tgl1 = '1/1/2018';
-    var tgl2 = '2/2/2018';
 
  var table = $('#addColumn').DataTable({
     paging:true,
@@ -181,26 +170,15 @@
     ).draw();    
 } 
 
-
-
-    $('.carispp').click(function(){
-      $no++;
-      $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
-    })
    function cetak(){
     
-      var a = $('#a').val();
-      var b = $('#b').val();
-      var c = $('#c').val();
-      var d = $('#d').val();
-
       var asw=[];
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
-           asw[i] =  $(asd[i][0]).val();
-       }
-       console.log(asw);
 
+           asw[i] =  $(asd[i][1]).val();
+  
+       }
 
       $.ajaxSetup({
         headers: {
@@ -208,21 +186,17 @@
         }
       });
 
-      $.ajax({
-        data: {asw:asw,download:'download'},
-        url: baseUrl + '/mastergudang/mastergudang/mastergudang',
-        type: "get",
-         complete : function(){
-        window.open(this.url,'_blank');
-        },    
-        success : function(data){
-            
-        }
 
+      $.ajax({
+        data: {a:asw,c:'download'}, 
+        url: baseUrl + '/reportmastergudang/reportmastergudang',
+        type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
+        }
       });
     }
-
-   
 
 </script>
 @endsection
