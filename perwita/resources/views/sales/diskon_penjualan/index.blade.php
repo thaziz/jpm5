@@ -350,9 +350,13 @@ function hapus(id){
           type: 'get',
           data: {id: id},
           success: function(response){
-            console.log(response);
             if (response.status == 'sukses') {
-              swal("Terhapus!", "Data sudah terhapus.", "success");
+              swal({
+                title: "Terhapus",
+                text: "Data telah dihapus",
+                showConfirmButton: false,
+                type: "success"
+            });
               location.reload();
             } else {
               swal({
