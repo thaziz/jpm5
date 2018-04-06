@@ -1897,6 +1897,9 @@
             /*==================== MASTER LAPORAN =========================*/
 
                     /*============== sub PENJUALAN LAPORAN========================*/
+                            /* LAPORAN MASTER BERSAMA */
+                            Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
+                            Request::is('laporanbersama/laporanbersama/*') ? 'active' : '' ||
                             /* lpoan cabang dokumen */
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : '' ||
@@ -2025,6 +2028,9 @@
                         {{
 
                               /*============== sub PENJUALAN LAPORAN========================*/
+                            /* LAPORAN MASTER BERSAMA */
+                            Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
+                            Request::is('laporanbersama/laporanbersama/*') ? 'active' : '' ||
                             /* lpoan cabang dokumen */
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : '' ||
@@ -2098,6 +2104,10 @@
                         ">
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Penjualan <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level" style="font-size:85%">
+                            <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
+                            Request::is('laporanbersama/laporanbersama/*') ? 'active' : ''}} " href="{{ url('laporanbersama/laporanbersama')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>master bersama</a>
+                                </li>
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_dokumen')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Dokumen</a>
@@ -2247,6 +2257,22 @@
                                     <a class="sidebar master-perusahaan {{Request::is('pengeluaranbarang/pengeluaranbarang/pengeluaranbarang') ? 'active' : '' || 
                             Request::is('pengeluaranbarang/pengeluaranbarang/pengeluaranbarang/*') ? 'active' : ''}}" href="{{ url('pengeluaranbarang/pengeluaranbarang/pengeluaranbarang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengeluaran Barang </a>
                                 </li>
+
+                                 <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('reportkartuhutang/reportkartuhutang') ? 'active' : '' || 
+                            Request::is('reportkartuhutang/reportkartuhutang/*') ? 'active' : ''}}" href="{{ url('reportkartuhutang/reportkartuhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Uang Muka </a>
+                                </li>
+
+                                 <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('reportkartuhutang/reportkartuhutang') ? 'active' : '' || 
+                            Request::is('reportkartuhutang/reportkartuhutang/*') ? 'active' : ''}}" href="{{ url('reportkartuhutang/reportkartuhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Voucher hutang </a>
+                                </li>
+
+                                 <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('reportkartuhutang/reportkartuhutang') ? 'active' : '' || 
+                            Request::is('reportkartuhutang/reportkartuhutang/*') ? 'active' : ''}}" href="{{ url('reportkartuhutang/reportkartuhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN/DN Pembelian </a>
+                                </li>
+
                                  <li >
                                     <a class="sidebar master-perusahaan {{Request::is('reportkartuhutang/reportkartuhutang') ? 'active' : '' || 
                             Request::is('reportkartuhutang/reportkartuhutang/*') ? 'active' : ''}}" href="{{ url('reportkartuhutang/reportkartuhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kartu hutang </a>

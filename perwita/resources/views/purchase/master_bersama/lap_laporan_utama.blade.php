@@ -51,23 +51,14 @@
                 	<label>Pilih Laporan : </label>
                           <select class="form-control" onchange="location = this.value;">
                  	          <option selected="" disabled="">Pilih terlebih dahulu</option>
-                            <option value="{{ url('/masteritem/masteritem/masteritem') }}" >Laporan Data Master Item</option>
-                            {{-- <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option> --}}
-                            <option value="{{ url('/mastergudang/mastergudang/mastergudang') }}" >Laporan Data Master Gudang</option>
-                            <option value="{{ url('/mastersupplier/mastersupplier/mastersupplier') }}" >Laporan Data Supplier</option>
-                            <option value="{{ url('/spp/spp/spp') }}">Laporan Data Surat Permintaan Pembelian</option>
-                            <option value="{{ url('/masterpo/masterpo/masterpo') }}">Laporan Data Order</option>
-                            <option value="{{ url('/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
-                            <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
-                            <option value="{{ url('/masterkaskeluar/masterkaskeluar/masterkaskeluar') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                            <option value="{{ url('/masterbayarbank/masterbayarbank/masterbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                            <option value="{{ url('/lappajak/lappajak') }}"> LAPORAN MASTER PAJAK </option>
+                            <option value="{{ url('/lapprovinsi/lapprovinsi') }}"> LAPORAN MASTER PROVINSI</option>
+                            <option value="{{ url('/lapkota/lapkota') }}"> LAPORAN MASTER KOTA </option>
+                            <option value="{{ url('/lapkecamatan/lapkecamatan') }}"> LAPORAN MASTER KECAMATAN </option>
+                            <option value="{{ url('/lapcabang/lapcabang') }}"> LAPORAN MASTER CABANG </option>
+                            <option value="{{ url('/laptipeangkutan/laptipeangkutan') }}"> LAPORAN MASTER TIPE ANGKUTAN </option>
+                            <option value="{{ url('/lapkendaraan/lakendaraan') }}"> LAPORAN MASTER KENDARAAN </option>
                            </select>
-                 	{{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
-                 	<option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>
-                 	<option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Faktur vs Pelunasan</option>
-                 	<option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Analisa Usia Hutang</option>
-                 	<option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Faktur Pajak Masukan</option>
-                 	<option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Uang Muka Pembelian</option> --}}
                  </select>
                 </div><!-- /.box-body -->
 

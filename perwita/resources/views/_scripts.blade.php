@@ -57,7 +57,14 @@
     <script src="{{ asset('assets/js/chosen/chosen.jquery.js') }}"></script>
     <!-- mask money -->
     <script src="{{ asset('assets/js/jquery.maskMoney.js') }}"></script>
-    
+
+    {{-- HIGHCHART --}}
+    <script src="{{ asset('assets/vendors/exporting.js') }}"></script>
+    <script src="{{ asset('assets/vendors/highcharts.js') }}"></script>
+    <script src="{{ asset('assets/vendors/highcharts-3d.js') }}"></script>
+    {{-- END OF --}}
+
+
     <script>
           $('[data-toggle="tooltip"]').tooltip({container : 'body'});
 //          if(screen.width > 768){

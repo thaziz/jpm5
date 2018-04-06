@@ -12,7 +12,7 @@
 </style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Laporan Pelunasan Hutang / Pembayaran Kas </h2>
+                    <h2> Laporan Master Cabang </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -24,7 +24,7 @@
                           <a> Laporan Purchase </a>
                         </li>
                         <li class="active">
-                            <strong> Pelunasan Hutang / Pembayaran Kas </strong>
+                            <strong> Master Cabang </strong>
                         </li>
 
                     </ol>
@@ -50,43 +50,41 @@
                 <div class="box-body">
   
                 <div class="col-xs-12">
-                <h3 style="text-align: center"> PT JAWA PRATAMA MANDIRI  <br> Register Pembayaran Hutang Cash (Master) <br>
-               {{--  Tanggal : 01 July 2017 s/d 31 July 2017 --}}
-                </h3> 
                   <table class="table table-bordered datatable table-striped">
                       <br>
                         <tr>                                                     
-                        <th> Nama Peminta: </th> 
+                        <th> kode: </th> 
                           <td> 
-                                <input id="peminta" type="text" class="form-control ">
+                                <input id="kode" type="text" class="form-control ">
                           </td>  
-                          <th> Status : </th> 
+                         <th> Nama : </th> 
                             <td> 
-                                <input id="status" type="text" class="form-control" >
+                                <input id="nama" type="text" class="form-control" >
                             </td>
                       </tr>
                       <tr>                                                     
-                        <th> Jenis Keluar : </th> 
-                          <td colspan="4"> 
-                                <input id="keluar" type="text" class="form-control ">
+                        <th> Alamat : </th> 
+                          <td> 
+                                <input id="alamat" type="text" class="form-control ">
+                          </td>
+                        <th> Kota : </th> 
+                          <td> 
+                                <input id="kota" type="text" class="form-control ">
                           </td>  
                       </tr>
                       <tr>
-                        <th> Dimulai : </th> 
-                        <td>
-                          <div class="input-group">
-                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                            <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
-                                date" onchange="tgl()">
-                          </div> 
-                        </td>  
-                        <th> Diakhiri : </th> 
-                        <td> 
-                          <div class="input-group">
-                              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                              <input type="text" class=" date form-control date_to date_range_filter
-                                  date" name="max" id="max" onchange="tgl()" >
-                          </div>
+                        <th> Pilih Laporan</th>
+                        <td colspan="4">
+                          <select class="form-control" onchange="location = this.value;">
+                            <option selected="" disabled="">Pilih terlebih dahulu</option>
+                            <option value="{{ url('/lappajak/lappajak') }}"> LAPORAN MASTER PAJAK </option>
+                            <option value="{{ url('/lapprovinsi/lapprovinsi') }}"> LAPORAN MASTER PROVINSI</option>
+                            <option value="{{ url('/lapkota/lapkota') }}"> LAPORAN MASTER KOTA </option>
+                            <option value="{{ url('/lapkecamatan/lapkecamatan') }}"> LAPORAN MASTER KECAMATAN </option>
+                            <option value="{{ url('/lapcabang/lapcabang') }}"> LAPORAN MASTER CABANG </option>
+                            <option value="{{ url('/laptipeangkutan/laptipeangkutan') }}"> LAPORAN MASTER TIPE ANGKUTAN </option>
+                            <option value="{{ url('/lapkendaraan/lakendaraan') }}"> LAPORAN MASTER KENDARAAN </option>
+                           </select>
                         </td>
                       </tr>
                       <br>
@@ -97,29 +95,25 @@
                   <table id="addColumn" class="table table_header table-bordered table-striped"> 
                     <thead>
                     <tr>
-                      <th  hidden="" style="text-align: center"> No.</th>                      
                       <th  style="text-align: center"> No.</th>                      
                       <th  style="text-align: center"> Kode</th>
-                      <th  style="text-align: center"> Tgl </th>
-                      <th  style="text-align: center"> keperluan </th>
-                      <th  style="text-align: center"> Peminta </th>
-                      <th  style="text-align: center"> Status</th>
-                      <th  style="text-align: center"> Jenis Keluar</th>
-                      <th  style="text-align: center"> Total </th>
+                      <th  style="text-align: center"> nama </th>
+                      <th  style="text-align: center"> alamat </th>
+                      <th  style="text-align: center"> telpon </th>
+                      <th  style="text-align: center"> fax</th>
+                      <th  style="text-align: center"> Kota</th>
                     </tr>
                     </thead>
                     <tbody>
-                      @foreach ($array as $index => $element)
+                      @foreach ($data as $index => $element)
                     <tr>
-                      <td hidden=""><input type="hidden" name="" value="{{ $element->pb_id }}">{{ $element->pb_id }} </td>
                       <td>{{ $index+1 }} </td>
-                      <td>{{ $element->pb_nota }}  </td>
-                      <td>{{ $element->pb_tgl }}  </td>
-                      <td>{{ $element->pb_keperluan }} </td>
-                      <td>{{ $element->pb_nama_peminta }} </td>
-                      <td>{{ $element->pb_status }} </td>
-                      <td>{{ $element->pb_jenis_keluar }} </td>
-                      <td>{{ number_format($element->pb_total,0,',','.') }} </td>
+                      <td><input type="hidden" name="" value="{{ $element->kode }}">{{ $element->kode }}  </td>
+                      <td>{{ $element->nama }}  </td>
+                      <td>{{ $element->alamat }} </td>
+                      <td>{{ $element->telpon }} </td>
+                      <td>{{ $element->fax }} </td>
+                      <td>{{ $element->kota }} </td>
                     </tr>
                     @endforeach
                     </tbody>
@@ -154,8 +148,6 @@
     var a = d.getDate();
     var b = d.getSeconds();
     var c = d.getMilliseconds();
-    var tgl1 = '1/1/2018';
-    var tgl2 = '2/2/2018';
 
   var table = $('#addColumn').DataTable({
             responsive: true,
@@ -170,8 +162,8 @@
                /* messageTop: 'Hasil pencarian dari Nama : ',*/
                 text: ' Excel',
                 className:'excel',
-                title:'LAPORAN PENERIMAAN BARANG',
-                filename:'PENERIMAANBRG-'+a+b+c,
+                title:'LAPORAN MASTER CABANG',
+                filename:'CABANG-'+a+b+c,
                 init: function(api, node, config) {
                 $(node).removeClass('btn-default'),
                 $(node).addClass('btn-warning'),
@@ -239,14 +231,17 @@
         });
           }
     
-    $('#peminta').on( 'keyup', function () {
-        table.column(5).search( this.value ).draw();
+    $('#kode').on( 'keyup', function () {
+        table.column(1).search( this.value ).draw();
       });  
-    $('#status').on( 'keyup', function () {
+    $('#nama').on( 'keyup', function () {
+         table.column(2).search( this.value ).draw();
+      });  
+    $('#alamat').on( 'keyup', function () {
+         table.column(3).search( this.value ).draw();
+      });
+    $('#kota').on( 'keyup', function () {
          table.column(6).search( this.value ).draw();
-      });  
-    $('#keluar').on( 'keyup', function () {
-         table.column(7).search( this.value ).draw();
       });
     
  
@@ -258,7 +253,7 @@
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
 
-           asw[i] =  $(asd[i][0]).val();
+           asw[i] =  $(asd[i][1]).val();
   
        }
 
@@ -271,7 +266,7 @@
 
       $.ajax({
         data: {a:asw,c:'download'},
-        url: baseUrl + '/reportpengeluaranbarang/reportpengeluaranbarang',
+        url: baseUrl + '/reportcabang/reportcabang',
          type: "post",
        success : function(data){
         var win = window.open();
