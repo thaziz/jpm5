@@ -151,7 +151,7 @@ class cndnController extends Controller
 
 		$data['cabang'] = DB::select("select * from cabang");
 		$data['supplier'] = DB::select("select * from supplier where active = 'AKTIF' and status = 'SETUJU'");
-		//dd($data);
+		$data['pph'] = DB::select("select * from pajak");
 		return view('purchase/cndn_pembelian/create' , compact('data'));
 	}
 

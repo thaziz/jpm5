@@ -16,6 +16,10 @@ use Auth;
 
 class LaporanMasterController extends Controller
 {
+														
+//❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤ LAPORAN OPERASIONAL PENJUALAN ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤
+								
+
 	// START OF DOKUMEN
 	public function tarif_cabang_dokumen(){
 
@@ -552,10 +556,7 @@ class LaporanMasterController extends Controller
 		return view('purchase/master/master_penjualan/laporan/lap_posting_bayar',compact('data','kota','kota1','ket','cus'));
 	}
 		public function reportposting_bayar(Request $request){
-		// return 'a';
 		$data = $request->a;	
-   		// dd($data[0]);
-   		// dd($request);
    		$dat = '';
 		for ($save=0; $save <count($data) ; $save++) { 
 			$dat = $dat.','.$data[$save];
@@ -567,13 +568,190 @@ class LaporanMasterController extends Controller
 		
 		$dat1[$i] = DB::table('posting_pembayaran')->get();
 			}
-        // dd($dat1);
 		return view('purchase/master/master_penjualan/pdf/pdf_posting_bayar',compact('dat1'));
 		
 	}
 
 	// END OF posting_bayar
 
-//========================== GARIS KERJAS MABRO ===================================//
+
+
+
+//❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤ END OFLAPORAN OPERASIONAL PENJUALAN ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤//
+
+
+
+
+
+//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+								//★★★★★★★★★★★★★★★ GARIS KERJAS MABRO ★★★★★★★★★★★★★★★★★★//
+//★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
+
+
+
+
+													
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
+
+							
+		//LAPORAN BERSAMA
+		public function lap_bersama(){
+			return view('purchase/master_bersama/lap_laporan_utama');
+		}
+		//END OF
+
+		//LAPORAN PAJAK 
+		public function lap_pajak(){
+			$data = DB::table('pajak')->get();
+			return view('purchase/master_bersama/lap_pajak/lap_pajak',compact('data'));
+		}	
+		public function report_pajak(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			$dat1[$i] = DB::table('pajak')->where('kode','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_bersama/lap_pajak/report_pajak',compact('dat1'));
+		}
+
+		//END OF 
+
+
+		//LAPORAN PROVINSI 
+		public function lap_provinsi(){
+			$data = DB::table('provinsi')->get();
+			return view('purchase/master_bersama/lap_provinsi/lap_provinsi',compact('data'));
+		}	
+		public function report_provinsi(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			$dat1[$i] = DB::table('provinsi')->where('id','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_bersama/lap_provinsi/report_provinsi',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN KOTA 
+		public function lap_kota(){
+			$array = DB::table('kota')->select('kota.*','provinsi.nama as prov')->join('provinsi','provinsi.id','=','kota.id_provinsi')->get();
+			return view('purchase/master_bersama/lap_kota/lap_kota',compact('array'));
+		}	
+		public function report_kota(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			$dat1[$i] = DB::table('kota')->select('kota.*','provinsi.nama as prov')->join('provinsi','provinsi.id','=','kota.id_provinsi')->where('kota.id','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_bersama/lap_kota/report_kota',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN KECAMATAN 
+		public function lap_kecamatan(){
+			$data = DB::table('kecamatan')->select('kota.nama as kota','kecamatan.*')->join('kota','kota.id','=','kecamatan.id_kota')->get();
+			return view('purchase/master_bersama/lap_kecamatan/lap_kecamatan',compact('data'));
+		}	
+		public function report_kecamatan(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			$dat1[$i] = DB::table('kecamatan')->select('kota.nama as kota','kecamatan.*')->join('kota','kota.id','=','kecamatan.id_kota')->where('kecamatan.id','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_bersama/lap_kecamatan/report_kecamatan',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN CABANG 
+		public function lap_cabang(){
+			$data = DB::table('cabang')->select('kota.nama as kota','cabang.*')->join('kota','kota.id','=','cabang.id_kota')->get();
+			return view('purchase/master_bersama/lap_cabang/lap_cabang',compact('data'));
+		}	
+		public function report_cabang(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			$dat1[$i] = DB::table('cabang')->select('kota.nama as kota','cabang.*')->join('kota','kota.id','=','cabang.id_kota')->where('cabang.kode','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_bersama/lap_cabang/report_cabang',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN TIPE ANGKUTAN 
+		public function lap_tipeangkutan(){
+			$data = DB::table('tipe_angkutan')->get();
+			return view('purchase/master_bersama/lap_tipeangkutan/lap_tipeangkutan',compact('data'));
+		}	
+		public function report_tipeangkutan(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('tipe_angkutan')->where('kode','=',$dat[$i])->get();
+			}
+		return view('purchase/master_bersama/lap_tipeangkutan/report_tipeangkutan',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN TIPE KENDARAAN 
+		public function lap_kendaraan(){
+			$data = DB::table('kendaraan')->get();
+			return view('purchase/master_bersama/lap_kendaraan/lap_kendaraan',compact('data'));
+		}	
+		public function report_kendaraan(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('kendaraan')->where('kode','=',$dat[$i])->get();
+			}
+		return view('purchase/master_bersama/lap_kendaraan/report_kendaraan',compact('dat1'));
+		}
+		//END OF
+
+
+
+								
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
+
+							
+
    }
 ?>
