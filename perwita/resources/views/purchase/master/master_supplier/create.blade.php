@@ -251,7 +251,7 @@
                           <tr>
                             <td class="pajak"> NO NPWP </td>
                             <td>
-                               <input type="number" class="input-sm form-control pajak isipajak" name="npwp">
+                               <input type="text" class="input-sm form-control pajak isipajak" name="npwp">
                             </td>
                           </tr>
 

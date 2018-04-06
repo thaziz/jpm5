@@ -3986,6 +3986,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				$fatkurpembelian->fp_pending_status = 'APPROVED';
 				$fatkurpembelian->fp_status = 'Released';
 				$fatkurpembelian->fp_edit = 'ALLOWED';
+				$fatkurpembelian->fp_sisapelunasan = $netto;
 
 				$fatkurpembelian->save();
 

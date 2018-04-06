@@ -2358,7 +2358,7 @@
           $('.keterangan2').attr('disabled' , true);
 
           $('.noinvoice').attr('disabled' , true);
-          $('.groupitem').attr('disabled' , true);
+     
 
 
         event.preventDefault();

@@ -150,7 +150,7 @@
                          
                           <tr >
                             <td> Bruto </td>
-                            <td>   <input type="text" class="form-control input-sm"> </td>
+                            <td>   <input type="text" class="form-control input-sm bruto" readonly="" style='text-align: right'> </td>
                             </td>
                           </tr>
 
@@ -170,7 +170,11 @@
                               Jenis PPn
                             </td>
                             <td>
-                              <select class="form-control"> <option value=""> </option> </select>
+                              <select class="form-control">
+                                <option value="T"> Tanpa </option>
+                                <option value="E"> Exclude </option>
+                                <option value="I"> Input </option>
+                              </select>
                             </td>
                           </tr>
                    
@@ -182,6 +186,20 @@
                             <td style="text-align: right">
                               <input type="text" class="form-control input-sm">
                             </td>
+                          </tr>
+
+                           <tr>
+                            <td>
+                              PPH
+                            </td>
+                            <td style="text-align: right">
+                              <input type="text" class="form-control input-sm">
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td> Nilai PPh </td>
+                            <td> </td>
                           </tr>
 
                           <tr>
@@ -196,22 +214,48 @@
                         </div>                    
                       </div>
 					
-					
-					 <div class="row"> 
+					             <br>
+					              <div class="row"> 
                           <div class="col-sm-6">
-                           <button class="btn btn-sm btn-primary  createmodalfaktur" id="createmodal" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data Faktur </i> </button>
+                          
                          </div>
                         </div>
-
+                        <br>
                         <div class="row">
-                         <div class="col-sm-6">
+                         
+
+                          <div class="col-sm-7">
+                              <button class="btn btn-sm btn-primary  createmodalfaktur" id="createmodal" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data Faktur </i> </button>
+
+                            <h3> Data Faktur </h3>
+                            <br>
+
+                            <div class="table-responsive">
+                              <table class="table table-bordered table-stripped" id="table-faktur" >
+                                <thead>
+                                <tr>
+                                  <th> No </th>
+                                  <th style="width:150px"> No Faktur </th>
+                                  <th style="width: 100px"> Jatuh Tempo </th>
+                                  <th> Netto Hutang </th>
+                                  <th> Sisa Hutang </th>
+                                  <th> Nilai CNDN </th>
+                                  <th> Aksi </th>
+                                </tr>
+                                </thead>
+                              </table>
+                            </div>
+                            </div>
+
+                             <div class="col-sm-5">                          
+                          <br>
                            <table class="table table-bordered table-striped">
                           <tr>
                             <td>
                              <b> Jumlah Biaya Faktur</b>
                             </td>
                             <td>
-                              <input type="text" class="form-control input-sm biayafaktur" readonly="">
+                              <input type="text" class="form-control input-sm biayafaktur" readonly="" style='text-align: right'>
                             </td>
                           </tr>
 
@@ -275,6 +319,7 @@
                                           <th style="width:120px"> No Faktur </th>
                                           <th style="width:120px"> Supplier </th>
                                            <th> Jatuh tempo </th>
+                                          
                                           <th> Netto Hutang </th>
                                           <th> Sisa Hutang </th>
                                           <th style="width:50px"> Aksi </th>      
@@ -294,27 +339,7 @@
                     </div>
                  </div> 
                   <!-- End Modal -->
-
-            
-                 
-                  <div class="col-sm-6">
-                  <h3> Data Faktur </h3>
-                  <br>
-
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-stripped" id="table-faktur" >
-                      <thead>
-                      <tr>
-                        <th> No </th>
-                        <th> No Faktur </th>
-                        <th> Jatuh Tempo </th>
-                        <th> Netto Hutang </th>
-                        <th> Sisa Hutang </th>
-                      </tr>
-                      </thead>
-                    </table>
-                  </div>
-                  </div>
+                
 
                   <div class="box-footer">
                   <div class="pull-right">
@@ -359,7 +384,7 @@
     }
 
 jenisbayar2 = $('.jenisbayar2').val();
-alert(jenisbayar2);
+//alert(jenisbayar2);
      $(document).ready( function () {
       var config2 = {
                    '.chosen-select'           : {},
@@ -462,6 +487,7 @@ alert(jenisbayar2);
                           "<td>"+table[i].fp_nofaktur+"</td>" + // no faktur
                           "<td>"+table[i].nama_supplier+"</td>" +
                           "<td>"+table[i].fp_jatuhtempo+"</td>" +
+                       
                           "<td style='text-align:right'>Rp "+addCommas(table[i].fp_netto)+"</td>" +
                           "<td  style='text-align:right'>Rp " +addCommas(table[i].fp_sisapelunasan)+"</td>" +
                          "<td>" +
@@ -499,7 +525,8 @@ alert(jenisbayar2);
       
     })
 
-
+     $nomor = 0;
+    
     $('#buttongetid').click(function(){
       var checked = $(".check:checked").map(function(){
         return this.id;
@@ -512,8 +539,10 @@ alert(jenisbayar2);
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
       });
-        $nomor = 0;
         $sisahutang = 0;
+         arrval = []; 
+        $nilaicndn = 0;
+       
         url = baseUrl + '/cndnpembelian/hslfaktur'; 
          $.ajax({    
           type :"get",
@@ -526,17 +555,68 @@ alert(jenisbayar2);
 
             for(i = 0; i < faktur.length; i++ ){
               $nomor++;
-              var row = "<tr>" +
+              var row = "<tr class='data"+i+"'>" +
                           "<td style='text-align:center'> "+$nomor+" </td>" +
                           "<td style='text-align:center'>"+faktur[i][0].fp_nofaktur+" </td>" +
                           "<td style='text-align:center'>"+faktur[i][0].fp_jatuhtempo+"</td>" +
                           "<td style='text-align:right'>"+addCommas(faktur[i][0].fp_netto)+"</td>" +
-                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(faktur[i][0].fp_sisapelunasan)+"' readonly></td>" +
+                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(faktur[i][0].fp_sisapelunasan)+"' readonly style='text-align:right'></td>" +
+                          "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right'> </td>" +
+                          "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+i+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
                         "</tr>";
               $('#table-faktur').append(row);
 
             }
 
+           $(document).on('click','.removes-btn',function(){
+                    var id = $(this).data('id');
+                    parentbayar = $('.data' + id);
+                    parentbayar.remove();
+                })
+
+
+         
+              $('.cndn').change(function(){
+                 val = $(this).val();     
+                 val = accounting.formatMoney(val, "", 2, ",",'.');
+                 $(this).val(val);
+                  $nilaicndn = 0;
+                 $('.cndn').each(function(){
+                    val = $(this).val(); 
+
+                    if(val == ''){
+
+                    }
+                    else {
+
+
+                      nilaicn = val.replace(/,/g, '');   
+                         
+                     $nilaicndn = parseFloat(parseFloat($nilaicndn) + parseFloat(nilaicn)).toFixed(2);
+                   //    alert($nilaicndn + 'nilaicndn');
+                     }
+                   
+                 })
+
+
+                   $('.bruto').val(addCommas($nilaicndn));
+                    bruto = $('.bruto').val();
+                    biayafaktur = $('.biayafaktur').val();
+                    nilaibruto = bruto.replace(/,/g,'');
+                    nilaibiaya = biayafaktur.replace(/,/g,'');
+                    alert(nilaibruto + 'nilaibruto');
+                    alert(nilaibiaya + 'nilaibiaya');
+                    if(parseFloat(nilaibruto) > parseFloat(nilaibiaya)){
+                      toastr.info('Nilai CN / DN tidak cukup pada jumlah faktur :)');
+                      $(this).val('');
+                      $('.bruto').val('');
+                    }
+                    else {
+
+                    }
+              })
+            
+       
 
             $('.sisahutang').each(function(){
               val = $(this).val();
@@ -557,7 +637,7 @@ alert(jenisbayar2);
             url : baseUrl + '/cndnpembelian/getnota',
             dataType:'json',
             success : function(data){
-              alert(comp);
+             // alert(comp);
                 var d = new Date();
                 
                 //tahun
@@ -592,7 +672,8 @@ alert(jenisbayar2);
             }
         })
 
-
+     
+      
 
 
     $('.jeniscndn').change(function(){
@@ -635,6 +716,9 @@ alert(jenisbayar2);
                 $('.notacndn').val(nospp);
                  nospp = $('.notacndn').val();
                
+            },
+            error : function(){
+              location.reload();
             }
         })
     
