@@ -19,7 +19,7 @@ class LaporanMasterController extends Controller
 	// START OF DOKUMEN
 	public function tarif_cabang_dokumen(){
 
-		/*return*/ $data = DB::select("SELECT tarif_cabang_dokumen.*,res.id as id_asal,res1.id as id_tujuan, res.asal,res1.tujuan 
+		$data = DB::select("SELECT tarif_cabang_dokumen.*,res.id as id_asal,res1.id as id_tujuan, res.asal,res1.tujuan 
 							from tarif_cabang_dokumen 
 							join (SELECT id, nama as asal from kota) as res
 							on id_kota_asal = res.id

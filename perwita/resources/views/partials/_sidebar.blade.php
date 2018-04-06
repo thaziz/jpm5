@@ -2271,6 +2271,14 @@
                                     <a class="sidebar master-perusahaan {{Request::is('reportbayarbank/reportbayarbank') ? 'active' : '' || 
                             Request::is('reportbayarbank/reportbayarbank/*') ? 'active' : ''}}" href="{{ url('reportbayarbank/reportbayarbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Pelunasan Hutang / Bayar Bank </a>
                                 </li> --}}
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('fakturpajakmasukan/fakturpajakmasukan') ? 'active' : '' || 
+                            Request::is('fakturpajakmasukan/fakturpajakmasukan/*') ? 'active' : ''}}" href="{{ url('fakturpajakmasukan/fakturpajakmasukan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pajak Masukan </a>
+                                </li>
+                                 <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('reportkartuhutang/reportkartuhutang') ? 'active' : '' || 
+                            Request::is('reportkartuhutang/reportkartuhutang/*') ? 'active' : ''}}" href="{{ url('reportkartuhutang/reportkartuhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kartu hutang </a>
+                                </li>
 
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('reportkartuhutang/reportkartuhutang') ? 'active' : '' || 
@@ -2291,10 +2299,7 @@
                             Request::is('reportanalisausiahutang/reportanalisausiahutang/*') ? 'active' : ''}}" href="{{ url('reportanalisausiahutang/reportanalisausiahutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Analisa Usia Hutang </a>
                                 </li>
 
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('reportfakturpajakmasukan/reportfakturpajakmasukan') ? 'active' : '' || 
-                            Request::is('reportfakturpajakmasukan/reportfakturpajakmasukan/*') ? 'active' : ''}}" href="{{ url('reportfakturpajakmasukan/reportfakturpajakmasukan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Register Faktur Pajak Masukan </a>
-                                </li>
+                                
 
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('historisuangmukapembelian/historisuangmukapembelian') ? 'active' : '' || 

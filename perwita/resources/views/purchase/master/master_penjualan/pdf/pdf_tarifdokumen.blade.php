@@ -40,7 +40,7 @@
                         <td>{{ $dat1[$index][0]->waktu}} (hari)</td>
                         <td>{{ $dat1[$index][0]->acc_pen}}</td>
                         <td>{{ $dat1[$index][0]->csf_pen}}</td>
-                        <td>{{"Rp " . number_format($dat1[$index][0]->tarif,2,",",".")}}</td>
+                        <td>{{"Rp " . number_format($dat1[$index][0]->harga,2,",",".")}}</td>
                       </tr>
                       @endforeach
                     </tbody>       

@@ -100,6 +100,7 @@
                                         <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
+                                        <option value="U"> UANG MUKA </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                     </select>
@@ -174,9 +175,9 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Total Bayar</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control total_jumlah_bayar_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
+                                    <input type="text"  class="form-control total_jumlah_bayar_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
 
-                                    <input type="hidden" name="jumlah_bayar" class="form-control total_jumlah_bayar" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
+                                    <input type="hidden" name="jumlah_bayar" class="form-control total_jumlah_bayar" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                 </td>
                               
                             </tr>
@@ -197,8 +198,8 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Netto</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control ed_netto_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
-                                    <input type="hidden" name="ed_netto" class="form-control ed_netto" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text"  class="form-control ed_netto_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                    <input type="hidden" name="ed_netto" class="form-control ed_netto" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                 </td>
                             </tr>
                     </table>
@@ -220,7 +221,7 @@
                     <div class="tabs-container tab_detail">
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" class="tab-1" href="#tab-1"> Detail Kwitansi</a></li>
-                            <li class=""><a data-toggle="tab" class="tab-2" href="#tab-2">Detail Biaya</a></li>
+                            {{-- <li class=""><a data-toggle="tab" class="tab-2" href="#tab-2">Detail Biaya</a></li> --}}
                             <li class=""><a data-toggle="tab" class="tab-3" href="#tab-3">Detail Uang Muka</a></li>
                         </ul>
                         <div class="tab-content ">
@@ -469,185 +470,160 @@
                 </div>
                   <!-- modal -->
 
-                <!-- modal biaya -->
-                <div id="modal_biaya" class="modal" >
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Edit Insert Biaya</h4>
-                            </div>
-                            <div class="modal-body">
-                                <table class="table table-bordered table-striped">
-                                    <tr>
-                                        <td class="kecil">Nomor</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" name="" class="m_sequence form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode Biaya</td>
-                                        <td colspan="2" class="akun_lain_td">
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">DEBET/KREDIT</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" class="m_debet form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode ACC</td>
-                                        <td colspan="2" >
-                                            <input type="text" readonly="" class="m_acc form-control input-sm">
-                                            <input type="hidden" readonly="" class="m_nama_akun form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode CSF</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" class="m_csf form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Jumlah</td>
-                                        <td colspan="2">
-                                            <input style="text-align: right" type="text"  class="m_jumlah form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Keterangan</td>
-                                        <td colspan="2">
-                                            <input type="text"  class="m_keterangan form-control input-sm">
-                                        </td>
-                                    </tr>
-                                </table>
-
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" id="btnsave3">Save changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{-- modal2 --}}
-                <div id="modal_edit_biaya" class="modal" >
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Edit Insert Biaya</h4>
-                            </div>
-                            <div class="modal-body">
-                                <table class="table table-bordered table-striped">
-                                    <tr>
-                                        <td class="kecil">Nomor</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" name="" class="me_nomor form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode Biaya</td>
-                                        <td colspan="2" class="akun_lain_td">
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">DEBET/KREDIT</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" class="me_debet form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode ACC</td>
-                                        <td colspan="2" >
-                                            <input type="text" readonly="" class="me_acc form-control input-sm">
-                                            <input type="hidden" readonly="" class="me_nama_akun form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode CSF</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" class="me_csf form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Jumlah</td>
-                                        <td colspan="2">
-                                            <input style="text-align: right" type="text"  class="me_jumlah form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Keterangan</td>
-                                        <td colspan="2">
-                                            <input type="text"  class="me_keterangan form-control input-sm">
-                                        </td>
-                                    </tr>
-                                </table>
-
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" id="update_biaya">Save changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 
                   {{-- modal um --}}
                 <div id="modal_um" class="modal" >
-                    <div class="modal-dialog modal-lg">
+                    <div class="modal-dialog modal-lg" style="min-width: 1200px;max-width: 1200px">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title">Edit Insert Uang Muka</h4>
                             </div>
                             <div class="modal-body">
-                                <table style="font-size: 12px;"  class="tabel_um table table-bordered table-striped">
-                                    <tr>
-                                        <td>Seq</td>
-                                        <td colspan="2">
-                                            <input type="hidden" readonly="" name="" class="me_um_flag form-control input-sm">
-                                            <input type="text"  readonly="" class="seq_um form-control" name="" value="1">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>No. UM</td>
-                                        <td>
-                                            <input type="text" readonly="" class=" no_um form-control">
-                                        </td>
-                                        <td width="100px" align="center">
-                                            <button type="button" class="btn cari_um btn-primary">
-                                                <i class="fa fa-search"> Cari</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Status Uang Muka</td>
-                                        <td colspan="2">
-                                           <input type="text" style="text-align: right;" readonly="" class="status_um form-control" name="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nominal UM</td>
-                                        <td colspan="2">
-                                            <input type="text" style="text-align: right;" readonly="" class="total_um_text form-control" name="">
-                                            <input type="hidden" style="text-align: right;" readonly="" class="total_um form-control" name="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jumlah Bayar</td>
-                                        <td colspan="2">
-                                            <input type="text" style="text-align: right;" class="jumlah_bayar_um form-control" value="0" name="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Keterangan</td>
-                                        <td colspan="2">
-                                            <input type="text" class="Keterangan_um form-control" name="">
-                                        </td>
-                                    </tr>
-                                </table>
+                                <form class="form-horizontal">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <table class="table table-bordered table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="padding-top: 0.4cm">No Invoice</td>
+                                                        <td colspan="3">
+                                                            <input type="text" class="form-control ed_nomor_invoice" name="ed_nomor_invoice"  readonly="readonly">
+                                                            <input type="hidden" name="ed_id" readonly="readonly" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jumlah Invoice</td>
+                                                        <td colspan="3">
+                                                            <input type="text" class="form-control ed_jumlah_tagihan" name="ed_jumlah_tagihan"  style="text-align:right" readonly="readonly" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control jumlah_tagihan">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>    
+                                                        <td style="padding-top: 0.4cm">Terbayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="readonly" class="form-control ed_terbayar" name="ed_terbayar" style="text-align:right" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control terbayar">
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                    <tr>
+                                                        <td style="padding-top: 0.4cm">Nota Debet</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="readonly" class="form-control ed_nota_debet" style="text-align:right">
+                                                            <input type="hidden" readonly="readonly" class="form-control nota_debet">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-top: 0.4cm">Nota Kredit</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="readonly" class="form-control ed_nota_kredit" name="ed_nota_kredit" style="text-align:right" value="0" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control nota_kredit">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sisa Terbayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text" class="form-control ed_sisa_terbayar" name="ed_sisa_terbayar" id="ed_sisa_terbayar" readonly="readonly" style="text-align:right" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control sisa_terbayar">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jumlah Bayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text"  class="form-control ed_jumlah_bayar" name="ed_jumlah_bayar" readonly="readonly" style="text-align:right" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
+                                                        </td>
+                                                    </tr>
+                                         
+                                                    <tr>
+                                                        <td>Akun Biaya</td>
+                                                        <td style="max-width: 200px" class="">
+                                                            <select onchange="akun_biaya1()" class="form-control akun_biaya" id="akun_biaya">
+                                                                <option value="0" data-jenis ="D" data-biaya ="0">Non-Biaya</option>
+                                                                @foreach($akun_biaya as $val)
+                                                                <option value="{{$val->kode}}" data-biaya ="{{$val->acc_biaya}}" data-jenis ="{{$val->jenis}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control" value="0">
+                                                            <input type="hidden" class="jenis_biaya " value="D">
+                                                            <input type="hidden" class="akun_acc_biaya" value="0">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Bayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="" style="text-align:right" class="total_bayar form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sisa</td>
+                                                        <td colspan="3">
+                                                            <input type="text" class="form-control ed_total"  readonly="readonly" style="text-align:right" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control total">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <h3>Riwayat</h3>
+                                            <div class="tabs-container">
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active"><a data-toggle="tab" href="#tab-rk"> Riwayat Kwitansi</a></li>
+                                                    <li class=""><a data-toggle="tab" href="#tab-cn">Riwayat CN/DN</a></li>
+                                                </ul>
+                                                <div class="tab-content ">
+                                                    <div id="tab-rk" class="tab-pane active">
+                                                        <div class="panel-body riwayat_kwitansi">
+                                                            <table class="table riwayat table-bordered table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nomor Kwitansi</th>
+                                                                    <th>Tanggal</th>
+                                                                    <th>Jml Bayar</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                        </div>
+                                                    </div>
+                                                    <div id="tab-cn" class="tab-pane">
+                                                        <div class="panel-body riwayat_cn_dn">
+                                                            <table id="table_cn_dn" class="table table-bordered table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Nomor CN/DN</th>
+                                                                        <th>Tanggal</th>
+                                                                        <th>Jml Kredit</th>
+                                                                        <th>Jml Kredit</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h3>Pembayaran</h3>
+                                            <table class="table  table-bordered table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Jumlah Bayar</td>
+                                                        <td>
+                                                            <input type="text" onkeyup="hitung()" class="form-control angka" name="ed_jml_bayar" style="text-align:right">
+                                                            <input type="hidden" name="ed_jml_bayar_old" >
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </form>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" id="save_um">Save changes</button>
                                 </div>
@@ -874,10 +850,10 @@ $(document).ready(function(){
         }
     });
     
-    $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
-    $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
-    $('.m_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
-    $('.me_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
+    $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true});
+    $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true});
+    $('.m_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true});
+    $('.me_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true});
 });
 
 // ganti nota untuk admin
@@ -1021,7 +997,7 @@ $('#btnsave').click(function(){
         success:function(response){
             for(var i = 0; i < response.data.length;i++){
                 table_data.row.add([
-                        '<a onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
+                        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
                         accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
                         accounting.formatMoney(response.data[i].i_sisa_pelunasan, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_pelunasan+'">',
                         '<input type="text" readonly class="form-control i_bayar_text input-sm" value="0">'+
@@ -1046,6 +1022,7 @@ $('#btnsave').click(function(){
             $(".i_bayar").focus(function() {
                  $(this).select();
             });
+        $( ".his" ).tooltip({ show: { effect: "none", duration: 800 } });
         $('.tab_detail ul li .tab-1').trigger('click');
         }
     })
@@ -1106,9 +1083,14 @@ function hitung() {
         var hasil = angka-sisa_terbayar;
         if (hasil <0) {
             hasil = 0;
-    }
+        }
+        var angka = $('.jumlah_bayar').val();
         $('.jumlah_biaya_admin').val(accounting.formatMoney(hasil,"",0,'.',','))
-        console.log(angka)
+
+        var biaya_admin   = $('.jumlah_biaya_admin').val();
+        biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
+        biaya_admin       = parseInt(biaya_admin);
+
         $('.total_bayar').val(accounting.formatMoney(angka-biaya_admin,"",2,'.',','))
     }
 
@@ -1121,8 +1103,9 @@ function histori(p){
     var i_sisa_pelunasan    = $(par).find('.i_sisa_pelunasan').val();
     var i_bayar             = $(par).find('.i_bayar ').val();
     var i_tagihan           = $(par).find('.i_tagihan ').val();
-
-    $.ajax({
+    var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val(); 
+    if (cb_jenis_pembayaran != 'U') {
+        $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
         data:{i_nomor},
         success:function(data){
@@ -1194,7 +1177,83 @@ function histori(p){
                 }
             })
         }
-    })
+        })
+    }else{
+        $.ajax({
+        url:baseUrl + '/sales/riwayat_invoice',
+        data:{i_nomor},
+        success:function(data){
+            $('.riwayat_kwitansi').html(data);
+            var temp = 0;
+            table_riwayat.$('.kd_total_bayar').each(function(){
+                temp += parseFloat($(this).val());
+            });
+            $('.ed_terbayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.terbayar').val(temp);
+
+
+            $.ajax({
+                url:baseUrl + '/sales/riwayat_cn_dn',
+                data:{i_nomor},
+                success:function(data){
+                    $('.riwayat_cn_dn').html(data);
+                    var temp = 0;
+                    var temp1 = 0;
+                    table_cd.$('.cd_debet').each(function(){
+                        temp += parseFloat($(this).val());
+                    });
+
+                    table_cd.$('.cd_kredit').each(function(){
+                        temp1 += parseFloat($(this).val());
+                    });
+                    $('.ed_nota_debet').val(accounting.formatMoney(temp,"",2,'.',','));
+                    $('.nota_debet').val(temp);
+
+                    $('.ed_nota_kredit').val(accounting.formatMoney(temp1,"",2,'.',','));
+                    $('.nota_kredit').val(temp1);
+
+
+                    $('.ed_nomor_invoice').val(i_nomor);
+                    $('.ed_jumlah_tagihan').val(accounting.formatMoney(i_tagihan,"",2,'.',','));
+                    $('.jumlah_tagihan').val(i_tagihan);
+
+                    var jumlah_tagihan = $('.jumlah_tagihan').val();
+                    jumlah_tagihan     = parseFloat(jumlah_tagihan);
+                    var terbayar       = $('.terbayar').val();
+                    terbayar           = parseFloat(terbayar);
+                    var nota_debet     = $('.nota_debet').val()
+                    nota_debet         = parseFloat(nota_debet);
+
+                    var nota_kredit    =$('.nota_kredit').val()
+                    nota_kredit        = parseFloat(nota_kredit);
+
+
+                    var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
+                    jumlah             = Math.round(jumlah).toFixed(2);
+                    $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
+                    $('.sisa_terbayar').val(jumlah);
+
+                    var i_bayar        = $(par).find('.i_bayar').val();
+                    var i_debet    = $(par).find('.i_debet').val();
+                    var i_kredit    = $(par).find('.i_kredit').val();
+                    var biaya_admin = parseInt(i_debet)+parseInt(i_kredit);
+                    console.log(i_bayar);
+                    $('.angka').val(i_bayar);
+                    $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
+                    $('.jumlah_bayar').val(i_bayar);
+                    $('.jumlah_biaya_admin ').val(biaya_admin);
+                    var biaya_admin    = $(par).find('.akun_biaya').val();
+                    $('.biaya_admin ').val(biaya_admin).trigger('chosen:updated');
+
+
+                    hitung();
+                    $('#modal_um').modal('show');
+                }
+            })
+        }
+        })
+    }
+    
   
 }
 
