@@ -862,8 +862,9 @@ class MasterPurchaseController extends Controller
 	public function getnosupplier (Request $request){
 		$cabang = $request->cabang;
 		
+		
 
-		$supplier = DB::select("select * from supplier where idcabang = '$cabang' order by idsup desc limit 1");
+		$supplier = DB::select("select * from supplier where idcabang = '$cabang'  order by idsup desc limit 1");
 		//return $fpg;
 		
 		if(count($supplier) > 0) {

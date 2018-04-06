@@ -418,6 +418,9 @@
 
                 
           },
+          error : function (){
+            location.reload();
+          }
         })
       })
 
