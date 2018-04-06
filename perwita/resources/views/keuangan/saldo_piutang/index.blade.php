@@ -71,18 +71,31 @@
                 </div><!-- /.box-header -->
                 <div class="box-body" style="min-height: 330px;">
                 
-                  <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
+                  <table id="ku" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
                     <thead>
                       <tr>
-                        <th width="18%" rowspan="2" style="padding:8px 0px" class="text-center">Kode Customer</ht>
+                        <th rowspan="2" style="padding:8px 0px" class="text-center">No</th>
+                        <th rowspan="2" style="padding:8px 0px" class="text-center">Cabang</th>
+                        <th width="18%" rowspan="2" style="padding:8px 0px" class="text-center">Kode Customer</th>
                         <th width="35%" rowspan="2" style="padding:8px 0px" class="text-center">Nama Customer</th>
                         <th style="padding:8px 0px" class="text-center">Saldo Piutang</th>
                         <th style="padding:8px 0px" class="text-center">Aksi</th>
                       </tr>
                     </thead>
                     <tbody>
+                      
+                      <?php $no = 1; ?>
 
-                      <tr><td>aa</td></tr>
+                      @foreach($data as $saldo_piutang)
+                        <tr>
+                          <td>{{ $no++ }}</td>
+                          <td>{{ $saldo_piutang->nama_cabang }}</td>
+                          <td>{{ $saldo_piutang->kode_customer }}</td>
+                          <td>{{ $saldo_piutang->nama_customer }}</td>
+                          <td class="text-right">{{ $saldo_piutang->jumlah }}</td>
+                          <td class="text-center">---</td>
+                        </tr>
+                      @endforeach
                       
                     </tbody>
                     
@@ -152,18 +165,12 @@
   $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip()
 
+
     @if(Session::has('sukses'))
         alert("{{ Session::get('sukses') }}")
     @endif
 
-    // tableDetail = $('.tbl-penerimabarang').DataTable({
-    //       responsive: true,
-    //       searching: true,
-    //       sorting: true,
-    //       paging: true,
-    //       //"pageLength": 10,
-    //       "language": dataTableLanguage,
-    // });
+    
 
     $(".tambahAkun").on("click", function(){
       $("#modal_tambah_akun .modal-header .parrent").val($(this).data("parrent"));
