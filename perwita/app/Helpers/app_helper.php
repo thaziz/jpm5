@@ -54,7 +54,6 @@
 		if($year == null)
 			$year = date('Y');
 
-
 		if($withMonth)
 			$data = DB::table("d_periode_keuangan")->where("bulan", $month)->where("tahun", $year)->select("*")->get();
 		else
