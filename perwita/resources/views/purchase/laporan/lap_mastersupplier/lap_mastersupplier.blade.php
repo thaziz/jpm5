@@ -68,18 +68,18 @@
                           <th> Pilih Laporan : </th>
                           <td >
                             <select class="form-control" onchange="location = this.value;">
-                  <option selected="" disabled="">Pilih terlebih dahulu</option>
-                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
-                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
-                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
-                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
-                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
-                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
-                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
-                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                 </select>
+                            <option selected="" disabled="">Pilih terlebih dahulu</option>
+                            <option value="{{ url('/masteritem/masteritem/masteritem') }}" >Laporan Data Master Item</option>
+                            {{-- <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option> --}}
+                            <option value="{{ url('/mastergudang/mastergudang/mastergudang') }}" >Laporan Data Master Gudang</option>
+                            <option value="{{ url('/mastersupplier/mastersupplier/mastersupplier') }}" >Laporan Data Supplier</option>
+                            <option value="{{ url('/spp/spp/spp') }}" selected="" disabled="">Laporan Data Surat Permintaan Pembelian</option>
+                            <option value="{{ url('/masterpo/masterpo/masterpo') }}">Laporan Data Order</option>
+                            <option value="{{ url('/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                            <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                            <option value="{{ url('/masterkaskeluar/masterkaskeluar/masterkaskeluar') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                            <option value="{{ url('/masterbayarbank/masterbayarbank/masterbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                           </select>
                           </td>
                         </tr>
                         <tr id="filter_col2" data-column="0">
@@ -101,43 +101,36 @@
                       <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr>
-                        <th>NO</th>
+                        <th>No</th>
                         <th>Kode Supplier</th>
                         <th>Nama Supplier</th>
                         <th>Alamat</th>
                         <th>Kota</th>
                         <th>Provinsi</th>
                         <th>Kode Pos</th>
-                        <th>No Telp / Fax</th>
+                        <th>No Telp</th>
                         <th>Contact Person</th>
                         <th>Syarat Kredit</th>
-                       <!--  <th>Plafon Kredit</th> -->
                         <th>Mata Uang</th>
-                        <!-- <th>NPWP</th>
-                        <th>Acc Hutang Dagang</th> -->
                     </tr>
-                 
                     </thead>
                     
                     <tbody>
-                      @for ($index = 0; $index < count($masterSupplier["nama"]); $index++)
+                      @foreach ($data as $index => $e)
                         <tr>
-                          <td align="center"><input type="hidden" name="" value="{{ $index + 1 }}">{{ $index + 1 }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["kode"][$index] }}">{{ $masterSupplier["kode"][$index] }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["nama"][$index] }}">{{ $masterSupplier["nama"][$index] }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["alamat"][$index] }}">{{ $masterSupplier["alamat"][$index] }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["kota"][$index] }}">{{ $masterSupplier["kota"][$index] }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["provinsi"][$index] }}">{{ $masterSupplier["provinsi"][$index] }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["kodePos"][$index] }}">{{ $masterSupplier["kodePos"][$index] }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["telp"][$index] }}">{{ $masterSupplier["telp"][$index] }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["contPerson"][$index] }}">{{ $masterSupplier["contPerson"][$index] }}</td>
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["kredit"][$index] }}">{{ $masterSupplier["kredit"][$index] }} Hari</td>
-                         <!--  <td align="center"></td> -->
-                          <td align="center"><input type="hidden" name="" value="{{ $masterSupplier["currency"][$index] }}">{{ $masterSupplier["currency"][$index] }}</td>
-                          <!-- <td align="center">{{ $masterSupplier["npwp"][$index] }}</td>
-                          <td align="center">{{ $masterSupplier["hutang"][$index] }}</td> -->
+                          <td align="center">{{ $index + 1 }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $e->no_supplier }}">{{ $e->no_supplier }}</td>
+                          <td align="center">{{ $e->nama_supplier  }}</td>
+                          <td align="center">{{ $e->alamat  }}</td>
+                          <td align="center">{{ $e->kota  }}</td>
+                          <td align="center">{{ $e->prov  }}</td>
+                          <td align="center">{{ $e->kodepos  }}</td>
+                          <td align="center">{{ $e->telp  }}</td>
+                          <td align="center">{{ $e->contact_person  }} </td>
+                          <td align="center">{{ $e->syarat_kredit  }} Hari</td>
+                          <td align="center">{{ $e->currency  }}</td>
                         </tr>
-                      @endfor
+                      @endforeach
                     </tbody>
                    
                   </table>
@@ -223,26 +216,14 @@ function filterColumn2 ( ) {
         format: 'dd-mm-yyyy'
     });
     
-    $no = 0;
-    $('.carispp').click(function(){
-      $no++;
-      $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
-    })
- 
     function cetak(){
-    
-      var a = $('#a').val();
-      var b = $('#b').val();
-      var c = $('#c').val();
-      var d = $('#d').val();
-
-      var asw=[];
+         var asw=[];
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
-           asw[i] =  $(asd[i][1]).val();
-       }
-       console.log(asw);
 
+           asw[i] =  $(asd[i][1]).val();
+  
+       }
 
       $.ajaxSetup({
         headers: {
@@ -250,18 +231,17 @@ function filterColumn2 ( ) {
         }
       });
 
-      $.ajax({
-        data: {asw:asw,download:'download'},
-        url: baseUrl + '/mastersupplier/mastersupplier/mastersupplier',
-        type: "get",
-         complete : function(){
-        window.location = /*baseUrl+'/'+*/this.url;
-        },    
-        success : function(data){
-            
-        }
 
+      $.ajax({
+        data: {a:asw,c:'download'}, 
+        url: baseUrl + '/reportmastersupplier/reportmastersupplier',
+       type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
+        }
       });
+    
     }
 
 </script>

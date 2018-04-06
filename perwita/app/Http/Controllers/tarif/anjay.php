@@ -410,4 +410,4 @@ $crud = $request->crud;
             $result['result']=0;
         }
         $result['crud']=$crud;
-        echo json_encode($result);
+        echo json_encode($result);  

@@ -216,7 +216,7 @@
                  /* messageTop: 'Hasil pencarian dari Nama : ',*/
                   text: ' Excel',
                   className:'excel',
-                  title:'LAPORAN TARIF CABANG KOLI',
+                  title:'LAPORAN DELIVERY ORDER KARGO',
                   filename:'CABANGKOLI-'+a+b+c,
                   init: function(api, node, config) {
                   $(node).removeClass('btn-default'),

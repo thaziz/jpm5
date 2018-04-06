@@ -191,6 +191,8 @@ class nota_debet_kredit_Controller extends Controller
     {
         // dd($request->all());
       // dd($request->all());
+        return DB::transaction(function() use ($request) {  
+
         $cari_nota = DB::table('cn_dn_penjualan')
                        ->where('cd_nomor',$request->nomor_cn_dn)
                        ->first();
@@ -260,6 +262,7 @@ class nota_debet_kredit_Controller extends Controller
           return response()->json(['status'=>2]);
         }
 
+        });
 
           
     }
