@@ -162,4 +162,24 @@ class DiskonPenjualanController extends Controller
             'cabang' => $cabang
         ]);
     }
+
+    public function delete(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $id = $request->id;
+            DB::table('d_disc_cabang')->where('dc_id', '=', $id)->delete();
+            DB::commit();
+            return response()->json([
+                'status' => 'sukses'
+            ]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'sukses',
+                'error' => $e,
+            ]);
+        }
+
+    }
 }

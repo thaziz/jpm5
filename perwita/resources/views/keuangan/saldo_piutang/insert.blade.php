@@ -437,10 +437,13 @@
         dataType: "json",
         data: { cust: { customer: $customer, periode: $periode, cabang : $cabang }, detail: $data_detail, _token: "{{ csrf_token() }}" },
         success: function(response){
+
           console.log(response);
-          // if(response.status == "sukses"){
-          //   alert("Desain Berhasil Ditambahkan");
-          // }
+
+          if(response.status == "sukses"){
+            alert("Desain Berhasil Ditambahkan");
+            reset_all();
+          }
         }
       })
 
@@ -481,7 +484,24 @@
       $("#tambah").removeAttr("disabled");
       $("#cancel").css("display", "none");
 
-      console.log($data_detail);
+      // console.log($data_detail);
+    }
+
+    function reset_all(){
+      detail_reset();
+
+      $("#cabang").val("---");
+      $("#customer").val("---");
+      $("#periode").val("");
+      $("#nama_cust").val("");
+      $("#alamat_cust").val("");
+
+      $('#cabang').trigger("chosen:updated");
+      $('#customer').trigger("chosen:updated");
+
+      $data_detail = [];
+
+      fill_detail();
     }
 
     function addCommas(nStr) {

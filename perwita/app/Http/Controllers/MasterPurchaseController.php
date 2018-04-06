@@ -65,7 +65,8 @@ class MasterPurchaseController extends Controller
 		$explode = explode(",", $groupitem);
 		$cabang = $request->cabang;
 		$idgrupitem = $explode[0];
-		//$updatestock = $explode[1];
+		
+
 		if($updatestock == 'T'){
 			if($idgrupitem == 'P'){
 				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
@@ -82,7 +83,8 @@ class MasterPurchaseController extends Controller
 		}
 		else if($updatestock == 'Y'){
 			if($idgrupitem == 'P'){
-				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '$cabang'");
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000'");
+				//return json_encode($data);
 			}
 			else if($idgrupitem == 'S'){
 				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang'");
@@ -860,14 +862,16 @@ class MasterPurchaseController extends Controller
 	public function getnosupplier (Request $request){
 		$cabang = $request->cabang;
 		
-
-		$supplier = DB::select("select * from supplier where idcabang = '$cabang' order by idsup desc limit 1");
-		//return $fpg;
+		$supplier = DB::select("select * from supplier where idcabang = '$cabang'  order by idsup desc limit 1");
+		
+	
+		
 		
 		if(count($supplier) > 0) {
 	//		return $fpg[0]->fpg_nofpg;
 			$explode = explode("/", $supplier[0]->no_supplier);
-			$idsupplier1 = $explode[2];
+			$idsupplier1 = $explode[1];
+			
 		
 
 			$idsupplier = (int)$idsupplier1 + 1;

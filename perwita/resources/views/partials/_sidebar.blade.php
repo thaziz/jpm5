@@ -184,6 +184,8 @@
                     /* Nomor seri pajak */
                     Request::is('master_sales/nomorseripajak') ? 'active' : '' || 
                     Request::is('master_sales/nomorseripajak/*') ? 'active' : '' ||
+                    /* master diskon penjualan */
+                    Request::is('master_sales/diskonpenjualan') ? 'active' : '' || 
                  /*=================  END OF MASTER DO ==================*/
                  /*================= sub MASTER KONTRAK ================= */
                     /* Kontrak */
@@ -417,6 +419,8 @@
                     /* saldo awal piutang akir */
                     Request::is('master_sales/saldoawalpiutanglain') ? 'active' : '' || 
                     Request::is('master_sales/saldoawalpiutanglain/*') ? 'active' : '' ||
+                    /* master diskon penjualan */
+                    Request::is('master_sales/diskonpenjualan') ? 'active' : '' || 
                     /* Nomor seri pajak */
                     Request::is('master_sales/nomorseripajak') ? 'active' : '' || 
                     Request::is('master_sales/nomorseripajak/*') ? 'active' : '' 
@@ -600,6 +604,8 @@
                     /* saldo awal piutang akir */
                     Request::is('master_sales/saldoawalpiutanglain') ? 'active' : '' || 
                     Request::is('master_sales/saldoawalpiutanglain/*') ? 'active' : '' ||
+                    /* master diskon penjualan */
+                    Request::is('master_sales/diskonpenjualan') ? 'active' : '' || 
                     /* Nomor seri pajak */
                     Request::is('master_sales/nomorseripajak') ? 'active' : '' || 
                     Request::is('master_sales/nomorseripajak/*') ? 'active' : '' 
@@ -1059,6 +1065,8 @@
                     Request::is('sales/deliveryorderkertas') ? 'active' : '' || 
                     Request::is('sales/deliveryorderkertas/*') ? 'active' : '' ||
                     /* Update Status order */
+                    Request::is('sales/deliveryorderform') ? 'active' : '' || 
+                    /* DO */
                     Request::is('updatestatus') ? 'active' : '' || 
                     Request::is('updatestatus/*') ? 'active' : '' ||
                     /* Update Status order kargo*/
@@ -1214,6 +1222,8 @@
                             /* delivery order */
                             Request::is('sales/deliveryorder') ? 'active' : '' || 
                             Request::is('sales/deliveryorder/*') ? 'active' : '' ||
+                            /* Update Status order */
+                            Request::is('sales/deliveryorderform') ? 'active' : '' || 
                             /* Delivery order kargo */
                             Request::is('sales/deliveryorderkargo') ? 'active' : '' || 
                             Request::is('sales/deliveryorderkargo/*') ? 'active' : '' ||
@@ -1268,6 +1278,7 @@
                     Request::is('sales/invoice_lain') ? 'active' : '' || 
                             Request::is('sales/invoice_lain/*') ? 'active' : '' ||
                     Request::is('sales/penerimaan_penjualan') ? 'active' : '' || 
+                    Request::is('sales/deliveryorderform') ? 'active' : '' || 
                             Request::is('sales/penerimaan_penjualan/*') ? 'active' : ''
 
                 /*=========== END OF sub MANAGEMEN GUDANG ================*/
@@ -1282,6 +1293,7 @@
                                 <a class="sidebar master-perusahaan 
 
                             {{Request::is('sales/deliveryorder') ? 'active' : '' || 
+                            Request::is('sales/deliveryorderform') ? 'active' : '' || 
                             Request::is('sales/deliveryorder/*') ? 'active' : ''}} 
 
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
