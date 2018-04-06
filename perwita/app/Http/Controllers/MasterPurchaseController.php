@@ -65,7 +65,8 @@ class MasterPurchaseController extends Controller
 		$explode = explode(",", $groupitem);
 		$cabang = $request->cabang;
 		$idgrupitem = $explode[0];
-		//$updatestock = $explode[1];
+		
+
 		if($updatestock == 'T'){
 			if($idgrupitem == 'P'){
 				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
@@ -82,7 +83,8 @@ class MasterPurchaseController extends Controller
 		}
 		else if($updatestock == 'Y'){
 			if($idgrupitem == 'P'){
-				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '$cabang'");
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1501%' and kode_cabang = '000'");
+				//return json_encode($data);
 			}
 			else if($idgrupitem == 'S'){
 				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1502%' and kode_cabang = '$cabang'");

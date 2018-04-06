@@ -150,8 +150,8 @@
                       </tr>
                       
                       <tr>
-                        <td class="updatestock"> Update Stock </td>
-                        <td class="updatestock"> <select class="form-control k updatestock" name="update_stock" required=""> 
+                        <td class="updatedtock"> Update Stock </td>
+                        <td class="updatedtock"> <select class="form-control k updatestock" name="update_stock" required=""> 
                           <option value='T'  selected="" > T </option>
                           <option value='Y' > Y </option>
                         </select>
@@ -267,7 +267,7 @@
     
 
     $('.jenis_item').change(function(){
-           updatestock = $('.updatestock').val();
+          updatestock = $('.updatestock').val();
           groupitem = $('.jenis_item').val();
           cabang = $('.cabang').val();
           $.ajax({
@@ -276,6 +276,8 @@
               dataType : "json",
             type : "get",
             success : function(response){
+              $('.accpersediaan').empty();
+                      $('.acchpp').empty();
               if(updatestock == 'Y') {
                       arrItem = response.akun;
                       $('.accpersediaan').empty();
@@ -314,6 +316,8 @@
               dataType : "json",
             type : "get",
             success : function(response){
+              $('.accpersediaan').empty();
+              $('.acchpp').empty();
               if(updatestock == 'Y') {
                       arrItem = response.akun;
                       $('.accpersediaan').empty();
@@ -343,9 +347,7 @@
     })
 
 
-   $('.accpersediaan').click(function(){
-         alert('lop');
-    })
+   
 
     $('.date').datepicker({
         autoclose: true,
@@ -357,11 +359,11 @@
       string = val.split(",");
       stock = string[1];
       if(stock == 'T') {
-        $('td.updatestock').hide();
+        $('td.updatedtock').hide();
         $('.updatestock').val('J');
       }
       else {
-         $('td.updatestock').show();
+         $('td.updatedtock').show();
       }
     })
 

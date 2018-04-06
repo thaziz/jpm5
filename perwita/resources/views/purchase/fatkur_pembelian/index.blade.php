@@ -269,25 +269,17 @@ function(){
       url:baseUrl + '/fakturpembelian/hapusfakturpembelian/'+id,
       type:'get',
       success:function(data){
-       // alert(data);
-        if(data == '"sukses"'){
-          swal({
-          title: "Berhasil!",
-                  type: 'success',
-                  text: "Data Berhasil Dihapus",
-                  timer: 2000,
-                  showConfirmButton: true
-                  },function(){
-                     location.reload();
-          });
-        }else{
-         swal({
-        title: "Data Tidak Bisa Dihapus",
-                type: 'error',
-                timer: 1000,
-                showConfirmButton: false
-    });
-        }
+      
+        swal({
+        title: "Berhasil!",
+                type: 'success',
+                text: "Data Berhasil Dihapus",
+                timer: 2000,
+                showConfirmButton: true
+                },function(){
+                   location.reload();
+        });
+       
       },
       error:function(data){
 
