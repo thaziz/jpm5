@@ -57,7 +57,7 @@
                       <br>
                                                                                 
                         <tr id="filter_col1" data-column="0">
-                           <th > Cari Nama BKK :  </th>
+                           <th > Cari Status :  </th>
                           <td >
                             <input type="text" id="col0_filter" name="filter_cabang"  onkeyup="filterColumn()" value="" class="col-sm-12 asal form-control column_filter" placeholder="Pencarian.." >
                           </td>
@@ -66,18 +66,18 @@
                           <th> Pilih Laporan : </th>
                           <td >
                             <select class="form-control" onchange="location = this.value;">
-                  <option selected="" disabled="">Pilih terlebih dahulu</option>
-                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
-                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
-                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
-                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
-                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
-                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
-                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
-                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                 </select>
+                            <option selected="" disabled="">Pilih terlebih dahulu</option>
+                            <option value="{{ url('/masteritem/masteritem/masteritem') }}" >Laporan Data Master Item</option>
+                            {{-- <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option> --}}
+                            <option value="{{ url('/mastergudang/mastergudang/mastergudang') }}" >Laporan Data Master Gudang</option>
+                            <option value="{{ url('/mastersupplier/mastersupplier/mastersupplier') }}" >Laporan Data Supplier</option>
+                            <option value="{{ url('/spp/spp/spp') }}" selected="" disabled="">Laporan Data Surat Permintaan Pembelian</option>
+                            <option value="{{ url('/masterpo/masterpo/masterpo') }}">Laporan Data Order</option>
+                            <option value="{{ url('/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                            <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                            <option value="{{ url('/masterkaskeluar/masterkaskeluar/masterkaskeluar') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                            <option value="{{ url('/masterbayarbank/masterbayarbank/masterbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                           </select>
                           </td>
                         </tr>
 
@@ -114,20 +114,18 @@
                       <th  style="text-align: center"> Akun kas - Akun hutang</th>
                       <th  style="text-align: center"> keterangan</th>
                       <th  style="text-align: center"> Status BKK </th>
-                      <th  hidden=""></th>
                     </tr>
                     </thead>
                     <tbody>
                       @foreach ($array as $index => $element)
                     <tr>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_id }}"> {{ $index+1 }} </td>
+                      <td> {{ $index+1 }} </td>
                       <td><input type="hidden" name="" value="{{ $element->bkk_nota }}">  {{ $element->bkk_nota }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_tgl }}">  {{ $element->bkk_tgl }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_jenisbayar }}">  {{ $element->bkk_jenisbayar }} </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_akun_kas }}">  {{ $element->bkk_akun_kas }} - {{ $element->bkk_akun_hutang }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_keterangan }}">  {{ $element->bkk_keterangan }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bkk_status }}">  {{ $element->bkk_status }} </td>
-                      <td hidden=""><input type="hidden" name="" value="{{ $element->bkk_akun_hutang }}"></td>
+                      <td> {{ $element->bkk_tgl }}  </td>
+                      <td> {{ $element->bkk_jenisbayar }} </td>
+                      <td>  {{ $element->bkk_akun_kas }} - {{ $element->bkk_akun_hutang }}  </td>
+                      <td> {{ $element->bkk_keterangan }}  </td>
+                      <td>  {{ $element->bkk_status }} </td>
 
                     </tr>
                     @endforeach
@@ -252,22 +250,29 @@
  
    
     function cetak(){
-      var asw=[];
+    
+     var asw=[];
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
-           asw[i] =  $(asd[i][0]).val();
+
+           asw[i] =  $(asd[i][1]).val();
+  
        }
-       console.log(asw);
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
 
 
       $.ajax({
-        data: {asw:asw,download:'download'},
-        url: baseUrl + '/masterkaskeluar/masterkaskeluar/masterkaskeluar',
-        type: "get",
-         complete : function(){
-        window.open(this.url,'_blank');
-        },     
-        success : function(data){
+        data: {a:asw,c:'download'},
+        url: baseUrl + '/report_kaskeluar/report_kaskeluar',
+         type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
         }
       });
     }
