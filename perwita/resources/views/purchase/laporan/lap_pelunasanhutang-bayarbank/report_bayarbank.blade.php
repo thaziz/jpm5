@@ -1,6 +1,6 @@
 <style>
 	.pembungkus{
-		width: 100%;
+		width: 900px;
 	}
 	table {
     border-collapse: collapse;
@@ -19,11 +19,7 @@
 </style>
 
 <div class=" pembungkus">
-	<div class="header" style="margin-bottom: 20px">
-		<table width="100%">
-			<tr><td>Laporan Bayar Bank</td></tr>
-		</table>
-	</div>
+	
 					<table width="100%" {{-- style="height: 50px; padding: 0;" --}} border="1">
 									<tr>
 										<th valign="middle" align="center" style="height: 50px;">No.</th>
@@ -38,18 +34,18 @@
 										<th valign="middle" align="center">Flag</th>
 									</tr>
 
-									@foreach ($data2 as $index => $a)
+									@foreach ($dat1 as $index => $a)
 									<tr style="font-size: 13px">
 										<td>{{ $index+1 }}</td>
-										<td>{{ $a->bbk_nota }}</td>
-										<td>{{ $a->bbk_kodebank }}</td>
-										<td>{{ $a->bbk_cabang }}</td>
-										<td>{{ $a->bbk_tgl }}</td>
-										<td>{{ strtolower($a->bbk_keterangan) }}</td>
-										<td>{{ $a->bbk_cekbg }}</td>
-										<td>{{ $a->bbk_biaya }}</td>
-										<td>{{ $a->bbk_total }}</td>
-										<td>{{ $a->bbk_flag }}</td>
+										<td>{{ $dat1[$index][0]->bbk_nota }}</td>
+										<td>{{ $dat1[$index][0]->bbk_kodebank }}</td>
+										<td>{{ $dat1[$index][0]->bbk_cabang }}</td>
+										<td>{{ $dat1[$index][0]->bbk_tgl }}</td>
+										<td>{{ strtolower($dat1[$index][0]->bbk_keterangan) }}</td>
+										<td>{{ $dat1[$index][0]->bbk_cekbg }}</td>
+										<td>{{ $dat1[$index][0]->bbk_biaya }}</td>
+										<td>{{ $dat1[$index][0]->bbk_total }}</td>
+										<td>{{ $dat1[$index][0]->bbk_flag }}</td>
 									</tr>
 									@endforeach
 								</table>

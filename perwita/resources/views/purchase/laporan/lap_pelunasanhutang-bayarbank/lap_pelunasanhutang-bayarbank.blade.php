@@ -134,23 +134,18 @@
                           <th> Pilih Laporan : </th>
                           <td >
                             <select class="form-control" onchange="location = this.value;">
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Master Item</option>
-                  <option value="/jpm/reportmasterdepartment/reportmasterdepartment">Laporan Data Department</option>
-                  <option value="/jpm/reportmastergudang/reportmastergudang" >Laporan Data Master Gudang</option>
-                  <option value="/jpm/reportmastersupplier/reportmastersupplier">Laporan Data Supplier</option>
-                  <option value="/jpm/reportspp/reportspp">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="/jpm/reportpo/reportpo">Laporan Data Order</option>
-                  <option value="/jpm/reportfakturpembelian/reportfakturpembelian">Laporan Data Faktur Pembelian</option>
-                  <option value="/jpm/buktikaskeluar/patty_cash">Laporan Data Patty Cash</option>
-                  <option value="/jpm/reportbayarkas/reportbayarkas">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="/jpm/reportbayarbank/reportbayarbank" selected="" disabled="" style="background-color: #DDD; ">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                  {{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Faktur vs Pelunasan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Analisa Usia Hutang</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Faktur Pajak Masukan</option>
-                  <option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Historis Uang Muka Pembelian</option> --}}
-                 </select>
+                            <option selected="" disabled="">Pilih terlebih dahulu</option>
+                            <option value="{{ url('/masteritem/masteritem/masteritem') }}" >Laporan Data Master Item</option>
+                            {{-- <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option> --}}
+                            <option value="{{ url('/mastergudang/mastergudang/mastergudang') }}" >Laporan Data Master Gudang</option>
+                            <option value="{{ url('/mastersupplier/mastersupplier/mastersupplier') }}" >Laporan Data Supplier</option>
+                            <option value="{{ url('/spp/spp/spp') }}" selected="" disabled="">Laporan Data Surat Permintaan Pembelian</option>
+                            <option value="{{ url('/masterpo/masterpo/masterpo') }}">Laporan Data Order</option>
+                            <option value="{{ url('/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                            <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                            <option value="{{ url('/masterkaskeluar/masterkaskeluar/masterkaskeluar') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                            <option value="{{ url('/masterbayarbank/masterbayarbank/masterbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                           </select>
                           </td>
                         </tr>
                     </table>
@@ -166,23 +161,21 @@
                         <th  style="text-align: center"> Cek / BG </th>
                         <th  style="text-align: center"> Biaya </th>
                         <th   style="text-align: center"> Total Bayar </th> 
-                        <th  style="text-align: center;"> Flag</th>
                     </tr>
                     </thead>
                     
                     <tbody>
                       @foreach ($array as $index => $element)
                     <tr>
-                      <td><input type="hidden" name="" value="{{ $element->bbk_id}}">{{ $index +1}}</td>
+                      <td>{{ $index +1}}</td>
                       <td><input type="hidden" name="" value="{{ $element->bbk_nota  }}">{{ $element->bbk_nota  }}</td>
-                      <td><input type="hidden" name="" value="{{ $element->bbk_tgl  }}">{{ $element->bbk_tgl  }}  </td>
-                      <td><input type="hidden" name="" value="{{ $element->bbk_keterangan  }}">{{ $element->bbk_keterangan  }}  </td>
-                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->bbk_cekbg  }}">{{ $element->bbk_cekbg  }}  </td>
-                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->bbk_biaya  }}">{{ $element->bbk_biaya  }} </td>
-                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->bbk_total  }}">{{ $element->bbk_total  }} </td>
-                      <td ><input type="hidden" name="" value="{{ $element->bbk_flag  }}">{{ $element->bbk_flag  }}  </td>
+                      <td>{{ $element->bbk_tgl  }}  </td>
+                      <td>{{ $element->bbk_keterangan  }}  </td>
+                      <td style="text-align: right">{{ $element->bbk_cekbg  }}  </td>
+                      <td style="text-align: right">{{ $element->bbk_biaya  }} </td>
+                      <td style="text-align: right">{{ $element->bbk_total  }} </td>
                     </tr>
-                  @endforeach
+                      @endforeach
 
                     </tbody>
                    
@@ -271,34 +264,32 @@
     
     function cetak(){
     
-      var a = $('#a').val();
-      var b = $('#b').val();
-      var c = $('#c').val();
-      var d = $('#d').val();
-      var e = $('#e').val(); 
-      var f = $('#f').val();
-      var g = $('#g').val();
-
-      var asw=[];
+    
+     var asw=[];
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
-           asw[i] =  $(asd[i][0]).val();
+
+           asw[i] =  $(asd[i][1]).val();
+  
        }
-       console.log(asw);
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
 
 
       $.ajax({
-        data: {asw:asw,download:'download'},
-        url: baseUrl + '/masterbayarbank/masterbayarbank/masterbayarbank',
-        type: "get",
-         complete : function(){
-        window.open(this.url,'_blank');
-        },     
-        success : function(data){
+        data: {a:asw,c:'download'},
+        url: baseUrl + '/reportbayarbank/reportbayarbank',
+         type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
         }
       });
     }
-   
 
 </script>
 @endsection

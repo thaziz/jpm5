@@ -16,8 +16,14 @@ class saldo_piutang_controller extends Controller
     }
 
     public function add(){
+    	$cab  = DB::table('cabang')->select("kode", "nama")->get();
     	$cust = DB::table('customer')->select("kode", "nama", "alamat")->get();
     	return view("keuangan.saldo_piutang.insert")
-    		   ->withCust($cust);
+    		   ->withCust($cust)
+    		   ->withCab($cab);
+    }
+
+    public function save(Request $request){
+    	return json_encode($request->all());
     }
 }

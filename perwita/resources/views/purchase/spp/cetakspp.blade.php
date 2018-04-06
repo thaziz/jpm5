@@ -76,10 +76,15 @@ div.bottom
 			<td align="center" width="410px"><h2>SURAT PERMINTAAN PEMBELIAN</h2></td>
 			
 			<td class="top" width="240px">No SPP : {{$data['spp'][0]->spp_nospp}} <br>Tanggal : {{$data['spp'][0]->spp_tgldibutuhkan}}
+
+			<br> No PO : <br> @foreach($data['po'] as $po) &nbsp; -  {{$po->po_no}} <br> @endforeach
+			</td>
+
+
 			</td>
 		</tr>
 	</table>
-	<table width="100%" style="border-top:hidden;">
+	<table width="100%" style="border-top:hidden;" id="hargatable">
 		<tr>
 			<td colspan="9" style="text-align: left">
 				Diminta oleh bagian : {{$data['spp'][0]->spp_bagian}} <br>
@@ -114,7 +119,8 @@ div.bottom
           </td> 
           @endforeach
         </tr>
-
+          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+           <input type="hidden" name="idspp" value="{{$data['spp'][0]->spp_id}}" class="idspp">
 		 @foreach($data['sppdt_barang'] as $idbarang=>$sppd)                 
                       <tr class="brg{{$idbarang}} barang" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$sppd->sppd_kodeitem}}" >
                         <td>  {{$idbarang + 1}} </td>
@@ -349,13 +355,115 @@ div.bottom
 
 </div>
 
-@section('page-script')
- <script type="text/javascript">
+
+  <script src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"> </script>
+  	<script  type="text/javascript">
     var baseurl = {!! json_encode(url('/')) !!}
- 	alert(baseurl);
-	      
+     function addCommas(nStr) {
+            nStr += '';
+            x = nStr.split('.');
+            x1 = x[0];
+            x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+    }
+
+    var countitem = $('.itm').length;
+    console.log(countitem);
+
+    var arritem = [];
+    $(function(){
+      for (var z = 0; z < countitem; z++ ){
+          var value = $('.item' + z).val();
+          arritem.push(value);
+      }
+    })
+
+	$(function(){
+      var url = baseurl + '/konfirmasi_order/ajax_confirmorderdt';
+        var idspp = $('.idspp').serialize();
+       
+        $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        console.log(idspp);
+        $.ajax({     
+          type :"get",
+          data : idspp,
+          url : url,
+          dataType:'json',
+          success : function(data){
+         //	alert(data);
+              $('#hargatable').each(function(){    
+                      for(var n=0;n<data.sppdt_barang.length;n++){
+                       var kodebrg =  $('.brg'+ n).data("kodeitem");
+                       console.log('kodebrg');
+                       console.log(kodebrg);
+                          for(var i = 0 ; i <data.sppdt.length;i++){
+                            if(kodebrg == data.sppdt[i].sppd_kodeitem) {
+                               for(var j =0; j < data.spptb.length; j++){
+                                if(data.sppdt[i].sppd_supplier == data.spptb[j].spptb_supplier) {
+                                    console.log(data.sppdt[i].sppd_supplier + 'supplier');
+                                        if(data.sppdt[i].sppd_kendaraan != null) {
+                                          var row = $('td[data-supplier="'+ data.sppdt[i].sppd_supplier + '"]').index() + 5;
+                                        }
+                                        else {
+                                         var row = $('td[data-supplier="'+ data.sppdt[i].sppd_supplier + '"]').index() + 4; 
+                                        }
+                                        var column = $('td', this).eq(row);
+                                        var tampilharga = '<div class="form-group">' +
+                                                          '<label class="col-sm-1 control-label"> @ </label>' +
+                                                           '<label class="col-sm-1 control-label"> Rp </label>' + addCommas(data.sppdt[i].sppd_harga) + 
+                                                            '<div class="col-xs-6">';
+                                        
+                                     
+
+                                        tampilharga += '<input type="hidden" name="itembarang[]" value="'+arritem[n]+''+','+''+n+'" >';
+                                        
+                                        tampilharga += '<div class="tampilsupplier'+j+'"> <input type="hidden" name="idsuplier[]" value='+data.spptb[j].spptb_supplier+'> </div>';
+
+                                        tampilharga += '<div class="tampilsyaratkredit'+j+'"> <input type="hidden" name="syaratkredit[]" value='+data.sppdt[i].sppd_bayar+'> </div>';
+
+                                        tampilharga += '<input type="hidden" name="idsppd[]" value='+data.sppdt[i].sppd_idsppdetail+'>';
+                                      tampilharga +=  '<div class="disetujui'+i+'" data-id="'+i+'"> </div>  <div class="btlsetuju'+i+'" data-id="'+i+'" data-supplier='+data.sppdt[i].sppd_supplier+' data-harga='+data.sppdt[i].sppd_harga+' data-totalhrg='+data.spptb[j].spptb_totalbiaya+'> </div> </div> </div> ';
+
+                                        $('tr.brg'+n).find("td").eq(row).html(tampilharga);  
+                                }
+
+                                }
+                              }  
+
+
+
+                            }
+                      }
+
+                                $('.hrg').each(function(){
+                                  $(this).change(function(){
+                                     var id = $(this).data('id');
+                                      harga = $(this).val();
+                                      numhar = Math.round(harga).toFixed(2);
+                                      $('.harga' + id).val(addCommas(numhar));
+                                  })
+                                })
+
+                 })
+                
+
+              
+             }
+
+        })
+ 
+      })
+  
 </script>
-@section('extra_scripts')
+
 
 </body>
 

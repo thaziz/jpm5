@@ -55,37 +55,34 @@
                 {{-- Tanggal : 01 July 2017 s/d 31 July 2017 --}}
                 </h3>
                 <table class="table table-bordered table-striped">
-                     {{--   <tr>
-                        <td> Dimulai Tanggal </td> <td> <div class="input-group date">
+         
+                         <tr>
+                        <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input name="min" id="min" type="text" class="form-control date_to date_range_filter
+                                          <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
                                               date" onchange="tgl()">
 
-                              </div> </td>  <td> Diakhiri Tanggal </td> 
-                              <td> <div class="input-group date">
+                              </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input type="text" class="form-control date_to date_range_filter
+                                          <input type="text" class=" date form-control date_to date_range_filter
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
-                      </tr> --}}
-                     
-                        
-                        
+                      </tr>               
                           <th> Pilih Laporan : </th>
-                          <td >
+                          <td colspan="4">
                             <select class="form-control" onchange="location = this.value;">
-                  <option selected="" disabled="">Pilih terlebih dahulu</option>
-                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
-                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
-                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
-                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
-                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
-                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
-                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
-                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                 </select>
+                            <option selected="" disabled="">Pilih terlebih dahulu</option>
+                            <option value="{{ url('/masteritem/masteritem/masteritem') }}" >Laporan Data Master Item</option>
+                            {{-- <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option> --}}
+                            <option value="{{ url('/mastergudang/mastergudang/mastergudang') }}" >Laporan Data Master Gudang</option>
+                            <option value="{{ url('/mastersupplier/mastersupplier/mastersupplier') }}" >Laporan Data Supplier</option>
+                            <option value="{{ url('/spp/spp/spp') }}" selected="" disabled="">Laporan Data Surat Permintaan Pembelian</option>
+                            <option value="{{ url('/masterpo/masterpo/masterpo') }}">Laporan Data Order</option>
+                            <option value="{{ url('/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                            <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                            <option value="{{ url('/masterkaskeluar/masterkaskeluar/masterkaskeluar') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                            <option value="{{ url('/masterbayarbank/masterbayarbank/masterbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                           </select>
                           </td>
                         </tr>
                   
@@ -101,8 +98,8 @@
                   <table id="addColumn" class="table table-bordered table-striped tbl-item">
                     <thead>
                      <tr >
-                        <th>No.</th>
-                        <th style="width:10px;" > No Faktur </th>
+                        <th style="width:10px;">No.</th>
+                        <th> No Faktur </th>
                         <th> Tanggal </th>
                         <th> Discount </th>
                         <th> D P P </th>
@@ -114,14 +111,14 @@
                     <tbody>
                       @foreach ($data as $index => $element)
                     <tr>
-                      <td><input type="hidden" name="" value="{{ $element->fp_idfaktur }}"> {{ $index+1 }} </td>
-                      <td><input type="hidden" name="" value="{{ $element->fp_nofaktur }}"> {{ $element->fp_nofaktur }} </td>
-                      <td><input type="hidden" name="" value="{{ $element->fp_tgl }}"> {{ $element->fp_tgl }}</td>
-                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_discount }}"> {{ $element->fp_discount }} </td>
-                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_dpp }}"> {{ $element->fp_dpp }} </td>
-                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_ppn }}"> {{ $element->fp_ppn }} </td>
-                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_fakturpajak }}"> {{ $element->fp_fakturpajak }} </td>
-                      <td style="text-align: right"><input type="hidden" name="" value="{{ $element->fp_netto }}"> {{ $element->fp_netto }} </td>
+                      <td>{{ $index+1 }} </td>
+                      <td><input type="hidden" name="" value="{{ $element->fp_nofaktur }}">{{ $element->fp_nofaktur }}</td>
+                      <td>{{ $element->fp_tgl }}</td>
+                      <td style="text-align: right">{{ $element->fp_discount }} </td>
+                      <td style="text-align: right">{{ $element->fp_dpp }} </td>
+                      <td style="text-align: right">{{ $element->fp_ppn }} </td>
+                      <td style="text-align: right">{{ $element->fp_fakturpajak }} </td>
+                      <td style="text-align: right">{{ $element->fp_netto }} </td>
                     </tr>
                       @endforeach
 
@@ -168,8 +165,6 @@ $(document).ready(function(){
     var a = d.getDate();
     var b = d.getSeconds();
     var c = d.getMilliseconds();
-    var tgl1 = '1/1/2018';
-    var tgl2 = '2/2/2018';
 
  var table = $('#addColumn').DataTable({
     paging:true,
@@ -180,8 +175,8 @@ $(document).ready(function(){
                /* messageTop: 'Hasil pencarian dari Nama : ',*/
                 text: ' Excel',
                 className:'excel',
-                title:'LAPORAN PATTY CASH',
-                filename:'PATTYCASH-'+a+b+c,
+                title:'LAPORAN FAKTUR PEMBELIAN',
+                filename:'FAKTURPEMBELIAN-'+a+b+c,
                 init: function(api, node, config) {
                 $(node).removeClass('btn-default'),
                 $(node).addClass('btn-warning'),
@@ -196,6 +191,49 @@ $(document).ready(function(){
             }
         ]
   });
+  $('.date').datepicker({
+        autoclose: true,
+        format: 'yyyy-mm-dd'
+    });
+            $("#min").datepicker({format:"dd/mm/yyyy"});
+            $("#max").datepicker({format:"dd/mm/yyyy"});
+
+       function tgl(){
+         var tgl1   = $("#min").val();
+         var tgl2   = $("#max").val();
+          if(tgl1 != "" && tgl2 != ""){
+          }
+
+            $(document).ready(function(){
+        $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var min = $('#min').datepicker("getDate");
+            // console.log(min);
+            var max = $('#max').datepicker("getDate");
+            // console.log(max);
+
+            var startDate = new Date(data[2]);
+            // console.log(startDate);
+            if (min == null || min == '' && max == null || max == '') { return true; }
+            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
+            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
+            if (startDate <= max && startDate >= min) { return true; }
+            return false;
+        }
+        );
+            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+           
+
+            // Event listener to the two range filtering inputs to redraw on input
+            $('#min, #max').change(function () {
+                /*if($('#max').val() == '' || $('#max').val() == null ){
+                    $('#max').val(0);
+                }*/
+                table.draw();
+            });
+        });
+          }
 
   function filterColumn ( ) {
     $('#addColumn').DataTable().column(2).search(
@@ -206,30 +244,28 @@ $(document).ready(function(){
 
         function cetak(){
     
-      var a = $('#a').val();
-      var b = $('#b').val();
-      var c = $('#c').val();
-      var d = $('#d').val();
-      var e = $('#e').val(); 
-      var f = $('#f').val();
-      var g = $('#g').val();
-
-      var asw=[];
+     var asw=[];
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
-           asw[i] =  $(asd[i][0]).val();
+
+           asw[i] =  $(asd[i][1]).val();
+  
        }
-       console.log(asw);
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
 
 
       $.ajax({
-        data: {asw:asw,download:'download'},
-        url: baseUrl + '/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian',
-        type: "get",
-         complete : function(){
-        window.open(this.url,'_blank');
-        },     
-        success : function(data){
+        data: {a:asw,c:'download'},
+        url: baseUrl + '/reportfakturpembelian/reportfakturpembelian',
+         type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
         }
       });
     }

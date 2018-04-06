@@ -150,7 +150,7 @@
     function(){
 
          $.ajax({
-          url:baseUrl + '/sales/hapus_invoice',
+          url:baseUrl + '/sales/nota_debet_kredit/hapus_cn_dn',
           data:{nomor_cn_dn},
           type:'get',
           success:function(data){

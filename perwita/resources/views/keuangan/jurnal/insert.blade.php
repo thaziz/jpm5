@@ -1,24 +1,43 @@
+<style type="text/css">
+    .table-form{
+      border-collapse: collapse;
+    }
+
+    .table-form th{
+      font-weight: 600;
+    }
+
+    .table-form th,
+    .table-form td{
+      padding: 4px 0px;
+    }
+
+    .table-form input{
+      font-size: 10pt;
+    }
+</style>
+
 <div class="row">
   <form class="form-horizontal kirim" id="form_tambah_akun">
     <div class="col-md-12" style="background:;margin-bottom: 20px;">
-      <table id="table_form" width="50%" border="0">
+      <table class="table-form" width="100%" border="0">
         <tbody>
           <tr>
             <td width="17%">Tanggal Transaksi<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
             <td width="35%">
-             <input readonly type="text" name="jr_date" value="{{ date("d-m-Y") }}">
+             <input readonly type="text" name="jr_date" value="{{ date("d-m-Y") }}" class="form-control" style="width: 85%">
             </td>
 
             <td width="17%">Tanggal Transaksi<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
             <td width="35%">
-             <input readonly type="text" name="jr_year" value="{{ date("Y") }}">
+             <input readonly type="text" name="jr_year" value="{{ date("Y") }}" class="form-control">
             </td>
           </tr>
 
           <tr>
             <td width="17%">Pilih Transaksi<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
             <td width="35%">
-             <select name="jr_detail" style="width:85%" id="detail" class="input-Validity" required>
+             <select name="jr_detail" style="width:85%" id="detail" class="form-control input-Validity chosen-select" required>
                 <option value=""> - Pilih Transaksi Terlebih Dahulu</option>
                @foreach($transaksi as $dataTransaksi)
                   <option value="{{ $dataTransaksi->tr_code }}"> {{ $dataTransaksi->tr_name }} </option>
@@ -30,7 +49,7 @@
           <tr>
             <td width="17%">Catatan Jurnal<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
             <td width="35%">
-             <textarea name="jr_note" class="input-Validity upper" style="resize: none;width: 85%" rows="3" placeholder="Masukkan Catatan Jurnal Disini"></textarea>
+             <textarea name="jr_note" class="input-Validity upper form-control" style="resize: none;width: 85%" rows="3" placeholder="Masukkan Catatan Jurnal Disini"></textarea>
             </td>
           </tr>
         </tbody>
@@ -57,7 +76,9 @@
 
     $change = false;
 
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $(".chosen-select").chosen({width: '85%'});
 
     $("#form_tambah_akun").submit(function(){
 
@@ -106,12 +127,20 @@
       if($(this).val() == ""){
         $("#detai_wrap").html("<center><small>Anda Harus Memilih Transaksi Dulu</small></center>");
       }else{
+        $("#detai_wrap").html("<center><small>Sedang Mengambil Data Akun...</small></center>");
         $.ajax(baseUrl+"/keuangan/jurnal_umum/detail/"+$(this).val(), {
-         timeout: 5000,
+         timeout: 10000,
          type: "GET",
          success: function (data) {
             $("#detai_wrap").html(data);
-         }
+         },
+         error: function(request, status, err) {
+            if (status == "timeout") {
+              $("#detai_wrap").html("<center><small>Request Time Out. Harap Memilih Transaksi Lagi...</small></center>");
+            } else {
+              $("#detai_wrap").html("<center><small>Internal Server Error. Harap Memilih Transaksi Lagi...</small></center>");
+            }
+        }
         })
       }
     })
