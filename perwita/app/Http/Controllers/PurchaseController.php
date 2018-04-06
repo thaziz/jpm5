@@ -69,6 +69,7 @@ class PurchaseController extends Controller
        $request->totalharga;
        $request->jumlahharga;
        $request->ppn;
+       $lokasigudang = [];
 		$data2['po'] = DB::select("select * from pembelian_order, supplier where po_id = '$id'");
 		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF'");
 
@@ -76,8 +77,18 @@ class PurchaseController extends Controller
 
 		$data2['spp'] = DB::select("select distinct spp_nospp , spp_keperluan, nama_department , nama , spp_tgldibutuhkan from  pembelian_order , spp, pembelian_orderdt, cabang, masterdepartment where po_id = '$id' and podt_idpo = po_id  and podt_idspp = spp_id and spp_cabang = kode and spp_bagian = kode_department ");
 	
-
-		$data2['gudang'] = DB::select("select * from mastergudang");
+		for($ds = 0; $ds < count($data2['podt']); $ds++){
+			$namagudang = $data2['podt'][$ds]->podt_lokasigudang;
+			array_push($lokasigudang , $namagudang);		
+		}
+		
+		
+		$idgudang = array_unique($lokasigudang);
+		
+		for($i = 0 ; $i < count($idgudang); $i++){
+			$idgudang2 = $idgudang[$i];
+			$data2['gudang'] = DB::select("select * from mastergudang where mg_id = '$idgudang2'");
+		}
 
 		foreach ($data2['po'] as $key => $value) {
 			$a = $value->nama_supplier;
@@ -123,7 +134,7 @@ class PurchaseController extends Controller
 		}
 
 		/*dd($data2);*/
-      return view('purchase.purchase.print',compact('data','request','data2','a','b','c','d','e','f','g','h','i','j','k','L','m','n'));
+      return view('purchase.purchase.print',compact('data','request','data2','a','b','c','d','e','f','g','h','i','j','k','L','m','n', 'data'));
     } 
 	public function spp_index () {
 		$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
@@ -134,7 +145,7 @@ class PurchaseController extends Controller
 		$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
 		$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
 
-		return view('purchase.spp.index', compact('data'));
+		return view('purchase.spp.index', compact('data2'));
 	}
 	
 	public function getnospp(Request $request){
@@ -3975,6 +3986,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				$fatkurpembelian->fp_pending_status = 'APPROVED';
 				$fatkurpembelian->fp_status = 'Released';
 				$fatkurpembelian->fp_edit = 'ALLOWED';
+				$fatkurpembelian->fp_sisapelunasan = $netto;
 
 				$fatkurpembelian->save();
 
@@ -5795,7 +5807,7 @@ public function kekata($x) {
 					$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
 					$deletefp2 = DB::table('form_tt')->where('tt_nofp' , '=' , $nofaktur)->delete();
 					$deletefp = DB::table('faktur_pembelian')->where('fp_idfaktur' , '=' , $id)->delete();			
-					$deletebt = 	DB::delete("DELETE from barang_terima where bt_idtransaksi = '$id' and bt_flag = '$idpodb'"); 
+					$deletebt = 	DB::delete("DELETE from barang_terima where bt_idtransaksi = '$id' and bt_flag = 'FP'"); 
 				}
 				else {
 					$deletefp = DB::table('fakturpajakmasukan')->where('fpm_idfaktur' , '=' , $id)->delete();
@@ -5806,7 +5818,7 @@ public function kekata($x) {
 				
 		}
 
-		return json_encode('sukses');
+		return json_encode('1');
 	}
 
 	public function updatestockbrgfp(Request $request){

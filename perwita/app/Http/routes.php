@@ -589,7 +589,15 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   Route::post('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPembelianController@report_fakturpajakmasukan');
   //END OF 
 
- 
+  //LAPORAN PENERIMAAN BARANG
+  Route::get('penerimaanbarang/penerimaanbarang/penerimaanbarang', 'LaporanPembelianController@lap_penerimaanbarang');
+  Route::post('reportpenerimaanbarang/reportpenerimaanbarang', 'LaporanPembelianController@report_penerimaanbarang');
+  //END OF
+
+  //LAPORAN PENGELUARAN BARANG
+  Route::get('pengeluaranbarang/pengeluaranbarang/pengeluaranbarang', 'LaporanPembelianController@lap_pengeluaranbarang');
+  Route::post('reportpengeluaranbarang/reportpengeluaranbarang', 'LaporanPembelianController@report_pengeluaranbarang');
+  //END OF
 
 
 
@@ -645,13 +653,55 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 
 
 
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
+
+//LAPORAN MASTER BERSAMA INDEX
+Route::get('laporanbersama/laporanbersama','LaporanMasterController@lap_bersama');
+//END OF
+
+//LAPORAN PAJAK
+Route::get('lappajak/lappajak','LaporanMasterController@lap_pajak');
+Route::post('reportpajak/reportpajak','LaporanMasterController@report_pajak');
+//END OF
+
+//LAPORAN PROVINSI 
+Route::get('lapprovinsi/lapprovinsi','LaporanMasterController@lap_provinsi');
+Route::post('reportprovinsi/reportprovinsi','LaporanMasterController@report_provinsi');
+//END OF
+
+
+//LAPORAN KOTA
+Route::get('lapkota/lapkota','LaporanMasterController@lap_kota');
+Route::post('reportkota/reportkota','LaporanMasterController@report_kota');
+//END OF
+
+//LAPORAN KECAMATAN
+Route::get('lapkecamatan/lapkecamatan','LaporanMasterController@lap_kecamatan');
+Route::post('reportkecamatan/reportkecamatan','LaporanMasterController@report_kecamatan');
+//END OF
+
+//LAPORAN CABANG
+Route::get('lapcabang/lapcabang','LaporanMasterController@lap_cabang');
+Route::post('reportcabang/reportcabang','LaporanMasterController@report_cabang');
+//END OF
+
+//LAPORAN TIPE ANGKUTAN
+Route::get('laptipeangkutan/laptipeangkutan','LaporanMasterController@lap_tipeangkutan');
+Route::post('reporttipeangkutan/reporttipeangkutan','LaporanMasterController@report_tipeangkutan');
+//END OF
+
+//LAPORAN KENDARAAN
+Route::get('lapkendaraan/lakendaraan','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
 
 
 
 
 
 //=================================== LAPORAN PENJUALAN BERAWAL =========================================//
-
 
 //LAPORAN TARIF
 Route::get('laporan_master_penjualan/tarif_cabang_dokumen', 'LaporanMasterController@tarif_cabang_dokumen');

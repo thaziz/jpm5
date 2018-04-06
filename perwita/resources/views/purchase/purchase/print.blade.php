@@ -253,6 +253,51 @@
                 <td class="textright"></td>
                 <td class="textright"></td>
         </tr>
+         <tr>
+                <td class="textcenter">&nbsp;</td>
+                <td class="textleft"></td>
+                <td class="textcenter"></td>
+                <td class="textleft"></td>
+                <td class="textleft"></td>
+                <td class="textright"></td>
+                <td class="textright"></td>
+        </tr>
+         <tr>
+                <td class="textcenter">&nbsp;</td>
+                <td class="textleft"></td>
+                <td class="textcenter"></td>
+                <td class="textleft"></td>
+                <td class="textleft"></td>
+                <td class="textright"></td>
+                <td class="textright"></td>
+        </tr>
+         <tr>
+                <td class="textcenter">&nbsp;</td>
+                <td class="textleft"></td>
+                <td class="textcenter"></td>
+                <td class="textleft"></td>
+                <td class="textleft"></td>
+                <td class="textright"></td>
+                <td class="textright"></td>
+        </tr>
+         <tr>
+                <td class="textcenter">&nbsp;</td>
+                <td class="textleft"></td>
+                <td class="textcenter"></td>
+                <td class="textleft"></td>
+                <td class="textleft"></td>
+                <td class="textright"></td>
+                <td class="textright"></td>
+        </tr>
+         <tr>
+                <td class="textcenter">&nbsp;</td>
+                <td class="textleft"></td>
+                <td class="textcenter"></td>
+                <td class="textleft"></td>
+                <td class="textleft"></td>
+                <td class="textright"></td>
+                <td class="textright"></td>
+        </tr>
         <tr>
           <td class="hiddenborderright hiddenbordertop hiddenborderbottom hiddenborderleft fixed" width="8%">
             <table>
@@ -324,6 +369,17 @@
     <table class="ataspenting">
       <tr>
         <td style="width: 200px;">&nbsp;</td>
+      </tr>
+
+        <td style="width: 200px;">Lokasi Gudang </td>
+        <td>:</td>
+        <td> @foreach($data2['gudang'] as $gudang)
+            &nbsp; <b> {{$gudang->mg_namagudang}} </b>
+            <tr>
+              <td> &nbsp; </td> <td>  </td> <td> &nbsp; {{$gudang->mg_alamat}}</td>
+            </tr>
+            @endforeach
+        </td>
       </tr>
       <tr>
         <td style="width: 200px;">Jangka Waktu Pembayaran</td>

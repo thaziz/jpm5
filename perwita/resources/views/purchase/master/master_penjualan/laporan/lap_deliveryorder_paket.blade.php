@@ -10,6 +10,12 @@
     font-family: FontAwesome;
 
   }
+  #container {
+    height: 400px; 
+    min-width: 310px; 
+    max-width: 800px;
+    margin: 0 auto;
+}
   .dataTables_filter, .dataTables_info { display: none; }
 
 </style>
@@ -34,6 +40,7 @@
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
+                    <div id="container" style="height: 400px"></div>
                     <table class="table table-bordered datatable table-striped">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
@@ -342,5 +349,49 @@
         }
       });
     }
+
+
+Highcharts.chart('container', {
+    chart: {
+        type: 'column',
+        options3d: {
+            enabled: true,
+            alpha: 5,
+            beta: 30,
+            depth: 70
+        }
+    },
+    title: {
+        text: 'Laporan'
+    },
+    subtitle: {
+        text: 'PENJUALAN PAKET'
+    },
+    plotOptions: {
+        column: {
+            depth: 100
+        }
+    },
+    xAxis: {
+        categories: ['a','b'],
+        labels: {
+            skew3d: true,
+            style: {
+                fontSize: '16px'
+            }
+        }
+    },
+    yAxis: {
+        title: {
+            text: null
+        }
+    },
+    series: [{
+        name: 'Sales',
+        data: [100, 200]
+    },
+
+    ]
+});
 </script>
 @endsection
