@@ -253,29 +253,65 @@ class LaporanPembelianController extends Controller
 
 
 	//-----
-	//=============================== LAPORAN FAKTUR PAJAK PEMBELIAN ========================================//
-	//=============================== END OF LAPORAN FAKTUR PAJAK PEMBELIAN ========================================//
+	
+
+	//START LAPORAN PENERIMAAN BARANG	
+	public function lap_penerimaanbarang() {
+		$array = DB::table('penerimaan_barang')
+					->select('penerimaan_barang.*','supplier.nama_supplier as supplier','mastergudang.mg_namagudang as gudang','d_akun.nama_akun as akun')
+					->join('supplier','supplier.idsup','=','penerimaan_barang.pb_supplier')
+					->join('mastergudang','mastergudang.mg_id','=','penerimaan_barang.pb_gudang')
+					->join('d_akun','d_akun.id_akun','=','penerimaan_barang.pb_acchutangdagang')
+					->get();
+		return view('purchase/laporan/lap_penerimaanbarang/lap_penerimaanbarang',compact('array'));
+	}
+	public function report_penerimaanbarang( Request $request ){
+			$data = $request->a;	
+	   		$dat = '';
+				for ($save=0; $save <count($data) ; $save++) { 
+					$dat = $dat.','.$data[$save];
+				}
+				$dat =explode(',', $dat); 
+				json_encode($dat);
+		        for ($i=1; $i <count($dat) ; $i++) { 
+					$dat1[$i] = DB::table('penerimaan_barang')
+					->select('penerimaan_barang.*','supplier.nama_supplier as supplier','mastergudang.mg_namagudang as gudang','d_akun.nama_akun as akun')
+					->join('supplier','supplier.idsup','=','penerimaan_barang.pb_supplier')
+					->join('mastergudang','mastergudang.mg_id','=','penerimaan_barang.pb_gudang')
+					->join('d_akun','d_akun.id_akun','=','penerimaan_barang.pb_acchutangdagang')
+					->where('pb_id','=',$dat[$i])->get();
+		        }
+		        // dd($dat1);
+		return view("purchase/laporan/lap_penerimaanbarang/report_penerimaanbarang",compact('dat1'));
+	}
+	//END OF
 
 
-
-	//=============================== LAPORAN MASTER ITEM PEMBELIAN ========================================//
-	//=============================== END OF LAPORAN MASTER ITEM PEMBELIAN ========================================//
+	//-----
 
 
+	//START LAPORAN PENGELUARAN BARANG	
+	public function lap_pengeluaranbarang() {
+		$array = DB::table('pengeluaran_barang')->get();
+		return view('purchase/laporan/lap_pengeluaranbarang/lap_pengeluaranbarang',compact('array'));
+	}
+	public function report_pengeluaranbarang( Request $request ){
+			$data = $request->a;	
+	   		$dat = '';
+				for ($save=0; $save <count($data) ; $save++) { 
+					$dat = $dat.','.$data[$save];
+				}
+				$dat =explode(',', $dat); 
+				json_encode($dat);
+		        for ($i=1; $i <count($dat) ; $i++) { 
+					$dat1[$i] = DB::table('pengeluaran_barang')->where('pb_id','=',$dat[$i])->get();
+		        }
+		        // dd($dat1);
+		return view("purchase/laporan/lap_pengeluaranbarang/report_pengeluaranbarang",compact('dat1'));
+	}
+	//END OF
 
-	//=============================== LAPORAN MASTER ITEM PEMBELIAN ========================================//
-	//=============================== END OF LAPORAN MASTER ITEM PEMBELIAN ========================================//
 
-
-
-
-	//=============================== LAPORAN MASTER ITEM PEMBELIAN ========================================//
-	//=============================== END OF LAPORAN MASTER ITEM PEMBELIAN ========================================//
-
-
-
-	//=============================== LAPORAN MASTER ITEM PEMBELIAN ========================================//
-	//=============================== END OF LAPORAN MASTER ITEM PEMBELIAN ========================================//
-
+	//-----
 
 }
