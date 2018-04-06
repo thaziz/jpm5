@@ -589,7 +589,15 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   Route::post('reportfakturpajakmasukan/reportfakturpajakmasukan', 'LaporanPembelianController@report_fakturpajakmasukan');
   //END OF 
 
- 
+  //LAPORAN PENERIMAAN BARANG
+  Route::get('penerimaanbarang/penerimaanbarang/penerimaanbarang', 'LaporanPembelianController@lap_penerimaanbarang');
+  Route::post('reportpenerimaanbarang/reportpenerimaanbarang', 'LaporanPembelianController@report_penerimaanbarang');
+  //END OF
+
+  //LAPORAN PENGELUARAN BARANG
+  Route::get('pengeluaranbarang/pengeluaranbarang/pengeluaranbarang', 'LaporanPembelianController@lap_pengeluaranbarang');
+  Route::post('reportpengeluaranbarang/reportpengeluaranbarang', 'LaporanPembelianController@report_pengeluaranbarang');
+  //END OF
 
 
 
