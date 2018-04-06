@@ -35,6 +35,13 @@
         #table_cn_dn tbody tr{
             cursor: pointer;
         }
+        .borderless td, .borderless th {
+            border: none !important;
+          }
+
+        #modal_um {
+            overflow-y:scroll;
+        }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -100,7 +107,7 @@
                                         <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
-                                        <option value="U"> UANG MUKA </option>
+                                        <option selected="" value="U"> UANG MUKA </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                     </select>
@@ -145,7 +152,11 @@
                                     <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
+                                    @if($row->kode == 'CS-001/00051')
+                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
+                                    @else
                                         <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
+                                    @endif
                                     @endforeach
                                     </select>
                                 </td>
@@ -473,14 +484,14 @@
                 
                   {{-- modal um --}}
                 <div id="modal_um" class="modal" >
-                    <div class="modal-dialog modal-lg" style="min-width: 1200px;max-width: 1200px">
+                    <div class="modal-dialog modal-lg" style="min-width: 1400px;max-width: 1400px">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title">Edit Insert Uang Muka</h4>
                             </div>
                             <div class="modal-body">
-                                <form class="form-horizontal">
+                                    <form class="form-horizontal">
                                     <div class="row">
                                         <div class="col-md-5">
                                             <table class="table table-bordered table-striped">
@@ -535,11 +546,10 @@
                                                             <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
                                                         </td>
                                                     </tr>
-                                         
                                                     <tr>
                                                         <td>Akun Biaya</td>
                                                         <td style="max-width: 200px" class="">
-                                                            <select onchange="akun_biaya1()" class="form-control akun_biaya" id="akun_biaya">
+                                                            <select onchange="akun_biaya_um()" class="form-control akun_biaya_um" id="akun_biaya">
                                                                 <option value="0" data-jenis ="D" data-biaya ="0">Non-Biaya</option>
                                                                 @foreach($akun_biaya as $val)
                                                                 <option value="{{$val->kode}}" data-biaya ="{{$val->acc_biaya}}" data-jenis ="{{$val->jenis}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -547,9 +557,9 @@
                                                             </select>
                                                         </td>
                                                         <td colspan="2">
-                                                            <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control" value="0">
-                                                            <input type="hidden" class="jenis_biaya " value="D">
-                                                            <input type="hidden" class="akun_acc_biaya" value="0">
+                                                            <input type="text" readonly="" onkeyup="hitung_um()" style="text-align:right" class="jumlah_biaya_admin_um form-control" value="0">
+                                                            <input type="hidden" class="jenis_biaya_um " value="D">
+                                                            <input type="hidden" class="akun_acc_biaya_um" value="0">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -569,15 +579,66 @@
                                             </table>
                                         </div>
                                         <div class="col-md-7">
-                                            <h3>Riwayat</h3>
+                                            <h3>Riwayat Dan Pembayaran</h3>
                                             <div class="tabs-container">
                                                 <ul class="nav nav-tabs">
-                                                    <li class="active"><a data-toggle="tab" href="#tab-rk"> Riwayat Kwitansi</a></li>
-                                                    <li class=""><a data-toggle="tab" href="#tab-cn">Riwayat CN/DN</a></li>
+                                                    <li class="active"><a data-toggle="tab" href="#tab-pb">Pembayaran</a></li>
+                                                    <li class=""><a data-toggle="tab" href="#tab-rk1"> Riwayat Kwitansi</a></li>
+                                                    <li class=""><a data-toggle="tab" href="#tab-cn1">Riwayat CN/DN</a></li>
                                                 </ul>
                                                 <div class="tab-content ">
-                                                    <div id="tab-rk" class="tab-pane active">
-                                                        <div class="panel-body riwayat_kwitansi">
+                                                    <div id="tab-pb" class="tab-pane active">
+                                                        <div class="panel-body pembayaran_um">
+                                                            <table class="table tabel_pembayaran_um borderless table-striped">
+                                                                <tr>
+                                                                    <td>No UM</td>
+                                                                    <td><input readonly="" type="text" class="form-control no_um"></td>
+                                                                    <td>
+                                                                        <button type="button" class="cari_um btn btn-primary">
+                                                                            <i class="fa fa-search"> Cari</i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Nominal Uang Muka</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" readonly="" style="text-align: right" class="form-control nominal_um_text">
+                                                                        <input type="hidden" readonly="" style="text-align: right" class="form-control nominal_um">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Sisa</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" readonly="" style="text-align: right" class="form-control terpakai_um_text">
+                                                                        <input type="hidden" readonly="" style="text-align: right" class="form-control terpakai_um">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Status UM</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" readonly="" style="text-align: right" class="form-control status_um">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Jumlah Bayar</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" style="text-align: right" class="form-control jumlah_bayar_um">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="3">
+                                                                        <div class="pull-right">
+                                                                        <button type="button" class="btn btn-default append_um">
+                                                                        <i class="fa fa-plus"></i>Append
+                                                                        </button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div id="tab-rk1" class="tab-pane">
+                                                        <div class="panel-body riwayat_kwitansi_um">
                                                             <table class="table riwayat table-bordered table-striped">
                                                             <thead>
                                                                 <tr>
@@ -591,8 +652,8 @@
                                                         </table>
                                                         </div>
                                                     </div>
-                                                    <div id="tab-cn" class="tab-pane">
-                                                        <div class="panel-body riwayat_cn_dn">
+                                                    <div id="tab-cn1" class="tab-pane">
+                                                        <div class="panel-body riwayat_cn_dn_um">
                                                             <table id="table_cn_dn" class="table table-bordered table-striped">
                                                                 <thead>
                                                                     <tr>
@@ -609,23 +670,27 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <h3>Pembayaran</h3>
-                                            <table class="table  table-bordered table-striped">
-                                                <tbody>
-                                                    <tr>
-                                                        <td>Jumlah Bayar</td>
-                                                        <td>
-                                                            <input type="text" onkeyup="hitung()" class="form-control angka" name="ed_jml_bayar" style="text-align:right">
-                                                            <input type="hidden" name="ed_jml_bayar_old" >
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            <div>
+                                                <table class="table table_histori_um ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No UM</th>
+                                                            <th>Nominal</th>
+                                                            <th>Sisa</th>
+                                                            <th>Jumlah Bayar</th>
+                                                            <th>Sisa Akhir</th>
+                                                            <th>Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                 </form>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="save_um">Save changes</button>
+                                    <button type="button" class="btn btn-primary" id="save_um">Simpan Uang Muka</button>
                                 </div>
                             </div>
                         </div>
@@ -635,7 +700,7 @@
                 <div class="box-footer">
                   <div class="pull-right">
 
-                     {{-- cari um modal --}}
+                     cari um modal
                 <div id="modal_cari_um" class="modal">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -685,10 +750,12 @@
 var array_simpan = [];
 var array_edit = [];
 var array_harga = [];
-var array_um= [];
 var count_um = 1;
 var simpan_um = [];
 var harga_um = [];
+var array_um= [];
+var array_um_harga=[];
+
 // datepicker
 $('.ed_tanggal').datepicker({
     format:'dd/mm/yyyy',
@@ -731,6 +798,11 @@ var table_data = $('#table_data').DataTable({
                       }
                     ],
                     
+                })
+
+
+var table_histori_um = $('.table_histori_um').DataTable({
+                    searching:false,
                 })
 
 var table_data_biaya = $('#table_data_biaya').DataTable({
@@ -776,7 +848,7 @@ function nota_kwitansi() {
 
     $.ajax({
         url:baseUrl+'/sales/akun_bank',
-        data:{cabang},
+        data:{cb_cabang},
         success:function(response){
             $('.td_akun_bank').html(response);
         },
@@ -852,6 +924,7 @@ $(document).ready(function(){
     
     $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true});
+    $('.jumlah_biaya_admin_um').maskMoney({precision:0,thousands:'.',allowZero:true});
     $('.m_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true});
     $('.me_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true});
 });
@@ -1102,12 +1175,16 @@ function histori(p){
     var i_nomor             = $(par).find('.i_nomor').val();
     var i_sisa_pelunasan    = $(par).find('.i_sisa_pelunasan').val();
     var i_bayar             = $(par).find('.i_bayar ').val();
+    var nota_kwitansi       = $('#nota_kwitansi').val();
     var i_tagihan           = $(par).find('.i_tagihan ').val();
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val(); 
+    var asd                 = simpan_um.length;
+    simpan_um.splice(0,asd);
+
     if (cb_jenis_pembayaran != 'U') {
         $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
-        data:{i_nomor},
+        data:{i_nomor,cb_jenis_pembayaran},
         success:function(data){
             $('.riwayat_kwitansi').html(data);
             var temp = 0;
@@ -1120,7 +1197,7 @@ function histori(p){
 
             $.ajax({
                 url:baseUrl + '/sales/riwayat_cn_dn',
-                data:{i_nomor},
+                data:{i_nomor,cb_jenis_pembayaran},
                 success:function(data){
                     $('.riwayat_cn_dn').html(data);
                     var temp = 0;
@@ -1168,9 +1245,8 @@ function histori(p){
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
                     $('.jumlah_bayar').val(i_bayar);
                     $('.jumlah_biaya_admin ').val(biaya_admin);
-                    var biaya_admin    = $(par).find('.akun_biaya').val();
-                    $('.biaya_admin ').val(biaya_admin).trigger('chosen:updated');
-
+                    var biaya_admin    = $(par).find('.i_akun_biaya').val();
+                    $('.akun_biaya ').val(biaya_admin).trigger('chosen:updated');
 
                     hitung();
                     $('#modal_info').modal('show');
@@ -1181,11 +1257,11 @@ function histori(p){
     }else{
         $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
-        data:{i_nomor},
+        data:{i_nomor,cb_jenis_pembayaran},
         success:function(data){
-            $('.riwayat_kwitansi').html(data);
+            $('.riwayat_kwitansi_um').html(data);
             var temp = 0;
-            table_riwayat.$('.kd_total_bayar').each(function(){
+            table_riwayat_um.$('.kd_total_bayar_um').each(function(){
                 temp += parseFloat($(this).val());
             });
             $('.ed_terbayar').val(accounting.formatMoney(temp,"",2,'.',','));
@@ -1194,18 +1270,19 @@ function histori(p){
 
             $.ajax({
                 url:baseUrl + '/sales/riwayat_cn_dn',
-                data:{i_nomor},
+                data:{i_nomor,cb_jenis_pembayaran},
                 success:function(data){
-                    $('.riwayat_cn_dn').html(data);
+                    $('.riwayat_cn_dn_um').html(data);
                     var temp = 0;
                     var temp1 = 0;
-                    table_cd.$('.cd_debet').each(function(){
+                    table_cd_um.$('.cd_debet_um').each(function(){
                         temp += parseFloat($(this).val());
                     });
 
-                    table_cd.$('.cd_kredit').each(function(){
+                    table_cd_um.$('.cd_kredit_um').each(function(){
                         temp1 += parseFloat($(this).val());
                     });
+                    console.log(temp1);
                     $('.ed_nota_debet').val(accounting.formatMoney(temp,"",2,'.',','));
                     $('.nota_debet').val(temp);
 
@@ -1224,7 +1301,7 @@ function histori(p){
                     var nota_debet     = $('.nota_debet').val()
                     nota_debet         = parseFloat(nota_debet);
 
-                    var nota_kredit    =$('.nota_kredit').val()
+                    var nota_kredit    = $('.nota_kredit').val()
                     nota_kredit        = parseFloat(nota_kredit);
 
 
@@ -1241,13 +1318,71 @@ function histori(p){
                     $('.angka').val(i_bayar);
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
                     $('.jumlah_bayar').val(i_bayar);
-                    $('.jumlah_biaya_admin ').val(biaya_admin);
-                    var biaya_admin    = $(par).find('.akun_biaya').val();
-                    $('.biaya_admin ').val(biaya_admin).trigger('chosen:updated');
+                    $('.jumlah_biaya_admin_um').val(biaya_admin);
+                    var biaya_admin    = $(par).find('.i_akun_biaya ').val();
+                    $('.akun_biaya_um').val(biaya_admin).trigger('chosen:updated');
+                    if (biaya_admin == '0') {
+                        $('.jumlah_biaya_admin_um').attr('readonly',true);
+                    }else{
+                        $('.jumlah_biaya_admin_um').attr('readonly',false);
+                    }
+                    $.ajax({
+                        url:baseUrl + '/sales/kwitansi_cari_um',
+                        data:{i_nomor,nota_kwitansi},
+                        dataType:'json',
+                        success:function(response){
+                            table_histori_um.clear().draw();
+                            console.log(response);
+                            for (var i = 0; i < response.data.length; i++) {
+
+                                var sisa_akhir = parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah) - parseFloat(response.data[i].ku_jumlah);
+                                table_histori_um.row.add([
+
+                                    response.data[i].ku_nomor_um+'<input type="hidden" value="'+response.data[i].ku_nomor_um+'" class="m_no_um m_um_'+response.data[i].ku_nomor_um+'" name="m_no_um[]">',
+
+                                    accounting.formatMoney(response.data[i].jumlah,"",2,'.',',')+
+                                    '<input type="hidden" value="'+response.data[i].jumlah+'" class="m_nominal_um">',
+
+                                    accounting.formatMoney(parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah),"",2,'.',',')+
+                                    '<input type="hidden" value="'+parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah)+'" class="m_terpakai_um">',
+
+                                    accounting.formatMoney(response.data[i].ku_jumlah,"",2,'.',',')+
+                                    '<input type="hidden" value="'+response.data[i].ku_jumlah+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+                                    accounting.formatMoney(sisa_akhir,"",2,'.',',')+
+                                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+                                    '<div class="btn-group ">'+
+                                    '<a  onclick="edit(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                                    '<a  onclick="hapus(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                                    '</div>',
+
+                                ]).draw();
+
+                                simpan_um.push(response.data[i].ku_nomor_um);
+                            }
+
+                            console.log(simpan_um);
+
+                            var temp = 0;
+                            
+                            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                                var ini = $(this).val();
+                                ini = parseFloat(ini);
+                                temp += ini;
+                            });
 
 
-                    hitung();
-                    $('#modal_um').modal('show');
+                            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+                            $('.jumlah_bayar').val(temp);
+                            $('.tabel_pembayaran_um input').val('');
+                            $('#modal_um').modal('show');
+                            hitung_um();
+
+
+                        }
+                    })
+
                 }
             })
         }
@@ -1582,8 +1717,10 @@ function pilih_um(par) {
         dataType : 'json',
         success:function(response){
             $('.no_um').val(response.data[0].nomor);
-            $('.total_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
-            $('.total_um').val(response.data[0].sisa_uang_muka);
+            $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
+            $('.nominal_um').val(response.data[0].jumlah);
+            $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+            $('.terpakai_um').val(response.data[0].sisa_uang_muka);
             $('.status_um').val(response.data[0].status_um);
             $('#modal_cari_um').modal('hide');
 
@@ -1633,96 +1770,116 @@ $('.jumlah_bayar_um ').keyup(function(){
    }
    $(this).val(accounting.formatMoney(jumlah,"",0,'.',','));
 });
-$('#save_um').click(function(){
-    var seq_um    = $('.seq_um').val();
-    var no_um     = $('.no_um').val();
-    var total_um  = $('.total_um').val();
+
+function akun_biaya_um(){
+   var jenis =  $('.akun_biaya_um').find(':selected').data('jenis');
+   var biaya =  $('.akun_biaya_um').find(':selected').data('biaya');
+   console.log(jenis);
+   $('.jenis_biaya_um').val('');
+   $('.akun_acc_biaya_um').val('');
+   $('.jenis_biaya_um').val(jenis);
+   $('.akun_acc_biaya_um').val(biaya);
+   $('.jumlah_biaya_admin_um').val('0');
+   if ($('.akun_biaya_um').val() == '0') {
+    $('.jumlah_biaya_admin_um ').attr('readonly',true);
+   }else{
+    $('.jumlah_biaya_admin_um ').attr('readonly',false);
+   }
+}
+
+function hitung_um(){
+    var sisa_terbayar = $('.sisa_terbayar').val();
+    var jumlah_bayar = $('.jumlah_bayar').val();
+    var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
+    jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+    jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
+    var akun_biaya         = $('.akun_biaya_um').val();
+    var jenis              = $('.jenis_biaya_um').val();
+
+
+
+    if (jenis != 'K') {
+        var hasil = sisa_terbayar - jumlah_bayar - jumlah_biaya_admin;
+        $('.ed_total').val(accounting.formatMoney(hasil,"",0,'.',','));
+        $('.total').val(hasil);
+        var hasil1 = parseFloat(jumlah_bayar) + parseFloat(jumlah_biaya_admin);
+        $('.total_bayar ').val(accounting.formatMoney(hasil1,"",0,'.',','));
+    }else{
+        toastr.warning('Jenis Akun Biaya Tidak Boleh Kredit');
+        $('.akun_biaya_um').val('0').trigger('chosen:updated');
+        akun_biaya_um();
+
+    }
+
+
+}
+    
+
+
+$('.append_um').click(function(){
+    var seq_um      = $('.seq_um').val();
+    var no_um       = $('.no_um').val();
+    var nominal_um  = $('.nominal_um').val();
+    var terpakai_um   = $('.terpakai_um').val();
     var status_um   = $('.status_um').val();
-    var Keterangan_um  = $('.Keterangan_um').val();
+    var terpakai_um = $('.terpakai_um').val();
     var jumlah_bayar_um   = $('.jumlah_bayar_um ').val();
-    var me_um_flag  = $('.me_um_flag').val();
     jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
+    jumlah_bayar_um = parseFloat(jumlah_bayar_um);
+    if (jumlah_bayar_um > terpakai_um) {
+        toastr.warning('Jumlah Lebih Besar Dari Sisa Uang Muka');
+        $('.jumlah_bayar_um ').val('0   ');
+        return 1;
+    }
     if (jumlah_bayar_um == 0 ||  jumlah_bayar_um =='') {
         toastr.warning('Jumlah Bayar Harus Diisi');
         return 1;
     }
-    if (Keterangan_um == 0) {
-        toastr.warning('Keterangan Harus Diisi');
-        return 1;
-    }
+    
+    var sisa_akhir = terpakai_um - jumlah_bayar_um;
 
-    if (no_um != '') {
-        if (me_um_flag == '') {
-            tabel_uang_muka.row.add([
-                    seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
-                    +'<input type="hidden" value="'+seq_um+'" class="sequence">',
-                    no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
-                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um">',
-                    accounting.formatMoney(total_um,"",2,'.',',')+
-                    '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
-                     accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
-                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
-                    '<input type="text" readonly value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
-                    '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-                    '<label class="fa fa-trash"><label></button>'+
-                    '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
-                    '<label class="fa fa-pencil"><label></button>'
+            table_histori_um.row.add([
+                    
+
+                    no_um+'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
+
+                    accounting.formatMoney(nominal_um,"",2,'.',',')+
+                    '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
+
+                    accounting.formatMoney(terpakai_um,"",2,'.',',')+
+                    '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
+
+                    accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
+                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+                    accounting.formatMoney(sisa_akhir,"",2,'.',',')+
+                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+                    '<div class="btn-group ">'+
+                    '<a  onclick="edit(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                    '<a  onclick="hapus(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                    '</div>',
 
                 ]).draw();
+
+
             count_um++;
+
             simpan_um.push(no_um);
             var temp = 0;
-            tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
-                var temp1 = $(this).val();
-                temp1     = parseInt(temp1);
-                temp += temp1;
+            
+            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                var ini = $(this).val();
+                ini = parseFloat(ini);
+                temp+=ini;
             });
-
-            $('.um').val(temp);
-            $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
-            $('.tab_detail ul li .tab-3').trigger('click');
-            $('#modal_um').modal('hide');
-        }else{
-
-            var par = $('.sequence_'+me_um_flag).parents('tr');
-      
-            tabel_uang_muka.row(par).remove().draw();
-
-            tabel_uang_muka.row.add([
-                    seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
-                    +'<input type="hidden" value="'+seq_um+'" class="sequence">',
-                    no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
-                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um" name="status_um[]">',
-                    accounting.formatMoney(total_um,"",2,'.',',')+
-                    '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
-                     accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
-                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
-                    '<input type="text" readonly value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
-                    '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-                    '<label class="fa fa-trash"><label></button>'+
-                    '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
-                    '<label class="fa fa-pencil"><label></button>'
-
-                ]).draw();
-
-            var temp = 0;
-            tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
-                var temp1 = $(this).val();
-                temp1     = parseInt(temp1);
-                temp += temp1;
-            });
-
-            $('.um').val(temp);
-            $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
-            $('.tab_detail ul li .tab-3').trigger('click');
-            $('#modal_um').modal('hide');
-
-
-        }
-    }else{
-        $('#modal_um').modal('hide');
-    }
-    hitung_bayar();
+            console.log(temp);
+            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.jumlah_bayar').val(temp);
+            $('.tabel_pembayaran_um input').val('');
+            hitung_um();
+        
+    // hitung();
 
 });
 
@@ -1760,6 +1917,116 @@ function hapus_detail_um(o){
 
     tabel_uang_muka.row(par).remove().draw(false);
 }
+
+
+$('#save_um').click(function(){
+    var customer = $('.customer').val();
+    var ed_nomor_invoice = $('.ed_nomor_invoice').val();
+    swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data Uang Muka!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+
+               // alert(accPiutang);
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+          $.ajax({
+          url:baseUrl + '/sales/save_um_kwitansi',
+          type:'get',
+          dataType:'json',
+          data:$('.tabel_header :input').serialize()
+               +'&'+table_histori_um.$('input').serialize()
+               +'&customer='+customer
+               +'&ed_nomor_invoice='+ed_nomor_invoice,
+          success:function(response){
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                   showConfirmButton: true
+                    },function(){
+
+                        var jumlah_bayar         = $('.jumlah_bayar').val();
+                        jumlah_bayar             = parseInt(jumlah_bayar);
+                        var akun_biaya           = $('.akun_biaya_um').val();
+                        var jumlah_biaya_admin   = $('.jumlah_biaya_admin_um').val();
+                        var jenis                = $('.jenis_biaya_um').val();
+                        var akun_acc_biaya       = $('.akun_acc_biaya_um').val();
+
+                        if (jumlah_biaya_admin == '') {
+                            jumlah_biaya_admin = 0;
+                        }else{
+                            jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+                            jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
+                        }
+
+                        var angka                = $('.total_bayar').val();
+                        angka                    = angka.replace(/[^0-9\-]+/g,"");
+                        angka                    = parseInt(angka);
+                        var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
+                        var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
+                        var jumlah_biaya         = 0;
+                        if (jenis == 'K') {
+                            $(par).find('.i_kredit').val(jumlah_biaya_admin);
+                        }else{
+                            $(par).find('.i_debet').val(jumlah_biaya_admin);
+                        }
+                        $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
+                        $(par).find('.i_bayar').val(angka);
+                        $(par).find('.i_akun_biaya').val(akun_biaya);
+                        var temp = 0;
+                        table_data.$('.i_bayar').each(function(){
+                            var i_bayar = Math.round($(this).val()).toFixed(2);
+                                i_bayar = parseFloat(i_bayar);
+                            temp += i_bayar;
+                        })
+
+                        var temp1 = 0;
+                        table_data.$('.i_debet').each(function(){
+                            var i_bayar = Math.round($(this).val()).toFixed(2);
+                                i_bayar = parseFloat(i_bayar);
+                            temp1 += i_bayar;
+                        })
+
+                        var temp2 = 0;
+                        table_data.$('.i_kredit').each(function(){
+                            var i_bayar = Math.round($(this).val()).toFixed(2);
+                                i_bayar = parseFloat(i_bayar);
+                            temp2 += i_bayar;
+                        });
+
+
+                        hitung_bayar();
+                        $('#modal_um').modal('hide');
+                });
+
+          
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
+        });
+       }
+      });  
+     });
+})
+
 
 $('#btnsimpan').click(function(){
     var customer = $('.customer').val();
@@ -1833,6 +2100,16 @@ $('.print').click(function(){
 
     window.open('{{url("sales/kwitansi/cetak_nota")}}'+'/'+id);
 });
+
+
+window.onbeforeunload = function(event)
+    {
+        
+           // return confirm();
+
+        
+
+    };
 
 </script>
 
