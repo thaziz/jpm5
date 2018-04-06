@@ -12,14 +12,25 @@
         <tr>
             <td>{{$val->cd_nomor}}</td>
             <td>{{$val->cd_tanggal}}</td>
+            @if($val->cd_jenis == 'K')
             <td align="right">
-                {{number_format($val->cd_debet, 2, ",", ".")}}
-                <input type="hidden" value="{{$val->cd_debet}}" class="cd_debet">
+                {{number_format(0, 2, ",", ".")}}
+                <input type="hidden" value="{{0}}" class="cd_debet">
             </td>
             <td align="right">
-                {{number_format($val->cd_kredit, 2, ",", ".")}}
-                <input type="hidden" value="{{$val->cd_kredit}}" class="cd_kredit">
+                {{number_format($val->cdd_dpp_akhir+$val->cdd_ppn_akhir-$val->cdd_pph_akhir, 2, ",", ".")}}
+                <input type="hidden" value="{{$val->cdd_dpp_akhir+$val->cdd_ppn_akhir-$val->cdd_pph_akhir}}" class="cd_kredit">
             </td>
+            @else
+            <td align="right">
+                {{number_format($val->cdd_dpp_akhir+$val->cdd_ppn_akhir-$val->cdd_pph_akhir, 2, ",", ".")}}
+                <input type="hidden" value="{{$val->cdd_dpp_akhir+$val->cdd_ppn_akhir-$val->cdd_pph_akhir}}" class="cd_debet">
+            </td>
+            <td align="right">
+                {{number_format(0, 2, ",", ".")}}
+                <input type="hidden" value="{{0}}" class="cd_kredit">
+            </td>
+            @endif
         </tr>
         @endforeach
     </tbody>

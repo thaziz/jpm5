@@ -11,7 +11,7 @@
     <tbody>
       @foreach($data as $val)
       <tr onclick="pilih_invoice(this)">
-        <td><a class="invoice_nomor">{{$val->i_nomor}}</a></td>
+        <td><p class="invoice_nomor">{{$val->i_nomor}}</p></td>
         <td>{{$val->i_tanggal}}</td>
         <td>{{$val->nama}}</td>
         <td style="text-align: right">{{number_format($val->i_total_tagihan, 2, ",", ".")}}</td>

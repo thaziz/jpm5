@@ -49,7 +49,7 @@ class invoice_pembetulan_controller extends Controller
  	public function cari_invoice_pembetulan(request $request)
  	{
  		   $data = DB::table('invoice')
- 				  ->join('customer','kode','=','i_kode_customer')
+ 				        ->join('customer','kode','=','i_kode_customer')
 	              ->where('i_kode_cabang',$request->cabang)
 	              ->where('i_sisa_pelunasan','!=',0)
 	              ->get();
@@ -69,13 +69,15 @@ class invoice_pembetulan_controller extends Controller
  		$temp = DB::table('invoice_d')
  				  ->where('id_nomor_invoice',$request->id)
  				  ->get();
+
+
  		if ($data->i_pendapatan == 'KORAN') {
  			for ($i=0; $i < count($temp); $i++) { 
  				$data_dt[$i] = DB::table('delivery_orderd')
  				  			 ->join('delivery_order','nomor','=','dd_nomor')
- 							 ->where('dd_nomor',$temp[$i]->id_nomor_do)
- 							 ->where('dd_id',$temp[$i]->id_nomor_do_dt)
- 							 ->get();
+   							 ->where('dd_nomor',$temp[$i]->id_nomor_do)
+   							 ->where('dd_id',$temp[$i]->id_nomor_do_dt)
+   							 ->get();
  			}
  		}else{
  			for ($i=0; $i < count($temp); $i++) { 

@@ -58,7 +58,7 @@
             {{Session::get('comp_year')}}
 
           </h5>
-           <a  href="../nota_debet_kredit" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+           <a  href="{{url('sales/nota_debet_kredit')}}" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
           
         </div>
         <div class="ibox-content">
@@ -73,7 +73,7 @@
                     <table class="table borderless tabel_header1">
                       <tr>
                         <td width="93px">Nomor CN/DN</td> 
-                        <td><input type="text" readonly="" class="form-control nomor_cn_dn" name="nomor_cn_dn"></td>
+                        <td><input type="text" readonly="" value="{{$data->cd_nomor}}" class="form-control nomor_cn_dn" name="nomor_cn_dn"></td>
                       </tr>
                       <tr>
                         <td>
@@ -81,8 +81,13 @@
                         </td>
                         <td class="jenis_td">
                           <select class="form-control jenis_cd" onchange="hitung()" name="jenis_debet">
-                          <option value="K">KREDIT</option>
+                          @if($data->cd_jenis == 'K')
+                          <option selected="" value="K">KREDIT</option>
                           <option value="D">DEBET</option>
+                          @else
+                          <option value="K">KREDIT</option>
+                          <option selected="" value="D">DEBET</option>
+                          @endif
                         </select>
                         </td>
                       </tr>
@@ -91,7 +96,11 @@
                           <td style="max-width: 200px"  class="akun_biaya_td">
                               <select  class="form-control akun_biaya" name="akun_biaya" id="akun_biaya">
                                   @foreach($akun_biaya as $val)
+                                  @if($data->cd_jenis_biaya == $val->kode)
+                                  <option selected="" value="{{$val->kode}}" data-biaya ="{{$val->acc_biaya}}" data-jenis ="{{$val->jenis}}">{{$val->kode}} - {{$val->nama}}</option>
+                                  @else
                                   <option value="{{$val->kode}}" data-biaya ="{{$val->acc_biaya}}" data-jenis ="{{$val->jenis}}">{{$val->kode}} - {{$val->nama}}</option>
+                                  @endif
                                   @endforeach
                               </select>
                           </td>
@@ -103,7 +112,7 @@
                               <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                               </span>
-                              <input type="text" class="form-control tgl" name="tgl" value="{{carbon\carbon::now()->format('Y-m-d')}}">
+                              <input type="text" class="form-control tgl" name="tgl" value="{{$data->cd_tanggal}}">
                           </div>
                         </td>
                       </tr>
@@ -112,10 +121,10 @@
                         <td>
                           Cabang
                         </td>
-                        <td class=" cabang_td">
+                        <td class=" cabang_td disabled">
                           <select class="form-control cabang chosen-select-width" name="cabang">
                           @foreach($cabang as $val)
-                            @if(Auth::user()->kode_cabang == $val->kode)
+                            @if($data->cd_kode_cabang == $val->kode)
                               <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                             @else
                               <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -132,7 +141,7 @@
                         <td class="cabang_td disabled">
                           <select class="form-control cabang chosen-select-width" name="cabang">
                           @foreach($cabang as $val)
-                            @if(Auth::user()->kode_cabang == $val->kode)
+                            @if($data->cd_kode_cabang == $val->kode)
                               <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                             @else
                               <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -144,10 +153,13 @@
                       @endif
                       <tr>
                           <td style="padding-top: 0.4cm" >Customer</td>
-                          <td colspan="5" class="customer_td">                                    
+                          <td colspan="5" class="customer_td disabled">                                    
                               <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                   <option value="0">Pilih - Customer</option>
                               @foreach ($customer as $row)
+                              @if ($data->cd_customer == $row->kode)
+                                  <option selected="" value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->cabang}} </option>
+                              @endif
                                   <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->cabang}} </option>
                               @endforeach
                               </select>
@@ -156,7 +168,7 @@
                       </tr>
                       <tr>
                         <td>Keterangan</td> 
-                        <td><input type="text" name="keterangan" class="form-control keterangan" ></td>
+                        <td><input type="text" name="keterangan" value="{{$data->cd_keterangan}}" class="form-control keterangan" ></td>
                       </tr>
                     </table>
                   </div>
@@ -258,7 +270,7 @@
                                           <td>DPP</td>
                                           <td colspan="3"><input type="text" style="text-align: right" name="dpp_akhir" onkeyup="hitung_jumlah()" value="0,00"  class="dpp_akhir form-control"></td>
                                         </tr>
-                                        <tr class="ppn_td">
+                                        <tr class="ppn_td ">
                                             <td >Jenis PPN</td>
                                             <td >
                                                 <select class="form-control jenis_ppn_akhir" onchange="hitung_pajak_ppn()"  >
@@ -304,10 +316,9 @@
                                         <tr>
                                           <td colspan="4" >
                                             <div class="pull-right">
-                                              <button onclick="append()" class="btn btn-default pull-right">
+                                              <button  onclick="append()" class="btn btn-default pull-right">
                                                 <i class="fa fa-plus"> Append</i>
                                               </button>
-
                                               <button style="margin-right: 10px" onclick="cancel()" class="btn btn-default pull-right ">
                                                 <i class="fa fa-close"> Cancel</i>
                                               </button>
@@ -417,19 +428,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
   var array_simpan = [];
-    $(document).ready(function(){
-      var cabang = $('.cabang').val();  
-      $.ajax({
-        url  :baseUrl+'/sales/nota_debet_kredit/nomor_cn_dn',
-        data : {cabang},
-        success:function(data){
-          $('.nomor_cn_dn').val(data.nota);
-        },
-        error:function(){
-          location.reload();
-        }
-      })
-    })
+      
     var table_detail = $('.table_detail').DataTable({
       columnDefs: [
 
@@ -562,7 +561,7 @@
         $('.sisa_piutang').val(accounting.formatMoney(sisa_terbayar + hasil,"",2,'.',','))
       }
 
-        $('.netto_akhir').val(accounting.formatMoney(hasil,"",2,'.',','));
+      $('.netto_akhir').val(accounting.formatMoney(hasil,"",2,'.',','));
     }
 
    
@@ -636,6 +635,7 @@
        if (pajak_lain == 0) {
 
         $('.pph_akhir').val(accounting.formatMoney(pajak_total,"",2,'.',','));
+        hitung_jumlah();
 
         return 1;
        }
@@ -663,9 +663,10 @@
 
     function pilih_invoice(par) {
       var nomor = $(par).find('.invoice_nomor').text();
+      var nomor_cn_dn = $('.nomor_cn_dn').val();
       $.ajax({
         url  :baseUrl+'/sales/nota_debet_kredit/pilih_invoice',
-        data : {nomor},
+        data : {nomor,nomor_cn_dn},
         dataType:'json',
         success:function(data){
           $('.nomor_invoice').val(data.data.i_nomor);
@@ -686,9 +687,10 @@
 
     function pilih_invoice1() {
       var nomor = $('.nomor_invoice').val();
+      var nomor_cn_dn = $('.nomor_cn_dn').val();
       $.ajax({
         url  :baseUrl+'/sales/nota_debet_kredit/pilih_invoice',
-        data : {nomor},
+        data : {nomor,nomor_cn_dn},
         dataType:'json',
         success:function(data){
           $('.nomor_invoice').val(data.data.i_nomor);
@@ -722,10 +724,48 @@
       })
     })
 
+    @foreach ($data_dt as $val)
+     var nomor_invoice        = "{{$val->cdd_nomor_invoice}}";
+     var dpp                  = "{{$val->cdd_dpp_akhir}}";
+     var ppn_akhir            = "{{$val->cdd_ppn_akhir}}";
+     var pph_akhir            = "{{$val->cdd_pph_akhir}}";
+     var jenis_ppn_akhir      = "{{$val->cdd_jenis_ppn}}";
+     var pajak_lain_akhir     = "{{$val->cdd_jenis_pajak}}";
+     var netto_akhir          = "{{$val->cdd_netto_akhir}}";
+
+          table_detail.row.add([
+          '<a onclick="histori(this)" class="d_nomor_text">'+nomor_invoice+'</a>'+
+          '<input type="hidden" class="d_nomor d_nomor_'+nomor_invoice+'" value="'+nomor_invoice+'" name="d_nomor[]">',
+
+          '<p class="d_dpp_text">'+accounting.formatMoney(dpp,"",2,'.',',')+'</p>'+'<input type="hidden" class="d_dpp" value="'+accounting.formatMoney(dpp,"",2,'.',',')+'" name="d_dpp[]">',
+
+          '<p class="d_ppn_text">'+accounting.formatMoney(ppn_akhir,"",2,'.',',')+'</p>'+
+          '<input type="hidden" value="'+accounting.formatMoney(ppn_akhir,"",2,'.',',')+'" class="d_ppn" name="d_ppn[]">'+
+          '<input type="hidden" class="d_jenis_ppn" value="'+jenis_ppn_akhir+'" name="d_jenis_ppn[]">'+
+          '<input type="hidden" class="d_pajak_lain" value="'+pajak_lain_akhir+'" name="d_pajak_lain[]">',
+
+          '<p class="d_pph_text">'+accounting.formatMoney(pph_akhir,"",2,'.',',')+'</p>'+'<input type="hidden" class="d_pph" value="'+accounting.formatMoney(pph_akhir,"",2,'.',',')+'" name="d_pph[]">',
+
+          '<p class="d_netto_text">'+accounting.formatMoney(netto_akhir,"",2,'.',',')+'</p>'+
+          '<input type="hidden" class="d_netto" value="'+accounting.formatMoney(netto_akhir,"",2,'.',',')+'" name="d_netto[]">',
+
+          '<div class="btn-group ">'+
+          '<a  onclick="edit(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+          '<a  onclick="hapus(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+          '</div>'
+        ]).draw();
+        array_simpan.push(nomor_invoice);
+        $('.jenis_td').addClass('disabled');
+        $('.akun_biaya_td').addClass('disabled');
+        $('.cabang_td').addClass('disabled');
+        $('.customer_td').addClass('disabled');
+        hitung_total_tagihan();
+   @endforeach
 
 
     var count = 1;
    function append() {
+
     var sisa = $('.sisa_piutang').val();
     sisa = sisa.replace(/[^0-9\-]+/g,"");
     sisa = parseFloat(sisa);
@@ -833,11 +873,12 @@
 
      $('.nomor_invoice').val(d_nomor);
      pilih_invoice1();
+
      toastr.info('Edit Data Berhasil Diinisialisasi');
    }
 
    function hapus(a) {
-     if ($('.nomor_invoice').val()!='') {
+    if ($('.nomor_invoice').val()!='') {
       toastr.warning('Tidak Bisa Menghapus saat Dalam Tahap Edit/Create Data');
       return 1;
     }
@@ -847,7 +888,6 @@
      array_simpan.splice(index,1);
      table_detail.row(par).remove().draw(false);
      hitung_total_tagihan();
-
      var val  = 0;
      $('d_nomor').each(function(){
       val += 1;
@@ -861,13 +901,10 @@
 
 
    function simpan(){
-
-
-
        
       swal({
         title: "Apakah anda yakin?",
-        text: "Simpan Data!",
+        text: "Update Data!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -883,7 +920,7 @@
             });
 
           $.ajax({
-          url:baseUrl + '/sales/nota_debet_kredit/simpan_cn_dn',
+          url:baseUrl + '/sales/nota_debet_kredit/update_cn_dn',
           type:'post',
           data:$('.tabel_header1 :input').serialize()
                +'&'+table_detail.$('input').serialize()
@@ -896,7 +933,7 @@
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        window.location.href='../nota_debet_kredit';
+                        window.location.href= baseUrl+'/sales/nota_debet_kredit';
                 });
           },
           error:function(data){
@@ -914,8 +951,7 @@
 
    function cancel() {
       $('.riwayat input').val('');
-    
-   }
+  }
 
 </script>
 @endsection

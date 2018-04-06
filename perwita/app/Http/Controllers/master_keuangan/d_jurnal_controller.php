@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\d_jurnal;
 use App\d_jurnal_dt;
+use App\master_akun;
 
 use DB;
 use Validator;
@@ -107,7 +108,11 @@ class d_jurnal_controller extends Controller
     				->where("trdt_year", date("Y"))
     				->get();
 
-    	$akun = DB::table("d_akun")->select("*")->get();
+    	$akun = master_akun::whereNotIn("id_akun", function($query){
+            $query->select("id_parrent")
+                  ->whereNotNull("id_parrent")
+                  ->from("d_akun")->get();
+        })->select(["id_akun", "nama_akun"])->get();
 
     	return view("keuangan.jurnal.form_detail")
     			->withDetail($detail)
