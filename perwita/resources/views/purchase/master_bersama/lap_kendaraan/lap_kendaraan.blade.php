@@ -50,9 +50,7 @@
                 <div class="box-body">
   
                 <div class="col-xs-12">
-                <h3 style="text-align: center"> PT JAWA PRATAMA MANDIRI  <br> Register Pembayaran Hutang Cash (Master) <br>
-               {{--  Tanggal : 01 July 2017 s/d 31 July 2017 --}}
-                </h3> 
+                
                   <table class="table table-bordered datatable table-striped">
                       <br>
                         <tr>                                                     
@@ -95,31 +93,77 @@
                     </table>
                   <div class="row"> &nbsp; &nbsp; <a class="btn btn-info" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                   <table id="addColumn" class="table table_header table-bordered table-striped"> 
-                    <thead>
-                    <tr>
-                      <th  hidden="" style="text-align: center"> No.</th>                      
+                    <thead> 
                       <th  style="text-align: center"> No.</th>                      
+                      <th  style="text-align: center"> kode.</th>                      
+                      <th  style="text-align: center"> nopol</th>
+                      <th  style="text-align: center"> Divisi </th>
+                      <th  style="text-align: center"> Status </th>
+                      <th  style="text-align: center"> vdrcde </th>
+                      <th  style="text-align: center"> vdrnme </th>
                       <th  style="text-align: center"> Kode</th>
-                      <th  style="text-align: center"> Tgl </th>
-                      <th  style="text-align: center"> keperluan </th>
-                      <th  style="text-align: center"> Peminta </th>
-                      <th  style="text-align: center"> Status</th>
-                      <th  style="text-align: center"> Jenis Keluar</th>
-                      <th  style="text-align: center"> Total </th>
-                    </tr>
-                    </thead>
+                      <th  style="text-align: center"> Merk </th>
+                      <th  style="text-align: center"> Tipe Angkutan </th>
+                      <th  style="text-align: center"> No Rangka </th>
+                      <th  style="text-align: center"> No mesin </th>
+                      <th  style="text-align: center"> jenis_bak </th>
+                      <th  style="text-align: center"> P , L , T , Volume</th>
+                      <th  style="text-align: center"> Tahun </th>
+                      <th  style="text-align: center"> seri unit </th>
+                      <th  style="text-align: center"> warna kabin </th>
+                      <th  style="text-align: center"> No. Bpbk </th>
+                      <th  style="text-align: center"> tgl Bpkb </th>
+                      <th  style="text-align: center"> No. Kir </th>
+                      <th  style="text-align: center"> Tgl kir </th>
+                      <th  style="text-align: center"> Tgl Pajak </th>
+                      <th  style="text-align: center"> Tgl Stnk </th>
+                      <th  style="text-align: center"> Gps </th>
+                      <th  style="text-align: center"> Posisi Bpkb </th>
+                      <th  style="text-align: center"> Ket Bpkb </th>
+                      <th  style="text-align: center"> Asuransi </th>
+                      <th  style="text-align: center"> Harga Perolehan </th>
+                      <th  style="text-align: center"> Tgl Perolehan </th>
+                      <th  style="text-align: center"> Keterangan </th>
+                      <th  style="text-align: center"> tgl pjk tahunan </th>
+                      <th  style="text-align: center"> tgl pjk 5 thn </th>
+                      <th  style="text-align: center"> Kode Subcon </th>
+                    </tdead>
                     <tbody>
-                      @foreach ($array as $index => $element)
+                    @foreach ($data as $index => $e)
                     <tr>
-                      <td hidden=""><input type="hidden" name="" value="{{ $element->pb_id }}">{{ $element->pb_id }} </td>
-                      <td>{{ $index+1 }} </td>
-                      <td>{{ $element->pb_nota }}  </td>
-                      <td>{{ $element->pb_tgl }}  </td>
-                      <td>{{ $element->pb_keperluan }} </td>
-                      <td>{{ $element->pb_nama_peminta }} </td>
-                      <td>{{ $element->pb_status }} </td>
-                      <td>{{ $element->pb_jenis_keluar }} </td>
-                      <td>{{ number_format($element->pb_total,0,',','.') }} </td>
+                      <td style="text-align: center"> {{ $index+1 }} </td>                      
+                      <td style="text-align: center"> {{ $e->id }}</td>                      
+                      <td style="text-align: center"> {{ $e->nopol }}</td>
+                      <td style="text-align: center"> {{ $e->divisi }}</td>
+                      <td style="text-align: center"> {{ $e->status }}</td>
+                      <td style="text-align: center"> {{ $e->vdrcde }}</td>
+                      <td style="text-align: center"> {{ $e->vdrnme }}</td>
+                      <td style="text-align: center"> {{ $e->kode }}</td>
+                      <td style="text-align: center"> {{ $e->merk }}</td>
+                      <td style="text-align: center"> {{ $e->tipe_angkutan }}</td>
+                      <td style="text-align: center"> {{ $e->no_rangka }}</td>
+                      <td style="text-align: center"> {{ $e->no_mesin }}</td>
+                      <td style="text-align: center"> {{ $e->jenis_bak }}</td>
+                      <td style="text-align: center"> {{ $e->p }} , {{ $e->l }} , {{ $e->t }} , {{ $e->volume }}</td>
+                      <td style="text-align: center"> {{ $e->tahun }}</td>
+                      <td style="text-align: center"> {{ $e->seri_unit }}</td>
+                      <td style="text-align: center"> {{ $e->warna_kabin }}</td>
+                      <td style="text-align: center"> {{ $e->no_bpkb }}</td>
+                      <td style="text-align: center"> {{ $e->tgl_bpkb }}</td>
+                      <td style="text-align: center"> {{ $e->no_kir }}</td>
+                      <td style="text-align: center"> {{ $e->tgl_kir }}</td>
+                      <td style="text-align: center"> {{ $e->tgl_pajak }}</td>
+                      <td style="text-align: center"> {{ $e->tgl_stnk }}</td>
+                      <td style="text-align: center"> {{ $e->gps }}</td>
+                      <td style="text-align: center"> {{ $e->posisi_bpkb }}</td>
+                      <td style="text-align: center"> {{ $e->ket_bpkb }}</td>
+                      <td style="text-align: center"> {{ $e->asuransi }}</td>
+                      <td style="text-align: center"> {{ $e->harga }}</td>
+                      <td style="text-align: center"> {{ $e->tgl_perolehan }}</td>
+                      <td style="text-align: center"> {{ $e->keterangan }} </td>
+                      <td style="text-align: center"> {{ $e->tgl_pajak_tahunan }}</td>
+                      <td style="text-align: center"> {{ $e->tgl_pajak_5_tahunan }}</td>
+                      <td style="text-align: center"> {{ $e->kode_subcon }}</td>
                     </tr>
                     @endforeach
                     </tbody>
