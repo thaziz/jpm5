@@ -864,7 +864,7 @@ class MasterPurchaseController extends Controller
 		
 		$supplier = DB::select("select * from supplier where idcabang = '$cabang'  order by idsup desc limit 1");
 		
-
+		return json_encode($supplier);
 		
 		if(count($supplier) > 0) {
 	//		return $fpg[0]->fpg_nofpg;
