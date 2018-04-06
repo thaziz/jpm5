@@ -2410,3 +2410,4 @@ Route::get('master_sales/diskonpenjualan' , 'DiskonPenjualanController@index');
 Route::get('master_sales/diskonpenjualan/simpan' , 'DiskonPenjualanController@save');
 Route::get('master_sales/diskonpenjualan/getAkun' , 'DiskonPenjualanController@getAkun');
 Route::get('master_sales/diskonpenjualan/getData' , 'DiskonPenjualanController@getData');
+Route::get('master_sales/diskonpenjualan/hapus' , 'DiskonPenjualanController@delete');

@@ -34,7 +34,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                    <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" data-toggle="modal" data-target="#myModal"> <i class="fa fa-plus"></i> Tambah Data</a> 
+                       <a class="btn btn-success" onclick="tambah()" aria-hidden="true" data-toggle="modal" data-target="#myModal"> <i class="fa fa-plus"></i> Tambah Data</a> 
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -208,6 +208,14 @@ function DiscCtrl(){
   }
 }
 
+function tambah(){
+  $('textarea.keter').val('');
+  $('select[name="cabang"]').val( '' ).trigger("chosen:updated");
+  $("input[name='diskon']").val(0);
+  $('select[name="do"]').val( '' ).trigger("chosen:updated");
+  $('select[name="akun"]').val( '' ).trigger("chosen:updated");
+}
+
 function getAkun(){
   var cabang = $("select[name='cabang']").val();
   $.ajax({
@@ -247,11 +255,13 @@ function simpan(){
   var diskon = $("input[name='diskon']").val();
   var jenisdo = $("select[name='do']").val();
   var akun = $("select[name='akun']").val();
+  var id = $("input[name='id_dc']").val();
   var value = { cabang: cabang,
             diskon: diskon,
             jenis: jenisdo,
             akun: akun,
-            keterangan: keter
+            keterangan: keter,
+            id_dc: id
           };
   $.ajax({
     url: baseUrl + '/master_sales/diskonpenjualan/simpan',
@@ -299,11 +309,10 @@ function edit(id){
     success: function(response){
       $("input[name='id_dc']").val(response.data[0].dc_id);
       $("input[name='diskon']").val(response.data[0].dc_diskon);
-      //remove selected one
-      $('option:selected', 'select[name="cabang"]').removeAttr('selected');
       $('select[name="cabang"]').val( response.data[0].dc_cabang ).trigger("chosen:updated");
-      
-      
+      $('select[name="do"]').val( response.data[0].dc_jenis ).trigger("chosen:updated");
+      $('select[name="akun"]').val( response.data[0].dc_kode ).trigger("chosen:updated");
+      $('textarea.keter').val(response.data[0].dc_note);
       $('#myModal').modal('show');
     }, error:function(x, e) {
         if (x.status == 0) {
@@ -324,7 +333,54 @@ function edit(id){
 }
 
 function hapus(id){
-
+  swal({
+      title: "Apakah anda yakin?",
+      text: "data yang dihapus tidak bisa dikembalikan!",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#DD6B55",
+      confirmButtonText: "lanjutkan!",
+      cancelButtonText: "Batalkan",
+      closeOnConfirm: false,
+      closeOnCancel: false },
+  function (isConfirm) {
+      if (isConfirm) {
+        $.ajax({
+          url: baseUrl + '/master_sales/diskonpenjualan/hapus',
+          type: 'get',
+          data: {id: id},
+          success: function(response){
+            console.log(response);
+            if (response.status == 'sukses') {
+              swal("Terhapus!", "Data sudah terhapus.", "success");
+              location.reload();
+            } else {
+              swal({
+                  title: "Gagal!!",
+                  text: "Data tidak terhapus",
+                  type: "error"
+              });
+            }
+          }, error:function(x, e) {
+              if (x.status == 0) {
+                  alert('ups !! gagal menghubungi server, harap cek kembali koneksi internet anda');
+              } else if (x.status == 404) {
+                  alert('ups !! Halaman yang diminta tidak dapat ditampilkan.');
+              } else if (x.status == 500) {
+                  alert('ups !! Server sedang mengalami gangguan. harap coba lagi nanti');
+              } else if (e == 'parsererror') {
+                  alert('Error.\nParsing JSON Request failed.');
+              } else if (e == 'timeout'){
+                  alert('Request Time out. Harap coba lagi nanti');
+              } else {
+                  alert('Unknow Error.\n' + x.responseText);
+              }
+            }
+        })
+      } else {
+          swal("Cancelled", "Your imaginary file is safe :)", "error");
+      }
+  });
 }
 
 </script>

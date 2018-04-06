@@ -184,6 +184,8 @@
                     /* Nomor seri pajak */
                     Request::is('master_sales/nomorseripajak') ? 'active' : '' || 
                     Request::is('master_sales/nomorseripajak/*') ? 'active' : '' ||
+                    /* master diskon penjualan */
+                    Request::is('master_sales/diskonpenjualan') ? 'active' : '' || 
                  /*=================  END OF MASTER DO ==================*/
                  /*================= sub MASTER KONTRAK ================= */
                     /* Kontrak */
@@ -417,6 +419,8 @@
                     /* saldo awal piutang akir */
                     Request::is('master_sales/saldoawalpiutanglain') ? 'active' : '' || 
                     Request::is('master_sales/saldoawalpiutanglain/*') ? 'active' : '' ||
+                    /* master diskon penjualan */
+                    Request::is('master_sales/diskonpenjualan') ? 'active' : '' || 
                     /* Nomor seri pajak */
                     Request::is('master_sales/nomorseripajak') ? 'active' : '' || 
                     Request::is('master_sales/nomorseripajak/*') ? 'active' : '' 
@@ -600,6 +604,8 @@
                     /* saldo awal piutang akir */
                     Request::is('master_sales/saldoawalpiutanglain') ? 'active' : '' || 
                     Request::is('master_sales/saldoawalpiutanglain/*') ? 'active' : '' ||
+                    /* master diskon penjualan */
+                    Request::is('master_sales/diskonpenjualan') ? 'active' : '' || 
                     /* Nomor seri pajak */
                     Request::is('master_sales/nomorseripajak') ? 'active' : '' || 
                     Request::is('master_sales/nomorseripajak/*') ? 'active' : '' 
