@@ -784,7 +784,8 @@ class do_Controller extends Controller
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
         $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
-        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y group by kode order by kode asc ");
+
         $kec = null;
         $do = null;
         $do_dt = null;
