@@ -42,6 +42,13 @@
         #modal_um {
             overflow-y:scroll;
         }
+
+        ..ui-select-placeholder, .ui-select-match-text {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding-right: 40px;
+        }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -77,7 +84,7 @@
                 </form>
                 <form id="form_header" class="form-horizontal">
                     <div class="col-sm-6">
-                    <table class="table table-striped table-bordered table-hover tabel_header">
+                    <table  class="table table-striped table-bordered table-hover tabel_header">
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor Kwitansi</td>
                                 <td colspan="20">
@@ -95,8 +102,8 @@
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="20">
-                                    <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="ed_tanggal form-control col-xs-12" name="ed_tanggal" value="{{$tgl}}">
+                                    <div class="input-group date" style="width: 100%">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="ed_tanggal form-control col-xs-12"  name="ed_tanggal" value="{{$tgl}}">
                                     </div>
                                 </td>
                             </tr>
@@ -133,7 +140,7 @@
                             @else
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="20" class="cabang_td">
+                                <td style="width:368px; padding-top: 0.4cm" colspan="20" class="cabang_td">
                                     <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
@@ -149,17 +156,20 @@
                             @endif
                             <tr class="">
                                 <td style="padding-top: 0.4cm">Customer</td>
-                                <td class="customer_td">
-                                    <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
+                                <td  class="customer_td">
+                                    <div style="width: 400px">
+                                        <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
-                                    @foreach ($customer as $row)
-                                    @if($row->kode == 'CS-001/00051')
-                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
-                                    @else
-                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
-                                    @endif
-                                    @endforeach
+                                        @foreach ($customer as $row)
+                                        @if($row->kode == 'CS-001/00051')
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
+                                        @else
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
+                                        @endif
+                                        @endforeach
                                     </select>
+                                    </div>
+                                    
                                 </td>
                                 
                             </tr>
@@ -184,7 +194,10 @@
                             </tr>
                         </table>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-1">
+                            
+                        </div>
+                        <div class="col-sm-5">
                         <table class="table table-striped table-bordered table-hover table_rincian">
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Total Bayar</td>
@@ -220,9 +233,7 @@
                     </div> 
 
                     <div class="row">
-                        <div class="col-sm-7">
-                            
-                        </div>
+                       
                         <div class="col-sm-12 ">
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                             <button type="button" class="btn btn-warning kanan pull-right print disabled" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
@@ -236,7 +247,7 @@
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" class="tab-1" href="#tab-1"> Detail Kwitansi</a></li>
                             {{-- <li class=""><a data-toggle="tab" class="tab-2" href="#tab-2">Detail Biaya</a></li> --}}
-                            <li class=""><a data-toggle="tab" class="tab-3" href="#tab-3">Detail Uang Muka</a></li>
+                            {{-- <li class=""><a data-toggle="tab" class="tab-3" href="#tab-3">Detail Uang Muka</a></li> --}}
                         </ul>
                         <div class="tab-content ">
                             <div id="tab-1" class="tab-pane active">
@@ -1851,23 +1862,24 @@ $('.append_um').click(function(){
             table_histori_um.row.add([
                     
 
-                    no_um+'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
+                    '<p class="no_um_text">'+no_um+'</p>'
+                    +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
 
-                    accounting.formatMoney(nominal_um,"",2,'.',',')+
+                    '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
                     '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
 
-                    accounting.formatMoney(terpakai_um,"",2,'.',',')+
+                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
                     '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
 
-                    accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
+                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
                     '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
 
-                    accounting.formatMoney(sisa_akhir,"",2,'.',',')+
+                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
                     '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
 
                     '<div class="btn-group ">'+
-                    '<a  onclick="edit(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
-                    '<a  onclick="hapus(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
                     '</div>',
 
                 ]).draw();
@@ -1895,38 +1907,7 @@ $('.append_um').click(function(){
 
 
 
-// edit um
-function edit_detail_um(p) {
 
-   var par               = p.parentNode.parentNode;
-   var seq_um            = $(par).find('.sequence').val();
-   var m_status_um       = $(par).find('.m_status_um').val();
-   var m_um_total        = $(par).find('.m_um_total').val();
-   var m_um              = $(par).find('.m_um').val();
-   var m_um_jumlah_bayar = $(par).find('.m_um_jumlah_bayar').val();
-   var m_Keterangan_um   = $(par).find('.m_Keterangan_um').val();
-   $('.me_um_flag').val(seq_um);
-   $('.seq_um').val(seq_um);
-   $('.status_um').val(m_status_um);
-   $('.total_um_text ').val(accounting.formatMoney(m_um_total,"",2,'.',','));
-   $('.total_um ').val(m_um_total);
-   $('.no_um ').val(m_um);
-
-   $('.jumlah_bayar_um  ').val(accounting.formatMoney(m_um_jumlah_bayar,"",0,'.',','));
-   $('.Keterangan_um ').val(m_Keterangan_um);
-   $('.cari_um').addClass('disabled');
-   $('#modal_um').modal('show');
-
-}
-
-function hapus_detail_um(o){
-    var par = o.parentNode.parentNode;
-    var arr = $(par).find('.m_um').val();
-    var index = simpan_um.indexOf(arr);
-    simpan_um.splice(index,1);
-
-    tabel_uang_muka.row(par).remove().draw(false);
-}
 
 
 $('#save_um').click(function(){
@@ -2044,6 +2025,33 @@ $('#save_um').click(function(){
       });  
      });
 })
+
+
+function edit_um(a) {
+    var par = $(a).parents('tr');
+    var um = $(par).find('.m_no_um').val();
+
+    var m_jumlah_bayar_um = $(par).find('.m_jumlah_bayar_um').val();
+    m_jumlah_bayar_um = parseFloat(m_jumlah_bayar_um);
+    $.ajax({
+        url:baseUrl+'/sales/pilih_um',
+        data:{um},
+        dataType : 'json',
+        success:function(response){
+            $('.no_um').val(response.data[0].nomor);
+            $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
+            $('.nominal_um').val(response.data[0].jumlah);
+            $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+            $('.terpakai_um').val(response.data[0].sisa_uang_muka);
+            $('.status_um').val(response.data[0].status_um);
+            $('#modal_cari_um').modal('hide');
+
+        },
+        error:function(){
+        }
+    });
+
+}
 
 
 $('#btnsimpan').click(function(){

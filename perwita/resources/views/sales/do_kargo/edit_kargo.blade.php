@@ -99,6 +99,7 @@
                                     <tr>
                                         <td>Customer</td>
                                         <td class="">
+                                            <div style="width: 380px">
                                             <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer_do">
                                                 <option value="0">Pilih - Customer</option>
                                             @foreach($customer as $val)
@@ -109,6 +110,7 @@
                                                 @endif
                                             @endforeach
                                             </select>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
