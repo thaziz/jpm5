@@ -85,9 +85,12 @@ class penerimaan_penjualan_Controller extends Controller
         $akun_biaya = DB::table('akun_biaya')
                   ->get();
 
+        $akun_bank = DB::table('masterbank')
+                  ->get();
+
         $tgl  = Carbon::now()->format('d/m/Y');
        
-        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl','akun_biaya' ));
+        return view('sales.penerimaan_penjualan.form',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','kas_bank','akun','tgl','akun_biaya','akun_bank' ));
     }
 
 
@@ -613,7 +616,8 @@ class penerimaan_penjualan_Controller extends Controller
                       ->where('ku_nomor',$request->id)
                       ->where('ku_nomor_invoice',$invoice_nomor[$i])
                       ->first(); 
-            if ($cari_um !=null) {
+
+            if ($cari_um != null) {
               $cari_um1 = DB::table('uang_muka_penjualan')
                          ->where('nomor',$cari_um->ku_nomor_um)
                          ->first();
@@ -627,14 +631,13 @@ class penerimaan_penjualan_Controller extends Controller
 
           }
 
-            $cari_um = DB::table('kwitansi_uang_muka')
+          $cari_um = DB::table('kwitansi_uang_muka')
                       ->where('ku_nomor',$request->nota)
-                      ->where('ku_nomor_invoice',$request->ed_nomor_invoice)
                       ->delete();
 
 
 
-            $hapus = DB::table('kwitansi')
+          $hapus = DB::table('kwitansi')
                       ->where('k_nomor',$request->id)
                       ->delete();
 
@@ -750,27 +753,96 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function hapus_um_kwitansi(request $request)
     { 
+      return DB::transaction(function() use ($request) { 
+            // dd($request->all());
+        
+        if ($request->flag_nota == '0' or $request->flag_nota == '0' or $request->flag_nota == '') {
+          if (isset($request->flag)) {
+            if ($request->flag == 'R') {
+              for ($i=0; $i < count($request->i_nomor); $i++) { 
 
-      $cari_um = DB::table('kwitansi_uang_muka')
-                    ->where('ku_nomor',$request->nota)
-                    ->where('ku_nomor_invoice',$request->ed_nomor_invoice)
-                    ->get();
-        for ($i=0; $i < count($cari_um); $i++) { 
-          $cari_um1 = DB::table('uang_muka_penjualan')
-                       ->where('nomor',$cari_um[$i]->ku_nomor_um)
-                       ->first();
+               $cari_um = DB::table('kwitansi_uang_muka')
+                          ->where('ku_nomor',$request->nota)
+                          ->where('ku_nomor_invoice',$request->i_nomor[$i])
+                          ->get(); 
 
-          $update = DB::table('uang_muka_penjualan')
-                      ->where('nomor',$cari_um1->nomor)
-                      ->update([
-                        'sisa_uang_muka'=>$cari_um1->sisa_uang_muka+$cari_um[$i]->ku_jumlah
-                      ]);
+                if ($cari_um !=null) 
+                {
+                  for ($a=0; $a < count($cari_um); $a++) { 
+                    $cari_um1 = DB::table('uang_muka_penjualan')
+                               ->where('nomor',$cari_um[$a]->ku_nomor_um)
+                               ->first();
+
+                    $update = DB::table('uang_muka_penjualan')
+                              ->where('nomor',$cari_um1->nomor)
+                              ->update([
+                                'sisa_uang_muka'=>$cari_um1->sisa_uang_muka+$cari_um[$a]->ku_jumlah
+                              ]);
+                  }
+                }
+
+               $cari_um = DB::table('kwitansi_uang_muka')
+                          ->where('ku_nomor',$request->nota)
+                          ->where('ku_nomor_invoice',$request->i_nomor[$i])
+                          ->delete();
+              }
+
+            }else{
+
+              if ($request->flag == 'H') {
+              for ($i=0; $i < count($request->i_nomor); $i++) { 
+
+               $cari_um = DB::table('kwitansi_uang_muka')
+                          ->where('ku_nomor',$request->nota)
+                          ->where('ku_nomor_invoice',$request->i_nomor)
+                          ->get(); 
+
+                if ($cari_um !=null) 
+                {
+                  for ($a=0; $a < count($cari_um); $a++) { 
+                    $cari_um1 = DB::table('uang_muka_penjualan')
+                               ->where('nomor',$cari_um[$a]->ku_nomor_um)
+                               ->first();
+
+                    $update = DB::table('uang_muka_penjualan')
+                              ->where('nomor',$cari_um1->nomor)
+                              ->update([
+                                'sisa_uang_muka'=>$cari_um1->sisa_uang_muka+$cari_um[$a]->ku_jumlah
+                              ]);
+                  }
+                }
+
+               $cari_um = DB::table('kwitansi_uang_muka')
+                          ->where('ku_nomor',$request->nota)
+                          ->where('ku_nomor_invoice',$request->i_nomor)
+                          ->delete();
+              }
+            }
+          }
+          }else{
+            $cari_um = DB::table('kwitansi_uang_muka')
+                          ->where('ku_nomor',$request->nota)
+                          ->where('ku_nomor_invoice',$request->ed_nomor_invoice)
+                          ->get();
+              for ($i=0; $i < count($cari_um); $i++) { 
+                $cari_um1 = DB::table('uang_muka_penjualan')
+                             ->where('nomor',$cari_um[$i]->ku_nomor_um)
+                             ->first();
+
+                $update = DB::table('uang_muka_penjualan')
+                            ->where('nomor',$cari_um1->nomor)
+                            ->update([
+                              'sisa_uang_muka'=>$cari_um1->sisa_uang_muka+$cari_um[$i]->ku_jumlah
+                            ]);
+              }
+
+               $cari_um = DB::table('kwitansi_uang_muka')
+                          ->where('ku_nomor',$request->nota)
+                          ->where('ku_nomor_invoice',$request->ed_nomor_invoice)
+                          ->delete();
+          }
         }
-
-         $cari_um = DB::table('kwitansi_uang_muka')
-                    ->where('ku_nomor',$request->nota)
-                    ->where('ku_nomor_invoice',$request->ed_nomor_invoice)
-                    ->delete();
+    });
         
     }
 
@@ -778,7 +850,6 @@ class penerimaan_penjualan_Controller extends Controller
     {
 
 
-      // dd($request->all());
 
       return DB::transaction(function() use ($request) {  
 

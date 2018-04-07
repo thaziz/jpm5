@@ -199,7 +199,7 @@ $(document).ready(function() {
          $.ajax({
           url:baseUrl + '/sales/hapus_kwitansi',
           data:{id},
-          type:'post',
+          type:'get',
           dataType:'json',
           success:function(data){
             if (data.status == 1) {

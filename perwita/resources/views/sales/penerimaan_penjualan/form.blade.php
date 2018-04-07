@@ -82,6 +82,7 @@
                                 <td style="width:px; padding-top: 0.4cm">Nomor Kwitansi</td>
                                 <td colspan="20">
                                     <input type="text" name="nota" id="nota_kwitansi" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
+                                    <input type="hidden" name="flag_nota" id="flag_nota" class="form-control flag_nota"  readonly="readonly" style="text-transform: uppercase" value="0" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                 </td>
                             </tr>
@@ -101,7 +102,7 @@
                             </tr>
                             <tr>
                                 <td style="width:110px;">Jenis Pembayaran</td>
-                                <td colspan="20">
+                                <td colspan="20" class="jenis_pembayaran_td">
 
                                     <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
                                         <option value="0">Pilih - Pembayaran</option>
@@ -116,7 +117,7 @@
                             @if(Auth::user()->punyaAkses('Kwitansi','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td> 
-                                <td colspan="20">
+                                <td colspan="20" class="cabang_td">
                                     <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
@@ -132,7 +133,7 @@
                             @else
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="20">
+                                <td colspan="20" class="cabang_td">
                                     <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
@@ -148,7 +149,7 @@
                             @endif
                             <tr class="">
                                 <td style="padding-top: 0.4cm">Customer</td>
-                                <td class="">
+                                <td class="customer_td">
                                     <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
@@ -164,10 +165,12 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Akun</td>
-                                <td colspan="3" class="td_akun_bank">
+                                <td colspan="3" class="akun_bank_td">
                                     <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
-                                        <option value="0">Pilih - Akun</option>
-                                    
+                                        <option value="0">Pilih - Akun Bank</option>
+                                        @foreach($akun_bank as $val)
+                                        <option value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                        @endforeach
                                     </select>
                                 </td>
                             </tr>
@@ -846,16 +849,6 @@ function nota_kwitansi() {
     })
 
 
-    $.ajax({
-        url:baseUrl+'/sales/akun_bank',
-        data:{cb_cabang},
-        success:function(response){
-            $('.td_akun_bank').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
 }
 
 //NOTA kwitansi
@@ -875,52 +868,7 @@ $(document).ready(function(){
 
     });
 
-    $.ajax({
-        url:baseUrl+'/sales/akun_bank',
-        data:{cabang},
-        success:function(response){
-            $('.td_akun_bank').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
 
-    $.ajax({
-        url:baseUrl +'/sales/drop_cus',
-        data:{cabang},
-        success:function(data){
-            $('.customer_td').html(data);
-            // toastr.info('Data Telah Dirubah Harap Periksa Kembali');
-        },
-        error:function(){
-            location.reload();
-        }
-        });
-
-    $.ajax({
-        url:baseUrl+'/sales/akun_all',
-        data:{cabang},
-        success:function(response){
-            $('.akun_lain_td').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
-
-
-    $.ajax({
-        url:baseUrl+'/sales/akun_biaya',
-        data:{cabang},
-        success:function(response){
-            $('.akun_biaya_td').html(response);
-
-        },
-        error:function(){
-            // location.reload();
-        }
-    });
     
     $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
     $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
@@ -1095,8 +1043,13 @@ $('#btnsave').click(function(){
             $(".i_bayar").focus(function() {
                  $(this).select();
             });
-        $( ".his" ).tooltip({ show: { effect: "none", duration: 800 } });
-        $('.tab_detail ul li .tab-1').trigger('click');
+            $('.jenis_pembayaran_td').addClass('disabled');
+            $('.cabang_td').addClass('disabled');
+            $('.customer_td').addClass('disabled');
+            $('.akun_bank_td').addClass('disabled');
+
+            $( ".his" ).tooltip({ show: { effect: "none", duration: 800 } });
+            $('.tab_detail ul li .tab-1').trigger('click');
         }
     })
 });
@@ -1104,12 +1057,16 @@ $('#btnsave').click(function(){
 function akun_biaya1(){
    var jenis =  $('.akun_biaya').find(':selected').data('jenis');
    var biaya =  $('.akun_biaya').find(':selected').data('biaya');
+
    console.log(jenis);
    $('.jenis_biaya').val('');
    $('.akun_acc_biaya').val('');
    $('.jenis_biaya').val(jenis);
    $('.akun_acc_biaya').val(biaya);
-   $('.jumlah_biaya_admin').val('0');
+   if (jenis != 'K') {
+      $('.jumlah_biaya_admin').val('0');
+   }
+
    if ($('.akun_biaya').val() == '0') {
     $('.jumlah_biaya_admin').attr('readonly',true);
    }else{
@@ -1209,7 +1166,7 @@ function histori(p){
                 data:{i_nomor,cb_jenis_pembayaran},
                 success:function(data){
                     $('.riwayat_cn_dn').html(data);
-                    table_cd.clear().draw();
+                    table_cd.destroy();
 
                     var temp = 0;
                     var temp1 = 0;
@@ -1413,10 +1370,32 @@ function histori(p){
 function hapus_detail(o) {
     var par = o.parentNode.parentNode;
     var arr = $(par).find('.i_nomor').val();
+    var flag_nota = $('.flag_nota').val();
     var index = array_simpan.indexOf(arr);
     array_simpan.splice(index,1);
-
+    $.ajax({
+        url:baseUrl + '/sales/hapus_um_kwitansi',
+        data:$('.tabel_header :input').serialize()
+             +'&i_nomor='+arr
+             +'&flag='+'H'
+             +'&flag_nota='+flag_nota,
+        dataType:'json',
+        success:function(response){
+        }
+    })
     table_data.row(par).remove().draw(false);
+
+    var temp =  0 ;
+    $('.i_nomor').each(function(){
+        temp += 1;
+    })
+    if (temp != 0) {
+        $('.jenis_pembayaran_td').removeClass('disabled');
+        $('.cabang_td').removeClass('disabled');
+        $('.customer_td').removeClass('disabled');
+        $('.akun_bank_td').removeClass('disabled');
+
+    }
 }
 
 //hitung total bayar
@@ -2110,6 +2089,7 @@ $('#btnsimpan').click(function(){
                         // location.reload();
                         $('.temp_1').addClass('disabled');
                         $('.print').removeClass('disabled');
+                        $('.flag_nota').val('success');
                 });
             }else{
                 $('#nota_kwitansi').val(response.nota);
@@ -2142,13 +2122,21 @@ $('.print').click(function(){
 
 
 window.onbeforeunload = function(event)
-    {
-        
-           // return confirm();
+{       
+            var flag_nota = $('.flag_nota').val();
+            $.ajax({
+            url:baseUrl + '/sales/hapus_um_kwitansi',
+            data:$('.tabel_header :input').serialize()
+                 +'&'+table_data.$('input').serialize()
+                 +'&flag='+'R'
+                 +'&flag_nota='+flag_nota,
+            dataType:'json',
+            success:function(response){
+            }
+            })
 
-        
 
-    };
+};
 
 </script>
 
