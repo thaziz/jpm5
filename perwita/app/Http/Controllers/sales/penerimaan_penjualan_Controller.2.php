@@ -350,7 +350,7 @@ class penerimaan_penjualan_Controller extends Controller
     public function simpan_kwitansi(request $request)
     {
         return DB::transaction(function() use ($request) {  
-            // dd($request->id);
+            dd($request->all());
         $tgl = str_replace('/', '-', $request->ed_tanggal);
         $tgl = Carbon::parse($tgl)->format('Y-m-d');
 
@@ -379,7 +379,6 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_update_by' => Auth::user()->m_username,
                                 'k_create_at' => Carbon::now(),
                                 'k_update_at' => Carbon::now(),
-                                'k_uang_muka' => $request->um,
                                 'k_kode_cabang' => $request->cb_cabang,
                                 'k_jenis_pembayaran' => $request->cb_jenis_pembayaran,
                                 'k_kredit' => $request->ed_kredit,
@@ -394,6 +393,7 @@ class penerimaan_penjualan_Controller extends Controller
                     $cari_invoice = DB::table('invoice')
                                       ->where('i_nomor',$request->i_nomor[$i])
                                       ->first();
+                                      
                     if ($request->i_biaya_admin[$i] == '') {
                         $i_biaya_admin[$i] = 0;
                     }else{
@@ -444,62 +444,7 @@ class penerimaan_penjualan_Controller extends Controller
 
             }
 
-            for ($i=0; $i < count($request->b_akun); $i++) { 
-                if ($request->b_debet[$i] != 0) {
-                    $jenis = 'D';
-                }else{
-                    $jenis = 'K';
-                }
-                $save_biaya = DB::table('kwitansi_biaya_d')
-                                 ->insert([
-                                      'kb_id' => $k_id,
-                                      'kb_dt'=> $i+1,
-                                      'kb_kode_akun' => $request->b_akun[$i],
-                                      'kb_kode_akun_acc' => $request->b_akun[$i],
-                                      'kb_kode_akun_csf' => $request->b_akun[$i],
-                                      'kb_jumlah' => $request->b_jumlah[$i],
-                                      'kb_keterangan' => $request->b_keterangan[$i],
-                                      'kb_jenis' => $jenis,
-                                      'kb_debet'    => $request->b_debet[$i],
-                                      'kb_kredit'    => $request->b_kredit[$i],
-                                 ]);
-
-            }
-
-            for ($i=0; $i < count($request->m_um); $i++) { 
-                $save_biaya = DB::table('kwitansi_uang_muka')
-                                 ->insert([
-                                      'ku_id' => $k_id,
-                                      'ku_dt'=> $i+1,
-                                      // 'ku_kode_akun' => $request->b_akun[$i],
-                                      // 'ku_kode_akun_acc' => $request->b_akun[$i],
-                                      // 'ku_kode_akun_csf' => $request->b_akun[$i],
-                                      'ku_jumlah' => $request->jumlah_bayar_um[$i],
-                                      'ku_keterangan' => $request->m_Keterangan_um[$i],
-                                      'ku_kredit'    => $request->jumlah_bayar_um[$i],
-                                      'ku_nomor_um'    => $request->m_um[$i],
-                                      'ku_status_um'    => $request->m_status_um[$i]
-                                      // 'ku_jenis'       => $request->m_status_um[$i]
-                                 ]);
-
-                $cari_um = DB::table('uang_muka_penjualan')
-                                      ->where('nomor',$request->m_um[$i])
-                                      ->first();
-                $hasil_um =  $cari_um->sisa_uang_muka - $request->jumlah_bayar_um[$i];
-                // dd($hasil);
-
-                if ($hasil_um < 0) {
-                    $hasil_um = 0;
-                }
-                
-                $update_invoice = DB::table('uang_muka_penjualan')
-                                    ->where('nomor',$request->m_um[$i])
-                                    ->update([
-                                        'sisa_uang_muka' => $hasil_um
-                                    ]);
-
-
-            }
+    
 
             $memorial_array = array_sum($memorial_array);
             $save_kwitansi = DB::table('kwitansi')

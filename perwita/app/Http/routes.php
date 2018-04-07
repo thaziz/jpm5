@@ -1221,6 +1221,7 @@ Route::get('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpa
 Route::get('sales/update_kwitansi', 'sales\penerimaan_penjualan_Controller@update_kwitansi');
 
 Route::post('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpan_kwitansi');
+Route::get('sales/simpan_kwitansi', 'sales\penerimaan_penjualan_Controller@simpan_kwitansi');
 Route::post('sales/update_kwitansi', 'sales\penerimaan_penjualan_Controller@update_kwitansi');
 
 Route::get('sales/kwitansi/cetak_nota/{id}', 'sales\penerimaan_penjualan_Controller@cetak_nota');

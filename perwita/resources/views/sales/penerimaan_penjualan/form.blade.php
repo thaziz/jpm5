@@ -395,7 +395,7 @@
                                                             </select>
                                                         </td>
                                                         <td colspan="2">
-                                                            <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control" value="0">
+                                                            <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control" value="0" readonly="">
                                                             <input type="hidden" class="jenis_biaya " value="D">
                                                             <input type="hidden" class="akun_acc_biaya" value="0">
                                                         </td>
@@ -484,7 +484,7 @@
                 
                   {{-- modal um --}}
                 <div id="modal_um" class="modal" >
-                    <div class="modal-dialog modal-lg" style="min-width: 1400px;max-width: 1400px">
+                    <div class="modal-dialog modal-lg" style="min-width: 1300px;max-width: 1300px">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -922,11 +922,11 @@ $(document).ready(function(){
         }
     });
     
-    $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true});
-    $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true});
-    $('.jumlah_biaya_admin_um').maskMoney({precision:0,thousands:'.',allowZero:true});
-    $('.m_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true});
-    $('.me_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true});
+    $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.jumlah_biaya_admin_um').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.m_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.me_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 });
 
 // ganti nota untuk admin
@@ -1073,8 +1073,8 @@ $('#btnsave').click(function(){
                         '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
                         accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
                         accounting.formatMoney(response.data[i].i_sisa_pelunasan, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_pelunasan+'">',
-                        '<input type="text" readonly class="form-control i_bayar_text input-sm" value="0">'+
-                        '<input type="hidden" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
+                        '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="0">'+
+                        '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
@@ -1109,7 +1109,12 @@ function akun_biaya1(){
    $('.akun_acc_biaya').val('');
    $('.jenis_biaya').val(jenis);
    $('.akun_acc_biaya').val(biaya);
-   $('.jumlah_biaya_admin').val('');
+   $('.jumlah_biaya_admin').val('0');
+   if ($('.akun_biaya').val() == '0') {
+    $('.jumlah_biaya_admin').attr('readonly',true);
+   }else{
+    $('.jumlah_biaya_admin').attr('readonly',false);
+   }
 }
 
 // hitung total
@@ -1182,11 +1187,15 @@ function histori(p){
     simpan_um.splice(0,asd);
 
     if (cb_jenis_pembayaran != 'U') {
+
         $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
         data:{i_nomor,cb_jenis_pembayaran},
         success:function(data){
+
             $('.riwayat_kwitansi').html(data);
+            table_riwayat.destroy();
+
             var temp = 0;
             table_riwayat.$('.kd_total_bayar').each(function(){
                 temp += parseFloat($(this).val());
@@ -1200,6 +1209,8 @@ function histori(p){
                 data:{i_nomor,cb_jenis_pembayaran},
                 success:function(data){
                     $('.riwayat_cn_dn').html(data);
+                    table_cd.clear().draw();
+
                     var temp = 0;
                     var temp1 = 0;
                     table_cd.$('.cd_debet').each(function(){
@@ -1247,7 +1258,11 @@ function histori(p){
                     $('.jumlah_biaya_admin ').val(biaya_admin);
                     var biaya_admin    = $(par).find('.i_akun_biaya').val();
                     $('.akun_biaya ').val(biaya_admin).trigger('chosen:updated');
-
+                    if (biaya_admin == '0') {
+                        $('.jumlah_biaya_admin').attr('readonly',true);
+                    }else{
+                        $('.jumlah_biaya_admin').attr('readonly',false);
+                    }
                     hitung();
                     $('#modal_info').modal('show');
                 }
@@ -1407,19 +1422,17 @@ function hapus_detail(o) {
 //hitung total bayar
 
 function hitung_bayar() {
-    var total_bayar = Math.round($('.total_jumlah_bayar').val()).toFixed(2);
+    var total_bayar = $('.total_jumlah_bayar').val();
         total_bayar = parseFloat(total_bayar);
 
-    var ed_debet = Math.round($('.ed_debet').val()).toFixed(2);
-        ed_debet = parseInt(ed_debet);
+    var ed_debet = $('.ed_debet').val();
+        ed_debet = parseFloat(ed_debet);
 
-    var ed_kredit = Math.round($('.ed_kredit').val()).toFixed(2);
-        ed_kredit = parseInt(ed_kredit);
+    var ed_kredit = $('.ed_kredit').val();
+        ed_kredit = parseFloat(ed_kredit);
 
-    var um        = Math.round($('.um').val()).toFixed(2);
-        um        = parseInt(um);
 
-    var total     = total_bayar + ed_debet - ed_kredit - um;
+    var total     = total_bayar + ed_debet - ed_kredit;
     if (total < 0) {
         total = 0;
     }
@@ -1972,7 +1985,7 @@ $('#save_um').click(function(){
                             jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
                         }
 
-                        var angka                = $('.total_bayar').val();
+                        var angka                = $('.jumlah_bayar').val();
                         angka                    = angka.replace(/[^0-9\-]+/g,"");
                         angka                    = parseInt(angka);
                         var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
@@ -1987,6 +2000,7 @@ $('#save_um').click(function(){
                         $(par).find('.i_bayar').val(angka);
                         $(par).find('.i_akun_biaya').val(akun_biaya);
                         var temp = 0;
+
                         table_data.$('.i_bayar').each(function(){
                             var i_bayar = Math.round($(this).val()).toFixed(2);
                                 i_bayar = parseFloat(i_bayar);
@@ -2007,6 +2021,13 @@ $('#save_um').click(function(){
                             temp2 += i_bayar;
                         });
 
+                        $('.total_jumlah_bayar').val(temp);
+                        $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+                        $('.ed_debet').val(temp1);
+                        $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+                        $('.ed_kredit').val(temp2);
+                        $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
 
                         hitung_bayar();
                         $('#modal_um').modal('hide');
@@ -2051,7 +2072,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/simpan_kwitansi',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()
