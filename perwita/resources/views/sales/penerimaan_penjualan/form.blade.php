@@ -536,7 +536,7 @@
                                                         <td>Sisa Terbayar</td>
                                                         <td colspan="3">
                                                             <input type="text" class="form-control ed_sisa_terbayar" name="ed_sisa_terbayar" id="ed_sisa_terbayar" readonly="readonly" style="text-align:right" tabindex="-1">
-                                                            <input type="hidden" readonly="readonly" class="form-control sisa_terbayar">
+                                                            <input type="hidden" readonly="readonly" class="form-control sisa_terbayar_um">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -1323,7 +1323,7 @@ function histori(p){
                     var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
                     jumlah             = Math.round(jumlah).toFixed(2);
                     $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
-                    $('.sisa_terbayar').val(jumlah);
+                    $('.sisa_terbayar_um').val(jumlah);
 
                     var i_bayar        = $(par).find('.i_bayar').val();
                     var i_debet    = $(par).find('.i_debet').val();
@@ -1801,7 +1801,7 @@ function akun_biaya_um(){
 }
 
 function hitung_um(){
-    var sisa_terbayar = $('.sisa_terbayar').val();
+    var sisa_terbayar = $('.sisa_terbayar_um').val();
     var jumlah_bayar = $('.jumlah_bayar').val();
     var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
     jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
@@ -1812,9 +1812,18 @@ function hitung_um(){
 
 
     if (jenis != 'K') {
+        if (jumlah_biaya_admin > sisa_terbayar) {
+            toastr.warning('Biaya Tidak Boleh Melebihi Sisa Piutang');
+            $('.jumlah_biaya_admin_um').val('0');
+            var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
+            jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+            jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
+        }
         var hasil = sisa_terbayar - jumlah_bayar - jumlah_biaya_admin;
+
         $('.ed_total').val(accounting.formatMoney(hasil,"",0,'.',','));
         $('.total').val(hasil);
+        
         var hasil1 = parseFloat(jumlah_bayar) + parseFloat(jumlah_biaya_admin);
         $('.total_bayar ').val(accounting.formatMoney(hasil1,"",0,'.',','));
     }else{
@@ -1823,6 +1832,8 @@ function hitung_um(){
         akun_biaya_um();
 
     }
+
+
 
 
 }
@@ -1836,16 +1847,23 @@ $('.append_um').click(function(){
     var terpakai_um   = $('.terpakai_um').val();
     var status_um   = $('.status_um').val();
     var terpakai_um = $('.terpakai_um').val();
+    var sisa_terbayar_um = $('.sisa_terbayar_um').val();
     var jumlah_bayar_um   = $('.jumlah_bayar_um ').val();
     jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
     jumlah_bayar_um = parseFloat(jumlah_bayar_um);
     if (jumlah_bayar_um > terpakai_um) {
         toastr.warning('Jumlah Lebih Besar Dari Sisa Uang Muka');
-        $('.jumlah_bayar_um ').val('0   ');
+        $('.jumlah_bayar_um ').val('0');
         return 1;
     }
     if (jumlah_bayar_um == 0 ||  jumlah_bayar_um =='') {
         toastr.warning('Jumlah Bayar Harus Diisi');
+        return 1;
+    }
+
+    if (jumlah_bayar_um > sisa_terbayar_um) {
+        toastr.warning('Jumlah Bayar Melebihi Sisa Piutang');
+        $('.jumlah_bayar_um ').val('0');
         return 1;
     }
     

@@ -199,8 +199,10 @@ $(document).ready(function() {
          $.ajax({
           url:baseUrl + '/sales/hapus_kwitansi',
           data:{id},
-          type:'get',
+          type:'post',
+          dataType:'json',
           success:function(data){
+            if (data.status == 1) {
               swal({
               title: "Berhasil!",
                       type: 'success',
@@ -210,6 +212,14 @@ $(document).ready(function() {
                       },function(){
                          location.reload();
               });
+            }else{
+              swal({
+                  title: "Anda Tidak Punya Akses Untuk Menghapus",
+                          type: 'error',
+                          timer: 2000,
+                          showConfirmButton: false
+              });
+            }
           },
           error:function(data){
 
