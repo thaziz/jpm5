@@ -562,19 +562,30 @@ class penerimaan_penjualan_Controller extends Controller
     }
     public function pilih_um(request $request)
     {
+
+        $find = DB::table('kwitansi_uang_muka')
+                  ->where('ku_nomor',$request->nota_kwitansi)
+                  ->where('ku_nomor_invoice',$request->ed_nomor_invoice)
+                  ->get();
+        if ($find != null) {
+          $status = 'I';
+        }else{
+          $status = 'E';
+        }
+        
         $data = DB::table('uang_muka_penjualan')
                    ->where('nomor',$request->um)
-                   // ->orWhere('status_um','=','NON CUSTOMER')
+                   ->orWhere('status_um','=','NON CUSTOMER')
                    ->get();
-        for ($i=0; $i < count($data); $i++) { 
-            for ($a=0; $a < count($request->array_um); $a++) { 
-                if ($request->array_um[$a] == $data[$i]->nomor) {
-                    $data[$i]->sisa_uang_muka = $data[$i]->sisa_uang_muka+$request->harga_um[$a];
-                }
-            }
-        }
+        // for ($i=0; $i < count($data); $i++) { 
+        //     for ($a=0; $a < count($request->array_um); $a++) { 
+        //         if ($request->array_um[$a] == $data[$i]->nomor) {
+        //             $data[$i]->sisa_uang_muka = $data[$i]->sisa_uang_muka+$request->harga_um[$a];
+        //         }
+        //     }
+        // }
 
-        return response()->json(['data'=>$data]);
+        return response()->json(['data'=>$data,'status'=>$status]);
     }
 
     public function hapus_kwitansi(request $request)

@@ -1319,26 +1319,29 @@ function histori(p){
                             for (var i = 0; i < response.data.length; i++) {
 
                                 var sisa_akhir = parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah) - parseFloat(response.data[i].ku_jumlah);
+
                                 table_histori_um.row.add([
 
-                                    response.data[i].ku_nomor_um+'<input type="hidden" value="'+response.data[i].ku_nomor_um+'" class="m_no_um m_um_'+response.data[i].ku_nomor_um+'" name="m_no_um[]">',
+                                    '<p class="no_um_text">'+response.data[i].ku_nomor_um+'</p>'
+                                    +'<input type="hidden" value="'+response.data[i].ku_nomor_um+'" class="m_no_um m_um_'+response.data[i].ku_nomor_um+'" name="m_no_um[]">',
 
-                                    accounting.formatMoney(response.data[i].jumlah,"",2,'.',',')+
+                                    '<p class="m_nominal_um_text">'+accounting.formatMoney(response.data[i].jumlah,"",2,'.',',')+'</p>'+
                                     '<input type="hidden" value="'+response.data[i].jumlah+'" class="m_nominal_um">',
 
-                                    accounting.formatMoney(parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah),"",2,'.',',')+
+                                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah),"",2,'.',',')+'</p>'+
                                     '<input type="hidden" value="'+parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah)+'" class="m_terpakai_um">',
 
-                                    accounting.formatMoney(response.data[i].ku_jumlah,"",2,'.',',')+
+                                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(response.data[i].ku_jumlah,"",2,'.',',')+'</p>'+
                                     '<input type="hidden" value="'+response.data[i].ku_jumlah+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
 
-                                    accounting.formatMoney(sisa_akhir,"",2,'.',',')+
+                                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
                                     '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
 
                                     '<div class="btn-group ">'+
-                                    '<a  onclick="edit(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
-                                    '<a  onclick="hapus(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
                                     '</div>',
+
 
                                 ]).draw();
 
@@ -1858,10 +1861,11 @@ $('.append_um').click(function(){
     }
     
     var sisa_akhir = terpakai_um - jumlah_bayar_um;
+    var index = simpan_um.indexOf(no_um);
+    if (index == -1) {
 
             table_histori_um.row.add([
                     
-
                     '<p class="no_um_text">'+no_um+'</p>'
                     +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
 
@@ -1900,7 +1904,47 @@ $('.append_um').click(function(){
             $('.jumlah_bayar').val(temp);
             $('.tabel_pembayaran_um input').val('');
             hitung_um();
-        
+    }else{
+        var par = $('.m_um_'+no_um).parents('tr');
+        table_histori_um.row(par).remove().draw(false);
+
+        table_histori_um.row.add([
+                    
+                    '<p class="no_um_text">'+no_um+'</p>'
+                    +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
+
+                    '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
+
+                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
+
+                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+                    '<div class="btn-group ">'+
+                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                    '</div>',
+
+                ]).draw();
+
+            var temp = 0;
+            
+            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                var ini = $(this).val();
+                ini = parseFloat(ini);
+                temp+=ini;
+            });
+            console.log(temp);
+            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.jumlah_bayar').val(temp);
+            $('.tabel_pembayaran_um input').val('');
+            hitung_um();
+    }
     // hitung();
 
 });
@@ -2031,18 +2075,27 @@ function edit_um(a) {
     var par = $(a).parents('tr');
     var um = $(par).find('.m_no_um').val();
 
+    var nota_kwitansi = $('#nota_kwitansi').val();
     var m_jumlah_bayar_um = $(par).find('.m_jumlah_bayar_um').val();
+    var ed_nomor_invoice = $('.ed_nomor_invoice').val();
+
     m_jumlah_bayar_um = parseFloat(m_jumlah_bayar_um);
     $.ajax({
         url:baseUrl+'/sales/pilih_um',
-        data:{um},
+        data:{um,nota_kwitansi,ed_nomor_invoice},
         dataType : 'json',
         success:function(response){
             $('.no_um').val(response.data[0].nomor);
             $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
             $('.nominal_um').val(response.data[0].jumlah);
-            $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
-            $('.terpakai_um').val(response.data[0].sisa_uang_muka);
+            if (response.status == 'E') {
+                $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+                $('.terpakai_um').val(response.data[0].sisa_uang_muka);
+            }else{
+                $('.terpakai_um_text').val(accounting.formatMoney(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um,"",2,'.',','));
+                $('.terpakai_um').val(parseFloat(response.data[0].sisa_uang_muka));
+            }
+            
             $('.status_um').val(response.data[0].status_um);
             $('#modal_cari_um').modal('hide');
 
@@ -2050,6 +2103,24 @@ function edit_um(a) {
         error:function(){
         }
     });
+
+}
+function hapus_um(a) {
+    var par = $(a).parents('tr');
+    table_histori_um.row(par).remove().draw(false);
+
+    var temp = 0;
+            
+    table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+        var ini = $(this).val();
+        ini = parseFloat(ini);
+        temp+=ini;
+    });
+    console.log(temp);
+    $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.jumlah_bayar').val(temp);
+    $('.tabel_pembayaran_um input').val('');
+    hitung_um();
 
 }
 
