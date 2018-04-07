@@ -295,10 +295,14 @@
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                                     <td colspan="5">
-                                                        <select class="form-control"  name="cb_cabang" style="width:100%" id="cb_cabang">
+                                                        <select class="form-control"  name="cb_cabang" onclick="setMaxDisc()" style="width:100%" id="cb_cabang">
                                                             <option value=""></option>
                                                         @foreach ($cabang as $row)
-                                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                                            @if($row->diskon != null)
+                                                            <option value="{{ $row->kode }}"> {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                            @else
+                                                            <option value="{{ $row->kode }}"> {{ $row->nama }}</option>
+                                                            @endif
                                                         @endforeach
                                                         </select>
                                                     </td>
@@ -346,7 +350,10 @@
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Discount</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control" name="ed_diskon_h" id="ed_diskon_h" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->diskon, 0, ",", ".") }}" @endif>
+                                                        <div class="input-group">
+                                                            <input type="text" class="form-control" name="ed_diskon_h" id="ed_diskon_h" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->diskon, 0, ",", ".") }}" @endif>
+                                                            <span class="input-group-addon">%</span>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                                 <tr id="komisi">
@@ -743,6 +750,10 @@
         var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
         return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&.');
     };
+
+    var listCabang = [];
+    var listDiskon = [];
+    var maxdiskon = 100;
     
     $(document).ready( function () {
         $("#surat_jalan").hide();
@@ -798,10 +809,19 @@
             }
 
         //$("input[name='ed_harga'],input[name='ed_jumlah'],input[name='ed_biaya_penerus'],input[name='ed_diskon']").maskMoney({thousands:'.', decimal:',', precision:-1});
-        $("input[name='ed_biaya_tambahan'],input[name='ed_biaya_komisi'],input[name='ed_diskon_h'],input[name='ed_berat']").maskMoney({thousands:'.', decimal:',', precision:-1});
+        $("input[name='ed_biaya_tambahan'],input[name='ed_biaya_komisi'],input[name='ed_berat']").maskMoney({thousands:'.', decimal:',', precision:-1});
     @if($do != null)
         $('#btn_cari_harga').click();
     @endif
+
+    @foreach ($cabang as $index=>$element)
+        listCabang[{{ $index }}] = '{{ $element->kode }}';
+        @if ($element->diskon == null)
+            listDiskon[{{ $index }}] = 0;
+        @else
+            listDiskon[{{ $index }}] = {{ $element->diskon }};
+        @endif
+    @endforeach
 
     });
 
@@ -834,8 +854,8 @@
         var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
         if (diskon > 0 && biaya_tambahan > 0) {
             alert("Diskon dan biaya tambahan di isi salah satu");
-            $("input[name='ed_diskon_h']").val('0');
-            $("input[name='ed_biaya_tambahan']").val('0');
+            $("input[name='ed_diskon_h']").val(0);
+            $("input[name='ed_biaya_tambahan']").val(0);
             diskon = 0;
             biaya_tambahan = 0;
             $("input[name='ed_biaya_tambahan']").focus();
@@ -843,7 +863,8 @@
         if ($("select[name='cb_outlet']").val() == '' ) {
             biaya_komisi = 0;
         }
-        var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) - parseFloat(diskon) + parseFloat(biaya_komisi)  ;
+        var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+        total = total - (total * diskon / 100);
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
             ppn =Math.round(parseFloat(total) * parseFloat(0.1));
@@ -2149,8 +2170,36 @@
         });
     });
 
+    $("input[name='ed_diskon_h']").blur(function(){
+        if ($("input[name='ed_diskon_h']").val() == '') {
+            $("input[name='ed_diskon_h']").val(0);
+            hitung();
+        }
+    });
     
     $("input[name='ed_biaya_tambahan'],input[name='ed_diskon_h'],input[name='ed_biaya_komisi']").keyup(function(){
+        if ($("input[name='ed_diskon_h']").val() > 100 || $("input[name='ed_diskon_h']").val() > maxdiskon) {
+            Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": true,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            $("input[name='ed_diskon_h']").val(0);
+        }
         hitung();
     });
     
@@ -2257,6 +2306,16 @@
             }
             $("input[name='ed_berat']").val(1);
             return false;
+        }
+    }
+
+    function setMaxDisc(){
+        var cabang = $("select[name='cb_cabang']").val();
+        for (var i = 0; i < listCabang.length; i++) {
+            if (listCabang[i] == cabang) {
+                maxdiskon = listDiskon[i];
+                i = listCabang.length + 1;
+            }
         }
     }
 
