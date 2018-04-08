@@ -996,7 +996,7 @@ $('.tambah_invoice').click(function(){
 
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
-        data:{cb_cabang,cb_customer,array_simpan},
+        data:{cb_cabang,cb_customer,array_simpan,array_edit,array_harga},
         success:function(data){
 
 
@@ -1073,7 +1073,6 @@ function akun_biaya1(){
    var jenis =  $('.akun_biaya').find(':selected').data('jenis');
    var biaya =  $('.akun_biaya').find(':selected').data('biaya');
 
-   console.log(jenis);
    $('.jenis_biaya').val('');
    $('.akun_acc_biaya').val('');
    $('.jenis_biaya').val(jenis);
@@ -1114,10 +1113,12 @@ function hitung() {
     }
 
     if (angka > sisa_terbayar) {
-        $('.akun_biaya').val('B3').trigger('chosen:updated');
-        akun_biaya1();
-        var jenis         = $('.jenis_biaya').val();
-        var akun_acc_biaya= $('.akun_acc_biaya').val();
+        if ($('.akun_biaya').val() != 'U2') {
+            $('.akun_biaya').val('B3').trigger('chosen:updated');
+            akun_biaya1();
+            var jenis         = $('.jenis_biaya').val();
+            var akun_acc_biaya= $('.akun_acc_biaya').val();
+        }
     }
     $('.ed_jumlah_bayar').val(accounting.formatMoney(angka,"",2,'.',','));
     $('.jumlah_bayar').val(angka);
@@ -1198,7 +1199,7 @@ function histori(p){
                     $('.ed_nota_kredit').val(accounting.formatMoney(temp1,"",2,'.',','));
                     $('.nota_kredit').val(temp1);
 
-
+                    
                     $('.ed_nomor_invoice').val(i_nomor);
                     $('.ed_jumlah_tagihan').val(accounting.formatMoney(i_tagihan,"",2,'.',','));
                     $('.jumlah_tagihan').val(i_tagihan);
@@ -1229,6 +1230,7 @@ function histori(p){
                     $('.jumlah_bayar').val(i_bayar);
                     $('.jumlah_biaya_admin ').val(biaya_admin);
                     var biaya_admin    = $(par).find('.i_akun_biaya').val();
+                    console.log(biaya_admin);
                     $('.akun_biaya ').val(biaya_admin).trigger('chosen:updated');
                     if (biaya_admin == '0') {
                         $('.jumlah_biaya_admin').attr('readonly',true);
@@ -1982,7 +1984,7 @@ $('#save_um').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/save_um_kwitansi',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_histori_um.$('input').serialize()
@@ -2075,6 +2077,8 @@ $('#save_um').click(function(){
 })
 
 @foreach($data_dt as $val)
+var nomor = [];
+
 var i_nomor   = "{{$val->kd_nomor_invoice}}"
 var i_tagihan = "{{$val->i_total_tagihan}}"
 var i_sisa    = "{{$val->i_sisa_pelunasan}}"
@@ -2084,7 +2088,9 @@ var i_kredit  = "{{$val->kd_kredit}}"
 var akun_biaya= "{{$val->kd_kode_biaya}}"
 var i_ket     = "{{$val->kd_keterangan}}"
 var i_ket     = "{{$val->kd_keterangan}}"
-
+array_simpan.push(i_nomor);
+array_edit.push(i_nomor);
+array_harga.push(bayar);
 
     table_data.row.add([
         '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor+'" name="i_nomor[]" value="'+i_nomor+'">',
@@ -2177,12 +2183,14 @@ function edit_um(a) {
                 $('.terpakai_um').val(response.data[0].sisa_uang_muka);
             }else{
                 $('.terpakai_um_text').val(accounting.formatMoney(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um,"",2,'.',','));
-                $('.terpakai_um').val(parseFloat(response.data[0].sisa_uang_muka));
+                $('.terpakai_um').val(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um);
             }
             
             $('.status_um').val(response.data[0].status_um);
+            $('.status_um').val(response.data[0].status_um);
             $('#modal_cari_um').modal('hide');
-
+        toastr.info('Edit Data Berhasil Diinisialisasi');
+        
         },
         error:function(){
         }
@@ -2234,7 +2242,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/update_kwitansi',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()

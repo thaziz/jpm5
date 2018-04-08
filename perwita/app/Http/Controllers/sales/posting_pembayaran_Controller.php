@@ -252,14 +252,12 @@ class posting_pembayaran_Controller extends Controller
         // dd($request->all());
         $temp = DB::table('kwitansi')
                   ->where('k_kode_cabang',$request->cabang)
-                  ->where('k_kode_customer',$request->customer)
                   ->where('k_nomor_posting','=',null)
                   ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
                   ->get();
 
         $temp1 = DB::table('kwitansi')
                   ->where('k_kode_cabang',$request->cabang)
-                  ->where('k_kode_customer',$request->customer)
                   ->where('k_nomor_posting','=',null)
                   ->where('k_jenis_pembayaran',$request->cb_jenis_pembayaran)
                   ->get();
@@ -299,6 +297,7 @@ class posting_pembayaran_Controller extends Controller
 
 
             $data = DB::table('kwitansi')
+                  ->join('customer','kode','=','k_kode_customer')
                   ->whereIn('k_nomor',$request->nomor)
                   ->get();
 

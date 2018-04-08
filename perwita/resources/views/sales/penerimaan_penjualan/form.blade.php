@@ -1110,10 +1110,12 @@ function hitung() {
     }
 
     if (angka > sisa_terbayar) {
-        $('.akun_biaya').val('B3').trigger('chosen:updated');
-        akun_biaya1();
-        var jenis         = $('.jenis_biaya').val();
-        var akun_acc_biaya= $('.akun_acc_biaya').val();
+        if ($('.akun_biaya').val() != 'U2') {
+            $('.akun_biaya').val('B3').trigger('chosen:updated');
+            akun_biaya1();
+            var jenis         = $('.jenis_biaya').val();
+            var akun_acc_biaya= $('.akun_acc_biaya').val();
+        }
     }
     $('.ed_jumlah_bayar').val(accounting.formatMoney(angka,"",2,'.',','));
     $('.jumlah_bayar').val(angka);
@@ -1980,7 +1982,7 @@ $('#save_um').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/save_um_kwitansi',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_histori_um.$('input').serialize()
@@ -2100,7 +2102,7 @@ function edit_um(a) {
             
             $('.status_um').val(response.data[0].status_um);
             $('#modal_cari_um').modal('hide');
-
+            toastr.info('Edit Data Berhasil Diinisialisasi');
         },
         error:function(){
         }
@@ -2152,7 +2154,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/simpan_kwitansi',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.tabel_header :input').serialize()
                +'&'+table_data.$('input').serialize()
