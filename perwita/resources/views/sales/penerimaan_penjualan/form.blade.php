@@ -1037,7 +1037,7 @@ $('#btnsave').click(function(){
                         '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
-                        '<input type="text" class="form-control input-sm" name="i_keterangan[]" value="">',
+                        '<input type="text" placeholder="keterangan..." class="form-control input-sm" name="i_keterangan[]" value="">',
                         '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
                     ]).draw();
 
@@ -1097,7 +1097,7 @@ function hitung() {
     }else{
         biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
     }
-    biaya_admin = parseInt(biaya_admin);
+    biaya_admin = parseFloat(biaya_admin);
     
         console.log(biaya_admin);
     
@@ -1120,7 +1120,7 @@ function hitung() {
 
     $('.ed_total').val(accounting.formatMoney(total,"",2,'.',','))
     $('.total').val(total);
-    angka = parseInt(angka);
+    angka = parseFloat(angka);
   
     
     if (jenis == 'D') {
@@ -1135,7 +1135,7 @@ function hitung() {
 
         var biaya_admin   = $('.jumlah_biaya_admin').val();
         biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
-        biaya_admin       = parseInt(biaya_admin);
+        biaya_admin       = parseFloat(biaya_admin);
 
         $('.total_bayar').val(accounting.formatMoney(angka-biaya_admin,"",2,'.',','))
     }
@@ -1211,14 +1211,14 @@ function histori(p){
 
 
                     var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
-                    jumlah             = Math.round(jumlah).toFixed(2);
+                    jumlah             = jumlah;
                     $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
                     $('.sisa_terbayar').val(jumlah);
 
                     var i_bayar        = $(par).find('.i_bayar').val();
                     var i_debet    = $(par).find('.i_debet').val();
                     var i_kredit    = $(par).find('.i_kredit').val();
-                    var biaya_admin = parseInt(i_debet)+parseInt(i_kredit);
+                    var biaya_admin = parseFloat(i_debet)+parseFloat(i_kredit);
                     console.log(i_bayar);
                     $('.angka').val(i_bayar);
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
@@ -1289,14 +1289,14 @@ function histori(p){
 
 
                     var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
-                    jumlah             = Math.round(jumlah).toFixed(2);
+                    jumlah             = jumlah;
                     $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
                     $('.sisa_terbayar_um').val(jumlah);
 
                     var i_bayar        = $(par).find('.i_bayar').val();
                     var i_debet    = $(par).find('.i_debet').val();
                     var i_kredit    = $(par).find('.i_kredit').val();
-                    var biaya_admin = parseInt(i_debet)+parseInt(i_kredit);
+                    var biaya_admin = parseFloat(i_debet)+parseFloat(i_kredit);
                     console.log(i_bayar);
                     $('.angka').val(i_bayar);
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
@@ -1442,7 +1442,7 @@ $(this).val(0);
 // simpan perubahan
 $('#btnsave2').click(function(){
     var jumlah_bayar         = $('.jumlah_bayar').val();
-    jumlah_bayar             = parseInt(jumlah_bayar);
+    jumlah_bayar             = parseFloat(jumlah_bayar);
     var akun_biaya           = $('.akun_biaya').val();
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
     var jenis                = $('.jenis_biaya').val();
@@ -1452,12 +1452,12 @@ $('#btnsave2').click(function(){
         jumlah_biaya_admin = 0;
     }else{
         jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
-        jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
+        jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
     }
     
     var angka                = $('.angka').val();
     angka                    = angka.replace(/[^0-9\-]+/g,"");
-    angka                    = parseInt(angka);
+    angka                    = parseFloat(angka);
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
     var tes                  = [];
     var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
@@ -1553,11 +1553,11 @@ $('#btnsave3').click(function(){
     var temp1 = 0; 
 
     table_data_biaya.$('.b_debet').each(function(){
-        var deb = parseInt($(this).val());
+        var deb = parseFloat($(this).val());
         temp += deb;
     })  
     table_data_biaya.$('.b_kredit').each(function(){
-        var deb = parseInt($(this).val());
+        var deb = parseFloat($(this).val());
         temp1 += deb;
     })  
 
@@ -1644,11 +1644,11 @@ $('#update_biaya').click(function(){
     var temp1 = 0; 
 
     table_data_biaya.$('.b_debet').each(function(){
-        var deb = parseInt($(this).val());
+        var deb = parseFloat($(this).val());
         temp += deb;
     })  
     table_data_biaya.$('.b_kredit').each(function(){
-        var deb = parseInt($(this).val());
+        var deb = parseFloat($(this).val());
         temp1 += deb;
     })  
 
@@ -1814,11 +1814,11 @@ function hitung_um(){
         }
         var hasil = sisa_terbayar - jumlah_bayar - jumlah_biaya_admin;
 
-        $('.ed_total').val(accounting.formatMoney(hasil,"",0,'.',','));
+        $('.ed_total').val(accounting.formatMoney(hasil,"",2,'.',','));
         $('.total').val(hasil);
         
         var hasil1 = parseFloat(jumlah_bayar) + parseFloat(jumlah_biaya_admin);
-        $('.total_bayar ').val(accounting.formatMoney(hasil1,"",0,'.',','));
+        $('.total_bayar ').val(accounting.formatMoney(hasil1,"",2,'.',','));
     }else{
         toastr.warning('Jenis Akun Biaya Tidak Boleh Kredit');
         $('.akun_biaya_um').val('0').trigger('chosen:updated');
@@ -1994,7 +1994,7 @@ $('#save_um').click(function(){
                     },function(){
 
                         var jumlah_bayar         = $('.jumlah_bayar').val();
-                        jumlah_bayar             = parseInt(jumlah_bayar);
+                        jumlah_bayar             = parseFloat(jumlah_bayar);
                         var akun_biaya           = $('.akun_biaya_um').val();
                         var jumlah_biaya_admin   = $('.jumlah_biaya_admin_um').val();
                         var jenis                = $('.jenis_biaya_um').val();
@@ -2004,12 +2004,12 @@ $('#save_um').click(function(){
                             jumlah_biaya_admin = 0;
                         }else{
                             jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
-                            jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
+                            jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
                         }
 
                         var angka                = $('.jumlah_bayar').val();
                         angka                    = angka.replace(/[^0-9\-]+/g,"");
-                        angka                    = parseInt(angka);
+                        angka                    = parseFloat(angka);
                         var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
                         var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
                         var jumlah_biaya         = 0;
@@ -2107,10 +2107,12 @@ function edit_um(a) {
 }
 function hapus_um(a) {
     var par = $(a).parents('tr');
+    var no  = $(par).find('.m_no_um').val();
     table_histori_um.row(par).remove().draw(false);
-
+    var index = array_simpan.indexOf(no);
+    simpan_um.splice(index,1);
     var temp = 0;
-            
+    
     table_histori_um.$('.m_jumlah_bayar_um').each(function(){
         var ini = $(this).val();
         ini = parseFloat(ini);

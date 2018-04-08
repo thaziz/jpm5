@@ -182,6 +182,8 @@ $(document).ready(function() {
     }
 
     function hapus(id) {
+      var nota = id;
+      var flag_nota = 'H';
         swal({
         title: "Apakah anda yakin?",
         text: "Hapus Data!",
@@ -198,7 +200,7 @@ $(document).ready(function() {
 
          $.ajax({
           url:baseUrl + '/sales/hapus_kwitansi',
-          data:{id},
+          data:{nota,flag_nota},
           type:'get',
           dataType:'json',
           success:function(data){
