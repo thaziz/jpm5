@@ -1158,7 +1158,7 @@ function histori(p){
 
         $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
-        data:{i_nomor,cb_jenis_pembayaran},
+        data:{i_nomor,cb_jenis_pembayaran,nota_kwitansi},
         success:function(data){
 
             $('.riwayat_kwitansi').html(data);
@@ -1174,7 +1174,7 @@ function histori(p){
 
             $.ajax({
                 url:baseUrl + '/sales/riwayat_cn_dn',
-                data:{i_nomor,cb_jenis_pembayaran},
+                data:{i_nomor,cb_jenis_pembayaran,nota_kwitansi},
                 success:function(data){
                     $('.riwayat_cn_dn').html(data);
                     table_cd.destroy();
@@ -1240,7 +1240,7 @@ function histori(p){
     }else{
         $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
-        data:{i_nomor,cb_jenis_pembayaran},
+        data:{i_nomor,cb_jenis_pembayaran,nota_kwitansi},
         success:function(data){
             $('.riwayat_kwitansi_um').html(data);
             var temp = 0;
@@ -1253,7 +1253,7 @@ function histori(p){
 
             $.ajax({
                 url:baseUrl + '/sales/riwayat_cn_dn',
-                data:{i_nomor,cb_jenis_pembayaran},
+                data:{i_nomor,cb_jenis_pembayaran,nota_kwitansi},
                 success:function(data){
                     $('.riwayat_cn_dn_um').html(data);
                     var temp = 0;
@@ -1464,8 +1464,10 @@ $('#btnsave2').click(function(){
     var jumlah_biaya         = 0;
     if (jenis == 'K') {
         $(par).find('.i_kredit').val(jumlah_biaya_admin);
+        $(par).find('.i_debet').val('0');
     }else{
         $(par).find('.i_debet').val(jumlah_biaya_admin);
+        $(par).find('.i_kredit').val('0');
     }
     $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
     $(par).find('.i_bayar').val(angka);
@@ -2093,7 +2095,7 @@ function edit_um(a) {
                 $('.terpakai_um').val(response.data[0].sisa_uang_muka);
             }else{
                 $('.terpakai_um_text').val(accounting.formatMoney(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um,"",2,'.',','));
-                $('.terpakai_um').val(parseFloat(response.data[0].sisa_uang_muka));
+                $('.terpakai_um').val(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um);
             }
             
             $('.status_um').val(response.data[0].status_um);
