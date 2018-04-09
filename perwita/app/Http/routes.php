@@ -980,6 +980,7 @@ Route::get('master_sales/kendaraan_form', 'master_sales\kendaraan_Controller@for
 Route::get('master_sales/kendaraan_form/{nomor}/edit', 'master_sales\kendaraan_Controller@form');
 Route::get('master_sales/kendaraan_form/{nomor}/hapus_data', 'master_sales\kendaraan_Controller@hapus_data');
 Route::post('master_sales/kendaraan/save_data', 'master_sales\kendaraan_Controller@save_data');
+Route::get('master_sales/kendaraan/{id}/hapus_data', 'master_sales\kendaraan_Controller@hapus_data');
 // end kendaraan
 
 //Nomor seri pajak
