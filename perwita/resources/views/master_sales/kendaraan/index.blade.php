@@ -49,8 +49,14 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 <div class="box-body">
+                    <ul class="nav nav-tabs">
+                      <li class="active"><a data-toggle="tab" href="#home">Mobil Sendiri</a></li>
+                      <li><a data-toggle="tab" href="#menu1">Mobil Subcon</a></li>
+                    </ul>
 
-                    <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+                    <div class="tab-content">
+                      <div id="home" class="tab-pane fade in active">
+                       <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
                         <thead>
                             <tr>
                                 <th> Nopol</th>
@@ -77,10 +83,42 @@
                                 </td>
                             </tr>
                             @endforeach
-
                         </tbody>
-
+                    </table>     
+                      </div>
+                      <div id="menu1" class="tab-pane fade">
+                        <table id="tabel_data1" class="table table-bordered table-striped" cellspacing="10">
+                        <thead>
+                            <tr>
+                                <th> Nopol</th>
+                                <th> Tipe </th>
+                                <th> GPS </th>
+                                <th> Cabang </th>
+                                <th> Status </th>
+                                <th style="width:12%"> Aksi </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($data1 as $row)
+                            <tr>
+                                <td>{{ $row->nopol }}</td>
+                                <td>{{ $row->tipe_angkutan }}</td>
+                                <td>{{ $row->gps }}</td>
+                                <td>{{ $row->nama_cabang }}</td>
+                                <td>{{ $row->status }}</td>
+                                <td class="text-center">
+                                    <div class="btn-group">
+                                        <a href="{{ url('master_sales/kendaraan_form/'.$row->id.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        <a href="{{ url('master_sales/kendaraan/'.$row->id.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
                     </table>
+                      </div>
+                    </div>
+                    
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -113,6 +151,18 @@
 <script type="text/javascript">
     $(document).ready( function () {
         $('#tabel_data').DataTable({
+            "paging": true,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": false,
+            "responsive": true,
+            "autoWidth": false,
+            "pageLength": 10,
+            "retrieve" : true,
+      });
+
+        $('#tabel_data1').DataTable({
             "paging": true,
             "lengthChange": true,
             "searching": true,

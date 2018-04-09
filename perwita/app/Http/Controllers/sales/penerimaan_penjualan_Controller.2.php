@@ -96,9 +96,10 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function index()
     {
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if (Auth::user()->punyaAkses('Kwitansi','all')) {
             $data = DB::table('kwitansi')
                       ->join('customer','kode','=','k_kode_customer')
+                      ->take(2000)
                       ->get();
             
         }else{
@@ -106,6 +107,7 @@ class penerimaan_penjualan_Controller extends Controller
             $data = DB::table('kwitansi')
                       ->join('customer','kode','=','k_kode_customer')
                       ->where('k_kode_cabang',$cabang)
+                      ->take(2000);
                       ->get();
         }
 

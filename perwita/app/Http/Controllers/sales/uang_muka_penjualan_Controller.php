@@ -6,13 +6,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Carbon\Carbon;
+use Auth;
 
 
 class uang_muka_penjualan_Controller extends Controller
 {
     public function table_data () {
-        $sql = "	SELECT u.*,c.nama FROM uang_muka_penjualan u
-					LEFT JOIN customer c ON c.kode=u.kode_customer  ";
+        $cabang = Auth::user()->kode_cabang;
+
+        if (Auth::user()->punyaAkses('Uang Muka Penjualan','all')) {
+
+            $sql = "	SELECT u.*,c.nama FROM uang_muka_penjualan u
+    					LEFT JOIN customer c ON c.kode=u.kode_customer  ";
+        }else{
+
+            $sql = "    SELECT u.*,c.nama FROM uang_muka_penjualan u
+                        LEFT JOIN customer c ON c.kode=u.kode_customer  
+                        where u.kode_cabang = '$cabang'";
+        }
+
         $list = DB::select(DB::raw($sql));
         $data = array();
         foreach ($list as $r) {
@@ -20,11 +32,27 @@ class uang_muka_penjualan_Controller extends Controller
         }
         $i=0;
         foreach ($data as $key) {
+
+
+              $div_1  =   '<div class="btn-group">';
+              if (Auth::user()->punyaAkses('Uang Muka Penjualan','ubah')) {
+              $div_2  = '<button type="button" id="'.$data[$i]['nomor'].'"  class="btn btn-xs btn-warning">'.
+                        '<i class="fa fa-pencil"></i></button>';
+              }else{
+                $div_2 = '';
+              }
+              if (Auth::user()->punyaAkses('Uang Muka Penjualan','hapus')) {
+              $div_3  = '<button type="button" id="'.$data[$i]['nomor'].'" name="'.$data[$i]['nama'].'" class="btn btn-xs btn-danger">'.
+                        '<i class="fa fa-trash"></i></button>';
+              }else{
+                $div_3 = '';
+              }
+              $div_4   = '</div>';
+
+               $div_1 . $div_2 . $div_3 . $div_4;
             // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['nomor'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['nomor'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
+              $data[$i]['button'] = $div_1 . $div_2 . $div_3 . $div_4;
+
             $i++;
         }
         $datax = array('data' => $data);

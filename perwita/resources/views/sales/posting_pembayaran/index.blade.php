@@ -5,6 +5,12 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .center{
+        text-align: center;
+    }
+    .right: {
+        text-align: right;
+    }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -126,6 +132,7 @@
             "autoWidth": false,
             "pageLength": 10,
             "retrieve" : true,
+            
       });
     });
 

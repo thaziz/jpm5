@@ -115,7 +115,7 @@
                                         <option value="0">Pilih - Pembayaran</option>
                                         <option value="T"> TUNAI/CASH </option>
                                         <option value="C"> TRANSFER </option>
-                                        <option selected="" value="U"> UANG MUKA </option>
+                                        <option value="U"> UANG MUKA </option>
                                         <option value="B"> NOTA/BIAYA LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                     </select>
@@ -161,11 +161,7 @@
                                         <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                         @foreach ($customer as $row)
-                                        @if($row->kode == 'CS-001/00051')
-                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
-                                        @else
                                             <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->cabang }}</option>
-                                        @endif
                                         @endforeach
                                     </select>
                                     </div>
@@ -1405,7 +1401,7 @@ function hapus_detail(o) {
     $('.i_nomor').each(function(){
         temp += 1;
     })
-    if (temp != 0) {
+    if (temp == 0) {
         $('.jenis_pembayaran_td').removeClass('disabled');
         $('.cabang_td').removeClass('disabled');
         $('.customer_td').removeClass('disabled');

@@ -159,6 +159,7 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-warning cndn disabled" onclick="simpan()" ><i class="glyphicon glyphicon-eye-open"></i> Lihat Di CNDN</button>
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
@@ -465,7 +466,8 @@
 
                         ]).draw(false);
                         index_detail++;
-                        array_simpan.push(data.data_dt.nomor);
+                        array_simpan.push(data.data_dt[i][0].nomor);
+                        console.log(array_simpan);
 
                     }
                 }
@@ -910,18 +912,13 @@
     function simpan(){
     var total_tagihan = $('.total_tagihan').val();
     var sisa_tagihan  = $('.sisa_tagihan').val();
-    var selisih_tagihan  = $('.selisih_tagihan').val();
     total_tagihan     = total_tagihan.replace(/[^0-9\-]+/g,"");
     sisa_tagihan      = sisa_tagihan.replace(/[^0-9\-]+/g,"");
-    selisih_tagihan      = selisih_tagihan.replace(/[^0-9\-]+/g,"");
     total_tagihan     = parseFloat(total_tagihan)/100;
     sisa_tagihan      = parseFloat(sisa_tagihan)/100;
-    selisih_tagihan      = parseFloat(selisih_tagihan)/100;
-    if (selisih_tagihan < 0) {
-       selisih_tagihan = selisih_tagihan * -1;
-    }
+ 
 
-    if (selisih_tagihan > selisih_tagihan) {
+    if (total_tagihan < total_tagihan) {
         toastr.warning('Sisa Tagihan Kurang Dari 0, Tidak Dapat Mengurangi Tagihan');
         return 1;
     }
@@ -948,8 +945,8 @@
             });
 
           $.ajax({
-          url:baseUrl + '/sales/simpan_invoice',
-          type:'post',
+          url:baseUrl + '/sales/simpan_invoice_pembetulan',
+          type:'get',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
