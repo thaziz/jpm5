@@ -83,7 +83,6 @@
                             <th> Tanggal </th>
                             <th> Customer </th>
                             <th> Ttl Bayar</th>
-                            <th> Uang M(-) </th>
                             <th> Debet(+) </th>
                             <th> Kredit(-) </th>
                             <th> Netto </th>
@@ -97,9 +96,8 @@
                         
                         <td><input type="hidden" value="{{ $e->k_nomor }}" name="nomor">{{ $e->k_nomor }}</td>
                         <td>{{ $e->k_tanggal }}</td>
-                        <td>{{ $e->nama }}</td>
+                        <td>{{ $e->k_kode_customer }}</td>
                         <td align="right">{{ number_format($e->k_jumlah,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_uang_muka,0,',','.') }}</td>
                         <td align="right">{{ number_format($e->k_debet,0,',','.') }}</td>
                         <td align="right">{{ number_format($e->k_kredit,0,',','.') }}</td>
                         <td align="right">{{ number_format($e->k_netto,0,',','.') }}</td>
