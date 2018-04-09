@@ -418,7 +418,7 @@ $('#btnsimpan').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        // location.reload();
+                        window.location.href='{{url('sales/posting_pembayaran')}}';
                 });
             }else{
                 $('#nota_kwitansi').val(response.nota);

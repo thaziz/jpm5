@@ -600,13 +600,34 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   Route::post('reportpengeluaranbarang/reportpengeluaranbarang', 'LaporanPembelianController@report_pengeluaranbarang');
   //END OF
 
+  //LAPORAN DEPARETMENT
+  Route::get('lap_masterdepartment/lap_masterdepartment', 'LaporanPembelianController@lap_department');
+  Route::post('reportmasterdepartment/reportmasterdepartment', 'LaporanPembelianController@report_masterdepartment');
+  //END OF 
 
+  //LAPORAN DEPARETMENT
+  Route::get('lap_masterpresentase/lap_masterpresentase', 'LaporanPembelianController@lap_persen');
+  Route::post('reportmasterpresentase/reportmasterpresentase', 'LaporanPembelianController@report_persen');
+  //END OF 
 
+  //LAPORAN BBM
+  Route::get('lap_bbm/lap_bbm', 'LaporanPembelianController@lap_bbm');
+  Route::post('reportbbm/reportbbm', 'LaporanPembelianController@report_bbm');
+  //END OF 
+
+  //LAPORAN BBM
+  Route::get('lap_voucherhutang/lap_voucherhutang', 'LaporanPembelianController@lap_voucherhutang');
+  Route::post('reportvoucherhutang/reportvoucherhutang', 'LaporanPembelianController@report_voucherhutang');
+  //END OF
+
+  //LAPORAN BBM
+  Route::get('lap_uangmuka/lap_uangmuka', 'LaporanPembelianController@lap_uangmuka');
+  Route::post('reportuangmuka/reportuangmuka', 'LaporanPembelianController@report_uangmuka');
+  //END OF
 
 
 //================================    BELUM SELESAI    ========================================//
-Route::get('reportmasterdepartment/reportmasterdepartment', 'LaporanPurchaseController@reportmasterdepartment');
-Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
+
 Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
 Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
 Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
@@ -614,28 +635,10 @@ Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhu
 Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
 //===========================================================================================================================
 
-
-
-
-
-
-
-
 //==================================== LAPORAN PEMBELIAN BERAKIR ========================================//
 
 
-
-
-
-
-
-
-
 //-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJARNI//
-
-
-
-
 
 
 //_____$$$$_________$$$$
@@ -650,10 +653,6 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 //__________$$$$$$$
 //____________$$$
 //_____________$
-
-
-
-
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
 
 //LAPORAN MASTER BERSAMA INDEX
@@ -699,7 +698,89 @@ Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_ke
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
 
 
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER DO ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
 
+
+//LAPORAN SEMUA DO
+Route::get('laporanmasterdo/laporanmasterdo','LaporanMasterController@lap_semuado');
+//END OF
+
+//LAPORAN AGEN
+Route::get('lapagen/lapagen','LaporanMasterController@lap_agen');
+Route::post('reportagen/reportagen','LaporanMasterController@report_agen');
+//END OF
+
+//LAPORAN BIAYA
+Route::get('lapbiaya/labiaya','LaporanMasterController@lap_biaya');
+Route::post('reportbiaya/reportbiaya','LaporanMasterController@report_biaya');
+//END OF
+
+//LAPORAN DISKON
+Route::get('lapdiskon/lapdiskon','LaporanMasterController@lap_diskon');
+Route::post('reportdiskon/reportdiskon','LaporanMasterController@report_diskon');
+//END OF
+
+//LAPORAN DISKON PENJUALAN
+Route::get('lapdiskonpenjualan/lapdiskonpenjualan','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//LAPORAN GRUP CUSTOMER
+Route::get('lapgrupcustomer/lapgrupcustomer','LaporanMasterController@lap_grupcustomer');
+Route::post('reportgrupcustomer/reportgrupcustomer','LaporanMasterController@report_grupcustomer');
+//END OF
+
+//LAPORAN GRUP ITEM
+Route::get('lapgrupitem/lapgrupitem','LaporanMasterController@lap_grupitem');
+Route::post('reportgrupitem/reportgrupitem','LaporanMasterController@report_grupitem');
+//END OF
+
+//LAPORAN ITEM
+Route::get('lapitem/lapitem','LaporanMasterController@lap_item');
+Route::post('reportitem/reportitem','LaporanMasterController@report_item');
+//END OF
+
+//LAPORAN NO SERI PAJAK
+Route::get('lapnoseripajak/lapnoseripajak','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//LAPORAN RUTE
+Route::get('laprute/laprute','LaporanMasterController@lap_rute');
+Route::post('reportrute/reportrute','LaporanMasterController@report_rute');
+//END OF
+
+//LAPORAN SALDO AWAL PIUTANG LAIN
+Route::get('lasaldoawalpiutang/lasaldoawalpiutang','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//LAPORAN SALDO PIUTANG
+Route::get('lasaldopiutang/lasaldopiutang','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//LAPORAN SATUAN
+Route::get('lapsatuan/lapsatuan','LaporanMasterController@lap_satuan');
+Route::post('reportsatuan/reportsatuan','LaporanMasterController@report_satuan');
+//END OF
+
+//LAPORAN SUBCON
+Route::get('lapsubcon/lapsubcon','LaporanMasterController@lap_subcon');
+Route::post('reportsubcon/reportsubcon','LaporanMasterController@report_subcon');
+//END OF
+
+//LAPORAN VENDOR
+Route::get('lapvendor/lapvendor','LaporanMasterController@lap_vendor');
+Route::post('reportvendor/reportvendor','LaporanMasterController@report_vendor');
+//END OF
+
+//LAPORAN ZONA
+Route::get('lapzona/lapzona','LaporanMasterController@lap_zona');
+Route::post('reportzona/reportzona','LaporanMasterController@report_zona');
+//END OF
+
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER DO ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
 
 
 //=================================== LAPORAN PENJUALAN BERAWAL =========================================//

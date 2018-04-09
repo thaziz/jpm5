@@ -740,7 +740,7 @@ class LaporanMasterController extends Controller
 					} 
 				json_encode($dat);
 	        for ($i=0; $i <count($dat); $i++) { 
-			  $dat1[$i] = DB::table('kendaraan')->where('kode','=',$dat[$i])->get();
+			  $dat1[$i] = DB::table('kendaraan')->where('id','=',$dat[$i])->get();
 			}
 		return view('purchase/master_bersama/lap_kendaraan/report_kendaraan',compact('dat1'));
 		}
@@ -750,6 +750,263 @@ class LaporanMasterController extends Controller
 
 								
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
+
+
+
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER DO ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
+
+
+		//LAPORAN SEMUA DO 
+		public function lap_semuado(){
+			return view('purchase/master_do/lap_semuado',compact('data'));
+		}	
+		//END OF
+
+
+
+		//LAPORAN AGEN 
+		public function lap_agen(){
+			$data = DB::table('agen')->get();
+			return view('purchase/master_do/lap_agen/lap_agen',compact('data'));
+		}	
+		public function report_agen(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('agen')->where('kode','=',$dat[$i])->get();
+			}
+		return view('purchase/master_do/lap_agen/report_agen',compact('dat1'));
+		}
+		//END OF
+
+
+
+		//LAPORAN BIAYA 
+		public function lap_biaya(){
+			$data = DB::table('biaya')->get();
+			return view('purchase/master_do/lap_biaya/lap_biaya',compact('data'));
+		}	
+		public function report_biaya(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('biaya')->where('b_kode','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_biaya/report_biaya',compact('dat1'));
+		}
+		//END OF
+
+
+
+		//LAPORAN DSIKON 
+		public function lap_diskon(){
+			$data = DB::table('diskon')->get();
+			return view('purchase/master_do/lap_diskon/lap_diskon',compact('data'));
+		}	
+		public function report_diskon(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('diskon')->where('b_kode','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_diskon/report_diskon',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN GROUP CUSTOMER 
+		public function lap_grupcustomer(){
+			$data = DB::table('group_customer')->get();
+			return view('purchase/master_do/lap_grupcustomer/lap_grupcustomer',compact('data'));
+		}	
+		public function report_grupcustomer(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('group_customer')->where('group_id','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_grupcustomer/report_grupcustomer',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN GROUP ITEM 
+		public function lap_grupitem(){
+			$data = DB::table('grup_item')->get();
+			return view('purchase/master_do/lap_grupitem/lap_grupitem',compact('data'));
+		}	
+		public function report_grupitem(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('grup_item')->where('kode','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_grupitem/report_grupitem',compact('dat1'));
+		}
+		//END OF
+
+		//LAPORAN ITEM 
+		public function lap_item(){
+			$data = DB::select('SELECT i.kode, i.nama, i.harga, i.keterangan, gi.nama grup_item, s.nama satuan 
+                    FROM item i
+                    LEFT JOIN satuan s ON s.kode=i.kode_satuan 
+                    LEFT JOIN grup_item gi ON gi.kode=i.kode_grup_item');
+			return view('purchase/master_do/lap_item/lap_item',compact('data'));
+		}	
+		public function report_item(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::select("SELECT i.kode, i.nama, i.harga, i.keterangan, gi.nama grup_item, s.nama satuan 
+                    FROM item i
+                    LEFT JOIN satuan s ON s.kode=i.kode_satuan 
+                    LEFT JOIN grup_item gi ON gi.kode=i.kode_grup_item
+                    WHERE i.kode = '$dat[$i]'
+                		");
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_item/report_item',compact('dat1'));
+		}
+		//END OF
+		
+
+		//LAPORAN RUTE 
+		public function lap_rute(){
+			$data = DB::table('rute')->get();
+			return view('purchase/master_do/lap_rute/lap_rute',compact('data'));
+		}	
+		public function report_rute(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('rute')->where('kode','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_rute/report_rute',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN SATUAN 
+		public function lap_satuan(){
+			$data = DB::table('satuan')->get();
+			return view('purchase/master_do/lap_satuan/lap_satuan',compact('data'));
+		}	
+		public function report_satuan(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('satuan')->where('kode','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_satuan/report_satuan',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN SUBCON 
+		public function lap_subcon(){
+			$data = DB::table('subcon')->get();
+			return view('purchase/master_do/lap_subcon/lap_subcon',compact('data'));
+		}	
+		public function report_subcon(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('subcon')->where('kode','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_subcon/report_subcon',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN SUBCON 
+		public function lap_vendor(){
+			$data = DB::select("SELECT a.kode, a.nama, a.alamat, k.nama kota, a.telpon, a.status FROM vendor a
+                    LEFT JOIN kota k ON k.id=a.id_kota ");
+			return view('purchase/master_do/lap_vendor/lap_vendor',compact('data'));
+		}	
+		public function report_vendor(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::select("SELECT a.kode, a.nama, a.alamat, k.nama kota, a.telpon, a.status FROM vendor a
+                    LEFT JOIN kota k ON k.id=a.id_kota 
+                    WHERE a.kode = '$dat[$i]'");
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_vendor/report_vendor',compact('dat1'));
+		}
+		//END OF
+
+
+		//LAPORAN ZONA 
+		public function lap_zona(){
+			$data = DB::table('zona')->get();
+			return view('purchase/master_do/lap_zona/lap_zona',compact('data'));
+		}	
+		public function report_zona(Request $request){
+			$data = $request->a;	
+		   		$dat = [];
+					for ($save=0; $save <count($data) ; $save++) { 
+						array_push($dat,$data[$save]);
+					} 
+				json_encode($dat);
+	        for ($i=0; $i <count($dat); $i++) { 
+			  $dat1[$i] = DB::table('zona')->where('id_zona','=',$dat[$i])->get();
+			}
+			// dd($dat1);
+		return view('purchase/master_do/lap_zona/report_zona',compact('dat1'));
+		}
+		//END OF
+		
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER DO ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
+
 
 							
 
