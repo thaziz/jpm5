@@ -132,7 +132,7 @@
                     @foreach ($data as $index => $e)
                     <tr>
                       <td style="text-align: center"> {{ $index+1 }} </td>                      
-                      <td style="text-align: center"> {{ $e->id }}</td>                      
+                      <td style="text-align: center"><input type="hidden" name="" value="{{ $e->id }}"> {{ $e->id }}</td>                      
                       <td style="text-align: center"> {{ $e->nopol }}</td>
                       <td style="text-align: center"> {{ $e->divisi }}</td>
                       <td style="text-align: center"> {{ $e->status }}</td>
@@ -302,7 +302,7 @@
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
 
-           asw[i] =  $(asd[i][0]).val();
+           asw[i] =  $(asd[i][1]).val();
   
        }
 
@@ -315,7 +315,7 @@
 
       $.ajax({
         data: {a:asw,c:'download'},
-        url: baseUrl + '/reportpengeluaranbarang/reportpengeluaranbarang',
+        url: baseUrl + '/reportkendaraan/reportkendaraan',
          type: "post",
        success : function(data){
         var win = window.open();

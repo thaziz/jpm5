@@ -314,4 +314,131 @@ class LaporanPembelianController extends Controller
 
 	//-----
 
+
+
+	//START LAPORAN DEPART	
+	public function lap_department() {
+		$array = DB::table('masterdepartment')->get();
+		return view('purchase/laporan/lap_masterdepartment/lap_masterdepartment',compact('array'));
+	}
+	public function report_masterdepartment( Request $request ){
+			$data = $request->a;	
+	   		$dat = '';
+				for ($save=0; $save <count($data) ; $save++) { 
+					$dat = $dat.','.$data[$save];
+				}
+				$dat =explode(',', $dat); 
+				json_encode($dat);
+		        for ($i=1; $i <count($dat) ; $i++) { 
+					$dat1[$i] = DB::table('masterdepartment')->where('kode_department','=',$dat[$i])->get();
+		        }
+		        // dd($dat1);
+		return view("purchase/laporan/lap_masterdepartment/report_masterdepartment",compact('dat1'));
+	}
+	//END OF
+
+
+	//-----
+
+
+
+	//START LAPORAN PRESENTASE	
+	public function lap_persen() {
+		$array = DB::table('master_persentase')->get();
+		return view('purchase/laporan/lap_masterpersen/lap_persen',compact('array'));
+	}
+	public function report_persen( Request $request ){
+			$data = $request->a;	
+	   		$dat = '';
+				for ($save=0; $save <count($data) ; $save++) { 
+					$dat = $dat.','.$data[$save];
+				}
+				$dat =explode(',', $dat); 
+				json_encode($dat);
+		        for ($i=1; $i <count($dat) ; $i++) { 
+					$dat1[$i] = DB::table('master_persentase')->where('kode','=',$dat[$i])->get();
+		        }
+		        // dd($dat1);
+		return view("purchase/laporan/lap_masterpersen/report_persen",compact('dat1'));
+	}
+	//END OF
+
+
+	//-----
+
+
+	//START LAPORAN PRESENTASE	
+	public function lap_bbm() {
+		$array = DB::table('master_bbm')->get();
+		return view('purchase/laporan/lap_bbm/lap_bbm',compact('array'));
+	}
+	public function report_bbm( Request $request ){
+			$data = $request->a;	
+	   		$dat = '';
+				for ($save=0; $save <count($data) ; $save++) { 
+					$dat = $dat.','.$data[$save];
+				}
+				$dat =explode(',', $dat); 
+				json_encode($dat);
+		        for ($i=1; $i <count($dat) ; $i++) { 
+					$dat1[$i] = DB::table('master_bbm')->where('mb_id','=',$dat[$i])->get();
+		        }
+		        // dd($dat1);
+		return view("purchase/laporan/lap_bbm/report_bbm",compact('dat1'));
+	}
+	//END OF
+
+
+	//-----
+
+
+	//START LAPORAN PRESENTASE	
+	public function lap_voucherhutang() {
+		$array = DB::table('v_hutang')->get();
+		return view('purchase/laporan/lap_voucherhutang/lap_voucherhutang',compact('array'));
+	}
+	public function report_voucherhutang( Request $request ){
+			$data = $request->a;	
+	   		$dat = '';
+				for ($save=0; $save <count($data) ; $save++) { 
+					$dat = $dat.','.$data[$save];
+				}
+				$dat =explode(',', $dat); 
+				json_encode($dat);
+		        for ($i=1; $i <count($dat) ; $i++) { 
+					$dat1[$i] = DB::table('v_hutang')->where('v_nomorbukti','=',$dat[$i])->get();
+		        }
+		        // dd($dat1);
+		return view("purchase/laporan/lap_voucherhutang/report_voucherhutang",compact('dat1'));
+	}
+	//END OF
+
+
+	//-----
+
+
+	//START LAPORAN UANGMUKA	
+	public function lap_uangmuka() {
+		$array = DB::table('v_hutang')->get();
+		return view('purchase/laporan/lap_uangmuka/lap_uangmuka',compact('array'));
+	}
+	public function report_uangmuka( Request $request ){
+			$data = $request->a;	
+	   		$dat = '';
+				for ($save=0; $save <count($data) ; $save++) { 
+					$dat = $dat.','.$data[$save];
+				}
+				$dat =explode(',', $dat); 
+				json_encode($dat);
+		        for ($i=1; $i <count($dat) ; $i++) { 
+					$dat1[$i] = DB::table('v_hutang')->where('v_nomorbukti','=',$dat[$i])->get();
+		        }
+		        // dd($dat1);
+		return view("purchase/laporan/lap_uangmuka/report_uangmuka",compact('dat1'));
+	}
+	//END OF
+
+
+	//-----
+
 }

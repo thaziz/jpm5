@@ -546,7 +546,11 @@
         var id = $(this).attr("id");
         var tujuan = $(this).data("tujuan");
         var asal = $(this).data("asal");
+
+
         if(!confirm("Hapus Data " + asal +' menuju ke '+ tujuan + " ?")) return false;
+        
+
         var value = {
             id: id,name:name,
             _token: "{{ csrf_token() }}"
