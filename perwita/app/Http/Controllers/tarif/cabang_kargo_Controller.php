@@ -184,7 +184,16 @@ class cabang_kargo_Controller extends Controller
                 }
 
             }
-            return response()->json(['status'=>1]);
+           if($data == TRUE){
+            $result['error']='';
+            $result['result']=1;
+            }else{
+                $result['error']=$data;
+                $result['result']=0;
+            }
+            $result['crud']=$crud;
+            echo json_encode($result);
+
         }else if($crud == 'E'){
           
             
