@@ -638,6 +638,10 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 //==================================== LAPORAN PEMBELIAN BERAKIR ========================================//
 
 
+Route::get('cari_paket/cari_paket', 'LaporanMasterController@cari_paket');
+
+
+
 //-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJARNI//
 
 
