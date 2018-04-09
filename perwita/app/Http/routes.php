@@ -338,6 +338,7 @@ Route::get('cndnpembelian/getnota', 'cndnController@getnota');
 Route::get('cndnpembelian/getfaktur', 'cndnController@getfaktur');
 Route::get('cndnpembelian/getsupplier', 'cndnController@getsupplier');
 Route::get('cndnpembelian/hslfaktur', 'cndnController@hslfaktur');
+Route::post('cndnpembelian/save', 'cndnController@save');
 
 Route::get('uangmukapembelian/uangmukapembelian', 'PurchaseController@uangmukapembelian');
 Route::get('uangmukapembelian/createuangmukapembelian', 'PurchaseController@createuangmukapembelian');

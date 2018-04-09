@@ -62,6 +62,10 @@ class cndnController extends Controller
 	}
 
 
+
+	public function save(Request $request){
+		return json_encode('ok');
+	}
 	public function getnota (Request $request){
 		$cabang = $request->comp;
 		
@@ -81,6 +85,8 @@ class cndnController extends Controller
 			$data['idcndn'] = '001';
 		}
 
+		$data['ppn'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '2302%' ");
+		$data['pph'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '2305%'  or id_akun LIKE '2306%' or id_akun LIKE '2307%' or id_akun LIKE '2308%' or id_akun LIKE '2309%' ");
 		return json_encode($data);
 	
 	}
@@ -152,6 +158,7 @@ class cndnController extends Controller
 		$data['cabang'] = DB::select("select * from cabang");
 		$data['supplier'] = DB::select("select * from supplier where active = 'AKTIF' and status = 'SETUJU'");
 		$data['pph'] = DB::select("select * from pajak");
+		$data['akunbiaya'] = DB::select("select * from akun_biaya");
 		return view('purchase/cndn_pembelian/create' , compact('data'));
 	}
 

@@ -7,7 +7,7 @@ use App\Http\Requests;
 use PDF;
 use App\masterItemPurchase;
 use App\masterSupplierPurchase;
-use App\master_cabang;
+use App\master_cabanfg;
 use App\masterJenisItemPurchase;
 use App\spp_purchase;
 use App\sppdt_purchase;
@@ -3987,6 +3987,8 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				$fatkurpembelian->fp_status = 'Released';
 				$fatkurpembelian->fp_edit = 'ALLOWED';
 				$fatkurpembelian->fp_sisapelunasan = $netto;
+				$fatkurpembelian->fp_acchutang = $request->acchutangdagang;
+				$fatkurpembelian->fp_accpph = $request->accPph;
 
 				$fatkurpembelian->save();
 

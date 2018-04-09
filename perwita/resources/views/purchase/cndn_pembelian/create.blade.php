@@ -39,7 +39,7 @@
 
                 </div>
             </div>
-
+  <form class="form-horizontal" id="formsave" method="POST"> 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
@@ -59,7 +59,7 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                  <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST"> 
+                
                   <div class="box-body">
                       <div class="row">
                       <div class="col-xs-6">
@@ -87,12 +87,14 @@
                                   @endforeach
                                   </select>
                               @endif
+
+                              <input type="hidden" class="valcabang" name="cabang">
                             </td>
                           </tr>
 
                           <tr>
                             <td> Jenis : </td>
-                            <td> <select class="form-control jeniscndn"><option value="CN">
+                            <td> <select class="form-control jeniscndn" name="jeniscndn"><option value="CN">
                                     CREDIT NOTA
                                 </option>
                                 <option value="DN">
@@ -112,7 +114,7 @@
 
                           <tr>
                             <td> Jenis Faktur </td>
-                            <td> <select class="form-control jenissup">
+                            <td> <select class="form-control jenissup" name="jenissup">
                                     <option value="2">
                                       Supplier Hutang Dagang
                                     </option>
@@ -142,6 +144,8 @@
                                   <option value="{{$supplier->idsup}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}} </option>
                                 @endforeach
                               </select>
+
+                              <input type="hidden" class="supplier2" name="supplier">
                             </td>
                           </tr>
 
@@ -150,14 +154,14 @@
                             <td>   Tanggal </td>
                             <td>
                                <div class="input-group date">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tgl">
                               </div>
                             </td>
                           </tr>
 
                           <tr>
                             <td> Keterangan </td>
-                            <td> <input type="text" class="form-control input-sm keterangan"> </td>
+                            <td> <input type="text" class="form-control input-sm keterangan" name="keterangan"> </td>
                           </tr>
                           </table>
                          </div>
@@ -166,23 +170,23 @@
                            <table border="0" class ="table table-striped borderless table-hover">
                          <tr>
                           <td> <b> Jumlah Faktur </b> </td>
-                          <td> <input type="text" class="form-control input-sm jumlahfaktur" readonly="" style='text-align: right'>  </td>
+                          <td> <input type="text" class="form-control input-sm jumlahfaktur" readonly="" style='text-align: right' name="jumlahfaktur">  </td>
                          </tr>
                           <tr >
                             <td> <b> Bruto </b> </td>
-                            <td>   <input type="text" class="form-control input-sm bruto" readonly="" style='text-align: right'> </td>
+                            <td>   <input type="text" class="form-control input-sm bruto" readonly="" style='text-align: right' name="bruto"> </td>
                             </td>
                           </tr>
 
 
-                          <tr>
+                      <!--     <tr>
                             <td>
                              <b> DPP </b>
                             </td>
                             <td style="text-align: right">
                                 <input type="text" class="form-control input-sm dpp" style="text-align: right"> 
                             </td>
-                          </tr>
+                          </tr> -->
 
 
                           <tr>
@@ -190,7 +194,7 @@
                              <b> Jumlah PPn </b>
                             </td>
                             <td style="text-align: right">
-                              <input type="text" class="form-control input-sm hasilppn" name="hasilppn" style="text-align: right">
+                              <input type="text" class="form-control input-sm hasilppnatas" name="hasilppn" style="text-align: right" name="jumlahppn">
                             </td>
                           </tr>
 
@@ -198,26 +202,34 @@
 
                           <tr>
                             <td>  <b> Jumlah PPh </b> </td>
-                            <td> <input type="" class="form-control nilaipph" name="nilaipph" style="text-align: right">  </td>
+                            <td> <input type="" class="form-control hasilpphatas" name="nilaipph" style="text-align: right" name="jumlahpph">  </td>
                           </tr>
 
                         
                             <tr>
                               <td> <b> Acc Hutang </b> </td>
-                              <td> <input type="text" class="form-control input-sm" name="acchutang"> </td>
+                              <td> <input type="text" class="form-control input-sm acchutang" name="acchutang"> </td>
                             </tr>
                             <tr>
                               <td> <b> Acc CN / DN </b> </td>
-                              <td> <input type="text" class="form-control input-sm" name="accdn"></td>
+                              <td>
+                              <select class='form-control' name="accbiaya">
+                                @foreach($data['akunbiaya'] as $akunbiaya)
+                                <option value="{{$akunbiaya->acc_biaya}}">
+                                  {{$akunbiaya->acc_biaya}} - {{$akunbiaya->nama}}
+                                </option>
+                                @endforeach
+                              </select>
+                              </td>
                             </tr>
                             <tr>
                               <td> <b> Acc PPn </b> </td>
-                              <td> <input type="text" class="form-control input-sm" name="accppn"> </td>
+                              <td> <input type="text" class="form-control input-sm accppn" name="accppn" readonly=""> </td>
                             </tr>
 
                             <tr>
                               <td> <b> Acc PPH </b> </td>
-                              <td> <input type="text" class="form-control input-sm" name="accpph"> </td>
+                              <td> <input type="text" class="form-control input-sm accpph" name="accpph"> </td>
                             </tr>
                             
                           </table>
@@ -243,7 +255,7 @@
                                     <table class="table table-stripped" id="tbl-faktur">
                                         <tr>
                                             <td style="width:140px">  No Faktur  </td>
-                                            <td> <input type="text" class="form-control input-sm nofakturheader clear" readonly=""> </td>
+                                            <td> <input type="text" class="form-control input-sm nofakturheader clear" readonly=""> <input type="hidden" class="form-control input-sm idfakturheader clear" readonly=""> </td>
                                         </tr>
 
                                         <tr>
@@ -299,10 +311,10 @@
                                                   </select>
                                                     </div>
                                               <div class="col-sm-3">
-                                                 <input type="text" class="form-control input-sm nilaipph clear" readonly=""> 
+                                                 <input type="text" class="form-control input-sm nilaipphheader clear" readonly=""> 
                                               </div>      
                                               <div class="col-sm-5">
-                                                  <input type="text" class="form-control input-sm hasilpph clear" readonly="" style="text-align: right"> 
+                                                  <input type="text" class="form-control input-sm hasilpphheader clear" readonly="" style="text-align: right"> 
                                               </div>
                                             </td>
                                         </tr>
@@ -322,19 +334,19 @@
                                     <h4> Data CN / DN </h4>
                                     <table class="table">
                                        <tr>
-                                          <td> Nilai Bruto CN / DN </td>
-                                          <td> <input type="text" class="form-control input-sm" style="text-align: right"></td>
+                                          <td style="width:140px"> Nilai Bruto CN / DN </td>
+                                          <td> <input type="text" class="form-control input-sm brutocn clear" style="text-align: right"></td>
                                        </tr>
 
                                        <tr>
                                           <td> DPP </td>
-                                          <td> <input type="text" class="form-control input-sm" style="text-align: right"> </td>
+                                          <td> <input type="text" class="form-control input-sm dppcn clear" style="text-align: right" readonly="">  </td>
                                        </tr>
-                                        <tr>
+                                         <tr>
                                             <td> Jenis PPN </td>
                                             <td>
                                                   <div class="col-xs-4">
-                                                  <select class="form-control input-sm">
+                                                  <select class="form-control input-sm jenisppncn clear" readonly="">
                                                       <option value="T">
                                                           Tanpa
                                                       </option>
@@ -346,9 +358,14 @@
                                                       </option>
                                                   </select>
                                                     </div>
-                                              <div class="col-sm-8">
-                                                  <input type="text" class="form-control input-sm" style="text-align: right"> 
+                                              <div class="col-sm-3">
+                                                  <input type="text" class="form-control input-sm inputppncn clear" readonly=""> 
                                               </div>
+
+                                              <div class="col-sm-5">
+                                                  <input type="text" class="form-control input-sm hasilppncn clear" readonly="" style="text-align: right"> 
+                                              </div>
+
                                             </td>
                                         </tr>
 
@@ -358,8 +375,7 @@
                                             </td>
                                             <td>
                                               <div class="col-xs-4">
-                                                  <select class="form-control input-sm">
-                                                      <option value=""> Tanpa PPH </option>
+                                                  <select class="form-control input-sm jenispphcn clear" readonly="">
                                                      @foreach($data['pph'] as $pajak)
                                                        <option value="{{$pajak->kode}}">
                                                           {{$pajak->nama}}
@@ -368,15 +384,18 @@
                                                      @endforeach
                                                   </select>
                                                     </div>
-                                              <div class="col-sm-8">
-                                                  <input type="text" class="form-control input-sm" style="text-align: right"> 
+                                              <div class="col-sm-3">
+                                                 <input type="text" class="form-control input-sm nilaipphcn clear" readonly=""> 
+                                              </div>      
+                                              <div class="col-sm-5">
+                                                  <input type="text" class="form-control input-sm hasilpphcn clear" readonly="" style="text-align: right"> 
                                               </div>
                                             </td>
                                         </tr>
 
                                        <tr>
                                           <td> Netto </td>
-                                          <td> <input type="text" class="form-control input-sm" style="text-align: right"></td>
+                                          <td> <input type="text" class="form-control input-sm  nettohutangcn clear" style="text-align: right" readonly=""></td>
                                        </tr>
                                     </table>
                                 </div>
@@ -413,6 +432,10 @@
                                   <th style="width: 100px"> Jatuh Tempo </th>
                                   <th> Netto Hutang </th>
                                   <th> Sisa Hutang </th>
+                               
+                                  <th> Nilai PPn </th>
+                                
+                                  <th> Nilai PPh </th>
                                   <th> Netto CNDN </th>
                                   <th> Aksi </th>
                                 </tr>
@@ -473,7 +496,7 @@
                           </table>
                       </div> -->
                       </div>
-                    </form>
+                   
 
              
                   <!--  Modal  -->
@@ -517,7 +540,11 @@
 
                   <div class="box-footer">
                   <div class="pull-right">
-                  
+
+
+                     <button type='button' class="btn btn-sm btn-warning"> Batal </button>  <button type="submit" class='btn btn-sm btn-success simpanitem'> Simpan Data </button> 
+
+                   </form>
                  
                     
                     
@@ -557,18 +584,86 @@
             return x1 + x2;
     }
 
+   $('#formsave').submit(function(event){
+
+      
+         
+          event.preventDefault();
+          var post_url2 = baseUrl + '/cndnpembelian/save';
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data CN DN PEMBELIAN!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+               
+        $.ajax({
+          type : "POST",          
+          data : form_data2,
+          url : post_url2,
+          dataType : 'json',
+          success : function (response){
+              
+                   alertSuccess(); 
+               
+                
+           
+                
+             
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
+      
+      })
+
   $('#cancel').click(function(){
     $('.clear').val('');
   })
 
   var noappend = 1;
   $('#append').click(function(){
+      nettocn = $('.nettohutangcn').val();
+      if(nettocn == '' || nettocn == 0.00){
+        toastr.info('Netto Hutang tidak boleh 0.00 atau kosong :)');
+        return false;
+      }
+
+
+     $('.jenisbayar2').addClass('disabled');
+     $('.jenissup').addClass('disabled');
+     $('.jeniscndn').addClass('disabled');
+     $('.cabang').addClass('disabled');
+    $('.cabang').prop('disabled', true).trigger("liszt:updated");
+    $('.cabang').prop('disabled', true).trigger("chosen:updated");
+
+    $('.jenisbayar2').prop('disabled', true).trigger("liszt:updated");
+    $('.jenisbayar2').prop('disabled', true).trigger("chosen:updated");
+
+    idfaktur = $('.idfakturheader').val();
      nofaktur = $('.nofakturheader').val();
     jatuhtempo = $('.jatuhtempheader').val();
     nettohutang = $('.nettoheader').val();
     sisahutang   =  $('.sisaterbayarheader').val();
-          
+    nettocn = $('.nettohutangcn').val();     
+    
+    nilaipph = $('.hasilpphcn').val();
+    jenispph = $('.jenispphcn').val();
+    inputpph = $('.inputpphcn').val();
 
+    nilaippn = $('.hasilppncn').val();
+    jenisppn = $('.jenisppncn').val();
+    inputppn = $('.inputppncn').val();
+
+    console.log(nilaipph + jenispph + inputpph + nilaippn + jenisppn + inputppn);
 
 
               var row = "<tr class='datafaktur data"+noappend+"' data-nofaktur='"+nofaktur+"'>" +
@@ -576,15 +671,74 @@
                           "<td style='text-align:center'>"+nofaktur+" </td>" +
                           "<td style='text-align:center'>"+jatuhtempo+"</td>" +
                           "<td style='text-align:right'>"+addCommas(nettohutang)+"</td>" +
-                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right'></td>" +
-                          "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right'> </td>" +
+                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="+idfaktur+" readonly style='text-align:right' name='idfaktur[]'></td>" + //idfaktur + sisahutang
+                           "<td style='text-align:right'>" +
+                           "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value="+inputppn+" readonly style='text-align:right;style='width:40%'' name='inputppn[]'>  </td>" + //nilaippn
+
+                            "<td style='text-align:right'> <input type='text' class='nilaipph form-control input-sm' value='"+addCommas(nilaipph)+"' readonly style='text-align:right' name='nilaipph[]'> <input type='text' class='form-control input-sm' value='"+inputpph+"' readonly style='text-align:right' name='inputpph[]'> <input type='text' class=' form-control input-sm' value="+jenispph+" readonly style='text-align:right' name='nilaipph[]'></td>" + //nilaipph
+                          "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right' value="+nettocn+" readonly name='nettocn[]'> </td>" + //nettocn
                           "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+noappend+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
                         "</tr>";
               $('#table-faktur').append(row);
 
     noappend++;
     
+
+
+      $(document).on('click','.removes-btn',function(){
+                    var id = $(this).data('id');
+                    parentbayar = $('.data' + id);
+                    parentbayar.remove();
+                })
+
     $('.clear').val(''); 
+
+      $('.nilaipph').each(function(){
+         val = $(this).val(); 
+         if(val == ''){
+
+         }
+         else {
+            nilaipph = val.replace(/,/g, '');   
+          $nilaipph = parseFloat(parseFloat($nilaipph) + parseFloat(nilaipph)).toFixed(2);
+         }
+         $('.hasilpphatas').val(addCommas($nilaipph));
+      })
+
+      $('.nilaippn').each(function(){
+        val = $(this).val(); 
+         if(val == ''){
+
+         }
+         else {
+          nilaippn = val.replace(/,/g, '');   
+          $nilaippn = parseFloat(parseFloat($nilaippn) + parseFloat(nilaippn)).toFixed(2);
+         }
+         $('.hasilppnatas').val(addCommas($nilaippn));
+      })
+
+      $('.cndn').each(function(){
+        val = $(this).val(); 
+
+        if(val == ''){
+
+        }
+        else {
+          nilaicn = val.replace(/,/g, '');   
+             
+         $nilaicndn = parseFloat(parseFloat($nilaicndn) + parseFloat(nilaicn)).toFixed(2);
+      
+         }
+      })
+      $('.bruto').val(addCommas($nilaicndn));
+
+       $('.sisahutang').each(function(){
+              val = $(this).val();
+              aslihutang = val.replace(/,/g, '');
+              $sisahutang = parseFloat(parseFloat($sisahutang) + parseFloat(aslihutang)).toFixed(2);
+            })
+
+            $('.jumlahfaktur').val(addCommas($sisahutang));
   })
 
 jenisbayar2 = $('.jenisbayar2').val();
@@ -672,8 +826,6 @@ jenisbayar2 = $('.jenisbayar2').val();
       idsup = $('.jenisbayar2').val();
       jenis = $('.jenissup').val();
       cabang = $('.cabang').val();
-
-      
       
       $.ajax({
         type : 'GET',
@@ -690,7 +842,7 @@ jenisbayar2 = $('.jenisbayar2').val();
             if(idsup == 2){
                for(var i = 0; i < table.length; i++){      
                                    
-               var html2 = "<tr id='"+table[i].fp_nofaktur+"' data-faktur='"+table[i].fp_nofaktur+"'>" +
+               var html2 = "<tr id="+table[i].fp_nofaktur+" data-faktur='"+table[i].fp_nofaktur+"'>" +
                           "<td>"+nmrbnk+"</td>" +
                           "<td>"+table[i].fp_nofaktur+"</td>" + // no faktur
                           "<td>"+table[i].nama_supplier+"</td>" +
@@ -750,6 +902,8 @@ jenisbayar2 = $('.jenisbayar2').val();
         $sisahutang = 0;
          arrval = []; 
         $nilaicndn = 0;
+        $nilaippn = 0;
+        $nilaipph = 0;
        
 
            arrnofaktur = [];
@@ -760,7 +914,7 @@ jenisbayar2 = $('.jenisbayar2').val();
           })
 
           for(var j = 0 ; j < arrnofaktur.length; j++){
-              $("#"+arrnofaktur[j]).hide();
+              toastr.info('')
           }
 
 
@@ -786,7 +940,7 @@ jenisbayar2 = $('.jenisbayar2').val();
             $('.nofakturheader').val(faktur[0][0].fp_nofaktur);
             $('.jatuhtempheader').val(faktur[0][0].fp_jatuhtempo);
             $('.dppheader').val(addCommas(faktur[0][0].fp_dpp));
-            $('.jenisppneader').val(faktur[0][0].fp_jenisppn);
+            $('.jenisppnheader').val(faktur[0][0].fp_jenisppn);
             $('.inputppnheader').val(faktur[0][0].fp_inputppn);
             $('.hasilppnheader').val(faktur[0][0].fp_ppn);
             $('.jenisppheader').val(faktur[0][0].fp_jenispph);
@@ -795,6 +949,18 @@ jenisbayar2 = $('.jenisbayar2').val();
             $('.nettoheader').val(addCommas(faktur[0][0].fp_netto));
             $('.sisaterbayarheader').val(addCommas(faktur[0][0].fp_sisapelunasan));
 
+            $('.idfakturheader').val(faktur[0][0].fp_idfaktur);
+
+            $('.acchutang').val(faktur[0][0].fp_acchutang);
+             $('.jenisppncn').val(faktur[0][0].fp_jenisppn);
+            $('.inputppncn').val(faktur[0][0].fp_inputppn);
+            $('.hasilppnhcn').val(faktur[0][0].fp_ppn);
+            $('.jenisppcn').val(faktur[0][0].fp_jenispph);
+            $('.nilaipphcn').val(faktur[0][0].fp_nilaipph);
+            $('.hasilpphcn').val(faktur[0][0].fp_pph);
+
+          
+            $('.accpph').val(faktur[0][0].fp_accpph);
           /*  for(i = 0; i < faktur.length; i++ ){
               $nomor++;
               var row = "<tr class='data"+i+"'>" +
@@ -818,7 +984,7 @@ jenisbayar2 = $('.jenisbayar2').val();
 
 
          
-              $('.cndn').change(function(){
+             /* $('.cndn').change(function(){
                  val = $(this).val();     
                  val = accounting.formatMoney(val, "", 2, ",",'.');
                  $(this).val(val);
@@ -856,9 +1022,203 @@ jenisbayar2 = $('.jenisbayar2').val();
                     else {
 
                     }
-              })
+              })*/
             
-       
+            
+            $('.brutocn').change(function(){
+              val = $(this).val();
+              val = accounting.formatMoney(val, "", 2, ",",'.');
+              $(this).val(val);
+              $('.dppcn').val(val);
+              
+              sisahutang = $('.sisaterbayarheader').val();
+              sisahutang2 = sisahutang.replace(/,/g,'');
+              val2 = val.replace(/,/g,'');
+              alert(val2);
+              alert(sisahutang2);
+              if(parseFloat(val2) > parseFloat(sisahutang2)){
+                toastr.info('Tidak bisa menginputkan nilai lebih dari sisa faktur :)');
+                return false;
+                $(this).val('');
+                $('.dppcn').val('');
+                $('.nettohutangcn').val('');
+              }
+              //PPN
+
+
+               //PPN
+              inputppn = $('.inputppncn').val();
+              jenisppn = $('.jenisppncn').val();
+              ppn = $('.hasilppncn').val(); 
+           
+              numeric2 = val.replace(/,/g,'');
+
+              if(inputppn != '') {
+                 hasilppn = parseFloat((inputppn / 100) * numeric2);
+                 hasilppn2 =   hasilppn.toFixed(2);
+                 ppn2 = $('.hasilppncn').val(addCommas(hasilppn2)); 
+                 ppn = $('.hasilppncn').val(); 
+              }
+
+              pph = $('.hasilpphcn').val();
+
+              if(pph != 0) {
+                inputpph = $('.inputpphcn').val();
+                 hasilpph = parseFloat((inputpph / 100) * numeric2);
+                 hasilpph2 =   hasil.toFixed(2); 
+                 pph2 = $('.hasilpphcn').val(addCommas(hasilpph2));
+                 pph = $('.hasilpphcn').val();
+              }
+
+            
+
+              replacepph = pph.replace(/,/g,'');
+              replaceppn = ppn.replace(/,/g,'');
+
+               if(pph != 0 & ppn != '') { 
+               // alert('pph ada ppn ada');//PPH  ADA DAN PPN  ADA
+                   jenisppn = $('.jenisppncn').val();
+                  if(jenisppn == 'E') {          
+                    hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                    hsl = hasilnetto.toFixed(2);
+                    $('.nettohutangcn').val(addCommas(hsl));
+                    $('.dppcn').val(addCommas(numeric2));
+                  }
+                  else if(jenisppn == 'I'){
+                      hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                      $('.dppcn').val(addCommas(hargadpp));
+                      subtotal = $('.dppcn').val();
+                      subtotal = $('.dppcn').val();
+                      subharga = subtotal.replace(/,/g, '');
+                      hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+               
+                      $('.hasilppncn').val(addCommas(hargappn));
+
+                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+                      $('.nettohutangcn').val(addCommas(total));                     
+                  }
+                  else {
+
+                      hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
+                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutangcn').val(addCommas(hsl));
+                      $('.dppcn').val(addCommas(numeric2));
+                  
+                  }
+                }
+                else if(pph != 0){ //PPH TIDAK KOSONG            
+               //   alert('pph tdk kosong');
+                  if(ppn == '') { //PPN KOSONG          
+                    hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
+                    $('.nettohutangcn').val(hasil);
+                      $('.dppcn').val(addCommas(numeric2));
+                  }
+                  else{ //PPN TIDAK KOSONG            
+                      jenisppn = $('.jenisppncn').val();
+                    if(jenisppn == 'E') {
+                    
+                      hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
+                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutangcn').val(addCommas(hsl));
+                       $('.dppcn').val(addCommas(numeric2));
+                    }
+                    else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
+
+                       hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                                   
+                      $('.dppcn').val(addCommas(hargadpp));
+                      subtotal = $('.dppcn').val();
+                      subharga = subtotal.replace(/,/g, '');
+                      hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+               
+                      $('.hasilppncn').val(addCommas(hargappn));
+
+                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+                      $('.nettohutangcn').val(addCommas(total));
+
+                    }
+                    else {
+                      hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
+                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutangcn').val(addCommas(hsl));
+                      $('.dppcn').val(addCommas(numeric2));
+                    }
+                  }
+                }
+                else if(ppn != '') { //PPN TIDAK KOSONG   
+               // alert('ppn tdk kosong')        
+                  jenisppn = $('.jenisppncn').val();
+                  if(pph == 0){ //PPN TIDAK KOSONG PPH KOSONG
+              //    alert('pph kosong');
+                      if(jenisppn == 'E'){   
+                //      alert('E');          
+                        hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
+                        hsl = hasil.toFixed(2);
+                  /*      alert(parseFloat(numeric2));
+                        alert(parseFloat(replaceppn));
+                        alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));*/
+                        $('.nettohutangcn').val(addCommas(hsl));
+                          $('.dppcn').val(addCommas(numeric2));
+                      }
+                      else if(jenisppn == 'I'){
+                   
+                          hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                          $('.dppcn').val(addCommas(hargadpp));
+                          subtotal = $('.dppcn').val();
+                          subharga = subtotal.replace(/,/g, '');
+                          hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+                   
+                          $('.hasilppncn').val(addCommas(hargappn));
+                          total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                          $('.nettohutangcn').val(addCommas(total));
+                      }
+                      else {
+                 
+                        hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
+                        hsl = hasilnetto.toFixed(2);
+                        $('.nettohutangcn').val(addCommas(hsl));
+                          $('.dppcn').val(addCommas(numeric2));
+                      }
+                  }
+                  else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
+                 
+                    jenisppn = $('.jenisppncn').val();
+                    if(jenisppn == 'E') {          
+                      hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutangcn').val(addCommas(hsl));
+                        $('.dppcn').val(addCommas(numeric2));
+                    }
+                    else if(jenisppn == 'I'){
+                          hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                                   
+                          $('.dppcn').val(addCommas(hargadpp));
+                          subtotal = $('.dppcn').val();
+                          subharga = subtotal.replace(/,/g, '');
+                          hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+                   
+                          $('.hasilppncn').val(addCommas(hargappn));
+
+                          total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+                          $('.nettohutangcn').val(addCommas(total)); 
+                    }
+                    else {
+
+                        hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
+                        hsl = hasilnetto.toFixed(2);
+                        $('.nettohutangcn').val(addCommas(hsl));
+                          $('.dppcn').val(addCommas(numeric2));
+                    
+                    }
+                  }
+                } 
+                else {
+                    $('.nettohutangcn').val(addCommas(numeric2));
+                    $('.dppcn').val(addCommas(numeric2));
+                }
+
+
+            })
 
             $('.sisahutang').each(function(){
               val = $(this).val();
@@ -911,6 +1271,10 @@ jenisbayar2 = $('.jenisbayar2').val();
             
                 $('.notacndn').val(nospp);
                  nospp = $('.notacndn').val();
+
+                 accppn = data['ppn'][0].id_akun;
+                 alert(accppn);
+                 $('.accppn').val(accppn);
                
             }
         })
