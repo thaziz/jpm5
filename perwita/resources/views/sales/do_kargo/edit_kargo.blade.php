@@ -59,12 +59,12 @@
                                     </tr>
                                     <tr>
                                         <td>DO Awal</td>
-                                        <td><input type="text" name="nomor_do_awal" class="nomor_do_awal form-control input-sm"></td>
+                                        <td><input type="text" value="{{$data->nomor_do_awal}}" name="nomor_do_awal" class="nomor_do_awal form-control input-sm"></td>
                                     </tr>
                                     <tr>
                                         <td>No Surat Jalan</td>
                                         <td>
-                                            <input type="text" name="surat_jalan" class="surat_jalan form-control input-sm">
+                                            <input type="text" value="{{$data->nomor_surat_jalan}}" name="surat_jalan" class="surat_jalan form-control input-sm">
                                             <input type="hidden" name="nomor_print" class="nomor_print form-control input-sm">
                                         </td>
                                     </tr>
@@ -542,15 +542,14 @@ $(document).ready(function(){
 
     tujuan     =  tujuan.split('-');
     $('.kota_penerima').val(tujuan[1]);
+
 })
 //hide unhide subcon
-$('.status_kendaraan').change(function(){
-    if ($(this).val() == 'SUB'){
+    if ($('.status_kendaraan').val() == 'SUB'){
         $('.nama_subcon_tr').attr('hidden',false);
     }else{
         $('.nama_subcon_tr').attr('hidden',true);
     }
-});
 
 //tujuan do
 $('.tujuan_do').change(function(){

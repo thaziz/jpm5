@@ -13,7 +13,7 @@
   #container {
     height: 400px; 
     min-width: 310px; 
-    max-width: 800px;
+    max-width: 100%;
     margin: 0 auto;
 }
   .dataTables_filter, .dataTables_info { display: none; }
@@ -24,17 +24,22 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Laporan Invoice Penjualan
+                    <h5> Laporan Delivery order paket
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
 
                     </div>
                 </div>
+                
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-
+              <div class="col-sm-6">
+                <input type="text" class="date" id="date_awal" name="">
+                <input type="text" class="date" id="date_akir" name="">
+                <button onclick="cari()">Cari</button>
+              </div>
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
@@ -351,47 +356,171 @@
     }
 
 
-Highcharts.chart('container', {
-    chart: {
-        type: 'column',
-        options3d: {
-            enabled: true,
-            alpha: 5,
-            beta: 30,
-            depth: 70
+    function cari(){
+      var date_awal = $('#date_awal').val();
+      var date_akir = $('#date_akir').val();
+      // alert(date_awal);
+      $.ajax({
+        data: {a:date_awal,b:date_akir},
+        url: baseUrl + '/cari_paket/cari_paket',
+        type: "get",
+       success : function(data){
+        console.log(data);
+        Highcharts.chart('container', {
+        chart: {
+            type: 'column',
+            options3d: {
+                enabled: true,
+                alpha: 5,
+                beta: 30,
+                depth: 70
+            }
+        },
+        title: {
+            text: 'Laporan'
+        },
+        subtitle: {
+            text: 'PENJUALAN PAKET'
+        },
+        plotOptions: {
+            column: {
+                depth: 100
+            }
+        },
+        xAxis: {
+            categories: ['TAMPILAN'],
+            labels: {
+                skew3d: true,
+                style: {
+                    fontSize: '16px'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+        series: [{
+            name: 'DOKUMEN',
+            data: [data.dokumen]
+        },{
+            name: 'KILOGRAM',
+            data: [data.kilogram]
+        },{
+            name: 'KOLI',
+            data: [data.koli]
+        },{
+            name: 'SEPEDA',
+            data: [data.sepeda]
+        },
+
+        ],
+      });
         }
+      });
+    }
+
+
+
+Highcharts.chart('container', {
+
+    chart: {
+        type: 'column'
+    },
+ xAxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
     title: {
-        text: 'Laporan'
-    },
-    subtitle: {
-        text: 'PENJUALAN PAKET'
-    },
-    plotOptions: {
-        column: {
-            depth: 100
-        }
-    },
-    xAxis: {
-        categories: ['a','b'],
-        labels: {
-            skew3d: true,
-            style: {
-                fontSize: '16px'
-            }
-        }
-    },
-    yAxis: {
-        title: {
-            text: null
-        }
-    },
-    series: [{
-        name: 'Sales',
-        data: [100, 200]
+        text: 'Styling axes and columns'
     },
 
-    ]
+    yAxis: [{
+        className: 'highcharts-color-0',
+        title: {
+            text: 'Primary axis'
+        }
+    }, {
+        className: 'highcharts-color-1',
+        opposite: true,
+        title: {
+            text: 'Secondary axis'
+        }
+    }],
+
+    plotOptions: {
+        column: {
+            borderRadius: 5
+        }
+    },
+
+   
+    series: [{
+        name: 'DOKUMEN',
+        data: [
+              {{ $c_jan }},
+              {{ $c_feb }},
+              {{ $c_mar }},
+              {{ $c_apr }},
+              {{ $c_may }}, 
+              {{ $c_jun }}, 
+              {{ $c_jul }}, 
+              {{ $c_aug }},
+              {{ $c_sep }}, 
+              {{ $c_okt }}, 
+              {{ $c_nov }}, 
+              {{ $c_dec }}]
+    }, 
+   {
+        name: 'KILOGRAM',
+        data: [
+              {{ $c_jan }},
+              {{ $c_feb }},
+              {{ $c_mar }},
+              {{ $c_apr }},
+              {{ $c_may }}, 
+              {{ $c_jun }}, 
+              {{ $c_jul }}, 
+              {{ $c_aug }},
+              {{ $c_sep }}, 
+              {{ $c_okt }}, 
+              {{ $c_nov }}, 
+              {{ $c_dec }}]
+    }, 
+    {
+        name: 'KOLI',
+        data: [
+              {{ $c_jan }},
+              {{ $c_feb }},
+              {{ $c_mar }},
+              {{ $c_apr }},
+              {{ $c_may }}, 
+              {{ $c_jun }}, 
+              {{ $c_jul }}, 
+              {{ $c_aug }},
+              {{ $c_sep }}, 
+              {{ $c_okt }}, 
+              {{ $c_nov }}, 
+              {{ $c_dec }}]
+    }, 
+    {
+        name: 'SEPEDA',
+        data: [
+              {{ $c_jan }},
+              {{ $c_feb }},
+              {{ $c_mar }},
+              {{ $c_apr }},
+              {{ $c_may }}, 
+              {{ $c_jun }}, 
+              {{ $c_jul }}, 
+              {{ $c_aug }},
+              {{ $c_sep }}, 
+              {{ $c_okt }}, 
+              {{ $c_nov }}, 
+              {{ $c_dec }}]
+    ,
+    }]
+
 });
 </script>
 @endsection

@@ -56,14 +56,16 @@ class invoice_Controller extends Controller
 
     public function index(){
      $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if (Auth::user()->punyaAkses('Invoice Penjualan','all')) {
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
+                      ->take(2000)
                       ->get();
         }else{
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
                       ->where('i_kode_cabang',$cabang)
+                      ->take(2000)
                       ->get();
         }
         $kota = DB::table('kota')
@@ -99,7 +101,12 @@ class invoice_Controller extends Controller
                     ->get();
         $counting = count($detail); 
   
-
+        $update_status = DB::table('invoice')
+                           ->where('i_nomor',$id)
+                           ->update([
+                            'i_statusprint'=>'Printed'
+                           ]);
+                           
         if ($counting < 30) {
           $hitung =30 - $counting;
           for ($i=0; $i < $hitung; $i++) { 
@@ -109,11 +116,7 @@ class invoice_Controller extends Controller
           $push = [];
         }
 
-        $update_status = DB::table('invoice')
-                           ->where('i_nomor',$id)
-                           ->update([
-                            'i_statusprint'=>'Printed'
-                           ]);
+        
 
         // return $push;
         $terbilang = $this->penyebut($head->i_total_tagihan);

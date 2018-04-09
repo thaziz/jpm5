@@ -38,12 +38,8 @@
                         <div class="box-body">
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
-
-                            </table>
+                                </table>
                         <div class="col-xs-6">
-
-
-
                         </div>
                     </div>
                 </form>
@@ -51,43 +47,26 @@
                     <table class="table table_header table-striped table-bordered table-hover">
 
                         <tbody>
-                            @if(Auth::user()->punyaAkses('Invoice Penjualan','cabang'))
-                            <tr class="">
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="5">
-                                        <select class="form-control chosen-select-width cabang "  name="cb_cabang">
-                                        @foreach ($cabang as $row)
-                                            @if(Auth::user()->kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
-                                            @else
-                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
-                                            @endif
-                                        @endforeach
-                                        </select>
-                                </td>
-                            </tr>
-                            @else
                             <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="5">
-                                        <select class="form-control chosen-select-width cabang "  name="cb_cabang">
-                                        @foreach ($cabang as $row)
-                                            @if(Auth::user()->kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                            @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                            @endif
-                                        @endforeach
-                                        </select>
+                                    <select class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                    @foreach ($cabang as $row)
+                                        @if($data->ip_kode_cabang == $row->kode)
+                                        <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @else
+                                        <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @endif
+                                    @endforeach
+                                    </select>
                                 </td>
                             </tr>
-                            @endif
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3" >
-                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="{{$data->ip_nomor}}" >
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
-                                    <input type="hidden" name="nota_cndn" id="nota_cndn" readonly="readonly" class="form-control nota_cndn" value="" >
+                                    <input type="hidden" name="nota_cndn" id="nota_cndn" readonly="readonly" class="form-control nota_cndn" value="{{$data->cd_nomor}}" >
                                 </td>
                                 <td colspan="1" width="15%" align="center">
                                     <button type="button" class="btn btn-primary cari_invoice">
