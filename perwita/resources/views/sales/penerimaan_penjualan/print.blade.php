@@ -335,12 +335,12 @@
 				@endforeach
 				@foreach ($push as $row)
 				<tr>
-					<th height="25" style="text-align:right" class="textcenter bot right top">&nbsp;</th>
-					<td class="bot right">&nbsp;</td>
-					<td class="bot right"> &nbsp;</td>
-					<td style="text-align:left" class="bot right">&nbsp;</td>
-					<td style="text-align:right" class="bot right">&nbsp;</td>
-					<td style="text-align:right" class="bot right">&nbsp;</td>
+					<th height="25" style="text-align:right;border: none" class="textcenter bot right top">&nbsp;</th>
+					<td style="text-align:right;border: none"  class="bot right">&nbsp;</td>
+					<td class="bot right" style="text-align:right;border: none"> &nbsp;</td>
+					<td style="text-align:right;border: none" class="bot right">&nbsp;</td>
+					<td style="text-align:right;border: none" class="bot right">&nbsp;</td>
+					<td style="text-align:right;border: none" class="bot right">&nbsp;</td>
 				</tr>
 				@endforeach
 				
@@ -367,10 +367,6 @@
 			<tr>
 				<td>Biaya Kredit</td>
 				<td style="text-align:right" class="textright">{{ number_format($head->k_kredit, 2, ",", ".") }}</td>
-			</tr>
-			<tr>
-				<td>Uang Muka</td>
-				<td style="text-align:right" class="textright">{{ number_format($head->k_uang_muka, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td>Total</td>

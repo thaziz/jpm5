@@ -274,7 +274,6 @@ public function cari_do_invoice(request $request)
     $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
-              ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
               ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','<=',$do_akhir)
@@ -499,6 +498,7 @@ public function simpan_invoice(request $request)
                                           'i_diskon2'            =>  $diskon2,
                                           'i_total_tagihan'      =>  $total_tagihan,
                                           'i_sisa_pelunasan'     =>  $total_tagihan,
+                                          'i_sisa_akhir'         =>  $total_tagihan,
                                           'i_netto'              =>  $ed_total,
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
@@ -787,6 +787,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_total'              =>  $total_tagihan,
                                           'i_total_tagihan'      =>  $total_tagihan,
                                           'i_sisa_pelunasan'     =>  $total_tagihan,
+                                          'i_sisa_akhir'         =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_diskon1'            =>  $diskon1,
                                           'i_status'             =>  'Released',
@@ -1039,6 +1040,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_jatuh_tempo'        =>  $ed_jatuh_tempo,
                                           'i_total'              =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
+                                          'i_sisa_akhir'         =>  $total_tagihan,
                                           'i_total_tagihan'      =>  $total_tagihan,
                                           'i_sisa_pelunasan'     =>  $total_tagihan,
                                           'i_status'             =>  'Released',
@@ -1309,6 +1311,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_total_tagihan'      =>  $total_tagihan,
                                           'i_netto_detail'       =>  $netto_total,
                                           'i_sisa_pelunasan'     =>  $total_tagihan,
+                                          'i_sisa_akhir'         =>  $total_tagihan,
                                           'i_status'             =>  'Released',
                                           'i_diskon1'            =>  $diskon1,
                                           'i_diskon2'            =>  $diskon2,

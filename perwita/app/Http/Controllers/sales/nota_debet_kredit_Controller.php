@@ -256,6 +256,27 @@ class nota_debet_kredit_Controller extends Controller
                             'cdd_pph_akhir'       => filter_var($request->d_pph[$i], FILTER_SANITIZE_NUMBER_INT)/100,
                             'cdd_netto_akhir'     => filter_var($request->d_netto[$i], FILTER_SANITIZE_NUMBER_INT)/100,
                           ]);
+
+            if ($request->jenis_debet == 'K') {
+              $hasil = $cari_invoice->i_kredit + filter_var($request->d_netto[$i], FILTER_SANITIZE_NUMBER_INT)/100;
+              $sisa_akhir = $cari_invoice->i_sisa_akhir - filter_var($request->d_netto[$i], FILTER_SANITIZE_NUMBER_INT)/100;
+              $update_invoice = DB::table('invoice')
+                                  ->where('i_nomor',$request->d_nomor[$i])
+                                  ->update([
+                                    'i_kredit' =>$hasil,
+                                    'i_sisa_akhir'=>$sisa_akhir
+                                  ]);
+            }else{
+              $hasil = $cari_invoice->i_debet + filter_var($request->d_netto[$i], FILTER_SANITIZE_NUMBER_INT)/100;
+              $sisa_akhir = $cari_invoice->i_sisa_akhir + filter_var($request->d_netto[$i], FILTER_SANITIZE_NUMBER_INT)/100;
+              $update_invoice = DB::table('invoice')
+                                  ->where('i_nomor',$request->d_nomor[$i])
+                                  ->update([
+                                    'i_debet' =>$hasil,
+                                    'i_sisa_akhir'=>$sisa_akhir
+                                  ]);
+            }
+
           }
           return response()->json(['status'=>1]);
         }else{
@@ -341,9 +362,45 @@ class nota_debet_kredit_Controller extends Controller
 
     public function hapus_cn_dn(request $request)
     {
-      $hapus_cn_dn = DB::table('cn_dn_penjualan')
+
+
+      $cari_cdn = DB::table('cn_dn_penjualan')
+                       ->join('cn_dn_penjualan_d','cd_id','=','cdd_id')
+                       ->where('cd_nomor',$request->nomor_cn_dn)
+                       ->get();
+
+      for ($i=0; $i < count($cari_cdn); $i++) { 
+        
+        $cari_invoice = DB::table('invoice')
+                              ->where('i_nomor',$cari_cdn[$i]->cdd_nomor_invoice)
+                              ->first();
+
+        if ($cari_cdn[$i]->cd_jenis == 'K') {
+              $hasil = $cari_invoice->i_kredit - $cari_cdn[$i]->cdd_netto_akhir;
+              $sisa_akhir = $cari_invoice->i_sisa_akhir + $cari_cdn[$i]->cdd_netto_akhir;
+              $update_invoice = DB::table('invoice')
+                                  ->where('i_nomor',$cari_cdn[$i]->cdd_nomor_invoice)
+                                  ->update([
+                                    'i_kredit' =>$hasil,
+                                    'i_sisa_akhir' =>$sisa_akhir,
+                                  ]);
+        }else{
+              $hasil = $cari_invoice->i_debet - $cari_cdn[$i]->cdd_netto_akhir;
+              $sisa_akhir = $cari_invoice->i_sisa_akhir - $cari_cdn[$i]->cdd_netto_akhir;
+              $update_invoice = DB::table('invoice')
+                                  ->where('i_nomor',$request->d_nomor[$i])
+                                  ->update([
+                                    'i_debet' =>$hasil,
+                                    'i_sisa_akhir' =>$sisa_akhir,
+                                  ]);
+        }
+
+      }
+
+      $hapus = DB::table('cn_dn_penjualan')
                        ->where('cd_nomor',$request->nomor_cn_dn)
                        ->delete();
+
       return response()->json(['status'=>1]);
     }
 

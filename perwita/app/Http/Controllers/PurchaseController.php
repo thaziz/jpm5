@@ -145,7 +145,7 @@ class PurchaseController extends Controller
 		$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
 		$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
 
-		return view('purchase.spp.index', compact('data2'));
+		return view('purchase.spp.index', compact('data'));
 	}
 	
 	public function getnospp(Request $request){

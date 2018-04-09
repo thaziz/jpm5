@@ -3,7 +3,19 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css" media="screen">
+  .disabled {
+        pointer-events: none;
+        opacity: 0.7;
+        }
+  .borderless td, .borderless th {
+    border: none !important;
+  }
 
+   .table-hover tbody tr{
+    cursor: pointer;
+  }
+  </style>
             <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> CN / DN Pembelian </h2>
@@ -142,14 +154,22 @@
                               </div>
                             </td>
                           </tr>
+
+                          <tr>
+                            <td> Keterangan </td>
+                            <td> <input type="text" class="form-control input-sm keterangan"> </td>
+                          </tr>
                           </table>
                          </div>
                         
                         <div class="col-xs-6">
-                           <table border="0" class ="table table-bordered table-striped">
-                         
+                           <table border="0" class ="table table-striped borderless table-hover">
+                         <tr>
+                          <td> <b> Jumlah Faktur </b> </td>
+                          <td> <input type="text" class="form-control input-sm jumlahfaktur" readonly="" style='text-align: right'>  </td>
+                         </tr>
                           <tr >
-                            <td> Bruto </td>
+                            <td> <b> Bruto </b> </td>
                             <td>   <input type="text" class="form-control input-sm bruto" readonly="" style='text-align: right'> </td>
                             </td>
                           </tr>
@@ -157,65 +177,49 @@
 
                           <tr>
                             <td>
-                              DPP
+                             <b> DPP </b>
                             </td>
                             <td style="text-align: right">
-                                <input type="text" class="form-control input-sm dpp"> 
+                                <input type="text" class="form-control input-sm dpp" style="text-align: right"> 
                             </td>
                           </tr>
 
 
                           <tr>
                             <td>
-                              Jenis PPn
-                            </td>
-                            <td>
-                              <select class="form-control jenisppn">
-                                <option value="T"> Tanpa </option>
-                                <option value="E"> Exclude </option>
-                                <option value="I"> Input </option>
-                              </select>
-                            </td>
-                          </tr>
-                   
-
-                          <tr>
-                            <td>
-                              PPn
+                             <b> Jumlah PPn </b>
                             </td>
                             <td style="text-align: right">
-                              <input type="text" class="form-control input-sm hasilppn" name="hasilppn">
+                              <input type="text" class="form-control input-sm hasilppn" name="hasilppn" style="text-align: right">
                             </td>
                           </tr>
 
-                           <tr>
-                            <td>
-                              PPH
-                            </td>
-                            <td style="text-align: right">
-                             <select class="form-control pph">
-                                @foreach($data['pph'] as $pph)
-                                  <option value="{{$pph->kode}}">
-                                    {{$pph->nama}}
-                                  </option>
-                                @endforeach
-                             </select>
-                            </td>
-                          </tr>
+                        
 
                           <tr>
-                            <td> Nilai PPh </td>
-                            <td> <input type="" class="form-control nilaipph" name="nilaipph">  </td>
+                            <td>  <b> Jumlah PPh </b> </td>
+                            <td> <input type="" class="form-control nilaipph" name="nilaipph" style="text-align: right">  </td>
                           </tr>
 
-                          <tr>
-                            <td> 
-                              Netto
-                            </td>
-                            <td style="text-align: right">
-                              <input type="text" class="form-control input-sm netto" name="netto">
-                            </td>
-                          </tr>
+                        
+                            <tr>
+                              <td> <b> Acc Hutang </b> </td>
+                              <td> <input type="text" class="form-control input-sm" name="acchutang"> </td>
+                            </tr>
+                            <tr>
+                              <td> <b> Acc CN / DN </b> </td>
+                              <td> <input type="text" class="form-control input-sm" name="accdn"></td>
+                            </tr>
+                            <tr>
+                              <td> <b> Acc PPn </b> </td>
+                              <td> <input type="text" class="form-control input-sm" name="accppn"> </td>
+                            </tr>
+
+                            <tr>
+                              <td> <b> Acc PPH </b> </td>
+                              <td> <input type="text" class="form-control input-sm" name="accpph"> </td>
+                            </tr>
+                            
                           </table>
                         </div>                    
                       </div>
@@ -227,17 +231,181 @@
                          </div>
                         </div>
                         <br>
+
+
+                        <div class="col-sm-12">
+                             <button class="btn btn-sm btn-primary  createmodalfaktur" id="createmodal" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data Faktur </i> </button>
+                             <br>
+                             <br>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h4> Data Faktur </h4>
+                                    <table class="table table-stripped" id="tbl-faktur">
+                                        <tr>
+                                            <td style="width:140px">  No Faktur  </td>
+                                            <td> <input type="text" class="form-control input-sm nofakturheader clear" readonly=""> </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td> Jatuh Tempo  </td>
+                                            <td> <input type="text" class="form-control input-sm jatuhtempheader clear" readonly=""> </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>  DPP  </td>
+                                            <td>  <input type="text" class="form-control input-sm dppheader clear" readonly="" style="text-align: right"></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td> Jenis PPN </td>
+                                            <td>
+                                                  <div class="col-xs-4">
+                                                  <select class="form-control input-sm jenisppnheader clear" readonly="">
+                                                      <option value="T">
+                                                          Tanpa
+                                                      </option>
+                                                      <option value="I">
+                                                          Input
+                                                      </option>
+                                                      <option value="E">
+                                                          Exclude
+                                                      </option>
+                                                  </select>
+                                                    </div>
+                                              <div class="col-sm-3">
+                                                  <input type="text" class="form-control input-sm inputppnheader clear" readonly=""> 
+                                              </div>
+
+                                              <div class="col-sm-5">
+                                                  <input type="text" class="form-control input-sm hasilppnheader clear" readonly="" style="text-align: right"> 
+                                              </div>
+
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                Jenis PPH
+                                            </td>
+                                            <td>
+                                              <div class="col-xs-4">
+                                                  <select class="form-control input-sm jenisppheaderclear" readonly="">
+                                                     @foreach($data['pph'] as $pajak)
+                                                       <option value="{{$pajak->kode}}">
+                                                          {{$pajak->nama}}
+                                                      </option>
+                                                     
+                                                     @endforeach
+                                                  </select>
+                                                    </div>
+                                              <div class="col-sm-3">
+                                                 <input type="text" class="form-control input-sm nilaipph clear" readonly=""> 
+                                              </div>      
+                                              <div class="col-sm-5">
+                                                  <input type="text" class="form-control input-sm hasilpph clear" readonly="" style="text-align: right"> 
+                                              </div>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td> Netto Hutang </td>
+                                            <td> <input type="text" class="form-control input-sm nettoheader clear" readonly="" style="text-align: right"> </td>
+                                        </tr>
+                                         <tr>
+                                            <td> Sisa Terbayar </td>
+                                            <td> <input type="text" class="form-control input-sm sisaterbayarheader clear" readonly="" style="text-align: right"> </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <h4> Data CN / DN </h4>
+                                    <table class="table">
+                                       <tr>
+                                          <td> Nilai Bruto CN / DN </td>
+                                          <td> <input type="text" class="form-control input-sm" style="text-align: right"></td>
+                                       </tr>
+
+                                       <tr>
+                                          <td> DPP </td>
+                                          <td> <input type="text" class="form-control input-sm" style="text-align: right"> </td>
+                                       </tr>
+                                        <tr>
+                                            <td> Jenis PPN </td>
+                                            <td>
+                                                  <div class="col-xs-4">
+                                                  <select class="form-control input-sm">
+                                                      <option value="T">
+                                                          Tanpa
+                                                      </option>
+                                                      <option value="I">
+                                                          Input
+                                                      </option>
+                                                      <option value="E">
+                                                          Exclude
+                                                      </option>
+                                                  </select>
+                                                    </div>
+                                              <div class="col-sm-8">
+                                                  <input type="text" class="form-control input-sm" style="text-align: right"> 
+                                              </div>
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                Jenis PPH
+                                            </td>
+                                            <td>
+                                              <div class="col-xs-4">
+                                                  <select class="form-control input-sm">
+                                                      <option value=""> Tanpa PPH </option>
+                                                     @foreach($data['pph'] as $pajak)
+                                                       <option value="{{$pajak->kode}}">
+                                                          {{$pajak->nama}}
+                                                      </option>
+                                                     
+                                                     @endforeach
+                                                  </select>
+                                                    </div>
+                                              <div class="col-sm-8">
+                                                  <input type="text" class="form-control input-sm" style="text-align: right"> 
+                                              </div>
+                                            </td>
+                                        </tr>
+
+                                       <tr>
+                                          <td> Netto </td>
+                                          <td> <input type="text" class="form-control input-sm" style="text-align: right"></td>
+                                       </tr>
+                                    </table>
+                                </div>
+
+                               
+                            </div>
+                             <div class="pull-right">
+                                  <button  class="btn btn-sm btn-default" type="button" id="append">
+                                    <i class="fa fa-plus"> Append</i>
+                                  </button>
+
+                                    &nbsp; 
+                                  <button style="margin-right: 10px" class="btn btn-sm btn-default" id="cancel" type="button">
+                                    <i class="fa fa-close"> Cancel</i>
+                                  </button>
+                                </div>
+                        </div>
+
                         <div class="row">
                          
 
-                          <div class="col-sm-7">
-                              <button class="btn btn-sm btn-primary  createmodalfaktur" id="createmodal" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data Faktur </i> </button>
+                          <div class="col-sm-12">
+                             
 
                             <h3> Data Faktur </h3>
                             <br>
 
                             <div class="table-responsive">
-                              <table class="table table-bordered table-stripped" id="table-faktur" >
+                              <table class="table table-bordered table-stripped table-borderless" id="table-faktur" >
                                 <thead>
                                 <tr>
                                   <th> No </th>
@@ -245,14 +413,14 @@
                                   <th style="width: 100px"> Jatuh Tempo </th>
                                   <th> Netto Hutang </th>
                                   <th> Sisa Hutang </th>
-                                  <th> Nilai CNDN </th>
+                                  <th> Netto CNDN </th>
                                   <th> Aksi </th>
                                 </tr>
                                 </thead>
                               </table>
                             </div>
                             </div>
-
+<!-- 
                              <div class="col-sm-5">                          
                           <br>
                            <table class="table table-bordered table-striped">
@@ -303,7 +471,7 @@
                           </tr>
                           </table>
                           </table>
-                      </div>
+                      </div> -->
                       </div>
                     </form>
 
@@ -388,6 +556,36 @@
             }
             return x1 + x2;
     }
+
+  $('#cancel').click(function(){
+    $('.clear').val('');
+  })
+
+  var noappend = 1;
+  $('#append').click(function(){
+     nofaktur = $('.nofakturheader').val();
+    jatuhtempo = $('.jatuhtempheader').val();
+    nettohutang = $('.nettoheader').val();
+    sisahutang   =  $('.sisaterbayarheader').val();
+          
+
+
+
+              var row = "<tr class='datafaktur data"+noappend+"' data-nofaktur='"+nofaktur+"'>" +
+                          "<td style='text-align:center'> "+noappend+" </td>" +
+                          "<td style='text-align:center'>"+nofaktur+" </td>" +
+                          "<td style='text-align:center'>"+jatuhtempo+"</td>" +
+                          "<td style='text-align:right'>"+addCommas(nettohutang)+"</td>" +
+                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right'></td>" +
+                          "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right'> </td>" +
+                          "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+noappend+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
+                        "</tr>";
+              $('#table-faktur').append(row);
+
+    noappend++;
+    
+    $('.clear').val(''); 
+  })
 
 jenisbayar2 = $('.jenisbayar2').val();
 //alert(jenisbayar2);
@@ -474,12 +672,16 @@ jenisbayar2 = $('.jenisbayar2').val();
       idsup = $('.jenisbayar2').val();
       jenis = $('.jenissup').val();
       cabang = $('.cabang').val();
+
+      
+      
       $.ajax({
         type : 'GET',
         data : {idsup,jenis,cabang},
         url : baseUrl + '/cndnpembelian/getfaktur',      
         dataType : 'json',
         success : function(response){
+
             var tablecek = $('#tblfaktur').DataTable();
           tablecek.clear().draw();
             var nmrbnk = 1;
@@ -488,7 +690,7 @@ jenisbayar2 = $('.jenisbayar2').val();
             if(idsup == 2){
                for(var i = 0; i < table.length; i++){      
                                    
-               var html2 = "<tr>" +
+               var html2 = "<tr id='"+table[i].fp_nofaktur+"' data-faktur='"+table[i].fp_nofaktur+"'>" +
                           "<td>"+nmrbnk+"</td>" +
                           "<td>"+table[i].fp_nofaktur+"</td>" + // no faktur
                           "<td>"+table[i].nama_supplier+"</td>" +
@@ -549,7 +751,29 @@ jenisbayar2 = $('.jenisbayar2').val();
          arrval = []; 
         $nilaicndn = 0;
        
+
+           arrnofaktur = [];
+          $('.datafaktur').each(function(){
+            valfaktur = $(this).data('nofaktur');
+            arrnofaktur.push(valfaktur);
+            console.log(arrnofaktur + 'arrnofaktur');
+          })
+
+          for(var j = 0 ; j < arrnofaktur.length; j++){
+              $("#"+arrnofaktur[j]).hide();
+          }
+
+
+        
         url = baseUrl + '/cndnpembelian/hslfaktur'; 
+
+        if(checked.length > 1){
+          toastr.info('Hanya Bisa Pilih Satu Data Faktur :) ');
+          return false;
+        }
+        else {
+
+
          $.ajax({    
           type :"get",
           data : {checked},
@@ -559,9 +783,19 @@ jenisbayar2 = $('.jenisbayar2').val();
             $('#myModal5').modal('toggle');
             faktur = response.faktur
 
-            $('.jenis')
+            $('.nofakturheader').val(faktur[0][0].fp_nofaktur);
+            $('.jatuhtempheader').val(faktur[0][0].fp_jatuhtempo);
+            $('.dppheader').val(addCommas(faktur[0][0].fp_dpp));
+            $('.jenisppneader').val(faktur[0][0].fp_jenisppn);
+            $('.inputppnheader').val(faktur[0][0].fp_inputppn);
+            $('.hasilppnheader').val(faktur[0][0].fp_ppn);
+            $('.jenisppheader').val(faktur[0][0].fp_jenispph);
+            $('.nilaipphheader').val(faktur[0][0].fp_nilaipph);
+            $('.hasilpphheader').val(faktur[0][0].fp_pph);
+            $('.nettoheader').val(addCommas(faktur[0][0].fp_netto));
+            $('.sisaterbayarheader').val(addCommas(faktur[0][0].fp_sisapelunasan));
 
-            for(i = 0; i < faktur.length; i++ ){
+          /*  for(i = 0; i < faktur.length; i++ ){
               $nomor++;
               var row = "<tr class='data"+i+"'>" +
                           "<td style='text-align:center'> "+$nomor+" </td>" +
@@ -572,9 +806,9 @@ jenisbayar2 = $('.jenisbayar2').val();
                           "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right'> </td>" +
                           "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+i+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
                         "</tr>";
-              $('#table-faktur').append(row);
+              $('#tbl-faktur').append(row);
 
-            }
+            }*/
 
            $(document).on('click','.removes-btn',function(){
                     var id = $(this).data('id');
@@ -635,6 +869,7 @@ jenisbayar2 = $('.jenisbayar2').val();
             $('.biayafaktur').val(addCommas($sisahutang));
           }
         })
+       }
     })
 
      val = $('.jeniscndn').val();

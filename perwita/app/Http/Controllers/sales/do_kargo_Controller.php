@@ -15,14 +15,16 @@ class do_kargo_Controller extends Controller
 
     public function index(){
         $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if (Auth::user()->punyaAkses('Delivery Order','all')) {
             $data = DB::table('delivery_order')
                       ->where('jenis','KARGO')
+                      ->orderBy('tanggal','DESC')
                       ->get();
         }else{
             $data = DB::table('delivery_order')
                       ->where('jenis','KARGO')
                       ->where('kode_cabang',$cabang)
+                      ->orderBy('tanggal','DESC')
                       ->get();
         }
         $kota = DB::table('kota')
@@ -206,9 +208,10 @@ class do_kargo_Controller extends Controller
     {
         if ($request->check == 'false') {
            $data = DB::table('tarif_cabang_kargo')
-                      ->join('jenis_tarif','jenis','=','jt_nama_tarif')
+                      ->join('jenis_tarif','jenis','=','jt_id')
                       ->where('id_kota_asal',$request->asal)
                       ->where('id_kota_tujuan',$request->tujuan)
+                      ->where('jenis',$request->jenis_tarif)
                       ->where('kode_cabang',$request->cabang_select)
                       ->where('kode_angkutan',$request->tipe_angkutan)
                       ->get();
@@ -217,6 +220,7 @@ class do_kargo_Controller extends Controller
                       ->join('kota','id','=','id_kota_asal')
                       ->where('id_kota_asal',$request->asal)
                       ->where('id_kota_tujuan',$request->tujuan)
+                      ->where('jenis',$request->jenis_tarif)
                       ->where('kode_cabang',$request->cabang_select)
                       ->where('kode_angkutan',$request->tipe_angkutan)
                       ->get();
@@ -224,6 +228,7 @@ class do_kargo_Controller extends Controller
             $tujuan = DB::table('tarif_cabang_kargo')
                       ->join('kota','id','=','id_kota_tujuan')
                       ->where('id_kota_asal',$request->asal)
+                      ->where('jenis',$request->jenis_tarif)
                       ->where('id_kota_tujuan',$request->tujuan)
                       ->where('kode_cabang',$request->cabang_select)
                       ->where('kode_angkutan',$request->tipe_angkutan)
@@ -508,7 +513,7 @@ class do_kargo_Controller extends Controller
                                 'status_kendaraan'      => strtoupper($request->status_kendaraan),
                                 'driver'                => strtoupper($request->driver),
                                 'co_driver'             => strtoupper($request->co_driver),
-                                'jenis_tarif'           => $jenis_tarif->jt_nama_tarif,
+                                'jenis_tarif'           => $jenis_tarif->jt_id,
                                 'ritase'                => strtoupper($request->ritase),
                                 'awal_shutle'           => strtoupper($awal),
                                 'akhir_shutle'          => strtoupper($akhir),
@@ -625,10 +630,10 @@ class do_kargo_Controller extends Controller
                          ->orWhere('jt_group',3)
                          ->orderBy('jt_id','ASC')
                          ->get();
+
         $data = DB::table('delivery_order')
                     ->where('nomor', $id)
                     ->first();
-
         $subcon_detail = DB::table('delivery_order')
                     ->leftjoin('subcon','kode','=','kode_subcon')
                     ->where('nomor', $id)
@@ -684,7 +689,7 @@ class do_kargo_Controller extends Controller
         $data = DB::table('delivery_order')
                     ->where('nomor', $id)
                     ->first();
-
+                    
         $subcon_detail = DB::table('delivery_order')
                     ->leftjoin('subcon','kode','=','kode_subcon')
                     ->where('nomor', $id)
