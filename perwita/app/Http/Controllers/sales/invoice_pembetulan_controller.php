@@ -51,7 +51,7 @@ class invoice_pembetulan_controller extends Controller
  		   $data = DB::table('invoice')
  				        ->join('customer','kode','=','i_kode_customer')
 	              ->where('i_kode_cabang',$request->cabang)
-	              ->where('i_sisa_pelunasan','!=',0)
+	              ->where('i_sisa_akhir','!=',0)
 	              ->get();
 
         return view('sales.invoice_pembetulan.tabel_invoice',compact('data'));
@@ -90,4 +90,12 @@ class invoice_pembetulan_controller extends Controller
 
  		return response()->json(['data'=>$data,'data_dt'=>$data_dt]);
  	}
+
+  public function simpan_invoice_pembetulan(request $request)
+  {
+    dd($request->all());
+
+
+    $cari_invoice = DB::table('invoice')
+  }
 }
