@@ -369,12 +369,7 @@
         Highcharts.chart('container', {
         chart: {
             type: 'column',
-            options3d: {
-                enabled: true,
-                alpha: 5,
-                beta: 30,
-                depth: 70
-            }
+          
         },
         title: {
             text: 'Laporan'
@@ -420,9 +415,6 @@
         }
       });
     }
-
-
-
 Highcharts.chart('container', {
 
     chart: {
@@ -432,25 +424,25 @@ Highcharts.chart('container', {
         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
     title: {
-        text: 'Styling axes and columns'
+        text: 'DIAGRAM BATANG PENJUALAN TAHUN 2018'
     },
 
     yAxis: [{
         className: 'highcharts-color-0',
         title: {
-            text: 'Primary axis'
+            text: 'Data Delivery Order Paket'
         }
     }, {
         className: 'highcharts-color-1',
         opposite: true,
         title: {
-            text: 'Secondary axis'
+            text: 'Data Delivery Order Paket'
         }
     }],
 
     plotOptions: {
         column: {
-            borderRadius: 5
+            borderRadius: 0
         }
     },
 
@@ -458,66 +450,70 @@ Highcharts.chart('container', {
     series: [{
         name: 'DOKUMEN',
         data: [
-              {{ $c_jan }},
-              {{ $c_feb }},
-              {{ $c_mar }},
-              {{ $c_apr }},
-              {{ $c_may }}, 
-              {{ $c_jun }}, 
-              {{ $c_jul }}, 
-              {{ $c_aug }},
-              {{ $c_sep }}, 
-              {{ $c_okt }}, 
-              {{ $c_nov }}, 
-              {{ $c_dec }}]
+        {{ $arraybulan_dokumen[0]}},
+        {{ $arraybulan_dokumen[1]}},
+        {{ $arraybulan_dokumen[2]}},
+        {{ $arraybulan_dokumen[3]}},
+        {{ $arraybulan_dokumen[4]}},
+        {{ $arraybulan_dokumen[5]}},
+        {{ $arraybulan_dokumen[6]}},
+        {{ $arraybulan_dokumen[7]}},
+        {{ $arraybulan_dokumen[8]}},
+        {{ $arraybulan_dokumen[9]}},
+        {{ $arraybulan_dokumen[10]}},
+        {{ $arraybulan_dokumen[11]}},
+        ]
     }, 
    {
         name: 'KILOGRAM',
         data: [
-              {{ $c_jan }},
-              {{ $c_feb }},
-              {{ $c_mar }},
-              {{ $c_apr }},
-              {{ $c_may }}, 
-              {{ $c_jun }}, 
-              {{ $c_jul }}, 
-              {{ $c_aug }},
-              {{ $c_sep }}, 
-              {{ $c_okt }}, 
-              {{ $c_nov }}, 
-              {{ $c_dec }}]
+        {{ $arraybulan_kilogram[0]}},
+        {{ $arraybulan_kilogram[1]}},
+        {{ $arraybulan_kilogram[2]}},
+        {{ $arraybulan_kilogram[3]}},
+        {{ $arraybulan_kilogram[4]}},
+        {{ $arraybulan_kilogram[5]}},
+        {{ $arraybulan_kilogram[6]}},
+        {{ $arraybulan_kilogram[7]}},
+        {{ $arraybulan_kilogram[8]}},
+        {{ $arraybulan_kilogram[9]}},
+        {{ $arraybulan_kilogram[10]}},
+        {{ $arraybulan_kilogram[11]}},
+        ]
     }, 
     {
         name: 'KOLI',
         data: [
-              {{ $c_jan }},
-              {{ $c_feb }},
-              {{ $c_mar }},
-              {{ $c_apr }},
-              {{ $c_may }}, 
-              {{ $c_jun }}, 
-              {{ $c_jul }}, 
-              {{ $c_aug }},
-              {{ $c_sep }}, 
-              {{ $c_okt }}, 
-              {{ $c_nov }}, 
-              {{ $c_dec }}]
+        {{ $arraybulan_koli[0]}},
+        {{ $arraybulan_koli[1]}},
+        {{ $arraybulan_koli[2]}},
+        {{ $arraybulan_koli[3]}},
+        {{ $arraybulan_koli[4]}},
+        {{ $arraybulan_koli[5]}},
+        {{ $arraybulan_koli[6]}},
+        {{ $arraybulan_koli[7]}},
+        {{ $arraybulan_koli[8]}},
+        {{ $arraybulan_koli[9]}},
+        {{ $arraybulan_koli[10]}},
+        {{ $arraybulan_koli[11]}},
+        ]
     }, 
     {
         name: 'SEPEDA',
         data: [
-              {{ $c_jan }},
-              {{ $c_feb }},
-              {{ $c_mar }},
-              {{ $c_apr }},
-              {{ $c_may }}, 
-              {{ $c_jun }}, 
-              {{ $c_jul }}, 
-              {{ $c_aug }},
-              {{ $c_sep }}, 
-              {{ $c_okt }}, 
-              {{ $c_nov }}, 
-              {{ $c_dec }}]
+        {{ $arraybulan_sepeda[0]}},
+        {{ $arraybulan_sepeda[1]}},
+        {{ $arraybulan_sepeda[2]}},
+        {{ $arraybulan_sepeda[3]}},
+        {{ $arraybulan_sepeda[4]}},
+        {{ $arraybulan_sepeda[5]}},
+        {{ $arraybulan_sepeda[6]}},
+        {{ $arraybulan_sepeda[7]}},
+        {{ $arraybulan_sepeda[8]}},
+        {{ $arraybulan_sepeda[9]}},
+        {{ $arraybulan_sepeda[10]}},
+        {{ $arraybulan_sepeda[11]}},
+        ]
     ,
     }]
 
