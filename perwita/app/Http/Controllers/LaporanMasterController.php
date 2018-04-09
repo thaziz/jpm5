@@ -556,7 +556,7 @@ class LaporanMasterController extends Controller
 
 		public function kwitansi(){
 		// return 'a';
-		$data = DB::table('kwitansi')->join('customer','customer.kode','=','kwitansi.k_kode_customer')->get();
+		$data = DB::table('kwitansi')->get();
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
