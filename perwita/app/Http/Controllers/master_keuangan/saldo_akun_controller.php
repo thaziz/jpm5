@@ -23,6 +23,8 @@ class saldo_akun_controller extends Controller
 
     	//return date("Y");
 
+        // return $data;
+
     	return view("keuangan.akun_saldo.index")->withData($data);
     }
 

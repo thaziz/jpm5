@@ -1,8 +1,8 @@
-    @extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 
-@section('content')
+@section('content')customer
 <style type="text/css">
       .id {display:none; }
       .cssright { text-align: right; }
@@ -34,6 +34,20 @@
         }
         #table_cn_dn tbody tr{
             cursor: pointer;
+        }
+        .borderless td, .borderless th {
+            border: none !important;
+          }
+
+        #modal_um {
+            overflow-y:scroll;
+        }
+
+        ..ui-select-placeholder, .ui-select-match-text {
+          width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          padding-right: 40px;
         }
     </style>
 
@@ -70,125 +84,121 @@
                 </form>
                 <form id="form_header" class="form-horizontal">
                     <div class="col-sm-6">
-                    <table class="table table-striped table-bordered table-hover tabel_header">
+                    <table  class="table table-striped table-bordered table-hover tabel_header">
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor Kwitansi</td>
                                 <td colspan="20">
-                                    <input type="text" name="nota" value="{{$data->k_nomor}}" id="nota_kwitansi" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota" id="nota_kwitansi" class="form-control" readonly="readonly" style="text-transform: uppercase" value="{{$data->k_nomor}}" >
+                                    <input type="hidden" name="flag_nota" id="flag_nota" class="form-control flag_nota"  readonly="readonly" style="text-transform: uppercase" value="0" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:px; padding-top: 0.4cm">Nomor Trans Bank</td>
                                 <td colspan="20">
-                                    <input type="text" value="{{$data->k_nota_bank}}" name="nota_bank" id="nota_bank" class="form-control" readonly="readonly" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota_bank" id="nota_bank" class="form-control" readonly="readonly" style="text-transform: uppercase" value="{{$data->k_nota_bank}}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="20">
-                                    <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="ed_tanggal form-control col-xs-12" name="ed_tanggal" value="{{carbon\carbon::parse($data->k_tanggal)->format('d/m/Y')}}">
+                                    <div class="input-group date" style="width: 100%">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="ed_tanggal form-control col-xs-12"  name="ed_tanggal" value="{{$data->k_tanggal}}">
                                     </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px;">Jenis Pembayaran</td>
-                                <td colspan="20">
-
+                                <td colspan="20" class="jenis_pembayaran_td">
                                     <select  class="form-control cb_jenis_pembayaran" onchange="nota_tes()" name="cb_jenis_pembayaran" >
                                         @if($data->k_jenis_pembayaran == 'T')
-                                        <option value="0">Pilih - Pembayaran</option>
-                                        <option selected="" value="T"> TUNAI/CASH </option>
-                                        <option value="C"> TRANSFER </option>
-                                        <option value="B"> NOTA/BIAYA LAIN </option>
-                                        <option value="F"> CHEQUE/BG </option>
+                                            <option value="0">Pilih - Pembayaran</option>
+                                            <option selected="" value="T"> TUNAI/CASH </option>
+                                            <option value="C"> TRANSFER </option>
+                                            <option value="U"> UANG MUKA </option>
+                                            <option value="B"> NOTA/BIAYA LAIN </option>
+                                            <option value="F"> CHEQUE/BG </option>
                                         @elseif($data->k_jenis_pembayaran == 'C')
-                                        <option value="0">Pilih - Pembayaran</option>
-                                        <option value="T"> TUNAI/CASH </option>
-                                        <option selected="" value="C"> TRANSFER </option>
-                                        <option value="B"> NOTA/BIAYA LAIN </option>
-                                        <option value="F"> CHEQUE/BG </option>
+                                            <option value="0">Pilih - Pembayaran</option>
+                                            <option value="T"> TUNAI/CASH </option>
+                                            <option selected="" value="C"> TRANSFER </option>
+                                            <option value="U"> UANG MUKA </option>
+                                            <option value="B"> NOTA/BIAYA LAIN </option>
+                                            <option value="F"> CHEQUE/BG </option>
+                                        @elseif($data->k_jenis_pembayaran == 'U')
+                                            <option value="0">Pilih - Pembayaran</option>
+                                            <option value="T"> TUNAI/CASH </option>
+                                            <option value="C"> TRANSFER </option>
+                                            <option selected="" value="U"> UANG MUKA </option>
+                                            <option value="B"> NOTA/BIAYA LAIN </option>
+                                            <option value="F"> CHEQUE/BG </option>
                                         @elseif($data->k_jenis_pembayaran == 'B')
-                                        <option value="0">Pilih - Pembayaran</option>
-                                        <option value="T"> TUNAI/CASH </option>
-                                        <option value="C"> TRANSFER </option>
-                                        <option selected="" value="B"> NOTA/BIAYA LAIN </option>
-                                        <option value="F"> CHEQUE/BG </option>
+                                            <option value="0">Pilih - Pembayaran</option>
+                                            <option value="T"> TUNAI/CASH </option>
+                                            <option value="C"> TRANSFER </option>
+                                            <option value="U"> UANG MUKA </option>
+                                            <option selected="" value="B"> NOTA/BIAYA LAIN </option>
+                                            <option value="F"> CHEQUE/BG </option>
                                         @elseif($data->k_jenis_pembayaran == 'F')
-                                        <option value="0">Pilih - Pembayaran</option>
-                                        <option value="T"> TUNAI/CASH </option>
-                                        <option value="C"> TRANSFER </option>
-                                        <option value="B"> NOTA/BIAYA LAIN </option>
-                                        <option selected="" value="F"> CHEQUE/BG </option>
+                                            <option value="0">Pilih - Pembayaran</option>
+                                            <option value="T"> TUNAI/CASH </option>
+                                            <option value="C"> TRANSFER </option>
+                                            <option value="U"> UANG MUKA </option>
+                                            <option value="B"> NOTA/BIAYA LAIN </option>
+                                            <option selected="" value="F"> CHEQUE/BG </option>
                                         @else
-                                        <option value="0">Pilih - Pembayaran</option>
-                                        <option value="T"> TUNAI/CASH </option>
-                                        <option value="C"> TRANSFER </option>
-                                        <option value="B"> NOTA/BIAYA LAIN </option>
-                                        <option value="F"> CHEQUE/BG </option>
+                                            <option selected="" value="0">Pilih - Pembayaran</option>
+                                            <option value="T"> TUNAI/CASH </option>
+                                            <option value="C"> TRANSFER </option>
+                                            <option value="U"> UANG MUKA </option>
+                                            <option value="B"> NOTA/BIAYA LAIN </option>
+                                            <option value="F"> CHEQUE/BG </option>
                                         @endif
                                     </select>
                                 </td>
                             </tr>
-                            @if(Auth::user()->punyaAkses('Kwitansi','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td class="disabled" colspan="20">
-                                    <select onchange="ganti_nota()" class="cb_cabang  form-control chosen-select-width"  name="cb_cabang" onchange="nota_kwitansi()" >
+                                <td style="width:368px; padding-top: 0.4cm" colspan="20" class="cabang_td">
+                                    <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
                                         @if($data->k_kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                         @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                         @endif
                                     @endforeach
                                     </select>
                                 </td>
                             </tr>
-                            @else
-                            <tr>
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="20" class="disabled"> 
-                                    <select class="cb_cabang form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
-                                        <option value="0">Pilih - Cabang</option>
-                                    @foreach ($cabang as $row)
-                                        @if($data->k_kode_cabang == $row->kode)
-                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                        @else
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                        @endif
-                                    @endforeach
-                                    </select>
-                                </td>
-                            </tr>
-                            @endif
-                            <tr class="disabled">
+                            <tr class="">
                                 <td style="padding-top: 0.4cm">Customer</td>
-                                <td >
-                                    <select class="chosen-select-width"  name="cb_customer" id="customer" style="width:100%" >
+                                <td  class="customer_td">
+                                    <div style="width: 400px">
+                                        <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
-                                    @foreach ($customer as $row)
-                                    @if($data->k_kode_customer == $row->kode)
-                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
-                                    @else
-                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
-                                    @endif
-                                    @endforeach 
+                                        @foreach ($customer as $row)
+                                            @if($data->k_kode_customer == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->kode }}</option>
+                                            @else
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} - {{ $row->kode }}</option>
+                                            @endif
+                                        @endforeach
                                     </select>
+                                    </div>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Akun</td>
-                                <td class="" colspan="3" class="">
+                                <td colspan="3" class="akun_bank_td">
                                     <select class="form-control chosen-select-width cb_akun_h" id="cb_akun_h" name="cb_akun_h" >
                                         <option value="0">Pilih - Akun Bank</option>
                                         @foreach($akun_bank as $val)
                                         @if($data->k_kode_akun == $val->mb_kode)
-                                        <option selected="" value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                            <option selected="" value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
                                         @else
-                                        <option value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
+                                            <option value="{{$val->mb_kode}}">{{$val->mb_kode}} - {{$val->mb_nama}}</option>
                                         @endif
                                         @endforeach
                                     </select>
@@ -199,28 +209,24 @@
                             <tr>    
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
-                                    <input type="text" value="{{$data->k_keterangan}}" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="ed_keterangan" class="form-control" style="text-transform: uppercase" value="{{$data->k_keterangan}}" >
                                 </td>
                             </tr>
                         </table>
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-sm-1">
+                            
+                        </div>
+                        <div class="col-sm-5">
                         <table class="table table-striped table-bordered table-hover table_rincian">
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Total Bayar</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control total_jumlah_bayar_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
+                                    <input type="text"  class="form-control total_jumlah_bayar_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
 
-                                    <input type="hidden" name="jumlah_bayar" class="form-control total_jumlah_bayar" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1">
+                                    <input type="hidden" name="jumlah_bayar" class="form-control total_jumlah_bayar" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                 </td>
                               
-                            </tr>
-                            <tr>
-                                  <td style="width:120px; padding-top: 0.4cm">Total Uang Muka (-)</td>
-                                <td colspan="3">
-                                    <input type="text"  class="form-control um_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0" >
-                                    <input type="hidden" name="um" class="form-control um" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
-                                </td>
                             </tr>
                             <tr>
                                   <td style="width:120px; padding-top: 0.4cm">Total Debet (+)</td>
@@ -239,23 +245,19 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Netto</td>
                                 <td colspan="3">
-                                    <input type="text"  class="form-control ed_netto_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
-                                    <input type="hidden" name="ed_netto" class="form-control ed_netto" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" >
+                                    <input type="text"  class="form-control ed_netto_text" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
+                                    <input type="hidden" name="ed_netto" class="form-control ed_netto" style="text-transform: uppercase ; text-align: right" readonly="readonly" tabindex="-1" value="0">
                                 </td>
                             </tr>
                     </table>
                     </div> 
 
                     <div class="row">
-                        <div class="col-sm-7">
-                            
-                        </div>
+                       
                         <div class="col-sm-12 ">
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                             <button type="button" class="btn btn-warning kanan pull-right print disabled" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i> Print</button>
                             <button type="button" class="btn btn-success kanan pull-right temp_1" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i> Simpan</button>
-                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_um" name="btnadd_um" ><i class="glyphicon glyphicon-plus"></i> Tambah Uang Muka</button>
-                            <button type="button" class="btn btn-info kanan pull-right temp_1" id="btnadd_biaya" name="btnadd_biaya" ><i class="glyphicon glyphicon-plus"></i> Tambah Biaya</button>
                             <button type="button" class="btn btn-info kanan pull-right tambah_invoice temp_1" name="btnadd" ><i class="glyphicon glyphicon-plus"></i> Pilih Nomor Invoice</button>
                         </div>
                     </div>
@@ -264,8 +266,8 @@
                     <div class="tabs-container tab_detail">
                         <ul class="nav nav-tabs">
                             <li class="active"><a data-toggle="tab" class="tab-1" href="#tab-1"> Detail Kwitansi</a></li>
-                            <li class=""><a data-toggle="tab" class="tab-2" href="#tab-2">Detail Biaya</a></li>
-                            <li class=""><a data-toggle="tab" class="tab-3" href="#tab-3">Detail Uang Muka</a></li>
+                            {{-- <li class=""><a data-toggle="tab" class="tab-2" href="#tab-2">Detail Biaya</a></li> --}}
+                            {{-- <li class=""><a data-toggle="tab" class="tab-3" href="#tab-3">Detail Uang Muka</a></li> --}}
                         </ul>
                         <div class="tab-content ">
                             <div id="tab-1" class="tab-pane active">
@@ -282,34 +284,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($data_dt as $val)
-                                            <tr>
-                                                <td>
-                                                    <a onclick="histori(this)">{{$val->kd_nomor_invoice}}</a>
-                                                    <input type="hidden" class="i_nomor i_flag_{{$val->kd_nomor_invoice}}" name="i_nomor[]" value="{{$val->kd_nomor_invoice}}">
-                                                </td>
-                                                <td>
-                                                    {{number_format($val->i_total_tagihan, 2, ",", ".")}}
-                                                    <input type="hidden" class="i_tagihan" name="i_tagihan[]" value="{{$val->i_total_tagihan}}">
-                                                </td>
-                                                <td>
-                                                    {{number_format($val->i_sisa_pelunasan+$val->kd_total_bayar, 2, ",", ".")}}
-                                                    <input type="hidden" class="i_sisa" name="i_sisa[]" value="{{$val->i_sisa_pelunasan+$val->kd_total_bayar}}">
-                                                </td>
-                                                <td align="left">
-                                                    <input type="text" readonly class="form-control i_bayar_text input-sm" value="{{number_format($val->kd_total_bayar, 2, ",", ".")}}" style="text-align: right">
-                                                    <input type="hidden" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="{{$val->kd_total_bayar}}">
-                                                    <input type="hidden" readonly class="form-control i_biaya_admin input-sm" name="i_biaya_admin[]" value="{{$val->kd_biaya_lain}}">
-                                                    <input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="{{$val->kd_kode_biaya}}}">
-                                                </td>
-                                                <td>
-                                                    <input type="text" class="form-control input-sm" name="i_keterangan[]" value="{{$val->kd_keterangan}}">
-                                                </td>
-                                                <td>
-                                                    <a type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i>&nbsp;</button>
-                                                </td>
-                                            </tr>
-                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -328,43 +302,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($data_bl as $i=>$val)
-                                            <tr>
-                                                <td>
-                                                    <p class="b_seq_text">{{$i+1}}</p>
-                                                    <input type="hidden" class="b_flag_{{$i+1}}">
-                                                </td>
-                                                <td>
-                                                    <p class="b_nama_akun_text">{{$val->nama_akun}}</p>
-                                                    <input type="hidden" class="b_kode_akun" value="{{$val->kb_kode_akun}}" name="b_akun[]">
-                                                </td>
-                                                <td>
-                                                    @if($val->kb_jenis == 'D')
-                                                    <p class="b_debet_text">DEBET</p>
-                                                    @else
-                                                    <p class="b_debet_text">KREDIT</p>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <p class="b_jumlah_text">{{number_format($val->kb_jumlah, 2, ",", ".")}}</p>
-                                                    <input type="hidden" class="b_jumlah" value="{{$val->kb_jumlah}}" name="b_jumlah[]">
-                                                    <input type="hidden" class="b_debet" value="{{$val->kb_debet}}" name="b_debet[]">
-                                                    <input type="hidden" class="b_kredit" value="{{$val->kb_kredit}}" name="b_kredit[]">
-                                                </td>
-                                                <td>
-                                                    <p class="b_keterangan_text">{{$val->kb_keterangan}}</p>
-                                                    <input type="hidden" class="b_keterangan" value="{{$val->kb_keterangan}}" name="b_keterangan[]">
-                                                </td>
-                                                <td>
-                                                    <button type="button" onclick="hapus_detail_biaya(this)" class="btn btn-danger hapus btn-sm" title="hapus">
-                                                    <label class="fa fa-trash"><label>
-                                                    </button>
-                                                    <button type="button" onclick="edit_detail_biaya(this)" class="btn btn-warning hapus btn-sm" title="edit">
-                                                    <label class="fa fa-pencil"><label>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            @endforeach
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -384,41 +322,6 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($data_um as $i=>$val)
-                                            <tr>
-                                                <td>
-                                                    {{$i+1}}<input type="hidden" value="{{$i+1}}" class="sequence_{{$i+1}}">
-                                                    <input type="hidden" value="{{$i+1}}" class="sequence">
-                                                </td>
-                                                <td>
-                                                    {{$val->ku_nomor_um}}
-                                                    <input type="hidden" value="{{$val->ku_nomor_um}}" class="m_um" name="m_um[]">
-                                                </td>
-                                                <td>
-                                                    {{$val->ku_status_um}}
-                                                    <input type="hidden" value="{{$val->ku_status_um}}" class="m_status_um" name="m_status_um[]"> 
-                                                </td>
-                                                <td>
-                                                    {{number_format($val->jumlah, 2, ",", ".")}}
-                                                    <input type="hidden" value="{{$val->jumlah}}" class="m_um_total" name="m_um_total[]">
-                                                </td>
-                                                <td>
-                                                    {{number_format($val->ku_jumlah, 2, ",", ".")}}
-                                                    <input type="hidden" value="{{$val->ku_jumlah}}" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">
-                                                </td>
-                                                <td>
-                                                    <input type="text" readonly value="{{$val->ku_keterangan}}" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">
-                                                </td>
-                                                <td>
-                                                    <button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">
-                                                    <label class="fa fa-trash"><label>
-                                                    </button>
-                                                    <button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">
-                                                    <label class="fa fa-pencil"><label>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -428,6 +331,7 @@
                     </div>
                 </div>
                 <!-- /.box-body -->
+                
                 <!-- modal -->
                 <div id="modal_invoice" class="modal" >
                     <div class="modal-dialog modal-lg">
@@ -513,17 +417,21 @@
                                                             <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
                                                         </td>
                                                     </tr>
+                                         
                                                     <tr>
                                                         <td>Akun Biaya</td>
-                                                        <td style="max-width: 200px" class="akun_biaya_td">
-                                                            <select class="form-control biaya_admin chosen-select-width1">
-                                                                @foreach($akun as $val)
-                                                                <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+                                                        <td style="max-width: 200px" class="">
+                                                            <select onchange="akun_biaya1()" class="form-control akun_biaya" id="akun_biaya">
+                                                                <option value="0" data-jenis ="D" data-biaya ="0">Non-Biaya</option>
+                                                                @foreach($akun_biaya as $val)
+                                                                <option value="{{$val->kode}}" data-biaya ="{{$val->acc_biaya}}" data-jenis ="{{$val->jenis}}">{{$val->kode}} - {{$val->nama}}</option>
                                                                 @endforeach
                                                             </select>
                                                         </td>
                                                         <td colspan="2">
-                                                            <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control">
+                                                            <input type="text" onkeyup="hitung()" style="text-align:right" class="jumlah_biaya_admin form-control" value="0" readonly="">
+                                                            <input type="hidden" class="jenis_biaya " value="D">
+                                                            <input type="hidden" class="akun_acc_biaya" value="0">
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -607,187 +515,216 @@
                 </div>
                   <!-- modal -->
 
-                <!-- modal biaya -->
-                <div id="modal_biaya" class="modal" >
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Edit Insert Biaya</h4>
-                            </div>
-                            <div class="modal-body">
-                                <table class="table table-bordered table-striped">
-                                    <tr>
-                                        <td class="kecil">Nomor</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" name="" class="m_sequence form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode Biaya</td>
-                                        <td colspan="2" class="akun_lain_td">
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">DEBET/KREDIT</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" class="m_debet form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode ACC</td>
-                                        <td colspan="2" >
-                                            <input type="text" readonly="" class="m_acc form-control input-sm">
-                                            <input type="hidden" readonly="" class="m_nama_akun form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode CSF</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" class="m_csf form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Jumlah</td>
-                                        <td colspan="2">
-                                            <input style="text-align: right" type="text"  class="m_jumlah form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Keterangan</td>
-                                        <td colspan="2">
-                                            <input type="text"  class="m_keterangan form-control input-sm">
-                                        </td>
-                                    </tr>
-                                </table>
-
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" id="btnsave3">Save changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {{-- modal2 --}}
-                <div id="modal_edit_biaya" class="modal" >
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Edit Insert Biaya</h4>
-                            </div>
-                            <div class="modal-body">
-                                <table class="table table-bordered table-striped">
-                                    <tr>
-                                        <td class="kecil">Nomor</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" name="" class="me_nomor form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode Biaya</td>
-                                        <td colspan="2" class="akun_lain_td">
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">DEBET/KREDIT</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" class="me_debet form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode ACC</td>
-                                        <td colspan="2" >
-                                            <input type="text" readonly="" class="me_acc form-control input-sm">
-                                            <input type="hidden" readonly="" class="me_nama_akun form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Kode CSF</td>
-                                        <td colspan="2">
-                                            <input type="text" readonly="" class="me_csf form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Jumlah</td>
-                                        <td colspan="2">
-                                            <input style="text-align: right" type="text"  class="me_jumlah form-control input-sm">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="kecil">Keterangan</td>
-                                        <td colspan="2">
-                                            <input type="text"  class="me_keterangan form-control input-sm">
-                                        </td>
-                                    </tr>
-                                </table>
-
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary" id="update_biaya">Save changes</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 
                   {{-- modal um --}}
                 <div id="modal_um" class="modal" >
-                    <div class="modal-dialog modal-lg">
+                    <div class="modal-dialog modal-lg" style="min-width: 1300px;max-width: 1300px">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title">Edit Insert Uang Muka</h4>
                             </div>
                             <div class="modal-body">
-                                <table style="font-size: 12px;"  class="tabel_um table table-bordered table-striped">
-                                    <tr>
-                                        <td>Seq</td>
-                                        <td colspan="2">
-                                            <input type="hidden" readonly="" name="" class="me_um_flag form-control input-sm">
-                                            <input type="text"  readonly="" class="seq_um form-control" name="" value="1">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>No. UM</td>
-                                        <td>
-                                            <input type="text" readonly="" class=" no_um form-control">
-                                        </td>
-                                        <td width="100px" align="center">
-                                            <button type="button" class="btn cari_um btn-primary">
-                                                <i class="fa fa-search"> Cari</i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Status Uang Muka</td>
-                                        <td colspan="2">
-                                           <input type="text" style="text-align: right;" readonly="" class="status_um form-control" name="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nominal UM</td>
-                                        <td colspan="2">
-                                            <input type="text" style="text-align: right;" readonly="" class="total_um_text form-control" name="">
-                                            <input type="hidden" style="text-align: right;" readonly="" class="total_um form-control" name="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Jumlah Bayar</td>
-                                        <td colspan="2">
-                                            <input type="text" style="text-align: right;" class="jumlah_bayar_um form-control" value="0" name="">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>Keterangan</td>
-                                        <td colspan="2">
-                                            <input type="text" class="Keterangan_um form-control" name="">
-                                        </td>
-                                    </tr>
-                                </table>
+                                    <form class="form-horizontal">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <table class="table table-bordered table-striped">
+                                                <tbody>
+                                                    <tr>
+                                                        <td style="padding-top: 0.4cm">No Invoice</td>
+                                                        <td colspan="3">
+                                                            <input type="text" class="form-control ed_nomor_invoice" name="ed_nomor_invoice"  readonly="readonly">
+                                                            <input type="hidden" name="ed_id" readonly="readonly" >
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jumlah Invoice</td>
+                                                        <td colspan="3">
+                                                            <input type="text" class="form-control ed_jumlah_tagihan" name="ed_jumlah_tagihan"  style="text-align:right" readonly="readonly" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control jumlah_tagihan">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>    
+                                                        <td style="padding-top: 0.4cm">Terbayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="readonly" class="form-control ed_terbayar" name="ed_terbayar" style="text-align:right" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control terbayar">
+                                                        </td>
+                                                    </tr>
+                                                    
+                                                    <tr>
+                                                        <td style="padding-top: 0.4cm">Nota Debet</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="readonly" class="form-control ed_nota_debet" style="text-align:right">
+                                                            <input type="hidden" readonly="readonly" class="form-control nota_debet">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="padding-top: 0.4cm">Nota Kredit</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="readonly" class="form-control ed_nota_kredit" name="ed_nota_kredit" style="text-align:right" value="0" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control nota_kredit">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sisa Terbayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text" class="form-control ed_sisa_terbayar" name="ed_sisa_terbayar" id="ed_sisa_terbayar" readonly="readonly" style="text-align:right" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control sisa_terbayar_um">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Jumlah Bayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text"  class="form-control ed_jumlah_bayar" name="ed_jumlah_bayar" readonly="readonly" style="text-align:right" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control jumlah_bayar">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Akun Biaya</td>
+                                                        <td style="max-width: 200px" class="">
+                                                            <select onchange="akun_biaya_um()" class="form-control akun_biaya_um" id="akun_biaya">
+                                                                <option value="0" data-jenis ="D" data-biaya ="0">Non-Biaya</option>
+                                                                @foreach($akun_biaya as $val)
+                                                                <option value="{{$val->kode}}" data-biaya ="{{$val->acc_biaya}}" data-jenis ="{{$val->jenis}}">{{$val->kode}} - {{$val->nama}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
+                                                        <td colspan="2">
+                                                            <input type="text" readonly="" onkeyup="hitung_um()" style="text-align:right" class="jumlah_biaya_admin_um form-control" value="0">
+                                                            <input type="hidden" class="jenis_biaya_um " value="D">
+                                                            <input type="hidden" class="akun_acc_biaya_um" value="0">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Bayar</td>
+                                                        <td colspan="3">
+                                                            <input type="text" readonly="" style="text-align:right" class="total_bayar form-control">
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Sisa</td>
+                                                        <td colspan="3">
+                                                            <input type="text" class="form-control ed_total"  readonly="readonly" style="text-align:right" tabindex="-1">
+                                                            <input type="hidden" readonly="readonly" class="form-control total">
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col-md-7">
+                                            <h3>Riwayat Dan Pembayaran</h3>
+                                            <div class="tabs-container">
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active"><a data-toggle="tab" href="#tab-pb">Pembayaran</a></li>
+                                                    <li class=""><a data-toggle="tab" href="#tab-rk1"> Riwayat Kwitansi</a></li>
+                                                    <li class=""><a data-toggle="tab" href="#tab-cn1">Riwayat CN/DN</a></li>
+                                                </ul>
+                                                <div class="tab-content ">
+                                                    <div id="tab-pb" class="tab-pane active">
+                                                        <div class="panel-body pembayaran_um">
+                                                            <table class="table tabel_pembayaran_um borderless table-striped">
+                                                                <tr>
+                                                                    <td>No UM</td>
+                                                                    <td><input readonly="" type="text" class="form-control no_um"></td>
+                                                                    <td>
+                                                                        <button type="button" class="cari_um btn btn-primary">
+                                                                            <i class="fa fa-search"> Cari</i>
+                                                                        </button>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Nominal Uang Muka</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" readonly="" style="text-align: right" class="form-control nominal_um_text">
+                                                                        <input type="hidden" readonly="" style="text-align: right" class="form-control nominal_um">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Sisa</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" readonly="" style="text-align: right" class="form-control terpakai_um_text">
+                                                                        <input type="hidden" readonly="" style="text-align: right" class="form-control terpakai_um">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Status UM</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" readonly="" style="text-align: right" class="form-control status_um">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Jumlah Bayar</td>
+                                                                    <td colspan="2">
+                                                                        <input type="text" style="text-align: right" class="form-control jumlah_bayar_um">
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td colspan="3">
+                                                                        <div class="pull-right">
+                                                                        <button type="button" class="btn btn-default append_um">
+                                                                        <i class="fa fa-plus"></i>Append
+                                                                        </button>
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                    <div id="tab-rk1" class="tab-pane">
+                                                        <div class="panel-body riwayat_kwitansi_um">
+                                                            <table class="table riwayat table-bordered table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nomor Kwitansi</th>
+                                                                    <th>Tanggal</th>
+                                                                    <th>Jml Bayar</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                        </div>
+                                                    </div>
+                                                    <div id="tab-cn1" class="tab-pane">
+                                                        <div class="panel-body riwayat_cn_dn_um">
+                                                            <table id="table_cn_dn" class="table table-bordered table-striped">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Nomor CN/DN</th>
+                                                                        <th>Tanggal</th>
+                                                                        <th>Jml Kredit</th>
+                                                                        <th>Jml Kredit</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <table class="table table_histori_um ">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>No UM</th>
+                                                            <th>Nominal</th>
+                                                            <th>Sisa</th>
+                                                            <th>Jumlah Bayar</th>
+                                                            <th>Sisa Akhir</th>
+                                                            <th>Aksi</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" id="save_um">Save changes</button>
+                                    <button type="button" class="btn btn-primary" id="save_um">Simpan Uang Muka</button>
                                 </div>
                             </div>
                         </div>
@@ -797,7 +734,7 @@
                 <div class="box-footer">
                   <div class="pull-right">
 
-                     {{-- cari um modal --}}
+                     cari um modal
                 <div id="modal_cari_um" class="modal">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -847,10 +784,11 @@
 var array_simpan = [];
 var array_edit = [];
 var array_harga = [];
-var array_um= [];
 var count_um = 1;
 var simpan_um = [];
 var harga_um = [];
+var array_um= [];
+var array_um_harga=[];
 
 // datepicker
 $('.ed_tanggal').datepicker({
@@ -863,7 +801,8 @@ var config1 = {
                    '.chosen-select-deselect'  : {allow_single_deselect:true},
                    '.chosen-select-no-single' : {disable_search_threshold:10},
                    '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-                   '.chosen-select-width1'     : {width:"100%"}
+                   '.chosen-select-width1'     : {width:"100%"},
+                   'parser_config': { copy_data_attributes: true }
                  }
     for (var selector in config1) {
       $(selector).chosen(config1[selector]);
@@ -895,6 +834,11 @@ var table_data = $('#table_data').DataTable({
                     
                 })
 
+
+var table_histori_um = $('.table_histori_um').DataTable({
+                    searching:false,
+                })
+
 var table_data_biaya = $('#table_data_biaya').DataTable({
                     searching:false,
                     columnDefs: [
@@ -922,33 +866,6 @@ var table_data_biaya = $('#table_data_biaya').DataTable({
                     
                 })
 
-var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
-     columnDefs: [  
-                      {
-                         targets: 0,
-                         className: 'center'
-                      },
-                      {
-                         targets: 4 ,
-                         className: 'center'
-                      },
-       
-                      {
-                         targets: 3,
-                         className: 'right'
-                      },
-                      {
-                      
-                         targets: 5,
-                         className: 'center'
-                      },
-                      {
-                      
-                         targets: 6,
-                         className: 'center'
-                      }
-                    ],
-});
 //mengganti nota kwitansi
 function nota_kwitansi() {
     var cb_cabang = $('.cb_cabang').val();
@@ -963,155 +880,16 @@ function nota_kwitansi() {
     })
 
 
-    $.ajax({
-        url:baseUrl+'/sales/akun_bank',
-        data:{cabang},
-        success:function(response){
-            $('.td_akun_bank').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
 }
-//hitung total bayar
 
-function hitung_bayar() {
-
-    var temp = 0;
-    table_data.$('.i_bayar').each(function(){
-        var i_bayar = Math.round($(this).val()).toFixed(2);
-            i_bayar = parseFloat(i_bayar);
-        temp += i_bayar;
-    })
-    $('.total_jumlah_bayar').val(temp);
-    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
-    var temp = 0;
-    tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
-        var temp1 = $(this).val();
-        temp1     = parseInt(temp1);
-        temp += temp1;
-    });
-
-    $('.um').val(temp);
-    $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
-    var temp = 0;    
-    var temp1 = 0; 
-
-    table_data_biaya.$('.b_debet').each(function(){
-        var deb = parseInt($(this).val());
-        temp += deb;
-    })  
-    table_data_biaya.$('.b_kredit').each(function(){
-        var deb = parseInt($(this).val());
-        temp1 += deb;
-    })  
-
-    $('.ed_debet').val(temp);
-    $('.ed_kredit').val(temp1);
-    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
-    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
-
-    
-
-    
-
-    var total_bayar = Math.round($('.total_jumlah_bayar').val()).toFixed(2);
-        total_bayar = parseFloat(total_bayar);
-
-    var ed_debet = Math.round($('.ed_debet').val()).toFixed(2);
-        ed_debet = parseInt(ed_debet);
-
-    var ed_kredit = Math.round($('.ed_kredit').val()).toFixed(2);
-        ed_kredit = parseInt(ed_kredit);
-
-    var um        = Math.round($('.um').val()).toFixed(2);
-        um        = parseInt(um);
-
-    var total     = total_bayar + ed_debet - ed_kredit - um;
-    if (total < 0) {
-        total = 0;
-    }
-    console.log(total);
-    $('.ed_netto').val(total);
-    $('.ed_netto_text').val(accounting.formatMoney(total,"",2,'.',','));
-    
-}
 //NOTA kwitansi
 $(document).ready(function(){
-    var cabang = $('.cb_cabang').val();
-
-
-    $.ajax({
-        url:baseUrl+'/sales/akun_bank',
-        data:{cabang},
-        success:function(response){
-            $('.td_akun_bank').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
-
-    $.ajax({
-        url:baseUrl +'/sales/drop_cus',
-        data:{cabang},
-        success:function(data){
-            $('.customer_td').html(data);
-            // toastr.info('Data Telah Dirubah Harap Periksa Kembali');
-        },
-        error:function(){
-            location.reload();
-        }
-        });
-
-    $.ajax({
-        url:baseUrl+'/sales/akun_all',
-        data:{cabang},
-        success:function(response){
-            $('.akun_lain_td').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
-
-
-    $.ajax({
-        url:baseUrl+'/sales/akun_biaya',
-        data:{cabang},
-        success:function(response){
-            $('.akun_biaya_td').html(response);
-
-        },
-        error:function(){
-            // location.reload();
-        }
-    });
-
-    table_data.$('.i_nomor').each(function(){
-        array_simpan.push($(this).val());
-        array_edit.push($(this).val());
-    })
-
-    table_data.$('.i_bayar').each(function(){
-        array_harga.push($(this).val());
-    })
-    tabel_uang_muka.$('.m_um').each(function(){
-        array_um.push($(this).val());
-        simpan_um.push($(this).val());
-    })
-
-    tabel_uang_muka.$('.m_um_jumlah_bayar').each(function(){
-        harga_um.push($(this).val());
-    })
     
-    $('.angka').maskMoney({precision:0,thousands:'.',defaultZero: true});
-    $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',defaultZero: true});
-    $('.m_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
-    $('.me_jumlah').maskMoney({precision:0,thousands:'.',defaultZero: true});
-    hitung_bayar();
-
+    $('.angka').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.jumlah_biaya_admin').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.jumlah_biaya_admin_um').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.m_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.me_jumlah').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 });
 
 // ganti nota untuk admin
@@ -1204,7 +982,7 @@ $('.tambah_invoice').click(function(){
         toastr.warning('Cabang Harus Dipilih')
         return 1
     }
-    if ($('#customer ').val() == '0') {
+    if ($('.customer ').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
@@ -1214,7 +992,7 @@ $('.tambah_invoice').click(function(){
     }
     
     var cb_cabang = $('.cb_cabang').val();
-    var cb_customer = $('#customer ').val();
+    var cb_customer = $('.customer').val();
 
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
@@ -1250,19 +1028,20 @@ $('#btnsave').click(function(){
 ///////////////////////////////////////////
     $.ajax({
         url:baseUrl + '/sales/append_invoice',
-        data:{nomor,array_edit,array_harga},
+        data:{nomor},
         dataType:'json',
         success:function(response){
             for(var i = 0; i < response.data.length;i++){
                 table_data.row.add([
-                        '<a onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
+                        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
                         accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
                         accounting.formatMoney(response.data[i].i_sisa_pelunasan, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_pelunasan+'">',
-                        '<input type="text" readonly class="form-control i_bayar_text input-sm" value="0">'+
-                        '<input type="hidden" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
-                        '<input type="hidden" readonly class="form-control i_biaya_admin input-sm" name="i_biaya_admin[]" value="0">'+
+                        '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="0">'+
+                        '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
+                        '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="0">'+
+                        '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
-                        '<input type="text" class="form-control input-sm" name="i_keterangan[]" value="">',
+                        '<input type="text" placeholder="keterangan..." class="form-control input-sm" name="i_keterangan[]" value="">',
                         '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
                     ]).draw();
 
@@ -1279,21 +1058,52 @@ $('#btnsave').click(function(){
             $(".i_bayar").focus(function() {
                  $(this).select();
             });
-        $('.tab_detail ul li .tab-1').trigger('click');
+            $('.jenis_pembayaran_td').addClass('disabled');
+            $('.cabang_td').addClass('disabled');
+            $('.customer_td').addClass('disabled');
+            $('.akun_bank_td').addClass('disabled');
+
+            $( ".his" ).tooltip({ show: { effect: "none", duration: 800 } });
+            $('.tab_detail ul li .tab-1').trigger('click');
         }
     })
 });
+
+function akun_biaya1(){
+   var jenis =  $('.akun_biaya').find(':selected').data('jenis');
+   var biaya =  $('.akun_biaya').find(':selected').data('biaya');
+
+   $('.jenis_biaya').val('');
+   $('.akun_acc_biaya').val('');
+   $('.jenis_biaya').val(jenis);
+   $('.akun_acc_biaya').val(biaya);
+   if (jenis != 'K') {
+      $('.jumlah_biaya_admin').val('0');
+   }
+
+   if ($('.akun_biaya').val() == '0') {
+    $('.jumlah_biaya_admin').attr('readonly',true);
+   }else{
+    $('.jumlah_biaya_admin').attr('readonly',false);
+   }
+}
 
 // hitung total
 function hitung() {
     var angka         = $('.angka').val();
     var biaya_admin   = $('.jumlah_biaya_admin').val();
+    var jenis         = $('.jenis_biaya').val();
+    var akun_acc_biaya= $('.akun_acc_biaya').val();
+
     if (biaya_admin == '') {
         biaya_admin = 0;
     }else{
         biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
     }
-    console.log()
+    biaya_admin = parseFloat(biaya_admin);
+    
+        console.log(biaya_admin);
+    
     var sisa_terbayar = $('.sisa_terbayar').val();
     sisa_terbayar     = parseFloat(sisa_terbayar);
     angka             = angka.replace(/[^0-9\-]+/g,"");
@@ -1301,16 +1111,39 @@ function hitung() {
     if (total < 0) {
         total = 0;
     }
+
     if (angka > sisa_terbayar) {
-        angka = sisa_terbayar;
+        if ($('.akun_biaya').val() != 'U2') {
+            $('.akun_biaya').val('B3').trigger('chosen:updated');
+            akun_biaya1();
+            var jenis         = $('.jenis_biaya').val();
+            var akun_acc_biaya= $('.akun_acc_biaya').val();
+        }
     }
     $('.ed_jumlah_bayar').val(accounting.formatMoney(angka,"",2,'.',','));
     $('.jumlah_bayar').val(angka);
+
     $('.ed_total').val(accounting.formatMoney(total,"",2,'.',','))
     $('.total').val(total);
-    angka = parseInt(angka);
-    biaya_admin = parseInt(biaya_admin);
-    $('.total_bayar').val(accounting.formatMoney(angka+biaya_admin,"",2,'.',','))
+    angka = parseFloat(angka);
+  
+    
+    if (jenis == 'D') {
+        $('.total_bayar').val(accounting.formatMoney(angka+biaya_admin,"",2,'.',','))
+    }else if(jenis == 'K'){
+        var hasil = angka-sisa_terbayar;
+        if (hasil <0) {
+            hasil = 0;
+        }
+        var angka = $('.jumlah_bayar').val();
+        $('.jumlah_biaya_admin').val(accounting.formatMoney(hasil,"",0,'.',','))
+
+        var biaya_admin   = $('.jumlah_biaya_admin').val();
+        biaya_admin       = biaya_admin.replace(/[^0-9\-]+/g,"");
+        biaya_admin       = parseFloat(biaya_admin);
+
+        $('.total_bayar').val(accounting.formatMoney(angka-biaya_admin,"",2,'.',','))
+    }
 
 }
 
@@ -1320,14 +1153,22 @@ function histori(p){
     var i_nomor             = $(par).find('.i_nomor').val();
     var i_sisa_pelunasan    = $(par).find('.i_sisa_pelunasan').val();
     var i_bayar             = $(par).find('.i_bayar ').val();
+    var nota_kwitansi       = $('#nota_kwitansi').val();
     var i_tagihan           = $(par).find('.i_tagihan ').val();
-    var id                  = "{{$id}}";
+    var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val(); 
+    var asd                 = simpan_um.length;
+    simpan_um.splice(0,asd);
 
-    $.ajax({
+    if (cb_jenis_pembayaran != 'U') {
+
+        $.ajax({
         url:baseUrl + '/sales/riwayat_invoice',
-        data:{i_nomor,id},
+        data:{i_nomor,cb_jenis_pembayaran,nota_kwitansi},
         success:function(data){
+
             $('.riwayat_kwitansi').html(data);
+            table_riwayat.destroy();
+
             var temp = 0;
             table_riwayat.$('.kd_total_bayar').each(function(){
                 temp += parseFloat($(this).val());
@@ -1338,9 +1179,11 @@ function histori(p){
 
             $.ajax({
                 url:baseUrl + '/sales/riwayat_cn_dn',
-                data:{i_nomor},
+                data:{i_nomor,cb_jenis_pembayaran,nota_kwitansi},
                 success:function(data){
                     $('.riwayat_cn_dn').html(data);
+                    table_cd.destroy();
+
                     var temp = 0;
                     var temp1 = 0;
                     table_cd.$('.cd_debet').each(function(){
@@ -1350,6 +1193,85 @@ function histori(p){
                     table_cd.$('.cd_kredit').each(function(){
                         temp1 += parseFloat($(this).val());
                     });
+                    $('.ed_nota_debet').val(accounting.formatMoney(temp,"",2,'.',','));
+                    $('.nota_debet').val(temp);
+
+                    $('.ed_nota_kredit').val(accounting.formatMoney(temp1,"",2,'.',','));
+                    $('.nota_kredit').val(temp1);
+
+                    
+                    $('.ed_nomor_invoice').val(i_nomor);
+                    $('.ed_jumlah_tagihan').val(accounting.formatMoney(i_tagihan,"",2,'.',','));
+                    $('.jumlah_tagihan').val(i_tagihan);
+
+                    var jumlah_tagihan = $('.jumlah_tagihan').val();
+                    jumlah_tagihan     = parseFloat(jumlah_tagihan);
+                    var terbayar       = $('.terbayar').val();
+                    terbayar           = parseFloat(terbayar);
+                    var nota_debet     = $('.nota_debet').val()
+                    nota_debet         = parseFloat(nota_debet);
+
+                    var nota_kredit    =$('.nota_kredit').val()
+                    nota_kredit        = parseFloat(nota_kredit);
+
+
+                    var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
+                    jumlah             = jumlah;
+                    $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
+                    $('.sisa_terbayar').val(jumlah);
+
+                    var i_bayar        = $(par).find('.i_bayar').val();
+                    var i_debet    = $(par).find('.i_debet').val();
+                    var i_kredit    = $(par).find('.i_kredit').val();
+                    var biaya_admin = parseFloat(i_debet)+parseFloat(i_kredit);
+                    console.log(i_bayar);
+                    $('.angka').val(i_bayar);
+                    $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
+                    $('.jumlah_bayar').val(i_bayar);
+                    $('.jumlah_biaya_admin ').val(biaya_admin);
+                    var biaya_admin    = $(par).find('.i_akun_biaya').val();
+                    console.log(biaya_admin);
+                    $('.akun_biaya ').val(biaya_admin).trigger('chosen:updated');
+                    if (biaya_admin == '0') {
+                        $('.jumlah_biaya_admin').attr('readonly',true);
+                    }else{
+                        $('.jumlah_biaya_admin').attr('readonly',false);
+                    }
+                    hitung();
+                    $('#modal_info').modal('show');
+                }
+            })
+        }
+        })
+    }else{
+        $.ajax({
+        url:baseUrl + '/sales/riwayat_invoice',
+        data:{i_nomor,cb_jenis_pembayaran,nota_kwitansi},
+        success:function(data){
+            $('.riwayat_kwitansi_um').html(data);
+            var temp = 0;
+            table_riwayat_um.$('.kd_total_bayar_um').each(function(){
+                temp += parseFloat($(this).val());
+            });
+            $('.ed_terbayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.terbayar').val(temp);
+
+
+            $.ajax({
+                url:baseUrl + '/sales/riwayat_cn_dn',
+                data:{i_nomor,cb_jenis_pembayaran,nota_kwitansi},
+                success:function(data){
+                    $('.riwayat_cn_dn_um').html(data);
+                    var temp = 0;
+                    var temp1 = 0;
+                    table_cd_um.$('.cd_debet_um').each(function(){
+                        temp += parseFloat($(this).val());
+                    });
+
+                    table_cd_um.$('.cd_kredit_um').each(function(){
+                        temp1 += parseFloat($(this).val());
+                    });
+                    console.log(temp1);
                     $('.ed_nota_debet').val(accounting.formatMoney(temp,"",2,'.',','));
                     $('.nota_debet').val(temp);
 
@@ -1368,32 +1290,97 @@ function histori(p){
                     var nota_debet     = $('.nota_debet').val()
                     nota_debet         = parseFloat(nota_debet);
 
-                    var nota_kredit    =$('.nota_kredit').val()
+                    var nota_kredit    = $('.nota_kredit').val()
                     nota_kredit        = parseFloat(nota_kredit);
 
 
                     var jumlah         = jumlah_tagihan - terbayar + nota_debet - nota_kredit;
-                    jumlah             = Math.round(jumlah).toFixed(2);
+                    jumlah             = jumlah;
                     $('.ed_sisa_terbayar').val(accounting.formatMoney(jumlah,"",2,'.',','));
-                    $('.sisa_terbayar').val(jumlah);
+                    $('.sisa_terbayar_um').val(jumlah);
 
                     var i_bayar        = $(par).find('.i_bayar').val();
-                    var biaya_admin    = $(par).find('.i_biaya_admin').val();
+                    var i_debet    = $(par).find('.i_debet').val();
+                    var i_kredit    = $(par).find('.i_kredit').val();
+                    var biaya_admin = parseFloat(i_debet)+parseFloat(i_kredit);
                     console.log(i_bayar);
-                    $('.angka').val(parseInt(i_bayar)-parseInt(biaya_admin));
+                    $('.angka').val(i_bayar);
                     $('.ed_jumlah_bayar').val(accounting.formatMoney(i_bayar,"",2,'.',','));
                     $('.jumlah_bayar').val(i_bayar);
-                    $('.jumlah_biaya_admin ').val(biaya_admin);
-                    var biaya_admin    = $(par).find('.akun_biaya').val();
-                    $('.biaya_admin ').val(biaya_admin).trigger('chosen:updated');
+                    $('.jumlah_biaya_admin_um').val(biaya_admin);
+                    var biaya_admin    = $(par).find('.i_akun_biaya ').val();
+                    $('.akun_biaya_um').val(biaya_admin).trigger('chosen:updated');
+                    if (biaya_admin == '0') {
+                        $('.jumlah_biaya_admin_um').attr('readonly',true);
+                    }else{
+                        $('.jumlah_biaya_admin_um').attr('readonly',false);
+                    }
+                    $.ajax({
+                        url:baseUrl + '/sales/kwitansi_cari_um',
+                        data:{i_nomor,nota_kwitansi},
+                        dataType:'json',
+                        success:function(response){
+                            table_histori_um.clear().draw();
+                            console.log(response);
+                            for (var i = 0; i < response.data.length; i++) {
+
+                                var sisa_akhir = parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah) - parseFloat(response.data[i].ku_jumlah);
+
+                                table_histori_um.row.add([
+
+                                    '<p class="no_um_text">'+response.data[i].ku_nomor_um+'</p>'
+                                    +'<input type="hidden" value="'+response.data[i].ku_nomor_um+'" class="m_no_um m_um_'+response.data[i].ku_nomor_um+'" name="m_no_um[]">',
+
+                                    '<p class="m_nominal_um_text">'+accounting.formatMoney(response.data[i].jumlah,"",2,'.',',')+'</p>'+
+                                    '<input type="hidden" value="'+response.data[i].jumlah+'" class="m_nominal_um">',
+
+                                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah),"",2,'.',',')+'</p>'+
+                                    '<input type="hidden" value="'+parseFloat(response.data[i].sisa_uang_muka)+parseFloat(response.data[i].ku_jumlah)+'" class="m_terpakai_um">',
+
+                                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(response.data[i].ku_jumlah,"",2,'.',',')+'</p>'+
+                                    '<input type="hidden" value="'+response.data[i].ku_jumlah+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+                                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
+                                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+                                    '<div class="btn-group ">'+
+                                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                                    '</div>',
 
 
-                    hitung();
-                    $('#modal_info').modal('show');
+                                ]).draw();
+
+                                simpan_um.push(response.data[i].ku_nomor_um);
+                            }
+
+                            console.log(simpan_um);
+
+                            var temp = 0;
+                            
+                            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                                var ini = $(this).val();
+                                ini = parseFloat(ini);
+                                temp += ini;
+                            });
+
+
+                            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+                            $('.jumlah_bayar').val(temp);
+                            $('.tabel_pembayaran_um input').val('');
+                            $('#modal_um').modal('show');
+                            hitung_um();
+
+
+                        }
+                    })
+
                 }
             })
         }
-    })
+        })
+    }
+    
   
 }
 
@@ -1403,13 +1390,53 @@ function histori(p){
 function hapus_detail(o) {
     var par = o.parentNode.parentNode;
     var arr = $(par).find('.i_nomor').val();
+    var flag_nota = $('.flag_nota').val();
     var index = array_simpan.indexOf(arr);
     array_simpan.splice(index,1);
-
+    $.ajax({
+        url:baseUrl + '/sales/hapus_um_kwitansi',
+        data:$('.tabel_header :input').serialize()
+             +'&i_nomor='+arr
+             +'&flag='+'H'
+             +'&flag_nota='+flag_nota,
+        dataType:'json',
+        success:function(response){
+        }
+    })
     table_data.row(par).remove().draw(false);
+
+    var temp =  0 ;
+    $('.i_nomor').each(function(){
+        temp += 1;
+    })
+    if (temp != 0) {
+        $('.jenis_pembayaran_td').removeClass('disabled');
+        $('.akun_bank_td').removeClass('disabled');
+
+    }
 }
 
+//hitung total bayar
 
+function hitung_bayar() {
+    var total_bayar = $('.total_jumlah_bayar').val();
+        total_bayar = parseFloat(total_bayar);
+
+    var ed_debet = $('.ed_debet').val();
+        ed_debet = parseFloat(ed_debet);
+
+    var ed_kredit = $('.ed_kredit').val();
+        ed_kredit = parseFloat(ed_kredit);
+
+
+    var total     = total_bayar + ed_debet - ed_kredit;
+    if (total < 0) {
+        total = 0;
+    }
+    $('.ed_netto').val(total);
+    $('.ed_netto_text').val(accounting.formatMoney(total,"",2,'.',','));
+    
+}
 $('.jumlah_biaya_admin').blur(function(){
 var ini = $(this).val();
 if (ini == '') {
@@ -1419,28 +1446,67 @@ $(this).val(0);
 // simpan perubahan
 $('#btnsave2').click(function(){
     var jumlah_bayar         = $('.jumlah_bayar').val();
-    jumlah_bayar             = parseInt(jumlah_bayar);
+    jumlah_bayar             = parseFloat(jumlah_bayar);
     var akun_biaya           = $('.akun_biaya').val();
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
+    var jenis                = $('.jenis_biaya').val();
+    var akun_acc_biaya       = $('.akun_acc_biaya').val();
+
     if (jumlah_biaya_admin == '') {
         jumlah_biaya_admin = 0;
     }else{
         jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
-        jumlah_biaya_admin       = parseInt(jumlah_biaya_admin);
+        jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
     }
     
     var angka                = $('.angka').val();
     angka                    = angka.replace(/[^0-9\-]+/g,"");
-    angka                    = parseInt(angka);
+    angka                    = parseFloat(angka);
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
     var tes                  = [];
     var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
-    console.log(angka);
-    $(par).find('.i_bayar_text').val(accounting.formatMoney(angka+jumlah_biaya_admin,"",2,'.',','));
-    $(par).find('.i_bayar').val(angka+jumlah_biaya_admin);
-    $(par).find('.i_biaya_admin').val(jumlah_biaya_admin);
+    var jumlah_biaya         = 0;
+    if (jenis == 'K') {
+        $(par).find('.i_kredit').val(jumlah_biaya_admin);
+        $(par).find('.i_debet').val('0');
+    }else{
+        $(par).find('.i_debet').val(jumlah_biaya_admin);
+        $(par).find('.i_kredit').val('0');
+    }
+    $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
+    $(par).find('.i_bayar').val(angka);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
-    
+    var temp = 0;
+    table_data.$('.i_bayar').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp += i_bayar;
+    })
+
+    var temp1 = 0;
+    table_data.$('.i_debet').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp1 += i_bayar;
+    })
+
+    var temp2 = 0;
+    table_data.$('.i_kredit').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp2 += i_bayar;
+    })
+
+
+
+
+    $('.total_jumlah_bayar').val(temp);
+    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_debet').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    $('.ed_kredit').val(temp2);
+    $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
     hitung_bayar();
     $('#modal_info').modal('hide');
 
@@ -1489,7 +1555,22 @@ $('#btnsave3').click(function(){
             '<label class="fa fa-pencil"><label></button>'
 
         ]).draw();
-    
+    var temp = 0;    
+    var temp1 = 0; 
+
+    table_data_biaya.$('.b_debet').each(function(){
+        var deb = parseFloat($(this).val());
+        temp += deb;
+    })  
+    table_data_biaya.$('.b_kredit').each(function(){
+        var deb = parseFloat($(this).val());
+        temp1 += deb;
+    })  
+
+    $('.ed_debet').val(temp);
+    $('.ed_kredit').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_kredit_text').val(accounting.formatMoney(temp1,"",2,'.',','));
 
     $('.m_acc').val('');
     $('.m_csf').val('');
@@ -1569,11 +1650,11 @@ $('#update_biaya').click(function(){
     var temp1 = 0; 
 
     table_data_biaya.$('.b_debet').each(function(){
-        var deb = parseInt($(this).val());
+        var deb = parseFloat($(this).val());
         temp += deb;
     })  
     table_data_biaya.$('.b_kredit').each(function(){
-        var deb = parseInt($(this).val());
+        var deb = parseFloat($(this).val());
         temp1 += deb;
     })  
 
@@ -1594,6 +1675,7 @@ $('#update_biaya').click(function(){
 
     $('#modal_edit_biaya').modal('hide');
 })
+var simpan_um = [];
 
 // cari um
 $('.cari_um').click(function(){
@@ -1601,16 +1683,16 @@ $('.cari_um').click(function(){
         toastr.warning('Akun Harus Dipilih')
         return 1
     }
-    if ($('#customer').val() == '0') {
+    if ($('.customer').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
     var cb_cabang = $('.cb_cabang').val();
-    var cb_customer = $('#customer').val();
+    var cb_customer = $('.customer').val();
 
     $.ajax({
         url:baseUrl + '/sales/cari_um',
-        data:{cb_cabang,cb_customer,simpan_um,array_um,harga_um},
+        data:{cb_cabang,cb_customer,simpan_um},
         success:function(data){
             $('.um_table').html(data);
 
@@ -1624,7 +1706,7 @@ $('#btnadd_um').click(function(){
         toastr.warning('Akun Harus Dipilih')
         return 1
     }
-    if ($('#customer').val() == '0') {
+    if ($('.customer').val() == '0') {
         toastr.warning('Customer Harus Dipilih')
         return 1
     }
@@ -1643,12 +1725,14 @@ function pilih_um(par) {
     var um = $(par).find('.nomor_modal_um').val();
     $.ajax({
         url:baseUrl+'/sales/pilih_um',
-        data:{um,simpan_um,array_um,harga_um},
+        data:{um,simpan_um},
         dataType : 'json',
         success:function(response){
             $('.no_um').val(response.data[0].nomor);
-            $('.total_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
-            $('.total_um').val(response.data[0].sisa_uang_muka);
+            $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
+            $('.nominal_um').val(response.data[0].jumlah);
+            $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+            $('.terpakai_um').val(response.data[0].sisa_uang_muka);
             $('.status_um').val(response.data[0].status_um);
             $('#modal_cari_um').modal('hide');
 
@@ -1658,9 +1742,34 @@ function pilih_um(par) {
     });
 
 }
-
+var tabel_uang_muka = $('#tabel_uang_muka').DataTable({
+     columnDefs: [  
+                      {
+                         targets: 0,
+                         className: 'center'
+                      },
+                      {
+                         targets: 4 ,
+                         className: 'center'
+                      },
+       
+                      {
+                         targets: 3,
+                         className: 'right'
+                      },
+                      {
+                      
+                         targets: 5,
+                         className: 'center'
+                      },
+                      {
+                      
+                         targets: 6,
+                         className: 'center'
+                      }
+                    ],
+});
 $('.jumlah_bayar_um').maskMoney({precision:0,thousands:'.',defaultZero: true});
-
 $('.jumlah_bayar_um ').keyup(function(){
    var jumlah = $(this).val();
    jumlah     = jumlah.replace(/[^0-9\-]+/g,"");
@@ -1673,123 +1782,445 @@ $('.jumlah_bayar_um ').keyup(function(){
    }
    $(this).val(accounting.formatMoney(jumlah,"",0,'.',','));
 });
-$('#save_um').click(function(){
-    var seq_um    = $('.seq_um').val();
-    var no_um     = $('.no_um').val();
-    var total_um  = $('.total_um').val();
+
+function akun_biaya_um(){
+   var jenis =  $('.akun_biaya_um').find(':selected').data('jenis');
+   var biaya =  $('.akun_biaya_um').find(':selected').data('biaya');
+   console.log(jenis);
+   $('.jenis_biaya_um').val('');
+   $('.akun_acc_biaya_um').val('');
+   $('.jenis_biaya_um').val(jenis);
+   $('.akun_acc_biaya_um').val(biaya);
+   $('.jumlah_biaya_admin_um').val('0');
+   if ($('.akun_biaya_um').val() == '0') {
+    $('.jumlah_biaya_admin_um ').attr('readonly',true);
+   }else{
+    $('.jumlah_biaya_admin_um ').attr('readonly',false);
+   }
+}
+
+function hitung_um(){
+    var sisa_terbayar = $('.sisa_terbayar_um').val();
+    var jumlah_bayar = $('.jumlah_bayar').val();
+    var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
+    jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+    jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
+    var akun_biaya         = $('.akun_biaya_um').val();
+    var jenis              = $('.jenis_biaya_um').val();
+
+
+
+    if (jenis != 'K') {
+        if (jumlah_biaya_admin > sisa_terbayar) {
+            toastr.warning('Biaya Tidak Boleh Melebihi Sisa Piutang');
+            $('.jumlah_biaya_admin_um').val('0');
+            var jumlah_biaya_admin  = $('.jumlah_biaya_admin_um').val();
+            jumlah_biaya_admin     = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+            jumlah_biaya_admin     = parseFloat(jumlah_biaya_admin);
+        }
+        var hasil = sisa_terbayar - jumlah_bayar - jumlah_biaya_admin;
+
+        $('.ed_total').val(accounting.formatMoney(hasil,"",2,'.',','));
+        $('.total').val(hasil);
+        
+        var hasil1 = parseFloat(jumlah_bayar) + parseFloat(jumlah_biaya_admin);
+        $('.total_bayar ').val(accounting.formatMoney(hasil1,"",2,'.',','));
+    }else{
+        toastr.warning('Jenis Akun Biaya Tidak Boleh Kredit');
+        $('.akun_biaya_um').val('0').trigger('chosen:updated');
+        akun_biaya_um();
+
+    }
+
+
+
+
+}
+    
+
+
+$('.append_um').click(function(){
+    var seq_um      = $('.seq_um').val();
+    var no_um       = $('.no_um').val();
+    var nominal_um  = $('.nominal_um').val();
+    var terpakai_um   = $('.terpakai_um').val();
     var status_um   = $('.status_um').val();
-    var Keterangan_um  = $('.Keterangan_um').val();
+    var terpakai_um = $('.terpakai_um').val();
+    var sisa_terbayar_um = $('.sisa_terbayar_um').val();
     var jumlah_bayar_um   = $('.jumlah_bayar_um ').val();
-    var me_um_flag  = $('.me_um_flag').val();
     jumlah_bayar_um  = jumlah_bayar_um.replace(/[^0-9\-]+/g,"");
+    jumlah_bayar_um = parseFloat(jumlah_bayar_um);
+    if (jumlah_bayar_um > terpakai_um) {
+        toastr.warning('Jumlah Lebih Besar Dari Sisa Uang Muka');
+        $('.jumlah_bayar_um ').val('0');
+        return 1;
+    }
     if (jumlah_bayar_um == 0 ||  jumlah_bayar_um =='') {
         toastr.warning('Jumlah Bayar Harus Diisi');
         return 1;
     }
-    if (Keterangan_um == 0) {
-        toastr.warning('Keterangan Harus Diisi');
+
+    if (jumlah_bayar_um > sisa_terbayar_um) {
+        toastr.warning('Jumlah Bayar Melebihi Sisa Piutang');
+        $('.jumlah_bayar_um ').val('0');
         return 1;
     }
+    
+    var sisa_akhir = terpakai_um - jumlah_bayar_um;
+    var index = simpan_um.indexOf(no_um);
+    if (index == -1) {
 
-    if (no_um != '') {
-        if (me_um_flag == '') {
-            tabel_uang_muka.row.add([
-                    seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
-                    +'<input type="hidden" value="'+seq_um+'" class="sequence">',
-                    no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
-                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um">',
-                    accounting.formatMoney(total_um,"",2,'.',',')+
-                    '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
-                     accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
-                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
-                    '<input type="text" readonly value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
-                    '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-                    '<label class="fa fa-trash"><label></button>'+
-                    '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
-                    '<label class="fa fa-pencil"><label></button>'
+            table_histori_um.row.add([
+                    
+                    '<p class="no_um_text">'+no_um+'</p>'
+                    +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
+
+                    '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
+
+                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
+
+                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+                    '<div class="btn-group ">'+
+                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                    '</div>',
 
                 ]).draw();
+
+
             count_um++;
+
             simpan_um.push(no_um);
+            var temp = 0;
             
-            $('.tab_detail ul li .tab-3').trigger('click');
-            $('#modal_um').modal('hide');
-        }else{
+            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                var ini = $(this).val();
+                ini = parseFloat(ini);
+                temp+=ini;
+            });
+            console.log(temp);
+            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.jumlah_bayar').val(temp);
+            $('.tabel_pembayaran_um input').val('');
+            hitung_um();
+    }else{
+        var par = $('.m_um_'+no_um).parents('tr');
+        table_histori_um.row(par).remove().draw(false);
 
-            var par = $('.sequence_'+me_um_flag).parents('tr');
-      
-            tabel_uang_muka.row(par).remove().draw();
+        table_histori_um.row.add([
+                    
+                    '<p class="no_um_text">'+no_um+'</p>'
+                    +'<input type="hidden" value="'+no_um+'" class="m_no_um m_um_'+no_um+'" name="m_no_um[]">',
 
-            tabel_uang_muka.row.add([
-                    seq_um+'<input type="hidden" value="'+seq_um+'" class="sequence_'+seq_um+'">'
-                    +'<input type="hidden" value="'+seq_um+'" class="sequence">',
-                    no_um+'<input type="hidden" value="'+no_um+'" class="m_um" name="m_um[]">',
-                    status_um+'<input type="hidden" value="'+status_um+'" class="m_status_um" name="status_um[]">',
-                    accounting.formatMoney(total_um,"",2,'.',',')+
-                    '<input type="hidden" value="'+total_um+'" class="m_um_total" name="m_um_total[]">',
-                     accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+
-                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_um_jumlah_bayar" name="jumlah_bayar_um[]">',
-                    '<input type="text" readonly value="'+Keterangan_um+'" class="m_Keterangan_um form-control" name="m_Keterangan_um[]">',
-                    '<button type="button" onclick="hapus_detail_um(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-                    '<label class="fa fa-trash"><label></button>'+
-                    '<button type="button" onclick="edit_detail_um(this)" class="btn btn-warning hapus btn-sm" title="edit">'+
-                    '<label class="fa fa-pencil"><label></button>'
+                    '<p class="m_nominal_um_text">'+accounting.formatMoney(nominal_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+nominal_um+'" class="m_nominal_um">',
+
+                    '<p class="m_terpakai_um_text">'+accounting.formatMoney(terpakai_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+terpakai_um+'" class="m_terpakai_um">',
+
+                    '<p class="m_jumlah_bayar_um_text">'+accounting.formatMoney(jumlah_bayar_um,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+jumlah_bayar_um+'" class="m_jumlah_bayar_um" name="m_jumlah_bayar_um[]">',
+
+                    '<p class="m_sisa_akhir_um_text">'+accounting.formatMoney(sisa_akhir,"",2,'.',',')+'</p>'+
+                    '<input type="hidden" value="'+sisa_akhir+'" class="m_sisa_akhir_um" name="m_sisa_akhir_um[]">',
+
+                    '<div class="btn-group ">'+
+                    '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+                    '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                    '</div>',
 
                 ]).draw();
 
-
-            $('.um').val(temp);
-            $('.um_text').val(accounting.formatMoney(temp,"",2,'.',','));
-            $('.tab_detail ul li .tab-3').trigger('click');
-            $('#modal_um').modal('hide');
-
-
-        }
-    }else{
-        $('#modal_um').modal('hide');
+            var temp = 0;
+            
+            table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+                var ini = $(this).val();
+                ini = parseFloat(ini);
+                temp+=ini;
+            });
+            console.log(temp);
+            $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+            $('.jumlah_bayar').val(temp);
+            $('.tabel_pembayaran_um input').val('');
+            hitung_um();
     }
-    hitung_bayar();
+    // hitung();
 
 });
 
 
 
-// edit um
-function edit_detail_um(p) {
 
-   var par               = p.parentNode.parentNode;
-   var seq_um            = $(par).find('.sequence').val();
-   var m_status_um       = $(par).find('.m_status_um').val();
-   var m_um_total        = $(par).find('.m_um_total').val();
-   var m_um              = $(par).find('.m_um').val();
-   var m_um_jumlah_bayar = $(par).find('.m_um_jumlah_bayar').val();
-   var m_Keterangan_um   = $(par).find('.m_Keterangan_um').val();
-   $('.me_um_flag').val(seq_um);
-   $('.seq_um').val(seq_um);
-   $('.status_um').val(m_status_um);
-   $('.total_um_text ').val(accounting.formatMoney(m_um_total,"",2,'.',','));
-   $('.total_um ').val(m_um_total);
-   $('.no_um ').val(m_um);
 
-   $('.jumlah_bayar_um  ').val(accounting.formatMoney(m_um_jumlah_bayar,"",0,'.',','));
-   $('.Keterangan_um ').val(m_Keterangan_um);
-   $('.cari_um').addClass('disabled');
-   $('#modal_um').modal('show');
+
+$('#save_um').click(function(){
+    var customer = $('.customer').val();
+    var ed_nomor_invoice = $('.ed_nomor_invoice').val();
+    swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data Uang Muka!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+
+               // alert(accPiutang);
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+          $.ajax({
+          url:baseUrl + '/sales/save_um_kwitansi',
+          type:'post',
+          dataType:'json',
+          data:$('.tabel_header :input').serialize()
+               +'&'+table_histori_um.$('input').serialize()
+               +'&customer='+customer
+               +'&ed_nomor_invoice='+ed_nomor_invoice,
+          success:function(response){
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                   showConfirmButton: true
+                    },function(){
+
+                        var jumlah_bayar         = $('.jumlah_bayar').val();
+                        jumlah_bayar             = parseFloat(jumlah_bayar);
+                        var akun_biaya           = $('.akun_biaya_um').val();
+                        var jumlah_biaya_admin   = $('.jumlah_biaya_admin_um').val();
+                        var jenis                = $('.jenis_biaya_um').val();
+                        var akun_acc_biaya       = $('.akun_acc_biaya_um').val();
+
+                        if (jumlah_biaya_admin == '') {
+                            jumlah_biaya_admin = 0;
+                        }else{
+                            jumlah_biaya_admin       = jumlah_biaya_admin.replace(/[^0-9\-]+/g,"");
+                            jumlah_biaya_admin       = parseFloat(jumlah_biaya_admin);
+                        }
+
+                        var angka                = $('.jumlah_bayar').val();
+                        angka                    = angka.replace(/[^0-9\-]+/g,"");
+                        angka                    = parseFloat(angka);
+                        var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
+                        var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
+                        var jumlah_biaya         = 0;
+                        if (jenis == 'K') {
+                            $(par).find('.i_kredit').val(jumlah_biaya_admin);
+                        }else{
+                            $(par).find('.i_debet').val(jumlah_biaya_admin);
+                        }
+                        $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
+                        $(par).find('.i_bayar').val(angka);
+                        $(par).find('.i_akun_biaya').val(akun_biaya);
+                        var temp = 0;
+
+                        table_data.$('.i_bayar').each(function(){
+                            var i_bayar = Math.round($(this).val()).toFixed(2);
+                                i_bayar = parseFloat(i_bayar);
+                            temp += i_bayar;
+                        })
+
+                        var temp1 = 0;
+                        table_data.$('.i_debet').each(function(){
+                            var i_bayar = Math.round($(this).val()).toFixed(2);
+                                i_bayar = parseFloat(i_bayar);
+                            temp1 += i_bayar;
+                        })
+
+                        var temp2 = 0;
+                        table_data.$('.i_kredit').each(function(){
+                            var i_bayar = Math.round($(this).val()).toFixed(2);
+                                i_bayar = parseFloat(i_bayar);
+                            temp2 += i_bayar;
+                        });
+
+                        $('.total_jumlah_bayar').val(temp);
+                        $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+                        $('.ed_debet').val(temp1);
+                        $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+                        $('.ed_kredit').val(temp2);
+                        $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
+
+                        hitung_bayar();
+                        $('#modal_um').modal('hide');
+                });
+
+          
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
+        });
+       }
+      });  
+     });
+})
+
+@foreach($data_dt as $val)
+var nomor = [];
+
+var i_nomor   = "{{$val->kd_nomor_invoice}}"
+var i_tagihan = "{{$val->i_total_tagihan}}"
+var i_sisa    = "{{$val->i_sisa_pelunasan}}"
+var bayar     = "{{$val->kd_total_bayar}}"
+var i_debet   = "{{$val->kd_debet}}"
+var i_kredit  = "{{$val->kd_kredit}}"
+var akun_biaya= "{{$val->kd_kode_biaya}}"
+var i_ket     = "{{$val->kd_keterangan}}"
+var i_ket     = "{{$val->kd_keterangan}}"
+array_simpan.push(i_nomor);
+array_edit.push(i_nomor);
+array_harga.push(bayar);
+
+    table_data.row.add([
+        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor+'" name="i_nomor[]" value="'+i_nomor+'">',
+
+        accounting.formatMoney(i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+i_tagihan+'">',
+
+        accounting.formatMoney(parseFloat(i_sisa)+parseFloat(bayar), "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+parseFloat(i_sisa)+parseFloat(bayar)+'">',
+
+        '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="'+accounting.formatMoney(bayar, "", 2, ".",',')+'">'+
+        '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="'+bayar+'">'+
+        '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="'+i_debet+'">'+
+        '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="'+i_kredit+'">'+
+        '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="'+akun_biaya+'">',
+
+        '<input type="text" placeholder="keterangan..." class="form-control input-sm" name="i_keterangan[]" value="'+i_ket+'">',
+        '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
+         ]).draw();
+
+        $('#modal_invoice').modal('hide');
+        $('.customer_tr').addClass('disabled');
+
+    $('.i_bayar').blur(function(){
+      var temp =  $(this).val();
+      console.log(temp);
+      $(this).val(accounting.formatMoney(temp, "", 2, ".",','));
+    });  
+
+    $(".i_bayar").focus(function() {
+         $(this).select();
+    });
+
+    var temp = 0;
+
+    table_data.$('.i_bayar').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp += i_bayar;
+    })
+
+    var temp1 = 0;
+    table_data.$('.i_debet').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp1 += i_bayar;
+    })
+
+    var temp2 = 0;
+    table_data.$('.i_kredit').each(function(){
+        var i_bayar = Math.round($(this).val()).toFixed(2);
+            i_bayar = parseFloat(i_bayar);
+        temp2 += i_bayar;
+    });
+
+    $('.total_jumlah_bayar').val(temp);
+    $('.total_jumlah_bayar_text').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.ed_debet').val(temp1);
+    $('.ed_debet_text').val(accounting.formatMoney(temp1,"",2,'.',','));
+
+    $('.ed_kredit').val(temp2);
+    $('.ed_kredit_text').val(accounting.formatMoney(temp2,"",2,'.',','));
+
+    $('.jenis_pembayaran_td').addClass('disabled');
+    $('.cabang_td').addClass('disabled');
+    $('.customer_td').addClass('disabled');
+    $('.akun_bank_td').addClass('disabled');
+    hitung_bayar()
+
+@endforeach
+
+
+function edit_um(a) {
+    var par = $(a).parents('tr');
+    var um = $(par).find('.m_no_um').val();
+
+    var nota_kwitansi = $('#nota_kwitansi').val();
+    var m_jumlah_bayar_um = $(par).find('.m_jumlah_bayar_um').val();
+    var ed_nomor_invoice = $('.ed_nomor_invoice').val();
+
+    m_jumlah_bayar_um = parseFloat(m_jumlah_bayar_um);
+    $.ajax({
+        url:baseUrl+'/sales/pilih_um',
+        data:{um,nota_kwitansi,ed_nomor_invoice},
+        dataType : 'json',
+        success:function(response){
+            $('.no_um').val(response.data[0].nomor);
+            $('.nominal_um_text').val(accounting.formatMoney(response.data[0].jumlah,"",2,'.',','));
+            $('.nominal_um').val(response.data[0].jumlah);
+            if (response.status == 'E') {
+                $('.terpakai_um_text').val(accounting.formatMoney(response.data[0].sisa_uang_muka,"",2,'.',','));
+                $('.terpakai_um').val(response.data[0].sisa_uang_muka);
+            }else{
+                $('.terpakai_um_text').val(accounting.formatMoney(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um,"",2,'.',','));
+                $('.terpakai_um').val(parseFloat(response.data[0].sisa_uang_muka)+m_jumlah_bayar_um);
+            }
+            
+            $('.status_um').val(response.data[0].status_um);
+            $('.status_um').val(response.data[0].status_um);
+            $('#modal_cari_um').modal('hide');
+        toastr.info('Edit Data Berhasil Diinisialisasi');
+        
+        },
+        error:function(){
+        }
+    });
 
 }
-
-function hapus_detail_um(o){
-    var par = o.parentNode.parentNode;
-    var arr = $(par).find('.m_um').val();
-    var index = simpan_um.indexOf(arr);
+function hapus_um(a) {
+    var par = $(a).parents('tr');
+    var no  = $(par).find('.m_no_um').val();
+    table_histori_um.row(par).remove().draw(false);
+    var index = array_simpan.indexOf(no);
     simpan_um.splice(index,1);
+    var temp = 0;
+    
+    table_histori_um.$('.m_jumlah_bayar_um').each(function(){
+        var ini = $(this).val();
+        ini = parseFloat(ini);
+        temp+=ini;
+    });
+    console.log(temp);
+    $('.ed_jumlah_bayar').val(accounting.formatMoney(temp,"",2,'.',','));
+    $('.jumlah_bayar').val(temp);
+    $('.tabel_pembayaran_um input').val('');
+    hitung_um();
 
-    tabel_uang_muka.row(par).remove().draw(false);
 }
+
 
 $('#btnsimpan').click(function(){
-    var customer = $('#customer ').val();
-    var id       = "{{$id}}"
+    var customer = $('.customer').val();
     swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data Kwitansi!",
@@ -1818,7 +2249,6 @@ $('#btnsimpan').click(function(){
                +'&'+table_data_biaya.$('input').serialize()
                +'&'+tabel_uang_muka.$('input').serialize()
                +'&'+$('.table_rincian :input').serialize()
-               +'&id='+id
                +'&customer='+customer,
           success:function(response){
             if (response.status == 1) {
@@ -1829,9 +2259,10 @@ $('#btnsimpan').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
+                        // location.reload();
                         $('.temp_1').addClass('disabled');
                         $('.print').removeClass('disabled');
-
+                        $('.flag_nota').val('success');
                 });
             }else{
                 $('#nota_kwitansi').val(response.nota);
@@ -1851,15 +2282,34 @@ $('#btnsimpan').click(function(){
       });  
      });
 })
+
 $('.reload').click(function(){
     location.reload();
 })
 
 $('.print').click(function(){
-    var id = "{{$id}}"
+    var id = $('#nota_kwitansi').val();
 
     window.open('{{url("sales/kwitansi/cetak_nota")}}'+'/'+id);
 });
+
+
+window.onbeforeunload = function(event)
+{       
+            var flag_nota = $('.flag_nota').val();
+            $.ajax({
+            url:baseUrl + '/sales/hapus_um_kwitansi',
+            data:$('.tabel_header :input').serialize()
+                 +'&'+table_data.$('input').serialize()
+                 +'&flag='+'RE'
+                 +'&flag_nota='+flag_nota,
+            dataType:'json',
+            success:function(response){
+            }
+            })
+
+
+};
 
 </script>
 

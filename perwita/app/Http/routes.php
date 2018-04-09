@@ -630,7 +630,7 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 
 
 
-//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJAMI//
+//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJARNI//
 
 
 
@@ -1228,6 +1228,14 @@ Route::get('sales/hapus_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_
 
 Route::get('sales/edit_kwitansi/{id}', 'sales\penerimaan_penjualan_Controller@edit_kwitansi');
 Route::get('sales/detail_kwitansi/{id}', 'sales\penerimaan_penjualan_Controller@detail_kwitansi');
+
+Route::post('sales/save_um_kwitansi', 'sales\penerimaan_penjualan_Controller@save_um_kwitansi');
+Route::get('sales/kwitansi_cari_um', 'sales\penerimaan_penjualan_Controller@kwitansi_cari_um');
+
+Route::get('sales/hapus_um_kwitansi', 'sales\penerimaan_penjualan_Controller@hapus_um_kwitansi');
+
+
+
 
 
 

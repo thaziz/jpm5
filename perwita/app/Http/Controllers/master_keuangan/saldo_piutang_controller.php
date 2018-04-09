@@ -12,7 +12,17 @@ use DB;
 class saldo_piutang_controller extends Controller
 {
     public function index(){
-    	return view("keuangan.saldo_piutang.index");
+
+        $data = DB::table('d_saldo_piutang')
+                ->join("d_saldo_piutang_detail", "d_saldo_piutang_detail.id_saldo_piutang", "=", "d_saldo_piutang.id")
+                ->join('customer', 'customer.kode', '=', 'd_saldo_piutang.kode_customer')
+                ->join('cabang', 'cabang.kode', '=', 'd_saldo_piutang.kode_cabang')
+                ->where("d_saldo_piutang.periode", date("m/Y"))
+                ->select("d_saldo_piutang.*", "customer.nama as nama_customer", "cabang.nama as nama_cabang", DB::raw('sum(d_saldo_piutang_detail.jumlah) as jumlah'))
+                ->groupBy('d_saldo_piutang.id', 'customer.nama', 'cabang.nama')->get();
+
+        // return $data;
+    	return view("keuangan.saldo_piutang.index")->withData($data);
     }
 
     public function add(){

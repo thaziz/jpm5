@@ -99,12 +99,14 @@
                                     <tr>
                                         <td>Customer</td>
                                         <td class="customer_td">
-                                            <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
+                                            <div style="width: 380px">
+                                                <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
                                                 <option value="0">Pilih - Customer</option>
-                                            @foreach($customer as $val)
-                                                <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}-{{$val->cabang}}</option>
-                                            @endforeach
+                                                @foreach($customer as $val)
+                                                    <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}-{{$val->cabang}}</option>
+                                                @endforeach
                                             </select>
+                                            </div>
                                         </td>
                                     </tr>
                                     <tr>
