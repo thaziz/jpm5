@@ -87,6 +87,7 @@
                                 <td colspan="3" >
                                     <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
+                                    <input type="hidden" name="nota_cndn" id="nota_cndn" readonly="readonly" class="form-control nota_cndn" value="" >
                                 </td>
                                 <td colspan="1" width="15%" align="center">
                                     <button type="button" class="btn btn-primary cari_invoice">
@@ -159,7 +160,7 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
-                            <button type="button" class="btn btn-warning cndn disabled" onclick="simpan()" ><i class="glyphicon glyphicon-eye-open"></i> Lihat Di CNDN</button>
+                            <button type="button" class="btn btn-warning cndn disabled" onclick="cndn()" ><i class="glyphicon glyphicon-eye-open"></i> Lihat Di CNDN</button>
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
@@ -982,10 +983,11 @@
                     timer: 1000,
                    showConfirmButton: true
                     },function(){
-                        window.location='../sales/invoice';
+                        // window.location='../sales/invoice';
                         $('.simpan').addClass('disabled');
                         $('.print').removeClass('disabled');
-
+                        $('.nota_cndn').val(response.nota);
+                        $('.cndn').removeClass('disabled');
                 });
              }
           },
@@ -1009,6 +1011,11 @@
     $('.reload').click(function(){
     location.reload();
 })
+
+    function cndn() {
+        var id = $('.nota_cndn').val();
+        window.open('{{url('sales/nota_debet_kredit/edit')}}'+'/'+id);
+    }
 
 $('#cb_pendapatan').change(function(){
     if ($(this).val() == 'KARGO') {
