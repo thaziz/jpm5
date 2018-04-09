@@ -1912,6 +1912,9 @@
                             /* LAPORAN MASTER BERSAMA */
                             Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
                             Request::is('laporanbersama/laporanbersama/*') ? 'active' : '' ||
+                            /* LAPORAN MASTER DO */
+                            Request::is('laporanmasterdo/laporanmasterdo') ? 'active' : '' || 
+                            Request::is('laporanmasterdo/laporanmasterdo/*') ? 'active' : '' ||
                             /* lpoan cabang dokumen */
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : '' ||
@@ -2043,6 +2046,9 @@
                             /* LAPORAN MASTER BERSAMA */
                             Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
                             Request::is('laporanbersama/laporanbersama/*') ? 'active' : '' ||
+                            /* LAPORAN MASTER DO */
+                            Request::is('laporanmasterdo/laporanmasterdo') ? 'active' : '' || 
+                            Request::is('laporanmasterdo/laporanmasterdo/*') ? 'active' : '' ||
                             /* lpoan cabang dokumen */
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : '' ||
@@ -2117,8 +2123,12 @@
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Penjualan <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level" style="font-size:85%">
                             <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
-                            Request::is('laporanbersama/laporanbersama/*') ? 'active' : ''}} " href="{{ url('laporanbersama/laporanbersama')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>master bersama</a>
+                                 <a class="sidebar master-perusahaan {{Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
+                            Request::is('laporanbersama/laporanbersama/*') ? 'active' : ''}} " href="{{ url('laporanbersama/laporanbersama')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Bersama<i class="fa fa-cog fa-spin pull-right" style="color: #19ecdd;"  aria-hidden="true"></i></a>
+                            </li>
+                            <li >
+                                    <a class=" sidebar master-perusahaan {{Request::is('laporanmasterdo/laporanmasterdo') ? 'active' : '' || 
+                            Request::is('laporanmasterdo/laporanmasterdo/*') ? 'active' : ''}} " href="{{ url('laporanmasterdo/laporanmasterdo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master DO<i class="fa fa-cog fa-spin pull-right " style="color: #19ecdd;" aria-hidden="true"></i></a>
                                 </li>
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 

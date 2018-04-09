@@ -350,7 +350,7 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
-        $("input[name='ed_harga'],input[name='ed_waktu']").maskMoney({thousands:'.', decimal:',', precision:-1});
+        $("input[name='ed_harga'],input[name='ed_waktu']").maskMoney({thousands:'', decimal:'', precision:-1});
     });
 
     $(document).on("click","#btn_add",function(){

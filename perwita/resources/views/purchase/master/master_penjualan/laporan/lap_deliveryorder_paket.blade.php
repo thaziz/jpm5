@@ -24,13 +24,15 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Laporan Invoice Penjualan
+                    <h5> Laporan Delivery order paket
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
 
                     </div>
                 </div>
+                <input type="text" class="date" name="">
+                <input type="text" class="date" name="">
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
@@ -350,6 +352,19 @@
       });
     }
 
+
+    function cari(){
+
+      $.ajax({
+        data: ,
+        url: baseUrl + '/reportdeliveryorder/reportdeliveryorder',
+        type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
+        }
+      });
+    }
 
 Highcharts.chart('container', {
     chart: {

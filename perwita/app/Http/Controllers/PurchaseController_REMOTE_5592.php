@@ -7,7 +7,7 @@ use App\Http\Requests;
 use PDF;
 use App\masterItemPurchase;
 use App\masterSupplierPurchase;
-use App\master_cabang;
+use App\master_cabanfg;
 use App\masterJenisItemPurchase;
 use App\spp_purchase;
 use App\sppdt_purchase;
@@ -145,7 +145,7 @@ class PurchaseController extends Controller
 		$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
 		$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
 
-		return view('purchase.spp.index', compact('data2'));
+		return view('purchase.spp.index', compact('data'));
 	}
 	
 	public function getnospp(Request $request){
@@ -3986,6 +3986,9 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				$fatkurpembelian->fp_pending_status = 'APPROVED';
 				$fatkurpembelian->fp_status = 'Released';
 				$fatkurpembelian->fp_edit = 'ALLOWED';
+				$fatkurpembelian->fp_sisapelunasan = $netto;
+				$fatkurpembelian->fp_acchutang = $request->acchutangdagang;
+				$fatkurpembelian->fp_accpph = $request->accPph;
 
 				$fatkurpembelian->save();
 

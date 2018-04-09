@@ -65,28 +65,27 @@
                           <td >
                             <input type="text" id="col0_filter" name="filter_cabang"  onkeyup="filterColumn()" value="" class="col-sm-12 asal form-control column_filter" placeholder="Pencarian.." >
                           </td>
-                        
-                        
-                          <th> Pilih Laporan : </th>
+                         <th> Pilih Laporan : </th>
                           <td >
                             <select class="form-control" onchange="location = this.value;">
-                  <option selected="" disabled="">Pilih terlebih dahulu</option>
-                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
-                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
-                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
-                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
-                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
-                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
-                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
-                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                 </select>
+                            <option selected="" disabled="">Pilih terlebih dahulu</option>
+                            <option value="{{ url('/masteritem/masteritem/masteritem') }}" >Laporan Data Master Item</option>
+                            <option value="{{ url('/masterdepartment/masterdepartment') }}" selected="" disabled="">Laporan Data Department</option>
+                            <option value="{{ url('/mastergudang/mastergudang/mastergudang') }}" >Laporan Data Master Gudang</option>
+                            <option value="{{ url('/mastersupplier/mastersupplier/mastersupplier') }}" >Laporan Data Supplier</option>
+                            <option value="{{ url('/spp/spp/spp') }}" >Laporan Data Surat Permintaan Pembelian</option>
+                            <option value="{{ url('/masterpo/masterpo/masterpo') }}">Laporan Data Order</option>
+                            <option value="{{ url('/masterfakturpembelian/masterfakturpembelian/masterfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
+                            <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
+                            <option value="{{ url('/masterkaskeluar/masterkaskeluar/masterkaskeluar') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
+                            <option value="{{ url('/masterbayarbank/masterbayarbank/masterbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                           </select>
+                          </td>
                           </td>
                         </tr>
                     </table>
                   <div class="row"> &nbsp; &nbsp; 
-                    <a class="btn btn-info" href="{{ route('masterDepartment.ViewReport') }}">
+                    <a class="btn btn-info" onclick="cetak()">
                       <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> 
                   </div>
 
@@ -94,21 +93,29 @@
                     <thead>
                      <tr >
                         <th align="center" width="20%">NO</th>
-                        <th align="center" width="20%">Kode</th>
-                        <th align="center" width="60%">Keterangan</th>
+                        <th align="center" width="20%">No bukti</th>
+                        <th align="center" width="20%">tanggal</th>
+                        <th align="center" width="20%">Tempo</th>
+                        <th align="center" width="20%">keterangan</th>
+                        <th align="center" width="20%">supllier</th>
+                        <th align="center" width="20%">hasil</th>
                         
                     </tr>
                  
                     </thead>
                     
                     <tbody>
-                      @for ($index = 0; $index < count($masterDepartment["dept"]); $index++)
+                      @foreach ($array as $index => $element)
                         <tr>
                           <td align="center">{{ $index + 1 }}</td>
-                          <td align="center">{{ $masterDepartment["kode"][$index] }}</td>
-                          <td align="center">{{ $masterDepartment["dept"][$index] }}</td>
+                          <td align="center"><input type="hidden" name="" value="{{ $element->v_nomorbukti }}">{{ $element->v_nomorbukti }}</td>
+                          <td align="center">{{ $element->v_tgl }}</td>
+                          <td align="center">{{ $element->v_tempo }}</td>
+                          <td align="center">{{ $element->v_keterangan }}</td>
+                          <td align="center">{{ $element->v_supid }}</td>
+                          <td align="center">{{ $element->v_hasil }}</td>
                         </tr>
-                      @endfor
+                      @endforeach
                     </tbody>
                    
                   </table>
@@ -143,7 +150,7 @@
     var tgl1 = '1/1/2018';
     var tgl2 = '2/2/2018';
 
-  $('#addColumn').DataTable({
+  var table = $('#addColumn').DataTable({
     paging:true,
        dom: 'Bfrtip',
        buttons: [
@@ -152,8 +159,8 @@
                /* messageTop: 'Hasil pencarian dari Nama : ',*/
                 text: ' Excel',
                 className:'excel',
-                title:'LAPORAN MASTER DEPARTMENT',
-                filename:'MASTERDEPART-'+a+b+c,
+                title:'LAPORAN MASTER VOUCHER HUTANG',
+                filename:'V_HUTANG-'+a+b+c,
                 init: function(api, node, config) {
                 $(node).removeClass('btn-default'),
                 $(node).addClass('btn-warning'),
@@ -176,19 +183,32 @@
 } 
 
 
-  
+  function cetak(){
+     var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'dd-mm-yyyy'
-    });
-    
-    $no = 0;
-    $('.carispp').click(function(){
-      $no++;
-      $("#addColumn").append('<tr> <td> ' + $no +' </td> <td> no spp </td> <td> 21 Juli 2016  </td> <td> <a href="{{ url('purchase/konfirmasi_orderdetail')}}" class="btn btn-danger btn-flat" id="tmbh_data_barang">Lihat Detail</a> </td> <td> <i style="color:red" >Disetujui </i> </td> </tr>');   
-    })
- 
+           asw[i] =  $(asd[i][1]).val();
+  
+       }
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+
+      $.ajax({
+        data: {a:asw,c:'download'},
+        url: baseUrl + '/reportvoucherhutang/reportvoucherhutang',
+       type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
+        }
+      });
+    }
    
 
 </script>

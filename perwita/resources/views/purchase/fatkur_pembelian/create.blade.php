@@ -2244,24 +2244,36 @@
           url : post_url2,
           dataType : 'json',
           success : function (response){
-            console.log(response);
+                if(response.status == "gagal"){
+                   
+                    swal({
+                        title: "error",
+                        text: response.info,
+                        type: "error",
+                        
+                    });
+                   
+                }
+                else {
+                   alertSuccess(); 
+                    $('#tabmenu').attr('disabled' , true);
+                 //   $('.tabs-container').addClass('disabled');
+                //  window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
+                  $('.simpanitem').attr('disabled' , true);
+                  $('#tmbhdatapo').addClass('disabled');
+                  $('#tmbhdataitem').addClass('disabled');
+                  $('#tmbhdatapenerus').addClass('disabled' );
+                  $('#tmbhdataoutlet').addClass('disabled');
+                  $('#tmbhdatasubcon').addClass('disabled');
+                  
+             
+
+
+                  html = "<a class='btn btn-success btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+                  $('.print').html(html);
+                }
            
-                  alertSuccess(); 
-                $('#tabmenu').attr('disabled' , true);
-             //   $('.tabs-container').addClass('disabled');
-            //  window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
-              $('.simpanitem').attr('disabled' , true);
-              $('#tmbhdatapo').addClass('disabled');
-              $('#tmbhdataitem').addClass('disabled');
-              $('#tmbhdatapenerus').addClass('disabled' );
-              $('#tmbhdataoutlet').addClass('disabled');
-              $('#tmbhdatasubcon').addClass('disabled');
-              
-         
-
-
-              html = "<a class='btn btn-success btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
-              $('.print').html(html);
+                
              
           },
           error : function(){
@@ -2415,7 +2427,7 @@
              
 
                   "<td> <input type='text' class='form-control updatestockitem updatestockitem"+nourut+"' value='"+updatestock+"'  name='updatestock[]' readonly> </td>"+ // updatestock
-                       "<td> <input type='text' class='form-control diskonitem2 diskonitem2"+nourut+"' value='"+diskon+"' name='diskonitem[]' data-id="+nourut+"> </td>" + //diskon
+                       "<td> <input type='number' class='form-control diskonitem2 diskonitem2"+nourut+"' value='"+diskon+"' name='diskonitem[]' data-id="+nourut+"> </td>" + //diskon
 
                   "<td>  <input type='text' class='input-sm form-control biayaitem biayaitem"+nourut+"' value='"+biaya+"'  name='biaya[]' readonly> </td>"+ //biaya
 
