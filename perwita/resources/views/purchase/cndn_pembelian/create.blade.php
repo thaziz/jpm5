@@ -673,16 +673,8 @@ jenisbayar2 = $('.jenisbayar2').val();
       jenis = $('.jenissup').val();
       cabang = $('.cabang').val();
 
-         arrnofaktur = [];
-      $('.datafaktur').each(function(){
-        valfaktur = $(this).data('nofaktur');
-        arrnofaktur.push(valfaktur);
-      })
-      no = 2;
-      for(i = 0; i < arrnofaktur.length; i++){
-        $('tr#nofakturs'+arrnofaktur[i]).hide();
-      }
-
+      
+      
       $.ajax({
         type : 'GET',
         data : {idsup,jenis,cabang},
@@ -698,7 +690,7 @@ jenisbayar2 = $('.jenisbayar2').val();
             if(idsup == 2){
                for(var i = 0; i < table.length; i++){      
                                    
-               var html2 = "<tr id='nofakturs"+table[i].fp_nofaktur+"' data-faktur='"+table[i].fp_nofaktur+"'>" +
+               var html2 = "<tr id='"+table[i].fp_nofaktur+"' data-faktur='"+table[i].fp_nofaktur+"'>" +
                           "<td>"+nmrbnk+"</td>" +
                           "<td>"+table[i].fp_nofaktur+"</td>" + // no faktur
                           "<td>"+table[i].nama_supplier+"</td>" +
@@ -759,6 +751,20 @@ jenisbayar2 = $('.jenisbayar2').val();
          arrval = []; 
         $nilaicndn = 0;
        
+
+           arrnofaktur = [];
+          $('.datafaktur').each(function(){
+            valfaktur = $(this).data('nofaktur');
+            arrnofaktur.push(valfaktur);
+            console.log(arrnofaktur + 'arrnofaktur');
+          })
+
+          for(var j = 0 ; j < arrnofaktur.length; j++){
+              $("#"+arrnofaktur[j]).hide();
+          }
+
+
+        
         url = baseUrl + '/cndnpembelian/hslfaktur'; 
 
         if(checked.length > 1){
