@@ -468,4 +468,17 @@ class posting_pembayaran_Controller extends Controller
         $this->posting_pembayaran_hapus($request);
         return $this->simpan_posting($request);
     }
+
+    public function posting_pembayaran_print($id)
+    {
+        $data = DB::table('posting_pembayaran')
+                  ->where('nomor',$id)
+                  ->first();
+        $data_dt = DB::table('posting_pembayaran_d')
+                     ->where('nomor_posting_pembayaran',$id)
+                     ->get();
+
+        return view('sales.posting_pembayaran.print',compact('data','data_dt'));
+
+    }
 }

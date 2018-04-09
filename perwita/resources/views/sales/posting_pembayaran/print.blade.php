@@ -248,10 +248,10 @@
       <th style="font-size: 17px;">PT. JAWA PRATAMA MANDIRI</th>
     </tr>
      <tr>
-       <td>{{$cari_bkk_id->alamat}}</td>
+       <td></td>
      </tr>
      <tr>
-       <td>Telp. {{$cari_bkk_id->telpon}}</td>
+       <td>Telp. </td>
      </tr>
      <tr>
        <td>Email : Ekspedisi@jawapos.co.id</td>
@@ -267,21 +267,21 @@
      <tr>
        <td>No.BKK</td>
        <td>:</td>
-       <td>{{$cari_bkk_id->bkk_nota}}</td>
+       <td></td>
      </tr>
      <tr>
        <td>Tanggal</td>
        <td>:</td>
-       <td>{{$tgl}}</td>
+       <td></td>
      </tr>
      <tr>
         <td>Account Kas</td>
        <td>:</td>
-       <td>{{$cari_bkk_id->id_akun}}</td>
+       <td></td>
      </tr>
      <tr>
        <td colspan="3">
-          <p  style="position: absolute; margin-left: 100px;font-size: 12px">{{$cari_bkk_id->nama_akun}}</p>
+          <p  style="position: absolute; margin-left: 100px;font-size: 12px"></p>
        </td>
      </tr>
    </table>
@@ -293,21 +293,7 @@
    <div style="margin-top: -35px; margin-right: 5%" class="pull-right">
    </div>
    <div class="blow">
-<fieldset class="scheduler-border">
-    <legend class="scheduler-border" style=" font-style: italic; background-color: white !important;">Bayar Kepada:</legend>
-    <table>
-      <tr>
-        @if($cari_bkk_id->bkk_supplier != null)
-        <td> {{$cari_bkk_id->bkk_supplier}} [ CASH ] </td>
-        @else
-        <td> - </td>
-        @endif
-      </tr>
-      <tr>
-        <td>{{$cari_bkk_id->bkk_keterangan}}</td>
-      </tr>
-    </table>
-</fieldset>
+
 </div>
     </div>
     <div class="pembungkus" >
@@ -326,16 +312,16 @@
      <tr>
          <td class="right textcenter" valign="top" height="300">
          <table> 
-         @foreach($cari_bkk_dt as $no=>$val) 
+         @foreach($data_dt as $no=>$val) 
           <tr>  
-           <td >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$no+1}}</td>
+           <td >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
           </tr>
           @endforeach
          </table>
        </td>
        <td class="textcenter right" valign="top" height="300">
          <table width="100%">
-         @foreach($cari_bkk_dt as $no=>$val) 
+         @foreach($data_dt as $no=>$val) 
           <tr>
            <td></td>
           </tr>
@@ -344,25 +330,25 @@
        </td>
         <td class="textcenter top right" valign="top" height="300">
          <table width="100%">
-         @foreach($cari_bkk_dt as $no=>$val) 
+         @foreach($data_dt as $no=>$val) 
           <tr>
-           <td>{{$val->bkkd_akun}}</td>
+           <td></td>
           </tr>
           @endforeach
          </table>
        </td>
          <td class="textleft top right" valign="top" height="300">
          <table width="100%">
-         @foreach($cari_bkk_dt as $no=>$val) 
+         @foreach($data_dt as $no=>$val) 
           <tr>
-           <td>{{$val->bkkd_keterangan}}</td>
+           <td></td>
           </tr>
           @endforeach
          </table>
        </td>
          <td class="top right" valign="top" height="300">
          <table width="100%">
-          @foreach($cari_bkk_dt as $no=>$val) 
+          @foreach($data_dt as $no=>$val) 
           <tr>
             @if($val->bkkd_debit == 'debit')
            <td>D</td>
@@ -375,9 +361,9 @@
        </td>
          <td class="textright top right" valign="top" height="300">
          <table width="100%">
-          @foreach($cari_bkk_dt as $no=>$val) 
+          @foreach($data_dt as $no=>$val) 
           <tr>
-           <td>{{'Rp. ' . number_format($val->bkkd_total,2,',','.')}}</td>
+           <td></td>
           </tr>
           @endforeach
          </table>
@@ -385,10 +371,10 @@
      </tr>
      <tr height="25px">
        <td colspan="5" class="top right textright">J u m l a h :</td>
-       <td class="textright top right">{{'Rp. ' . number_format($cari_bkk_id->bkk_total,2,',','.')}}</td>
+       <td class="textright top right"></td>
      </tr>
      <tr height="25px">
-       <td colspan="7" class="textleft top">Terbilang : {{$terbilang}}</td>
+       <td colspan="7" class="textleft top">Terbilang : </td>
      </tr>
    </table>
    <table class="textcenter" width="100%">
