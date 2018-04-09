@@ -35,18 +35,24 @@
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-              <div class="col-sm-6">
-                <input type="text" class="date" id="date_awal" name="">
-                <input type="text" class="date" id="date_akir" name="">
-                <button onclick="cari()">Cari</button>
-              </div>
+              <div class="form-row">
+                <div class="form-group col-md-2">
+                  <input type="text" class="date form-control" readonly="" id="date_awal" name="">
+                </div>
+                <div class="form-group col-md-2">
+                  <input type="text" class="date form-control" readonly="" id="date_akir" name="">
+                </div>
+                <div class="form-group col-md-2">
+                  <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
+                </div>
+              </div>  
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                     <div id="container" style="height: 400px"></div>
-                    <table class="table table-bordered datatable table-striped">
+                    <table class="table table-bordered datatable table-striped" style="margin-top: 100px;">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -359,7 +365,50 @@
     function cari(){
       var date_awal = $('#date_awal').val();
       var date_akir = $('#date_akir').val();
-      // alert(date_awal);
+      
+      if(date_awal == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+
+      if(date_akir == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
       $.ajax({
         data: {a:date_awal,b:date_akir},
         url: baseUrl + '/cari_paket/cari_paket',
@@ -415,6 +464,10 @@
         }
       });
     }
+
+var date = new Date();
+    var y = date.getFullYear();
+
 Highcharts.chart('container', {
 
     chart: {
@@ -424,7 +477,7 @@ Highcharts.chart('container', {
         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
     },
     title: {
-        text: 'DIAGRAM BATANG PENJUALAN TAHUN 2018'
+        text: 'DIAGRAM BATANG PENJUALAN TAHUN '+ y
     },
 
     yAxis: [{
