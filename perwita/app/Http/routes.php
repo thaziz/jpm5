@@ -333,7 +333,7 @@ Route::get('returnpembelian/detailreturnpembelian', 'PurchaseController@detailre
 
 Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
 Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');
-Route::get('cndnpembelian/detailcndnpembelian', 'cndnController@detailcndnpembelian');
+Route::get('cndnpembelian/detailcndnpembelian/{id}', 'cndnController@detailcndnpembelian');
 Route::get('cndnpembelian/getnota', 'cndnController@getnota');
 Route::get('cndnpembelian/getfaktur', 'cndnController@getfaktur');
 Route::get('cndnpembelian/getsupplier', 'cndnController@getsupplier');
@@ -1195,6 +1195,7 @@ Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@pen
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
 Route::get('sales/invoice_pembetulan_create', 'sales\invoice_pembetulan_controller@invoice_pembetulan_create');
+Route::get('sales/invoice_pembetulan_edit/{id}', 'sales\invoice_pembetulan_controller@invoice_pembetulan_edit');
 Route::get('sales/cari_invoice_pembetulan', 'sales\invoice_pembetulan_controller@cari_invoice_pembetulan');
 Route::get('sales/pilih_invoice_pembetulan', 'sales\invoice_pembetulan_controller@pilih_invoice_pembetulan');
 Route::get('sales/simpan_invoice_pembetulan', 'sales\invoice_pembetulan_controller@simpan_invoice_pembetulan');

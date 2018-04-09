@@ -48,9 +48,9 @@
                     <h5> Tambah Data
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                    <div class="ibox-tools">
-                        
-                    </div>
+                   <div class="text-right">
+                        <a class="btn btn-sm btn-default" href="{{url('cndnpembelian/cndnpembelian')}}" aria-hidden="true"> <i class="fa fa-arrow-left" aria-hidden="true"> Kembali </i> </a>
+                      </div>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -64,7 +64,7 @@
                       <div class="row">
                       <div class="col-xs-6">
                           <table border="0" class="table">
-                          
+                          <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
                           <tr>
                             <td> Cabang </td>
                             <td> 
@@ -73,7 +73,7 @@
                               <select class='form-control chosen-select-width cabang'>
                                   @foreach($data['cabang'] as $cabang)
                                     <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
+                                      {{$cabang->kode}} - {{$cabang->nama}}
                                     </option>
                                   @endforeach
                                   </select>
@@ -139,7 +139,7 @@
                               Supplier
                             </td>
                             <td>
-                              <select class="form-control chosen-select-width jenisbayar2" name="supplier">
+                              <select class="form-control chosen-select-width jenisbayar2">
                                 @foreach($data['supplier'] as $supplier)
                                   <option value="{{$supplier->idsup}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}} </option>
                                 @endforeach
@@ -161,7 +161,7 @@
 
                           <tr>
                             <td> Keterangan </td>
-                            <td> <input type="text" class="form-control input-sm keterangan" name="keterangan"> </td>
+                            <td> <input type="text" class="form-control input-sm keterangan" name="keterangan" required=""> </td>
                           </tr>
                           </table>
                          </div>
@@ -174,27 +174,16 @@
                          </tr>
                           <tr >
                             <td> <b> Bruto </b> </td>
-                            <td>   <input type="text" class="form-control input-sm bruto" readonly="" style='text-align: right' name="bruto"> </td>
+                            <td>   <input type="text" class="form-control input-sm bruto" readonly="" style='text-align: right' name="bruto" required=""> </td>
                             </td>
                           </tr>
-
-
-                      <!--     <tr>
-                            <td>
-                             <b> DPP </b>
-                            </td>
-                            <td style="text-align: right">
-                                <input type="text" class="form-control input-sm dpp" style="text-align: right"> 
-                            </td>
-                          </tr> -->
-
 
                           <tr>
                             <td>
                              <b> Jumlah PPn </b>
                             </td>
                             <td style="text-align: right">
-                              <input type="text" class="form-control input-sm hasilppnatas" name="hasilppn" style="text-align: right" name="jumlahppn">
+                              <input type="text" class="form-control input-sm hasilppnatas" style="text-align: right" name="jumlahppn" readonly="">
                             </td>
                           </tr>
 
@@ -202,13 +191,13 @@
 
                           <tr>
                             <td>  <b> Jumlah PPh </b> </td>
-                            <td> <input type="" class="form-control hasilpphatas" name="nilaipph" style="text-align: right" name="jumlahpph">  </td>
+                            <td> <input type="text" class="form-control hasilpphatas" style="text-align: right" name="jumlahpph" readonly="">  </td>
                           </tr>
 
                         
                             <tr>
                               <td> <b> Acc Hutang </b> </td>
-                              <td> <input type="text" class="form-control input-sm acchutang" name="acchutang"> </td>
+                              <td> <input type="text" class="form-control input-sm acchutang" name="acchutang" readonly=""> </td>
                             </tr>
                             <tr>
                               <td> <b> Acc CN / DN </b> </td>
@@ -222,7 +211,7 @@
                               </select>
                               </td>
                             </tr>
-                            <tr>
+                          <!--   <tr>
                               <td> <b> Acc PPn </b> </td>
                               <td> <input type="text" class="form-control input-sm accppn" name="accppn" readonly=""> </td>
                             </tr>
@@ -230,7 +219,7 @@
                             <tr>
                               <td> <b> Acc PPH </b> </td>
                               <td> <input type="text" class="form-control input-sm accpph" name="accpph"> </td>
-                            </tr>
+                            </tr> -->
                             
                           </table>
                         </div>                    
@@ -335,7 +324,7 @@
                                     <table class="table">
                                        <tr>
                                           <td style="width:140px"> Nilai Bruto CN / DN </td>
-                                          <td> <input type="text" class="form-control input-sm brutocn clear" style="text-align: right"></td>
+                                          <td> <input type="text" class="form-control input-sm brutocn clear" style="text-align: right" ></td>
                                        </tr>
 
                                        <tr>
@@ -385,7 +374,7 @@
                                                   </select>
                                                     </div>
                                               <div class="col-sm-3">
-                                                 <input type="text" class="form-control input-sm nilaipphcn clear" readonly=""> 
+                                                 <input type="text" class="form-control input-sm inputpphcn clear" readonly=""> 
                                               </div>      
                                               <div class="col-sm-5">
                                                   <input type="text" class="form-control input-sm hasilpphcn clear" readonly="" style="text-align: right"> 
@@ -584,9 +573,13 @@
             return x1 + x2;
     }
 
-   $('#formsave').submit(function(event){
 
-      
+
+   $('#formsave').submit(function(event){
+          trtbl = $('tr.datafaktur').length;
+          if(trtbl == 0){
+            toastr.info('Data yang di inputkan belum ada :)');
+          }
          
           event.preventDefault();
           var post_url2 = baseUrl + '/cndnpembelian/save';
@@ -609,13 +602,8 @@
           url : post_url2,
           dataType : 'json',
           success : function (response){
-              
                    alertSuccess(); 
-               
-                
-           
-                
-             
+             $('.simpanitem').attr('disabled' , true);
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -673,9 +661,9 @@
                           "<td style='text-align:right'>"+addCommas(nettohutang)+"</td>" +
                           "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="+idfaktur+" readonly style='text-align:right' name='idfaktur[]'></td>" + //idfaktur + sisahutang
                            "<td style='text-align:right'>" +
-                           "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value="+inputppn+" readonly style='text-align:right;style='width:40%'' name='inputppn[]'>  </td>" + //nilaippn
+                           "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value='"+inputppn+" 'readonly style='text-align:right;style='width:40%'' name='inputppn[]'>  </td>" + //nilaippn
 
-                            "<td style='text-align:right'> <input type='text' class='nilaipph form-control input-sm' value='"+addCommas(nilaipph)+"' readonly style='text-align:right' name='nilaipph[]'> <input type='text' class='form-control input-sm' value='"+inputpph+"' readonly style='text-align:right' name='inputpph[]'> <input type='text' class=' form-control input-sm' value="+jenispph+" readonly style='text-align:right' name='nilaipph[]'></td>" + //nilaipph
+                            "<td style='text-align:right'> <input type='text' class='nilaipph form-control input-sm' value='"+addCommas(nilaipph)+"' readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm' value='"+inputpph+"' readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm' value="+jenispph+" readonly style='text-align:right' name='jenispph[]'></td>" + //nilaipph
                           "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right' value="+nettocn+" readonly name='nettocn[]'> </td>" + //nettocn
                           "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+noappend+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
                         "</tr>";
@@ -779,7 +767,7 @@ jenisbayar2 = $('.jenisbayar2').val();
                           $('.jenisbayar2').append("<option value='' selected> Pilih Supplier </option>");                
                       for(var j=0; j<response.length; j++){  
                                     
-                         $('.jenisbayar2').append("<option value="+response[j].no_supplier+">"+response[j].no_supplier+" - "+response[j].nama_supplier+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].idsup+">"+response[j].no_supplier+" - "+response[j].nama_supplier+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                       }                     
@@ -811,6 +799,8 @@ jenisbayar2 = $('.jenisbayar2').val();
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
                     }
+
+                   
              }      
       })
      })
@@ -885,6 +875,11 @@ jenisbayar2 = $('.jenisbayar2').val();
       
     })
 
+    $('.jenisbayar2').change(function(){
+       jenisbayar = $('.jenisbayar2').val();
+       $('.supplier2').val(jenisbayar);
+    })
+
      $nomor = 0;
     
     $('#buttongetid').click(function(){
@@ -956,7 +951,7 @@ jenisbayar2 = $('.jenisbayar2').val();
             $('.inputppncn').val(faktur[0][0].fp_inputppn);
             $('.hasilppnhcn').val(faktur[0][0].fp_ppn);
             $('.jenisppcn').val(faktur[0][0].fp_jenispph);
-            $('.nilaipphcn').val(faktur[0][0].fp_nilaipph);
+            $('.inputpphcn').val(faktur[0][0].fp_nilaipph);
             $('.hasilpphcn').val(faktur[0][0].fp_pph);
 
           
@@ -1034,8 +1029,7 @@ jenisbayar2 = $('.jenisbayar2').val();
               sisahutang = $('.sisaterbayarheader').val();
               sisahutang2 = sisahutang.replace(/,/g,'');
               val2 = val.replace(/,/g,'');
-              alert(val2);
-              alert(sisahutang2);
+             
               if(parseFloat(val2) > parseFloat(sisahutang2)){
                 toastr.info('Tidak bisa menginputkan nilai lebih dari sisa faktur :)');
                 return false;
@@ -1234,6 +1228,7 @@ jenisbayar2 = $('.jenisbayar2').val();
 
      val = $('.jeniscndn').val();
      comp = $('.cabang').val();
+     $('.valcabang').val(comp);
         $.ajax({    
             type :"get",
             data : {comp},
@@ -1273,7 +1268,7 @@ jenisbayar2 = $('.jenisbayar2').val();
                  nospp = $('.notacndn').val();
 
                  accppn = data['ppn'][0].id_akun;
-                 alert(accppn);
+                // alert(accppn);
                  $('.accppn').val(accppn);
                
             }
