@@ -333,7 +333,7 @@ Route::get('returnpembelian/detailreturnpembelian', 'PurchaseController@detailre
 
 Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
 Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');
-Route::get('cndnpembelian/detailcndnpembelian', 'cndnController@detailcndnpembelian');
+Route::get('cndnpembelian/detailcndnpembelian/{id}', 'cndnController@detailcndnpembelian');
 Route::get('cndnpembelian/getnota', 'cndnController@getnota');
 Route::get('cndnpembelian/getfaktur', 'cndnController@getfaktur');
 Route::get('cndnpembelian/getsupplier', 'cndnController@getsupplier');
