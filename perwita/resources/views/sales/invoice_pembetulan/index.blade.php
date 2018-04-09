@@ -151,7 +151,7 @@
     });
 
     function edit(id){
-        window.location.href = baseUrl + '/sales/edit_invoice/'+id;
+        window.location.href = baseUrl + '/sales/invoice_pembetulan_edit/'+id;
     }
     function lihat(id){
         window.open(baseUrl + '/sales/lihat_invoice/'+id);

@@ -32,7 +32,7 @@ class invoice_pembetulan_controller extends Controller
 
  	public function invoice_pembetulan_create()
  	{
- 		$customer = DB::table('customer')
+ 		    $customer = DB::table('customer')
                       ->get();
 
         $cabang   = DB::table('cabang')
@@ -331,6 +331,7 @@ class invoice_pembetulan_controller extends Controller
                               'cd_acc'        => $cari_acc->acc_biaya,
                               'cd_csf'        => $cari_acc->csf_biaya,
                               'cd_keterangan' => '',
+                              'cd_ref'        => $request->nota_invoice,
                               'cd_jenis_biaya'=> $cari_acc->kode,
                               'created_at'    => carbon::now(),
                               'updated_at'    => carbon::now(),
@@ -388,6 +389,36 @@ class invoice_pembetulan_controller extends Controller
 
 
     });
+  }
+
+  public function invoice_pembetulan_edit($id)
+  {
+    if (Auth::user()->punyaAkses('Invoice Penjualan','ubah')) {
+       $customer = DB::table('customer')
+                      ->get();
+
+        $cabang   = DB::table('cabang')
+                      ->get();
+        $tgl      = Carbon::now()->format('d/m/Y');
+        $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
+
+        $pajak    = DB::table('pajak')
+                      ->get();
+
+
+        $data = DB::table('invoice_pembetulan')
+                  ->join('cn_dn_penjualan','cd_ref','=','ip_nomor')
+                  ->where('ip_nomor',$id)
+                  ->first();
+
+        $data_dt = DB::table('invoice_pembetulan_d')
+                  ->where('ip_nomor',$id)
+                  ->get();
+
+        return view('sales.invoice_pembetulan.invoice_pembetulan_edit',compact('customer','cabang','tgl','tgl1','pajak','data','data_dt'));
+    }else{
+      return redirect()->back();
+    }
   }
 
 }
