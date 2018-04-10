@@ -192,7 +192,7 @@ class cabang_kargo_Controller extends Controller
                         
                         $index = $kode_detailis;
                         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                        $kodeutama = $kodekota . '/' .  'KGO' .$request->ed_caban  .  $index;
+                        $kodeutama = $kodekota . '/' .  'KGO' .$request->ed_cabang  .  $index;
 
                             if ($crud == 'N') {
                             $simpan = array(
