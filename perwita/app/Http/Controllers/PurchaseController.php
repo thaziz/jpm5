@@ -7,7 +7,7 @@ use App\Http\Requests;
 use PDF;
 use App\masterItemPurchase;
 use App\masterSupplierPurchase;
-use App\master_cabanfg;
+use App\master_cabang;
 use App\masterJenisItemPurchase;
 use App\spp_purchase;
 use App\sppdt_purchase;

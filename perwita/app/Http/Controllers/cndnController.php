@@ -59,14 +59,49 @@ class cndnController extends Controller
 {
 	
 
+
 	public function cndnpembelian() {
 		$cabang = session::get('cabang');
-		if($cabang == 000){
-			$data['cndn'] = DB::select("select * from cndnpembelian ");
+		$data['cndn'] = array();
+		if($cabang == 000){		
+			$cndn = DB::select("select * from cndnpembelian ");
+		//	$data['fpg'] = DB::select("select * from cndnpembelian , supplier where cndn_supplier = idsup ");
+
+			for($i = 0; $i < count($cndn); $i++){
+				$jenisbayar = 2;
+
+				//$jenisbayar = $cndn[$i]->cndn_jenissup;
+			//	dd($jenisbayar);
+
+				if($jenisbayar == '2'){
+					$datacn = DB::select("select * from cndnpembelian , supplier where cndn_supplier = idsup ");
+					
+				} 
+
+				
+				if($jenisbayar == '6' || $jenisbayar == '7') {
+					$datacn = DB::select("select * from   cndnpembelian LEFT OUTER JOIN  agen on cndn_agen = kode");	
+					//array_push($arrfpg, $fpg2);
+					
+				}
+				if($jenisbayar == '9'){
+					$datacn = DB::select("select * from   cndnpembelian LEFT OUTER JOIN  subcon on cndnpembelian_agen = kode ");
+					
+				}
+				
+				array_push($data['cndn'] , $datacn);
+				$data['jenisbayar'][] = $jenisbayar;
+			}
+			
 		}
 		else {
-			$data['cndn'] = DB::select("select * from cndnpembelian where cndn_comp = '$cabang'");
+			$datacn = DB::select("select * from cndnpembelian where cndn_comp = '$cabang'");
+			//array_push($data['cndn'], $fpg2);
 		}
+
+		
+
+		/*dd($data);*/
 		return view('purchase/cndn_pembelian/index', compact('data'));
 	}
 
@@ -113,6 +148,8 @@ class cndnController extends Controller
 			
 			$sisahutang = str_replace(',', '', $request->sisahutang[$i]);
 			$nettocn = str_replace(',', '', $request->nettocn[$i]);
+			$dppcn = str_replace(',', '', $request->dppcn[$i]);
+			$bruto = str_replace(',', '', $request->brutocn[$i]);
 
 
 			$iddt = DB::table('cndnpembelian_dt')  	
@@ -136,6 +173,9 @@ class cndnController extends Controller
 				$cndt->cndt_sisahutang = $sisahutang;
 				$cndt->create_by = $request->username;
 				$cndt->cndt_nettocn = $nettocn;
+				$cndt->cndt_bruto = $bruto;
+				$cndt->cndt_dpp = $dppcn;
+
 				if(isset($request->inputppn[$i])) {
 						
 						
@@ -169,11 +209,25 @@ class cndnController extends Controller
 
 		return json_encode('ok');
 	}
+
+
+	public function caricndn(Request $request){
+		$idcndn = $request->idcndn;
+		$idcndt = $request->idcndt;
+		$nofaktur = $request->nofaktur;
+		$idfaktur = $request->idfaktur;
+		$data['cndn'] = DB::select("select * from cndnpembelian_dt where cndt_idcn = '$idcndn' and cndt_id = '$idcndt' and cndt_idfp = '$idfaktur' ");
+
+		return json_encode($data);	
+	}
+
 	public function getnota (Request $request){
 		$cabang = $request->comp;
 		
-		$mon = Carbon::now(); 
-		$cndn = DB::select("select * from cndnpembelian where cndn_comp = '$cabang' and created_at = '$mon' order by cndn_id desc limit 1");
+		/*$mon = date('Y-m'); */
+		$mon =Carbon::now(); 
+		//return $mon;
+		$cndn = DB::select("select * from cndnpembelian where cndn_comp = '$cabang'  order by cndn_id desc limit 1");
 		
 		if(count($cndn) > 0) {
 			$explode = explode("/", $cndn[0]->cndn_nota);
@@ -275,8 +329,8 @@ class cndnController extends Controller
 		$data['pph'] = DB::select("select * from pajak");
 		$data['akunbiaya'] = DB::select("select * from akun_biaya");
 
-	//	dd($data);
-
+	/*	dd($data);
+*/
 		return view('purchase/cndn_pembelian/detail', compact('data'));
 	}
 }

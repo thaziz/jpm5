@@ -441,17 +441,25 @@
 
                               @foreach($data['cndndt'] as $index=>$cndt)
                                 <tr class="datafaktur data{{$index + 1}}" data-nofaktur="{{$cndt->fp_nofaktur}}">
-                                  <td style='text-align:center'> {{$index + 1}}</td>
-                                  <td style='text-align:center'> {{$cndt->fp_nofaktur}} </td>
-                                  <td style='text-align:center'> {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }}</td>
-                                  <td style='text-align:right'> {{ number_format($cndt->fp_netto, 2) }} </td>
-                                  <td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value="{{ number_format($cndt->fp_sisapelunasan, 2) }}" readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="{{$cndt->fp_idfaktur}}" readonly style='text-align:right' name='idfaktur[]'></td>
-                                  <td style='text-align:right'>
-                                  <input type='text' class='nilaippn form-control input-sm' value="{{ number_format($cndt->fp_ppn, 2) }}" readonly style="text-align:right" style="width:40%" name="nilaippn[]"> <input type='hidden' class=' form-control input-sm' value="{{$cndt->fp_jenisppn}}" readonly style="text-align:right" style="width:40%" name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value="{{$cndt->fp_inputppn}}" readonly style="text-align:right" style="width:40%" name="inputppn[]">  </td>
+                                  <td style='text-align:center'> {{$index + 1}}</td> 
+                                  <td style='text-align:center'> <p class="nofaktur2{{$cndt->fp_idfaktur}}"> {{$cndt->fp_nofaktur}} </p>
+                                   <input type='hidden' class='form-control input-sm nofaktur' name='nofaktur[]' value='{{$cndt->fp_nofaktur}}' readonly="">
+                                  <input type='hidden' class='form-control input-sm idcndt' name='idcndt[]' value='{{$cndt->cndt_id}}' readonly=""> <input type='hidden' class='form-control input-sm idcndn' name='idcndn[]' value='{{$cndt->cndn_id}}' readonly=""> </td> <!-- no faktur -->
 
-                                  <td style='text-align:right'> <input type='text' class='nilaipph form-control input-sm' value="{{ number_format($cndt->fp_pph, 2) }}" readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm' value="{{$cndt->fp_nilaipph}}" readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm' value="{{$cndt->fp_jenispph}}" readonly style='text-align:right' name='jenispph[]'></td>
-                                  <td> <input type='text' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> </td>
-                                  <td> <button class='btn btn-sm btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </button>  </td>
+                                  <td style='text-align:center'> {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }} <input type='hidden' class='form-control input-sm tglfaktur' name='tglfaktur[]' value=" {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }}"> </td> <!--tgl-->
+
+                                  <td style='text-align:right'> <input type='hidden' class='form-control input-sm fpnetto' name='fpnetto[]' value="{{ number_format($cndt->fp_netto, 2) }} "> {{ number_format($cndt->fp_netto, 2) }}</td> <!-- netto -->
+
+                                  <td style='text-align:right'> {{ number_format($cndt->fp_sisapelunasan, 2) }} <input type='hidden' class='sisahutang form-control input-sm' value="{{ number_format($cndt->fp_sisapelunasan, 2) }}" readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="{{$cndt->fp_idfaktur}}" readonly style='text-align:right' name='idfaktur[]'> <input type='hidden' class='dpp form-control input-sm' value="{{$cndt->fp_dpp}}" readonly style='text-align:right' name='dpp[]'> </td> <!-- sisapelunasan -->
+
+                                  <td style='text-align:right'> <p class="ppn_text">{{ number_format($cndt->fp_ppn, 2) }} </p>
+                                  <input type='hidden' class='nilaippn form-control input-sm' value="{{ number_format($cndt->cndt_hasilppn, 2) }}" readonly style="text-align:right" style="width:40%" name="nilaippn[]"> <input type='hidden' class=' form-control input-sm jenisppn' value="{{$cndt->cndt_jenisppn}}" readonly style="text-align:right" style="width:40%" name='jenisppn[]'> <input type='hidden' class=' form-control input-sm inputppn' value="{{$cndt->cndt_nilaippn}}" readonly style="text-align:right" style="width:40%" name="inputppn[]">  </td> <!--ppn -->
+
+                                  <td style='text-align:right'>   <p class="pph_text"> {{ number_format($cndt->fp_pph, 2) }} </p> <input type='hidden' class='nilaipph form-control input-sm' value="{{ number_format($cndt->cndt_hasilpph, 2) }}" readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm inputpph' value="{{$cndt->cndt_nilaipph}}" readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm jenispph' value="{{$cndt->cndt_jenispph}}" readonly style='text-align:right' name='jenispph[]'></td>  <!--pph-->
+
+                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> </td> <!-- nettocdcn -->
+
+                                  <td>  <a class='btn btn-xs btn-warning' onclick="edit(this)" data-id="{{$index + 1}}" type='button'><i class='fa fa-pencil'></i> </a> <a class='btn btn-xs btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </a>   </td>
                               </tr>
                               @endforeach
                               </tbody>
@@ -536,6 +544,42 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+ function edit(a){
+  alert(a);
+       var par          = $(a).parents('tr');
+       var nomorfaktur      = $(par).find('.nofaktur').val();
+       var jatuhtempo = $(par).find('.tglfaktur').val();
+       var netto = $(par).find('.fpnetto').val();
+       var sisahutang = $(par).find('.sisahutang').val();
+       var dpp = $(par).find('.dpp').val();
+       var nilaippn = $(par).find('.nilaippn').val();
+       var jenisppn = $(par).find('.jenisppn').val();
+       var inputppn = $(par).find('.inputppn').val();
+       var nilaipph = $(par).find('.nilaipph').val();
+       var jenispph = $(par).find('.jenispph').val();
+       var inputpph = $(par).find('.inputpph').val();
+       var nilaicndn = $(par).find('.cndn').val();
+       var idcndt = $(par).find('.idcndtn').val();
+       var idcndn = $(par).find('.idcndn').val();
+       var idfaktur = $(par).find('.idfaktur').val();
+           $('.nofakturheader').val(nomorfaktur);
+            $('.jatuhtempheader').val(jatuhtempo);
+            $('.dppheader').val(addCommas(dpp));
+            $('.jenisppnheader').val(jenisppn);
+            $('.inputppnheader').val(inputppn);
+            $('.hasilppnheader').val(nilaippn);
+            $('.jenisppheader').val(jenispph);
+            $('.nilaipphheader').val(inputpph);
+            $('.hasilpphheader').val(nilaipph);
+            $('.nettoheader').val(addCommas(netto));
+            $('.sisaterbayarheader').val(addCommas(sisahutang));
+           $('.idfakturheader').val(idfaktur);
+
+          
+
+            caricndn();
+    }
+
  function addCommas(nStr) {
             nStr += '';
             x = nStr.split('.');
@@ -605,15 +649,254 @@
       
       })
 
+  
+
   $('#cancel').click(function(){
     $('.clear').val('');
   })
 
-  var noappend = 1;
+  
+  function caricndn(){
+    nofaktur = $('.nofakturheader').val();
+    idcndn = $('.idcndn').val();
+    idcndt = $('.idcndt').val();
+    idfaktur = $('.idfakturheader').val();
+    $.ajax({
+      url : baseUrl + '/cndnpembelian/caricndn',
+      data : {nofaktur,idcndn,idcndt,idfaktur},
+      type : "get",
+      dataType : 'json',
+      success : function(response){
+          $('.brutocn').val(response.cndn[0].cndt_bruto);
+          $('.dppcn').val(response.cndn[0].cndt_dpp);
+          $('.dppcn').val(response.cndn[0].cndt_dpp);
+          if(response.cndn[0].cndt_jenisppn != null){
+              $('.jenisppncn').val(response.cndn[0].cndt_jenisppn);
+              $('.inputppncn').val(response.cndn[0].cndt_nilaippn);
+              $('.hasilpphcn').val(addCommas(response.cndn[0].cndt_hasilppn));
+          }
+
+           if(response.cndn[0].cndt_jenispph != null){
+              $('.jenispphcn').val(addCommas(response.cndn[0].cndt_jenispph));
+          $('.inputpphcn').val(addCommas(response.cndn[0].cndt_nilaipph));
+          $('.hasilpphcn').val(addCommas(response.cndn[0].cndt_hasilpph));
+          }
+        
+         
+          $('.nettohutangcn').val(addCommas(response.cndn[0].cndt_nettocn));
+
+      }
+    })
+  }
+
+   $('.brutocn').change(function(){
+              val = $(this).val();
+              val = accounting.formatMoney(val, "", 2, ",",'.');
+              $(this).val(val);
+              $('.dppcn').val(val);
+              
+              sisahutang = $('.sisaterbayarheader').val();
+              sisahutang2 = sisahutang.replace(/,/g,'');
+              val2 = val.replace(/,/g,'');
+             
+              if(parseFloat(val2) > parseFloat(sisahutang2)){
+                toastr.info('Tidak bisa menginputkan nilai lebih dari sisa faktur :)');
+                return false;
+                $(this).val('');
+                $('.dppcn').val('');
+                $('.nettohutangcn').val('');
+              }
+              //PPN
+
+
+               //PPN
+              inputppn = $('.inputppncn').val();
+              jenisppn = $('.jenisppncn').val();
+              ppn = $('.hasilppncn').val(); 
+           
+              numeric2 = val.replace(/,/g,'');
+
+              if(inputppn != '') {
+                 hasilppn = parseFloat((inputppn / 100) * numeric2);
+                 hasilppn2 =   hasilppn.toFixed(2);
+                 ppn2 = $('.hasilppncn').val(addCommas(hasilppn2)); 
+                 ppn = $('.hasilppncn').val(); 
+              }
+
+              pph = $('.hasilpphcn').val();
+
+              if(pph != 0) {
+                inputpph = $('.inputpphcn').val();
+                 hasilpph = parseFloat((inputpph / 100) * numeric2);
+                 hasilpph2 =   hasil.toFixed(2); 
+                 pph2 = $('.hasilpphcn').val(addCommas(hasilpph2));
+                 pph = $('.hasilpphcn').val();
+              }
+
+            
+
+              replacepph = pph.replace(/,/g,'');
+              replaceppn = ppn.replace(/,/g,'');
+
+               if(pph != 0 & ppn != '') { 
+               // alert('pph ada ppn ada');//PPH  ADA DAN PPN  ADA
+                   jenisppn = $('.jenisppncn').val();
+                  if(jenisppn == 'E') {          
+                    hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                    hsl = hasilnetto.toFixed(2);
+                    $('.nettohutangcn').val(addCommas(hsl));
+                    $('.dppcn').val(addCommas(numeric2));
+                  }
+                  else if(jenisppn == 'I'){
+                      hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                      $('.dppcn').val(addCommas(hargadpp));
+                      subtotal = $('.dppcn').val();
+                      subtotal = $('.dppcn').val();
+                      subharga = subtotal.replace(/,/g, '');
+                      hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+               
+                      $('.hasilppncn').val(addCommas(hargappn));
+
+                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+                      $('.nettohutangcn').val(addCommas(total));                     
+                  }
+                  else {
+
+                      hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
+                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutangcn').val(addCommas(hsl));
+                      $('.dppcn').val(addCommas(numeric2));
+                  
+                  }
+                }
+                else if(pph != 0){ //PPH TIDAK KOSONG            
+               //   alert('pph tdk kosong');
+                  if(ppn == '') { //PPN KOSONG          
+                    hasil = parseFloat(parseFloat(numeric2) - parseFloat(replacepph));
+                    $('.nettohutangcn').val(hasil);
+                      $('.dppcn').val(addCommas(numeric2));
+                  }
+                  else{ //PPN TIDAK KOSONG            
+                      jenisppn = $('.jenisppncn').val();
+                    if(jenisppn == 'E') {
+                    
+                      hasilnetto = parseFloat((parseFloat(numeric2)+parseFloat(replaceppn)) - parseFloat(replacepph)); 
+                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutangcn').val(addCommas(hsl));
+                       $('.dppcn').val(addCommas(numeric2));
+                    }
+                    else if(jenisppn == 'I'){ //PPN TIDAK KOSONG && PPH TIDAK KOSONG
+
+                       hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                                   
+                      $('.dppcn').val(addCommas(hargadpp));
+                      subtotal = $('.dppcn').val();
+                      subharga = subtotal.replace(/,/g, '');
+                      hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+               
+                      $('.hasilppncn').val(addCommas(hargappn));
+
+                      total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+                      $('.nettohutangcn').val(addCommas(total));
+
+                    }
+                    else {
+                      hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
+                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutangcn').val(addCommas(hsl));
+                      $('.dppcn').val(addCommas(numeric2));
+                    }
+                  }
+                }
+                else if(ppn != '') { //PPN TIDAK KOSONG   
+               // alert('ppn tdk kosong')        
+                  jenisppn = $('.jenisppncn').val();
+                  if(pph == 0){ //PPN TIDAK KOSONG PPH KOSONG
+              //    alert('pph kosong');
+                      if(jenisppn == 'E'){   
+                //      alert('E');          
+                        hasil = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn));
+                        hsl = hasil.toFixed(2);
+                  /*      alert(parseFloat(numeric2));
+                        alert(parseFloat(replaceppn));
+                        alert(parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)));*/
+                        $('.nettohutangcn').val(addCommas(hsl));
+                          $('.dppcn').val(addCommas(numeric2));
+                      }
+                      else if(jenisppn == 'I'){
+                   
+                          hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                          $('.dppcn').val(addCommas(hargadpp));
+                          subtotal = $('.dppcn').val();
+                          subharga = subtotal.replace(/,/g, '');
+                          hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+                   
+                          $('.hasilppncn').val(addCommas(hargappn));
+                          total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                          $('.nettohutangcn').val(addCommas(total));
+                      }
+                      else {
+                 
+                        hasilnetto = parseFloat(parseFloat(numeric2) + parseFloat(replaceppn)); 
+                        hsl = hasilnetto.toFixed(2);
+                        $('.nettohutangcn').val(addCommas(hsl));
+                          $('.dppcn').val(addCommas(numeric2));
+                      }
+                  }
+                  else{ //PPN TIDAK KOSONG PPH TIDAK KOSONG
+                 
+                    jenisppn = $('.jenisppncn').val();
+                    if(jenisppn == 'E') {          
+                      hasilnetto = parseFloat(parseFloat(numeric2)+parseFloat(replaceppn) - parseFloat(replacepph)); 
+                      hsl = hasilnetto.toFixed(2);
+                      $('.nettohutangcn').val(addCommas(hsl));
+                        $('.dppcn').val(addCommas(numeric2));
+                    }
+                    else if(jenisppn == 'I'){
+                          hargadpp = parseFloat((parseFloat(numeric2) * 100) / (100 + parseFloat(inputppn))).toFixed(2) ; 
+                                   
+                          $('.dppcn').val(addCommas(hargadpp));
+                          subtotal = $('.dppcn').val();
+                          subharga = subtotal.replace(/,/g, '');
+                          hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
+                   
+                          $('.hasilppncn').val(addCommas(hargappn));
+
+                          total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
+                          $('.nettohutangcn').val(addCommas(total)); 
+                    }
+                    else {
+
+                        hasilnetto = parseFloat(parseFloat(numeric2) - parseFloat(replacepph)); 
+                        hsl = hasilnetto.toFixed(2);
+                        $('.nettohutangcn').val(addCommas(hsl));
+                          $('.dppcn').val(addCommas(numeric2));
+                    
+                    }
+                  }
+                } 
+                else {
+                    $('.nettohutangcn').val(addCommas(numeric2));
+                    $('.dppcn').val(addCommas(numeric2));
+                }
+
+
+            })
+  
+
+  trlenght = $('.datafaktur').length;
+  var noappend = trlenght + 1;
   $('#append').click(function(){
       nettocn = $('.nettohutangcn').val();
+      nofaktur = $('.nofakturheader').val();
+
       if(nettocn == '' || nettocn == 0.00){
         toastr.info('Netto Hutang tidak boleh 0.00 atau kosong :)');
+        return false;
+      }
+
+      if(nofaktur == ''){
+        toastr.info('No faktur tidak ada :)');
         return false;
       }
 
@@ -634,7 +917,8 @@
     nettohutang = $('.nettoheader').val();
     sisahutang   =  $('.sisaterbayarheader').val();
     nettocn = $('.nettohutangcn').val();     
-    
+    dppheader = $('.dppheader').val();
+
     nilaipph = $('.hasilpphcn').val();
     jenispph = $('.jenispphcn').val();
     inputpph = $('.inputpphcn').val();
@@ -643,29 +927,60 @@
     jenisppn = $('.jenisppncn').val();
     inputppn = $('.inputppncn').val();
 
-    console.log(nilaipph + jenispph + inputpph + nilaippn + jenisppn + inputppn);
+    nilaicndn = $('.nettohutangcn').val();
+    brutocn = $('.brutocn').val();
+    dppcn = $('.dppcn').val();
+   
 
+     arrnofaktur = [];
+      $('.datafaktur').each(function(){
+        valfaktur = $(this).data('nofaktur');
+        arrnofaktur.push(valfaktur);
+        console.log(arrnofaktur + 'arrnofaktur');
+        alert(arrnofaktur + 'arrnofaktur');
+      })
 
-              var row = "<tr class='datafaktur data"+noappend+"' data-nofaktur='"+nofaktur+"'>" +
+      index = arrnofaktur.indexOf(nofaktur);
+      if(index == -1) {
+         var row = '<tr class="datafaktur data'+noappend+'" data-nofaktur="'+nofaktur+'">' +
+                    '<td style="text-align:center"> {{$index + 1}}</td>' +
+                    '<td style="text-align:center"> <p class="nofaktur2'+idfaktur+'">'+nofaktur+'</p>' +
+                    '<input type="hidden" class="form-control input-sm nofaktur" name="nofaktur[]" value='+nofaktur+' readonly="">' + //nofaktur
+                     
+                     '<td style='text-align:center'> {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }} <input type='hidden' class='form-control input-sm tglfaktur' name='tglfaktur[]' value=" {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }}"> </td>' + //tgl
+
+                      '<td style="text-align:right"> <input type="hidden" class="form-control input-sm fpnetto" name="fpnetto[]" value="'+nettohutang+'"> {{ number_format($cndt->fp_netto, 2) }}</td>' + // netto
+
+                      '<td style="text-align:right">'+sisahutang+' <input type="hidden" class="sisahutang form-control input-sm" value='+sisahutang+'readonly style="text-align:right" name="sisahutang[]"> <input type="hidden" class="idfaktur form-control input-sm" value='+idfaktur+' readonly style="text-align:right" name="idfaktur[]"> <input type="hidden" class="dpp form-control input-sm" value='+dppheader+' readonly style="text-align:right" name="dpp[]"> </td>' + // sisapelunasan
+
+                        '<td style="text-align:right"> <p class="ppn_text">{{ number_format($cndt->fp_ppn, 2) }} </p>' +
+                        '<input type="hidden" class="nilaippn form-control input-sm" value='+nilaippn+' readonly style="text-align:right" style="width:40%" name="nilaippn[]"> <input type="hidden" class="form-control input-sm jenisppn" value='+jenisppn+' readonly style="text-align:right" style="width:40%" name="jenisppn[]"> <input type="hidden" class=" form-control input-sm inputppn" value='+inputppn+' readonly style="text-align:right" style="width:40%" name="inputppn[]">  </td>' //ppn
+
+                                  <td style='text-align:right'>   <p class="pph_text"> {{ number_format($cndt->fp_pph, 2) }} </p> <input type='hidden' class='nilaipph form-control input-sm' value="{{ number_format($cndt->cndt_hasilpph, 2) }}" readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm inputpph' value="{{$cndt->cndt_nilaipph}}" readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm jenispph' value="{{$cndt->cndt_jenispph}}" readonly style='text-align:right' name='jenispph[]'></td>  <!--pph-->
+
+                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> </td> <!-- nettocdcn -->
+
+                                  <td>  <a class='btn btn-xs btn-warning' onclick="edit(this)" data-id="{{$index + 1}}" type='button'><i class='fa fa-pencil'></i> </a> <a class='btn btn-xs btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </a>   </td>
+                              </tr>"
+
+         "<tr class='datafaktur data"+noappend+"' data-nofaktur='"+nofaktur+"'>" +
                           "<td style='text-align:center'> "+noappend+" </td>" +
                           "<td style='text-align:center'>"+nofaktur+" </td>" +
                           "<td style='text-align:center'>"+jatuhtempo+"</td>" +
                           "<td style='text-align:right'>"+addCommas(nettohutang)+"</td>" +
                           "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="+idfaktur+" readonly style='text-align:right' name='idfaktur[]'></td>" + //idfaktur + sisahutang
                            "<td style='text-align:right'>" +
-                           "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value='"+inputppn+" 'readonly style='text-align:right;style='width:40%'' name='inputppn[]'>  </td>" + //nilaippn
+                           "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value='"+inputppn+" 'readonly style='text-align:right;style='width:40%'' name='inputppn[]'> <input type='hidden' class=' form-control input-sm dppcn2' value='"+dppcn+" 'readonly style='text-align:right;style='width:40%'' name='dppcn[]'>  <input type='hidden' class=' form-control input-sm brutocn2' value='"+brutocn+" 'readonly style='text-align:right;style='width:40%'' name='brutocn[]'>   </td>" + //nilaippn
 
                             "<td style='text-align:right'> <input type='text' class='nilaipph form-control input-sm' value='"+addCommas(nilaipph)+"' readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm' value='"+inputpph+"' readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm' value="+jenispph+" readonly style='text-align:right' name='jenispph[]'></td>" + //nilaipph
                           "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right' value="+nettocn+" readonly name='nettocn[]'> </td>" + //nettocn
-                          "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+noappend+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
+                          "<td> <button class='btn btn-xs btn-danger' onclick='edit(this)' data-id='"+noappend+"' type='button'><i class='fa fa-pencil'></i> </button> <button class='btn btn-xs btn-danger removes-btn' data-id='"+noappend+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
                         "</tr>";
               $('#table-faktur').append(row);
 
-    noappend++;
-    
+         noappend++;
 
-
-      $(document).on('click','.removes-btn',function(){
+            $(document).on('click','.removes-btn',function(){
                     var id = $(this).data('id');
                     parentbayar = $('.data' + id);
                     parentbayar.remove();
@@ -719,6 +1034,59 @@
             })
 
             $('.jumlahfaktur').val(addCommas($sisahutang));
+      }
+      else {
+        alert('else');
+         nilaipph = $('.hasilpphcn').val();
+        jenispph = $('.jenispphcn').val();
+        inputpph = $('.inputpphcn').val();
+
+        nilaippn = $('.hasilppncn').val();
+        jenisppn = $('.jenisppncn').val();
+        inputppn = $('.inputppncn').val();
+
+
+
+
+         var a                = $('.nofaktur2'+idfaktur);
+         var par              = $(a).parents('tr');
+         var nomorfaktur      = $(par).find('.nofakturheader').val();
+         var jatuhtempo       = $(par).find('.tglfaktur').val();
+         var netto            = $(par).find('.fpnetto').val();
+         var sisahutang2      = $(par).find('.sisahutang').val();
+         var dpp              = $(par).find('.dpp').val();
+         $(par).find('.nilaippn').val();
+         $(par).find('.jenisppn').val(jenisppn);
+         $(par).find('.inputppn').val(inputppn);
+         $(par).find('.nilaipph').val(nilaippn);
+
+         $(par).find('.jenispph').val(jenispph);
+         $(par).find('.inputpph').val(inputpph);
+         $(par).find('.nilaipph').val(nilaipph);
+
+         $(par).find('.cndn').val(nettocn);
+
+      
+         if(nilaippn == ''){
+          nilaippn = 0.00;
+         }
+         if(nilaipph == ''){
+          nilaipph = 0.00;
+         }
+          
+
+          $(par).find('.ppn_text').text(addCommas(nilaippn));
+          $(par).find('.pph_text').text(addCommas(nilaipph));
+           
+            $(par).find('.cndn_text').text(addCommas(nettocn));
+             $('.clear').val(''); 
+      }
+
+             
+    
+
+
+   
   })
 
 jenisbayar2 = $('.jenisbayar2').val();
@@ -742,7 +1110,7 @@ jenisbayar2 = $('.jenisbayar2').val();
 
     })
 
-
+    
 
      $('.jenissup').change(function(){
       idjenis = $('.jenissup').val();
@@ -809,6 +1177,16 @@ jenisbayar2 = $('.jenisbayar2').val();
       jenis = $('.jenissup').val();
       cabang = $('.cabang').val();
       
+       arrnofaktur = [];
+      $('.datafaktur').each(function(){
+        valfaktur = $(this).data('nofaktur');
+        arrnofaktur.push(valfaktur);
+        console.log(arrnofaktur + 'arrnofaktur');
+        alert(arrnofaktur + 'arrnofaktur');
+      })
+
+    
+
       $.ajax({
         type : 'GET',
         data : {idsup,jenis,cabang},

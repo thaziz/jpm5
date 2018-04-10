@@ -58,6 +58,7 @@
                      <tr>
                         <th style="width:10px">NO</th>
                         <th> No CN / DN </th>
+                        <th> Supplier </th>
                         <th> Jenis CN / DN</th>                      
                         <th> Nilai CN / DN </th>
                         <th> Keterangan </th>
@@ -65,18 +66,29 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($data['cndn'] as $index=>$cndn)
+                    <?php $n = 1 ?>
+                    @for($i = 0; $i < count($data['cndn']); $i++)
+                     
                       <tr>
-                        <td> {{$index + 1}} </td>
-                        <td>  {{$cndn->cndn_nota}}  </td>
-                        <td> {{$cndn->cndn_jeniscndn}} </td>
-                        <td style='text-align: right'> {{ number_format($cndn->cndn_bruto, 2) }} </td>
-                        <td> {{$cndn->cndn_keterangan}} </td>
+                        <td> <?php echo $n ?> </td>
+                        <td>  {{$data['cndn'][$i][0]->cndn_nota}}  </td>
+                        <td>  @if($data['jenisbayar'][$i] == 2)
+                               {{$data['cndn'][$i][0]->nama_supplier}}
+                              @else
+                                 {{$data['cndn'][$i][0]->nama}}
+                              @endif
+                        </td>
+                        <td> {{$data['cndn'][$i][0]->cndn_jeniscndn}} </td>
+                        <td style='text-align: right'> {{ number_format($data['cndn'][$i][0]->cndn_bruto, 2) }} </td>
+                        <td> {{$data['cndn'][$i][0]->cndn_keterangan}} </td>
                       
-                        <td> <a class="btn btn-sm btn-success" href={{url('cndnpembelian/detailcndnpembelian/'. $cndn->cndn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  <a class="btn btn-sm btn-danger" href={{url('cndnpembelian/detailcndnpembelian/'. $cndn->cndn_id.'')}}><i class="fa fa-trash" aria-hidden="true"></i> </a> </td>
+                        <td> <a class="btn btn-sm btn-success" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndn'][$i][0]->cndn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  <a class="btn btn-sm btn-danger" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndn'][$i][0]->cndn_id.'')}}><i class="fa fa-trash" aria-hidden="true"></i> </a> </td>
                         
                       </tr>
-                   @endforeach
+                      <?php $n++ ?>
+                   
+                     
+                   @endfor
                     </tbody>
                    
                   </table>
