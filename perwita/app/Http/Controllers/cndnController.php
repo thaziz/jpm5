@@ -134,15 +134,13 @@ class cndnController extends Controller
 		$cndn->cndn_bruto = $bruto;
 		$cndn->cndn_comp = $request->cabang;
 		$cndn->cndn_nota = $request->nota;
-		$cndn->cndn_hasilppn = $request->hasilppn;				
-		$cndn->cndn_hasilpph = $request->hasilpph;				
+			
 		$cndn->create_by = $request->username;
-		$cndn->cndn_jeniscndn = $request->jeniscndn;
+
 		$cndn->cndn_jenissup = $request->jenissup;
 		$cndn->cndn_keterangan = $request->keterangan;
 		$cndn->save();
 		
-
 		for($i = 0; $i < count($request->idfaktur); $i++){
 
 			
@@ -176,6 +174,7 @@ class cndnController extends Controller
 				$cndt->cndt_bruto = $bruto;
 				$cndt->cndt_dpp = $dppcn;
 
+				
 				if(isset($request->inputppn[$i])) {
 						
 						
@@ -199,13 +198,35 @@ class cndnController extends Controller
 						$cndt->cndt_nilaipph = $request->inputpph[$i];
 						$cndt->cndt_hasilpph = $hasilpph;
 				}
+
+				if(isset($request->inputppnfp[$i])) {
+						
+						
+				}
+				else {
+					//$nilaippn = str_replace(',', '', $request->nilaippn);	
+						$hasilppn = str_replace(',', '', $request->hasilppnfp[$i]);	
+				
+						$cndt->cndt_nilaippnfp = $request->inputppnfp[$i];
+						$cndt->cndt_hasilppnfp = $hasilppn;
+				}
+
+				if(isset($request->inputpph[$i]) ) {
+					
+						
+				}
+				else {
+					//	$nilaippn = str_replace(',', '', $request->nilaipph);	
+						$hasilpph = str_replace(',', '', $request->hasilpphfp[$i]);	
+						
+						$cndt->cndt_nilaipph = $request->inputpphfp[$i];
+						$cndt->cndt_hasilpphfp = $hasilpph;
+				}	
+				
 				$cndt->save();
 			
-
-			
-
-			
 		}
+
 
 		return json_encode('ok');
 	}

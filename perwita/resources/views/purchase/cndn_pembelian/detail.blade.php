@@ -269,7 +269,7 @@
                                             <td> Jenis PPN </td>
                                             <td>
                                                   <div class="col-xs-4">
-                                                  <select class="form-control input-sm jenisppnheader clear" readonly="">
+                                                  <select class="form-control input-sm jenisppnheader clear disabled">
                                                       <option value="T">
                                                           Tanpa
                                                       </option>
@@ -298,7 +298,7 @@
                                             </td>
                                             <td>
                                               <div class="col-xs-4">
-                                                  <select class="form-control input-sm jenisppheaderclear" readonly="">
+                                                  <select class="form-control input-sm jenisppheader clear" readonly="">
                                                      @foreach($data['pph'] as $pajak)
                                                        <option value="{{$pajak->kode}}">
                                                           {{$pajak->nama}}
@@ -448,7 +448,7 @@
 
                                   <td style='text-align:center'> {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }} <input type='hidden' class='form-control input-sm tglfaktur' name='tglfaktur[]' value=" {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }}"> </td> <!--tgl-->
 
-                                  <td style='text-align:right'> <input type='hidden' class='form-control input-sm fpnetto' name='fpnetto[]' value="{{ number_format($cndt->fp_netto, 2) }} "> {{ number_format($cndt->fp_netto, 2) }}</td> <!-- netto -->
+                                  <td style='text-align:right'> <input type='hidden' class='form-control input-sm fpnetto' name='fpnetto[]' value="{{ number_format($cndt->fp_netto, 2) }} "> {{ number_format($cndt->fp_netto, 2) }} <input type='hidden' class='inputppnfp' value='{{$cndt->cndt_nilaippnfp}}' >  <input type='hidden' class='hasilppnfp' value='{{$cndt->cndt_hasilppnfp}}' > <input type='hidden' class='inputpphfp' value='{{$cndt->cndt_nilaipphfp}}' > <input type='hidden' class='hasilpphfp' value='{{$cndt->cndt_hasilpphfp}}' > <input type='hidden' class='jenisppnfp' value='{{$cndt->fp_jenisppn}}'> <input type='hidden' class='jenispphfp' name='jenispphfp' value='{{$cndt->fp_jenispph}}'> </td> <!-- netto , ppn, pph-->
 
                                   <td style='text-align:right'> {{ number_format($cndt->fp_sisapelunasan, 2) }} <input type='hidden' class='sisahutang form-control input-sm' value="{{ number_format($cndt->fp_sisapelunasan, 2) }}" readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="{{$cndt->fp_idfaktur}}" readonly style='text-align:right' name='idfaktur[]'> <input type='hidden' class='dpp form-control input-sm' value="{{$cndt->fp_dpp}}" readonly style='text-align:right' name='dpp[]'> </td> <!-- sisapelunasan -->
 
@@ -562,6 +562,7 @@
        var idcndt = $(par).find('.idcndtn').val();
        var idcndn = $(par).find('.idcndn').val();
        var idfaktur = $(par).find('.idfaktur').val();
+       alert(jenispph);
            $('.nofakturheader').val(nomorfaktur);
             $('.jatuhtempheader').val(jatuhtempo);
             $('.dppheader').val(addCommas(dpp));
@@ -575,9 +576,33 @@
             $('.sisaterbayarheader').val(addCommas(sisahutang));
            $('.idfakturheader').val(idfaktur);
 
-          
+          alert(idcndt + 'idcndt');
+           if(idcndt === undefined){
+              bruto = $('.brutocn2').val();
+              dpp = $('.dppcn2').val();
+              cndn = $('.cndn').val();
 
-            caricndn();
+             $('.brutocn').val(bruto);
+              $('.dppcn').val(dpp);
+             
+              if(response.cndn[0].cndt_jenisppn != null){
+                  $('.jenisppncn').val(response.cndn[0].cndt_jenisppn);
+                  $('.inputppncn').val(response.cndn[0].cndt_nilaippn);
+                  $('.hasilpphcn').val(addCommas(response.cndn[0].cndt_hasilppn));
+              }
+
+               if(response.cndn[0].cndt_jenispph != null){
+                  $('.jenispphcn').val(addCommas(response.cndn[0].cndt_jenispph));
+                  $('.inputpphcn').val(addCommas(response.cndn[0].cndt_nilaipph));
+                  $('.hasilpphcn').val(addCommas(response.cndn[0].cndt_hasilpph));
+              }
+            
+             
+              $('.nettohutangcn').val(cndn);
+           }
+           else {
+             caricndn();
+           }
     }
 
  function addCommas(nStr) {
@@ -889,6 +914,7 @@
   $('#append').click(function(){
       nettocn = $('.nettohutangcn').val();
       nofaktur = $('.nofakturheader').val();
+      alert(noappend);
 
       if(nettocn == '' || nettocn == 0.00){
         toastr.info('Netto Hutang tidak boleh 0.00 atau kosong :)');
@@ -919,6 +945,8 @@
     nettocn = $('.nettohutangcn').val();     
     dppheader = $('.dppheader').val();
 
+
+
     nilaipph = $('.hasilpphcn').val();
     jenispph = $('.jenispphcn').val();
     inputpph = $('.inputpphcn').val();
@@ -931,6 +959,22 @@
     brutocn = $('.brutocn').val();
     dppcn = $('.dppcn').val();
    
+    jenisppnfp = $('.jenisppnfp').val();
+    jeispphfp = $('.jenispphfp').val();
+    
+    inputppnfp = $('.inputppnfp').val();
+    hasilppnfp = $('.hasilppnfp').val();
+
+    inputpphfp = $('.inputpphfp').val();
+    hasilpphfp = $('.hasilpphfp').val();
+
+     if(nilaippn == ''){
+      nilaippn = 0.00;
+     }
+     if(nilaipph == ''){
+      nilaipph = 0.00;
+     }
+
 
      arrnofaktur = [];
       $('.datafaktur').each(function(){
@@ -943,39 +987,26 @@
       index = arrnofaktur.indexOf(nofaktur);
       if(index == -1) {
          var row = '<tr class="datafaktur data'+noappend+'" data-nofaktur="'+nofaktur+'">' +
-                    '<td style="text-align:center"> {{$index + 1}}</td>' +
+                    '<td style="text-align:center">'+noappend+'</td>' +
                     '<td style="text-align:center"> <p class="nofaktur2'+idfaktur+'">'+nofaktur+'</p>' +
                     '<input type="hidden" class="form-control input-sm nofaktur" name="nofaktur[]" value='+nofaktur+' readonly="">' + //nofaktur
                      
-                     '<td style='text-align:center'> {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }} <input type='hidden' class='form-control input-sm tglfaktur' name='tglfaktur[]' value=" {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }}"> </td>' + //tgl
+                     '<td style="text-align:center"> '+jatuhtempo+' <input type="hidden" class="form-control input-sm tglfaktur" name="tglfaktur[]" value='+jatuhtempo+'> </td>' + //tgl
 
                       '<td style="text-align:right"> <input type="hidden" class="form-control input-sm fpnetto" name="fpnetto[]" value="'+nettohutang+'"> {{ number_format($cndt->fp_netto, 2) }}</td>' + // netto
 
-                      '<td style="text-align:right">'+sisahutang+' <input type="hidden" class="sisahutang form-control input-sm" value='+sisahutang+'readonly style="text-align:right" name="sisahutang[]"> <input type="hidden" class="idfaktur form-control input-sm" value='+idfaktur+' readonly style="text-align:right" name="idfaktur[]"> <input type="hidden" class="dpp form-control input-sm" value='+dppheader+' readonly style="text-align:right" name="dpp[]"> </td>' + // sisapelunasan
+                      '<td style="text-align:right">"'+sisahutang+'" <input type="hidden" class="sisahutang form-control input-sm" value="'+sisahutang+'" readonly style="text-align:right" name="sisahutang[]"> <input type="hidden" class="idfaktur form-control input-sm" value='+idfaktur+' readonly style="text-align:right" name="idfaktur[]"> <input type="hidden" class="dpp form-control input-sm" value="'+dppheader+'" readonly style="text-align:right" name="dpp[]"> </td>' + // sisapelunasan
 
-                        '<td style="text-align:right"> <p class="ppn_text">{{ number_format($cndt->fp_ppn, 2) }} </p>' +
-                        '<input type="hidden" class="nilaippn form-control input-sm" value='+nilaippn+' readonly style="text-align:right" style="width:40%" name="nilaippn[]"> <input type="hidden" class="form-control input-sm jenisppn" value='+jenisppn+' readonly style="text-align:right" style="width:40%" name="jenisppn[]"> <input type="hidden" class=" form-control input-sm inputppn" value='+inputppn+' readonly style="text-align:right" style="width:40%" name="inputppn[]">  </td>' //ppn
+                        '<td style="text-align:right"> <p class="ppn_text"> '+addCommas(nilaippn)+' </p>' +
+                        '<input type="hidden" class="nilaippn form-control input-sm" value="'+nilaippn+'" readonly style="text-align:right" style="width:40%" name="nilaippn[]"> <input type="hidden" class="form-control input-sm jenisppn" value="'+jenisppn+'" readonly style="text-align:right" style="width:40%" name="jenisppn[]"> <input type="hidden" class=" form-control input-sm inputppn" value="'+inputppn+'" readonly style="text-align:right" style="width:40%" name="inputppn[]">  <input type="hidden" class="form-control input-sm dppcn2" value="'+dppcn+'" readonly style="text-align:right;style="width:40%"" name="dppcn[]">  <input type="hidden" class="form-control input-sm brutocn2" value="'+brutocn+'" readonly style="text-align:right;style="width:40%"" name="brutocn[]"> </td>' + //ppn
 
-                                  <td style='text-align:right'>   <p class="pph_text"> {{ number_format($cndt->fp_pph, 2) }} </p> <input type='hidden' class='nilaipph form-control input-sm' value="{{ number_format($cndt->cndt_hasilpph, 2) }}" readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm inputpph' value="{{$cndt->cndt_nilaipph}}" readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm jenispph' value="{{$cndt->cndt_jenispph}}" readonly style='text-align:right' name='jenispph[]'></td>  <!--pph-->
+                           '<td style="text-align:right">   <p class="pph_text"> '+addCommas(nilaipph)+' </p> <input type="hidden" class="nilaipph form-control input-sm" value="'+nilaipph+'" readonly style="text-align:right" name="nilaipph[]"> <input type="hidden" class="form-control input-sm inputpph" value="'+inputpph+'" readonly style="text-align:right" name="inputpph[]"> <input type="hidden" class="form-control input-sm jenispph" value="'+jenispph+'" readonly style="text-align:right" name="jenispph"></td>' + //pph
 
-                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> </td> <!-- nettocdcn -->
+                                 ' <td> <p class="cndn_text">  '+nilaicndn+' </p> <input type="hidden" class="form-control input-sm cndn" style="text-align:right" value="'+nilaicndn+'" readonly name="nettocn[]"> </td>' + // <!-- nettocdcn -->
 
-                                  <td>  <a class='btn btn-xs btn-warning' onclick="edit(this)" data-id="{{$index + 1}}" type='button'><i class='fa fa-pencil'></i> </a> <a class='btn btn-xs btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </a>   </td>
-                              </tr>"
-
-         "<tr class='datafaktur data"+noappend+"' data-nofaktur='"+nofaktur+"'>" +
-                          "<td style='text-align:center'> "+noappend+" </td>" +
-                          "<td style='text-align:center'>"+nofaktur+" </td>" +
-                          "<td style='text-align:center'>"+jatuhtempo+"</td>" +
-                          "<td style='text-align:right'>"+addCommas(nettohutang)+"</td>" +
-                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="+idfaktur+" readonly style='text-align:right' name='idfaktur[]'></td>" + //idfaktur + sisahutang
-                           "<td style='text-align:right'>" +
-                           "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value='"+inputppn+" 'readonly style='text-align:right;style='width:40%'' name='inputppn[]'> <input type='hidden' class=' form-control input-sm dppcn2' value='"+dppcn+" 'readonly style='text-align:right;style='width:40%'' name='dppcn[]'>  <input type='hidden' class=' form-control input-sm brutocn2' value='"+brutocn+" 'readonly style='text-align:right;style='width:40%'' name='brutocn[]'>   </td>" + //nilaippn
-
-                            "<td style='text-align:right'> <input type='text' class='nilaipph form-control input-sm' value='"+addCommas(nilaipph)+"' readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm' value='"+inputpph+"' readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm' value="+jenispph+" readonly style='text-align:right' name='jenispph[]'></td>" + //nilaipph
-                          "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right' value="+nettocn+" readonly name='nettocn[]'> </td>" + //nettocn
-                          "<td> <button class='btn btn-xs btn-danger' onclick='edit(this)' data-id='"+noappend+"' type='button'><i class='fa fa-pencil'></i> </button> <button class='btn btn-xs btn-danger removes-btn' data-id='"+noappend+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
-                        "</tr>";
+                                ' <td>  <a class="btn btn-xs btn-warning" onclick="edit(this)" data-id='+noappend+' type="button"><i class="fa fa-pencil"></i> </a> <a class="btn btn-xs btn-danger removes-btn" data-id='+noappend+' type="button"><i class="fa fa-trash"></i> </a>   </td>' +
+                              '</tr>';
+        
               $('#table-faktur').append(row);
 
          noappend++;
