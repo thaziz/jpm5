@@ -2617,3 +2617,8 @@ Route::get('master_sales/diskonpenjualan/simpan' , 'DiskonPenjualanController@sa
 Route::get('master_sales/diskonpenjualan/getAkun' , 'DiskonPenjualanController@getAkun');
 Route::get('master_sales/diskonpenjualan/getData' , 'DiskonPenjualanController@getData');
 Route::get('master_sales/diskonpenjualan/hapus' , 'DiskonPenjualanController@delete');
+
+
+//print out do 
+
+Route::get('dopo','LaporanMasterController@dopo');

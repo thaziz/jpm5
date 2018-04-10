@@ -128,6 +128,8 @@ class cabang_kargo_Controller extends Controller
 
             }
 
+
+
             if ($request->cb_provinsi_tujuan != '') {
             for ($i=0; $i < count($cari); $i++) { 
                 for ($a=0; $a < count($array_harga); $a++) { 
@@ -193,6 +195,7 @@ class cabang_kargo_Controller extends Controller
                         $index = $kode_detailis;
                         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
                         $kodeutama = $kodekota . '/' .  'KGO' .$request->ed_cabang  .  $index;
+                        $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get();
 
                             if ($crud == 'N') {
                             $simpan = array(
@@ -208,7 +211,7 @@ class cabang_kargo_Controller extends Controller
                                 'acc_penjualan' => $request->ed_acc_penjualan,
                                 'csf_penjualan'=>$request->ed_csf_penjualan,
                                 'create_at'=>carbon::now(),
-                                'kode_provinsi'=>0,
+                                'kode_provinsi'=>$provinsi[0]->id_provinsi,
                                 'create_by'=>Auth::user()->m_username,
                                 'kode_cabang'=>$request->ed_cabang,
                                 'crud'=>'N',
@@ -229,8 +232,8 @@ class cabang_kargo_Controller extends Controller
             echo json_encode($result);
 
                 }else if($crud == 'E'){
-                    // dd($request->all());
-                
+                                            
+                       
                        $simpan = array(
                                 'kode' => $request->ed_kode_lama,
                                 'id_kota_asal' => $request->cb_kota_asal,
@@ -244,7 +247,7 @@ class cabang_kargo_Controller extends Controller
                                 'acc_penjualan' => $request->ed_acc_penjualan,
                                 'csf_penjualan'=>$request->ed_csf_penjualan,
                                 'update_at'=>carbon::now(),
-                                'kode_provinsi'=>0,
+                                'kode_provinsi'=>$provinsi[0]->id_provinsi,
                                 'update_by'=>Auth::user()->m_username,
                                 'kode_cabang'=>$request->ed_cabang,
                                 'crud'=>'E',

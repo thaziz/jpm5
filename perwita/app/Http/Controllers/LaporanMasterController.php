@@ -1574,8 +1574,10 @@ class LaporanMasterController extends Controller
 		
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER DO ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
 
-
-							
+	public function dopo(){
+		return view('/delivery_order');
+	}
+								
 
    }
 ?>
