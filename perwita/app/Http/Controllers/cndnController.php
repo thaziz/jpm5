@@ -44,6 +44,8 @@ use App\bukti_bank_keluar_biaya;
 use App\master_akun;
 Use App\d_jurnal;
 Use App\d_jurnal_dt;
+Use App\cndn;
+Use App\cndn_dt;
 use App\fakturpajakmasukan;
 use DB;
 Use Carbon\Carbon;
@@ -58,12 +60,113 @@ class cndnController extends Controller
 	
 
 	public function cndnpembelian() {
-		return view('purchase/cndn_pembelian/index');
+		$cabang = session::get('cabang');
+		if($cabang == 000){
+			$data['cndn'] = DB::select("select * from cndnpembelian ");
+		}
+		else {
+			$data['cndn'] = DB::select("select * from cndnpembelian where cndn_comp = '$cabang'");
+		}
+		return view('purchase/cndn_pembelian/index', compact('data'));
 	}
 
 
 
 	public function save(Request $request){
+
+	
+		$id = DB::table('cndnpembelian')  	
+	    		->max('cndn_id'); 
+						if(isset($id)) {
+							$id = $id;
+							$id = (int)$id + 1;
+							
+						}
+						else {
+							$id = 1;
+						}
+
+		$bruto = str_replace(',', '', $request->bruto);						
+		$jumlahppn = str_replace(',', '', $request->jumlahppn);						
+		$jumlahpph = str_replace(',', '', $request->jumlahpph);	
+
+		$cndn = new cndn();	
+		$cndn->cndn_id			= $id;	
+		$cndn->cndn_tgl			= $request->tgl;
+		$cndn->cndn_supplier	= $request->supplier;
+		$cndn->cndn_acchutangdagang = $request->acchutang;
+		$cndn->cndn_acccndn		= $request->accbiaya;
+		$cndn->cndn_bruto = $bruto;
+		$cndn->cndn_comp = $request->cabang;
+		$cndn->cndn_nota = $request->nota;
+		$cndn->cndn_hasilppn = $request->hasilppn;				
+		$cndn->cndn_hasilpph = $request->hasilpph;				
+		$cndn->create_by = $request->username;
+		$cndn->cndn_jeniscndn = $request->jeniscndn;
+		$cndn->cndn_jenissup = $request->jenissup;
+		$cndn->cndn_keterangan = $request->keterangan;
+		$cndn->save();
+		
+
+		for($i = 0; $i < count($request->idfaktur); $i++){
+
+			
+			$sisahutang = str_replace(',', '', $request->sisahutang[$i]);
+			$nettocn = str_replace(',', '', $request->nettocn[$i]);
+
+
+			$iddt = DB::table('cndnpembelian_dt')  	
+	    		->max('cndt_id'); 
+						if(isset($id)) {
+							$iddt = $iddt;
+							$iddt = (int)$iddt + 1;
+							
+						}
+						else {
+							$iddt = 1;
+						}
+
+		
+				$cndt = new cndn_dt();
+				$cndt->cndt_id =  $iddt;
+				$cndt->cndt_idcn = $id;
+				$cndt->cndt_idfp = $request->idfaktur[$i];
+				$cndt->cndt_tgl = $request->tgl;
+			
+				$cndt->cndt_sisahutang = $sisahutang;
+				$cndt->create_by = $request->username;
+				$cndt->cndt_nettocn = $nettocn;
+				if(isset($request->inputppn[$i])) {
+						
+						
+				}
+				else {
+					//$nilaippn = str_replace(',', '', $request->nilaippn);	
+						$hasilppn = str_replace(',', '', $request->nilaipph[$i]);	
+						$cndt->cndt_jenisppn = $request->jenisppn[$i];
+						$cndt->cndt_nilaippn = $request->inputppn[$i];
+						$cndt->cndt_hasilppn = $hasilppn;
+				}
+
+				if(isset($request->inputpph[$i]) ) {
+					
+						
+				}
+				else {
+					//	$nilaippn = str_replace(',', '', $request->nilaipph);	
+						$hasilpph = str_replace(',', '', $request->hasilpph[$i]);	
+						$cndt->cndt_jenispph = $request->jenispph[$i];
+						$cndt->cndt_nilaipph = $request->inputpph[$i];
+						$cndt->cndt_hasilpph = $hasilpph;
+				}
+				$cndt->save();
+			
+
+			
+
+			
+		}
+
 		return json_encode('ok');
 	}
 	public function getnota (Request $request){
@@ -162,7 +265,18 @@ class cndnController extends Controller
 		return view('purchase/cndn_pembelian/create' , compact('data'));
 	}
 
-	public function detailcndnpembelian() {
-		return view('purchase/cndn_pembelian/detail');
+	public function detailcndnpembelian($id) {
+
+		$data['cndndt'] = DB::select("select * from cndnpembelian, cndnpembelian_dt, faktur_pembelian where cndt_idcn = cndn_id and cndn_id ='$id' and cndt_idfp = fp_idfaktur ");
+
+		$data['cndn'] = DB::select("select * from cndnpembelian where cndn_id = '$id'");
+		$data['cabang'] = DB::select("select * from cabang");
+		$data['supplier'] = DB::select("select * from supplier where active = 'AKTIF' and status = 'SETUJU'");
+		$data['pph'] = DB::select("select * from pajak");
+		$data['akunbiaya'] = DB::select("select * from akun_biaya");
+
+	//	dd($data);
+
+		return view('purchase/cndn_pembelian/detail', compact('data'));
 	}
 }

@@ -179,7 +179,7 @@
     function(){
 
          $.ajax({
-          url:baseUrl + '/sales/hapus_invoice',
+          url:baseUrl + '/sales/hapus_invoice_pembetulan',
           data:{id},
           type:'get',
           success:function(data){
