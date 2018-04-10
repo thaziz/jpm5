@@ -297,19 +297,29 @@
      </tr>
 
    </table>
-   </div>   
-      <p><w style="margin-left: 10%;">Mengetahui/Pengirim</w><w style="margin-left: 25%;">Penerima</w><w style="margin-left: 20%;">Pemberi ORder</w></p>
-      
-      
-   <div >
-    <input class="border tandatangan hiddenbordertop" type="" name="">
-   </div>
-   <div>
-    <input class="border tandatangan hiddenbordertop" type="" name="">
-   </div>
-   <div>
-    <input class="border tandatangan hiddenbordertop" type="" name="">
-   </div>
+   </div>  
+   <br> 
+   <table width="100%" class="textcenter">
+     <tr>
+       <th class="textcenter">Mengetahui/Pengirim</th>
+       <th class="textcenter">Penerima</th>
+       <th class="textcenter">Pemberi Order</th>
+     </tr>
+     <tr>
+       <td>&nbsp;</td>
+     </tr>
+     <tr>
+       <td>&nbsp;</td>
+     </tr>
+     <tr>
+       <td>&nbsp;</td>
+     </tr>
+     <tr>
+       <td><input type="text" class="hiddenbordertop bot right left" name=""></td>
+       <td><input type="text" class="hiddenbordertop bot right left" name=""></td>
+       <td><input type="text" class="hiddenbordertop bot right left" name=""></td>
+     </tr>
+   </table>
  </div>
 </body>
 </html>
