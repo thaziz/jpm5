@@ -26,9 +26,9 @@ class LaporanMasterController extends Controller
 
 		$data =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-				->join('kota as ka','do.id_kota_asal','=','ka.id')
-				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->get();
 
 		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
@@ -38,33 +38,34 @@ class LaporanMasterController extends Controller
 		for ($i=0; $i <count($array_bulan) ; $i++) { 
 			$dat[$i] =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-				->join('kota as ka','do.id_kota_asal','=','ka.id')
-				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
 				->where('pendapatan','=','PAKET')
 				->get();
 			$dat1[$i] =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-				->join('kota as ka','do.id_kota_asal','=','ka.id')
-				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
 				->where('pendapatan','=','KORAN')
 				->get();
 			$dat2[$i] =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-				->join('kota as ka','do.id_kota_asal','=','ka.id')
-				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
-				->where('pendapatan','=','KARGO')
+				->where('nomor','like','%KGO%')
 				->get();
 		}
 		// return $dat1;
+		// return $tahun;
 		for ($i=0; $i < count(isset($dat)); $i++) { 
 			// return $dat;
 			for ($a=0; $a < count(isset($dat[$i])); $a++) { 
