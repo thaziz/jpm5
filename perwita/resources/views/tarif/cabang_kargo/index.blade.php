@@ -370,6 +370,7 @@
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
         $("select[name='ed_acc_penjualan']").val('').trigger('chosen:updated');
         $("select[name='ed_csf_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
 
         $('.hilang1').show();
         $('.hilang').show();
