@@ -316,7 +316,7 @@
 				<tr>
 					<td class="bot right textcenter" height="25">1</td>
 					<td class="bot right textcenter">KARGO</td>
-					<td class="bot right textcenter">{{$row->no_surat_jalan}} - PENGIRIMAN KARGO DARI {{$nota[0]->asal}} KE {{$nota[0]->tujuan}} {{$nota[0]->nopol}}</td>
+					<td class="bot right textcenter">{{$nota[0]->no_surat_jalan}} - PENGIRIMAN KARGO DARI {{$nota[0]->asal}} KE {{$nota[0]->tujuan}} {{$nota[0]->nopol}}</td>
 					<td class="bot right textcenter">{{ number_format($nota[0]->jumlah, 0, ",", ".") }} {{$nota[0]->kode_satuan}}</td>
 					<td class="bot textright">{{ number_format($nota[0]->total, 0, ",", ".") }}</td>
 				</tr>
