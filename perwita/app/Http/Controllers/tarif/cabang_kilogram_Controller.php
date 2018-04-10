@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Auth;
 use carbon\carbon;
+
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
@@ -111,7 +112,7 @@ class cabang_kilogram_Controller extends Controller
         $cari = DB::table('kota')  
                   ->where('id_provinsi',$request->cb_provinsi_tujuan)
                   ->get();
-
+        // return $cari;
         $crud = $request->crud;
         
 
@@ -120,8 +121,10 @@ class cabang_kilogram_Controller extends Controller
 
         $array_harga = [];
         $array_harga_kge = [];
-        $array_jenis = ['REGULER','EXPRESS'];
-        $array_keterangan  = ['Tarif Kertas / Kg','Tarif <= 10 Kg','Tarif Kg selanjutnya <= 10 Kg','Tarif <= 20 Kg','Tarif Kg selanjutnya <= 20 Kg','Tarif Kertas / Kg','Tarif <= 10 Kg','Tarif Kg selanjutnya <= 10 Kg','Tarif <= 20 Kg','Tarif Kg selanjutnya <= 20 Kg'];
+        $array_jenis = ['REGULER','REGULER','REGULER','REGULER','REGULER'];
+        $array_jenis_kge = ['EXPRESS','EXPRESS','EXPRESS','EXPRESS','EXPRESS'];
+        $array_keterangan  = ['Tarif Kertas / Kg','Tarif <= 10 Kg','Tarif Kg selanjutnya <= 10 Kg','Tarif <= 20 Kg','Tarif Kg selanjutnya <= 20 Kg'];
+        $array_keterangan_kge = ['Tarif Kertas / Kg','Tarif <= 10 Kg','Tarif Kg selanjutnya <= 10 Kg','Tarif <= 20 Kg','Tarif Kg selanjutnya <= 20 Kg'];
         $array_waktu = [];
         $array_waktu_kge = [];
         $array_nota  = ['KGR','KGE'];
@@ -163,14 +166,7 @@ class cabang_kilogram_Controller extends Controller
         }else{
             $cari_kode_sama += 1;
         }
-
-        
-
-        // return $array_harga;
-        // return $array_keterangan;
-
         if ($crud  == 'N') {
-
             for ($i=0; $i < count($cari); $i++) { 
                 $cari_old0[$i] = DB::table('tarif_cabang_kilogram')
                           ->where('id_kota_asal',$request->cb_kota_asal)
@@ -178,7 +174,6 @@ class cabang_kilogram_Controller extends Controller
                           ->where('kode_cabang',$request->cb_cabang)
                           ->where('jenis','REGULER')
                           ->get();
-
                 $cari_old1[$i] = DB::table('tarif_cabang_kilogram')
                           ->where('id_kota_asal',$request->cb_kota_asal)
                           ->where('id_kota_tujuan',$cari[$i]->id)
@@ -186,7 +181,6 @@ class cabang_kilogram_Controller extends Controller
                           ->where('jenis','EXPRESS')
                           ->get();
             }
-
             $cari_nota0 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_kilogram
                                                 WHERE kode_cabang = '$request->cb_cabang'
                                                 and jenis = 'REGULER'
@@ -198,15 +192,6 @@ class cabang_kilogram_Controller extends Controller
                                                 ");
             $kode_utama = DB::table('tarif_cabang_kilogram')->select('kode_detail_kilo')->max('kode_detail_kilo');
             
-            // $id2 = (integer)$cari_nota1[0]->id+1;
-            // $id2 = (integer)$cari_nota1[0]->id+1;
-            // $id2 = (integer)$cari_nota1[0]->id+1;
-            // $id2 = (integer)$cari_nota1[0]->id+1;
-            // $id2 = (integer)$cari_nota1[0]->id+1;
-            // $id2 = (integer)$cari_nota1[0]->id+1;
-            // $id2 = (integer)$cari_nota1[0]->id+1;
-            // return $id0;
-            // return $cari;
             $b=0;
             $s=[];
             $o=[];
@@ -223,59 +208,67 @@ class cabang_kilogram_Controller extends Controller
 
              $d =1;
              $e =1;
-            // return $array_harga;
+
                 for ($i=0; $i <count($cari) ; $i++) { 
                      for ($a=0; $a < count($array_harga); $a++) { 
-                         $index = str_pad($d, 5, '0', STR_PAD_LEFT);
-                         $nota = 'KGR' . Auth::user()->kode_cabang . $index;
+                         $index = str_pad($d++, 5, '0', STR_PAD_LEFT);
+                         $nota = $request->kodekota.'/KGR' . Auth::user()->kode_cabang . $index;
                          array_push($s, $nota);
                     }
                     $d++;
+                }
+                for ($p=0; $p <count($cari) ; $p++) { 
                     for ($i=0; $i <count($array_harga_kge) ; $i++) {   
-                         $index = str_pad($e, 5, '0', STR_PAD_LEFT);
-                         $nota = 'KGE' . Auth::user()->kode_cabang . $index;
+                         $index = str_pad($e++, 5, '0', STR_PAD_LEFT);
+                         $nota = $request->kodekota.'/KGE' . Auth::user()->kode_cabang . $index;
                          array_push($o, $nota);
                     }
                     $e++;
                 }
-                return $s;
+                        
+            $array_note = [$s,$o];
+            $array_time = [$array_waktu,$array_waktu_kge];
+            $array_keterangan = [$array_keterangan,$array_keterangan_kge];
+            $array_uang = [$array_harga,$array_harga_kge];
+            $array_jenising = [$array_jenis,$array_jenis_kge];
+            // return $array_note;
 
-                // return $kode_utama;
-                for ($r=0; $r <count($kode_utama) ; $r++) { 
-                 $kode_utama = (int)$kode_utama+1;
-                $index = $kode_utama;
-                $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                $nota0[$r] = $kodekota . '/' .  $array_nota[0] .$request->cb_cabang .  $index;
-            }
-            // return $kode_utama;
-
-              
             
-            $array_note = [$nota0];
-            return $array_note; 
+
+
+            // return [$array_time,$array_keterangan,$array_note];
             for ($i=0; $i < count($cari); $i++) { 
-
-                
                 for ($a=0; $a < count($array_harga); $a++) { 
-
-
-                    return [$array_note,$array_jenis,$array_harga,$array_waktu,$array_keterangan];
-
                     $kode_detail = DB::table('tarif_cabang_kilogram')
                             ->max('kode_detail_kilo');
                     if ($kode_detail == null) {
                         $kode_detail = 1;
                     }else{
                         $kode_detail += 1;
-                    }
-                    // return $cari[$i]->id;
-                    // return $array_note[$a][$i];
-                       
+                    }   
                             if (isset(${'cari_old'.$a}[$i][0]->id_kota_asal) != $request->cb_kota_asal and
                                 isset(${'cari_old'.$a}[$i][0]->id_kota_tujuan) != $cari[$i]->id and
                                 isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->cb_cabang ) {
 
                                     $data = DB::table('tarif_cabang_kilogram')
+                                    ->insert([
+                                            'kode'=>$array_note[$a][$i],
+                                            'kode_sama_kilo' => $cari_kode_sama,
+                                            'kode_detail_kilo'=>$kode_detail,
+                                            'id_kota_asal' => $request->cb_kota_asal,
+                                            'id_kota_tujuan' => $cari[$i]->id,
+                                            'kode_cabang' => $request->cb_cabang,
+                                            'keterangan' => $array_keterangan[$a][$i],
+                                            'jenis' => $array_jenising[$a][$i],
+                                            'harga' => $array_uang[$a][$i],
+                                            'waktu' => $array_time[$a][$i],
+                                            'acc_penjualan'=>$request->cb_acc_penjualan,
+                                            'csf_penjualan'=>$request->cb_csf_penjualan,
+                                            'id_provinsi_cabkilogram'=>$request->cb_provinsi_tujuan,
+                                            'crud'=>$crud,
+                                  ]);
+
+                                   $data1 = DB::table('tarif_cabang_kilogram')
                                     ->insert([
                                             'kode'=>$array_note[$a][$i],
                                             'kode_sama_kilo' => $cari_kode_sama,
@@ -292,7 +285,6 @@ class cabang_kilogram_Controller extends Controller
                                             'id_provinsi_cabkilogram'=>$request->cb_provinsi_tujuan,
                                             'crud'=>$crud,
                                   ]);
-                                    // return $data;
                             }else{
                                 if (isset(${'cari_old'.$a}[$i][0]->crud) != 'E') {
                                     $data = DB::table('tarif_cabang_kilogram')

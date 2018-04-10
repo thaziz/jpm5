@@ -23,6 +23,8 @@
                         <input type="hidden" value="{{$val->dd_nomor}}" class="nomor_do" name="nomor_do">
                     </td>
                     <td>{{$val->tanggal}}</td>
+                    <td>{{$val->nama_customer}}</td>
+                    <td>{{$val->keterangan_tarif}}</td>
                     <td align="right">{{number_format($val->dd_total, 2, ",", ".")}}</td>
                     <td align="center">
                         <input class="tanda" type="checkbox"  name="tanda">
@@ -39,6 +41,8 @@
            <th>No</th>
            <th>Nomor Order</th>
            <th>Tgl Order</th>
+           <th>Nama Customer</th>
+           <th>Keterangan</th>
            <th>Jumlah</th>
            <th style="text-align: center;"><input type="checkbox" class="parent_check" onchange="check_parent()"></th>
         </tr>
@@ -55,6 +59,8 @@
                         <input type="hidden" value="{{$val->nomor}}" class="nomor_do" name="nomor_do">
                     </td>
                     <td>{{$val->tanggal}}</td>
+                    <td>{{$val->nama_customer}}</td>
+                    <td>{{$val->keterangan_tarif}}</td>
                     <td align="right"> {{number_format($val->total_net, 2, ",", ".")}}</td>
                     <td align="center">
                         <input class="tanda" type="checkbox"  name="tanda">
