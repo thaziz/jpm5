@@ -233,6 +233,7 @@ class cabang_kargo_Controller extends Controller
 
                 }else if($crud == 'E'){
                                             
+                       $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get();
                        
                        $simpan = array(
                                 'kode' => $request->ed_kode_lama,
