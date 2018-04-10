@@ -436,7 +436,7 @@ class invoice_pembetulan_controller extends Controller
     $terbayar   = $invoice->i_sisa_pelunasan + $invoice->i_debet;
 
       if (($penambahan - $terbayar) < $invoice->i_debet) {
-        return response()->json('status'=>2,'ket'=>'Data Tidak Bisa Dihapus Karena Sisa kurang Dari Debet');
+        return response()->json(['status'=>2,'ket'=>'Data Tidak Bisa Dihapus Karena Sisa kurang Dari Debet']);
       }else{
 
 
@@ -468,7 +468,7 @@ class invoice_pembetulan_controller extends Controller
                             ->where('ip_nomor',$request->id)
                             ->delete();
 
-        return response()->json('status'=>1);
+        return response()->json(['status'=>1]);
       }
 
   }
