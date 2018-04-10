@@ -945,7 +945,7 @@ function hitung_pajak_lain(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        window.location="../invoice"
+                        // window.location="../invoice"
                 });
              }
           },

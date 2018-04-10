@@ -925,7 +925,7 @@ $(document).ready(function(){
         url:baseUrl +'/sales/drop_cus',
         data:{cabang},
         success:function(data){
-            $('.customer_td').html(data);
+            // $('.customer_td').html(data);
             toastr.info('Data Telah Dirubah Harap Periksa Kembali');
         },
         error:function(){

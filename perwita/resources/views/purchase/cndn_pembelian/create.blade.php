@@ -624,7 +624,9 @@
       }
        brutocn = $('.brutocn').val();
     dppcn = $('.dppcn').val();
- 
+    alert(dppcn);
+    alert(brutocn);
+
 
      $('.jenisbayar2').addClass('disabled');
      $('.jenissup').addClass('disabled');
@@ -644,6 +646,9 @@
     nettocn = $('.nettohutangcn').val();     
     dpp = $('.dppheader').val();
 
+
+
+
     nilaipph = $('.hasilpphcn').val();
     jenispph = $('.jenispphcn').val();
     inputpph = $('.inputpphcn').val();
@@ -652,9 +657,16 @@
     jenisppn = $('.jenisppncn').val();
     inputppn = $('.inputppncn').val();
 
+    jenisppnheader =  $('.jenisppnheader').val();
+    inputppnheader =  $('.inputppnheader').val();
+    hasilppnheader =  $('.hasilppnheader').val();
+
+    jenispphheader =  $('.jenisppheader').val();
+    nilaipphheader =  $('.nilaipphheader').val();
+    hasilpphheader =  $('.hasilpphheader').val();
 
    
-    console.log(nilaipph + jenispph + inputpph + nilaippn + jenisppn + inputppn);
+   
 
 
               var row = "<tr class='datafaktur data"+noappend+"' data-nofaktur='"+nofaktur+"'>" +
@@ -664,6 +676,8 @@
                           "<td style='text-align:right'>"+addCommas(nettohutang)+"</td>" +
                           "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="+idfaktur+" readonly style='text-align:right' name='idfaktur[]'> <input type='hidden' class='dpp form-control input-sm' value="+dpp+" readonly style='text-align:right' name='dpp[]'></td> " + //idfaktur + sisahutang
                            "<td style='text-align:right'>" +
+                           "<input type='hidden' name='hasilpphfp[]' value="+hasilpphheader+"> <input type='hidden' name='inputpphfp[]' value="+nilaipphheader+">  <input type='hidden' name='hasilppnfp[]' value="+hasilppnheader+"> <input type='hidden' name='inputppnfp[]' value="+inputppnheader+"> " + //ppn , pph fp
+
                            "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value='"+inputppn+" 'readonly style='text-align:right;style='width:40%'' name='inputppn[]'>  <input type='hidden' class=' form-control input-sm dppcn2' value='"+dppcn+" 'readonly style='text-align:right;style='width:40%'' name='dppcn[]'>  <input type='hidden' class=' form-control input-sm brutocn2' value='"+brutocn+" 'readonly style='text-align:right;style='width:40%'' name='brutocn[]'>  </td>" + //nilaippn + dpp + bruto
 
                             "<td style='text-align:right'> <input type='text' class='nilaipph form-control input-sm' value='"+addCommas(nilaipph)+"' readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm' value='"+inputpph+"' readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm' value="+jenispph+" readonly style='text-align:right' name='jenispph[]'></td>" + //nilaipph
