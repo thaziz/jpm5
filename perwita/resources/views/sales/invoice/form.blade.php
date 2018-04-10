@@ -908,5 +908,14 @@ $('#cb_pendapatan').change(function(){
         $('#cb_jenis_ppn').val(1);
     }
 })
+
+
+
+window.onbeforeunload = function(event)
+{       
+       confirm();
+
+};
+
 </script>
 @endsection
