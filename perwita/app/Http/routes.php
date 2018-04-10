@@ -154,6 +154,7 @@ Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstocko
 Route::get('stockopname/save_stock_opname' , 'PengeluaranBarangController@save_stock_opname');
 Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detailstockopname');*/
 //stock opname
+
 Route::get('stockopname/stockopname' , 'PengeluaranBarangController@stockopname');
 Route::get('stockopname/cari_sm/{id}' , 'PengeluaranBarangController@cari_sm');
 Route::get('stockopname/berita_acara/{id}' , 'PengeluaranBarangController@berita_acara');
@@ -804,6 +805,12 @@ Route::post('reportcabangkargo/reportcabangkargo', 'LaporanMasterController@repo
 Route::post('reportcabangkilogram/reportcabangkilogram', 'LaporanMasterController@reportcabangkilogram')->name('reportcabangkilogram');
 Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@reportcabangsepeda')->name('reportcabangsepeda');
 //END OF LAPORAN TARIF PDF
+
+//LAPORAN DELIVERY ORDER PAKET 
+Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
+Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
+Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterController@carideliveryorder_total');
+//END OF DELIVERY ORDER PAKET
 
 //LAPORAN DELIVERY ORDER PAKET 
 Route::post('reportdeliveryorder/reportdeliveryorder','LaporanMasterController@reportdeliveryorder');

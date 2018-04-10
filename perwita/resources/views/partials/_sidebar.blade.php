@@ -1934,6 +1934,9 @@
                             Request::is('sales/laporansalesorder') ? 'active' : '' || 
                             Request::is('sales/laporansalesorder/*') ? 'active' : ''||
                             /* do */
+                            Request::is('sales/laporandeliveryorder_total') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_total/*') ? 'active' : ''||
+                            /* do */
                             Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder/*') ? 'active' : ''||
                              /* do kargo */
@@ -2068,6 +2071,9 @@
                             Request::is('sales/laporansalesorder') ? 'active' : '' || 
                             Request::is('sales/laporansalesorder/*') ? 'active' : ''||
                             /* do */
+                            Request::is('sales/laporandeliveryorder_total') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_total/*') ? 'active' : ''||
+                            /* do */
                             Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder/*') ? 'active' : ''||
                             /* do kargo */
@@ -2154,6 +2160,10 @@
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporansalesorder') ? 'active' : '' || 
                             Request::is('sales/laporansalesorder/*') ? 'active' : ''}} " href="{{ url('sales/laporansalesorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Sales Order (SO)</a>
                                 </li> --}}
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_total') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_total/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_total')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Analisa</a>
+                                </li>
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Paket</a>

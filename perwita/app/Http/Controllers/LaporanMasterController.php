@@ -20,6 +20,159 @@ class LaporanMasterController extends Controller
 //❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤ LAPORAN OPERASIONAL PENJUALAN ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤
 								
 
+	//LAPORAN DELIVERY ORDER SEMUA 
+
+	public function deliveryorder_total(){
+
+		$data =DB::table('delivery_order as do')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->join('kota as ka','do.id_kota_asal','=','ka.id')
+				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->get();
+
+		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+		 $tahun = carbon::now();
+		 $tahun =  $tahun->year;
+
+		for ($i=0; $i <count($array_bulan) ; $i++) { 
+			$dat[$i] =DB::table('delivery_order as do')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->join('kota as ka','do.id_kota_asal','=','ka.id')
+				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->whereMonth('tanggal','=',$array_bulan[$i])
+				->whereYear('tanggal','=',$tahun)
+				->where('pendapatan','=','PAKET')
+				->get();
+			$dat1[$i] =DB::table('delivery_order as do')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->join('kota as ka','do.id_kota_asal','=','ka.id')
+				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->whereMonth('tanggal','=',$array_bulan[$i])
+				->whereYear('tanggal','=',$tahun)
+				->where('pendapatan','=','KORAN')
+				->get();
+			$dat2[$i] =DB::table('delivery_order as do')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->join('kota as ka','do.id_kota_asal','=','ka.id')
+				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->whereMonth('tanggal','=',$array_bulan[$i])
+				->whereYear('tanggal','=',$tahun)
+				->where('pendapatan','=','KARGO')
+				->get();
+		}
+		// return $dat1;
+		for ($i=0; $i < count(isset($dat)); $i++) { 
+			// return $dat;
+			for ($a=0; $a < count(isset($dat[$i])); $a++) { 
+
+				$paket = [	$data0 = count($dat[0]),
+							$data1 = count($dat[1]),
+							$data2 = count($dat[2]),
+							$data3 = count($dat[3]),
+							$data4 = count($dat[4]),
+							$data5 = count($dat[5]),
+							$data6 = count($dat[6]),
+							$data7 = count($dat[7]),
+							$data8 = count($dat[8]),
+							$data9 = count($dat[9]),
+							$data10 = count($dat[10]),
+							$data11 = count($dat[11])
+							];	
+			}
+		}
+
+		for ($i=0; $i < count(isset($dat1)); $i++) { 
+			// return $dat;
+			for ($a=0; $a < count(isset($dat1[$i])); $a++) { 
+
+				$koran = [	$data0 = count($dat1[0]),
+							$data1 = count($dat1[1]),
+							$data2 = count($dat1[2]),
+							$data3 = count($dat1[3]),
+							$data4 = count($dat1[4]),
+							$data5 = count($dat1[5]),
+							$data6 = count($dat1[6]),
+							$data7 = count($dat1[7]),
+							$data8 = count($dat1[8]),
+							$data9 = count($dat1[9]),
+							$data10 = count($dat1[10]),
+							$data11 = count($dat1[11])
+							];	
+			}
+		}
+
+		for ($i=0; $i < count(isset($dat2)); $i++) { 
+			// return $dat;
+			for ($a=0; $a < count(isset($dat2[$i])); $a++) { 
+
+				$kargo = [	$data0 = count($dat2[0]),
+							$data1 = count($dat2[1]),
+							$data2 = count($dat2[2]),
+							$data3 = count($dat2[3]),
+							$data4 = count($dat2[4]),
+							$data5 = count($dat2[5]),
+							$data6 = count($dat2[6]),
+							$data7 = count($dat2[7]),
+							$data8 = count($dat2[8]),
+							$data9 = count($dat2[9]),
+							$data10 = count($dat2[10]),
+							$data11 = count($dat2[11])
+							];	
+			}
+		}
+		// return $dat2;
+		// return [$paket,$koran,$kargo];
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+		return view('purchase/master/master_penjualan/laporan/lap_deliveryorder_total',compact('data','kota','kota1','paket','koran','kargo'));
+	}
+	public function carideliveryorder_total(Request $request){
+		$awal = $request->a;
+		$akir = $request->b;
+
+		$data =DB::table('delivery_order as do')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->join('kota as ka','do.id_kota_asal','=','ka.id')
+				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->where('nomor','like','%PAK%')
+				->where('pendapatan','=','PAKET')
+				->where('tanggal','>=',$awal)
+				->where('tanggal','<=',$akir)
+				->get();
+
+		$data1 =DB::table('delivery_order as do')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->join('kota as ka','do.id_kota_asal','=','ka.id')
+				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->where('nomor','like','%PAK%')
+				->where('pendapatan','=','KORAN')
+				->where('tanggal','>=',$awal)
+				->where('tanggal','<=',$akir)
+				->get();
+
+		$data2 =DB::table('delivery_order as do')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->join('kota as ka','do.id_kota_asal','=','ka.id')
+				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->where('nomor','like','%PAK%')
+				->where('pendapatan','=','KARGO')
+				->where('tanggal','>=',$awal)
+				->where('tanggal','<=',$akir)
+				->get();
+
+        return response()->json(['paket'=>count($data),'koran'=>count($data1),'kargo'=>count($data2)]);
+	}
+
+	//END OF
+
+
 	// START OF DOKUMEN
 	public function tarif_cabang_dokumen(){
 
@@ -175,6 +328,9 @@ class LaporanMasterController extends Controller
 							on id_kota_asal = res.id
 							join (SELECT id, nama as tujuan from kota) as res1
 							on id_kota_tujuan = res1.id");
+
+
+
 		$ket = DB::table('tarif_cabang_kilogram')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$kota1 = DB::select("SELECT id, nama as asal from kota");

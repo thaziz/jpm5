@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Auth;
-
+use carbon\carbon;
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
@@ -204,17 +204,29 @@ class cabang_kilogram_Controller extends Controller
             // $id2 = (integer)$cari_nota1[0]->id+1;
             // $id2 = (integer)$cari_nota1[0]->id+1;
             // return $id0;
+            // return $cari;
+            $b=0;
+            $s=[];
+            // return $array_harga;
                 for ($i=0; $i <count($cari) ; $i++) { 
            
                      for ($a=0; $a < count($array_harga); $a++) { 
 
-                        // return $cari;
-                        $kode_utama = (int)$kode_utama+1;
-                        $index = $kode_utama;
-                        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                        $nota0[$a] = $kodekota . '/' .  $array_nota[0] .$request->cb_cabang .  $index;
+                        $bulan = Carbon::now()->format('m');
+                         $tahun = Carbon::now()->format('y');
+                         $cabang= Auth::user()->kode_cabang;
+                         $cari_nota = DB::select("SELECT  substring(max(kode),11) as id from tarif_cabang_kilogram
+                                                        WHERE kode_cabang = '$cabang'
+                                                        AND jenis='REGULER'");
+                        return $index = (integer)$cari_nota[0]->id +;
+                         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+                         $nota = 'KGR' . Auth::user()->kode_cabang . $bulan . $tahun . $index;
+
+                         array_push($s, $nota);
                     }    
                 }
+                return $s;
+
                 // return $kode_utama;
                 for ($r=0; $r <count($kode_utama) ; $r++) { 
                  $kode_utama = (int)$kode_utama+1;
@@ -227,14 +239,14 @@ class cabang_kilogram_Controller extends Controller
               
             
             $array_note = [$nota0];
-            return $array_note;
+            return $array_note; 
             for ($i=0; $i < count($cari); $i++) { 
 
                 
                 for ($a=0; $a < count($array_harga); $a++) { 
 
 
-                    return [$array_note,$array_jenis,$array_harga,$array_waktu];
+                    return [$array_note,$array_jenis,$array_harga,$array_waktu,$array_keterangan];
 
                     $kode_detail = DB::table('tarif_cabang_kilogram')
                             ->max('kode_detail_kilo');

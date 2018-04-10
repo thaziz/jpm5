@@ -172,7 +172,7 @@
                                     <td class="hilang" style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td class="hilang" id="kota_col">   
                                         <select class="chosen-select-width c "  name="cb_kota_tujuan" id="cb_kota_tujuan" style="width:100%">
-                                           <option value="" selected="" disabled="">Pilih - Kota tujuan</option>
+                                           <option value="" selected="" readonly="">Pilih - Kota tujuan</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
                                         @endforeach
@@ -181,8 +181,8 @@
                                 
                                     <td class="hilang1" style="padding-top: 0.4cm">Provinsi Tujuan</td>
                                     <td class="hilang1" id="prov_col">   
-                                        <select class="chosen-select-width c "  name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
-                                            <option value="" selected="" disabled="">Pilih - Provinsi tujuan</option>
+                                        <select class="chosen-select-width c " name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
+                                            <option value="" selected="" readonly="">Pilih - Provinsi tujuan</option>
                                         @foreach ($prov as $prov)
                                             <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
                                         @endforeach
@@ -302,15 +302,15 @@
         var kotaid = $('#kodekota').val(idkota);
     })
 
-    $('#cb_kota_tujuan').change(function(){
-        $('.hilang1').hide();
-        $('#kota_col').attr('colspan','3');
+    // $('#cb_kota_tujuan').change(function(){
+    //     $('.hilang1').hide();
+    //     $('#kota_col').attr('colspan','3');
 
-    })
-    $('#cb_provinsi_tujuan').change(function(){
-        $('.hilang').hide();
-        $('#prov_col').attr('colspan','3');
-    })
+    // })
+    // $('#cb_provinsi_tujuan').change(function(){
+    //     $('.hilang').hide();
+    //     $('#prov_col').attr('colspan','3');
+    // })
 
 
     $(document).ready( function () {
