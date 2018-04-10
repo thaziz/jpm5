@@ -797,7 +797,7 @@ $('.reload').click(function(){
 
     window.onbeforeunload = function(event)
 {       
-       confirm();
+       return confirm();
 
 };
 </script>
