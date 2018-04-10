@@ -81,6 +81,17 @@ class invoice_Controller extends Controller
 
         $cabang   = DB::table('cabang')
                       ->get();
+        $kota     = DB::table('kota')
+                      ->get();
+
+        for ($i=0; $i < count($customer); $i++) { 
+          for ($a=0; $a < count($kota); $a++) { 
+            if ($customer[$i]->kota == $kota[$a]->id) {
+               $customer[$i]->nama_kota = $kota[$a]->nama;
+            }
+          }
+        }
+        // return $customer;
         $tgl      = Carbon::now()->format('d/m/Y');
         $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
 
@@ -274,7 +285,7 @@ public function cari_do_invoice(request $request)
     $id = '0';
     if ($request->cb_pendapatan == 'KORAN') {
 
-    $temp = DB::table('delivery_order')
+      $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
@@ -342,6 +353,16 @@ public function cari_do_invoice(request $request)
         }else{
             $data = $temp;
         }
+    }
+
+    $customer = DB::table('customer')
+                      ->get();
+    for ($i=0; $i < count($data); $i++) { 
+      for ($a=0; $a < count($customer); $a++) { 
+        if ($data[$i]->kode_customer == $customer[$a]->kode) {
+           $data[$i]->nama_customer = $customer[$a]->nama;
+        }
+      }
     }
     // return $data;
    $id = $request->id;

@@ -92,7 +92,7 @@
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
-                                        <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->cabang}} </option>
+                                        <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->nama_kota}} </option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
