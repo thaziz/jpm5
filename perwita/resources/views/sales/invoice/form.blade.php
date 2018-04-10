@@ -87,12 +87,14 @@
                             </tr>
                             @endif
                             <tr>
+
+                                {{-- {{dd($customer)}} --}}
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4" class="">                                    
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
-                                    @foreach ($customer as $row)
-                                        <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->nama_kota}} </option>
+                                    @foreach ($customer as $i=> $val)
+                                        <option value="{{$customer[$i]->kode}}" data-accpiutang="{{$customer[$i]->acc_piutang}}"> {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >

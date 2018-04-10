@@ -1546,6 +1546,15 @@ public function cari_do_edit_invoice(request $request)
         }
     }
     
+     $customer = DB::table('customer')
+                      ->get();
+    for ($i=0; $i < count($data); $i++) { 
+      for ($a=0; $a < count($customer); $a++) { 
+        if ($data[$i]->kode_customer == $customer[$a]->kode) {
+           $data[$i]->nama_customer = $customer[$a]->nama;
+        }
+      }
+    }
 
     return view('sales.invoice.tableDo',compact('data','jenis','id'));
 }
