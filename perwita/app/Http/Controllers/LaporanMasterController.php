@@ -61,10 +61,11 @@ class LaporanMasterController extends Controller
 				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
-				->where('pendapatan','=','KARGO')
+				->where('nomor','like','%KGO%')
 				->get();
 		}
 		// return $dat1;
+		// return $tahun;
 		for ($i=0; $i < count(isset($dat)); $i++) { 
 			// return $dat;
 			for ($a=0; $a < count(isset($dat[$i])); $a++) { 
