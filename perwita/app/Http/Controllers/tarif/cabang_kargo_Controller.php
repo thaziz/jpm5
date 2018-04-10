@@ -211,7 +211,7 @@ class cabang_kargo_Controller extends Controller
                                 'kode_provinsi'=>0,
                                 'create_by'=>Auth::user()->m_username,
                                 'kode_cabang'=>$request->ed_cabang,
-                                'crud'='N',
+                                'crud'=>'N',
                             );
                             $data = DB::table('tarif_cabang_kargo')->insert($simpan);
                         }  
