@@ -44,6 +44,7 @@ class LaporanMasterController extends Controller
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
 				->where('pendapatan','=','PAKET')
+				->where('status','=','DELIVERED OK')
 				->get();
 			$dat1[$i] =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
@@ -53,6 +54,7 @@ class LaporanMasterController extends Controller
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
 				->where('pendapatan','=','KORAN')
+				->where('status','=','DELIVERED OK')
 				->get();
 			$dat2[$i] =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
@@ -62,6 +64,7 @@ class LaporanMasterController extends Controller
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
 				->where('nomor','like','%KGO%')
+				->where('status','=','DELIVERED OK')
 				->get();
 		}
 		// return $dat1;
@@ -954,12 +957,64 @@ class LaporanMasterController extends Controller
 
 	public function invoice(){
 		// return 'a';
+
 		$data = DB::table('invoice')->get();
+
+		$array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+		$tahun = carbon::now();
+		$tahun =  $tahun->year;
+
+		for ($i=0; $i <count($array_bulan) ; $i++) { 
+			$dat[$i] =	DB::table('invoice')
+						->select('i_tanggal','i_total')
+						->whereMonth('i_tanggal','=',$array_bulan[$i])
+						->whereYear('i_tanggal','=',$tahun)
+						->get();
+			$dat1[$i] =  DB::table('invoice')
+						->whereMonth('i_tanggal','=',$array_bulan[$i])
+						->whereYear('i_tanggal','=',$tahun)
+						->get();
+		}
+		// return $dat;
+		// $pushdata = [];
+		for ($i=0; $i < count(isset($dat)); $i++) { 
+			
+			for ($a=0; $a < count(isset($dat[$i])); $a++) { 	
+
+				
+
+				if (isset($dat[$i][$a]->i_kode)) {
+					$anjay[$i] = $dat[$i][$a]->i_kode;
+				}else{
+					$anjay[$i] = 0;
+				}
+				
+				$invoice = [$data0 = count($dat[0]),
+							$data1 = count($dat[1]),
+							$data2 = count($dat[2]),
+							$data3 = count($dat[3]),
+							$data4 = count($dat[4]),
+							$data5 = count($dat[5]),
+							$data6 = count($dat[6]),
+							$data7 = count($dat[7]),
+							$data8 = count($dat[8]),
+							$data9 = count($dat[9]),
+							$data10 = count($dat[10]),
+							$data11 = count($dat[11])
+							];	
+			}
+			
+		}
+		// return ($gg[0]+$gg[1]+$gg[2]+$gg[3]+$gg[4]+$gg[5]+$gg[6]+$gg[7]);
+		return $anjay;
+		// return $invoice;
+		
+		// return $invoice;
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
-		return view('purchase/master/master_penjualan/laporan/lap_invoice',compact('data','kota','kota1','ket','cus'));
+		return view('purchase/master/master_penjualan/laporan/lap_invoice',compact('data','kota','kota1','ket','cus','invoice'));
 	}
 		public function reportinvoice(Request $request){
 		// return 'a';

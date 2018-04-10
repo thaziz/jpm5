@@ -10,6 +10,12 @@
     font-family: FontAwesome;
 
   }
+   #container {
+    height: 400px; 
+    min-width: 310px; 
+    max-width: 100%;
+    margin: 0 auto;
+}
   .dataTables_filter, .dataTables_info { display: none; }
 
 </style>
@@ -28,12 +34,23 @@
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-
+               <div class="form-row">
+                <div class="form-group col-md-2">
+                  <input type="text" class="date form-control" readonly="" id="date_awal" name="">
+                </div>
+                <div class="form-group col-md-2">
+                  <input type="text" class="date form-control" readonly="" id="date_akir" name="">
+                </div>
+                <div class="form-group col-md-2">
+                  <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
+                </div>
+              </div>  
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
+                  <div id="container" style="height: 400px"></div>
                     <table class="table table-bordered datatable table-striped">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
