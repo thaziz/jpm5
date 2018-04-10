@@ -501,75 +501,162 @@ Highcharts.chart('container', {
 
    
     series: [{
-        name: 'DOKUMEN',
+        name: 'PAKET',
         data: [
-        {{ $arraybulan_dokumen[0]}},
-        {{ $arraybulan_dokumen[1]}},
-        {{ $arraybulan_dokumen[2]}},
-        {{ $arraybulan_dokumen[3]}},
-        {{ $arraybulan_dokumen[4]}},
-        {{ $arraybulan_dokumen[5]}},
-        {{ $arraybulan_dokumen[6]}},
-        {{ $arraybulan_dokumen[7]}},
-        {{ $arraybulan_dokumen[8]}},
-        {{ $arraybulan_dokumen[9]}},
-        {{ $arraybulan_dokumen[10]}},
-        {{ $arraybulan_dokumen[11]}},
+        {{ $paket[0]}},
+        {{ $paket[1]}},
+        {{ $paket[2]}},
+        {{ $paket[3]}},
+        {{ $paket[4]}},
+        {{ $paket[5]}},
+        {{ $paket[6]}},
+        {{ $paket[7]}},
+        {{ $paket[8]}},
+        {{ $paket[9]}},
+        {{ $paket[10]}},
+        {{ $paket[11]}},
         ]
     }, 
    {
-        name: 'KILOGRAM',
+        name: 'KORAN',
         data: [
-        {{ $arraybulan_kilogram[0]}},
-        {{ $arraybulan_kilogram[1]}},
-        {{ $arraybulan_kilogram[2]}},
-        {{ $arraybulan_kilogram[3]}},
-        {{ $arraybulan_kilogram[4]}},
-        {{ $arraybulan_kilogram[5]}},
-        {{ $arraybulan_kilogram[6]}},
-        {{ $arraybulan_kilogram[7]}},
-        {{ $arraybulan_kilogram[8]}},
-        {{ $arraybulan_kilogram[9]}},
-        {{ $arraybulan_kilogram[10]}},
-        {{ $arraybulan_kilogram[11]}},
+        {{ $koran[0]}},
+        {{ $koran[1]}},
+        {{ $koran[2]}},
+        {{ $koran[3]}},
+        {{ $koran[4]}},
+        {{ $koran[5]}},
+        {{ $koran[6]}},
+        {{ $koran[7]}},
+        {{ $koran[8]}},
+        {{ $koran[9]}},
+        {{ $koran[10]}},
+        {{ $koran[11]}},
         ]
-    }, 
+    },  
     {
-        name: 'KOLI',
+        name: 'KARGO',
         data: [
-        {{ $arraybulan_koli[0]}},
-        {{ $arraybulan_koli[1]}},
-        {{ $arraybulan_koli[2]}},
-        {{ $arraybulan_koli[3]}},
-        {{ $arraybulan_koli[4]}},
-        {{ $arraybulan_koli[5]}},
-        {{ $arraybulan_koli[6]}},
-        {{ $arraybulan_koli[7]}},
-        {{ $arraybulan_koli[8]}},
-        {{ $arraybulan_koli[9]}},
-        {{ $arraybulan_koli[10]}},
-        {{ $arraybulan_koli[11]}},
-        ]
-    }, 
-    {
-        name: 'SEPEDA',
-        data: [
-        {{ $arraybulan_sepeda[0]}},
-        {{ $arraybulan_sepeda[1]}},
-        {{ $arraybulan_sepeda[2]}},
-        {{ $arraybulan_sepeda[3]}},
-        {{ $arraybulan_sepeda[4]}},
-        {{ $arraybulan_sepeda[5]}},
-        {{ $arraybulan_sepeda[6]}},
-        {{ $arraybulan_sepeda[7]}},
-        {{ $arraybulan_sepeda[8]}},
-        {{ $arraybulan_sepeda[9]}},
-        {{ $arraybulan_sepeda[10]}},
-        {{ $arraybulan_sepeda[11]}},
+        {{ $kargo[0]}},
+        {{ $kargo[1]}},
+        {{ $kargo[2]}},
+        {{ $kargo[3]}},
+        {{ $kargo[4]}},
+        {{ $kargo[5]}},
+        {{ $kargo[6]}},
+        {{ $kargo[7]}},
+        {{ $kargo[8]}},
+        {{ $kargo[9]}},
+        {{ $kargo[10]}},
+        {{ $kargo[11]}},
         ]
     ,
     }]
 
 });
+
+
+
+ function cari(){
+      var date_awal = $('#date_awal').val();
+      var date_akir = $('#date_akir').val();
+      
+      if(date_awal == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+
+      if(date_akir == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+      $.ajax({
+        data: {a:date_awal,b:date_akir},
+        url: baseUrl + '/carideliveryorder_total/carideliveryorder_total',
+        type: "get",
+       success : function(data){
+        console.log(data);
+        Highcharts.chart('container', {
+        chart: {
+            type: 'column',
+          
+        },
+        title: {
+            text: 'Laporan'
+        },
+        subtitle: {
+            text: 'PENJUALAN PAKET'
+        },
+        plotOptions: {
+            column: {
+                depth: 100
+            }
+        },
+        xAxis: {
+            categories: ['LAPORAN'],
+            labels: {
+                skew3d: true,
+                style: {
+                    fontSize: '16px'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+        series: [{
+            name: 'PAKET',
+            data: [data.paket]
+        },{
+            name: 'KORAN',
+            data: [data.koran]
+        },{
+            name: 'KARGO',
+            data: [data.kargo]
+        },
+
+        ],
+      });
+        }
+      });
+    }
+
+
 </script>
 @endsection

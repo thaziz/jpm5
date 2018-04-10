@@ -389,7 +389,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
+                                            <button type="button" class="pull-right btn btn-danger ngeprint" style="margin-left: 30px">
                                                 <i class="fa fa-print"> Print</i>
                                             </button>
                                             <button type="button" class="pull-right btn btn-primary save">

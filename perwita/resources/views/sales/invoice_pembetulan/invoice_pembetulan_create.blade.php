@@ -609,7 +609,7 @@
         $('.terbayar').val(accounting.formatMoney(total_tagihan-sisa_tagihan,"",2,'.',','));
         // $('.selisih_tagihan').val(accounting.formatMoney(total_tagihan-sisa_tagihan,"",2,'.',','));
     }
-
+   
 
    function hitung_pajak_ppn() {
        var cb_jenis_ppn = $('#cb_jenis_ppn').val();

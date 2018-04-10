@@ -63,4 +63,5 @@
 		return count($data);
 	} //JIKA COUNT == 0, maka belum tutup periode, jika ada maka tidak kosong
 
+	
 ?>

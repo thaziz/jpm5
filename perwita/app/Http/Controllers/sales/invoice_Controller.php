@@ -309,6 +309,7 @@ public function cari_do_invoice(request $request)
             $data = $temp;
         }
     }else if ($request->cb_pendapatan == 'PAKET' || $jenis == 'KARGO') {
+      // dd($request->all());
        $temp = DB::table('delivery_order')
               ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
               ->where('delivery_order.kode_cabang','=',$request->cabang)

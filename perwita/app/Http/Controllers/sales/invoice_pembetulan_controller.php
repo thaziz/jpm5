@@ -412,6 +412,7 @@ class invoice_pembetulan_controller extends Controller
                   ->first();
 
         $data_dt = DB::table('invoice_pembetulan_d')
+                  ->join('invoice_pembetulan','ip_nomor','=','ipd_nomor_invoice')
                   ->where('ip_nomor',$id)
                   ->get();
 
@@ -419,6 +420,57 @@ class invoice_pembetulan_controller extends Controller
     }else{
       return redirect()->back();
     }
+  }
+
+  public function hapus_invoice_pembetulan(request $request)
+  {
+    $invoice = DB::table('invoice')
+                  ->where('i_nomor',$request->id)
+                  ->first();
+
+    $invoice_pembetulan = DB::table('invoice_pembetulan_d')
+                            ->where('ip_nomor',$request->id)
+                            ->first();
+
+    $penambahan = $invoice->i_sisa_pelunasan + $invoice->i_debet;
+    $terbayar   = $invoice->i_sisa_pelunasan + $invoice->i_debet;
+
+      if (($penambahan - $terbayar) < $invoice->i_debet) {
+        return response()->json(['status'=>2,'ket'=>'Data Tidak Bisa Dihapus Karena Sisa kurang Dari Debet']);
+      }else{
+
+
+        if ($invoice->i_debet != 0) {
+          $selisih = $invoice_pembetulan->ip_total_revisi - $invoice_pembetulan->ip_total_tagihan;
+
+          $hasil = $invoice->i_sisa_akhir - $selisih;
+
+          $update_invoice = DB::table('invoice')
+                            ->where('i_nomor',$request->id)
+                            ->update([
+                              'i_debet' => 0,
+                              'i_sisa_akhir'=> $hasil
+                            ]);
+        }else{
+          $selisih = $invoice_pembetulan->ip_total_tagihan - $invoice_pembetulan->ip_total_revisi;
+
+          $hasil = $invoice->i_sisa_akhir + $invoice->i_kredit;
+
+          $update_invoice = DB::table('invoice')
+                            ->where('i_nomor',$request->id)
+                            ->update([
+                              'i_debet' => 0,
+                              'i_sisa_akhir'=> $hasil
+                            ]);
+        }
+
+        $invoice_pembetulan = DB::table('invoice_pembetulan_d')
+                            ->where('ip_nomor',$request->id)
+                            ->delete();
+
+        return response()->json(['status'=>1]);
+      }
+
   }
 
 }

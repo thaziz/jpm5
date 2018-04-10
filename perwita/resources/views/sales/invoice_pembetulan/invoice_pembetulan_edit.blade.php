@@ -25,7 +25,7 @@
                     <h5> INVOICE PEMBETULAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -67,11 +67,6 @@
                                     <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="{{$data->ip_nomor}}" >
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
                                     <input type="hidden" name="nota_cndn" id="nota_cndn" readonly="readonly" class="form-control nota_cndn" value="{{$data->cd_nomor}}" >
-                                </td>
-                                <td colspan="1" width="15%" align="center">
-                                    <button type="button" class="btn btn-primary cari_invoice">
-                                        <i class="fa fa-search"> cari invoice</i>
-                                    </button>
                                 </td>
                             </tr>
                             
@@ -389,6 +384,9 @@
     // pilih_invoice
     function pilih_invoice(a) {
         var id  = $(a).find('.i_nomor_invoice').val();
+        if (id == null) {
+        var id  = $(a).find('#nota_invoice').val();
+        }
         $.ajax({
             url:baseUrl+'/sales/pilih_invoice_pembetulan',
             data:{id},
@@ -474,7 +472,11 @@
     });
     //ajax cari nota
 
-
+    $(document).ready(function(){
+        var nota_invoice = $('#nota_invoice').parents('tr');
+        console.log(nota_invoice);
+        pilih_invoice(nota_invoice);
+    })
     //ajax jatuh  tempo
    function ganti(){
         var customer = $('#customer').val();

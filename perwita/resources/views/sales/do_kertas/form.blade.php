@@ -793,5 +793,12 @@ $('.reload').click(function(){
       });  
      });
     }
+
+
+    window.onbeforeunload = function(event)
+{       
+       return confirm();
+
+};
 </script>
 @endsection

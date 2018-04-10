@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Auth;
-
+use carbon\carbon;
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
@@ -119,9 +119,11 @@ class cabang_kilogram_Controller extends Controller
         $kodecabang = Auth::user()->kode_cabang;
 
         $array_harga = [];
+        $array_harga_kge = [];
         $array_jenis = ['REGULER','EXPRESS'];
         $array_keterangan  = ['Tarif Kertas / Kg','Tarif <= 10 Kg','Tarif Kg selanjutnya <= 10 Kg','Tarif <= 20 Kg','Tarif Kg selanjutnya <= 20 Kg','Tarif Kertas / Kg','Tarif <= 10 Kg','Tarif Kg selanjutnya <= 10 Kg','Tarif <= 20 Kg','Tarif Kg selanjutnya <= 20 Kg'];
         $array_waktu = [];
+        $array_waktu_kge = [];
         $array_nota  = ['KGR','KGE'];
         $array_note  = [];
 
@@ -136,11 +138,11 @@ class cabang_kilogram_Controller extends Controller
         array_push($array_harga, $request->tarif20kg_reguler);
         array_push($array_harga, $request->tarifkgsel_reguler);
 
-        array_push($array_harga, $request->tarifkertas_express);
-        array_push($array_harga, $request->tarif0kg_express);
-        array_push($array_harga, $request->tarif10kg_express);
-        array_push($array_harga, $request->tarif20kg_express);
-        array_push($array_harga, $request->tarifkgsel_express);
+        array_push($array_harga_kge, $request->tarifkertas_express);
+        array_push($array_harga_kge, $request->tarif0kg_express);
+        array_push($array_harga_kge, $request->tarif10kg_express);
+        array_push($array_harga_kge, $request->tarif20kg_express);
+        array_push($array_harga_kge, $request->tarifkgsel_express);
 
         array_push($array_waktu, $request->waktu_regular);
         array_push($array_waktu, $request->waktu_regular);
@@ -148,11 +150,11 @@ class cabang_kilogram_Controller extends Controller
         array_push($array_waktu, $request->waktu_regular);
         array_push($array_waktu, $request->waktu_regular);
 
-        array_push($array_waktu, $request->waktu_express);
-        array_push($array_waktu, $request->waktu_express);
-        array_push($array_waktu, $request->waktu_express);
-        array_push($array_waktu, $request->waktu_express);
-        array_push($array_waktu, $request->waktu_express);
+        array_push($array_waktu_kge, $request->waktu_express);
+        array_push($array_waktu_kge, $request->waktu_express);
+        array_push($array_waktu_kge, $request->waktu_express);
+        array_push($array_waktu_kge, $request->waktu_express);
+        array_push($array_waktu_kge, $request->waktu_express);
 
         $cari_kode_sama = DB::table('tarif_cabang_kilogram')
                             ->max('kode_sama_kilo');
@@ -164,7 +166,7 @@ class cabang_kilogram_Controller extends Controller
 
         
 
-
+        // return $array_harga;
         // return $array_keterangan;
 
         if ($crud  == 'N') {
@@ -204,17 +206,40 @@ class cabang_kilogram_Controller extends Controller
             // $id2 = (integer)$cari_nota1[0]->id+1;
             // $id2 = (integer)$cari_nota1[0]->id+1;
             // return $id0;
-                for ($i=0; $i <count($cari) ; $i++) { 
-           
-                     for ($a=0; $a < count($array_harga); $a++) { 
+            // return $cari;
+            $b=0;
+            $s=[];
+            $o=[];
+             $cabang= Auth::user()->kode_cabang;
+             $cari_nota = DB::select("SELECT  substring(max(kode),11) as id from tarif_cabang_kilogram
+                                            WHERE kode_cabang = '$cabang'
+                                            AND jenis='REGULER'");
+             $index = (integer)$cari_nota[0]->id;
 
-                        // return $cari;
-                        $kode_utama = (int)$kode_utama+1;
-                        $index = $kode_utama;
-                        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                        $nota0[$a] = $kodekota . '/' .  $array_nota[0] .$request->cb_cabang .  $index;
-                    }    
+             $cari_nota_kge = DB::select("SELECT  substring(max(kode),11) as id from tarif_cabang_kilogram
+                                            WHERE kode_cabang = '$cabang'
+                                            AND jenis='EXPRESS'");
+             $index_kge = (integer)$cari_nota[0]->id;
+
+             $d =1;
+             $e =1;
+            // return $array_harga;
+                for ($i=0; $i <count($cari) ; $i++) { 
+                     for ($a=0; $a < count($array_harga); $a++) { 
+                         $index = str_pad($d, 5, '0', STR_PAD_LEFT);
+                         $nota = 'KGR' . Auth::user()->kode_cabang . $index;
+                         array_push($s, $nota);
+                    }
+                    $d++;
+                    for ($i=0; $i <count($array_harga_kge) ; $i++) {   
+                         $index = str_pad($e, 5, '0', STR_PAD_LEFT);
+                         $nota = 'KGE' . Auth::user()->kode_cabang . $index;
+                         array_push($o, $nota);
+                    }
+                    $e++;
                 }
+                return $s;
+
                 // return $kode_utama;
                 for ($r=0; $r <count($kode_utama) ; $r++) { 
                  $kode_utama = (int)$kode_utama+1;
@@ -227,14 +252,14 @@ class cabang_kilogram_Controller extends Controller
               
             
             $array_note = [$nota0];
-            return $array_note;
+            return $array_note; 
             for ($i=0; $i < count($cari); $i++) { 
 
                 
                 for ($a=0; $a < count($array_harga); $a++) { 
 
 
-                    return [$array_note,$array_jenis,$array_harga,$array_waktu];
+                    return [$array_note,$array_jenis,$array_harga,$array_waktu,$array_keterangan];
 
                     $kode_detail = DB::table('tarif_cabang_kilogram')
                             ->max('kode_detail_kilo');

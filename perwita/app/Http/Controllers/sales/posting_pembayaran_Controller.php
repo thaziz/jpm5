@@ -468,4 +468,21 @@ class posting_pembayaran_Controller extends Controller
         $this->posting_pembayaran_hapus($request);
         return $this->simpan_posting($request);
     }
+
+    public function posting_pembayaran_print($id)
+    {
+        $data = DB::table('posting_pembayaran')
+                  ->join('cabang','kode','=','kode_cabang')
+                  ->where('nomor',$id)
+                  ->first();
+
+        $data_dt = DB::table('posting_pembayaran_d')
+                     ->join('kwitansi','nomor_penerimaan_penjualan','=','k_nomor')
+                     ->join('masterbank','mb_kode','=','k_kode_akun')
+                     ->where('nomor_posting_pembayaran',$id)
+                     ->get();
+
+        return view('sales.posting_pembayaran.print',compact('data','data_dt'));
+
+    }
 }
