@@ -231,6 +231,8 @@ class cabang_kilogram_Controller extends Controller
                          array_push($s, $nota);
                     }
                     $d++;
+                }
+                for ($p=0; $p <count($cari) ; $p++) { 
                     for ($i=0; $i <count($array_harga_kge) ; $i++) {   
                          $index = str_pad($e, 5, '0', STR_PAD_LEFT);
                          $nota = 'KGE' . Auth::user()->kode_cabang . $index;
@@ -238,7 +240,7 @@ class cabang_kilogram_Controller extends Controller
                     }
                     $e++;
                 }
-                return $s;
+                return [$s,$o];
 
                 // return $kode_utama;
                 for ($r=0; $r <count($kode_utama) ; $r++) { 
