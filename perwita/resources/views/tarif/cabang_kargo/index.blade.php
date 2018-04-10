@@ -474,9 +474,9 @@
     $(document).on( "click",".btndelete", function() {
         var name = $(this).attr("name");
         var id = $(this).attr("id");
-        if(!confirm("Hapus Data " +name+ " ?")) return false;
+        if(!confirm('Apakah Anda Yaking'+"Hapus Data "+" ?")) return false;
         var value = {
-            id: id,
+            id: id,name:name,
             _token: "{{ csrf_token() }}"
         };
         $.ajax({

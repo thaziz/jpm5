@@ -10,7 +10,7 @@ use Carbon\carbon;
 class cabang_kargo_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
+        $sql = "    SELECT t.kode_provinsi,jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
                     FROM tarif_cabang_kargo t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
@@ -29,7 +29,7 @@ class cabang_kargo_Controller extends Controller
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
                                         <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['kode_provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                         <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button> 
 
                                     </div> ';
@@ -233,6 +233,7 @@ class cabang_kargo_Controller extends Controller
 
                 }else if($crud == 'E'){
                                             
+                       $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get();
                        
                        $simpan = array(
                                 'kode' => $request->ed_kode_lama,
@@ -271,9 +272,11 @@ class cabang_kargo_Controller extends Controller
     }
 
     public function hapus_data (Request $request) {
+        // dd($request->all());
         $hapus='';
-        $id=$request->id;
-        $hapus = DB::table('tarif_cabang_kargo')->where('kode' ,'=', $id)->where('crud','!=','E')->delete();
+        $asal=$request->id;
+        $tujuan=$request->name;
+        $hapus = DB::table('tarif_cabang_kargo')->where('kode_provinsi','=',$tujuan)->where('crud','!=','E')->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
