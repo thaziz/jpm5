@@ -118,9 +118,7 @@
                                     <option value="2">
                                       Supplier Hutang Dagang
                                     </option>
-                                    <option value="3">
-                                      Voucher / Hutang Dagang
-                                    </option>
+                                 
                                     <option value="6">
                                     Biaya Penerus Agen / Vendor
                                     </option>
@@ -624,7 +622,9 @@
         toastr.info('Netto Hutang tidak boleh 0.00 atau kosong :)');
         return false;
       }
-
+       brutocn = $('.brutocn').val();
+    dppcn = $('.dppcn').val();
+ 
 
      $('.jenisbayar2').addClass('disabled');
      $('.jenissup').addClass('disabled');
@@ -642,7 +642,8 @@
     nettohutang = $('.nettoheader').val();
     sisahutang   =  $('.sisaterbayarheader').val();
     nettocn = $('.nettohutangcn').val();     
-    
+    dpp = $('.dppheader').val();
+
     nilaipph = $('.hasilpphcn').val();
     jenispph = $('.jenispphcn').val();
     inputpph = $('.inputpphcn').val();
@@ -651,6 +652,8 @@
     jenisppn = $('.jenisppncn').val();
     inputppn = $('.inputppncn').val();
 
+
+   
     console.log(nilaipph + jenispph + inputpph + nilaippn + jenisppn + inputppn);
 
 
@@ -659,11 +662,12 @@
                           "<td style='text-align:center'>"+nofaktur+" </td>" +
                           "<td style='text-align:center'>"+jatuhtempo+"</td>" +
                           "<td style='text-align:right'>"+addCommas(nettohutang)+"</td>" +
-                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="+idfaktur+" readonly style='text-align:right' name='idfaktur[]'></td>" + //idfaktur + sisahutang
+                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(sisahutang)+"' readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="+idfaktur+" readonly style='text-align:right' name='idfaktur[]'> <input type='hidden' class='dpp form-control input-sm' value="+dpp+" readonly style='text-align:right' name='dpp[]'></td> " + //idfaktur + sisahutang
                            "<td style='text-align:right'>" +
-                           "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value='"+inputppn+" 'readonly style='text-align:right;style='width:40%'' name='inputppn[]'>  </td>" + //nilaippn
+                           "<input type='text' class='nilaippn form-control input-sm' value='"+addCommas(nilaippn)+"' readonly style='text-align:right;style='width:40%'' name='nilaippn[]'> <input type='hidden' class=' form-control input-sm' value="+jenisppn+" readonly style='text-align:right;style='width:40%'' name='jenisppn[]'> <input type='hidden' class=' form-control input-sm' value='"+inputppn+" 'readonly style='text-align:right;style='width:40%'' name='inputppn[]'>  <input type='hidden' class=' form-control input-sm dppcn2' value='"+dppcn+" 'readonly style='text-align:right;style='width:40%'' name='dppcn[]'>  <input type='hidden' class=' form-control input-sm brutocn2' value='"+brutocn+" 'readonly style='text-align:right;style='width:40%'' name='brutocn[]'>  </td>" + //nilaippn + dpp + bruto
 
                             "<td style='text-align:right'> <input type='text' class='nilaipph form-control input-sm' value='"+addCommas(nilaipph)+"' readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm' value='"+inputpph+"' readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm' value="+jenispph+" readonly style='text-align:right' name='jenispph[]'></td>" + //nilaipph
+
                           "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right' value="+nettocn+" readonly name='nettocn[]'> </td>" + //nettocn
                           "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+noappend+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
                         "</tr>";
@@ -817,6 +821,19 @@ jenisbayar2 = $('.jenisbayar2').val();
       jenis = $('.jenissup').val();
       cabang = $('.cabang').val();
       
+      arrnofaktur = [];
+      $('.datafaktur').each(function(){
+        valfaktur = $(this).data('nofaktur');
+        arrnofaktur.push(valfaktur);
+        console.log(arrnofaktur + 'arrnofaktur');
+      })
+
+          
+     /* for($j = 0; $j < arrnofaktur.length; $j++){
+        $('#tr'+arrnofaktur[$j]).hide();
+      }*/
+    
+
       $.ajax({
         type : 'GET',
         data : {idsup,jenis,cabang},
@@ -829,46 +846,36 @@ jenisbayar2 = $('.jenisbayar2').val();
             var nmrbnk = 1;
             table = response.fakturpembelian;
 
-            if(idsup == 2){
-               for(var i = 0; i < table.length; i++){      
-                                   
-               var html2 = "<tr id="+table[i].fp_nofaktur+" data-faktur='"+table[i].fp_nofaktur+"'>" +
-                          "<td>"+nmrbnk+"</td>" +
-                          "<td>"+table[i].fp_nofaktur+"</td>" + // no faktur
-                          "<td>"+table[i].nama_supplier+"</td>" +
-                          "<td>"+table[i].fp_jatuhtempo+"</td>" +
-                       
-                          "<td style='text-align:right'>Rp "+addCommas(table[i].fp_netto)+"</td>" +
-                          "<td  style='text-align:right'>Rp " +addCommas(table[i].fp_sisapelunasan)+"</td>" +
-                         "<td>" +
-                           "<div class='checkbox'> <input type='checkbox' id="+table[i].fp_idfaktur+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                      "<label></label>" +
-                                      "</div></td>" +
-                         "</tr>";
-                        
-                 tablecek.rows.add($(html2)).draw(); 
-                nmrbnk++; 
-               }   
-            }
-            else {
-              for(var i = 0; i < table.length; i++){  
-                  var html2 = "<tr>" +
-                          "<td>"+nmrbnk+"</td>" +
-                          "<td>"+table[i].fp_nofaktur+"</td>" + // no faktur
-                          "<td>"+table[i].nama+"</td>" +
-                          "<td>"+table[i].fp_jatuhtempo+"</td>" +
-                          "<td style='text-align:right'>Rp "+addCommas(table[i].fp_netto)+"</td>" +
-                          "<td  style='text-align:right'>Rp " +addCommas(table[i].fp_sisapelunasan)+"</td>" +
-                         "<td>" +
-                           "<div class='checkbox'> <input type='checkbox' id="+table[i].fp_idfaktur+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                      "<label></label>" +
-                                      "</div></td>" +
-                         "</tr>";
-
-                tablecek.rows.add($(html2)).draw(); 
-                nmrbnk++; 
+            if(jenis == 2){
+                 for(var i = 0; i < table.length; i++){  
+                  alert(arrnofaktur[i] + 'dilooptable');
+                  
+                       var html2 = "<tr class='data"+nmrbnk+"' id="+table[i].fp_nofaktur+" data-faktur='"+table[i].fp_nofaktur+"'>" +
+                            "<td>"+nmrbnk+"</td>" +
+                            "<td>"+table[i].fp_nofaktur+"</td>" + // no faktur
+                            "<td>"+table[i].nama_supplier+"</td>" +
+                            "<td>"+table[i].fp_jatuhtempo+"</td>" +
+                         
+                            "<td style='text-align:right'>Rp "+addCommas(table[i].fp_netto)+"</td>" +
+                            "<td  style='text-align:right'>Rp " +addCommas(table[i].fp_sisapelunasan)+"</td>" +
+                           "<td>" +
+                             "<div class='checkbox'> <input type='checkbox' id="+table[i].fp_idfaktur+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                        "<label></label>" +
+                                        "</div></td>" +
+                           "</tr>";
+                          
+                       tablecek.rows.add($(html2)).draw(); 
+                      nmrbnk++; 
+                  
+                                                                                   
+                 }   
               }
-               } 
+             
+               $("#tblfaktur tbody tr.data345").hide();
+                for($j = 0; $j < arrnofaktur.length; $j++){
+                  alert(arrnofaktur[$j]);
+                    $("#tblfaktur tbody tr.data"+ arrnofaktur[$j]).hide();
+                  }
             }
            
         })
@@ -900,19 +907,6 @@ jenisbayar2 = $('.jenisbayar2').val();
         $nilaippn = 0;
         $nilaipph = 0;
        
-
-           arrnofaktur = [];
-          $('.datafaktur').each(function(){
-            valfaktur = $(this).data('nofaktur');
-            arrnofaktur.push(valfaktur);
-            console.log(arrnofaktur + 'arrnofaktur');
-          })
-
-          for(var j = 0 ; j < arrnofaktur.length; j++){
-              toastr.info('')
-          }
-
-
         
         url = baseUrl + '/cndnpembelian/hslfaktur'; 
 
@@ -921,7 +915,7 @@ jenisbayar2 = $('.jenisbayar2').val();
           return false;
         }
         else {
-
+            $('tr.data1').hide();
 
          $.ajax({    
           type :"get",

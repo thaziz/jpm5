@@ -293,7 +293,7 @@
 
                           <tr>
                             <td> Diskon </td>
-                            <td> <div class="form-group"> <div class="col-md-3"> <input type='text' class='form-control diskon' name="diskon2" required=""> </div> <label class="col-sm-2 col-sm-2 control-label"> % </label> <div class="col-sm-7"> <input style='text-align: right' type="text" class="form-control hasildiskonitem" name="hasildiskon"> </div> </div> </td>
+                            <td> <div class="form-group"> <div class="col-md-3"> <input type='number' class='form-control diskon' name="diskon2" required=""> </div> <label class="col-sm-2 col-sm-2 control-label"> % </label> <div class="col-sm-7"> <input style='text-align: right' type="text" class="form-control hasildiskonitem" name="hasildiskon"> </div> </div> </td>
                           </tr>
 
 
