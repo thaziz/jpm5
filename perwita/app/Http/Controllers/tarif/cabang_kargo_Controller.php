@@ -96,40 +96,42 @@ class cabang_kargo_Controller extends Controller
         if ($crud  == 'N') {
             if ($request->cb_provinsi_tujuan != '') {
                 for ($i=0; $i < count($cari); $i++) { 
-                $cari_old0[$i] = DB::table('tarif_cabang_kargo')
-                          ->where('id_kota_asal',$request->cb_kota_asal)
-                          ->where('id_kota_tujuan',$cari[$i]->id)
-                          ->where('kode_cabang',$request->ed_cabang)
-                          ->where('jenis',$request->cb_jenis)
-                          ->get();
-            }
-            // return $cari_old1;
-            $cari_nota0 = DB::select("SELECT  substring(max(kode),11) as id from tarif_cabang_kargo
-                                                WHERE kode_cabang = '$request->ed_cabang' 
-                                                and jenis = $request->cb_jenis");
-            // return $cari_nota2;
-            $id0 = (integer)$cari_nota0[0]->id+1;   
-
-             
-                for ($i=0; $i < count($cari); $i++) { 
-                    for ($a=0; $a < count($array_harga); $a++) { 
-                        
-                        $index = $id0;
-                        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-                        $nota0[$i] = $kodekota . '/' .  'KGO' .$request->ed_cabang .  $index;
-                        
-                    }
-                    $id0++;
-                   
+                    $cari_old0[$i] = DB::table('tarif_cabang_kargo')
+                              ->where('id_kota_asal',$request->cb_kota_asal)
+                              ->where('id_kota_tujuan',$cari[$i]->id)
+                              ->where('kode_cabang',$request->ed_cabang)
+                              ->where('jenis',$request->cb_jenis)
+                              ->get();
                 }
-            $array_note = [$nota0]; 
-             
+                // return $cari_old1;
+                $cari_nota0 = DB::select("SELECT  substring(max(kode),11) as id from tarif_cabang_kargo
+                                                    WHERE kode_cabang = '$request->ed_cabang' 
+                                                    and jenis = $request->cb_jenis");
+                // return $cari_nota2;
+                $id0 = (integer)$cari_nota0[0]->id+1;   
+
+                 
+                    for ($i=0; $i < count($cari); $i++) { 
+                        for ($a=0; $a < count($array_harga); $a++) { 
+                            
+                            $index = $id0;
+                            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+                            $nota0[$i] = $kodekota . '/' .  'KGO' .$request->ed_cabang .  $index;
+                            
+                        }
+                        $id0++;
+                       
+                    }
+                $array_note = [$nota0]; 
+                 
             }else{
-
+                $cari_kode = DB::table('tarif_cabang_kargo')
+                              ->where('id_kota_asal',$request->cb_kota_asal)
+                              ->where('id_kota_tujuan',$request->cb_kota_tujuan)
+                              ->where('kode_cabang',$request->ed_cabang)
+                              ->get();
             }
-
-
-
+            
             if ($request->cb_provinsi_tujuan != '') {
             for ($i=0; $i < count($cari); $i++) { 
                 for ($a=0; $a < count($array_harga); $a++) { 
@@ -184,7 +186,11 @@ class cabang_kargo_Controller extends Controller
                 }
 
             }else{
-                     $kode_detailis = DB::table('tarif_cabang_kargo')
+                    if (isset($cari_kode[0]->id_kota_asal) != $request->cb_kota_asal  and
+                        isset($cari_kode[0]->id_kota_tujuan) != $request->cb_kota_tujuan and
+                        isset($cari_kode[0]->kode_cabang) != $request->ed_cabang) {
+
+                        $kode_detailis = DB::table('tarif_cabang_kargo')
                             ->max('kode_detail_kargo');
                                 if ($kode_detailis == null) {
                                     $kode_detailis = 1;
@@ -197,7 +203,7 @@ class cabang_kargo_Controller extends Controller
                         $kodeutama = $kodekota . '/' .  'KGO' .$request->ed_cabang  .  $index;
                         $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get();
 
-                            if ($crud == 'N') {
+                        if ($crud == 'N') {
                             $simpan = array(
                                 'kode' => $kodeutama,
                                 'id_kota_asal' => $request->cb_kota_asal,
@@ -217,8 +223,22 @@ class cabang_kargo_Controller extends Controller
                                 'crud'=>'N',
                             );
                             $data = DB::table('tarif_cabang_kargo')->insert($simpan);
-                        }  
+                        }
+                    }else{
 
+                        if ($crud == 'N') {
+                            $simpan = array(
+                                'jenis' => $request->cb_jenis,
+                                'kode_satuan' => $request->satuan,
+                                'kode_angkutan' => $request->cb_angkutan,
+                                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                                'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
+                                'acc_penjualan' => $request->ed_acc_penjualan,
+                                'csf_penjualan'=>$request->ed_csf_penjualan,
+                         );
+                        $data = DB::table('tarif_cabang_kargo')->where('kode','=',$cari_kode[0]->kode)->update($simpan);
+                        }
+                    }
             }
 
             if($data == TRUE){
