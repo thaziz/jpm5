@@ -107,12 +107,11 @@ class penerimaan_penjualan_Controller extends Controller
             $data = DB::table('kwitansi')
                       ->join('customer','kode','=','k_kode_customer')
                       ->where('k_kode_cabang',$cabang)
-                      ->take(2000);
+                      ->take(2000)
                       ->get();
         }
 
         
-
         return view('sales.penerimaan_penjualan.index',compact('data'));
         
     }
