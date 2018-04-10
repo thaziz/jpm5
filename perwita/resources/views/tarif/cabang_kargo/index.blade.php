@@ -362,6 +362,15 @@
         $("input[name='ed_waktu']").val(0);
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
+
+        $("select[name='cb_jenis']").val('');
+        $("select[name='cb_angkutan']").val('');
+        $("select[name='ed_cabang']").val('');
+        $("select[name='satuan']").val('');
+        $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
+        $("select[name='ed_acc_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='ed_csf_penjualan']").val('').trigger('chosen:updated');
+
         $('.hilang1').show();
         $('.hilang').show();
         $('#kota_col').attr('colspan','1');
