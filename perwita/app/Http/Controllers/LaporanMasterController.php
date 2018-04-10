@@ -977,37 +977,32 @@ class LaporanMasterController extends Controller
 		}
 		// return $dat;
 		// $pushdata = [];
-		for ($i=0; $i < count(isset($dat)); $i++) { 
-			
-			for ($a=0; $a < count(isset($dat[$i])); $a++) { 	
-
-				
-
-				if (isset($dat[$i][$a]->i_kode)) {
-					$anjay[$i] = $dat[$i][$a]->i_kode;
-				}else{
-					$anjay[$i] = 0;
+		// return $dat[3][0]->i_total;
+		// return $dat
+		for ($i=0; $i < count($dat); $i++) { 
+			if ($dat[$i] != null) {
+				for ($a=0; $a < count($dat[$i]); $a++) { 
+					$anjay[$i][$a] = $dat[$i][$a]->i_total;
 				}
-				
-				$invoice = [$data0 = count($dat[0]),
-							$data1 = count($dat[1]),
-							$data2 = count($dat[2]),
-							$data3 = count($dat[3]),
-							$data4 = count($dat[4]),
-							$data5 = count($dat[5]),
-							$data6 = count($dat[6]),
-							$data7 = count($dat[7]),
-							$data8 = count($dat[8]),
-							$data9 = count($dat[9]),
-							$data10 = count($dat[10]),
-							$data11 = count($dat[11])
-							];	
+			}else{
+				$anjay[$i] = 0;
 			}
-			
 		}
+		// return $anjay;
+
+		for ($i=0; $i < count($anjay); $i++) { 
+			if ($anjay[$i] != 0) {
+				for ($a=0; $a < count($anjay[$i]); $a++) { 
+					$fix[$i] = array_sum($anjay[$i]);
+				}
+			}else{
+				$fix[$i] = 0;
+			}
+		}
+
 		// return ($gg[0]+$gg[1]+$gg[2]+$gg[3]+$gg[4]+$gg[5]+$gg[6]+$gg[7]);
-		return $anjay;
-		// return $invoice;
+		// return $i;
+		return $fix;
 		
 		// return $invoice;
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
