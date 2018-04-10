@@ -402,7 +402,6 @@ function hapus_detail(o) {
 $('#btnsimpan').click(function(){
     var temp = 0;
     var temp1 = 0;
-    var id = '{{$id}}';
 
     $('.d_keterangan').each(function(){
         if ($(this).val() != '') {
