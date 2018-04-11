@@ -190,7 +190,7 @@
                          <tr>
                           <td> Plafon Kredit </td>
                            <td>
-                             <input type="text" class="form-control plafonkredit input-sm" name="plafon_kredit" value="{{$sup->plafon}}" readonly="">
+                             <input type="text" class="form-control plafonkredit input-sm" name="plafon_kredit" value="{{ number_format($$sup->plafon, 2) }}" readonly="">
                           </td>
                         </tr>
 
@@ -212,6 +212,13 @@
                           <td> <input type="text" class="form-control acchutangdagang input-sm" name="acchutangdagang" readonly="" value="{{$sup->acc_hutang}}"> </td>
                         </tr>
                          
+                         <tr>
+                          <td>
+                            Acc CSF
+                          </td>
+                          <td> <input type="text" class="form-control acchutangdagang input-sm" name="acchutangdagang" readonly="" value="{{$sup->acc_csf}}"> </td>
+                        </tr>
+
                         <tr>
                           <td>
                             Terikat Kontrak

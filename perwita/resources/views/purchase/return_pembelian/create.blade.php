@@ -51,7 +51,7 @@
                   <div class="box-body">
                       <div class="row">
                       <div class="col-xs-6">
-                           <table border="0">
+                           <table border="0" class="table">
                           <tr>
                             <td width="150px">
                           No Return
