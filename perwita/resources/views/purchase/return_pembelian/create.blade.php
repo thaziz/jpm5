@@ -62,22 +62,12 @@
                           </tr>
 
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
                             <td>   Tanggal </td>
                             <td>
                               <input type="text" class="form-control">
                             </td>
                           </tr>
-                          <tr>
-                          <td>
-                            &nbsp;
-                          </td>
-                          </tr>
+                       
 
                           <tr>
                             <td> No Faktur </td>
@@ -85,28 +75,12 @@
                             </td>
                           </tr>
 
-
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-
                             <td>
                               Tanggal Faktur
                             </td>
                             <td>
                                 <input type="text" class="form-control"> 
-
-                            </td>
-
-                          </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
                             </td>
                           </tr>
 
@@ -117,6 +91,14 @@
                             <td>
                               <input type="text" class="form-control">
                             </td>
+                          </tr>
+                          <tr>
+                            <td> Keterangan </td>
+                            <td> <input type="text" class="form-control"></td>
+                          </tr>
+
+                          <tr>
+                            <td> </td>
                           </tr>
                           </table>
                       </div>
