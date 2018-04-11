@@ -281,8 +281,8 @@ class PurchaseController extends Controller
 			
 			$time = Carbon::now();
 
-			$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
-			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
+			 $month = Carbon::now()->format('M');
+       		 $year = Carbon::now()->format('Y');
 
 			$spp = new spp_purchase();
 			$spp->spp_nospp = strtoupper($request->nospp);
@@ -292,7 +292,7 @@ class PurchaseController extends Controller
 			$spp->spp_bagian = strtoupper($request->bagian);
 			$spp->spp_keperluan = strtoupper($request->keperluan);
 			$spp->spp_status = 'DITERBITKAN';
-			$spp->spp_noform = 'JPM/FR/PURC/01-02' . $month . $year;
+			$spp->spp_noform = 'JPM/FR/PURC/01-02 ' . 'Januari ' . $year;
 			$spp->spp_keterangan = strtoupper($request->keterangan);
 			$spp->spp_penerimaan = $request->spp_penerimaan;
 			$spp->create_by = $request->username;
