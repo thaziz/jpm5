@@ -995,15 +995,16 @@ class PurchaseController extends Controller
 	
 public function purchase_order() {
 
-		$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode order by po_id desc");
+		$cabang = session::get('cabang');
+		$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_supplier = idsup and po_cabang = kode and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' order by po_id desc");
 		$data['spp'] = DB::select("select * from  spp, supplier, cabang, confirm_order, confirm_order_tb where co_idspp = spp_id and co_mng_pem_approved = 'DISETUJUI' and spp_cabang = kode and cotb_idco = co_id and cotb_supplier = idsup  and cotb_setuju = 'BELUM DI SETUJUI'");
 
 		$data['countspp'] = count($data['spp']);
 		
-		$data['posetuju'] = DB::table("pembelian_order")->where('po_setujufinance' , '=' , 'DISETUJUI')->count();
-		$data['porevisi'] = DB::table("pembelian_order")->where('po_setujufinance' , '=' , 'DIREVISI')->count();
-		$data['poditolak'] = DB::table("pembelian_order")->where('po_setujufinance' , '=' , 'DITOLAK')->count();
-		$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull('po_setujufinance')->count();
+		$data['posetuju'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DISETUJUI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
+		$data['porevisi'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DIREVISI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
+		$data['poditolak'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DITOLAK'],['po_statusreturn' , '=' , 'AKTIF']])->count();
+		$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull([['po_setujufinance'],['po_statusreturn' , '=' , 'AKTIF']])->count();
 
 		Session::flash('message', 'Terdapat ' . count($data['spp']). ' data SPP yang belum di proses'); 
 
@@ -1121,7 +1122,7 @@ public function purchase_order() {
 
 	public function detailpurchasekeuangan(Request $request){
 		$id = $request->poid;
-		$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_id = '$id' and po_supplier = idsup and active = 'AKTIF' and po_cabang = kode");
+		$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_id = '$id' and po_supplier = idsup and active = 'AKTIF' and po_cabang = kode and po_statusreturn = 'AKTIF' ");
 
 		$data['supplier'] = DB::select("select * from supplier where active='AKTIF'");
 
@@ -1156,7 +1157,7 @@ public function purchase_order() {
 	}
 
 	public function detailpurchase($id) {		
-		$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_id = '$id' and po_supplier = idsup and active = 'AKTIF' and po_cabang = kode");
+		$data['po'] = DB::select("select * from pembelian_order, supplier, cabang where po_id = '$id' and po_supplier = idsup and active = 'AKTIF' and po_cabang = kode and po_statusreturn = 'AKTIF' ");
 
 		$data['supplier'] = DB::select("select * from supplier where active='AKTIF'");
 
@@ -1364,6 +1365,7 @@ public function purchase_order() {
 				$po->po_tipe = $request->spptipe;
 				$po->po_penerimaan = $request->spp_penerimaan;
 				$po->po_jenisppn = $request->jenisppn;
+				$po->po_statusreturn = 'AKTIF';
 				$po->save();
 
 
@@ -1805,7 +1807,7 @@ public function purchase_order() {
 			//$statusheaderpb[0]->pbdt_status;
 			
 			/*dd($statusheaderpb[4]->pbdt_status);*/
-			$statusheaderpo = DB::select("select * from pembelian_order , pembelian_orderdt where po_id = podt_idpo and po_id = '$no_po'");
+			$statusheaderpo = DB::select("select * from pembelian_order , pembelian_orderdt where po_id = podt_idpo and po_id = '$no_po' and po_statusreturn = 'AKTIF'");
 			$hitungpo = count($statusheaderpo);
 			$hitungpb = count($statusheaderpb);
 			
@@ -4533,11 +4535,11 @@ public function kekata($x) {
 					}*/
 
 			if($cabang == '000'){
-				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J'  and pb_terfaktur IS null union select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J'  and po_idfaktur IS null  order  by id desc");
+				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J'  and pb_terfaktur IS null and po_statusreturn = 'AKTIF' union select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J'  and po_idfaktur IS null and po_statusreturn = 'AKTIF' order  by id desc");
 	
 			}		
 			else {
-				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J' and po_cabang = '$cabang' and pb_terfaktur IS null union select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J' and po_cabang = '$cabang' and po_idfaktur IS null  order  by id desc");
+				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J' and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' and pb_terfaktur IS null union select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J' and po_cabang = '$cabang' and po_idfaktur IS null and po_statusreturn = 'AKTIF'  order  by id desc");
 			}
 			
 			
@@ -4562,7 +4564,7 @@ public function kekata($x) {
 
 					if($flag == 'PO'){
 						$id = $data['po'][$inx]->id;
-						$datas['data'] = DB::select("select po_no, po_totalharga, po_id, string_agg(pb_status,',') as p from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J' and po_id = '$id'  group by po_id , po_no order by p");
+						$datas['data'] = DB::select("select po_no, po_totalharga, po_id, string_agg(pb_status,',') as p from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J' and po_id = '$id' and po_statusreturn = 'AKTIF'  group by po_id , po_no order by p");
 							$temp = 0;
 
 						//	return json_encode($datas['data'][0]->p);
@@ -4664,16 +4666,16 @@ public function kekata($x) {
 			if($flag[$j] == 'PO'){				
 				if($jenis[$j] != 'J'){
 
-					$data['po'][] = DB::select("select po_id ,po_no, po_subtotal, po_tipe, po_ppn, po_jenisppn, po_totalharga from pembelian_order, penerimaan_barang where po_id = pb_po and po_no = '$no_po' Group by po_id, po_no");
-					$data['po_barang'][] = DB::select("select distinct po_id, po_no, nama_masteritem, acc_persediaan , pb_gudang, pbdt_item, pbdt_idspp, sum(pbdt_totalharga) as sumharga, sum(podt_qtykirim) as qty_po, pb_po , pbdt_updatestock, podt_jumlahharga, sum(pbdt_qty) as sumqty, pb_comp, acc_hpp  from penerimaan_barang , pembelian_order, penerimaan_barangdt, pembelian_orderdt, masteritem where po_id = podt_idpo and pbdt_idpb = pb_id and pbdt_item = kode_item  and podt_kodeitem = pbdt_item and podt_idpo = pb_po and  pbdt_po = pb_po and pbdt_idspp = podt_idspp and po_no = '$no_po' group by pb_gudang, nama_masteritem, pbdt_item, pbdt_idspp, pb_po, pbdt_updatestock ,pbdt_hpp, pb_comp, acc_persediaan, podt_jumlahharga, acc_hpp, po_no, po_id");
+					$data['po'][] = DB::select("select po_id ,po_no, po_subtotal, po_tipe, po_ppn, po_jenisppn, po_totalharga from pembelian_order, penerimaan_barang where po_id = pb_po and po_no = '$no_po' and po_statusreturn = 'AKTIF'  Group by po_id, po_no");
+					$data['po_barang'][] = DB::select("select distinct po_id, po_no, nama_masteritem, acc_persediaan , pb_gudang, pbdt_item, pbdt_idspp, sum(pbdt_totalharga) as sumharga, sum(podt_qtykirim) as qty_po, pb_po , pbdt_updatestock, podt_jumlahharga, sum(pbdt_qty) as sumqty, pb_comp, acc_hpp  from penerimaan_barang , pembelian_order, penerimaan_barangdt, pembelian_orderdt, masteritem where po_id = podt_idpo and pbdt_idpb = pb_id and pbdt_item = kode_item  and podt_kodeitem = pbdt_item and podt_idpo = pb_po and  pbdt_po = pb_po and pbdt_idspp = podt_idspp and po_no = '$no_po'  and po_statusreturn = 'AKTIF'  group by pb_gudang, nama_masteritem, pbdt_item, pbdt_idspp, pb_po, pbdt_updatestock ,pbdt_hpp, pb_comp, acc_persediaan, podt_jumlahharga, acc_hpp, po_no, po_id");
 
 					$data['barang_penerimaan'] = DB::select("select distinct nama_masteritem, acc_persediaan , pb_gudang, pbdt_item, pbdt_idspp, sum(pbdt_totalharga) as sumharga, podt_qtykirim , pb_po , pbdt_updatestock, podt_jumlahharga, sum(pbdt_qty) as sumqty, pb_comp, acc_hpp  from penerimaan_barang , penerimaan_barangdt, masteritem, pembelian_orderdt where pbdt_idpb = pb_id and pbdt_item = kode_item  and podt_kodeitem = pbdt_item and podt_idpo = pb_po and  pbdt_po = pb_po and pbdt_idspp = podt_idspp  group by pb_gudang, nama_masteritem, pbdt_item, pbdt_idspp, pb_po, pbdt_updatestock ,pbdt_hpp, pb_comp, podt_qtykirim,acc_persediaan, podt_jumlahharga, acc_hpp");
 				}
 				else {
 
-					$data['po'][] = DB::select("select po_id ,po_no, po_subharga, po_tipe, po_ppn, po_jenisppn, po_totalharga  from pembelian_order where  po_no = '$no_po' Group by po_id, po_no");
+					$data['po'][] = DB::select("select po_id ,po_no, po_subharga, po_tipe, po_ppn, po_jenisppn, po_totalharga  from pembelian_order where  po_no = '$no_po' and po_statusreturn = 'AKTIF'  Group by po_id, po_no");
 
-					$data['po_barang'][] = DB::select("select po_no, po_id, acc_persediaan, nama_masteritem, podt_totalharga, podt_kodeitem, podt_qtykirim, podt_jumlahharga, accc_biaya from pembelian_order,  masteritem, pembelian_orderdt where podt_kodeitem = kode_item and podt_idpo = po_id and po_no = '$no_po'");
+					$data['po_barang'][] = DB::select("select po_no, po_id, acc_persediaan, nama_masteritem, podt_totalharga, podt_kodeitem, podt_qtykirim, podt_jumlahharga, accc_biaya from pembelian_order,  masteritem, pembelian_orderdt where podt_kodeitem = kode_item and podt_idpo = po_id and po_no = '$no_po' and po_statusreturn = 'AKTIF' ");
 
 					$data['barang_penerimaan'] = DB::select("select po_id, acc_persediaan, acc_hpp, nama_masteritem, podt_kodeitem, podt_qtykirim, podt_totalharga, podt_jumlahharga from pembelian_order,  masteritem, pembelian_orderdt where podt_kodeitem = kode_item and podt_idpo = po_id");
 
@@ -4699,7 +4701,6 @@ public function kekata($x) {
 					$data['po_barang'][] = DB::select("select fpdt_kodeitem, fpdt_diskon, fpdt_harga, fpdt_biaya, fp_idfaktur, acc_persediaan, nama_masteritem, fpdt_totalharga, fpdt_biaya, fpdt_qty from faktur_pembelian,  masteritem, faktur_pembeliandt where fpdt_kodeitem = kode_item and fpdt_idfp = fp_idfaktur and fp_nofaktur = '$no_po'");
 
 					$data['barang_penerimaan'] = DB::select("select fp_idfaktur, fpdt_diskon, fpdt_kodeitem, acc_persediaan, nama_masteritem, fpdt_totalharga, fpdt_biaya, fpdt_qty, fpdt_harga from faktur_pembelian,  masteritem, faktur_pembeliandt where fpdt_kodeitem = kode_item and fpdt_idfp = fp_idfaktur and fp_tipe = 'J'");
-
 					
 				}
 				

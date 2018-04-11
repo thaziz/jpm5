@@ -259,11 +259,15 @@ class cndnController extends Controller
 
 	public function getnota (Request $request){
 		$cabang = $request->comp;
-		
+		  $bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
 		/*$mon = date('Y-m'); */
 		$mon =Carbon::now(); 
+
+
 		//return $mon;
-		$cndn = DB::select("select * from cndnpembelian where cndn_comp = '$cabang'  order by cndn_id desc limit 1");
+		$cndn = DB::select("select * from cndnpembelian where cndn_comp = '$cabang'  and to_char(cndn_tgl, 'MM') = '$bulan' and to_char(cndn_tgl, 'YY') = '$tahun' order by cndn_id desc limit 1");
 		
 		if(count($cndn) > 0) {
 			$explode = explode("/", $cndn[0]->cndn_nota);
