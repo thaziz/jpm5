@@ -2,7 +2,11 @@
 <select  class="chosen-select-width form-control customer"  name="id_subcon" id="customer" style="width:100%" >
     <option selected="">- Pilih Customer -</option>
     @foreach($customer as $val)
-    <option value="{{$val->kode}}" data-accpiutang="{{$val->acc_piutang}}">{{$val->kode}} - {{$val->nama}}</option>
+    @foreach($kota as $i)
+      @if($i->id == $val->kota)
+      <option value="{{$val->kode}}" data-accpiutang="{{$val->acc_piutang}}">{{$val->kode}} - {{$val->nama}} - {{$i->nama}}</option>
+      @endif
+    @endforeach
     @endforeach
 </select>
 

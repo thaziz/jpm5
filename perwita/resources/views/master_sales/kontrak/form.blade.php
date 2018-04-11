@@ -194,6 +194,7 @@
                                         <option value="DOKUMEN">DOKUMEN</option>
                                         <option value="KOLI">KOLI</option>
                                         <option value="KILO">KILO</option>
+                                        <option value="SEPEDA">SEPEDA</option>
                                     </select>
                                 </td>
                             </tr>

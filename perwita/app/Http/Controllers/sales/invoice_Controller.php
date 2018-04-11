@@ -293,6 +293,7 @@ public function cari_do_invoice(request $request)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
+              ->orderBy('tanggal','desc')
               ->get();
 
       $temp1 = DB::table('delivery_order')
@@ -303,6 +304,7 @@ public function cari_do_invoice(request $request)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
+              ->orderBy('tanggal','desc')
               ->get();
 
         if (isset($request->array_simpan)) {
