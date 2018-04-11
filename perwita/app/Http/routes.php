@@ -640,7 +640,6 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 //==================================== LAPORAN PEMBELIAN BERAKIR ========================================//
 
 
-Route::get('cari_paket/cari_paket', 'LaporanMasterController@cari_paket');
 
 
 
@@ -807,25 +806,28 @@ Route::post('reportcabangkilogram/reportcabangkilogram', 'LaporanMasterControlle
 Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@reportcabangsepeda')->name('reportcabangsepeda');
 //END OF LAPORAN TARIF PDF
 
-//LAPORAN DELIVERY ORDER PAKET 
+//LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
 Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
 Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterController@carideliveryorder_total');
-//END OF DELIVERY ORDER PAKET
+//END OF DELIVERY ORDER TOTAL
 
 //LAPORAN DELIVERY ORDER PAKET 
 Route::post('reportdeliveryorder/reportdeliveryorder','LaporanMasterController@reportdeliveryorder');
 Route::get('sales/laporandeliveryorder','LaporanMasterController@deliveryorder');
+Route::get('cari_paket/cari_paket', 'LaporanMasterController@cari_paket');
 //END OF DELIVERY ORDER PAKET
 
 //LAPORAN DELIVERY ORDER KARGO 
 Route::post('reportdeliveryorder/reportdeliveryorder_kargo','LaporanMasterController@reportdeliveryorder_kargo');
 Route::get('sales/laporandeliveryorder_kargo','LaporanMasterController@deliveryorder_kargo');
+Route::get('carideliveryorder_kargo/carideliveryorder_kargo','LaporanMasterController@carideliveryorder_kargo');
 //END OF DELIVERY ORDER KARGO
 
 //LAPORAN DELIVERY ORDER KORAN 
 Route::post('reportdeliveryorder/reportdeliveryorder_koran','LaporanMasterController@reportdeliveryorder_koran');
 Route::get('sales/laporandeliveryorder_koran','LaporanMasterController@deliveryorder_koran');
+Route::get('carideliveryorder_koran/carideliveryorder_koran','LaporanMasterController@carideliveryorder_koran');
 //END OF DELIVERY ORDER KORAN
 
 //LAPORAN INVOICE

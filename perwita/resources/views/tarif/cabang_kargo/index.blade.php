@@ -302,15 +302,15 @@
         var kotaid = $('#kodekota').val(idkota);
     })
 
-    // $('#cb_kota_tujuan').change(function(){
-    //     $('.hilang1').hide();
-    //     $('#kota_col').attr('colspan','3');
+    $('#cb_kota_tujuan').change(function(){
+        $('.hilang1').hide();
+        $('#kota_col').attr('colspan','3');
 
-    // })
-    // $('#cb_provinsi_tujuan').change(function(){
-    //     $('.hilang').hide();
-    //     $('#prov_col').attr('colspan','3');
-    // })
+    })
+    $('#cb_provinsi_tujuan').change(function(){
+        $('.hilang').hide();
+        $('#prov_col').attr('colspan','3');
+    })
 
 
     $(document).ready( function () {
