@@ -483,13 +483,13 @@ Highcharts.chart('container', {
     yAxis: [{
         className: 'highcharts-color-0',
         title: {
-            text: 'Data Delivery Order Paket'
+            text: 'Data Delivery Order'
         }
     }, {
         className: 'highcharts-color-1',
         opposite: true,
         title: {
-            text: 'Data Delivery Order Paket'
+            text: 'Data Delivery Order'
         }
     }],
 
@@ -516,8 +516,7 @@ Highcharts.chart('container', {
         {{ $paket[10]}},
         {{ $paket[11]}},
         ]
-    }, 
-   {
+    },{
         name: 'KORAN',
         data: [
         {{ $koran[0]}},
@@ -533,7 +532,7 @@ Highcharts.chart('container', {
         {{ $koran[10]}},
         {{ $koran[11]}},
         ]
-    },  
+    },
     {
         name: 'KARGO',
         data: [

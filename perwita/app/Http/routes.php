@@ -833,6 +833,7 @@ Route::get('sales/laporandeliveryorder_koran','LaporanMasterController@deliveryo
 
 //LAPORAN INVOICE
 Route::get('sales/laporan_invoice','LaporanMasterController@invoice');
+Route::get('cari_lap_invoice/cari_lap_invoice','LaporanMasterController@cari_lap_invoice');
 Route::post('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoice')->name('reportinvoice');
 //END OF LAPORAN INVOICE
 
