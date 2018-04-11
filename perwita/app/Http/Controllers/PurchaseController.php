@@ -1013,13 +1013,15 @@ public function purchase_order() {
 		$data['countspp'] = count($data['spp']);
 		
 		$data['posetuju'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DISETUJUI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
+
 		$data['porevisi'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DIREVISI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
 		$data['poditolak'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DITOLAK'],['po_statusreturn' , '=' , 'AKTIF']])->count();
-		$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull([['po_setujufinance'],['po_statusreturn' , '=' , 'AKTIF']])->count();
+
+		$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull('po_setujufinance')->where('po_statusreturn' , '=' , 'AKTIF')->count();
 
 		Session::flash('message', 'Terdapat ' . count($data['spp']). ' data SPP yang belum di proses'); 
 
-		//dd($data);
+	//	dd($data);
 		 return view('purchase/purchase/index', compact('data'));
 
 	}
