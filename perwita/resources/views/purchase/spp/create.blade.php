@@ -81,13 +81,13 @@
                                               @if(Session::get('cabang') != 000)
                                               <select class="form-control disabled cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
-                                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->kode}} -  {{$cabang->nama}} </option>
                                                 @endforeach
                                               </select>
                                               @else
                                                 <select class="form-control cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
-                                                  <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                                  <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}}  {{$cabang->nama}} </option>
                                                   @endforeach
                                                 </select> 
                                               @endif
@@ -1395,7 +1395,7 @@
                       $('.sup' + nobarang).empty();
                       $.each(arrSupid, function(i , obj) {
                       
-                        $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.nama_supplier+"</option>");
+                        $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.no_supplier+","+obj.nama_supplier+"</option>");
                       });
                       
                         supbtn = arrSupid;
@@ -1449,7 +1449,7 @@
                       idcntr = counterId - 1;
                
 
-                     $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.nama_supplier+"</option>");
+                     $('.sup'+nobarang).append("<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+nobarang+","+obj.nama_supplier+","+obj.kontrak+","+obj.is_harga+","+obj.idsup+"' selected id='selectsup'>"+obj.no_supplier+","+obj.nama_supplier+"</option>");
                     
                         var datasup = $('.sup'+nobarang).find('option:selected').val();
                   
@@ -1529,12 +1529,12 @@
       					
                 if(hasilsupp.length > 0){ //TERIKAT KONTRAK
                       $.each(hasilsupp, function(i , obj) {
-                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.is_contract+","+obj.is_harga+","+obj.idsup+"' selected>"+ obj.nama_supplier+"</option>";
+                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.is_contract+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+","+ obj.nama_supplier+"</option>";
                       }) 
                 }
                 else {
                    $.each(hasilmaster, function(i , obj) {
-                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.is_contract+","+obj.is_harga+","+obj.idsup+"' selected>"+ obj.nama_supplier+"</option>";
+                        rowSup +=  "<option value='"+obj.no_supplier+","+obj.syarat_kredit+","+idtrsup+","+obj.nama_supplier+","+obj.is_contract+","+obj.is_harga+","+obj.idsup+"' selected>"+obj.no_supplier+","+ obj.nama_supplier+"</option>";
                       }) 
                 }
 
