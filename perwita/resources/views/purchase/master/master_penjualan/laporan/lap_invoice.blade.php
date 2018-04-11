@@ -48,6 +48,9 @@
                 <div class="form-group col-md-2">
                   <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
                 </div>
+                {{-- <div class="form-group col-md-2 pull-right">
+                  <button  class="btn btn-info" onclick="reresh()"> <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Reload </button>
+                </div> --}}
               </div> 
               <h3 id="replace" align="center"></h3> 
               <div class="box" id="seragam_box">
@@ -291,13 +294,18 @@
       });
     }
 
+    //reload 
+
+    
+
     //chart 
 
 
 var date = new Date();
 var y = date.getFullYear();
 
-Highcharts.chart('container', {
+
+    Highcharts.chart('container', {
 
     chart: {
         type: 'column',
@@ -334,7 +342,7 @@ Highcharts.chart('container', {
         }
     },
 
-   
+     
     series: [
     {
         name: 'INVOICE',
@@ -356,6 +364,8 @@ Highcharts.chart('container', {
     }]
 
 });
+    
+   
 
 //cari 
 

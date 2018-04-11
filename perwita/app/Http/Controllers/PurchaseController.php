@@ -150,11 +150,21 @@ class PurchaseController extends Controller
 	
 	public function getnospp(Request $request){
 		
-		$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
+
+		$cabang = $request->comp;
+		  $bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
+
+
+		//return $mon;
+		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
+
+	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
 		if(isset($idspp)) {
-		/*	$explode = explode("/", $nosppid);
-			$idspp = $explode[2];*/
-		//	dd($nosppid);
+			$explode = explode("/", $idspp[0]->spp_nospp);
+			$idspp = $explode[2];
+
 			$string = (int)$idspp + 1;
 			$idspp = str_pad($string, 3, '0', STR_PAD_LEFT);
 		}
@@ -270,9 +280,9 @@ class PurchaseController extends Controller
 			$hasiltbb = str_replace(',', '', $tbb);
 			
 			$time = Carbon::now();
-			
-			$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
-			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
+
+			 $month = Carbon::now()->format('M');
+       		 $year = Carbon::now()->format('Y');
 
 			$spp = new spp_purchase();
 			$spp->spp_nospp = strtoupper($request->nospp);
@@ -282,7 +292,7 @@ class PurchaseController extends Controller
 			$spp->spp_bagian = strtoupper($request->bagian);
 			$spp->spp_keperluan = strtoupper($request->keperluan);
 			$spp->spp_status = 'DITERBITKAN';
-			$spp->spp_noform = 'JPM/FR/PURC/01-02' . $month . $year;
+			$spp->spp_noform = 'JPM/FR/PURC/01-02 ' . 'Januari ' . $year;
 			$spp->spp_keterangan = strtoupper($request->keterangan);
 			$spp->spp_penerimaan = $request->spp_penerimaan;
 			$spp->create_by = $request->username;
@@ -1003,13 +1013,15 @@ public function purchase_order() {
 		$data['countspp'] = count($data['spp']);
 		
 		$data['posetuju'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DISETUJUI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
+
 		$data['porevisi'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DIREVISI'],['po_statusreturn' , '=' , 'AKTIF']])->count();
 		$data['poditolak'] = DB::table("pembelian_order")->where([['po_setujufinance' , '=' , 'DITOLAK'],['po_statusreturn' , '=' , 'AKTIF']])->count();
-		$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull([['po_setujufinance'],['po_statusreturn' , '=' , 'AKTIF']])->count();
+
+		$data['poblmdiproses'] = DB::table("pembelian_order")->whereNull('po_setujufinance')->where('po_statusreturn' , '=' , 'AKTIF')->count();
 
 		Session::flash('message', 'Terdapat ' . count($data['spp']). ' data SPP yang belum di proses'); 
 
-		//dd($data);
+	//	dd($data);
 		 return view('purchase/purchase/index', compact('data'));
 
 	}
