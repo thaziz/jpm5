@@ -65,6 +65,7 @@
                       <div class="col-xs-6">
                           <table border="0" class="table">
                           <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
+                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
                           <tr>
                             <td> Cabang </td>
                             <td> 
@@ -142,7 +143,7 @@
                             
                               @if($data['cndn'][0]->cndn_jenissup == '2')
 
-                                <select class="form-control chosen-select-width jenisbayar2">
+                                <select class="form-control chosen-select-width jenisbayar2" >
                                  @foreach($data['supplier'] as $supplier)
                                   <option value="{{$supplier->idsup}}" @if($data['cndn'][0]->cndn_supplier == $supplier->idsup) selected @endif> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}} </option>
                                 @endforeach
@@ -153,7 +154,7 @@
                                
                             
 
-                              <input type="hidden" class="supplier2" name="supplier">
+                              <input type="hidden" class="supplier2" name="supplier" value="{{$data['cndn'][0]->cndn_supplier}}">
                             </td>
                           </tr>
 
@@ -298,7 +299,7 @@
                                             </td>
                                             <td>
                                               <div class="col-xs-4">
-                                                  <select class="form-control input-sm jenisppheader clear" readonly="">
+                                                  <select class="form-control input-sm jenisppheader clear disabled" readonly="">
                                                      @foreach($data['pph'] as $pajak)
                                                        <option value="{{$pajak->kode}}">
                                                           {{$pajak->nama}}
@@ -442,13 +443,17 @@
                               @foreach($data['cndndt'] as $index=>$cndt)
                                 <tr class="datafaktur data{{$index + 1}}" data-nofaktur="{{$cndt->fp_nofaktur}}">
                                   <td style='text-align:center'> {{$index + 1}}</td> 
-                                  <td style='text-align:center'> <p class="nofaktur2{{$cndt->fp_idfaktur}}"> {{$cndt->fp_nofaktur}} </p>
+                                  <td style='text-align:center'> 
+                                 <!--  <button class="btn btn-success nofaktur2{{$cndt->fp_idfaktur}}" id="historypembayaran" data-toggle="modal" data-target="#historypembayaran" type="button"> {{$cndt->fp_nofaktur}} </button> -->
+
+                                 <p class="nofaktur2{{$cndt->fp_idfaktur}}" id="historypembayaran" data-toggle="modal" data-target="#myModal6" type="button" onclick="pembayaran({{$cndt->fp_idfaktur}},{{$cndt->fp_jenisbayar}})"> {{$cndt->fp_nofaktur}} </p>
+
                                    <input type='hidden' class='form-control input-sm nofaktur' name='nofaktur[]' value='{{$cndt->fp_nofaktur}}' readonly="">
-                                  <input type='hidden' class='form-control input-sm idcndt' name='idcndt[]' value='{{$cndt->cndt_id}}' readonly=""> <input type='hidden' class='form-control input-sm idcndn' name='idcndn[]' value='{{$cndt->cndn_id}}' readonly=""> </td> <!-- no faktur -->
+                                  <input type='hidden' class='form-control input-sm idcndt' name='idcndt[]' value='{{$cndt->cndt_id}}' readonly=""> <input type='hidden' class='form-control input-sm idcndn' name='idcndn' value='{{$cndt->cndn_id}}' readonly=""> </td> <!-- no faktur -->
 
                                   <td style='text-align:center'> {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }} <input type='hidden' class='form-control input-sm tglfaktur' name='tglfaktur[]' value=" {{ Carbon\Carbon::parse($cndt->fp_jatuhtempo)->format('d-M-Y ') }}"> </td> <!--tgl-->
 
-                                  <td style='text-align:right'> <input type='hidden' class='form-control input-sm fpnetto' name='fpnetto[]' value="{{ number_format($cndt->fp_netto, 2) }} "> {{ number_format($cndt->fp_netto, 2) }} <input type='hidden' class='inputppnfp' value='{{$cndt->cndt_nilaippnfp}}' >  <input type='hidden' class='hasilppnfp' value='{{$cndt->cndt_hasilppnfp}}' > <input type='hidden' class='inputpphfp' value='{{$cndt->cndt_nilaipphfp}}' > <input type='hidden' class='hasilpphfp' value='{{$cndt->cndt_hasilpphfp}}' > <input type='hidden' class='jenisppnfp' value='{{$cndt->fp_jenisppn}}'> <input type='hidden' class='jenispphfp' name='jenispphfp' value='{{$cndt->fp_jenispph}}'> </td> <!-- netto , ppn, pph-->
+                                  <td style='text-align:right'> <input type='hidden' class='form-control input-sm fpnetto' name='fpnetto[]' value="{{ number_format($cndt->fp_netto, 2) }} "> {{ number_format($cndt->fp_netto, 2) }} <input type='hidden' class='inputppnfp' value='{{$cndt->fp_inputppn}}' >  <input type='hidden' class='hasilppnfp' value='{{$cndt->fp_ppn}}' > <input type='hidden' class='inputpphfp' value='{{$cndt->fp_nilaipph}}' > <input type='hidden' class='hasilpphfp' value='{{$cndt->fp_pph}}' > <input type='hidden' class='jenisppnfp' value='{{$cndt->fp_jenispph}}'> <input type='hidden' class='jenispphfp' name='jenispphfp' value='{{$cndt->fp_jenispph}}'> </td> <!-- netto , ppn, pph-->
 
                                   <td style='text-align:right'> {{ number_format($cndt->fp_sisapelunasan, 2) }} <input type='hidden' class='sisahutang form-control input-sm' value="{{ number_format($cndt->fp_sisapelunasan, 2) }}" readonly style='text-align:right' name='sisahutang[]'> <input type='hidden' class='idfaktur form-control input-sm' value="{{$cndt->fp_idfaktur}}" readonly style='text-align:right' name='idfaktur[]'> <input type='hidden' class='dpp form-control input-sm' value="{{$cndt->fp_dpp}}" readonly style='text-align:right' name='dpp[]'> </td> <!-- sisapelunasan -->
 
@@ -457,7 +462,7 @@
 
                                   <td style='text-align:right'>   <p class="pph_text"> {{ number_format($cndt->fp_pph, 2) }} </p> <input type='hidden' class='nilaipph form-control input-sm' value="{{ number_format($cndt->cndt_hasilpph, 2) }}" readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm inputpph' value="{{$cndt->cndt_nilaipph}}" readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm jenispph' value="{{$cndt->cndt_jenispph}}" readonly style='text-align:right' name='jenispph[]'></td>  <!--pph-->
 
-                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> </td> <!-- nettocdcn -->
+                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> <input type='hidden' class='brutocn2' value="{{ number_format($cndt->cndt_bruto, 2) }}" name='brutocn[]'> <input type='hidden' class='dppcn2' value="{{ number_format($cndt->cndt_dpp, 2) }}" name='dppcn[]'>  </td> <!-- nettocdcn -->
 
                                   <td>  <a class='btn btn-xs btn-warning' onclick="edit(this)" data-id="{{$index + 1}}" type='button'><i class='fa fa-pencil'></i> </a> <a class='btn btn-xs btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </a>   </td>
                               </tr>
@@ -469,7 +474,79 @@
 
                       </div>
                    
+                     <!-- Modal Pembayaran -->
+                  <div class="modal inmodal fade" id="myModal6" tabindex="-1" role="dialog"  aria-hidden="true" style="min-width:200px">
+                               <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                       <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                        <h4 class="modal-title"> Data Pembayaran </h4>     
+                                       </div>
 
+                                <div class="modal-body">
+                                 <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#tab-3"> Data Pembayaran FPG </a></li>
+                            <li class=""><a data-toggle="tab" href="#tab-4"> Data CN / DN </a></li>
+                           
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-3" class="tab-pane active">
+                                <div class="panel-body">
+                                  
+
+                                    <table class="table table-bordered table-striped table-datatable" id="table-pembayaran" >
+                                        <thead>
+                                        <tr>
+                                          <th> Nomor Faktur </th>
+                                          <th> Tanggal </th>
+                                          <th> Jumlah Bayar </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr> 
+                                          <td> </td>
+                                          <td> </td>
+                                          <td> </td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                   
+                                </div>
+                            </div>
+                            <div id="tab-4" class="tab-pane">
+                                <div class="panel-body">
+                                    
+                                    <table class="table table-bordered table-striped table-datatable" id="table-cndn">
+                                        <thead>
+                                        <tr>
+                                          <th> Nomor CN / DN </th>
+                                          <th> Tanggal </th>
+                                          <th> Jumlah Bayar </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                          <tr> 
+                                          <td> </td>
+                                          <td> </td>
+                                          <td> </td>
+                                          </tr>
+                                        </tbody>
+                                    </table>
+                                   
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                </div>
+
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="buttongetid">Save changes</button>
+                          </div>
+                      </div>
+                    </div>
+                 </div>   <!-- End Modal -->
              
                   <!--  Modal  -->
                    <div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -508,7 +585,8 @@
                     </div>
                  </div> 
                   <!-- End Modal -->
-                
+                  
+                 
 
                   <div class="box-footer">
                   <div class="pull-right">
@@ -543,9 +621,67 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+ $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+      });
+
+  tableDetail = $('.table-datatable').DataTable({
+            responsive: true,
+            searching: true,
+            //paging: false,
+            "pageLength": 10,
+            "language": dataTableLanguage,
+    });
+
+ function pembayaran(id,jenisbayar){
+ 
+      $.ajax({
+          type : "POST",          
+          data : {id,jenisbayar},
+          url : baseUrl + '/cndnpembelian/pembayaran',
+          dataType : 'json',
+          success : function (response){
+          var tablepembayaran = $('#table-pembayaran').DataTable();
+          tablepembayaran.clear().draw();
+           var tablecndn = $('#table-cndn').DataTable();
+          tablecndn.clear().draw();
+            var nmrpembayaran = 1;
+          
+          pembayaran = response.fpg
+          cndn = response.cndn
+
+               for(var i = 0; i < pembayaran.length; i++){      
+                                   
+               var html2 = "<tr> <td>"+pembayaran[i].nota+"</td>" +
+                                "<td>"+ pembayaran[i].tgl +"</td>" +
+                                "<td>"+ addCommas(pembayaran[i].pelunasan) +"</td>" +
+                            "</tr>"
+                        
+                 tablepembayaran.rows.add($(html2)).draw(); 
+                nmrbnk++; 
+               }  
+
+               for(var j = 0 ; j < cndn.length; j++ ){
+                 var html2 = "<tr> <td>"+cndn[i].cndn_nota+"</td>" +
+                                "<td>"+ cndn[i].cndn_tgl +"</td>" +
+                                "<td style='text-align:right'>"+ addCommas(cndn[i].cndt_nettocn) +"</td>" +
+                            "</tr>"
+                        
+                 tablecndn.rows.add($(html2)).draw(); 
+                nmrbnk++; 
+               } 
+            
+          },
+          error : function(){
+          
+          }
+        })
+ }
 
  function edit(a){
-  alert(a);
+ // alert(a);
        var par          = $(a).parents('tr');
        var nomorfaktur      = $(par).find('.nofaktur').val();
        var jatuhtempo = $(par).find('.tglfaktur').val();
@@ -562,7 +698,7 @@
        var idcndt = $(par).find('.idcndtn').val();
        var idcndn = $(par).find('.idcndn').val();
        var idfaktur = $(par).find('.idfaktur').val();
-       alert(jenispph);
+      // alert(jenispph);
            $('.nofakturheader').val(nomorfaktur);
             $('.jatuhtempheader').val(jatuhtempo);
             $('.dppheader').val(addCommas(dpp));
@@ -576,7 +712,6 @@
             $('.sisaterbayarheader').val(addCommas(sisahutang));
            $('.idfakturheader').val(idfaktur);
 
-          alert(idcndt + 'idcndt');
            if(idcndt === undefined){
               bruto = $('.brutocn2').val();
               dpp = $('.dppcn2').val();
@@ -585,23 +720,20 @@
              $('.brutocn').val(bruto);
               $('.dppcn').val(dpp);
              
-              if(response.cndn[0].cndt_jenisppn != null){
-                  $('.jenisppncn').val(response.cndn[0].cndt_jenisppn);
-                  $('.inputppncn').val(response.cndn[0].cndt_nilaippn);
-                  $('.hasilpphcn').val(addCommas(response.cndn[0].cndt_hasilppn));
+              if(jenisppn != null){
+                  $('.jenisppncn').val(jenisppn);
+                  $('.inputppncn').val(inputppn);
+                  $('.hasilpphcn').val(addCommas(nilaippn));
               }
 
-               if(response.cndn[0].cndt_jenispph != null){
-                  $('.jenispphcn').val(addCommas(response.cndn[0].cndt_jenispph));
-                  $('.inputpphcn').val(addCommas(response.cndn[0].cndt_nilaipph));
-                  $('.hasilpphcn').val(addCommas(response.cndn[0].cndt_hasilpph));
+               if(jenispph != null){
+                  $('.jenispphcn').val(addCommas(jenispph));
+                  $('.inputpphcn').val(addCommas(inputpph));
+                  $('.hasilpphcn').val(addCommas(nilaipph));
               }
             
              
               $('.nettohutangcn').val(cndn);
-           }
-           else {
-             caricndn();
            }
     }
 
@@ -641,9 +773,11 @@
           if(trtbl == 0){
             toastr.info('Data yang di inputkan belum ada :)');
           }
+
+        
          
           event.preventDefault();
-          var post_url2 = baseUrl + '/cndnpembelian/save';
+          var post_url2 = baseUrl + '/cndnpembelian/update';
           var form_data2 = $(this).serialize();
             swal({
             title: "Apakah anda yakin?",
@@ -914,7 +1048,7 @@
   $('#append').click(function(){
       nettocn = $('.nettohutangcn').val();
       nofaktur = $('.nofakturheader').val();
-      alert(noappend);
+     
 
       if(nettocn == '' || nettocn == 0.00){
         toastr.info('Netto Hutang tidak boleh 0.00 atau kosong :)');
@@ -926,7 +1060,7 @@
         return false;
       }
 
-
+     
      $('.jenisbayar2').addClass('disabled');
      $('.jenissup').addClass('disabled');
      $('.jeniscndn').addClass('disabled');
@@ -980,8 +1114,8 @@
       $('.datafaktur').each(function(){
         valfaktur = $(this).data('nofaktur');
         arrnofaktur.push(valfaktur);
-        console.log(arrnofaktur + 'arrnofaktur');
-        alert(arrnofaktur + 'arrnofaktur');
+      
+     
       })
 
       index = arrnofaktur.indexOf(nofaktur);
@@ -993,7 +1127,7 @@
                      
                      '<td style="text-align:center"> '+jatuhtempo+' <input type="hidden" class="form-control input-sm tglfaktur" name="tglfaktur[]" value='+jatuhtempo+'> </td>' + //tgl
 
-                      '<td style="text-align:right"> <input type="hidden" class="form-control input-sm fpnetto" name="fpnetto[]" value="'+nettohutang+'"> {{ number_format($cndt->fp_netto, 2) }}</td>' + // netto
+                      '<td style="text-align:right"> <input type="hidden" class="form-control input-sm fpnetto" name="fpnetto[]" value="'+nettohutang+'">"'+nettohutang+'"</td>' + // netto
 
                       '<td style="text-align:right">"'+sisahutang+'" <input type="hidden" class="sisahutang form-control input-sm" value="'+sisahutang+'" readonly style="text-align:right" name="sisahutang[]"> <input type="hidden" class="idfaktur form-control input-sm" value='+idfaktur+' readonly style="text-align:right" name="idfaktur[]"> <input type="hidden" class="dpp form-control input-sm" value="'+dppheader+'" readonly style="text-align:right" name="dpp[]"> </td>' + // sisapelunasan
 
@@ -1061,13 +1195,16 @@
        $('.sisahutang').each(function(){
               val = $(this).val();
               aslihutang = val.replace(/,/g, '');
+             // alert(aslihutang);
+             // alert($sisahutang);
+
               $sisahutang = parseFloat(parseFloat($sisahutang) + parseFloat(aslihutang)).toFixed(2);
             })
 
             $('.jumlahfaktur').val(addCommas($sisahutang));
       }
       else {
-        alert('else');
+       // alert('else');
          nilaipph = $('.hasilpphcn').val();
         jenispph = $('.jenispphcn').val();
         inputpph = $('.inputpphcn').val();
@@ -1212,15 +1349,14 @@ jenisbayar2 = $('.jenisbayar2').val();
       $('.datafaktur').each(function(){
         valfaktur = $(this).data('nofaktur');
         arrnofaktur.push(valfaktur);
-        console.log(arrnofaktur + 'arrnofaktur');
-        alert(arrnofaktur + 'arrnofaktur');
+      
       })
 
     
 
       $.ajax({
         type : 'GET',
-        data : {idsup,jenis,cabang},
+        data : {idsup,jenis,cabang,arrnofaktur},
         url : baseUrl + '/cndnpembelian/getfaktur',      
         dataType : 'json',
         success : function(response){
@@ -1309,9 +1445,6 @@ jenisbayar2 = $('.jenisbayar2').val();
             console.log(arrnofaktur + 'arrnofaktur');
           })
 
-          for(var j = 0 ; j < arrnofaktur.length; j++){
-              toastr.info('')
-          }
 
 
         
@@ -1615,13 +1748,6 @@ jenisbayar2 = $('.jenisbayar2').val();
 
             })
 
-            $('.sisahutang').each(function(){
-              val = $(this).val();
-              aslihutang = val.replace(/,/g, '');
-              $sisahutang = parseFloat(parseFloat($sisahutang) + parseFloat(aslihutang)).toFixed(2);
-            })
-
-            $('.biayafaktur').val(addCommas($sisahutang));
           }
         })
        }

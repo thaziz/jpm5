@@ -341,6 +341,9 @@ Route::get('cndnpembelian/getsupplier', 'cndnController@getsupplier');
 Route::get('cndnpembelian/hslfaktur', 'cndnController@hslfaktur');
 Route::post('cndnpembelian/save', 'cndnController@save');
 Route::get('cndnpembelian/caricndn', 'cndnController@caricndn');
+Route::get('cndnpembelian/hapusdata/{id}', 'cndnController@hapusdata');
+Route::post('cndnpembelian/update', 'cndnController@updatedata');
+Route::post('cndnpembelian/pembayaran', 'cndnController@pembayaran');
 
 Route::get('uangmukapembelian/uangmukapembelian', 'PurchaseController@uangmukapembelian');
 Route::get('uangmukapembelian/createuangmukapembelian', 'PurchaseController@createuangmukapembelian');
