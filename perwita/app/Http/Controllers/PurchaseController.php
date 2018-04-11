@@ -269,9 +269,10 @@ class PurchaseController extends Controller
 			$tbb = $request->total_biaya;
 			$hasiltbb = str_replace(',', '', $tbb);
 			
-
-				$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
-				$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
+			$time = Carbon::now();
+			
+			$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
+			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
 
 			$spp = new spp_purchase();
 			$spp->spp_nospp = strtoupper($request->nospp);
