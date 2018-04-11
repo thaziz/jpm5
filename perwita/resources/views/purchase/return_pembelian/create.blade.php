@@ -51,7 +51,7 @@
                   <div class="box-body">
                       <div class="row">
                       <div class="col-xs-6">
-                           <table border="0">
+                           <table border="0" class="table">
                           <tr>
                             <td width="150px">
                           No Return
@@ -62,22 +62,12 @@
                           </tr>
 
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
                             <td>   Tanggal </td>
                             <td>
                               <input type="text" class="form-control">
                             </td>
                           </tr>
-                          <tr>
-                          <td>
-                            &nbsp;
-                          </td>
-                          </tr>
+                       
 
                           <tr>
                             <td> No Faktur </td>
@@ -85,28 +75,12 @@
                             </td>
                           </tr>
 
-
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-
                             <td>
                               Tanggal Faktur
                             </td>
                             <td>
                                 <input type="text" class="form-control"> 
-
-                            </td>
-
-                          </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
                             </td>
                           </tr>
 
@@ -118,63 +92,219 @@
                               <input type="text" class="form-control">
                             </td>
                           </tr>
+                          <tr>
+                            <td> Keterangan </td>
+                            <td> <input type="text" class="form-control"></td>
+                          </tr>
+
+                          <tr>
+                            <td> </td>
+                          </tr>
                           </table>
                       </div>
 
+                      <div class="col-sm-6">
+                          <table class="table table-stripped">
+                              <tr>
+                                  <td> Sub Total </td>
+                                  <td> <input type="text" class="form-control" name="subtotal"> </td>
+                              </tr>
+
+                              <tr>
+                                  <td> Jenis PPn </td>
+                                  <td> <select class="form-control" name="jenisppn">
+                                          <option value="T">
+                                              Tanpa
+                                          </option>
+                                          <option value="E">
+                                              Exclude
+                                          </option>
+                                          <option value="I">
+                                              Include
+                                          </option>
+                                      </select>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td> PPn </td>
+                                  <td> <input type="text" class="form-control" name="ppn"></td>
+                              </tr>
+                              <tr>
+                                  <td> Total </td>
+                                  <td> <input type="text" class="form-control" name="total"> </td>
+                              </tr>
+                          </table>
+                      </div>
                     
                       </div>
 
                       <hr>
 
-                      <h4> Detail Return Pembelian</h4>
-                      <br>
-                       <a class="btn btn-success" id="tmbh_data_barang"> Tambah Data </a>
-                       <br>
-                      <div class="table-responsive">
-                      <table class="table table-bordered table-striped tbl-penerimabarang" id="addColumn">
-                      <tr>
-                        <thead>
-                        <th>
-                          No
-                        </th>
-                          <th>
-                          Item
-                          </th>
+                       <div class="col-sm-12">
+                             <button class="btn btn-sm btn-primary  createmodalfaktur" id="createmodal" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data PO </i> </button>
+                             <br>
+                             <br>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <h4> Data PO </h4>
+                                    <table class="table table-stripped" id="tbl-faktur">
+                                        <tr>
+                                            <td style="width:140px">  No PO  </td>
+                                            <td> <input type="text" class="form-control input-sm nopoheader clear" readonly="" > <input type="hidden" class="form-control input-sm idpoheader clear" readonly=""> </td>
+                                        </tr>
 
-                          <th>
-                            Update Stock
-                          </th>
+                                       
 
-                          <th>
-                            Qty
-                          </th>
+                                        <tr>
+                                            <td>  DPP  </td>
+                                            <td>  <input type="text" class="form-control input-sm dppheader clear" readonly="" style="text-align: right"></td>
+                                        </tr>
 
-                          <th>
-                            Gudang
-                          </th>
+                                        <tr>
+                                            <td> Jenis PPN </td>
+                                            <td>
+                                                  <div class="col-xs-4">
+                                                  <select class="form-control input-sm jenisppnheader clear" readonly="">
+                                                      <option value="T">
+                                                          Tanpa
+                                                      </option>
+                                                      <option value="I">
+                                                          Input
+                                                      </option>
+                                                      <option value="E">
+                                                          Exclude
+                                                      </option>
+                                                  </select>
+                                                    </div>
+                                              <div class="col-sm-3">
+                                                  <input type="text" class="form-control input-sm inputppnheader clear" readonly=""> 
+                                              </div>
 
-                          <th>
-                            Harga
-                           </th>
+                                              <div class="col-sm-5">
+                                                  <input type="text" class="form-control input-sm hasilppnheader clear" readonly="" style="text-align: right"> 
+                                              </div>
 
-                           <th>
-                            Jumlah
-                           </th>
+                                            </td>
+                                        </tr>
 
-                           <th>
-                            Acc Persediaan
-                           </th>
-                        </thead>
+                                        <tr>
+                                            <td>
+                                                Jenis PPH
+                                            </td>
+                                            <td>
+                                              <div class="col-xs-4">
+                                                  <select class="form-control input-sm jenisppheaderclear disabled" readonly="">
+                                                     @foreach($data['pph'] as $pajak)
+                                                       <option value="{{$pajak->kode}}">
+                                                          {{$pajak->nama}}
+                                                      </option>
+                                                     
+                                                     @endforeach
+                                                  </select>
+                                                    </div>
+                                              <div class="col-sm-3">
+                                                 <input type="text" class="form-control input-sm nilaipphheader clear" readonly=""> 
+                                              </div>      
+                                              <div class="col-sm-5">
+                                                  <input type="text" class="form-control input-sm hasilpphheader clear" readonly="" style="text-align: right"> 
+                                              </div>
+                                            </td>
+                                        </tr>
 
-                      </tr>
-                      <tbody>
-                          <tr>
-                              <td colspan ="12">
-                             
-                              </td>
-                          </tr>
-                      </tbody>
-                      </table>
+                                        <tr>
+                                            <td> Netto Hutang </td>
+                                            <td> <input type="text" class="form-control input-sm nettoheader clear" readonly="" style="text-align: right"> </td>
+                                        </tr>
+                                         <tr>
+                                            <td> Sisa Terbayar </td>
+                                            <td> <input type="text" class="form-control input-sm sisaterbayarheader clear" readonly="" style="text-align: right"> </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <h4> Data CN / DN </h4>
+                                    <table class="table">
+                                       <tr>
+                                          <td style="width:140px"> Nilai Bruto CN / DN </td>
+                                          <td> <input type="text" class="form-control input-sm brutocn clear" style="text-align: right" ></td>
+                                       </tr>
+
+                                       <tr>
+                                          <td> DPP </td>
+                                          <td> <input type="text" class="form-control input-sm dppcn clear" style="text-align: right" readonly="">  </td>
+                                       </tr>
+                                         <tr>
+                                            <td> Jenis PPN </td>
+                                            <td>
+                                                  <div class="col-xs-4">
+                                                  <select class="form-control input-sm jenisppncn clear" readonly="">
+                                                      <option value="T">
+                                                          Tanpa
+                                                      </option>
+                                                      <option value="I">
+                                                          Input
+                                                      </option>
+                                                      <option value="E">
+                                                          Exclude
+                                                      </option>
+                                                  </select>
+                                                    </div>
+                                              <div class="col-sm-3">
+                                                  <input type="text" class="form-control input-sm inputppncn clear" readonly=""> 
+                                              </div>
+
+                                              <div class="col-sm-5">
+                                                  <input type="text" class="form-control input-sm hasilppncn clear" readonly="" style="text-align: right"> 
+                                              </div>
+
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+                                                Jenis PPH
+                                            </td>
+                                            <td>
+                                              <div class="col-xs-4">
+                                                  <select class="form-control input-sm jenispphcn clear" readonly="">
+                                                     @foreach($data['pph'] as $pajak)
+                                                       <option value="{{$pajak->kode}}">
+                                                          {{$pajak->nama}}
+                                                      </option>
+                                                     
+                                                     @endforeach
+                                                  </select>
+                                                    </div>
+                                              <div class="col-sm-3">
+                                                 <input type="text" class="form-control input-sm inputpphcn clear" readonly=""> 
+                                              </div>      
+                                              <div class="col-sm-5">
+                                                  <input type="text" class="form-control input-sm hasilpphcn clear" readonly="" style="text-align: right"> 
+                                              </div>
+                                            </td>
+                                        </tr>
+
+                                       <tr>
+                                          <td> Netto </td>
+                                          <td> <input type="text" class="form-control input-sm  nettohutangcn clear" style="text-align: right" readonly=""></td>
+                                       </tr>
+                                    </table>
+                                </div>
+
+                               
+                            </div>
+                             <div class="pull-right">
+                                  <button  class="btn btn-sm btn-default" type="button" id="append">
+                                    <i class="fa fa-plus"> Append</i>
+                                  </button>
+
+                                    &nbsp; 
+                                  <button style="margin-right: 10px" class="btn btn-sm btn-default" id="cancel" type="button">
+                                    <i class="fa fa-close"> Cancel</i>
+                                  </button>
+                                </div>
+                        </div>
                       </div>
                     
                       <br>

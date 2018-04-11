@@ -1015,6 +1015,8 @@ class MasterPurchaseController extends Controller
 
 	public function detailsupplier($id) {
 
+
+
 		$data['supplier'] = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and supplier.idsup = '$id'");
 		$data['item_supplier'] = DB::select("select * from itemsupplier,masteritem where is_idsup = '$id' and is_kodeitem = kode_item");
 		$data['countitem'] = count($data['item_supplier']);
@@ -1023,7 +1025,7 @@ class MasterPurchaseController extends Controller
 			$data['item'] = masterItemPurchase::all();
 				$data['kota'] = master_kota::all();
 		$data['provinsi'] = master_provinsi::all();
-//		dd($data);
+		
 
 		return view('purchase/master/master_supplier/detail', compact('data'));
 	}
@@ -1034,6 +1036,7 @@ class MasterPurchaseController extends Controller
 
 		if($request->iskontrak == 'tdkeditkontrak') {	
 		/*dd('sama');*/
+			$statusactive = 'AKTIF';
 			$data = masterSupplierPurchase::find($id);
 			$data->nama_supplier = strtoupper($request->nama_supplier);
 			$data->no_supplier = strtoupper($request->nosupplier);
@@ -1053,7 +1056,12 @@ class MasterPurchaseController extends Controller
 			$data->noseri_pajak = strtoupper($request->seripajak);
 			$data->kodepos = strtoupper($request->kodepos);
 			$data->idcabang = strtoupper($request->idcabang);
-			$data->kontrak = strtoupper($request->kontrak);
+			$data->kontrak = strtoupper($request->kontrak);	
+			$data->nama_cp = $request->nm_cp;
+			$data->acc_hutang = $request->acc_hutangdagang;
+			$data->acc_csf = $request->acc_csf;
+			$data->active = $statusactive;
+
 			if($request->nokontrak != '') {
 				$data->no_kontrak = strtoupper($request->nokontrak);
 			}
@@ -1185,6 +1193,12 @@ class MasterPurchaseController extends Controller
 			$mastersupplier->idcabang = $request->idcabang;
 			$mastersupplier->nama_cp = $request->nm_cp;
 			$mastersupplier->active = $aktif;
+
+			
+			$data->acc_hutang = $request->acc_hutangdagang;
+			$data->acc_csf = $request->acc_csf;
+			
+
 			if($request->kontrak == 'YA') {
 				$mastersupplier->no_kontrak = strtoupper($request->no_kontrak);
 			}

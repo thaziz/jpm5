@@ -351,7 +351,7 @@ div.bottom
 	</table>
 	<div class="bottom" style="width: 300px;float: left">1. Arsip yang meminta barang / jasa</div>
 	<div class="bottom" style="width: 600px;float: right;">2. Bagian Pembelian</div>
-	<div class="bottom" style="float: right;">JPM/FR/PURC/01-02-Januari 2017-00</div>
+	<div class="bottom" style="float: right;"> {{$data['spp'][0]->spp_noform}}</div>
 
 </div>
 

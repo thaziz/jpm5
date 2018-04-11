@@ -83,8 +83,19 @@ class do_kertas_Controller extends Controller
                       ->where('kode',$request->customer)
                       ->first();
 
-
-        return json_encode($customer);
+        $cari_kontrak = DB::table('customer')
+                      ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
+                      ->join('kontrak_customer_d','kcd_id','=','kc_id')
+                      ->where('kc_aktif','AKTIF')
+                      ->where('kcd_jenis','KORAN')
+                      ->where('kode',$request->customer)
+                      ->get();
+        if ($cari_kontrak != null) {
+            $status = 1;
+        }else{
+            $status = 2;
+        }
+        return response()->json(['customer'=>$customer,'status'=>$status]);
         
     }
 
@@ -267,5 +278,41 @@ class do_kertas_Controller extends Controller
                   ->get();
 
         return view('sales.do_kertas.detail_kertas',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','item','id','data_dt'));
+    }
+
+    public function ganti_item(request $request)
+    {
+        $status = $request->status;
+        $item = DB::select(" SELECT kode,nama,harga,kode_satuan,acc_penjualan FROM item ORDER BY nama ASC ");
+
+        return view('sales.do_kertas.item_kertas',compact('status','item'));
+    }
+    public function cari_kontrak_kertas(request $request)
+    {
+        $cari_kontrak = DB::table('customer')
+                      ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
+                      ->join('kontrak_customer_d','kcd_id','=','kc_id')
+                      ->join('jenis_tarif','kcd_jenis_tarif','=','jt_id')
+                      ->where('kc_aktif','AKTIF')
+                      ->where('kcd_jenis','KORAN')
+                      ->where('kode',$request->customer)
+                      ->get();
+
+        $kota = DB::table('kota')
+                   ->get();
+
+        for ($i=0; $i < count($cari_kontrak); $i++) { 
+            for ($a=0; $a < count($kota); $a++) { 
+                if ($cari_kontrak[$i]->kcd_kota_asal == $kota[$a]->id) {
+                    $cari_kontrak[$i]->nama_asal = $kota[$a]->nama;
+                }
+                if ($cari_kontrak[$i]->kcd_kota_tujuan == $kota[$a]->id) {
+                    $cari_kontrak[$i]->nama_tujuan = $kota[$a]->nama;
+                }
+            }
+        }
+
+        // return $cari_kontrak;
+        return view('sales.do_kertas.modal_kontrak',compact('cari_kontrak','kota'));
     }
 }

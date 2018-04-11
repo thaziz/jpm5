@@ -52,10 +52,22 @@ class kontrak_Controller extends Controller
         // $cabang = Auth::user()->kode_cabang;
         $customer = DB::table('customer')
                       ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
-                      ->where('cabang',$request->cabang)
+                      // ->where('cabang',$request->cabang)
                       ->where('kc_kode_customer',null)
                       ->get();
-        return view('master_sales.kontrak.dropdown_customer',compact('customer'));
+
+        $kota     = DB::table("kota")
+                      ->get();
+
+        for ($i=0; $i < count($customer); $i++) { 
+          for ($a=0; $a < count($kota); $a++) { 
+            if ($customer[$i]->kota == $kota[$a]->id) {
+                $customer[$i]->nama_kota = $kota[$a]->nama;
+            }
+          }
+        }
+        // return $customer;
+        return view('master_sales.kontrak.dropdown_customer',compact('customer','kota'));
     }
 
     public function kontrak_set_nota(request $request)

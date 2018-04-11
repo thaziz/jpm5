@@ -82,7 +82,7 @@
                         <td style='text-align: right'> {{ number_format($data['cndn'][$i][0]->cndn_bruto, 2) }} </td>
                         <td> {{$data['cndn'][$i][0]->cndn_keterangan}} </td>
                       
-                        <td> <a class="btn btn-sm btn-success" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndn'][$i][0]->cndn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  <a class="btn btn-sm btn-danger" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndn'][$i][0]->cndn_id.'')}}><i class="fa fa-trash" aria-hidden="true"></i> </a> </td>
+                        <td> <a class="btn btn-sm btn-success" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndn'][$i][0]->cndn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  <a class="btn btn-sm btn-danger" onclick="hapusData({{$data['cndn'][$i][0]->cndn_id.''}})"><i class="fa fa-trash" aria-hidden="true"></i> </a> </td>
                         
                       </tr>
                       <?php $n++ ?>
@@ -126,7 +126,57 @@
     });
 
   
-  
+   function hapusData(id){
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Hapus Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+  },
+
+function(){
+     $.ajax({
+      url:baseUrl + '/cndnpembelian/hapusdata/'+id,
+      type:'get',
+      dataType : 'json',
+      success:function(data){
+       if(data.status == "gagal"){       
+          swal({
+              title: "error",
+              text: data.info,
+              type: "error",
+              
+          });         
+      }
+       else {
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                     location.reload();
+          });
+       }   
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+  });
+}
     
 
 </script>
