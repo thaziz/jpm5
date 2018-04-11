@@ -44,7 +44,6 @@ class LaporanMasterController extends Controller
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
 				->where('pendapatan','=','PAKET')
-				->where('status','=','DELIVERED OK')
 				->get();
 			$dat1[$i] =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
@@ -54,7 +53,6 @@ class LaporanMasterController extends Controller
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
 				->where('pendapatan','=','KORAN')
-				->where('status','=','DELIVERED OK')
 				->get();
 			$dat2[$i] =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
@@ -64,7 +62,6 @@ class LaporanMasterController extends Controller
 				->whereMonth('tanggal','=',$array_bulan[$i])
 				->whereYear('tanggal','=',$tahun)
 				->where('nomor','like','%KGO%')
-				->where('status','=','DELIVERED OK')
 				->get();
 		}
 		// return $dat1;
@@ -970,10 +967,6 @@ class LaporanMasterController extends Controller
 						->whereMonth('i_tanggal','=',$array_bulan[$i])
 						->whereYear('i_tanggal','=',$tahun)
 						->get();
-			$dat1[$i] =  DB::table('invoice')
-						->whereMonth('i_tanggal','=',$array_bulan[$i])
-						->whereYear('i_tanggal','=',$tahun)
-						->get();
 		}
 		// return $dat;
 		// $pushdata = [];
@@ -991,18 +984,20 @@ class LaporanMasterController extends Controller
 		// return $anjay;
 
 		for ($i=0; $i < count($anjay); $i++) { 
+			// return $anjay;
+
 			if ($anjay[$i] != 0) {
 				for ($a=0; $a < count($anjay[$i]); $a++) { 
-					$fix[$i] = array_sum($anjay[$i]);
+					$invoice[$i] = array_sum($anjay[$i]);
 				}
 			}else{
-				$fix[$i] = 0;
+				$invoice[$i] = 0;
 			}
 		}
 
 		// return ($gg[0]+$gg[1]+$gg[2]+$gg[3]+$gg[4]+$gg[5]+$gg[6]+$gg[7]);
-		// return $i;
-		return $fix;
+		// return $invoice;
+		// return $fix;
 		
 		// return $invoice;
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
@@ -1011,6 +1006,34 @@ class LaporanMasterController extends Controller
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
 		return view('purchase/master/master_penjualan/laporan/lap_invoice',compact('data','kota','kota1','ket','cus','invoice'));
 	}
+
+		public function cari_lap_invoice(Request $request){
+
+		$awal = $request->a;
+		$akir = $request->b;
+		$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->get();
+
+		
+		for ($i=0; $i <count($data); $i++) { 
+			$dat[$i] = $data[$i]->i_total;
+
+			$array = array_sum($dat);
+
+		}
+				
+		
+		
+		if ($data != null) {
+        	return  response()->json(['data'=>$array,'awal'=> $awal,'akir' => $akir]);
+		}else{
+			return response()->json(['response'=>'Data Tidak Ditemukan !']);
+		}
+
+	}
+
 		public function reportinvoice(Request $request){
 		// return 'a';
 		$data = $request->a;	
