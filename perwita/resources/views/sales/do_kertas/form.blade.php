@@ -594,7 +594,11 @@ function simpan_modal() {
     var acc_penjualan       = $('.acc_penjualan').val();
     var cb_kota_asal_text   = $('.cb_kota_asal option:selected').text();
     var cb_kota_tujuan_text = $('.cb_kota_tujuan option:selected').text();
-    var item_text           = $('.item option:selected').text();
+    if ($('.status_kontrak').is(':checked') == true) {
+        var item_text       = $('.nama_kontrak ').val();
+    }else{
+        var item_text       = $('.item option:selected').text();
+    }
 
 
 if (old_id == '') {
@@ -826,6 +830,7 @@ function pilih_kontrak(a) {
     var kcd_kode_satuan = $(a).find('.kcd_kode_satuan').val();
     var kcd_dt          = $(a).find('.kcd_dt_m').val();
     var acc_penjualan   = $(a).find('.acc_kontrak').val();
+    var kcd_keterangan  = $(a).find('.kcd_keterangan').val();
 
     $('.item').val(kc_nomor);
     $('.ed_satuan').val(kcd_kode_satuan);
@@ -837,6 +842,7 @@ function pilih_kontrak(a) {
     $('.cb_kota_tujuan').val(kcd_kota_tujuan).trigger('chosen:updated');
     $('.acc_penjualan').val(acc_penjualan);
     $('.ed_jumlah').val(1);
+    $('.nama_kontrak').val(kcd_keterangan);
     hitung();
     $('#modal_kontrak').modal('hide');
 

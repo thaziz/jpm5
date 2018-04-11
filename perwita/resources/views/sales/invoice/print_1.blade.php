@@ -353,8 +353,8 @@
 					<th class="textcenter borderbottomtabel borderrighttabel" width=>No. DO</th>
 					<th class="textcenter borderbottomtabel borderrighttabel" width="8%">Tgl</th>
 					<th class="textcenter borderbottomtabel borderrighttabel">Keterangan</th>
-					<th class="textcenter borderbottomtabel borderrighttabel" width="11%">Harga Satuan</th>
 					<th class="textcenter borderbottomtabel borderrighttabel" width="8%">Kuantum</th>
+					<th class="textcenter borderbottomtabel borderrighttabel" width="11%">Harga Satuan</th>
 					<th class="textcenter borderbottomtabel borderrighttabel" width="11%">Harga Bruto</th>
 					<th class="textcenter borderbottomtabel" width="11%">Harga Netto</th>
 				</tr>

@@ -31,7 +31,7 @@
                     <h5> DO KERTAS
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/deliveryorderkertas" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../deliveryorderkertas" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                      
                 </div>
                 <div class="ibox-content">

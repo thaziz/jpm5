@@ -192,6 +192,9 @@
       border-right: 1px solid black;
       border-left:  1px solid black;
     }
+    .center{
+      text-align: center;
+    }
 </style>
 <body>
  <div class="wrapper">
@@ -204,7 +207,7 @@
       <th>PT. JAWA PRATAMA MANDIRI</th>
     </tr>
      <tr>
-       <td>Gedung Temprina Lt. 1 Jl. Wringin Anom KM 30-31 Sumengko Gresik</td>
+       <td></td>
      </tr>
      <tr>
        <td>Telp.(031) 8986777, 89868888, Fax. (031) 89839999</td>
@@ -228,35 +231,32 @@
      <tr>
        <td>No.Kwitansi</td>
        <td>:</td>
-       <td>KWT-1117/08/A0092</td>
+       <td>{{$head->nomor}}</td>
      </tr>
      <tr>
         <td>Tanggal</td>
        <td>:</td>
-       <td>30/11/17</td>
+       <td>{{carbon\carbon::parse($head->tanggal)->format('d/m/Y')}}</td>
      </tr>
      <tr>
         <td>Kode.Cust.</td>
        <td>:</td>
-       <td>CS/08/0046</td>
+       <td>{{$head->kode_customer}}</td>
      </tr>
    </table>
   
-   <table class="margin-top-10px size" width="50%">
+   <table class="size" width="50%">
      <tr>
        <th>Kepada Yth:</th>
      </tr>
      <tr>
-       <th>CV .MEDIA JAYA</th>
+       <th>{{$head->nama}}</th>
      </tr>
      <tr>
-       <td >JL , WRINGIN ASEM ANJAY</td>
+       <td >{{$head->alamat}}</td>
      </tr>
      <tr>
-       <td >GRESIK - JATIM</td>
-     </tr>
-     <tr>
-       <td>Telp.000000</td>
+       <td>{{$head->telpon}}</td>
      </tr>
    </table>
     </div>
@@ -274,28 +274,41 @@
        <th class="textcenter bot right top" width="10%">Kode</th>
        <th class="textcenter bot right top" width="10%">Nama</th>
      </tr>
+     @foreach($detail as $val)
      <tr>
-       <td class="bot left right">FP1117/08/A0092</td>
-       <td class="bot left right">30/11/2017</td>
-       <td class="bot left right">O.KIR CARGO MEDIA JAYA NOVEMBER 2017 VI</td>
-       <td class="bot left right">1.800.000,00</td>
-       <td class="bot left right">1.800.000,00</td>
-     </tr>
-     <tr>
-       <td class="bot left right">FP1117/08/A0092</td>
-       <td class="bot left right">30/11/2017</td>
-       <td class="bot left right">O.KIR CARGO MEDIA JAYA NOVEMBER 2017 VI</td>
-       <td class="bot left right">1.800.000,00</td>
-       <td class="bot left right">1.800.000,00</td>
-     </tr>
-     <tr>
-       <td class="bot left right">FP1117/08/A0092</td>
-       <td class="bot left right">30/11/2017</td>
-       <td class="bot left right">O.KIR CARGO MEDIA JAYA NOVEMBER 2017 VI</td>
-       <td class="bot left right">1.800.000,00</td>
-       <td class="bot left right">1.800.000,00</td>
-     </tr>
+       <td class="bot left right">{{$val->dd_kode_item}}</td>
+       @if($val->dd_id_kontrak == 0)
+       <td class="bot center left right">{{$val->dd_kode_item}}</td>
+       @else
+       <td class="bot center left right">{{$val->dd_id_kontrak}}</td>
+       @endif
 
+       @if(isset($val->kcd_keterangan))
+       <td class="bot left right">{{$val->kcd_keterangan}}</td>
+       @else
+       <td class="bot left right">{{$val->nama}}</td>
+       @endif
+       <td class="bot left right" >{{$val->dd_keterangan}}</td>
+       <td class="bot center left right">{{$val->dd_jumlah}} {{$val->dd_kode_satuan}}</td>
+     </tr>
+     @endforeach
+     @foreach($array as $val)
+     <tr>
+       <td class=" left ">&nbsp;</td>
+       <td >&nbsp;</td>
+       <td>&nbsp;</td>
+       <td>&nbsp;</td>
+       <td class="right">&nbsp;</td>
+     </tr>
+     @endforeach 
+     <tr>
+      <tr>
+       <td class="bot left">&nbsp;</td>
+       <td class="bot">&nbsp;</td>
+       <td class="bot">&nbsp;</td>
+       <td class="bot">&nbsp;</td>
+       <td class="bot right">&nbsp;</td>
+      </tr>
    </table>
    </div>  
    <br> 
@@ -318,6 +331,9 @@
        <td><input type="text" class="hiddenbordertop bot right left" name=""></td>
        <td><input type="text" class="hiddenbordertop bot right left" name=""></td>
        <td><input type="text" class="hiddenbordertop bot right left" name=""></td>
+     </tr>
+     <tr>
+       <td colspan="4" align="right" style="font-size: 10px">{{Auth::user()->m_username}} - {{carbon\carbon::now()}}</td>
      </tr>
    </table>
  </div>

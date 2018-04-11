@@ -648,10 +648,10 @@ if(count($dataItem)==0){
        $acc=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();       
-
+          
         if(count($acc)!=0){
         $akun[$indexakun]['id_akun']=$acc->id_akun;
         $akun[$indexakun]['value']=round($dataJurnal['totalInvoice'],2);
@@ -919,7 +919,7 @@ if(count($dataItem)==0){
        $acc=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                   
         if(count($acc)!=0){
@@ -1180,7 +1180,7 @@ if(count($dataItem)==0){
        $acc=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                   
         if(count($acc)!=0){
