@@ -18,6 +18,8 @@
             <td>
                 {{$val->nama_asal}}
                 <input type="hidden" value="{{$val->kcd_kota_asal}}" class="kcd_kota_asal">
+                <input type="hidden" value="{{$val->kcd_dt}}" class="kcd_dt_m">
+                <input type="hidden" value="{{$val->kcd_acc_penjualan}}" class="acc_kontrak">
             </td>
             <td>
                 {{$val->nama_tujuan}}
