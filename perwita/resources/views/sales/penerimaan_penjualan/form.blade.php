@@ -43,7 +43,7 @@
             overflow-y:scroll;
         }
 
-        ..ui-select-placeholder, .ui-select-match-text {
+        .ui-select-placeholder, .ui-select-match-text {
           width: 100%;
           overflow: hidden;
           text-overflow: ellipsis;
