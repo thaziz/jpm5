@@ -51,7 +51,7 @@
                   <div class="box-body">
                       <div class="row">
                       <div class="col-xs-6">
-                           <table border="0">
+                           <table border="0" class="table">
                           <tr>
                             <td width="150px">
                           No Return
@@ -62,22 +62,12 @@
                           </tr>
 
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
                             <td>   Tanggal </td>
                             <td>
                               <input type="text" class="form-control">
                             </td>
                           </tr>
-                          <tr>
-                          <td>
-                            &nbsp;
-                          </td>
-                          </tr>
+                       
 
                           <tr>
                             <td> No Faktur </td>
@@ -85,28 +75,12 @@
                             </td>
                           </tr>
 
-
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-
                             <td>
                               Tanggal Faktur
                             </td>
                             <td>
                                 <input type="text" class="form-control"> 
-
-                            </td>
-
-                          </tr>
-
-                          <tr>
-                            <td>
-                              &nbsp;
                             </td>
                           </tr>
 
@@ -117,6 +91,14 @@
                             <td>
                               <input type="text" class="form-control">
                             </td>
+                          </tr>
+                          <tr>
+                            <td> Keterangan </td>
+                            <td> <input type="text" class="form-control"></td>
+                          </tr>
+
+                          <tr>
+                            <td> </td>
                           </tr>
                           </table>
                       </div>
