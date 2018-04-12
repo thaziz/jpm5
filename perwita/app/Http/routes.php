@@ -809,6 +809,27 @@ Route::post('reportcabangkilogram/reportcabangkilogram', 'LaporanMasterControlle
 Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@reportcabangsepeda')->name('reportcabangsepeda');
 //END OF LAPORAN TARIF PDF
 
+//========tarif penerus
+
+//TARIF PENERUS
+Route::get('laporan_master_penjualan/tarif_penerus_dokumen', 'LaporanMasterController@tarif_penerus_dokumen');
+Route::get('laporan_master_penjualan/tarif_penerus_koli', 'LaporanMasterController@tarif_penerus_koli');
+Route::get('laporan_master_penjualan/tarif_penerus_default', 'LaporanMasterController@tarif_penerus_default');
+Route::get('laporan_master_penjualan/tarif_penerus_kilogram', 'LaporanMasterController@tarif_penerus_kilogram');
+Route::get('laporan_master_penjualan/tarif_penerus_sepeda', 'LaporanMasterController@tarif_penerus_sepeda');
+//END OF PENERUS  
+
+//LAPORAN PENERUS PDF
+Route::post('reportpenerusdokumen/reportpenerusdokumen', 'LaporanMasterController@reportpenerusdokumen')->name('reportpenerusdokumen');
+Route::post('reportpeneruskoli/reportpeneruskoli', 'LaporanMasterController@reportpeneruskoli')->name('reportpeneruskoli');
+Route::post('reportpenerusdefault/reportpenerusdefault', 'LaporanMasterController@reportpenerusdefault')->name('reportpenerusdefault');
+Route::post('reportpeneruskilogram/reportpeneruskilogram', 'laporanmasterController@reportpeneruskilogram')->name('reportpeneruskilogram');
+Route::post('reportpenerussepeda/reportpenerussepeda', 'LaporanMasterController@reportpenerussepeda')->name('reportpenerussepeda');
+//END OF LAPORAN PENERUS PDF
+
+
+//=======end of
+
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
 Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');

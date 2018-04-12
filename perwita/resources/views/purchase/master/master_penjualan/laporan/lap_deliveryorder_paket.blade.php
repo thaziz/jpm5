@@ -416,7 +416,7 @@
         type: "get",
        success : function(data){
         // console.log(data.dokumen == null &&  data.kilogram == null  &&  data.koli == null &&  data.sepeda == null);
-         if (data.dokumen == null) {
+         if (data.dokumen == null && data.kilogram == null && data.koli == null && data.sepeda == null) {
           Command: toastr["warning"](data.response, "Peringatan !")
 
           toastr.options = {
@@ -436,6 +436,7 @@
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
           }
+          $('#container').html('');
 
         }else{
          var awal = $.datepicker.formatDate("dd MM yy", new Date(data.awal))

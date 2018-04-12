@@ -261,21 +261,30 @@ class LaporanMasterController extends Controller
 	}
 	// END OF SEPEDA
 
+													//=====PENERUS======\\
+
 	// START OF DOKUMEN
 	public function tarif_penerus_dokumen(){
 
-		$data = DB::select("SELECT tarif_cabang_dokumen.*,res.id as id_asal,res1.id as id_tujuan, res.asal,res1.tujuan 
-							from tarif_cabang_dokumen 
-							join (SELECT id, nama as asal from kota) as res
-							on id_kota_asal = res.id
-							join (SELECT id, nama as tujuan from kota) as res1
-							on id_kota_tujuan = res1.id
+		$data = DB::select("SELECT tarif_penerus_dokumen.*,res.id as id_asal,res1.id as id_tujuan, res.asal,res3.kecamatan,res1.tujuan,res4.harga_reg,res5.harga_ex
+							from tarif_penerus_dokumen 
+							left join (SELECT id, nama as asal from provinsi) as res
+							on id_provinsi = res.id
+							left join (SELECT id, nama as tujuan from kota) as res1
+							on id_kota = res1.id
+							left join (SeLECT id,nama as kecamatan from kecamatan) as res3
+							on id_kecamatan = res3.id
+							left join (SeLECT id_zona as id_reg,harga_zona as harga_reg,nama as nama_reg from zona ) as res4
+							on tarif_reguler = res4.id_reg
+							left join (select id_zona as id_ex ,harga_zona as harga_ex,nama as nama_ex from zona) as res5
+							on tarif_express = res5.id_ex
 							");
 
-		$kota = DB::select("SELECT id, nama as tujuan from kota");
-		$kota1 = DB::select("SELECT id, nama as asal from kota");
+		$kota = DB::select("SELECT id, nama as kota from kota");
+		$provinsi = DB::select("SELECT id, nama as provinsi from provinsi");
+		$kecamatan = DB::select("SELECT id, nama as kecamatan from kecamatan");
 
-		return view('purchase/master/master_penjualan/laporan/tarifCabangDokumen',compact('data','kota','kota1'));
+		return view('purchase/master/master_penjualan/laporan/tarifPenerusDokumen',compact('data','kota','provinsi','kecamatan'));
 	}
 	public function reportpenerusdokumen(Request $request){
 		
@@ -289,22 +298,236 @@ class LaporanMasterController extends Controller
 		json_encode($dat);
         for ($i=1; $i <count($dat) ; $i++) { 
 			$dat1[$i] =
-			DB::select("SELECT tarif_penerus_dokumen.*,res.id as id_asal,res1.id as id_tujuan,res.asal,res1.tujuan 
-							from tarif_cabang_dokumen 
-							join (SELECT id, nama as asal from kota) as res
+			$data = DB::select("SELECT tarif_penerus_dokumen.*,res.id as id_asal,res1.id as id_tujuan, res.asal,res3.kecamatan,res1.tujuan,res4.harga_reg,res5.harga_ex
+							from tarif_penerus_dokumen 
+							left join (SELECT id, nama as asal from provinsi) as res
 							on id_provinsi = res.id
-							join (SELECT id, nama as tujuan from kota) as res1
+							left join (SELECT id, nama as tujuan from kota) as res1
 							on id_kota = res1.id
-							join (SeLECT id,nama as kecamatan from kecamatan) as res3
+							left join (SeLECT id,nama as kecamatan from kecamatan) as res3
 							on id_kecamatan = res3.id
-							where kode = '$dat[$i]'
-							order by tarif_cabang_dokumen.kode_detail ASC"); 
+							left join (SeLECT id_zona as id_reg,harga_zona as harga_reg,nama as nama_reg from zona ) as res4
+							on tarif_reguler = res4.id_reg
+							left join (select id_zona as id_ex ,harga_zona as harga_ex,nama as nama_ex from zona) as res5
+							on tarif_express = res5.id_ex
+							where tarif_penerus_dokumen.id_tarif_dokumen = '$dat[$i]' 
+							");
         }
         // dd ($dat1);
-		return view('purchase/master/master_penjualan/pdf/pdf_tarifdokumen',compact('dat1'));
+		return view('purchase/master/master_penjualan/pdf/pdf_penerusdokumen',compact('dat1'));
 		
 	}
 	// END OF DOKUMEN
+
+	// START OF KILOGRAM
+	public function tarif_penerus_kilogram(){
+
+		$data = DB::select("SELECT tarif_penerus_kilogram.*,res.id as id_asal,res1.id as id_tujuan, res.asal,res3.kecamatan,res1.tujuan,res4.harga_10reg,res5.harga_10ex,res6.harga_20reg,res7.harga_20ex
+							from tarif_penerus_kilogram 
+							left join (SELECT id, nama as asal from provinsi) as res
+							on id_provinsi_kilo = res.id
+							left join (SELECT id, nama as tujuan from kota) as res1
+							on id_kota_kilo = res1.id
+							left join (SeLECT id,nama as kecamatan from kecamatan) as res3
+							on id_kecamatan_kilo = res3.id
+							left join (SeLECT id_zona as id_10reg,harga_zona as harga_10reg,nama as nama_reg from zona ) as res4
+							on tarif_10reguler_kilo = res4.id_10reg
+							left join (select id_zona as id_10ex ,harga_zona as harga_10ex,nama as nama_ex from zona) as res5
+							on tarif_10express_kilo = res5.id_10ex
+							left join (select id_zona as id_20reg ,harga_zona as harga_20reg,nama as nama_ex from zona) as res6
+							on tarif_20reguler_kilo = res6.id_20reg
+							left join (select id_zona as id_20ex ,harga_zona as harga_20ex,nama as nama_ex from zona) as res7
+							on tarif_20express_kilo = res7.id_20ex
+							");
+
+		$kota = DB::select("SELECT id, nama as kota from kota");
+		$provinsi = DB::select("SELECT id, nama as provinsi from provinsi");
+		$kecamatan = DB::select("SELECT id, nama as kecamatan from kecamatan");
+
+		return view('purchase/master/master_penjualan/laporan/tarifPenerusKilogram',compact('data','kota','provinsi','kecamatan'));
+	}
+	public function reportpeneruskilogram(Request $request){
+		
+		$data = $request->a;	
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat) ; $i++) { 
+			$dat1[$i] =
+			DB::select("SELECT tarif_penerus_kilogram.*,res.id as id_asal,res1.id as id_tujuan, res.asal,res3.kecamatan,res1.tujuan,res4.harga_10reg,res5.harga_10ex,res6.harga_20reg,res7.harga_20ex
+							from tarif_penerus_kilogram 
+							left join (SELECT id, nama as asal from provinsi) as res
+							on id_provinsi_kilo = res.id
+							left join (SELECT id, nama as tujuan from kota) as res1
+							on id_kota_kilo = res1.id
+							left join (SeLECT id,nama as kecamatan from kecamatan) as res3
+							on id_kecamatan_kilo = res3.id
+							left join (SeLECT id_zona as id_10reg,harga_zona as harga_10reg,nama as nama_reg from zona ) as res4
+							on tarif_10reguler_kilo = res4.id_10reg
+							left join (select id_zona as id_10ex ,harga_zona as harga_10ex,nama as nama_ex from zona) as res5
+							on tarif_10express_kilo = res5.id_10ex
+							left join (select id_zona as id_20reg ,harga_zona as harga_20reg,nama as nama_ex from zona) as res6
+							on tarif_20reguler_kilo = res6.id_20reg
+							left join (select id_zona as id_20ex ,harga_zona as harga_20ex,nama as nama_ex from zona) as res7
+							on tarif_20express_kilo = res7.id_20ex
+							where id_tarif_kilogram = '$dat[$i]'
+							order by tarif_penerus_kilogram.id_increment_kilogram ASC"); 
+        }
+        // dd ($dat1);
+		return view('purchase/master/master_penjualan/pdf/pdf_peneruskilogram',compact('dat1'));
+		
+	}
+	// END OF KILOGRAM
+
+	// START OF koli
+	public function tarif_penerus_koli(){
+
+		$data = DB::table('tarif_penerus_koli as tk')
+					->select('tk.*','z1.harga_zona as h1','z2.harga_zona as h2','z3.harga_zona as h3','z4.harga_zona as h4','z5.harga_zona as h5','z6.harga_zona as h6','z7.harga_zona as h7','z8.harga_zona as h8','provinsi.nama as prov','kota.nama as kot','kecamatan.nama as kec')
+					->leftjoin('zona as z1','tk.tarif_10reguler_koli','=','z1.id_zona')
+					->leftjoin('zona as z2','tk.tarif_10express_koli','=','z2.id_zona')
+					->leftjoin('zona as z3','tk.tarif_20reguler_koli','=','z3.id_zona')
+					->leftjoin('zona as z4','tk.tarif_20express_koli','=','z4.id_zona')
+					->leftjoin('zona as z5','tk.tarif_30reguler_koli','=','z5.id_zona')
+					->leftjoin('zona as z6','tk.tarif_30express_koli','=','z6.id_zona')
+					->leftjoin('zona as z7','tk.tarif_>30reguler_koli','=','z7.id_zona')
+					->leftjoin('zona as z8','tk.tarif_>30express_koli','=','z8.id_zona')
+					->leftjoin('provinsi','provinsi.id','=','tk.id_provinsi_koli')
+					->leftjoin('kota','kota.id','=','tk.id_kota_koli')
+					->leftjoin('kecamatan','kecamatan.id','=','tk.id_kecamatan_koli')
+					->get();	
+
+		$kota = DB::select("SELECT id, nama as kota from kota");
+		$provinsi = DB::select("SELECT id, nama as provinsi from provinsi");
+		$kecamatan = DB::select("SELECT id, nama as kecamatan from kecamatan");
+
+		return view('purchase/master/master_penjualan/laporan/tarifPenerusKoli',compact('data','kota','provinsi','kecamatan'));
+	}
+	public function reportpeneruskoli(Request $request){
+		
+		$data = $request->a;	
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat) ; $i++) { 
+			$dat1[$i] =
+			DB::table('tarif_penerus_koli as tk')
+					->select('tk.*','z1.harga_zona as h1','z2.harga_zona as h2','z3.harga_zona as h3','z4.harga_zona as h4','z5.harga_zona as h5','z6.harga_zona as h6','z7.harga_zona as h7','z8.harga_zona as h8','provinsi.nama as prov','kota.nama as kot','kecamatan.nama as kec')
+					->leftjoin('zona as z1','tk.tarif_10reguler_koli','=','z1.id_zona')
+					->leftjoin('zona as z2','tk.tarif_10express_koli','=','z2.id_zona')
+					->leftjoin('zona as z3','tk.tarif_20reguler_koli','=','z3.id_zona')
+					->leftjoin('zona as z4','tk.tarif_20express_koli','=','z4.id_zona')
+					->leftjoin('zona as z5','tk.tarif_30reguler_koli','=','z5.id_zona')
+					->leftjoin('zona as z6','tk.tarif_30express_koli','=','z6.id_zona')
+					->leftjoin('zona as z7','tk.tarif_>30reguler_koli','=','z7.id_zona')
+					->leftjoin('zona as z8','tk.tarif_>30express_koli','=','z8.id_zona')
+					->leftjoin('provinsi','provinsi.id','=','tk.id_provinsi_koli')
+					->leftjoin('kota','kota.id','=','tk.id_kota_koli')
+					->leftjoin('kecamatan','kecamatan.id','=','tk.id_kecamatan_koli')
+					->where('tk.id_tarif_koli','=',$dat[$i])
+					->get();
+        }
+        // dd ($dat1);
+		return view('purchase/master/master_penjualan/pdf/pdf_peneruskoli',compact('dat1'));
+		
+	}
+	// END OF koli
+
+	// START OF SEPEDA
+	public function tarif_penerus_sepeda(){
+
+		$data = DB::table('tarif_penerus_sepeda as tk')
+					->select('tk.*','z1.harga_zona as h1','z2.harga_zona as h2','z3.harga_zona as h3','z4.harga_zona as h4','provinsi.nama as prov','kota.nama as kot','kecamatan.nama as kec')
+					->leftjoin('zona as z1','tk.sepeda','=','z1.id_zona')
+					->leftjoin('zona as z2','tk.matik','=','z2.id_zona')
+					->leftjoin('zona as z3','tk.sport','=','z3.id_zona')
+					->leftjoin('zona as z4','tk.moge','=','z4.id_zona')
+					->leftjoin('provinsi','provinsi.id','=','tk.id_provinsi_sepeda')
+					->leftjoin('kota','kota.id','=','tk.id_kota_sepeda')
+					->leftjoin('kecamatan','kecamatan.id','=','tk.id_kecamatan_sepeda')
+					->get();	
+
+
+		$kota = DB::select("SELECT id, nama as kota from kota");
+		$provinsi = DB::select("SELECT id, nama as provinsi from provinsi");
+		$kecamatan = DB::select("SELECT id, nama as kecamatan from kecamatan");
+
+		return view('purchase/master/master_penjualan/laporan/tarifPenerusSepeda',compact('data','kota','provinsi','kecamatan'));
+	}
+	public function reportpenerussepeda(Request $request){
+		
+		$data = $request->a;	
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat) ; $i++) { 
+			$dat1[$i] =
+			DB::table('tarif_penerus_sepeda as tk')
+					->select('tk.*','z1.harga_zona as h1','z2.harga_zona as h2','z3.harga_zona as h3','z4.harga_zona as h4','provinsi.nama as prov','kota.nama as kot','kecamatan.nama as kec')
+					->leftjoin('zona as z1','tk.sepeda','=','z1.id_zona')
+					->leftjoin('zona as z2','tk.matik','=','z2.id_zona')
+					->leftjoin('zona as z3','tk.sport','=','z3.id_zona')
+					->leftjoin('zona as z4','tk.moge','=','z4.id_zona')
+					->leftjoin('provinsi','provinsi.id','=','tk.id_provinsi_sepeda')
+					->leftjoin('kota','kota.id','=','tk.id_kota_sepeda')
+					->leftjoin('kecamatan','kecamatan.id','=','tk.id_kecamatan_sepeda')
+					->where('id_tarif_sepeda','=',$dat[$i])
+					->get();	
+        }
+        // dd ($dat1);
+		return view('purchase/master/master_penjualan/pdf/pdf_penerussepeda',compact('dat1'));
+		
+	}
+	// END OF SEPEDA
+
+	// START OF DEFAULT
+	public function tarif_penerus_default(){
+
+		$data = DB::table('tarif_penerus_default as tk')
+					->select('tk.*','z1.harga_zona as h1')
+					->leftjoin('zona as z1','tk.id_zona_foreign','=','z1.id_zona')
+					->get();	
+
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+
+		return view('purchase/master/master_penjualan/laporan/tarifPenerusdefault',compact('data','kota','kota1'));
+	}
+	public function reportpenerusdefault(Request $request){
+		
+		$data = $request->a;	
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat) ; $i++) { 
+			$dat1[$i] =
+			DB::table('tarif_penerus_default as tk')
+					->select('tk.*','z1.harga_zona as h1')
+					->leftjoin('zona as z1','tk.id_zona_foreign','=','z1.id_zona')
+					->where('id','=',$dat[$i])
+					->get();        
+				}
+        // dd ($dat1);
+		return view('purchase/master/master_penjualan/pdf/pdf_penerusdefault',compact('dat1'));
+		
+	}
+	// END OF DEFAULT
 
 
 //==================================================== LAPORAN TARIF BERAKIR ========================================================//
@@ -882,9 +1105,9 @@ class LaporanMasterController extends Controller
 				->get();
 
 		if ($data != null || $data1 != null || $data2 != null || $data3 != null) {
-        	return response()->json(['dokumen'=>count($data),'kilogram'=>count($data1),'koli'=>count($data2),'sepeda'=>count($data3)]);			
+        	return response()->json(['dokumen'=>count($data),'kilogram'=>count($data1),'koli'=>count($data2),'sepeda'=>count($data3),'awal'=> $awal,'akir' => $akir]);			
 		}else{
-			return response()->json(['response'=>'Data Tidak Ditemukan']);
+			return response()->json(['response'=>'Data Tidak Ditemukan','awal'=> $awal,'akir' => $akir]);
 		}		
 
 
@@ -990,7 +1213,7 @@ class LaporanMasterController extends Controller
 		if ($data != null) {
         	return  response()->json(['data'=>$array,'awal'=> $awal,'akir' => $akir]);
 		}else{
-			return response()->json(['response'=>'Data Tidak Ditemukan !']);
+			return response()->json(['response'=>'Data Tidak Ditemukan !','awal'=> $awal,'akir' => $akir]);
 		}
 
 	}
@@ -1097,8 +1320,30 @@ class LaporanMasterController extends Controller
 		return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_koran',compact('dat1'));
 		
 	}
-	public function carideliveryorder_koran(Request $request){
+	public function cari_deliveryorder_koran(Request $request){
+		$awal = $request->a;
+		$akir = $request->b;
+		$data =DB::table('delivery_order as do')
+				->where('pendapatan','=','KORAN')
+				->where('tanggal','>=',$awal)
+				->where('tanggal','<=',$akir)
+				->get();
 
+		for ($i=0; $i <count($data); $i++) { 
+			$dat[$i] = $data[$i]->total_net;
+
+			$array = array_sum($dat);
+
+		}
+		// return $array;
+				
+		
+		
+		if ($data != null) {
+        	return  response()->json(['data'=>$array,'awal'=> $awal,'akir' => $akir]);
+		}else{
+			return response()->json(['response'=>'Data Tidak Ditemukan !','awal'=> $awal,'akir' => $akir]);
+		}
 	}
 // END OF DELIVERY ORDER LAPORAN KORAN(DO)
 
@@ -1172,7 +1417,7 @@ class LaporanMasterController extends Controller
 		if ($data != null) {
         	return  response()->json(['data'=>$array,'awal'=> $awal,'akir' => $akir]);
 		}else{
-			return response()->json(['response'=>'Data Tidak Ditemukan !']);
+			return response()->json(['response'=>'Data Tidak Ditemukan !','awal'=> $awal,'akir' => $akir]);
 		}
 
 	}
