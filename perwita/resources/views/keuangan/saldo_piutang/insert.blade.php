@@ -55,152 +55,72 @@
 
 <div class="row">
 
-  <div class="col-md-5">
-    <div class="col-md-12" style="background: #fff; padding: 10px; border: 1px solid #ddd;border-radius: 5px;" id="master_saldo_piutang" data-toggle="tooltip" data-placement="top" title="Pastikan Tidak Ada Data Yang Kosong">
-      <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Master Saldo Piutang</small></span>
-      <form id="customer_form">
+  <form id="form">
+
+  <div class="col-md-12">
+    <div class="col-md-12" style="background: #fff; padding: 10px; border: 1px solid #ddd;border-radius: 5px; border-bottom: 0px;" id="master_saldo_piutang" data-toggle="tooltip" data-placement="top" title="Pastikan Tidak Ada Data Yang Kosong">
+      <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Informasi Cabang Dan Periode</small></span>
+      
+        <input type="hidden" value="{{csrf_token()}}" name="_token">
         <table width="100%" border="0" class="table-form" style="margin-top: 10px;">
           <tr>
             <th>Pilih Cabang</th>
-            <td>
-              <select name="customer" class="chosen-select" id="cabang" name="cabang" style="background: red;">
+            <td width="40%">
+              <select name="cabang" class="chosen-select" id="cab" style="background: red;">
                 <option value="---">- Pilih Cabang</option>
                 @foreach ($cab as $cabang)
                   <option value="{{ $cabang->kode }}">{{ $cabang->nama }}</option>
                 @endforeach
               </select>
             </td>
-          </tr>
 
-          <tr>
-            <th>Kode Customer</th>
-            <td>
-              <select name="customer" class="chosen-select" id="customer" name="customer" style="background: red;">
-                <option value="---">- Pilih Customer</option>
-                @foreach ($cust as $customer)
-                  <option value="{{ $customer->kode }}" data-nama="{{ $customer->nama }}" data-alamat="{{ $customer->alamat }}">{{ $customer->kode }}</option>
-                @endforeach
-              </select>
-            </td>
-          </tr>
-
-          <tr>
-            <th>Nama</th>
-            <td>
-              <input type="text" class="form-control" id="nama_cust" placeholder="" style="height: 30px;" disabled>
-            </td>
-          </tr>
-
-          <tr>
-            <th>Alamat</th>
-            <td>
-              <input type="text" class="form-control" id="alamat_cust" placeholder="" style="height: 30px;" disabled>
-            </td>
-          </tr>
-
-          <tr>
             <th>Periode</th>
-            <td>
-              <input type="text" class="form-control bulan" id="periode" placeholder="Bulan/Tahun" style="height: 30px; cursor: pointer; background: white;" readonly name="periode" value="{{ date("m/Y") }}">
-            </td>
-          </tr>
-
-          <tr>
-            <th>Saldo Awal</th>
-            <td>
-              <input type="text" class="form-control currency" id="saldo_awal" placeholder="0" style="height: 30px; text-align: right;" readonly>
+            <td width="20%">
+              <input type="text" class="form-control" value="{{ date("m/Y") }}" name="periode">
             </td>
           </tr>
 
         </table>
-      </form>
     </div>
 
-    <div class="col-md-12" style="background: #fff; padding: 10px; border: 1px solid #ddd;border-radius: 5px; margin-top: 25px;" id="detail_saldo_piutang" data-toggle="tooltip" data-placement="top" title="Pastikan Tidak Ada Data Yang Kosong">
-      <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Detail Saldo Piutang</small></span>
 
-      <span class="text-muted" style="position: absolute; background: white; top: -10px; right: -5px; padding: 0px 0px; font-style: italic;"><small><i class="fa fa-arrow-right"></i> <i class="fa fa-arrow-right"></i> <i class="fa fa-arrow-right"></i></small></span>
-      <table width="100%" border="0" class="table-form" style="margin-top: 10px;" id="table-datail">
-        <tr>
-          <th>Nomor Faktur</th>
-          <td>
-            <input type="text" class="form-control" placeholder="Masukkan Nomor Faktur" style="height: 30px;" id="nomor_faktur">
-          </td>
-        </tr>
+    <div class="col-md-12 m-t-lg" style="background: #fff; padding: 10px; border: 1px solid #ddd;border-radius: 5px;" id="master_saldo_piutang" data-toggle="--" data-placement="top" title="Pastikan Tidak Ada Data Yang Kosong">
+      <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Saldo Awal Piutang Per Customer</small></span>
+      
+      <div class="col-md-12" style="padding: 0px; height: 320px; overflow-y: scroll; border-bottom: 1px solid #bbb;">
+          <table width="100%" border="0" class="table table-bordered" style="margin-top: 10px;">
+            <thead>
+              <tr>
+                <th width="20%" class="text-center">Kode Customer</th>
+                <th class="text-center">Nama Customer</th>
+                <th width="30%" class="text-center">Saldo Awal Piutang</th>
+              </tr>
+            </thead>
 
-        <tr>
-          <th>Tanggal Faktur</th>
-          <td>
-            <input type="text" class="form-control tgl_faktur" placeholder="Tanggal/Bulan/Tahun" style="height: 30px; cursor: pointer;background: white;" readonly id="tanggal_faktur">
-          </td>
-        </tr>
+            <tbody id="cust_wrap">
+                @foreach($cust as $customer)
+                  <tr>
+                    <td class="text-center">
+                      {{ $customer->kode }}
+                      <input type="hidden" value="{{ $customer->kode }}" name="customer[]" readonly>
+                    </td>
+                    <td class="text-center">{{ $customer->nama }}</td>
+                    <td class="text-center">
+                      <input type="text" class="form-control currency text-right" name="jumlah[]" value="0" readonly>
+                    </td>
+                  </tr>
+                @endforeach
+            </tbody>
+          </table>
+      </div>
 
-        <tr>
-          <th>Jatuh Tempo</th>
-          <td>
-            <input type="text" class="form-control jatuh_tempo" placeholder="Tanggal/Bulan/Tahun" style="height: 30px;cursor: pointer;background: white;" readonly id="jatuh_tempo">
-          </td>
-        </tr>
-
-        <tr>
-          <th>Keterangan</th>
-          <td>
-            <input type="text" class="form-control" placeholder="" style="height: 30px;" id="keterangan">
-          </td>
-        </tr>
-
-        <tr>
-          <th>Jumlah</th>
-          <td>
-            <input type="text" class="form-control currency" placeholder="0" style="height: 30px; text-align: right;" id="jumlah">
-          </td>
-        </tr>
-
-      </table>
-    </div>
-
-    <div class="col-md-12 m-t text-right" style="border-top: 1px solid #ddd; padding: 15px 10px 0px 10px">
-      <i class="fa fa-times" style="color: red; cursor: pointer; display: none;" data-toggle="tooltip" data-placement="right" title="Bersihkan Form Detail Saldo Piutang" id="cancel"></i> &nbsp; &nbsp; 
-      <button class="btn btn-default btn-sm" id="tambah"><i class="fa fa-plus-square-o"></i>&nbsp;Tambahkan</button>
-      <button class="btn btn-primary btn-sm" disabled id="edit"><i class="fa fa-edit"></i>&nbsp;Edit</button>
-      <button class="btn btn-danger btn-sm" disabled id="hapus"><i class="fa fa-times"></i>&nbsp;Hapus</button>
-      <button class="btn btn-success btn-sm" id="simpan"><i class="fa fa-check"></i>&nbsp;Simpan</button>
-    </div>
-
-  </div>
-
-  <div class="col-md-7" style="background:; min-height: 300px; padding: 0px;">
-    <div class="col-md-12" style="padding: 0px; height: 495px; overflow-y: scroll; border-bottom: 1px solid #bbb;">
-      <table border="0" class="table-detail" width="100%">
-        <thead>
-          <tr>
-            <th width="18%" class="text-center">Nomor Faktur</th>
-            <th width="13%" class="text-center">Tanggal</th>
-            <th width="14%"class="text-center">Jatuh Tempo</th>
-            <th class="text-center">Keterangan</th>
-            <th width="19%" class="text-center">Jumlah</th>
-          </tr>
-        </thead>
-
-        <tbody id="body_detail">
-          
-
-
-        </tbody>
-      </table>
-    </div>
-
-    <div class="col-md-12" style="padding: 0px; margin-top: 8px;">
-      <table border="0" class="table-detail" width="100%">
-        <tbody>
-          <tr>
-            <td class="text-center" width="79%" colspan="4" style="font-weight: bold;">Grand Total</td>
-            <td class="text-right" id="grand_total"><b></b></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="col-md-12 m-t text-right">
+        <button class="btn btn-primary btn-sm" id="simpan"><i class="fa fa-check"></i>&nbsp;Simpan</button>
+      </div>
     </div>
   </div>
+  
+  </form>
 
 </div>
 
@@ -209,96 +129,12 @@
 
   $(document).ready(function(){
 
+    $(".chosen-select").chosen({width: '90%'});
     $('[data-toggle="tooltip"]').tooltip();
 
-    $data_detail = [
-      {
-        nomor_faktur    : "FKT J-0001/1207",
-        tanggal_faktur  : "10/12/2007",
-        jatuh_tempo     : "20/12/2007",
-        keterangan      : "PIUTANG PT.JAWA POS",
-        jumlah          : "232514744"
-      },
+    // console.log(customer);
 
-      {
-        nomor_faktur    : "FKT J-0038/1207",
-        tanggal_faktur  : "20/12/2007",
-        jatuh_tempo     : "31/12/2007",
-        keterangan      : "PIUTANG PT.JAWA POS",
-        jumlah          : "219216074"
-      },
-
-      {
-        nomor_faktur    : "FKT J-0065/1207",
-        tanggal_faktur  : "31/12/2007",
-        jatuh_tempo     : "10/01/2007",
-        keterangan      : "PIUTANG PT.JAWA POS",
-        jumlah          : "251663104"
-      },
-
-      {
-        nomor_faktur    : "FKT J-0068/1207",
-        tanggal_faktur  : "31/11/2007",
-        jatuh_tempo     : "10/12/2007",
-        keterangan      : "PIUTANG PT.JAWA POS",
-        jumlah          : "225853939"
-      },
-
-      {
-        nomor_faktur    : "FKT J-0068/1207",
-        tanggal_faktur  : "31/11/2007",
-        jatuh_tempo     : "10/12/2007",
-        keterangan      : "PIUTANG PT.JAWA POS",
-        jumlah          : "225853939"
-      },
-
-      {
-        nomor_faktur    : "FKT J-0068/1207",
-        tanggal_faktur  : "31/11/2007",
-        jatuh_tempo     : "10/12/2007",
-        keterangan      : "PIUTANG PT.JAWA POS",
-        jumlah          : "225853939"
-      },
-
-      {
-        nomor_faktur    : "FKT J-0068/1207",
-        tanggal_faktur  : "31/11/2007",
-        jatuh_tempo     : "10/12/2007",
-        keterangan      : "PIUTANG PT.JAWA POS",
-        jumlah          : "225853939"
-      },
-    ];
-
-    fill_detail();
-
-    $(".chosen-select").chosen({width: '100%'});
-
-    $('.bulan').datepicker({
-        format: "mm/yyyy",
-        viewMode: "months", 
-        minViewMode: "months"
-    });
-
-    $('.jatuh_tempo').datepicker({
-        format: "dd/mm/yyyy",
-    });
-
-    $('.tgl_faktur').datepicker({
-        format: "dd/mm/yyyy",
-    }).on("changeDate", function(){
-      $('.jatuh_tempo').val("");
-      $('.jatuh_tempo').datepicker("setStartDate", $(this).val());
-    });
-
-    $("#customer").change(function(){
-      nama = $(this).find(":selected").data("nama");
-      alamat = $(this).find(":selected").data("alamat");
-
-      $("#nama_cust").val(nama);
-      $("#alamat_cust").val(alamat);
-    })
-
-    $('.currency').inputmask("currency", {
+    $('#cust_wrap .currency').inputmask("currency", {
         radixPoint: ",",
         groupSeparator: ".",
         digits: 2,
@@ -308,124 +144,21 @@
         oncleared: function () { self.Value(''); }
     });
 
-    $("#tambah").click(function(evt){
-      evt.stopImmediatePropagation();
-      
-      nomor_faktur = $("#nomor_faktur").val().toUpperCase();
-      tanggal_faktur = $("#tanggal_faktur").val();
-      jatuh_tempo = $("#jatuh_tempo").val();
-      keterangan = $("#keterangan").val().toUpperCase();
-      jumlah = $("#jumlah").val().split(',')[0].replace(/\./g, '');
-
-      // alert(jumlah);
-
-      if(nomor_faktur == "" || tanggal_faktur == "" || jatuh_tempo == "" || keterangan == "" || jumlah == ""){
-        $("#detail_saldo_piutang").tooltip("show")
-        $("#detail_saldo_piutang" ).effect( "shake" );
-        return false;
-      }
-
-      $data_detail[$data_detail.length] = {
-          nomor_faktur    : nomor_faktur,
-          tanggal_faktur  : tanggal_faktur,
-          jatuh_tempo     : jatuh_tempo,
-          keterangan      : keterangan,
-          jumlah          : jumlah
-      }
-
-      fill_detail();
-      detail_reset();
-    });
-
-    $("#body_detail").on("click", ".row-detail", function(evt){
-      evt.stopImmediatePropagation();
-      
-      $getId = $data_detail.findIndex(x => x.nomor_faktur == $(this).data("nf"));
-
-      // console.log($data_detail[$getId]);
-
-      $("#nomor_faktur").val($data_detail[$getId].nomor_faktur);
-      $("#tanggal_faktur").val($data_detail[$getId].tanggal_faktur);
-      $("#jatuh_tempo").val($data_detail[$getId].jatuh_tempo);
-      $("#keterangan").val($data_detail[$getId].keterangan);
-      $("#jumlah").val($data_detail[$getId].jumlah);
-
-      $("#edit").removeAttr("disabled");
-      $("#hapus").removeAttr("disabled");
-      $("#tambah").attr("disabled", "disabled");
-      $("#cancel").css("display", "");
-    });
-
-    $("#edit").click(function(evt){
-      evt.stopImmediatePropagation();
-
-      nomor_faktur = $("#nomor_faktur").val().toUpperCase();
-      tanggal_faktur = $("#tanggal_faktur").val();
-      jatuh_tempo = $("#jatuh_tempo").val();
-      keterangan = $("#keterangan").val().toUpperCase();
-      jumlah = $("#jumlah").val().split(',')[0].replace(/\./g, '');
-
-      // alert(jumlah);
-
-      if(nomor_faktur == "" || tanggal_faktur == "" || jatuh_tempo == "" || keterangan == "" || jumlah == ""){
-        alert("inputan Detail Saldo Piutang Tidak Boleh Kosong");
-        return false;
-      }
-
-      $id = $data_detail.findIndex(x => x.nomor_faktur == nomor_faktur);
-
-      if($id == -1){
-        alert("Nomor Faktur Tidak Ditemukan Di Detail");
-        return false;
-      }
-
-      $data_detail[$id] = {
-          nomor_faktur    : nomor_faktur,
-          tanggal_faktur  : tanggal_faktur,
-          jatuh_tempo     : jatuh_tempo,
-          keterangan      : keterangan,
-          jumlah          : jumlah
-      }
-
-      fill_detail();
-      detail_reset();
-    });
-
-    $("#hapus").click(function(evt){
-      evt.stopImmediatePropagation();
-
-      nomor_faktur = $("#nomor_faktur").val().toUpperCase();
-
-      // alert(jumlah);
-
-      if(nomor_faktur == ""){
-        alert("Nomor Faktur Tidak Boleh Koson");
-        return false;
-      }
-
-      $id = $data_detail.findIndex(x => x.nomor_faktur == nomor_faktur);
-
-      if($id == -1){
-        alert("Nomor Faktur Tidak Ditemukan Di Detail");
-        return false;
-      }
-
-      $data_detail.splice($id, 1);
-
-      fill_detail();
-      detail_reset();
-    });
+    $("#cab").change(function(){
+      if($(this).val() == "---")
+        $(".currency").attr("readonly", "readonly");
+      else
+        $(".currency").removeAttr("readonly");
+    })
 
     $("#simpan").click(function(evt){
       evt.stopImmediatePropagation();
-
-      $customer = $("#customer").val();
-      $periode = $("#periode").val();
-      $cabang = $("#cabang").val();
+      $cabang = $("#cab").val();
+      var form = $('#form');
 
       // alert($customer);
 
-      if($customer == "---" || $periode == "" || $cabang == "---"){
+      if($cabang == "---"){
         $("#master_saldo_piutang").tooltip("show");
         $( "#master_saldo_piutang" ).effect("shake");
 
@@ -435,7 +168,7 @@
       $.ajax(baseUrl+"/master_keuangan/saldo_piutang/save",{
         type: "post",
         dataType: "json",
-        data: { cust: { customer: $customer, periode: $periode, cabang : $cabang }, detail: $data_detail, _token: "{{ csrf_token() }}" },
+        data: form.serialize(),
         success: function(response){
 
           console.log(response);
@@ -447,30 +180,8 @@
         }
       })
 
+      return false;
     })
-
-    $("#cancel").click(function(evt){
-      detail_reset();
-    });
-
-    function fill_detail(){
-      $html = ""; $total = 0;
-      $.each($data_detail, function(i, n){
-        $html = $html + '<tr class="row-detail" data-nf = "'+n.nomor_faktur+'">'+
-                  '<td>'+n.nomor_faktur+'</td>'+
-                  '<td>'+n.tanggal_faktur+'</td>'+
-                  '<td>'+n.jatuh_tempo+'</td>'+
-                  '<td>'+n.keterangan+'</td>'+
-                  '<td class="text-right">'+addCommas(n.jumlah)+',00</td>'+
-                '</tr>';
-
-        $total += parseInt(n.jumlah);
-      })
-
-      $("#saldo_awal").val($total);
-      $("#grand_total b").text(addCommas($total)+",00");
-      $("#body_detail").html($html);
-    }
 
     function detail_reset(){
       $("#nomor_faktur").val("");
