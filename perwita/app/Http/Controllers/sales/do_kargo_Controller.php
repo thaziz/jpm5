@@ -185,16 +185,18 @@ class do_kargo_Controller extends Controller
         // return dd($request->all());
         if ($request->status_kendaraan == 'OWN') {
             $data = DB::table('kendaraan')
-                  ->where('status',$request->status_kendaraan)
-                  ->where('tipe_angkutan',$request->tipe_angkutan)
-                  ->where('kode_cabang',$request->cabang_select)
+                  ->join('tipe_angkutan','tipe_angkutan.kode','=','kendaraan.tipe_angkutan')
+                  ->where('kendaraan.status',$request->status_kendaraan)
+                  ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
+                  // ->where('kode_cabang',$request->cabang_select)
                   ->get();
         }else{
             $data = DB::table('kendaraan')
                   ->where('status','SUB')
-                  ->where('tipe_angkutan',$request->tipe_angkutan)
-                  ->where('kode_cabang',$request->cabang_select)
-                  ->where('kode_subcon',$request->nama_subcon)
+                  ->join('tipe_angkutan','tipe_angkutan.kode','=','kendaraan.tipe_angkutan')
+                  ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
+                  // ->where('kode_cabang',$request->cabang_select)
+                  ->where('kendaraan.kode_subcon',$request->nama_subcon)
                   ->get();
         }
         if ($data == null) {

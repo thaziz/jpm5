@@ -505,6 +505,18 @@ count+=1;
     // }
     console.log(array_kontrak_id);
     hitung_all();
+
+       $.ajax({
+        url:baseUrl + '/sales/ganti_item',
+        data:{status},
+        success:function(data){
+            $('.item_tr').html(data);
+            // $('#modal').modal('show');
+        },
+        error:function(){
+            toastr.warning('Terjadi Kesalahan Silahkan Coba Lagi');
+        }
+    }) 
 @endforeach
 });
 
@@ -836,12 +848,22 @@ function edit_detail(p) {
     $('.ed_id').val(id);
     $('.old_id').val(id);
     $('.kcd_dt').val(kcd_dt);
-    $('.item').val(d_kode_item).trigger('chosen:updated');
     $('.cb_kota_asal').val(d_asal).trigger('chosen:updated');
     $('.cb_kota_tujuan').val(d_tujuan).trigger('chosen:updated');
     if (kcd_dt == 0) {
         cari_item();
     }
+
+    if ($('.status_kontrak').is(':checked') == true) {
+       var status = 2;
+        $('.item').val(d_kode_item);
+
+    }else{
+        var status = 1;
+        $('.item').val(d_kode_item).trigger('chosen:updated');
+    }
+
+  
     $('.ed_jumlah').val(d_jumlah);
     $('.ed_diskon').val(d_diskon);
     $('.ed_diskon_modal').val(accounting.formatMoney(d_diskon,"",0,'.',','));

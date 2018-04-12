@@ -54,7 +54,7 @@
                             @if(Auth::user()->punyaAkses('Invoice Penjualan','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="5">
+                                <td colspan="5" class="cabang_td">
                                         <select class="form-control chosen-select-width cabang "  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)

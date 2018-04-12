@@ -345,9 +345,9 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                             {{--                <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
+                                            <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
                                                 <i class="fa fa-print"> Print</i>
-                                            </button> --}}
+                                            </button>
                                             <button type="button" class="pull-right btn btn-primary save">
                                                 <i class="fa fa-save"> Simpan</i>
                                             </button>
@@ -825,7 +825,7 @@ $('.save').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                       window.location.href='../sales/deliveryorderkargo';
+                       // window.location.href='../sales/deliveryorderkargo';
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);

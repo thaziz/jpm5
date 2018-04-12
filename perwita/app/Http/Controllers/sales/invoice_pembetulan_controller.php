@@ -230,7 +230,7 @@ class invoice_pembetulan_controller extends Controller
               }else{
                 for ($i=0; $i < count($request->do_detail); $i++) { 
 
-                $cari_id = DB::table('invoice_d')
+                $cari_id = DB::table('invoice_pembetulan_d')
                              ->max('ipd_id');
 
                  if ($cari_id == null ) {
@@ -428,7 +428,7 @@ class invoice_pembetulan_controller extends Controller
                   ->where('i_nomor',$request->id)
                   ->first();
 
-    $invoice_pembetulan = DB::table('invoice_pembetulan_d')
+    $invoice_pembetulan = DB::table('invoice_pembetulan')
                             ->where('ip_nomor',$request->id)
                             ->first();
 
@@ -464,8 +464,12 @@ class invoice_pembetulan_controller extends Controller
                             ]);
         }
 
-        $invoice_pembetulan = DB::table('invoice_pembetulan_d')
+        $invoice_pembetulan = DB::table('invoice_pembetulan')
                             ->where('ip_nomor',$request->id)
+                            ->delete();
+
+        $cn_dn_del = DB::table('cn_dn_penjualan')
+                            ->where('ref',$request->id)
                             ->delete();
 
         return response()->json(['status'=>1]);

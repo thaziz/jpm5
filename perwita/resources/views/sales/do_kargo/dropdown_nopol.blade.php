@@ -3,7 +3,7 @@
 	@if($status == 1)
 	@foreach($data as $val)
 		@if($nopol == $val->nopol)
-		<option selected="" value="{{$val->id}}">{{$val->nopol}}</option>
+		<option selected="" value="{{$val->id}}">{{$val->nopol}} - {{$val->nama}} - {{$val->kode_cabang}}</option>
 		@else
 		<option value="{{$val->id}}">{{$val->nopol}}</option>
 		@endif

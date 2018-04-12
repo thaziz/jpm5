@@ -786,6 +786,14 @@ function edit_detail(p) {
     if (kcd_dt == 0) {
         cari_item();
     }
+
+    if ($('.status_kontrak').is(':checked') == true) {
+       var status = 2;
+    }else{
+        var status = 1;
+    }
+
+  
     $('.ed_jumlah').val(d_jumlah);
     $('.ed_diskon').val(d_diskon);
     $('.ed_diskon_modal').val(accounting.formatMoney(d_diskon,"",0,'.',','));
