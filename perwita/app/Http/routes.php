@@ -1645,6 +1645,11 @@ Route::post('master_keuangan/saldo_akun/save_data', [
 
 //saldo piutang
 
+Route::get('master_keuangan/saldo_piutang/cek', [
+  'uses' => 'master_keuangan\saldo_piutang_controller@cek',
+  'as'   => 'saldo_piutang.cek'
+]);
+
 Route::get('master_keuangan/saldo_piutang/{cabang}', [
   'uses' => 'master_keuangan\saldo_piutang_controller@index',
   'as'   => 'saldo_piutang.index'

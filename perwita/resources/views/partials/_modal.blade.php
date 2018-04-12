@@ -102,7 +102,7 @@
         $(this).text("Sedang Menambahkan...");
 
         $.ajax(baseUrl+"/master_keuangan/periode_keuangan/tambah", {
-           timeout: 10000,
+           timeout: 500000,
            type: "post",
            data: {bulan: $("#periode_month").val(), tahun: $("#periode_year").val(), _token: '{{ csrf_token() }}' },
            dataType: 'json',

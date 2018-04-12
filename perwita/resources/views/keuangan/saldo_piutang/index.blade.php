@@ -154,17 +154,18 @@
                 </div><!-- /.box-header -->
                 <div class="box-body" style="min-height: 330px;">
 
-                  <table id="ku" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; margin-top: 10px;">
+                  <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
                     <thead>
                       <tr>
-                        <th rowspan="2" style="padding:8px 0px" class="text-center">No</th>
-                        <th rowspan="2" style="padding:8px 0px" class="text-center">Periode</th>
-                        <th width="18%" rowspan="2" style="padding:8px 0px" class="text-center">Kode Customer</th>
-                        <th width="35%" rowspan="2" style="padding:8px 0px" class="text-center">Nama Customer</th>
+                        <th style="padding:8px 0px" class="text-center">No</th>
+                        <th style="padding:8px 0px" class="text-center">Periode</th>
+                        <th width="18%" style="padding:8px 0px" class="text-center">Kode Customer</th>
+                        <th width="35%" style="padding:8px 0px" class="text-center">Nama Customer</th>
                         <th style="padding:8px 0px" class="text-center">Saldo Piutang</th>
                         <th style="padding:8px 0px" class="text-center">Aksi</th>
                       </tr>
                     </thead>
+                    
                     <tbody>
                       
                       <?php $no = 1; ?>
@@ -185,8 +186,6 @@
                       @endforeach
                       
                     </tbody>
-                    
-                   
                   </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -348,7 +347,7 @@
 
                 <tbody id="body_detail">
                   
-
+                    
 
                 </tbody>
               </table>
@@ -388,6 +387,15 @@
     $('[data-toggle="tooltip"]').tooltip();
 
     saldo_piutang = {!! $datajson !!}; detail = {!! $detailjson !!}; $state = 0;
+
+    $('.tbl-penerimabarang').DataTable({
+          responsive: true,
+          searching: true,
+          sorting: true,
+          paging: true,
+          //"pageLength": 10,
+          "language": dataTableLanguage,
+    });
 
     console.log(detail);
 
@@ -439,6 +447,7 @@
     })
 
     $(".tampilkan").click(function(evt){
+      // alert("okee");
       evt.stopImmediatePropagation()
       $id = $(this).data("id");
 
@@ -469,6 +478,7 @@
       $("#cust_view").val(saldo_piutang[id].kode_customer);
       $("#nama_cust_view").val(saldo_piutang[id].nama_customer);
       $("#alamat_cust_view").val(saldo_piutang[id].alamat_customer);
+      $("#saldo_awal_view").val(saldo_piutang[id].jumlah);
 
       initial_detail($id)
     }
@@ -476,24 +486,31 @@
     function initial_detail($id){
 
       $html = ""; $total = 0;
+      if(detail.length != 0){
+        $.each(detail, function(i, n){
+          if(n.id_saldo_piutang == $id){
+            $html = $html + '<tr class="row-detail" data-nf = "'+n.id_referensi+'">'+
+                  '<td>'+n.id_referensi+'</td>'+
+                  '<td>'+n.tanggal+'</td>'+
+                  '<td>'+n.jatuh_tempo+'</td>'+
+                  '<td>'+n.keterangan+'</td>'+
+                  '<td class="text-right">'+addCommas(n.jumlah)+',00</td>'+
+                '</tr>';
 
-      $.each(detail, function(i, n){
-        if(n.id_saldo_piutang == $id){
-          $html = $html + '<tr class="row-detail" data-nf = "'+n.id_referensi+'">'+
-                '<td>'+n.id_referensi+'</td>'+
-                '<td>'+n.tanggal+'</td>'+
-                '<td>'+n.jatuh_tempo+'</td>'+
-                '<td>'+n.keterangan+'</td>'+
-                '<td class="text-right">'+addCommas(n.jumlah)+',00</td>'+
-              '</tr>';
+            $total += parseInt(n.jumlah);
+          }
+        })
 
-          $total += parseInt(n.jumlah);
-        }
-      })
+        $("#saldo_awal").val($total);
+        $("#grand_total b").text(addCommas($total)+",00");
+        $("#body_detail").html($html);
+      }else{
+        $html = $html + '<tr>'+
+                      '<td colspan="5" class="text-center text-muted"><small>Tidak Ada Detail</small></td>'+
+                    '</tr>';
 
-      $("#saldo_awal").val($total);
-      $("#grand_total b").text(addCommas($total)+",00");
-      $("#body_detail").html($html);
+        $("#body_detail").html($html);
+      }
 
     }
 
