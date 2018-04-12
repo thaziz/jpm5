@@ -136,7 +136,11 @@ class BiayaPenerusController extends Controller
 
 	            foreach ($queries as $query)
 	            {
-	                $results[] = [ 'id' => $query->nomor, 'label' => $query->nomor,'validator'=>$query->bpd_pod];
+	                $results[] = [ 'id' => $query->nomor,
+					                'label' => $query->nomor,
+					                'validator'=>$query->bpd_pod,
+					                'harga'=>$query->total_net
+					              ];
 	            }
 	        }
 
@@ -236,7 +240,37 @@ class BiayaPenerusController extends Controller
 		}
 
 		public function save_agen(request $request){
-			
+
+			if ($request->vendor == "AGEN") {
+			 	$cari_persen = DB::table('agen')
+			 					 ->where('kode',$vend)
+			 					 ->first();
+			 }else{
+			 	$cari_persen = DB::table('vendor')
+			 					 ->where('kode',$vend)
+			 					 ->first();
+			 }
+			 // return $cari_persen->acc_hutang;
+			 $status=[];
+			 $total_tarif=0;
+
+			 for ($i=0; $i < count($request->harga_resi); $i++) {
+			    $persentase = $cari_persen->komisi/100; 
+			    $harga_fix = round($request->harga_resi[$i])*$persentase;
+			    $total_tarif+=$request->bayar_biaya[$i];
+
+				if($request->bayar_biaya[$i] <= $harga_fix){
+					$status[$i] = 'APPROVED';
+				}else{
+					$status[$i] = 'PENDING';
+				}
+			 }
+
+			 if(in_array('PENDING', $status)){
+			 	$pending_status='PENDING';
+			 }else{
+			 	$pending_status='APPROVED';
+			 }
 		}
 		public function edit($id){
 

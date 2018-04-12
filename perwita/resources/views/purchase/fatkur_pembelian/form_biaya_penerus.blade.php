@@ -124,7 +124,7 @@
 		<td width="10">:</td>
 		<td width="200">
 			<input type="text" name="nominal" class="form-control nominal" onkeyup="hitung()" style="">
-			<input type="hidden" readonly="" class="form-control total_pod" style="">
+			<input type="hidden" readonly="" class="form-control harga_do" style="">
 		</td>
 	  </tr>
 	  <tr>
@@ -175,33 +175,67 @@
         <h4 class="modal-title">Update Data</h4>
       </div>
       <div class="modal-body">
-     <table class="table">
-	   <tr>
-		<td style="width: 100px ; padding-left: 65px;">Debet/Kredit</td>
-		<td width="10">:</td>
-		<td>
-			<select name="debit" class="form-control debit_update" style="text-align: center; ">
- 				<option value="debit" selected="">DEBIT</option>
- 				<option value="kredit">KREDIT</option>
- 			</select>
- 		</td>
-	  </tr>
-    
-	  <tr>
-	 	<td style="width: 100px ;padding-left: 65px;">Memo</td>
-	 	<td width="10">:</td>
-		<td width="200"><input type="text" name="ket-biaya" class="form-control ket_biaya_update" style=""></td>
-	 </tr>
-	  <tr>
-		<td style="width: 100px ;padding-left: 65px;">Nominal</td>
-		<td width="10">:</td>
-		<td width="200"><input type="number" name="nominal" class="form-control nominal_update" onkeyup="hitung()" style=""></td>
-	  </tr>
+     <table class="table table_detail">
+         <div align="center" style="width: 100%;">  
+        <h3 >Detail Biaya Penerus Hutang</h3>
+       </div> 
+        <tr>
+        <td style="width: 100px">Nomor</td>
+        <td width="10">:</td>
+        <td width="200">
+          <input type="text" name="e_jml_data" value="1" class="form-control e_jml_data" style="" readonly="">
+        </td>
+        </tr>
+        <tr>
+          <td style="width: 100px">Nomor POD</td>
+          <td width="10">:</td>
+          <td width="200">
+            <input type="text" name="no_pod" id="tages" class="form-control e_no_pod" style="">
+          </td>
+        </tr>
+         <tr>
+        <td style="width: 100px">Debet/Kredit</td>
+        <td width="10">:</td>
+        <td>
+          <select name="debit" class="form-control e_debit" style="text-align: center; ">
+            <option value="debit" selected="">DEBIT</option>
+            <option value="kredit">KREDIT</option>
+          </select>
+        </td>
+        </tr>
+        <tr>
+          <td style="width: 100px ;">Akun</td>
+          <td width="10">:</td>
+          <td>
+            <select class="form-control e_akun_biaya chosen-select-width1" style="text-align: center; ">
+              <option value="0" selected="">Pilih - akun</option>
+              @foreach($akun as $val)
+                <option value="{{$val->id_akun}}" selected="">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+              @endforeach
+            </select>
+          </td>
+        </tr>
+        <tr>
+        <td style="width: 100px">Memo</td>
+        <td width="10">:</td>
+        <td width="200"><input type="text" class="form-control e_keterangan_biaya" style=""></td>
+       </tr>
+        <tr>
+        <td style="width: 100px">Nominal</td>
+        <td width="10">:</td>
+        <td width="200">
+          <input type="text" name="nominal" class="form-control e_nominal" onkeyup="hitung()" style="">
+        </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <div class="pull-right">
+              <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="save-update" onclick="update_tabel_detail()" data-dismiss="modal">Save changes</button>
+            </div>
+          </td>
+        </tr>
      </table>
-     	<div class="pull-right">
-     		<button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
-    		<button type="button" class="btn btn-primary" id="save-update" onclick="sve()" data-dismiss="modal">Save changes</button>
-    	</div>
       </div>      
     </div>
     	
@@ -300,7 +334,7 @@
               </td>
             </tr>
             <tr>
-              <td>Total di Terima</td>
+            <td>Total di Terima</td>
               <td>
               	<div class="row">
               		<div class="col-sm-3">
@@ -327,7 +361,8 @@
 				format:'dd/mm/yyyy',
 				autoclose: true
 				});
-	var dsa = $('.nominal').maskMoney({precision:0,thousands:'.'});
+  var dsa = $('.nominal').maskMoney({precision:0,thousands:'.'});
+	var dsa = $('.e_nominal').maskMoney({precision:0,thousands:'.'});
 	var datatable1 = $('.datatable').DataTable({
             responsive: true,
             searching:false,
@@ -361,6 +396,8 @@
           if (ui.item.validator != null) {
             $('.status_pod').val('Terdaftar');
           }
+          $('.harga_do').val(ui.item.harga);
+
       }
 
     });
@@ -373,6 +410,7 @@
       toastr.warning('Data Telah Ada');
       $('.no_pod').val('');
       $('.status_pod').val('');
+      $('.harga_do').val('');
       return 1;
     }
 
@@ -380,12 +418,25 @@
       toastr.warning('Data Telah Terdaftar Di Sistem');
       $('.no_pod').val('');
       $('.status_pod').val('');
+      $('.harga_do').val('');
+      return 1;
+    }else if($('.harga_do').val() == ''){
+      toastr.warning('Nomor Do Tidak Ada');
+      $('.no_pod').val('');
+      $('.status_pod').val('');
+      $('.harga_do').val('');
       return 1;
     }else{
       toastr.success('Data Berhasil Diinisialisasi');
       return 1;
     }
   })
+
+
+
+
+
+
   var count = 1;
   function appendDO(){
 
@@ -395,7 +446,18 @@
       var akun_biaya          = $('.akun_biaya').val();
       var keterangan_biaya    = $('.keterangan_biaya ').val();
       var nominal             = $('.nominal').val();
+      var harga_do            = $('.harga_do').val();
       nominal                 = nominal.replace(/[^0-9\-]+/g,"");
+
+      if (no_pod == '') {
+        toastr.warning('Harap Isi Nomor DO');
+        return 1;
+      }
+      if (keterangan_biaya == '') {
+        toastr.warning('Memo Harus Diisi');
+        return 1;
+      }
+
 
       datatable1.row.add( [
                 '<input type="hidden" class="form-control tengah kecil seq seq_biaya_'+jml_data+'" name="seq_biaya[]" value="'+jml_data+'" readonly>'+'<div class="seq-app">'+jml_data+'</div>',
@@ -404,7 +466,8 @@
 
                 '<input type="hidden" class="form-control tengah kecil kode_biaya" name="kode_biaya[]" value="'+akun_biaya+'" readonly>'+'<div class="kode_text">'+akun_biaya+'</div>',
 
-                '<input type="hidden" class="form-control tengah bayar_biaya" name="bayar_biaya[]" value="'+parseFloat(nominal)+'" readonly>'+'<div class="bayar_text">'+accounting.formatMoney(nominal, "Rp ", 2, ".",',')+'</div>',
+                '<input type="hidden" class="form-control tengah bayar_biaya" name="bayar_biaya[]" value="'+parseFloat(nominal)+'" readonly>'+'<div class="bayar_text">'+accounting.formatMoney(nominal, "Rp ", 2, ".",',')+'</div>'+
+                '<input type="hidden" class="form-control tengah do_harga" name="do_harga[]" value="'+harga_do+'" readonly>',
 
                 '<input type="hidden" class="form-control tengah debet_biaya" name="debet_biaya[]" value="'+debit+'" readonly>'+'<div class="debet_text">'+debit+'</div>',
 
@@ -413,11 +476,22 @@
                 '<a class="btn btn-success btn-xs fa fa-pencil" align="center" onclick="edit_biaya(this)" title="edit"></i></a>&nbsp;&nbsp;<a class="btn btn-danger btn-xs fa fa-minus" align="center" onclick="hapus_biaya(this)" title="hapus"></i></a>'
             ] ).draw( false );   
       count++;
+
       array_do.push(no_pod);
       $('.table_biaya').prop('hidden',false);
       $('.table_detail input').val(''); 
       $('.jml_data').val(count); 
+      toastr.success('Data Berhasil Di Append, Buat Tanda Terima Untuk Mengaktifkan fitur Simpan');
+
   } 
+
+  $('.nominal').on('keydown', function(e) {
+    if (e.which == 13) {
+      console.log('asd');
+      appendDO();
+        e.preventDefault();
+    }
+  });
 
   function edit_biaya(par) {
     var parent = par.parentNode.parentNode;
@@ -428,6 +502,22 @@
     var debet_biaya    = $(parent).find('.debet_biaya').val();
     var ket_biaya    = $(parent).find('.ket_biaya').val();
 
+    console.log(kode_biaya);
+    $('.e_jml_data').val(seq);
+    $('.e_no_pod').val(no_do);
+    $('.e_akun_biaya').val(kode_biaya).trigger('chosen:updated');
+    $('.e_nominal').val(accounting.formatMoney(bayar_biaya,'',0, ".",','));
+    $('.e_debit').val(debet_biaya);
+    $('.e_keterangan_biaya').val(ket_biaya);
+
     $('#modal_biaya_update').modal('show');
   }
+
+  function function_name(argument) {
+    // body...
+  }
+
+
+
+
 </script>
