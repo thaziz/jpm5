@@ -165,7 +165,7 @@
 	    </table>
 	</div>
 	
-<div id="modal-biaya" class="modal fade" role="dialog">
+<div id="modal_biaya_update" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
     <!-- Modal content-->
@@ -427,5 +427,7 @@
     var bayar_biaya    = $(parent).find('.bayar_biaya').val();
     var debet_biaya    = $(parent).find('.debet_biaya').val();
     var ket_biaya    = $(parent).find('.ket_biaya').val();
+
+    $('#modal_biaya_update').modal('show');
   }
 </script>

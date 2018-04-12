@@ -200,18 +200,19 @@ class kontrak_Controller extends Controller
                   ->join('tipe_angkutan','kode','=','kcd_kode_angkutan')
                   ->where('kcd_id',$id)
                   ->get();
-        $asal    = DB::table('kontrak_customer_d')
-                  ->join('kota','id','=','kcd_kota_asal')
-                  ->where('kcd_id',$id)
+        $kota    = DB::table('kota')
                   ->get();
-        $tujuan  = DB::table('kontrak_customer_d')
-                  ->join('kota','id','=','kcd_kota_tujuan')
-                  ->where('kcd_id',$id)
-                  ->get();
+
                   
         for ($i=0; $i < count($data_dt); $i++) { 
-            $data_dt[$i]->nama_asal = $asal[$i]->nama;
-            $data_dt[$i]->nama_tujuan = $tujuan[$i]->nama;
+          for ($a=0; $a < count($kota); $a++) { 
+            if ($kota[$a]->id == $data_dt[$i]->kcd_kota_asal) {
+              $data_dt[$i]->nama_asal = $kota[$a]->nama;
+            }
+            if ($kota[$a]->id == $data_dt[$i]->kcd_kota_tujuan) {
+              $data_dt[$i]->nama_tujuan = $kota[$a]->nama;
+            }
+          }
         }
 
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
