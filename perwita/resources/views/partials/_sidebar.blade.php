@@ -980,7 +980,7 @@
                         {{ Request::is('master_keuangan/saldo_piutang') ? 'active' : '' || 
                             Request::is('master_keuangan/saldo_piutang/*') ? 'active' : ''}} 
 
-                        " href="{{ url('master_keuangan/saldo_piutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
+                        " href="{{ url('master_keuangan/saldo_piutang/null')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
                         </li>
                          
                         <li >

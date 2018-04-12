@@ -7,6 +7,7 @@
   <link href="{{ asset('assets/vendors/bootstrap-treegrid/css/jquery.treegrid.css') }}" rel="stylesheet">
 
   <style>
+
     body{
       overflow-y: scroll;
     }
@@ -14,6 +15,67 @@
     .modal-open{
       overflow: inherit;
     }
+
+     #table_form input{
+      padding-left: 5px;
+    }
+
+    #table_form td,
+    #table_form th{
+      padding:10px 0px;
+    }
+
+    .table-form{
+      border-collapse: collapse;
+    }
+
+    .table-form th{
+      font-weight: 600;
+    }
+
+    .table-form th,
+    .table-form td{
+      padding: 2px 0px;
+    }
+
+    .table-form input{
+      font-size: 10pt;
+    }
+
+    .table-detail{
+      font-size: 8pt;
+    }
+
+    .table-detail td,
+    .table-detail th{
+      border: 1px solid #bbb;
+    }
+
+    .table-detail th{
+      padding: 3px 0px 10px 0px;
+      background: white;
+      position: sticky;
+      top: 0px;
+    }
+
+    .table-detail tfoot th{
+      position: sticky;
+      bottom:0px;
+    }
+
+    .table-detail td{
+      padding: 5px;
+    }
+
+    .row-detail{
+      cursor: pointer;
+    }
+
+    .row-detail:hover{
+      background: #1b82cf;
+      color: #fff;
+    }
+
   </style>
 @endsection
 
@@ -35,8 +97,29 @@
 
           </ol>
       </div>
-      <div class="col-lg-2">
+      <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
+        <table border="0" width="100%" id="table_form">
+          <tr>
+            <th width="15%" class="text-center">Menampilkan Cabang : </th>
+            <td width="17%">
+              <select class="chosen-select" id="cabang" name="cabang" style="background:;">
+                @foreach ($cab as $cabangs)
+                  <?php
+                    $selected = "";
+                    if($cabangs->kode == $cabang)
+                      $selected = "selected";
+                  ?>
 
+                  <option value="{{ $cabangs->kode }}" {{ $selected }}>{{ $cabangs->nama }}</option>
+                @endforeach
+              </select>
+            </td>
+
+            <td>
+              <button class="btn btn-success btn-sm" id="filter">Filter</button>
+            </td>
+          </tr>
+        </table>
       </div>
   </div>
 
@@ -70,12 +153,12 @@
                 <div class="box-header">
                 </div><!-- /.box-header -->
                 <div class="box-body" style="min-height: 330px;">
-                
-                  <table id="ku" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
+
+                  <table id="ku" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; margin-top: 10px;">
                     <thead>
                       <tr>
                         <th rowspan="2" style="padding:8px 0px" class="text-center">No</th>
-                        <th rowspan="2" style="padding:8px 0px" class="text-center">Cabang</th>
+                        <th rowspan="2" style="padding:8px 0px" class="text-center">Periode</th>
                         <th width="18%" rowspan="2" style="padding:8px 0px" class="text-center">Kode Customer</th>
                         <th width="35%" rowspan="2" style="padding:8px 0px" class="text-center">Nama Customer</th>
                         <th style="padding:8px 0px" class="text-center">Saldo Piutang</th>
@@ -88,12 +171,16 @@
 
                       @foreach($data as $saldo_piutang)
                         <tr>
-                          <td>{{ $no++ }}</td>
-                          <td>{{ $saldo_piutang->nama_cabang }}</td>
-                          <td>{{ $saldo_piutang->kode_customer }}</td>
-                          <td>{{ $saldo_piutang->nama_customer }}</td>
-                          <td class="text-right">{{ $saldo_piutang->jumlah }}</td>
-                          <td class="text-center">---</td>
+                          <td class="text-center" width="5%">{{ $no++ }}</td>
+                          <td class="text-center" width="10%">{{ date('m/Y') }}</td>
+                          <td class="text-center" width="20%">{{ $saldo_piutang->kode_customer }}</td>
+                          <td class="text-center">{{ $saldo_piutang->nama_customer }}</td>
+                          <td class="text-right" width="15%">{{ number_format($saldo_piutang->jumlah, 2) }}</td>
+                          <td class="text-center">
+                            <span data-toggle="tooltip" data-placement="top" title="Tampilkan Detail Saldo">
+                                <button class="btn btn-xs btn-success tampilkan" data-id="{{ $saldo_piutang->id }}"><i class="fa fa-external-link-square"></i></button>
+                            </span>
+                          </td>
                         </tr>
                       @endforeach
                       
@@ -118,7 +205,7 @@
 
  <!-- modal -->
 <div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog" style="width: 80%;">
+  <div class="modal-dialog" style="width: 60%;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -135,8 +222,8 @@
   <!-- modal -->
 
 <!-- modal -->
-<div id="modal_edit_akun" class="modal">
-  <div class="modal-dialog">
+<div id="modal_view" class="modal">
+  <div class="modal-dialog" style="width: 80%;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -144,7 +231,142 @@
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">
-        <center class="text-muted">Menyiapkan Form</center>
+        <div class="row">
+
+          <div class="col-md-5">
+            <div class="col-md-12" style="background: #fff; padding: 10px; border: 1px solid #ddd;border-radius: 5px;" id="master_saldo_piutang" data-toggle="tooltip" data-placement="top" title="Pastikan Tidak Ada Data Yang Kosong">
+              <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Master Saldo Piutang</small></span>
+              <form id="customer_form">
+                <table width="100%" border="0" class="table-form" style="margin-top: 10px;">
+                  <tr>
+                    <th>Cabang</th>
+                    <td>
+                      <input type="text" id="cab_view" class="form-control" readonly>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Kode Customer</th>
+                    <td>
+                      <input type="text" class="form-control" id="cust_view" readonly>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Nama</th>
+                    <td>
+                      <input type="text" class="form-control" id="nama_cust_view" placeholder="" style="height: 30px;" disabled>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Alamat</th>
+                    <td>
+                      <input type="text" class="form-control" id="alamat_cust_view" placeholder="" style="height: 30px;" disabled>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Periode</th>
+                    <td>
+                      <input type="text" class="form-control" id="periode_view" placeholder="Bulan/Tahun" style="height: 30px; cursor: pointer; background: white;" readonly name="periode" readonly value="{{ date("m/Y") }}">
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <th>Saldo Awal</th>
+                    <td>
+                      <input type="text" class="form-control currency" id="saldo_awal_view" placeholder="0" style="height: 30px; text-align: right;" readonly>
+                    </td>
+                  </tr>
+
+                </table>
+              </form>
+            </div>
+
+            <div class="col-md-12" style="background: #fff; padding: 10px; border: 1px solid #ddd;border-radius: 5px; margin-top: 25px;" id="detail_saldo_piutang" data-toggle="tooltip" data-placement="top" title="Pastikan Tidak Ada Data Yang Kosong">
+              <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Detail Saldo Piutang</small></span>
+
+              <span class="text-muted" style="position: absolute; background: white; top: -10px; right: -5px; padding: 0px 0px; font-style: italic;"><small><i class="fa fa-arrow-right"></i> <i class="fa fa-arrow-right"></i> <i class="fa fa-arrow-right"></i></small></span>
+              <table width="100%" border="0" class="table-form" style="margin-top: 10px;" id="table-datail">
+                <tr>
+                  <th>Nomor Faktur</th>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Masukkan Nomor Faktur" style="height: 30px;" id="nomor_faktur_view" readonly>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Tanggal Faktur</th>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Tanggal/Bulan/Tahun" style="height: 30px; cursor: pointer;background: white;" readonly id="tanggal_faktur_view" readonly>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Jatuh Tempo</th>
+                  <td>
+                    <input type="text" class="form-control" placeholder="Tanggal/Bulan/Tahun" style="height: 30px;cursor: pointer;background: white;" readonly id="jatuh_tempo_view" readonly>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Keterangan</th>
+                  <td>
+                    <input type="text" class="form-control" placeholder="" style="height: 30px;" id="keterangan_view" readonly>
+                  </td>
+                </tr>
+
+                <tr>
+                  <th>Jumlah</th>
+                  <td>
+                    <input type="text" class="form-control currency" placeholder="0" style="height: 30px; text-align: right;" id="jumlah_view" readonly>
+                  </td>
+                </tr>
+
+              </table>
+            </div>
+
+            <div class="col-md-12 m-t text-right" style="border-top: 1px solid #ddd; padding: 15px 10px 0px 10px">
+
+            </div>
+
+          </div>
+
+          <div class="col-md-7" style="background:; min-height: 300px; padding: 0px;">
+            <div class="col-md-12" style="padding: 0px; height: 450px; overflow-y: scroll; border-bottom: 1px solid #bbb;">
+              <table border="0" class="table-detail" width="100%">
+                <thead>
+                  <tr>
+                    <th width="18%" class="text-center">Nomor Faktur</th>
+                    <th width="13%" class="text-center">Tanggal</th>
+                    <th width="14%"class="text-center">Jatuh Tempo</th>
+                    <th class="text-center">Keterangan</th>
+                    <th width="19%" class="text-center">Jumlah</th>
+                  </tr>
+                </thead>
+
+                <tbody id="body_detail">
+                  
+
+
+                </tbody>
+              </table>
+            </div>
+
+            <div class="col-md-12" style="padding: 0px; margin-top: 8px;">
+              <table border="0" class="table-detail" width="100%">
+                <tbody>
+                  <tr>
+                    <td class="text-center" width="79%" colspan="4" style="font-weight: bold;">Grand Total</td>
+                    <td class="text-right" id="grand_total"><b></b></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
       </div>
 
     </div>
@@ -163,14 +385,29 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 
+    saldo_piutang = {!! $datajson !!}; detail = {!! $detailjson !!}; $state = 0;
+
+    console.log(detail);
 
     @if(Session::has('sukses'))
         alert("{{ Session::get('sukses') }}")
     @endif
 
-    
+    $("#filter").click(function(){
+      window.location = baseUrl+"/master_keuangan/saldo_piutang/"+$('#cabang').val();
+    })
+
+    $('.currency').inputmask("currency", {
+        radixPoint: ",",
+        groupSeparator: ".",
+        digits: 2,
+        autoGroup: true,
+        prefix: '', //Space after $, this will not truncate the first character.
+        rightAlign: false,
+        oncleared: function () { self.Value(''); }
+    });
 
     $(".tambahAkun").on("click", function(){
       $("#modal_tambah_akun .modal-header .parrent").val($(this).data("parrent"));
@@ -201,53 +438,78 @@
       });
     })
 
-    $(".editAkun").on("click", function(){
-      $("#modal_edit_akun .modal-header .parrent").val($(this).data("parrent"));
+    $(".tampilkan").click(function(evt){
+      evt.stopImmediatePropagation()
+      $id = $(this).data("id");
+
+      $("#modal_view").modal("show");
+
+      initiate_saldo(saldo_piutang.findIndex(x => x.id === $id), $id);
     })
 
-    $("#modal_edit_akun").on("hidden.bs.modal", function(e){
-      $("#modal_edit_akun .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
-      if($change)
-        window.location = baseUrl+"/master_keuangan/akun";
-    })
+    $("#body_detail").on("click", ".row-detail", function(evt){
+      evt.stopImmediatePropagation();
+      $getId = detail.findIndex(x => x.id_referensi == $(this).data("nf"));
 
-    $("#modal_edit_akun").on("shown.bs.modal", function(e){
-      //alert($("#modal_edit_akun .modal-header .parrent").val())
+      // console.log($data_detail[$getId]);
 
-      $.ajax(baseUrl+"/master_keuangan/edit/"+$("#modal_edit_akun .modal-header .parrent").val(), {
-         timeout: 5000,
-         dataType: "html",
-         success: function (data) {
-             $("#modal_edit_akun .modal-body").html(data);
-         },
-         error: function(request, status, err) {
-            if (status == "timeout") {
-              $("#modal_edit_akun .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
-            } else {
-              $("#modal_edit_akun .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
-            }
-        } 
-      });
-    })
-
-    $("#table").treegrid({
-          treeColumn: 0,
-          initialState: "expanded"
+      $("#nomor_faktur_view").val(detail[$getId].id_referensi);
+      $("#tanggal_faktur_view").val(detail[$getId].tanggal);
+      $("#jatuh_tempo_view").val(detail[$getId].jatuh_tempo);
+      $("#keterangan_view").val(detail[$getId].keterangan);
+      $("#jumlah_view").val(detail[$getId].jumlah);
     });
 
-    $("#collapsed").click(function(){
-      $('#table').treegrid('collapseAll');
-    })
+    function initiate_saldo($idx, $id){
+      id = $idx
 
-    $("#expand").click(function(){
-      $('#table').treegrid('expandAll');
-    })
+      $state = id;
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
+      $("#cab_view").val(saldo_piutang[id].nama_cabang);
+      $("#cust_view").val(saldo_piutang[id].kode_customer);
+      $("#nama_cust_view").val(saldo_piutang[id].nama_customer);
+      $("#alamat_cust_view").val(saldo_piutang[id].alamat_customer);
+
+      initial_detail($id)
+    }
+
+    function initial_detail($id){
+
+      $html = ""; $total = 0;
+
+      $.each(detail, function(i, n){
+        if(n.id_saldo_piutang == $id){
+          $html = $html + '<tr class="row-detail" data-nf = "'+n.id_referensi+'">'+
+                '<td>'+n.id_referensi+'</td>'+
+                '<td>'+n.tanggal+'</td>'+
+                '<td>'+n.jatuh_tempo+'</td>'+
+                '<td>'+n.keterangan+'</td>'+
+                '<td class="text-right">'+addCommas(n.jumlah)+',00</td>'+
+              '</tr>';
+
+          $total += parseInt(n.jumlah);
+        }
+      })
+
+      $("#saldo_awal").val($total);
+      $("#grand_total b").text(addCommas($total)+",00");
+      $("#body_detail").html($html);
+
+    }
+
   })
+
+  function addCommas(nStr) {
+      nStr += '';
+      x = nStr.split('.');
+      x1 = x[0];
+      x2 = x.length > 1 ? '.' + x[1] : '';
+      var rgx = /(\d+)(\d{3})/;
+      while (rgx.test(x1)) {
+          x1 = x1.replace(rgx, '$1' + '.' + '$2');
+      }
+      return x1 + x2;
+    }
 
 </script>
 @endsection

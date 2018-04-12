@@ -65,6 +65,7 @@
     <script src="{{ asset('assets/vendors/highchart/exporting.js') }}"></script>
     <script src="{{ asset('assets/vendors/highchart/highcharts.js') }}"></script>
     <script src="{{ asset('assets/vendors/highchart/highcharts-3d.js') }}"></script>
+    
     {{-- END OF --}}
     
     <script>
