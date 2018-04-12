@@ -61,6 +61,7 @@
                             <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
                             <option value="{{ url('/masterkaskeluar/masterkaskeluar/masterkaskeluar') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
                             <option value="{{ url('/masterbayarbank/masterbayarbank/masterbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
+                            <option value="{{ url('/lap_ttt/lap_ttt') }}" >Laporan Data Tanda Terima Tagihan</option>
                            </select>
                  	{{-- <option value="/jpm/reportbayarbank/reportbayarbank">Laporan Data Kartu Hutang</option>
                  	<option value="/jpm/reportmasteritem/reportmasteritem">Laporan Data Mutasi Hutang</option>

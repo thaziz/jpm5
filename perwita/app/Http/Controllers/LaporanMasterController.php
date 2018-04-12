@@ -1838,7 +1838,7 @@ class LaporanMasterController extends Controller
 
 		//LAPORAN DSIKON 
 		public function lap_diskon(){
-			$data = DB::table('diskon')->get();
+			$data = DB::table('d_disc_cabang')->select('d_disc_cabang.*','cabang.nama as cabang')->join('cabang','cabang.kode','=','d_disc_cabang.dc_cabang')->get();
 			return view('purchase/master_do/lap_diskon/lap_diskon',compact('data'));
 		}	
 		public function report_diskon(Request $request){
@@ -1849,7 +1849,7 @@ class LaporanMasterController extends Controller
 					} 
 				json_encode($dat);
 	        for ($i=0; $i <count($dat); $i++) { 
-			  $dat1[$i] = DB::table('diskon')->where('b_kode','=',$dat[$i])->get();
+			  $dat1[$i] = DB::table('d_disc_cabang')->select('d_disc_cabang.*','cabang.nama as cabang')->join('cabang','cabang.kode','=','d_disc_cabang.dc_cabang')->where('dc_id','=',$dat[$i])->get();
 			}
 			// dd($dat1);
 		return view('purchase/master_do/lap_diskon/report_diskon',compact('dat1'));

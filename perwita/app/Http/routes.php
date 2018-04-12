@@ -630,7 +630,10 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   Route::post('reportuangmuka/reportuangmuka', 'LaporanPembelianController@report_uangmuka');
   //END OF
 
-
+  //LAPORAN TANDA TERIMA TAGIHAN
+  Route::get('lap_ttt/lap_ttt', 'LaporanPembelianController@lap_ttt');
+  Route::post('reporttt/reporttt', 'LaporanPembelianController@report_ttt');
+  //END OF 
 //================================    BELUM SELESAI    ========================================//
 
 Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
@@ -2652,3 +2655,7 @@ Route::get('master_sales/diskonpenjualan/hapus' , 'DiskonPenjualanController@del
 //print out do 
 
 Route::get('dopo','LaporanMasterController@dopo');
+
+//STOCK OPNAME
+
+Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstockopname');
