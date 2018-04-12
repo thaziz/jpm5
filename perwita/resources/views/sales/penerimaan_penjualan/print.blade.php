@@ -219,6 +219,9 @@
 	.margin-top-60px {
 		margin-top: -20px;
 	}
+	.margin-top-70px {
+		margin-top: -35px;
+	}
 
 	.margin-top-10px {
 		margin-top: -40px;
@@ -273,7 +276,7 @@
 			</div>
 		<div style="margin-top: 30px;">
 			
-			<table class="inlineTable pull-right margin-top-60px size">
+			<table class="inlineTable pull-right margin-top-70px size">
 				<tr>
 					<th width="90">&nbsp;</th>
 					<th width="10">&nbsp;</th>
@@ -294,6 +297,22 @@
 					<td>Kode.Cust.</td>
 					<td>:</td>
 					<td>{{$head->k_kode_customer}}</td>
+				</tr>
+				<tr>
+					<td>Jenis Bayar</td>
+					<td>:</td>
+					@if($head->k_jenis_pembayaran == 'T')
+					<td>TUNAI</td>
+					@elseif($head->k_jenis_pembayaran == 'C')
+					<td>TRANSFER</td>
+					@elseif($head->k_jenis_pembayaran == 'U')
+					<td>UANG MUKA</td>
+					@elseif($head->k_jenis_pembayaran == 'B')
+					<td>NOTA/BIAYA LAIN</td>
+					@elseif($head->k_jenis_pembayaran == 'F')
+					<td>CHEQUE/BG</td>
+					@endif
+
 				</tr>
 			</table>
 

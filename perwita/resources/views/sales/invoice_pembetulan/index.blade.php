@@ -9,7 +9,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> INVOICE </h2>
+                    <h2> INVOICE PEMBETULAN</h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -24,7 +24,7 @@
                             <a>Transaksi Penjualan</a>
                         </li>
                         <li class="active">
-                            <strong> INVOICE </strong>
+                            <strong> INVOICE PEMBETULAN</strong>
                         </li>
 
                     </ol>
@@ -69,7 +69,7 @@
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td><a onclick="lihat('{{ $row->ip_nomor }}')">{{ $row->ip_nomor }}</a></td>
+                                <td>{{ $row->ip_nomor }}</td>
                                 <td>{{ $row->ip_tanggal }}</td>
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->ip_jatuh_tempo }}</td>

@@ -1,0 +1,6 @@
+
+								Rule Keuangan
+
+ - Saldo Piutang
+	- Ketika Tambah Customer Maka Secara Otomatis Menambahkan data saldo piutang customer tersebut di setiap cabang.
+	

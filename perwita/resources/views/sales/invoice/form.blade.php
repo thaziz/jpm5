@@ -871,7 +871,7 @@ function hitung_total_tagihan(){
                     timer: 1000,
                    showConfirmButton: true
                     },function(){
-                        window.location='../sales/invoice';
+                        // window.location='../sales/invoice';
                         $('.simpan').addClass('disabled');
                         $('.print').removeClass('disabled');
 
