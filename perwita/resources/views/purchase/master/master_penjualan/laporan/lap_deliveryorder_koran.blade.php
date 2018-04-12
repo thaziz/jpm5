@@ -418,7 +418,7 @@ function cari(){
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
           }
-
+          $('#container').html('');
         }else{
             var awal = $.datepicker.formatDate("dd MM yy", new Date(data.awal))
             var akir = $.datepicker.formatDate("dd MM yy", new Date(data.akir))

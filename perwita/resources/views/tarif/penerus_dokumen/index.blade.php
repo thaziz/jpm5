@@ -77,14 +77,14 @@
                     <table id="table_data" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th style="width:100px"> Tarif Dokumen</th>
-                                <th> Provinsi </th>
-                                <th> Kota </th>
-                                <th> kecamatan </th>
-                                <th> type </th>
-                                <th> tarif reguler </th>
-                                <th> tarif express </th>
-                                <th style="width:50px"> Aksi </th>
+                                <th hidden="" align="center"> Kota Asal</th>
+                        <th hidden="" align="center">id Kota Asal</th>
+                        <th align="center"> Kota Asal</th>
+                        <th align="center"> Kota Tujuan</th>
+                        <th align="center">kode</th>
+                        <th align="center"> Jenis </th>
+                        <th align="center"> Waktu </th>
+                        <th align="center"> Tarif</th>
                             </tr>
                         </thead>
                         <tbody>
