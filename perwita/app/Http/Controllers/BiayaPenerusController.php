@@ -40,6 +40,7 @@ use Session;
 use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
+use Auth;
 
 class BiayaPenerusController extends Controller
 {
@@ -54,8 +55,17 @@ class BiayaPenerusController extends Controller
 					  ->get();
 			$vendor = DB::table('vendor')
 					  ->get();
+			if (Auth::user()->punyaAKses('Biaya Penerus Hutang','all')) {
+				$akun   = DB::table('d_akun')
+						->get();
+			}else{
+				$akun   = DB::table('d_akun')
+						->where('kode_cabang',Auth::user()->kode_cabang)
+						->get();
+			}
+			
 			$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
-			return view('purchase/fatkur_pembelian/form_biaya_penerus',compact('data','date','agen','vendor','now','jt'));
+			return view('purchase/fatkur_pembelian/form_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun'));
 		}
 
 		public function kekata($x) {
@@ -110,13 +120,14 @@ class BiayaPenerusController extends Controller
     }     
     return $hasil;
 }
-		public function caripod(request $request){
+		public function cari_do(request $request){
 
 		
 	        $results = array();
 	        $queries = DB::table('delivery_order')
 	        	->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
 	            ->where('nomor', 'like', '%'.strtoupper($request->term).'%')
+	            ->where('bpd_pod',null)
 	            ->take(10)->get();
 
 	        if ($queries == null){
@@ -204,7 +215,7 @@ class BiayaPenerusController extends Controller
 
 		}
 
-		public function auto($i){
+		public function autocomplete_biaya_penerus($i){
 
 	        $data = DB::table('delivery_order')
 	        			->where('nomor','=',strtoupper($i))
@@ -222,10 +233,8 @@ class BiayaPenerusController extends Controller
 	        				'data'=>'data tidak ada'
 	        				]);
 	       }
-	        
-
-	    
 		}
+
 		public function save_agen(request $request){
 			
 		}
@@ -1787,7 +1796,7 @@ class BiayaPenerusController extends Controller
 	{
 		// dd($request->all());
 
-		if ($request->vendor == 'AGEN') {
+		if ($request->val == 'AGEN') {
 			$data = DB::table('agen')
 					  ->where('kode_cabang',$request->cabang)
 					  ->where('kategori','AGEN')

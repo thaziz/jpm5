@@ -4788,7 +4788,6 @@ $(document).ready(function(){
       }
 
     })
-  cari_outlet();
   $('.msh_hdn').attr('hidden',true);
  
 });

@@ -29,7 +29,7 @@
  	<td style="width: 100px">Tipe Vendor </td>
  	<td width="10">:</td>
  	<td width="200">
- 		<select onchange="ganti_agen()" name="vendor" class="form-control vendor1 "  style="text-align: center; " >
+ 		<select onchange="ganti_agen(this.value)" name="vendor" class="form-control vendor1 "  style="text-align: center; " >
  			<option  selected="" value="kosong">-PILIH TIPE VENDOR-</option>
  			<option value="AGEN">Agen Penerus </option>
  			<option value="VENDOR">Vendor Penerus</option>
@@ -37,30 +37,13 @@
  		<input type="hidden" name="akun_agen" class="akun_agen">
  	</td>
  </tr>
-  <!-- NAMA KONTAK KOSONG -->
  <tr class="nama-kontak-kosong">
- 	<td style="width: 100px">Nama Kontak </td>
+ 	<td style="width: 100px">Nama Agen/Vendor </td>
  	<td width="10">:</td>
- 	<td width="200">
- 		<select name="nama_kontak1" class="form-control nama-kontak" style="text-align: center; ">
- 			<option disabled="" selected="">-PILIH NAMA KONTAK-</option>
+ 	<td width="200" class="nama_kontak_td">
+ 		<select name="" class="form-control agen_vendor" style="text-align: center; ">
+ 			<option value="0" selected="">-PILIH NAMA AGEN/VENDOR-</option>
  		</select>
- 	</td>
- </tr>
- <!-- NAMA KONTAK AGEN -->
- <tr hidden="" class="nama-kontak-agen">
- 	<td style="width: 100px">Nama Kontak </td>
- 	<td width="10">:</td>
- 	<td width="200" class="agen_dropdown">
-
- 	</td>
- </tr>
- <!-- NAMA KONTAK VENDOR -->
-  <tr hidden="" class="nama-kontak-vendor">
- 	<td style="width: 100px">Nama Kontak </td>
- 	<td width="10">:</td>
- 	<td width="200" class="vendor_dropdown">
-
  	</td>
  </tr>
  <tr>
@@ -83,23 +66,26 @@
 </div>
 
 
-<div class="col-sm-5 detail_biaya disabled"   style="margin-left: 100px;">
+<div class="col-sm-5 detail_biaya"   style="margin-left: 100px;">
     <form class="form">
-     <table class="table">
+     <table class="table table_detail">
      <div align="center" style="width: 100%;">	
 		<h3 >Detail Biaya Penerus Hutang</h3>
 	 </div>	
 	  <tr>
 		<td style="width: 100px">Nomor</td>
 		<td width="10">:</td>
-		<td width="200"><input type="text" name="jml_data" class="form-control jml_data" style="" readonly=""></td>
+		<td width="200">
+      <input type="text" name="jml_data" value="1" class="form-control jml_data" style="" readonly="">
+    </td>
 	  </tr>
 	  <tr>
-		<td style="width: 100px">Nomor POD</td>
-		<td width="10">:</td>
-		<td width="200"><input type="text" name="no_pod" id="tages" class="form-control no_pod" onkeyup="cariDATA()" onblur="seq();" style="">
-			<input type="hidden" class="form-control status_pod" style="">
-		</td>
+  		<td style="width: 100px">Nomor POD</td>
+  		<td width="10">:</td>
+  		<td width="200">
+        <input type="text" name="no_pod" id="tages" class="form-control no_pod" onkeyup="cari_do()"  style="">
+  			<input type="hidden" class="form-control status_pod" style="">
+  		</td>
 	  </tr>
 	   <tr>
 		<td style="width: 100px">Debet/Kredit</td>
@@ -111,10 +97,22 @@
  			</select>
  		</td>
 	  </tr>
+    <tr>
+      <td style="width: 100px ;">Akun</td>
+      <td width="10">:</td>
+      <td>
+        <select class="form-control akun_biaya chosen-select-width1" style="text-align: center; ">
+          <option value="0" selected="">Pilih - akun</option>
+          @foreach($akun as $val)
+            <option value="{{$val->id_akun}}" selected="">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+          @endforeach
+        </select>
+      </td>
+    </tr>
 	  <tr>
 	 	<td style="width: 100px">Memo</td>
 	 	<td width="10">:</td>
-		<td width="200"><input type="text" name="ket-biaya" class="form-control ket-biaya" style=""></td>
+		<td width="200"><input type="text" class="form-control keterangan_biaya" style=""></td>
 	 </tr>
 	  <tr>
 		<td style="width: 100px">Total</td>
@@ -132,7 +130,7 @@
 	  <tr>
 	  	<td colspan="3">
 	  <button class="btn btn-info modal_penerus_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_penerus" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-     <button type="button" class="btn btn-primary pull-right cari-pod" onclick="cariPOD();"><i class="fa fa-search">&nbsp;Append</i></button>
+     <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
 	  	</td>
 	  </tr>
 	  <tr>
@@ -146,7 +144,7 @@
     </form>
 </div>
 
- <div class="table-biaya col-sm-12" hidden="">
+ <div class="table_biaya col-sm-12" hidden="">
  	<h3>Tabel Detail Resi</h3>
  	<hr>
 	    <table class="table table-bordered table-hover datatable">
@@ -154,9 +152,7 @@
 				<tr>
 				<th>No</th>
 				<th width="90">Nomor Bukti</th>
-				<th>Tanggal</th>
 				<th width="90">AccBiaya</th>
-				<th>Tarif Resi</th>
 				<th>Jumlah Bayar</th>
 				<th>Tipe Debet</th>
 				<th>Keterangan</th>
@@ -190,6 +186,7 @@
  			</select>
  		</td>
 	  </tr>
+    
 	  <tr>
 	 	<td style="width: 100px ;padding-left: 65px;">Memo</td>
 	 	<td width="10">:</td>
@@ -325,11 +322,12 @@
   </div>
 </div>
 <script type="text/javascript">
+  var array_do = [];
 	var jt = $('.jatuh_tempo').datepicker({
 				format:'dd/mm/yyyy',
 				autoclose: true
 				});
-	var dsa = $('.nominal').maskMoney({precision:0, prefix:'Rp '});
+	var dsa = $('.nominal').maskMoney({precision:0,thousands:'.'});
 	var datatable1 = $('.datatable').DataTable({
             responsive: true,
             searching:false,
@@ -338,10 +336,96 @@
             "language": dataTableLanguage,
     });
 
-  function ganti_agen() {
+  function ganti_agen(val) {
     $.ajax({
-      url:baseUrl +'/fakturpembelian/rubahVen'
-      data: 
+      url:baseUrl +'/fakturpembelian/rubahVen',
+      data: {val},
+      success:function(data){
+        $('.nama_kontak_td').html(data);
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
     })
+  }
+
+  function cari_do() {
+    if ($('.agen_vendor').val()  == '0') {
+      toastr.warning('Harap Mengisi Nama Agen/Vendor');
+      return 1;
+    }
+
+    $( ".no_pod" ).autocomplete({
+      source:baseUrl + '/fakturpembelian/cari_do', 
+      minLength: 1,
+      select: function(event, ui) {
+          if (ui.item.validator != null) {
+            $('.status_pod').val('Terdaftar');
+          }
+      }
+
+    });
+  }
+
+
+  $('.no_pod').blur(function(){
+    var index = array_do.indexOf($(this).val());
+    if (index != -1) {
+      toastr.warning('Data Telah Ada');
+      $('.no_pod').val('');
+      $('.status_pod').val('');
+      return 1;
+    }
+
+    if ($('.status_pod').val() != '') {
+      toastr.warning('Data Telah Terdaftar Di Sistem');
+      $('.no_pod').val('');
+      $('.status_pod').val('');
+      return 1;
+    }else{
+      toastr.success('Data Berhasil Diinisialisasi');
+      return 1;
+    }
+  })
+  var count = 1;
+  function appendDO(){
+
+      var jml_data            = $('.jml_data').val();
+      var no_pod              = $('.no_pod ').val();
+      var debit               = $('.debit').val();
+      var akun_biaya          = $('.akun_biaya').val();
+      var keterangan_biaya    = $('.keterangan_biaya ').val();
+      var nominal             = $('.nominal').val();
+      nominal                 = nominal.replace(/[^0-9\-]+/g,"");
+
+      datatable1.row.add( [
+                '<input type="hidden" class="form-control tengah kecil seq seq_biaya_'+jml_data+'" name="seq_biaya[]" value="'+jml_data+'" readonly>'+'<div class="seq-app">'+jml_data+'</div>',
+
+                '<input type="hidden" class="form-control tengah kecil no_do" name="no_do[]" value="'+no_pod+'" readonly>'+'<div class="no_do_text">'+no_pod+'</div>',
+
+                '<input type="hidden" class="form-control tengah kecil kode_biaya" name="kode_biaya[]" value="'+akun_biaya+'" readonly>'+'<div class="kode_text">'+akun_biaya+'</div>',
+
+                '<input type="hidden" class="form-control tengah bayar_biaya" name="bayar_biaya[]" value="'+parseFloat(nominal)+'" readonly>'+'<div class="bayar_text">'+accounting.formatMoney(nominal, "Rp ", 2, ".",',')+'</div>',
+
+                '<input type="hidden" class="form-control tengah debet_biaya" name="debet_biaya[]" value="'+debit+'" readonly>'+'<div class="debet_text">'+debit+'</div>',
+
+                '<input type="hidden" class="form-control tengah ket_biaya" name="ket_biaya[]" value="'+keterangan_biaya+'" readonly>'+'<div class="ket_text">'+keterangan_biaya+'</div>',
+
+                '<a class="btn btn-success btn-xs fa fa-pencil" align="center" onclick="edit_biaya(this)" title="edit"></i></a>&nbsp;&nbsp;<a class="btn btn-danger btn-xs fa fa-minus" align="center" onclick="hapus_biaya(this)" title="hapus"></i></a>'
+            ] ).draw( false );   
+      count++;
+      array_do.push(no_pod);
+      $('.table_biaya').prop('hidden',false);
+      $('.table_detail input').val(''); 
+      $('.jml_data').val(count); 
+  } 
+
+  function edit_biaya(par) {
+    var parent = par.parentNode.parentNode;
+    var seq    = $(parent).find('.seq').val();
+    var no_do    = $(parent).find('.no_do').val();
+    var kode_biaya    = $(parent).find('.kode_biaya').val();
+    var bayar_biaya    = $(parent).find('.bayar_biaya').val();
+    var debet_biaya    = $(parent).find('.debet_biaya').val();
+    var ket_biaya    = $(parent).find('.ket_biaya').val();
   }
 </script>

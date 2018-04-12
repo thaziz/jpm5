@@ -450,7 +450,6 @@ $('.jenis_modal').change(function(){
 });
 var datatable = $('#table_data').DataTable({
                       'paging':false,
-                      'searching':false,
                       columnDefs: [
                       {
                          targets: 6 ,

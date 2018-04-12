@@ -208,9 +208,9 @@ Route::get('fakturpembelian/hapusfakturpembelian/{id}' , 'PurchaseController@hap
 
 //BIAYA PENERUS AGEN
 Route::get('fakturpembelian/getdatapenerus', 'BiayaPenerusController@getdatapenerus');
-Route::get('fakturpembelian/caripod', 'BiayaPenerusController@caripod');
+Route::get('fakturpembelian/cari_do', 'BiayaPenerusController@cari_do');
 Route::get('fakturpembelian/carimaster', 'BiayaPenerusController@carimaster');
-Route::get('fakturpembelian/auto/{i}', 'BiayaPenerusController@auto');
+Route::get('fakturpembelian/autocomplete_biaya_penerus', 'BiayaPenerusController@autocomplete_biaya_penerus');
 Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::get('fakturpembelian/cari_do_subcon', 'BiayaPenerusController@cari_do_subcon');
