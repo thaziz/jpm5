@@ -10,7 +10,7 @@ use Carbon\carbon;
 class cabang_kargo_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
+        $sql = "    SELECT t.kode_provinsi,jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
                     FROM tarif_cabang_kargo t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
@@ -29,7 +29,7 @@ class cabang_kargo_Controller extends Controller
             // add new button
             $data[$i]['button'] = ' <div class="btn-group">
                                         <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['kode_provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
                                         <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button> 
 
                                     </div> ';
@@ -56,186 +56,247 @@ class cabang_kargo_Controller extends Controller
         echo json_encode($data);
     }
 
-    public function save_data (Request $request) {
-        // dd($request);
+     public function save_data (Request $request) {
+        // dd($request->all());
         $simpan='';
+        if ($request->cb_provinsi_tujuan != '') {
+             $cari = DB::table('kota')  
+                  ->where('id_provinsi',$request->cb_provinsi_tujuan)
+                  ->get();
+        }else{
+
+        }
+        
+        // return $cari;
         $crud = $request->crud;
-          // KODE UTAMA
-        $kode_utama = DB::table('tarif_cabang_kargo')->select('kode_detail_kargo')->max('kode_detail_kargo');
-          $datadetail = DB::table('tarif_cabang_kargo')->select('kode_detail_kargo')->get();  
-               $datadetailcount = count($datadetail);
-         for ($i=0; $i <count($datadetail) ; $i++) {  
-            if ($datadetail == null) {
-                $datadetailcount;
-            }else{
-              $kode_detailtambahutama = $datadetail[$i]->kode_detail_kargo;
-            }
-            $kode_detailtambahutama+1;  
-         }
         
-        // return $kode_utama;
-        //end
-        //KODE 
-        $kode_detail = DB::table('tarif_cabang_kargo')->select('kode_detail_kargo')->max('kode_detail_kargo');
-        
-          $datadetail = DB::table('tarif_cabang_kargo')->select('kode_detail_kargo')->get();  
-               $datadetailcount = count($datadetail);
-         for ($i=0; $i <count($datadetail) ; $i++) {  
-            if ($datadetail == null) {
-                $datadetailcount;
-            }else{
-                $kode_detailtambah1 = $datadetail[$i]->kode_detail_kargo;
-
-            }
-            $kode_detailtambah1+1;  
-         }
-         // for ($i=0; $i <$datadetail ; $i++) {  
-         //     $datadetail[$i]->keterangan;
-             
-         //     dd($datadetail);
-         // }
-        
-        $kodecabang = Auth::user()->kode_cabang ;
-        
-
-      $cekdata = DB::table('tarif_cabang_kargo')->select('kode')->get();
-            
-        // return $cekdata;
-
-      
 
         $kodekota = $request->kodekota;
+        $kodecabang = Auth::user()->kode_cabang;
 
-        $jt_kode = DB::table('jenis_tarif')
-                     ->where('jt_id',$request->cb_jenis)
-                      ->first();
-        // return $request->cb_jenis;
-           
-        $prov = $request->cb_provinsi_tujuan;
-        $sel_prov = DB::table('kota')->select('id','nama')->orWhere('id_provinsi','=',$prov)->get();
-        
-        $id_provinsi_loop = '';
-        for ($for=0; $for <count($sel_prov) ; $for++) { 
-             $id_provinsi_loop = $id_provinsi_loop.' '.$sel_prov[$for]->id;
+        $array_harga = [];
+        $array_waktu = [];
+        $array_nota  = ['KGO'];
+        $array_note  = [];
+
+        if ($request->harga_outlet == '' or null) {
+            $request->harga_outlet = 0;
         }
-        $id_provinsi_loop =explode(' ', $id_provinsi_loop);
-        json_encode($id_provinsi_loop); 
 
-        if ($request->cb_kota_tujuan == '' || $request->cb_kota_tujuan == null) {
-               if ($crud == 'N') {
-                for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
+        array_push($array_harga, $request->ed_harga);
+        array_push($array_waktu, $request->ed_waktu);
 
-                if ($datadetailcount != 0) {
-                    $kode_detail += 1;
-                     $kode_utama = $kode_utama+1;
-                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
-                 $kodeutama = $kodekota.'/'.'KRG'.$jt_kode->jt_kode.$kodecabang.$kode_utama;
-                    
 
-                }else if ($datadetailcount == 0){
-                    $kode_detail += 1;
-                     $kode_utama = $kode_utama+1;
-                     $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
-                    $kodeutama = $kodekota.'/'.'KRG'.$jt_kode->jt_kode.$kodecabang.$kode_utama;           
+        // return $array_waktu;
+       
+
+
+        // return $array_harga;
+
+        if ($crud  == 'N') {
+            if ($request->cb_provinsi_tujuan != '') {
+                for ($i=0; $i < count($cari); $i++) { 
+                    $cari_old0[$i] = DB::table('tarif_cabang_kargo')
+                              ->where('id_kota_asal',$request->cb_kota_asal)
+                              ->where('id_kota_tujuan',$cari[$i]->id)
+                              ->where('kode_cabang',$request->ed_cabang)
+                              ->where('jenis',$request->cb_jenis)
+                              ->get();
                 }
-                   // return $kodeutama = $kodeutama ;
-
-                    $data = array(
-                        'kode' => strtoupper($kodeutama),
-                        'id_kota_asal' => $request->cb_kota_asal,
-                        'id_kota_tujuan' => $id_provinsi_loop[$save],
-                        'jenis' => $request->cb_jenis,
-                        'kode_satuan' => $request->satuan,
-                        'kode_angkutan' => $request->cb_angkutan,
-                        'kode_detail_kargo' => $kode_detail,
-                        'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
-                        'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
-                        'acc_penjualan' => $request->ed_acc_penjualan,
-                        'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'create_at'=>carbon::now(),
-                        'create_by'=>Auth::user()->m_username,
-                        'kode_cabang'=>$request->ed_cabang,
-                        'kode_provinsi'=>$request->cb_provinsi_tujuan,
-                    );
-                    $simpan = DB::table('tarif_cabang_kargo')->insert($data);
-                }
-            }
-        }else if($request->cb_kota_tujuan != '' || $request->cb_kota_tujuan != null) {
-           if ($crud == 'N') {
-            $data = array(
-                'kode' => strtoupper($kodeutama),
-                'id_kota_asal' => $request->cb_kota_asal,
-                'id_kota_tujuan' => $request->cb_kota_tujuan,
-                'jenis' => $request->cb_jenis,
-                'kode_satuan' => $request->satuan,
-                'kode_angkutan' => $request->cb_angkutan,
-                'kode_detail_kargo' => $kode_detail,
-                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
-                'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
-                'acc_penjualan' => $request->ed_acc_penjualan,
-                'csf_penjualan'=>$request->ed_csf_penjualan,
-                'create_at'=>carbon::now(),
-                'create_by'=>Auth::user()->m_username,
-                'kode_provinsi'=>$request->cb_provinsi_tujuan,
-                'kode_cabang'=>$request->ed_cabang,
-            );
-            $simpan = DB::table('tarif_cabang_kargo')->insert($data);
-        }elseif ($crud == 'E') {
-            
-                 $id = $request->ed_kode_old;
-
-                $integer =  (int)$id;              
-                
-                // $integer = $integer;
-                $integer = str_pad($integer, 5,'0',STR_PAD_LEFT);
-                $kodekota = $request->kodekota;
+                // return $cari_old1;
+                $cari_nota0 = DB::select("SELECT  substring(max(kode),11) as id from tarif_cabang_kargo
+                                                    WHERE kode_cabang = '$request->ed_cabang' 
+                                                    and jenis = $request->cb_jenis");
+                // return $cari_nota2;
+                $id0 = (integer)$cari_nota0[0]->id+1;   
 
                  
-                $id_kode = $kodekota.'/'.'KRG'.$jt_kode->jt_kode.$kodecabang.$integer;           
-                
-                // return $request->ed_kode_lama;
-                 $prov = DB::table('kota')->select('id','id_provinsi')->where('id',$request->cb_kota_tujuan)->get();
-                $prov = $prov[0]->id_provinsi;
+                    for ($i=0; $i < count($cari); $i++) { 
+                        for ($a=0; $a < count($array_harga); $a++) { 
+                            
+                            $index = $id0;
+                            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+                            $nota0[$i] = $kodekota . '/' .  'KGO' .$request->ed_cabang .  $index;
+                            
+                        }
+                        $id0++;
+                       
+                    }
+                $array_note = [$nota0]; 
+                 
+            }else{
+                $cari_kode = DB::table('tarif_cabang_kargo')
+                              ->where('id_kota_asal',$request->cb_kota_asal)
+                              ->where('id_kota_tujuan',$request->cb_kota_tujuan)
+                              ->where('kode_cabang',$request->ed_cabang)
+                              ->get();
+            }
+            
+            if ($request->cb_provinsi_tujuan != '') {
+            for ($i=0; $i < count($cari); $i++) { 
+                for ($a=0; $a < count($array_harga); $a++) { 
+                    $kode_detail = DB::table('tarif_cabang_kargo')
+                            ->max('kode_detail_kargo');
+                    if ($kode_detail == null) {
+                        $kode_detail = 1;
+                    }else{
+                        $kode_detail += 1;
+                    }
+                            if (isset(${'cari_old'.$a}[$i][0]->id_kota_asal) != $request->cb_kota_asal and
+                                isset(${'cari_old'.$a}[$i][0]->id_kota_tujuan) != $cari[$i]->id and
+                                isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->ed_cabang ) {
 
-            $data = array(
-                'kode' => $id_kode,
-                'id_kota_asal' => $request->cb_kota_asal,
-                'id_kota_tujuan' => $request->cb_kota_tujuan,
-                'kode_satuan' => $request->satuan,
-                'jenis' => $request->cb_jenis,
-                'kode_angkutan' => $request->cb_angkutan,
-                'kode_detail_kargo' => $request->ed_kode_old,
-                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
-                'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
-                'acc_penjualan' => $request->ed_acc_penjualan,
-                'csf_penjualan'=>$request->ed_csf_penjualan,
-                'update_at'=>carbon::now(),
-                'create_by'=>Auth::user()->m_username,
-                'kode_cabang'=>$request->ed_cabang,
-                'kode_provinsi'=>$prov,
-            );
-            // dd($request->ed_kode);
-            $simpan = DB::table('tarif_cabang_kargo')->where('kode', $request->ed_kode_lama)->update($data);
-        }
-        }
+                                    $data = DB::table('tarif_cabang_kargo')
+                                    ->insert([
+                                            'kode_detail_kargo'=>$kode_detail,
+                                            'kode'=>$array_note[$a][$i],
+                                            'id_kota_asal' => $request->cb_kota_asal,
+                                            'id_kota_tujuan' => $cari[$i]->id,
+                                            'kode_cabang' => $request->ed_cabang,
+                                            'jenis' => $request->cb_jenis,
+                                            'harga' => $array_harga[$a],
+                                            'waktu' => $array_waktu[$a],
+                                            'acc_penjualan'=>$request->ed_acc_penjualan,
+                                            'csf_penjualan'=>$request->ed_csf_penjualan,
+                                            'kode_provinsi'=>$request->cb_provinsi_tujuan,
+                                            'crud'=>$crud,
+                                            'create_at'=>carbon::now(),
+                                            'create_by'=>Auth::user()->m_username,
+                                            'kode_satuan' => $request->satuan,
+                                            'kode_angkutan' => $request->cb_angkutan,
 
+                                  ]);
+                            }else{
+                                if (${'cari_old'.$a}[$i][0]->crud != 'E') {
+                                    $data = DB::table('tarif_cabang_kargo')
+                                    ->where('kode',${'cari_old'.$a}[$i][0]->kode)
+                                    ->update([
+                                            'kode_cabang' => $request->ed_cabang,
+                                            'jenis' => $request->cb_jenis,
+                                            'harga' => $array_harga[$a],
+                                            'waktu' => $array_waktu[$a],
+                                            'acc_penjualan'=>$request->ed_acc_penjualan,
+                                            'csf_penjualan'=>$request->ed_csf_penjualan,
+                                            'crud'=>'N',
+                                    ]);
+                                }
+                                    
+                            }
+                        }
+                }
 
-        
-        if($simpan == TRUE){
+            }else{
+                    if (isset($cari_kode[0]->id_kota_asal) != $request->cb_kota_asal  and
+                        isset($cari_kode[0]->id_kota_tujuan) != $request->cb_kota_tujuan and
+                        isset($cari_kode[0]->kode_cabang) != $request->ed_cabang) {
+
+                        $kode_detailis = DB::table('tarif_cabang_kargo')
+                            ->max('kode_detail_kargo');
+                                if ($kode_detailis == null) {
+                                    $kode_detailis = 1;
+                                }else{
+                                    $kode_detailis += 1;
+                                }
+                        
+                        $index = $kode_detailis;
+                        $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+                        $kodeutama = $kodekota . '/' .  'KGO' .$request->ed_cabang  .  $index;
+                        $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get();
+
+                        if ($crud == 'N') {
+                            $simpan = array(
+                                'kode' => $kodeutama,
+                                'id_kota_asal' => $request->cb_kota_asal,
+                                'id_kota_tujuan' => $request->cb_kota_tujuan,
+                                'jenis' => $request->cb_jenis,
+                                'kode_satuan' => $request->satuan,
+                                'kode_angkutan' => $request->cb_angkutan,
+                                'kode_detail_kargo' => $kode_detailis,
+                                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                                'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
+                                'acc_penjualan' => $request->ed_acc_penjualan,
+                                'csf_penjualan'=>$request->ed_csf_penjualan,
+                                'create_at'=>carbon::now(),
+                                'kode_provinsi'=>$provinsi[0]->id_provinsi,
+                                'create_by'=>Auth::user()->m_username,
+                                'kode_cabang'=>$request->ed_cabang,
+                                'crud'=>'N',
+                            );
+                            $data = DB::table('tarif_cabang_kargo')->insert($simpan);
+                        }
+                    }else{
+
+                        if ($crud == 'N') {
+                            $simpan = array(
+                                'jenis' => $request->cb_jenis,
+                                'kode_satuan' => $request->satuan,
+                                'kode_angkutan' => $request->cb_angkutan,
+                                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                                'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
+                                'acc_penjualan' => $request->ed_acc_penjualan,
+                                'csf_penjualan'=>$request->ed_csf_penjualan,
+                         );
+                        $data = DB::table('tarif_cabang_kargo')->where('kode','=',$cari_kode[0]->kode)->update($simpan);
+                        }
+                    }
+            }
+
+            if($data == TRUE){
             $result['error']='';
             $result['result']=1;
-        }else{
-            $result['error']=$data;
-            $result['result']=0;
+            }else{
+                $result['error']=$data;
+                $result['result']=0;
+            }
+            $result['crud']=$crud;
+            echo json_encode($result);
+
+                }else if($crud == 'E'){
+                                            
+                       $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get();
+                       
+                       $simpan = array(
+                                'kode' => $request->ed_kode_lama,
+                                'id_kota_asal' => $request->cb_kota_asal,
+                                'id_kota_tujuan' => $request->cb_kota_tujuan,
+                                'jenis' => $request->cb_jenis,
+                                'kode_satuan' => $request->satuan,
+                                'kode_angkutan' => $request->cb_angkutan,
+                                'kode_detail_kargo' => $request->ed_kode_old,
+                                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                                'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
+                                'acc_penjualan' => $request->ed_acc_penjualan,
+                                'csf_penjualan'=>$request->ed_csf_penjualan,
+                                'update_at'=>carbon::now(),
+                                'kode_provinsi'=>$provinsi[0]->id_provinsi,
+                                'update_by'=>Auth::user()->m_username,
+                                'kode_cabang'=>$request->ed_cabang,
+                                'crud'=>'E',
+                            );
+                            $data = DB::table('tarif_cabang_kargo')->where('kode','=',$request->ed_kode_lama)->update($simpan);
+
+
+             if($data == TRUE){
+            $result['error']='';
+            $result['result']=1;
+            }else{
+                $result['error']=$data;
+                $result['result']=0;
+            }
+            $result['crud']=$crud;
+            echo json_encode($result);
         }
-        $result['crud']=$crud;
-        echo json_encode($result);
+
+        
+    
     }
 
     public function hapus_data (Request $request) {
+        // dd($request->all());
         $hapus='';
-        $id=$request->id;
-        $hapus = DB::table('tarif_cabang_kargo')->where('kode' ,'=', $id)->where('crud','!=','E')->delete();
+        $asal=$request->id;
+        $tujuan=$request->name;
+        $hapus = DB::table('tarif_cabang_kargo')->where('kode_provinsi','=',$tujuan)->where('crud','!=','E')->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;

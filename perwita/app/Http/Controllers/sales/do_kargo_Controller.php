@@ -159,12 +159,24 @@ class do_kargo_Controller extends Controller
             for ($a=0; $a < count($nota); $a++) { 
                 if ($nota[$a]->kode_customer == $customer[$i]->kode) {
                     $nota[$a]->nama_customer = $customer[$i]->nama;
+                    $nota[$a]->alamat = $customer[$i]->alamat;
+                    $nota[$a]->telpon = $customer[$i]->telpon;
                 }
             }
         }
+
+        $count = count($nota);
+        $array = [];
+        if ($count<15) {
+            $temp = 15- $count;
+            for ($i=0; $i < $temp; $i++) { 
+                $array[$i] = '';
+            }
+        }
+        // return $nota;
         //$pdf = PDF::loadView('sales.do.nota',compact('nota'))->setPaper('a4', 'potrait');
         //return $pdf->stream();
-        return view('sales.do_kargo.print',compact('nota'));
+        return view('sales.do_kargo.print',compact('nota','array'));
 
     }
 	
@@ -173,16 +185,18 @@ class do_kargo_Controller extends Controller
         // return dd($request->all());
         if ($request->status_kendaraan == 'OWN') {
             $data = DB::table('kendaraan')
-                  ->where('status',$request->status_kendaraan)
-                  ->where('tipe_angkutan',$request->tipe_angkutan)
-                  ->where('kode_cabang',$request->cabang_select)
+                  ->join('tipe_angkutan','tipe_angkutan.kode','=','kendaraan.tipe_angkutan')
+                  ->where('kendaraan.status',$request->status_kendaraan)
+                  ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
+                  // ->where('kode_cabang',$request->cabang_select)
                   ->get();
         }else{
             $data = DB::table('kendaraan')
                   ->where('status','SUB')
-                  ->where('tipe_angkutan',$request->tipe_angkutan)
-                  ->where('kode_cabang',$request->cabang_select)
-                  ->where('kode_subcon',$request->nama_subcon)
+                  ->join('tipe_angkutan','tipe_angkutan.kode','=','kendaraan.tipe_angkutan')
+                  ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
+                  // ->where('kode_cabang',$request->cabang_select)
+                  ->where('kendaraan.kode_subcon',$request->nama_subcon)
                   ->get();
         }
         if ($data == null) {
@@ -483,7 +497,7 @@ class do_kargo_Controller extends Controller
                                 'type_kiriman'          => 0,
                                 'jenis_pengiriman'      => $jenis_tarif->jt_nama_tarif,
                                 'kode_tipe_angkutan'    => $request->tipe_angkutan,
-                                'no_surat_jalan'        => strtoupper($request->surat_jalan),
+                                'nomor_surat_jalan'     => $request->surat_jalan,
                                 'nopol'                 => $nopol->nopol,
                                 'id_kendaraan'          => (int)$request->tipe_kendaraan,
                                 'kode_subcon'           => strtoupper($request->nama_subcon),
@@ -520,6 +534,10 @@ class do_kargo_Controller extends Controller
                                 'nomor_do_awal'         => strtoupper($request->nomor_do_awal),
                                 'kode_satuan'           => strtoupper($request->satuan),
                                 'kontrak'               => $kontrak,
+                                'created_by'            =>  Auth::user()->m_name,
+                                'created_at'            =>  Carbon::now(),
+                                'updated_by'             =>  Auth::user()->m_name,
+                                'updated_at'             =>  Carbon::now(),
                                 'kode_tarif'            => $request->kode_tarif,
                                 'keterangan_tarif'      => $request->keterangan_detail,
                                 'acc_penjualan'         => $request->acc_penjualan,
@@ -563,7 +581,7 @@ class do_kargo_Controller extends Controller
                                 'type_kiriman'          => 0,
                                 'jenis_pengiriman'      => $jenis_tarif->jt_nama_tarif,
                                 'kode_tipe_angkutan'    => $request->tipe_angkutan,
-                                'no_surat_jalan'        => strtoupper($request->surat_jalan),
+                                'nomor_surat_jalan'     => strtoupper($request->surat_jalan),
                                 'nopol'                 => $nopol->nopol,
                                 'id_kendaraan'          => $request->tipe_kendaraan,
                                 'kode_subcon'           => strtoupper($request->nama_subcon),
@@ -596,6 +614,10 @@ class do_kargo_Controller extends Controller
                                 'jenis_tarif'           => $jenis_tarif->jt_nama_tarif,
                                 'ritase'                => strtoupper($request->ritase),
                                 'awal_shutle'           => strtoupper($awal),
+                                'created_by'            =>  Auth::user()->m_name,
+                                'created_at'            =>  Carbon::now(),
+                                'updated_by'             =>  Auth::user()->m_name,
+                                'updated_at'             =>  Carbon::now(),
                                 'akhir_shutle'          => strtoupper($akhir),
                                 'nomor_do_awal'         => strtoupper($request->nomor_do_awal),
                                 'kode_tarif'            => $request->kode_tarif,
@@ -653,8 +675,10 @@ class do_kargo_Controller extends Controller
     {
         // return $request->all();
         $data = DB::table('kontrak_customer')
+                  ->join('kontrak_customer_d','kc_nomor','=','kcd_kode')
                   ->where('kc_kode_customer',$request->customer_do)
                   ->where('kc_kode_cabang',$request->cabang)
+                  ->where('kcd_jenis','KARGO')
                   ->get();
         $customer = DB::table('customer')
                       ->where('kode',$request->customer_do)

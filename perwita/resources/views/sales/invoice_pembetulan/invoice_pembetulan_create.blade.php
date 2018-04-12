@@ -54,7 +54,7 @@
                             @if(Auth::user()->punyaAkses('Invoice Penjualan','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="5">
+                                <td colspan="5" class="cabang_td">
                                         <select class="form-control chosen-select-width cabang "  name="cb_cabang">
                                         @foreach ($cabang as $row)
                                             @if(Auth::user()->kode_cabang == $row->kode)
@@ -87,6 +87,7 @@
                                 <td colspan="3" >
                                     <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
+                                    <input type="hidden" name="nota_cndn" id="nota_cndn" readonly="readonly" class="form-control nota_cndn" value="" >
                                 </td>
                                 <td colspan="1" width="15%" align="center">
                                     <button type="button" class="btn btn-primary cari_invoice">
@@ -159,6 +160,7 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-warning cndn disabled" onclick="cndn()" ><i class="glyphicon glyphicon-eye-open"></i> Lihat Di CNDN</button>
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
@@ -465,7 +467,8 @@
 
                         ]).draw(false);
                         index_detail++;
-                        array_simpan.push(data.data_dt.nomor);
+                        array_simpan.push(data.data_dt[i][0].nomor);
+                        console.log(array_simpan);
 
                     }
                 }
@@ -606,7 +609,7 @@
         $('.terbayar').val(accounting.formatMoney(total_tagihan-sisa_tagihan,"",2,'.',','));
         // $('.selisih_tagihan').val(accounting.formatMoney(total_tagihan-sisa_tagihan,"",2,'.',','));
     }
-
+   
 
    function hitung_pajak_ppn() {
        var cb_jenis_ppn = $('#cb_jenis_ppn').val();
@@ -910,18 +913,13 @@
     function simpan(){
     var total_tagihan = $('.total_tagihan').val();
     var sisa_tagihan  = $('.sisa_tagihan').val();
-    var selisih_tagihan  = $('.selisih_tagihan').val();
     total_tagihan     = total_tagihan.replace(/[^0-9\-]+/g,"");
     sisa_tagihan      = sisa_tagihan.replace(/[^0-9\-]+/g,"");
-    selisih_tagihan      = selisih_tagihan.replace(/[^0-9\-]+/g,"");
     total_tagihan     = parseFloat(total_tagihan)/100;
     sisa_tagihan      = parseFloat(sisa_tagihan)/100;
-    selisih_tagihan      = parseFloat(selisih_tagihan)/100;
-    if (selisih_tagihan < 0) {
-       selisih_tagihan = selisih_tagihan * -1;
-    }
+ 
 
-    if (selisih_tagihan > selisih_tagihan) {
+    if (total_tagihan < total_tagihan) {
         toastr.warning('Sisa Tagihan Kurang Dari 0, Tidak Dapat Mengurangi Tagihan');
         return 1;
     }
@@ -948,8 +946,8 @@
             });
 
           $.ajax({
-          url:baseUrl + '/sales/simpan_invoice',
-          type:'post',
+          url:baseUrl + '/sales/simpan_invoice_pembetulan',
+          type:'get',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
@@ -985,10 +983,11 @@
                     timer: 1000,
                    showConfirmButton: true
                     },function(){
-                        window.location='../sales/invoice';
+                        // window.location='../sales/invoice';
                         $('.simpan').addClass('disabled');
                         $('.print').removeClass('disabled');
-
+                        $('.nota_cndn').val(response.nota);
+                        $('.cndn').removeClass('disabled');
                 });
              }
           },
@@ -1012,6 +1011,11 @@
     $('.reload').click(function(){
     location.reload();
 })
+
+    function cndn() {
+        var id = $('.nota_cndn').val();
+        window.open('{{url('sales/nota_debet_kredit/edit')}}'+'/'+id);
+    }
 
 $('#cb_pendapatan').change(function(){
     if ($(this).val() == 'KARGO') {

@@ -89,19 +89,23 @@
                                 <td>{{ $row->total }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                         @if(Auth::user()->punyaAkses('Delivery Order','ubah'))
-                                            @if($row->status_do == 'Released')
-                                                <a type="button" href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah'))
+                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
+                                            <a type="button" href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
                                             @endif
                                         @endif
+
+
                                         @if(Auth::user()->punyaAkses('Delivery Order','print'))
                                             <button type="button" onclick="print('{{$row->nomor}}')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>
                                         @endif
-                                        @if(Auth::user()->punyaAkses('Delivery Order','hapus'))
-                                            @if($row->status_do == 'Released')
-                                                <button type="button" onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>
+
+                                        @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus'))
+                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
+                                            <button type="button" onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>
                                             @endif
                                         @endif
+
                                     </div>
                                 </td>
                             </tr>
@@ -145,10 +149,9 @@
             "paging": true,
             "lengthChange": true,
             "searching": true,
-            "ordering": true,
+            order: [[ 1, "desc" ]],
             "info": false,
             "responsive": true,
-            "autoWidth": false,
             "pageLength": 10,
             "retrieve" : true,
             "columns": [

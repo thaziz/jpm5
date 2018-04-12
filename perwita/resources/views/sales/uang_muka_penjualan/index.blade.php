@@ -7,6 +7,12 @@
 <style type="text/css">
       .id {display:none; }
       .cssright { text-align: right; }
+      .center{
+        text-align: center;
+    }
+    .right: {
+        text-align: right;
+    }
     </style>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -193,6 +199,21 @@
             { "data": "jenis" },
             { "data": "jumlah" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
+            ],
+            columnDefs:[
+                 {
+                 targets: 6,
+                 className: 'center'
+                 },
+                 {
+                 targets: 5,
+                 className: 'right'
+                 },
+                 {
+                 targets: 4,
+                 className: 'center'
+                 },
+
             ]
         });
         var config = {

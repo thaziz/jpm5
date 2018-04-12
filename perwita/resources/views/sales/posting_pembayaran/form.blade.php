@@ -78,7 +78,7 @@
                             </tr>
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td>
+                                <td class="cabang_td">
                                     <select onchange="ganti_nota()" class="form-control cabang chosen-select-width" name="cb_cabang" >
                                     @foreach ($cabang as $row)
                                         @if(Auth::user()->kode_cabang == $row->kode)
@@ -214,7 +214,7 @@ var table_data = $('#table_data').DataTable({
         },
         {
              targets: 1 ,
-             className: 'right'
+             className: 'left'
         },
         {
              targets: 2 ,
@@ -298,6 +298,7 @@ function hitung() {
     $('.ed_jumlah_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('.ed_jumlah').val(temp);
 }
+
 $('#append').click(function(){
 
     var cabang = $('.cabang').val();
@@ -324,7 +325,7 @@ if (cb_jenis_pembayaran != 'U') {
                 table_data.row.add([
                     data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
-                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].nama+'" class="form-control d_customer" name="d_customer[]">',
+                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">',
 
                     accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
                     '<input type="text" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
@@ -334,6 +335,8 @@ if (cb_jenis_pembayaran != 'U') {
             }
             $('#modal').modal('hide');
             hitung();
+            $('.cb_jenis_pembayaran').addClass('disabled');
+            $('.cabang_td').addClass('disabled');
         }
     })
 
@@ -369,6 +372,8 @@ if (cb_jenis_pembayaran != 'U') {
             }
             $('#modal').modal('hide');
             hitung();
+            $('.cb_jenis_pembayaran').addClass('disabled');
+            $('.cabang_td').addClass('disabled');
         }
     })
 }
@@ -380,13 +385,42 @@ function hapus_detail(o) {
     var index = array_simpan.indexOf(arr);
     array_simpan.splice(index,1);
 
+    var temp = 0;
+
     table_data.row(par).remove().draw(false);
+
+    $('.d_nomor_kwitansi').each(function(){
+        temp+=1;
+    });
+    if (temp == 0) {
+        $('.cb_jenis_pembayaran').removeClass('disabled');
+        $('.cabang_td').removeClass('disabled');
+    }
+    
 }
 
 $('#btnsimpan').click(function(){
+    var temp = 0;
+    var temp1 = 0;
+
+    $('.d_keterangan').each(function(){
+        if ($(this).val() != '') {
+            temp+=1;
+        }
+        temp1+=1;
+    });
+    if (temp1 == 0) {
+        toastr.warning('Tidak Ada Yang Di Posting');
+        return 1;
+    }
+    if (temp == 0) {
+        toastr.warning('Kolom Keterangan Pada Sequence Harus Diisi');
+        return 1;
+    }
+
     swal({
         title: "Apakah anda yakin?",
-        text: "Simpan Data Kwitansi!",
+        text: "Update Data!",
         type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
@@ -404,7 +438,7 @@ $('#btnsimpan').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/posting_pembayaran_form/simpan_posting',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header1 :input').serialize()
                +'&'+$('.table_header2 :input').serialize()

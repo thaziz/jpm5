@@ -71,7 +71,7 @@
                             <select class="form-control" onchange="location = this.value;">
                             <option selected="" disabled="">Pilih terlebih dahulu</option>
                             <option value="{{ url('/masteritem/masteritem/masteritem') }}" >Laporan Data Master Item</option>
-                            {{-- <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option> --}}
+                            <option value="{{ url('/lap_masterdepartment/lap_masterdepartment') }}">Laporan Data Department</option>
                             <option value="{{ url('/mastergudang/mastergudang/mastergudang') }}" >Laporan Data Master Gudang</option>
                             <option value="{{ url('/mastersupplier/mastersupplier/mastersupplier') }}" >Laporan Data Supplier</option>
                             <option value="{{ url('/spp/spp/spp') }}" selected="" disabled="">Laporan Data Surat Permintaan Pembelian</option>

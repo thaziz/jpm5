@@ -15,6 +15,12 @@
     .center{
         text-align: center;
     }
+    .tabel_tarif tbody tr{
+        cursor: pointer;
+    }
+    #modal {
+        overflow-y:scroll;
+    }
 </style>                
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -69,7 +75,7 @@
                            @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="4">
+                                <td colspan="4" class="cabang_td">
                                     <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                     @foreach ($cabang as $row)
                                         @if(Auth::user()->kode_cabang == $row->kode)
@@ -99,7 +105,7 @@
                             @endif
                             <tr>
                                 <td>Customer</td>
-                                <td class="customer_td">
+                                <td class="customer_td" colspan="3">
                                     <select onchange="cari_customer()" class="form-control customer chosen-select-width" name="customer">
                                         <option value="0">Pilih - Customer</option>
                                     @foreach($customer as $val)
@@ -110,8 +116,16 @@
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Alamat</td>
-                                <td colspan="3">
+                                <td>
                                     <input type="text" class="form-control ed_alamat" name="ed_alamat" readonly="readonly" tabindex="-1" style="text-transform: uppercase" value="">
+                                </td>
+                                <td colspan="2">
+                                    <div class="checkbox checkbox-info checkbox-circle disabled">
+                                        <input class="status_kontrak" type="checkbox" name="status_kontrak">
+                                        <label>
+                                           status Kontrak
+                                        </label>
+                                    </div> 
                                 </td>
                             </tr>
                             <tr>
@@ -133,7 +147,7 @@
                     </table>
                     <div class="row">
                         <div class="col-md-12">
-                            <button type="button" class="btn btn-info " onclick="tambah_kertas()"><i class="glyphicon glyphicon-plus"></i>Tambah</button>
+                            <button type="button" class="btn btn-info tambah_kertas" onclick="tambah_kertas()"><i class="glyphicon glyphicon-plus"></i>Tambah</button>
                             <button type="button" class="btn btn-success disabled" onclick="simpan()" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                             <button type="button" class="btn btn-warning disabled" onclick="ngeprint()" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i>Print</button>
                             <button type="button" class="btn btn-danger reload" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i>reload</button>
@@ -181,9 +195,9 @@
                                       
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr class="item_tr">
                                                 <td>Item</td>
-                                                <td colspan="5" class="item_td">
+                                                <td colspan="5">
                                                     <select onchange="cari_item()" name="item" class="form-control item chosen-select-width">
                                                         <option value="0">Pilih - Item</option>
                                                         @foreach($item as $val)
@@ -206,8 +220,7 @@
                                             
                                                 <td style="padding-top: 0.4cm">Tarif Dasar</td>
                                                 <td>
-                                                    <input readonly="" type="text" class="form-control ed_harga_text" name="ed_harga" style="text-align: right;">
-                                                    <input readonly="" type="hidden" class="form-control ed_harga" name="ed_harga" style="text-align: right;">
+                                                    <input readonly="" onkeyup="hitung()" type="text" class="form-control ed_harga" name="ed_harga" style="text-align: right;">
                                                 </td>
                                             
                                                 <td style="padding-top: 0.4cm">Total</td>
@@ -227,13 +240,13 @@
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Netto</td>
                                                 <td colspan="5">
-                                                    <input type="text" class="form-control ed_netto_text" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
+                                                    <input type="text" class="form-control ed_netto_text" readonly="readonly" name= tabindex="-1" style="text-align: right;">
                                                     <input type="hidden" class="form-control ed_netto" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Kota Asal</td>
-                                                <td colspan="5">   
+                                                <td colspan="5" class="asal_td">   
                                                     <select class="chosen-select-width cb_kota_asal"  name="cb_kota_asal" style="width:100%">
                                                         <option value="0">Pilih - Kota</option>
                                                     @foreach ($kota as $row)
@@ -244,7 +257,7 @@
                                             </tr>
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Kota Tujuan</td>
-                                                <td colspan="5">   
+                                                <td colspan="5"  class="tujuan_td">   
                                                     <select class="chosen-select-width cb_kota_tujuan"  name="cb_kota_tujuan" style="width:100%">
                                                         <option value="0">Pilih - Kota</option>
                                                     @foreach ($kota as $row)
@@ -268,6 +281,24 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                {{-- modal kontrak --}}
+                <div id="modal_kontrak" class="modal" >
+                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Pilih Kontrak</h4>
+                      </div>
+                      <div class="modal-body">
+                            <form class="form-horizontal  modal_kontrak">
+                                
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                          </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="box-footer">
@@ -296,7 +327,8 @@
 @section('extra_scripts')
 <script type="text/javascript">
 // datatable
-
+var array_kontrak    = [];
+var array_kontrak_id = [];
 
 
 var table_detail = $('#table_detail').DataTable( {
@@ -337,7 +369,8 @@ $('.date').datepicker({
 
 
 
-$('.ed_diskon_modal').maskMoney({precision:0,thousands:'.'});
+$('.ed_diskon_modal').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+$('.ed_harga').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 $(document).ready(function(){
     var cabang = $('.cabang').val();
     $.ajax({
@@ -385,12 +418,27 @@ function ganti_nota(){
 function cari_customer() {
     var cabang   = $('.cabang').val();
     var customer = $('.customer').val();
+    $('.tambah_kertas').addClass('disabled');
     $.ajax({
         url:baseUrl + '/sales/cari_customer_kertas',
         data:{customer},
         dataType:'json',
         success:function(data){
-            $('.ed_alamat').val(data.alamat);
+            $('.ed_alamat').val(data.customer.alamat);
+            var len = array_kontrak_id.length;
+            console.log(len);
+            if (len != 0) {
+                len     = array_kontrak_id.splice(0,len);
+            }
+            if (data.status == 1) {
+                $('.status_kontrak').prop('checked',true);
+                $('.ed_harga').prop('readonly',true);
+            }else{
+                $('.status_kontrak').prop('checked',false);
+                $('.ed_harga').prop('readonly',false);
+            }
+            $('.tambah_kertas').removeClass('disabled');
+
         },
         error:function(){
             // location.reload();
@@ -414,18 +462,38 @@ function tambah_kertas() {
     $('.ed_diskon').val('0');
     $('.ed_diskon_modal').val('0');
     $('.ed_keterangan').val('');
-    $('.ed_harga_text').val('0');
     $('.ed_harga').val('0');
     $('.ed_total_text').val('0');
     $('.ed_total').val('0');
     $('.ed_satuan').val('');
     $('.acc_penjualan').val('');
+    $('.kcd_dt').val('');
+    $('.asal_td').removeClass('disabled');
+    $('.tujuan_td').removeClass('disabled');
+    $('.ed_netto_text').val(0);
+    $('.ed_netto').val(0);
+    if ($('.status_kontrak').is(':checked') == true) {
+       var status = 2;
+    }else{
+        var status = 1;
+    }
 
+     $.ajax({
+        url:baseUrl + '/sales/ganti_item',
+        data:{status},
+        success:function(data){
+            $('.item_tr').html(data);
+            $('#modal').modal('show');
+        },
+        error:function(){
+            toastr.warning('Terjadi Kesalahan Silahkan Coba Lagi');
+        }
+    }) 
 
-    $('#modal').modal('show');
 }
 function hitung() {
    var ed_harga  = $('.ed_harga').val();
+   ed_harga      = ed_harga.replace(/[^0-9\-]+/g,"");
    if (ed_harga == '') {
     ed_harga = 0;
    }
@@ -475,7 +543,6 @@ function cari_item() {
             if (data == null) {
                 $('.ed_satuan').val(0);
                 $('.ed_harga').val(0);
-                $('.ed_harga_text').val(0);
                 $('.acc_penjualan').val(0)
                 $('.ed_jumlah').val(0);
                 $('.ed_total').val(0);
@@ -483,7 +550,6 @@ function cari_item() {
             }
             $('.ed_satuan').val(data.kode_satuan);
             $('.ed_harga').val(data.harga);
-            $('.ed_harga_text').val(accounting.formatMoney(data.harga,"",2,'.',','));
             $('.acc_penjualan').val(data.acc_penjualan)
             $('.ed_jumlah').val(1);
             
@@ -515,9 +581,11 @@ function simpan_modal() {
 
     var item                = $('.item').val();
     var old_id              = $('.old_id').val();
+    var kcd_dt              = $('.kcd_dt').val();
     var ed_satuan           = $('.ed_satuan').val();
     var ed_jumlah           = $('.ed_jumlah').val();
     var ed_harga            = $('.ed_harga').val();
+    ed_harga                = ed_harga.replace(/[^0-9\-]+/g,"");
     var ed_diskon           = $('.ed_diskon').val();
     var ed_netto            = $('.ed_netto').val();
     var cb_kota_asal        = $('.cb_kota_asal').val();
@@ -526,7 +594,13 @@ function simpan_modal() {
     var acc_penjualan       = $('.acc_penjualan').val();
     var cb_kota_asal_text   = $('.cb_kota_asal option:selected').text();
     var cb_kota_tujuan_text = $('.cb_kota_tujuan option:selected').text();
-    var item_text           = $('.item option:selected').text();
+    if ($('.status_kontrak').is(':checked') == true) {
+        var item_text       = $('.nama_kontrak ').val();
+    }else{
+        var item_text       = $('.item option:selected').text();
+    }
+
+
 if (old_id == '') {
     table_detail.row.add({
         'id':'<p class="id_text">'+count+'</p>'+
@@ -534,6 +608,7 @@ if (old_id == '') {
         '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+ed_diskon+'">'+
         '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+ed_harga+'">'+
         '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+ed_netto+'">'+
+        '<input type="hidden" readonly name="d_kcd_dt[]" class="form-control d_kcd_dt" value="'+kcd_dt+'">'+
         '<input type="hidden" readonly name="d_satuan[]" class="form-control d_satuan" value="'+ed_satuan+'">'+
         '<input type="hidden" readonly name="d_jumlah[]" class="form-control d_jumlah" value="'+ed_jumlah+'">'+
         '<input type="hidden" readonly name="d_asal[]" class="form-control d_asal" value="'+cb_kota_asal+'">'+
@@ -541,6 +616,7 @@ if (old_id == '') {
 
         'Kode Item':'<p class="kode_item_text">'+item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
+        '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
         '<input type="hidden" name="d_acc[]" class="d_acc" value="'+acc_penjualan+'">',
 
         'Nama Item':'<p class="nama_item">'+item_text+'</p>',
@@ -579,6 +655,7 @@ if (old_id == '') {
         '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+ed_diskon+'">'+
         '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+ed_harga+'">'+
         '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+ed_netto+'">'+
+        '<input type="hidden" readonly name="d_kcd_dt[]" class="form-control d_kcd_dt" value="'+kcd_dt+'">'+
         '<input type="hidden" readonly name="d_satuan[]" class="form-control d_satuan" value="'+ed_satuan+'">'+
         '<input type="hidden" readonly name="d_jumlah[]" class="form-control d_jumlah" value="'+ed_jumlah+'">'+
         '<input type="hidden" readonly name="d_asal[]" class="form-control d_asal" value="'+cb_kota_asal+'">'+
@@ -611,9 +688,15 @@ if (old_id == '') {
         }).draw();
 }
 
+    if ($('.status_kontrak').is(':checked') == true) {
+        array_kontrak.push(item);
+        array_kontrak_id.push(kcd_dt);
+    }
+
 
     $('#modal').modal('hide');
-
+    $('.customer_td').addClass('disabled');
+    $('.cabang_td').addClass('disabled');
     hitung_all();
 }
 function format ( d ) {
@@ -674,14 +757,16 @@ function hapus_detail(p) {
     })
     if (temp == 0) {
         $('#btnsimpan').addClass('disabled');
+        $('.customer_td').removeClass('disabled');
+        $('.cabang_td').removeClass('disabled');
     }
+    hitung_all();
 }
 
 function edit_detail(p) {
     var par = p.parentNode.parentNode;
     var id  = $(par).find('.id').val();
     var d_kode_item  = $(par).find('.d_kode_item').val();
-    var d_satuan  = $(par).find('.d_satuan').val();
     var d_satuan  = $(par).find('.d_satuan').val();
     var d_jumlah  = $(par).find('.d_jumlah').val();
     var d_harga  = $(par).find('.d_harga').val();
@@ -690,13 +775,25 @@ function edit_detail(p) {
     var d_acc  = $(par).find('.d_acc').val();
     var d_tujuan  = $(par).find('.d_tujuan').val();
     var d_keterangan  = $(par).find('.d_keterangan').val();
+    var kcd_dt  = $(par).find('.d_kcd_dt').val();
 
     $('.ed_id').val(id);
     $('.old_id').val(id);
+    $('.kcd_dt').val(kcd_dt);
     $('.item').val(d_kode_item).trigger('chosen:updated');
     $('.cb_kota_asal').val(d_asal).trigger('chosen:updated');
     $('.cb_kota_tujuan').val(d_tujuan).trigger('chosen:updated');
-    cari_item();
+    if (kcd_dt == 0) {
+        cari_item();
+    }
+
+    if ($('.status_kontrak').is(':checked') == true) {
+       var status = 2;
+    }else{
+        var status = 1;
+    }
+
+  
     $('.ed_jumlah').val(d_jumlah);
     $('.ed_diskon').val(d_diskon);
     $('.ed_diskon_modal').val(accounting.formatMoney(d_diskon,"",0,'.',','));
@@ -715,10 +812,52 @@ $('.reload').click(function(){
     location.reload();
 })
 
+function cari_kontrak() {
+    var customer = $('.customer').val();
+    $.ajax({
+        url:baseUrl + '/sales/cari_kontrak_kertas',
+        data:{customer,array_kontrak,array_kontrak_id},
+        success:function(data){
+            $('.modal_kontrak').html(data);
+            $('#modal_kontrak').modal('show');
+            $('.asal_td').removeClass('disabled');
+            $('.tujuan_td').removeClass('disabled');
+        },
+        error:function(){
+            // location.reload();
+        }
+    })
 
+}
+
+function pilih_kontrak(a) {
+    var kc_nomor        = $(a).find('.kc_nomor').val();
+    var kcd_kota_asal   = $(a).find('.kcd_kota_asal').val();
+    var kcd_kota_tujuan = $(a).find('.kcd_kota_tujuan').val()
+    var kcd_harga       = $(a).find('.kcd_harga').val();
+    var kcd_kode_satuan = $(a).find('.kcd_kode_satuan').val();
+    var kcd_dt          = $(a).find('.kcd_dt_m').val();
+    var acc_penjualan   = $(a).find('.acc_kontrak').val();
+    var kcd_keterangan  = $(a).find('.kcd_keterangan').val();
+
+    $('.item').val(kc_nomor);
+    $('.ed_satuan').val(kcd_kode_satuan);
+    $('.kcd_dt').val(kcd_dt);
+    $('.ed_harga').val(accounting.formatMoney(kcd_harga,"",0,'.',','));
+    $('.cb_kota_asal').val(kcd_kota_asal).trigger('chosen:updated');
+    $('.asal_td').addClass('disabled');
+    $('.tujuan_td').addClass('disabled');
+    $('.cb_kota_tujuan').val(kcd_kota_tujuan).trigger('chosen:updated');
+    $('.acc_penjualan').val(acc_penjualan);
+    $('.ed_jumlah').val(1);
+    $('.nama_kontrak').val(kcd_keterangan);
+    hitung();
+    $('#modal_kontrak').modal('hide');
+
+}
 // SIMPAN DATA
     function simpan(){
-
+        var check = $('.status_kontrak').is(':checked');
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data DO!",
@@ -740,10 +879,11 @@ $('.reload').click(function(){
 
           $.ajax({
           url:baseUrl + '/sales/save_do_kertas',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.table_header :input').serialize()
-               +'&'+table_detail.$('input').serialize(),
+               +'&'+table_detail.$('input').serialize()
+               +'&check='+check,
           success:function(response){
              if (response.status =='gagal') {
                 
@@ -793,5 +933,13 @@ $('.reload').click(function(){
       });  
      });
     }
+
+
+
+    window.onbeforeunload = function(event)
+{       
+       return confirm();
+
+};
 </script>
 @endsection

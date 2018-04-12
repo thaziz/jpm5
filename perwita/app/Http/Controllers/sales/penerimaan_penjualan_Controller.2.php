@@ -96,9 +96,11 @@ class penerimaan_penjualan_Controller extends Controller
 
     public function index()
     {
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if (Auth::user()->punyaAkses('Kwitansi','all')) {
             $data = DB::table('kwitansi')
                       ->join('customer','kode','=','k_kode_customer')
+                      ->take(2000)
+                      ->orderBy('k_tanggal','DESC')
                       ->get();
             
         }else{
@@ -106,11 +108,12 @@ class penerimaan_penjualan_Controller extends Controller
             $data = DB::table('kwitansi')
                       ->join('customer','kode','=','k_kode_customer')
                       ->where('k_kode_cabang',$cabang)
+                      ->orderBy('k_tanggal','DESC')
+                      ->take(2000)
                       ->get();
         }
 
         
-
         return view('sales.penerimaan_penjualan.index',compact('data'));
         
     }
@@ -396,6 +399,11 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_netto' => $request->ed_netto,
                                 'k_kode_akun'=> $request->cb_akun_h
                                ]);
+
+
+            $del = DB::table('kwitansi_uang_muka')
+                                        ->where('ku_keterangan','OLD')
+                                        ->delete();
             $memorial_array = [];
             for ($i=0; $i < count($request->i_nomor); $i++) { 
                 if ($request->i_bayar[$i] != 0) {
@@ -482,7 +490,9 @@ class penerimaan_penjualan_Controller extends Controller
                     }
                     
 
-                    
+                    if ($hasil < 0) {
+                        $hasil = 0;
+                    }
                     
                     $update_invoice = DB::table('invoice')
                                         ->where('i_nomor',$request->i_nomor[$i])

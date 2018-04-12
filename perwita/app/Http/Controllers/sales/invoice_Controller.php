@@ -56,14 +56,16 @@ class invoice_Controller extends Controller
 
     public function index(){
      $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if (Auth::user()->punyaAkses('Invoice Penjualan','all')) {
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
+                      ->take(2000)
                       ->get();
         }else{
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
                       ->where('i_kode_cabang',$cabang)
+                      ->take(2000)
                       ->get();
         }
         $kota = DB::table('kota')
@@ -79,6 +81,17 @@ class invoice_Controller extends Controller
 
         $cabang   = DB::table('cabang')
                       ->get();
+        $kota     = DB::table('kota')
+                      ->get();
+
+        for ($i=0; $i < count($customer); $i++) { 
+          for ($a=0; $a < count($kota); $a++) { 
+            if ($customer[$i]->kota == $kota[$a]->id) {
+               $customer[$i]->nama_kota = $kota[$a]->nama;
+            }
+          }
+        }
+        // return $customer;
         $tgl      = Carbon::now()->format('d/m/Y');
         $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
 
@@ -99,7 +112,12 @@ class invoice_Controller extends Controller
                     ->get();
         $counting = count($detail); 
   
-
+        $update_status = DB::table('invoice')
+                           ->where('i_nomor',$id)
+                           ->update([
+                            'i_statusprint'=>'Printed'
+                           ]);
+                           
         if ($counting < 30) {
           $hitung =30 - $counting;
           for ($i=0; $i < $hitung; $i++) { 
@@ -109,11 +127,7 @@ class invoice_Controller extends Controller
           $push = [];
         }
 
-        $update_status = DB::table('invoice')
-                           ->where('i_nomor',$id)
-                           ->update([
-                            'i_statusprint'=>'Printed'
-                           ]);
+        
 
         // return $push;
         $terbilang = $this->penyebut($head->i_total_tagihan);
@@ -271,7 +285,7 @@ public function cari_do_invoice(request $request)
     $id = '0';
     if ($request->cb_pendapatan == 'KORAN') {
 
-    $temp = DB::table('delivery_order')
+      $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
@@ -279,6 +293,7 @@ public function cari_do_invoice(request $request)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
+              ->orderBy('tanggal','desc')
               ->get();
 
       $temp1 = DB::table('delivery_order')
@@ -289,6 +304,7 @@ public function cari_do_invoice(request $request)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
+              ->orderBy('tanggal','desc')
               ->get();
 
         if (isset($request->array_simpan)) {
@@ -306,6 +322,7 @@ public function cari_do_invoice(request $request)
             $data = $temp;
         }
     }else if ($request->cb_pendapatan == 'PAKET' || $jenis == 'KARGO') {
+      // dd($request->all());
        $temp = DB::table('delivery_order')
               ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
               ->where('delivery_order.kode_cabang','=',$request->cabang)
@@ -338,6 +355,16 @@ public function cari_do_invoice(request $request)
         }else{
             $data = $temp;
         }
+    }
+
+    $customer = DB::table('customer')
+                      ->get();
+    for ($i=0; $i < count($data); $i++) { 
+      for ($a=0; $a < count($customer); $a++) { 
+        if ($data[$i]->kode_customer == $customer[$a]->kode) {
+           $data[$i]->nama_customer = $customer[$a]->nama;
+        }
+      }
     }
     // return $data;
    $id = $request->id;
@@ -621,10 +648,10 @@ if(count($dataItem)==0){
        $acc=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();       
-
+          
         if(count($acc)!=0){
         $akun[$indexakun]['id_akun']=$acc->id_akun;
         $akun[$indexakun]['value']=round($dataJurnal['totalInvoice'],2);
@@ -892,7 +919,7 @@ if(count($dataItem)==0){
        $acc=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                   
         if(count($acc)!=0){
@@ -1153,7 +1180,7 @@ if(count($dataItem)==0){
        $acc=master_akun::
                   select('id_akun','nama_akun')
                   ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
-                  ->where('kode_cabang',$cabang)
+                  // ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                   
         if(count($acc)!=0){
@@ -1521,6 +1548,15 @@ public function cari_do_edit_invoice(request $request)
         }
     }
     
+     $customer = DB::table('customer')
+                      ->get();
+    for ($i=0; $i < count($data); $i++) { 
+      for ($a=0; $a < count($customer); $a++) { 
+        if ($data[$i]->kode_customer == $customer[$a]->kode) {
+           $data[$i]->nama_customer = $customer[$a]->nama;
+        }
+      }
+    }
 
     return view('sales.invoice.tableDo',compact('data','jenis','id'));
 }

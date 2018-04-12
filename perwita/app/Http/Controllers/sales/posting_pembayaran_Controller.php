@@ -184,8 +184,17 @@ class posting_pembayaran_Controller extends Controller
     }
 
     public function index(){
-        $data  = DB::table('posting_pembayaran')
-                  ->get();
+        $cabang = Auth::user()->kode_cabang;
+        if (Auth::user()->punyaAkses('Kwitansi','all')) {
+            $data  = DB::table('posting_pembayaran')
+                      ->take(2000)
+                      ->get();
+        }else{
+            $data  = DB::table('posting_pembayaran')
+                      ->where('kode_cabang',$cabang)
+                      ->take(2000)
+                      ->get();
+        }
         return view('sales.posting_pembayaran.index',compact('data'));
     }
 
@@ -328,10 +337,10 @@ class posting_pembayaran_Controller extends Controller
                                   ->insert([
                                       'nomor' =>$request->nomor_posting,
                                       'tanggal' =>$request->ed_tanggal,
+                                      'nomor_cek' =>$request->nomor_cek,
                                       'kode_akun_kredit' => $akun->mb_kode,
                                       'kode_akun_debet' => $akun->mb_kode,
                                       'jumlah' => $request->ed_jumlah,
-                                      'customer'=>$request->customer,
                                       'keterangan' =>  $request->ed_keterangan,
                                       'create_by' => Auth::user()->m_username,
                                       'update_by' => Auth::user()->m_username ,
@@ -351,6 +360,7 @@ class posting_pembayaran_Controller extends Controller
                         }else{
                             $id += 1;
                         }
+
                         $save_detail = DB::table('posting_pembayaran_d')
                                          ->insert([
                                             'id' => $id,
@@ -361,6 +371,8 @@ class posting_pembayaran_Controller extends Controller
                                             'create_at' =>Carbon::now(),
                                             'update_by'=>Auth::user()->m_username,
                                             'update_at'=> Carbon::now(),
+                                            'kode_customer'=> $request->d_customer[$i],
+                                            'keterangan'=> $request->d_keterangan[$i],
                                          ]);
 
                         if ($request->cb_jenis_pembayaran != 'U') {
@@ -404,7 +416,7 @@ class posting_pembayaran_Controller extends Controller
 
     public function posting_pembayaran_hapus(request $request)
     {
-
+        // dd($request->all());
         $cari_detail = DB::table('posting_pembayaran_d')
                          ->where('nomor_posting_pembayaran',$request->id)
                          ->get(); 
@@ -413,8 +425,8 @@ class posting_pembayaran_Controller extends Controller
             $update = DB::table('kwitansi')
                         ->where('k_nomor',$cari_detail[$i]->nomor_penerimaan_penjualan)
                         ->update([
-                            'k_nomor_posting' => '',
-                            'k_tgl_posting'   => '',
+                            'k_nomor_posting' => null,
+                            'k_tgl_posting'   => null,
                         ]); 
         }
         $hapus = DB::table('posting_pembayaran')
@@ -422,5 +434,55 @@ class posting_pembayaran_Controller extends Controller
                    ->delete();
 
         return response()->json(['pesan'=>'Data Berhasil Dihapus']);
+    }
+
+    public function edit($id)
+    {
+        if (Auth::user()->punyaAkses('Posting Pembayaran','ubah')) {
+            $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+            $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+            $rute = DB::select(" SELECT kode,nama FROM rute ORDER BY nama ASC ");
+            $kendaraan = DB::select(" SELECT id,nopol FROM kendaraan ORDER BY nopol ASC ");
+            $customer = DB::select(" SELECT kode,nama,cabang FROM customer order by kode ASC");
+            $akun     = DB::table('masterbank')
+                          ->get();
+
+            $data = DB::table('posting_pembayaran')
+                      ->where('nomor',$id)
+                      ->first();
+
+            $data_dt = DB::table('posting_pembayaran_d')
+                         ->join('customer','kode','=','kode_customer')
+                         ->where('nomor_posting_pembayaran',$id)
+                         ->get();
+
+            return view('sales.posting_pembayaran.edit_posting',compact('id','data','data_dt','cabang','kota','rute','kendaraan','akun','customer'));
+        }else{
+            return redirect()->back();
+        }
+        
+    }
+
+    public function update_posting(request $request)
+    {
+        $this->posting_pembayaran_hapus($request);
+        return $this->simpan_posting($request);
+    }
+
+    public function posting_pembayaran_print($id)
+    {
+        $data = DB::table('posting_pembayaran')
+                  ->join('cabang','kode','=','kode_cabang')
+                  ->where('nomor',$id)
+                  ->first();
+
+        $data_dt = DB::table('posting_pembayaran_d')
+                     ->join('kwitansi','nomor_penerimaan_penjualan','=','k_nomor')
+                     ->join('masterbank','mb_kode','=','k_kode_akun')
+                     ->where('nomor_posting_pembayaran',$id)
+                     ->get();
+
+        return view('sales.posting_pembayaran.print',compact('data','data_dt'));
+
     }
 }

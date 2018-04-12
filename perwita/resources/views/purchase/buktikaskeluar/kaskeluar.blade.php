@@ -385,7 +385,7 @@
      </tr>
      <tr height="25px">
        <td colspan="5" class="top right textright">J u m l a h :</td>
-       <td class="textright top right">{{'Rp. ' . number_format($val->bkk_total,2,',','.')}}</td>
+       <td class="textright top right">{{'Rp. ' . number_format($cari_bkk_id->bkk_total,2,',','.')}}</td>
      </tr>
      <tr height="25px">
        <td colspan="7" class="textleft top">Terbilang : {{$terbilang}}</td>

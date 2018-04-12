@@ -154,6 +154,7 @@ Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstocko
 Route::get('stockopname/save_stock_opname' , 'PengeluaranBarangController@save_stock_opname');
 Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detailstockopname');*/
 //stock opname
+
 Route::get('stockopname/stockopname' , 'PengeluaranBarangController@stockopname');
 Route::get('stockopname/cari_sm/{id}' , 'PengeluaranBarangController@cari_sm');
 Route::get('stockopname/berita_acara/{id}' , 'PengeluaranBarangController@berita_acara');
@@ -333,11 +334,16 @@ Route::get('returnpembelian/detailreturnpembelian', 'PurchaseController@detailre
 
 Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
 Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');
-Route::get('cndnpembelian/detailcndnpembelian', 'cndnController@detailcndnpembelian');
+Route::get('cndnpembelian/detailcndnpembelian/{id}', 'cndnController@detailcndnpembelian');
 Route::get('cndnpembelian/getnota', 'cndnController@getnota');
 Route::get('cndnpembelian/getfaktur', 'cndnController@getfaktur');
 Route::get('cndnpembelian/getsupplier', 'cndnController@getsupplier');
 Route::get('cndnpembelian/hslfaktur', 'cndnController@hslfaktur');
+Route::post('cndnpembelian/save', 'cndnController@save');
+Route::get('cndnpembelian/caricndn', 'cndnController@caricndn');
+Route::get('cndnpembelian/hapusdata/{id}', 'cndnController@hapusdata');
+Route::post('cndnpembelian/update', 'cndnController@updatedata');
+Route::post('cndnpembelian/pembayaran', 'cndnController@pembayaran');
 
 Route::get('uangmukapembelian/uangmukapembelian', 'PurchaseController@uangmukapembelian');
 Route::get('uangmukapembelian/createuangmukapembelian', 'PurchaseController@createuangmukapembelian');
@@ -599,13 +605,34 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   Route::post('reportpengeluaranbarang/reportpengeluaranbarang', 'LaporanPembelianController@report_pengeluaranbarang');
   //END OF
 
+  //LAPORAN DEPARETMENT
+  Route::get('lap_masterdepartment/lap_masterdepartment', 'LaporanPembelianController@lap_department');
+  Route::post('reportmasterdepartment/reportmasterdepartment', 'LaporanPembelianController@report_masterdepartment');
+  //END OF 
 
+  //LAPORAN DEPARETMENT
+  Route::get('lap_masterpresentase/lap_masterpresentase', 'LaporanPembelianController@lap_persen');
+  Route::post('reportmasterpresentase/reportmasterpresentase', 'LaporanPembelianController@report_persen');
+  //END OF 
 
+  //LAPORAN BBM
+  Route::get('lap_bbm/lap_bbm', 'LaporanPembelianController@lap_bbm');
+  Route::post('reportbbm/reportbbm', 'LaporanPembelianController@report_bbm');
+  //END OF 
+
+  //LAPORAN BBM
+  Route::get('lap_voucherhutang/lap_voucherhutang', 'LaporanPembelianController@lap_voucherhutang');
+  Route::post('reportvoucherhutang/reportvoucherhutang', 'LaporanPembelianController@report_voucherhutang');
+  //END OF
+
+  //LAPORAN BBM
+  Route::get('lap_uangmuka/lap_uangmuka', 'LaporanPembelianController@lap_uangmuka');
+  Route::post('reportuangmuka/reportuangmuka', 'LaporanPembelianController@report_uangmuka');
+  //END OF
 
 
 //================================    BELUM SELESAI    ========================================//
-Route::get('reportmasterdepartment/reportmasterdepartment', 'LaporanPurchaseController@reportmasterdepartment');
-Route::get('reportmutasihutang/reportmutasihutang', 'LaporanPurchaseController@reportmutasihutang');
+
 Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
 Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
 Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
@@ -613,28 +640,13 @@ Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhu
 Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurchaseController@historisuangmukapembelian');
 //===========================================================================================================================
 
-
-
-
-
-
-
-
 //==================================== LAPORAN PEMBELIAN BERAKIR ========================================//
 
 
 
 
 
-
-
-
-
 //-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJARNI//
-
-
-
-
 
 
 //_____$$$$_________$$$$
@@ -649,10 +661,6 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 //__________$$$$$$$
 //____________$$$
 //_____________$
-
-
-
-
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
 
 //LAPORAN MASTER BERSAMA INDEX
@@ -698,7 +706,89 @@ Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_ke
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
 
 
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER DO ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
 
+
+//LAPORAN SEMUA DO
+Route::get('laporanmasterdo/laporanmasterdo','LaporanMasterController@lap_semuado');
+//END OF
+
+//LAPORAN AGEN
+Route::get('lapagen/lapagen','LaporanMasterController@lap_agen');
+Route::post('reportagen/reportagen','LaporanMasterController@report_agen');
+//END OF
+
+//LAPORAN BIAYA
+Route::get('lapbiaya/labiaya','LaporanMasterController@lap_biaya');
+Route::post('reportbiaya/reportbiaya','LaporanMasterController@report_biaya');
+//END OF
+
+//LAPORAN DISKON
+Route::get('lapdiskon/lapdiskon','LaporanMasterController@lap_diskon');
+Route::post('reportdiskon/reportdiskon','LaporanMasterController@report_diskon');
+//END OF
+
+//LAPORAN DISKON PENJUALAN
+Route::get('lapdiskonpenjualan/lapdiskonpenjualan','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//LAPORAN GRUP CUSTOMER
+Route::get('lapgrupcustomer/lapgrupcustomer','LaporanMasterController@lap_grupcustomer');
+Route::post('reportgrupcustomer/reportgrupcustomer','LaporanMasterController@report_grupcustomer');
+//END OF
+
+//LAPORAN GRUP ITEM
+Route::get('lapgrupitem/lapgrupitem','LaporanMasterController@lap_grupitem');
+Route::post('reportgrupitem/reportgrupitem','LaporanMasterController@report_grupitem');
+//END OF
+
+//LAPORAN ITEM
+Route::get('lapitem/lapitem','LaporanMasterController@lap_item');
+Route::post('reportitem/reportitem','LaporanMasterController@report_item');
+//END OF
+
+//LAPORAN NO SERI PAJAK
+Route::get('lapnoseripajak/lapnoseripajak','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//LAPORAN RUTE
+Route::get('laprute/laprute','LaporanMasterController@lap_rute');
+Route::post('reportrute/reportrute','LaporanMasterController@report_rute');
+//END OF
+
+//LAPORAN SALDO AWAL PIUTANG LAIN
+Route::get('lasaldoawalpiutang/lasaldoawalpiutang','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//LAPORAN SALDO PIUTANG
+Route::get('lasaldopiutang/lasaldopiutang','LaporanMasterController@lap_kendaraan');
+Route::post('reportkendaraan/reportkendaraan','LaporanMasterController@report_kendaraan');
+//END OF
+
+//LAPORAN SATUAN
+Route::get('lapsatuan/lapsatuan','LaporanMasterController@lap_satuan');
+Route::post('reportsatuan/reportsatuan','LaporanMasterController@report_satuan');
+//END OF
+
+//LAPORAN SUBCON
+Route::get('lapsubcon/lapsubcon','LaporanMasterController@lap_subcon');
+Route::post('reportsubcon/reportsubcon','LaporanMasterController@report_subcon');
+//END OF
+
+//LAPORAN VENDOR
+Route::get('lapvendor/lapvendor','LaporanMasterController@lap_vendor');
+Route::post('reportvendor/reportvendor','LaporanMasterController@report_vendor');
+//END OF
+
+//LAPORAN ZONA
+Route::get('lapzona/lapzona','LaporanMasterController@lap_zona');
+Route::post('reportzona/reportzona','LaporanMasterController@report_zona');
+//END OF
+
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER DO ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
 
 
 //=================================== LAPORAN PENJUALAN BERAWAL =========================================//
@@ -719,23 +809,33 @@ Route::post('reportcabangkilogram/reportcabangkilogram', 'LaporanMasterControlle
 Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@reportcabangsepeda')->name('reportcabangsepeda');
 //END OF LAPORAN TARIF PDF
 
+//LAPORAN DELIVERY ORDER TOTAL 
+Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
+Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
+Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterController@carideliveryorder_total');
+//END OF DELIVERY ORDER TOTAL
+
 //LAPORAN DELIVERY ORDER PAKET 
 Route::post('reportdeliveryorder/reportdeliveryorder','LaporanMasterController@reportdeliveryorder');
 Route::get('sales/laporandeliveryorder','LaporanMasterController@deliveryorder');
+Route::get('cari_paket/cari_paket', 'LaporanMasterController@cari_paket');
 //END OF DELIVERY ORDER PAKET
 
 //LAPORAN DELIVERY ORDER KARGO 
 Route::post('reportdeliveryorder/reportdeliveryorder_kargo','LaporanMasterController@reportdeliveryorder_kargo');
 Route::get('sales/laporandeliveryorder_kargo','LaporanMasterController@deliveryorder_kargo');
+Route::get('carideliveryorder_kargo/carideliveryorder_kargo','LaporanMasterController@carideliveryorder_kargo');
 //END OF DELIVERY ORDER KARGO
 
 //LAPORAN DELIVERY ORDER KORAN 
 Route::post('reportdeliveryorder/reportdeliveryorder_koran','LaporanMasterController@reportdeliveryorder_koran');
 Route::get('sales/laporandeliveryorder_koran','LaporanMasterController@deliveryorder_koran');
+Route::get('carideliveryorder_koran/carideliveryorder_koran','LaporanMasterController@carideliveryorder_koran');
 //END OF DELIVERY ORDER KORAN
 
 //LAPORAN INVOICE
 Route::get('sales/laporan_invoice','LaporanMasterController@invoice');
+Route::get('cari_lap_invoice/cari_lap_invoice','LaporanMasterController@cari_lap_invoice');
 Route::post('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoice')->name('reportinvoice');
 //END OF LAPORAN INVOICE
 
@@ -898,6 +998,7 @@ Route::get('master_sales/kendaraan_form', 'master_sales\kendaraan_Controller@for
 Route::get('master_sales/kendaraan_form/{nomor}/edit', 'master_sales\kendaraan_Controller@form');
 Route::get('master_sales/kendaraan_form/{nomor}/hapus_data', 'master_sales\kendaraan_Controller@hapus_data');
 Route::post('master_sales/kendaraan/save_data', 'master_sales\kendaraan_Controller@save_data');
+Route::get('master_sales/kendaraan/{id}/hapus_data', 'master_sales\kendaraan_Controller@hapus_data');
 // end kendaraan
 
 //Nomor seri pajak
@@ -1044,6 +1145,8 @@ Route::get('sales/edit_do_kertas/{id}', 'sales\do_kertas_Controller@edit_do_kert
 Route::get('sales/update_do_kertas', 'sales\do_kertas_Controller@update_do_kertas');
 Route::post('sales/update_do_kertas', 'sales\do_kertas_Controller@update_do_kertas');
 Route::get('sales/detail_do_kertas/{id}', 'sales\do_kertas_Controller@detail_do_kertas');
+Route::get('sales/ganti_item', 'sales\do_kertas_Controller@ganti_item');
+Route::get('sales/cari_kontrak_kertas', 'sales\do_kertas_Controller@cari_kontrak_kertas');
 
 // end delivery order kertas
 
@@ -1108,8 +1211,11 @@ Route::get('sales/invoice_form/{nilai}/terbilang', 'sales\invoice_Controller@pen
 // invoice pembetulan
 Route::get('sales/invoice_pembetulan', 'sales\invoice_pembetulan_controller@index');
 Route::get('sales/invoice_pembetulan_create', 'sales\invoice_pembetulan_controller@invoice_pembetulan_create');
+Route::get('sales/invoice_pembetulan_edit/{id}', 'sales\invoice_pembetulan_controller@invoice_pembetulan_edit');
 Route::get('sales/cari_invoice_pembetulan', 'sales\invoice_pembetulan_controller@cari_invoice_pembetulan');
 Route::get('sales/pilih_invoice_pembetulan', 'sales\invoice_pembetulan_controller@pilih_invoice_pembetulan');
+Route::get('sales/simpan_invoice_pembetulan', 'sales\invoice_pembetulan_controller@simpan_invoice_pembetulan');
+Route::get('sales/hapus_invoice_pembetulan', 'sales\invoice_pembetulan_controller@hapus_invoice_pembetulan');
 
 // update faktur 
 
@@ -1249,9 +1355,11 @@ Route::get('sales/posting_pembayaran_form/nomor_posting', 'sales\posting_pembaya
 Route::get('sales/posting_pembayaran_form/cari_kwitansi', 'sales\posting_pembayaran_Controller@cari_kwitansi');
 Route::get('sales/posting_pembayaran_form/cari_uang_muka', 'sales\posting_pembayaran_Controller@cari_uang_muka');
 Route::get('sales/posting_pembayaran_form/append', 'sales\posting_pembayaran_Controller@append');
-Route::get('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
+Route::post('sales/posting_pembayaran_form/simpan_posting', 'sales\posting_pembayaran_Controller@simpan_posting');
+Route::post('sales/posting_pembayaran_form/update_posting', 'sales\posting_pembayaran_Controller@update_posting');
 Route::get('sales/posting_pembayaran_edit/{id}', 'sales\posting_pembayaran_Controller@edit');
 Route::get('sales/posting_pembayaran_hapus', 'sales\posting_pembayaran_Controller@posting_pembayaran_hapus');
+Route::get('sales/posting_pembayaran_print/{id}', 'sales\posting_pembayaran_Controller@posting_pembayaran_print');
 
 
 
@@ -2518,3 +2626,8 @@ Route::get('master_sales/diskonpenjualan/simpan' , 'DiskonPenjualanController@sa
 Route::get('master_sales/diskonpenjualan/getAkun' , 'DiskonPenjualanController@getAkun');
 Route::get('master_sales/diskonpenjualan/getData' , 'DiskonPenjualanController@getData');
 Route::get('master_sales/diskonpenjualan/hapus' , 'DiskonPenjualanController@delete');
+
+
+//print out do 
+
+Route::get('dopo','LaporanMasterController@dopo');

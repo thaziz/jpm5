@@ -151,27 +151,27 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Panjang</td>
                                 <td>
-                                    <input type="text" name="ed_panjang" class="form-control angka" style="text-transform: uppercase" value="{{ $data->p or null }}" >
+                                    <input type="number" name="ed_panjang" class="form-control angka" style="text-transform: uppercase" value="{{ $data->p or null }}" >
                                 </td>
                                 <td style="width:120px; padding-top: 0.4cm">Lebar</td>
                                 <td>
-                                    <input type="text" name="ed_lebar" class="form-control angka" style="text-transform: uppercase" value="{{ $data->l or null }}" >
+                                    <input type="number" name="ed_lebar" class="form-control angka" style="text-transform: uppercase" value="{{ $data->l or null }}" >
                                 </td>
                                 <td style="width:120px; padding-top: 0.4cm">Tinggi</td>
                                 <td>
-                                    <input type="text" name="ed_tinggi" class="form-control angka" style="text-transform: uppercase" value="{{ $data->t or null }}" >
+                                    <input type="number" name="ed_tinggi" class="form-control angka" style="text-transform: uppercase" value="{{ $data->t or null }}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Volume</td>
                                 <td>
-                                    <input type="text" name="ed_volume" class="form-control" style="text-transform: uppercase" readonly="readonly" tabindex="-1"  value="{{ $data->volume or null }}" >
+                                    <input type="number" name="ed_volume" class="form-control" style="text-transform: uppercase" readonly="readonly" tabindex="-1"  value="{{ $data->volume or null }}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Tahun Pembuatan</td>
                                 <td>
-                                    <input type="text" name="ed_tahun_pembuatan" class="form-control angka" style="text-transform: uppercase" value="{{ $data->tahun or null }}" >
+                                    <input type="number" name="ed_tahun_pembuatan" class="form-control angka" style="text-transform: uppercase" value="{{ $data->tahun or null }}" >
                                 </td>
                                 <td style="width:120px; padding-top: 0.4cm">Seri Unit</td>
                                 <td>

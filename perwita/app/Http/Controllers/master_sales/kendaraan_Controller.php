@@ -46,6 +46,7 @@ class kendaraan_Controller extends Controller
         $simpan='';
         $id = $request->ed_id;
         $crud = $request->crud_h;
+        // dd($request->all());
         $data = array(
                 'nopol' => strtoupper($request->ed_nopol),
                 'divisi' => strtoupper($request->cb_divisi),
@@ -106,9 +107,14 @@ class kendaraan_Controller extends Controller
     public function index(){
         $sql = "    SELECT k.id,k.nopol,t.nama tipe_angkutan,k.gps,k.kode_cabang, c.nama nama_cabang, k.status FROM kendaraan k
                     LEFT JOIN cabang c ON c.kode=k.kode_cabang
-                    LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan  ";
+                    LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan where k.status != 'SUB' ";
         $data =  DB::select($sql);
-        return view('master_sales.kendaraan.index',compact('data'));
+
+        $sql = "    SELECT k.id,k.nopol,t.nama tipe_angkutan,k.gps,k.kode_cabang, c.nama nama_cabang, k.status FROM kendaraan k
+                    LEFT JOIN cabang c ON c.kode=k.kode_cabang
+                    LEFT JOIN tipe_angkutan t ON t.kode=k.tipe_angkutan where k.status = 'SUB'  ";
+        $data1 =  DB::select($sql);
+        return view('master_sales.kendaraan.index',compact('data','data1'));
     }
     
     public function form($id=null){

@@ -306,7 +306,16 @@ class cabang_dokumen_Controller extends Controller
                 }
 
             }
-            return response()->json(['status'=>1]);
+            if($data == TRUE){
+            $result['error']='';
+            $result['result']=1;
+            }else{
+                $result['error']=$data;
+                $result['result']=0;
+            }
+            $result['crud']=$crud;
+            echo json_encode($result);
+
         }else if($crud == 'E'){
             $cari_reguler = DB::select("SELECT  substring(kode,10) as id from tarif_cabang_dokumen
                                                 WHERE kode = '$request->id_reguler'");

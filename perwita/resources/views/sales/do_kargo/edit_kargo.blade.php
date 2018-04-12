@@ -59,12 +59,12 @@
                                     </tr>
                                     <tr>
                                         <td>DO Awal</td>
-                                        <td><input type="text" name="nomor_do_awal" class="nomor_do_awal form-control input-sm"></td>
+                                        <td><input type="text" value="{{$data->nomor_do_awal}}" name="nomor_do_awal" class="nomor_do_awal form-control input-sm"></td>
                                     </tr>
                                     <tr>
                                         <td>No Surat Jalan</td>
                                         <td>
-                                            <input type="text" name="surat_jalan" class="surat_jalan form-control input-sm">
+                                            <input type="text" value="{{$data->nomor_surat_jalan}}" name="surat_jalan" class="surat_jalan form-control input-sm">
                                             <input type="hidden" name="nomor_print" class="nomor_print form-control input-sm">
                                         </td>
                                     </tr>
@@ -202,6 +202,28 @@
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr class="kontrak_tr">
+                                        <td class="kontrak_td disabled">
+                                            <div class="checkbox checkbox-info checkbox-circle">
+                                                @if($data->kontrak == true)
+                                                <input checked="" onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                @else
+                                                <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                @endif
+                                                <label>
+                                                    Kontrak
+                                                </label>
+                                            </div> 
+                                        </td>
+                                        <td style="padding-bottom: 0.1cm">
+                                            <span class="input-group-btn">
+                                                <button type="button" id="btn_cari_tarif" class="btn btn-primary">
+                                                    Search Tarif
+                                                </button>
+                                            </span>
+                                        </td>
+                                        
+                                    </tr>
                                 </table>
                             </form>
                             <form class="col-sm-6" style="margin-bottom: 80px">
@@ -275,33 +297,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="kontrak_tr">
-                                        <td class="kontrak_td disabled">
-                                            <div class="checkbox checkbox-info checkbox-circle">
-                                                @if($data->kontrak == true)
-                                                <input checked="" onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
-                                                @else
-                                                <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
-                                                @endif
-                                                <label>
-                                                    Kontrak
-                                                </label>
-                                            </div> 
-                                        </td>
-                                        <td style="padding-bottom: 0.1cm">
-                                            <span class="input-group-btn">
-                                                <button type="button" id="btn_cari_tarif" class="btn btn-primary">
-                                                    Search Tarif
-                                                </button>
-                                            </span>
-                                        </td>
-
-                                        <td style="padding-top: 0.4cm">Satuan</td>
-                                        <td>
-                                            <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
-                                        </td>
-                                        
-                                    </tr>
+                                    
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
                                         <td>
@@ -320,8 +316,12 @@
                                     </tr>
                                     <tr>
                                         <td>Discount</td>
-                                        <td colspan="3">
+                                        <td colspan="1">
                                             <input type="text" onkeyup="hitung()" value="{{number_format($data->diskon, 0, ",", ".")}}" name="discount" class=" form-control discount input-sm">
+                                        </td>
+                                        <td style="padding-top: 0.4cm">Satuan</td>
+                                        <td>
+                                            <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
                                     </tr>
                                     <tr>
@@ -389,7 +389,7 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                                            <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
+                                            <button type="button" class="pull-right btn btn-danger ngeprint" style="margin-left: 30px">
                                                 <i class="fa fa-print"> Print</i>
                                             </button>
                                             <button type="button" class="pull-right btn btn-primary save">
@@ -542,15 +542,14 @@ $(document).ready(function(){
 
     tujuan     =  tujuan.split('-');
     $('.kota_penerima').val(tujuan[1]);
+
 })
 //hide unhide subcon
-$('.status_kendaraan').change(function(){
-    if ($(this).val() == 'SUB'){
+    if ($('.status_kendaraan').val() == 'SUB'){
         $('.nama_subcon_tr').attr('hidden',false);
     }else{
         $('.nama_subcon_tr').attr('hidden',true);
     }
-});
 
 //tujuan do
 $('.tujuan_do').change(function(){

@@ -87,12 +87,14 @@
                             </tr>
                             @endif
                             <tr>
+
+                                {{-- {{dd($customer)}} --}}
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4" class="">                                    
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
-                                    @foreach ($customer as $row)
-                                        <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->cabang}} </option>
+                                    @foreach ($customer as $i=> $val)
+                                        <option value="{{$customer[$i]->kode}}" data-accpiutang="{{$customer[$i]->acc_piutang}}"> {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -263,7 +265,7 @@
                 </form>
                 <!-- modal -->
                 <div id="modal_do" class="modal" >
-                  <div class="modal-dialog">
+                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -869,7 +871,7 @@ function hitung_total_tagihan(){
                     timer: 1000,
                    showConfirmButton: true
                     },function(){
-                        window.location='../sales/invoice';
+                        // window.location='../sales/invoice';
                         $('.simpan').addClass('disabled');
                         $('.print').removeClass('disabled');
 
@@ -908,5 +910,14 @@ $('#cb_pendapatan').change(function(){
         $('#cb_jenis_ppn').val(1);
     }
 })
+
+
+
+window.onbeforeunload = function(event)
+{       
+       confirm();
+
+};
+
 </script>
 @endsection

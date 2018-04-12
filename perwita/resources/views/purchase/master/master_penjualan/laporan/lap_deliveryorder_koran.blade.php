@@ -28,13 +28,25 @@
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-
+              <div class="form-row">
+                <div class="form-group col-md-2">
+                  <input type="text" class="date form-control" readonly="" id="date_awal" name="">
+                </div>
+                <div class="form-group col-md-2">
+                  <input type="text" class="date form-control" readonly="" id="date_akir" name="">
+                </div>
+                <div class="form-group col-md-2">
+                  <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
+                </div>
+              </div> 
+              <h3 id="replace" align="center"></h3> 
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                    <table class="table table-bordered datatable table-striped">
+                  <div id="container" style="height: 400px"></div>
+                    <table class="table table-bordered datatable table-striped" style="margin-top: 100px;">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -101,8 +113,8 @@
                         <td>{{ $e->kode_customer }}</td>
                         <td>{{ $e->kode_satuan }}</td>
                         <td>{{ $e->status }}</td>
-                        <td>{{ $e->diskon }}</td>
-                        <td>{{ $e->total_net }}</td>
+                        <td align="right">{{ number_format($e->diskon,0,'','.') }}</td>
+                        <td align="right">{{ number_format($e->total_net,0,'','.') }}</td>
                         <td>{{ $e->status_do }}</td>
                         </tr>
                       @endforeach
@@ -266,5 +278,199 @@
         }
       });
     }
+
+
+    var date = new Date();
+    var y = date.getFullYear();
+
+    Highcharts.chart('container', {
+
+    chart: {
+        type: 'column',
+         options3d: {
+                enabled: true,
+                alpha: 15,
+                beta: 15,
+                depth: 50
+            }
+    },
+    xAxis: {
+        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+    title: {
+        text: 'DIAGRAM BATANG PENJUALAN TAHUN '+ y
+    },
+
+    yAxis: [{
+        className: 'highcharts-color-0',
+        title: {
+            text: ''
+        }
+    }, {
+        className: 'highcharts-color-1',
+        opposite: true,
+        title: {
+            text: ''
+        }
+    }],
+
+    plotOptions: {
+        column: {
+            borderRadius: 0
+        }
+    },
+
+     
+    series: [
+    {
+
+        name: 'DO KORAN',
+        data: [
+        {{ $koran[0]}},
+        {{ $koran[1]}},
+        {{ $koran[2]}},
+        {{ $koran[3]}},
+        {{ $koran[4]}},
+        {{ $koran[5]}},
+        {{ $koran[6]}},
+        {{ $koran[7]}},
+        {{ $koran[8]}},
+        {{ $koran[9]}},
+        {{ $koran[10]}},
+        {{ $koran[11]}},
+        ]
+    ,
+    }]
+
+});
+
+
+function cari(){
+      var date_awal = $('#date_awal').val();
+      var date_akir = $('#date_akir').val();
+      
+      if(date_awal == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+
+      if(date_akir == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+      $.ajax({
+        data: {a:date_awal,b:date_akir},
+        url: baseUrl + '/carideliveryorder_koran/carideliveryorder_koran',
+        type: "get",
+       success : function(data){
+        // console.log(data);
+        if (data.data == null) {
+          Command: toastr["warning"](data.response, "Peringatan !")
+
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+
+        }else{
+            var awal = $.datepicker.formatDate("dd MM yy", new Date(data.awal))
+            var akir = $.datepicker.formatDate("dd MM yy", new Date(data.akir))
+              $('#replace').html('Tampilkan Data ' + awal + ' S/D ' + akir);
+            Highcharts.chart('container', {
+            chart: {
+                type: 'column',
+                options3d: {
+                    enabled: true,
+                    alpha: 15,
+                    beta: 15,
+                    depth: 50
+            }  
+            },
+            title: {
+                text: 'Laporan'
+            },
+            subtitle: {
+                text: 'PENJUALAN KORAN'
+            },
+            plotOptions: {
+                column: {
+                    depth: 100
+                }
+            },
+            xAxis: {
+                width: 200,
+                align: 'center',
+                categories: ['LAPORAN'],
+                labels: {
+                    skew3d: true,
+                    style: {
+                        fontSize: '16px'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: null
+                }
+            },
+            series: [{
+                name: 'KORAN',
+                data: [data.data]
+            },
+
+            ],
+          });
+        }
+        }
+      });
+    }
+
 </script>
 @endsection

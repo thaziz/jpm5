@@ -172,7 +172,7 @@
                                     <td class="hilang" style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td class="hilang" id="kota_col">   
                                         <select class="chosen-select-width c "  name="cb_kota_tujuan" id="cb_kota_tujuan" style="width:100%">
-                                           <option value="" selected="" disabled="">Pilih - Kota tujuan</option>
+                                           <option value="" selected="" readonly="">Pilih - Kota tujuan</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
                                         @endforeach
@@ -181,8 +181,8 @@
                                 
                                     <td class="hilang1" style="padding-top: 0.4cm">Provinsi Tujuan</td>
                                     <td class="hilang1" id="prov_col">   
-                                        <select class="chosen-select-width c "  name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
-                                            <option value="" selected="" disabled="">Pilih - Provinsi tujuan</option>
+                                        <select class="chosen-select-width c " name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
+                                            <option value="" selected="" readonly="">Pilih - Provinsi tujuan</option>
                                         @foreach ($prov as $prov)
                                             <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
                                         @endforeach
@@ -350,7 +350,7 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
-        $("input[name='ed_harga'],input[name='ed_waktu']").maskMoney({thousands:'.', decimal:',', precision:-1});
+        $("input[name='ed_harga'],input[name='ed_waktu']").maskMoney({thousands:'', decimal:'', precision:-1});
     });
 
     $(document).on("click","#btn_add",function(){
@@ -362,6 +362,16 @@
         $("input[name='ed_waktu']").val(0);
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
+
+        $("select[name='cb_jenis']").val('');
+        $("select[name='cb_angkutan']").val('');
+        $("select[name='ed_cabang']").val('');
+        $("select[name='satuan']").val('');
+        $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
+        $("select[name='ed_acc_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='ed_csf_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
+
         $('.hilang1').show();
         $('.hilang').show();
         $('#kota_col').attr('colspan','1');
@@ -421,6 +431,96 @@
     });
 
     $(document).on("click","#btnsave",function(){
+       var a = $('select[name="cb_kota_asal"]').val();
+       var b = $('select[name="satuan"]').val();
+       if(a == null){
+            Command: toastr["warning"]("Kota Asal Tidak Boleh Kosong", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if(b == null || ''){
+            Command: toastr["warning"]("Satuan Tidak Boleh Kosong", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if($('input[name="ed_waktu"]').val() == '0'){
+            Command: toastr["warning"]("Harga Tidak Boleh Kosong", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if($('input[name="ed_harga"]').val() == '0'){
+            Command: toastr["warning"]("Waktu Tidak Boleh Kosong", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": false,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
 
         $.ajax(
         {
@@ -464,9 +564,9 @@
     $(document).on( "click",".btndelete", function() {
         var name = $(this).attr("name");
         var id = $(this).attr("id");
-        if(!confirm("Hapus Data " +name+ " ?")) return false;
+        if(!confirm('Apakah Anda Yaking'+"Hapus Data "+" ?")) return false;
         var value = {
-            id: id,
+            id: id,name:name,
             _token: "{{ csrf_token() }}"
         };
         $.ajax({

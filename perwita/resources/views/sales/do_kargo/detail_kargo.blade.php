@@ -102,6 +102,7 @@
                                             @foreach($customer as $val)
                                                 @if($data->kode_customer == $val->kode)
                                                 <input type="text" readonly="" class="form-control" value="{{$val->nama}}">
+                                                @else
                                                 @endif
                                             @endforeach
                                         </td>

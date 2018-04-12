@@ -5,6 +5,12 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .center{
+        text-align: center;
+    }
+    .right: {
+        text-align: right;
+    }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -75,7 +81,8 @@
                                 <td>{{ $row->keterangan }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        <a onclick="edit('{{$row->nomor}}')" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        <a onclick="edit('{{$row->nomor}}')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        <a onclick="print('{{$row->nomor}}')" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnprnt"><i class="fa fa-print"></i></a>
                                         <a onclick="hapus('{{$row->nomor}}')" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
                                     </div>
                                 </td>
@@ -126,6 +133,7 @@
             "autoWidth": false,
             "pageLength": 10,
             "retrieve" : true,
+            
       });
     });
 
@@ -134,6 +142,11 @@
 
     function edit(id){
         window.location.href = baseUrl + '/sales/posting_pembayaran_edit/'+id;
+
+    }
+
+    function print(id){
+        window.location.href = baseUrl + '/sales/posting_pembayaran_print/'+id;
 
     }
 

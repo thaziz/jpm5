@@ -1409,7 +1409,7 @@ function hapus_detail(o) {
     $('.i_nomor').each(function(){
         temp += 1;
     })
-    if (temp != 0) {
+    if (temp == 0) {
         $('.jenis_pembayaran_td').removeClass('disabled');
         $('.akun_bank_td').removeClass('disabled');
 

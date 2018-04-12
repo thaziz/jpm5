@@ -845,6 +845,7 @@
         var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
         var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
         var diskon  = $("input[name='ed_diskon_h']").val();
+        var diskon_val  = $("input[name='ed_diskon_h']").val();
         var biaya_komisi  = $("input[name='ed_biaya_komisi']").val();
         var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
         var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");

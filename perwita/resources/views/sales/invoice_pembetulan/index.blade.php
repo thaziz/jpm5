@@ -9,7 +9,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> INVOICE </h2>
+                    <h2> INVOICE PEMBETULAN</h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -24,7 +24,7 @@
                             <a>Transaksi Penjualan</a>
                         </li>
                         <li class="active">
-                            <strong> INVOICE </strong>
+                            <strong> INVOICE PEMBETULAN</strong>
                         </li>
 
                     </ol>
@@ -62,45 +62,29 @@
                                 <th>Customer</th>
                                 <th>JT</th>
                                 <th>Tagihan </th>
-                                <th>Sisa Tagihan </th>
                                 <th>Keterangan </th>
-                                <th>No Faktur Pajak </th>
-                                <th>Status Print</th>
                                 <th style="width:10%"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td><a onclick="lihat('{{ $row->ip_nomor }}')">{{ $row->ip_nomor }}</a></td>
+                                <td>{{ $row->ip_nomor }}</td>
                                 <td>{{ $row->ip_tanggal }}</td>
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->ip_jatuh_tempo }}</td>
                                 <td style="text-align:right"> {{ number_format($row->ip_total_tagihan, 2, ",", ".") }} </td>
-                                <td style="text-align:right"> {{ number_format($row->ip_sisa_pelunasan, 2, ",", ".") }} </td>
                                 <td>{{ $row->ip_keterangan }}</td>
-                                <td>{{ $row->ip_no_faktur_pajak }}</td>
-                                <td>
-                                    @if($row->ip_statusprint == 'Released')
-                                    <label class="label label-warning">{{$row->ip_statusprint}}</label>
-                                    @else
-                                    <label class="label label-success">{{$row->ip_statusprint}}</label>
-                                    @endif
-                                </td>
                                 <td class="text-center">
                                     <div class="btn-group ">
                                         @if(Auth::user()->punyaAkses('Invoice Penjualan','ubah'))
-                                        @if($row->ip_statusprint == 'Released')
                                         <a  onclick="edit('{{$row->ip_nomor}}')" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>
-                                        @endif
                                         @endif
                                         @if(Auth::user()->punyaAkses('Invoice Penjualan','print'))
                                         <a  onclick="ngeprint('{{$row->ip_nomor}}')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></a>
                                         @endif
                                         @if(Auth::user()->punyaAkses('Invoice Penjualan','hapus'))
-                                        @if($row->ip_statusprint == 'Released')
                                         <a  onclick="hapus('{{$row->ip_nomor}}')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
-                                        @endif
                                         @endif
                                         
 
@@ -167,7 +151,7 @@
     });
 
     function edit(id){
-        window.location.href = baseUrl + '/sales/edit_invoice/'+id;
+        window.location.href = baseUrl + '/sales/invoice_pembetulan_edit/'+id;
     }
     function lihat(id){
         window.open(baseUrl + '/sales/lihat_invoice/'+id);
@@ -195,7 +179,7 @@
     function(){
 
          $.ajax({
-          url:baseUrl + '/sales/hapus_invoice',
+          url:baseUrl + '/sales/hapus_invoice_pembetulan',
           data:{id},
           type:'get',
           success:function(data){

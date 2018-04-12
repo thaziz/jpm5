@@ -366,8 +366,8 @@
 					<td height="27" class="textright borderbottomtabel borderrighttabel">{{$i++}}.</td>
 					<td class="textleft borderbottomtabel borderrighttabel"> {{$row->id_nomor_do}} </td>
 					<td class="borderbottomtabel borderrighttabel"> {{$row->id_tgl_do}} </td>
-					<td class="textleft borderbottomtabel borderrighttabel"> {{$row->id_keterangan}} </td>
-					<td class="borderbottomtabel borderrighttabel"> {{$row->id_kuantum}} {{$row->id_kode_satuan}}</td>
+					<td class="textleft borderbottomtabel borderrighttabel">{{$row->id_keterangan}} </td>
+					<td class="borderbottomtabel borderrighttabel">{{$row->id_kuantum}}&nbsp;{{$row->id_kode_satuan}}</td>
 					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_satuan, 2, ",", ".") }} </td>
 					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_bruto, 2, ",", ".") }} </td>
 					<td class="textright borderbottomtabel borderrighttabel"> {{ number_format($row->id_harga_netto, 2, ",", ".") }} </td>
