@@ -52,8 +52,8 @@ class kontrak_Controller extends Controller
         // $cabang = Auth::user()->kode_cabang;
         $customer = DB::table('customer')
                       ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
-                      // ->where('cabang',$request->cabang)
-                      ->where('kc_kode_customer',null)
+                      // ->where('kc_kode_cabang',$request->cabang)
+                      // ->where('kc_kode_customer',null)
                       ->get();
 
         $kota     = DB::table("kota")
