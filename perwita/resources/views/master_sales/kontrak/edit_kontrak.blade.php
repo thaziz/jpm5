@@ -67,7 +67,7 @@
                                     <select class="form-control cabang chosen-select-width" disabled="" name="cabang" >
                                       <option selected="" disabled="">- Pilih Cabang -</option>
                                       @foreach($cabang as $val)
-                                      @if(Auth::user()->kode_cabang == $val->kode)
+                                      @if($data->kc_kode_cabang== $val->kode)
                                       <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                       @else
                                       <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>

@@ -8,28 +8,28 @@
  	<td style="width: 100px">Tanggal</td>
  	<td width="10">:</td>
  	<td width="200">
- 		<input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="width: 250px;">
- 		<input type="hidden" class="form-control tgl_resi"  readonly="" style="width: 250px;">
- 		<input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="width: 250px;">
+ 		<input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="">
+ 		<input type="hidden" class="form-control tgl_resi"  readonly="" style="">
+ 		<input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
  	</td>
  </tr>
  <tr>
  	<td style="width: 100px">Jatuh Tempo</td>
  	<td width="10">:</td>
  	<td width="200">
- 		<input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="{{$jt}}" placeholder="Jatuh tempo" style="width: 250px;">
+ 		<input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="{{$jt}}" placeholder="Jatuh tempo" style="">
  	</td>
  </tr>
 <tr>
  	<td style="width: 100px">Status </td>
  	<td width="10">:</td>
-	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" style="width: 250px;"></td>
+	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" style=""></td>
  </tr>
   <tr class="vendor">
  	<td style="width: 100px">Tipe Vendor </td>
  	<td width="10">:</td>
  	<td width="200">
- 		<select onchange="ven()" name="vendor" class="form-control vendor1 "  style="text-align: center; width: 250px;" >
+ 		<select onchange="ganti_agen()" name="vendor" class="form-control vendor1 "  style="text-align: center; " >
  			<option  selected="" value="kosong">-PILIH TIPE VENDOR-</option>
  			<option value="AGEN">Agen Penerus </option>
  			<option value="VENDOR">Vendor Penerus</option>
@@ -42,7 +42,7 @@
  	<td style="width: 100px">Nama Kontak </td>
  	<td width="10">:</td>
  	<td width="200">
- 		<select name="nama_kontak1" class="form-control nama-kontak" style="text-align: center; width: 250px;">
+ 		<select name="nama_kontak1" class="form-control nama-kontak" style="text-align: center; ">
  			<option disabled="" selected="">-PILIH NAMA KONTAK-</option>
  		</select>
  	</td>
@@ -66,12 +66,12 @@
  <tr>
  	<td style="width: 100px">No Invoice</td>
  	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Invoice_biaya" class="form-control" style="width: 250px;" placeholder="No Invoice"></td>
+ 	<td width="200"><input type="text" name="Invoice_biaya" class="form-control" style="" placeholder="No Invoice"></td>
  </tr>
   <tr>
  	<td style="width: 100px">Keterangan</td>
  	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Keterangan_biaya" class="form-control" style="width: 250px;"></td>
+ 	<td width="200"><input type="text" name="Keterangan_biaya" class="form-control" style=""></td>
  </tr>	
 <!--  <tr>
  	<td style="width: 100px">Biaya Khusus</td>
@@ -92,32 +92,20 @@
 	  <tr>
 		<td style="width: 100px">Nomor</td>
 		<td width="10">:</td>
-		<td width="200"><input type="text" name="jml_data" class="form-control jml_data" style="width: 250px;" readonly=""></td>
+		<td width="200"><input type="text" name="jml_data" class="form-control jml_data" style="" readonly=""></td>
 	  </tr>
 	  <tr>
 		<td style="width: 100px">Nomor POD</td>
 		<td width="10">:</td>
-		<td width="200"><input type="text" name="no_pod" id="tages" class="form-control no_pod" onkeyup="cariDATA()" onblur="seq();" style="width: 250px;">
-			<input type="hidden" class="form-control status_pod" style="width: 250px;">
-		</td>
-	  </tr>
-	  <tr>
-		<td style="width: 100px">Account Biaya</td>
-		<td width="10">:</td>
-		<td width="200" class="form-inline">
-			<input type="text" name="kode_akun" class="form-control kode_akun" style="width: 70px;" readonly="">
-			<select name="nama_akun" class="form-control nama_akun chosen-select-width" style="width: 176px !important;" onchange="setNo()">
-				@foreach($akun_biaya as $val)
-		        <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
-		        @endforeach
-			</select> 
+		<td width="200"><input type="text" name="no_pod" id="tages" class="form-control no_pod" onkeyup="cariDATA()" onblur="seq();" style="">
+			<input type="hidden" class="form-control status_pod" style="">
 		</td>
 	  </tr>
 	   <tr>
 		<td style="width: 100px">Debet/Kredit</td>
 		<td width="10">:</td>
 		<td>
-			<select name="debit" class="form-control debit" style="text-align: center; width: 250px;">
+			<select name="debit" class="form-control debit" style="text-align: center; ">
  				<option value="debit" selected="">DEBIT</option>
  				<option value="kredit">KREDIT</option>
  			</select>
@@ -126,24 +114,19 @@
 	  <tr>
 	 	<td style="width: 100px">Memo</td>
 	 	<td width="10">:</td>
-		<td width="200"><input type="text" name="ket-biaya" class="form-control ket-biaya" style="width: 250px;"></td>
+		<td width="200"><input type="text" name="ket-biaya" class="form-control ket-biaya" style=""></td>
 	 </tr>
 	  <tr>
 		<td style="width: 100px">Total</td>
 		<td width="10">:</td>
-		<td width="200"><input type="text" name="total_jml" class="form-control total_jml" style="width: 250px;" readonly=""></td>
-	  </tr>
-	  <tr>
-		<td style="width: 100px">Nominal Resi</td>
-		<td width="10">:</td>
-		<td width="200"><input type="text" readonly="" class="form-control total_pod" style="width: 250px;"></td>
+		<td width="200"><input type="text" name="total_jml" class="form-control total_jml" style="" readonly=""></td>
 	  </tr>
 	  <tr>
 		<td style="width: 100px">Nominal</td>
 		<td width="10">:</td>
 		<td width="200">
-			<input type="text" name="nominal" class="form-control nominal" onkeyup="hitung()" style="width: 250px;">
-			
+			<input type="text" name="nominal" class="form-control nominal" onkeyup="hitung()" style="">
+			<input type="hidden" readonly="" class="form-control total_pod" style="">
 		</td>
 	  </tr>
 	  <tr>
@@ -197,23 +180,11 @@
       </div>
       <div class="modal-body">
      <table class="table">
-	  <tr>
-		<td style="width: 100px ;padding-left: 65px;">Account Biaya</td>
-		<td width="10">:</td>
-		<td width="200" class="form-inline">
-			<input type="text" name="kode_akun" class="form-control kode_akun_update" style="width: 70px;" readonly="">
-			<select name="nama_akun" class="form-control nama_akun_update chosen-select-width" style="width: 176px !important;" onchange="updt()">
-				@foreach($akun_biaya as $val)
-		        <option value="{{$val->id_akun}}">{{$val->nama_akun}}</option>
-		        @endforeach
-			</select> 
-		</td>
-	  </tr>
 	   <tr>
 		<td style="width: 100px ; padding-left: 65px;">Debet/Kredit</td>
 		<td width="10">:</td>
 		<td>
-			<select name="debit" class="form-control debit_update" style="text-align: center; width: 250px;">
+			<select name="debit" class="form-control debit_update" style="text-align: center; ">
  				<option value="debit" selected="">DEBIT</option>
  				<option value="kredit">KREDIT</option>
  			</select>
@@ -222,12 +193,12 @@
 	  <tr>
 	 	<td style="width: 100px ;padding-left: 65px;">Memo</td>
 	 	<td width="10">:</td>
-		<td width="200"><input type="text" name="ket-biaya" class="form-control ket_biaya_update" style="width: 250px;"></td>
+		<td width="200"><input type="text" name="ket-biaya" class="form-control ket_biaya_update" style=""></td>
 	 </tr>
 	  <tr>
 		<td style="width: 100px ;padding-left: 65px;">Nominal</td>
 		<td width="10">:</td>
-		<td width="200"><input type="number" name="nominal" class="form-control nominal_update" onkeyup="hitung()" style="width: 250px;"></td>
+		<td width="200"><input type="number" name="nominal" class="form-control nominal_update" onkeyup="hitung()" style=""></td>
 	  </tr>
      </table>
      	<div class="pull-right">
@@ -367,133 +338,10 @@
             "language": dataTableLanguage,
     });
 
-	var tabel_remove = datatable1.column( 0 ).data().length;
-
-	var config = {
-               '.chosen-select'           : {},
-               '.chosen-select-deselect'  : {allow_single_deselect:true},
-               '.chosen-select-no-single' : {disable_search_threshold:10},
-               '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-               '.chosen-select-width'     : {width:"176px"}
-             }
-             for (var selector in config) {
-               $(selector).chosen(config[selector]);
-             }
-    var config1 = {
-               '.chosen-select'           : {},
-               '.chosen-select-deselect'  : {allow_single_deselect:true},
-               '.chosen-select-no-single' : {disable_search_threshold:10},
-               '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
-               '.chosen-select-width1'     : {width:"250px"}
-             }
-             for (var selector in config1) {
-               $(selector).chosen(config1[selector]);
-             }
-
-    $(".nama_akun").chosen(config); 
-
-    $(".nama-kontak-agen1").chosen(config1);
-
-    $(".nama-kontak-vendor1").chosen(config1);
-$(document).ready(function(){
-    $('.modal_penerus_tt').addClass('disabled');
-	var isi =  $('.nama_akun').val();
-  	$('.kode_akun').val(isi);
-});
-    
-
-
- $('.nominal').keypress(function(e){
-
-    if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-        $('.cari-pod').click();
-        return false;
-     }	
- })
-
-$('.nama-kontak-agen1').change(function(){
- 	
- 	@foreach($agen as $a)
- 	if ($(this).val() == '{{$a->kode}}') {
- 		$('.akun_agen').val('{{$a->acc_hutang}}');
- 		// console.log($('.akun_agen').val());
- 	}
- 	@endforeach
-
- });
-
-$('.nama-kontak-vendor1').change(function(){
- 	
- 	@foreach($vendor as $a)
- 	if ($(this).val() == '{{$a->kode}}') {
- 		$('.akun_agen').val('{{$a->acc_hutang}}');
- 		// console.log($('.akun_agen').val()); 
- 	}
- 	@endforeach
-
- });
-
-// modal tt
-
- $('.modal_penerus_tt').click(function(){
- 	  agen   = $('.vendor1 ').val();
-      cabang = $('.cabang').val();
-      supplier = $('.idsup').val();
-      jatuh_tempo = $('.jatuh_tempo').val();
-      total_jml = $('.total_jml').val();
-      string = supplier.split(",");
-      if (agen == 'AGEN') {
-      	ven = $('.nama-kontak-agen1').val();
-      }else{
-      	ven = $('.nama-kontak-vendor1').val();
-      }
-
-      // console.log(agen);
-      tgl = $('.tgl').val();
-      jatuhtempo = $('.jatuhtempoitem').val();
-      nettohutang = $('.nettohutang').val();
-
-      $('.tgl_tt').val(tgl);
-      $('.supplier_tt').val(string[2]);
-      $('.jatuhtempo_tt').val(jatuhtempo);
-      $('.totalterima_tt').val(nettohutang);
-
-
-       $.ajax({    
-            type :"get",
-            data : 'cab='+cabang+'&'+'supp='+ven+'&'+'jenis='+agen+'&'+$('.head1 .nofaktur').serialize(),
-            url : baseUrl + '/fakturpembelian/adinott',
-            dataType:'json',
-            success : function(data){
-            	$('.supplier_tt').val(data.sup.nama);
-            	$('.notandaterima').val(data.nota);
-            	$('.jatuhtempo_tt').val(jatuh_tempo);
-            	$('.totalterima_tt').val(total_jml);
-
-            }
-        })
+  function ganti_agen() {
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/rubahVen'
+      data: 
     })
-
-$('.simpan_penerus').click(function(){
- 	agen = $('.vendor1 ').val();
- 	cabang = $('.cabang').val();
- 	// console.log(agen);
-
-	if (agen == 'AGEN') {
-      	ven = $('.nama-kontak-agen1').val();
-      }else{
-      	ven = $('.nama-kontak-vendor1').val();
-      }
-      // console.log(ven);
-	$.ajax({    
-            type :"get",
-            data : $('.tabel_tt :input').serialize()+'&'+'agen='+ven+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
-            url : baseUrl + '/fakturpembelian/simpan_tt1',
-            dataType:'json',
-            success : function(data){
-            	toastr.success('Form Tanda terima berhasil disimpan');
-            	$('.save_biaya').removeClass('disabled');
-            }
-        })
-})
+  }
 </script>

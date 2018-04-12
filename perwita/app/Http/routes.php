@@ -209,7 +209,7 @@ Route::get('fakturpembelian/hapusfakturpembelian/{id}' , 'PurchaseController@hap
 //BIAYA PENERUS AGEN
 Route::get('fakturpembelian/getdatapenerus', 'BiayaPenerusController@getdatapenerus');
 Route::get('fakturpembelian/caripod', 'BiayaPenerusController@caripod');
-Route::get('fakturpembelian/carimaster/{vendor}', 'BiayaPenerusController@carimaster');
+Route::get('fakturpembelian/carimaster', 'BiayaPenerusController@carimaster');
 Route::get('fakturpembelian/auto/{i}', 'BiayaPenerusController@auto');
 Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
@@ -1003,6 +1003,14 @@ Route::get('master_sales/subcon/tabel', 'master_sales\subcon_Controller@table_da
 Route::get('master_sales/subcon/get_data', 'master_sales\subcon_Controller@get_data');
 Route::get('master_sales/subcon/save_data', 'master_sales\subcon_Controller@save_data');
 Route::post('master_sales/subcon/hapus_data', 'master_sales\subcon_Controller@hapus_data');
+// end subcon
+
+//Master Tarif Subcon
+Route::get('master_purchase/tarif_subcon', 'subcon_Controller@index');
+Route::get('master_purchase/subcon/tabel', 'subcon_Controller@table_data');
+Route::get('master_purchase/subcon/get_data', 'subcon_Controller@get_data');
+Route::get('master_purchase/subcon/save_data', 'subcon_Controller@save_data');
+Route::post('master_purchase/subcon/hapus_data', 'subcon_Controller@hapus_data');
 // end subcon
 
 //tipe angkutan
