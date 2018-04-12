@@ -1,165 +1,269 @@
+@extends('main')
 
-<div class="col-sm-5 header_biaya"  >
-	{{ csrf_field() }}
-<form class="head_atas">
-<table class="table	head_biaya">
-	<h3 style="text-align: center;">Form Biaya Penerus Hutang</h3>
- <tr>
- 	<td style="width: 100px">Tanggal</td>
- 	<td width="10">:</td>
- 	<td width="200">
- 		<input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="">
- 		<input type="hidden" class="form-control tgl_resi"  readonly="" style="">
- 		<input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
- 	</td>
- </tr>
- <tr>
- 	<td style="width: 100px">Jatuh Tempo</td>
- 	<td width="10">:</td>
- 	<td width="200">
- 		<input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="{{$jt}}" placeholder="Jatuh tempo" style="">
- 	</td>
- </tr>
-<tr>
- 	<td style="width: 100px">Status </td>
- 	<td width="10">:</td>
-	<td width="200"><input type="text" name="status" class="form-control" value="Released" readonly="" style=""></td>
- </tr>
-  <tr class="vendor">
- 	<td style="width: 100px">Tipe Vendor </td>
- 	<td width="10">:</td>
- 	<td width="200" class="vendor_td">
- 		<select onchange="ganti_agen(this.value)" name="vendor" class="form-control vendor1 "  style="text-align: center; " >
- 			<option  selected="" value="kosong">-PILIH TIPE VENDOR-</option>
- 			<option value="AGEN">Agen Penerus </option>
- 			<option value="VENDOR">Vendor Penerus</option>
- 		</select>
- 	</td>
- </tr>
- <tr class="nama-kontak-kosong">
- 	<td style="width: 100px">Nama Agen/Vendor </td>
- 	<td width="10">:</td>
- 	<td width="200" class="nama_kontak_td">
- 		<select name="" class="form-control agen_vendor" style="text-align: center; ">
- 			<option value="0" selected="">-PILIH NAMA AGEN/VENDOR-</option>
- 		</select>
- 	</td>
- </tr>
- <tr>
- 	<td style="width: 100px">No Invoice</td>
- 	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Invoice_biaya" class="form-control" style="" placeholder="No Invoice"></td>
- </tr>
-  <tr>
- 	<td style="width: 100px">Keterangan</td>
- 	<td width="10">:</td>
- 	<td width="200"><input type="text" name="Keterangan_biaya" style="text-transform: uppercase;" class="form-control" style=""></td>
- </tr>	
-<tr>
-  <td colspan="3">
-     <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt disabled" style="margin-right: 20px;" type="button" data-toggle="modal" data-target="#modal_tt_penerus" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-     <button type="button" class="btn btn-warning pull-left disabled" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
-  </td>
-</tr>
-</table>
-</form>
+@section('title', 'dashboard')
+<style type="text/css">
+  .table-biaya{
+    overflow-x: auto;
+  }
+  tbody tr{
+    cursor: pointer;
+  }
+  th{
+    text-align: center !important;
+  }
+  .tengah{
+    text-align: center;
+  }
+  .kecil{
+    width: 50px;
+    
+  }
+  .datatable tbody tr td{
+    padding-top: 16px;
+  }
+  .dataTables_paginate{
+    float: right;
+  }
+  #modal-biaya .modal-dialog .modal-body{
+    min-height: 340px;
+  }
+  .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+  .right{
+      text-align: right;
+  }
+  .table-hover tbody tr{
+    cursor: pointer;
+  }
+
+  .center{
+      text-align: center;
+  }
+</style>
+@section('content')
+
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2> Faktur Pembelian </h2>
+    <ol class="breadcrumb">
+      <li>
+        <a>Home</a>
+      </li>
+      <li>
+        <a>Purchase</a>
+      </li>
+      <li>
+        <a> Transaksi Purchase</a>
+      </li>
+      <li class="active">
+        <strong> Detail Faktur Pembelian </strong>
+      </li>
+    </ol>
+  </div>
+</div>
+<div class="wrapper wrapper-content animated fadeInRight">
+  {{ csrf_field() }}
+  <div class="row">
+    <div class="ibox" style="padding-top: 10px;" >
+      <div class="ibox-title"><h5>Detail Faktur Pembelian</h5>
+        <a href="../fakturpembelian" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+      </div>
+      <div class="ibox-content col-sm-12">
+
+          <div class="col-sm-5 header_biaya"  >
+            {{ csrf_field() }}
+          <form class="head_atas">
+          <table class="table head_biaya">
+            <h3 style="text-align: center;">Form Biaya Penerus Hutang</h3>
+            
+          <tr>
+            <td width="150px">
+          No Faktur
+            </td>
+            <td width="10">:</td>
+            <td>
+               <input type="text" class="form-control nofaktur" value="{{$cari_fp->fp_nofaktur}}" name="nofaktur" required="" readonly="">
+               <input type="hidden" class="form-control idfaktur" name="idfaktur" value="{{$cari_fp->fp_idfaktur}}" required="" readonly="">
+            
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+            </td>
+          </tr>
+          <tr>
+            <td> Cabang </td>
+            <td width="10">:</td>
+            <td class="disabled">  
+              <select class="form-control cabang" name="cabang">
+                @foreach($cabang as $val)
+                <option value="{{$val->kode}}" @if($val->kode == $cari_fp->fp_comp) selected @endif> {{$val->nama}} </option>
+                @endforeach
+              </select> 
+            </td>
+           </tr>
+           <tr>
+            <td style="width: 100px">Tanggal</td>
+            <td width="10">:</td>
+            <td width="200">
+              <input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="">
+              <input type="hidden" class="form-control tgl_resi"  readonly="" style="">
+              <input type="hidden" name="master_persen" class="form-control master_persen"  readonly="" style="">
+            </td>
+           </tr>
+           <tr>
+            <td style="width: 100px">Jatuh Tempo</td>
+            <td width="10">:</td>
+            <td width="200">
+              <input type="text" name="jatuh_tempo" class="form-control jatuh_tempo" value="{{carbon\carbon::parse($cari_fp->fp_jatuhtempo)->format('d/m/Y')}}" placeholder="Jatuh tempo" style="">
+            </td>
+           </tr>
+          <tr>
+            <td style="width: 100px">Status </td>
+            <td width="10">:</td>
+            <td width="200"><input type="text" name="status" class="form-control" value="{{$cari_fp->fp_status}}" readonly="" style=""></td>
+           </tr>
+            <tr class="vendor">
+            <td style="width: 100px">Tipe Vendor </td>
+            <td width="10">:</td>
+            <td width="200" class="vendor_td disabled">
+              <select onchange="ganti_agen(this.value)" name="vendor" class="form-control vendor1 "  style="text-align: center; " >
+                <option @if($bp->bp_tipe_vendor == 'kosong') selected @endif value="kosong">-PILIH TIPE VENDOR-</option>
+                <option @if($bp->bp_tipe_vendor == 'AGEN') selected @endif value="AGEN">Agen Penerus </option>
+                <option @if($bp->bp_tipe_vendor == 'VENDOR') selected @endif value="VENDOR">Vendor Penerus</option>
+              </select>
+            </td>
+           </tr>
+           <tr class="nama-kontak-kosong">
+            <td style="width: 100px">Nama Agen/Vendor </td>
+            <td width="10">:</td>
+            <td width="200" class="nama_kontak_td disabled">
+              <select name="" class="form-control agen_vendor" style="text-align: center; ">
+                <option value="0" selected="">-PILIH NAMA AGEN/VENDOR-</option>
+              </select>
+            </td>
+           </tr>
+           <tr>
+            <td style="width: 100px">No Invoice</td>
+            <td width="10">:</td>
+            <td width="200">
+              <input type="text" name="Invoice_biaya" class="form-control" value="{{$cari_fp->fp_noinvoice}}" placeholder="No Invoice">
+            </td>
+           </tr>
+            <tr>
+            <td style="width: 100px">Keterangan</td>
+            <td width="10">:</td>
+            <td width="200"><input type="text" value="{{$cari_fp->fp_keterangan}}" name="Keterangan_biaya" style="text-transform: uppercase;" class="form-control" style=""></td>
+           </tr>  
+          <tr>
+            <td colspan="3">
+               <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt "  type="button" data-toggle="modal" data-target="#modal_tt_penerus" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+               <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left @if($cari_fp->fp_pending_status == 'PENDING') disabled @endif " id="print-tt"><i class="fa fa-print"></i> Print Tanda Terima</button>
+               <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left " id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
+            </td>
+          </tr>
+          </table>
+          </form>
+          </div>
+
+
+          <div class="col-sm-5 detail_biaya"   style="margin-left: 100px;">
+              <form class="form">
+               <table class="table table_detail">
+               <div align="center" style="width: 100%;">  
+              <h3 >Detail Biaya Penerus Hutang</h3>
+             </div> 
+              <tr>
+              <td style="width: 100px">Nomor</td>
+              <td width="10">:</td>
+              <td width="200">
+                <input type="text" name="jml_data" value="1" class="form-control jml_data" style="" readonly="">
+              </td>
+              </tr>
+              <tr>
+                <td style="width: 100px">Nomor POD</td>
+                <td width="10">:</td>
+                <td width="200">
+                  <input type="text" name="no_pod" id="tages" class="form-control no_pod" onkeyup="cari_do()"  style="">
+                  <input type="hidden" class="form-control status_pod" style="">
+                </td>
+              </tr>
+               <tr>
+              <td style="width: 100px">DEBET/Kredit</td>
+              <td width="10">:</td>
+              <td>
+                <select name="DEBET" class="form-control DEBET" style="text-align: center; ">
+                  <option value="DEBET" selected="">DEBET</option>
+                  <option value="kredit">KREDIT</option>
+                </select>
+              </td>
+              </tr>
+              <tr>
+                <td style="width: 100px ;">Akun</td>
+                <td width="10">:</td>
+                <td>
+                  <select class="form-control akun_biaya chosen-select-width1" style="text-align: center; ">
+                    <option value="0" selected="">Pilih - akun</option>
+                    @foreach($akun as $val)
+                      <option value="{{$val->id_akun}}" selected="">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+                    @endforeach
+                  </select>
+                </td>
+              </tr>
+              <tr>
+              <td style="width: 100px">Memo</td>
+              <td width="10">:</td>
+              <td width="200"><input type="text" class="form-control keterangan_biaya" style="text-transform: uppercase;" style=""></td>
+             </tr>
+              <tr>
+              <td style="width: 100px">Total</td>
+              <td width="10">:</td>
+              <td width="200"><input type="text" name="total_jml" class="form-control total_jml" style="" readonly=""></td>
+              </tr>
+              <tr>
+              <td style="width: 100px">Nominal</td>
+              <td width="10">:</td>
+              <td width="200">
+                <input type="text" name="nominal" class="form-control nominal" onkeyup="hitung()" style="">
+                <input type="hidden" readonly="" class="form-control harga_do" style="">
+              </td>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
+
+                  <button type="button" class="btn btn-primary pull-right save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
+                </td>
+              </tr>
+               </table>
+                
+              </form>
+          </div>
+
+           <div class="table_biaya col-sm-12" >
+            <h3>Tabel Detail Resi</h3>
+            <hr>
+                <table class="table table-bordered table-hover datatable" style="font-size: 12px">
+                <thead align="center">
+                  <tr>
+                  <th>No</th>
+                  <th>Nomor Bukti</th>
+                  <th >AccBiaya</th>
+                  <th>Jumlah Bayar</th>
+                  <th>Tipe debet</th>
+                  <th>Keterangan</th>
+                  <th>Aksi</th>
+                  </tr>
+                </thead> 
+                <tbody class="body-biaya">
+
+                </tbody>    
+                </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
-
-<div class="col-sm-5 detail_biaya"   style="margin-left: 100px;">
-    <form class="form">
-     <table class="table table_detail">
-     <div align="center" style="width: 100%;">	
-		<h3 >Detail Biaya Penerus Hutang</h3>
-	 </div>	
-	  <tr>
-		<td style="width: 100px">Nomor</td>
-		<td width="10">:</td>
-		<td width="200">
-      <input type="text" name="jml_data" value="1" class="form-control jml_data" style="" readonly="">
-    </td>
-	  </tr>
-	  <tr>
-  		<td style="width: 100px">Nomor POD</td>
-  		<td width="10">:</td>
-  		<td width="200">
-        <input type="text" name="no_pod" id="tages" class="form-control no_pod" onkeyup="cari_do()"  style="">
-  			<input type="hidden" class="form-control status_pod" style="">
-  		</td>
-	  </tr>
-	   <tr>
-		<td style="width: 100px">DEBET/Kredit</td>
-		<td width="10">:</td>
-		<td>
-			<select name="DEBET" class="form-control DEBET" style="text-align: center; ">
- 				<option value="DEBET" selected="">DEBET</option>
- 				<option value="kredit">KREDIT</option>
- 			</select>
- 		</td>
-	  </tr>
-    <tr>
-      <td style="width: 100px ;">Akun</td>
-      <td width="10">:</td>
-      <td>
-        <select class="form-control akun_biaya chosen-select-width1" style="text-align: center; ">
-          <option value="0" selected="">Pilih - akun</option>
-          @foreach($akun as $val)
-            <option value="{{$val->id_akun}}" selected="">{{$val->id_akun}} - {{$val->nama_akun}}</option>
-          @endforeach
-        </select>
-      </td>
-    </tr>
-	  <tr>
-	 	<td style="width: 100px">Memo</td>
-	 	<td width="10">:</td>
-		<td width="200"><input type="text" class="form-control keterangan_biaya" style="text-transform: uppercase;" style=""></td>
-	 </tr>
-	  <tr>
-		<td style="width: 100px">Total</td>
-		<td width="10">:</td>
-		<td width="200"><input type="text" name="total_jml" class="form-control total_jml" style="" readonly=""></td>
-	  </tr>
-	  <tr>
-		<td style="width: 100px">Nominal</td>
-		<td width="10">:</td>
-		<td width="200">
-			<input type="text" name="nominal" class="form-control nominal" onkeyup="hitung()" style="">
-			<input type="hidden" readonly="" class="form-control harga_do" style="">
-		</td>
-	  </tr>
-	  <tr>
-      <td colspan="3">
-        <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
-
-        <button type="button" class="btn btn-primary pull-right disabled save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
-      </td>
-    </tr>
-     </table>
-      
-    </form>
-</div>
-
- <div class="table_biaya col-sm-12" hidden="">
- 	<h3>Tabel Detail Resi</h3>
- 	<hr>
-	    <table class="table table-bordered table-hover datatable">
-			<thead align="center">
-				<tr>
-				<th>No</th>
-				<th>Nomor Bukti</th>
-				<th >AccBiaya</th>
-				<th>Jumlah Bayar</th>
-				<th>Tipe debet</th>
-				<th>Keterangan</th>
-				<th>Aksi</th>
-				</tr>
-			</thead> 
-			<tbody class="body-biaya">
-
-			</tbody>   	
-	    </table>
-	</div>
-	
 <div id="modal_biaya_update" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -233,10 +337,9 @@
      </table>
       </div>      
     </div>
-    	
+      
   </div>
 </div>
-
 
 <!--  MODAL TT PENERUS  -->
 
@@ -251,26 +354,26 @@
       </div>
       <div class="modal-body">
         <table class="table table-stripped tabel_tt_penerus">
-        	<tr>
-        		<td width="150px">
+          <tr>
+            <td width="150px">
                   No Tanda Terima 
                 </td>
                 <td>
-                  <input type='text' name="nota_tt" class='input-sm form-control notandaterima'>
+                  <input type='text' name="nota_tt" value="{{$form_tt->tt_noform}}" class='input-sm form-control notandaterima'>
                   <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 </td>
-        	</tr>
-        	<tr>
-        		<td> Tanggal </td>
+          </tr>
+          <tr>
+            <td> Tanggal </td>
                 <td>
                    <div class="input-group date">
-                    	<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="{{carbon\carbon::now()->format('d/m/Y')}}" readonly="" name="tgl_tt">
+                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="{{carbon\carbon::parse($form_tt->tt_tgl)->format('d/m/Y')}}" readonly="" name="tgl_tt">
                   </div>
                 </td>
-        	</tr>
-        	<tr>
+          </tr>
+          <tr>
               <td> Supplier </td>
-              <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
+              <td> <input type='text' class="form-control supplier_tt" value="{{$form_tt->tt_idagen}}" name="supplier_tt" readonly=""></td>
               </td>
             </tr>
             <tr>
@@ -278,7 +381,7 @@
                  <div class="row">
                     <div class="col-sm-3"> 
                       <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
+                          <input id="Kwitansi" type="checkbox" @if($form_tt->tt_kwitansi == 'ADA') checked=""  @endif name="kwitansi">
                             <label for="Kwitansi">
                                 Kwitansi / Invoice / No
                             </label>
@@ -286,7 +389,7 @@
                     </div>
                     <div class="col-sm-3"> 
                       <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
+                          <input id="FakturPajak" type="checkbox" @if($form_tt->tt_faktur == 'ADA') checked=""  @endif name="faktur_pajak">
                             <label for="FakturPajak">
                                 Faktur Pajak
                             </label>
@@ -295,7 +398,7 @@
 
                     <div class="col-sm-3"> 
                       <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
+                          <input id="SuratPerananAsli" type="checkbox" @if($form_tt->tt_suratperan == 'ADA') checked=""  @endif name="surat_peranan">
                             <label for="SuratPerananAsli">
                                 Surat Peranan Asli
                             </label>
@@ -304,7 +407,7 @@
 
                      <div class="col-sm-3"> 
                       <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
+                          <input id="SuratJalanAsli" type="checkbox" @if($form_tt->tt_suratjalanasli == 'ADA') checked=""  @endif name="surat_jalan">
                             <label for="SuratJalanAsli">
                                Surat Jalan Asli
                             </label>
@@ -318,27 +421,27 @@
                Lain Lain
               </td>
               <td>                      
-                <input type="text" class="form-control lain_penerus" name="lainlain">
+                <input type="text" class="form-control lain_penerus" value="{{$form_tt->tt_lainlain}}" name="lainlain">
               </td>
             </tr>
             <tr>
               <td> Tanggal Kembali </td>
               <td><div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali" value="{{carbon\carbon::parse($form_tt->tt_tglkembali)->format('d/m/Y')}}" >
                 </div>
               </td>
             </tr>
             <tr>
             <td>Total di Terima</td>
               <td>
-              	<div class="row">
-              		<div class="col-sm-3">
-              			<label class="col-sm-3 label-control"> Rp </label>
-              		</div>
-              		<div class="col-sm-9">
-              			<input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly="">
-              		</div>
-              	</div>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <label class="col-sm-3 label-control"> Rp </label>
+                  </div>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly="">
+                  </div>
+                </div>
               </td>
             </tr>
         </table>
@@ -350,20 +453,22 @@
     </div>
   </div>
 </div>
+@endsection
+@section('extra_scripts')
 <script type="text/javascript">
-  var array_do = [];
-	var jt = $('.jatuh_tempo').datepicker({
-				format:'dd/mm/yyyy',
-				autoclose: true
-				});
+ var array_do = [];
+  var jt = $('.jatuh_tempo').datepicker({
+        format:'dd/mm/yyyy',
+        autoclose: true
+        });
 
   var jt = $('.tgl_tt').datepicker({
         format:'dd/mm/yyyy',
         autoclose: true
         });
   var dsa = $('.nominal').maskMoney({precision:0,thousands:'.'});
-	var dsa = $('.e_nominal').maskMoney({precision:0,thousands:'.'});
-	var datatable1 = $('.datatable').DataTable({
+  var dsa = $('.e_nominal').maskMoney({precision:0,thousands:'.'});
+  var datatable1 = $('.datatable').DataTable({
             responsive: true,
             searching:false,
             //paging: false,
@@ -387,9 +492,11 @@
     });
 
   function ganti_agen(val) {
+    var agen = '{{$cari_fp->fp_supplier}}';
+    var val = $('.vendor1 ').val();
     $.ajax({
       url:baseUrl +'/fakturpembelian/rubahVen',
-      data: {val},
+      data: {val,agen},
       success:function(data){
         $('.nama_kontak_td').html(data);
       },error:function(){
@@ -406,6 +513,7 @@
 
     $( ".no_pod" ).autocomplete({
       source:baseUrl + '/fakturpembelian/cari_do', 
+      data:{},
       minLength: 1,
       select: function(event, ui) {
           if (ui.item.validator != null) {
@@ -417,7 +525,9 @@
 
     });
   }
-
+  $(document).ready(function(){
+    ganti_agen();
+  })
 
   $('.no_pod').blur(function(){
     var index = array_do.indexOf($(this).val());
@@ -459,6 +569,57 @@
 
 
   var count = 1;
+
+
+  @foreach($bpd as $val)
+      var jml_data            = count;
+      var no_pod              = "{{$val->bpd_pod}}";
+      var DEBET               = "{{$val->bpd_debit}}";
+      var akun_biaya          = "{{$val->bpd_akun_biaya}}";
+      @foreach($akun as $i)
+        @if($val->bpd_akun_biaya == $i->id_akun)
+          var akun_biaya_text     = '{{$i->id_akun}}-{{$i->nama_akun}}';
+        @endif
+      @endforeach
+      var keterangan_biaya    = "{{$val->bpd_memo}}";
+      var nominal             = "{{$val->bpd_nominal}}";
+      var harga_do            = "{{$val->bpd_tarif_resi}}";
+      // nominal                 = nominal.replace(/[^0-9\-]+/g,"");
+
+
+
+      datatable1.row.add( [
+                '<input type="hidden" class="form-control tengah kecil seq seq_biaya_'+jml_data+'" name="seq_biaya[]" value="'+jml_data+'" readonly>'+'<div class="seq_text">'+jml_data+'</div>',
+
+                '<input type="hidden" class="form-control tengah kecil no_do" name="no_do[]" value="'+no_pod+'" readonly>'+'<div class="no_do_text">'+no_pod+'</div>',
+
+                '<input type="hidden" class="form-control tengah kecil kode_biaya" name="kode_biaya[]" value="'+akun_biaya+'" readonly>'+'<div class="kode_biaya_text">'+akun_biaya_text+'</div>',
+
+                '<input type="hidden" class="form-control tengah bayar_biaya" name="bayar_biaya[]" value="'+parseFloat(nominal)+'" readonly>'+'<div class="bayar_biaya_text">'+accounting.formatMoney(nominal, "Rp ", 2, ".",',')+'</div>'+
+                '<input type="hidden" class="form-control tengah do_harga" name="do_harga[]" value="'+harga_do+'" readonly>',
+
+                '<input type="hidden" class="form-control tengah DEBET_biaya" name="DEBET_biaya[]" value="'+DEBET+'" readonly>'+'<div class="DEBET_biaya_text">'+DEBET+'</div>',
+
+                '<input type="hidden" class="form-control tengah ket_biaya" name="ket_biaya[]" value="'+keterangan_biaya+'" readonly>'+'<div class="ket_biaya_text">'+keterangan_biaya+'</div>',
+
+                
+                '<div class="btn-group ">'+
+                '<a  onclick="edit_biaya(this)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a>'+
+                '<a  onclick="hapus_biaya(this)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>'+
+                '</div>',
+            ] ).draw( false );   
+      count++;
+      array_do.push(no_pod);
+      $('.table_biaya').prop('hidden',false);
+      $('.table_detail input').val(''); 
+      $('.jml_data').val(count); 
+      hitung();
+  @endforeach
+
+
+
+
+
   function appendDO(){
 
       var jml_data            = $('.jml_data').val();
@@ -497,8 +658,8 @@
 
                 
                 '<div class="btn-group ">'+
-                '<a  onclick="edit_biaya(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
-                '<a  onclick="hapus_biaya(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+                '<a  onclick="edit_biaya(this)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a>'+
+                '<a  onclick="hapus_biaya(this)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>'+
                 '</div>',
             ] ).draw( false );   
       count++;
@@ -596,28 +757,7 @@
   }
 
   function tt_penerus() {
-
-    var cabang = $('.cabang').val();
-    $.ajax({
-      url:baseUrl +'/fakturpembelian/nota_tt',
-      data: {cabang},
-      dataType:'json',
-      success:function(data){
-        $('.notandaterima').val(data.nota);
-        var agen_vendor = $('.agen_vendor').val();
-        var jatuh_tempo = $('.jatuh_tempo').val();
-        var total_jml   = $('.total_jml').val();
-        total_jml       = total_jml.replace(/[^0-9\-]+/g,"")/100;
-        $('.supplier_tt').val(agen_vendor);
-        $('.jatuhtempo_tt').val(jatuh_tempo);
-        $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
-
-      },error:function(){
-        toastr.warning('Terjadi Kesalahan');
-      }
-    })
-
-
+    $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
   }
 
   function save_biaya() {
@@ -738,3 +878,6 @@
 
 
 </script>
+
+
+@endsection

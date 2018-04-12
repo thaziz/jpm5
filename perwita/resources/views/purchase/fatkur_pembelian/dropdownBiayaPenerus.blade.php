@@ -1,16 +1,16 @@
 
 @if($flag == 'AGEN')
-<select name="nama_kontak1" class="form-control agen_vendor  chosen-select-width1" style="text-align: center;">
+<select name="nama_kontak2" class="form-control agen_vendor  chosen-select-width1" style="text-align: center;">
  	<option data-acc_penjualan="0" data-csf_penjualan="0" value="0">- Pilih - Agen/Vendor -</option>
  	@foreach($data as $val)
- 	<option data-acc_penjualan="{{$val->acc_penjualan}}" data-csf_penjualan="{{$val->csf_penjualan}}" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+ 	<option @if($val->kode == $agen) selected @endif data-acc_penjualan="{{$val->acc_penjualan}}" data-csf_penjualan="{{$val->csf_penjualan}}" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
  	@endforeach
 </select>
 @else
 <select name="nama_kontak2" class="form-control agen_vendor chosen-select-width1" style="text-align: center;">
  	<option data-acc_penjualan="0" data-csf_penjualan="0" value="0">- Pilih - Agen/Vendor -</option>
  	@foreach($data as $val)
- 	<option data-acc_penjualan="{{$val->acc_penjualan}}" data-csf_penjualan="{{$val->csf_penjualan}}" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+ 	<option @if($val->kode == $agen) selected @endif data-acc_penjualan="{{$val->acc_penjualan}}" data-csf_penjualan="{{$val->csf_penjualan}}" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
  	@endforeach
 </select>
 @endif

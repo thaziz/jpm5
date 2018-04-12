@@ -212,13 +212,11 @@ Route::get('fakturpembelian/cari_do', 'BiayaPenerusController@cari_do');
 Route::get('fakturpembelian/carimaster', 'BiayaPenerusController@carimaster');
 Route::get('fakturpembelian/autocomplete_biaya_penerus', 'BiayaPenerusController@autocomplete_biaya_penerus');
 Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
-Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::get('fakturpembelian/cari_do_subcon', 'BiayaPenerusController@cari_do_subcon');
 Route::post('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/edit_penerus/{i}', 'BiayaPenerusController@edit');
 Route::get('fakturpembelian/cari_kontrak_subcon/{i}', 'BiayaPenerusController@cari_kontrak_subcon');
-Route::get('fakturpembelian/cari_kontrak_subcon1/{i}', 'BiayaPenerusController@cari_kontrak_subcon1');
 Route::get('fakturpembelian/getdatapenerusedit', 'BiayaPenerusController@getdatapenerusedit');
 Route::post('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');
 Route::get('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');
@@ -232,6 +230,7 @@ Route::get('fakturpembelian/buktibiayapenerus', 'BiayaPenerusController@buktibia
 Route::get('fakturpembelian/notapenerusagen', 'BiayaPenerusController@notapenerusagen');
 Route::get('fakturpembelian/notaoutlet', 'BiayaPenerusController@notaoutlet');
 Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
+Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');

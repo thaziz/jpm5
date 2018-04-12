@@ -33,6 +33,16 @@
     pointer-events: none;
     opacity: 1;
 }
+  .right{
+      text-align: right;
+  }
+  .table-hover tbody tr{
+    cursor: pointer;
+  }
+
+  .center{
+      text-align: center;
+  }
 </style>
 <link href="{{asset('assets/css/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet">
 
@@ -398,10 +408,10 @@
                           </tr>
 
                           <tr>
-                                              <td colspan="2">
-                                                <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-                                              </td>
-                                            </tr>
+                            <td colspan="2">
+                              <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+                            </td>
+                          </tr>
                          
 
                           <tr>
