@@ -157,7 +157,7 @@
           <tr>
             <td colspan="3">
                 <button type="button" class="btn btn-primary pull-right save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
-                
+
                <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt "  type="button" data-toggle="modal" data-target="#modal_tt_penerus" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
                <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left @if($cari_fp->fp_pending_status == 'PENDING') disabled @endif " id="print-tt"><i class="fa fa-print"></i> Print Tanda Terima</button>
                <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left " id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
@@ -427,8 +427,9 @@
             </tr>
             <tr>
               <td> Tanggal Kembali </td>
-              <td><div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali" value="{{carbon\carbon::parse($form_tt->tt_tglkembali)->format('d/m/Y') or null}}" >
+              <td>
+                <div class="input-group date">
+                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuh_tempo" value="@if(isset($form_tt->tt_tgl)){{carbon\carbon::parse($form_tt->tt_tgl )->format('d/m/Y')}}@else{{carbon\carbon::now()->format('d/m/Y')}}@endif" readonly="" name="tgl_kembali">
                 </div>
               </td>
             </tr>
@@ -842,6 +843,7 @@
                       });
                     });
             }else{
+
               swal({
                 title: "Data Sudah Ada",
                 type: 'error',

@@ -447,6 +447,7 @@ class BiayaPenerusController extends Controller
 
 			return DB::transaction(function() use ($request) {  
 				// dd($request->all());
+		
 				$cari_fp = DB::table('faktur_pembelian')
 							 ->where('fp_nofaktur',$request->nofaktur)
 							 ->first();
@@ -872,7 +873,7 @@ class BiayaPenerusController extends Controller
 
 			 $tgl         = str_replace('/', '-', $request->tgl_tt);		 
 			 $tgl 		  = Carbon::parse($tgl)->format('Y-m-d');
-
+			 
 			 $tgl_kembali         = str_replace('/', '-', $request->tgl_kembali);		 
 			 $tgl_kembali 		  = Carbon::parse($tgl_kembali)->format('Y-m-d');
 			
