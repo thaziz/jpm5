@@ -157,7 +157,7 @@
                           
                           <tr>
                             
-                            <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control ppn" name="ppn" value="{{$po->po_ppn}}"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hargappn" readonly>   </div> </div> </td>
+                            <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control ppn" name="ppn" value="{{$po->po_ppn}}"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hargappn" readonly value="{{$po->po_hasilppn}}">   </div> </div> </td>
                           </tr>
 
 

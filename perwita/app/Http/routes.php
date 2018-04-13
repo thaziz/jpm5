@@ -328,9 +328,13 @@ Route::get('voucherhutang/print_voucherhutang/{v_id}', 'v_hutangController@cetak
 Route::get('voucherhutang/getnota', 'v_hutangController@getnota');
 
 
-Route::get('returnpembelian/returnpembelian', 'PurchaseController@returnpembelian');
-Route::get('returnpembelian/createreturnpembelian', 'PurchaseController@createreturnpembelian');
-Route::get('returnpembelian/detailreturnpembelian', 'PurchaseController@detailreturnpembelian');
+Route::get('returnpembelian/returnpembelian', 'ReturnPembelianController@returnpembelian');
+Route::get('returnpembelian/createreturnpembelian', 'ReturnPembelianController@createreturnpembelian');
+Route::get('returnpembelian/detailreturnpembelian/{id}', 'ReturnPembelianController@detailreturnpembelian');
+Route::get('returnpembelian/getpo', 'ReturnPembelianController@getpo');
+Route::get('returnpembelian/hslfaktur', 'ReturnPembelianController@hslfaktur');
+Route::get('returnpembelian/getnota', 'ReturnPembelianController@getnota');
+Route::post('returnpembelian/save', 'ReturnPembelianController@save');
 
 Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
 Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');

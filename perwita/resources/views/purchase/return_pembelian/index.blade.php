@@ -48,32 +48,7 @@
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                  <div class="box-body">
-                       <!--  <div class="form-group">
-                            
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-                                                      
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-                            
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-                                                      
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
-                </div>        
+                     
                     
                 <div class="box-body">
                 
@@ -83,30 +58,26 @@
                         <th style="width:10px">NO</th>
                         <th> No Return </th>
                         <th> Tanggal </th>
-                        <th> No Faktur </th>
-                        <th> Tanggal Fatkur </th>
                         <th> Supplier </th>
-                        <th> Detail </th>
-                     
+                        <th> No Po </th>
+                        <th> Detail </th>                    
                       
                     </tr>
                   
 
                     </thead>
                     <tbody>
-                      
+                      @foreach($data['rn'] as $index=>$rn)
                       <tr>
-                        <td> 1 </td>
-                        <td>  No Bukti  </td>
-                        <td>  12 Juli 2017 </td>
-                        <td> Supplier A </td>
-                        <td> Uang Makan JPEM Surabaya April 2008 </td>
-                        <td> Rp 22.686.500,00 </td>
-                        <td> <a class="btn btn-success" href={{url('returnpembelian/detailreturnpembelian')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> </td>
+                        <td> {{$index + 1}} </td>
+                        <td> {{$rn->rn_nota}} </td>
+                        <td> {{ Carbon\Carbon::parse($rn->rn_tgl)->format('d-M-Y ') }} </td>
+                        <td> {{$rn->nama_supplier}} </td>
+                        <td> {{$rn->po_no}} </td>
+                        <td> <a class="btn btn-sm btn-success" href={{url('returnpembelian/detailreturnpembelian/'. $rn->rn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> </td>
                         
                       </tr>
-                      <!-- <tr> <td rowspan="4"> 1 </td> <td rowspan="4"> </td> <td rowspan="4"> </td> <td> halo </td> <td> halo </td> <td> halo </td> <tr> <td> halo </td> <td> halo </td> <td> halo </td> </tr> <tr> <td> halo </td> <td> halo</td><td> halo</td>
-                      </tr> -->
+                      @endforeach
                     </tbody>
                    
                   </table>
