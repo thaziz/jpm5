@@ -3,19 +3,24 @@
 <select name="nama_kontak2" class="form-control agen_vendor  chosen-select-width1" style="text-align: center;">
  	<option data-acc_penjualan="0" data-csf_penjualan="0" value="0">- Pilih - Agen/Vendor -</option>
  	@foreach($data as $val)
- 	<option @if($val->kode == $agen) selected @endif data-acc_penjualan="{{$val->acc_penjualan}}" data-csf_penjualan="{{$val->csf_penjualan}}" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+ 	<option @if($val->kode == $agen) selected @endif data-acc_penjualan="{{$val->acc_hutang}}" data-csf_penjualan="{{$val->csf_hutang}}" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
  	@endforeach
 </select>
 @else
 <select name="nama_kontak2" class="form-control agen_vendor chosen-select-width1" style="text-align: center;">
  	<option data-acc_penjualan="0" data-csf_penjualan="0" value="0">- Pilih - Agen/Vendor -</option>
  	@foreach($data as $val)
- 	<option @if($val->kode == $agen) selected @endif data-acc_penjualan="{{$val->acc_penjualan}}" data-csf_penjualan="{{$val->csf_penjualan}}" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+ 	<option @if($val->kode == $agen) selected @endif data-acc_penjualan="{{$val->acc_hutang}}" data-csf_penjualan="{{$val->csf_hutang}}" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
  	@endforeach
 </select>
 @endif
-<input type="hidden" name="acc_penjualan_penerus" class="acc_penjualan_penerus">
-<input type="hidden" name="csf_penjualan_penerus" class="csf_penjualan_penerus">
+@if($flag1 == "E")
+<input type="hidden" name="acc_penjualan_penerus" value="{{$acc}}" class="acc_penjualan_penerus" >
+<input type="hidden" name="csf_penjualan_penerus" value="{{$acc}}" class="csf_penjualan_penerus">
+@else
+<input type="hidden" name="acc_penjualan_penerus" value="" class="acc_penjualan_penerus" >
+<input type="hidden" name="csf_penjualan_penerus" value="" class="csf_penjualan_penerus">
+@endif
 <script>
 	var config1 = {
                    '.chosen-select'           : {},
@@ -35,4 +40,5 @@
     	$('.acc_penjualan_penerus').val(acc);
     	$('.csf_penjualan_penerus').val(csf);
     })
+
 </script>

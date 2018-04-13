@@ -29,7 +29,7 @@
   }
   .disabled {
     pointer-events: none;
-    opacity: 1;
+    opacity: 0.6;
 }
   .right{
       text-align: right;
@@ -84,7 +84,7 @@
             </td>
             <td width="10">:</td>
             <td>
-               <input type="text" class="form-control nofaktur" value="{{$cari_fp->fp_nofaktur}}" name="nofaktur" required="" readonly="">
+               <input type="text" name="nofaktur"  class="form-control nofaktur" value="{{$cari_fp->fp_nofaktur}}" required="" readonly="">
                <input type="hidden" class="form-control idfaktur" name="idfaktur" value="{{$cari_fp->fp_idfaktur}}" required="" readonly="">
             
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -359,7 +359,7 @@
                   No Tanda Terima 
                 </td>
                 <td>
-                  <input type='text' name="nota_tt" value="{{$form_tt->tt_noform}}" class='input-sm form-control notandaterima'>
+                  <input type='text' name="nota_tt" value="{{$form_tt->tt_noform or null}}" class='input-sm form-control notandaterima'>
                   <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 </td>
           </tr>
@@ -367,13 +367,13 @@
             <td> Tanggal </td>
                 <td>
                    <div class="input-group date">
-                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="{{carbon\carbon::parse($form_tt->tt_tgl)->format('d/m/Y')}}" readonly="" name="tgl_tt">
+                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="@if(isset($form_tt->tt_tgl)){{carbon\carbon::parse($form_tt->tt_tgl )->format('d/m/Y')}}@else{{carbon\carbon::now()->format('d/m/Y')}}@endif" readonly="" name="tgl_tt">
                   </div>
                 </td>
           </tr>
           <tr>
               <td> Supplier </td>
-              <td> <input type='text' class="form-control supplier_tt" value="{{$form_tt->tt_idagen}}" name="supplier_tt" readonly=""></td>
+              <td> <input type='text' class="form-control supplier_tt" value="{{$form_tt->tt_idagen or null}}" name="supplier_tt" readonly=""></td>
               </td>
             </tr>
             <tr>
@@ -421,13 +421,13 @@
                Lain Lain
               </td>
               <td>                      
-                <input type="text" class="form-control lain_penerus" value="{{$form_tt->tt_lainlain}}" name="lainlain">
+                <input type="text" class="form-control lain_penerus" value="{{$form_tt->tt_lainlain or null}}" name="lainlain">
               </td>
             </tr>
             <tr>
               <td> Tanggal Kembali </td>
               <td><div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali" value="{{carbon\carbon::parse($form_tt->tt_tglkembali)->format('d/m/Y')}}" >
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali" value="{{carbon\carbon::parse($form_tt->tt_tglkembali)->format('d/m/Y') or null}}" >
                 </div>
               </td>
             </tr>
@@ -491,12 +491,16 @@
        ]
     });
 
+
+  
+
   function ganti_agen(val) {
     var agen = '{{$cari_fp->fp_supplier}}';
+    var acc  = '{{$cari_fp->fp_acchutang}}';
     var val = $('.vendor1 ').val();
     $.ajax({
       url:baseUrl +'/fakturpembelian/rubahVen',
-      data: {val,agen},
+      data: {val,agen,acc},
       success:function(data){
         $('.nama_kontak_td').html(data);
       },error:function(){
@@ -527,6 +531,12 @@
   }
   $(document).ready(function(){
     ganti_agen();
+
+    var acc = $('.agen_vendor').find(':selected').data('acc_penjualan');
+    var csf = $('.agen_vendor').find(':selected').data('csf_penjualan');
+    console.log(acc);
+    $('.acc_penjualan_penerus').val(acc);
+    $('.csf_penjualan_penerus').val(csf);
   })
 
   $('.no_pod').blur(function(){
@@ -757,6 +767,8 @@
   }
 
   function tt_penerus() {
+    var total_jml = $('.total_jml').val();
+    total_jml = total_jml.replace(/[^0-9\-]+/g,"")/100;
     $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
   }
 
@@ -770,7 +782,7 @@
         toastr.warning('Tidak Ada Data');
         return 1;
       }
-
+      tt_penerus();
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data!",
@@ -788,11 +800,10 @@
                 }
             });
           $.ajax({
-          url:baseUrl + '/fakturpembelian/save_agen',
+          url:baseUrl + '/fakturpembelian/update_agen',
           type:'get',
-          data:$('.head1 :input').serialize()
-              +'&'+$('.head_biaya :input').serialize()
-              +'&'+datatable1.$('input').serialize(),
+          data:$('.head_biaya :input').serialize()
+               +'&'+datatable1.$('input').serialize(),
           success:function(response){
             if (response.status == 1) {
                 swal({
@@ -802,8 +813,32 @@
                     timer: 900,
                     showConfirmButton: true
                     },function(){
-                      $('.save_biaya').addClass('disabled');
-                      $('.modal_penerus_tt').removeClass('disabled');
+                      $.ajax({
+                          url:baseUrl + '/fakturpembelian/simpan_tt',
+                          type:'get',
+                          data:$('.tabel_tt_penerus :input').serialize()
+                               +'&'+$('.head1 :input').serialize(),
+                          success:function(response){
+                                swal({
+                                    title: "Berhasil!",
+                                    type: 'success',
+                                    text: "Data berhasil disimpan",
+                                    timer: 900,
+                                    showConfirmButton: true
+                                    },function(){
+                                      
+                                    });
+                          },
+                          error:function(data){
+                            swal({
+                            title: "Terjadi Kesalahan",
+                                    type: 'error',
+                                    timer: 900,
+                                   showConfirmButton: true
+
+                        });
+                       }
+                      });
                     });
             }else{
               swal({
@@ -858,7 +893,7 @@
                     timer: 900,
                     showConfirmButton: true
                     },function(){
-                      $('.save_biaya').addClass('disabled');
+                      
                     });
           },
           error:function(data){
@@ -872,6 +907,10 @@
        }
       });  
      });
+  }
+
+  function print_penerus() {
+   window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+'{{$cari_fp->fp_idfaktur}}');
   }
 
 
