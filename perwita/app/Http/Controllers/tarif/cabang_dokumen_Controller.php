@@ -394,7 +394,7 @@ class cabang_dokumen_Controller extends Controller
                     }
                     for ($k=0; $k <count($gege) ; $k++) { 
                         
-                        if (isset($gege[$k][0]->id_kota_asal) == $request->cb_kota_asal &&
+                    if (isset($gege[$k][0]->id_kota_asal) == $request->cb_kota_asal &&
                         isset($gege[$k][0]->id_kota_tujuan) == $request->cb_kota_tujuan &&
                         isset($gege[$k][0]->kode_cabang) == $request->ed_cabang) {
                         
@@ -424,10 +424,12 @@ class cabang_dokumen_Controller extends Controller
                             $kode_detail += 1;
                         }
                         // return $provinsi[0]->id;
-                        // return $array_note;
+                        // return count($array_note);
                         // return $array_jenis;
+                        $a = "";
                         for ($i=0; $i <count($array_note) ; $i++) { 
                             // return $array_note;
+
                             $data = DB::table('tarif_cabang_dokumen')
                                 ->insert([
                                         'kode_sama' => $cari_kode_sama,
@@ -444,13 +446,13 @@ class cabang_dokumen_Controller extends Controller
                                         'id_provinsi_cabdokumen'=>$provinsi[0]->id,
                                         'crud'=>$crud,
                                 ]);
-                        }
-                        
+                        }                     
                     }
                   }  
+                
                 }
             }
-                
+
             if($data == TRUE){
             $result['error']='';
             $result['result']=1;
