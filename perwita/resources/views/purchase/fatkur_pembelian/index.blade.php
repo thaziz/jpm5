@@ -218,7 +218,7 @@ function(){
       url:baseUrl + '/fakturpembelian/hapusbiayapenerus/'+id,
       type:'get',
       success:function(data){
-        if(data == 'sukses'){
+        if(data.status == 1){
           swal({
           title: "Berhasil!",
                   type: 'success',

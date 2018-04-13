@@ -112,7 +112,6 @@ class kontrak_Controller extends Controller
     }
     public function save_kontrak(request $request)
     {   
-        // dd($request->all());
         $cari_kontrak = DB::table('kontrak_customer')
                           ->where('kc_nomor',$request->kontrak_nomor)
                           ->first();
@@ -232,7 +231,7 @@ class kontrak_Controller extends Controller
     }
     public function update_kontrak(request $request)
     {   
-        // dd($request->all());
+        dd($request->all());
        $cari_kontrak = DB::table('kontrak_customer')
                           ->where('kc_nomor',$request->kontrak_nomor)
                           ->first();

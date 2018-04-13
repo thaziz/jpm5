@@ -71,7 +71,7 @@
                                         <option value="C"> TRANSFER </option>
                                         <option value="L"> LAIN-LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
-                                        <option value="F"> NOTA/BIAYA LAIN</option>
+                                        <option value="B"> NOTA/BIAYA LAIN</option>
                                         <option value="U"> UANG MUKA/DP </option>
                                     </select>
                                 </td>

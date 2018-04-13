@@ -617,78 +617,9 @@
       }
     })
 
-
   }
 
-  function save_biaya() {
-      var temp = 0;
-      $('.no_do').each(function(){
-        temp+=1;
-      })
-
-      if (temp == 0) {
-        toastr.warning('Tidak Ada Data');
-        return 1;
-      }
-
-      swal({
-        title: "Apakah anda yakin?",
-        text: "Simpan Data!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Simpan!",
-        cancelButtonText: "Batal",
-        closeOnConfirm: true
-      },
-      function(){
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-          $.ajax({
-          url:baseUrl + '/fakturpembelian/save_agen',
-          type:'get',
-          data:$('.head1 :input').serialize()
-              +'&'+$('.head_biaya :input').serialize()
-              +'&'+datatable1.$('input').serialize(),
-          success:function(response){
-            if (response.status == 1) {
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                    showConfirmButton: true
-                    },function(){
-                      $('.save_biaya').addClass('disabled');
-                      $('.modal_penerus_tt').removeClass('disabled');
-                    });
-            }else{
-              swal({
-                title: "Data Sudah Ada",
-                type: 'error',
-                timer: 900,
-                showConfirmButton: true
-
-              });
-            }
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
-
-        });
-       }
-      });  
-     });
-  }
-
-  function simpan_tt(argument) {
+  function simpan_tt() {
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data!",
@@ -734,6 +665,78 @@
      });
   }
 
+
+  function save_biaya() {
+
+      var temp = 0;
+      $('.no_do').each(function(){
+        temp+=1;
+      })
+
+      if (temp == 0) {
+        toastr.warning('Tidak Ada Data');
+        return 1;
+      }
+
+      swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+          $.ajax({
+          url:baseUrl + '/fakturpembelian/save_agen',
+          type:'get',
+          data:$('.head1 :input').serialize()
+              +'&'+$('.head_biaya :input').serialize()
+              +'&'+datatable1.$('input').serialize(),
+          success:function(response){
+            if (response.status == 1) {
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                    showConfirmButton: true
+                    },function(){
+                      $('.save_biaya').addClass('disabled');
+                      $('.modal_penerus_tt').removeClass('disabled');
+                      $('#print-penerus').removeClass('disabled');
+                    });
+            }else{
+              swal({
+                title: "Data Sudah Ada",
+                type: 'error',
+                timer: 900,
+                showConfirmButton: true
+
+              });
+            }
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
+        });
+       }
+      });  
+     });
+  }
+
+  
 
 
 
