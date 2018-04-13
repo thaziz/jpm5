@@ -450,7 +450,6 @@ $('.jenis_modal').change(function(){
 });
 var datatable = $('#table_data').DataTable({
                       'paging':false,
-                      'searching':false,
                       columnDefs: [
                       {
                          targets: 6 ,
@@ -492,12 +491,11 @@ var csf_akun_modal           = $('.csf_akun_modal').val();
 var satuan_modal             = $('.satuan_modal').val();
 var tipe_angkutan            = $('.tipe_angkutan').val();
 console.log(harga_modal);
-kota_asal_modal_text   = kota_asal_modal_text.split('-');
-kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
+
 
   datatable.row.add([
-           kota_asal_modal_text[1]+'<input type="hidden" class="kota_asal" value="'+kota_asal_modal+'" name="kota_asal[]">' ,
-           kota_tujuan_modal_text[1]+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
+           kota_asal_modal_text+'<input type="hidden" class="kota_asal" value="'+kota_asal_modal+'" name="kota_asal[]">' ,
+           kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
            jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
            '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
            satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,

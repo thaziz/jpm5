@@ -67,10 +67,10 @@
                                     <select class="form-control cabang chosen-select-width" disabled="" name="cabang" >
                                       <option selected="" disabled="">- Pilih Cabang -</option>
                                       @foreach($cabang as $val)
-                                      @if(Auth::user()->kode_cabang == $val->kode)
-                                      <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      @if($data->kc_kode_cabang== $val->kode)
+                                      <option selected="" value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                       @else
-                                      <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      <option  value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                       @endif
                                       @endforeach
                                     </select>
@@ -129,11 +129,11 @@
                         @foreach($data_dt as $val)
                         <tr>
                             <td>
-                                {{$val->nama_asal}}
+                                {{$val->kcd_kota_asal}} - {{$val->nama_asal}}
                                 <input type="hidden" class="kota_asal" value="{{$val->kcd_kota_asal}}" name="kota_asal[]">
                             </td>
                             <td>
-                                {{$val->nama_tujuan}}
+                                {{$val->kcd_kota_tujuan}} - {{$val->nama_tujuan}}
                                 <input type="hidden" class="kota_tujuan" value="{{$val->kcd_kota_tujuan}}" name="kota_tujuan[]">
                             </td>
                             <td>
@@ -413,7 +413,6 @@ $('#btnadd').click(function(){
 
 var datatable = $('#table_data').DataTable({
                       'paging':false,
-                      'searching':false,
                       columnDefs: [
                       {
                          targets: 6 ,
@@ -440,6 +439,7 @@ $('.jenis_modal').change(function(){
     }
 });
 function tambah(){
+
   
 var kota_asal_modal_text     = $('.kota_asal_modal  option:selected').text();
 var kota_tujuan_modal_text   = $('.kota_tujuan_modal  option:selected').text();
@@ -462,13 +462,12 @@ var acc_akun_modal           = $('.acc_akun_modal ').val();
 var csf_akun_modal           = $('.csf_akun_modal').val();
 var tipe_angkutan            = $('.tipe_angkutan').val();
 var satuan_modal             = $('.satuan_modal').val();
+console.log(kota_asal_modal_text);
 
-kota_asal_modal_text   = kota_asal_modal_text.split('-');
-kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
 
   datatable.row.add([
-           kota_asal_modal_text[1]+'<input type="hidden" class="kota_asal" value="'+kota_asal_modal+'" name="kota_asal[]">' ,
-           kota_tujuan_modal_text[1]+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
+           kota_asal_modal_text+'<input type="hidden" class="kota_asal" value="'+kota_asal_modal+'" name="kota_asal[]">' ,
+           kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
            jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
            '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
            satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,

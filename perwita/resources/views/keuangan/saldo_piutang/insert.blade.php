@@ -76,7 +76,7 @@
 
             <th>Periode</th>
             <td width="20%">
-              <input type="text" class="form-control" value="{{ date("m/Y") }}" name="periode">
+              <input type="text" class="form-control" value="{{ date("m/Y") }}" name="periode" readonly>
             </td>
           </tr>
 
@@ -106,7 +106,7 @@
                     </td>
                     <td class="text-center">{{ $customer->nama }}</td>
                     <td class="text-center">
-                      <input type="text" class="form-control currency text-right" name="jumlah[]" value="0" readonly>
+                      <input type="text" class="form-control currency text-right jumlah" name="jumlah[]" value="0" readonly>
                     </td>
                   </tr>
                 @endforeach
@@ -155,13 +155,14 @@
       evt.stopImmediatePropagation();
       $cabang = $("#cab").val();
       var form = $('#form');
+      $(this).attr("disabled", "disabled");
 
       // alert($customer);
 
       if($cabang == "---"){
         $("#master_saldo_piutang").tooltip("show");
         $( "#master_saldo_piutang" ).effect("shake");
-
+        $("#simpan").removeAttr("disabled");
         return false;
       }
 
@@ -170,14 +171,23 @@
         dataType: "json",
         data: form.serialize(),
         success: function(response){
-
           console.log(response);
-
-          if(response.status == "sukses"){
+          // if(response.status == "sukses"){
             alert("Desain Berhasil Ditambahkan");
+            $("#simpan").removeAttr("disabled");
+            $("#cab").find(":selected").attr("disabled", "disabled");
             reset_all();
-          }
-        }
+          // }
+        },
+        error: function(request, status, err) {
+            if (status == "timeout") {
+              alert("Request Timeout, Data Gagal Disimpan");
+            } else {
+              alert("Internal Server Error, Data Gagal Disimpan");
+            }
+
+            $("#simpan").removeAttr("disabled");
+        } 
       })
 
       return false;
@@ -199,20 +209,14 @@
     }
 
     function reset_all(){
-      detail_reset();
+      // alert("okee");
 
-      $("#cabang").val("---");
-      $("#customer").val("---");
+      $("#cab").val("---");
+      $(".currency").val(0);
       $("#periode").val("");
-      $("#nama_cust").val("");
-      $("#alamat_cust").val("");
 
-      $('#cabang').trigger("chosen:updated");
-      $('#customer').trigger("chosen:updated");
-
-      $data_detail = [];
-
-      fill_detail();
+      $(".currency").attr("readonly", "readonly");
+      $('#cab').trigger("chosen:updated"); 
     }
 
     function addCommas(nStr) {
