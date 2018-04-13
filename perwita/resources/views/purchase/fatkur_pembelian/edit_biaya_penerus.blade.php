@@ -29,7 +29,7 @@
   }
   .disabled {
     pointer-events: none;
-    opacity: 1;
+    opacity: 0.6;
 }
   .right{
       text-align: right;
@@ -84,7 +84,7 @@
             </td>
             <td width="10">:</td>
             <td>
-               <input type="text" class="form-control nofaktur" value="{{$cari_fp->fp_nofaktur}}" name="nofaktur" required="" readonly="">
+               <input type="text" name="nofaktur"  class="form-control nofaktur" value="{{$cari_fp->fp_nofaktur}}" required="" readonly="">
                <input type="hidden" class="form-control idfaktur" name="idfaktur" value="{{$cari_fp->fp_idfaktur}}" required="" readonly="">
             
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -491,12 +491,16 @@
        ]
     });
 
+
+  
+
   function ganti_agen(val) {
     var agen = '{{$cari_fp->fp_supplier}}';
+    var acc  = '{{$cari_fp->fp_acchutang}}';
     var val = $('.vendor1 ').val();
     $.ajax({
       url:baseUrl +'/fakturpembelian/rubahVen',
-      data: {val,agen},
+      data: {val,agen,acc},
       success:function(data){
         $('.nama_kontak_td').html(data);
       },error:function(){
@@ -527,6 +531,12 @@
   }
   $(document).ready(function(){
     ganti_agen();
+
+    var acc = $('.agen_vendor').find(':selected').data('acc_penjualan');
+    var csf = $('.agen_vendor').find(':selected').data('csf_penjualan');
+    console.log(acc);
+    $('.acc_penjualan_penerus').val(acc);
+    $('.csf_penjualan_penerus').val(csf);
   })
 
   $('.no_pod').blur(function(){
@@ -772,7 +782,7 @@
         toastr.warning('Tidak Ada Data');
         return 1;
       }
-
+      tt_penerus();
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data!",
@@ -791,8 +801,8 @@
             });
           $.ajax({
           url:baseUrl + '/fakturpembelian/update_agen',
-          type:'post',
-          data:+'&'+$('.head_biaya :input').serialize()
+          type:'get',
+          data:$('.head_biaya :input').serialize()
                +'&'+datatable1.$('input').serialize(),
           success:function(response){
             if (response.status == 1) {

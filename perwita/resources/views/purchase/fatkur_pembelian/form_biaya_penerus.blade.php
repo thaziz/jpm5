@@ -712,6 +712,7 @@
                       $('.save_biaya').addClass('disabled');
                       $('.modal_penerus_tt').removeClass('disabled');
                       $('#print-penerus').removeClass('disabled');
+                      $('.idfaktur').val(response.id);
                     });
             }else{
               swal({
@@ -738,6 +739,10 @@
 
   
 
-
+function print_penerus() {
+  var idfaktur = $('.idfaktur').val();
+  console.log(idfaktur);
+   window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
+  }
 
 </script>

@@ -369,7 +369,7 @@ class BiayaPenerusController extends Controller
 									 ]);
 					}	
 
-					return response()->json(['status'=>1,'sp'=>$pending_status]);
+					return response()->json(['status'=>1,'sp'=>$pending_status,'id'=>$id]);
 				}else{
 					return response()->json(['status'=>2,'alert'=>'DATA SUDAH ADA']);
 				}
@@ -445,7 +445,7 @@ class BiayaPenerusController extends Controller
 
 		public function update_agen(request $request){
 			return DB::transaction(function() use ($request) {  
-
+				// dd($request->all());
 				$cari_fp = DB::table('faktur_pembelian')
 							 ->where('fp_nofaktur',$request->nofaktur)
 							 ->first();
@@ -457,8 +457,8 @@ class BiayaPenerusController extends Controller
 
 				if ($request->vendor == "AGEN") {
 					$cari_persen = DB::table('agen')
-					 					 ->where('kode',$request->nama_kontak2)
-					 					 ->first();
+				 					 ->where('kode',$request->nama_kontak2)
+				 					 ->first();
 					$komisi = $cari_persen->komisi_agen;
 				}else{
 				 	$cari_persen = DB::table('vendor')
@@ -2147,8 +2147,11 @@ class BiayaPenerusController extends Controller
 		// dd($request->all());
 		if (isset($request->agen)) {
 			$agen = $request->agen;
+			$acc  = $request->acc;
+			$flag1 = 'E';
 		}else{
-			$agen = 0;
+			$agen = '0';
+			$flag1 = 'C';
 		}
 		if ($request->val == 'AGEN') {
 			$data = DB::table('agen')
@@ -2162,7 +2165,7 @@ class BiayaPenerusController extends Controller
 		}
 			$flag = $request->vendor;
 // return 'asd';
-		return view('purchase/fatkur_pembelian/dropdownBiayaPenerus',compact('data','flag','agen'));
+		return view('purchase/fatkur_pembelian/dropdownBiayaPenerus',compact('data','flag','agen','acc','flag1'));
 	}
 
 
