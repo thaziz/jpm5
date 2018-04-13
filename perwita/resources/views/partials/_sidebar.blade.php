@@ -980,7 +980,9 @@
                         {{ Request::is('master_keuangan/saldo_piutang') ? 'active' : '' || 
                             Request::is('master_keuangan/saldo_piutang/*') ? 'active' : ''}} 
 
-                        " href="{{ url('master_keuangan/saldo_piutang/null')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
+                        <?php $cabang = (Session::get('cabang') != 000) ? Session::get('cabang') : 'null'; ?>
+
+                        " href="{{ url('master_keuangan/saldo_piutang/'.$cabang)}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
                         </li>
                          
                         <li >
@@ -2227,7 +2229,7 @@
                                 </li> --}}
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporan_penjualan') ? 'active' : '' || 
-                            Request::is('sales/laporan_penjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporan_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Analisa</a>
+                            Request::is('sales/laporan_penjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporan_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Penjualan</a>
                                 </li>
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_total') ? 'active' : '' || 

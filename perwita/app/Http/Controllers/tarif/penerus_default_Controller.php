@@ -5,12 +5,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
-
+use Carbon\carbon;
+use Auth;
 
 class penerus_default_Controller extends Controller
 {
     public function table_data () {
-        $list = DB::table('tarif_penerus_default')->get();
+        $list = DB::table('tarif_penerus_default')->select('tarif_penerus_default.*','cabang.nama as cabang')->join('cabang','cabang.kode','=','tarif_penerus_default.cabang_default')->get();
         // return $list;
         $data = array();
         foreach ($list as $r) {
@@ -40,19 +41,32 @@ class penerus_default_Controller extends Controller
         $simpan='';
         $crud = $request->crud;
         if ($request->cb_keterangan == null ) {
-            $request->cb_keterangan = ' ';
+            $request->cb_keterangan = ' - ';
         }
-        $data = array(
+
+        if ($crud == 'N') {
+            $data = array(
                 'jenis' => $request->cb_jenis,
                 'keterangan' => $request->cb_keterangan,
                 'tipe_kiriman' => $request->cb_tipe_kiriman,
                 'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
                 'id_zona_foreign' => $request->id_zona_foreign,
                 'cabang_default' => $request->ed_cabang,
+                'create_at' => Carbon::now(),
+                'create_by' => auth::user()->m_name,
             );
-        if ($crud == 'N') {
             $simpan = DB::table('tarif_penerus_default')->insert($data);
         }elseif ($crud == 'E') {
+            $data = array(
+                'jenis' => $request->cb_jenis,
+                'keterangan' => $request->cb_keterangan,
+                'tipe_kiriman' => $request->cb_tipe_kiriman,
+                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                'id_zona_foreign' => $request->id_zona_foreign,
+                'cabang_default' => $request->ed_cabang,
+                'update_at' => Carbon::now(),
+                'update_by' => auth::user()->m_name,
+            );
             $simpan = DB::table('tarif_penerus_default')->where('id', $request->ed_id)->update($data);
         }
         if($simpan == TRUE){

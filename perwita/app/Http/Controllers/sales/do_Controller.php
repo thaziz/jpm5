@@ -421,6 +421,7 @@ class do_Controller extends Controller
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
                 'total' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->ed_diskon_h, FILTER_SANITIZE_NUMBER_INT),
+                'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
                 'kode_satuan' => $kode_satuan,
                 'jumlah' => $jumlah,
@@ -831,12 +832,12 @@ class do_Controller extends Controller
         $simpan = '';
         $crud = $request->crud;
         $data = array(
-            'nomor' => strtoupper($request->ed_nomor),
-            'status' => strtoupper($request->cb_status),
+            'no_do' => strtoupper($request->ed_nomor),
+            'status' => $request->input('tujuan'),
             'id_penerima' => strtoupper($request->ed_id_penerima),
-            'catatan_admin' => strtoupper($request->ed_catatan_admin),
+            'catatan' => 'MANIFESTED',
         );
-        $simpan = DB::table('delivery_order')->where('nomor', $request->ed_nomor)->update($data);
+        $simpan = DB::table('u_s_order_do')->where('nomor', $request->ed_nomor)->insert($data);
         if ($simpan == TRUE) {
             return redirect('sales/deliveryorder');
         }

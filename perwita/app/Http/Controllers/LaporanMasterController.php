@@ -2099,7 +2099,27 @@ class LaporanMasterController extends Controller
 	public function dopo(){
 		return view('/delivery_order');
 	}
-								
+
+	
+	//KARTU PIUTANG 
+
+   public function kartupiutang(){
+   		$tunai = 'T';
+   		if ($tunai == 'T') {
+   			$data = DB::table('invoice')->join('kwitansi_d','invoice.i_nomor','=','kwitansi_d.kd_nomor_invoice')->get();
+   		}
+   		$tunai = 'C';
+   		if ($tunai == 'C') {
+   			$data = DB::table('invoice')->join('kwitansi_d','invoice.i_nomor','=','kwitansi_d.kd_nomor_invoice')->get();
+   		}
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang');
+   }
+
+   //END OF
+
 
    }
+
+   
+
 ?>
