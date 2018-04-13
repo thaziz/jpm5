@@ -629,7 +629,10 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   Route::post('reportuangmuka/reportuangmuka', 'LaporanPembelianController@report_uangmuka');
   //END OF
 
-
+  //LAPORAN TANDA TERIMA TAGIHAN
+  Route::get('lap_ttt/lap_ttt', 'LaporanPembelianController@lap_ttt');
+  Route::post('reporttt/reporttt', 'LaporanPembelianController@report_ttt');
+  //END OF 
 //================================    BELUM SELESAI    ========================================//
 
 Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
@@ -828,6 +831,11 @@ Route::post('reportpenerussepeda/reportpenerussepeda', 'LaporanMasterController@
 
 
 //=======end of
+//LAPORAN PENJUALAN 
+Route::get('sales/laporan_penjualan','LaporanMasterController@laporan_penjualan');
+Route::post('reportlaporan_penjualan/reportlaporan_penjualan','LaporanMasterController@reportlaporan_penjualan');
+Route::get('carilaporan_penjualan/carilaporan_penjualan','LaporanMasterController@carilaporan_penjualan');
+//END OF PENJUALAN
 
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
@@ -1100,24 +1108,24 @@ Route::get('sales/deliveryordercabangtracking/table','trackingdoController@getda
 Route::get('sales/deliveryordercabangtracking/autocomplete','trackingdoController@autocomplete');
 Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoController@getdata');
 // delivery order
-Route::get('sales/deliveryorder', 'sales\do_controller@index');
-Route::get('sales/deliveryorderform', 'sales\do_controller@form');
-Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
-Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
-Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
-Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
-Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
-Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
-Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
+Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
+Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
+Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
+Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
+Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
+Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
+Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
+Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
 
-Route::post('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
-Route::get('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
-Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_controller@save_data_detail');
-Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_controller@hapus_data');
-Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_controller@hapus_data_detail');
-Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_controller@form_update_status');
-Route::post('sales/deliveryorderform/save_update_status', 'sales\do_controller@save_update_status');
-Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
+Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
+Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');
+Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_Controller@hapus_data_detail');
+Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller@form_update_status');
+Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
+Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
 
 
@@ -2664,3 +2672,7 @@ Route::get('master_sales/diskonpenjualan/hapus' , 'DiskonPenjualanController@del
 //print out do 
 
 Route::get('dopo','LaporanMasterController@dopo');
+
+//STOCK OPNAME
+
+Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstockopname');

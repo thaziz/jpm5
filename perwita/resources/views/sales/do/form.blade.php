@@ -349,10 +349,16 @@
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Discount</td>
-                                                    <td colspan="2" id="div_kom">
+                                                    <td  id="div_kom">
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" name="ed_diskon_h" id="ed_diskon_h" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->diskon, 0, ",", ".") }}" @endif>
                                                             <span class="input-group-addon">%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td  id="div_kom">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">Rp</span>
+                                                            <input type="text" class="form-control" name="ed_diskon_v" id="ed_diskon_v" onkeyup="dikonval()" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->diskon, 0, ",", ".") }}" @endif>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -754,6 +760,7 @@
     var listCabang = [];
     var listDiskon = [];
     var maxdiskon = 100;
+    var maxvalue = 0;
     
     $(document).ready( function () {
         $("#surat_jalan").hide();
@@ -1046,6 +1053,9 @@
             return input.value;
         });
         
+
+
+            
         $("input[name='ed_harga']").val(0);
               if (kota_asal == '') {
             Command: toastr["warning"]("Kota Asal harus diisi", "Peringatan !")
@@ -1273,6 +1283,12 @@
                     if (data.jumlah_data == 0){
                         alert('Tarif penerus tidak ditemukan');
                     }
+                    var dasar = $('input[name="ed_tarif_dasar"]').val();
+                    dasar = dasar.replace(/[A-Za-z$. ,-]/g, "");
+                    var penerus = $("input[name='ed_tarif_penerus']").val();
+                    penerus = penerus.replace(/[A-Za-z$. ,-]/g, "");
+                    var hasil = parseInt(dasar)+parseInt(penerus);
+                    maxvalue = hasil*maxdiskon/100;
                     hitung();
                 }
             },
@@ -2318,6 +2334,13 @@
                 i = listCabang.length + 1;
             }
         }
+    }
+    function dikonval(){
+        var data_value = $('#ed_diskon_v').val();
+        if (data_value > maxvalue) {
+            alert('anjay');
+            $('#ed_diskon_v').val(parseInt(maxvalue));
+        }   
     }
 
 </script>

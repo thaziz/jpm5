@@ -19,12 +19,29 @@ use Dompdf\Dompdf;
 
 class StockOpnameController extends Controller
 {
-    public function createstockopname() {
+    public function detailstockopname() {
 
-        $kodeCabang = session::get('cabang');
-
+        $kodeCabang = Session::get('cabang');
+        $namacabang = DB::select(" SELECT nama FROM cabang WHERE kode = '$kodeCabang' ");
+        //dd($namacabang);
         $cabang = null;
         $gudang = null;
+
+         
+        $mastergudang = DB::select(DB::raw(" SELECT mg_id,mg_namagudang,mg_cabang FROM mastergudang 
+                                            WHERE mg_cabang = '$kodeCabang' ORDER BY mg_namagudang ASC "));
+
+        $data = DB::table('stock_opname')
+                  ->join('mastergudang','mg_id','=','so_gudang')
+                  ->get();
+
+        $detail = DB::table('stock_opname_dt')
+            ->join('stock_opname', 'stock_opname_dt.sod_so_id', '=', 'stock_opname.so_id')
+            ->join('masteritem', 'masteritem.kode_item', '=', 'stock_opname_dt.sod_item')
+            ->select('stock_opname_dt.*', 'stock_opname.*', 'masteritem.*')
+            ->get();
+
+
 
         if ($kodeCabang == '000'){
             $gudang  = DB::table('mastergudang')
@@ -69,6 +86,7 @@ class StockOpnameController extends Controller
         $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
 
         $pb  = 'SO-' . $month . $year . '/'. '000' . '/' .  $id;
-        return view('purchase/stock_opname/create',compact('cabang','now','pb', 'gudang'));
+        return view('purchase/stock_opname/detail',
+            compact('cabang','now','pb', 'gudang','kodeCabang','namacabang','mastergudang','tgl','detail','data'));
     }
 }

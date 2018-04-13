@@ -530,8 +530,68 @@ class LaporanMasterController extends Controller
 	// END OF DEFAULT
 
 
+
+
 //==================================================== LAPORAN TARIF BERAKIR ========================================================//
 
+
+//LAPORAN PENJUALAN
+
+	public function laporan_penjualan(){
+
+		$data =DB::table('delivery_order as do')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->leftjoin('invoice_d','invoice_d.id_nomor_do','=','do.nomor')
+				->where('do.status','=','DELIVERED OK')
+				->get();
+
+		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+		 $tahun = carbon::now();
+		 $tahun =  $tahun->year;
+
+		for ($i=0; $i <count($array_bulan) ; $i++) { 
+			$dat[$i] =DB::table('delivery_order as do')
+				->select('do.total_net','do.tanggal','do.pendapatan','do.status','do.nomor')
+				->whereMonth('tanggal','=',$array_bulan[$i])
+				->whereYear('tanggal','=',$tahun)
+				->where('do.status','=','DELIVERED OK')
+				->join('invoice_d','invoice_d.id_nomor_do','=','do.nomor')
+				->get();
+			
+		}
+		// return $dat;
+		// return $tahun;
+		for ($i=0; $i <count($dat) ; $i++) { 
+			if ($dat[$i] != null) {
+				for ($j=0; $j <count($dat[$i]); $j++) {
+					$hitung[$i][$j] = $dat[$i][$j]->total_net;
+				}
+			}else{
+				$hitung[$i] = 0;
+			}
+		}
+		// return $hitung;
+		for ($i=0; $i <count($hitung) ; $i++) {
+			if ($hitung[$i] != null) {
+				for ($j=0; $j <count($hitung[$i]) ; $j++) {
+					$penjualan[$i] = array_sum($hitung[$i]);
+				}
+			}else{
+					$penjualan[$i] = 0;
+			}
+			
+		}
+		// return $penjualan;
+		// return [$paket,$koran,$kargo];
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+		return view('purchase/master/master_penjualan/laporan/lap_penjualan',compact('data','kota','kota1','paket','koran','penjualan'));
+	}
+
+//END OF
 
 	public function deliveryorder_total(){
 
@@ -1838,7 +1898,7 @@ class LaporanMasterController extends Controller
 
 		//LAPORAN DSIKON 
 		public function lap_diskon(){
-			$data = DB::table('diskon')->get();
+			$data = DB::table('d_disc_cabang')->select('d_disc_cabang.*','cabang.nama as cabang')->join('cabang','cabang.kode','=','d_disc_cabang.dc_cabang')->get();
 			return view('purchase/master_do/lap_diskon/lap_diskon',compact('data'));
 		}	
 		public function report_diskon(Request $request){
@@ -1849,7 +1909,7 @@ class LaporanMasterController extends Controller
 					} 
 				json_encode($dat);
 	        for ($i=0; $i <count($dat); $i++) { 
-			  $dat1[$i] = DB::table('diskon')->where('b_kode','=',$dat[$i])->get();
+			  $dat1[$i] = DB::table('d_disc_cabang')->select('d_disc_cabang.*','cabang.nama as cabang')->join('cabang','cabang.kode','=','d_disc_cabang.dc_cabang')->where('dc_id','=',$dat[$i])->get();
 			}
 			// dd($dat1);
 		return view('purchase/master_do/lap_diskon/report_diskon',compact('dat1'));

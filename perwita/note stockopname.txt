@@ -1,0 +1,10 @@
+
+1. menambah route
+Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstockopname');
+
+2. menambah controller /StckOpnameController.php
+- file dalam folder
+
+3. menambah view /purchase/stock_opname/detail.blade.php
+- file dalam folder
+
