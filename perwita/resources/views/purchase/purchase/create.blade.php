@@ -85,22 +85,23 @@
                     <br>
                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="row">
+                        <div class="col-sm-12">
+                          <div class="col-sm-6"> <div class="judul-spp"> </div> </div>
+                        </div>
                         <div class="col-md-8">
                            <div class="tablespp"> </div>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="judul-spp"> </div> 
-                             <div class="pull-right">
-                         <div class="simpan"> </div>
-                    </div>
+                     
+                            
+                       
 
-                        </div>
+                       
                     </div>
                     
                    
-                    <div class="pull-right">
-                       
-                    </div>
+                       <div class="pull-right">
+                               <div class="simpan"> </div>
+                          </div>
 
                 </div><!-- /.box-body -->
 
@@ -374,20 +375,20 @@
 
          var judul = '<table class="table" > <tr> <td style="width:100px"> <h2> SUPPLIER </h2> </td> <td style="width:20px"> : </td> <td> <h2> '+response.spp[0][0].nama_supplier+' </h2>  </td> <input type="hidden" value='+response.spp[0][0].idsup+' name="idsupplier"> <input type="hidden" name="nosupplier" value='+response.spp[0][0].idsup+'> </tr>' + //namasupplier
 
-                    '<tr> <td> Jatuh Tempo </td> <td> : </td>  <td>  <div class="col-sm-8"> <input type="number" class="form-control bayar" name="bayar" value="'+response.spp[0][0].spptb_bayar+'"> </div> <label class="col-sm-2 col-sm-2 control-label"> Hari </label> </div>' + // jangka waktu pembayaran
+                    '<tr> <td> Jatuh Tempo </td> <td> : </td>  <td>  <div class="col-sm-8"> <input type="number" class="form-control input-sm bayar" name="bayar" value="'+response.spp[0][0].spptb_bayar+'"> </div> <label class="col-sm-2 col-sm-2 control-label"> Hari </label> </div>' + // jangka waktu pembayaran
 
                     '<input type="hidden" value="'+response.spp[0][0].spp_penerimaan+'" name="spp_penerimaan"> </td> </tr>  </tr>' +
-                    '<tr> <td> Catatan </td>  <td> : </td> <td> <div class="col-md-12"> <input type="text" class="form-control" name="catatan" required=""> </div> </td> </tr>' +
+                    '<tr> <td> Catatan </td>  <td> : </td> <td> <div class="col-md-12"> <input type="text" class="form-control input-sm" name="catatan" required=""> </div> </td> </tr>' +
 
-                    '<tr> <td> Sub Total </td> <td> : </td> <td>  <label class="col-sm-1 col-sm-1 control-label"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control subtotal" readonly="" name="subtotal" style="text-align:right"> <input type="hidden" class="form-control subtotal2" readonly="" style="text-align:right"> </div> </td>  </tr>' + // subtotal
+                    '<tr> <td> Sub Total </td> <td> : </td> <td>  <label class="col-sm-1 col-sm-1 control-label"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control subtotal input-sm" readonly="" name="subtotal" style="text-align:right"> <input type="hidden" class="form-control subtotal2" readonly="" style="text-align:right"> </div> </td>  </tr>' + // subtotal
 
                   /*  '<tr> <td> Discount </td> <td> : </td> <td> <div class="row"><div class="col-md-4"> <input type="text" class="form-control disc" name="diskon"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hsldiskon" readonly>   </div> </td> </tr>' + //diskon*/
 
                     '<tr> <td> Jenis PPn </td> <td> : </td> <td> <select class="form-control jenisppn" name="jenisppn">  <option value="T"> Tanpa </option> <option value="E"> Exclude </option> <option value="I"> Include </option> </select> </td> </tr>' + //jenisppn
 
-                    '<tr> <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-4"> <input type="number" class="form-control ppn" name="ppn"> </div> <label class="col-md-3"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control hargappn" readonly>   </div> </div> </td> </tr>' + //ppn
+                    '<tr> <td> PPn </td> <td> : </td> <td> <div class="row"> <div class="col-md-5"> <input type="number" class="form-control input-sm ppn" name="ppn"> </div> <label class="col-md-2"> % </label> <div class="col-md-5">   <input type="text" style="text-align:right" class="form-control input-sm hargappn" readonly name="hasilppn">   </div> </div> </td> </tr>' + //ppn
 
-                    '<tr> <td> Total </td> <td> : </td> <td> <label class="col-md-1"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control total" readonly="" name="total" style="text-align:right">  </div> </td> </tr> </table>'; //total
+                    '<tr> <td> Total </td> <td> : </td> <td> <label class="col-md-1"> Rp </label> <div class="col-md-8"> <input type="text" class="form-control total input-sm" readonly="" name="total" style="text-align:right">  </div> </td> </tr> </table>'; //total
 
                
                       //jangka waktu pembayaran;
@@ -781,7 +782,7 @@
 
                         ppnasli = parseFloat((parseFloat($this) / 100) * parseFloat(hargappn2)).toFixed(2);
                         $('.hargappn').val(addCommas(ppnasli));
-                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli))
+                        hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
                        // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
                         $('.total').val(addCommas(hasiltotal));
                     }
@@ -816,7 +817,7 @@
                       total = parseFloat(parseFloat(subharga) + parseFloat(ppnhar));
                       numhar = total.toFixed(2);
                       $('.total').val(addCommas(numhar));
-                      $('.subtotal').val(addCommas(numhar));
+                      $('.subtotal').val(addCommas(subtotal));
                      
                     }
                     else if(jenisppn == 'I'){
@@ -846,6 +847,7 @@
                             $('.hargappn').val('');
                            total = parseFloat(subharga).toFixed(2);
                           $('.total').val(addCommas(total));
+                          $('.subtotal').val(subtotal)
                     }
                    
              

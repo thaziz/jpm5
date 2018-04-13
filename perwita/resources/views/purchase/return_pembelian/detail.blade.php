@@ -3,7 +3,19 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css" media="screen">
+  .disabled {
+        pointer-events: none;
+        opacity: 0.7;
+        }
+  .borderless td, .borderless th {
+    border: none !important;
+  }
 
+   .table-hover tbody tr{
+    cursor: pointer;
+  }
+  </style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Return Pembelian </h2>
@@ -17,7 +29,8 @@
                         <li>
                           <a> Transaksi Purchase</a>
                         </li>
-                        <li class="active"> Detail Return Pembelian  </strong>
+                        <li class="active">
+                            <strong> Create Return Pembelian  </strong>
                         </li>
 
                     </ol>
@@ -32,13 +45,15 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Detail Return Pembelian
+                    <h5> Tambah Data
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                    <div class="pull-right">
-                        <a class="btn btn-success"> Kembali </a>
+                   <div class="text-right">
+                       <a class="btn btn-sm bbtn-default" aria-hidden="true" href="{{ url('returnpembelian/returnpembelian')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
+
                     </div>
                 </div>
+                  <form class="form-horizontal" id="saveform"  method="POST">
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
@@ -46,139 +61,290 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                  <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST"> 
+                 
                   <div class="box-body">
                       <div class="row">
                       <div class="col-xs-6">
-                           <table border="0">
+                        <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
+                           <table border="0" class="table">
+                            <tr>
+                                <td> Cabang </td>
+                                 <td> 
+
+                              @if(session::get('cabang') == 000)
+                              <select class='form-control chosen-select-width cabang' name="cabang">
+                                  @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}">
+                                      {{$cabang->kode}} - {{$cabang->nama}}
+                                    </option>
+                                  @endforeach
+                                  </select>
+                              @else
+                              <select class='form-control chosen-select-width cabang disabled'>
+                                  @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}" 
+                                    @if($cabang->kode == Session::get('cabang')) selected @endif>
+                                      {{$cabang->nama}}
+                                    </option>
+                                  @endforeach
+                                  </select>
+                              @endif
+                            </tr>
+
                           <tr>
                             <td width="150px">
-                          No Bukti
+                          No Return
                             </td>
                             <td>
-                              
+                               <input type="text" class="form-control notareturn input-sm" name="nota">
+                                <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                             </td>
                           </tr>
 
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-                            <td> Tanggal </td>
+                            <td>   Tanggal </td>
                             <td>
-                           
+                             <div class="input-group date">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tgl" required="">
+                              </div>
                             </td>
                           </tr>
-                          <tr>
-                          <td>
-                            &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-                            <td> Supplier </td>
-                            <td> </td>
-                            </td>
-                          </tr>
+                       
 
 
                           <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-
                             <td>
-                              Keterangan
+                              Supplier
                             </td>
                             <td>
-                             
-
+                              <select class="form-control chosen-select supplier" required="" name="supplier">
+                              @foreach($data['supplier'] as $supplier)
+                                <option value="{{$supplier->idsup}}">
+                                        {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}
+                                </option>
+                                @endforeach
+                              </select>
                             </td>
-
                           </tr>
-
-
                           <tr>
-                            <td> &nbsp; </td>
+                            <td> Keterangan </td>
+                            <td> <input type="text" class="form-control input-sm" name="keterangan" required></td>
                           </tr>
-
-                          <tr>
-                            <td> Netto </td>
-                            <td> Rp 22.682.500, 00</td>
-                          </tr>
-
+                         
                           </table>
+                       
                       </div>
 
+                      <div class="col-sm-6">                      
+                          <table class="table table-stripped">
+                             
+                          </table>
+                          
+                      </div>
+                    
                       </div>
 
                       <hr>
 
-                      <h4> Detail Daftar Voucher Hutang </h4>
-                
-                   <br>
-
-                   <div class="box-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered table-striped tbl-penerimabarang" id="addColumn">
-                      <tr>
-                        <thead>
-                        <th>
-                          No
-                        </th>
-                          <th width="150px">
-                           Acc Biaya
-                          </th>
-
-                          <th>
-                          Nama Account Biaya
-                          </th>
-
-                          <th width="150px">
-                            Keterangan
-                          </th>
-
-                          <th width="100px">
-                           Debit
-                          </th>
-
-                          <th>
-                          Kredit
-                          </th>
-
                         
-                        </thead>
+                      <button class="btn btn-sm btn-primary  createmodalpo" id="createmodal_po" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data PO </i> </button>
 
-                      </tr>
-                      <tbody>
-                          <tr>
-                            <td> 1 </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            <td> </td>
-                            
-                          </tr>
-                      </tbody>
-                      </table>
+
+                      <div class="col-sm-12">
+                          <div class="col-sm-8">
+                          <br>
+                              <table class="table">
+                                  <tr>
+                                  <th> No PO </th>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm nopo" readonly="" name="nopo"> <input type="hidden" class="form-control input-sm idpo" readonly="" name="idpo"> </div> <div class="col-sm-4"> <button class="btn btn-xs btn-info" type="button" onclick="lihatbarang()" data-toggle="modal" data-target="#myModal7"> <i class="fa fa-search"> Lihat Data PO </i> </button> </div> </td>
+                                  </tr>  
+                                  
+                                   <tr>
+                                  <td> Sub Total </td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal"> </div></td>
+                              </tr>
+
+                              <tr>
+                                  <td> Jenis PPn </td>
+                                  <td> <div class="col-sm-7"> <select class="form-control jenisppn" name="jenisppn">
+                                          <option value="T">
+                                              Tanpa
+                                          </option>
+                                          <option value="E">
+                                              Exclude
+                                          </option>
+                                          <option value="I">
+                                              Include
+                                          </option>
+                                      </select>
+                                      </div>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td> PPn </td>
+                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn"></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn"> </div></td>
+                              </tr>
+                              <tr>
+                                  <td> Total </td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total"></div> </td>
+                              </tr>
+                              </table>
+                              
+                              <p style="color:red"> <i> *Hapus data yang tidak di perlukan </i></p>
+
+                              <table class="table table-datatable" id="table-barang">
+                              <thead>
+                                  <tr> 
+                                      <th> No </th>
+                                      <th style="width:300px"> Nama Barang </th>
+                                      <th> Qty PO </th>
+                                      <th style="width:70px"> Qty Return </th>
+                                      <th> Harga </th>
+                                      <th> Total Harga </th>
+                                      <th> Aksi </th>
+                                  </tr>
+                              </thead>
+                                 
+                              </table>
+                          </div>
+                          
+
                       </div>
-                   </div>
+
+
+                       <!--  Modal  -->
+                   <div class="modal inmodal fade" id="myModal5" tabindex="-1" role="dialog"  aria-hidden="true" style="min-width:100px">
+                               <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                     <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                        <h4 class="modal-title"> Data Po </h4>     
+                                       </div>
+
+                                <div class="modal-body">
+                                   <table class="table table-datatable table-bordered table-stripped" id="table-po">
+                                      <thead>
+                                      <tr>
+                                          <th> No </th>
+                                          <th> No PO </th>
+                                          <th> Netto Harga </th>
+                                          <th> Tipe PO </th>
+                                          <th> Aksi </th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                          <tr>
+                                              <td> </td>
+                                              <td> </td>
+                                              <td> </td>
+                                              <td> </td>
+                                              <td> </td>
+                                          </tr>
+                                      </tbody>
+                                   </table>
+                                </div>
+
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="buttongetid">Save changes</button>
+                          </div>
+                      </div>
+                    </div>
+                 </div> 
+                  <!-- End Modal -->
+
+                    <!-- Modal Data PO -->
+                         <div class="modal inmodal fade" id="myModal7" tabindex="-1" role="dialog"  aria-hidden="true" style="min-width:100px">
+                               <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                     <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                          <h2> DATA PO</h2>
+                                       </div>
+
+                                <div class="modal-body">
+                                     
+                                   
+                                          <table class="table" id="header-modal">
+                                              <tr>
+                                              <th> No PO </th>
+                                              <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm nopomodal" readonly="" name="nopo" readonly=""> </div> </td>
+                                              </tr>  
+                                              
+                                               <tr>
+                                              <td> Sub Total </td>
+                                              <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotalmodal" name="subtotal" readonly=""> </div></td>
+                                          </tr>
+
+                                          <tr>
+                                              <td> Jenis PPn </td>
+                                              <td> <div class="col-sm-7"> <select class="form-control jenisppnmodal disabled" name="jenisppn">
+                                                      <option value="T">
+                                                          Tanpa
+                                                      </option>
+                                                      <option value="E">
+                                                          Exclude
+                                                      </option>
+                                                      <option value="I">
+                                                          Include
+                                                      </option>
+                                                  </select>
+                                                  </div>
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <td> PPn </td>
+                                              <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppnmodal" name="inputppn" readonly=""></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppnmodal" name="hasilppn"> </div></td>
+                                          </tr>
+                                          <tr>
+                                              <td> Total </td>
+                                              <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm totalmodal" name="total" readonly=""></div> </td>
+                                          </tr>
+                                          </table>
+                                         
+
+                                          <table class="table table-datatable" id="barang-header">
+                                          <thead>
+                                              <tr> 
+                                                  <th> No </th>
+                                                  <th style="width:300px"> Nama Barang </th>
+                                                  <th> Qty PO </th>
+                                              
+                                                  <th> Harga </th>
+                                                  <th> Total Harga </th>
+                                                  <th> Aksi </th>
+                                              </tr>
+                                          </thead>
+                                             
+                                          </table>
+                                     
+
+                                </div>
+
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="buttongetid">Save changes</button>
+                          </div>
+                            </div>
+                          </div>
+                       </div> 
+
+                    <!-- End Modal PO -->
+
+                    </div>
+                   
+
+             
                    
   
 
                 <div class="box-footer">
                   <div class="pull-right">
                   
-                    <a class="btn btn-warning" href={{url('purchase/voucherhutang')}}> Kembali </a>
-                   <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-success">
+                    <a class="btn btn-sm btn-warning" href={{url('purchase/returnpembelian')}}> Kembali </a>
+                   <button type="submit" id="submit" name="submit" value="Simpan" class="btn btn-sm btn-success simpanitem"> <i class=" fa fa-upload"> </i> Simpan </button>
          
-                    
+                    </form>
                     
                     </div>
                   </div><!-- /.box-footer -->
@@ -204,51 +370,398 @@
 <script type="text/javascript">
 
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
-    
-   /* $('#tmbh_data_barang').click(function(){
-      $("#addColumn").append('<tr> <td rowspan="3"> 1 </td> <td rowspan="3"> </td> <td rowspan="3"> </td>  <td rowspan="3"> </td> <td> halo </td> <td> 3000 </td>  <tr> <td> halo </td> <td>  5.000 </td> </tr> <tr><td> halo </td> <td> 3000 </td> </tr>');
-    })*/
-     $no = 0;
-    $('#tmbh_data_barang').click(function(){
-         $no++;
-     $("#addColumn").append('<tr id=item-'+$no+'> <td> <b>' + $no +' </b> </td>' + 
-      /* brg*/       '<td> <select class="form-control"> <option value=""> Brg A </option> <option value=""> Brg B </option> </select> </td>' + 
-      /* qty*/       '<td> <input type="text" class="form-control"> </td>' +
-      /* gudang  */  '<td> <input type="text" class="form-control"> </td>' +
-      /* harga */    '<td> <input type="text" class="form-control"> </td>'  +
-      /* amount*/    '<td> <input type="text" class="form-control">  </td>' +
-      /* stok */     '<td> <select class="form-control"> <option value=""> ya </option> <option value=""> tidak </option></select></td>'  +
-      /* biaya */   '<td> <input type"text" class="form-control">  </td>' +
-      /* ppn */     '<td> <input type="text" class="form-control"> </td>' +
-      /* netto */   '<td> <input type="text" class="form-control"> </td>' +
-      /* account */ '<td> <select class="form-control"> <option value=""> A </option> <option value="B"> B </option></select></td>' +
-      /* keterangan */  '<td> <input type="text" class="form-control"> </td>' +
+    function lihatbarang () {
+      $idpo = $('.idpo').val();
+      checked = [];
+      checked = $idpo;
+      if($idpo == ''){
+        toastr.info('anda belum memasukkan data po :)');
+       return false;
+      } 
+      $.ajax({
+       url : baseUrl + '/returnpembelian/hslfaktur',
+       data : {checked},
+       dataType : 'json',
+       type : "get",
+       success : function(response){
+          // $('#myModal7').modal('toggle');
+              $('.nopomodal').val(response.po[0].po_no);
+              $('.subtotalmodal').val(addCommas(response.po[0].po_subtotal));
+            
+              $('.jenisppnmodal').val(response.po[0].po_jenisppn);
+              if(response.po[0].po_jenisppn == 'T'){
+                $('.inputppnmodal').val('0.00');
+                $('.hasilppnmodal').val('0.00');
 
-                   '<td><a class="btn btn-danger removes-btn" data-id='+ $no +'> <i class="fa fa-trash"> </i>  </a> </td>' +
+              }
+              else {
+                $('.inputppnmodal').val(addCommas(response.po[0].po_ppn));
+                $('.hasilppnmodal').val(addCommas(response.po[0].po_hasilppn));
+              }
+              
+              $('.totalmodal').val(addCommas(response.po[0].po_totalharga));
+
+
+                var barangheader = $('#barang-header').DataTable();
+                barangheader.clear().draw();
+                var nmrbnk = 1;
+                table2 = response.po;       
+                 for(var i = 0; i < table2.length; i++){  
+                       var html2 = "<tr class='databarang data"+nmrbnk+"' id="+table2[i].po_id+" data-nopo='"+table2[i].po_noform+"'>" +
+                            "<td>"+nmrbnk+"</td>" +
+                            "<td style='width:200px'> <p style='width:200px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
+                            "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+nmrbnk+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +                           
+                            "<td> <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
+                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"'> <input type='hidden' class='minusharga' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" +
+                            "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+nmrbnk+"' type='button'><i class='fa fa-trash'></i></button> </td>" +
+                           "</tr>";
+                          
+                       barangheader.rows.add($(html2)).draw(); 
+                      nmrbnk++;                                                                                  
+                 } 
+       }
+      })
+    }
+
+
+    $('#saveform').submit(function(event){
+          trtbl = $('tr.databarang').length;
+          if(trtbl == 0){
+            toastr.info('Data yang di inputkan belum ada :)');
+          }
+         
+          event.preventDefault();
+          var post_url2 = baseUrl + '/returnpembelian/save';
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data RETURN PEMBELIAN!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+               
+        $.ajax({
+          type : "POST",          
+          data : form_data2,
+          url : post_url2,
+          dataType : 'json',
+          success : function (response){
+                   alertSuccess(); 
+            $('.simpanitem').attr('disabled' , true);
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
+      
+      })
+
+    $('.cabang').change(function(){
+        comp = $('.cabang').val();    
+        $.ajax({    
+            type :"get",
+            data : {comp},
+            url : baseUrl + '/returnpembelian/getnota',
+            dataType:'json',
+            success : function(data){
+             // alert(comp);
+                var d = new Date();
                 
-      '</tr>');+ 
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
 
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+                console.log(d);
 
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
 
-
-        $(document).on('click','.removes-btn',function(){
-              var id = $(this).data('id');
-       //       alert(id);
-              var parent = $('#item-'+id);
-
-             parent.remove();
-          })
-
-
+                 
+                    nospp = 'RN' + month + year2 + '/' + comp + '/' + data.idreturn
+                
+            
+                $('.notareturn').val(nospp);
+              
+            }
+        })
     })
 
+  comp = $('.cabang').val();    
+        $.ajax({    
+            type :"get",
+            data : {comp},
+            url : baseUrl + '/returnpembelian/getnota',
+            dataType:'json',
+            success : function(data){
+             // alert(comp);
+                var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+
+                 
+                    nospp = 'RN' + month + year2 + '/' + comp + '/' + data.idreturn
+                
+            
+                $('.notareturn').val(nospp);
+              
+            }
+        })
+
+ function addCommas(nStr) {
+            nStr += '';
+            x = nStr.split('.');
+            x1 = x[0];
+            x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+    }
+
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+      });
+
+     $('.date').datepicker({
+        autoclose: true,
+         format: 'dd-MM-yyyy',
+    }).datepicker("setDate", "0");
+
+  $('#buttongetid').click(function(){
+     var checked = $(".check:checked").map(function(){
+        return this.id;
+      }).toArray();
+           var tablepo = $('#table-po').DataTable();
+          tablepo.clear().draw();   
+        url = baseUrl + '/returnpembelian/hslfaktur'; 
+
+        if(checked.length > 1){
+          toastr.info('Hanya Bisa Pilih Satu Data Faktur :) ');
+          return false;
+        }
+         $.ajax({    
+          type :"get",
+          data : {checked},
+          url : url,
+          dataType:'json',
+          success : function(response){
+              $('#myModal5').modal('toggle');
+              $('.nopo').val(response.po[0].po_no);
+              $('.subtotal').val(addCommas(response.po[0].po_subtotal));
+              $('.idpo').val(response.po[0].po_id);
+              $('.jenisppn').val(response.po[0].po_jenisppn);
+
+              if(response.po[0].po_jenisppn == 'T'){
+                 $('.inputppn').val('0.00');
+                 $('.hasilppn').val('0.00');
+              }
+              else {
+                $('.inputppn').val(addCommas(response.po[0].po_ppn));
+                $('.hasilppn').val(addCommas(response.po[0].po_hasilppn));
+              }
+              $('.total').val(addCommas(response.po[0].po_totalharga));
+
+
+                var tablebarang = $('#table-barang').DataTable();
+                tablebarang.clear().draw();
+                var nmrbnk = 1;
+                table2 = response.po;       
+                 for(var i = 0; i < table2.length; i++){  
+                       var html2 = "<tr class='databarang data"+nmrbnk+"' id="+table2[i].po_id+" data-nopo='"+table2[i].po_noform+"'>" +
+                            "<td>"+nmrbnk+"</td>" +
+                            "<td style='width:200px'> <p style='width:200px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
+                            "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+nmrbnk+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +
+                            "<td> <input type='text' class='form-control input-sm  qtyreturn qtyreturn"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyreturn[]' style='width:70px' required></td>" +
+                            "<td> <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
+                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"'> <input type='hidden' class='minusharga' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" +
+                            "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+nmrbnk+"' type='button'><i class='fa fa-trash'></i></button> </td>" +
+                           "</tr>";
+                          
+                       tablebarang.rows.add($(html2)).draw(); 
+                      nmrbnk++;                                                                                  
+                 } 
+
+                $('.qtyreturn').each(function(){
+                  $(this).change(function(){
+                    dataid = $(this).data('id');
+                    qty = $(this).val();
+                    qtykirim = $('.qtykirim' + dataid).val();
+                    if(parseInt(qty) > parseInt(qtykirim)){
+                      toastr.info('Tidak bisa melebihi dari jumlah qty PO :) ');
+                      $(this).val('');
+                      return false;
+                    }  
+
+                    //hitung jumlah total per barang
+                    hasilqty = parseInt(qtykirim) - parseInt(qty);
+                    harga = $('.jumlahharga'+dataid).val();
+                    harga2 = harga.replace(/,/g, ''); 
+                    totalhrga = (hasilqty * parseFloat(harga2)).toFixed(2);
+                    $('.totalharga' + dataid).val(addCommas(totalhrga));
+
+                    minusqty = (qty * parseFloat(harga2)).toFixed(2);
+                    $('.minusharga' + dataid).val(addCommas(minusqty));
+
+
+                    //hitung total di header
+                      subtotal = response.po[0].po_subtotal;            
+                      jenisppn = response.po[0].po_jenisppn;
+                      inputppn = response.po[0].po_ppn;
+                      hasilppn = response.po[0].po_hasilppn;
+                      totalharga =$('.total').val(addCommas(response.po[0].po_totalharga));
+                      $('.minusharga').each(function(){
+                        valminus2 = $(this).val();
+
+                        if(valminus2 != ''){
+                          valminus = valminus2.replace(/,/g, ''); 
+                          hargasubtotal = parseFloat(parseFloat(subtotal) - parseFloat(valminus)).toFixed(2);
+                          // alert(subtotal);   
+                         // alert(valminus); 
+                         
+                          // alert(hargasubtotal);
+                        }
+
+                      })
+                    //  alert(hargasubtotal);
+                      $('.subtotal').val(addCommas(hargasubtotal));
+                      subtotal3 = $('.subtotal').val();
+                      subtotal2 =   subtotal3.replace(/,/g, ''); 
+                      if(jenisppn != 'T'){
+                          if(jenisppn == 'E'){
+                
+                            hargappn = parseFloat(inputppn * parseFloat(subtotal2) / 100);
+                       
+                            $('.hasilppn').val(addCommas(hargappn));
+                            total = parseFloat(parseFloat(subtotal2) + parseFloat(hargappn));
+                           
+                            numhar = total.toFixed(2);
+                            $('.total').val(addCommas(numhar));
+                            $('.subtotal').val(addCommas(subtotal2));
+                          }
+                          else if(jenisppn == 'I'){                            
+                              hargappn = parseFloat(subtotal2 * 100) / (100 + parseFloat(inputppn) );                     
+                              hargappn2 = hargappn.toFixed(2);
+                              $('.subtotal').val(addCommas(hargappn2));
+                             // alert(subtotal2 *100);
+                             // alert(100 + parseFloat(inputppn));
+
+
+                              ppnasli = parseFloat((parseFloat(inputppn) / 100) * parseFloat(hargappn2)).toFixed(2);
+                              $('.hargappn').val(addCommas(ppnasli));
+                              hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
+                             // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                              $('.total').val(addCommas(hasiltotal));
+                          }
+                          else {
+                             $('.subtotal').val(addCommas(subtotal));
+                             $('.total').val(addCommas(subtotal));
+                          }
+                        }
+                  })
+                })
+
+                 tablebarang = $('#table-barang').DataTable();
+                $('.removes-btn').click(function(){
+                 tablebarang.row( $(this).parents('tr') )
+                  .remove()
+                  .draw();
+                })
+          }
+        })
+  })
+
+  $(document).ready( function () {
+      var config2 = {
+                   '.chosen-select'           : {},
+                   '.chosen-select-deselect'  : {allow_single_deselect:true},
+                   '.chosen-select-no-single' : {disable_search_threshold:10},
+                   '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                   '.chosen-select-width1'     : {width:"100%"}
+                 }
+                 for (var selector in config2) {
+                   $(selector).chosen(config2[selector]);
+                 }
+
+
+    })    
+   
+ tableDetail = $('.table-datatable').DataTable({
+            responsive: true,
+            searching: true,
+            //paging: false,
+            "pageLength": 10,
+            "language": dataTableLanguage,
+    });
     
   
-   
+   $('#createmodal_po').click(function(){
+      supplier = $('.supplier').val();
+        $.ajax({    
+          type :"get",
+          data : {supplier},
+          url : baseUrl + '/returnpembelian/getpo',
+          dataType:'json',
+          success : function(response){
+          var tablepo = $('#table-po').DataTable();
+          tablepo.clear().draw();
+            var nmrbnk = 1;
+            table = response.po;       
+                 for(var i = 0; i < table.length; i++){  
+                       var html2 = "<tr class='data"+nmrbnk+"' id="+table[i].po_noform+" data-faktur='"+table[i].po_noform+"'>" +
+                            "<td>"+nmrbnk+"</td>" +
+                            "<td>"+table[i].po_no+"</td>" + // no faktur
+                            "<td>"+addCommas(table[i].po_totalharga)+"</td>" +
+                            "<td style='text-align:right'>"+table[i].po_tipe+"</td>" +
+                            "<td>" +
+                             "<div class='checkbox'> <input type='checkbox' id="+table[i].po_id+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                        "<label></label>" +
+                                        "</div></td>" +
+                           "</tr>";
+                          
+                       tablepo.rows.add($(html2)).draw(); 
+                      nmrbnk++;                                                                                  
+                 }   
+          }
+
+        })
+   })
 
 </script>
 @endsection

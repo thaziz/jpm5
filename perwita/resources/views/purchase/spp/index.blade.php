@@ -72,7 +72,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                       <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" href="{{ url('suratpermintaanpembelian/createspp')}}"> <i class="fa fa-plus"> Tambah Data Surat Permintaan Pembelian </i> </a> 
+                       <a class="btn btn-sm btn-success" aria-hidden="true" href="{{ url('suratpermintaanpembelian/createspp')}}"> <i class="fa fa-plus"> Tambah Data Surat Permintaan Pembelian </i> </a> 
                     </div>
 
                 </div>
