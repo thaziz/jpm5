@@ -156,9 +156,12 @@
            </tr>  
           <tr>
             <td colspan="3">
+                <button type="button" class="btn btn-primary pull-right save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
+                
                <button onclick="tt_penerus()" class="btn btn-info modal_penerus_tt "  type="button" data-toggle="modal" data-target="#modal_tt_penerus" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
                <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left @if($cari_fp->fp_pending_status == 'PENDING') disabled @endif " id="print-tt"><i class="fa fa-print"></i> Print Tanda Terima</button>
                <button type="button" style="margin-right: 20px;" class="btn btn-warning pull-left " id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
+
             </td>
           </tr>
           </table>
@@ -230,18 +233,16 @@
               <tr>
                 <td colspan="3">
                   <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
-
-                  <button type="button" class="btn btn-primary pull-right save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
                 </td>
               </tr>
                </table>
-                
               </form>
           </div>
 
            <div class="table_biaya col-sm-12" >
             <h3>Tabel Detail Resi</h3>
             <hr>
+
                 <table class="table table-bordered table-hover datatable" style="font-size: 12px">
                 <thead align="center">
                   <tr>
@@ -381,7 +382,7 @@
                  <div class="row">
                     <div class="col-sm-3"> 
                       <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="Kwitansi" type="checkbox" @if($form_tt->tt_kwitansi == 'ADA') checked=""  @endif name="kwitansi">
+                          <input id="Kwitansi" type="checkbox"@if(isset($form_tt)) @if($form_tt->tt_kwitansi == 'ADA') checked=""  @endif @endif name="kwitansi">
                             <label for="Kwitansi">
                                 Kwitansi / Invoice / No
                             </label>
@@ -389,7 +390,7 @@
                     </div>
                     <div class="col-sm-3"> 
                       <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="FakturPajak" type="checkbox" @if($form_tt->tt_faktur == 'ADA') checked=""  @endif name="faktur_pajak">
+                          <input id="FakturPajak" type="checkbox"@if(isset($form_tt)) @if($form_tt->tt_faktur == 'ADA') checked=""  @endif @endif name="faktur_pajak">
                             <label for="FakturPajak">
                                 Faktur Pajak
                             </label>
@@ -398,7 +399,7 @@
 
                     <div class="col-sm-3"> 
                       <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratPerananAsli" type="checkbox" @if($form_tt->tt_suratperan == 'ADA') checked=""  @endif name="surat_peranan">
+                          <input id="SuratPerananAsli" type="checkbox"@if(isset($form_tt)) @if($form_tt->tt_suratperan == 'ADA') checked=""  @endif @endif name="surat_peranan">
                             <label for="SuratPerananAsli">
                                 Surat Peranan Asli
                             </label>
@@ -407,7 +408,7 @@
 
                      <div class="col-sm-3"> 
                       <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratJalanAsli" type="checkbox" @if($form_tt->tt_suratjalanasli == 'ADA') checked=""  @endif name="surat_jalan">
+                          <input id="SuratJalanAsli" type="checkbox"@if(isset($form_tt)) @if($form_tt->tt_suratjalanasli == 'ADA') checked=""  @endif @endif name="surat_jalan">
                             <label for="SuratJalanAsli">
                                Surat Jalan Asli
                             </label>

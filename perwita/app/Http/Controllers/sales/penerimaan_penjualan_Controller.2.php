@@ -204,6 +204,7 @@ class penerimaan_penjualan_Controller extends Controller
                   ->orWhere('k_nomor','=',$request->id)
                   ->where('i_kode_cabang',$request->cabang)
                   ->get();
+
         if (isset($request->array_edit)) {
             $temp_2  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
@@ -283,7 +284,7 @@ class penerimaan_penjualan_Controller extends Controller
                         })
                         ->addColumn('i_sisa', function ($data) {
 
-                                return number_format($data->i_sisa_pelunasan,2,',','.');
+                                return number_format($data->i_sisa_tagihan,2,',','.');
                         })
                         ->addColumn('i_tagihan', function ($data) {
                                 return number_format($data->i_total_tagihan,2,',','.');
