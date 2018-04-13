@@ -40,6 +40,7 @@ use Session;
 use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
+use Auth;
 
 class BiayaPenerusController extends Controller
 {
@@ -49,14 +50,22 @@ class BiayaPenerusController extends Controller
 			$date = Carbon::now()->format('d/m/Y');
 
 			$agen = DB::table('agen')
+					  ->where('kategori','AGEN')
+					  ->orWhere('kategori','AGEN DAN OUTLET')
 					  ->get();
 			$vendor = DB::table('vendor')
 					  ->get();
-			$akun_biaya = DB::table('d_akun')
-					  ->where('id_parrent',5)
-					  ->get();
+			if (Auth::user()->punyaAKses('Biaya Penerus Hutang','all')) {
+				$akun   = DB::table('d_akun')
+						->get();
+			}else{
+				$akun   = DB::table('d_akun')
+						->where('kode_cabang',Auth::user()->kode_cabang)
+						->get();
+			}
+			
 			$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
-			return view('purchase/fatkur_pembelian/tableBiaya',compact('data','date','agen','vendor','akun_biaya','now','jt'));
+			return view('purchase/fatkur_pembelian/form_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun'));
 		}
 
 		public function kekata($x) {
@@ -111,13 +120,14 @@ class BiayaPenerusController extends Controller
     }     
     return $hasil;
 }
-		public function caripod(request $request){
+		public function cari_do(request $request){
 
 		
 	        $results = array();
 	        $queries = DB::table('delivery_order')
 	        	->leftjoin('biaya_penerus_dt','nomor','=','bpd_pod')
-	            ->where('nomor', 'like', '%'.$request->term.'%')
+	            ->where('nomor', 'like', '%'.strtoupper($request->term).'%')
+	            ->where('bpd_pod',null)
 	            ->take(10)->get();
 
 	        if ($queries == null){
@@ -126,7 +136,11 @@ class BiayaPenerusController extends Controller
 
 	            foreach ($queries as $query)
 	            {
-	                $results[] = [ 'id' => $query->nomor, 'label' => $query->nomor,'validator'=>$query->bpd_pod];
+	                $results[] = [ 'id' => $query->nomor,
+					                'label' => $query->nomor,
+					                'validator'=>$query->bpd_pod,
+					                'harga'=>$query->total_net
+					              ];
 	            }
 	        }
 
@@ -135,42 +149,15 @@ class BiayaPenerusController extends Controller
 
 		}
 
-	public function caripodsubcon(request $request){
 
-		
-	        $results = array();
-	       $queries = DB::table('delivery_order')
-	        	->leftjoin('pembayaran_subcon_dt','nomor','=','pbd_resi')
-	            ->where('nomor', 'like', '%'.$request->term.'%')
-	            ->take(10)->get();
+		public function carimaster(request $request){
 
-	        if ($queries == null){
-	            $results[] = [ 'id' => null, 'label' => 'Tidak ditemukan data terkait'];
-	        } else {
-
-	            foreach ($queries as $query)
-	            {
-	                $results[] = [ 'id' => $query->nomor, 
-	                'label' => $query->nomor,
-	                'validator'=>$query->pbd_resi,
-	                'harga'=>$query->tarif_dasar,
-	            	'comp' => $query->kode_cabang];
-	            }
-	        }
-	        // return $results;
-	        return Response::json($results);
-
-
-		}
-
-		public function carimaster($vendor){
-
-			if ($vendor == 'AGEN') {
+			if ($request->vendor == 'AGEN') {
 
 
 				$persen = DB::table('master_persentase')
 	        			->where('kode_akun','LIKE','%'.'5319'.'%')
-	        			->where('cabang','001')
+	        			->where('cabang',$request->cabang)
 	        			->get();
 
 	        	if ($persen == null) {
@@ -186,7 +173,7 @@ class BiayaPenerusController extends Controller
 
 				$persen = DB::table('master_persentase')
 	        			->where('kode_akun','LIKE','%'.'5315'.'%')
-	        			->where('cabang','001')
+	        			->where('cabang',$request->cabang)
 	        			->get();
 
 	        	if ($persen == null) {
@@ -205,11 +192,10 @@ class BiayaPenerusController extends Controller
 
 		}
 
-		public function auto($i){
+		public function autocomplete_biaya_penerus($i){
 
-		
 	        $data = DB::table('delivery_order')
-	        			->where('nomor','=',$i)
+	        			->where('nomor','=',strtoupper($i))
 	        			->first();
 
 	       if($data != null){
@@ -224,358 +210,362 @@ class BiayaPenerusController extends Controller
 	        				'data'=>'data tidak ada'
 	        				]);
 	       }
-	        
-
-	    
 		}
+
+		public function nota_tt(request $request)
+		{
+			$bulan = Carbon::now()->format('m');
+		    $tahun = Carbon::now()->format('y');
+
+		    $cari_nota = DB::select("SELECT  substring(max(tt_noform),12) as id from form_tt
+		                                    WHERE tt_idcabang = '$request->cabang'
+		                                    AND to_char(created_at,'MM') = '$bulan'
+		                                    AND to_char(created_at,'YY') = '$tahun'");
+		    $index = (integer)$cari_nota[0]->id + 1;
+		    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+		    $nota = 'TT' . $bulan . $tahun .'/'.$request->cabang.'/'. $index;
+
+		    return response()->json(['nota'=>$nota]);
+		}
+
 		public function save_agen(request $request){
 			// dd($request->all());
-			 // $request->master_persen;
-			 $year  = Carbon::now()->format('Y'); 
-			 $month = Carbon::now()->format('m'); 
-		     $cari_id = DB::table('faktur_pembelian')
-		     			->max('fp_idfaktur');
-		    	
-		     if($cari_id == null){
-		     	$cari_id = 1;
-		     }else{
-		     	$cari_id+=1;
-		     }
+   			return DB::transaction(function() use ($request) {  
 
-		     $tgl = str_replace('/', '-', $request->tgl_biaya_head);
-		     $jt = str_replace('/', '-', $request->jatuh_tempo);
-			 $tgl = Carbon::parse($tgl)->format('Y-m-d');
-			 $jt = Carbon::parse($jt)->format('Y-m-d');
+				$cari_fp = DB::table('faktur_pembelian')
+							 ->where('fp_nofaktur',$request->nofaktur)
+							 ->first();
+				$tgl         = str_replace('/', '-', $request->tgl_biaya_head);		 
+				$tgl 		 = Carbon::parse($tgl)->format('Y-m-d');
+				$jt         = str_replace('/', '-', $request->jatuh_tempo);		 
+				$jt 		 = Carbon::parse($jt)->format('Y-m-d');
+				$total_biaya = array_sum($request->bayar_biaya);
 
-			 $cari_master = DB::table('master_persentase')
-			 				  ->where('kode',$request->id_persen)
-			 				  ->first();
-
-			 if($request->vendor == "AGEN"){
-			 	$vend = $request->nama_kontak1;
-			 	$kode_akun = $cari_master->kode_akun;
-			 }else{
-			 	$vend = $request->nama_kontak2;
-			 	$kode_akun = $cari_master->kode_akun;
-
-			 }
-
-			 // return $vend;
-
-			 if ($request->vendor == "AGEN") {
-			 	$cari_persen = DB::table('agen')
-			 					 ->where('kode',$vend)
-			 					 ->first();
-			 }else{
-			 	$cari_persen = DB::table('vendor')
-			 					 ->where('kode',$vend)
-			 					 ->first();
-			 }
-			 // return $cari_persen->acc_hutang;
-			 $status=[];
-			 $total_tarif=0;
-
-			 for ($i=0; $i < count($request->harga_resi); $i++) {
-			    $persentase = $cari_persen->komisi/100; 
-			    $harga_fix = round($request->harga_resi[$i])*$persentase;
-			    $total_tarif+=$request->bayar_biaya[$i];
-
-				if($request->bayar_biaya[$i] <= $harga_fix){
-					$status[$i] = 'APPROVED';
+				if ($request->vendor == "AGEN") {
+					$cari_persen = DB::table('agen')
+					 					 ->where('kode',$request->nama_kontak2)
+					 					 ->first();
+					$komisi = $cari_persen->komisi_agen;
 				}else{
-					$status[$i] = 'PENDING';
-				}
-			 }
-
-			 if(in_array('PENDING', $status)){
-			 	$pending_status='PENDING';
-			 }else{
-			 	$pending_status='APPROVED';
-			 }
-			 // dd($request->Keterangan_biaya);
-// car
-
-
-			// $save = DB::table('form_tt')
-			//         			->insert([
-			//         				'tt_idform'		 	 => $id,
-			//         				'tt_tgl'   			 => $tgl,
-			//         				'tt_idagen' 	 	 => $vend,
-			//         				'tt_totalterima'	 => round($total_tarif,2),
-			//         				'created_at'		 => Carbon::now(),
-			//         				'updated_at'	 	 => Carbon::now(),
-			//         				'tt_tglkembali'	 	 => Carbon::now(),
-			//         				'tt_kwitansi'	 	 => 'ADA',
-			//         				'tt_suratperan'	 	 => 'ADA',
-			//         				'tt_suratjalanasli'	 => 'ADA',
-			//         				'tt_faktur'			 => 'ADA',
-			//         				'tt_noform'			 => $nota,
-			//         				'tt_nofp'			 => $request->nofaktur,
-			//         				'tt_idcabang'		 => '001'
-			//         			]);
-
-			$cari_tt = DB::table('form_tt')
-		    			 ->where('tt_nofp',$request->nofaktur)
-		    			 ->first();
-
-			fakturpembelian::create([
-								'fp_idfaktur'		=> $cari_id,
-								'fp_nofaktur'		=> $request->nofaktur,
-								'fp_tgl'			=> $tgl,
-								'fp_jenisbayar' 	=> 6,
-								'fp_comp'			=> $request->cab,
-								'fp_noinvoice'		=> $request->Invoice_biaya,
-								'created_at'		=> Carbon::now(),
-								'fp_pending_status' => $pending_status,
-								'fp_keterangan'		=> $request->Keterangan_biaya,
-								'fp_status'			=> $request->status,
-								'fp_edit'			=> 'UNALLOWED',
-								'fp_supplier'		=> $vend,
-								'fp_sisapelunasan'	=> round($total_tarif,2),
-								'fp_netto'			=> round($total_tarif,2),
-								'fp_jatuhtempo'		=> $jt,
-								'fp_idtt'			=> $cari_tt->tt_idform
-								]);
-
-
-			
-
-			$cari_id = DB::table('biaya_penerus')
-		     			->max('bp_id');
-
-		     if($cari_id == null){
-		     	$cari_id = 1;
-		     }else{
-		     	$cari_id+=1;
-		     }
-		    
-
-
-			$save_biaya = DB::table('biaya_penerus')->insert([
-									'bp_id'				=> $cari_id,
-									'bp_faktur'			=> $request->nofaktur,
-									'bp_tipe_vendor'	=> $request->vendor,
-									'bp_status' 		=> $request->status,
-									'bp_kode_vendor'	=> $vend,
-									'bp_keterangan'		=> $request->Keterangan_biaya,
-									'bp_invoice'		=> $request->Invoice_biaya,
-									'bp_total_penerus'	=> round($total_tarif,2),
-									'created_at'		=> Carbon::now(),
-									'updated_at'		=> Carbon::now(),
-									'bp_akun_agen'		=> $cari_persen->acc_hutang
-									// 'bp_id_persen'		=> $request->id_persen
-									]);
-		   
-
-		    $id_bpd = DB::table('biaya_penerus_dt')
-		     			->max('bpd_id');
-
-		     if($id_bpd == null){
-		     	$id_bpd = 1;
-		     }else{
-		     	$id_bpd+=1;
-		     }
-
-
-
-		    	for ($i=0; $i < count($request->seq_biaya); $i++) { 
-			    	$id_bpd = DB::table('biaya_penerus_dt')
-			     			->max('bpd_id');
-
-				     if($id_bpd == null){
-				     	$id_bpd = 1;
-				     }else{
-				     	$id_bpd+=1;
-				     }
-
-				     
-
-			    	biaya_penerus_dt::create([
-			    						'bpd_id'		=> $id_bpd,
-										'bpd_bpid'		=> $cari_id,
-										'bpd_bpdetail'	=> $i+1,
-										'bpd_pod'		=> $request->pod_biaya[$i],
-										'bpd_tgl' 		=> $request->tgl_biaya[$i],
-										'bpd_akun_biaya'=> $request->kode_biaya[$i],
-										'bpd_nominal'	=> round($request->bayar_biaya[$i],2),
-										'bpd_tarif_resi'=> round($request->harga_resi[$i],2),
-										'bpd_debit'		=> $request->debet_biaya[$i],
-										'bpd_memo'		=> $request->ket_biaya[$i],
-										'bpd_status'	=> $status[$i],
-										'created_at'	=> Carbon::now(),
-										'updated_at'	=> Carbon::now()
-										]);
-		        }
-				
-				
-			return response()->json(['id'=>$request->nofaktur]);
-		}
-		public function edit($id){
-
-		 	$cari_tipe = DB::table('faktur_pembelian')
-						   ->where('fp_idfaktur',$id)
-						   ->get();
-
-				$year =Carbon::now()->format('y'); 
-				$month =Carbon::now()->format('m'); 
-
-				$idfaktur = DB::table('form_tt')->where('tt_idcabang' , '001')
-									   ->where('tt_noform','LIKE','%'.'P-0'.'%')
-									   ->max('tt_noform');
-			//	dd($nosppid);
-				if(isset($idfaktur)) {
-					$explode  = explode("/", $idfaktur);
-					$idfaktur = $explode[2];
-					$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
-					$idfaktur = str_replace('-', '', $idfaktur) ;
-					$string = (int)$idfaktur + 1;
-					$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
+				 	$cari_persen = DB::table('vendor')
+				 					 ->where('kode',$request->nama_kontak2)
+				 					 ->first();
+					$komisi = $cari_persen->komisi_vendor;
 				}
 
-				else {
-					$idfaktur = '001';
+				$status=[];
+
+				for ($i=0; $i < count($request->do_harga); $i++) 
+				{
+				    $persentase = $komisi/100; 
+				    $harga_fix  = round($request->do_harga[$i])*$persentase;
+
+					if($request->bayar_biaya[$i] <= $harga_fix){
+						$status[$i] = 'APPROVED';
+					}else{
+						$status[$i] = 'PENDING';
+					}
 				}
 
-				$nota = 'TT' . $month . $year . '/' . '001' . '/P-' .  $idfaktur;
-				// return $nota;
-				if($cari_tipe[0]->fp_jenisbayar == 6 ){
-					// return 'asd';
-			     	$data = DB::table('faktur_pembelian')
-						  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
-						  ->join('agen','bp_kode_vendor','=','kode')
-						  ->where('fp_idfaktur','=',$id)
-						  ->get();
-					if ($data == null) {
-					$data = DB::table('faktur_pembelian')
-						  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
-						  ->join('vendor','bp_kode_vendor','=','kode')
-						  ->where('fp_idfaktur','=',$id)
-						  ->get();
+				if(in_array('PENDING', $status)){
+				 	$pending_status='PENDING';
+				}else{
+				 	$pending_status='APPROVED';
+				}
+
+				if ($cari_fp == null) {
+
+					$id = DB::table('faktur_pembelian')
+							 ->max('fp_idfaktur');
+
+					if ($id == null) {
+						$id = 1;
+					}else{
+						$id+=1;
 					}
 
-					$akun = DB::table('d_akun')
-						  ->where('id_parrent',1001)
-						  ->get();
+					$total_biaya =  array_sum($request->bayar_biaya);
+					$count 		 = count($request->no_do);
+					$save_data = DB::table('faktur_pembelian')
+								   ->insert([
+								   	  'fp_idfaktur'   		=> $id,
+									  'fp_nofaktur'   		=> $request->nofaktur,
+									  'fp_tgl'        		=> $tgl,
+									  'fp_keterangan' 		=> $request->Keterangan_biaya,
+									  'fp_noinvoice'  		=> $request->Invoice_biaya,
+									  'fp_jatuhtempo' 		=> $jt,
+									  'created_at'    		=> carbon::now(),
+									  'updated_at'    		=> carbon::now(),
+									  'fp_jumlah'     		=> $count,
+									  'fp_netto' 	  		=> $total_biaya,
+									  'fp_comp'  	  		=> $request->cabang,
+									  'fp_pending_status'	=> $pending_status,
+									  'fp_status'  			=> 'Released',  
+									  'fp_jenisbayar' 		=> '6',
+									  'fp_edit'  			=> 'ALLOWED',
+									  'fp_sisapelunasan' 	=> $total_biaya,
+									  'fp_supplier'  		=> $request->nama_kontak2,
+									  'fp_acchutang'  		=> $request->acc_penjualan_penerus,
+									  'created_by'  		=> Auth::user()->m_username,
+									  'updated_by'  		=> Auth::user()->m_username,
+								   ]);	
 
-					$akun_biaya = DB::table('d_akun')
-						   ->where('id_parrent',5)
-						   ->get();
+					$id_bp = DB::table('biaya_penerus')
+							 ->max('bp_id');
+
+					if ($id_bp == null) {
+						$id_bp = 1;
+					}else{
+						$id_bp+=1;
+					}
+
+					$save_data1 = DB::table('biaya_penerus')
+									->insert([
+									  'bp_id' 			 => $id_bp,
+									  'bp_faktur' 		 => $request->nofaktur,
+									  'bp_tipe_vendor' 	 => $request->vendor,
+									  'bp_kode_vendor' 	 => $request->nama_kontak2,
+									  'bp_keterangan' 	 => $request->Keterangan_biaya,
+									  'bp_invoice'		 => $request->Invoice_biaya,
+									  'bp_status'		 => $pending_status,
+									  'updated_at' 		 => carbon::now(),
+									  'created_at' 		 => carbon::now(),
+									  'bp_total_penerus' => $total_biaya,
+									  'bp_akun_agen'	 => $request->acc_penjualan_penerus,
+									]);
 
 					
-					$valid_cetak = DB::table('faktur_pembelian')
-						  ->leftjoin('form_tt','fp_nofaktur','=','tt_nofp')
-						  ->where('fp_idfaktur',$id)
-						  ->get();
-						  
-					
-				    $date = Carbon::now()->format('d/m/Y');
-					$data_dt = DB::table('biaya_penerus_dt')
-							  ->join('biaya_penerus','bp_id','=','bpd_bpid')
-							  ->where('bp_faktur','=',$data[0]->bp_faktur)
-							  ->get();
 
-					return view('purchase/fatkur_pembelian/editbiaya',compact('data',
-																			  'data_dt',
-																			  'akun_biaya',
-																			  'akun',
-																			  'date',
-																			  'id',
-																			  'vendor',
-																			  'nota',
-																			  'valid_cetak'));
-			}else if($cari_tipe[0]->fp_jenisbayar == 7){
+					for ($i=0; $i < count($request->no_do); $i++) { 
 
-				$data = DB::table('faktur_pembelian')
-						  ->join('pembayaran_outlet','pot_faktur','=','fp_nofaktur')
-						  ->join('agen','pot_kode_outlet','=','kode')
-						  ->where('fp_idfaktur','=',$id)
-						  ->get();
-			    $tgl1 = Carbon::parse($data[0]->pot_tgl)->format('d/m/Y');
-				$tgl2 = Carbon::parse($data[0]->pot_tgl_kembali)->format('d/m/Y');
+						$id_bpd = DB::table('biaya_penerus_dt')
+							 ->max('bpd_id');
 
-			 	$data_dt = DB::table('pembayaran_outlet_dt')
-							  ->join('pembayaran_outlet','pot_id','=','potd_potid')
-							  ->where('pot_faktur','=',$data[0]->pot_faktur)
-							  ->orderBy('potd_potdetail','desc')
-							  ->get();
+						if ($id_bpd == null) {
+							$id_bpd = 1;
+						}else{
+							$id_bpd+=1;
+						}
+						$cari_do = DB::table("delivery_order")
+									 ->where("nomor",$request->no_do[$i])
+									 ->first();
 
-				$valid_cetak = DB::table('faktur_pembelian')
-						  ->leftjoin('form_tt','fp_nofaktur','=','tt_nofp')
-						  ->where('fp_idfaktur',$id)
-						  ->get();
+						$save_dt = DB::table('biaya_penerus_dt')
+									 ->insert([
+										  'bpd_id'  		=> $id_bpd,
+										  'bpd_bpid' 		=> $id_bp,
+										  'bpd_bpdetail'	=> $i+1,
+										  'bpd_pod' 		=> $request->no_do[$i],
+										  'bpd_tgl'  		=> $cari_do->tanggal,
+										  'bpd_akun_biaya'  => $request->kode_biaya[$i],
+										  'bpd_debit' 	   	=> $request->DEBET_biaya[$i],
+										  'bpd_memo'  	  	=> $request->ket_biaya[$i],
+										  'bpd_akun_hutang' => $request->acc_penjualan_penerus,
+										  'created_at'      => carbon::now(), 
+										  'updated_at' 	   	=> carbon::now(),
+										  'bpd_status' 	    => $status[$i],
+										  'bpd_nominal'	    => $request->bayar_biaya[$i],
+										  'bpd_tarif_resi'  => $request->do_harga[$i]
+									 ]);
+					}	
 
-				$agen = DB::table('agen')
-					  ->where('nama','LIKE','%'.'OUTLET'.'%')
+					return response()->json(['status'=>1,'sp'=>$pending_status,'id'=>$id]);
+				}else{
+					return response()->json(['status'=>2,'alert'=>'DATA SUDAH ADA']);
+				}
+				
+			});
+		}
+		public function edit($id){
+			$cari_fp = DB::table('faktur_pembelian')
+						 ->where('fp_idfaktur',$id)
+						 ->first();
+			if ($cari_fp->fp_jenisbayar == 6) {
+				$data = DB::table('akun')
 					  ->get();
-
-				return view('purchase/fatkur_pembelian/editOutlet',compact('data','data_dt','valid_cetak','nota','tgl1','tgl2','agen','id'));
-			}else if($cari_tipe[0]->fp_jenisbayar == 9){
-
-				$data = DB::table('faktur_pembelian')
-						  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
-						  ->join('subcon','pb_kode_subcon','=','kode')
-						  ->join('kontrak_subcon','ks_nama','=','kode')
-						  ->where('fp_idfaktur','=',$id)
-						  ->first();
-
-				$angkutan = DB::table('faktur_pembelian')
-						  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
-						  ->join('tipe_angkutan','kode','=','pb_jenis_kendaraan')
-						  ->where('kode',$data->pb_jenis_kendaraan)
-						  ->first();
-
-				$data_dt = DB::table('pembayaran_subcon_dt')
-						  ->join('pembayaran_subcon','pb_id','=','pbd_pb_id')
-						  ->join('faktur_pembelian','fp_nofaktur','=','pb_faktur')
-						  ->join('subcon','pb_kode_subcon','=','kode')
-						  ->where('fp_idfaktur','=',$id)
-						  ->get();
-
-				$persen = DB::table('master_persentase')
-					  	  ->get();
-
 				$date = Carbon::now()->format('d/m/Y');
 
-				$subcon = DB::table('kontrak_subcon')
-						  ->join('subcon','kode','=','ks_nama')
+				$agen = DB::table('agen')
+						  ->where('kategori','AGEN')
+						  ->orWhere('kategori','AGEN DAN OUTLET')
 						  ->get();
-				$data->fp_jatuhtempo = Carbon::parse($data->fp_jatuhtempo)->format('d/m/Y');
-
-				$pilih = DB::table('faktur_pembelian')
-						  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
-						  ->join('subcon','pb_kode_subcon','=','kode')
-						  ->join('kontrak_subcon','ks_nama','=','kode')
-						  ->join('kontrak_subcon_dt','ksd_ks_id','=','ks_id')
-						  ->where('fp_idfaktur','=',$id)
-						  ->where('ksd_ks_dt',$data->pb_dt_kontrak)
-						  ->where('ksd_ks_id',$data->pb_id_kontrak)
-						  ->where('ksd_angkutan',$data->pb_jenis_kendaraan)
+				$vendor = DB::table('vendor')
 						  ->get();
+				if (Auth::user()->punyaAKses('Biaya Penerus Hutang','all')) {
+					$akun   = DB::table('d_akun')
+							->get();
+				}else{
+					$akun   = DB::table('d_akun')
+							->where('kode_cabang',Auth::user()->kode_cabang)
+							->get();
+				}
 
-				$nota = DB::table('faktur_pembelian')
-						  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
-						  ->join('subcon','pb_kode_subcon','=','kode')
-						  ->join('kontrak_subcon','ks_nama','=','kode')
-						  ->join('kontrak_subcon_dt','ksd_ks_id','=','ks_id')
-						  ->where('fp_idfaktur','=',$id)
-						  ->get();
+				$bp = DB::table('biaya_penerus')
+						  ->where('bp_faktur',$cari_fp->fp_nofaktur)
+						  ->first();
 
-				$akun_biaya = DB::table('d_akun')
-						  ->get();
-				$kota   = DB::table('kota')
-						->get();
-
-				$valid_cetak = DB::table('faktur_pembelian')
-						  ->leftjoin('form_tt','fp_nofaktur','=','tt_nofp')
-						  ->where('fp_idfaktur',$id)
+				$bpd = DB::table('biaya_penerus_dt')
+						  ->where('bpd_bpid',$bp->bp_id)
 						  ->get();
 
+				$form_tt = DB::table('form_tt')
+							 ->where('tt_nofp',$cari_fp->fp_nofaktur)
+							 ->first();
+				$cabang = DB::table("cabang")
+							->get();
+				
+				$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
 
-				return view('purchase/fatkur_pembelian/editsubcon',compact('valid_cetak','pilih','nota','data','date','kota','subcon','akun_biaya','data_dt','angkutan','id','persen'));
+				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt'));
+
+			} elseif ($cari_fp->fp_jenisbayar == 7){
+
+			}elseif ($cari_fp->fp_jenisbayar == 9){
 
 			}
+			
+		 	
 		}
 
+
+		public function hapus_biaya($id){
+		 	$cari = DB::table('faktur_pembelian')
+		 				->where('fp_idfaktur',$id)
+		 				->first();
+
+		 	$delete = DB::table('form_tt')
+		 				->where('tt_nofp',$cari->fp_nofaktur)
+		 				->delete();
+
+		 	$delete = DB::table('faktur_pembelian')
+		 				->where('fp_idfaktur',$id)
+		 				->delete();
+		 	return response()->json(['status'=>1]);
+		}
+
+		public function update_agen(request $request){
+			return DB::transaction(function() use ($request) {  
+				// dd($request->all());
+				$cari_fp = DB::table('faktur_pembelian')
+							 ->where('fp_nofaktur',$request->nofaktur)
+							 ->first();
+				$tgl         = str_replace('/', '-', $request->tgl_biaya_head);		 
+				$tgl 		 = Carbon::parse($tgl)->format('Y-m-d');
+				$jt         = str_replace('/', '-', $request->jatuh_tempo);		 
+				$jt 		 = Carbon::parse($jt)->format('Y-m-d');
+				$total_biaya = array_sum($request->bayar_biaya);
+
+				if ($request->vendor == "AGEN") {
+					$cari_persen = DB::table('agen')
+				 					 ->where('kode',$request->nama_kontak2)
+				 					 ->first();
+					$komisi = $cari_persen->komisi_agen;
+				}else{
+				 	$cari_persen = DB::table('vendor')
+				 					 ->where('kode',$request->nama_kontak2)
+				 					 ->first();
+					$komisi = $cari_persen->komisi_vendor;
+				}
+
+				$status=[];
+
+				for ($i=0; $i < count($request->do_harga); $i++) 
+				{
+				    $persentase = $komisi/100; 
+				    $harga_fix  = round($request->do_harga[$i])*$persentase;
+
+					if($request->bayar_biaya[$i] <= $harga_fix){
+						$status[$i] = 'APPROVED';
+					}else{
+						$status[$i] = 'PENDING';
+					}
+				}
+
+				if(in_array('PENDING', $status)){
+				 	$pending_status='PENDING';
+				}else{
+				 	$pending_status='APPROVED';
+				}
+
+				if ($cari_fp == null) {
+
+					
+
+					$total_biaya =  array_sum($request->bayar_biaya);
+					$count 		 = count($request->no_do);
+					$save_data = DB::table('faktur_pembelian')
+								   ->insert([
+									  'fp_nofaktur'   		=> $request->nofaktur,
+									  'fp_tgl'        		=> $tgl,
+									  'fp_keterangan' 		=> $request->Keterangan_biaya,
+									  'fp_noinvoice'  		=> $request->Invoice_biaya,
+									  'fp_jatuhtempo' 		=> $jt,
+									  'created_at'    		=> carbon::now(),
+									  'updated_at'    		=> carbon::now(),
+									  'fp_jumlah'     		=> $count,
+									  'fp_netto' 	  		=> $total_biaya,
+									  'fp_comp'  	  		=> $request->cabang,
+									  'fp_pending_status'	=> $pending_status,
+									  'fp_status'  			=> 'Released',  
+									  'fp_jenisbayar' 		=> '6',
+									  'fp_edit'  			=> 'ALLOWED',
+									  'fp_sisapelunasan' 	=> $total_biaya,
+									  'fp_supplier'  		=> $request->nama_kontak2,
+									  'fp_acchutang'  		=> $request->acc_penjualan_penerus,
+									  'created_by'  		=> Auth::user()->m_username,
+									  'updated_by'  		=> Auth::user()->m_username,
+								   ]);	
+
+				
+					$save_data1 = DB::table('biaya_penerus')
+									->insert([
+									  'bp_id' 			 => $id_bp,
+									  'bp_faktur' 		 => $request->nofaktur,
+									  'bp_tipe_vendor' 	 => $request->vendor,
+									  'bp_kode_vendor' 	 => $request->nama_kontak2,
+									  'bp_keterangan' 	 => $request->Keterangan_biaya,
+									  'bp_invoice'		 => $request->Invoice_biaya,
+									  'bp_status'		 => $pending_status,
+									  'updated_at' 		 => carbon::now(),
+									  'created_at' 		 => carbon::now(),
+									  'bp_total_penerus' => $total_biaya,
+									  'bp_akun_agen'	 => $request->acc_penjualan_penerus,
+									]);
+
+					
+
+					for ($i=0; $i < count($request->no_do); $i++) { 
+
+					
+						$cari_do = DB::table("delivery_order")
+									 ->where("nomor",$request->no_do[$i])
+									 ->first();
+
+						$save_dt = DB::table('biaya_penerus_dt')
+									 ->insert([
+										  'bpd_bpid' 		=> $id_bp,
+										  'bpd_bpdetail'	=> $i+1,
+										  'bpd_pod' 		=> $request->no_do[$i],
+										  'bpd_tgl'  		=> $cari_do->tanggal,
+										  'bpd_akun_biaya'  => $request->kode_biaya[$i],
+										  'bpd_debit' 	   	=> $request->DEBET_biaya[$i],
+										  'bpd_memo'  	  	=> $request->ket_biaya[$i],
+										  'bpd_akun_hutang' => $request->acc_penjualan_penerus,
+										  'created_at'      => carbon::now(), 
+										  'updated_at' 	   	=> carbon::now(),
+										  'bpd_status' 	    => $status[$i],
+										  'bpd_nominal'	    => $request->bayar_biaya[$i],
+										  'bpd_tarif_resi'  => $request->do_harga[$i]
+									 ]);
+					}	
+
+					return response()->json(['status'=>1,'sp'=>$pending_status]);
+				}else{
+					return response()->json(['status'=>2,'alert'=>'DATA SUDAH ADA']);
+				}
+				
+			});
+		}
 		public function getdatapenerusedit(){
 
 			$data = DB::table('akun')
@@ -759,59 +749,7 @@ class BiayaPenerusController extends Controller
 
         
 		}
-		public function adinott(request $request){
-				// dd($request->all());
 
-				$cari_tt = DB::table('form_tt')
-							 ->where('tt_nofp',$request->nofaktur)
-							 ->first();
-				if ($cari_tt == null) {
-
-					$idfaktur = DB::table('form_tt')->where('tt_idcabang' , $request->cab)
-									   ->max('tt_noform');
-
-					$month = Carbon::now()->format('m');
-					$year = Carbon::now()->format('y');
-					if(isset($idfaktur)) {
-						$explode  = explode("/", $idfaktur);
-						$idfaktur = $explode[2];
-						$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
-						$idfaktur = str_replace('-', '', $idfaktur) ;
-						$string = (int)$idfaktur + 1;
-						$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
-					}
-
-					else {
-						$idfaktur = '001';
-					}
-
-					$nota = 'TT' . $month . $year . '/' . $request->cab . '/' .  $idfaktur;
-
-					
-				}else{
-					$nota = $cari_tt->tt_noform;
-				}
-				if (isset($request->jenis)) {
-					if ($request->jenis == 'AGEN') {
-						$sup = DB::table('agen')
-								 ->where('kode',$request->supp)
-								 ->first();
-				 	}else{
-						$sup = DB::table('vendor')
-								 ->where('kode',$request->supp)
-								 ->first();
-				 	}
-				}else if ($request->outlet) {
-					$sup = DB::table('agen')
-							 ->where('kode',$request->outlet)
-							 ->first();
-				}
-				 
-				return response()->json([
-								'nota'=>$nota,
-								'sup'=>$sup
-								]);
-		}
 
 		public function notaoutlet(request $request){
 
@@ -899,104 +837,10 @@ class BiayaPenerusController extends Controller
 
 			return response()->json(['nota' => $nota]);
 		}
-		public function update_agen(request $request){
-			// dd($request->all());
-	
-	        $cari_bp = DB::table('biaya_penerus')
-	      				->where('bp_faktur',$request->nota)
-	      				->first();
-            
-	      	$vend = $cari_bp->bp_kode_vendor;
-	        
-
-	        $update_dt = DB::table('biaya_penerus_dt')
-	      				 ->where('bpd_bpid',$cari_bp->bp_id)
-	      				 ->delete();
-
-
-	       	$status=[];
-			$total_tarif=0;
-
-			if ($cari_bp->bp_tipe_vendor == "AGEN") {
-				// return 'asd';
-			 	$cari_persen = DB::table('agen')
-			 					 ->where('kode',$vend)
-			 					 ->first();
-			 }else{
-			 	$cari_persen = DB::table('vendor')
-			 					 ->where('kode',$vend)
-			 					 ->first();
-			 }
-
-			 // return $cari_persen->komisi;
-
-			for ($i=0; $i < count($request->harga_resi); $i++) {
-			    $persentase = $cari_persen->komisi/100; 
-			    $harga_fix = $request->harga_resi[$i]*$persentase;
-			     $total_tarif+=$request->bayar_biaya[$i];
-
-				if($request->bayar_biaya[$i] <= $harga_fix){
-					$status[$i] = 'APPROVED';
-				}else{
-					$status[$i] = 'PENDING';
-				}
-			}
-			// return $total_tarif;
-			 if(in_array('PENDING', $status)){
-			 	$pending_status='PENDING';
-			 }else{ 
-			 	$pending_status='APPROVED';
-			 }
-
-			 // return $pending_status;
-	      	 for ($i=0; $i < count($request->seq_biaya); $i++) { 
-
-		       	$max_id = DB::table('biaya_penerus_dt')
-		       				->max('bpd_id');
-		       	if($max_id == ''){
-		       	  $max_id = 1;
-		       	}else{
-		       		$max_id+=1;
-		       	}
-
-		       	$update_fp = DB::table('faktur_pembelian')
-		       				   ->where('fp_nofaktur',$request->nota)
-		       				   ->update([
-		       				   		'fp_netto' => $total_tarif,
-		       				   		'fp_pending_status' => $pending_status
-		       				   ]);
-		       	$update_fp = DB::table('biaya_penerus')
-		       				   ->where('bp_faktur',$request->nota)
-		       				   ->update([
-		       				   		'bp_total_penerus' => $total_tarif
-		       				   ]);
-
-		       	$update = DB::table('biaya_penerus_dt')
-		       				->insert([
-		       					'bpd_id'		=> $max_id,
-								'bpd_bpid'		=> $cari_bp->bp_id,
-								'bpd_bpdetail'	=> $i+1,
-								'bpd_pod'		=> $request->pod_biaya[$i],
-								'bpd_tgl' 		=> $request->tgl_biaya[$i],
-								'bpd_akun_biaya'=> $request->kode_biaya[$i],
-								'bpd_nominal'	=> round($request->bayar_biaya[$i],2),
-								'bpd_tarif_resi'=> round($request->harga_resi[$i],2),
-								'bpd_debit'		=> $request->debet_biaya[$i],
-								'bpd_memo'		=> $request->ket_biaya[$i],
-								'bpd_status'	=> $status[$i],
-								'created_at'	=> Carbon::now(),
-								'updated_at'	=> Carbon::now()
-		       				]);
-
-	       }
-
-	       $status = DB::table('faktur_pembelian')
-						->where('fp_nofaktur',$request->nota)
-						->first();
-
-			return response()->json(['status'=>$status->fp_pending_status]);
-		}
+		
 		public function simpan_tt(request $request){
+
+			// dd($request->all());
 		
 			 $id = DB::table('form_tt')
 					->max('tt_idform');
@@ -1006,128 +850,47 @@ class BiayaPenerusController extends Controller
 			 	$id+=1;
 			 }
 
-			 $total = filter_var($request->total_terima, FILTER_SANITIZE_NUMBER_INT);
-			 $total = $total/100;
-			
-		      	if($request->Kwitansi == 'on')	{
-		      		$kwitansi = 'ADA';
-		      	}else{
-		      		$kwitansi = 'tidak ada';
-		      	}
-		      	if($request->Faktur == 'on')	{
-		      		$Faktur = 'ada';
-		      	}else{
-		      		$Faktur = 'tidak ada';
-		      	}
-		      	if($request->Peranan == 'on')	{
-		      		$Peranan = 'ada';
-		      	}else{
-		      		$Peranan = 'tidak ada';
-		      	}
-		      	if($request->Jalan == 'on')	{
-		      		$Jalan = 'ada';
-		      	}else{
-		      		$Jalan = 'tidak ada';
-		      	}
-
-		      	$valid_notafp =DB::table('form_tt')
-		      					 ->where('tt_nofp',$request->nota)
-		      					 ->get();
-
-		      	if($valid_notafp == null){
-			        $save = DB::table('form_tt')
-			        			->insert([
-			        				'tt_idform'		 	 => $id,
-			        				'tt_tgl'   			 => $request->modal_tanggal,
-			        				'tt_idagen' 	 	 => $request->supplier,
-			        				'tt_lainlain'		 => $request->modal_lain,
-			        				'tt_tglkembali' 	 => $request->tgl_terima,
-			        				'tt_totalterima'	 => round($total,2),
-			        				'created_at'		 => Carbon::now(),
-			        				'updated_at'	 	 => Carbon::now(),
-			        				'tt_kwitansi'	 	 => strtoupper($kwitansi),
-			        				'tt_suratperan'	 	 => strtoupper($Peranan),
-			        				'tt_suratjalanasli'	 => strtoupper($Jalan),
-			        				'tt_faktur'			 => strtoupper($Faktur),
-			        				'tt_noform'			 => $request->no_tt,
-			        				'tt_nofp'			 => $request->nota,
-			        				'tt_idcabang'		 =>'001'
-			        			]);
-			        return response()->json(['status' => '1']);
-			    }else{
-			    	$save = DB::table('form_tt')
-			    				->where('tt_noform',$request->no_tt)
-			        			->update([
-			        				'tt_idform'		 	 => $id,
-			        				'tt_tgl'   			 => $request->modal_tanggal,
-			        				'tt_idagen' 	 	 => $request->supplier,
-			        				'tt_lainlain'		 => $request->modal_lain,
-			        				'tt_tglkembali' 	 => $request->tgl_terima,
-			        				'tt_totalterima'	 => round($total,2),
-			        				'created_at'		 => Carbon::now(),
-			        				'updated_at'	 	 => Carbon::now(),
-			        				'tt_kwitansi'	 	 => strtoupper($kwitansi),
-			        				'tt_suratperan'	 	 => strtoupper($Peranan),
-			        				'tt_suratjalanasli'	 => strtoupper($Jalan),
-			        				'tt_faktur'			 => strtoupper($Faktur),
-			        				'tt_noform'			 => $request->no_tt,
-			        				'tt_nofp'			 => $request->nota,
-			        				'tt_idcabang'		 =>'001'
-			        			]);
-			    	return response()->json(['status' => '0']);
-			    }
-
-		}
-
-
-
-		public function simpan_tt1(request $request){
-			// dd($request->all());
-			 $id = DB::table('form_tt')
-					->max('tt_idform');
-			 if($id == null){
-			 	$id=1;
-			 }else{
-			 	$id+=1;
-			 }
-
 			 $total = filter_var($request->total_diterima, FILTER_SANITIZE_NUMBER_INT);
-			 // $total = $total/100;
+			 $total = $total/100;
+
+			 $tgl         = str_replace('/', '-', $request->tgl_tt);		 
+			 $tgl 		  = Carbon::parse($tgl)->format('Y-m-d');
+
+			 $tgl_kembali         = str_replace('/', '-', $request->tgl_kembali);		 
+			 $tgl_kembali 		  = Carbon::parse($tgl_kembali)->format('Y-m-d');
 			
 		      	if($request->kwitansi == 'on')	{
 		      		$kwitansi = 'ADA';
 		      	}else{
-		      		$kwitansi = 'tidak ada';
+		      		$kwitansi = 'TIDAK ADA';
 		      	}
 		      	if($request->faktur_pajak == 'on')	{
 		      		$Faktur = 'ada';
 		      	}else{
-		      		$Faktur = 'tidak ada';
+		      		$Faktur = 'TIDAK ADA';
 		      	}
 		      	if($request->surat_peranan == 'on')	{
 		      		$Peranan = 'ada';
 		      	}else{
-		      		$Peranan = 'tidak ada';
+		      		$Peranan = 'TIDAK ADA';
 		      	}
 		      	if($request->surat_jalan == 'on')	{
 		      		$Jalan = 'ada';
 		      	}else{
-		      		$Jalan = 'tidak ada';
+		      		$Jalan = 'TIDAK ADA';
 		      	}
 
 		      	$valid_notafp =DB::table('form_tt')
-		      					 ->where('tt_nofp',$request->nofaktur)
+		      					 ->where('tt_noform',$request->nota_tt)
 		      					 ->get();
-		      	$tgl_kembali = str_replace('/', '-', $request->tgl_kembali);
 
 		      	if($valid_notafp == null){
 			        $save = DB::table('form_tt')
 			        			->insert([
 			        				'tt_idform'		 	 => $id,
-			        				'tt_tgl'   			 => Carbon::parse($request->tgl_tt)->format('Y-m-d'),
-			        				'tt_idagen' 	 	 => $request->agen,
+			        				'tt_tgl'   			 => $tgl,
 			        				'tt_lainlain'		 => $request->lainlain,
-			        				'tt_tglkembali' 	 => Carbon::parse($tgl_kembali)->format('Y-m-d'),
+			        				'tt_tglkembali' 	 => $tgl_kembali,
 			        				'tt_totalterima'	 => round($total,2),
 			        				'created_at'		 => Carbon::now(),
 			        				'updated_at'	 	 => Carbon::now(),
@@ -1137,18 +900,18 @@ class BiayaPenerusController extends Controller
 			        				'tt_faktur'			 => strtoupper($Faktur),
 			        				'tt_noform'			 => $request->nota_tt,
 			        				'tt_nofp'			 => $request->nofaktur,
+			        				'tt_idagen'			 => $request->supplier_tt,
 			        				'tt_idcabang'		 => $request->cabang
 			        			]);
 			        return response()->json(['status' => '1']);
 			    }else{
 			    	$save = DB::table('form_tt')
-			    				->where('tt_noform',$request->no_tt)
+			    				->where('tt_noform',$request->nota_tt)
 			        			->update([
 			        				'tt_idform'		 	 => $id,
-			        				'tt_tgl'   			 => Carbon::parse($request->tgl_tt)->format('Y-m-d'),
-			        				'tt_idagen' 	 	 => $request->agen,
+			        				'tt_tgl'   			 => $tgl,
 			        				'tt_lainlain'		 => $request->lainlain,
-			        				'tt_tglkembali' 	 => Carbon::parse($tgl_kembali)->format('Y-m-d'),
+			        				'tt_tglkembali' 	 => $tgl_kembali,
 			        				'tt_totalterima'	 => round($total,2),
 			        				'created_at'		 => Carbon::now(),
 			        				'updated_at'	 	 => Carbon::now(),
@@ -1158,12 +921,16 @@ class BiayaPenerusController extends Controller
 			        				'tt_faktur'			 => strtoupper($Faktur),
 			        				'tt_noform'			 => $request->nota_tt,
 			        				'tt_nofp'			 => $request->nofaktur,
+			        				'tt_idagen'			 => $request->supplier_tt,
 			        				'tt_idcabang'		 => $request->cabang
 			        			]);
 			    	return response()->json(['status' => '0']);
 			    }
 
 		}
+
+
+
 
 		public function simpan_tt_subcon(request $request){
 		
@@ -1329,107 +1096,28 @@ class BiayaPenerusController extends Controller
 			}
 		}
 
-		public function hapus_biaya($id){
-		 	$cari_faktur = DB::table('faktur_pembelian')
-							 ->where('fp_idfaktur',$id)
-							 ->get();
-			if($cari_faktur[0]->fp_jenisbayar == 6){
-				$cari_bp = DB::table('biaya_penerus')
-								 ->where('bp_faktur',$cari_faktur[0]->fp_nofaktur)
-								 ->get();
-
-				if($cari_faktur[0]->fp_status == 'Released'){
-					$delete_bpd = DB::table('biaya_penerus_dt')
-									 ->where('bpd_bpid',$cari_bp[0]->bp_id)
-									 ->delete();
-					$delete_bp  = DB::table('biaya_penerus')
-									 ->where('bp_faktur',$cari_faktur[0]->fp_nofaktur)
-									 ->delete();
-					$delete_form_tt  = DB::table('form_tt')
-									 ->where('tt_nofp',$cari_faktur[0]->fp_nofaktur)
-									 ->delete();
-					$delete_faktur = DB::table('faktur_pembelian')
-									 ->where('fp_idfaktur',$id)
-									 ->delete();
-
-					return response()->json(['status' => '1']);
-				}else{
-					return response()->json(['status' => '0']);
-				}
-			}else if($cari_faktur[0]->fp_jenisbayar == 7){
-
-
-				$cari_pot = DB::table('pembayaran_outlet')
-								 ->where('pot_faktur',$cari_faktur[0]->fp_nofaktur)
-								 ->get();
-				if($cari_faktur[0]->fp_status == 'Released'){
-
-					$delete_potd = DB::table('pembayaran_outlet_dt')
-									 ->where('potd_potid',$cari_pot[0]->pot_id)
-									 ->delete();
-					$delete_pot  = DB::table('pembayaran_outlet')
-									 ->where('pot_faktur',$cari_faktur[0]->fp_nofaktur)
-									 ->delete();
-
-					$delete_form_tt  = DB::table('form_tt')
-									 ->where('tt_nofp',$cari_faktur[0]->fp_nofaktur)
-									 ->delete();
-					$delete_faktur = DB::table('faktur_pembelian')
-									 ->where('fp_idfaktur',$id)
-									 ->delete();
-
-					return response()->json(['status' => '1']);
-				}else{
-					return response()->json(['status' => '0']);
-				}  
-			}else if($cari_faktur[0]->fp_jenisbayar == 9){
-				$cari_pot = DB::table('pembayaran_subcon')
-								 ->where('pb_faktur',$cari_faktur[0]->fp_nofaktur)
-								 ->get();
-				if($cari_faktur[0]->fp_status == 'Released'){
-
-					$delete_potd = DB::table('pembayaran_subcon_dt')
-									 ->where('pbd_pb_id',$cari_pot[0]->pb_id)
-									 ->delete();
-					$delete_pot  = DB::table('pembayaran_subcon')
-									 ->where('pb_faktur',$cari_faktur[0]->fp_nofaktur)
-									 ->delete();
-
-					$delete_form_tt  = DB::table('form_tt')
-									 ->where('tt_nofp',$cari_faktur[0]->fp_nofaktur)
-									 ->delete();
-					$delete_faktur = DB::table('faktur_pembelian')
-									 ->where('fp_idfaktur',$id)
-									 ->delete();
-
-					return response()->json(['status' => '1']);
-				}else{
-					return response()->json(['status' => '0']);
-				}
-			}
-		}
-
-		public function detailbiayapenerus(request $request){
+		
+		public function detailbiayapenerus($id){
 			$cari_agen 	 = DB::table('faktur_pembelian')
-						 ->where('fp_nofaktur',$request->id)
+						 ->where('fp_idfaktur',$id)
 						 ->first();
 
 			if ($cari_agen->fp_jenisbayar == 6) {
 				$cari 	 = DB::table('faktur_pembelian')
 						 ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
-						 ->where('fp_nofaktur',$request->id)
+						 ->where('fp_idfaktur',$id)
 						 ->get();
 				if($cari[0]->bp_tipe_vendor == 'AGEN'){
 						$cari_fp 	 = DB::table('faktur_pembelian')
 									 ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
 									 ->join('agen','bp_kode_vendor','=','kode')
-									 ->where('fp_nofaktur',$request->id)
+									 ->where('fp_idfaktur',$id)
 									 ->get();
 					}else{
 						$cari_fp 	 = DB::table('faktur_pembelian')
 									 ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
 									 ->join('vendor','bp_kode_vendor','=','kode')
-									 ->where('fp_nofaktur',$request->id)
+									 ->where('fp_idfaktur',$id)
 									 ->get();
 					}
 
@@ -1447,7 +1135,7 @@ class BiayaPenerusController extends Controller
 								 ->orderBy('bpd_bpdetail')
 								 ->get();
 
-
+					// return $cari_bpd;
 				
 					$pdf = PDF::loadView('purchase/fatkur_pembelian/detailBiayaPenerus',compact('cari_fp','cari_bpd','kota_tujuan'))
 								->setPaper('a4','potrait');
@@ -1456,7 +1144,7 @@ class BiayaPenerusController extends Controller
 				$cari_fp 	 = DB::table('faktur_pembelian')
 									 ->join('pembayaran_outlet','pot_faktur','=','fp_nofaktur')
 									 ->join('agen','pot_kode_outlet','=','kode')
-									 ->where('fp_nofaktur',$request->id)
+									 ->where('fp_idfaktur',$id)
 									 ->get();
 
 				$cari_bpd 	 = DB::table('pembayaran_outlet_dt')
@@ -1482,7 +1170,7 @@ class BiayaPenerusController extends Controller
 				$cari_fp 	 = DB::table('faktur_pembelian')
 									 ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
 									 ->join('subcon','pb_kode_subcon','=','kode')
-									 ->where('fp_nofaktur',$request->id)
+									 ->where('fp_idfaktur',$id)
 									 ->get();
 
 				$cari_bpd 	 = DB::table('pembayaran_subcon_dt')
@@ -2433,8 +2121,15 @@ class BiayaPenerusController extends Controller
 	public function rubahVen(request $request)
 	{
 		// dd($request->all());
-
-		if ($request->vendor == 'AGEN') {
+		if (isset($request->agen)) {
+			$agen = $request->agen;
+			$acc  = $request->acc;
+			$flag1 = 'E';
+		}else{
+			$agen = '0';
+			$flag1 = 'C';
+		}
+		if ($request->val == 'AGEN') {
 			$data = DB::table('agen')
 					  ->where('kode_cabang',$request->cabang)
 					  ->where('kategori','AGEN')
@@ -2446,7 +2141,7 @@ class BiayaPenerusController extends Controller
 		}
 			$flag = $request->vendor;
 // return 'asd';
-		return view('purchase/fatkur_pembelian/dropdownBiayaPenerus',compact('data','flag'));
+		return view('purchase/fatkur_pembelian/dropdownBiayaPenerus',compact('data','flag','agen','acc','flag1'));
 	}
 
 

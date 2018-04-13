@@ -151,7 +151,7 @@
                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                     <td>   
                                         <select class="chosen-select-width c"  name="cb_kota_tujuan" id="cb_kota_tujuan" style="width:100%" i>
-                                            <option value="" selected="" disabled="">-- Pilih Kota tujuan --</option>
+                                            <option value="" selected="" readonly >-- Pilih Kota tujuan --</option>
                                         @foreach ($kota as $row)
                                             <option value="{{ $row->id }}"> {{ $row->nama }} </option>
                                         @endforeach
@@ -163,7 +163,7 @@
                                     <td style="padding-top: 0.4cm">Provinsi Tujuan</td>
                                     <td>   
                                         <select class="chosen-select-width c"  name="cb_provinsi_tujuan" id="cb_provinsi_tujuan" style="width:100%" i>
-                                            <option value="" selected="" disabled="">-- Pilih Provinsi tujuan --</option>
+                                            <option value="" selected="" readonly >-- Pilih Provinsi tujuan --</option>
                                         @foreach ($prov as $prov)
                                             <option value="{{ $prov->id }}"> {{ $prov->nama }} </option>
                                         @endforeach
@@ -313,7 +313,6 @@
     })
    $('#cb_kota_tujuan').change(function(){
         $('#hilang').hide();
-
     })
     $('#cb_provinsi_tujuan').change(function(){
         $('#hilang2').hide();
@@ -492,15 +491,15 @@
                         swal("Error","Can't update customer data, error : "+data.error,"error");
                     }
                 }else{
-                  console.log(data.hasil_cek);
-                    swal(data.hasil_cek,'Cek sekali lagi',"warning");
+                  console.log(data.result);
+                    swal(data.result,'Cek sekali lagi',"warning");
                 }
             },
             error: function(data,jqXHR, textStatus, errorThrown,hasil_cek)
             {
 
-               // console.log(hasil_cek);
-               swal("Terdapat Kesalahan!", data.hasil_cek, "warning");
+               console.log(data);
+               swal("Terdapat Kesalahan!", 'a', "warning");
             }
         });
     });

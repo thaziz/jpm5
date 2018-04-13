@@ -349,10 +349,16 @@
                                                 </tr>
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Discount</td>
-                                                    <td colspan="2" id="div_kom">
+                                                    <td  id="div_kom">
                                                         <div class="input-group">
                                                             <input type="text" class="form-control" name="ed_diskon_h" id="ed_diskon_h" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->diskon, 0, ",", ".") }}" @endif>
                                                             <span class="input-group-addon">%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td  id="div_kom">
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon">Rp</span>
+                                                            <input type="text" class="form-control" name="ed_diskon_v" id="ed_diskon_v" onkeyup="dikonval()" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->diskon, 0, ",", ".") }}" @endif>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -754,6 +760,7 @@
     var listCabang = [];
     var listDiskon = [];
     var maxdiskon = 100;
+    var maxvalue = 0;
     
     $(document).ready( function () {
         $("#surat_jalan").hide();
@@ -845,6 +852,7 @@
         var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
         var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
         var diskon  = $("input[name='ed_diskon_h']").val();
+        var diskon_value  = $("input[name='ed_diskon_v']").val();
         var diskon_val  = $("input[name='ed_diskon_h']").val();
         var biaya_komisi  = $("input[name='ed_biaya_komisi']").val();
         var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
@@ -865,7 +873,19 @@
             biaya_komisi = 0;
         }
         var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
-        total = total - (total * diskon / 100);
+        if (diskon != 0) {
+            $("input[name='ed_diskon_v']").attr('readonly',true);
+            total = total - (total * diskon / 100);
+        }else if (diskon == 0) {
+            $("input[name='ed_diskon_v']").attr('readonly',false);
+        }
+        if (diskon_value != 0) {
+            $("input[name='ed_diskon_h']").attr('readonly',true);
+            total = total - (diskon_value);
+            
+        }else if (diskon_value == 0) {
+                $("input[name='ed_diskon_h']").attr('readonly',false);
+        }
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
             ppn =Math.round(parseFloat(total) * parseFloat(0.1));
@@ -1046,6 +1066,9 @@
             return input.value;
         });
         
+
+
+            
         $("input[name='ed_harga']").val(0);
               if (kota_asal == '') {
             Command: toastr["warning"]("Kota Asal harus diisi", "Peringatan !")
@@ -1089,28 +1112,28 @@
               "hideMethod": "fadeOut"
             }
             return false;
-        }else if (kecamatan_tujuan == '' || kecamatan_tujuan == null) {
-          Command: toastr["warning"]("Kecamatan Tujuan harus diisi", "Peringatan !")
+            }else if (kecamatan_tujuan == '' || kecamatan_tujuan == null) {
+              Command: toastr["warning"]("Kecamatan Tujuan harus diisi", "Peringatan !")
 
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
-        }else if (pendapatan == '') {
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": true,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": false,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+                return false;
+            }else if (pendapatan == '') {
            Command: toastr["warning"]("Pendapatan harus diisi", "Peringatan !")
 
             toastr.options = {
@@ -1273,6 +1296,12 @@
                     if (data.jumlah_data == 0){
                         alert('Tarif penerus tidak ditemukan');
                     }
+                    var dasar = $('input[name="ed_tarif_dasar"]').val();
+                    dasar = dasar.replace(/[A-Za-z$. ,-]/g, "");
+                    var penerus = $("input[name='ed_tarif_penerus']").val();
+                    penerus = penerus.replace(/[A-Za-z$. ,-]/g, "");
+                    var hasil = parseInt(dasar)+parseInt(penerus);
+                    maxvalue = hasil*maxdiskon/100;
                     hitung();
                 }
             },
@@ -2318,6 +2347,35 @@
                 i = listCabang.length + 1;
             }
         }
+    }
+    function dikonval(){
+        var data_value = $('#ed_diskon_v').val();
+        if (data_value > maxvalue) {
+            
+            Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": true,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            
+        
+            $('#ed_diskon_v').val(parseInt(maxvalue));
+        }
+        hitung();   
     }
 
 </script>

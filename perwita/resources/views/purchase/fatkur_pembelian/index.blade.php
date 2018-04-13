@@ -78,7 +78,7 @@
                     @foreach($data['faktur'] as $index=>$faktur)
 
                       <tr>
-                        <td> {{$index + 1}}</td>
+                        <td align="center"> {{$index + 1}}</td>
                         <td> {{$faktur->fp_nofaktur}} </td>
                         <td>  {{$faktur->fp_tgl}} </td>
                         <td> {{$faktur->jenisbayar}} </td>
@@ -88,7 +88,7 @@
                         <td align="center"> - </td>
                         @endif
                         <td>{{$faktur->fp_netto}}</td>
-                        <td>
+                        <td align="center">
                           @if($faktur->fp_pending_status == 'APPROVED')
                             <label class="label label-success">APPROVED</label>
                           @elseif($faktur->fp_pending_status == 'PENDING')
@@ -190,6 +190,24 @@
             //paging: false,
             "pageLength": 10,
             "language": dataTableLanguage,
+            columnDefs: [
+              {
+                 targets: 0,
+                 className: 'center'
+              },
+              {
+                 targets: 5,
+                 className: 'right'
+              },
+              {
+                 targets: 6,
+                 className: 'center'
+              },
+              {
+                 targets: 8,
+                 className: 'center'
+              }
+            ]
     });
 
     $('.date').datepicker({
@@ -218,7 +236,7 @@ function(){
       url:baseUrl + '/fakturpembelian/hapusbiayapenerus/'+id,
       type:'get',
       success:function(data){
-        if(data == 'sukses'){
+        if(data.status == 1){
           swal({
           title: "Berhasil!",
                   type: 'success',

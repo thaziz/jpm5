@@ -67,10 +67,10 @@
                                     <select class="form-control cabang chosen-select-width" disabled="" name="cabang" >
                                       <option selected="" disabled="">- Pilih Cabang -</option>
                                       @foreach($cabang as $val)
-                                      @if(Auth::user()->kode_cabang == $val->kode)
-                                      <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      @if($data->kc_kode_cabang== $val->kode)
+                                      <option selected="" value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                       @else
-                                      <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      <option  value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                       @endif
                                       @endforeach
                                     </select>
@@ -126,14 +126,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($data_dt as $val)
+                        @foreach($data_dt as $i=> $val)
                         <tr>
                             <td>
-                                {{$val->nama_asal}}
-                                <input type="hidden" class="kota_asal" value="{{$val->kcd_kota_asal}}" name="kota_asal[]">
+                                {{$val->kcd_kota_asal}} - {{$val->nama_asal}}
+                                <input type="hidden" class="kota_asal urut_ke_{{$i+1}}" value="{{$val->kcd_kota_asal}}" name="kota_asal[]">
+                                <input type="hidden" class="seq" value="{{$i+1}}">
                             </td>
                             <td>
-                                {{$val->nama_tujuan}}
+                                {{$val->kcd_kota_tujuan}} - {{$val->nama_tujuan}}
                                 <input type="hidden" class="kota_tujuan" value="{{$val->kcd_kota_tujuan}}" name="kota_tujuan[]">
                             </td>
                             <td>
@@ -156,9 +157,13 @@
                             <td>
                                 <input type="text" class="keterangan form-control" value="{{$val->kcd_keterangan}}" name="keterangan[]">
                             </td>
-                            <td>
-                                <button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">
-                                <label class="fa fa-trash"></label></button>
+                            <td align="center">
+                                <div class="btn-group">
+                                   <button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">
+                                   <label class="fa fa-pencil"></label></button>
+                                   <button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">
+                                   <label class="fa fa-trash"></label></button>
+                               </div>
                                 <input type="hidden" class="akun_acc form-control" value="{{$val->kcd_acc_penjualan}}" name="akun_acc[]">
                                 <input type="hidden" class="akun_csf form-control" value="{{$val->kcd_csf_penjualan}}" name="akun_csf[]">
                             </td>
@@ -188,6 +193,7 @@
                                         <option value="{{$val->id}}">{{$val->id}} - {{$val->nama}}</option>
                                         @endforeach
                                     </select>
+                                <input type="hidden" class="id_detail" name="">
                                 </td>
                             </tr>
                             <tr>
@@ -238,7 +244,7 @@
                             <tr>
                                 <td>Tipe Angkutan</td>
                                 <td>
-                                    <select name="tipe_angkutan" class="form-control tipe_angkutan chosen-select-width">
+                                    <select name="tipe_angkutan" class="form-control tipe_angkutan_modal chosen-select-width">
                                         <option value="0">Pilih - Tipe Angkutan</option>
                                         @foreach($tipe_angkutan as $val)
                                             <option value="{{$val->kode}}">{{$val->nama}}</option>
@@ -413,10 +419,13 @@ $('#btnadd').click(function(){
 
 var datatable = $('#table_data').DataTable({
                       'paging':false,
-                      'searching':false,
                       columnDefs: [
                       {
                          targets: 6 ,
+                         className: 'center'
+                      },
+                      {
+                         targets: 7 ,
                          className: 'center'
                       },
                       {
@@ -439,6 +448,12 @@ $('.jenis_modal').change(function(){
         $('.type_tarif_tr').attr('hidden',true);
     }
 });
+
+var count = 1;
+
+@foreach($data_dt as $val)
+count +=1;
+@endforeach
 function tambah(){
   
 var kota_asal_modal_text     = $('.kota_asal_modal  option:selected').text();
@@ -448,8 +463,8 @@ var jenis_tarif_modal_text   = $('.jenis_tarif_modal option:selected').text();
 var acc_akun_modal_text      = $('.acc_akun_modal option:selected ').text();
 var csf_akun_modal_text      = $('.csf_akun_modal option:selected').text();
 var satuan_modal_text        = $('.satuan_modal option:selected').text();
-var tipe_angkutan_text       = $('.tipe_angkutan option:selected').text();
-
+var tipe_angkutan_text       = $('.tipe_angkutan_modal option:selected').text();
+var id_detail                = $('.id_detail').val();
 var harga_modal              = $('.harga_modal').val();
 var keterangan_modal         = $('.keterangan_modal ').val();
 
@@ -460,91 +475,122 @@ var jenis_modal              = $('.jenis_modal').val();
 var jenis_tarif_modal        = $('.jenis_tarif_modal').val();
 var acc_akun_modal           = $('.acc_akun_modal ').val();
 var csf_akun_modal           = $('.csf_akun_modal').val();
-var tipe_angkutan            = $('.tipe_angkutan').val();
 var satuan_modal             = $('.satuan_modal').val();
+var tipe_angkutan            = $('.tipe_angkutan_modal').val();
+console.log(id_detail);
 
-kota_asal_modal_text   = kota_asal_modal_text.split('-');
-kota_tujuan_modal_text = kota_tujuan_modal_text.split('-');
+    if (id_detail == '') {
+        datatable.row.add([
+               kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+count+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
+               '<input type="hidden" class="seq" value="'+count+'">' ,
 
-  datatable.row.add([
-           kota_asal_modal_text[1]+'<input type="hidden" class="kota_asal" value="'+kota_asal_modal+'" name="kota_asal[]">' ,
-           kota_tujuan_modal_text[1]+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
-           jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
-           '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
-           satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
-           tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
-           '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
-           '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
-           '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
-           '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-           '<label class="fa fa-trash"></label></button>'+
-           '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
-           '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
-    ]).draw();
+               kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
+
+               jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
+               '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
+
+               satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+
+               tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
+
+               '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
+               '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
+
+               '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
+
+               '<div class="btn-group">'+
+               '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
+               '<label class="fa fa-pencil"></label></button>'+
+               '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+               '<label class="fa fa-trash"></label></button>'+
+               '</div>'+
+               '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
+               '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
+          
+        ]).draw();
+        count++;
+    }else{
+        var par = $('.urut_ke_'+id_detail).parents('tr');
+        datatable.row(par).remove().draw(false);
+
+        datatable.row.add([
+               kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+id_detail+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
+               '<input type="hidden" class="seq" value="'+id_detail+'">',
+
+               kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
+
+               jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
+               '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
+
+               satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+
+               tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
+
+               '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
+               '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
+
+               '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
+
+               '<div class="btn-group">'+
+               '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
+               '<label class="fa fa-pencil"></label></button>'+
+               '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+               '<label class="fa fa-trash"></label></button>'+
+               '</div>'+
+               '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
+               '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
+          
+        ]).draw();
+    }
   // console.log('asd');
-
+  $('.id_detail').val('');
   $('.modal_customer').modal('hide');
 }
   
 function hapus(p){
-  var par = p.parentNode.parentNode;
+  var par = $(p).parents('tr');
   datatable.row(par).remove().draw(false);
 }
 
 function edit(p){
-var par  = p.parentNode.parentNode;
-var asal = $(par).find('.asal_tb').val();
-var tujuan = $(par).find('.tujuan_tb').val();
-var angkutan = $(par).find('.angkutan_tb').val();
-var tarif = $(par).find('.tarif_tb').val();
-var harga = $(par).find('.harga_tb').val();
-var keterangan = $(par).find('.keterangan_tb').val();
-var id = $(par).find('.id_table').val();
+var par  = $(p).parents('tr');
+var kota_asal = $(par).find('.kota_asal').val();
+var kota_tujuan = $(par).find('.kota_tujuan').val();
 
-  $('.asal').val(asal).trigger('chosen:updated');
-  $('.tujuan').val(tujuan).trigger('chosen:updated');
-  $('.angkutan').val(angkutan).trigger('chosen:updated');
-  $('.tarif').val(tarif);
-  $('.harga').val(harga);
-  $('.keterangan').val(keterangan);
-  $('.id_edit').val(id);
-  $('.updt').attr('hidden',false);
-  $('.tambah').attr('hidden',true);
-  $('.modal').modal('show');
+var jenis_detail = $(par).find('.jenis_detail').val();
+var jenis_tarif_detail = $(par).find('.jenis_tarif_detail').val();
+var type_tarif = $(par).find('.type_tarif').val();
+
+var satuan = $(par).find('.satuan').val();
+var tipe_angkutan = $(par).find('.tipe_angkutan').val();
+var harga = $(par).find('.harga').val();
+var keterangan = $(par).find('.keterangan').val();
+var akun_acc = $(par).find('.akun_acc').val();
+var akun_csf = $(par).find('.akun_csf').val();
+var seq = $(par).find('.seq').val();
+if (jenis_detail == 'PAKET') {
+    $('.type_tarif_tr').prop('hidden',false);
+}else{
+    $('.type_tarif_tr').prop('hidden',true);
+}
+  $('.kota_asal_modal').val(kota_asal).trigger('chosen:updated');
+  $('.kota_tujuan_modal').val(kota_tujuan).trigger('chosen:updated');
+
+  $('.jenis_modal').val(jenis_detail).trigger('chosen:updated');
+  $('.jenis_tarif_modal').val(jenis_tarif_detail).trigger('chosen:updated');
+  $('.type_tarif_modal ').val(type_tarif).trigger('chosen:updated');
+
+  $('.tipe_angkutan_modal').val(tipe_angkutan).trigger('chosen:updated');
+  $('.harga_modal').val(harga);
+  $('.satuan_modal').val(satuan).trigger('chosen:updated');
+  $('.keterangan_modal').val(keterangan);
+  $('.acc_akun_modal').val(akun_acc).trigger('chosen:updated');
+  $('.csf_akun_modal').val(akun_csf).trigger('chosen:updated');
+  $('.id_detail').val(seq);
+  
+  $('#modal_customer').modal('show');
 }
 
-// function updt(){
-//   var id            = $('.id_edit').val();
-//   var asal_text     = $('.asal option:selected').text();
-//   var tujuan_text   = $('.tujuan option:selected').text();
-//   var angkutan_text = $('.angkutan option:selected').text();
-//   var asal          = $('.asal').val();
-//   var tujuan        = $('.tujuan').val();
-//   var angkutan      = $('.angkutan').val();
-//   var tarif         = $('.tarif').val();
-//   var harga         = $('.harga').val();
-//   var keterangan    = $('.keterangan').val();
-
-
-
-//   var par         = $('.hitung_'+id).parents('tr');
-
-//   $(par).find('.asal_text').html(asal_text);
-//   $(par).find('.tujuan_text').html(tujuan_text);
-//   $(par).find('.angkutan_text').html(angkutan_text);
-//   $(par).find('.tarif_text').html(tarif);
-//   $(par).find('.harga_text').html(harga);
-//   $(par).find('.keterangan_text').html(keterangan);
-
-//   $(par).find('.asal_tb').val(asal);
-//   $(par).find('.tujuan_tb').val(tujuan);
-//   $(par).find('.angkutan_tb').val(angkutan);
-//   $(par).find('.tarif_tb').val(tarif);
-//   $(par).find('.harga_tb').val(harga);
-//   $(par).find('.keterangan_tb').val(keterangan);
-
-//   $('.modal').modal('hide');
-// }
 
 $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();

@@ -174,9 +174,13 @@
 
                 <div class="box-footer">
                   <div class="pull-right">
-					<input id="submit" name="submit" value="Apply Stock Opname" class="btn btn-info" type="submit">
-                  </div>
-                </div><!-- /.box-footer -->
+                  
+                    
+         
+                    
+                    
+                    </div>
+                  </div><!-- /.box-footer -->
               </div><!-- /.box -->
             </div><!-- /.col -->
           </div><!-- /.row -->

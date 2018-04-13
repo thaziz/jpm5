@@ -173,6 +173,24 @@
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr class="kontrak_tr">
+                                        <td class="kontrak_td disabled">
+                                            <div class="checkbox checkbox-info checkbox-circle">
+                                                <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                <label>
+                                                    Kontrak
+                                                </label>
+                                            </div> 
+                                        </td>
+                                        <td style="padding-bottom: 0.1cm">
+                                            <span class="input-group-btn">
+                                                <button type="button" id="btn_cari_tarif" class="btn btn-primary">
+                                                    Search Tarif
+                                                </button>
+                                            </span>
+                                        </td>
+                                        
+                                    </tr>
                                 </table>
                             </form>
                             <form class="col-sm-6" style="margin-bottom: 80px">
@@ -238,27 +256,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="kontrak_tr">
-                                        <td class="kontrak_td disabled">
-                                            <div class="checkbox checkbox-info checkbox-circle">
-                                                <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
-                                                <label>
-                                                    Kontrak
-                                                </label>
-                                            </div> 
-                                        </td>
-                                        <td style="padding-bottom: 0.1cm">
-                                            <span class="input-group-btn">
-                                                <button type="button" id="btn_cari_tarif" class="btn btn-primary">
-                                                    Search Tarif
-                                                </button>
-                                            </span>
-                                        </td>
-                                        <td style="padding-top: 0.4cm">Satuan</td>
-                                        <td>
-                                            <input type="text" readonly="readonly" class="form-control satuan" name="satuan" value="">
-                                        </td>
-                                    </tr>
+                                    
 
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
@@ -278,8 +276,12 @@
                                     </tr>
                                     <tr>
                                         <td>Discount</td>
-                                        <td colspan="3">
+                                        <td colspan="">
                                             <input type="text" onkeyup="hitung()" value="0" name="discount" class=" form-control discount input-sm">
+                                        </td>
+                                        <td style="padding-top: 0.4cm" colspan="">Satuan</td>
+                                        <td>
+                                            <input type="text" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
                                     </tr>
                                     <tr>
@@ -343,9 +345,9 @@
                                     </tr>
                                     <tr>
                                         <td colspan="2">
-                             {{--                <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
+                                            <button type="button" class="pull-right btn btn-danger disabled ngeprint" style="margin-left: 30px">
                                                 <i class="fa fa-print"> Print</i>
-                                            </button> --}}
+                                            </button>
                                             <button type="button" class="pull-right btn btn-primary save">
                                                 <i class="fa fa-save"> Simpan</i>
                                             </button>
@@ -823,7 +825,7 @@ $('.save').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                       window.location.href='../sales/deliveryorderkargo';
+                       // window.location.href='../sales/deliveryorderkargo';
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);

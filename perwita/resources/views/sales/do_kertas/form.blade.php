@@ -75,7 +75,7 @@
                            @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="4">
+                                <td colspan="4" class="cabang_td">
                                     <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                     @foreach ($cabang as $row)
                                         @if(Auth::user()->kode_cabang == $row->kode)
@@ -240,7 +240,7 @@
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Netto</td>
                                                 <td colspan="5">
-                                                    <input type="text" class="form-control ed_netto_text" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
+                                                    <input type="text" class="form-control ed_netto_text" readonly="readonly" name= tabindex="-1" style="text-align: right;">
                                                     <input type="hidden" class="form-control ed_netto" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
                                                 </td>
                                             </tr>
@@ -327,7 +327,8 @@
 @section('extra_scripts')
 <script type="text/javascript">
 // datatable
-
+var array_kontrak    = [];
+var array_kontrak_id = [];
 
 
 var table_detail = $('#table_detail').DataTable( {
@@ -423,8 +424,12 @@ function cari_customer() {
         data:{customer},
         dataType:'json',
         success:function(data){
-            $('.ed_alamat').val(data.alamat);
-
+            $('.ed_alamat').val(data.customer.alamat);
+            var len = array_kontrak_id.length;
+            console.log(len);
+            if (len != 0) {
+                len     = array_kontrak_id.splice(0,len);
+            }
             if (data.status == 1) {
                 $('.status_kontrak').prop('checked',true);
                 $('.ed_harga').prop('readonly',true);
@@ -462,7 +467,11 @@ function tambah_kertas() {
     $('.ed_total').val('0');
     $('.ed_satuan').val('');
     $('.acc_penjualan').val('');
-
+    $('.kcd_dt').val('');
+    $('.asal_td').removeClass('disabled');
+    $('.tujuan_td').removeClass('disabled');
+    $('.ed_netto_text').val(0);
+    $('.ed_netto').val(0);
     if ($('.status_kontrak').is(':checked') == true) {
        var status = 2;
     }else{
@@ -572,9 +581,11 @@ function simpan_modal() {
 
     var item                = $('.item').val();
     var old_id              = $('.old_id').val();
+    var kcd_dt              = $('.kcd_dt').val();
     var ed_satuan           = $('.ed_satuan').val();
     var ed_jumlah           = $('.ed_jumlah').val();
     var ed_harga            = $('.ed_harga').val();
+    ed_harga                = ed_harga.replace(/[^0-9\-]+/g,"");
     var ed_diskon           = $('.ed_diskon').val();
     var ed_netto            = $('.ed_netto').val();
     var cb_kota_asal        = $('.cb_kota_asal').val();
@@ -583,7 +594,13 @@ function simpan_modal() {
     var acc_penjualan       = $('.acc_penjualan').val();
     var cb_kota_asal_text   = $('.cb_kota_asal option:selected').text();
     var cb_kota_tujuan_text = $('.cb_kota_tujuan option:selected').text();
-    var item_text           = $('.item option:selected').text();
+    if ($('.status_kontrak').is(':checked') == true) {
+        var item_text       = $('.nama_kontrak ').val();
+    }else{
+        var item_text       = $('.item option:selected').text();
+    }
+
+
 if (old_id == '') {
     table_detail.row.add({
         'id':'<p class="id_text">'+count+'</p>'+
@@ -591,6 +608,7 @@ if (old_id == '') {
         '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+ed_diskon+'">'+
         '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+ed_harga+'">'+
         '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+ed_netto+'">'+
+        '<input type="hidden" readonly name="d_kcd_dt[]" class="form-control d_kcd_dt" value="'+kcd_dt+'">'+
         '<input type="hidden" readonly name="d_satuan[]" class="form-control d_satuan" value="'+ed_satuan+'">'+
         '<input type="hidden" readonly name="d_jumlah[]" class="form-control d_jumlah" value="'+ed_jumlah+'">'+
         '<input type="hidden" readonly name="d_asal[]" class="form-control d_asal" value="'+cb_kota_asal+'">'+
@@ -598,6 +616,7 @@ if (old_id == '') {
 
         'Kode Item':'<p class="kode_item_text">'+item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
+        '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
         '<input type="hidden" name="d_acc[]" class="d_acc" value="'+acc_penjualan+'">',
 
         'Nama Item':'<p class="nama_item">'+item_text+'</p>',
@@ -636,6 +655,7 @@ if (old_id == '') {
         '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+ed_diskon+'">'+
         '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+ed_harga+'">'+
         '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+ed_netto+'">'+
+        '<input type="hidden" readonly name="d_kcd_dt[]" class="form-control d_kcd_dt" value="'+kcd_dt+'">'+
         '<input type="hidden" readonly name="d_satuan[]" class="form-control d_satuan" value="'+ed_satuan+'">'+
         '<input type="hidden" readonly name="d_jumlah[]" class="form-control d_jumlah" value="'+ed_jumlah+'">'+
         '<input type="hidden" readonly name="d_asal[]" class="form-control d_asal" value="'+cb_kota_asal+'">'+
@@ -668,9 +688,15 @@ if (old_id == '') {
         }).draw();
 }
 
+    if ($('.status_kontrak').is(':checked') == true) {
+        array_kontrak.push(item);
+        array_kontrak_id.push(kcd_dt);
+    }
+
 
     $('#modal').modal('hide');
-
+    $('.customer_td').addClass('disabled');
+    $('.cabang_td').addClass('disabled');
     hitung_all();
 }
 function format ( d ) {
@@ -731,14 +757,16 @@ function hapus_detail(p) {
     })
     if (temp == 0) {
         $('#btnsimpan').addClass('disabled');
+        $('.customer_td').removeClass('disabled');
+        $('.cabang_td').removeClass('disabled');
     }
+    hitung_all();
 }
 
 function edit_detail(p) {
     var par = p.parentNode.parentNode;
     var id  = $(par).find('.id').val();
     var d_kode_item  = $(par).find('.d_kode_item').val();
-    var d_satuan  = $(par).find('.d_satuan').val();
     var d_satuan  = $(par).find('.d_satuan').val();
     var d_jumlah  = $(par).find('.d_jumlah').val();
     var d_harga  = $(par).find('.d_harga').val();
@@ -747,13 +775,25 @@ function edit_detail(p) {
     var d_acc  = $(par).find('.d_acc').val();
     var d_tujuan  = $(par).find('.d_tujuan').val();
     var d_keterangan  = $(par).find('.d_keterangan').val();
+    var kcd_dt  = $(par).find('.d_kcd_dt').val();
 
     $('.ed_id').val(id);
     $('.old_id').val(id);
+    $('.kcd_dt').val(kcd_dt);
     $('.item').val(d_kode_item).trigger('chosen:updated');
     $('.cb_kota_asal').val(d_asal).trigger('chosen:updated');
     $('.cb_kota_tujuan').val(d_tujuan).trigger('chosen:updated');
-    cari_item();
+    if (kcd_dt == 0) {
+        cari_item();
+    }
+
+    if ($('.status_kontrak').is(':checked') == true) {
+       var status = 2;
+    }else{
+        var status = 1;
+    }
+
+  
     $('.ed_jumlah').val(d_jumlah);
     $('.ed_diskon').val(d_diskon);
     $('.ed_diskon_modal').val(accounting.formatMoney(d_diskon,"",0,'.',','));
@@ -776,7 +816,7 @@ function cari_kontrak() {
     var customer = $('.customer').val();
     $.ajax({
         url:baseUrl + '/sales/cari_kontrak_kertas',
-        data:{customer},
+        data:{customer,array_kontrak,array_kontrak_id},
         success:function(data){
             $('.modal_kontrak').html(data);
             $('#modal_kontrak').modal('show');
@@ -796,20 +836,28 @@ function pilih_kontrak(a) {
     var kcd_kota_tujuan = $(a).find('.kcd_kota_tujuan').val()
     var kcd_harga       = $(a).find('.kcd_harga').val();
     var kcd_kode_satuan = $(a).find('.kcd_kode_satuan').val();
-    console.log(kcd_kota_asal);
+    var kcd_dt          = $(a).find('.kcd_dt_m').val();
+    var acc_penjualan   = $(a).find('.acc_kontrak').val();
+    var kcd_keterangan  = $(a).find('.kcd_keterangan').val();
+
     $('.item').val(kc_nomor);
     $('.ed_satuan').val(kcd_kode_satuan);
-    $('.ed_harga').val(kcd_harga);
+    $('.kcd_dt').val(kcd_dt);
+    $('.ed_harga').val(accounting.formatMoney(kcd_harga,"",0,'.',','));
     $('.cb_kota_asal').val(kcd_kota_asal).trigger('chosen:updated');
     $('.asal_td').addClass('disabled');
     $('.tujuan_td').addClass('disabled');
     $('.cb_kota_tujuan').val(kcd_kota_tujuan).trigger('chosen:updated');
+    $('.acc_penjualan').val(acc_penjualan);
+    $('.ed_jumlah').val(1);
+    $('.nama_kontrak').val(kcd_keterangan);
+    hitung();
     $('#modal_kontrak').modal('hide');
 
 }
 // SIMPAN DATA
     function simpan(){
-
+        var check = $('.status_kontrak').is(':checked');
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data DO!",
@@ -831,10 +879,11 @@ function pilih_kontrak(a) {
 
           $.ajax({
           url:baseUrl + '/sales/save_do_kertas',
-          type:'post',
+          type:'get',
           dataType:'json',
           data:$('.table_header :input').serialize()
-               +'&'+table_detail.$('input').serialize(),
+               +'&'+table_detail.$('input').serialize()
+               +'&check='+check,
           success:function(response){
              if (response.status =='gagal') {
                 

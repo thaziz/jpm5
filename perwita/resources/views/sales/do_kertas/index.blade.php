@@ -75,17 +75,20 @@
                                 <td style="text-align:right"> {{ number_format($row->total_net, 0, ",", ".") }} </td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        @if(Auth::user()->punyaAkses('Delivery Order','ubah'))
-                                            @if($row->status_do == 'Released')
-                                            <a href="{{ url('sales/edit_do_kertas') }}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah'))
+                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
+                                            <a type="button" href="{{ url('sales/edit_do_kertas')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
                                             @endif
                                         @endif
+
+
                                         @if(Auth::user()->punyaAkses('Delivery Order','print'))
-                                            <a href="{{ url('sales/cetak_nota_kertas') }}/{{$row->nomor}}" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>
+                                            <button type="button" onclick="print('{{$row->nomor}}')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>
                                         @endif
-                                        @if(Auth::user()->punyaAkses('Delivery Order','hapus'))
-                                            @if($row->status_do == 'Released')
-                                            <a onclick="hapus('{{$row->nomor}}')" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+
+                                        @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus'))
+                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
+                                            <button type="button" onclick="hapus('{{$row->nomor}}')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>
                                             @endif
                                         @endif
                                     </div>
@@ -151,7 +154,9 @@
     });
 
 
-    
+    function print(a) {
+        window.open('{{ url('sales/cetak_nota_kertas') }}'+'/'+a)
+    }
 
     function hapus(id){
         

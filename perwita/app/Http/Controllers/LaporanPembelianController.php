@@ -441,4 +441,31 @@ class LaporanPembelianController extends Controller
 
 	//-----
 
+
+	//START LAPORAN TTT /TANDA TERIMA TAGIHAN	
+	public function lap_ttt() {
+		$data = DB::table('form_tt')->get();
+		return view('purchase/laporan/lap_ttt/lap_ttt',compact('data'));
+	}
+	public function report_ttt( Request $request ){
+			$data = $request->a;	
+	   		$dat = '';
+				for ($save=0; $save <count($data) ; $save++) { 
+					$dat = $dat.','.$data[$save];
+				}
+				$dat =explode(',', $dat); 
+				json_encode($dat);
+		        for ($i=1; $i <count($dat) ; $i++) { 
+					$dat1[$i] = DB::table('form_tt')->where('tt_idform','=',$dat[$i])->get();
+		        }
+		        // dd($dat1);
+		return view("purchase/laporan/lap_ttt/report_ttt",compact('dat1'));
+	}
+	//END OF
+
+
+	//-----
+
+
+
 }

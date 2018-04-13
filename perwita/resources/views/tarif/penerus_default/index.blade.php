@@ -81,6 +81,7 @@
                                 <th> Tipe Kiriman</th>
                                 <th> Keterangan </th>
                                 <th> Harga </th>
+                                <th> Kode Cabang </th>
                                 <th style="width:50px"> Aksi </th>
                             </tr>
                         </thead>
@@ -356,6 +357,7 @@
             { "data": "tipe_kiriman", },
             { "data": "keterangan" },
             { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            { "data": "cabang" },
             { "data": "button" },
             ]
         });

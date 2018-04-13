@@ -46,6 +46,7 @@
                   <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
                 </div>
               </div>  
+              <h3 id="replace" align="center"></h3> 
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
@@ -414,11 +415,36 @@
         url: baseUrl + '/cari_paket/cari_paket',
         type: "get",
        success : function(data){
-        console.log(data);
+        // console.log(data.dokumen == null &&  data.kilogram == null  &&  data.koli == null &&  data.sepeda == null);
+         if (data.dokumen == null && data.kilogram == null && data.koli == null && data.sepeda == null) {
+          Command: toastr["warning"](data.response, "Peringatan !")
+
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          $('#container').html('');
+
+        }else{
+         var awal = $.datepicker.formatDate("dd MM yy", new Date(data.awal))
+         var akir = $.datepicker.formatDate("dd MM yy", new Date(data.akir))
+         $('#replace').html('Tampilkan Data ' + awal + ' S/D ' + akir);
         Highcharts.chart('container', {
         chart: {
             type: 'column',
-          
         },
         title: {
             text: 'Laporan'
@@ -461,6 +487,7 @@
 
         ],
       });
+        }
         }
       });
     }

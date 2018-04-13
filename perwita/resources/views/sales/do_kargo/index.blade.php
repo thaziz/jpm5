@@ -149,10 +149,9 @@
             "paging": true,
             "lengthChange": true,
             "searching": true,
-            "ordering": true,
+            order: [[ 1, "desc" ]],
             "info": false,
             "responsive": true,
-            "autoWidth": false,
             "pageLength": 10,
             "retrieve" : true,
             "columns": [

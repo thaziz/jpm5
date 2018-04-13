@@ -16,6 +16,11 @@ class periode_keuangan_controller extends Controller
     public function make(Request $request){
 
         // return json_encode($request->all());
+
+        $this->generate_saldo_piutang($request["bulan"]."/".$request["tahun"]);
+
+        return "aa";
+
         $response = [
             'status' => 'sukses',
         ];
@@ -32,14 +37,12 @@ class periode_keuangan_controller extends Controller
 
         $cek2 = DB::table('d_periode_keuangan')->select("*")->limit(1)->first();
 
-        if(count($cek2) > 0){
-            if($request->bulan < $cek2->bulan || $request->tahun < $cek2->tahun){
-                $response = [
-                    'status' => 'past_insert',
-                ];
+        if($request->bulan < date("m") || $request->tahun < date("Y")){
+            $response = [
+                'status' => 'past_insert',
+            ];
 
-                return json_encode($response);
-            }
+            return json_encode($response);
         }
 
         $id = (DB::table("d_periode_keuangan")->max("id") == null) ? 1 : (DB::table("d_periode_keuangan")->max("id")+1);
@@ -53,11 +56,8 @@ class periode_keuangan_controller extends Controller
         // return json_encode($ret);
 
         if($periode->save()){
-
             
             $this->generate_akun($request);
-
-
 
             return json_encode($response);
         }
@@ -142,5 +142,7 @@ class periode_keuangan_controller extends Controller
 
             return true;
     }
+
+    
 
 }

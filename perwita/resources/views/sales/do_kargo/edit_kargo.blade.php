@@ -202,6 +202,28 @@
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr class="kontrak_tr">
+                                        <td class="kontrak_td disabled">
+                                            <div class="checkbox checkbox-info checkbox-circle">
+                                                @if($data->kontrak == true)
+                                                <input checked="" onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                @else
+                                                <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                @endif
+                                                <label>
+                                                    Kontrak
+                                                </label>
+                                            </div> 
+                                        </td>
+                                        <td style="padding-bottom: 0.1cm">
+                                            <span class="input-group-btn">
+                                                <button type="button" id="btn_cari_tarif" class="btn btn-primary">
+                                                    Search Tarif
+                                                </button>
+                                            </span>
+                                        </td>
+                                        
+                                    </tr>
                                 </table>
                             </form>
                             <form class="col-sm-6" style="margin-bottom: 80px">
@@ -275,33 +297,7 @@
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr class="kontrak_tr">
-                                        <td class="kontrak_td disabled">
-                                            <div class="checkbox checkbox-info checkbox-circle">
-                                                @if($data->kontrak == true)
-                                                <input checked="" onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
-                                                @else
-                                                <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
-                                                @endif
-                                                <label>
-                                                    Kontrak
-                                                </label>
-                                            </div> 
-                                        </td>
-                                        <td style="padding-bottom: 0.1cm">
-                                            <span class="input-group-btn">
-                                                <button type="button" id="btn_cari_tarif" class="btn btn-primary">
-                                                    Search Tarif
-                                                </button>
-                                            </span>
-                                        </td>
-
-                                        <td style="padding-top: 0.4cm">Satuan</td>
-                                        <td>
-                                            <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
-                                        </td>
-                                        
-                                    </tr>
+                                    
                                     <tr>
                                         <td style="padding-top: 0.4cm">Jumlah</td>
                                         <td>
@@ -320,8 +316,12 @@
                                     </tr>
                                     <tr>
                                         <td>Discount</td>
-                                        <td colspan="3">
+                                        <td colspan="1">
                                             <input type="text" onkeyup="hitung()" value="{{number_format($data->diskon, 0, ",", ".")}}" name="discount" class=" form-control discount input-sm">
+                                        </td>
+                                        <td style="padding-top: 0.4cm">Satuan</td>
+                                        <td>
+                                            <input type="text" value="{{$data->kode_satuan}}" readonly="readonly" class="form-control satuan" name="satuan" value="">
                                         </td>
                                     </tr>
                                     <tr>
