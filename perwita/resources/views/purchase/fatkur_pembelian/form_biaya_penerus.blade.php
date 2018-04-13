@@ -370,20 +370,19 @@
             "pageLength": 10,
             "language": dataTableLanguage,
             columnDefs: [
-
-          {
-             targets: 0,
-             className: 'center'
-          },
-          {
-             targets: 3,
-             className: 'right'
-          },
-          {
-             targets: 6,
-             className: 'center'
-          }
-       ]
+              {
+                 targets: 0,
+                 className: 'center'
+              },
+              {
+                 targets: 3,
+                 className: 'right'
+              },
+              {
+                 targets: 6,
+                 className: 'center'
+              }
+            ]
     });
 
   function ganti_agen(val) {

@@ -489,20 +489,12 @@ class BiayaPenerusController extends Controller
 
 				if ($cari_fp == null) {
 
-					$id = DB::table('faktur_pembelian')
-							 ->max('fp_idfaktur');
-
-					if ($id == null) {
-						$id = 1;
-					}else{
-						$id+=1;
-					}
+					
 
 					$total_biaya =  array_sum($request->bayar_biaya);
 					$count 		 = count($request->no_do);
 					$save_data = DB::table('faktur_pembelian')
 								   ->insert([
-								   	  'fp_idfaktur'   		=> $id,
 									  'fp_nofaktur'   		=> $request->nofaktur,
 									  'fp_tgl'        		=> $tgl,
 									  'fp_keterangan' 		=> $request->Keterangan_biaya,
@@ -524,15 +516,7 @@ class BiayaPenerusController extends Controller
 									  'updated_by'  		=> Auth::user()->m_username,
 								   ]);	
 
-					$id_bp = DB::table('biaya_penerus')
-							 ->max('bp_id');
-
-					if ($id_bp == null) {
-						$id_bp = 1;
-					}else{
-						$id_bp+=1;
-					}
-
+				
 					$save_data1 = DB::table('biaya_penerus')
 									->insert([
 									  'bp_id' 			 => $id_bp,
@@ -552,21 +536,13 @@ class BiayaPenerusController extends Controller
 
 					for ($i=0; $i < count($request->no_do); $i++) { 
 
-						$id_bpd = DB::table('biaya_penerus_dt')
-							 ->max('bpd_id');
-
-						if ($id_bpd == null) {
-							$id_bpd = 1;
-						}else{
-							$id_bpd+=1;
-						}
+					
 						$cari_do = DB::table("delivery_order")
 									 ->where("nomor",$request->no_do[$i])
 									 ->first();
 
 						$save_dt = DB::table('biaya_penerus_dt')
 									 ->insert([
-										  'bpd_id'  		=> $id_bpd,
 										  'bpd_bpid' 		=> $id_bp,
 										  'bpd_bpdetail'	=> $i+1,
 										  'bpd_pod' 		=> $request->no_do[$i],
