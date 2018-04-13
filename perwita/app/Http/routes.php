@@ -892,7 +892,10 @@ Route::get('sales/laporan_posting_bayar','LaporanMasterController@posting_bayar'
 Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@reportposting_bayar')->name('reportposting_bayar');
 //END OF LAPORAN BAYAR PENJUALAN
 
-
+//LAPORAN KARTU HUTANG
+Route::get('laporan_sales/kartu_piutang','LaporanMasterController@kartupiutang');
+Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@reportkartupiutang')->name('reportkartupiutang');
+//END OF 
 
 //========================================== LAPORAN PENJUALAN BERAKIR ====================================================//
 
@@ -1457,8 +1460,8 @@ Route::get('sales/laporaninvoicepenjualanperitem', function(){
 });
 
 //kartu piutang
-Route::get('laporan_sales/kartu_piutang', 'laporan_sales\kartu_piutang_Controller@index');
-Route::get('laporan_sales/kartu_piutang/tampil_data', 'laporan_sales\kartu_piutang_Controller@tampil_kartu_piutang');
+// Route::get('laporan_sales/kartu_piutang', 'laporan_sales\kartu_piutang_Controller@index');
+// Route::get('laporan_sales/kartu_piutang/tampil_data', 'laporan_sales\kartu_piutang_Controller@tampil_kartu_piutang');
 // end kartu piutang
 
 //analisa piutang
