@@ -832,6 +832,11 @@ Route::post('reportpenerussepeda/reportpenerussepeda', 'LaporanMasterController@
 
 
 //=======end of
+//LAPORAN PENJUALAN 
+Route::get('sales/laporan_penjualan','LaporanMasterController@laporan_penjualan');
+Route::post('reportlaporan_penjualan/reportlaporan_penjualan','LaporanMasterController@reportlaporan_penjualan');
+Route::get('carilaporan_penjualan/carilaporan_penjualan','LaporanMasterController@carilaporan_penjualan');
+//END OF PENJUALAN
 
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');

@@ -491,15 +491,15 @@
                         swal("Error","Can't update customer data, error : "+data.error,"error");
                     }
                 }else{
-                  console.log(data.hasil_cek);
-                    swal(data.hasil_cek,'Cek sekali lagi',"warning");
+                  console.log(data.result);
+                    swal(data.result,'Cek sekali lagi',"warning");
                 }
             },
             error: function(data,jqXHR, textStatus, errorThrown,hasil_cek)
             {
 
-               // console.log(hasil_cek);
-               swal("Terdapat Kesalahan!", data.hasil_cek, "warning");
+               console.log(data);
+               swal("Terdapat Kesalahan!", 'a', "warning");
             }
         });
     });
