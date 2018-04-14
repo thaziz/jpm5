@@ -59,6 +59,7 @@
                             <tr>
                                 <th> Nomor</th>
                                 <th> Tanggal </th>
+                                <th> Cabang </th>
                                 <th> Customer </th>
                                 <th> Keterangan </th>
                                 <th style="width:10%"> Aksi </th>
@@ -69,6 +70,7 @@
                             <tr>
                                 <td>{{ $row->kc_nomor }}</td>
                                 <td>{{ $row->kc_tanggal }}</td>
+                                <td>{{ $row->kc_kode_cabang }}</td>
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->kc_keterangan }}</td>
                                 <td class="text-center">

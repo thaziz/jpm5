@@ -457,6 +457,10 @@ var datatable = $('#table_data').DataTable({
                          className: 'center'
                       },
                       {
+                         targets: 5 ,
+                         className: 'center'
+                      },
+                      {
                          targets: 7 ,
                          className: 'center'
                       },
