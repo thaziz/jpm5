@@ -450,7 +450,7 @@ $('.jenis_modal').change(function(){
     }
 });
 var datatable = $('#table_data').DataTable({
-                      'paging':false,
+                      // 'paging':false,
                       columnDefs: [
                       {
                          targets: 6 ,
