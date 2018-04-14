@@ -153,7 +153,59 @@ class kontrak_Controller extends Controller
                                 'kc_nomor'          => $request->kontrak_nomor
                               ]);
         }else{
-            return response()->json(['status'=>2]);
+
+            $month    = Carbon::now()->format('m');
+            $year     = Carbon::now()->format('y');
+            $idfaktur = DB::table('kontrak_customer')
+                          ->where('kc_kode_cabang' , $request->cabang)
+                          ->max('kc_nomor');
+        
+                if(isset($idfaktur)) {
+                    $explode  = explode("/", $idfaktur);
+                    $idfaktur = $explode[2];
+                    $idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
+                    $idfaktur = str_replace('-', '', $idfaktur) ;
+                    $string   = (int)$idfaktur + 1;
+                    $idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
+
+                }else{
+
+                    $idfaktur = '001';
+                }
+
+            $nota = 'KNK' . $month . $year . '/' . $request->cabang . '/' .  $idfaktur;
+
+            $id = DB::table('kontrak_customer')
+                    ->max('kc_id');
+
+            if ($id == null) {
+                $id = 1;
+            }else{
+                $id += 1;
+            }
+            if ($request->ck_aktif == 'on') {
+               $kc_aktif = 'AKTIF';
+            }else{
+               $kc_aktif = 'NON AKTIF';
+            }
+            $save_kontrak = DB::table('kontrak_customer')
+                              ->insert([
+                                'kc_id'             => $id,
+                                'kc_tanggal'        => $tgl,
+                                'kc_kode_customer'  => $request->customer,
+                                'kc_keterangan'     => $request->ed_keterangan,
+                                'kc_kode_cabang'    => $request->cabang,
+                                'kc_created_by'     => Auth::user()->m_username,
+                                'kc_created_at'     => Carbon::now(),
+                                'kc_updated_at'     => Carbon::now(),
+                                'kc_updated_by'     => Auth::user()->m_username,
+                                'kc_mulai'          => $mulai,
+                                'kc_akhir'          => $akhir,
+                                'kc_aktif'          => $kc_aktif,
+                                'kc_nomor'          => $request->$nota
+                              ]);
+
+            return response()->json(['status'=>2,'nomor'=>$nota]);
         }
 
         for ($i=0; $i < count($request->kota_asal); $i++) { 
