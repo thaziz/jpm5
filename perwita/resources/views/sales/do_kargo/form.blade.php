@@ -834,7 +834,7 @@ $('.save').click(function(){
             });
         }else{
             swal({
-                title: "Harap Lengkapi Data Anda",
+                title: "Data "+response.text+" Harus Diisi",
                 type: 'warning',
                 timer: 900,
                 showConfirmButton: true

@@ -879,7 +879,7 @@ function pilih_kontrak(a) {
 
           $.ajax({
           url:baseUrl + '/sales/save_do_kertas',
-          type:'get',
+          type:'post',
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
