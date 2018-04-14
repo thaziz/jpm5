@@ -980,7 +980,9 @@
                         {{ Request::is('master_keuangan/saldo_piutang') ? 'active' : '' || 
                             Request::is('master_keuangan/saldo_piutang/*') ? 'active' : ''}} 
 
-                        " href="{{ url('master_keuangan/saldo_piutang/null')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
+                        <?php $cabang = Session::get('cabang');?>
+
+                        " href="{{ url('master_keuangan/saldo_piutang/'.$cabang)}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
                         </li>
                          
                         <li >

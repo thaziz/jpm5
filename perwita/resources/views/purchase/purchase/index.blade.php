@@ -133,7 +133,7 @@
                           <td> 
                             <button class="btn btn-sm btn-primary" onclick="proseskeuangan({{$po->po_id}})" type="button" id="createmodal" data-toggle="modal" data-target="#myModal2"> PROSES  </button> &nbsp;  
                             @if($po->po_setujufinance == '')
-                              <a title="Hapus" class="btn btn-danger" onclick="hapusData({{$po->po_id}})">
+                              <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$po->po_id}})">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                               </a>
                             @endif

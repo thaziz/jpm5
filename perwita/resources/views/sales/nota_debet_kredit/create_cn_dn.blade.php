@@ -204,7 +204,7 @@
                                     <table class="table riwayat borderless">
                                         <tr>
                                           <td>Nomor Invoice</td>
-                                          <td colspan="3"><input type="text" name="nomor_invoice" class="nomor_invoice form-control"></td>
+                                          <td colspan="3"><input type="text" name="nomor_invoice" class="nomor_invoice form-control" placeholder="klik disini.."></td>
                                         </tr>
                                         <tr>
                                           <td>Tanggal Invoice</td>
@@ -493,6 +493,7 @@
           temp2 += ini;
         })
         $('.jumlah_ppn').val(accounting.formatMoney(temp2,"",2,'.',','));
+
         var temp3 = 0;
         $('.d_pph').each(function(){
           var ini  = $(this).val();
@@ -555,7 +556,7 @@
       pph_akhir         = parseFloat(pph_akhir)/100;
 
       if (jenis_cd == 'K') {
-        var hasil = dpp_akhir + ppn_akhir - pph_akhir;
+        var hasil = dpp_akhir + ppn_akhir + pph_akhir;
         $('.sisa_piutang').val(accounting.formatMoney(sisa_terbayar - hasil,"",2,'.',','))
       }else{
         var hasil = dpp_akhir + ppn_akhir - pph_akhir;
@@ -627,7 +628,7 @@
 
     function hitung_pajak_lain(){
 
-       var netto_total  = $('.dpp_akhir').val();
+       var netto_total  = $('.sisa_terbayar').val();
        var pajak_lain   = $('.pajak_lain_akhir').val();
        netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
        netto_total      = parseInt(netto_total)/100;
@@ -861,8 +862,14 @@
 
 
    function simpan(){
-
-
+    var temp = 0
+    $('.d_nomor').each(function(){
+      temp+=1;
+    })
+    if (temp == 0) {
+      toastr.warning('Tidak Ada Data Yang Akan Disimpan');
+      return 1;
+    }
 
        
       swal({

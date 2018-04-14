@@ -342,111 +342,101 @@ class do_kargo_Controller extends Controller
        // dd($request->all());
 
         if ($request->nomor_do == '') {
-            return response()->json(['status' => 3,'get'=>'$request->nomor_do']); 
+            return response()->json(['status' => 3,'text'=>'Nomor DO']); 
         }
 
         if ($request->tanggal_do == '') {
-            return response()->json(['status' => 3,'get'=>'$request->tanggal_do']);
+            return response()->json(['status' => 3,'text'=>'Tanggal']);
         }
 
         if ($request->customer == '0') {
-            return response()->json(['status' => 3,'get'=>'$request->customer']);
+            return response()->json(['status' => 3,'text'=>'Customer']);
         }
 
         if ($request->asal_do == 0) {
-            return response()->json(['status' => 3,'get'=>'$request->asal_do']);
+            return response()->json(['status' => 3,'text'=>'Asal DO']);
         }
 
         if ($request->tujuan_do == 0) {
-            return response()->json(['status' => 3,'get'=>'$request->tujuan_do']);
+            return response()->json(['status' => 3,'text'=>'Tujuan DO']);
         }
 
         if ($request->jenis_tarif_do == 0) {
-            return response()->json(['status' => 3,'get'=>'$request->jenis_tarif_do']);
+            return response()->json(['status' => 3,'text'=>'Jenis Tarif DO']);
         }
 
         if ($request->status_kendaraan == 'SUB') {
             if ($request->nama_subcon == 0) {
-                return response()->json(['status' => 3,'get'=>'$request->nama_subcon' ]);
+                return response()->json(['status' => 3,'text'=>'Nama Subcon' ]);
             }
         }
 
         if ($request->tipe_angkutan == 0) {
-            return response()->json(['status' => 3,'get'=>'$request->tipe_angkutan' ]);
+            return response()->json(['status' => 3,'text'=>'Tipe Angkutan' ]);
         }
 
         if ($request->tipe_kendaraan == 0) {
-            return response()->json(['status' => 3,'get'=>'$request->tipe_kendaraan']);
+            return response()->json(['status' => 3,'text'=>'Tipe Kendaraan']);
         }
 
         if ($request->keterangan_detail == '') {
-            return response()->json(['status' => 3,'get'=>'$request->keterangan_detail']);
+            return response()->json(['status' => 3,'text'=>'Keterangan']);
         }
 
         if ($request->ed_awal_shuttle == '') {
-            return response()->json(['status' => 3,'get'=>'$request->ed_awal_shuttle']);
+            return response()->json(['status' => 3,'text'=>'Awal Shuttle']);
         }
         if ($request->ed_akhir_shuttle == '') {
-            return response()->json(['status' => 3,'get'=>'$request->ed_akhir_shuttle']);
+            return response()->json(['status' => 3,'text'=>'Akhir Shuttle']);
         }
         if ($request->satuan == '') {
-            return response()->json(['status' => 3,'get'=>'$request->satuan']);
+            return response()->json(['status' => 3,'text'=>'Satuan']);
         }
         if ($request->jumlah == '') {
-            return response()->json(['status' => 3,'get'=>'$request->jumlah']);
+            return response()->json(['status' => 3,'text'=>'Jumlah']);
         }
         if ($request->acc_penjualan == '') {
-            return response()->json(['status' => 3,'get'=>'$request->acc_penjualan']);
+            return response()->json(['status' => 3,'text'=>'Akun']);
         }
         if ($request->tarif_dasar == '') {
-            return response()->json(['status' => 3,'get'=>'$request->tarif_dasar']);
+            return response()->json(['status' => 3,'text'=>'Tarif Dasar']);
         }
         if ($request->harga_master == '') {
-            return response()->json(['status' => 3,'get'=>'$request->harga_master']);
+            return response()->json(['status' => 3,'text'=>'Harga Master']);
         }
         if ($request->kode_tarif == '') {
-            return response()->json(['status' => 3,'get'=>'$request->kode_tarif']);
+            return response()->json(['status' => 3,'text'=>'Kode Tarif']);
         }
         if ($request->kcd_id == '') {
-            return response()->json(['status' => 3,'get'=>'$request->kcd_id']);
+            return response()->json(['status' => 3,'text'=>'$request->kcd_id']);
         }
         if ($request->kcd_dt == '') {
-            return response()->json(['status' => 3,'get'=>'$request->kcd_dt']);
-        }
-        if ($request->company_ == '') {
-            return response()->json(['status' => 3,'get'=>'$request->company_']);
-        }
-        if ($request->nama_penerima == '') {
-            return response()->json(['status' => 3,'get'=>'$request->nama_penerima']);
-        }
-        if ($request->alamat_penerima == '') {
-            return response()->json(['status' => 3,'get'=>'$request->alamat_penerima']);
-        }
-        if ($request->kode_pos_penerima == '') {
-            return response()->json(['status' => 3,'get'=>'$request->kode_pos_penerima']);
-        }
-        if ($request->telpon_penerima == '') {
-            return response()->json(['status' => 3,'get'=>'$request->telpon_penerima']);
-        }
-        if ($request->deskripsi_penerima == '') {
-            return response()->json(['status' => 3,'get'=>'$request->deskripsi_penerima']);
-        }
-        if ($request->intruksi_penerima == '') {
-            return response()->json(['status' => 3,'get'=>'$request->intruksi_penerima']);
-        }
-        if ($request->nama_pengirim == '') {
-            return response()->json(['status' => 3,'get'=>'$request->nama_pengirim']);
-        }
-        if ($request->alamat_pengirim == '') {
-            return response()->json(['status' => 3,'get'=>'$request->alamat_pengirim']);
-        }
-        if ($request->kode_pos_pengirim == '') {
-            return response()->json(['status' => 3,'get'=>'$request->kode_pos_pengirim']);
+            return response()->json(['status' => 3,'text'=>'$request->kcd_dt']);
         }
 
-        if ($request->telpon_pengirim == '') {
-            return response()->json(['status' => 3,'get'=>'$request->telpon_pengirim']);
+        if ($request->nama_penerima == '') {
+            return response()->json(['status' => 3,'text'=>'Nama Penerima']);
         }
+
+        if ($request->alamat_penerima == '') {
+            return response()->json(['status' => 3,'text'=>'Alamat Penerima']);
+        }
+
+        if ($request->kode_pos_penerima == '') {
+            return response()->json(['status' => 3,'text'=>'Kode Pos Penerima']);
+        }
+
+        if ($request->telpon_penerima == '') {
+            return response()->json(['status' => 3,'text'=>'Telpon Penerima']);
+        }
+        if ($request->deskripsi_penerima == '') {
+            return response()->json(['status' => 3,'text'=>'Deskripsi']);
+        }
+    
+        if ($request->nama_pengirim == '') {
+            return response()->json(['status' => 3,'text'=>'Nama Pengirim']);
+        }
+
         
         // dd($discount);
         return DB::transaction(function() use ($request) {  

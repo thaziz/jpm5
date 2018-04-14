@@ -161,7 +161,8 @@ class PurchaseController extends Controller
 		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
 
 	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
-		if(isset($idspp)) {
+		if(count($idspp) != 0) {
+		
 			$explode = explode("/", $idspp[0]->spp_nospp);
 			$idspp = $explode[2];
 
@@ -170,6 +171,7 @@ class PurchaseController extends Controller
 		}
 
 		else {
+		
 			$idspp = '001';
 		}
 
@@ -1368,7 +1370,9 @@ public function purchase_order() {
 
 				}
 				else {
+					$hasilppn = str_replace(',', '', $request->hasilppn);
 					$po->po_ppn = strtoupper($request->ppn);
+					$po->po_hasilppn = $hasilppn;
 				}
 				$po->po_subtotal = $replacesubtotal;
 				$po->po_totalharga = $replacetotal;
@@ -1379,6 +1383,7 @@ public function purchase_order() {
 				$po->po_penerimaan = $request->spp_penerimaan;
 				$po->po_jenisppn = $request->jenisppn;
 				$po->po_statusreturn = 'AKTIF';
+			
 				$po->save();
 
 
@@ -2269,7 +2274,7 @@ public function purchase_order() {
 				$stock_mutation->sm_hpp = $request->jumlahharga[$i];
 				$stock_mutation->sm_lpb =  $lpb ;
 				$stock_mutation->sm_suratjalan = $request->suratjalan ;
-				$stock_mutation->sm_po = $request->po_id ;
+				$stock_mutation->sm_po = $idpb;
 				$stock_mutation->sm_id_gudang = $request->gudang;
 				$stock_mutation->sm_sisa = $request->qtyterima[$i];
 				$stock_mutation->sm_flag = 'PO';
@@ -2301,7 +2306,7 @@ public function purchase_order() {
 				$stock_mutation->sm_hpp = $request->jumlahharga[$i];
 				$stock_mutation->sm_lpb =  $lpb ;
 				$stock_mutation->sm_suratjalan = $request->suratjalan ;
-				$stock_mutation->sm_po = $request->idfp ;
+				$stock_mutation->sm_po = $idpb ;
 				$stock_mutation->sm_id_gudang = $request->gudang;
 				$stock_mutation->sm_sisa = $request->qtyterima[$i];
 				$stock_mutation->sm_flag = 'FP';

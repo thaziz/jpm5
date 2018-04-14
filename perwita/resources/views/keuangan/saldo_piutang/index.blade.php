@@ -102,17 +102,26 @@
           <tr>
             <th width="15%" class="text-center">Menampilkan Cabang : </th>
             <td width="17%">
-              <select class="chosen-select" id="cabang" name="cabang" style="background:;">
-                @foreach ($cab as $cabangs)
-                  <?php
-                    $selected = "";
-                    if($cabangs->kode == $cabang)
-                      $selected = "selected";
-                  ?>
 
-                  <option value="{{ $cabangs->kode }}" {{ $selected }}>{{ $cabangs->nama }}</option>
-                @endforeach
-              </select>
+              @if(Session::get('cabang') == 000)
+                <select class="chosen-select" id="cabang" name="cabang" style="background:;">
+                  @foreach ($cab as $cabangs)
+                    <?php
+                      $selected = "";
+                      if($cabangs->kode == $cabang)
+                        $selected = "selected";
+                    ?>
+
+                    <option value="{{ $cabangs->kode }}" {{ $selected }}>{{ $cabangs->nama }}</option>
+                  @endforeach
+                </select>
+              @else
+                
+                <input type="hidden" class="form-control" id="cabang" name="cabang" style="background:; font-size: 10pt; padding-left: 10px;" value="{{ Session::get('cabang') }}" readonly>
+
+                <input type="text" class="form-control" id="aa" name="aa" style="background:; font-size: 10pt; padding-left: 10px; width: 90%;" value="{{ Session::get('namaCabang') }}" readonly>
+
+              @endif
             </td>
 
             <td>
@@ -166,7 +175,7 @@
                       </tr>
                     </thead>
                     
-                    <tbody>
+                    <tbody id="okee">
                       
                       <?php $no = 1; ?>
 
@@ -446,8 +455,8 @@
       });
     })
 
-    $(".tampilkan").click(function(evt){
-      // alert("okee");
+    $("#okee").on("click", ".tampilkan", function(evt){
+      alert("okee");
       evt.stopImmediatePropagation()
       $id = $(this).data("id");
 
@@ -458,15 +467,14 @@
 
     $("#body_detail").on("click", ".row-detail", function(evt){
       evt.stopImmediatePropagation();
-      $getId = detail.findIndex(x => x.id_referensi == $(this).data("nf"));
 
       // console.log($data_detail[$getId]);
 
-      $("#nomor_faktur_view").val(detail[$getId].id_referensi);
-      $("#tanggal_faktur_view").val(detail[$getId].tanggal);
-      $("#jatuh_tempo_view").val(detail[$getId].jatuh_tempo);
-      $("#keterangan_view").val(detail[$getId].keterangan);
-      $("#jumlah_view").val(detail[$getId].jumlah);
+      $("#nomor_faktur_view").val($(this).data("nf"));
+      $("#tanggal_faktur_view").val($(this).data("tanggal"));
+      $("#jatuh_tempo_view").val($(this).data("jt"));
+      $("#keterangan_view").val($(this).data("keterangan"));
+      $("#jumlah_view").val($(this).data("jumlah"));
     });
 
     function initiate_saldo($idx, $id){
@@ -489,15 +497,27 @@
       if(detail.length != 0){
         $.each(detail, function(i, n){
           if(n.id_saldo_piutang == $id){
-            $html = $html + '<tr class="row-detail" data-nf = "'+n.id_referensi+'">'+
-                  '<td>'+n.id_referensi+'</td>'+
-                  '<td>'+n.tanggal+'</td>'+
-                  '<td>'+n.jatuh_tempo+'</td>'+
-                  '<td>'+n.keterangan+'</td>'+
-                  '<td class="text-right">'+addCommas(n.jumlah)+',00</td>'+
-                '</tr>';
 
-            $total += parseInt(n.jumlah);
+            $a = n.id_referensi.substring(0, 3);
+
+            if($a == "KWT"){
+              $total -= parseInt(n.jumlah);
+              $b = '('+addCommas(n.jumlah)+',00)';
+            }
+            else{
+              $total += parseInt(n.jumlah);
+              $b = addCommas(n.jumlah)+',00';
+            }
+
+            $faktur = (n.id_referensi == "null") ? "" ? n.id_referensi;
+
+            $html = $html + '<tr class="row-detail" data-nf = "'+$faktur+'" data-tanggal = "'+n.tanggal+'" data-jt = "'+n.jatuh_tempo+'" data-keterangan = "'+n.keterangan+'" data-jumlah = "'+addCommas(n.jumlah)+'">'+
+                  '<td>'+$faktur+'</td>'+
+                  '<td class="text-center">'+n.tanggal+'</td>'+
+                  '<td class="text-center">'+n.jatuh_tempo+'</td>'+
+                  '<td>'+n.keterangan+'</td>'+
+                  '<td class="text-right">'+$b+'</td>'+
+                '</tr>';
           }
         })
 
