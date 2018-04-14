@@ -23,7 +23,7 @@ class DiskonPenjualanController extends Controller
 
         $akun = DB::table('d_akun')
             ->select('id_akun', 'nama_akun')
-            ->where('id_akun', 'like', '5298%')
+            // ->where('id_akun', 'like', '5298%')
             ->get();
 
         if ($status == '000'){
@@ -34,7 +34,7 @@ class DiskonPenjualanController extends Controller
         } else {
             $cabang = DB::table('cabang')
                 ->select('kode', 'nama')
-                ->where('kode', '=', $status)
+                // ->where('kode', '=', $status)
                 ->get();
 
         }

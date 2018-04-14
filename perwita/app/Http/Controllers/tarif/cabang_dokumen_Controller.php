@@ -322,6 +322,7 @@ class cabang_dokumen_Controller extends Controller
 
                         
                         if (isset(${'cari_old'.$a}[$i][0])) {
+                            return ${'cari_old'.$a}[$i][0];
                             if ($array_harga[$a] != '') {
                                 if (${'cari_old'.$a}[$i][0]->id_kota_asal != $request->cb_kota_asal and
                                     ${'cari_old'.$a}[$i][0]->id_kota_tujuan != $cari[$i]->id and
@@ -362,7 +363,7 @@ class cabang_dokumen_Controller extends Controller
                         }else{
                             // return 'asd';
                             if ($array_harga[$a] != '') {
-
+                                // return $array_harga[$a];
                                 $data = DB::table('tarif_cabang_dokumen')
                                 ->insert([
                                         'kode_sama' => $cari_kode_sama,
@@ -392,30 +393,15 @@ class cabang_dokumen_Controller extends Controller
                         $gege[$j] = ${'cari_old'.$j};
                     
                     }
+
+
                     for ($k=0; $k <count($gege) ; $k++) { 
-                        
-                    if (isset($gege[$k][0]->id_kota_asal) == $request->cb_kota_asal &&
-                        isset($gege[$k][0]->id_kota_tujuan) == $request->cb_kota_tujuan &&
-                        isset($gege[$k][0]->kode_cabang) == $request->ed_cabang) {
+                        // return $gege;
+                    if (isset($gege[$k][0]->id_kota_asal) != $request->cb_kota_asal &&
+                        isset($gege[$k][0]->id_kota_tujuan) !=$request->cb_kota_tujuan &&
+                        isset($gege[$k][0]->kode_cabang) != $request->ed_cabang) {
                         
                         // return $array_jenis;
-
-                         if ($gege[$k][0]->crud != 'E') {
-                                        $data = DB::table('tarif_cabang_dokumen')
-                                        ->where('kode',$gege[$k][0]->kode)
-                                        ->update([
-                                                'harga' => $array_harga[$k],
-                                                'waktu' => $array_waktu[$k],
-                                                'acc_penjualan'=>$request->ed_acc_penjualan,
-                                                'csf_penjualan'=>$request->ed_csf_penjualan,
-                                                'crud'=>'N',
-                                                'id_provinsi_cabdokumen'=>$provinsi[0]->id,
-                                        ]);
-                                    }
-                        
-                    }else{
-                        // return 'b';
-                        
                         $kode_detail = DB::table('tarif_cabang_dokumen')
                                 ->max('kode_detail');
                         if ($kode_detail == null) {
@@ -427,26 +413,45 @@ class cabang_dokumen_Controller extends Controller
                         // return count($array_note);
                         // return $array_jenis;
                         $a = "";
-                        for ($i=0; $i <count($array_note) ; $i++) { 
+                        
                             // return $array_note;
 
                             $data = DB::table('tarif_cabang_dokumen')
                                 ->insert([
                                         'kode_sama' => $cari_kode_sama,
                                         'kode_detail'=>$kode_detail,
-                                        'kode'=>$array_note[$i],
+                                        'kode'=>$array_note[$k],
                                         'id_kota_asal' => $request->cb_kota_asal,
                                         'id_kota_tujuan' => $request->cb_kota_tujuan,
                                         'kode_cabang' => $request->ed_cabang,
-                                        'jenis' => $array_jenis[$i],
-                                        'harga' => $array_harga[$i],
-                                        'waktu' => $array_waktu[$i],
+                                        'jenis' => $array_jenis[$k],
+                                        'harga' => $array_harga[$k],
+                                        'waktu' => $array_waktu[$k],
                                         'acc_penjualan'=>$request->ed_acc_penjualan,
                                         'csf_penjualan'=>$request->ed_csf_penjualan,
                                         'id_provinsi_cabdokumen'=>$provinsi[0]->id,
                                         'crud'=>$crud,
                                 ]);
-                        }                     
+                          
+                         
+                        
+                    }else{
+                        // return 'b';
+                        
+                        if ($gege[$k][0]->crud != 'E') {
+                                        $data = DB::table('tarif_cabang_dokumen')
+                                        ->where('kode',$gege[$k][0]->kode)
+                                        ->update([
+                                                'harga' => $array_harga[$k],
+                                                'waktu' => $array_waktu[$k],
+                                                'acc_penjualan'=>$request->ed_acc_penjualan,
+                                                'csf_penjualan'=>$request->ed_csf_penjualan,
+                                                'crud'=>'N',
+                                                'id_provinsi_cabdokumen'=>$provinsi[0]->id,
+                                        ]);
+                                    }
+
+                                           
                     }
                   }  
                 
