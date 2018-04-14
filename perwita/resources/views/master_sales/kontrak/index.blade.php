@@ -70,7 +70,11 @@
                             <tr>
                                 <td>{{ $row->kc_nomor }}</td>
                                 <td>{{ $row->kc_tanggal }}</td>
-                                <td>{{ $row->kc_kode_cabang }}</td>
+                                @foreach($cab as $i)
+                                    @if($i->kode == $row->kc_kode_cabang )
+                                    <td>{{ $i->nama}}</td>
+                                    @endif
+                                @endforeach
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->kc_keterangan }}</td>
                                 <td class="text-center">

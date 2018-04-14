@@ -15,6 +15,8 @@ class kontrak_Controller extends Controller
     public function index(){
         $cabang = session::get('cabang');
         $jabatan = Auth::user()->m_level;
+        $cab     = DB::table('cabang')
+                     ->get();
         // $cabang = Auth::user()->kode_cabang;
         if ($jabatan == 'ADMINISTRATOR' || $jabatan == 'SUPERVISOR') {
             $data =  DB::table('kontrak_customer')
@@ -28,7 +30,7 @@ class kontrak_Controller extends Controller
         }
         
 
-        return view('master_sales.kontrak.index',compact('data'));
+        return view('master_sales.kontrak.index',compact('data','cab'));
     }
     
     public function form($nomor=null){
