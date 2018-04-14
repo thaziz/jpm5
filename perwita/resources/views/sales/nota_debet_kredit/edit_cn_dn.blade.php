@@ -216,7 +216,9 @@
                                     <table class="table riwayat borderless">
                                         <tr>
                                           <td>Nomor Invoice</td>
-                                          <td colspan="3"><input type="text" name="nomor_invoice" class="nomor_invoice form-control"></td>
+                                          <td colspan="3">
+                                            <input type="text" name="nomor_invoice" class="nomor_invoice form-control" placeholder="klik disini..">
+                                          </td>
                                         </tr>
                                         <tr>
                                           <td>Tanggal Invoice</td>
@@ -626,7 +628,7 @@
 
     function hitung_pajak_lain(){
 
-       var netto_total  = $('.dpp_akhir').val();
+       var netto_total  = $('.sisa_terbayar').val();
        var pajak_lain   = $('.pajak_lain_akhir').val();
        netto_total      = netto_total.replace(/[^0-9\-]+/g,"");
        netto_total      = parseInt(netto_total)/100;
@@ -901,7 +903,14 @@
 
 
    function simpan(){
-       
+       var temp = 0
+      $('.d_nomor').each(function(){
+        temp+=1;
+      })
+      if (temp == 0) {
+        toastr.warning('Tidak Ada Data Yang Akan Disimpan');
+        return 1;
+      }
       swal({
         title: "Apakah anda yakin?",
         text: "Update Data!",
