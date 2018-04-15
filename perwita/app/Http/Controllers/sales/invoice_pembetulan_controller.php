@@ -297,26 +297,30 @@ class invoice_pembetulan_controller extends Controller
               $bulan = Carbon::now()->format('m');
               $tahun = Carbon::now()->format('y');
 
-              $cari_nota = DB::select("SELECT  substring(max(cd_nomor),12) as id from cn_dn_penjualan
+              $cari_nota = DB::select("SELECT  substring(max(cd_nomor),11) as id from cn_dn_penjualan
                                               WHERE cd_kode_cabang = '$cabang'
                                               AND to_char(cd_tanggal,'MM') = '$bulan'
                                               AND to_char(cd_tanggal,'YY') = '$tahun'");
 
               $index = (integer)$cari_nota[0]->id + 1;
               $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-              $nota = 'CDN' . $cabang . $bulan . $tahun . $index;
+              if ($jenis == 'K') {
+                $nota = 'KN' . $cabang . $bulan . $tahun . $index;
+              }else{  
+                $nota = 'DN' . $cabang . $bulan . $tahun . $index;
+              }
 
-                $id = DB::table('cn_dn_penjualan')
-                             ->max('cd_id');
-                if ($id == null) {
-                  $id = 1;
-                }else{
-                  $id +=1;
-                }
+              $id = DB::table('cn_dn_penjualan')
+                           ->max('cd_id');
+              if ($id == null) {
+                $id = 1;
+              }else{
+                $id +=1;
+              }
 
                 
 
-                $save_cd = DB::table('cn_dn_penjualan')
+              $save_cd = DB::table('cn_dn_penjualan')
                              ->insert([
                               'cd_id'         => $id,
                               'cd_nomor'      => $nota,

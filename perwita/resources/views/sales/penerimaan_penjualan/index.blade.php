@@ -146,6 +146,7 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('.tabel_data').DataTable({
+      ordering:false,
         columnDefs: [  
           
                       {

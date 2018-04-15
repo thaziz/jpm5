@@ -293,13 +293,17 @@ class nota_debet_kredit_Controller extends Controller
         $bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
 
-        $cari_nota = DB::select("SELECT  substring(max(cd_nomor),12) as id from cn_dn_penjualan
+        $cari_nota = DB::select("SELECT  substring(max(cd_nomor),11) as id from cn_dn_penjualan
                                         WHERE cd_kode_cabang = '$request->cabang'
                                         AND to_char(cd_tanggal,'MM') = '$bulan'
                                         AND to_char(cd_tanggal,'YY') = '$tahun'");
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
-        $nota = 'CDN' . $request->cabang . $bulan . $tahun . $index;
+        if ($request->jenis_cd == 'K') {
+          $nota = 'KN' . $request->cabang . $bulan . $tahun . $index;
+        }else{
+          $nota = 'DN' . $request->cabang . $bulan . $tahun . $index;
+        }
         return response()->json(['nota'=>$nota]);
     }
     public function riwayat(request $request)

@@ -880,7 +880,7 @@ $('.save').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                       window.location.href='../deliveryorderkargo';
+                       // window.location.href='../deliveryorderkargo';
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);

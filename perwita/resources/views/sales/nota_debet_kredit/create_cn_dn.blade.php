@@ -419,9 +419,10 @@
   var array_simpan = [];
     $(document).ready(function(){
       var cabang = $('.cabang').val();  
+      var jenis_cd = $('.jenis_cd').val();  
       $.ajax({
         url  :baseUrl+'/sales/nota_debet_kredit/nomor_cn_dn',
-        data : {cabang},
+        data : {cabang,jenis_cd},
         success:function(data){
           $('.nomor_cn_dn').val(data.nota);
         },
@@ -509,6 +510,19 @@
      } 
 
      function hitung() {
+      var jenis_cd = $('.jenis_cd').val();
+      var cabang = $('.cabang').val();
+      $.ajax({
+        url  :baseUrl+'/sales/nota_debet_kredit/nomor_cn_dn',
+        data : {cabang,jenis_cd},
+        success:function(data){
+          $('.nomor_cn_dn').val(data.nota);
+        },
+        error:function(){
+          toastr.waning('Nomor Nota Gagal Diload');
+        }
+      })
+
       var jenis_cd      = $('.jenis_cd').val();
       // if (jenis_cd == 'K') {
       //   $('.ppn_td').addClass('disabled');
