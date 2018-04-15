@@ -61,7 +61,7 @@ class do_kargo_Controller extends Controller
             $jml_detail = 0;
         }
 
-        
+      
         return view('sales.do_kargo.form',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'do', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon'));
     }
     
