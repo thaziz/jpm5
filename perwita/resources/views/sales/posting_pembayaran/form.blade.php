@@ -69,6 +69,7 @@
                                 <td>
                                     <select class="form-control cb_jenis_pembayaran" name="cb_jenis_pembayaran" >
                                         <option value="C"> TRANSFER </option>
+                                        <option value="K"> TRANSFER KAS</option>
                                         <option value="L"> LAIN-LAIN </option>
                                         <option value="F"> CHEQUE/BG </option>
                                         <option value="B"> NOTA/BIAYA LAIN</option>
@@ -137,20 +138,7 @@
                         </tbody>
                     </table>
                     </div>
-                    
                 </form>
-                <div class="col-sm-12">
-                    <div class="col-sm-6">
-                        <table class="table ">
-                            <h3>Detail Posting</h3>
-                            <tr>
-                                <td>
-                                    <input type="datetime-local" name="" value="" placeholder="">
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
                 <div class="box-body">
                   <table id="table_data" class="table table-bordered table-striped">
                     <thead>
@@ -179,6 +167,29 @@
                             <div class="modal-body">
                                 <form class="form-horizontal  kirim">
                                     
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary" id="append">Append</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal kas-->
+                <div id="modal_kas" class="modal" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Detail Transfer Kas</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal  kirim">
+                                    <table class="table ">
+                                       <tr>
+                                           <td>Kas</td>
+                                       </tr>
+                                    </table>
                                 </form>
                             </div>
                             <div class="modal-footer">
@@ -267,8 +278,8 @@ function ganti_nota() {
 $('#btn_kwitansi').click(function(){
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var cabang = $('.cabang').val();
-    
-    if (cb_jenis_pembayaran != 'U') {
+    console.log(cb_jenis_pembayaran);
+    if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_kwitansi',
             data : {cabang,cb_jenis_pembayaran,array_simpan},
@@ -278,7 +289,7 @@ $('#btn_kwitansi').click(function(){
 
             }
         })
-    }else{
+    }else if (cb_jenis_pembayaran == 'U') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_uang_muka',
             data : {cabang,cb_jenis_pembayaran,customer,array_simpan},
@@ -287,6 +298,9 @@ $('#btn_kwitansi').click(function(){
               $('#modal').modal('show');
             }
         })
+    }else{
+        console.log('asdf');
+        $('#modal_kas').modal('show');
     }
     
 })
