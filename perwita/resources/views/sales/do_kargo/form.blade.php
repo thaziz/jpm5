@@ -522,7 +522,6 @@ function cari_nopol_kargo() {
     var nama_subcon      = $('.nama_subcon').val();
     var tipe_angkutan    = $('.tipe_angkutan').val();
     var cabang_select    = $('.cabang_select').val();
-    $('.nama_subcon_detail').val('');
     
     $.ajax({
         url:baseUrl + '/sales/cari_nopol_kargo',
@@ -532,6 +531,11 @@ function cari_nopol_kargo() {
         }
     })
 }
+$('.status_kendaraan').change(function(){
+    if ($(this).val() == 'OWN') {
+        $('.nama_subcon_detail ').val('');
+    }
+})
 function reseting() {
     $('.satuan').val('');
     $('.tarif_dasar_text').val('');
@@ -876,7 +880,7 @@ $('.ritase').change(function(){
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();
 
-    window.open('{{ url('sales/deliveryorderkargoform')}}'+'/'+print+'/nota');
+    window.open('{{ url('sales/deliveryorderkargoform/nota')}}'+'/'+print);
 })
 </script>
 @endsection

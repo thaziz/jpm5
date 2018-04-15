@@ -81,9 +81,23 @@
                                 <td>{{ $row->keterangan }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
+
+                                    @if(Auth::user()->punyaAkses('Posting Penjualan','ubah'))
+                                        @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
                                         <a onclick="edit('{{$row->nomor}}')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        @endif
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Posting Penjualan','print'))
                                         <a onclick="print('{{$row->nomor}}')" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnprnt"><i class="fa fa-print"></i></a>
+                                    @endif
+
+                                    @if(Auth::user()->punyaAkses('Posting Penjualan','hapus'))
+                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
                                         <a onclick="hapus('{{$row->nomor}}')" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                        @endif
+                                    @endif
+
                                     </div>
                                 </td>
                             </tr>

@@ -192,9 +192,9 @@ class do_kargo_Controller extends Controller
                   ->get();
         }else{
             $data = DB::table('kendaraan')
-                  ->where('status','SUB')
                   ->join('tipe_angkutan','tipe_angkutan.kode','=','kendaraan.tipe_angkutan')
                   ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
+                  ->where('kendaraan.status','SUB')
                   // ->where('kode_cabang',$request->cabang_select)
                   ->where('kendaraan.kode_subcon',$request->nama_subcon)
                   ->get();
