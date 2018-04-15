@@ -25,7 +25,7 @@
                     <h5> POSTING PEMBAYARAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/posting_pembayaran" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../posting_pembayaran" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
 
                 </div>
                 <div class="ibox-content">
@@ -70,34 +70,46 @@
                                     <select class="form-control cb_jenis_pembayaran" name="cb_jenis_pembayaran" >
                                         @if($data->jenis_pembayaran == 'C')
                                             <option selected="" value="C"> TRANSFER </option>
+                                            <option value="K"> TRANSFER KAS</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
-                                            <option value="F"> NOTA/BIAYA LAIN</option>
+                                            <option value="B"> NOTA/BIAYA LAIN</option>
                                             <option value="U"> UANG MUKA/DP </option>
                                         @elseif($data->jenis_pembayaran == 'L')
                                             <option value="C"> TRANSFER </option>
+                                            <option value="K"> TRANSFER KAS</option>
                                             <option selected="" value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
-                                            <option value="F"> NOTA/BIAYA LAIN</option>
+                                            <option value="B"> NOTA/BIAYA LAIN</option>
                                             <option value="U"> UANG MUKA/DP </option>
                                         @elseif($data->jenis_pembayaran == 'F')
                                             <option value="C"> TRANSFER </option>
+                                            <option value="K"> TRANSFER KAS</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option selected="" value="F"> CHEQUE/BG </option>
-                                            <option value="F"> NOTA/BIAYA LAIN</option>
+                                            <option value="B"> NOTA/BIAYA LAIN</option>
                                             <option value="U"> UANG MUKA/DP </option>
                                         @elseif($data->jenis_pembayaran == 'B')
                                             <option value="C"> TRANSFER </option>
+                                            <option value="K"> TRANSFER KAS</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
                                             <option selected="" value="B"> NOTA/BIAYA LAIN</option>
                                             <option value="U"> UANG MUKA/DP </option>
                                         @elseif($data->jenis_pembayaran == 'U')
                                             <option value="C"> TRANSFER </option>
+                                            <option value="K"> TRANSFER KAS</option>
                                             <option value="L"> LAIN-LAIN </option>
                                             <option value="F"> CHEQUE/BG </option>
-                                            <option value="F"> NOTA/BIAYA LAIN</option>
+                                            <option value="B"> NOTA/BIAYA LAIN</option>
                                             <option selected="" value="U"> UANG MUKA/DP </option>
+                                        @elseif($data->jenis_pembayaran == 'K')
+                                            <option value="C"> TRANSFER </option>
+                                            <option selected="" value="K"> TRANSFER KAS</option>
+                                            <option value="L"> LAIN-LAIN </option>
+                                            <option value="F"> CHEQUE/BG </option>
+                                            <option value="B"> NOTA/BIAYA LAIN</option>
+                                            <option value="U"> UANG MUKA/DP </option>
                                         @endif
                                     </select>
                                 </td>
@@ -200,8 +212,50 @@
                         </div>
                     </div>
                 </div>
-                  <!-- modal -->
-
+                  <!-- modal kas-->
+                <div id="modal_kas" class="modal" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Detail Transfer Kas</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal ">
+                                    <table class="table ">
+                                       <tr>
+                                           <td>Kas</td>
+                                           <td>
+                                               <select onchange="m_kode_akun()" class="form-control m_akun_as">
+                                                        <option value="0">Pilih - Akun</option>
+                                                    @foreach ($akun as $val)
+                                                        <option data-kode_acc="{{$val->mb_kode}}" value="{{$val->mb_id}}">{{$val->mb_accno}}-{{$val->mb_nama}}</option>
+                                                    @endforeach
+                                               </select>
+                                               <input type="hidden" class="m_data_acc">
+                                           </td>
+                                       </tr>
+                                       <tr>
+                                           <td>Jumlah</td>
+                                           <td>
+                                               <input type="text" class="form-control m_jumlah_kas" value="0">
+                                           </td>
+                                       </tr>
+                                       <tr>
+                                           <td>Keterangan</td>
+                                           <td>
+                                               <input type="text" class=" form-control m_keterangan_kas">
+                                           </td>
+                                       </tr>
+                                    </table>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary append" id="append">Append</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="box-footer">
                   <div class="pull-right">
 
@@ -252,13 +306,13 @@ var table_data = $('#table_data').DataTable({
         },
     ],
 });
+$('.m_jumlah_kas').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 
     
 $('#btn_kwitansi').click(function(){
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var cabang = $('.cabang').val();
-    
-    if (cb_jenis_pembayaran != 'U') {
+    if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_kwitansi',
             data : {cabang,cb_jenis_pembayaran,array_simpan},
@@ -268,7 +322,7 @@ $('#btn_kwitansi').click(function(){
 
             }
         })
-    }else{
+    }else if (cb_jenis_pembayaran == 'U') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_uang_muka',
             data : {cabang,cb_jenis_pembayaran,customer,array_simpan},
@@ -277,6 +331,9 @@ $('#btn_kwitansi').click(function(){
               $('#modal').modal('show');
             }
         })
+    }else{
+        console.log('asdf');
+        $('#modal_kas').modal('show');
     }
     
 })
@@ -301,12 +358,13 @@ function hitung() {
     $('.ed_jumlah_text').val(accounting.formatMoney(temp,"",2,'.',','));
     $('.ed_jumlah').val(temp);
 }
-$('#append').click(function(){
+$('.append').click(function(){
 
     var cabang = $('.cabang').val();
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var nomor = [];
-if (cb_jenis_pembayaran != 'U') {
+    console.log(cb_jenis_pembayaran);
+if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
@@ -327,7 +385,8 @@ if (cb_jenis_pembayaran != 'U') {
                 table_data.row.add([
                     data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
-                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">',
+                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">'+
+                    '<input type="hidden" value="'+data.data[i].k_kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                     accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
                     '<input type="text" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
@@ -342,7 +401,7 @@ if (cb_jenis_pembayaran != 'U') {
         }
     })
 
-}else{
+}else if (cb_jenis_pembayaran == 'U'){
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
@@ -363,7 +422,8 @@ if (cb_jenis_pembayaran != 'U') {
                 table_data.row.add([
                     data.data[i].nomor+'<input type="hidden" value="'+data.data[i].nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
-                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].nama+'" class="form-control d_customer" name="d_customer[]">',
+                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].nama+'" class="form-control d_customer" name="d_customer[]">'+
+                    '<input type="hidden" value="'+data.data[i].kode_acc+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                     accounting.formatMoney(data.data[i].jumlah,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].jumlah+'" class="form-control d_netto" name="d_netto[]">',
 
@@ -378,15 +438,46 @@ if (cb_jenis_pembayaran != 'U') {
             $('.cabang_td').addClass('disabled');
         }
     })
+}else{
+    console.log('asd');
+ var m_data_acc   =  $('.m_data_acc').val();
+ var m_jumlah_kas = $('.m_jumlah_kas').val();
+ m_jumlah_kas     = m_jumlah_kas.replace(/[^0-9\-]+/g,"");
+
+ var m_keterangan_kas = $('.m_keterangan_kas').val();
+
+            table_data.row.add([
+                'NON KWITANSI'+'<input type="hidden" value="NON KWITANSI" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
+
+                'NON CUSTOMER'+'<input type="hidden" value="'+'NON CUSTOMER'+'" class="form-control d_customer" name="d_customer[]">'+
+                '<input type="hidden" value="'+m_data_acc+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
+
+                accounting.formatMoney(m_jumlah_kas,"",2,'.',',')+'<input type="hidden" value="'+m_jumlah_kas+'" class="form-control d_netto" name="d_netto[]">',
+
+                '<input type="text" class="form-control d_keterangan" value="'+m_keterangan_kas+'"  placholder="keterangan..." name="d_keterangan[]">',
+               
+                '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+            ]).draw();
+            $('#modal_kas').modal('hide');
+            hitung();
+            $('.cb_jenis_pembayaran').addClass('disabled');
+            $('.cabang_td').addClass('disabled');
 }
 })
 
-
-@foreach($data_dt    as $val)
+@foreach($data_dt as $val)
 
 var nomor_kwi = '{{$val->nomor_penerimaan_penjualan}}';
+@if ($val->kode_customer == 'NON CUSTOMER')
+
+var nama = '{{$val->kode_customer}}';
+var kode = '{{$val->kode_customer}}';
+@else
 var nama = '{{$val->nama}}';
 var kode = '{{$val->kode}}';
+@endif
+
+var kode_akun = '{{$val->kode_acc}}';
 var jumlah = '{{$val->jumlah}}';
 var ket   = '{{$val->keterangan}}';
 var nomor = [];
@@ -397,7 +488,8 @@ array_simpan.push(nomor_kwi);
 table_data.row.add([
     nomor_kwi+'<input type="hidden" value="'+nomor_kwi+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
-    nama+'<input type="hidden" value="'+kode+'" class="form-control d_customer" name="d_customer[]">',
+    nama+'<input type="hidden" value="'+kode+'" class="form-control d_customer" name="d_customer[]">'+
+    '<input type="hidden" value="'+kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
     accounting.formatMoney(jumlah,"",2,'.',',')+'<input type="hidden" value="'+jumlah+'" class="form-control d_netto" name="d_netto[]">',
 
@@ -488,7 +580,7 @@ $('#btnsimpan').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        window.location.href='{{url('sales/posting_pembayaran')}}';
+                        location.reload();
                 });
             }else{
                 $('#nota_kwitansi').val(response.nota);

@@ -122,7 +122,7 @@
                                 <td>
                                     <select class="form-control cb_jenis_pembayaran" name="akun_bank" >
                                         @foreach ($akun as $val)
-                                            <option value="{{$val->mb_id}}">{{$val->mb_nama}}</option>
+                                            <option value="{{$val->mb_id}}">{{$val->mb_accno}} - {{$val->mb_nama}}</option>
                                         @endforeach
                                     </select>
                                 </td>
@@ -170,7 +170,7 @@
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" id="append">Append</button>
+                                <button type="submit" class="btn btn-primary append" id="append">Append</button>
                             </div>
                         </div>
                     </div>
@@ -184,16 +184,37 @@
                                 <h4 class="modal-title">Detail Transfer Kas</h4>
                             </div>
                             <div class="modal-body">
-                                <form class="form-horizontal  kirim">
+                                <form class="form-horizontal ">
                                     <table class="table ">
                                        <tr>
                                            <td>Kas</td>
+                                           <td>
+                                               <select onchange="m_kode_akun()" class="form-control m_akun_as">
+                                                        <option value="0">Pilih - Akun</option>
+                                                    @foreach ($akun as $val)
+                                                        <option data-kode_acc="{{$val->mb_kode}}" value="{{$val->mb_id}}">{{$val->mb_accno}}-{{$val->mb_nama}}</option>
+                                                    @endforeach
+                                               </select>
+                                               <input type="hidden" class="m_data_acc">
+                                           </td>
+                                       </tr>
+                                       <tr>
+                                           <td>Jumlah</td>
+                                           <td>
+                                               <input type="text" class="form-control m_jumlah_kas" value="0">
+                                           </td>
+                                       </tr>
+                                       <tr>
+                                           <td>Keterangan</td>
+                                           <td>
+                                               <input type="text" class=" form-control m_keterangan_kas">
+                                           </td>
                                        </tr>
                                     </table>
                                 </form>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" id="append">Append</button>
+                                <button type="submit" class="btn btn-primary append" id="append">Append</button>
                             </div>
                         </div>
                     </div>
@@ -232,10 +253,7 @@ var table_data = $('#table_data').DataTable({
     paging:false,
     searching:false,
     columnDefs:[
-        {
-             targets: 3 ,
-             className: 'center'
-        },
+
         {
              targets: 1 ,
              className: 'left'
@@ -261,6 +279,9 @@ var cabang = $('.cabang').val();
           $('.nomor_posting').val(data.nota);
         }
       })
+
+
+$('.m_jumlah_kas').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 });
 
 
@@ -277,6 +298,7 @@ function ganti_nota() {
 
 $('#btn_kwitansi').click(function(){
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
+    console.log(cb_jenis_pembayaran);
     var cabang = $('.cabang').val();
     console.log(cb_jenis_pembayaran);
     if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
@@ -326,12 +348,13 @@ function hitung() {
     $('.ed_jumlah').val(temp);
 }
 
-$('#append').click(function(){
+$('.append').click(function(){
 
     var cabang = $('.cabang').val();
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val();
     var nomor = [];
-if (cb_jenis_pembayaran != 'U') {
+    console.log(cb_jenis_pembayaran);
+if (cb_jenis_pembayaran == 'C' || cb_jenis_pembayaran == 'L' || cb_jenis_pembayaran == 'F' || cb_jenis_pembayaran == 'B') {
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
@@ -352,7 +375,8 @@ if (cb_jenis_pembayaran != 'U') {
                 table_data.row.add([
                     data.data[i].k_nomor+'<input type="hidden" value="'+data.data[i].k_nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
-                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">',
+                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].kode+'" class="form-control d_customer" name="d_customer[]">'+
+                    '<input type="hidden" value="'+data.data[i].k_kode_akun+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                     accounting.formatMoney(data.data[i].k_netto,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].k_netto+'" class="form-control d_netto" name="d_netto[]">',
                     '<input type="text" class="form-control d_keterangan" placeholder="keterangan..." name="d_keterangan[]">',
@@ -367,7 +391,7 @@ if (cb_jenis_pembayaran != 'U') {
         }
     })
 
-}else{
+}else if (cb_jenis_pembayaran == 'U'){
     $('.tanda').each(function(){
         var check = $(this).is(':checked');
         if (check == true) {
@@ -388,7 +412,8 @@ if (cb_jenis_pembayaran != 'U') {
                 table_data.row.add([
                     data.data[i].nomor+'<input type="hidden" value="'+data.data[i].nomor+'" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
 
-                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].nama+'" class="form-control d_customer" name="d_customer[]">',
+                    data.data[i].nama+'<input type="hidden" value="'+data.data[i].nama+'" class="form-control d_customer" name="d_customer[]">'+
+                    '<input type="hidden" value="'+data.data[i].kode_acc+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
 
                     accounting.formatMoney(data.data[i].jumlah,"",2,'.',',')+'<input type="hidden" value="'+data.data[i].jumlah+'" class="form-control d_netto" name="d_netto[]">',
 
@@ -403,9 +428,36 @@ if (cb_jenis_pembayaran != 'U') {
             $('.cabang_td').addClass('disabled');
         }
     })
+}else{
+    console.log('asd');
+ var m_data_acc   =  $('.m_data_acc').val();
+ var m_jumlah_kas = $('.m_jumlah_kas').val();
+ m_jumlah_kas     = m_jumlah_kas.replace(/[^0-9\-]+/g,"");
+
+ var m_keterangan_kas = $('.m_keterangan_kas').val();
+
+            table_data.row.add([
+                'NON KWITANSI'+'<input type="hidden" value="NON KWITANSI" class="form-control d_nomor_kwitansi" name="d_nomor_kwitansi[]">',
+
+                'NON CUSTOMER'+'<input type="hidden" value="'+'NON CUSTOMER'+'" class="form-control d_customer" name="d_customer[]">'+
+                '<input type="hidden" value="'+m_data_acc+'" class="form-control d_kode_akun" name="d_kode_akun[]">',
+
+                accounting.formatMoney(m_jumlah_kas,"",2,'.',',')+'<input type="hidden" value="'+m_jumlah_kas+'" class="form-control d_netto" name="d_netto[]">',
+
+                '<input type="text" class="form-control d_keterangan" value="'+m_keterangan_kas+'"  placholder="keterangan..." name="d_keterangan[]">',
+
+                '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+            ]).draw();
+            $('#modal_kas').modal('hide');
+            hitung();
+            $('.cb_jenis_pembayaran').addClass('disabled');
+            $('.cabang_td').addClass('disabled');
 }
 })
-
+function m_kode_akun(argument) {
+   var jenis =  $('.m_akun_as').find(':selected').data('kode_acc');
+   $('.m_data_acc').val(jenis);
+}
 function hapus_detail(o) {
     var par = o.parentNode.parentNode;
     var arr = $(par).find('.d_nomor_kwitansi').val();

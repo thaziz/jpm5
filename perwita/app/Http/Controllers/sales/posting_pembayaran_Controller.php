@@ -373,6 +373,8 @@ class posting_pembayaran_Controller extends Controller
                                             'update_at'=> Carbon::now(),
                                             'kode_customer'=> $request->d_customer[$i],
                                             'keterangan'=> $request->d_keterangan[$i],
+                                            'kode_acc'=> $request->d_kode_akun[$i],
+                                            'kode_csf'=> $request->d_kode_akun[$i],
                                          ]);
 
                         if ($request->cb_jenis_pembayaran != 'U') {
@@ -452,7 +454,7 @@ class posting_pembayaran_Controller extends Controller
                       ->first();
 
             $data_dt = DB::table('posting_pembayaran_d')
-                         ->join('customer','kode','=','kode_customer')
+                         ->leftjoin('customer','kode','=','kode_customer')
                          ->where('nomor_posting_pembayaran',$id)
                          ->get();
 
@@ -469,6 +471,36 @@ class posting_pembayaran_Controller extends Controller
         return $this->simpan_posting($request);
     }
 
+
+    public function penyebut($nilai=null) {
+        $_this = new self;
+        $nilai = abs($nilai);
+        $huruf = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+        $temp = "";
+        if ($nilai < 12) {
+            $temp = " ". $huruf[$nilai];
+        } else if ($nilai <20) {
+            $temp = $_this->penyebut($nilai - 10). " belas";
+        } else if ($nilai < 100) {
+            $temp = $_this->penyebut($nilai/10)." puluh". $_this->penyebut($nilai % 10);
+        } else if ($nilai < 200) {
+            $temp = " seratus" . $_this->penyebut($nilai - 100);
+        } else if ($nilai < 1000) {
+            $temp = $_this->penyebut($nilai/100) . " ratus" . $_this->penyebut($nilai % 100);
+        } else if ($nilai < 2000) {
+            $temp = " seribu" . $_this->penyebut($nilai - 1000);
+        } else if ($nilai < 1000000) {
+            $temp = $_this->penyebut($nilai/1000) . " ribu" . $_this->penyebut($nilai % 1000);
+        } else if ($nilai < 1000000000) {
+            $temp = $_this->penyebut($nilai/1000000) . " juta" . $_this->penyebut($nilai % 1000000);
+        } else if ($nilai < 1000000000000) {
+            $temp = $_this->penyebut($nilai/1000000000) . " milyar" . $_this->penyebut(fmod($nilai,1000000000));
+        } else if ($nilai < 1000000000000000) {
+            $temp = $_this->penyebut($nilai/1000000000000) . " trilyun" . $_this->penyebut(fmod($nilai,1000000000000));
+        }     
+        return $temp;
+    }
+
     public function posting_pembayaran_print($id)
     {
         $data = DB::table('posting_pembayaran')
@@ -477,12 +509,12 @@ class posting_pembayaran_Controller extends Controller
                   ->first();
 
         $data_dt = DB::table('posting_pembayaran_d')
-                     ->join('kwitansi','nomor_penerimaan_penjualan','=','k_nomor')
-                     ->join('masterbank','mb_kode','=','k_kode_akun')
+                     ->join('masterbank','mb_kode','=','kode_acc')
+                     ->leftjoin('kwitansi','nomor_penerimaan_penjualan','=','k_nomor')
                      ->where('nomor_posting_pembayaran',$id)
                      ->get();
-
-        return view('sales.posting_pembayaran.print',compact('data','data_dt'));
+        $sebut = $this->penyebut($data->jumlah);
+        return view('sales.posting_pembayaran.print',compact('data','data_dt','sebut'));
 
     }
 }
