@@ -93,7 +93,7 @@
                                     @endif
 
                                     @if(Auth::user()->punyaAkses('Posting Penjualan','hapus'))
-                                            @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
+                                        @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
                                         <a onclick="hapus('{{$row->nomor}}')" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
                                         @endif
                                     @endif

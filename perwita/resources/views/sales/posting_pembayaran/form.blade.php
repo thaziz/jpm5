@@ -137,7 +137,20 @@
                         </tbody>
                     </table>
                     </div>
+                    
                 </form>
+                <div class="col-sm-12">
+                    <div class="col-sm-6">
+                        <table class="table ">
+                            <h3>Detail Posting</h3>
+                            <tr>
+                                <td>
+                                    <input type="datetime-local" name="" value="" placeholder="">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
                 <div class="box-body">
                   <table id="table_data" class="table table-bordered table-striped">
                     <thead>
