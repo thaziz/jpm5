@@ -153,7 +153,9 @@
           url:baseUrl + '/sales/nota_debet_kredit/hapus_cn_dn',
           data:{nomor_cn_dn},
           type:'get',
+          dataType:'json',
           success:function(data){
+            if (data.status == 1) {
               swal({
               title: "Berhasil!",
                       type: 'success',
@@ -163,6 +165,16 @@
                       },function(){
                          location.reload();
               });
+            }else{
+              swal({
+            title: "Data ini hanya bisa dihapus melalui invoice pembetulan",
+                    type: 'warning',
+                    timer: 2000,
+                    showConfirmButton: false
+            });
+            }
+
+              
           },
           error:function(data){
 

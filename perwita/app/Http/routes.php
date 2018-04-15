@@ -1258,6 +1258,7 @@ Route::get('sales/invoice_pembetulan_edit/{id}', 'sales\invoice_pembetulan_contr
 Route::get('sales/cari_invoice_pembetulan', 'sales\invoice_pembetulan_controller@cari_invoice_pembetulan');
 Route::get('sales/pilih_invoice_pembetulan', 'sales\invoice_pembetulan_controller@pilih_invoice_pembetulan');
 Route::get('sales/simpan_invoice_pembetulan', 'sales\invoice_pembetulan_controller@simpan_invoice_pembetulan');
+Route::get('sales/update_invoice_pembetulan', 'sales\invoice_pembetulan_controller@update_invoice_pembetulan');
 Route::get('sales/hapus_invoice_pembetulan', 'sales\invoice_pembetulan_controller@hapus_invoice_pembetulan');
 
 // update faktur 

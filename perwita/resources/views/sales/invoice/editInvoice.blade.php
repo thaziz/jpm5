@@ -236,7 +236,7 @@
                                 {{$val->tanggal}}
                             </td>
                             <td>
-                                {{$val->dd_keterangan}}
+                                {{$val->keterangan_tarif}}
                                 <input type="hidden" class="acc_penjualan" value="{{$val->id_acc_penjualan}}" name="akun[]">
                             </td>
                             <td>
