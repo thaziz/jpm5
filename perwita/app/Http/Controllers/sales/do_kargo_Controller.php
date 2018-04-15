@@ -45,13 +45,14 @@ class do_kargo_Controller extends Controller
         $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
         $subcon =DB::select("SELECT * FROM subcon");
         $now = Carbon::now()->format('d/m/Y');
-        $bulan_depan = Carbon::now()->subDay(-30)->``at('d/m/Y');
+        $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
         $jenis_tarif = DB::table('jenis_tarif')
                          ->where('jt_group',1)
                          ->orWhere('jt_group',2)
                          ->orWhere('jt_group',3)
                          ->orderBy('jt_id','ASC')
                          ->get();
+
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
             $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor='$nomor' "))->first();
