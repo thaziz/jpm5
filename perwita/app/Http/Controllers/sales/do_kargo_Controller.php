@@ -720,17 +720,27 @@ class do_kargo_Controller extends Controller
                          ->orWhere('jt_group',3)
                          ->orderBy('jt_id','ASC')
                          ->get();
+
+
         $data = DB::table('delivery_order')
                     ->where('nomor', $id)
                     ->first();
-                    
         $subcon_detail = DB::table('delivery_order')
                     ->leftjoin('subcon','kode','=','kode_subcon')
                     ->where('nomor', $id)
                     ->first();
 
+        $cari_diskon = DB::table('d_disc_cabang')
+                    ->where('dc_cabang',$data->kode_cabang)
+                    ->where('dc_jenis','KARGO')
+                    ->first();
+        if ($cari_diskon == null) {
+          $diskon = 'NONE';
+        }else{
+          $diskon = $cari_diskon->dc_diskon;
+        }
        
-        return view('sales.do_kargo.detail_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail'));
+        return view('sales.do_kargo.detail_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail','diskon'));
     }
   
 }
