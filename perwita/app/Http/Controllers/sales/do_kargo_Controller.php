@@ -45,7 +45,7 @@ class do_kargo_Controller extends Controller
         $tipe_angkutan =DB::select("SELECT kode,nama FROM tipe_angkutan");
         $subcon =DB::select("SELECT * FROM subcon");
         $now = Carbon::now()->format('d/m/Y');
-        $bulan_depan = Carbon::now()->subDay(-30)->format('d/m/Y');
+        $bulan_depan = Carbon::now()->subDay(-30)->``at('d/m/Y');
         $jenis_tarif = DB::table('jenis_tarif')
                          ->where('jt_group',1)
                          ->orWhere('jt_group',2)
@@ -59,6 +59,8 @@ class do_kargo_Controller extends Controller
             $do = null;
             $jml_detail = 0;
         }
+
+        
         return view('sales.do_kargo.form',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'do', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon'));
     }
     
@@ -310,7 +312,7 @@ class do_kargo_Controller extends Controller
         }else{
           $diskon = $cari_diskon->dc_diskon;
         }
-        return response()->json(['nota'=>$nota,'diskon'=>$diskon]);
+        return response()->json(['nota'=>$nota,'diskon'=>$diskon,]);
     }
     public function pilih_tarif_kargo(request $request)
     {
