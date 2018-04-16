@@ -225,7 +225,7 @@
                                           <div class="tabs-container">
                                             <ul class="nav nav-tabs">
                                                 <li class="active"><a data-toggle="tab" href="#pembayaran">Pembayaran</a></li>
-                                                <li class=""><a data-toggle="tab" href="#returnbeli">Return Beli</a></li>
+                                               <!--  <li class=""><a data-toggle="tab" href="#returnbeli">Return Beli</a></li> -->
                                                 <li class=""><a data-toggle="tab" href="#creditnota"> Credit Nota </a></li>
                                                 <li class=""><a data-toggle="tab" href="#debitnota"> Debit Nota </a></li>
                                                 <li class=""><a data-toggle="tab" href="#pelunasanum"> Pelunasan UM </a></li>
@@ -259,7 +259,7 @@
                                                        </div>
                                                     </div>
                                                 </div>
-
+<!-- 
                                                 <div id="returnbeli" class="tab-pane">
                                                     <div class="panel-body">
                                                       <div class="col-sm-12">
@@ -280,7 +280,7 @@
                                                             </table>
                                                        </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                                 <div id="creditnota" class="tab-pane">
                                                   <div class="panel-body">
@@ -292,13 +292,17 @@
                                                                 <th style="width:40%"> Tanggal </th>
                                                                 <th style="width:100%"> Jumlah Bayar </th>
                                                               </tr>
-                                                              <tr style="height: 30%">
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-
-                                                              </tr>
+                                                              @for($j=0;$j< count($data['cndn']);$j++)
+                                                                @for($k=0; $k < count($data['cndn'][$j]); $k++)
+                                                                  <tr style="height: 30%">
+                                                                    <td> </td>
+                                                                    <td> </td>
+                                                                    <td> </td>
+                                                                    <td> </td>
+                                                                  </tr>
+                                                                @endfor
+                                                              @endfor
+                                                              
                                                             </table>
                                                        </div>
                                                   </div>

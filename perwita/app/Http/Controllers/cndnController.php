@@ -391,8 +391,6 @@ class cndnController extends Controller
 		$data['pph'] = DB::select("select * from pajak");
 		$data['akunbiaya'] = DB::select("select * from akun_biaya");
 
-
-
 	/*	dd($data);
 */
 		return view('purchase/cndn_pembelian/detail', compact('data'));

@@ -71,8 +71,8 @@
                       <td> {{$gudang->nama}}</td>
                       <td> {{$gudang->mg_alamat}}</td>
                       <td>
-                      
-                        <a href="#" class="btn btn-danger" onclick="hapusData('{{$gudang->mg_id}}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
+                         <a class="btn btn-info btn-sm" href="{{url('mastergudang/detailmastergudang/'. $gudang->mg_id.'')}}"> <i class="fa fa-arrow-right"> </i> </a>
+                        <a href="#" class="btn btn-sm btn-danger" onclick="hapusData('{{$gudang->mg_id}}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
                         {{ Form::open(['url'=>'mastergudang/deletegudang/'. $gudang->mg_id, 'method' => 'delete', 'id' => $gudang->mg_id ]) }}
                         {{ Form::close() }}
                       

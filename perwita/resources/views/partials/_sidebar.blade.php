@@ -829,6 +829,8 @@
                         " href="{{ url('konfirmasisupplier/konfirmasisupplier')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Konfirmasi Supplier </a>
                         </li>
 
+
+
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -914,6 +916,9 @@
                    " href="{{ url('master_sales/kontrak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak Customer</a>
                    </li>
                 @endif
+               
+
+
              @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 

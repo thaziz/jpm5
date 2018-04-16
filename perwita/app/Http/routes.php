@@ -260,6 +260,10 @@ Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
 Route::get('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_update');
 
 
+
+
+
+
 //BIAYA PENERUS KAS
 Route::get('biaya_penerus/index', 'KasController@index');
 Route::get('biaya_penerus/createkas', 'KasController@create');
@@ -461,6 +465,12 @@ Route::get('mastersupplier/getacchutang', 'MasterPurchaseController@getacchutang
 Route::get('mastersupplier/getnosupplier', 'MasterPurchaseController@getnosupplier');
 
 
+Route::get('master_supplier/master_supplier', 'MasterPurchaseController@master_supplier');
+Route::get('master_supplier/createkontrak', 'MasterPurchaseController@createkontraksupplier');
+Route::get('master_supplier/detailkontrak', 'MasterPurchaseController@detailkontraksupplier');
+Route::get('master_supplier/hapuskontrak', 'MasterPurchaseController@hapuskontrak');
+
+
 
 Route::get('masterdepartment/masterdepartment', 'MasterPurchaseController@masterdepartment');
 Route::get('masterdepartment/createmasterdepartment', 'MasterPurchaseController@createmasterdepartment');
@@ -516,7 +526,8 @@ Route::get('modelkendaraan/detailmodelkendaraan', 'MasterPurchaseController@deta
 Route::get('mastergudang/mastergudang', 'MasterPurchaseController@mastergudang');
 Route::get('mastergudang/createmastergudang', 'MasterPurchaseController@createmastergudang');
 Route::post('mastergudang/savemastergudang', 'MasterPurchaseController@savemastergudang');
-Route::get('mastergudang/detailmastergudang', 'MasterPurchaseController@detailmastergudang');
+Route::get('mastergudang/detailmastergudang/{id}', 'MasterPurchaseController@detailmastergudang');
+Route::post('mastergudang/updatemastergudang', 'MasterPurchaseController@updatemastergudang');
 Route::delete('mastergudang/deletegudang/{id}', 'MasterPurchaseController@deletegudang');
 // BBM DAN PERSEN
 Route::get('bbm/index', 'MasterPenerusController@bbm');

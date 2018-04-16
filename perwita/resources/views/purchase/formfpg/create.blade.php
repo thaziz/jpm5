@@ -7,7 +7,7 @@
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Form Permintaan Cek / BG (FPG) </h2>
-                    <ol class="breadcrumb">
+                    <ol class="breadcrumb"
                         <li>
                             <a>Home</a>
                         </li>
@@ -59,22 +59,20 @@
                             <table class="table table-striped table-bordered">
                             <tr>
                               <th> Cabang </th>
-                              <td> <select class='form-control chosen-select-width1 cabang' >
-                                  <option value="">
-                                    Pilih-Cabang 
-                                  </option>
-
-                                   @foreach($data['cabang'] as $cabang)
-                                    @if($cabang->kode == Auth::user()->kode_cabang)
-                                    <option selected="" value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
+                              <td> 
+                                   @if(Session::get('cabang') != 000)
+                                    <select class="form-control disabled cabang" name="cabang">
+                                        @foreach($data['cabang'] as $cabang)
+                                      <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                      @endforeach
+                                    </select>
                                     @else
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->nama}}
-                                    </option>
-                                    @endif
-                                  @endforeach
+                                      <select class="form-control cabang" name="cabang">
+                                        @foreach($data['cabang'] as $cabang)
+                                        <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                        @endforeach
+                                      </select> 
+                                    @endif                                 
                                   </select>
 
                                  </td>
@@ -235,7 +233,7 @@
                                           <div class="tabs-container">
                                             <ul class="nav nav-tabs">
                                                 <li class="active"><a data-toggle="tab" href="#pembayaran">Pembayaran</a></li>
-                                                <li class=""><a data-toggle="tab" href="#returnbeli">Return Beli</a></li>
+                                                <!-- <li class=""><a data-toggle="tab" href="#returnbeli">Return Beli</a></li> -->
                                                 <li class=""><a data-toggle="tab" href="#creditnota"> Credit Nota </a></li>
                                                 <li class=""><a data-toggle="tab" href="#debitnota"> Debit Nota </a></li>
                                                 <li class=""><a data-toggle="tab" href="#pelunasanum"> Pelunasan UM </a></li>
@@ -257,7 +255,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div id="returnbeli" class="tab-pane">
+                                               <!--  <div id="returnbeli" class="tab-pane">
                                                     <div class="panel-body">
                                                       <div class="col-sm-12">
                                                             <table class="table table-bordered" style="margin-bottom: 40%">
@@ -277,25 +275,35 @@
                                                             </table>
                                                        </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                                 <div id="creditnota" class="tab-pane">
                                                   <div class="panel-body">
                                                     <div class="col-sm-12">
-                                                            <table class="table table-bordered" style="margin-bottom: 40%">
+                                                            <table class="table table-bordered" style="margin-bottom: 40%" id="table-kredit">
                                                               <tr>
                                                                 <th> No </th>
                                                                 <th style="width:40%"> No Bukti </th>
                                                                 <th style="width:40%"> Tanggal </th>
                                                                 <th style="width:100%"> Jumlah Bayar </th>
                                                               </tr>
-                                                              <tr style="height: 30%">
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
+                                                             
+                                                            </table>
+                                                       </div>
+                                                  </div>
+                                                </div>
 
+                                                <div id="debitnota" class="tab-pane">
+                                                  <div class="panel-body">
+                                                    <div class="col-sm-12">
+                                                            <table class="table table-bordered" style="margin-bottom: 40%" id="table-debit">
+                                                              <tr>
+                                                                <th> No </th>
+                                                                <th style="width:40%"> No Bukti </th>
+                                                                <th style="width:40%"> Tanggal </th>
+                                                                <th style="width:100%"> Jumlah Bayar </th>
                                                               </tr>
+                                                              
                                                             </table>
                                                        </div>
                                                   </div>
@@ -354,11 +362,11 @@
                                           <td> 
                                             Credit Nota
                                           </td>
-                                          <td> <input type="text" class="input-sm form-control" readonly="" style="text-align: right" name="creditnota"> </td>
+                                          <td> <input type="text" class="input-sm form-control cnkanan" readonly="" style="text-align: right" name="creditnota"> </td>
                                         </tr>
                                         <tr>
                                           <td> Debit Nota </td>
-                                          <td> <input type="text" class="input-sm form-control" readonly="" style="text-align: right" name="debitnota"> </td>
+                                          <td> <input type="text" class="input-sm form-control dnkanan" readonly="" style="text-align: right" name="debitnota"> </td>
                                         </tr>
                                         <tr>
                                           <td> Sisa Terbayar </td>
@@ -799,7 +807,6 @@
         })
 
 
-     
 
 
       $('#getbank').click(function(){
@@ -1165,8 +1172,6 @@
                        nopembayaran++;
                        $('#tbl-pembayaran').append(rowpembayaran);
                      }
-
-
                     }
                    
                       $('.pembayaran').val(addCommas(totalpembayaran2));
@@ -1174,9 +1179,91 @@
                   else {
                     $('.pembayaran').val('0.00');
                   }
-                
+                  
+
+                    cndn = data.cndn;
+                    $n = 1;
+                   /* for($g = 0 ; $g < data.jeniscndn.length; $g++){
+                      if(data.jeniscndn[$g] == 'D'){
+                        for($p = 0; $p < data.cndn.length; $p++){ 
+                          for($c = 0; $c < data.cndn[$p].length; $c++){
+                              row = "<tr>" +
+                                "<td>"+$n+"</td>" +
+                                "<td>"+cndn[$p][$c].cndn_nota+"</td>" +
+                                "<td>"+cndn[$p][$c].cndn_tgl+"</td>" +
+                                "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+"</td>" +
+                                "</tr>";
+                                $('#table-debit').append(row);  
+                                $n++; 
+                          }
+                        }
+                      }
+                      else {
+
+                        for($p = 0; $p < data.cndn.length; $p++){ 
+                          for($c = 0; $c < data.cndn[$p].length; $c++){
+                              row = "<tr>" +
+                                "<td>"+$n+"</td>" +
+                                "<td>"+cndn[$p][$c].cndn_nota+"</td>" +
+                                "<td>"+cndn[$p][$c].cndn_tgl+"</td>" +
+                                "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+"</td>" +
+                                "</tr>";
+                                $('#table-kredit').append(row);  
+                                $n++; 
+                          }
+                        }
+                      }
+                    }*/
               
-               //     alert(totalpembayaran);
+                  
+
+                     
+                       for($p = 0; $p < data.cndn.length; $p++){                      
+                             for($c = 0 ; $c < data.cndn[$p].length; $c++){
+                               if(data.cndn[$p][$c].cndn_jeniscndn == 'D'){
+                                  $n = 1;
+                                 row = "<tr>" +
+                                "<td>"+$n+"</td>" +
+                                "<td>"+cndn[$p][$c].cndn_nota+"</td>" +
+                                "<td>"+cndn[$p][$c].cndn_tgl+"</td>" +
+                                "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+" <input type='hidden' class='dnbruto' value='"+cndn[$p][$c].cndn_bruto+"'> </td>" +
+                                "</tr>";
+                                $('#table-debit').append(row);  
+                                $n++;  
+                               }
+                             else {
+                              $n = 1;
+                              row = "<tr>" +
+                                      "<td>"+$n+"</td>" +
+                                      "<td>"+cndn[$p][$c].cndn_nota+"</td>" +
+                                      "<td>"+cndn[$p][$c].cndn_tgl+"</td>" +
+                                      "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+" <input type='hidden' class='cnbruto' value='"+cndn[$p][$c].cndn_bruto+"'></td>" +
+                                      "</tr>";
+                              $('#table-kredit').append(row);
+                              $n++;
+                             }
+                          }                         
+                        }
+                      
+                    
+                   
+                        $jumlahdebit = 0;
+                        $('.dnbruto').each(function(){
+                          val = $(this).val();
+                          $jumlahdebit = parseFloat(parseFloat($jumlahdebit) + parseFloat(val)).toFixed(2);
+                        });
+                        $('.dnkanan').val(addCommas($jumlahdebit));
+
+                        $jumlahkredit = 0;
+                        $('.cnbruto').each(function(){
+                          val = $(this).val();
+                          $jumlahkredit = parseFloat(parseFloat($jumlahkredit) + parseFloat(val)).toFixed(2);
+                          $sisafaktur2 = $('.sisafaktur').val();  
+                        })
+                        $('.cnkanan').val(addCommas($jumlahkredit));
+
+
+                     
 
                   
 
@@ -1467,8 +1554,8 @@
                             jumlahfakturs = jumlahfaktur.toFixed(2);
                        }
 
-                    
-
+                          
+                     
                             tblitem = $('.field').length;
                        //     console.log('tblitem2' + tblitem);
                              arrnofaktur = [];
@@ -1481,7 +1568,18 @@
                                arrnofaktur.push(val);
                             }
                     }
+	
+						$sisaterbayar2 = $('.sisatrbyr').val();
+                        $sisaterbayar = $sisaterbayar2.replace(/,/g, '');
+                        cnkanan2 = $('.cnkanan').val();
+                        cnkanan =   cnkanan2.replace(/,/g, '');
+                        dbkanan2 = $('.dnkanan').val();
+                        dbkanan = dbkanan2.replace(/,/g, '');
 
+                        hasilsisaterbayar = parseFloat(parseFloat($sisaterbayar) - parseFloat(dbkanan) + parseFloat(cnkanan)).toFixed(2);
+                        $('.sisatrbyr').val(addCommas(hasilsisaterbayar));
+                        $('.sisafaktur').val(addCommas(hasilsisaterbayar));
+//                        alert(hasilsisaterbayar);
 
               $('.nofp').click(function(){
                 id = $(this).data('id');
@@ -1551,7 +1649,9 @@
                     parent.remove();
                     parentbayar.remove();
                 })
-                  }
+
+
+                  } // end success
           })
         
      })
@@ -2021,14 +2121,20 @@
               var idjenisbayar = $('.jenisbayar').val();
               var cabang = $('.cabang').val();
               $('.hsljenisbayar').val(idsup);
-              alert(idsup);
+
+              if(idsup == ''){
+                toastr.info("Data Supplier belum ada :)");
+                return false;
+              }
+
+             // alert(idsup);
                $.ajax({
                   url : baseUrl + '/formfpg/changesupplier',
                   data : {idsup, idjenisbayar,cabang},
                   type : "get",
                   dataType : "json",
                   success : function(data) {
-                   
+                 
                     var fp = data.fakturpembelian;
                     $('.jthtmpo_bank').val(fp[0].fp_jatuhtempo);
                     //$('.hari_bank').val(fp[0].fp_jatuhtempo);

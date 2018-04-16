@@ -1522,4 +1522,29 @@ class MasterPurchaseController extends Controller
 		return view('purchase/master/master_gudang/create', compact('data'));
 	}
 
+	public function detailmastergudang($id) {
+		$data['cabang'] = master_cabang::all();	
+		$data['gudang'] = DB::select("select * from mastergudang where mg_id = '$id'");
+		return view('purchase/master/master_gudang/detail', compact('data'));
+	}
+
+	public function updatemastergudang(Request $request){
+	//	dd($request);
+		$id = $request->idgudang;
+
+		$updategudang = masterGudangPurchase::where('mg_id' , '=' , $id);
+		$updategudang->update([
+				'mg_namagudang' => $request->nmgudang,
+				'mg_cabang' => $request->idcabang,
+				'mg_alamat' => $request->alamat,
+		 		]);
+
+		return redirect('mastergudang/mastergudang');
+
+	}
+
+
+	public function master_supplier(){
+		return view('purchase/master/kontraksupplier/index');
+	}
 }	
