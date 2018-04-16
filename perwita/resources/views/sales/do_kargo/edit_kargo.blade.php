@@ -318,6 +318,8 @@
                                         <td>Discount</td>
                                         <td colspan="1">
                                             <input type="text" onkeyup="hitung()" value="{{number_format($data->diskon, 0, ",", ".")}}" name="discount" class=" form-control discount input-sm">
+
+                                            <input type="hidden"  class=" form-control master_diskon input-sm" value="{{$diskon}}">
                                         </td>
                                         <td style="padding-top: 0.4cm">Satuan</td>
                                         <td>
@@ -515,6 +517,12 @@ $('.tanggal_do').datepicker({
 $('.date').datepicker({
     format:'dd/mm/yyyy'
 })
+
+$('.status_kendaraan').change(function(){
+    if ($(this).val() == 'OWN') {
+        $('.nama_subcon_detail ').val('');
+    }
+})
 //menentukan cabang
 $(document).ready(function(){
    var cabang = $('.cabang_select').val();
@@ -572,7 +580,6 @@ function cari_nopol_kargo() {
     var nama_subcon      = $('.nama_subcon').val();
     var tipe_angkutan    = $('.tipe_angkutan').val();
     var cabang_select    = $('.cabang_select').val();
-    $('.nama_subcon_detail').val('');
     
     $.ajax({
         url:baseUrl + '/sales/cari_nopol_kargo',
@@ -729,9 +736,14 @@ $('.jumlah').focus(function(){
     $('.jumlah').select();
 })
 function hitung() {
-    var jumlah      = $('.jumlah').val();
-    var tarif_dasar = $('.harga_master').val();
-    var discount    = $('.discount').val();
+    var jumlah           = $('.jumlah').val();
+    var tarif_dasar      = $('.harga_master').val();
+    var tarif_dasar1      = $('.tarif_dasar').val();
+    var discount         = $('.discount').val();
+    var master_diskon    = $('.master_diskon').val();
+    if (master_diskon == 'NONE') {
+        master_diskon = 100;
+    }
     discount        = discount.replace(/[^0-9\-]+/g,"");
     var temp        = 0;
     var temp1       = 0;
@@ -740,6 +752,13 @@ function hitung() {
     discount        = parseInt(discount);
     if (discount == '') {
         discount = 0;
+    }
+    var max_diskon = parseInt(master_diskon)/100*tarif_dasar1;
+    console.log(max_diskon);
+    if (discount > max_diskon) {
+        discount = max_diskon;
+        $('.discount').val(discount);
+        toastr.warning('MAX Diskon '+master_diskon+'%');
     }
     temp1           = jumlah * tarif_dasar;
     temp            = temp1  - discount;
@@ -875,7 +894,7 @@ $('.save').click(function(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                       window.location.href='../deliveryorderkargo';
+                       // window.location.href='../deliveryorderkargo';
                     $('.save').addClass('disabled');
                     $('.ngeprint').removeClass('disabled');
                     $('.nomor_print').val(response.nota);
@@ -926,7 +945,7 @@ $('.ritase').change(function(){
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();
 
-    window.open('{{ url('sales/deliveryorderkargoform')}}'+'/'+print+'/nota');
+    window.open('{{ url('sales/deliveryorderkargoform/nota')}}'+'/'+print);
 })
 </script>
 @endsection

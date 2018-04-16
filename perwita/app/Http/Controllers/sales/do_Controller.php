@@ -837,7 +837,7 @@ class do_Controller extends Controller
             'id_penerima' => strtoupper($request->ed_id_penerima),
             'catatan' => 'MANIFESTED',
         );
-        $simpan = DB::table('u_s_order_do')->where('nomor', $request->ed_nomor)->insert($data);
+        $simpan = DB::table('u_s_order_do')->insert($data);
         if ($simpan == TRUE) {
             return redirect('sales/deliveryorder');
         }

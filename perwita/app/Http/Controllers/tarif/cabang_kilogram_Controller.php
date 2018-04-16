@@ -228,25 +228,29 @@ class cabang_kilogram_Controller extends Controller
                                 'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                             ]);
 
-                for ($k=0; $k <count($arrtmp) ; $k++) { 
-                $provinsi = DB::table('provinsi')->where('id','=',$request->cb_provinsi_tujuan)->get(); 
-    
-                        // $simpan = DB::table('tarif_cabang_kilogram')
-                        //           ->insert([
-                        //             ''
-                        //             'id_kota_tujuan' => $arrtmp[$k],
-                        //             'crud' => $crud,
-                        //             'harga' => $array_harga[$i],
-                        //             'waktu' => $array_waktu[$i],
-                        //             'id_provinsi_cabkilogram' => $provinsi[0]->id,
-                        //             'acc_penjualan' => $request->cb_acc_penjualan,
-                        //             'csf_penjualan' => $request->cb_csf_penjualan,
-                        //           ]);
-
-                         //------------------------------------ REGULER ----------------------------------------//
-                      
+               
                     }
+                        if (count($arrtmp) > 0) {
+                           for ($k=0; $k <count($arrtmp) ; $k++) { 
+                            $provinsi = DB::table('provinsi')->where('id','=',$request->cb_provinsi_tujuan)->get(); 
+            
+                                $simpan = DB::table('tarif_cabang_kilogram')
+                                          ->insert([
+                                            'id_kota_tujuan' => $arrtmp[$k],
+                                            'crud' => $crud,
+                                            'harga' => $array_harga[$i],
+                                            'waktu' => $array_waktu[$i],
+                                            'id_provinsi_cabkilogram' => $provinsi[0]->id,
+                                            'acc_penjualan' => $request->cb_acc_penjualan,
+                                            'csf_penjualan' => $request->cb_csf_penjualan,
+                                          ]);
 
+                                
+                              
+                              }
+                        }
+                
+                  }
             $hasil_cek = 'Data Telah Disimpan Dan Menggantikan Data Lama!';
             $result['hasil_cek']=$hasil_cek;
             return json_encode($result);
@@ -601,6 +605,7 @@ class cabang_kilogram_Controller extends Controller
      }
     }else{
     if ($crud == 'N') {
+        // return $kode_detail;
         $kode_utama = $kode_utama+1;
         $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);         
         $kode_reguler = $kodekota.'/'.'KG'.'R'.$kodecabang.$kode_utama;
@@ -663,6 +668,7 @@ class cabang_kilogram_Controller extends Controller
             $result['hasil_cek']=$hasil_cek;
             return json_encode($result);
         }else{
+            $kode_detail = $kode_detail+1;
             //------------------------------------ REGULER ----------------------------------------//
             $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
                $kertas_reguler = array(
@@ -807,6 +813,7 @@ class cabang_kilogram_Controller extends Controller
                     'id_kota_asal' => $request->cb_kota_asal,
                     'id_kota_tujuan' => $request->cb_kota_tujuan,
                     'kode_cabang' => $request->cb_cabang,
+                    'id_provinsi_cabkilogram' => $provinsi[0]->id,
                     'acc_penjualan' => strtoupper($request->cb_acc_penjualan),
                     'csf_penjualan' => strtoupper($request->cb_csf_penjualan),
                 );

@@ -2104,15 +2104,26 @@ class LaporanMasterController extends Controller
 	//KARTU PIUTANG 
 
    public function kartupiutang(){
-   		$tunai = 'T';
-   		if ($tunai == 'T') {
-   			$data = DB::table('invoice')->join('kwitansi_d','invoice.i_nomor','=','kwitansi_d.kd_nomor_invoice')->get();
-   		}
-   		$tunai = 'C';
-   		if ($tunai == 'C') {
-   			$data = DB::table('invoice')->join('kwitansi_d','invoice.i_nomor','=','kwitansi_d.kd_nomor_invoice')->get();
-   		}
-   		return view('purchase/master/master_penjualan/laporan/lap_piutang');
+   		
+   		$data_p = DB::table('invoice')->select('i_nomor','i_kode_customer','i_kode_cabang','i_tanggal')->get();
+   		
+   		$a = DB::table('invoice')->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total')
+   				->where('i_kode_customer','CS-012/00159');
+
+   		$b = DB::table('cn_dn_penjualan')->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total')
+   				->where('cd_customer','CS-012/00159');
+
+   		$c = DB::table('kwitansi')->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
+   				->where('k_kode_customer','CS-012/00159');
+
+   		$d = DB::table('kwitansi')->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
+   				->where('k_kode_customer','CS-012/00159');
+
+   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
+
+
+   		
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang',compact('data'));
    }
 
    //END OF

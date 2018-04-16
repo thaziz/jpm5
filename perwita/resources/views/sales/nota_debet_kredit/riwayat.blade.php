@@ -1,8 +1,8 @@
 <div class="col-md-12">
     <div class="tabs-container">
         <ul class="nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#tab-rk1"> Riwayat Pembayaran</a></li>
-            <li class=""><a data-toggle="tab" href="#tab-cn1">Riwayat CN/DN</a></li>
+            <li class="active"><a data-toggle="tab" href="#tab-rk1">Riwayat CN/DN</a></li>
+            <li class=""><a data-toggle="tab" href="#tab-cn1">Riwayat Pembayaran</a></li>
         </ul>
         <div class="tab-content ">
             <div id="tab-rk1" class="tab-pane active">

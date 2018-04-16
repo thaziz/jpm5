@@ -58,7 +58,6 @@ class loginController extends Controller {
             $password = $req->password;
             $user = mMember::whereRaw("m_username  = '$req->username'")->first();
 
-//               
             if ($user && $user->m_passwd == sha1(md5('passwordAllah').$req->password)) {
 
                  // Auth::login($user); //set login

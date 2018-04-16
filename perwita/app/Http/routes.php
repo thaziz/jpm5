@@ -1126,6 +1126,25 @@ Route::get('sales/deliveryordercabangtracking/table','trackingdoController@getda
 Route::get('sales/deliveryordercabangtracking/autocomplete','trackingdoController@autocomplete');
 Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoController@getdata');
 // delivery order
+Route::get('sales/deliveryorder', 'sales\do_controller@index');
+Route::get('sales/deliveryorderform', 'sales\do_controller@form');
+Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
+Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
+Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
+Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
+Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
+Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
+Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
+
+Route::post('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
+Route::get('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
+Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_controller@save_data_detail');
+Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_controller@hapus_data');
+Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_controller@hapus_data_detail');
+Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_controller@form_update_status');
+Route::post('sales/deliveryorderform/save_update_status', 'sales\do_controller@save_update_status');
+Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
+
 Route::get('sales/deliveryorder', 'sales\do_Controller@index');
 Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
 Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
@@ -1269,6 +1288,7 @@ Route::get('sales/invoice_pembetulan_edit/{id}', 'sales\invoice_pembetulan_contr
 Route::get('sales/cari_invoice_pembetulan', 'sales\invoice_pembetulan_controller@cari_invoice_pembetulan');
 Route::get('sales/pilih_invoice_pembetulan', 'sales\invoice_pembetulan_controller@pilih_invoice_pembetulan');
 Route::get('sales/simpan_invoice_pembetulan', 'sales\invoice_pembetulan_controller@simpan_invoice_pembetulan');
+Route::get('sales/update_invoice_pembetulan', 'sales\invoice_pembetulan_controller@update_invoice_pembetulan');
 Route::get('sales/hapus_invoice_pembetulan', 'sales\invoice_pembetulan_controller@hapus_invoice_pembetulan');
 
 // update faktur 

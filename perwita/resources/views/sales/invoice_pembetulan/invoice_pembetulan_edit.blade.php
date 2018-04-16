@@ -25,7 +25,7 @@
                     <h5> INVOICE PEMBETULAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../invoice_pembetulan" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -76,7 +76,7 @@
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
-                                        <option value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->cabang}} </option>
+                                        <option @if($data->ip_kode_customer == $row->kode) selected @endif value="{{$row->kode}}" data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} - {{$row->cabang}} </option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -101,9 +101,9 @@
                                 <td colspan="5">
                                     <select class="form-control"  name="cb_pendapatan" id="cb_pendapatan" >
                                         <option value="0">Pilih - Pendapatan</option>
-                                        <option value="PAKET">PAKET</option>
-                                        <option value="KARGO">KARGO</option>
-                                        <option value="KORAN">KORAN</option>
+                                        <option @if($data->ip_pendapatan == 'PAKET') selected="" @endif value="PAKET">PAKET</option>
+                                        <option @if($data->ip_pendapatan == 'KARGO') selected="" @endif  value="KARGO">KARGO</option>
+                                        <option @if($data->ip_pendapatan == 'KORAN') selected="" @endif  value="KORAN">KORAN</option>
                                     </select>
                                     <input type="hidden" class="ed_pendapatan" name="ed_pendapatan" value="" >
                                 </td>
@@ -134,7 +134,7 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
-                            <button type="button" class="btn btn-warning cndn disabled" onclick="cndn()" ><i class="glyphicon glyphicon-eye-open"></i> Lihat Di CNDN</button>
+                            <button type="button" class="btn btn-warning cndn" onclick="cndn()" ><i class="glyphicon glyphicon-eye-open"></i> Lihat Di CNDN</button>
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
@@ -156,6 +156,92 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach($data_dt as $i => $val)
+                          @if($data->ip_pendapatan == 'KORAN')
+                          <tr>
+                            <td>
+                                {{$i+1}}
+                            </td>
+                            <td>
+                                {{$val->ipd_nomor_do}}
+                                <input class="nomor_detail" type="hidden" value="{{$val->ipd_nomor_do}}" name="do_detail[]">
+                            </td>
+                            <td>
+                                {{$val->tanggal}}
+                                <input type="hidden" class="dd_id" value="{{$val->ipd_nomor_do_dt}}" name="do_id[]">
+                            </td>
+                            <td>
+                                {{$val->dd_keterangan}}
+                                <input type="hidden" class="acc_penjualan" value="{{$val->ipd_acc_penjualan}}" name="akun[]">
+                            </td>
+                            <td>
+                                {{$val->ipd_jumlah}}
+                                <input type="hidden"  value="{{$val->ipd_jumlah}}" name="dd_jumlah[]">
+                            </td>
+                            <td>
+                                {{number_format($val->ipd_harga_satuan, 2, ",", ".")}}
+                                <input type="hidden" class="dd_harga" value="{{$val->ipd_harga_satuan}}" name="dd_harga[]">
+                            </td>
+                            <td>
+                                {{number_format($val->ipd_harga_bruto, 2, ",", ".")}}
+                                <input type="hidden" class="dd_total" value="{{$val->ipd_harga_bruto}}" name="dd_total[]">
+                            </td>
+                            <td>
+                                {{number_format($val->ipd_diskon, 2, ",", ".")}}
+                                <input class="dd_diskon" type="hidden" value="{{$val->ipd_diskon}}" name="dd_diskon[]">
+                            </td>
+                            <td>
+                                {{number_format($val->ipd_harga_netto, 2, ",", ".")}}
+                                <input type="hidden" class="harga_netto" value="{{$val->ipd_harga_netto}}" name="harga_netto[]">
+                            </td>
+                            <td>
+                                <button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus">
+                                    <label class="fa fa-trash"></label>
+                                </button>
+                            </td>
+                          </tr>
+                          @else
+                          <tr>
+                            <td>{{$i+1}}</td>
+                            <td>
+                                {{$val->ipd_nomor_do}}
+                                <input class="nomor_detail" type="hidden" value="{{$val->ipd_nomor_do}}" name="do_detail[]">
+                            </td>
+                            <td>
+                                {{$val->tanggal}}
+                            </td>
+                            <td>
+                                {{$val->keterangan_tarif}}
+                                <input type="hidden" class="acc_penjualan" value="{{$val->ipd_acc_penjualan}}" name="akun[]">
+                            </td>
+                            <td>
+                                {{$val->ipd_jumlah}}
+                                <input type="hidden"  value="{{$val->ipd_jumlah}}" name="dd_jumlah[]">
+                            </td>
+                            <td>
+                                {{number_format($val->ipd_harga_satuan, 2, ",", ".")}}
+                                <input type="hidden" class="dd_harga" value="{{$val->ipd_harga_satuan}}" name="dd_harga[]">
+                            </td>
+                            <td>
+                                {{number_format($val->ipd_harga_bruto, 2, ",", ".")}}
+                                <input type="hidden" class="dd_total" value="{{$val->ipd_harga_bruto}}" name="dd_total[]">
+                            </td>
+                            <td>
+                                {{number_format($val->ipd_diskon, 2, ",", ".")}}
+                                <input class="dd_diskon" type="hidden" value="{{$val->ipd_diskon}}" name="dd_diskon[]">
+                            </td>
+                            <td>
+                                {{number_format($val->ipd_harga_netto, 2, ",", ".")}}
+                                <input type="hidden" class="harga_netto" value="{{$val->ipd_harga_netto}}" name="harga_netto[]">
+                            </td>
+                            <td>
+                                <button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus">
+                                    <label class="fa fa-trash"></label>
+                                </button>
+                            </td>
+                          </tr>
+                          @endif
+                        @endforeach
                     </tbody>
                   </table>
                 </div>
@@ -184,7 +270,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Diskon Invoice</td>
                                 <td colspan="4">
-                                    <input type="number" name="diskon2" onkeyup="hitung()" value="0"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
+                                    <input type="number" name="diskon2" onkeyup="hitung()" value="{{$data->ip_diskon2}}"  class="form-control diskon2" style="text-transform: uppercase;text-align:right" >
                                 </td>
                             </tr>
                             <tr>
@@ -197,11 +283,37 @@
                                 <td style="width:110px; padding-top: 0.4cm; text-align:right">Jenis PPN</td>
                                 <td>
                                     <select class="form-control" name="cb_jenis_ppn" onchange="hitung_pajak_ppn()" id="cb_jenis_ppn" >
-                                        <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
-                                        <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
-                                        <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
-                                        <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
-                                        <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @if($i_awal->i_jenis_ppn == 1)
+                                            <option selected="" value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @elseif($i_awal->i_jenis_ppn == 2)
+                                            <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option selected="" value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @elseif($i_awal->i_jenis_ppn == 3)
+                                            <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option selected="" value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @elseif($i_awal->i_jenis_ppn == 4)
+                                            <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option selected="" value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @elseif($i_awal->i_jenis_ppn == 5)
+                                            <option value="1" ppnrte="10" ppntpe="pkp" >EXCLUDE 10 %</option>
+                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                            <option selected="" value="5" ppnrte="10" ppntpe="npkp" >INCLUDE 10 %</option>
+                                        @endif
                                     </select>
                                 </td>
                                 <td style="padding-top: 0.4cm; text-align:right">PPN</td>
@@ -227,7 +339,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm; text-align:right">Tagihan Awal</td>
                                 <td colspan="4">
-                                    <input type="text" name="tagihan_awal" class="form-control tagihan_awal" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                    <input type="text" name="tagihan_awal" class="form-control tagihan_awal" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" value="{{number_format($i_awal->i_total_tagihan, 2, ",", ".")}}">
                                 </td>
                             </tr>
                             <tr>
@@ -243,9 +355,9 @@
                                 </td>
                             </tr>
                              <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Sisa Pembayaran</td>
+                                <td style="padding-top: 0.4cm; text-align:right">Sisa Pembayaran Awal</td>
                                 <td colspan="4">
-                                    <input type="text" name="sisa_tagihan" class="form-control sisa_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
+                                    <input type="text" name="sisa_tagihan" class="form-control sisa_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right" value="{{number_format($i_awal->i_sisa_pelunasan, 2, ",", ".")}}">
                                 </td>
                             </tr>
                         </tbody>
@@ -253,7 +365,7 @@
                 </form>
                 <!-- modal -->
                 <div id="modal_do" class="modal" >
-                  <div class="modal-dialog">
+                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -284,7 +396,7 @@
 
                 <!-- modal invoice-->
                 <div id="modal_invoice" class="modal" >
-                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
+                  <div class="modal-dialog" style="min-width: 1000px;max-width: 1000px">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -472,11 +584,6 @@
     });
     //ajax cari nota
 
-    $(document).ready(function(){
-        var nota_invoice = $('#nota_invoice').parents('tr');
-        console.log(nota_invoice);
-        pilih_invoice(nota_invoice);
-    })
     //ajax jatuh  tempo
    function ganti(){
         var customer = $('#customer').val();
@@ -828,6 +935,11 @@
         })
         toastr.info('Tekan simpan untuk menyimpan semua data');
    });
+
+$(document).ready(function(){
+        // $('.diskon2').maskMoney({precision:0,thousands:'.'})
+        hitung();
+    });
    // hapus detail
    function hapus_detail(o) {
         var jenis = $('#cb_pendapatan').val();
@@ -927,7 +1039,7 @@
             });
 
           $.ajax({
-          url:baseUrl + '/sales/simpan_invoice_pembetulan',
+          url:baseUrl + '/sales/update_invoice_pembetulan',
           type:'get',
           dataType:'json',
           data:$('.table_header :input').serialize()

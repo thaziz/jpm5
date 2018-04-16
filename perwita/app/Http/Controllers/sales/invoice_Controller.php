@@ -285,9 +285,10 @@ public function cari_do_invoice(request $request)
     $id = '0';
     if ($request->cb_pendapatan == 'KORAN') {
 
-      $temp = DB::table('delivery_order')
+     $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
+              ->leftjoin('invoice_pembetulan_d','delivery_orderd.dd_id','=','invoice_pembetulan_d.ipd_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
               ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','<=',$do_akhir)
@@ -299,6 +300,7 @@ public function cari_do_invoice(request $request)
       $temp1 = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
+              ->leftjoin('invoice_pembetulan_d','delivery_orderd.dd_id','=','invoice_pembetulan_d.ipd_nomor_do_dt')
               ->where('delivery_order.tanggal','>=',$do_awal)
               ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','<=',$do_akhir)
@@ -325,6 +327,7 @@ public function cari_do_invoice(request $request)
       // dd($request->all());
        $temp = DB::table('delivery_order')
               ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
+              ->leftjoin('invoice_pembetulan_d','delivery_order.nomor','=','invoice_pembetulan_d.ipd_nomor_do')
               ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','>=',$do_awal)
               ->where('delivery_order.tanggal','<=',$do_akhir)
@@ -334,6 +337,7 @@ public function cari_do_invoice(request $request)
 
         $temp1 = DB::table('delivery_order')
               ->leftjoin('invoice_d','delivery_order.nomor','=','invoice_d.id_nomor_do')
+              ->leftjoin('invoice_pembetulan_d','delivery_order.nomor','=','invoice_pembetulan_d.ipd_nomor_do')
               ->where('delivery_order.tanggal','>=',$do_awal)
               ->where('delivery_order.kode_cabang','=',$request->cabang)
               ->where('delivery_order.tanggal','<=',$do_akhir)
@@ -351,12 +355,22 @@ public function cari_do_invoice(request $request)
             }
 
             $data = $temp;
+            $data1= $temp;
             
         }else{
             $data = $temp;
+            $data1 = $temp;
         }
     }
+    $data = array_values($data);
+    $data1 = array_values($data1);
 
+    for ($i=0; $i < count($data1); $i++) { 
+      if ($data1[$i]->ipd_nomor_invoice !=null) {
+          unset($data[$i]);
+      }
+    }
+    $data = array_values($data);
     $customer = DB::table('customer')
                       ->get();
     for ($i=0; $i < count($data); $i++) { 

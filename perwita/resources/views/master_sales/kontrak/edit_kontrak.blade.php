@@ -79,7 +79,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td colspan="3">
-                                    <input type="text" class="form-control" readonly="" value="{{$data->nama}}">
+                                    <input type="text" class="form-control" readonly="" value="{{$data->kc_kode_customer}}- {{$data->nama}} - {{$data->nama_kota}}">
                                     <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
                                 </td>
                             </tr>
@@ -418,7 +418,7 @@ $('#btnadd').click(function(){
 });
 
 var datatable = $('#table_data').DataTable({
-                      'paging':false,
+                      // 'paging':false,
                       columnDefs: [
                       {
                          targets: 6 ,
@@ -435,6 +435,10 @@ var datatable = $('#table_data').DataTable({
                       {
                          targets: 1 ,
                          className: 'lebar'
+                      },
+                      {
+                         targets: 5 ,
+                         className: 'center'
                       },
                    
                     ]
@@ -614,7 +618,7 @@ $('#btnsimpan').click(function(){
 
       $.ajax({
       url:baseUrl + '/master_sales/update_kontrak',
-      type:'get',
+      type:'post',
       data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
       success:function(response){
         swal({

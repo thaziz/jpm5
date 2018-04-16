@@ -25,7 +25,7 @@
                     <h5> INVOICE PEMBETULAN DETAIL
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../sales/invoice" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../sales/invoice_pembetulan" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -269,7 +269,7 @@
                                 </td>
                             </tr>
                              <tr>
-                                <td style="padding-top: 0.4cm; text-align:right">Sisa Pembayaran</td>
+                                <td style="padding-top: 0.4cm; text-align:right">Sisa Pembayaran Awal</td>
                                 <td colspan="4">
                                     <input type="text" name="sisa_tagihan" class="form-control sisa_tagihan" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
@@ -279,7 +279,7 @@
                 </form>
                 <!-- modal -->
                 <div id="modal_do" class="modal" >
-                  <div class="modal-dialog">
+                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -917,7 +917,7 @@
     sisa_tagihan      = sisa_tagihan.replace(/[^0-9\-]+/g,"");
     total_tagihan     = parseFloat(total_tagihan)/100;
     sisa_tagihan      = parseFloat(sisa_tagihan)/100;
- 
+    var cb_pendapatan = $('#cb_pendapatan').val();
 
     if (total_tagihan < total_tagihan) {
         toastr.warning('Sisa Tagihan Kurang Dari 0, Tidak Dapat Mengurangi Tagihan');
@@ -954,7 +954,8 @@
                +'&'+$('.table_pajak :input').serialize()
                +'&accPiutang='+accPiutang
                +'&pajak_lain='+pajak_lain
-               +'&ed_customer='+ed_customer,
+               +'&ed_customer='+ed_customer
+               +'&cb_pendapatan='+cb_pendapatan,
           success:function(response){
              if (response.status =='gagal') {
                 

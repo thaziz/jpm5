@@ -80,7 +80,6 @@ class saldo_piutang_controller extends Controller
         $cab  = DB::table('cabang')
                 ->whereNotIn('kode', function($query){
                      $query->select('kode_cabang')
-                           ->where("periode", date("m/Y"))
                            ->from('d_saldo_piutang')->get();
                 })->select("kode", "nama")->get();
 

@@ -17,10 +17,6 @@ class periode_keuangan_controller extends Controller
 
         // return json_encode($request->all());
 
-        $this->generate_saldo_piutang($request["bulan"]."/".$request["tahun"]);
-
-        return "aa";
-
         $response = [
             'status' => 'sukses',
         ];

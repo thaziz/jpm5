@@ -501,6 +501,12 @@
                                                             <input type="hidden" name="ed_jml_bayar_old" >
                                                         </td>
                                                     </tr>
+                                                    <tr>
+                                                        <td>Keterangan</td>
+                                                        <td>
+                                                            <input type="text"  class="form-control ed_keterangan"  style="text-align:right;text-transform: uppercase;">
+                                                        </td>
+                                                    </tr>
                                                 </tbody>
                                             </table>
                                         </div>
@@ -612,6 +618,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
+
                                         <div class="col-md-7">
                                             <h3>Riwayat Dan Pembayaran</h3>
                                             <div class="tabs-container">
@@ -1035,13 +1042,15 @@ $('#btnsave').click(function(){
                 table_data.row.add([
                         '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
                         accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
-                        accounting.formatMoney(response.data[i].i_sisa_pelunasan, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_pelunasan+'">',
+                        accounting.formatMoney(response.data[i].i_sisa_akhir, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_akhir+'">',
                         '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="0">'+
                         '<input type="hidden" style="text-align:right;" readonly class="form-control i_bayar input-sm" name="i_bayar[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_debet input-sm" name="i_debet[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="0">'+
                         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="0">',
-                        '<input type="text" placeholder="keterangan..." class="form-control input-sm" name="i_keterangan[]" value="">',
+
+                        '<input type="text" placeholder="keterangan..." class="form-control input-sm i_keterangan" name="i_keterangan[]" value="">',
+
                         '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
                     ]).draw();
 
@@ -1153,6 +1162,8 @@ function histori(p){
     var i_nomor             = $(par).find('.i_nomor').val();
     var i_sisa_pelunasan    = $(par).find('.i_sisa_pelunasan').val();
     var i_bayar             = $(par).find('.i_bayar ').val();
+    var i_keterangan        = $(par).find('.i_keterangan').val();
+    console.log(i_keterangan);
     var nota_kwitansi       = $('#nota_kwitansi').val();
     var i_tagihan           = $(par).find('.i_tagihan ').val();
     var cb_jenis_pembayaran = $('.cb_jenis_pembayaran').val(); 
@@ -1203,6 +1214,7 @@ function histori(p){
                     $('.ed_nomor_invoice').val(i_nomor);
                     $('.ed_jumlah_tagihan').val(accounting.formatMoney(i_tagihan,"",2,'.',','));
                     $('.jumlah_tagihan').val(i_tagihan);
+                    $('.ed_keterangan').val(i_keterangan);
 
                     var jumlah_tagihan = $('.jumlah_tagihan').val();
                     jumlah_tagihan     = parseFloat(jumlah_tagihan);
@@ -1451,6 +1463,7 @@ $('#btnsave2').click(function(){
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
     var jenis                = $('.jenis_biaya').val();
     var akun_acc_biaya       = $('.akun_acc_biaya').val();
+    var ed_keterangan        = $('.ed_keterangan').val();
 
     if (jumlah_biaya_admin == '') {
         jumlah_biaya_admin = 0;
@@ -1473,9 +1486,11 @@ $('#btnsave2').click(function(){
         $(par).find('.i_debet').val(jumlah_biaya_admin);
         $(par).find('.i_kredit').val('0');
     }
+
     $(par).find('.i_bayar_text').val(accounting.formatMoney(angka,"",2,'.',','));
     $(par).find('.i_bayar').val(angka);
     $(par).find('.i_akun_biaya ').val(akun_biaya);
+    $(par).find('.i_keterangan ').val(ed_keterangan);
     var temp = 0;
     table_data.$('.i_bayar').each(function(){
         var i_bayar = Math.round($(this).val()).toFixed(2);
@@ -2105,7 +2120,7 @@ array_harga.push(bayar);
         '<input type="hidden" readonly class="form-control i_kredit input-sm" name="i_kredit[]" value="'+i_kredit+'">'+
         '<input type="hidden" readonly class="form-control i_akun_biaya input-sm" name="akun_biaya[]" value="'+akun_biaya+'">',
 
-        '<input type="text" placeholder="keterangan..." class="form-control input-sm" name="i_keterangan[]" value="'+i_ket+'">',
+        '<input type="text" placeholder="keterangan..." class="form-control input-sm i_keterangan" name="i_keterangan[]" value="'+i_ket+'">',
         '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>'
          ]).draw();
 

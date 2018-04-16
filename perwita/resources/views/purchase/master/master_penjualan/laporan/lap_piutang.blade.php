@@ -58,7 +58,7 @@
                            </select>
                           </td>
  --}}
-                           <th style="width: 100px; padding-top: 16px"> Customer </th>
+                           {{-- <th style="width: 100px; padding-top: 16px"> Customer </th>
                           <td colspan="3"> 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
                             <option selected="">- Pilih Customer -</option>
@@ -66,7 +66,7 @@
                               <option value="{{ $c->nama }}" >{{ $c->kode }} - {{ $c->nama }}</option>
                             @endforeach
                            </select>
-                          </td>
+                          </td> --}}
                         </tr>
                        
                       <br>
@@ -78,30 +78,30 @@
                 <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                          
-                            <th> No Kwitansi</th>
-                            <th> Tanggal </th>
-                            <th> Customer </th>
-                            <th> Ttl Bayar</th>
+                            <th> Kode</th>
+                            <th> Tgl </th>
+                            <th> Keterangan </th>
                             <th> Debet(+) </th>
                             <th> Kredit(-) </th>
-                            <th> Netto </th>
-                            <th> bank </th>
-                            
+                            <th> saldo </th>
                         </tr>
                     </thead>
                     <tbody>
                       @foreach ($data as $index =>$e)
                         <tr>
                         
-                        <td><input type="hidden" value="{{ $e->k_nomor }}" name="nomor">{{ $e->k_nomor }}</td>
-                        <td>{{ $e->k_tanggal }}</td>
-                        <td>{{ $e->k_kode_customer }}</td>
-                        <td align="right">{{ number_format($e->k_jumlah,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_debet,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_kredit,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->k_netto,0,',','.') }}</td>
-                        <td >{{ $e->k_nota_bank }}</td>
+                        <td><input type="hidden" value="{{ $e->kode }}" name="nomor">{{ $e->kode }}</td>
+                        <td>{{ $e->tanggal }}</td>
+                        <td>{{ $e->keterangan }}</td>
+                        <td align="right"> 
+                        @if ($e->flag == 'D' or substr($e->kode,0,3) == 'INV')
+                          {{ $e->total }}
+                        @else 
+                          0
+                        @endif
+                        </td>
+                        
+                        <td></td>
                         </tr>
                       @endforeach
                     </tbody>
