@@ -5,7 +5,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
-
+use Yajra\Datatables\Datatables;
+use carbon\carbon;
+use Auth;
 
 class hak_akses_Controller extends Controller
 {
@@ -94,32 +96,58 @@ class hak_akses_Controller extends Controller
         echo json_encode($data);
     }
 
+   
+
     public function save_data (Request $request) {
-        $simpan='';
-        $crud = $request->crud;
-        $level = strtoupper($request->ed_level);
-        $level_old = strtoupper($request->ed_level_old);
-        $data = array(
-                'level' => strtoupper($request->ed_level),
-            );
-        if ($crud == 'N') {
-            $simpan = DB::select(" INSERT INTO hak_akses (id,sub,level,menu)  SELECT id,sub,'$level',menu FROM menu m ");
-        }elseif ($crud == 'E') {
-            $simpan = DB::table('hak_akses')->where('level', $request->ed_level_old)->update($data);
-            
+        $loop = DB::table('master_menu')
+                  ->orderBy('mm_id','ASC')
+                  ->get();
+
+        $count = 1;
+        
+        $valid = DB::table('hak_akses')
+                  ->where('level',$request->ed_level)
+                  ->get();
+
+        if ($valid != null) {
+            return redirect(url('setting/hak_akses'));
         }
-        return redirect('setting/hak_akses');
-        /*
-        if($simpan >= 0){
-            $result['error']='';
-            $result['result']=1;
-        }else{
-            $result['error']=$simpan;
-            $result['result']=0;
+
+        for ($i=0; $i < count($loop); $i++) { 
+
+
+
+            $id = DB::table('hak_akses')
+                    ->max('id');
+            if ($id == null) {
+                $id = 1;
+            }else{
+                $id+=1;
+            }
+
+            $save = DB::table('hak_akses')
+                      ->insert([
+                        'id' =>$id,
+                        'sub' =>$loop[$i]->mm_id,
+                        'level' =>$request->ed_level,
+                        'menu' =>$loop[$i]->mm_nama,
+                        'aktif' =>false,
+                        'tambah' =>false,
+                        'ubah' =>false,
+                        'hapus' =>false,
+                        'export_ke_excel' =>false,
+                        'cabang' =>false,
+                        'print' =>false,
+                        'aksi' =>false,
+                        'all' =>false,
+                        'create_by' =>Auth::user()->m_username,
+                        'update_by' =>Auth::user()->m_username,
+                        'create_at' =>carbon::now(),
+                        'update_at' =>carbon::now(),
+                ]);
         }
-        echo json_encode($result);
-         * 
-         */
+
+        return redirect(url('setting/hak_akses'));  
     }
 
     public function hapus_data (Request $request) {
@@ -175,6 +203,20 @@ class hak_akses_Controller extends Controller
             $level = null;
         }
         return view('setting.hak_akses.form',compact('level'));
+    }
+
+    public function cari_data(request $request)
+    {
+       
+           $data = DB::table('master_menu')
+                     ->join('hak_akses','menu','=','mm_nama')
+                     ->where('level',$request->cblevel)
+                     ->get();
+
+     
+
+        // return $data;
+       return view('setting.hak_akses.table_data',compact('data','filter'));
     }
 
 }
