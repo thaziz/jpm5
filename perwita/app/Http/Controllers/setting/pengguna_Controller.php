@@ -42,7 +42,7 @@ class pengguna_Controller extends Controller
         $data = array(
                 'm_id' => $request->ed_nama,
                 'm_username' => $request->ed_nama,    
-                'm_passwd' => sha1(md5('passwordAllah') + $request->ed_kata_sandi),
+                'm_passwd' => sha1(md5('passwordAllah').$request->ed_kata_sandi),
                 'm_level' => strtoupper($request->cb_level),
                 'kode_cabang' => strtoupper($request->cb_cabang),
             );

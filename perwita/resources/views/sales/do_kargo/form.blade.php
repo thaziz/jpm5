@@ -99,11 +99,15 @@
                                     <tr>
                                         <td>Customer</td>
                                         <td class="customer_td">
-                                            <div style="width: 380px">
+                                            <div >
                                                 <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
                                                 <option value="0">Pilih - Customer</option>
                                                 @foreach($customer as $val)
-                                                    <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}-{{$val->cabang}}</option>
+                                                    @foreach($kota as $i)
+                                                    @if($val->kota == $i->id)
+                                                    <option value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}-{{$i->nama}}</option>
+                                                    @endif
+                                                    @endforeach
                                                 @endforeach
                                             </select>
                                             </div>
@@ -278,6 +282,7 @@
                                         <td>Discount</td>
                                         <td colspan="">
                                             <input type="text" onkeyup="hitung()" value="0" name="discount" class=" form-control discount input-sm">
+                                            <input type="hidden" value="" class=" form-control master_diskon input-sm">
                                         </td>
                                         <td style="padding-top: 0.4cm" colspan="">Satuan</td>
                                         <td>
@@ -478,13 +483,14 @@ $(document).ready(function(){
    $('.cabang_input').val(cabang);
    $('.jenis_tarif_do').val(jenis_tarif_do);
    $('.jenis_tarif_temp').val(jenis_tarif_do);
-   $('.discount').maskMoney({precision:0,thousands:'.'});
+   $('.discount').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
    $.ajax({
         url:baseUrl + '/sales/nomor_do_kargo',
         data:{cabang},
         dataType:'json',
         success:function(data){
             $('.nomor_do').val(data.nota);
+            $('.master_diskon').val(data.diskon);
         },
         error:function(){
             location.reload();
@@ -522,7 +528,6 @@ function cari_nopol_kargo() {
     var nama_subcon      = $('.nama_subcon').val();
     var tipe_angkutan    = $('.tipe_angkutan').val();
     var cabang_select    = $('.cabang_select').val();
-    $('.nama_subcon_detail').val('');
     
     $.ajax({
         url:baseUrl + '/sales/cari_nopol_kargo',
@@ -532,6 +537,11 @@ function cari_nopol_kargo() {
         }
     })
 }
+$('.status_kendaraan').change(function(){
+    if ($(this).val() == 'OWN') {
+        $('.nama_subcon_detail ').val('');
+    }
+})
 function reseting() {
     $('.satuan').val('');
     $('.tarif_dasar_text').val('');
@@ -604,6 +614,7 @@ function ganti_nota(argument) {
             $('#kode_tarif').val('');
             $('.kcd_id').val('');
             $('.kcd_dt').val('');
+            $('.master_diskon').val(data.diskon);
             cari_nopol_kargo();
             cari_kontrak();
             reseting();
@@ -679,9 +690,14 @@ $('.jumlah').focus(function(){
     $('.jumlah').select();
 })
 function hitung() {
-    var jumlah      = $('.jumlah').val();
-    var tarif_dasar = $('.harga_master').val();
-    var discount    = $('.discount').val();
+    var jumlah           = $('.jumlah').val();
+    var tarif_dasar      = $('.harga_master').val();
+    var tarif_dasar1      = $('.tarif_dasar').val();
+    var discount         = $('.discount').val();
+    var master_diskon    = $('.master_diskon').val();
+    if (master_diskon == 'NONE') {
+        master_diskon = 100;
+    }
     discount        = discount.replace(/[^0-9\-]+/g,"");
     var temp        = 0;
     var temp1       = 0;
@@ -690,6 +706,13 @@ function hitung() {
     discount        = parseInt(discount);
     if (discount == '') {
         discount = 0;
+    }
+    var max_diskon = parseInt(master_diskon)/100*tarif_dasar1;
+    console.log(max_diskon);
+    if (discount > max_diskon) {
+        discount = max_diskon;
+        $('.discount').val(discount);
+        toastr.warning('MAX Diskon '+master_diskon+'%');
     }
     temp1           = jumlah * tarif_dasar;
     temp            = temp1  - discount;
@@ -876,7 +899,7 @@ $('.ritase').change(function(){
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();
 
-    window.open('{{ url('sales/deliveryorderkargoform')}}'+'/'+print+'/nota');
+    window.open('{{ url('sales/deliveryorderkargoform/nota')}}'+'/'+print);
 })
 </script>
 @endsection

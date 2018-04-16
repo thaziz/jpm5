@@ -159,6 +159,7 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan_btn" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-warning disabled print" onclick="ngeprint()" ><i class="glyphicon glyphicon-print"></i> print</button>
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
                     </div>
@@ -235,7 +236,7 @@
                                 {{$val->tanggal}}
                             </td>
                             <td>
-                                {{$val->dd_keterangan}}
+                                {{$val->keterangan_tarif}}
                                 <input type="hidden" class="acc_penjualan" value="{{$val->id_acc_penjualan}}" name="akun[]">
                             </td>
                             <td>
@@ -945,7 +946,7 @@ function hitung_pajak_lain(){
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                        // window.location="../invoice"
+                        $('.print').removeClass('disabled');
                 });
              }
           },

@@ -53,13 +53,13 @@
 
                   <table class="table" style="width:400px">
                     <tr>
-                      <th> Cabang : </th>
-                      <td style="width:200px">  <select class="form-control"> @foreach($data['cabang'] as $cbg) <option value="{{$cbg->kode_kantorcabang}}"> {{$cbg->nama_cabang}} </option> @endforeach </select> </td>
-                      <td> <button class="btn btn-primary" type="button"> <i class="fa fa-search" aria-hidden="true"></i> Cari</button></td>
+                      <th> Gudang : </th>
+                      <td style="width:200px">  <select class="form-control gudang" onclick="carigudang()"> @foreach($data['gudang'] as $gdg) <option value="{{$gdg->mg_id}}"> {{$gdg->mg_namagudang}} </option> @endforeach </select> </td>
+                    
                     </tr>
                   </table>
 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang">
+                  <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" id="table-gudang">
                     <thead>
                      <tr>
                         <th style="width:10px">NO</th>
@@ -75,7 +75,7 @@
                       @foreach($data['stock'] as $index=>$stock)
                       <tr>
                         <td> {{$index + 1}} </td>
-                        <td> {{$stock->nama_masteritem}} </td>
+                        <td> {{$stock->kode_item}} - {{$stock->nama_masteritem}} </td>
                         <td> {{$stock->sg_qty}}</td>
                         <td> {{$stock->sg_minstock}} </td>
                         <td> @if($stock->sg_qty < $stock->sg_minstock)
@@ -84,7 +84,7 @@
                             <i class="fa fa-check" aria-hidden="true"></i> 
                             @endif
                         </td>
-                        <td>  <a class="btn btn-info" href="{{url('pengeluaranbarang/createpengeluaranbarang')}}">Buat SPPB </a> &nbsp; <a class="btn btn-info" href="{{url('suratpermintaanpembelian/createspp')}}"> Buat SPP</i> </a></td>
+                        <td>  <a class="btn btn-sm btn-info" href="{{url('pengeluaranbarang/createpengeluaranbarang')}}"> <i class="fa fa-plus"> </i> Buat SPPB </a> &nbsp; <a class="btn btn-sm btn-primary" href="{{url('suratpermintaanpembelian/createspp')}}"> <i class="fa fa-plus"> </i> Buat SPP</i> </a></td>
                       </tr>
                       @endforeach
                     </tbody>
@@ -94,7 +94,7 @@
                 <div class="box-footer">
                   <div class="pull-right">
             
-                   <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-info">
+                 
          
                     
                     
@@ -134,38 +134,45 @@
         format: 'yyyy-mm-dd'
     });
     
-   /* $('#tmbh_data_barang').click(function(){
-      $("#addColumn").append('<tr> <td rowspan="3"> 1 </td> <td rowspan="3"> </td> <td rowspan="3"> </td>  <td rowspan="3"> </td> <td> halo </td> <td> 3000 </td>  <tr> <td> halo </td> <td>  5.000 </td> </tr> <tr><td> halo </td> <td> 3000 </td> </tr>');
-    })*/
-     $no = 0;
-    $('#tmbh_data_barang').click(function(){
-         $no++;
-     $("#addColumn").append('<tr id=field-'+$no+'> <td> <b>' + $no +' </b> </td> <td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]">  <option value=""> -- Pilih Data Barang -- </option> <option value="">  Barang 1 </option> <option value="">  Barang 2 </option> </td> <td> </td>  <td> </td> <td> </td> <td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]"> <option value=""> -- Pilih Data Supplier -- </option> <option value="">  Supplier 1 </option> <option value="">  Supplier 2 </option> </td> <td> 3000 </td> <td> <button class="btn btn-danger remove-btn" data-id='+$no+' type="button"><i class="fa fa-trash"></i></button> </td> </tr>');
-
-
-
-      $(document).on('click','.remove-btn',function(){
-              var id = $(this).data('id');
-              var parent = $('#field-'+id);
-
-              parent.remove();
-          })
-    })
-
-      $('#tmbh_supplier').click(function(){
-            $no++;
-        $("#addColumn").append('<tr id=supp-'+$no+'> <td> <b>  </b> </td> <td> </td> <td> </td>  <td> </td> <td> </td><td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]"> <option value=""> -- Pilih Data Supplier -- </option> <option value="">  Supplier 1 </option> <option value="">  Supplier 2 </option>  </td> <td> 3000 </td> <td> <button class="btn btn-danger removes-btn" data-id='+$no+' type="button"><i class="fa fa-trash"></i></button>  </td> </tr>');
-
-
-        $(document).on('click','.removes-btn',function(){
-              var id = $(this).data('id');
-       //       alert(id);
-              var parent = $('#supp-'+id);
-
-             parent.remove();
-          })
-     })
   
+  function carigudang(){
+    idgudang = $('.idgudang').val();
+
+    $.ajax({
+      data : idgudang,
+      type : "get",
+      url : baseUrl + '/stockgudang/carigudang',
+      success : function(response){
+
+        tablegudang = $('#table-gudang').DataTable();
+        tablegudang.clear.draw();
+
+        datagudang = response.gudang;
+        n = 1;
+        for(i = 0 ; i < datagudang; i++){
+          row = "<tr>" +
+                "<td> "+n+" </td>" +
+                "<td> "+datagudang[i].kode_item+" - "+datagudang[i].nama_masteritem+" </td>"
+                "<td> "+datagudang[i].sg_qty+"</td>" +
+                "<td> "+datagudang[i].sg_minstock+" </td>" +
+                "<td>"; if(datagudang[i].sg_qty < datagudang[i].sg_minstock)
+                row +=   "<i class='btn btn-warning fa fa-exclamation-triangle' aria-hidden='true'></i> Waning";
+                    else
+                row +=   "<i class='fa fa-check' aria-hidden='true'></i>" + 
+                    
+                 row +=  "</td>" +
+                "<td>  <a class='btn btn-sm btn-info' href='url('pengeluaranbarang/createpengeluaranbarang')'> <i class='fa fa-plus'> </i> Buat SPPB </a> &nbsp; <a class='btn btn-sm btn-primary' href='url('suratpermintaanpembelian/createspp')'> <i class='fa fa-plus'> </i> Buat SPP</i> </a></td>" +
+              "</tr>"
+            
+
+              tablegudang.rows.add($(html2)).draw(); 
+              n++;
+        }
+
+
+      }
+    })
+  }
     
 
 </script>

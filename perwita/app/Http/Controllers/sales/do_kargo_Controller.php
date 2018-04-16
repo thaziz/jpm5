@@ -52,6 +52,7 @@ class do_kargo_Controller extends Controller
                          ->orWhere('jt_group',3)
                          ->orderBy('jt_id','ASC')
                          ->get();
+
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
             $jml_detail = collect(\DB::select(" SELECT COUNT(id) jumlah FROM delivery_orderd WHERE nomor='$nomor' "))->first();
@@ -59,6 +60,8 @@ class do_kargo_Controller extends Controller
             $do = null;
             $jml_detail = 0;
         }
+
+      
         return view('sales.do_kargo.form',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'do', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon'));
     }
     
@@ -192,9 +195,9 @@ class do_kargo_Controller extends Controller
                   ->get();
         }else{
             $data = DB::table('kendaraan')
-                  ->where('status','SUB')
                   ->join('tipe_angkutan','tipe_angkutan.kode','=','kendaraan.tipe_angkutan')
                   ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
+                  ->where('kendaraan.status','SUB')
                   // ->where('kode_cabang',$request->cabang_select)
                   ->where('kendaraan.kode_subcon',$request->nama_subcon)
                   ->get();
@@ -300,7 +303,17 @@ class do_kargo_Controller extends Controller
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
 
         $nota = 'KGO' . $cabang . $bulan . $tahun . $index;
-        return response()->json(['nota'=>$nota]);
+
+        $cari_diskon = DB::table('d_disc_cabang')
+                    ->where('dc_cabang',$request->cabang)
+                    ->where('dc_jenis','KARGO')
+                    ->first();
+        if ($cari_diskon == null) {
+          $diskon = 'NONE';
+        }else{
+          $diskon = $cari_diskon->dc_diskon;
+        }
+        return response()->json(['nota'=>$nota,'diskon'=>$diskon,]);
     }
     public function pilih_tarif_kargo(request $request)
     {
@@ -643,6 +656,7 @@ class do_kargo_Controller extends Controller
                          ->orderBy('jt_id','ASC')
                          ->get();
 
+
         $data = DB::table('delivery_order')
                     ->where('nomor', $id)
                     ->first();
@@ -651,8 +665,17 @@ class do_kargo_Controller extends Controller
                     ->where('nomor', $id)
                     ->first();
 
+        $cari_diskon = DB::table('d_disc_cabang')
+                    ->where('dc_cabang',$data->kode_cabang)
+                    ->where('dc_jenis','KARGO')
+                    ->first();
+        if ($cari_diskon == null) {
+          $diskon = 'NONE';
+        }else{
+          $diskon = $cari_diskon->dc_diskon;
+        }
        
-        return view('sales.do_kargo.edit_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail'));
+        return view('sales.do_kargo.edit_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail','diskon'));
     }
 
     public function update_do_kargo(request $request)
@@ -700,17 +723,27 @@ class do_kargo_Controller extends Controller
                          ->orWhere('jt_group',3)
                          ->orderBy('jt_id','ASC')
                          ->get();
+
+
         $data = DB::table('delivery_order')
                     ->where('nomor', $id)
                     ->first();
-                    
         $subcon_detail = DB::table('delivery_order')
                     ->leftjoin('subcon','kode','=','kode_subcon')
                     ->where('nomor', $id)
                     ->first();
 
+        $cari_diskon = DB::table('d_disc_cabang')
+                    ->where('dc_cabang',$data->kode_cabang)
+                    ->where('dc_jenis','KARGO')
+                    ->first();
+        if ($cari_diskon == null) {
+          $diskon = 'NONE';
+        }else{
+          $diskon = $cari_diskon->dc_diskon;
+        }
        
-        return view('sales.do_kargo.detail_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail'));
+        return view('sales.do_kargo.detail_kargo',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'data', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon','subcon_detail','diskon'));
     }
   
 }

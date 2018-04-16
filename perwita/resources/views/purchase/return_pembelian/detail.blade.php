@@ -49,7 +49,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                    <div class="text-right">
-                       <a class="btn btn-sm bbtn-default" aria-hidden="true" href="{{ url('returnpembelian/returnpembelian')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
+                       <a class="btn btn-sm btn-default" aria-hidden="true" href="{{ url('returnpembelian/returnpembelian')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
 
                     </div>
                 </div>
@@ -67,6 +67,7 @@
                       <div class="col-xs-6">
                         <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
                            <table border="0" class="table">
+                             @foreach($data['rn'] as $rn)
                             <tr>
                                 <td> Cabang </td>
                                  <td> 
@@ -74,7 +75,7 @@
                               @if(session::get('cabang') == 000)
                               <select class='form-control chosen-select-width cabang' name="cabang">
                                   @foreach($data['cabang'] as $cabang)
-                                    <option value="{{$cabang->kode}}">
+                                    <option value="{{$cabang->kode}}" @if($rn->rn_cabang == $cabang->kode) selected @endif>
                                       {{$cabang->kode}} - {{$cabang->nama}}
                                     </option>
                                   @endforeach
@@ -83,7 +84,7 @@
                               <select class='form-control chosen-select-width cabang disabled'>
                                   @foreach($data['cabang'] as $cabang)
                                     <option value="{{$cabang->kode}}" 
-                                    @if($cabang->kode == Session::get('cabang')) selected @endif>
+                                     @if($rn->rn_cabang == $cabang->kode) selected @endif>
                                       {{$cabang->nama}}
                                     </option>
                                   @endforeach
@@ -96,7 +97,7 @@
                           No Return
                             </td>
                             <td>
-                               <input type="text" class="form-control notareturn input-sm" name="nota">
+                               <input type="text" class="form-control notareturn input-sm" name="nota" value="{{$rn->rn_nota}}" readonly="">
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                             </td>
                           </tr>
@@ -105,7 +106,7 @@
                             <td>   Tanggal </td>
                             <td>
                              <div class="input-group date">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tgl" required="">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control disabled" name="tgl" required="" value="{{ Carbon\Carbon::parse($rn->rn_tgl)->format('d-M-Y ') }}">
                               </div>
                             </td>
                           </tr>
@@ -119,7 +120,7 @@
                             <td>
                               <select class="form-control chosen-select supplier" required="" name="supplier">
                               @foreach($data['supplier'] as $supplier)
-                                <option value="{{$supplier->idsup}}">
+                                <option value="{{$supplier->idsup}}" @if($rn->rn_supplier == $supplier->idsup) selected @endif >
                                         {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}
                                 </option>
                                 @endforeach
@@ -128,9 +129,10 @@
                           </tr>
                           <tr>
                             <td> Keterangan </td>
-                            <td> <input type="text" class="form-control input-sm" name="keterangan" required></td>
+                            <td> <input type="text" class="form-control input-sm" name="keterangan" required value="{{$rn->rn_keterangan}}"></td>
                           </tr>
-                         
+                          
+                          @endforeach
                           </table>
                        
                       </div>
@@ -147,26 +149,28 @@
                       <hr>
 
                         
-                      <button class="btn btn-sm btn-primary  createmodalpo" id="createmodal_po" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data PO </i> </button>
+                    <!--   <button class="btn btn-sm btn-primary  createmodalpo" id="createmodal_po" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data PO </i> </button> -->
 
 
                       <div class="col-sm-12">
                           <div class="col-sm-8">
                           <br>
                               <table class="table">
+
+
                                   <tr>
                                   <th> No PO </th>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm nopo" readonly="" name="nopo"> <input type="hidden" class="form-control input-sm idpo" readonly="" name="idpo"> </div> <div class="col-sm-4"> <button class="btn btn-xs btn-info" type="button" onclick="lihatbarang()" data-toggle="modal" data-target="#myModal7"> <i class="fa fa-search"> Lihat Data PO </i> </button> </div> </td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm nopo" readonly="" name="nopo" value="{{$data['rndt'][0]->po_no}}"> <input type="hidden" class="form-control input-sm idpo" readonly="" name="idpo" value="{{$data['rndt'][0]->po_id}}"> </div> <div class="col-sm-4"> <button class="btn btn-xs btn-info" type="button" onclick="lihatbarang()" data-toggle="modal" data-target="#myModal7"> <i class="fa fa-search"> Lihat Data PO </i> </button> </div> </td>
                                   </tr>  
                                   
                                    <tr>
                                   <td> Sub Total </td>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal"> </div></td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal" value="{{ number_format($rn->rn_subtotal, 2) }}"> </div></td>
                               </tr>
 
                               <tr>
                                   <td> Jenis PPn </td>
-                                  <td> <div class="col-sm-7"> <select class="form-control jenisppn" name="jenisppn">
+                                  <td> <div class="col-sm-7"> <select class="form-control jenisppn" name="jenisppn" value="{{$data['rndt'][0]->rn_jenisppn}}">
                                           <option value="T">
                                               Tanpa
                                           </option>
@@ -182,11 +186,11 @@
                               </tr>
                               <tr>
                                   <td> PPn </td>
-                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn"></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn"> </div></td>
+                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn" value="{{$data['rndt'][0]->rn_inputppn}}"></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn" value="{{ number_format($rn->rn_hasilppn, 2) }}"> </div></td>
                               </tr>
                               <tr>
                                   <td> Total </td>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total"></div> </td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total" value="{{ number_format($rn->rn_totalharga, 2) }}"></div> </td>
                               </tr>
                               </table>
                               
@@ -201,10 +205,22 @@
                                       <th style="width:70px"> Qty Return </th>
                                       <th> Harga </th>
                                       <th> Total Harga </th>
-                                      <th> Aksi </th>
+                                     
                                   </tr>
                               </thead>
-                                 
+                              <tbody>
+                                @foreach($data['rndt'] as $index=>$rndt)
+                                  <tr>
+                                    <td> {{$index + 1 }} </td>
+                                    <td> {{$rndt->nama_masteritem}}</td>
+                                    <td> {{$rndt->rndt_qtypo}}</td>
+                                    <td> {{$rndt->rndt_qtyreturn}}</td>
+                                    <td> {{ number_format($rndt->rndt_harga, 2) }}</td>
+                                    <td> {{ number_format($rndt->rndt_totalharga, 2) }}</td>
+                                   
+                                  </tr>
+                                @endforeach
+                              </tbody>  
                               </table>
                           </div>
                           
@@ -244,10 +260,10 @@
                                    </table>
                                 </div>
 
-                          <div class="modal-footer">
+                         <!--  <div class="modal-footer">
                               <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                               <button type="button" class="btn btn-primary" id="buttongetid">Save changes</button>
-                          </div>
+                          </div> -->
                       </div>
                     </div>
                  </div> 

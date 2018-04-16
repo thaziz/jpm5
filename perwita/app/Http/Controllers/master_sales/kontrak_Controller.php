@@ -268,6 +268,7 @@ class kontrak_Controller extends Controller
           }
         }
 
+        
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
         $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
@@ -280,7 +281,13 @@ class kontrak_Controller extends Controller
         $now1    = Carbon::now()->subDay(-30)->format('d/m/Y');
         $now    = Carbon::now()->format('d/m/Y');
 
+        for ($i=0; $i < count($kota); $i++) { 
+          if ($data->kota == $kota[$i]->id) {
+            $data->nama_kota = $kota[$i]->nama;
+          }
+        }
         
+
         return view('master_sales.kontrak.edit_kontrak',compact('data','data_dt','kota','customer','data','cabang','satuan','tipe_angkutan','now','now1','jenis_tarif'));
     }
     public function update_kontrak(request $request)

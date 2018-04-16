@@ -286,6 +286,25 @@
        <td>{{$data->tanggal}}</td>
      </tr>
      <tr>
+       <td>Jenis Pembayaran</td>
+       <td>:</td>
+       <td>
+        @if($data->jenis_pembayaran == 'C')
+        TRANSFER
+        @elseif($data->jenis_pembayaran == 'K')
+        TRANSFER KAS
+        @elseif($data->jenis_pembayaran == 'L')
+        LAIN - LAIN
+        @elseif($data->jenis_pembayaran == 'F')
+        CHEQUE/BG
+        @elseif($data->jenis_pembayaran == 'B')
+        NOTA / BIAYA LAIN
+        @elseif($data->jenis_pembayaran == 'U')
+        UANG MUKA
+        @endif
+      </td>
+     </tr>
+     <tr>
        <td colspan="3">
           <p  style="position: absolute; margin-left: 100px;font-size: 12px"></p>
        </td>
@@ -311,60 +330,68 @@
           <th rowspan="2" class="top right textcenter" width="15%">Nama Bank</th>
           <th rowspan="2" class="top right textcenter" width="10%">Nilai Cek/BG</th>
           <th colspan="2" class="top right textcenter" width="15%">Kode Account</th>
-          <th rowspan="2" class="top right textcenter" width="7%">D/K</th>
-          <th rowspan="2" class="top textcenter" >Jumlah</th>
+          <th rowspan="2" class="top textcenter" >Keterangan</th>
      </tr>
      <tr height="25px">
           <th class="top right bot textcenter" width="12%">Nomor</th>
           <th class="top right bot textcenter">Tanggal</th>
-          <th class="top right bot textcenter">Tanggal</th>
-          <th class="top right bot textcenter">Tanggal</th>
+          <th class="top right bot textcenter">CF</th>
+          <th class="top right bot textcenter">AK</th>
      </tr>
      <tr>
          <td class="right textcenter" valign="top" height="300">
          <table> 
-         
+          @foreach($data_dt as $val)
+         <tr>{{$val->nomor_penerimaan_penjualan}}</tr>
+         @endforeach
          </table>
        </td>
        <td class="textcenter right" valign="top" height="300">
          <table width="100%">
-         
+         @foreach($data_dt as $val)
+         <tr>{{$val->nomor_penerimaan_penjualan}}</tr>
+         @endforeach
          </table>
        </td>
-        <td class="textcenter top right" valign="top" height="300">
+        <td class="textleft top right" valign="top" height="300">
          <table width="100%">
-
+         @foreach($data_dt as $val)
+         <tr>{{$val->mb_nama}}</tr>
+         @endforeach
+         </table>
+       </td>
+       <td class="textright top right" valign="top" height="300">
+         <table width="100%">
+          @foreach($data_dt as $val)
+         <tr>{{ number_format($val->jumlah, 2, ",", ".") }}</tr>
+         @endforeach
          </table>
        </td>
        <td class="textcenter top right" valign="top" height="300">
          <table width="100%">
-
+           @foreach($data_dt as $val)
+         <tr>{{$val->kode_csf}}</tr>
+         @endforeach
          </table>
        </td>
        <td class="textcenter top right" valign="top" height="300">
          <table width="100%">
-
-         </table>
-       </td>
-       <td class="textcenter top right" valign="top" height="300">
-         <table width="100%">
-         
+          @foreach($data_dt as $val)
+         <tr>{{$val->kode_acc}}</tr>
+         @endforeach
          </table>
        </td>
          <td class="textleft top right" valign="top" height="300">
          <table width="100%">
-         
-         </table>
-       </td>
-         <td class="top right" valign="top" height="300">
-         <table width="100%">
-        
+        @foreach($data_dt as $val)
+         <tr>{{$val->keterangan}}</tr>
+         @endforeach
          </table>
       </td>
 
      </tr>
      <tr height="25px">
-       <td colspan="8" class="textleft top">Terbilang : </td>
+       <td colspan="8" class="textleft top">Terbilang : {{$sebut}}</td>
      </tr>
    </table>
    <table class="textcenter" width="100%">

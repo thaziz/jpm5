@@ -509,14 +509,18 @@
      } 
 
      function hitung() {
-      var jenis_cd      = $('.jenis_cd').val();
-      // if (jenis_cd == 'K') {
-      //   $('.ppn_td').addClass('disabled');
-      //   $('.pph_td').removeClass('disabled');
-      // }else{
-      //   $('.pph_td').addClass('disabled');
-      //   $('.ppn_td').removeClass('disabled');
-      // }
+      var jenis_cd = $('.jenis_cd').val();
+      var cabang = $('.cabang').val();
+      $.ajax({
+        url  :baseUrl+'/sales/nota_debet_kredit/nomor_cn_dn',
+        data : {cabang,jenis_cd},
+        success:function(data){
+          $('.nomor_cn_dn').val(data.nota);
+        },
+        error:function(){
+          toastr.waning('Nomor Nota Gagal Diload');
+        }
+      })
       var terbayar      = $('.terbayar').val();
       var nota_debet    = $('.nota_debet').val();
       var nota_kredit   = $('.nota_kredit').val();
