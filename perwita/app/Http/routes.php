@@ -797,6 +797,32 @@ Route::post('reportzona/reportzona','LaporanMasterController@report_zona');
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN MASTER DO ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
 
 
+
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN OMSET PENJUALAN ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
+
+//LAPORAN OMZET INDEX
+Route::get('diagram/diagram','laporanOmsetController@index');
+//END OF
+
+//LAPORAN DIAGRAM
+
+Route::get('diagram_dokargo/diagram_dokargo','laporanOmsetController@diagram_dokargo');
+Route::get('caridiagram_dokargo/caridiagram_dokargo','laporanOmsetController@caridiagram_dokargo');
+
+//END OF 
+
+//LAPORAN DIAGRAM
+
+Route::get('diagram_penjualan/diagram_penjualan','LaporanOmsetController@diagram_penjualan');
+Route::get('caridiagram_penjualan/caridiagram_penjualan','LaporanOmsetController@caridiagram_penjualan');
+//END OF 
+
+
+//➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN OMSET PENJUALAN ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
+
+
+
+
 //=================================== LAPORAN PENJUALAN BERAWAL =========================================//
 
 //LAPORAN TARIF
@@ -844,7 +870,6 @@ Route::get('carilaporan_penjualan/carilaporan_penjualan','LaporanMasterControlle
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
 Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
-Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterController@carideliveryorder_total');
 //END OF DELIVERY ORDER TOTAL
 
 //LAPORAN DELIVERY ORDER PAKET 
@@ -856,7 +881,6 @@ Route::get('cari_paket/cari_paket', 'LaporanMasterController@cari_paket');
 //LAPORAN DELIVERY ORDER KARGO 
 Route::post('reportdeliveryorder/reportdeliveryorder_kargo','LaporanMasterController@reportdeliveryorder_kargo');
 Route::get('sales/laporandeliveryorder_kargo','LaporanMasterController@deliveryorder_kargo');
-Route::get('carideliveryorder_kargo/carideliveryorder_kargo','LaporanMasterController@carideliveryorder_kargo');
 //END OF DELIVERY ORDER KARGO
 
 //LAPORAN DELIVERY ORDER KORAN 
@@ -2683,3 +2707,10 @@ Route::get('dopo','LaporanMasterController@dopo');
 //STOCK OPNAME
 
 Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstockopname');
+
+//MASTER PERUSAHAAN
+
+Route::get('master/master_perusahaan', 'MasterPerusahaanController@index');
+Route::get('master/master_perusahaan/save_data', 'perusahaanController@save_data');
+
+//END OF
