@@ -75,7 +75,7 @@
                 {{$i->mm_id}}
             </td>
             <td>
-                {{$i->mm_nama}}
+                {{$i->mm_nama}} - {{$i->gm_nama}}
                 <input value="{{$i->mm_nama}}" class="aktif" type="hidden" name="nama[]">
             </td>
             <td align="center">

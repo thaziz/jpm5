@@ -126,6 +126,7 @@ class hak_akses_Controller extends Controller
        
            $data = DB::table('master_menu')
                      ->join('hak_akses','menu','=','mm_nama')
+                     ->join('grup_menu','gm_id','=','mm_group')
                      ->where('level',$request->cblevel)
                      ->orderBy('mm_id','ASC')
                      ->get();
