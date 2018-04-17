@@ -15,7 +15,7 @@ class invoice_pembetulan_controller extends Controller
    public function index()
  	{
  		$cabang = auth::user()->kode_cabang;
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if (Auth::user()->punyaAkses('Invoice Pembetulan','all')) {
             $data = DB::table('invoice_pembetulan')
                       ->join('customer','kode','=','ip_kode_customer')
                       ->get();
