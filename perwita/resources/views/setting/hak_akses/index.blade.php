@@ -63,8 +63,8 @@
                                             <div class="col-md-8">
                                                 <button type="button" class="btn btn-primary " id="cari" >Cari</button>
                                                 <button type="button" class="btn btn-primary " id="btnaddlevel" >Add Level</button>
-                                                <button type="button" class="btn btn-primary " id="btneditlevel" >Edit Level</button>
                                                 <button type="button" class="btn btn-primary " id="btnhapuslevel" >Hapus Level</button>
+                                                <button type="button" class="btn btn-primary " id="btnsimpanlevel" >Simpan Perubahan</button>
                                             </div>
                                         </div>
                                     </form>
@@ -112,14 +112,12 @@
                 success: function(data)
                 {
                     $('.table_data').html(data);
+                    toastr.success('Pencarian Berhasil');
                 }
         });
     })
 
-    $("#cblevel").change(function () {
-        var table = $('#table_data').DataTable();
-        table.ajax.reload(null, false);
-    });
+
 
     $(document).on("click", "#btnaddlevel", function () {
         window.location = baseUrl + "/setting/hak_akses/add_level";
@@ -229,5 +227,51 @@
       }
    }
 
+   $('#btnsimpanlevel').click(function(){
+    var cblevel = $('#cblevel').val();
+    $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+    $.ajax({
+              url: baseUrl + "/setting/hak_akses/simpan_perubahan",
+              type: "post",
+              data:$('#table_data :input').serialize()+'&cblevel='+cblevel,
+              success: function(data)
+              {
+                toastr.success('Data berhasil Disimpan');
+              },error:function(){
+                toastr.warning('Terjadi kesalahan');
+              }
+          });
+   });
+
+
+   $.fn.serializeArray = function () {
+    var rselectTextarea= /^(?:select|textarea)/i;
+    var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;
+    var rCRLF = /\r?\n/g;
+    
+    return this.map(function () {
+        return this.elements ? jQuery.makeArray(this.elements) : this;
+    }).filter(function () {
+        return this.name && !this.disabled && (this.checked || rselectTextarea.test(this.nodeName) || rinput.test(this.type) || this.type == "checkbox");
+    }).map(function (i, elem) {
+        var val = jQuery(this).val();
+        if (this.type == 'checkbox' && this.checked === false) {
+            val = 'off';
+        }
+        return val == null ? null : jQuery.isArray(val) ? jQuery.map(val, function (val, i) {
+            return {
+                name: elem.name,
+                value: val.replace(rCRLF, "\r\n")
+            };
+        }) : {
+            name: elem.name,
+            value: val.replace(rCRLF, "\r\n")
+        };
+    }).get();
+}
 </script>
 @endsection

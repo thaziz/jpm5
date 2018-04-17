@@ -77,6 +77,7 @@
                                     </select>
                                 </td>
                             </tr>
+                            @if(Auth::user()->punyaAkses('Posting Pembayaran','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td class="cabang_td">
@@ -91,6 +92,22 @@
                                     </select>
                                 </td>
                             </tr>
+                            @else
+                            <tr class="">
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td class="cabang_td disabled">
+                                    <select onchange="ganti_nota()" class="form-control cabang chosen-select-width" name="cb_cabang" >
+                                    @foreach ($cabang as $row)
+                                        @if(Auth::user()->kode_cabang == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @else
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                        @endif
+                                    @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            @endif
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="4" >

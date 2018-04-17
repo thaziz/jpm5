@@ -11,84 +11,7 @@ use Auth;
 
 class hak_akses_Controller extends Controller
 {
-    public function table_data (Request $request) {
-        $level = $request->level;
-        //$sql = " SELECT * FROM hak_akses WHERE level = '$level' ORDER BY id,sub,kode";
-        $sql = "    SELECT *,menu FROM hak_akses WHERE sub = 0 AND level = '$level'
-                    UNION ALL
-                    SELECT *,'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'||menu as menu FROM hak_akses WHERE sub > 1 AND level = '$level'
-                    ORDER BY id,sub,kode " ;
-
-        $list = DB::select(DB::raw($sql));
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array) $r;
-        }
-        $i=0;
-        foreach ($data as $key) {
-            // add new button
-            // Aktif
-            if ($data[$i]['aktif']==TRUE) {
-                    $Aktif = 'checked';
-            } else {
-                    $Aktif = '';
-            }
-            $data[$i]['aktif'] = '<input type="checkbox" '.$Aktif.' id="'.$data[$i]['kode'].'" class="btnaktif" >';
-
-            //Tambah
-            if ($data[$i]['tambah']==TRUE) {
-                    $Tambah = 'checked';
-            } else {
-                    $Tambah = '';
-            }
-            $data[$i]['tambah'] = '<input type="checkbox" '.$Tambah.' id="'.$data[$i]['kode'].'" class="btntambah" >';
-
-            //Ubah
-            if ($data[$i]['ubah']==TRUE) {
-                    $Ubah = 'checked';
-            } else {
-                    $Ubah = '';
-            }
-            $data[$i]['ubah'] = '<input type="checkbox" '.$Ubah.' id="'.$data[$i]['kode'].'" class="btnubah" >';
-
-            //Hapus
-            if ($data[$i]['hapus']==TRUE) {
-                    $Hapus = 'checked';
-            } else {
-                    $Hapus = '';
-            }
-            $data[$i]['hapus'] = '<input type="checkbox" '.$Hapus.' id="'.$data[$i]['kode'].'" class="btnhapus" >';
-
-            //Function1
-            if ($data[$i]['function1']==TRUE) {
-                    $Function1 = 'checked';
-            } else {
-                    $Function1 = '';
-            }
-            $data[$i]['function1'] = '<input type="checkbox" '.$Function1.' id="'.$data[$i]['kode'].'" class="btnfunction1" >';
-
-            //Function2
-            if ($data[$i]['function2']==TRUE) {
-                    $Function2 = 'checked';
-            } else {
-                    $Function2 = '';
-            }
-            $data[$i]['function2'] = '<input type="checkbox" '.$Function2.' id="'.$data[$i]['kode'].'" class="btnfunction2" >';
-            //$data[$i]['Function2'] = '<input type="checkbox" checked="" />';
-
-            //Function3
-            if ($data[$i]['function3']==TRUE) {
-                    $Function3 = 'checked';
-            } else {
-                    $Function3 = '';
-            }
-            $data[$i]['function3'] = '<input type="checkbox" '.$Function3.' id="'.$data[$i]['kode'].' " class="btnfunction3" >';
-
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
-    }
+   
 
     public function get_data (Request $request) {
         $id =$request->input('id');
@@ -117,21 +40,14 @@ class hak_akses_Controller extends Controller
 
 
 
-            $id = DB::table('hak_akses')
-                    ->max('id');
-            if ($id == null) {
-                $id = 1;
-            }else{
-                $id+=1;
-            }
-
+          
             $save = DB::table('hak_akses')
                       ->insert([
-                        'id' =>$id,
+                        'id' =>$i+1,
                         'sub' =>$loop[$i]->mm_id,
-                        'level' =>$request->ed_level,
+                        'level' =>strtoupper($request->ed_level),
                         'menu' =>$loop[$i]->mm_nama,
-                        'aktif' =>false,
+                        'aktif' =>true,
                         'tambah' =>false,
                         'ubah' =>false,
                         'hapus' =>false,
@@ -211,12 +127,87 @@ class hak_akses_Controller extends Controller
            $data = DB::table('master_menu')
                      ->join('hak_akses','menu','=','mm_nama')
                      ->where('level',$request->cblevel)
+                     ->orderBy('mm_id','ASC')
                      ->get();
 
      
 
         // return $data;
-       return view('setting.hak_akses.table_data',compact('data','filter'));
+       return view('setting.hak_akses.table_data',compact('data'));
+    }
+
+    public function simpan_perubahan(request $request)
+    {
+        // dd($request->all());
+
+
+        for ($i=0; $i < count($request->nama); $i++) { 
+            if ($request->aktif[$i] == 'on') {
+                $aktif[$i] = true;
+            }else if ($request->aktif[$i]  == 'off'){
+                $aktif[$i] = false;
+            }
+
+            if ($request->tambah[$i] == 'on') {
+                $tambah[$i] = true;
+            }else if ($request->tambah[$i]  == 'off'){
+                $tambah[$i] = false;
+            }
+
+            if ($request->ubah[$i] == 'on') {
+                $ubah[$i] = true;
+            }else if ($request->ubah[$i]  == 'off'){
+                $ubah[$i] = false;
+            }
+
+            if ($request->hapus[$i] == 'on') {
+                $hapus[$i] = true;
+            }else if ($request->hapus[$i]  == 'off'){
+                $hapus[$i] = false;
+            }
+
+            if ($request->cabang[$i] == 'on') {
+                $cabang[$i] = true;
+            }else if ($request->cabang[$i]  == 'off'){
+                $cabang[$i] = false;
+            }
+
+            if ($request->print[$i] == 'on') {
+                $print[$i] = true;
+            }else if ($request->print[$i]  == 'off'){
+                $print[$i] = false;
+            }
+
+            if ($request->global[$i] == 'on') {
+                $all[$i] = true;
+            }else if ($request->global[$i]  == 'off'){
+                $all[$i] = false;
+            }
+        }
+
+        // return $aktif;
+
+         for ($i=0; $i < count($request->nama); $i++) { 
+             $update = DB::table('hak_akses')
+                         ->where('menu',$request->nama[$i])
+                         ->where('level',$request->cblevel)
+                         ->update([
+                            'aktif' =>$aktif[$i],
+                            'tambah' =>$tambah[$i],
+                            'ubah' =>$ubah[$i],
+                            'hapus' =>$hapus[$i],
+                            'export_ke_excel' =>true,
+                            'cabang' =>$cabang[$i],
+                            'print' =>$print[$i],
+                            'all' =>$all[$i],
+                            'update_by' =>Auth::user()->m_username,
+                            'update_at' =>carbon::now(),
+                        ]);
+         }
+
+         return 'success';
+
+
     }
 
 }

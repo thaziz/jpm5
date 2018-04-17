@@ -1,6 +1,7 @@
 <table id="table_data" class="table table-bordered table-striped">
     <thead>
         <tr>
+            <th>No</th>
             <th>Menu</th>
             <th>
             <div class="checkbox checkbox-info checkbox-circle">
@@ -68,13 +69,18 @@
         </tr>
     </thead>
     <tbody>
-
         @foreach($data as  $i)
         <tr>
-            <td>{{$i->mm_nama}}</td>
+            <td align="center">
+                {{$i->mm_id}}
+            </td>
+            <td>
+                {{$i->mm_nama}}
+                <input value="{{$i->mm_nama}}" class="aktif" type="hidden" name="nama[]">
+            </td>
             <td align="center">
                 <div class="checkbox checkbox-info checkbox-circle">
-                    <input  class="aktif" type="checkbox" name="aktif">
+                    <input @if($i->aktif == true) checked @endif class="aktif" type="checkbox" name="aktif[]">
                     <label>
                         
                     </label>
@@ -82,7 +88,7 @@
             </td>
             <td align="center">
                 <div class="checkbox checkbox-info checkbox-circle">
-                    <input  class="tambah" type="checkbox" name="tambah">
+                    <input @if($i->tambah == true) checked @endif class="tambah" type="checkbox" name="tambah[]">
                     <label>
                         
                     </label>
@@ -90,7 +96,7 @@
             </td>
             <td align="center">
                 <div class="checkbox checkbox-info checkbox-circle">
-                    <input  class="ubah" type="checkbox" name="ubah">
+                    <input @if($i->ubah == true) checked @endif class="ubah" type="checkbox" name="ubah[]">
                     <label>
                         
                     </label>
@@ -98,7 +104,7 @@
             </td>
             <td align="center">
                 <div class="checkbox checkbox-info checkbox-circle">
-                    <input  class="hapus" type="checkbox" name="hapus">
+                    <input @if($i->hapus == true) checked @endif class="hapus" type="checkbox" name="hapus[]">
                     <label>
                         
                     </label>
@@ -106,7 +112,7 @@
             </td>
             <td align="center">
                 <div class="checkbox checkbox-info checkbox-circle">
-                    <input  class="cabang" type="checkbox" name="cabang">
+                    <input @if($i->cabang == true) checked @endif class="cabang" type="checkbox" name="cabang[]">
                     <label>
                         
                     </label>
@@ -114,7 +120,7 @@
             </td>
             <td align="center">
                 <div class="checkbox checkbox-info checkbox-circle">
-                    <input  class="print" type="checkbox" name="print">
+                    <input @if($i->print == true) checked @endif class="print" type="checkbox" name="print[]">
                     <label>
                         
                     </label>
@@ -122,13 +128,12 @@
             </td>
             <td align="center">
                 <div class="checkbox checkbox-info checkbox-circle">
-                    <input  class="global" type="checkbox" name="global">
+                    <input @if($i->all == true) checked @endif class="global" type="checkbox" name="global[]">
                     <label>
                         
                     </label>
                 </div> 
             </td>
-            
         </tr>
         @endforeach
     </tbody>
