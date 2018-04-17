@@ -77,14 +77,16 @@
                                 <td>{{ $row->ip_keterangan }}</td>
                                 <td class="text-center">
                                     <div class="btn-group ">
-                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','ubah'))
+                                        @if(Auth::user()->punyaAkses('Invoice Pembetulan','ubah'))
                                         @if(cek_periode(carbon\carbon::parse($val->ip_tanggal)->format('m'),carbon\carbon::parse($row->ip_tanggal)->format('Y') ) != 0)
                                         <a  onclick="edit('{{$row->ip_nomor}}')" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>
                                         @endif
                                         @endif
-                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','print'))
+                                        @if(Auth::user()->punyaAkses('Invoice Pembetulan','print'))
                                         <a  onclick="ngeprint('{{$row->ip_nomor}}')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></a>
                                         @endif
+
+                                        @if(Auth::user()->punyaAkses('Invoice Pembetulan','hapus'))
                                         @if(cek_periode(carbon\carbon::parse($val->ip_tanggal)->format('m'),carbon\carbon::parse($row->ip_tanggal)->format('Y') ) != 0)
                                         <a  onclick="hapus('{{$row->ip_nomor}}')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
                                         @endif
