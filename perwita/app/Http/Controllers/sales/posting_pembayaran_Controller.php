@@ -295,7 +295,7 @@ class posting_pembayaran_Controller extends Controller
     {
         $data = DB::table('uang_muka_penjualan')
                   ->where('kode_cabang',$request->cabang)
-                  ->where('kode_customer',$request->customer)
+                  ->where('nomor_posting',null)
                   ->get();
         return view('sales.posting_pembayaran.table_uang_muka',compact('data'));
     }
