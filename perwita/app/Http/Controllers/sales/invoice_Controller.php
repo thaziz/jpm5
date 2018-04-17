@@ -56,7 +56,7 @@ class invoice_Controller extends Controller
 
     public function index(){
      $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->punyaAkses('Invoice Penjualan','all')) {
+        if (Auth::user()->punyaAkses('Invoice','all')) {
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
                       ->take(2000)
