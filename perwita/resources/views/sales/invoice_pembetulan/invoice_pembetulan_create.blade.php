@@ -51,7 +51,7 @@
                     <table class="table table_header table-striped table-bordered table-hover">
 
                         <tbody>
-                            @if(Auth::user()->punyaAkses('Invoice Penjualan','cabang'))
+                            @if(Auth::user()->punyaAkses('Invoice Pembetulan','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="5" class="cabang_td">

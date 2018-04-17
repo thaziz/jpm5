@@ -49,10 +49,18 @@
                 <li class="treeview sidebar data-master {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }}">
                     <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Setting</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
-                        <li class="sidebar {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }} ">
+
+                        @if(Auth::user()->PunyaAkses('Hak Akses','aktif'))
+                        <li class="sidebar {{Request::is('setting/hak_akses') ? 'active' : '' || Request::is('setting/hak_akses/*') ? 'active' : '' }} ">
+                            <a href="{{ url('setting/hak_akses')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Hak Akses</a>
+                        </li>
+                        @endif
+                        
+                        @if(Auth::user()->PunyaAkses('Pengguna','aktif'))
+                         <li class="sidebar {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }} ">
                             <a href="{{ url('setting/pengguna')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengguna</a>
                         </li>
-
+                        @endif
                        <!--   <li class="sidebar {{Request::is('setting/groupbaru') ? 'active' : '' || Request::is('setting/groupbaru/*') ? 'active' : '' }} ">
                             <a href="{{ url('setting/groupbaru')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Group Baru </a>
                         </li> -->

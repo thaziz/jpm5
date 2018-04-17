@@ -235,7 +235,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Edit Data Akun</h4>
+        <h4 class="modal-title">Detail Saldo Piutang</h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">
@@ -456,7 +456,7 @@
     })
 
     $("#okee").on("click", ".tampilkan", function(evt){
-      alert("okee");
+      // alert("okee");
       evt.stopImmediatePropagation()
       $id = $(this).data("id");
 
@@ -500,7 +500,7 @@
 
             $a = n.id_referensi.substring(0, 3);
 
-            if($a == "KWT"){
+            if($a == "KWT" || $a == "PST"){
               $total -= parseInt(n.jumlah);
               $b = '('+addCommas(n.jumlah)+',00)';
             }
@@ -509,13 +509,18 @@
               $b = addCommas(n.jumlah)+',00';
             }
 
-            $faktur = (n.id_referensi == "null") ? "" ? n.id_referensi;
+            ket = n.keterangan;
 
-            $html = $html + '<tr class="row-detail" data-nf = "'+$faktur+'" data-tanggal = "'+n.tanggal+'" data-jt = "'+n.jatuh_tempo+'" data-keterangan = "'+n.keterangan+'" data-jumlah = "'+addCommas(n.jumlah)+'">'+
+            if(n.keterangan.length >= 28)
+              ket = n.keterangan.substring(0, 24)+' ...';
+
+            $faktur = (n.id_referensi == "null") ? "" : n.id_referensi;
+
+            $html = $html + '<tr class="row-detail" data-nf = "'+$faktur+'" data-tanggal = "'+n.tanggal+'" data-jt = "'+n.jatuh_tempo+'" data-keterangan = "'+n.keterangan+'" data-jumlah = "'+$b+'">'+
                   '<td>'+$faktur+'</td>'+
                   '<td class="text-center">'+n.tanggal+'</td>'+
                   '<td class="text-center">'+n.jatuh_tempo+'</td>'+
-                  '<td>'+n.keterangan+'</td>'+
+                  '<td>'+ket+'</td>'+
                   '<td class="text-right">'+$b+'</td>'+
                 '</tr>';
           }
