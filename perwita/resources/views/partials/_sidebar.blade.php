@@ -914,7 +914,7 @@
                " >
                    <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Kontrak<span class="fa arrow"></span></a>
                    <ul class="nav nav-third-level">
-                @if(Auth::user()->PunyaAkses('Master Kontrak','aktif'))
+                @if(Auth::user()->PunyaAkses('Kontrak Customer','aktif'))
                    <li >
                     <a class="sidebar master-perusahaan 
 
@@ -927,7 +927,7 @@
                
 
 
-             @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
+             @if(Auth::user()->PunyaAkses('Kontrak Subcon','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 
