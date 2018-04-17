@@ -601,7 +601,7 @@ class BiayaPenerusController extends Controller
 		
 			return view('purchase/fatkur_pembelian/editTableBiaya',compact('data','date','agen','vendor','akun_biaya','now'));
 		}
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
 		public function getpembayaranoutlet(){
 
 
@@ -625,42 +625,20 @@ class BiayaPenerusController extends Controller
 
 			return view('purchase/fatkur_pembelian/PembayaranOutlet',compact('date','agen','akun_biaya','second','start','jt'));
 		}
-		public function cari_outlet(request $request,$agen){
-			// dd($request);
-			$id = DB::table('master_note')
-					->max('mn_id');
-			if($id == ''){
-				$id = 1;
-			}else{
-				$id+=1;
-			}
-			
-			$cari_note = DB::table('master_note')
-							->where('mn_keterangan',$request->note)
-							->get();
-
-
-			if ($cari_note == null) {
-				// return 'asd';
-				if($request->note != ''){
-					master_note::create([
-							'mn_id'			=> $id,
-							'mn_keterangan' => $request->note,
-							'created_at'	=> Carbon::now()
-					]);
-				}
-			}
+		public function cari_outlet(request $request){
+			// dd($request->all());
 		
 
-		 $tgl = explode('-',$request->rangepicker);
-		 $tgl = str_replace(' ', '', $tgl);
+		$tgl = explode('-',$request->reportrange);
+		$tgl = str_replace(' ', '', $tgl);
 		for ($i=0; $i < count($tgl); $i++) { 
 			$tgl[$i] = str_replace('/', '-', $tgl[$i]);
 			$tgl[$i] = Carbon::parse($tgl[$i])->format('Y-m-d');
 		}
-		if(isset($tgl[1])){
 
-			$list = DB::select("SELECT nomor,potd_pod,tanggal,nama_pengirim,nama_penerima,asal.nama as asal,asal.id as id_asal,
+		if(isset($tgl)){
+
+			$list = DB::select("SELECT nomor,potd_pod,tanggal,nama_pengirim,nama_penerima,total_net,asal.nama as asal,asal.id as id_asal,
 			 							tujuan.nama as tujuan,tujuan.id as id_tujuan,status,agen.nama as nama_agen,tarif_dasar,biaya_komisi,
 			 							delivery_order.kode_cabang 
 					 					FROM delivery_order
@@ -673,13 +651,14 @@ class BiayaPenerusController extends Controller
 										pembayaran_outlet_dt on potd_pod = nomor
 										WHERE delivery_order.tanggal >= '$tgl[0]'
 										AND delivery_order.tanggal <= '$tgl[1]'
-										AND delivery_order.kode_outlet = '$agen'
+										AND delivery_order.kode_outlet = '$request->selectOutlet'
+										-- AND delivery_order.kode_cabang = '$request->cabang'
 										order by tanggal desc");
 			
 
-			$persen = DB::table('master_persentase')
-			 			 ->where('kode_akun',5317)
-			 			 ->get();
+			$persen = DB::table('agen')
+			 			 ->where('kode',$request->selectOutlet)
+			 			 ->first();
 			
 			$data = array();
 	        foreach ($list as $r) {
@@ -688,7 +667,7 @@ class BiayaPenerusController extends Controller
 	 
 	        foreach ($data as $i => $key) {
 	            
-	            $data[$i]['komisi']	= round($data[$i]['tarif_dasar']*($persen[0]->persen/100),2);
+	            $data[$i]['komisi']	= (float)$data[$i]['total_net']*(float)($persen->komisi/100);
 	          
 	        }
 	        return view('purchase/fatkur_pembelian/detailpembayaranoutlet',compact('data'));
