@@ -160,9 +160,9 @@ class laporanOmsetController extends Controller
 		}
 		// return $data1[0]->total_net;
 		if ($data == null && $data1 == null && $data2 == null) {
-			return response()->json(['hasil'=>'0']);
+			return response()->json(['hasil'=>'0','a'=>$awal,'b'=>$akir]);
 		}else{
-       		return response()->json(['paket'=>$data,'koran'=>$data1,'kargo'=>$data2]);
+       		return response()->json(['paket'=>$data,'koran'=>$data1,'kargo'=>$data2,'a'=>$awal,'b'=>$akir]);
 		}
 	}
 	//END OF

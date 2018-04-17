@@ -155,7 +155,7 @@
                                         @endforeach
                                         </select>
                                     <td>
-                                        <div class="checkbox">
+                                        <div >
                                             <label for="checkbox1"> <input type="checkbox" name="ck_pakai_angkutan"> Pakai Angkutan </label>
                                         </div>
                                     </td>

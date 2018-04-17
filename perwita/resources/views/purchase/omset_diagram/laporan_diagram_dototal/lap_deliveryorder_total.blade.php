@@ -426,11 +426,12 @@ Highcharts.chart('container', {
 
             ],
           });
+          $('.highcharts-title').html('Menampilkan Diagram Tanggal '+data.a+' Hingga '+data.b)
+             
         }else {
           Highcharts.chart('container', {
             chart: {
                 type: 'column',
-              
             },
             title: {
                 text: 'Laporan'
@@ -470,6 +471,9 @@ Highcharts.chart('container', {
 
             ],
           });
+
+          $('.highcharts-title').html('Menampilkan Diagram Tanggal '+data.a+' Hingga '+data.b)
+
         }
         console.log(data);
         
