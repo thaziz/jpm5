@@ -319,9 +319,11 @@ public function cari_do_invoice(request $request)
             }
             $temp = array_values($temp);
             $data = $temp;
+            $data1 = $temp;
             
         }else{
             $data = $temp;
+            $data1 = $temp;
         }
     }else if ($request->cb_pendapatan == 'PAKET' || $jenis == 'KARGO') {
       // dd($request->all());
