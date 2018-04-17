@@ -190,7 +190,6 @@ class ReturnPembelianController extends Controller
 		else {
 			$rn->rn_ppn = $ppn;
 			$rn->rn_hasilppn = $hasilppn;
-			$rn->rn_inputppn = $hasilppn;
 
 		}
 
@@ -224,9 +223,9 @@ class ReturnPembelianController extends Controller
 			$rndt->rndt_idrn = $idrn;
 			$rndt->rndt_item = $request->kodeitem[$i];
 			$rndt->rndt_qtypo = $request->qtypo[$i];
-			$rndt->rndt_qtyreturn = $request->qtyreturn[$i];
-			$rndt->rndt_harga = $jumlahharga;
-			$rndt->rndt_totalharga = $totalharga;
+			$rndt->rndt_qtyreturn = $request->qtyretrun;
+			$rndt->rndt_harga = $jumlahharga[$i];
+			$rndt->rndt_totalharga = $totalharga[$i];
 			$rndt->create_by = $request->username;
 			$rndt->save();
 		}
@@ -354,186 +353,365 @@ class ReturnPembelianController extends Controller
 		
 
 			$datastockmutation = 0;
-			for($k = 0; $k < count($request->kodeitem); $k++){
-				$iditem = $request->kodeitem[$k];
-				$data['iditem'][] = $iditem;
-				$data['pb'][] = DB::select("select * from penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' order by pbdt_id asc");
 
-				$hitungpb = count($data['pb']);
+			//update pbdt
+			for($j = 0; $j < count($request->kodeitem); $j++){
+				$iditem2 = $request->kodeitem[$j];
+				$jumlahterima = 0;
 
+			//	return $idpo . $iditem;
+
+				$data['pb'][] = DB::select("select * from penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem2'");
+			//	return json_encode($data);
 				//return json_encode($data);
+				if(count($data['pb'][0]) != 0 ) {
+					for($x = 0 ; $x < count($data['pb'][0]); $x++){
+						$jumlahterima = $jumlahterima + (int)$data['pb'][0][$x]->pbdt_qty;
+					}
 
-				$sisa = -1;
+					
 
-				if($hitungpb != 0){ // jika jumlah pb tidak 0
-					$updatebarangterima = barang_terima::where([['bt_flag' , '=' , 'PO'], ['bt_idtransaksi' , '=' , $idpo]]);
-						$updatebarangterima->update([
+				//update peritem di pbdt
+				$hasilqty = (int)$request->qtypo[$j] - (int)$request->qtyreturn[$j];
+
+			
+
+				//return $hasilqty . $jumlahterima;
+				if((int)$jumlahterima > $hasilqty){
+
+
+				$datastockmutation = 1;
+				//update barang terima
+				$updatebarangterima = barang_terima::where([['bt_flag' , '=' , 'PO'], ['bt_idtransaksi' , '=' , $idpo]]);
+				$updatebarangterima->update([
 						'bt_idtransaksi' => $idpo2,
-				 	]);
+				 		]);
+		
 
-					for($i = 0 ; $i < count($data['pb']); $i++){
-						
-						$hz = (int) count($data['pb'][$i]) - 1;
-							for ($j = 0; $j < count($data['pb'][$i]); $j++){
-							$jumlahperitem = 0;
-								
-									//return $hz;
-									$jumlahperitem = $jumlahperitem + $data['pb'][$i][$hz]->pbdt_qty;
-									//	$jumlahperitem = 3;	
-								
+				$akhir = count($data['pb'][0]);
+				$nz = (int)$akhir - 1;
+					for($m = $akhir; $m > 0; $m--){
+						$qtyterimaitem = $data['pb'][0][$nz]->pbdt_qty;
+						//return $qtyterimaitem . $request->qtyreturn[$j];
+						if((int)$qtyterimaitem >= (int)$request->qtyreturn[$j]){
+							/*return $qtyterimaitem . $request->qtyreturn[$j] . $request->kodeitem[$j] . $nz . $data['pb'][0][$nz]->pbdt_item;
+							return 'yes';*/
+							$hasilqtypb = (int)$qtyterimaitem - (int)$request->qtyreturn[$j];	
+							$idpbdt = $data['pb'][0][$nz]->pbdt_id;
+							$iditem = $data['pb'][0][$nz]->pbdt_item;
+							
+							$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+								$updatepbdt->update([
+									'pbdt_qty' => $hasilqtypb,
 									
-								//return $jumlahperitem . $request->qtyreturn[$k];	
-								if((int)$jumlahperitem >= (int)$request->qtyreturn[$k]){// 
-									$j = (int)1000;	
-									$qty = $data['pb'][$i][$hz]->pbdt_qty;
-									$idpbdt = $data['pb'][$i][$hz]->pbdt_id;
-										
+									]);
 
-									//return $idpbdt  . $hz . $qty . $request->qtyreturn[$k] ;
-									if((int)$request->qtyreturn[$k] == (int)$qty){ // SAMA
+							//update di stockmutation di penerimaan barang
+							$datapbdt = DB::select("select * from penerimaan_barang, penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' and pbdt_id = '$idpbdt' and pbdt_idpb = pb_id");
+						//	return $idpo . $iditem . $idpbdt;
+							$idpb = $datapbdt[0]->pb_id;
 
 
-									//	return 'yes1';									
-										//return $idpo . $idpbdt  . $idpbdt1 . $idpbdt2 . $iditem . $hz . $i;
+								//update di stockmutation di penerimaan barang
+							$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$j] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
+
+							$updatesmt->update([
+								'sm_qty' => $hasilqtypb,
+								'sm_sisa' => $hasilqtypb,
+								'update_by' => $request->username
+								]);
+
+							$m = -1;
+
+						}
+
+						else if((int)$qtyterimaitem == (int)$request->qtyreturn[$j]){
+						//	return 'hore';
+							$hasilqtypb = (int)$qtyterimaitem - (int)$request->qtyreturn[$j];	
+							$idpbdt = $data['pb'][0][$nz]->pbdt_id;
+							$iditem = $data['pb'][0][$nz]->pbdt_item;
+							//return $qtyterimaitem . $hasilqtypb . $idpbdt;
+							$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+								$updatepbdt->update([
+									'pbdt_qty' => $hasilqtypb,
+									]);
+
+								//update di stockmutation di penerimaan barang
+								$datapbdt = DB::select("select * from penerimaan_barang, penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' and pbdt_id = '$idpbdt' and pbdt_idpb = pb_id");
+							//	return $idpbdt . $idpo . $iditem;
+								$idpb = $datapbdt[0]->pb_id;
+
+
+									//update di stockmutation di penerimaan barang
+							$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'] , ['sm_id_gudang' , '=' , $request->lokasigudang[$j] ], ['sm_comp' , '=' , $cabang],['sm_po' , '=' , $idpb], ['sm_item' , '=' , $iditem]]);
+
+							$updatesmt->update([
+								'sm_qty' => $hasilqtypb,
+								'sm_sisa' => $hasilqtypb,
+								'update_by' => $request->username
+								]);
+
+								$m = -1;
+
+						}
+						else {
+							$yz = (int)$akhir - (int)1;
+							$selisih = 0;
+							$selisih2 = $request->qtyreturn[$j];
+
+							$data['pb'][] = DB::select("select * from penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem2'");
+							//return $akhir;
+							for($xz = $akhir; $xz > 0; $xz--){
+							//	return $data['pb'][0];
+								$qtyterimaitem2 = $data['pb'][0][$yz]->pbdt_qty;
+								if($selisih2 != 0) {
+									if($selisih == 0){
+									/*$qtyterimaitem2 = $data['pb'][0][$yz]->pbdt_qty;
+									$selisih = (int) $request->qtyreturn[$j] - (int)$qtyterimaitem2;
+									return $selisih . $qtyterimaitem2;
+									if($selisih == $qtyterimaitem2){
+										$idpbdt = $data['pb'][0][$yz]->pbdt_id;
+
 										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
 										$updatepbdt->update([
 											'pbdt_qty' => 0,
 											]);
-								
-									//	return $idpo . $iditem . $idpbdt;
-										$idpb = $data['pb'][$i][$hz]->pbdt_idpb;
+										//$selisih = (int)$request->qtyreturn[$j] - (int)$qtyterimaitem2; 
+									}
+									else if($selisih > $qtyterimaitem2){
+										$idpbdt = $data['pb'][0][$yz]->pbdt_id;
+
+										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+										$updatepbdt->update([
+											'pbdt_qty' => 0,
+											]);
+									}
+									else {
+										$idpbdt = $data['pb'][0][$yz]->pbdt_id;
+
+										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+										$updatepbdt->update([
+											'pbdt_qty' => $selisih,
+											]);
+									}*/
+
+									if((int)$request->qtyreturn[$j] > (int) $qtyterimaitem2 ) {
+									//	return '1';
+										$idpbdt = $data['pb'][0][$yz]->pbdt_id;
+										$iditem = $data['pb'][0][$yz]->pbdt_item;
+
+										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+										$updatepbdt->update([
+											'pbdt_qty' => 0,
+											]);
 
 
-											//update di stockmutation di penerimaan barang
-										$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
+										$selisih = (int)$request->qtyreturn[$j] - (int)$qtyterimaitem2;
+										$selisih2 = $selisih;
+										
+										//update di stockmutation di penerimaan barang
+										$datapbdt = DB::select("select * from penerimaan_barang, penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' and pbdt_id = '$idpbdt' and pbdt_idpb = pb_id");
+
+										$idpb = $datapbdt[0]->pb_id;
+
+									//	return $idpb . $idpbdt;
+										$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$j]], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
 
 										$updatesmt->update([
 											'sm_qty' => 0,
 											'sm_sisa' => 0,
 											'update_by' => $request->username
 											]);
-										//$sisa = (int)$jumlahperitem - (int)$request->qtyreturn[$k];
-									} // END SAMA
-									else if((int)$request->qtyreturn[$k] < (int)$qty) {
-									//	return 'yes2';
-										$hasilselisih = (int)$qty -  (int)$request->qtyreturn[$k];
+										
+									}
+									else if($qtyterimaitem2 > $selisih){
+								//		return '2'; /*. $qtyterimaitem2 . $selisih;*/
+										$idpbdt = $data['pb'][0][$yz]->pbdt_id;
+										$iditem = $data['pb'][0][$nz]->pbdt_item;
+
+										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+										$updatepbdt->update([
+											'pbdt_qty' => 0,
+											]);
+										
+
+										$datapbdt = DB::select("select * from penerimaan_barang, penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' and pbdt_id = '$idpbdt' and pbdt_idpb = pb_id ");
+
+										$idpb = $datapbdt[0]->pb_id;
+											//update di stockmutation di penerimaan barang
+										$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_id_gudang' , '=' , $request->lokasigudang[$j] ], ['sm_comp' , '=' , $cabang], ['sm_po' , '=' , $idpb] , ['sm_item' , '=' , $iditem]]);
+										$updatesmt->update([
+											'sm_qty' => 0,
+											'sm_sisa' => 0,
+											'update_by' => $request->username
+											]);	
+										
+										$selisih = (int)$request->qtyreturn[$j] - (int)$qtyterimaitem2; 
+										$selisih2 = $selisih;
+									}
+									else {
+								//		return '3';
+										$idpbdt = $data['pb'][0][$yz]->pbdt_id;
+										$iditem = $data['pb'][0][$nz]->pbdt_item;
+
+										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+										$updatepbdt->update([
+											'pbdt_qty' => $selisih,
+											]);
+										
+
+											//update di stockmutation di penerimaan barang
+										$datapbdt = DB::select("select * from penerimaan_barang, penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' and pbdt_id = '$idpbdt' and pbdt_idpb = pb_id");
+
+										$idpb = $datapbdt[0]->pb_id;
+
+										$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'] , ['sm_id_gudang' , '=' , $request->lokasigudang[$j] ], ['sm_comp' , '=' , $cabang], ['sm_po' , '=' , $idpb] , ['sm_item' , '=' , $iditem]]);
+
+										$updatesmt->update([
+											'sm_qty' => $selisih,
+											'sm_sisa' => $selisih,
+											'update_by' => $request->username
+											]); 
+
+										$selisih = (int)$request->qtyreturn[$j] - (int)$qtyterimaitem2;
+										$selisih2 = $selisih;
+									}
+								}
+								else{
+									if((int)$selisih < (int)$qtyterimaitem2 ) {
+									//	return '12nd';
+										$idpbdt = $data['pb'][0][$yz]->pbdt_id;
+										$iditem = $data['pb'][0][$nz]->pbdt_item;
+
+										$hasilselisih = (int)$qtyterimaitem2 - (int)$selisih;
 
 										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
 										$updatepbdt->update([
 											'pbdt_qty' => $hasilselisih,
 											]);
 
+										//update di stockmutation di penerimaan barang
+										$datapbdt = DB::select("select * from penerimaan_barang, penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' and pbdt_id = '$idpbdt' and pbdt_idpb = pb_id");
 
-										
-									//	return $idpo . $iditem . $idpbdt;
-										$idpb = $data['pb'][$i][$hz]->pbdt_idpb;
+										$idpb = $datapbdt[0]->pb_id;
 
+									//	return $idpb . $idpbdt;
 
-											//update di stockmutation di penerimaan barang
-										$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
-
+										$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_id_gudang' , '=' , $request->lokasigudang[$j] ], ['sm_comp' , '=' , $cabang] , ['sm_po' ,'=' , $idpb] , ['sm_item' , '=' , $iditem]]);
 										$updatesmt->update([
 											'sm_qty' => $hasilselisih,
 											'sm_sisa' => $hasilselisih,
 											'update_by' => $request->username
+											]);	
+
+										$selisih =  (int)$qtyterimaitem2 - (int)$selisih;
+										$selisih2 = $selisih;
+									}
+									else if ((int)$selisih == (int)$qtyterimaitem2){
+									//	return '13nd';
+										$idpbdt = $data['pb'][0][$yz]->pbdt_id;
+										$iditem = $data['pb'][0][$nz]->pbdt_item;
+
+										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+										$updatepbdt->update([
+											'pbdt_qty' => 0,
 											]);
+
+										//update di stockmutation di penerimaan barang
+										$datapbdt = DB::select("select * from penerimaan_barang, penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' and pbdt_id = '$idpbdt' and pbdt_idpb = pb_id");
+ 
+										$idpb = $datapbdt[0]->pb_id;
+
+										$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_id_gudang' , '=' , $request->lokasigudang[$j] ], ['sm_comp' , '=' , $cabang] , ['sm_po' ,'=' , $idpb] , ['sm_item' , '=' , $iditem]]);
+
+										$updatesmt->update([
+											'sm_qty' => 0,
+											'sm_sisa' => 0,
+											'update_by' => $request->username
+											]);	
+
+										$selisih = (int)$selisih - (int)$qtyterimaitem2;
+										$selisih2 = $selisih;
+									}
+									else {
+									//	return '14nd';
+										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+										$updatepbdt->update([
+											'pbdt_qty' => $selisih,
+											]);
+
+										//update di stockmutation di penerimaan barang
+										$datapbdt = DB::select("select * from penerimaan_barang, penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' and pbdt_id = '$idpbdt' and pbdt_idpb = pb_id");
+
+										$idpb = $datapbdt[0]->pb_id;
+										$iditem = $data['pb'][0][$nz]->pbdt_item;
+
+										$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'],  ['sm_id_gudang' , '=' , $request->lokasigudang[$j]], ['sm_comp' , '=' , $cabang] , ['sm_po' , '=' , $idpb], ['sm_item' , '=' , $iditem]]);
+
+										$updatesmt->update([
+											'sm_qty' => $selisih,
+											'sm_sisa' => $selisih,
+											'update_by' => $request->username
+											]);	
+
+										$selisih = (int)$selisih - (int)$qtyterimaitem2;
+										$selisih2 = $selisih;
 									}
 								}
-									else {
-										//return 'yes3';
-										//perulangan
-										$return = $request->qtyreturn[$k];
-										$yz = (int) count($data['pb'][$i]) - 1;
-										for ($j = 0; $j < count($data['pb'][$i]); $j++){
-											
-											$qty = $data['pb'][$i][$yz]->pbdt_qty;
-											$idpbdt = $data['pb'][$i][$yz]->pbdt_id;
-											//return $qty . $idpbdt . $iditem;
-											if($return != 0){
+								}
+								
+								$yz--;
+							}
 
 
-												if((int)$return > (int)$qty){
-													$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
-													$updatepbdt->update([
-														'pbdt_qty' => 0,
-														]);
-											
-												//	return $idpo . $iditem . $idpbdt;
-													$idpb = $data['pb'][$i][$yz]->pbdt_idpb;
+								/*if((int)$request->qtyreturn[$j] > (int) $qtyterimaitem2 ) {
+									//return '1';
+									$idpbdt = $data['pb'][0][$xz]->pbdt_id;
 
+									$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+									$updatepbdt->update([
+										'pbdt_qty' => 0,
+										]);
+									$selisih = (int)$request->qtyreturn[$j] - (int)$qtyterimaitem2; 
+									
+								}
+								else if($qtyterimaitem2 > $selisih){
+									return '2' . $qtyterimaitem2 . $selisih;
+									$idpbdt = $data['pb'][0][$yz]->pbdt_id;
 
-														//update di stockmutation di penerimaan barang
-													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
+									$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+									$updatepbdt->update([
+										'pbdt_qty' => 0,
+										]);
+									$selisih = (int)$request->qtyreturn[$j] - (int)$qtyterimaitem2; 	
+								}
+								else {
+								//	return '3';
+									$idpbdt = $data['pb'][0][$yz]->pbdt_id;
 
-													$updatesmt->update([
-														'sm_qty' => 0,
-														'sm_sisa' => 0,
-														'update_by' => $request->username
-														]);	
-													$return = (int)$return - (int)$qty;										
-												}
-												else if((int)$return < (int)$qty){
-													$hasilqty = (int)$qty - (int)$return;
-													$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
-													$updatepbdt->update([
-														'pbdt_qty' => $hasilqty,
-														]);
-											
-												//	return $idpo . $iditem . $idpbdt;
-													$idpb = $data['pb'][$i][$yz]->pbdt_idpb;
-
-													
-														//update di stockmutation di penerimaan barang
-													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
-
-													$updatesmt->update([
-														'sm_qty' => $hasilqty,
-														'sm_sisa' => $hasilqty,
-														'update_by' => $request->username
-														]);	
-													$return = (int)$return - (int)$qty;	
-												}
-												else {
-													$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
-													$updatepbdt->update([
-														'pbdt_qty' => 0,
-														]);
-											
-												//	return $idpo . $iditem . $idpbdt;
-													$idpb = $data['pb'][$i][$yz]->pbdt_idpb;
-
-														//update di stockmutation di penerimaan barang
-													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
-
-													$updatesmt->update([
-														'sm_qty' => 0,
-														'sm_sisa' => 0,
-														'update_by' => $request->username
-														]);
-												}
-											}
-											$yz--;	
-										}											
-									}
-
-
+									$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
+									$updatepbdt->update([
+										'pbdt_qty' => $selisih,
+										]);
+								}*/
+								
 
 								
-								 // end jumlahperitem >= $request->qtyreturn[$k]
-									$hz--;
-							} // end for data[pb][0]
+								$m = -1;
+							}
+						}
+
+
+						$nz--;
 						
-						} // for data[pb]
-					} // jika jumlah pb tidak 0
+						
+
+					} // END JIKA JUMLAH TERIMA LEBIH BIAYA RETURN
 				
-					
 
 
-			}// END FOR KODEITEM
-			
-
-
-
+				} // END DATA PB != 0
+		} // END FOR KODEITEM
 			
 			
 			//update pbdt
@@ -624,7 +802,7 @@ class ReturnPembelianController extends Controller
 				}
 			}
 			
-			return json_encode($data);
-		});	
-	}
+			return json_encode('ok');
+		});				
+		}	
 }

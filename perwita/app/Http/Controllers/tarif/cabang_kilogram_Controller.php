@@ -148,7 +148,7 @@ class cabang_kilogram_Controller extends Controller
 
             $cek =count($check);
          if ($cek > 0) {
-
+            // return 'a';
             $array_harga = [$request->tarifkertas_reguler,
                            $request->tarif0kg_reguler,
                            $request->tarif10kg_reguler,
@@ -167,9 +167,31 @@ class cabang_kilogram_Controller extends Controller
                            $request->waktu_regular,
                            $request->waktu_express,
                            $request->waktu_express,
-                           $request->waktu_express   ,
                            $request->waktu_express,
                            $request->waktu_express,
+                           $request->waktu_express,
+                            ];
+             $array_keterangan = ['Tarif Kertas / Kg',
+                           'Tarif <= 10 Kg',
+                           'Tarif Kg selanjutnya <= 10 Kg',
+                           'Tarif <= 20 Kg',
+                           'Tarif Kg selanjutnya <= 20 Kg',
+                           'Tarif Kertas / Kg',
+                           'Tarif <= 10 Kg',
+                           'Tarif Kg selanjutnya <= 10 Kg',
+                           'Tarif <= 20 Kg',
+                           'Tarif Kg selanjutnya <= 20 Kg',
+                            ];
+            $array_jenis = [   'REGULER',
+                               'REGULER',
+                               'REGULER',
+                               'REGULER',
+                               'REGULER',
+                               'EXPRESS',
+                               'EXPRESS',
+                               'EXPRESS',
+                               'EXPRESS',
+                               'EXPRESS',
                             ];
             $a1=array("a"=>"red","b"=>"green","c"=>"blue","d"=>"yellow");
             $a2=array("a"=>"red","b"=>"green","c"=>"blue");
@@ -192,20 +214,7 @@ class cabang_kilogram_Controller extends Controller
             
             $compare=array_diff($ret2,$ret1);
             
-            $arrtmp;
-            $temp = 0;
-            for ($i=0; $i >= 0  ; $i++) { 
-                if (isset($compare[$i]) != null) {
-                    $arrtmp[$temp] = $compare[$i];
-                    $temp = $temp + 1;
-                    if (count($compare) == $temp) {
-                        $i = -2;
-                    }
-                }
-                
-            }
-
-            // return $arrtmp;
+            $arrtmp = array_values($compare);
 
             $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
             for ($i=1; $i <count($id_provinsi_loop) ; $i++) { 
@@ -230,27 +239,48 @@ class cabang_kilogram_Controller extends Controller
 
                
                     }
-                        if (count($arrtmp) > 0) {
-                           for ($k=0; $k <count($arrtmp) ; $k++) { 
-                            $provinsi = DB::table('provinsi')->where('id','=',$request->cb_provinsi_tujuan)->get(); 
-            
-                                $simpan = DB::table('tarif_cabang_kilogram')
-                                          ->insert([
-                                            'id_kota_tujuan' => $arrtmp[$k],
-                                            'crud' => $crud,
-                                            'harga' => $array_harga[$i],
-                                            'waktu' => $array_waktu[$i],
-                                            'id_provinsi_cabkilogram' => $provinsi[0]->id,
-                                            'acc_penjualan' => $request->cb_acc_penjualan,
-                                            'csf_penjualan' => $request->cb_csf_penjualan,
-                                          ]);
-
-                                
-                              
-                              }
-                        }
+                        
                 
                   }
+              if (count($arrtmp) > 0) {
+                   for ($i=0; $i <count($array_harga) ; $i++) { 
+                    
+                        $kode_detail += 1;
+                        $kode_utama = $kode_utama+1;
+                        $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                        $kode_reguler = $kodekota.'/'.'KG'.'R'.$kodecabang.$kode_utama;   
+
+                       for ($k=0; $k <count($arrtmp) ; $k++) { 
+                        $provinsi = DB::table('provinsi')->where('id','=',$request->cb_provinsi_tujuan)->get(); 
+                        $kode_detail += 1;
+                        $kode_utama = $kode_utama+1;
+                        $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
+                        $kode_reguler = $kodekota.'/'.'KG'.'R'.$kodecabang.$kode_utama;   
+                            $simpan = DB::table('tarif_cabang_kilogram')
+                                      ->insert([
+                                        'kode'=>$kode_reguler,
+                                        'kode_detail_kilo'=>$kode_detail,
+                                        'kode_sama_kilo'=>$kode_sama,
+                                        'id_kota_tujuan' => $arrtmp[$k],
+                                        'id_kota_asal' => $request->cb_kota_asal,
+                                        'crud' => $crud,
+                                        'harga' => $array_harga[$i],
+                                        'waktu' => $array_waktu[$i],
+                                        'keterangan' => $array_keterangan[$i],
+                                        'jenis' => $array_jenis[$i],
+                                        'id_provinsi_cabkilogram' => $provinsi[0]->id,
+                                        'acc_penjualan' => $request->cb_acc_penjualan,
+                                        'csf_penjualan' => $request->cb_csf_penjualan,
+                                        'kode_cabang' => $request->cb_cabang,
+                                        'crud'=>strtoupper($crud),
+                                      ]);
+
+                            
+                          
+                          }
+                        }
+                       
+                    }
             $hasil_cek = 'Data Telah Disimpan Dan Menggantikan Data Lama!';
             $result['hasil_cek']=$hasil_cek;
             return json_encode($result);

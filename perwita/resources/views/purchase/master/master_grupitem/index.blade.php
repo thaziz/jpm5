@@ -68,9 +68,9 @@
                           <td> {{$gitem->keterangan_jenisitem}} </td>
                           <td> 
                         
-                          <a class="btn btn-success" href="{{url('masterjenisitem/detailmasterjenisitem/'.$gitem->kode_jenisitem .'')}}"> <i class="fa fa-arrow-right" aria-hidden="true"></i>  </a>
+                          <a class="btn btn-sm btn-success" href="{{url('masterjenisitem/detailmasterjenisitem/'.$gitem->kode_jenisitem .'')}}"> <i class="fa fa-arrow-right" aria-hidden="true"></i>  </a>
 
-                            <a href="#" class="btn btn-danger" onclick="hapusData('{{$gitem->kode_jenisitem}}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
+                            <a href="#" class="btn btn-sm btn-danger" onclick="hapusData('{{$gitem->kode_jenisitem}}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
                                         {{ Form::open(['url'=>'masterjenisitem/deletemasterjenisitem/'. $gitem->kode_jenisitem, 'method' => 'delete', 'id' => $gitem->kode_jenisitem ]) }}
                                         {{ Form::close() }}
                           </td>

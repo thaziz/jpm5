@@ -18,7 +18,7 @@
                           <a> Master Purchase</a>
                         </li>
                         <li class="active">
-                            <strong> Create Master Gudang </strong>
+                            <strong> Detail Master Gudang </strong>
                         </li>
 
                     </ol>
@@ -45,29 +45,35 @@
                     <div class="col-xs-12">
                       <div class="box" id="seragam_box">
               <!-- /.box-header -->
-                          <form method="post" action="{{url('mastergudang/savemastergudang')}}"  enctype="multipart/form-data" class="form-horizontal">
+                          <form method="post" action="{{url('mastergudang/updatemastergudang')}}"  enctype="multipart/form-data" class="form-horizontal">
                           <div class="box-body">
                             <div class="col-xs-12">
                               <table class="table" border="0">
                                   <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
+                                 @foreach($data['gudang'] as $gudang) 
                                 <tr>
                                   <td> Nama Gudang </td>
-                                  <td> <input type="text" class="form-control" name="nmgudang"></td>
+                                  <td>
+
+                                  <input type="text" class="form-control" name="nmgudang" value="{{$gudang->mg_namagudang}}">
+                                  <input type="hidden" class="form-control" name="idgudang" value="{{$gudang->mg_id}}">
+
+                                  </td>
                                 </tr>
                                 <tr>
                                   <td> Cabang </td>
                                   <td> <select class="chosen-select-width" name="idcabang">
                                        @foreach($data['cabang'] as $cbg)
-                                       <option value="{{$cbg->kode}}"> {{$cbg->nama}} </option>
+                                       <option value="{{$cbg->kode}}" @if($cbg->kode == $gudang->mg_cabang) selected @endif> {{$cbg->nama}} </option>
                                        @endforeach
                                         </select>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td> Alamat </td>
-                                  <td> <input type="text" class="form-control" name="alamat"> </td>
+                                  <td> <input type="text" class="form-control" name="alamat" value="{{$gudang->mg_alamat}}"> </td>
                                 </tr>
-
+                                @endforeach
                               </table>
                             </div>
                           </div>
@@ -75,8 +81,8 @@
                 <div class="box-footer">
                   <div class="pull-right">
                   
-                    <a class="btn btn-sm btn-warning" href={{url('mastergudang/mastergudang')}}> Kembali </a>
-                   <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-sm btn-success">
+                    <a class="btn btn-warning" href={{url('mastergudang/mastergudang')}}> Kembali </a>
+                   <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-success">
                    </form>
                     
                     
