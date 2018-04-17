@@ -49,7 +49,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                    <div class="text-right">
-                       <a class="btn btn-sm bbtn-default" aria-hidden="true" href="{{ url('returnpembelian/returnpembelian')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
+                       <a class="btn btn-sm btn-default" aria-hidden="true" href="{{ url('returnpembelian/returnpembelian')}}"> <i class="fa fa-arrow-circle-left"> </i> &nbsp; Kembali  </a> 
 
                     </div>
                 </div>
@@ -452,7 +452,7 @@
           dataType : 'json',
           success : function (response){
                    alertSuccess(); 
-            $('.simpanitem').attr('disabled' , true);
+           $('.simpanitem').attr('disabled' , true);
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");

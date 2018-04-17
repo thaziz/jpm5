@@ -190,7 +190,7 @@ class ReturnPembelianController extends Controller
 		else {
 			$rn->rn_ppn = $ppn;
 			$rn->rn_hasilppn = $hasilppn;
-			$rn->rn_inputppn = $hasilppn;
+			$rn->rn_inputppn = $request->inputppn;
 
 		}
 
@@ -224,9 +224,9 @@ class ReturnPembelianController extends Controller
 			$rndt->rndt_idrn = $idrn;
 			$rndt->rndt_item = $request->kodeitem[$i];
 			$rndt->rndt_qtypo = $request->qtypo[$i];
-			$rndt->rndt_qtyreturn = $request->qtyreturn[$i];
-			$rndt->rndt_harga = $jumlahharga;
-			$rndt->rndt_totalharga = $totalharga;
+			$rndt->rndt_qtyreturn = $request->qtyretrun;
+			$rndt->rndt_harga = $jumlahharga[$i];
+			$rndt->rndt_totalharga = $totalharga[$i];
 			$rndt->create_by = $request->username;
 			$rndt->save();
 		}
@@ -288,7 +288,7 @@ class ReturnPembelianController extends Controller
 		$po->po_statusreturn = 'AKTIF';
 		$po->create_by = $request->username;	
 		$po->po_setujufinance = 'DISETUJUI';
-		$po->save();
+	//	$po->save();
 
 
 		
@@ -332,7 +332,7 @@ class ReturnPembelianController extends Controller
 				$podt->podt_totalharga = $data['podt'][$n]->podt_totalharga;
 				$podt->podt_lokasigudang = $data['podt'][$n]->podt_lokasigudang;
 				$podt->create_by = $request->username;	
-				$podt->save();
+			//	$podt->save();
 
 			}
 
@@ -357,49 +357,40 @@ class ReturnPembelianController extends Controller
 			for($k = 0; $k < count($request->kodeitem); $k++){
 				$iditem = $request->kodeitem[$k];
 				$data['iditem'][] = $iditem;
-				$data['pb'][] = DB::select("select * from penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem' order by pbdt_id asc");
+				$data['pb'][] = DB::select("select * from penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem'");
 
 				$hitungpb = count($data['pb']);
 
-				//return json_encode($data);
-
-				$sisa = -1;
-
 				if($hitungpb != 0){ // jika jumlah pb tidak 0
-					$updatebarangterima = barang_terima::where([['bt_flag' , '=' , 'PO'], ['bt_idtransaksi' , '=' , $idpo]]);
-						$updatebarangterima->update([
-						'bt_idtransaksi' => $idpo2,
-				 	]);
-
 					for($i = 0 ; $i < count($data['pb']); $i++){
-						
-						$hz = (int) count($data['pb'][$i]) - 1;
-							for ($j = 0; $j < count($data['pb'][$i]); $j++){
+						for ($j = 0; $j < count($data['pb'][$i]); $j++){
 							$jumlahperitem = 0;
+
+							//	return $hitungpb;
+								for($z = 0; $z < count($data['pb']); $z++){
+									for($x = 0; $x < count($data['pb'][$z]); $x++){
+										$jumlahperitem = $jumlahperitem + $data['pb'][$z][$x]->pbdt_qty;
+									//	$jumlahperitem = 3;
+									}
+								}
+
 								
-									//return $hz;
-									$jumlahperitem = $jumlahperitem + $data['pb'][$i][$hz]->pbdt_qty;
-									//	$jumlahperitem = 3;	
-								
-									
-								//return $jumlahperitem . $request->qtyreturn[$k];	
-								if((int)$jumlahperitem >= (int)$request->qtyreturn[$k]){// 
-									$j = (int)1000;	
+								//	return $qty . $idpbdt . $iditem . $idpo . $jumlahperitem . $request->qtyreturn[$k];
+								$hz = (int) count($data['pb'][$i]) - 1;
+								if($jumlahperitem >= $request->qtyreturn[$k]){ // 
+
 									$qty = $data['pb'][$i][$hz]->pbdt_qty;
-									$idpbdt = $data['pb'][$i][$hz]->pbdt_id;
-										
+									$idpbdt = $data['pb'][$i][$hz]->pbdt_qty;
 
-									//return $idpbdt  . $hz . $qty . $request->qtyreturn[$k] ;
-									if((int)$request->qtyreturn[$k] == (int)$qty){ // SAMA
+									if($request->qtyreturn[$k] == $qty){ // SAMA
 
-
-									//	return 'yes1';									
-										//return $idpo . $idpbdt  . $idpbdt1 . $idpbdt2 . $iditem . $hz . $i;
 										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
 										$updatepbdt->update([
 											'pbdt_qty' => 0,
 											]);
-								
+
+
+										
 									//	return $idpo . $iditem . $idpbdt;
 										$idpb = $data['pb'][$i][$hz]->pbdt_idpb;
 
@@ -412,12 +403,9 @@ class ReturnPembelianController extends Controller
 											'sm_sisa' => 0,
 											'update_by' => $request->username
 											]);
-										//$sisa = (int)$jumlahperitem - (int)$request->qtyreturn[$k];
 									} // END SAMA
-									else if((int)$request->qtyreturn[$k] < (int)$qty) {
-									//	return 'yes2';
-										$hasilselisih = (int)$qty -  (int)$request->qtyreturn[$k];
-
+									else if($request->qtyreturn[$k] > $qty) {
+										$hasilselisih = (int)$request->qtyreturn[$k] - (int)$qty;
 										$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
 										$updatepbdt->update([
 											'pbdt_qty' => $hasilselisih,
@@ -426,7 +414,7 @@ class ReturnPembelianController extends Controller
 
 										
 									//	return $idpo . $iditem . $idpbdt;
-										$idpb = $data['pb'][$i][$hz]->pbdt_idpb;
+										$idpb = $data['pb'][$i][$j]->pbdt_idpb;
 
 
 											//update di stockmutation di penerimaan barang
@@ -438,91 +426,19 @@ class ReturnPembelianController extends Controller
 											'update_by' => $request->username
 											]);
 									}
-								}
 									else {
-										//return 'yes3';
 										//perulangan
-										$return = $request->qtyreturn[$k];
-										$yz = (int) count($data['pb'][$i]) - 1;
-										for ($j = 0; $j < count($data['pb'][$i]); $j++){
-											
-											$qty = $data['pb'][$i][$yz]->pbdt_qty;
-											$idpbdt = $data['pb'][$i][$yz]->pbdt_id;
-											//return $qty . $idpbdt . $iditem;
-											if($return != 0){
 
-
-												if((int)$return > (int)$qty){
-													$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
-													$updatepbdt->update([
-														'pbdt_qty' => 0,
-														]);
-											
-												//	return $idpo . $iditem . $idpbdt;
-													$idpb = $data['pb'][$i][$yz]->pbdt_idpb;
-
-
-														//update di stockmutation di penerimaan barang
-													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
-
-													$updatesmt->update([
-														'sm_qty' => 0,
-														'sm_sisa' => 0,
-														'update_by' => $request->username
-														]);	
-													$return = (int)$return - (int)$qty;										
-												}
-												else if((int)$return < (int)$qty){
-													$hasilqty = (int)$qty - (int)$return;
-													$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
-													$updatepbdt->update([
-														'pbdt_qty' => $hasilqty,
-														]);
-											
-												//	return $idpo . $iditem . $idpbdt;
-													$idpb = $data['pb'][$i][$yz]->pbdt_idpb;
-
-													
-														//update di stockmutation di penerimaan barang
-													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
-
-													$updatesmt->update([
-														'sm_qty' => $hasilqty,
-														'sm_sisa' => $hasilqty,
-														'update_by' => $request->username
-														]);	
-													$return = (int)$return - (int)$qty;	
-												}
-												else {
-													$updatepbdt =  penerimaan_barangdt::where([['pbdt_po' , '=' ,$idpo],['pbdt_item' , '=' , $iditem],['pbdt_id' , '=' , $idpbdt]]);						
-													$updatepbdt->update([
-														'pbdt_qty' => 0,
-														]);
-											
-												//	return $idpo . $iditem . $idpbdt;
-													$idpb = $data['pb'][$i][$yz]->pbdt_idpb;
-
-														//update di stockmutation di penerimaan barang
-													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
-
-													$updatesmt->update([
-														'sm_qty' => 0,
-														'sm_sisa' => 0,
-														'update_by' => $request->username
-														]);
-												}
-											}
-											$yz--;	
-										}											
+										
 									}
 
 
 
-								
-								 // end jumlahperitem >= $request->qtyreturn[$k]
-									$hz--;
-							} // end for data[pb][0]
-						
+
+
+								} // end jumlahperitem >= $request->qtyreturn[$k]
+							
+							} // for data[pb][0]
 						} // for data[pb]
 					} // jika jumlah pb tidak 0
 				
@@ -531,13 +447,10 @@ class ReturnPembelianController extends Controller
 
 			}// END FOR KODEITEM
 			
-
-
-
-			
+			return json_encode($data);
 			
 			//update pbdt
-			for($j = 0; $j < count($request->kodeitem); $j++){
+		/*	for($j = 0; $j < count($request->kodeitem); $j++){
 				$iditem = $request->kodeitem[$j];
 				$jumlahterima = 0;
 
@@ -622,7 +535,7 @@ class ReturnPembelianController extends Controller
 				
 				}
 				}
-			}
+			}*/
 			
 			return json_encode($data);
 		});	

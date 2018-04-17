@@ -837,6 +837,8 @@
                         " href="{{ url('konfirmasisupplier/konfirmasisupplier')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Konfirmasi Supplier </a>
                         </li>
 
+
+
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -922,6 +924,9 @@
                    " href="{{ url('master_sales/kontrak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kontrak Customer</a>
                    </li>
                 @endif
+               
+
+
              @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
@@ -1960,6 +1965,9 @@
                             Request::is('sales/laporansalesorder') ? 'active' : '' || 
                             Request::is('sales/laporansalesorder/*') ? 'active' : ''||
                             /* do */
+                            //LAPORAN DIAGRAM
+                            Request::is('diagram_penjualan/diagram_penjualan') ? 'active' : '' || 
+                            Request::is('diagram_penjualan/diagram_penjualan/*') ? 'active' : '' ||
                             /* Laporan penjualan*/
                             Request::is('sales/laporan_penjualan') ? 'active' : '' || 
                             Request::is('sales/laporan_penjualan/*') ? 'active' : '' ||
@@ -2119,6 +2127,9 @@
                             /* Laporan penjualan*/
                             Request::is('sales/laporan_penjualan') ? 'active' : '' || 
                             Request::is('sales/laporan_penjualan/*') ? 'active' : '' ||
+                             //LAPORAN DIAGRAM
+                            Request::is('diagram_penjualan/diagram_penjualan') ? 'active' : '' || 
+                            Request::is('diagram_penjualan/diagram_penjualan/*') ? 'active' : '' ||
                             /* do */
                             Request::is('sales/laporandeliveryorder_total') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder_total/*') ? 'active' : ''||
@@ -2238,6 +2249,10 @@
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporan_penjualan') ? 'active' : '' || 
                             Request::is('sales/laporan_penjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporan_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Penjualan</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('diagram_penjualan/diagram_penjualan') ? 'active' : '' || 
+                            Request::is('diagram_penjualan/diagram_penjualan/*') ? 'active' : ''}} " href="{{ url('diagram_penjualan/diagram_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Omset Penjualan</a>
                                 </li>
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_total') ? 'active' : '' || 

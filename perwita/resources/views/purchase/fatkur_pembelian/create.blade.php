@@ -454,7 +454,7 @@
                                           No Tanda Terima 
                                         </td>
                                         <td>
-                                          <input type='text' name="nota_tt" class='input-sm form-control notandaterima'>
+                                          <input type='text' name="nota_tt" class='input-sm form-control notandaterima' readonly="">
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         </td>
                                       </tr>
@@ -735,7 +735,7 @@
                                       <table class="table table-striped">
                                           <tr>
                                             <td> Supplier </td>
-                                            <td>   <select class="form-control idsup_po" name="supplier_po" novalidate required=""> 
+                                            <td>   <select class="form-control idsup_po chosen-select-width" name="supplier_po" novalidate required=""> 
                                                     <option value=""> -- Pilih Supplier -- </option>
                                                 @foreach($data['supplier'] as $supplier)
                                                     <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
@@ -743,6 +743,8 @@
                                                 </select>                                        
                                             </td>
                                             </td>
+                                            <input type="hidden" class="acchutangdagang_po" name="acchutangdagang">
+
                                           </tr>
 
                                           <tr>
@@ -3317,6 +3319,8 @@
             console.log(response);
            $('.loading').css('display', 'none');
 
+            acchutangdagang = $(this).data("accHutang");
+            $('.acchutangdagang_po').val(acchutangdagang);
             //setting jatuh tempo
              if(tanggal != '') {
                syaratkredit = parseInt(response.supplier[0].syarat_kredit);
