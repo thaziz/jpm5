@@ -137,13 +137,23 @@ class PurchaseController extends Controller
       return view('purchase.purchase.print',compact('data','request','data2','a','b','c','d','e','f','g','h','i','j','k','L','m','n', 'data'));
     } 
 	public function spp_index () {
-		$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
+		$cabang = session::get('cabang');
 
+		if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','all')){
+			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode order by spp_id desc");
 
-		$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->count();
-		$data['disetujui'] = DB::table("spp")->where('spp_status' , '=' , 'DISETUJUI')->count();
-		$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
-		$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
+			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->count();
+			$data['disetujui'] = DB::table("spp")->where('spp_status' , '=' , 'DISETUJUI')->count();
+			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->count();
+			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->count();
+		}else{
+			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode and spp_cabang = '$cabang' order by spp_id desc");
+
+			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->where('spp_cabang' , '=' , $cabang)->count();
+			$data['disetujui'] = DB::table("spp")->where('spp_status' , '=' , 'DISETUJUI')->where('spp_cabang' , '=' , $cabang)->count();
+			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->where('spp_cabang' , '=' , $cabang)->count();
+			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->where('spp_cabang' , '=' , $cabang)->count();
+		}
 
 		return view('purchase.spp.index', compact('data'));
 	}
@@ -1988,7 +1998,7 @@ public function purchase_order() {
 				$updatefaktur = fakturpembelian::where('fp_idfaktur' , '=' , $request->idfp);
 
 				$updatefaktur->update([
-				 	'fp_pending_status' => 'Approved',
+				 	'fp_pending_status' => 'APPROVED',
 			 	]);	
 
 
@@ -6395,7 +6405,7 @@ public function kekata($x) {
 						$updatefaktur = fakturpembelian::where('fp_nofaktur', '=', $request->nofaktur[$i]);
 						$updatefaktur->update([
 						 	'fp_sisapelunasan' => $sisafaktur,
-						 	'fp_pending_status' => 'Approved',
+						 	'fp_pending_status' => 'APPROVED',
 					 	]);	
 					}
 					else if($request->jenisbayar == 3) { // VOUCHER HUTANG

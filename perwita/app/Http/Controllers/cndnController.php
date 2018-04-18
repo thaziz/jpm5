@@ -168,7 +168,7 @@ class cndnController extends Controller
 				}
 				else {
 					$hasilsisa2 = floatval(floatval($sisapelunasan) + floatval($nettocn));
-					$hasildn = floatval(floatval($hasilcn) - floatval($nettocn));
+					$hasildn = floatval(floatval($hasildn) - floatval($nettocn));
 					$updatefaktur = fakturpembelian::where('fp_idfaktur', '=', $idfaktur);
 							$updatefaktur->update([
 							 	'fp_debitnota' => $hasildn,
@@ -305,12 +305,12 @@ class cndnController extends Controller
 					if($request->jeniscndn == 'CN'){
 						$idfaktur = $request->idfaktur[$i];
 						$datafp = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfaktur'");
-						$datadn = $datafp[0]->fp_debitnota;
+						$datadn = $datafp[0]->fp_creditnota;
 						$nettocn = str_replace(',', '', $request->nettocn[$i]);
-						$hasilcn = floatval($datadn) + floatval($nettocn);
+						$hasilcn = floatval(floatval($datadn) + floatval($nettocn));
 
+						//return $datadn . $nettocn . $hasilcn;
 
-						
 						$hasilakhir = str_replace(',', '', $request->hasilakhir[$i]);	
 						$updatefaktur = fakturpembelian::where('fp_idfaktur', '=', $request->idfaktur[$i]);
 
@@ -324,7 +324,7 @@ class cndnController extends Controller
 						$idfaktur = $request->idfaktur[$i];
 						$datafp = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfaktur'");
 						$datadn = $datafp[0]->fp_debitnota;
-						$hasildn = floatval(floatval($datadn)) + floatval(floatval($nettocn));
+						$hasildn = floatval(floatval($datadn) + floatval($nettocn));
 
 						$hasilakhir = str_replace(',', '', $request->hasilakhir[$i]);	
 						$updatefaktur = fakturpembelian::where('fp_idfaktur', '=', $request->idfaktur[$i]);
