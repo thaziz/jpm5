@@ -122,7 +122,7 @@ class cabang_dokumen_Controller extends Controller
     }
 
     public function save_data (Request $request) {
-        dd($request->all());
+        // dd($request->all());
         
         $simpan='';
         if ($request->cb_provinsi_tujuan != null or '') {
