@@ -66,7 +66,8 @@ Route::get('setting/hak_akses/cari_data', 'setting\hak_akses_Controller@cari_dat
 Route::get('setting/hak_akses/add_level', 'setting\hak_akses_Controller@form');
 Route::get('setting/hak_akses/simpan_perubahan', 'setting\hak_akses_Controller@simpan_perubahan');
 Route::post('setting/hak_akses/simpan_perubahan', 'setting\hak_akses_Controller@simpan_perubahan');
-Route::get('setting/hak_akses/{level}/edit_level', 'setting\hak_akses_Controller@form');
+Route::get('setting/hak_akses/{level}/edit_level', 'setting\hak_akses_Controller@edit');
+Route::post('setting/hak_akses/edit_data', 'setting\hak_akses_Controller@edit_data');
 Route::get('setting/hak_akses/tabel', 'setting\hak_akses_Controller@table_data');
 Route::get('setting/hak_akses/datatable_hak_akses', 'setting\hak_akses_Controller@datatable_hak_akses')->name('datatable_hak_akses');
 //Route::get('setting/hak_akses/get_data', 'setting\hak_akses_Controller@get_data');

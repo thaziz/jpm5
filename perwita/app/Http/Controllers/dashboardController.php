@@ -15,10 +15,11 @@ use Auth;
 class dashboardController extends Controller
 {
     public function dashboard(){ 
-if(Auth::user()->punyaAkses('Item','ubah')){
+if(Auth::user()->punyaAkses('Dashboard','ubah')){
     	return view('dashboard');
     }else{
     	
+    	return view('dashboard');
     }
     }
 }

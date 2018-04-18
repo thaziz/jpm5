@@ -90,14 +90,27 @@
                                         <option value="SUB">SUB</option>
                                     </select>
                                 </td>
+
+                                @if(Auth::user()->punyaAkses('Kendaraan','cabang'))
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td>
                                     <select class="form-control" name="cb_cabang" >
                                     @foreach ($cabang as $row)
-                                        <option value="{{ $row->kode }}">{{ $row->nama }}</option>
+                                        <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
                                     @endforeach
                                     </select>
                                 </td>
+                                @else
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td class="disabled">
+                                    <select class="form-control" name="cb_cabang" >
+                                    @foreach ($cabang as $row)
+                                        <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                    @endforeach
+                                    </select>
+                                </td>
+                                @endif
+
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Subcon</td>
@@ -332,7 +345,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
     $(document).ready( function () {
-        $("select[name='cb_cabang']").val('{{ $data->kode_cabang or ''  }}');
+        $("select[name='cb_cabang']").val('{{ $data->kode_cabang or Auth::user()->kode_cabang  }}');
         $("select[name='cb_status']").val('{{ $data->status or ''  }}');
         $("select[name='cb_divisi']").val('{{ $data->divisi or ''  }}');
         $("select[name='cb_subcon']").val('{{ $data->kode_subcon or ''  }}');

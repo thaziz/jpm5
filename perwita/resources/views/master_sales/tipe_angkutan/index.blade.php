@@ -35,7 +35,7 @@
                     <h5> TIPE ANGKUTAN
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     @if(Auth::user()->PunyaAkses('Tipe Kendaraan','tambah'))
+                     @if(Auth::user()->PunyaAkses('Tipe Angkutan','tambah'))
                      <div class="text-right">
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
                     </div>
