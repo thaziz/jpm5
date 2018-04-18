@@ -234,6 +234,7 @@ Route::get('fakturpembelian/buktibiayapenerus/{id}', 'BiayaPenerusController@buk
 Route::get('fakturpembelian/notapenerusagen', 'BiayaPenerusController@notapenerusagen');
 Route::get('fakturpembelian/notaoutlet', 'BiayaPenerusController@notaoutlet');
 Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
+Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 
 //PEMBAYARAN OUTLET
@@ -666,7 +667,7 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 
 
 
-//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJARNI//
+//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU-----  WIELIEJARNI//
 
 
 //_____$$$$_________$$$$

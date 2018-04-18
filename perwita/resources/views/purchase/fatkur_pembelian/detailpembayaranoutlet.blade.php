@@ -43,7 +43,7 @@
 	 	</div>
 
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
-	    <button class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
 	    <button type="button" class="btn btn-primary pull-right disabled" id="save-update-outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">
@@ -615,7 +615,7 @@ $('.simpan_outlet').click(function(){
 
 
 
-  function tt_penerus() {
+  function tt_penerus_outlet() {
 
     var cabang = $('.cabang').val();
     $.ajax({
