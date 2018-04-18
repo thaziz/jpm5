@@ -310,7 +310,7 @@ class cndnController extends Controller
 						$hasilcn = floatval($datadn) + floatval($nettocn);
 
 
-
+						
 						$hasilakhir = str_replace(',', '', $request->hasilakhir[$i]);	
 						$updatefaktur = fakturpembelian::where('fp_idfaktur', '=', $request->idfaktur[$i]);
 

@@ -86,7 +86,7 @@
                                 <td>
                                     <select class="form-control" name="cb_status" >                                    
                                         <option value="DPT">DPT</option>
-                                        <option value="KARGO">KARGO</option>
+                                        <option value="OWN">OWN</option>
                                         <option value="SUB">SUB</option>
                                     </select>
                                 </td>
