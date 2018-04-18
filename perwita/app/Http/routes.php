@@ -53,18 +53,22 @@ Route::get('setting/pengguna/get_data', 'setting\pengguna_Controller@get_data');
 Route::post('setting/pengguna/save_data', 'setting\pengguna_Controller@save_data');
 Route::post('setting/pengguna/hapus_data', 'setting\pengguna_Controller@hapus_data');
 
-Route::post('setting/groupbaru', 'setting\groupController@groupbaru');
+Route::get('setting/groupbaru', 'setting\groupController@groupbaru');
 
 Route::get('setting/daftarmenu', 'setting\groupController@daftarmenu');
 Route::get('setting/createdaftarmenu', 'setting\groupController@createdaftarmenu');
-Route::post('setting/savedaftarmenu', 'setting\groupController@savedaftarmenu');
+Route::get('setting/savedaftarmenu', 'setting\groupController@savedaftarmenu');
 // end pengguna
 
 //hak_akses
 Route::get('setting/hak_akses', 'setting\hak_akses_Controller@index');
+Route::get('setting/hak_akses/cari_data', 'setting\hak_akses_Controller@cari_data');
 Route::get('setting/hak_akses/add_level', 'setting\hak_akses_Controller@form');
+Route::get('setting/hak_akses/simpan_perubahan', 'setting\hak_akses_Controller@simpan_perubahan');
+Route::post('setting/hak_akses/simpan_perubahan', 'setting\hak_akses_Controller@simpan_perubahan');
 Route::get('setting/hak_akses/{level}/edit_level', 'setting\hak_akses_Controller@form');
 Route::get('setting/hak_akses/tabel', 'setting\hak_akses_Controller@table_data');
+Route::get('setting/hak_akses/datatable_hak_akses', 'setting\hak_akses_Controller@datatable_hak_akses')->name('datatable_hak_akses');
 //Route::get('setting/hak_akses/get_data', 'setting\hak_akses_Controller@get_data');
 Route::post('setting/hak_akses/save_data', 'setting\hak_akses_Controller@save_data');
 Route::post('setting/hak_akses/hapus_data', 'setting\hak_akses_Controller@hapus_data');
@@ -234,8 +238,7 @@ Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
-Route::post('fakturpembelian/cari_outlet/{agen}', 'BiayaPenerusController@cari_outlet');
-Route::post('fakturpembelian/cari_outlet/{agen}', 'BiayaPenerusController@cari_outlet');
+Route::get('fakturpembelian/cari_outlet', 'BiayaPenerusController@cari_outlet');
 Route::post('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
 // Route::get('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
 Route::get('fakturpembelian/cariNote', 'BiayaPenerusController@cari_note');

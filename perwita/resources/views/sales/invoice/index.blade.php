@@ -90,17 +90,17 @@
                                 <td class="text-center">
                                     <div class="btn-group ">
 
-                                        @if($row->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice Penjualan','ubah'))
+                                        @if($row->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','ubah'))
                                             @if(cek_periode(carbon\carbon::parse($row->i_tanggal)->format('m'),carbon\carbon::parse($row->i_tanggal)->format('Y') ) != 0)
                                             <a  onclick="edit('{{$row->i_nomor}}')" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>
                                             @endif
                                         @endif
 
-                                        @if(Auth::user()->punyaAkses('Invoice Penjualan','print'))
+                                        @if(Auth::user()->punyaAkses('Invoice','print'))
                                         <a  onclick="ngeprint('{{$row->i_nomor}}')" class="btn btn-xs btn-warning"><i class="fa fa-print"></i></a>
                                         @endif
 
-                                        @if($row->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice Penjualan','hapus'))
+                                        @if($row->i_statusprint == 'Released' or Auth::user()->punyaAkses('Invoice','hapus'))
                                             @if(cek_periode(carbon\carbon::parse($row->i_tanggal)->format('m'),carbon\carbon::parse($row->i_tanggal)->format('Y') ) != 0)
                                             <a  onclick="hapus('{{$row->i_nomor}}')" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>
                                             @endif

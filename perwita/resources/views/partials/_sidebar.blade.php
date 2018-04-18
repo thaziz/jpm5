@@ -49,10 +49,18 @@
                 <li class="treeview sidebar data-master {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }}">
                     <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Setting</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
-                        <li class="sidebar {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }} ">
+
+                        @if(Auth::user()->PunyaAkses('Hak Akses','aktif'))
+                        <li class="sidebar {{Request::is('setting/hak_akses') ? 'active' : '' || Request::is('setting/hak_akses/*') ? 'active' : '' }} ">
+                            <a href="{{ url('setting/hak_akses')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Hak Akses</a>
+                        </li>
+                        @endif
+                        
+                        @if(Auth::user()->PunyaAkses('Pengguna','aktif'))
+                         <li class="sidebar {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }} ">
                             <a href="{{ url('setting/pengguna')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengguna</a>
                         </li>
-
+                        @endif
                        <!--   <li class="sidebar {{Request::is('setting/groupbaru') ? 'active' : '' || Request::is('setting/groupbaru/*') ? 'active' : '' }} ">
                             <a href="{{ url('setting/groupbaru')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Group Baru </a>
                         </li> -->
@@ -290,14 +298,19 @@
                 ">
                     <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Master Bersama <span class="fa arrow"></span></a>
             <ul class="nav nav-third-level"  style="font-size:90%" >
+                @if(Auth::user()->PunyaAkses('Pajak','aktif'))
                 <li>
                     <a class="{{Request::is('master_sales/pajak') ? 'active' : '' ||
                  Request::is('master_sales/pajak/*') ? 'active' : ''}}" href="{{ url('master_sales/pajak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pajak</a>
                 </li>
+                @endif
+                @if(Auth::user()->PunyaAkses('Provinsi','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan {{Request::is('sales/provinsi') ? 'active' : '' || 
                     Request::is('sales/provinsi/*') ? 'active' : ''}}" href="{{ url('sales/provinsi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Provinsi</a>
                 </li>
+                @endif
+                @if(Auth::user()->PunyaAkses('Kota','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 
@@ -306,6 +319,8 @@
 
                 " href="{{ url('sales/kota')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kota</a>
                 </li>
+                @endif
+                @if(Auth::user()->PunyaAkses('Kecamatan','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 
@@ -314,6 +329,8 @@
 
                 " href="{{ url('sales/kecamatan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kecamatan</a>
                 </li>
+                @endif
+                @if(Auth::user()->PunyaAkses('Cabang','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 
@@ -322,7 +339,8 @@
 
                 " href="{{ url('master_sales/cabang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Cabang</a>
                 </li>
-                @if(Auth::user()->PunyaAkses('Tipe Kendaraan','aktif'))
+                @endif
+                @if(Auth::user()->PunyaAkses('Tipe Angkutan','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 
@@ -332,6 +350,7 @@
                 " href="{{ url('master_sales/tipe_angkutan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tipe Angkutan</a>
                 </li>
                 @endif
+                @if(Auth::user()->PunyaAkses('Tipe Kendaraan','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 
@@ -340,6 +359,7 @@
 
                 " href="{{ url('master_sales/kendaraan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kendaraan</a>
                 </li>
+                @endif
             </ul>
         </li>
                         
@@ -471,16 +491,22 @@
                        " style="padding-left: 10%;">
                        <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Tarif<span class="fa arrow"></span></a>
                        <ul class="nav nav-third-level" >
+
+                        @if(Auth::user()->PunyaAkses('Tarif Cabang Dokumen','aktif'))
                         <li class="sidebar master-perusahaan">
                             <a href="{{ url('sales/tarif_cabang_dokumen')}}" class="{{Request::is('sales/tarif_cabang_dokumen') ? 'active' : '' ||
                          Request::is('sales/tarif_cabang_dokumen/*') ? 'active' : ''}} "><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Dokumen</a>
-                            </li>
+                        </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Tarif Cabang Kilogram','aktif'))
                         <li>
                             <a class="sidebar master-perusahaan 
 
                         {{Request::is('sales/tarif_cabang_kilogram') ? 'active' : '' ||
                          Request::is('sales/tarif_cabang_kilogram/*') ? 'active' : ''}}" href="{{ url('sales/tarif_cabang_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kilogram</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Tarif Cabang Koli','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -489,6 +515,8 @@
 
                         " href="{{ url('sales/tarif_cabang_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Koli</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Tarif Cabang Kargo','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -496,6 +524,8 @@
                     Request::is('sales/tarif_cabang_kargo/*') ? 'active' : ''}} "
                          href="{{ url('sales/tarif_cabang_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Kargo</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Tarif Cabang Sepeda','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -504,7 +534,9 @@
                     Request::is('sales/tarif_cabang_sepeda/*') ? 'active' : ''}} "
                          href="{{ url('sales/tarif_cabang_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Sepeda</a>
                         </li>
+                        @endif
                         <br>
+                        @if(Auth::user()->PunyaAkses('Tarif Penerus Default','aktif'))
                         <li >
                             <a
                         class="sidebar master-perusahaan 
@@ -514,6 +546,8 @@
 
                         " href="{{ url('sales/tarif_penerus_default')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Default</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Tarif Penerus Dokumen','aktif'))
                         <li >
                             <a
                         class="sidebar master-perusahaan 
@@ -523,6 +557,8 @@
 
                         " href="{{ url('sales/tarif_penerus_dokumen')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Dokumen</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Tarif Penerus Kilogram','aktif'))
                         <li >
                             <a
                         class="sidebar master-perusahaan 
@@ -532,6 +568,8 @@
 
                         " href="{{ url('sales/tarif_penerus_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Kilogram</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Tarif Penerus Koli','aktif'))
                         <li >
                             <a
                         class="sidebar master-perusahaan 
@@ -541,7 +579,9 @@
 
                         " href="{{ url('sales/tarif_penerus_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus Koli</a>
                         </li>
+                        @endif
 
+                        @if(Auth::user()->PunyaAkses('Tarif Penerus Sepeda','aktif'))
                         <li >
                             <a
                         class="sidebar master-perusahaan 
@@ -553,7 +593,7 @@
                         " href="{{ url('sales/tarif_penerus_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Penerus sepeda</a>
 
                         </li>
-                        
+                        @endif
                     </ul>
                 </li>
 
@@ -615,6 +655,7 @@
             }}" style="padding-left: 10%;">
                        <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master DO<span class="fa arrow"></span></a>
                        <ul class="nav nav-third-level">
+                        @if(Auth::user()->PunyaAkses('Agen','aktif'))
                        <li >
                         <a class="sidebar master-perusahaan 
 
@@ -623,6 +664,8 @@
 
                        " href="{{ url('master_sales/agen')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Agen</a>
                     </li>
+                    @endif
+                        @if(Auth::user()->PunyaAkses('Vendor','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -631,6 +674,8 @@
 
                     " href="{{ url('master_sales/vendor')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Vendor</a>
                     </li>
+                    @endif
+                        @if(Auth::user()->PunyaAkses('Rute','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -639,6 +684,8 @@
 
                      " href="{{ url('master_sales/rute')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Rute</a>
                     </li>
+                    @endif
+                        @if(Auth::user()->PunyaAkses('Satuan','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -647,6 +694,8 @@
 
                     " href="{{ url('master_sales/satuan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Satuan</a>
                     </li>
+                    @endif
+                        @if(Auth::user()->PunyaAkses('Zona','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -655,7 +704,9 @@
 
                     " href="{{ url('sales/zona')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Zona</a>
                     </li>
+                    @endif
                    
+                        @if(Auth::user()->PunyaAkses('Group Customer','aktif'))
                       <li >
                         <a class="sidebar master-perusahaan 
 
@@ -665,6 +716,8 @@
 
                      " href="{{ url('master_sales/group_customer')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Group Customer</a>
                     </li>
+                    @endif
+                        @if(Auth::user()->PunyaAkses('Group Item','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -673,6 +726,9 @@
 
                      " href="{{ url('master_sales/grup_item')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Group Item</a>
                     </li>
+                    @endif
+
+                    @if(Auth::user()->PunyaAkses('Item','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -681,7 +737,9 @@
 
                     " href="{{ url('master_sales/item')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Item</a>
                     </li>
+                    @endif
 
+                    @if(Auth::user()->PunyaAkses('Diskon','aktif'))
                     <li >
                     <a class="sidebar master-perusahaan 
 
@@ -690,12 +748,15 @@
 
                     " href="{{ url('master_sales/komisi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Diskon</a>
                     </li>
-
+                    @endif
+                    @if(Auth::user()->PunyaAkses('Diskon Penjualan','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan {{Request::is('master_sales/diskonpenjualan') ? 'active' : '' || Request::is('master_sales/diskonpenjualan/*') ? 'active' : ''}}" href="{{ url('master_sales/diskonpenjualan')}}">
                             <i class="fa fa-folder-open-o" aria-hidden="true"></i>Diskon Penjualan</a>
                     </li>
+                    @endif
 
+                    @if(Auth::user()->PunyaAkses('Customer','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -704,6 +765,9 @@
 
                     " href="{{ url('master_sales/customer')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Customer</a>
                     </li>
+                    @endif
+
+                    @if(Auth::user()->PunyaAkses('Subcon','aktif'))
                     <li>
                         <a  class="sidebar master-perusahaan 
 
@@ -711,7 +775,10 @@
                     Request::is('master_sales/subcon/*') ? 'active' : ''}} 
 
                     " href="{{ url('master_sales/subcon')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Subcon</a>
-                        </li>
+                    </li>
+                    @endif
+
+                    @if(Auth::user()->PunyaAkses('Biaya','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -720,6 +787,9 @@
 
                     " href="{{ url('master_sales/biaya')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Biaya</a>
                     </li>
+                    @endif
+
+                    @if(Auth::user()->PunyaAkses('Saldo Piutang Penjualan','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -728,6 +798,9 @@
 
                     " href="{{ url('master_sales/saldopiutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
                     </li>
+                    @endif
+
+                    @if(Auth::user()->PunyaAkses('Saldo Awal Piutang Lain','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -736,6 +809,8 @@
 
                     " href="{{ url('master_sales/saldoawalpiutanglain')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Awal Piutang Lain</a>
                     </li>
+                    @endif
+                    @if(Auth::user()->PunyaAkses('Nomor Seri Pajak','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -744,6 +819,8 @@
 
                     " href="{{ url('master_sales/nomorseripajak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Nomor Seri Pajak</a>
                     </li>
+                    @endif
+
                        </ul>
                    </li>
 
@@ -796,6 +873,7 @@
                          ">
                          <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Master Pembelian <span class="fa arrow"></span></a>
                            <ul class="nav nav-third-level" style="font-size:90%">
+                        @if(Auth::user()->PunyaAkses('Nomor Seri Pajak','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -804,6 +882,9 @@
 
                         " href="{{ url('masterjenisitem/masterjenisitem')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Group Item </a>
                         </li>
+                        @endif
+
+                        @if(Auth::user()->PunyaAkses('Master Item Purchase','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -812,6 +893,8 @@
 
                         " href="{{ url('masteritem/masteritem')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Item Purchase </a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Master Supplier','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -820,6 +903,9 @@
 
                         " href="{{ url('mastersupplier/mastersupplier')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Supplier </a>
                         </li>
+                        @endif
+
+                        @if(Auth::user()->PunyaAkses('Konfirmasi Supplier','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -828,9 +914,10 @@
 
                         " href="{{ url('konfirmasisupplier/konfirmasisupplier')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Konfirmasi Supplier </a>
                         </li>
+                        @endif
 
 
-
+                        @if(Auth::user()->PunyaAkses('Master Gudang','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -839,7 +926,9 @@
 
                         " href="{{ url('mastergudang/mastergudang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Gudang </a>
                         </li>
+                        @endif
 
+                        @if(Auth::user()->PunyaAkses('Master Department','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -848,10 +937,10 @@
 
                         " href="{{ url('masterdepartment/masterdepartment')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Department </a>
                         </li>
+                        @endif
+
                         <li class="
-
                         {{
-
                              /*================ sub MASTER BIAYA PENERUS ======*/  
                             /* Master Gudang */
                             Request::is('presentase/index') ? 'active' : '' || 
@@ -876,6 +965,7 @@
                         " href="{{ url('presentase/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Persen </a>
                         </li>
                         @endif
+
                         @if(Auth::user()->PunyaAkses('Master BBM','aktif'))
                          <li >
                             <a class="sidebar master-perusahaan 
@@ -906,7 +996,7 @@
                " >
                    <a href="#" {{-- style="padding-left: 30%;" --}} style="font-size: 13px;">Master Kontrak<span class="fa arrow"></span></a>
                    <ul class="nav nav-third-level">
-                @if(Auth::user()->PunyaAkses('Master Kontrak','aktif'))
+                @if(Auth::user()->PunyaAkses('Kontrak Customer','aktif'))
                    <li >
                     <a class="sidebar master-perusahaan 
 
@@ -919,7 +1009,7 @@
                
 
 
-             @if(Auth::user()->PunyaAkses('Master subcon','aktif'))
+             @if(Auth::user()->PunyaAkses('Kontrak Subcon','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 
@@ -970,6 +1060,8 @@
                         ">
                        <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Master Keuangan <span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level" style="font-size:90%">
+
+                        @if(Auth::user()->PunyaAkses('Saldo Akun','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -978,7 +1070,8 @@
 
                         " href="{{ url('master_keuangan/saldo_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Akun</a>
                         </li>
-
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Saldo Piutang','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -989,7 +1082,8 @@
 
                         " href="{{ url('master_keuangan/saldo_piutang/'.$cabang)}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
                         </li>
-                         
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Master Bank','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -998,6 +1092,8 @@
 
                         " href="{{ url('masterbank/masterbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Bank </a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Master Activa','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -1006,6 +1102,8 @@
 
                         " href="{{ url('masteractiva/masteractiva')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Activa </a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Golongan Activa','aktif'))
                          <li >
                             <a class="sidebar master-perusahaan 
 
@@ -1014,6 +1112,8 @@
 
                          " href="{{ url('golonganactiva/golonganactiva')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Golongan Activa </a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Nota Debit/Kredit Aktiva','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -1022,6 +1122,8 @@
 
                         " href="{{ url('notadebit/notadebit')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Nota Debit / Kredit Aktiva </a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Kelompok Akun','aktif'))
                         <li>
                             <a  class="sidebar master-perusahaan 
 
@@ -1030,6 +1132,8 @@
 
                          " href="{{ url('master_keuangan/kelompok_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kelompok Akun</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Transaksi','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -1038,6 +1142,8 @@
 
                         " href="{{ url('master-transaksi/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi</a>
                         </li>
+                        @endif
+                        @if(Auth::user()->PunyaAkses('Akun','aktif'))
                         <li >
                             <a class="sidebar master-perusahaan 
 
@@ -1046,6 +1152,7 @@
 
                         " href="{{ url('master_keuangan/akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Akun</a>
                         </li>
+                        @endif
                         </ul>
                         </li>
                        
@@ -1296,17 +1403,17 @@
                                     <a  href="#" style="font-size: 96%" > Transaksi Penjualan <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%;">
                                 <li>
-                                       <li >
-                                <a class="sidebar master-perusahaan 
-
+                            @if(Auth::user()->PunyaAkses('Delivery Order','aktif'))
+                            <li >
+                            <a class="sidebar master-perusahaan 
                             {{Request::is('sales/deliveryorder') ? 'active' : '' || 
                             Request::is('sales/deliveryorderform') ? 'active' : '' || 
                             Request::is('sales/deliveryorder/*') ? 'active' : ''}} 
 
                             " href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                             </li>
-
-                            @if(Auth::user()->PunyaAkses('Delivery Order','aktif'))
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Delivery Order Kargo','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1315,7 +1422,8 @@
 
                             " href="{{ url('sales/deliveryorderkargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO) Kargo</a>
                             </li>
-
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Delivery Order Koran','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1339,6 +1447,7 @@
                                 <a href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
                             </li>
                             -->
+                            @if(Auth::user()->PunyaAkses('Invoice','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1347,6 +1456,8 @@
 
                             " href="{{ url('sales/invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice </a>
                             </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Invoice Pembetulan','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1355,11 +1466,13 @@
 
                             " href="{{ url('sales/invoice_pembetulan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice Pembetulan</a>
                             </li>
+                            @endif
                             <!--
                             <li class="sidebar master-perusahaan {{Request::is('sales/fakturpajak') ? 'active' : ''}} ">
                                 <a href="{{ url('sales/fakturpajak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pajak</a>
                             </li>
                             -->
+                            @if(Auth::user()->PunyaAkses('Invoice Lain Lain','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1368,6 +1481,9 @@
 
                             " href="{{ url('sales/invoice_lain')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice Lain Lain</a>
                             </li>
+                            @endif
+
+                            @if(Auth::user()->PunyaAkses('Kwitansi','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1376,6 +1492,7 @@
 
                             " href="{{ url('sales/penerimaan_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kwitansi</a>
                             </li>
+                            @endif
                             
                                
                             </ul>
@@ -1403,7 +1520,7 @@
                                     <a  href="#" style="font-size: 96%" > Transaksi Status  <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
                                 <li>
-
+                            @if(Auth::user()->PunyaAkses('Update Status Paket','aktif'))
                             <li >
                             <a class="sidebar master-perusahaan 
 
@@ -1412,6 +1529,8 @@
 
                             " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Paket</a>
                             </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('update Status Kargo','aktif'))
                               <li >
                             <a class="sidebar master-perusahaan 
 
@@ -1420,6 +1539,8 @@
 
                             " href="{{ url('updatestatus')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Update Status Kargo</a>
                             </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Tracking Delivery Order','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1428,6 +1549,9 @@
 
                             " href="{{ url('sales/deliveryordercabangtracking')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tracking Delivery Order (DO)</a>
                             </li>
+                            @endif
+
+                            @if(Auth::user()->PunyaAkses('Surat Jalan By Trayek','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1436,6 +1560,7 @@
 
                             " href="{{ url('sales/surat_jalan_trayek')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Surat Jalan By Trayek</a>
                             </li>
+                            @endif
 
                                 </li>
                             </ul>
@@ -1454,6 +1579,8 @@
                                     <a  href="#" style="font-size: 96%" > Penerimaan Kwitansi <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
                                 <li>
+
+                            @if(Auth::user()->PunyaAkses('CN/DN','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1462,10 +1589,14 @@
 
                             " href="{{ url('sales/nota_debet_kredit')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN/DN</a>
                             </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Uang Muka Penjualan','aktif'))
                             <li >
                                 <a class="sidebar master-perusahaan {{Request::is('sales/uang_muka_penjualan') ? 'active' : '' || 
                                 Request::is('sales/index/*') ? 'uang_muka_penjualan' : ''}}" href="{{ url('sales/uang_muka_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Uang Muka Penjualan</a>
                                 </li> 
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Posting Pembayaran','aktif'))
                              <li >
                                 <a class="sidebar master-perusahaan 
 
@@ -1474,7 +1605,8 @@
 
                             " href="{{ url('sales/posting_pembayaran')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Posting Pembayaran</a>
                             </li>
-                        
+                            @endif
+                            
                             </ul>
                         </li>
                            
@@ -1620,23 +1752,32 @@
                                   " style="border-left:none;">
                                     <a  href="#" style="font-size: 85%" > Manajemen Pembelian <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
+                                @if(Auth::user()->PunyaAkses('Surat Permintaan Pembelian','aktif'))
                                 <li>
                                 <a class="sidebar master-perusahaan {{Request::is('suratpermintaanpembelian') ? 'active' : '' || 
                                     Request::is('suratpermintaanpembelian/*') ? 'active' : ''}}" href="{{ url('suratpermintaanpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Surat Permintaan Pembeliaan</a>
                                 </li>
+                                @endif
+
+                                @if(Auth::user()->PunyaAkses('Konfirmasi Order','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('konfirmasi_order/konfirmasi_order') ? 'active' : '' || 
                                     Request::is('konfirmasi_order/konfirmasi_order/*') ? 'active' : ''}}" href="{{ url('konfirmasi_order/konfirmasi_order')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Konfirmasi Order </a>
                                 </li>
+                                @endif
+                                @if(Auth::user()->PunyaAkses('Purchase Order','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('purchaseorder/purchaseorder') ? 'active' : '' || 
                                     Request::is('purchaseorder/purchaseorder/*') ? 'active' : ''}}" href="{{ url('purchaseorder/purchaseorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Purchase Order </a>
                                 </li>
-                          
+                                @endif
+                                @if(Auth::user()->PunyaAkses('Return Pembelian','aktif'))
+                                
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('returnpembelian/returnpembelian') ? 'active' : '' || 
                                     Request::is('returnpembelian/returnpembelian/*') ? 'active' : ''}}" href="{{ url('returnpembelian/returnpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Return Pembelian </a>
                                 </li>
+                                @endif
                             </ul>
                         </li>
                                   <li   class="as {{
@@ -1668,30 +1809,38 @@
     
                                   " href="#" style="font-size: 85%"> Manajemen Gudang <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
+                                @if(Auth::user()->PunyaAkses('Penerimaan Barang','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{ Request::is('penerimaanbarang/penerimaanbarang') ? 'active' : '' || 
                                     Request::is('penerimaanbarang/penerimaanbarang') ? 'active' : ''}}" href="{{ url('penerimaanbarang/penerimaanbarang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Penerimaan Barang </a>
                                 </li>
+                                @endif
+
                                 @if(Auth::user()->PunyaAkses('Pengeluaran Barang','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pengeluaranbarang/pengeluaranbarang') ? 'active' : '' || 
                                     Request::is('pengeluaranbarang/pengeluaranbarang') ? 'active' : ''}}" href="{{ url('pengeluaranbarang/pengeluaranbarang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengeluaran Barang </a>
                                 </li>
                                 @endif
-                                @if(Auth::user()->PunyaAkses('Konfirmasi Pengeluaran','aktif'))
+
+                                @if(Auth::user()->PunyaAkses('Konfirmasi Pengeluaran Barang','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('konfirmasipengeluaranbarang/konfirmasipengeluaranbarang') ? 'active' : '' || 
                                     Request::is('konfirmasipengeluaranbarang/konfirmasipengeluaranbarang/*') ? 'active' : ''}}" href="{{ url('konfirmasipengeluaranbarang/konfirmasipengeluaranbarang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Konfirmasi Pengeluaran Barang </a>
                                 </li>
                                 @endif
+                                @if(Auth::user()->PunyaAkses('Stock Gudang','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('stockgudang/stockgudang') ? 'active' : '' || 
                                     Request::is('stockgudang/stockgudang/*') ? 'active' : ''}}" href="{{ url('stockgudang/stockgudang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Stock Gudang </a>
                                 </li>
+                                @endif
+                                @if(Auth::user()->PunyaAkses('Mutasi Stock','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('mutasi_stock/mutasi_stock') ? 'active' : '' || 
                                     Request::is('mutasi_stock/mutasi_stock/*') ? 'active' : ''}}" href="{{ url('mutasi_stock/mutasi_stock')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Mutasi Stock </a>
                                 </li>
+                                @endif
                                 @if(Auth::user()->PunyaAkses('Stock Opname','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('stockopname/stockopname') ? 'active' : '' || 
@@ -1760,30 +1909,42 @@
                                         Request::is('fakturpembelian/fakturpembelian/*') ? 'active' : ''}}" href="{{ url('fakturpembelian/fakturpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pembelian </a>
                                 </li>
                                 @endif
+                                @if(Auth::user()->PunyaAkses('Uang Muka','aktif'))
                                 <li>
                                     <a class=" {{/* uangmuka */Request::is('uangmuka') ? 'active' : '' || Request::is('uangmuka/*') ? 'active' : '' }}" href="{{url('uangmuka')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Uang Muka </a>
                                 </li>
+                                @endif
+                                @if(Auth::user()->PunyaAkses('Voucher Hutang','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('voucherhutang/voucherhutang') ? 'active' : '' || 
                                         Request::is('voucherhutang/voucherhutang/*') ? 'active' : ''}}" href="{{ url('voucherhutang/voucherhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Voucher Hutang </a>
                                 </li>
-
+                                @endif
+                                @if(Auth::user()->PunyaAkses('Pending','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pending/index') ? 'active' : '' || 
                                         Request::is('pending/index/*') ? 'active' : ''}}" href="{{ url('pending/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Pending</a>
                                 </li>
+                                @endif
+                                @if(Auth::user()->PunyaAkses('Pending Subcon','aktif'))
                                 <li class="sidebar master-perusahaan {{Request::is('pending_subcon/*') ? 'active' : ''}}">
                                     <a href="{{ url('pending_subcon/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Pending Subcon</a>
                                 </li>
+                                @endif
+                                @if(Auth::user()->PunyaAkses('CN/DN Pembelian','aktif'))
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('cndnpembelian/cndnpembelian') ? 'active' : '' || 
                                         Request::is('cndnpembelian/cndnpembelian/*') ? 'active' : ''}}" href="{{ url('cndnpembelian/cndnpembelian')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN / DN Pembelian </a>
                                 </li>
-                           
+                                @endif
+                                @if(Auth::user()->PunyaAkses('Pelunasan Hutang','aktif'))
+                                
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pelunasanhutangbank/pelunasanhutangbank') ? 'active' : '' || 
                                         Request::is('pelunasanhutangbank/pelunasanhutangbank/*') ? 'active' : ''}}" href="{{ url('pelunasanhutangbank/pelunasanhutangbank')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pelunasan Hutang / Pembayaran Bank </a>
                                 </li>
+                                @endif
+
 <!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('formtandaterimatagihan/formtandaterimatagihan') ? 'active' : '' || 
                                         Request::is('formtandaterimatagihan/formtandaterimatagihan/*') ? 'active' : ''}}" href="{{ url('formtandaterimatagihan/formtandaterimatagihan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima Tagihan (TTT)</a>
@@ -1793,11 +1954,14 @@
                                     <a class="sidebar master-perusahaan {{Request::is('formaju/formaju') ? 'active' : '' || 
                                         Request::is('formaju/formaju/*') ? 'active' : ''}}" href="{{ url('formaju/formaju')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Pengajuan Cek / BG (AJU)</a>
                                 </li>
- -->
+ -->                            
+                                @if(Auth::user()->PunyaAkses('Form Permintaan Giro','aktif'))
+
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('formfpg/formfpg') ? 'active' : '' || 
                                         Request::is('formfpg/formfpg/*') ? 'active' : ''}}" href="{{ url('formfpg/formfpg')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Permintaan Cek / BG (FPG)</a>
                                 </li>
+                                @endif
 
 <!--                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan') ? 'active' : '' || 
@@ -1834,22 +1998,30 @@
                                 " style="border-left:none;">
                                     <a href="#" style="font-size:85%"> Transaksi Kas <span class="fa arrow"></span></a>
                                     <ul class="nav nav-third-level" style="padding-left: 5%;font-size: 85%">
+                                        @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','aktif'))
                                          <li >
                                             <a class="sidebar master-perusahaan {{Request::is('biaya_penerus/index') ? 'active' : '' || 
                                         Request::is('biaya_penerus/index/*') ? 'active' : ''}}" href="{{ url('biaya_penerus/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Biaya Penerus Kas</a>
                                         </li>
+                                        @endif
+                                        @if(Auth::user()->PunyaAkses('Pending Kas','aktif'))
                                         <li >
                                             <a class="sidebar master-perusahaan {{Request::is('pending_kas/index') ? 'active' : '' || 
                                         Request::is('pending_kas/index/*') ? 'active' : ''}}" href="{{ url('pending_kas/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Pending Kas</a>
                                         </li>  
+                                        @endif
+                                        @if(Auth::user()->PunyaAkses('Bukti Kas Keluar','aktif'))
                                         <li >
                                             <a class="sidebar master-perusahaan {{Request::is('buktikaskeluar/index') ? 'active' : '' || 
                                         Request::is('buktikaskeluar/index/*') ? 'active' : ''}}" href="{{ url('buktikaskeluar/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Bukti Kas Keluar (BKK)</a>
                                         </li>  
+                                        @endif
+                                        @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
                                         <li >
                                             <a class="sidebar master-perusahaan {{Request::is('ikhtisar_kas/index') ? 'active' : '' || 
                                         Request::is('ikhtisar_kas/index/*') ? 'active' : ''}}" href="{{ url('ikhtisar_kas/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Ikhtisar Kas</a>
                                         </li>                     
+                                        @endif
                                     </ul>
                                 </li>
                                 
@@ -1882,27 +2054,42 @@
                         ">
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level" style="font-size:85%">
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('keuangan/penerimaan') ? 'active' : '' || 
-                            Request::is('keuangan/penerimaan/*') ? 'active' : ''}}" href="{{ url('keuangan/penerimaan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Penerimaan </a>
-                                </li>
+
+                            @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
+                            <li >
+                            <a class="sidebar master-perusahaan {{Request::is('keuangan/penerimaan') ? 'active' : '' || 
+                        Request::is('keuangan/penerimaan/*') ? 'active' : ''}}" href="{{ url('keuangan/penerimaan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Penerimaan </a>
+                            </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Ikhtisar Kas','aktif'))
+
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('keuangan/pengeluaran') ? 'active' : '' || 
                             Request::is('keuangan/pengeluaran/*') ? 'active' : ''}}" href="{{ url('keuangan/pengeluaran   ')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengeluaran </a>
                                 </li>
-                                <li >
+
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Jurnal Umum','aktif'))
+
+                            <li >
                                     <a class="sidebar master-perusahaan {{Request::is('keuangan/jurnal_umum') ? 'active' : '' || 
                             Request::is('keuangan/jurnal_umum/*') ? 'active' : ''   }}" href="{{ url('keuangan/jurnal_umum')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Jurnal Umum </a>
                                 </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Desain Neraca','aktif'))
+
                                 <li>
                                     <a class="sidebar master-perusahaan {{Request::is('master_keuangan/desain_neraca') ? 'active' : '' || 
                             Request::is('master_keuangan/desain_neraca/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_neraca')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Neraca </a>
                                 </li>
+                            @endif
+                            @if(Auth::user()->PunyaAkses('Desain Laba Rugi','aktif'))
 
                                 <li>
                                     <a class="sidebar master-perusahaan {{Request::is('master_keuangan/desain_laba_rugi') ? 'active' : '' || 
                             Request::is('master_keuangan/desain_neraca/*') ? 'active' : ''   }}" href="{{ url('master_keuangan/desain_laba_rugi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Desain Laba Rugi </a>
                                 </li>
+                            @endif
                             </ul>
                         </li>
                         <!-- end operasional keuangan -->
@@ -2067,6 +2254,7 @@
                 }}
 
                 ">
+
                     <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Laporan</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <!-- Laporan Penjualan -->
@@ -2178,7 +2366,9 @@
                         }}
 
                         ">
+                            @if(Auth::user()->PunyaAkses('Laporan Penjualan','aktif'))
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Penjualan <span class="fa arrow"></span></a>
+                            @endif
                             <ul class="nav nav-third-level" style="font-size:85%">
                             <li >
                                  <a class="sidebar master-perusahaan {{Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
@@ -2356,7 +2546,10 @@
                         }}
 
                         ">
+                            @if(Auth::user()->PunyaAkses('Laporan Pembelian','aktif'))
+
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Pembelian <span class="fa arrow"></span></a>
+                            @endif
                             <ul class="nav nav-third-level" style="font-size:85%">
 
                                 <li  >
@@ -2450,7 +2643,10 @@
                         }}
 
                         ">
+                            @if(Auth::user()->PunyaAkses('Laporan Keuangan','aktif'))
+
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
+                            @endif
                             <ul class="nav nav-third-level">
 
                                 {{-- <li >

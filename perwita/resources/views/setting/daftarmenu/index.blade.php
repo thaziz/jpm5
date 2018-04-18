@@ -3,7 +3,6 @@
 @section('title', 'dashboard')
 
 @section('content')
-
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                   <br>
@@ -29,6 +28,11 @@
                 </div>
             </div>
 
+<style type="text/css">
+  .center{
+    text-align: center;
+  }
+</style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
@@ -60,63 +64,59 @@
                      <tr>
                         <th style="width:40px">No</th>
                         <th> Nama Menu </th>
-                        <th> Keterangan </th>
+                        <th> Group Item </th>
                     </tr>
-                 
                     </thead>
-                    
                     <tbody>
-              
-
-
-
+                      @foreach($data_dt as $i=>$val)
+                      <tr>
+                        <td align="center">
+                        {{$i+1}}
+                        <input type="hidden" class="form-control id_mm" value="{{$val->mm_id}}" name="id_mm">
+                      </td>
+                        <td>{{$val->mm_nama}}</td>
+                        <td>{{$val->gm_id}} - {{$val->gm_nama}}</td>
+                      </tr>
+                      @endforeach
                     </tbody>
                    
                   </table>
 
-                  <!-- Modal -->
-                     <div class="modal fade" id="myModal" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span>
-                                        <span class="sr-only">Close</span>
-                                      </button>                     
-                                      <h4 class="modal-title" style="text-align: center;"> 
-                                       </h4>     
-                                    </div>
-                                                  
-                                    <div class="modal-body">
-                                    <button class="btn btn-xs btn-info tmbhmenu">
-                                            <i class="fa fa-plus"> Tambah Daftar Menu </i>
-                                    </button>
-                                    <br>
-                                    <br>
-                                     <form method="post" action="{{url('setting/savedaftarmenu')}}"  enctype="multipart/form-data" class="form-horizontal" id="formsave">
-                                      <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <table class="table table-stripped table-bordered" id="tbl-menu">
-                                        <thead>
-                                            <tr>
-                                                <td> No </td>
-                                                <td> Nama Menu</td>
-                                            </tr>
-                                        </thead>
-                                    </table>                           
-                                               
-                                         </div>
-
-                                      <div class="modal-footer">
-                                          <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="submit" class="btn btn-primary " id="buttonsimpan">
-                                            Simpan
-                                          </button>
-                                         
-                                      </div>
-                                      
-                                  </div>
-                                </div>
-                             </div> 
+                  <div id="myModal" class="modal" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Detail Transfer Kas</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal form_append">
+                                    <table class="table tabel_menu">
+                                       <tr>
+                                           <td>Nama Menu</td>
+                                           <td>
+                                               <input type="text " class="form-control nama_menu" name="nama_menu">
+                                           </td>
+                                       </tr>
+                                       <tr>
+                                           <td>Group Menu</td>
+                                           <td>
+                                               <select class="form-control grup_item chosen-select-width" name="grup_item">
+                                                @foreach($data as $i)
+                                                 <option value="{{$i->gm_id}}">{{$i->gm_id}} - {{$i->gm_nama}}</option>
+                                                 @endforeach
+                                               </select>
+                                           </td>
+                                       </tr>
+                                    </table>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary append" id="append">Simpan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                   <!-- ENd Modal -->
 
@@ -154,47 +154,48 @@
             //paging: false,
             "pageLength": 10,
             "language": dataTableLanguage,
+            columnDefs: [
+            {
+               targets: 0 ,
+               className: 'center'
+            },
+            ]
     });
 
-    $no = 0;
-    $('.tmbhmenu').click(function(){
-        $no++;
-        row = "<tr> <td style='text-align:center'>"+$no+"</td> <td> <input type='text form-control' name='menu[]'> </td> </tr>";
-        $('#tbl-menu').append(row);
-    })
-    
-     $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
 
-  
-
-    var arrnobrg = [];
-
-    $('#formsave input').on("invalid" , function(){
-      this.setCustomValidity("Harap di isi :) ");
-    })
-
-    $('#formsave input').change(function(){
-      this.setCustomValidity("");
-    })
-
-    $('#formsave').submit(function(){
-
-          var post_url2 = $(this).attr("action");
-          var form_data2 = $(this).serialize();
-          event.preventDefault();
+    $('#append').click(function(){
+         var nama = $('.nama_menu').val();
+         var setting = $('.grup_item :selected').text();
          $.ajax({
-          type : "POST",          
-          data : form_data2,
-          url : post_url2,
-          dataType : 'json',
-          success : function (response){
-            $('#myModal').modal('toggle');
-             
-          }
+            type : "get",          
+            data : $('.tabel_menu :input').serialize(),
+            url : '{{url('setting/savedaftarmenu')}}',
+            dataType : 'json',
+            success : function (response){
+               if (response.status == 2) {
+                toastr.warning('Data Sudah Ada');
+                $('.tabel_menu :input').val('');
+                return 1;
+               }else if (response.status == 3) {
+                toastr.warning('Masukan Data Dengan Benar');
+                $('.tabel_menu :input').val('');
+                return 1;
+               }
+               var temp =1 
+               tableDetail.$('.id_mm').each(function(){
+                temp +=1;
+               })
+
+               tableDetail.row.add([
+                temp+'<input type="hidden" class="id_mm" name="id_mm">',
+                nama,
+                setting,
+                ]).draw();
+                // toastr.success('Berhasil Di Save');
+
+                $('.tabel_menu .nama_menu').val('');
+
+            }
       })
      })
 
@@ -217,6 +218,11 @@
                   /*  swal("Deleted!", "Your imaginary file has been deleted.", "success");*/
                     });
             }
-
+      $('.nama_menu').on('keydown', function(e) {
+        if (e.which == 13) {
+            $('#append').trigger('click');
+            e.preventDefault();
+        }
+      });
 </script>
 @endsection

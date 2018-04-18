@@ -139,7 +139,7 @@
                             @else
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td style="width:368px; padding-top: 0.4cm" colspan="20" class="cabang_td">
+                                <td style=" padding-top: 0.4cm" colspan="20" class="cabang_td">
                                     <select class="cb_cabang disabled form-control"  name="cb_cabang" onchange="nota_kwitansi()" >
                                         <option value="0">Pilih - Cabang</option>
                                     @foreach ($cabang as $row)
@@ -156,7 +156,7 @@
                             <tr class="">
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td  class="customer_td">
-                                    <div style="width: 400px">
+                                    <div>
                                         <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                         @foreach ($customer as $row)
