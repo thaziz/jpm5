@@ -36,11 +36,12 @@ class hak_akses_Controller extends Controller
             return redirect(url('setting/hak_akses'));
         }
 
+        $level = DB::table('hak_akses')
+                   ->where('level',strtoupper($request->ed_level))
+                   ->delete();
+                   
         for ($i=0; $i < count($loop); $i++) { 
 
-
-
-          
             $save = DB::table('hak_akses')
                       ->insert([
                         'id' =>$i+1,
