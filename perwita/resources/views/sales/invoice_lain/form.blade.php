@@ -92,12 +92,46 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr>
+
+                            @if(Auth::user()->punyaAkses('Invoice Pembetulan','cabang'))
+                            <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td>
-                                    <select class="form-control" name="cb_cabang" >
-                                    @foreach ($cabang as $row)
+                                <td colspan="5" class="cabang_td">
+                                        <select class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                        @foreach ($cabang as $row)
+                                            @if(Auth::user()->kode_cabang == $row->kode)
+                                            <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
+                                            @else
+                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                            @endif
+                                        @endforeach
+                                        </select>
+                                    <input type="hidden" name="ed_cabang" value="{{ $data->kode_cabang or null }}" >
+                                </td>
+                                <td style="padding-top: 0.4cm">Customer</td>
+                                <td >
+                                    <select class="chosen-select-width"  name="cb_customer" id="cb_customer" style="width:100%" >
+                                        <option> </option>
+                                    @foreach ($customer as $row)
                                         <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                    @endforeach
+                                    </select>
+                                    <input type="hidden" name="ed_customer" value="{{ $data->kode_customer or null }}" >
+
+
+                                </td>
+                            </tr>
+                            @else
+                            <tr class="disabled">
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td colspan="5">
+                                        <select class="form-control" name="cb_cabang" >
+                                    @foreach ($cabang as $row)
+                                        @if(Auth::user()->kode_cabang == $row->kode)
+                                        <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @else
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                        @endif
                                     @endforeach
                                     </select>
                                     <input type="hidden" name="ed_cabang" value="{{ $data->kode_cabang or null }}" >
@@ -111,8 +145,11 @@
                                     @endforeach
                                     </select>
                                     <input type="hidden" name="ed_customer" value="{{ $data->kode_customer or null }}" >
+
+
                                 </td>
                             </tr>
+                            @endif
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Type Kiriman</td>
                                 <td colspan="4">

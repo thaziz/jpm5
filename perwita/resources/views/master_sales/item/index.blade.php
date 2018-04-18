@@ -124,7 +124,6 @@
                         <form class="form-horizontal kirim">
                           <table  class="table table-striped table-bordered table-hover">
                             <tbody>
-                                <input type="hidden" name="id_item">
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
                                     <td>
@@ -132,6 +131,7 @@
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
+                                        <input type="hidden" name="id_item" class="id_item">
                                     </td>
                                 </tr>
                                 <tr>
@@ -155,7 +155,7 @@
                                         @endforeach
                                         </select>
                                     <td>
-                                        <div class="checkbox">
+                                        <div >
                                             <label for="checkbox1"> <input type="checkbox" name="ck_pakai_angkutan"> Pakai Angkutan </label>
                                         </div>
                                     </td>
@@ -278,6 +278,7 @@
         var value = {
             id: id
         };
+        console.log(id);
         $.ajax(
         {
             url : baseUrl + "/master_sales/item/get_data",
@@ -289,7 +290,7 @@
                 $("input[name='crud']").val('E');
                 $("input[name='ed_kode']").val(data.kode);
                 $("input[name='ed_kode']").attr('readonly','true');
-                $("input[name='id_item']").val(data.id_item);
+                $(".id_item").val(data.id_item);
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("input[name='ed_nama']").val(data.nama);
                 $("input[name='ed_keterangan']").val(data.keterangan);
@@ -311,13 +312,12 @@
     });
 
     $(document).on("click","#btnsave",function(){
-     
         $.ajax(
         {
             url : baseUrl + "/master_sales/item/save_data",
             type: "get",
             dataType:"JSON",
-            data : $('.kirim :input').serialize() ,
+            data : $('.kirim :input').serialize(),
             success: function(data, textStatus, jqXHR)
             {
                 if(data.crud == 'N'){

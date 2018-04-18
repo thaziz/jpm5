@@ -41,10 +41,11 @@ class item_Controller extends Controller
     }
 
     public function save_data (Request $request) {
+
         $simpan='';
         $crud = $request->crud;
 
-         $year = carbon::now()->format('y');
+        $year = carbon::now()->format('y');
         $month = carbon::now()->format('m');
         $day = carbon::now()->format('d');
          $kodecabang =  auth::user()->kode_cabang;
@@ -74,7 +75,7 @@ class item_Controller extends Controller
         
         if ($crud == 'N') {
             $data = array(
-                'id_item' => $id_kode,
+                // 'id_item' => $id_kode,
                 'kode' => $kodekode,
                 'nama' => strtoupper($request->ed_nama),
                 'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
@@ -88,7 +89,7 @@ class item_Controller extends Controller
             $simpan = DB::table('item')->insert($data);
         }elseif ($crud == 'E') {
             $data = array(
-                'id_item' => $request->id_item,
+                // 'id_item' => $request->id_item,
                 'kode' => $request->ed_kode,
                 'nama' => strtoupper($request->ed_nama),
                 'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),

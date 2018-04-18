@@ -107,7 +107,7 @@
                           </div>
                         </td>
                       </tr>
-                      @if(Auth::user()->punyaAkses('CN DN Penjualan','cabang'))
+                      @if(Auth::user()->punyaAkses('CN/DN','cabang'))
                       <tr>
                         <td>
                           Cabang

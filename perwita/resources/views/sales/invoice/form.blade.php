@@ -55,7 +55,7 @@
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
                                 </td>
                             </tr>
-                            @if(Auth::user()->punyaAkses('Invoice Penjualan','cabang'))
+                            @if(Auth::user()->punyaAkses('Invoice','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">

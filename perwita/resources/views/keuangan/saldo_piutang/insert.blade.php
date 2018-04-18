@@ -174,7 +174,6 @@
           console.log(response);
           // if(response.status == "sukses"){
             alert("Desain Berhasil Ditambahkan");
-            $("#simpan").removeAttr("disabled");
             $("#cab").find(":selected").attr("disabled", "disabled");
             reset_all();
           // }

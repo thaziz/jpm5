@@ -181,7 +181,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Penjualan</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_acc_penjualan"  style="text-align: right;">
+                                        <select  class="chosen-select-width form-control d" name="ed_acc_penjualan"  style="text-align: right;">
                                         
                                             <option value="">-- Pilih Acc Penjualan Terlebih Dahulu --</option>
                                             @foreach ($accpenjualan as $b)
@@ -193,7 +193,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Csf Penjualan</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_csf_penjualan" style="text-align: right;">
+                                        <select  class="chosen-select-width form-control d" name="ed_csf_penjualan" style="text-align: right;">
                                         
                                             <option value="">-- Pilih Csf Penjualan Terlebih Dahulu --</option>
                                             @foreach ($csfpenjualan as $a)

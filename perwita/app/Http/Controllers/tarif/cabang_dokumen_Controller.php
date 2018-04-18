@@ -101,7 +101,7 @@ class cabang_dokumen_Controller extends Controller
     }
 
     public function get_data (Request $request) {
-        // dd($request);
+        // dd($request->all());
         $asal = $request->asal;
         $tujuan = $request->tujuan;
         $sql = " SELECT t.kode_cabang,t.crud,t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
@@ -123,6 +123,7 @@ class cabang_dokumen_Controller extends Controller
 
     public function save_data (Request $request) {
         // dd($request->all());
+        
         $simpan='';
         if ($request->cb_provinsi_tujuan != null or '') {
             $cari = DB::table('kota')  
@@ -322,7 +323,6 @@ class cabang_dokumen_Controller extends Controller
 
                         
                         if (isset(${'cari_old'.$a}[$i][0])) {
-                            return ${'cari_old'.$a}[$i][0];
                             if ($array_harga[$a] != '') {
                                 if (${'cari_old'.$a}[$i][0]->id_kota_asal != $request->cb_kota_asal and
                                     ${'cari_old'.$a}[$i][0]->id_kota_tujuan != $cari[$i]->id and
@@ -394,9 +394,9 @@ class cabang_dokumen_Controller extends Controller
                     
                     }
 
-
+                    // return $gege;
                     for ($k=0; $k <count($gege) ; $k++) { 
-                        // return $gege;
+                        
                     if (isset($gege[$k][0]->id_kota_asal) != $request->cb_kota_asal &&
                         isset($gege[$k][0]->id_kota_tujuan) !=$request->cb_kota_tujuan &&
                         isset($gege[$k][0]->kode_cabang) != $request->ed_cabang) {
@@ -429,7 +429,7 @@ class cabang_dokumen_Controller extends Controller
                                         'waktu' => $array_waktu[$k],
                                         'acc_penjualan'=>$request->ed_acc_penjualan,
                                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                                        'id_provinsi_cabdokumen'=>$provinsi[0]->id,
+                                        'id_provinsi_cabdokumen'=>$provinsi[0]->id_provinsi,
                                         'crud'=>$crud,
                                 ]);
                           
@@ -447,7 +447,7 @@ class cabang_dokumen_Controller extends Controller
                                                 'acc_penjualan'=>$request->ed_acc_penjualan,
                                                 'csf_penjualan'=>$request->ed_csf_penjualan,
                                                 'crud'=>'N',
-                                                'id_provinsi_cabdokumen'=>$provinsi[0]->id,
+                                                'id_provinsi_cabdokumen'=>$provinsi[0]->id_provinsi,
                                         ]);
                                     }
 

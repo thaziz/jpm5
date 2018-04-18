@@ -325,7 +325,7 @@ $('#btn_kwitansi').click(function(){
     }else if (cb_jenis_pembayaran == 'U') {
         $.ajax({
             url  :baseUrl+'/sales/posting_pembayaran_form/cari_uang_muka',
-            data : {cabang,cb_jenis_pembayaran,customer,array_simpan},
+            data : {cabang,cb_jenis_pembayaran,array_simpan},
             success:function(data){
               $('.kirim').html(data);
               $('#modal').modal('show');
