@@ -350,7 +350,7 @@
                 " href="{{ url('master_sales/tipe_angkutan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tipe Angkutan</a>
                 </li>
                 @endif
-                @if(Auth::user()->PunyaAkses('Tipe Kendaraan','aktif'))
+                @if(Auth::user()->PunyaAkses('Kendaraan','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 

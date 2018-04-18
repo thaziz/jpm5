@@ -82,7 +82,6 @@
 				</tr>
 			</thead> 
 			<tbody align="center" class="body-outlet">
-
 				@foreach($data as $index => $val)
 				@if($data[$index]['potd_pod'] == null)
 				<tr>
@@ -108,8 +107,8 @@
 						<!-- <input type="hidden" name="status[]" class="form-control" value="{{$data[$index]['status']}}"> -->
 					</td>
 					<td>
-						{{$data[$index]['tarif_dasar']}}
-						<input type="hidden" name="tarif[]" class="form-control tarif_dasar" value="{{$data[$index]['tarif_dasar']}}">
+						{{$data[$index]['total_net']}}
+						<input type="hidden" name="tarif[]" class="form-control tarif_dasar" value="{{$data[$index]['total_net']}}">
 					</td>
 					<td>
 						{{$data[$index]['komisi']}}
@@ -121,8 +120,8 @@
 						<input type="hidden" name="komisi_tambahan[]" onload="hitung_komisi(this)" class="form-control komisi_tambah" value="{{$data[$index]['biaya_komisi']}}">
 					</td>
 					<td >
-						<span class="komisi_total">{{$data[$index]['komisi']}}</span>
-						<input type="hidden" name="total_komisi[]" class="form-control total_komisi" value="{{$data[$index]['komisi']}}">
+						<span class="komisi_total">{{$data[$index]['total_komisi']}}</span>
+						<input type="hidden" name="total_komisi[]" class="form-control total_komisi" value="{{$data[$index]['total_komisi']}}">
 					</td>
 				</tr>
 				@endif
@@ -281,7 +280,7 @@
 	    	var temp3  			= 0;
 	    	var temp4  			= 0;
 
-	    	if (child_check=='on') {
+	    	if (child_check == 'on') {
 	    		tar_das.push(tarif_dasar);
 	    		kom_tam.push(komisi_tambah)
 	    		tot_kom.push(total_komisi)
@@ -295,19 +294,24 @@
 	    		for(var i=0; i<kom_tam.length;i++) {
 	    			temp2 += parseInt(kom_tam[i]);
 	    		}
+
 	    		for(var i=0; i<tot_kom.length;i++) {
 	    			temp3 += parseInt(tot_kom[i]);
 	    		}
+
 	    		for(var i=0; i<kom.length;i++) {
-	    			temp4 += parseInt(kom[i]);
+	    			temp4 += parseInt(kom[i]);	
 	    		}
-	    	
+	    		console.log(temp3);
 	    		temp1 = accounting.formatMoney(temp1, "Rp ", 2, ".",',');
 	    		$('.total_tarif').val(temp1);
+
 	    		temp4 = accounting.formatMoney(temp4, "Rp ", 2, ".",',');
 		    	$('.total_komisi_outlet').val(temp4);
+
 		    	temp2 = accounting.formatMoney(temp2, "Rp ", 2, ".",',');
 		    	$('.total_komisi_tambahan').val(temp2);
+
 		    	temp3 = accounting.formatMoney(temp3, "Rp ", 2, ".",',');
 		    	$('.total_all_komisi').val(temp3);
 
@@ -428,6 +432,7 @@ function check_parent(){
 	}
 
 }
+
 
 
 function hitung_komisi(o){
@@ -589,7 +594,6 @@ $('.simpan_outlet').click(function(){
  	selectOutlet = $('.selectOutlet').val();
 
  	totalterima_tt = $('.totalterima_tt').val();
- 	console.log(totalterima_tt);
 
 // return 1;
 	if (totalterima_tt != 'Rp 0,00') {
@@ -608,6 +612,32 @@ $('.simpan_outlet').click(function(){
 		toastr.warning('Periksa Kembali Data Anda');
 	}
 })
+
+
+
+  function tt_penerus() {
+
+    var cabang = $('.cabang').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang},
+      dataType:'json',
+      success:function(data){
+        $('.nota_tt').val(data.nota);
+        var agen_vendor = $('.agen_vendor').val();
+        var jatuh_tempo = $('.jatuh_tempo').val();
+        var total_jml   = $('.total_jml').val();
+        total_jml       = total_jml.replace(/[^0-9\-]+/g,"")/100;
+        $('.supplier_tt').val(agen_vendor);
+        $('.jatuhtempo_tt').val(jatuh_tempo);
+        $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
+        $('#modal_tt_outlet').modal('show');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+
+  }
 
 $.fn.serializeArray = function () {
     var rselectTextarea= /^(?:select|textarea)/i;
@@ -635,4 +665,4 @@ $.fn.serializeArray = function () {
     }).get();
 }
     
-		</script>
+</script>
