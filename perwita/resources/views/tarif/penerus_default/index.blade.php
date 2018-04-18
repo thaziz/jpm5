@@ -46,7 +46,10 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
+
+                      @if(Auth::user()->punyaAkses('Tarif Penerus Default','tambah'))
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
+                       @endif
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -140,17 +143,33 @@
                                     </td>
                                 </tr>
                                 <tr>
+                               @if(Auth::user()->punyaAkses('Tarif Penerus Default','cabang'))
+                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>
-                                        <select  class="form-control d" name="ed_cabang" style="text-align: right;">
+                                        <select  class="form-control d" name="ed_cabang"  style="text-align: right;">
                                         
                                             <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
                                             @foreach ($cabang_default as $a)
-                                                <option value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
+                                                <option @if(Auth::user()->kode_cabang == $a->kode) selected="" @endif value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                 </tr>
+                                @else
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td class="disabled">
+                                        <select  class="form-control d" name="ed_cabang"  style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
+                                            @foreach ($cabang_default as $a)
+                                                <option @if(Auth::user()->kode_cabang == $a->kode) selected="" @endif value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                @endif
                                 <tr>
                                     <td style="padding-top: 0.4cm">Harga</td>
                                     <td>
@@ -381,8 +400,7 @@
         $("input[name='ed_id']").val('');
         $("select[name='cb_jenis']").val('');
         $("select[name='cb_tipe_kiriman']").val('');
-        $("select[name='ed_harga']").val('');
-        $("select[name='ed_cabang']").val('');
+        // $("select[name='ed_harga']").val('');
         $("select[name='cb_keterangan']").val('');
         $("#modal").modal("show");
         $("input[name='cb_tipe_kiriman']").focus();

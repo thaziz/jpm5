@@ -21,11 +21,7 @@ class provinsi_Controller extends Controller
 		$i=0;
 		foreach ($data as $key) {
 				// add new button
-			$data[$i]['button'] = '	<div class="btn-group">
-										<button type="button" id="'.$data[$i]['id'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-										<button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                	</div> ';
-			$i++;
+			
 		}
 		$datax = array('data' => $data);
 		echo json_encode($datax);

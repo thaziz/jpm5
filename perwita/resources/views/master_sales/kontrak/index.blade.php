@@ -43,7 +43,9 @@
                     </h5>
 
                     <div class="text-right" style="">
+                        @if(Auth()->user()->punyaAkses('Kontrak Customer','tambah'))
                        <button  type="button" style="margin-right :12px; width:110px" class="btn btn-success " id="btn_add_order" name="btnok"></i>Tambah Data</button>
+                       @endif
                     </div>
                 </div>
                 <div class="ibox-content">

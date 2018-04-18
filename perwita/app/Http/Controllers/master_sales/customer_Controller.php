@@ -6,11 +6,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Carbon\Carbon;
-
+use Auth;
 class customer_Controller extends Controller
 {
     public function table_data () {
-        $list = DB::table('customer')->get();
+
+         $cabang = Auth::user()->kode_cabang;
+      if (Auth::user()->punyaAkses('Customer','all')) {
+         $list = DB::table('customer')->get();
+      }else{
+         $list = DB::table('customer')->where('cabang',$cabang)->get();
+      }
+
         $data = array();
         foreach ($list as $r) {
             $data[] = (array) $r;
@@ -18,11 +25,25 @@ class customer_Controller extends Controller
         $i=0;
         foreach ($data as $key) {
             // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
+
+             $div_1  =   '<div class="btn-group">';
+                                  if (Auth::user()->punyaAkses('Customer','ubah')) {
+                                  $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                                  }else{
+                                    $div_2 = '';
+                                  }
+                                  if (Auth::user()->punyaAkses('Customer','hapus')) {
+                                  $div_3  = '<button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>';
+                                  }else{
+                                    $div_3 = '';
+                                  }
+                                  $div_4   = '</div>';
+                                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+
+                                $data[$i]['button'] = $all_div;
+                               
+                                $i++;
+           
         }
         $datax = array('data' => $data);
         echo json_encode($datax);

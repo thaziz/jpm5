@@ -60,7 +60,7 @@
                                 </td>
                             </tr>
                             
-                            @if(Auth()->user()->punyaAkses('Master Kontrak','cabang'))
+                            @if(Auth()->user()->punyaAkses('Kontrak Customer','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="3">

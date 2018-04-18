@@ -12,8 +12,17 @@ use Auth;
 class agen_Controller extends Controller
 {
     public function table_data () {
-        $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi,a.komisi_agen FROM agen a
+
+         $cabang = Auth::user()->kode_cabang;
+      if (Auth::user()->punyaAkses('Agen','all')) {
+          $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi,a.komisi_agen FROM agen a
                     LEFT JOIN kota k ON k.id=a.id_kota  ";
+      }else{
+         $sql = "    SELECT a.kode, a. nama, a.kategori, k.nama kota, a.alamat, a.telpon, a.fax, a.komisi,a.komisi_agen FROM agen a
+                    LEFT JOIN kota k ON k.id=a.id_kota where kode_cabang = '$cabang' ";
+      }
+
+    
         $list = DB::select(DB::raw($sql));
         $data = array();
         foreach ($list as $r) {
@@ -22,11 +31,23 @@ class agen_Controller extends Controller
         $i=0;
         foreach ($data as $key) {
             // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
+             $div_1  =   '<div class="btn-group">';
+                                  if (Auth::user()->punyaAkses('Agen','ubah')) {
+                                  $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                                  }else{
+                                    $div_2 = '';
+                                  }
+                                  if (Auth::user()->punyaAkses('Agen','hapus')) {
+                                  $div_3  = '<button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>';
+                                  }else{
+                                    $div_3 = '';
+                                  }
+                                  $div_4   = '</div>';
+                                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+
+                                $data[$i]['button'] = $all_div;
+                               
+                                $i++;
         }
         $datax = array('data' => $data);
         echo json_encode($datax);
