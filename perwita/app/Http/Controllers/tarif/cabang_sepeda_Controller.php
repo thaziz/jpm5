@@ -328,7 +328,7 @@ class cabang_sepeda_Controller extends Controller
                         'waktu' => $request->waktu,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'id_provinsi_cabsepeda'=>$provinsi,
+                        'id_provinsi_cabsepeda'=>$provinsi[0]->id_provinsi,
                         'crud'=>$crud,
                     );
             
@@ -358,7 +358,7 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         // 'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
-                        'id_provinsi_cabsepeda'=>$prov,
+                        'id_provinsi_cabsepeda'=>$provinsi[0]->id_provinsi,
                         'crud'=>$crud,
                     );
 
@@ -389,7 +389,7 @@ class cabang_sepeda_Controller extends Controller
                         'waktu' => $request->waktu,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'id_provinsi_cabsepeda'=>$prov,
+                        'id_provinsi_cabsepeda'=>$provinsi[0]->id_provinsi,
                         'crud'=>$crud,
                     );
 
@@ -418,7 +418,7 @@ class cabang_sepeda_Controller extends Controller
                         'waktu' => $request->waktu,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'id_provinsi_cabsepeda'=>$prov,
+                        'id_provinsi_cabsepeda'=>$provinsi[0]->id_provinsi,
                         'crud'=>$crud,
                     );
                   
@@ -476,7 +476,7 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
-                        'id_provinsi_cabsepeda'=>$prov,
+                        'id_provinsi_cabsepeda'=>$provinsi[0]->id_provinsi,
                    );
                    
                 // return $regular;
@@ -493,7 +493,7 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
-                        'id_provinsi_cabsepeda'=>$prov,
+                        'id_provinsi_cabsepeda'=>$provinsi[0]->id_provinsi,
                     );
                      $sport = array(
                         'kode_sama_sepeda' => $kode_sama_sepeda,
@@ -508,7 +508,7 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
-                        'id_provinsi_cabsepeda'=>$prov,
+                        'id_provinsi_cabsepeda'=>$provinsi[0]->id_provinsi,
                     );
                         // return $request->moge; 
                 if ($request->moge != null || $request->moge != '') {
@@ -525,7 +525,7 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         'crud'=>$crud,
-                        'id_provinsi_cabsepeda'=>$prov,
+                        'id_provinsi_cabsepeda'=>$provinsi[0]->id_provinsi,
                     );
             $simpan = DB::table('tarif_cabang_sepeda')->where('kode', $request->id_moge)->update($moge);
             }else if($request->moge == null || $request->moge == ''){ 
