@@ -56,7 +56,7 @@ class invoice_Controller extends Controller
 
     public function index(){
      $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->punyaAkses('Invoice Penjualan','all')) {
+        if (Auth::user()->punyaAkses('Invoice','all')) {
             $data = DB::table('invoice')
                       ->join('customer','kode','=','i_kode_customer')
                       ->take(2000)
@@ -319,9 +319,11 @@ public function cari_do_invoice(request $request)
             }
             $temp = array_values($temp);
             $data = $temp;
+            $data1 = $temp;
             
         }else{
             $data = $temp;
+            $data1 = $temp;
         }
     }else if ($request->cb_pendapatan == 'PAKET' || $jenis == 'KARGO') {
       // dd($request->all());

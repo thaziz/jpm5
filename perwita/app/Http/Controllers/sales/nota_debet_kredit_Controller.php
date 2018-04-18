@@ -16,7 +16,7 @@ class nota_debet_kredit_Controller extends Controller
         //$cabang = strtoupper($request->input('kode_cabang'));
     		$cabang = Auth::user()->kode_cabang;
 
-        if (Auth::user()->punyaAkses('CN DN Penjualan','all')) {
+        if (Auth::user()->punyaAkses('CN/DN','all')) {
           $data = DB::table('cn_dn_penjualan')
                       ->join('customer','kode','=','cd_customer')
                       ->get();
@@ -35,13 +35,13 @@ class nota_debet_kredit_Controller extends Controller
         return Datatables::of($data)
                         ->addColumn('tombol', function ($data) {
                               $div_1  =   '<div class="btn-group">';
-                              if (Auth::user()->punyaAkses('CN DN Penjualan','ubah')) {
+                              if (Auth::user()->punyaAkses('CN/DN','ubah')) {
                               $div_2  = '<button type="button" onclick="edit(\''.$data->cd_nomor.'\')" class="btn btn-xs btn-warning">'.
                                         '<i class="fa fa-pencil"></i></button>';
                               }else{
                                 $div_2 = '';
                               }
-                              if (Auth::user()->punyaAkses('CN DN Penjualan','hapus')) {
+                              if (Auth::user()->punyaAkses('CN/DN','hapus')) {
                               $div_3  = '<button type="button" onclick="hapus(\''.$data->cd_nomor.'\')" class="btn btn-xs btn-danger">'.
                                         '<i class="fa fa-trash"></i></button>';
                               }else{

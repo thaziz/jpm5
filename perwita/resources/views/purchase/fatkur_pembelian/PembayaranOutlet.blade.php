@@ -80,4 +80,20 @@ function autoNote(){
     });
  }
 
+ function cari_outlet() {
+ 	var  selectOutlet = $('.selectOutlet').val();
+ 	var  cabang 	  = $('.cabang').val();
+ 	var  reportrange  = $('.reportrange').val();
+ 	$.ajax({
+      url:baseUrl +'/fakturpembelian/cari_outlet',
+      data: {selectOutlet,cabang,reportrange},
+      success:function(data){
+ 		
+
+
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+ }
 </script>

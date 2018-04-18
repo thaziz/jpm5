@@ -238,8 +238,7 @@ Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
-Route::post('fakturpembelian/cari_outlet/{agen}', 'BiayaPenerusController@cari_outlet');
-Route::post('fakturpembelian/cari_outlet/{agen}', 'BiayaPenerusController@cari_outlet');
+Route::get('fakturpembelian/cari_outlet', 'BiayaPenerusController@cari_outlet');
 Route::post('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
 // Route::get('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
 Route::get('fakturpembelian/cariNote', 'BiayaPenerusController@cari_note');
