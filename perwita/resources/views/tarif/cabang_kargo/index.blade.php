@@ -530,7 +530,11 @@
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
             {
-                if(data.crud == 'N'){
+                console.log(data);
+                if (data.crud == '0') {
+                    swal("warning","Data Telah ada Di Database",'warning');
+                }else{
+                    if(data.crud == 'N'){
                     if(data.result == 1){
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );
@@ -553,10 +557,12 @@
                 }else{
                     swal("Error","invalid order","error");
                 }
+                }
+                
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
-               swal("Kode Tidak boleh sama !", 'periksa sekali lagi', "warning");
+               swal("Terjadi Kealahan !", 'Kemunkinan Data Terdapat Kesamaan', "warning");
             }
         });
     });

@@ -101,6 +101,7 @@ class cabang_kargo_Controller extends Controller
                               ->where('id_kota_tujuan',$cari[$i]->id)
                               ->where('kode_cabang',$request->ed_cabang)
                               ->where('jenis',$request->cb_jenis)
+                              ->where('kode_angkutan',$request->cb_angkutan)
                               ->get();
                 }
                 // return $cari_old1;
@@ -129,6 +130,7 @@ class cabang_kargo_Controller extends Controller
                               ->where('id_kota_asal',$request->cb_kota_asal)
                               ->where('id_kota_tujuan',$request->cb_kota_tujuan)
                               ->where('kode_cabang',$request->ed_cabang)
+                              ->where('kode_angkutan',$request->cb_angkutan)
                               ->get();
             }
             
@@ -144,7 +146,8 @@ class cabang_kargo_Controller extends Controller
                     }
                             if (isset(${'cari_old'.$a}[$i][0]->id_kota_asal) != $request->cb_kota_asal and
                                 isset(${'cari_old'.$a}[$i][0]->id_kota_tujuan) != $cari[$i]->id and
-                                isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->ed_cabang ) {
+                                isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->ed_cabang and
+                                isset(${'cari_old'.$a}[$i][0]->kode_angkutan) != $request->cb_angkutan ) {
 
                                     $data = DB::table('tarif_cabang_kargo')
                                     ->insert([
@@ -167,19 +170,23 @@ class cabang_kargo_Controller extends Controller
 
                                   ]);
                             }else{
-                                if (${'cari_old'.$a}[$i][0]->crud != 'E') {
-                                    $data = DB::table('tarif_cabang_kargo')
-                                    ->where('kode',${'cari_old'.$a}[$i][0]->kode)
-                                    ->update([
-                                            'kode_cabang' => $request->ed_cabang,
-                                            'jenis' => $request->cb_jenis,
-                                            'harga' => $array_harga[$a],
-                                            'waktu' => $array_waktu[$a],
-                                            'acc_penjualan'=>$request->ed_acc_penjualan,
-                                            'csf_penjualan'=>$request->ed_csf_penjualan,
-                                            'crud'=>'N',
-                                    ]);
-                                }
+                                // if (${'cari_old'.$a}[$i][0]->crud != 'E') {
+                                //     $data = DB::table('tarif_cabang_kargo')
+                                //     ->where('kode',${'cari_old'.$a}[$i][0]->kode)
+                                //     ->update([
+                                //             'kode_cabang' => $request->ed_cabang,
+                                //             'jenis' => $request->cb_jenis,
+                                //             'harga' => $array_harga[$a],
+                                //             'waktu' => $array_waktu[$a],
+                                //             'acc_penjualan'=>$request->ed_acc_penjualan,
+                                //             'csf_penjualan'=>$request->ed_csf_penjualan,
+                                //             'crud'=>'N',
+                                //     ]);
+                                // }
+                                $data = FALSE;
+                                $crud = 'Data Tersebut Telah Ada';
+                                $result['crud']=$crud;
+                                echo json_encode($result);
                                     
                             }
                         }
@@ -188,7 +195,8 @@ class cabang_kargo_Controller extends Controller
             }else{
                     if (isset($cari_kode[0]->id_kota_asal) != $request->cb_kota_asal  and
                         isset($cari_kode[0]->id_kota_tujuan) != $request->cb_kota_tujuan and
-                        isset($cari_kode[0]->kode_cabang) != $request->ed_cabang) {
+                        isset($cari_kode[0]->kode_cabang) != $request->ed_cabang and 
+                        isset($cari_kode[0]->kode_angkutan) != $request->cb_angkutan) {
 
                         $kode_detailis = DB::table('tarif_cabang_kargo')
                             ->max('kode_detail_kargo');
@@ -226,30 +234,41 @@ class cabang_kargo_Controller extends Controller
                         }
                     }else{
 
-                        if ($crud == 'N') {
-                            $simpan = array(
-                                'jenis' => $request->cb_jenis,
-                                'kode_satuan' => $request->satuan,
-                                'kode_angkutan' => $request->cb_angkutan,
-                                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
-                                'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
-                                'acc_penjualan' => $request->ed_acc_penjualan,
-                                'csf_penjualan'=>$request->ed_csf_penjualan,
-                         );
-                        $data = DB::table('tarif_cabang_kargo')->where('kode','=',$cari_kode[0]->kode)->update($simpan);
-                        }
+                        // return $request->cb_angkutan;
+                        // if ($crud == 'N') {
+                        //     $simpan = array(
+                        //         'jenis' => $request->cb_jenis,
+                        //         'kode_satuan' => $request->satuan,
+                        //         'kode_angkutan' => $request->cb_angkutan,
+                        //         'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                        //         'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
+                        //         'acc_penjualan' => $request->ed_acc_penjualan,
+                        //         'csf_penjualan'=>$request->ed_csf_penjualan,
+                        //  );
+                        // $data = DB::table('tarif_cabang_kargo')->where('kode','=',$cari_kode[0]->kode)->update($simpan);
+                        // }
+                        // $data = FALSE;
+                        // $crud = 'Data Tersebut Telah Ada';
+                        //         $result['crud']=$crud;
+                        //         echo json_encode($result);
+                        $data = FALSE;
                     }
             }
 
-            if($data == TRUE){
-            $result['error']='';
-            $result['result']=1;
-            }else{
+            
+                if($data == TRUE){
+                $result['error']='';
+                $result['result']=1;
+                }else{
                 $result['error']=$data;
                 $result['result']=0;
-            }
-            $result['crud']=$crud;
-            echo json_encode($result);
+                }
+                $result['crud']=$crud;
+                echo json_encode($result);
+            
+            
+
+            
 
                 }else if($crud == 'E'){
                                             
