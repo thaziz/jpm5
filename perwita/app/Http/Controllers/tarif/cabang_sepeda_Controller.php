@@ -163,6 +163,7 @@ class cabang_sepeda_Controller extends Controller
               json_encode($id_provinsi_loop); 
      
         
+            $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
      if ($request->cb_kota_tujuan == '' ) {  
       for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
                 
@@ -327,7 +328,7 @@ class cabang_sepeda_Controller extends Controller
                         'waktu' => $request->waktu,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                        // 'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
+                        'id_provinsi_cabsepeda'=>$provinsi,
                         'crud'=>$crud,
                     );
             
@@ -357,6 +358,7 @@ class cabang_sepeda_Controller extends Controller
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
                         // 'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
+                        'id_provinsi_cabsepeda'=>$prov,
                         'crud'=>$crud,
                     );
 
@@ -387,7 +389,7 @@ class cabang_sepeda_Controller extends Controller
                         'waktu' => $request->waktu,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
+                        'id_provinsi_cabsepeda'=>$prov,
                         'crud'=>$crud,
                     );
 
@@ -416,7 +418,7 @@ class cabang_sepeda_Controller extends Controller
                         'waktu' => $request->waktu,
                         'acc_penjualan'=>$request->ed_acc_penjualan,
                         'csf_penjualan'=>$request->ed_csf_penjualan,
-                        'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
+                        'id_provinsi_cabsepeda'=>$prov,
                         'crud'=>$crud,
                     );
                   
