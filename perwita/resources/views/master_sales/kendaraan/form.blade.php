@@ -85,9 +85,9 @@
                                 <td style="width:120px; padding-top: 0.4cm">Status</td>
                                 <td>
                                     <select class="form-control" name="cb_status" >                                    
-                                        <option value="OWN">OWN</option>
-                                        <option value="SUB">SUB</option>
                                         <option value="DPT">DPT</option>
+                                        <option value="KARGO">KARGO</option>
+                                        <option value="SUB">SUB</option>
                                     </select>
                                 </td>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
@@ -115,8 +115,8 @@
                                 <td>
                                     <select class="form-control" name="cb_divisi" >                                    
                                         <option value="KARGO">KARGO</option>
-                                        <option value="SUB">SUB</option>
-                                        <option value="DPT">DPT</option>
+                                        <option value="PAKET">PAKET</option>
+                                        <option value="KORAN">KORAN</option>
                                     </select>
                                 </td>
                                 <td style="width:110px; padding-top: 0.4cm">Tipe Angkutan</td>

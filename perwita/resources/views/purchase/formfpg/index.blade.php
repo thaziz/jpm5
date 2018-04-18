@@ -107,7 +107,7 @@
                         <td> - </td>
                         <td> {{$fpg->fpg_cekbg}} </td>
                         
-                        <td> <a class="btn btn-sm btn-success" href={{url('formfpg/detailformfpg/'.$fpg->idfpg.'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a> <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>  </td>
+                        <td> <a class="btn btn-sm btn-success" href={{url('formfpg/detailformfpg/'.$fpg->idfpg.'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a> <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a> <a class="btn btn-sm btn-danger" onclick="hapusdata({{$fpg->idfpg}})"> <i class="fa fa-trash" aria-hidden="true"></i> </a>  </td>
                         
                       </tr>
                     @endforeach
@@ -153,7 +153,16 @@
     });
     
   
-  
+    function hapusdata($id){
+      $.ajax({
+        data : {$id},
+        url : baseUrl + '/formfpg/hapusfpg/' + $id,
+        type : "get",
+        sucess : function(){
+          alert('ok');
+        }
+      })
+    }
     
 
 </script>

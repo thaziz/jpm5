@@ -167,7 +167,7 @@
                         <div class="col-xs-6">
                            <table border="0" class ="table table-striped borderless table-hover">
                          <tr>
-                          <td> <b> Jumlah Faktur </b> </td>
+                          <td> <b> Jumlah Sisa Hutang Faktur </b> </td>
                           <td> <input type="text" class="form-control input-sm jumlahfaktur" readonly="" style='text-align: right' name="jumlahfaktur">  </td>
                          </tr>
                           <tr >
@@ -384,6 +384,11 @@
                                           <td> Netto </td>
                                           <td> <input type="text" class="form-control input-sm  nettohutangcn clear" style="text-align: right" readonly=""></td>
                                        </tr>
+
+                                       <tr>
+                                          <td> Total Sisa Hutang </td>
+                                          <td>  <input type="text" class="form-control input-sm hasilakhir clear" style="text-align: right" readonly=""> </td>
+                                       </tr>
                                     </table>
                                 </div>
 
@@ -579,6 +584,7 @@
           trtbl = $('tr.datafaktur').length;
           if(trtbl == 0){
             toastr.info('Data yang di inputkan belum ada :)');
+            return false;
           }
          
           event.preventDefault();
@@ -672,6 +678,8 @@
     inputpphfp = $('.inputpphfp').val();
     hasilpphfp = $('.hasilpphfp').val();
 
+
+    hasilakhir = $('.hasilakhir').val();
      if(nilaippn == ''){
       nilaippn = 0.00;
      }
@@ -706,7 +714,7 @@
 
                            '<td style="text-align:right">   <p class="pph_text"> '+addCommas(nilaipph)+' </p> <input type="hidden" class="nilaipph form-control input-sm" value="'+nilaipph+'" readonly style="text-align:right" name="nilaipph[]"> <input type="hidden" class="form-control input-sm inputpph" value="'+inputpph+'" readonly style="text-align:right" name="inputpph[]"> <input type="hidden" class="form-control input-sm jenispph" value="'+jenispph+'" readonly style="text-align:right" name="jenispph"></td>' + //pph
 
-                                 ' <td> <p class="cndn_text">  '+nilaicndn+' </p> <input type="hidden" class="form-control input-sm cndn" style="text-align:right" value="'+nilaicndn+'" readonly name="nettocn[]"> </td>' + // <!-- nettocdcn -->
+                                 ' <td> <p class="cndn_text">  '+nilaicndn+' </p> <input type="hidden" class="form-control input-sm cndn" style="text-align:right" value="'+nilaicndn+'" readonly name="nettocn[]">  <input type="hidden" class="hasilakhir2" value="'+hasilakhir+'" name="hasilakhir[]">  </td>' + // <!-- nettocdcn -->
 
                                 ' <td>  <a class="btn btn-xs btn-warning" onclick="edit(this)" data-id='+noappend+' type="button"><i class="fa fa-pencil"></i> </a> <a class="btn btn-xs btn-danger removes-btn" data-id='+noappend+' type="button"><i class="fa fa-trash"></i> </a>   </td>' +
                               '</tr>';
@@ -722,7 +730,7 @@
                 })
 
     $('.clear').val(''); 
-
+    $nilaipph = 0;
       $('.nilaipph').each(function(){
          val = $(this).val(); 
          if(val == ''){
@@ -734,7 +742,7 @@
          }
          $('.hasilpphatas').val(addCommas($nilaipph));
       })
-
+      $nilaippn = 0;
       $('.nilaippn').each(function(){
         val = $(this).val(); 
          if(val == ''){
@@ -747,6 +755,7 @@
          $('.hasilppnatas').val(addCommas($nilaippn));
       })
 
+      $nilaicndn  = 0
       $('.cndn').each(function(){
         val = $(this).val(); 
 
@@ -762,6 +771,7 @@
       })
       $('.bruto').val(addCommas($nilaicndn));
 
+      $sisahutang = 0;
        $('.sisahutang').each(function(){
               val = $(this).val();
               aslihutang = val.replace(/,/g, '');
@@ -815,6 +825,57 @@
            
             $(par).find('.cndn_text').text(addCommas(nettocn));
              $('.clear').val(''); 
+
+          $nilaipph = 0;   
+          $('.nilaipph').each(function(){
+         val = $(this).val(); 
+         if(val == ''){
+
+         }
+         else {
+            nilaipph = val.replace(/,/g, '');   
+          $nilaipph = parseFloat(parseFloat($nilaipph) + parseFloat(nilaipph)).toFixed(2);
+         }
+         $('.hasilpphatas').val(addCommas($nilaipph));
+      })
+
+      $nilaippn = 0;
+      $('.nilaippn').each(function(){
+        val = $(this).val(); 
+         if(val == ''){
+
+         }
+         else {
+          nilaippn = val.replace(/,/g, '');   
+          $nilaippn = parseFloat(parseFloat($nilaippn) + parseFloat(nilaippn)).toFixed(2);
+         }
+         $('.hasilppnatas').val(addCommas($nilaippn));
+      })
+
+      $nilaicndn = 0;
+      $('.cndn').each(function(){
+        val = $(this).val(); 
+
+        if(val == ''){
+
+        }
+        else {
+          nilaicn = val.replace(/,/g, '');   
+             
+         $nilaicndn = parseFloat(parseFloat($nilaicndn) + parseFloat(nilaicn)).toFixed(2);
+      
+         }
+      })
+      $('.bruto').val(addCommas($nilaicndn));
+
+      $sisahutang = 0;
+       $('.sisahutang').each(function(){
+              val = $(this).val();
+              aslihutang = val.replace(/,/g, '');
+              $sisahutang = parseFloat(parseFloat($sisahutang) + parseFloat(aslihutang)).toFixed(2);
+            })
+
+            $('.jumlahfaktur').val(addCommas($sisahutang));
       }
 
              
@@ -1023,6 +1084,30 @@ jenisbayar2 = $('.jenisbayar2').val();
                                                                                    
                  }   
               }
+              else {
+                 for(var i = 0; i < table.length; i++){  
+                 // alert(arrnofaktur[i] + 'dilooptable');
+                  
+                       var html2 = "<tr class='data"+nmrbnk+"' id="+table[i].fp_nofaktur+" data-faktur='"+table[i].fp_nofaktur+"'>" +
+                            "<td>"+nmrbnk+"</td>" +
+                            "<td>"+table[i].fp_nofaktur+"</td>" + // no faktur
+                            "<td>"+table[i].namaoutlet+"</td>" +
+                            "<td>"+table[i].fp_jatuhtempo+"</td>" +
+                         
+                            "<td style='text-align:right'>Rp "+addCommas(table[i].fp_netto)+"</td>" +
+                            "<td  style='text-align:right'>Rp " +addCommas(table[i].fp_sisapelunasan)+"</td>" +
+                           "<td>" +
+                             "<div class='checkbox'> <input type='checkbox' id="+table[i].fp_idfaktur+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                        "<label></label>" +
+                                        "</div></td>" +
+                           "</tr>";
+                          
+                       tablecek.rows.add($(html2)).draw(); 
+                      nmrbnk++; 
+                  
+                                                                                   
+                 }
+              }
              
                $("#tblfaktur tbody tr.data345").hide();
                 for($j = 0; $j < arrnofaktur.length; $j++){
@@ -1079,10 +1164,17 @@ jenisbayar2 = $('.jenisbayar2').val();
           success : function(response){
             $('#myModal5').modal('toggle');
             faktur = response.faktur
+            dpp = 0;
+            if(faktur[0][0].fp_dpp == null){
+              dpp = 0.00
+            }
+            else {
+              dpp = faktur[0][0].fp_dpp;
+            }
 
             $('.nofakturheader').val(faktur[0][0].fp_nofaktur);
             $('.jatuhtempheader').val(faktur[0][0].fp_jatuhtempo);
-            $('.dppheader').val(addCommas(faktur[0][0].fp_dpp));
+            $('.dppheader').val(addCommas(dpp));
             $('.jenisppnheader').val(faktur[0][0].fp_jenisppn);
             $('.inputppnheader').val(faktur[0][0].fp_inputppn);
             $('.hasilppnheader').val(faktur[0][0].fp_ppn);
@@ -1127,45 +1219,6 @@ jenisbayar2 = $('.jenisbayar2').val();
 
 
          
-             /* $('.cndn').change(function(){
-                 val = $(this).val();     
-                 val = accounting.formatMoney(val, "", 2, ",",'.');
-                 $(this).val(val);
-                  $nilaicndn = 0;
-                 $('.cndn').each(function(){
-                    val = $(this).val(); 
-
-                    if(val == ''){
-
-                    }
-                    else {
-
-
-                      nilaicn = val.replace(/,/g, '');   
-                         
-                     $nilaicndn = parseFloat(parseFloat($nilaicndn) + parseFloat(nilaicn)).toFixed(2);
-                   //    alert($nilaicndn + 'nilaicndn');
-                     }
-                   
-                 })
-
-
-                   $('.bruto').val(addCommas($nilaicndn));
-                    bruto = $('.bruto').val();
-                    biayafaktur = $('.biayafaktur').val();
-                    nilaibruto = bruto.replace(/,/g,'');
-                    nilaibiaya = biayafaktur.replace(/,/g,'');
-                    alert(nilaibruto + 'nilaibruto');
-                    alert(nilaibiaya + 'nilaibiaya');
-                    if(parseFloat(nilaibruto) > parseFloat(nilaibiaya)){
-                      toastr.info('Nilai CN / DN tidak cukup pada jumlah faktur :)');
-                      $(this).val('');
-                      $('.bruto').val('');
-                    }
-                    else {
-
-                    }
-              })*/
             
             
             $('.brutocn').change(function(){
@@ -1359,7 +1412,23 @@ jenisbayar2 = $('.jenisbayar2').val();
                     $('.nettohutangcn').val(addCommas(numeric2));
                     $('.dppcn').val(addCommas(numeric2));
                 }
-
+                 jeniscn = $('.jeniscndn').val();
+                if(jeniscn == 'CN'){
+                   nettohutangcn2 = $('.nettohutangcn').val();
+                    nettohutangcn = nettohutangcn2.replace(/,/g, '');
+                    sisaterbayar2 = $('.sisaterbayarheader').val();
+                    sisaterbayar = sisaterbayar2.replace(/,/g, '');
+                    $hasil = parseFloat(parseFloat(nettohutangcn) + parseFloat(sisaterbayar)).toFixed(2);
+                    $('.hasilakhir').val(addCommas($hasil));
+                }
+                else {
+                    nettohutangcn2 = $('.nettohutangcn').val();
+                    nettohutangcn = nettohutangcn2.replace(/,/g, '');
+                    sisaterbayar2 = $('.sisaterbayarheader').val();
+                    sisaterbayar = sisaterbayar2.replace(/,/g, '');
+                    $hasil = parseFloat(parseFloat(sisaterbayar) - parseFloat(nettohutangcn)).toFixed(2);
+                    $('.hasilakhir').val(addCommas($hasil));
+                }
 
             })
             
@@ -1468,6 +1537,29 @@ jenisbayar2 = $('.jenisbayar2').val();
     $('.jeniscndn').change(function(){
         val = $(this).val();
         comp = $('.cabang').val();
+        sisaterbayar = $('.sisaterbayarheader').val();
+        nettohutangcn = $('.nettohutangcn').val();
+        if(sisaterbayar != '' && nettohutangcn != '' ) {
+            if(val == 'CN'){
+                   nettohutangcn2 = $('.nettohutangcn').val();
+                    nettohutangcn = nettohutangcn2.replace(/,/g, '');
+                    sisaterbayar2 = $('.sisaterbayarheader').val();
+                    sisaterbayar = sisaterbayar2.replace(/,/g, '');
+                    $hasil = parseFloat(parseFloat(nettohutangcn) + parseFloat(sisaterbayar)).toFixed(2);
+                    $('.hasilakhir').val(addCommas($hasil));
+                }
+                else {
+                    nettohutangcn2 = $('.nettohutangcn').val();
+                    nettohutangcn = nettohutangcn2.replace(/,/g, '');
+                    sisaterbayar2 = $('.sisaterbayarheader').val();
+                    sisaterbayar = sisaterbayar2.replace(/,/g, '');
+                    $hasil = parseFloat(parseFloat(sisaterbayar) - parseFloat(nettohutangcn)).toFixed(2);
+                    $('.hasilakhir').val(addCommas($hasil));
+                }
+
+        }
+
+
         $.ajax({    
             type :"get",
             data : {comp},
