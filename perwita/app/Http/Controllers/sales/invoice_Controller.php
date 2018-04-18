@@ -1453,7 +1453,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
 public function edit_invoice($id)
 { 
     // return $id;
-    if (auth::user()->punyaAkses('Invoice Penjualan','ubah')) {
+    if (auth::user()->punyaAkses('Invoice','ubah')) {
       $data = DB::table('invoice')
               ->where('i_nomor',$id)
                 ->first();

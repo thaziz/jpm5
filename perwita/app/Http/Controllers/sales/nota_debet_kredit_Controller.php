@@ -324,7 +324,7 @@ class nota_debet_kredit_Controller extends Controller
     }
     public function edit($id)
     {
-      if (Auth::user()->punyaAkses('CN DN Penjualan','ubah')) {
+      if (Auth::user()->punyaAkses('CN/DN','ubah')) {
           $cabang = DB::select(DB::raw(" SELECT * FROM cabang"));
 
           $customer = DB::table('customer')

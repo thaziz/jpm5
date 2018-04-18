@@ -668,6 +668,7 @@ class BiayaPenerusController extends Controller
 	        foreach ($data as $i => $key) {
 	            
 	            $data[$i]['komisi']	= (float)$data[$i]['total_net']*(float)($persen->komisi/100);
+	            $data[$i]['total_komisi']	= ((float)$data[$i]['total_net']*(float)($persen->komisi/100))+$data[$i]['biaya_komisi'];
 	          
 	        }
 	        return view('purchase/fatkur_pembelian/detailpembayaranoutlet',compact('data'));
