@@ -266,7 +266,7 @@
                 </form>
                 <!-- modal -->
                 <div id="modal_do" class="modal" >
-                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
+                  <div class="modal-dialog" style="min-width: 1000px;max-width: 1000px">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
