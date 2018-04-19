@@ -4,6 +4,16 @@
 
 @section('content')
 
+ <style>
+   table{
+    font-size: 8pt;
+   }
+
+   .form-control{
+    font-size: 8pt;
+   }
+ </style>
+
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2>Golongan Activa</h2>
@@ -47,18 +57,24 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                  <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST"> 
+                  <form class="form-horizontal" id="form-data" action="post" method="POST"> 
                   <div class="box-body">
                        <div class="row">
                           <div class="col-xs-6">
 
                           <table border="0">
+
                           <tr>
                             <td width="150px">
-                           Kode Activa
+                           Kode Cabang
                             </td>
                             <td>
-                               <input type="text" class="form-control">
+                               <select name="cabang" class="form-control chosen-select select_validate" id="cab" required>
+                                  <option value="---">- Pilih Cabang</option>
+                                  @foreach ($cab as $cabang)
+                                    <option value="{{ $cabang->kode }}">{{ $cabang->nama }}</option>
+                                  @endforeach
+                                </select>
                             </td>
                           </tr>
 
@@ -69,11 +85,33 @@
                           </tr>
 
                           <tr>
-                            <td>    Nama Activa </td>
+                            <td width="150px">
+                           Kode Golongan Activa
+                            </td>
                             <td>
-                              <input type="text" class="form-control">
+                               <input type="text" class="form-control input_validate" readonly placeholder="Kode Golongan Otomatis" name="kode_golongan" id="kode_golongan" required>
+                            </td>
+                            <td>
+                              &nbsp;&nbsp;&nbsp;&nbsp; 
+                                <i data-toggle="tooltip" data-placement="top" title="Klik Untuk Membuat Kode Golongan Aktiva" class="fa fa-refresh" style="cursor: pointer;" id="generate_kode"></i>
+                              &nbsp;
+                                <span class="text-muted" style="font-style: italic; display: none;" id="kode_info"></span>
                             </td>
                           </tr>
+
+                          <tr>
+                          <td>
+                          &nbsp;
+                          </td>
+                          </tr>
+
+                          <tr>
+                            <td>Nama Golongan Activa </td>
+                            <td>
+                              <input type="text" class="form-control input_validate" placeholder="Masukkan Nama Aktiva" name="nama_golongan" id="nama_golongan" required>
+                            </td>
+                          </tr>
+
                           <tr>
                           <td>
                             &nbsp;
@@ -81,60 +119,36 @@
                           </tr>
 
                           <tr>
-                            <td> Tanggal Perolehan </td>
-                            <td>   <input type="text" class="form-control"> </td>
+                            <td>Keterangan </td>
+                            <td>
+                              <input type="text" class="form-control input_validate" placeholder="Masukkan Keterangan" name="keterangan" id="keterangan" required>
                             </td>
                           </tr>
 
-
                           <tr>
                           <td>
-                          &nbsp;
+                            &nbsp;
                           </td>
                           </tr>
 
                           <tr>
+                            <td>Fiskal/Komersial</td>
+                            <td>
+                              <select class="form-control select_validate" name="s_k" id="s_k" required>
+                                <option value="K">Komersial</option>
+                                <option value="F">Fisikal</option>
+                              </select>
+                            </td>
 
                             <td>
-                              Nilai Perolehan
+                              <input type="text" style="width: 20%" class="form-control input_validate" value="K" name="sk_view" id="sk_view" readonly required>
                             </td>
-                            <td>
-                                <input type="text" class="form-control"> 
-
-                            </td>
-
                           </tr>
-
 
                           <tr>
                           <td>
-                          &nbsp;
+                            &nbsp;
                           </td>
-                          </tr>
-
-                          <tr>
-                            <td>
-                              Acc Debet
-                            </td>
-                            <td>
-                              <input type="text" class="form-control">
-                            </td>
-                          </tr>
-
-
-                          <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-                            <td>
-                             CSF Kredit
-                            </td>
-                            <td>
-                              <input type="text" class="form-control">
-                            </td>
                           </tr>
 
                           </table>
@@ -142,64 +156,34 @@
                          </div>
 
                          <div class="col-xs-6">
+
                           <table border="0">
                           <tr>
-                            <td width="150px">
-                           Keterangan
+                            <td width="40%">
+                              Masa Manfaat
                             </td>
                             <td>
-                               <input type="text" class="form-control">
+                               <input placeholder="Lebih Besar Dari 0" type="number" min="1" class="form-control input_validate" name="masa_manfaat" id="masa_manfaat" required>
                             </td>
-                          </tr>
-
-                          <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                          <tr>
-                            <td>   Kode Golongan Activa  </td>
                             <td>
-                               <input type="text" class="form-control">
+                              &nbsp;&nbsp;
+                                <span class="text-muted" style="font-style: italic;">Tahun</span>
                             </td>
                           </tr>
-
-                          <tr>
-                          <td>
-                          &nbsp;
-                          </td>
-                          </tr>
-
-                           <tr>
-                            <td> Nama Golongan Activa </td>
-                             <td>
-                               <input type="text" class="form-control">
-                            </td>
-                          </tr>
-
-                        
 
                           </table>
 
-                         </div>
-                         </div>
-
-                         <hr>
-                    
-
-                          <div class="col-xs-6">
-                          <table class="table table-bordered table-striped tbl-item">
+                          <table class="table table-bordered table-striped tbl-item m-t-lg">
                           <thead>
                           <tr>
-                            <th width="100px">
+                            <th class="text-center" width="30%" style="font-weight: normal;">
                               Metode
                             </th>
-                            <th width="200px">
-                              Masa Manfaat (th)
+                            <th class="text-center" width="35%" style="font-weight: normal;">
+                              Masa Manfaat (tahun)
                             </th>
-                            <th width="200px">
-                            Porsentase (%)
+                            <th class="text-center" width="35%" style="font-weight: normal;">
+                            Persentase (%)
                             </th>
                           </tr>
                           </thead>
@@ -210,19 +194,21 @@
                                 Garis Lurus
                               </td>
                               <td>
-                                <input type="text" class="form-control">
+                                <input placeholder="Lebih Besar Dari 0" type="number" min="1" class="form-control input_validate" name="masa_manfaat_gl" id="masa_manfaat_gl" required>
                               </td>
-                              <td> <input type="text" class="form-control"> </td>
+                              <td>
+                                <input placeholder="Otomatis" type="number" min="1" readonly class="form-control input_validate" name="persentase_gl" id="persentase_gl" required>
+                              </td>
                             </tr>
                            
                             <tr>
                               <td>  Saldo Menurun
                               </td>
                               <td>
-                                <input type="text" class="form-control">
+                                <input placeholder="Lebih Besar Dari 0" type="number" min="1" class="form-control input_validate" name="masa_manfaat_sm" id="masa_manfaat_sm" required>
                               </td>
                               <td>
-                                <input type="text" class="form-control">
+                                <input placeholder="Otomatis" type="number" min="1" readonly class="form-control input_validate" name="persentase_sm" id="persentase_sm" required>
                               </td>
                             </tr>
                           </tbody>
@@ -231,33 +217,20 @@
 
                           </table>
 
-                         </div>
 
+                         </div>
+                         </div>
 
                     </div>
                     </form>
 
-                   
-          
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-                
+                    <hr>
+
                 <div class="box-footer">
                   <div class="pull-right">
                   
-                    <a class="btn btn-warning" href={{url('golonganactiva/golonganactiva')}}> Kembali </a>
-                   <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-success">
-         
-                    
+                    <a class="btn btn-warning btn-sm" href={{url('golonganactiva/golonganactiva')}}  style="font-size: 8pt;"> Kembali </a>
+                      <button type="button" id="submit" name="submit" class="btn btn-success btn-sm" style="font-size: 8pt;">Simpan</button>
                     
                     </div>
                   </div><!-- /.box-footer -->
@@ -280,38 +253,122 @@
 
 
 @section('extra_scripts')
-<script type="text/javascript">
+  <script type="text/javascript">
+     
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+      $(".chosen-select").chosen({width: '100%'});
+
+      $("#generate_kode").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        info = $("#kode_info");
+
+        info.text("Sedang Membuat Kode...")
+        info.css("display", "");
+
+        if($("#cab").val() == "---"){
+          info.text("Pilih Cabang Dahulu");
+          setTimeout(function(){ info.fadeOut(1000,"linear"); }, 1000);
+
+          return false;
+        }
+
+        $.ajax(baseUrl+"/golonganactiva/ask_kode/"+$("#cab").val(),{
+          type: "get",
+          dataType: 'json',
+          success: function(response){
+            $("#kode_golongan").val('GL-00'+response);
+            info.css("display", "none");
+          },
+          error: function(request, status, err) {
+              if (status == "timeout") {
+                info.text("Waktu Habis. Coba Lagi");
+                setTimeout(function(){ info.fadeOut(1000,"linear"); }, 1000);
+              } else {
+                info.text("Internal Error, Coba Lagi");
+                setTimeout(function(){ info.fadeOut(1000,"linear"); }, 1000);
+              }
+
+              $("#simpan").removeAttr("disabled");
+          }
+        })
+      })
+
+      $("#submit").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        btn = $(this);
+
+        btn.attr("disabled", "disabled");
+        btn.text("Menyimpan...");
+
+        if(validate_form()){
+          alert("ready");
+        }else{
+          btn.removeAttr("disabled");
+        btn.text("Simpan");
+        }
+
+      })
+
+      $("#cab").change(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        $("#kode_golongan").val("");
+      })
+
+      $("#s_k").change(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        $("#sk_view").val($(this).val())
+      })
+
+      $(":input[type='number']").keypress(function(evt){
+        // console.log(evt.which)
+
+        if(evt.which == 101 || evt.which == 69)
+          return false;
+        else if($(this).val().length == 0 && evt.which == 48)
+          return false;
+      })
 
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
-    
-   /* $('#tmbh_data_barang').click(function(){
-      $("#addColumn").append('<tr> <td rowspan="3"> 1 </td> <td rowspan="3"> </td> <td rowspan="3"> </td>  <td rowspan="3"> </td> <td> halo </td> <td> 3000 </td>  <tr> <td> halo </td> <td>  5.000 </td> </tr> <tr><td> halo </td> <td> 3000 </td> </tr>');
-    })*/
-     $no = 0;
-    $('#tmbh_data_barang').click(function(){
-         $no++;
-     $("#addColumn").append('<tr id=item-'+$no+'> <td> <b>' + $no +' </b> </td> <td> <input type="text" class="form-control"> <td><a class="btn btn-danger removes-btn" data-id='+ $no +'> <i class="fa fa-trash"> </i>  </a> </td> </tr>');
+      $("#masa_manfaat_gl").on("keyup", function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
 
+        val = 100 / $(this).val();
 
+        $("#persentase_gl").val(val.toFixed(2));
+      })
 
-        $(document).on('click','.removes-btn',function(){
-              var id = $(this).data('id');
-       //       alert(id);
-              var parent = $('#item-'+id);
+      $("#masa_manfaat_sm").on("keyup", function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
 
-             parent.remove();
-          })
+        val = 100 / $(this).val();
 
+        $("#persentase_sm").val(val.toFixed(2));
+      })
 
+      function validate_form(){
+        a = true;
+        $(".input_validate").each(function(i, e){
+          if($(this).val() == ""){
+            a = false;
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
+
+        return a;
+      }
     })
 
-    
-  
-   
-
-</script>
+  </script>
 @endsection
