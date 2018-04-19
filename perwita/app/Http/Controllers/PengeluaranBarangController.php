@@ -381,10 +381,6 @@ class PengeluaranBarangController extends Controller
 						 ->where('sm_id','=',$cari_sm[$a]->sm_id)
 						 ->first();
 
-				
-
-
-				
 
 				if ($kurang > 0) {
 

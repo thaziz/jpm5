@@ -76,7 +76,7 @@
 								<thead>
 								 <tr>
 									<th style="width:10px">NO</th>
-									<th> No PO </th>
+									<th> No Transaksi </th>
 								  
 									<th> Supplier </th>
 									<th> Status </th>
