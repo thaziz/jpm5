@@ -111,8 +111,6 @@
                         </td>
                         <!-- <td align="center"><input type="checkbox" class="form-control" name="allow"></td> -->
                        @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
-                        @if($faktur->fp_status == 'Released' or Auth::user()->PunyaAkses('Aksi Faktur','aktif'))
-
                          <td align="center"> 
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
                             <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
@@ -126,22 +124,28 @@
                             @endif
                           <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
                          </td> 
-                         @else
-                         <td align="center">-</td>
-                        @endif
                        @else
-                        <td align="center"> <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
+                        <td align="center">
+
+                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
+                          <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
+                            @endif
                           @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
-                          <a title="Hapus" class="btn btn-sm btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                          </a> 
+                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
+                            <a title="Hapus" class="btn btn-sm btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
+                              <i class="fa fa-trash" aria-hidden="true"></i>
+                            </a> 
+                            @endif
+
                           @else
                             @if($faktur->fp_status == 'Approved')
                            
                             @else
+                            @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
                               <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$faktur->fp_idfaktur}})">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                               </a>
+                              @endif
                             @endif
                           @endif
                         <input type="hidden" value="{{$faktur->fp_jenisbayar}}">

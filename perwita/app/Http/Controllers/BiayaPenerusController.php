@@ -377,6 +377,7 @@ class BiayaPenerusController extends Controller
 			});
 		}
 		public function edit($id){
+			if (Auth::user()->punyaAKses('Faktur Pembelian','ubah')) {
 			$cari_fp = DB::table('faktur_pembelian')
 						 ->where('fp_idfaktur',$id)
 						 ->first();
@@ -416,12 +417,51 @@ class BiayaPenerusController extends Controller
 				
 				$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
 
-				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt'));
+				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id'));
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
 
+				$date = Carbon::now()->format('d/m/Y');
+
+				$agen = DB::table('agen')
+						  ->where('kategori','OUTLET')
+						  ->orWhere('kategori','AGEN DAN OUTLET')
+						  ->get();
+
+				$akun_biaya = DB::table('akun_biaya')
+						  ->get();
+				$first = Carbon::now();
+		        $second = Carbon::now()->format('d/m/Y');
+		        // $start = $first->subMonths(1)->startOfMonth();
+		        $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
+		        $jt = Carbon::now()->subDays(-30)->format('d/m/Y');
+
+		        $data = DB::table('faktur_pembelian')
+		        		  ->join('pembayaran_outlet','fp_nofaktur','=','pot_faktur')
+		        		  ->join('agen','kode','=','fp_supplier')
+		        		  ->first();
+
+		       	$data_dt = DB::table('pembayaran_outlet_dt')
+		       				 ->where('potd_potid',$data->pot_id)
+		       				 ->get();
+
+		       	$valid_cetak = DB::table('form_tt')
+		       					 ->where('tt_nofp',$data->fp_nofaktur)
+		       					 ->first();
+
+		       	// dd($valid_cetak);
+			return view('purchase/fatkur_pembelian/editOutlet',compact('date','agen','akun_biaya','second','start','jt','data','data_dt','valid_cetak','id'));
+
 			}elseif ($cari_fp->fp_jenisbayar == 9){
 
+
+
+			}
+
+
+
+			}else{
+				return redirect()->back();
 			}
 			
 		 	
@@ -750,14 +790,14 @@ class BiayaPenerusController extends Controller
 
 
 		public function notaoutlet(request $request){
-
+			// dd($request->all());	
 			$year =Carbon::now()->format('y'); 
 			$month =Carbon::now()->format('m'); 
 			$mon =Carbon::now(); 
 
 			$idfaktur =   fakturpembelian::where('fp_comp' , $request->cab)
-											->where('fp_nofaktur','LIKE','%'.'O-0'.'%')
-											->where('created_at','>=',$mon)
+											->where('fp_jenisbayar','7')
+											// ->where('created_at','>=',$mon)
 											->max('fp_nofaktur');
 		//	dd($nosppid);
 			if(isset($idfaktur)) {

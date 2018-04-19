@@ -44,7 +44,7 @@
 
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
 	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-	    <button type="button" class="btn btn-primary pull-right disabled" id="save-update-outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
+	    <button type="button" class="btn btn-primary pull-right disabled" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">
           <img src="{{ asset('assets/img/loading1.gif') }}" width="100px">
@@ -237,7 +237,7 @@
       </div>
       <div class="modal-footer inline-form">
         <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary simpan_outlet" data-dismiss="modal">Simpan</button>
+        <button type="button" class="btn btn-primary simpan_outlet" onclick="simpan_tt()" data-dismiss="modal">Simpan</button>
       </div>
     </div>
   </div>
@@ -412,7 +412,7 @@ function check_parent(){
 		$('.total_komisi_tambahan').val(temp2);
 		temp3 = accounting.formatMoney(temp3, "Rp ", 2, ".",',');
 		$('.total_all_komisi').val(temp3);
-	    $('#save-update-outlet').addClass('disabled');
+	    $('#save_update_outlet').addClass('disabled');
 
 	}else{
 	  tar_das.splice(0,tar_das.length);
@@ -428,7 +428,7 @@ function check_parent(){
 	  $('.total_komisi_tambahan').val(temp2);
 	  temp3 = accounting.formatMoney(0, "Rp ", 2, ".",',');
 	  $('.total_all_komisi').val(temp3);
-	  $('#save-update-outlet').addClass('disabled');
+	  $('#save_update_outlet').addClass('disabled');
 	}
 
 }
@@ -542,7 +542,7 @@ function hitung_komisi(o){
                   
                   $('.modal_penerus_tt').addClass('disabled');
                   $('.print-penerus').removeClass('disabled');
-                  $('#save-update-outlet').removeClass('disabled');
+                  $('#save_update_outlet').removeClass('disabled');
                   $('.idfaktur').val(response.id);
 
         });
@@ -580,7 +580,7 @@ $('.modal_outlet_tt').click(function(){
 	            	}else{
 	            		$('.totalterima_tt').val('Rp 0,00');
 	            	}
-	            	$('#save-update-outlet').removeClass('disabled');
+	            	$('#save_update_outlet').removeClass('disabled');
 
 	            }
 	    })
@@ -598,6 +598,8 @@ $('.simpan_outlet').click(function(){
 // return 1;
 	if (totalterima_tt != 'Rp 0,00') {
 
+
+
      	$.ajax({    
             type :"get",
             data : $('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
@@ -613,7 +615,54 @@ $('.simpan_outlet').click(function(){
 	}
 })
 
+function simpan_tt() {
+ 	var totalterima_tt = $('.totalterima_tt').val();
+ 	if (totalterima_tt == 'Rp 0,00') {
+ 		toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
+ 	}
+      swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+          $.ajax({
+          url:baseUrl + '/fakturpembelian/simpan_tt',
+          type:'get',
+          data:$('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+          success:function(response){
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                    showConfirmButton: true
+                    },function(){
+                      $('#save_update_outlet').removeClass('disabled');
+                    });
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
 
+        });
+       }
+      });  
+     });
+  }
 
   function tt_penerus_outlet() {
 
@@ -623,13 +672,14 @@ $('.simpan_outlet').click(function(){
       data: {cabang},
       dataType:'json',
       success:function(data){
-        $('.nota_tt').val(data.nota);
-        var agen_vendor = $('.agen_vendor').val();
-        var jatuh_tempo = $('.jatuh_tempo').val();
-        var total_jml   = $('.total_jml').val();
+        $('.notandaterima').val(data.nota);
+        var agen_vendor = $('.selectOutlet').val();
+        var jatuh_tempo = $('.jatuh_tempo_outlet').val();
+        var total_jml   = $('.total_all_komisi').val();
         total_jml       = total_jml.replace(/[^0-9\-]+/g,"")/100;
         $('.supplier_tt').val(agen_vendor);
         $('.jatuhtempo_tt').val(jatuh_tempo);
+        $('.tgl_tt').val('{{carbon\carbon::now()->format('d/m/Y')}}');
         $('.totalterima_tt').val(accounting.formatMoney(total_jml, "Rp ", 2, ".",','));
         $('#modal_tt_outlet').modal('show');
       },error:function(){

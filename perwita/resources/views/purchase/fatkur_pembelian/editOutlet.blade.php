@@ -85,24 +85,24 @@
   <table class="table " style="font-size: 14px;">
     <tr>
       <td>No Faktur</td>
-      <td><input type="text" name="no_faktur" readonly="" value="{{$data[0]->fp_nofaktur}}" class="form-control"></td>
+      <td><input type="text" name="no_faktur" readonly="" value="{{$data->fp_nofaktur}}" class="form-control"></td>
     </tr>
     <tr>
       <td>Tanggal</td>
       <td>
        <div class="input-group date">
          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-         <input type="text" name="tgl" readonly="" class="form-control" value="<?php echo date('d/F/Y',strtotime($data[0]->fp_tgl)); ?>">
+         <input type="text" name="tgl" readonly="" class="form-control" value="<?php echo date('d/F/Y',strtotime($data->fp_tgl)); ?>">
        </div>
      </td>
     </tr>
     <tr>
       <td>Agen/Vendor/Outlet</td>
-      <td><input type="text" name="pihak_ketiga" readonly="" value="{{$data[0]->nama}}" class="form-control pihak_ketiga"></td>
+      <td><input type="text" name="pihak_ketiga" readonly="" value="{{$data->kode}} - {{$data->nama}}" class="form-control pihak_ketiga"></td>
     </tr>
     <tr>
       <td>Keterangan</td>
-      <td><textarea onkeyup="autoNote()" class="form-control note_po" id="note1" readonly="" name="note" style="min-width: 100%;max-width: 310px;min-height: 100px; max-height: 100px">{{$data[0]->fp_keterangan}}</textarea></td>
+      <td><textarea onkeyup="autoNote()" class="form-control note_po" id="note1" readonly="" name="note" style="min-width: 100%;max-width: 310px;min-height: 100px; max-height: 100px">{{$data->fp_keterangan}}</textarea></td>
     </tr>
     <tr>
       <td>Editable</td>
@@ -110,8 +110,8 @@
     </tr>
     <tr>
       <td style="border:none;" colspan="2">
-        @if($data[0]->fp_pending_status == 'APPROVED')
-        @if($valid_cetak[0]->tt_nofp != null)
+        @if($data->fp_pending_status == 'APPROVED')
+        @if($valid_cetak->tt_nofp != null)
         <div class="cetak_tt">
          <a class="btn btn-warning pull-right" onclick="tt_print()"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>
         </div>
@@ -146,12 +146,12 @@
       <tr>
         <td>Total Tarif</td>
         <td>:</td>
-        <td><input style="width: 150px;" readonly="" type="text" value="{{'Rp ' . number_format($data[0]->pot_total_tarif)}}" name="total_tarif" class="form-control form-inline"></td>
+        <td><input style="width: 150px;" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_tarif)}}" name="total_tarif" class="form-control form-inline"></td>
       </tr>
       <tr>
         <td>Total Komisi Outlet</td>
         <td>:</td>
-        <td><input style="width: 150px;" readonly="" type="text" value="{{'Rp ' . number_format($data[0]->pot_total_komisi_outlet)}}" name="total_komisi_outlet" class="form-control form-inline"></td>
+        <td><input style="width: 150px;" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_komisi_outlet)}}" name="total_komisi_outlet" class="form-control form-inline"></td>
       </tr>
     </table>
     </div>
@@ -160,12 +160,12 @@
       <tr>
         <td>Total Komisi Tambahan</td>
         <td>:</td>
-        <td><input style="width: 150px;" readonly="" type="text" name="total_komisi_tambahan" value="{{'Rp ' . number_format($data[0]->pot_total_komisi_tambah)}}" class="form-control form-inline"></td>
+        <td><input style="width: 150px;" readonly="" type="text" name="total_komisi_tambahan" value="{{'Rp ' . number_format($data->pot_total_komisi_tambah)}}" class="form-control form-inline"></td>
       </tr>
       <tr>
         <td>Total Jumlah Komisi</td>
         <td>:</td>
-        <td><input style="width: 150px;" readonly="" type="text" name="total_all_komisi" value="{{'Rp ' . number_format($data[0]->pot_total_komisi)}}" class="form-control form-inline"></td>
+        <td><input style="width: 150px;" readonly="" type="text" name="total_all_komisi" value="{{'Rp ' . number_format($data->pot_total_komisi)}}" class="form-control form-inline"></td>
       </tr>
     </table>
     </div>
@@ -239,37 +239,37 @@
           <tr>
             <td>No Tanda Terima</td>
             <td>
-              @if($valid_cetak[0]->tt_noform == null)
+              @if($valid_cetak->tt_noform == null)
               <input type="text" name="no_tt" readonly="" class="form-control" value="{{$nota}}">
               @else
-              <input type="text" name="no_tt" readonly="" class="form-control" value="{{$valid_cetak[0]->tt_noform}}">
+              <input type="text" name="no_tt" readonly="" class="form-control" value="{{$valid_cetak->tt_noform}}">
               @endif
             </td>
           </tr>
           <tr>
             <td>Tanggal</td>
             <td>
-              @if($valid_cetak[0]->tt_tgl == null)
+              @if($valid_cetak->tt_tgl == null)
               <input type="text" name="modal_tanggal" class="form-control modal_tanggal" value="">
               @else
-               <input type="text" name="modal_tanggal" class="form-control modal_tanggal" value="<?php echo date('d-F-Y',strtotime($valid_cetak[0]->tt_tgl)); ?>">
+               <input type="text" name="modal_tanggal" class="form-control modal_tanggal" value="<?php echo date('d-F-Y',strtotime($valid_cetak->tt_tgl)); ?>">
               @endif
             </td>
           </tr>
           <tr>
             <td>Agen/Vendor/Outlet</td>
-            <td><input type="text" name="modal_vendor" class="form-control" readonly="" value="{{$data[0]->nama}}"></td>
+            <td><input type="text" name="modal_vendor" class="form-control" readonly="" value="{{$data->nama}}"></td>
           </tr>
           <tr>  
             <td colspan="2" style="font-size: 12px;">
-              @if($valid_cetak[0]->tt_noform == null)
+              @if($valid_cetak->tt_noform == null)
               <input type="checkbox" name="Kwitansi" style="margin-right: 10px;" checked=""><label style=" margin-right: 10%;">Kwitansi/Invoice/No</label>
               <input type="checkbox" name="Faktur" style="margin-right: 10px;" checked=""><label style=" margin-right: 10%;">Faktur Pajak</label>
               <input type="checkbox" name="Peranan" style="margin-right: 10px;" checked=""><label style=" margin-right: 10%;">Surat Peranan Asli</label>
               <input type="checkbox" name="Jalan" style="margin-right: 10px;" checked=""><label style=" margin-right: 0%;">Surat Jalan Asli</label>
               @else
 
-                @if($valid_cetak[0]->tt_kwitansi == 'TIDAK ADA')
+                @if($valid_cetak->tt_kwitansi == 'TIDAK ADA')
                   <input type="checkbox" name="Kwitansi" style="margin-right: 10px;">
                   <label style=" margin-right: 10%;">Kwitansi/Invoice/No</label>
                 @else
@@ -277,7 +277,7 @@
                   <label style=" margin-right: 10%;">Kwitansi/Invoice/No</label>
                 @endif
 
-                @if($valid_cetak[0]->tt_faktur == 'TIDAK ADA')
+                @if($valid_cetak->tt_faktur == 'TIDAK ADA')
                   <input type="checkbox" name="Faktur" style="margin-right: 10px;">
                   <label style=" margin-right: 10%;">Faktur Pajak</label>
                 @else
@@ -285,7 +285,7 @@
                   <label style=" margin-right: 10%;">Faktur Pajak</label>
                 @endif
 
-                @if($valid_cetak[0]->tt_suratperan == 'TIDAK ADA')
+                @if($valid_cetak->tt_suratperan == 'TIDAK ADA')
                   <input type="checkbox" name="Peranan" style="margin-right: 10px;">
                   <label style=" margin-right: 10%;">Surat Peranan Asli</label>
                 @else
@@ -293,7 +293,7 @@
                   <label style=" margin-right: 10%;">Surat Peranan Asli</label>
                 @endif
 
-                @if($valid_cetak[0]->tt_suratjalanasli == 'TIDAK ADA')
+                @if($valid_cetak->tt_suratjalanasli == 'TIDAK ADA')
                   <input type="checkbox" name="Jalan">
                   <label style=" margin-right: 0%;">Surat Jalan Asli</label>
                 @else
@@ -306,10 +306,10 @@
           <tr>
             <td>Lain Lain</td>
              <td>
-              @if($valid_cetak[0]->tt_noform == null)
+              @if($valid_cetak->tt_noform == null)
               <input type="text" name="modal_lain" class="form-control" value="">
               @else
-              <input type="text" name="modal_lain" class="form-control" value="{{$valid_cetak[0]->tt_lainlain}}">
+              <input type="text" name="modal_lain" class="form-control" value="{{$valid_cetak->tt_lainlain}}">
               @endif
              </td>
           </tr>
@@ -318,10 +318,10 @@
           <td>
            <div class="input-group date">
              <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-             @if($valid_cetak[0]->tt_noform == null)
+             @if($valid_cetak->tt_noform == null)
              <input type="text" name="tgl_terima"  class="form-control tgl_terima" >
              @else
-             <input type="text" name="tgl_terima"  class="form-control tgl_terima" value="<?php echo date('d-F-Y',strtotime($valid_cetak[0]->tt_tglkembali)); ?>">
+             <input type="text" name="tgl_terima"  class="form-control tgl_terima" value="<?php echo date('d-F-Y',strtotime($valid_cetak->tt_tglkembali)); ?>">
              @endif
            </div>
          </td>
@@ -329,10 +329,10 @@
           <tr>
             <td>Total di Terima</td>
              <td>
-              @if($valid_cetak[0]->tt_noform == null)
-              <input type="text" name="total_terima" class="form-control total_terima" value="{{'Rp ' . number_format($data[0]->pot_total_komisi,2,',','.')}}">
+              @if($valid_cetak->tt_noform == null)
+              <input type="text" name="total_terima" class="form-control total_terima" value="{{'Rp ' . number_format($data->pot_total_komisi,2,',','.')}}">
               @else
-              <input type="text" name="total_terima" class="form-control total_terima" value="{{'Rp ' . number_format($valid_cetak[0]->tt_totalterima,2,',','.')}}">
+              <input type="text" name="total_terima" class="form-control total_terima" value="{{'Rp ' . number_format($valid_cetak->tt_totalterima,2,',','.')}}">
               @endif
             </td>
           </tr>
@@ -362,7 +362,7 @@ addDays.setDate(addDays.getDate() + 30);
 var d = new Date();
 d.setDate(d.getDate());
 
-@if($valid_cetak[0]->tt_tgl == null)
+@if($valid_cetak->tt_tgl == null)
    $('.tgl_terima').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',
@@ -374,7 +374,7 @@ d.setDate(d.getDate());
     });
 @endif
 
-@if($valid_cetak[0]->tt_tgl == null)
+@if($valid_cetak->tt_tgl == null)
 $('.modal_tanggal').datepicker({
         autoclose: true,
         format: 'dd-MM-yyyy',
@@ -393,8 +393,8 @@ function modal_tt(){
 function checker(){
 
 var checker =$('.checker:checked').val();
-var harga =  "{{'Rp ' . number_format($data[0]->pot_total_komisi)}}";
-console.log(checker);
+var harga =  "{{'Rp ' . number_format($data->pot_total_komisi)}}";
+
 if(checker != undefined){
    $.ajax({
         url:baseUrl + '/fakturpembelian/getpembayaranoutlet',
@@ -410,12 +410,12 @@ if(checker != undefined){
             
          });
 
-         $('.reportrange').val('{{$tgl1}} - {{$tgl2}}'  );
+         $('.reportrange').val('{{$start}} - {{$second}}'  );
         }
 
       })
 
-    cari_outlet();
+    cari_outlet1();
     $('.msh_hdn').attr('hidden',true);
 }else{
   $('.outlet').html('');
@@ -425,11 +425,10 @@ if(checker != undefined){
 }
 }
 
-function  cari_outlet(){
+function  cari_outlet1(){
    $('.loading').css('display', 'block');
  var agen = $('.selectOutlet').val();
-
-
+ console.log(agen);
       $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -485,13 +484,13 @@ function save_outlet1(){
 
 
 function save_tt1(){
-  var faktur = "{{$data[0]->fp_nofaktur}}";
+  var faktur = "{{$data->fp_nofaktur}}";
   faktur = faktur.toString();
 
   $.ajax({
       url:baseUrl + '/fakturpembelian/simpan_tt',
       type:'get',
-      data:'id={{$id}}'+'&'+'nota='+faktur+'&'+'supplier='+"{{$data[0]->pot_kode_outlet}}"+'&'+$('.table_terima :input').serialize(),
+      data:'id={{$id}}'+'&'+'nota='+faktur+'&'+'supplier='+"{{$data->pot_kode_outlet}}"+'&'+$('.table_terima :input').serialize(),
       success:function(response){
         if(response.status[0] == '1'){
         toastr.success("Data Berhasil Disimpan")
@@ -507,7 +506,7 @@ function save_tt1(){
 
 function save_tt(){
 
-  var faktur = "{{$data[0]->fp_nofaktur}}";
+  var faktur = "{{$data->fp_nofaktur}}";
   faktur = faktur.toString();
 
   try{
@@ -530,7 +529,7 @@ function save_tt(){
    $.ajax({
       url:baseUrl + '/fakturpembelian/simpan_tt',
       type:'get',
-      data:'id={{$id}}'+'&'+'nota='+faktur+'&'+'supplier='+"{{$data[0]->pot_kode_outlet}}"+'&'+$('.table_terima :input').serialize(),
+      data:'id={{$id}}'+'&'+'nota='+faktur+'&'+'supplier='+"{{$data->pot_kode_outlet}}"+'&'+$('.table_terima :input').serialize(),
       success:function(response){
         if(response.status[0] == '1'){
         swal({
@@ -570,10 +569,10 @@ function save_tt(){
 }
 
 function tt_print(){
-  @if($valid_cetak[0]->tt_tgl == null)
+  @if($valid_cetak->tt_tgl == null)
   var win = window.open('../cetak_tt?nota={{$nota}}&id={{$id}}');
   @else
-  var win = window.open('../cetak_tt?nota={{$valid_cetak[0]->tt_noform}}&id={{$id}}');
+  var win = window.open('../cetak_tt?nota={{$valid_cetak->tt_noform}}&id={{$id}}');
   @endif
 }
 
