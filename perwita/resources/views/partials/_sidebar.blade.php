@@ -69,22 +69,26 @@
                             <a href="{{ url('setting/daftarmenu')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Daftar Menu </a>
                         </li> -->
 
-                        <li>
-                                <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    @if(Auth::user()->PunyaAkses('Tambah Periode','aktif'))
-                                    <li>
-                                        <a href="#" id="setting_periode"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tambah Periode</a>
-                                    </li>
-                                    @endif
-                                    @if(Auth::user()->PunyaAkses('Setting Periode','aktif'))
-                                    <li>
-                                        <a href="#" id="option_periode"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Setting Periode</a>
-                                    </li>
-                                    @endif
+                        @if(Auth::user()->PunyaAkses('Tambah Periode','aktif') || Auth::user()->PunyaAkses('Setting Periode','aktif'))
 
-                                </ul>
-                            </li>
+                        <li>
+                            <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
+                            <ul class="nav nav-third-level">
+                                @if(Auth::user()->PunyaAkses('Tambah Periode','aktif'))
+                                <li>
+                                    <a href="#" id="setting_periode"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tambah Periode</a>
+                                </li>
+                                @endif
+                                @if(Auth::user()->PunyaAkses('Setting Periode','aktif'))
+                                <li>
+                                    <a href="#" id="option_periode"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Setting Periode</a>
+                                </li>
+                                @endif
+
+                            </ul>
+                        </li>
+
+                        @endif
 
                     </ul>
                 </li>
@@ -1113,7 +1117,7 @@
                          {{Request::is('golonganactiva/golonganactiva') ? 'active' : '' || 
                             Request::is('golonganactiva/golonganactiva/*') ? 'active' : ''}}
 
-                         " href="{{ url('golonganactiva/golonganactiva')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Golongan Activa </a>
+                         " href="{{ url('golonganactiva/golonganactiva/'.Session::get('cabang'))}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Golongan Activa </a>
                         </li>
                         @endif
                         @if(Auth::user()->PunyaAkses('Nota Debit/Kredit Aktiva','aktif'))
