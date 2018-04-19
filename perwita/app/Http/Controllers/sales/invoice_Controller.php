@@ -824,7 +824,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
              $save_header_invoice = DB::table('invoice')
                                      ->insert([
                                           'i_nomor'              =>  $nota,
-                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
                                           'i_tgl_sampai_do'      =>  $do_akhir,
@@ -1078,7 +1078,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
                                           'i_nomor'              =>  $request->nota_invoice,
-                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
                                           'i_tgl_sampai_do'      =>  $do_akhir,
@@ -1347,7 +1347,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
              $save_header_invoice = DB::table('invoice')
                                      ->insert([
                                           'i_nomor'              =>  $nota,
-                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
                                           'i_tgl_sampai_do'      =>  $do_akhir,
