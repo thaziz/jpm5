@@ -18,6 +18,8 @@ use App\itemsupplier;
 use App\masterbank;
 use App\masterbank_dt;
 
+use App\d_golongan_aktiva;
+
 use DB;
 
 use Session;
@@ -1424,8 +1426,6 @@ class MasterPurchaseController extends Controller
 		return view('purchase/master/master_activa/detail');
 	}
 	
-
-
 	public function detailgarislurusmasteractiva() {
 		return view('purchase/master/master_activa/detailgarislurus');
 	}
@@ -1435,11 +1435,26 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function creategolonganactiva() {
-		return view('purchase/master/golongan_activa/create');
+		$cab = DB::table("cabang")->select("kode", "nama")->get();
+
+		if(Session::get("cabang") != "000"){
+			$cab = DB::table("cabang")->select("kode", "nama")->where("kode", Session::get("cabang"))->get();
+		}
+		return view('purchase/master/golongan_activa/create')->withCab($cab);
 	}
 
 	public function golonganactiva() {
 		return view('purchase/master/golongan_activa/index');
+	}
+
+	public function ask_kode($cabang){
+		$data = DB::table("d_golongan_aktiva")
+				->select(DB::raw("max(to_number(substring(id, 6), '99G999D9S')) as id"))
+				->where("kode_cabang", $cabang)->first();
+
+		$response = (count($data) > 0) ? ($data->id + 1) : $data->id;
+
+		return json_encode($response);
 	}
 
 	public function nota_debit() {
