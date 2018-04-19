@@ -729,10 +729,15 @@ class BiayaPenerusController extends Controller
 			$tgl[$i] = str_replace('/', '-', $tgl[$i]);
 			$tgl[$i] = Carbon::parse($tgl[$i])->format('Y-m-d');
 		}
+
+		$id = DB::table('faktur_pembelian')
+				->join('pembayaran_outlet','pot_faktur','=','fp_nofaktur')
+				->where('fp_idfaktur',$id)
+				->first();
 		// return $tgl;
 		if(isset($tgl[1])){
 
-			$list = DB::select("SELECT agen.kode_cabang,nomor,tanggal,nama_pengirim,nama_penerima,asal.nama as asal,asal.id as id_asal,
+			$list = DB::select("SELECT potd_pod,potd_potid,potd_pod,agen.kode_cabang,nomor,tanggal,nama_pengirim,nama_penerima,asal.nama as asal,asal.id as id_asal,
 			 							tujuan.nama as tujuan,tujuan.id as id_tujuan,status,agen.nama as nama_agen,tarif_dasar,biaya_komisi,total_net
 					 					FROM delivery_order
 										LEFT JOIN agen on agen.kode = kode_outlet
@@ -740,6 +745,8 @@ class BiayaPenerusController extends Controller
 										(SELECT id,nama FROM kota) as asal on id_kota_asal = asal.id
 										LEFT JOIN 
 										(SELECT id,nama FROM kota) as tujuan on id_kota_tujuan = tujuan.id
+										LEFT JOIN
+										pembayaran_outlet_dt on potd_pod = nomor
 										WHERE delivery_order.tanggal >= '$tgl[0]'
 										AND delivery_order.tanggal <= '$tgl[1]'
 										AND delivery_order.kode_outlet = '$request->selectOutlet'
