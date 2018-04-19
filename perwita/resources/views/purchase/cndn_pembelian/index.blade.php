@@ -36,9 +36,11 @@
                     <h5> CN / DN Pembelian
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                         @if(Auth::user()->punyaAkses('CN/DN Pembelian','tambah'))
                       <div class="text-right">
                        <a class="btn btn-sm btn-success" aria-hidden="true" href="{{ url('cndnpembelian/createcndnpembelian')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>
+                        @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -85,8 +87,14 @@
                         <td style='text-align: right'> {{ number_format($data['cndnt'][$i][0]->cndn_bruto, 2) }} </td>
                         <td> {{$data['cndnt'][$i][0]->cndn_keterangan}} </td>
                       
-                        <td> <a class="btn btn-sm btn-success" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndnt'][$i][0]->cndn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  <a class="btn btn-sm btn-danger" onclick="hapusData({{$data['cndnt'][$i][0]->cndn_id.''}})"><i class="fa fa-trash" aria-hidden="true"></i> </a> </td>
-                        
+                        <td> 
+                            @if(Auth::user()->punyaAkses('CN/DN Pembelian','ubah'))
+                        <a class="btn btn-sm btn-success" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndnt'][$i][0]->cndn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>
+                            @endif
+
+                             @if(Auth::user()->punyaAkses('CN/DN Pembelian','hapus'))
+                        <a class="btn btn-sm btn-danger" onclick="hapusData({{$data['cndnt'][$i][0]->cndn_id.''}})"><i class="fa fa-trash" aria-hidden="true"></i> </a> </td>
+                            @endif
                       </tr>
                       <?php $n++ ?>
                    

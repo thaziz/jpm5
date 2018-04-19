@@ -485,9 +485,17 @@
 
                                   <td style='text-align:right'>   <p class="pph_text"> {{ number_format($cndt->fp_pph, 2) }} </p> <input type='hidden' class='nilaipph form-control input-sm' value="{{ number_format($cndt->cndt_hasilpph, 2) }}" readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm inputpph' value="{{$cndt->cndt_nilaipph}}" readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm jenispph' value="{{$cndt->cndt_jenispph}}" readonly style='text-align:right' name='jenispph[]'></td>  <!--pph-->
 
-                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> <input type='hidden' class='brutocn2' value="{{ number_format($cndt->cndt_bruto, 2) }}" name='brutocn[]'> <input type='hidden' class='dppcn2' value="{{ number_format($cndt->cndt_dpp, 2) }}" name='dppcn[]'> <input class="hasilakhir2" type="text" value="{{ number_format($cndt->fp_sisapelunasan, 2) }}" name="hasilakhir[]">  </td> <!-- nettocdcn -->
+                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> <input type='hidden' class='brutocn2' value="{{ number_format($cndt->cndt_bruto, 2) }}" name='brutocn[]'> <input type='hidden' class='dppcn2' value="{{ number_format($cndt->cndt_dpp, 2) }}" name='dppcn[]'> <input class="hasilakhir2" type="hidden" value="{{ number_format($cndt->fp_sisapelunasan, 2) }}" name="hasilakhir[]">  </td> <!-- nettocdcn -->
 
-                                  <td>  <a class='btn btn-xs btn-warning' onclick="edit(this)" data-id="{{$index + 1}}" type='button'><i class='fa fa-pencil'></i> </a> <a class='btn btn-xs btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </a>   </td>
+                                  <td> 
+                                  @if($cndt->cndt_statusfpg == 'YES')
+                                    <p style="color:red"> <i> Data sudah Posting FPG tidak bisa di edit </i></p>
+                                  @else
+                                    <a class='btn btn-xs btn-warning' onclick="edit(this)" data-id="{{$index + 1}}" type='button'><i class='fa fa-pencil'></i> </a> <a class='btn btn-xs btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </a>
+
+                                  @endif                                  
+
+                                  </td>
                               </tr>
                               @endforeach
                               </tbody>

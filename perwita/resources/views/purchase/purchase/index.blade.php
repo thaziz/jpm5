@@ -77,9 +77,11 @@
                     <h5> Pembelian Order
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                     @if(Auth::user()->punyaAkses('Purchase Order','hapus'))
                     <div class="text-right">
                         <a class="btn btn-success" href="{{url('purchaseorder/createpurchase')}}"> <i class="fa fa-plus"> </i> Buat PO </a>
                     </div>
+                    @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -132,12 +134,16 @@
                           </td>
                           <td> 
                             <button class="btn btn-sm btn-primary" onclick="proseskeuangan({{$po->po_id}})" type="button" id="createmodal" data-toggle="modal" data-target="#myModal2"> PROSES  </button> &nbsp;  
+
+                            @if(Auth::user()->punyaAkses('Purchase Order','hapus'))
                             @if($po->po_setujufinance == '')
                               <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapusData({{$po->po_id}})">
                                 <i class="fa fa-trash" aria-hidden="true"></i>
                               </a>
                             @endif
-                            
+                            @endif
+
+                            @if(Auth::user()->punyaAkses('Purchase Order','print'))
                             @if($po->po_setujufinance != '')
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span> @endif
                             @if($po->po_setujufinance == 'DISETUJUI')

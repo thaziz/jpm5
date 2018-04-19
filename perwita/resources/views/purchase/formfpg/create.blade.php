@@ -58,24 +58,25 @@
                         <div class="col-xs-6"> 
                             <table class="table table-striped table-bordered">
                             <tr>
-                              <th> Cabang </th>
-                              <td> 
-                                   @if(Session::get('cabang') != 000)
-                                    <select class="form-control disabled cabang" name="cabang">
-                                        @foreach($data['cabang'] as $cabang)
-                                      <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
-                                      @endforeach
-                                    </select>
-                                    @else
-                                      <select class="form-control cabang" name="cabang">
-                                        @foreach($data['cabang'] as $cabang)
-                                        <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
-                                        @endforeach
-                                      </select> 
-                                    @endif                                 
-                                  </select>
+                              <td> Cabang </td>
+                              <td>
+                                   @if(Auth::user()->punyaAkses('Form Permintaan Giro','cabang'))
+                                <select class="form-control chosen-select-width  cabang" name="cabang">
+                                    @foreach($data['cabang'] as $cabang)
+                                  <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                  @endforeach
+                                </select>
+                                @else
+                                  <select class="form-control disabled cabang" name="cabang">
+                                    @foreach($data['cabang'] as $cabang)
+                                    <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                    @endforeach
+                                  </select> 
+                                @endif
+                                
 
-                                 </td>
+                              </td>
+                             
                             </tr>
 
                               <tr>
@@ -805,6 +806,11 @@
                  nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
                
                 $('.nofpg').val(nofpg);
+
+                nofpg = $('.nofpg').val();
+                if(nofpg == ''){
+                    location.reload();
+                }
           },
         })
 
@@ -945,7 +951,7 @@
     })
 
 
-     $('.cabang').attr('disabled' , true);
+//     $('.cabang').attr('disabled' , true);
 
     $('.reload').click(function(){
       location.reload();
@@ -1185,41 +1191,7 @@
 
                     cndn = data.cndn;
                     $n = 1;
-                   /* for($g = 0 ; $g < data.jeniscndn.length; $g++){
-                      if(data.jeniscndn[$g] == 'D'){
-                        for($p = 0; $p < data.cndn.length; $p++){ 
-                          for($c = 0; $c < data.cndn[$p].length; $c++){
-                              row = "<tr>" +
-                                "<td>"+$n+"</td>" +
-                                "<td>"+cndn[$p][$c].cndn_nota+"</td>" +
-                                "<td>"+cndn[$p][$c].cndn_tgl+"</td>" +
-                                "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+"</td>" +
-                                "</tr>";
-                                $('#table-debit').append(row);  
-                                $n++; 
-                          }
-                        }
-                      }
-                      else {
-
-                        for($p = 0; $p < data.cndn.length; $p++){ 
-                          for($c = 0; $c < data.cndn[$p].length; $c++){
-                              row = "<tr>" +
-                                "<td>"+$n+"</td>" +
-                                "<td>"+cndn[$p][$c].cndn_nota+"</td>" +
-                                "<td>"+cndn[$p][$c].cndn_tgl+"</td>" +
-                                "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+"</td>" +
-                                "</tr>";
-                                $('#table-kredit').append(row);  
-                                $n++; 
-                          }
-                        }
-                      }
-                    }*/
-              
-                  
-
-                     
+                                      
                        for($p = 0; $p < data.cndn.length; $p++){                      
                              for($c = 0 ; $c < data.cndn[$p].length; $c++){
                                if(data.cndn[$p][$c].cndn_jeniscndn == 'D'){
@@ -1228,7 +1200,12 @@
                                 "<td>"+$n+"</td>" +
                                 "<td>"+cndn[$p][$c].cndn_nota+"</td>" +
                                 "<td>"+cndn[$p][$c].cndn_tgl+"</td>" +
-                                "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+" <input type='hidden' class='dnbruto' value='"+cndn[$p][$c].cndn_bruto+"'> </td>" +
+                                "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+" <input type='hidden' class='dnbruto' value='"+cndn[$p][$c].cndn_bruto+"'>"+
+                                 "<input type='hidden' value='"+cndn[$p][$c].cndn_id+"' name='idcndn[]'>" + //idcn
+                                 "<input type='hidden' value='"+cndn[$p][$c].cndt_idfp+"' name='idcnfp[]'>" + //idfp
+                                 "<input type='hidden' value='"+cndn[$p][$c].cndt_nettocn+"' name='nettocn[]'>" + //idfp
+
+                                "</td>" +
                                 "</tr>";
                                 $('#table-debit').append(row);  
                                 $n++;  
@@ -1239,16 +1216,18 @@
                                       "<td>"+$n+"</td>" +
                                       "<td>"+cndn[$p][$c].cndn_nota+"</td>" +
                                       "<td>"+cndn[$p][$c].cndn_tgl+"</td>" +
-                                      "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+" <input type='hidden' class='cnbruto' value='"+cndn[$p][$c].cndn_bruto+"'></td>" +
+                                      "<td>"+addCommas(cndn[$p][$c].cndn_bruto)+" <input type='hidden' class='cnbruto' value='"+cndn[$p][$c].cndn_bruto+"'>" +
+                                         "<input type='hidden' value='"+cndn[$p][$c].cndn_id+"' name='idcndn[]'>" + //idcn
+                                         "<input type='hidden' value='"+cndn[$p][$c].cndt_idfp+"' name='idcnfp[]'>" + //idfp
+                                         "<input type='hidden' value='"+cndn[$p][$c].cndt_nettocn+"' name='nettocn[]'>" + //idfp
+                                      "</td>" +
                                       "</tr>";
                               $('#table-kredit').append(row);
                               $n++;
                              }
                           }                         
                         }
-                      
-                    
-                   
+                  
                         $jumlahdebit = 0;
                         $('.dnbruto').each(function(){
                           val = $(this).val();
@@ -2028,6 +2007,13 @@
     // Getter
     $('.jenisbayar').change(function(){     
       idjenis = $(this).val(); 
+
+      nofpg = $('.nofpg').val();
+      if(nofpg == ''){
+        toastr.info('Data No FPG belum ada, form akan reload otomatis');
+        location.reload();
+      }
+
        var tablefaktur = $('#tbl-faktur').DataTable();  
       tablefaktur.clear().draw();
         $.ajax({ //AJAX
@@ -2745,7 +2731,77 @@
     //NOMINAL BANK
     arrnominal = [];
     $('.nominal').change(function(){
+      alert('guy');
           totalbayar = $('.totbayar').val();
+          jenisbayar = $('.jenisbayar').val();
+          if(jenisbayar == 5){
+              idbank = $('.idbank').val();
+    
+       val = $(this).val();
+      
+       val = accounting.formatMoney(val, "", 2, ",",'.');
+       $(this).val(val);
+       console.log(idbank);
+
+       if(idbank != ''){
+          $('.nominalbank' + idbank).val(val);
+          totalbayar = $('.totbayar').val();
+          aslitotal = totalbayar.replace(/,/g, '');
+       }
+       else {
+           $('.nominalbank1').val(val);
+       }
+
+        
+
+
+
+          var jmlhnominal = 0;
+        $('.nominaltblbank').each(function(){
+         
+          totalbayar = $('.totbayar').val();
+          aslitotal = totalbayar.replace(/,/g, '');
+          id = $(this).data('id');
+          val = $(this).val();
+           
+           val2 = val.replace(/,/g, '');
+         
+          if(val2 != ''){
+            jmlhnominal += parseFloat   (val2);
+           
+          }
+         
+        })
+        
+        console.log(jmlhnominal);
+        jenisbayarnominal = $('.jenisbayar').val();
+        // alert(jmlhnominal);
+
+        if(jenisbayarnominal != '5'){
+            if(jmlhnominal > aslitotal){
+           toastr.info('Angka yang di inputkan lebih dari Total Bayar :) ');
+            $('.nominal').val('');
+            $('.nominalbank' + idbank).val('');
+
+        }
+        else {
+
+           val3 = parseFloat(jmlhnominal);
+           val4 = jmlhnominal.toFixed(2);
+           $('.ChequeBg').val(addCommas(val4));
+        }
+        }
+        else {
+           val3 = parseFloat(jmlhnominal);
+           val4 = jmlhnominal.toFixed(2);
+          $('.totbayar').val(addCommas(val4));
+          $('.ChequeBg').val(addCommas(val4));
+        }
+      
+          }
+          else {
+
+
           if(totalbayar == '') {
           
             toastr.info("Anda Belum menginputkan nilai pembayaran di transaksi :)");
@@ -2818,7 +2874,7 @@
 
           }
 
-     
+        }
       
 
        

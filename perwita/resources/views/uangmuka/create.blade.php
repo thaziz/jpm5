@@ -60,29 +60,27 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                         <div class="row">
-                      @if(session::get('cabang') != 000)
-                         <div class="form-group">
+                            <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label> Cabang  </label>
-                          <select class="form-control disabled cabang" name="cabang">
-                            @foreach($cabang as $cabang)
-                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
-                            @endforeach
-                          </select>                          
-                        </div>
-                        </div>
-                        @else
-                          <div class="form-group">
-                         <div class="col-sm-8 col-sm-offset-2">
-                          <label> Cabang  </label>
-                          <select class="form-control cabang" name="cabang">
-                            @foreach($cabang as $cabang)
-                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
-                            @endforeach
-                          </select>                          
-                        </div>
-                        </div>
-                        @endif  
+
+                             @if(Auth::user()->punyaAkses('Uang Muka','cabang'))
+                            <select class="form-control chosen-select-width cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              @endforeach
+                            </select>
+                            @else
+                              <select class="form-control disabled cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                            @endif
+                          </div>
+                          </div>
+
+                    
 
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">

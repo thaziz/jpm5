@@ -181,7 +181,7 @@
                   
                 <div class="box-body">
                   
-                
+                @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','hapus'))
                 @if($data['po'][0]->po_setujufinance == 'DISETUJUI')
                  <button class="btn-sm btn btn-primary edit" type="button" onclick="cetak()"> Print Data </button>
                 @else
