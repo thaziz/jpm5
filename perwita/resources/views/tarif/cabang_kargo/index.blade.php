@@ -56,8 +56,12 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
+                      @if(Auth::user()->punyaAkses('Tarif Cabang Kargo','tambah'))
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
+                       @endif
+                      @if(Auth::user()->punyaAkses('Tarif Cabang Kargo','print'))
                        <a href="{{ url('/laporan_master_penjualan/tarif_cabang_kargo') }}" class="btn btn-warning"><i class="glyphicon glyphicon-print"></i>Laporan</a>
+                       @endif
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -189,18 +193,33 @@
                                         </select>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td style="padding-top: 0.4cm" >Cabang</td>
-                                    <td colspan="3">
-                                        <select  class="form-control d" name="ed_cabang" style="text-align: right;">
+                                 @if(Auth::user()->punyaAkses('Tarif Cabang Kargo','cabang'))
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td>
+                                        <select  class="form-control d" name="ed_cabang"  style="text-align: right;">
                                         
-                                            <option value="">Pilih - Cabang</option>
+                                            <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
                                             @foreach ($cabang_default as $a)
-                                                <option value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
+                                                <option @if(Auth::user()->kode_cabang == $a->kode) selected="" @endif value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                 </tr>
+                                @else
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td class="disabled">
+                                        <select  class="form-control d" name="ed_cabang"  style="text-align: right;">
+                                        
+                                            <option value="">-- Pilih Cabang Terlebih Dahulu --</option>
+                                            @foreach ($cabang_default as $a)
+                                                <option @if(Auth::user()->kode_cabang == $a->kode) selected="" @endif value="{{ $a->kode }}" >{{ $a->kode }} - {{ $a->nama }}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                @endif
                                 <tr>
                                     <td style="padding-top: 0.4cm">tarif</td>
                                     <td>   
@@ -295,7 +314,6 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-
     $('#cb_kota_asal').change(function(){
         var idkota = $('#cb_kota_asal :selected').data('kota');
         // alert(idkota);
@@ -365,7 +383,6 @@
 
         $("select[name='cb_jenis']").val('');
         $("select[name='cb_angkutan']").val('');
-        $("select[name='ed_cabang']").val('');
         $("select[name='satuan']").val('');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
         $("select[name='ed_acc_penjualan']").val('').trigger('chosen:updated');
@@ -530,7 +547,11 @@
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
             {
-                if(data.crud == 'N'){
+                console.log(data);
+                if (data.crud == '0') {
+                    swal("warning","Data Telah ada Di Database",'warning');
+                }else{
+                    if(data.crud == 'N'){
                     if(data.result == 1){
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );
@@ -553,10 +574,12 @@
                 }else{
                     swal("Error","invalid order","error");
                 }
+                }
+                
             },
             error: function(jqXHR, textStatus, errorThrown)
             {
-               swal("Kode Tidak boleh sama !", 'periksa sekali lagi', "warning");
+               swal("Terjadi Kealahan !", 'Kemunkinan Data Terdapat Kesamaan', "warning");
             }
         });
     });

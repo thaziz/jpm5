@@ -67,10 +67,13 @@
                           <td> {{$gitem->kode_jenisitem}} </td>
                           <td> {{$gitem->keterangan_jenisitem}} </td>
                           <td> 
-                        
+                          @if(Auth::user()->punyaAkses('Group Item','ubah'))
                           <a class="btn btn-success" href="{{url('masterjenisitem/detailmasterjenisitem/'.$gitem->kode_jenisitem .'')}}"> <i class="fa fa-arrow-right" aria-hidden="true"></i>  </a>
-
+                          @endif
+                          @if(Auth::user()->punyaAkses('Group Item','hapus'))
                             <a href="#" class="btn btn-danger" onclick="hapusData('{{$gitem->kode_jenisitem}}')"><i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
+                          @endif
+
                                         {{ Form::open(['url'=>'masterjenisitem/deletemasterjenisitem/'. $gitem->kode_jenisitem, 'method' => 'delete', 'id' => $gitem->kode_jenisitem ]) }}
                                         {{ Form::close() }}
                           </td>

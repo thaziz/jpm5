@@ -350,7 +350,7 @@
                 " href="{{ url('master_sales/tipe_angkutan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tipe Angkutan</a>
                 </li>
                 @endif
-                @if(Auth::user()->PunyaAkses('Tipe Kendaraan','aktif'))
+                @if(Auth::user()->PunyaAkses('Kendaraan','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan 
 
@@ -498,7 +498,7 @@
                          Request::is('sales/tarif_cabang_dokumen/*') ? 'active' : ''}} "><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tarif Cabang Dokumen</a>
                         </li>
                         @endif
-                        @if(Auth::user()->PunyaAkses('Tarif Cabang Kilogram','aktif'))
+                        @if(Auth::user()->PunyaAkses('Tarif Penerus Kilogram','aktif'))
                         <li>
                             <a class="sidebar master-perusahaan 
 

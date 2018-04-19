@@ -21,7 +21,7 @@ class subconController extends Controller
 {
 	public function subcon(){
 		$cabang =Auth::user()->kode_cabang;
-		if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR'){
+		if (Auth::user()->punyaAkses('Kontrak Subcon','all')){
 			$data = DB::table('kontrak_subcon')
 				 ->join('cabang','kode','=','ks_cabang')
 				 ->orderBy('ks_id','asc')

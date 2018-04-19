@@ -80,10 +80,10 @@
                         <!-- <td align="center"><input type="checkbox" class="allow" name="cek[]"></td> -->
                         <td class="text-center">
                           <div class="btn-group">
-                          @if(Auth::user()->PunyaAkses('Master subcon','ubah'))
+                          @if(Auth::user()->PunyaAkses('Kontrak Subcon','ubah'))
                             <a href="{{url('master_subcon/edit_subcon')}}/{{$val->ks_id}}" data-toggle="tooltip" title="" class="btn btn-warning btn-xs btnedit" data-original-title="Edit"><i class="fa fa-pencil"></i></a>
                           @endif
-                          @if(Auth::user()->PunyaAkses('Master subcon','hapus'))
+                          @if(Auth::user()->PunyaAkses('Kontrak Subcon','hapus'))
                             <a onclick="hapus('{{$val->ks_id}}')" data-toggle="tooltip" title="" class="btn btn-xs btn-danger btnhapus" data-original-title="Delete"><i class="fa fa-times"></i></a>
                           @endif
                           </div>

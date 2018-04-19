@@ -77,6 +77,7 @@
                                 <td>
                                   <h4> {{$fpg->jenisbayar}} <input type="hidden" value="{{$fpg->fpg_jenisbayar}}" name="jenisbayar" class="jenisbayarheader"></h4>
                                 </td>
+                                 <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                               </tr>
                             </table>
                         </div>
@@ -285,24 +286,66 @@
                                                 <div id="creditnota" class="tab-pane">
                                                   <div class="panel-body">
                                                     <div class="col-sm-12">
-                                                            <table class="table table-bordered" style="margin-bottom: 40%">
+                                                            <table class="table table-bordered" style="margin-bottom: 40%" id="table-kredit">
                                                               <tr>
                                                                 <th> No </th>
                                                                 <th style="width:40%"> No Bukti </th>
                                                                 <th style="width:40%"> Tanggal </th>
                                                                 <th style="width:100%"> Jumlah Bayar </th>
                                                               </tr>
-                                                              @for($j=0;$j< count($data['cndn']);$j++)
-                                                                @for($k=0; $k < count($data['cndn'][$j]); $k++)
-                                                                  <tr style="height: 30%">
-                                                                    <td> </td>
-                                                                    <td> </td>
-                                                                    <td> </td>
-                                                                    <td> </td>
+                                                               <?php $no = 1; ?>  
+                                                             @for($p = 0; $p < count($data['cndn']); $p++)
+                                                                                 
+                                                               @for($c = 0 ; $c < count($data['cndn'][$p]); $c++)
+                                                               @if($data['cndn'][$p][$c]->cndn_jeniscndn == 'K')
+                                                                  
+                                                                  <tr>
+                                                                  <td> <?php echo $no ?> </td>
+                                                                  <td> {{$data['cndn'][$p][$c]->cndn_nota}} </td>
+                                                                  <td> {{$data['cndn'][$p][$c]->cndn_tgl}}    </td>
+                                                                  <td>  {{ number_format($data['cndn'][$p][$c]->cndn_bruto, 2) }}  <input type='hidden' class='cnbruto' value="{{$data['cndn'][$p][$c]->cndn_bruto}}"> </td>
                                                                   </tr>
-                                                                @endfor
+                                                                    
+                                                                 
+
+                                                                  <?php $no++ ?>  
+                                                                @endif
+                                                                
                                                               @endfor
-                                                              
+
+                                                              @endfor
+
+                                                            </table>
+                                                       </div>
+                                                  </div>
+                                                </div>
+
+                                                <div id="debitnota" class="tab-pane">
+                                                  <div class="panel-body">
+                                                    <div class="col-sm-12">
+                                                            <table class="table table-bordered" style="margin-bottom: 40%" id="table-debit">
+                                                              <tr>
+                                                                <th> No </th>
+                                                                <th style="width:40%"> No Bukti </th>
+                                                                <th style="width:40%"> Tanggal </th>
+                                                                <th style="width:100%"> Jumlah Bayar </th>
+                                                              </tr>
+                                                                 @for($p = 0; $p < count($data['cndn']); $p++)                     
+                                                               @for($c = 0 ; $c < count($data['cndn'][$p]); $c++)
+                                                               @if($data['cndn'][$p][$c]->cndn_jeniscndn == 'D')
+                                                                    <?php $n = 1; ?>
+                                                                  <tr>
+                                                                  <td> <?php echo $n ?> </td>
+                                                                  <td> {{$data['cndn'][$p][$c]->cndn_nota}} </td>
+                                                                  <td> {{$data['cndn'][$p][$c]->cndn_tgl}}    </td>
+                                                                  <td>  {{ number_format($data['cndn'][$p][$c]->cndn_bruto, 2) }}  <input type='hidden' class='dnbruto' value="{{$data['cndn'][$p][$c]->cndn_bruto}}"> </td>
+                                                                  </tr>
+                                                                    
+                                                                  <?php $n++ ?>  
+                                                                 
+                                                                @endif
+                                                              @endfor
+                                                              @endfor
                                                             </table>
                                                        </div>
                                                   </div>
@@ -361,11 +404,11 @@
                                           <td> 
                                             Credit Nota
                                           </td>
-                                          <td> <input type="text" class="input-sm form-control" readonly="" style="text-align: right" name="creditnota"> </td>
+                                          <td> <input type="text" class="input-sm form-control cnkanan" readonly="" style="text-align: right" name="creditnota"> </td>
                                         </tr>
                                         <tr>
                                           <td> Debit Nota </td>
-                                          <td> <input type="text" class="input-sm form-control" readonly="" style="text-align: right" name="debitnota"> </td>
+                                          <td> <input type="text" class="input-sm form-control dnkanan" readonly="" style="text-align: right" name="debitnota"> </td>
                                         </tr>
                                         <tr>
                                           <td> Sisa Terbayar </td>
@@ -1215,6 +1258,7 @@
 
 
               $('.nofp').click(function(){
+
                 tempnofp = tempnofp + 1;
                 id = $(this).data('id');
                 $('.id').val(id);
@@ -1264,8 +1308,8 @@
                 // alert(nilaiaslipelunasan);
                 // alert(pelunasanasli);
                  $('.sisatrbyr').val(addCommas(tmbhnpelunasan));
-                 $('.pembayaran').val(penguranganpembayaran);         
-                 $('.sisafaktur').val(tmbhnpelunasan);
+                 $('.pembayaran').val(addCommas(penguranganpembayaran));         
+                 $('.sisafaktur').val(addCommas(tmbhnpelunasan));
 
                 
                 nofaktur = $('.nofaktur' + id).val();
@@ -1278,6 +1322,44 @@
                  $('.tgl').val(tgl);
                  $('.jatuhtempo').val(jatuhtempo);
                  $('.formtt').val(formtt);
+
+
+                 $jumlahdebit = 0;
+                  $('.dnbruto').each(function(){
+                    val = $(this).val();
+                  //  alert(val + 'val');
+                    $jumlahdebit = parseFloat(parseFloat($jumlahdebit) + parseFloat(val)).toFixed(2);
+                  });
+
+                 // alert($jumlahdebit);
+                  $('.dnkanan').val(addCommas($jumlahdebit));
+
+                  $jumlahkredit = 0;
+                  $('.cnbruto').each(function(){
+                    val = $(this).val();
+                    $jumlahkredit = parseFloat(parseFloat($jumlahkredit) + parseFloat(val)).toFixed(2);
+                    $sisafaktur2 = $('.sisafaktur').val();  
+                  })
+
+                  alert($jumlahkredit);
+                  $('.cnkanan').val(addCommas($jumlahkredit));
+
+
+                  $sisaterbayar2 = $('.sisatrbyr').val();
+                  $sisaterbayar = $sisaterbayar2.replace(/,/g, '');
+                  cnkanan2 = $('.cnkanan').val();
+                  cnkanan =   cnkanan2.replace(/,/g, '');
+                  dbkanan2 = $('.dnkanan').val();
+                  dbkanan = dbkanan2.replace(/,/g, '');
+
+                  alert(dbkanan + 'dbkanan');
+                  alert($sisaterbayar + 'dbkanan');
+                  alert(cnkanan + 'dbkanan');
+                  hasilsisaterbayar = parseFloat(parseFloat($sisaterbayar) - parseFloat(dbkanan) + parseFloat(cnkanan)).toFixed(2);
+                  $('.sisatrbyr').val(addCommas(hasilsisaterbayar));
+                  $('.sisafaktur').val(addCommas(hasilsisaterbayar));
+
+
               })
 
                //removes nofaktur di ajax 
@@ -1376,8 +1458,8 @@
         // alert(nilaiaslipelunasan);
         // alert(pelunasanasli);
          $('.sisatrbyr').val(addCommas(tmbhnpelunasan));
-         $('.pembayaran').val(penguranganpembayaran);         
-         $('.sisafaktur').val(tmbhnpelunasan);
+         $('.pembayaran').val(addCommas(penguranganpembayaran));         
+         $('.sisafaktur').val(addCommas(tmbhnpelunasan));
 
         
         nofaktur = $('.nofaktur' + id).val();
@@ -1390,6 +1472,40 @@
          $('.tgl').val(tgl);
          $('.jatuhtempo').val(jatuhtempo);
          $('.formtt').val(formtt);
+
+                /*  $jumlahdebit = 0;
+                  $('.dnbruto').each(function(){
+                    val = $(this).val();
+                    $jumlahdebit = parseFloat(parseFloat($jumlahdebit) + parseFloat(val)).toFixed(2);
+                  });
+                  alert($jumlahdebit);
+                  $('.dnkanan').val(addCommas($jumlahdebit));
+
+                  $jumlahkredit = 0;
+                  $('.cnbruto').each(function(){
+                    val = $(this).val();
+                    $jumlahkredit = parseFloat(parseFloat($jumlahkredit) + parseFloat(val)).toFixed(2);
+                    $sisafaktur2 = $('.sisafaktur').val();  
+                  });
+                   alert($jumlahkredit);
+                  $('.cnkanan').val(addCommas($jumlahkredit));
+
+
+                  $sisaterbayar2 = $('.sisatrbyr').val();
+                  $sisaterbayar = $sisaterbayar2.replace(/,/g, '');
+                  cnkanan2 = $('.cnkanan').val();
+                  cnkanan =   cnkanan2.replace(/,/g, '');
+                  dbkanan2 = $('.dnkanan').val();
+                  dbkanan = dbkanan2.replace(/,/g, '');
+
+
+                  alert(cnkanan + 'cnkanan');
+                  alert(dbkanan + 'dbkanan');
+                  alert($sisaterbayar + 'sisaterbayar');
+                  hasilsisaterbayar = parseFloat(parseFloat($sisaterbayar) - parseFloat(dbkanan) + parseFloat(cnkanan)).toFixed(2);
+                  $('.sisatrbyr').val(addCommas(hasilsisaterbayar));
+                  $('.sisafaktur').val(addCommas(hasilsisaterbayar));*/
+
        })
               //removes no faktur
                $(document).on('click','.removes-btn',function(){

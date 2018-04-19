@@ -40,7 +40,7 @@
                      </h5>
                     <div class="text-right">
                     
-                          <a class="btn btn-success" href="{{url('konfirmasi_order/konfirmasi_order')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
+                          <a class="btn btn-sm btn-default" href="{{url('konfirmasi_order/konfirmasi_order')}}"> <i class="fa fa-arrow-left" aria-hidden="true"></i> Kembali </a>
                     
                     </div>
                 </div>

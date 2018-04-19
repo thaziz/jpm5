@@ -28,7 +28,15 @@ class MasterPurchaseController extends Controller
 {
 
 	public function masteritem() {
-	$data['cabang'] = master_cabang::all();
+
+		$data['cabang'] = master_cabang::all();
+		$cabang = session::get('cabang');
+		/*if(Auth::user()->punyaAkses('Master Item Purchase','all')){
+			$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem  ORDER BY kode_item DESC");
+		}else{
+			$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem and comp_id = '$cabang'  ORDER BY kode_item DESC");
+		}*/
+
 		$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem  ORDER BY kode_item DESC");
 
 
@@ -824,6 +832,9 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function mastersupplier() {
+
+		
+		
 		$data = DB::select("select * from supplier, kota, provinsi where supplier.kota = kota.id and supplier.propinsi = provinsi.id and active='AKTIF'");
 
 		return view('purchase/master/master_supplier/index', compact('data'));
@@ -1346,7 +1357,11 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function masterjenisitem() {
-		$data = masterJenisItemPurchase::all();
+		if(Auth::user()->punyaAkses('Master Group Item','all')){
+			$data = masterJenisItemPurchase::all();
+		}else{
+			$data = masterJenisItemPurchase::all();
+		}
 
 		return view('purchase/master/master_jenisitem/index', compact('data'));
 	}

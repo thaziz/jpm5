@@ -22,9 +22,9 @@ class hak_akses_Controller extends Controller
    
 
     public function save_data (Request $request) {
-        $loop = DB::table('master_menu')
-                  ->orderBy('mm_id','ASC')
-                  ->get();
+        // dd($request->all());
+        
+        
 
         $count = 1;
         
@@ -36,11 +36,16 @@ class hak_akses_Controller extends Controller
             return redirect(url('setting/hak_akses'));
         }
 
+        $level = DB::table('hak_akses')
+                   ->where('level',strtoupper($request->ed_level))
+                   ->delete();
+
+        $loop = DB::table('master_menu')
+                  ->orderBy('mm_id','ASC')
+                  ->get();
+             
         for ($i=0; $i < count($loop); $i++) { 
 
-
-
-          
             $save = DB::table('hak_akses')
                       ->insert([
                         'id' =>$i+1,
@@ -48,6 +53,30 @@ class hak_akses_Controller extends Controller
                         'level' =>strtoupper($request->ed_level),
                         'menu' =>$loop[$i]->mm_nama,
                         'aktif' =>true,
+                        'tambah' =>true,
+                        'ubah' =>true,
+                        'hapus' =>true,
+                        'export_ke_excel' =>true,
+                        'cabang' =>false,
+                        'print' =>true,
+                        'aksi' =>false,
+                        'all' =>false,
+                        'create_by' =>Auth::user()->m_username,
+                        'update_by' =>Auth::user()->m_username,
+                        'create_at' =>carbon::now(),
+                        'update_at' =>carbon::now(),
+                ]);
+
+
+        }
+
+          $save = DB::table('hak_akses')
+                      ->join('master_menu','menu','=','mm_nama')
+                      ->where('level',strtoupper($request->ed_level))
+                         // ->where('level','!=','ADMINISTRATOR')
+                      ->whereIn('mm_group',[1,18,19,20,2])
+                      ->update([
+                        'aktif' =>false,
                         'tambah' =>false,
                         'ubah' =>false,
                         'hapus' =>false,
@@ -56,14 +85,21 @@ class hak_akses_Controller extends Controller
                         'print' =>false,
                         'aksi' =>false,
                         'all' =>false,
-                        'create_by' =>Auth::user()->m_username,
-                        'update_by' =>Auth::user()->m_username,
-                        'create_at' =>carbon::now(),
-                        'update_at' =>carbon::now(),
                 ]);
-        }
 
         return redirect(url('setting/hak_akses'));  
+    }
+
+    public function edit($id)
+    {
+        if (Auth::user()->punyaAkses('Hak Akses','ubah')) {
+            $level = DB::table('hak_akses')->where('level', $id)->first();
+
+            
+
+            return view('setting.hak_akses.edit',compact('level'));
+
+        }
     }
 
     public function hapus_data (Request $request) {
@@ -80,34 +116,21 @@ class hak_akses_Controller extends Controller
         echo json_encode($result);
     }
     
-    public function edit_hak_akses (Request $request) {
-        $id = $request->id;
-        $nilai = $request->nilai;
-        $keterangan = $request->keterangan;
-        if ($keterangan == 'aktif') {
-            $data = DB::select(" UPDATE hak_akses SET aktif='$nilai' where kode='$id' ");
-            return $data;
-        } else if ($keterangan == 'tambah') {
-            $data = DB::select(" UPDATE hak_akses SET tambah='$nilai' where kode='$id' ");
-            return $data;
-        } else if ($keterangan == 'ubah') {
-            $data = DB::select(" UPDATE hak_akses SET ubah='$nilai' where kode='$id' ");
-            return $data;
-        } else if ($keterangan == 'hapus') {
-            $data = DB::select(" UPDATE hak_akses SET hapus='$nilai' where kode='$id' ");
-            return $data;
-        } else if ($keterangan == 'function1') {
-            $data = DB::select(" UPDATE hak_akses SET function1='$nilai' where kode='$id' ");
-            return $data;
-        } else if ($keterangan == 'function2') {
-            $data = DB::select(" UPDATE hak_akses SET function2='$nilai' where kode='$id' ");
-            return $data;
-        } else if ($keterangan == 'function3') {
-            $data = DB::select(" UPDATE hak_akses SET function3='$nilai' where kode='$id' ");
-            return $data;
-        }
+    public function edit_data (Request $request) {
+       $update = DB::table('hak_akses')
+                   ->where('level',$request->ed_level_old)
+                   ->update([
+                    'level' => strtoupper($request->ed_level)
+                   ]);
+
+
+        return redirect(url('setting/hak_akses'));
     }
     public function index(){
+        // dd($request->all());
+        // $update = DB::table('hak_akses')
+        //            ->where('level','')
+        //            ->delete();
         $level = DB::select(" SELECT DISTINCT level FROM hak_akses ORDER BY level ASC");
         return view('setting.hak_akses.index',compact('level'));
     }
@@ -140,7 +163,9 @@ class hak_akses_Controller extends Controller
     public function simpan_perubahan(request $request)
     {
         // dd($request->all());
-
+        // $update = DB::table('hak_akses')
+        //            ->where('level',$request->cblevel)
+        //            ->delete();
 
         for ($i=0; $i < count($request->nama); $i++) { 
             if ($request->aktif[$i] == 'on') {
@@ -188,10 +213,58 @@ class hak_akses_Controller extends Controller
 
         // return $aktif;
 
+
+        // $loop = DB::table('master_menu')
+        //           ->orderBy('mm_id','ASC')
+        //           ->get();
+             
+        // for ($i=0; $i < count($loop); $i++) { 
+
+        //     $save = DB::table('hak_akses')
+        //               ->insert([
+        //                 'id' =>$i+1,
+        //                 'sub' =>$loop[$i]->mm_id,
+        //                 'level' =>strtoupper($request->cblevel),
+        //                 'menu' =>$loop[$i]->mm_nama,
+        //                 'aktif' =>true,
+        //                 'tambah' =>true,
+        //                 'ubah' =>true,
+        //                 'hapus' =>true,
+        //                 'export_ke_excel' =>true,
+        //                 'cabang' =>false,
+        //                 'print' =>true,
+        //                 'aksi' =>false,
+        //                 'all' =>false,
+        //                 'create_by' =>Auth::user()->m_username,
+        //                 'update_by' =>Auth::user()->m_username,
+        //                 'create_at' =>carbon::now(),
+        //                 'update_at' =>carbon::now(),
+        //         ]);
+
+
+        // }
+
+        //   $save = DB::table('hak_akses')
+        //               ->join('master_menu','menu','=','mm_nama')
+        //               ->where('level',strtoupper($request->cblevel))
+        //                  // ->where('level','!=','ADMINISTRATOR')
+        //               ->whereIn('mm_group',[1,18,19,20,2])
+        //               ->update([
+        //                 'aktif' =>false,
+        //                 'tambah' =>false,
+        //                 'ubah' =>false,
+        //                 'hapus' =>false,
+        //                 'export_ke_excel' =>false,
+        //                 'cabang' =>false,
+        //                 'print' =>false,
+        //                 'aksi' =>false,
+        //                 'all' =>false,
+        //         ]);
+
          for ($i=0; $i < count($request->nama); $i++) { 
              $update = DB::table('hak_akses')
                          ->where('menu',$request->nama[$i])
-                         ->where('level',$request->cblevel)
+                         ->where('level','=',$request->cblevel)
                          ->update([
                             'aktif' =>$aktif[$i],
                             'tambah' =>$tambah[$i],
@@ -205,6 +278,23 @@ class hak_akses_Controller extends Controller
                             'update_at' =>carbon::now(),
                         ]);
          }
+
+         // $save = DB::table('hak_akses')
+         //              ->join('master_menu','menu','=','mm_nama')
+         //              // ->where('level',strtoupper($request->ed_level))
+         //                 // ->where('level','!=','ADMINISTRATOR')
+         //              ->whereIn('mm_group',[1,18,19,20,2])
+         //              ->update([
+         //                'aktif' =>false,
+         //                'tambah' =>false,
+         //                'ubah' =>false,
+         //                'hapus' =>false,
+         //                'export_ke_excel' =>false,
+         //                'cabang' =>false,
+         //                'print' =>false,
+         //                'aksi' =>false,
+         //                'all' =>false,
+         //        ]);
 
          return 'success';
 

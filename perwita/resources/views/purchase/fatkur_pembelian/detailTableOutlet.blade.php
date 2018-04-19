@@ -101,8 +101,8 @@
 						<!-- <input type="hidden" name="status[]" class="form-control" value="{{$data[$index]['status']}}"> -->
 					</td>
 					<td>
-						{{$data[$index]['tarif_dasar']}}
-						<input type="hidden" name="tarif[]" class="form-control tarif_dasar" value="{{$data[$index]['tarif_dasar']}}">
+						{{$data[$index]['total_net']}}
+						<input type="hidden" name="tarif[]" class="form-control tarif_dasar" value="{{$data[$index]['total_net']}}">
 					</td>
 					<td>
 						{{$data[$index]['komisi']}}
@@ -114,8 +114,8 @@
 						<input type="hidden" name="komisi_tambahan[]" onload="hitung_komisi(this)" class="form-control komisi_tambah" value="{{$data[$index]['biaya_komisi']}}">
 					</td>
 					<td >
-						<span class="komisi_total">{{$data[$index]['komisi']}}</span>
-						<input type="hidden" name="total_komisi[]" class="form-control total_komisi" value="{{$data[$index]['komisi']}}">
+						<span class="komisi_total">{{$data[$index]['total_komisi']}}</span>
+						<input type="hidden" name="total_komisi[]" class="form-control total_komisi" value="{{$data[$index]['total_komisi']}}">
 					</td>
 				</tr>
 				@endforeach
@@ -184,10 +184,13 @@
 	    	
 	    		temp1 = accounting.formatMoney(temp1, "Rp ", 2, ".",',');
 	    		$('.total_tarif').val(temp1);
+	    		
 	    		temp4 = accounting.formatMoney(temp4, "Rp ", 2, ".",',');
 		    	$('.total_komisi_outlet').val(temp4);
+
 		    	temp2 = accounting.formatMoney(temp2, "Rp ", 2, ".",',');
 		    	$('.total_komisi_tambahan').val(temp2);
+
 		    	temp3 = accounting.formatMoney(temp3, "Rp ", 2, ".",',');
 		    	$('.total_all_komisi').val(temp3);
 		    	$('.total_terima').val(temp3);

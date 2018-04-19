@@ -43,7 +43,9 @@
                     </h5>
 
                     <div class="text-right" style="">
+                        @if(Auth()->user()->punyaAkses('Kontrak Customer','tambah'))
                        <button  type="button" style="margin-right :12px; width:110px" class="btn btn-success " id="btn_add_order" name="btnok"></i>Tambah Data</button>
+                       @endif
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -79,10 +81,10 @@
                                 <td>{{ $row->kc_keterangan }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
-                                        @if(Auth::user()->punyaAkses('Master Kontrak','ubah'))
+                                        @if(Auth::user()->punyaAkses('Kontrak Customer','ubah'))
                                         <button type="button" onclick="edit('{{$row->kc_id}}')" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></button>
                                         @endif
-                                        @if(Auth::user()->punyaAkses('Master Kontrak','hapus'))
+                                        @if(Auth::user()->punyaAkses('Kontrak Customer','hapus'))
                                         <button type="button" onclick="hapus('{{$row->kc_id}}')" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                                         @endif
                                         

@@ -63,6 +63,7 @@
                                             <div class="col-md-8">
                                                 <button type="button" class="btn btn-primary " id="cari" >Cari</button>
                                                 <button type="button" class="btn btn-primary " id="btnaddlevel" >Add Level</button>
+                                                <button type="button" class="btn btn-primary " id="btneditlevel" >Edit Level</button>
                                                 <button type="button" class="btn btn-primary " id="btnhapuslevel" >Hapus Level</button>
                                                 <button type="button" class="btn btn-primary " id="btnsimpanlevel" >Simpan Perubahan</button>
                                             </div>

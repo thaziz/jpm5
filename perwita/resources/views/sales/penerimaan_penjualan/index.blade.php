@@ -93,7 +93,7 @@
                             <td>
                               <div class="btn-group">
                               @if(Auth::user()->punyaAkses('Kwitansi','ubah'))
-                              @if(cek_periode(carbon\carbon::parse($val->k_tanggal)->format('m'),carbon\carbon::parse($row->k_tanggal)->format('Y') ) != 0)
+                              @if(cek_periode(carbon\carbon::parse($val->k_tanggal)->format('m'),carbon\carbon::parse($val->k_tanggal)->format('Y') ) != 0)
                                 <button type="button" onclick="edit('{{$val->k_nomor}}')" class="btn btn-xs btn-primary">
                                   <i class="fa fa-pencil"></i>
                                 </button>
@@ -105,7 +105,7 @@
                                 </button>
                               @endif
                               @if(Auth::user()->punyaAkses('Kwitansi','hapus'))
-                              @if(cek_periode(carbon\carbon::parse($val->k_tanggal)->format('m'),carbon\carbon::parse($row->k_tanggal)->format('Y') ) != 0)
+                              @if(cek_periode(carbon\carbon::parse($val->k_tanggal)->format('m'),carbon\carbon::parse($val->k_tanggal)->format('Y') ) != 0)
                                 <button type="button" onclick="hapus('{{$val->k_nomor}}')" class="btn btn-xs btn-danger">
                                   <i class="fa fa-trash"></i>
                                 </button>

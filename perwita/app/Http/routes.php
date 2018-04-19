@@ -66,7 +66,8 @@ Route::get('setting/hak_akses/cari_data', 'setting\hak_akses_Controller@cari_dat
 Route::get('setting/hak_akses/add_level', 'setting\hak_akses_Controller@form');
 Route::get('setting/hak_akses/simpan_perubahan', 'setting\hak_akses_Controller@simpan_perubahan');
 Route::post('setting/hak_akses/simpan_perubahan', 'setting\hak_akses_Controller@simpan_perubahan');
-Route::get('setting/hak_akses/{level}/edit_level', 'setting\hak_akses_Controller@form');
+Route::get('setting/hak_akses/{level}/edit_level', 'setting\hak_akses_Controller@edit');
+Route::post('setting/hak_akses/edit_data', 'setting\hak_akses_Controller@edit_data');
 Route::get('setting/hak_akses/tabel', 'setting\hak_akses_Controller@table_data');
 Route::get('setting/hak_akses/datatable_hak_akses', 'setting\hak_akses_Controller@datatable_hak_akses')->name('datatable_hak_akses');
 //Route::get('setting/hak_akses/get_data', 'setting\hak_akses_Controller@get_data');
@@ -234,6 +235,7 @@ Route::get('fakturpembelian/buktibiayapenerus/{id}', 'BiayaPenerusController@buk
 Route::get('fakturpembelian/notapenerusagen', 'BiayaPenerusController@notapenerusagen');
 Route::get('fakturpembelian/notaoutlet', 'BiayaPenerusController@notaoutlet');
 Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
+Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 
 //PEMBAYARAN OUTLET
@@ -404,6 +406,7 @@ Route::post('formfpg/deletedetailformfpg', 'PurchaseController@deletedetailformf
 Route::post('formfpg/deletedetailbankformfpg', 'PurchaseController@deletedetailbankformfpg');
 Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
 Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
+Route::get('formfpg/hapusfpg/{id}', 'PurchaseController@hapusfpg');
 
 
 Route::get('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan', 'PurchaseController@pelaporanfakturpajakmasukan');
@@ -662,7 +665,7 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 
 
 
-//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU----- @ADI WIELIEJARNI//
+//-------------------------INI ADALAH BATAS ANTARA KITA YANG TAK BISA SALING BERSATU-----  WIELIEJARNI//
 
 
 //_____$$$$_________$$$$
@@ -1168,24 +1171,33 @@ Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller
 Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
 Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
-Route::get('sales/deliveryorder', 'sales\do_controller@index');
-Route::get('sales/deliveryorderform', 'sales\do_controller@form');
-Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
-Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
-Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
-Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
-Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
-Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
-Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
 
-Route::post('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
-Route::get('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
-Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_controller@save_data_detail');
-Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_controller@hapus_data');
-Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_controller@hapus_data_detail');
-Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_controller@form_update_status');
-Route::post('sales/deliveryorderform/save_update_status', 'sales\do_controller@save_update_status');
-Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
+
+
+
+////////////
+
+
+Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
+Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
+Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
+Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
+Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
+Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
+Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
+Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
+
+Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
+Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');
+Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_Controller@hapus_data_detail');
+Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller@form_update_status');
+Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
+Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
+
+
 
 
 

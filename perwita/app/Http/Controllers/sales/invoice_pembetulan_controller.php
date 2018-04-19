@@ -403,7 +403,7 @@ class invoice_pembetulan_controller extends Controller
 
   public function invoice_pembetulan_edit($id)
   {
-    if (Auth::user()->punyaAkses('Invoice Penjualan','ubah')) {
+    if (Auth::user()->punyaAkses('Invoice Pembetulan','ubah')) {
        $customer = DB::table('customer')
                       ->get();
 

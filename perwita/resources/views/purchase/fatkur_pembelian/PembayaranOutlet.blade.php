@@ -89,7 +89,7 @@ function autoNote(){
       data: {selectOutlet,cabang,reportrange},
       success:function(data){
  		
-
+      	$('.table-outlet').html(data);
 
       },error:function(){
         toastr.warning('Terjadi Kesalahan');

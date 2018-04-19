@@ -1127,6 +1127,12 @@ img {
 .img-rounded {
   border-radius: 6px;
 }
+.center{
+  text-align: center;
+}
+.right{
+  text-align: right;
+}
 .img-thumbnail {
   display: inline-block;
   max-width: 100%;
@@ -6546,6 +6552,10 @@ button.close {
 }
 @-ms-viewport {
   width: device-width;
+}
+.disabled{
+  pointer-events: none;
+  opacity: 0.7;
 }
 .visible-xs,
 .visible-sm,

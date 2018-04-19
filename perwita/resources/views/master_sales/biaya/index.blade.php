@@ -35,8 +35,12 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
+                      @if(Auth::user()->punyaAkses('Biaya','tambah'))
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
+                       @endif
+                      @if(Auth::user()->punyaAkses('Biaya','print'))
                             <a href="{{ url('/master_sales/biaya') }}" class="btn btn-warning"><i class="glyphicon glyphicon-print"></i>LAPORAN</a>
+                       @endif
                     </div>
 
                 </div>
@@ -87,8 +91,12 @@
                            <td>{{ $e->b_csf_hutang }}</td>
                            <td>
                             <div class="btn-group">
-                                    <button type="button" id="{{ $e->b_kode }}" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>                       
+                                 @if(Auth::user()->punyaAkses('Biaya','ubah'))
+                                    <button type="button" id="{{ $e->b_kode }}" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button> 
+                                    @endif         
+                                    @if(Auth::user()->punyaAkses('Biaya','hapus'))
                                     <button type="button" id="{{ $e->b_kode }}" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                    @endif 
                             </div>
                            </td>
                        </tr>

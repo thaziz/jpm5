@@ -10,6 +10,8 @@ use Carbon\carbon;
 class cabang_kargo_Controller extends Controller
 {
     public function table_data () {
+      $cabang = Auth::user()->kode_cabang;
+      if (Auth::user()->punyaAkses('Tarif Cabang Kargo','all')) {
         $sql = "    SELECT t.kode_provinsi,jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
                     FROM tarif_cabang_kargo t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
@@ -18,6 +20,18 @@ class cabang_kargo_Controller extends Controller
                     LEFT JOIN jenis_tarif jj ON jj.jt_id=t.jenis
                     LEFT JOIN provinsi p ON p.id=t.kode_provinsi
                     ORDER BY  t.kode_detail_kargo DEsC";
+        }else{
+            $sql = "    SELECT t.kode_provinsi,jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
+                    FROM tarif_cabang_kargo t
+                    LEFT JOIN kota k ON k.id=t.id_kota_asal 
+                    LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN tipe_angkutan a ON a.kode=t.kode_angkutan
+                    LEFT JOIN jenis_tarif jj ON jj.jt_id=t.jenis
+                    LEFT JOIN provinsi p ON p.id=t.kode_provinsi
+                    where t.kode_cabang = '$cabang'
+                    ORDER BY  t.kode_detail_kargo DEsC";
+        }
+
         
         $list = DB::select(DB::raw($sql));
         $data = array();
@@ -27,13 +41,26 @@ class cabang_kargo_Controller extends Controller
         $i=0;
         foreach ($data as $key) {
             // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['kode_provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button> 
 
-                                    </div> ';
-            $i++;
+            $div_1  =   '<div class="btn-group">';
+                                  if (Auth::user()->punyaAkses('Tarif Cabang Kargo','ubah')) {
+                                  $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                                  }else{
+                                    $div_2 = '';
+                                  }
+                                  if (Auth::user()->punyaAkses('Tarif Cabang Kargo','hapus')) {
+                                  $div_3  = '<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['kode_provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                                        <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button> ';
+                                  }else{
+                                    $div_3 = '';
+                                  }
+                                  $div_4   = '</div>';
+                                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+
+                                $data[$i]['button'] = $all_div;
+                               
+                                $i++;
+          
         }
         $datax = array('data' => $data);
         echo json_encode($datax);
@@ -101,6 +128,7 @@ class cabang_kargo_Controller extends Controller
                               ->where('id_kota_tujuan',$cari[$i]->id)
                               ->where('kode_cabang',$request->ed_cabang)
                               ->where('jenis',$request->cb_jenis)
+                              ->where('kode_angkutan',$request->cb_angkutan)
                               ->get();
                 }
                 // return $cari_old1;
@@ -129,6 +157,7 @@ class cabang_kargo_Controller extends Controller
                               ->where('id_kota_asal',$request->cb_kota_asal)
                               ->where('id_kota_tujuan',$request->cb_kota_tujuan)
                               ->where('kode_cabang',$request->ed_cabang)
+                              ->where('kode_angkutan',$request->cb_angkutan)
                               ->get();
             }
             
@@ -144,7 +173,8 @@ class cabang_kargo_Controller extends Controller
                     }
                             if (isset(${'cari_old'.$a}[$i][0]->id_kota_asal) != $request->cb_kota_asal and
                                 isset(${'cari_old'.$a}[$i][0]->id_kota_tujuan) != $cari[$i]->id and
-                                isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->ed_cabang ) {
+                                isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->ed_cabang and
+                                isset(${'cari_old'.$a}[$i][0]->kode_angkutan) != $request->cb_angkutan ) {
 
                                     $data = DB::table('tarif_cabang_kargo')
                                     ->insert([
@@ -167,19 +197,23 @@ class cabang_kargo_Controller extends Controller
 
                                   ]);
                             }else{
-                                if (${'cari_old'.$a}[$i][0]->crud != 'E') {
-                                    $data = DB::table('tarif_cabang_kargo')
-                                    ->where('kode',${'cari_old'.$a}[$i][0]->kode)
-                                    ->update([
-                                            'kode_cabang' => $request->ed_cabang,
-                                            'jenis' => $request->cb_jenis,
-                                            'harga' => $array_harga[$a],
-                                            'waktu' => $array_waktu[$a],
-                                            'acc_penjualan'=>$request->ed_acc_penjualan,
-                                            'csf_penjualan'=>$request->ed_csf_penjualan,
-                                            'crud'=>'N',
-                                    ]);
-                                }
+                                // if (${'cari_old'.$a}[$i][0]->crud != 'E') {
+                                //     $data = DB::table('tarif_cabang_kargo')
+                                //     ->where('kode',${'cari_old'.$a}[$i][0]->kode)
+                                //     ->update([
+                                //             'kode_cabang' => $request->ed_cabang,
+                                //             'jenis' => $request->cb_jenis,
+                                //             'harga' => $array_harga[$a],
+                                //             'waktu' => $array_waktu[$a],
+                                //             'acc_penjualan'=>$request->ed_acc_penjualan,
+                                //             'csf_penjualan'=>$request->ed_csf_penjualan,
+                                //             'crud'=>'N',
+                                //     ]);
+                                // }
+                                $data = FALSE;
+                                $crud = 'Data Tersebut Telah Ada';
+                                $result['crud']=$crud;
+                                echo json_encode($result);
                                     
                             }
                         }
@@ -188,7 +222,8 @@ class cabang_kargo_Controller extends Controller
             }else{
                     if (isset($cari_kode[0]->id_kota_asal) != $request->cb_kota_asal  and
                         isset($cari_kode[0]->id_kota_tujuan) != $request->cb_kota_tujuan and
-                        isset($cari_kode[0]->kode_cabang) != $request->ed_cabang) {
+                        isset($cari_kode[0]->kode_cabang) != $request->ed_cabang and 
+                        isset($cari_kode[0]->kode_angkutan) != $request->cb_angkutan) {
 
                         $kode_detailis = DB::table('tarif_cabang_kargo')
                             ->max('kode_detail_kargo');
@@ -226,30 +261,41 @@ class cabang_kargo_Controller extends Controller
                         }
                     }else{
 
-                        if ($crud == 'N') {
-                            $simpan = array(
-                                'jenis' => $request->cb_jenis,
-                                'kode_satuan' => $request->satuan,
-                                'kode_angkutan' => $request->cb_angkutan,
-                                'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
-                                'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
-                                'acc_penjualan' => $request->ed_acc_penjualan,
-                                'csf_penjualan'=>$request->ed_csf_penjualan,
-                         );
-                        $data = DB::table('tarif_cabang_kargo')->where('kode','=',$cari_kode[0]->kode)->update($simpan);
-                        }
+                        // return $request->cb_angkutan;
+                        // if ($crud == 'N') {
+                        //     $simpan = array(
+                        //         'jenis' => $request->cb_jenis,
+                        //         'kode_satuan' => $request->satuan,
+                        //         'kode_angkutan' => $request->cb_angkutan,
+                        //         'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
+                        //         'waktu' => filter_var($request->ed_waktu, FILTER_SANITIZE_NUMBER_INT),
+                        //         'acc_penjualan' => $request->ed_acc_penjualan,
+                        //         'csf_penjualan'=>$request->ed_csf_penjualan,
+                        //  );
+                        // $data = DB::table('tarif_cabang_kargo')->where('kode','=',$cari_kode[0]->kode)->update($simpan);
+                        // }
+                        // $data = FALSE;
+                        // $crud = 'Data Tersebut Telah Ada';
+                        //         $result['crud']=$crud;
+                        //         echo json_encode($result);
+                        $data = FALSE;
                     }
             }
 
-            if($data == TRUE){
-            $result['error']='';
-            $result['result']=1;
-            }else{
+            
+                if($data == TRUE){
+                $result['error']='';
+                $result['result']=1;
+                }else{
                 $result['error']=$data;
                 $result['result']=0;
-            }
-            $result['crud']=$crud;
-            echo json_encode($result);
+                }
+                $result['crud']=$crud;
+                echo json_encode($result);
+            
+            
+
+            
 
                 }else if($crud == 'E'){
                                             

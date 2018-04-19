@@ -7,7 +7,7 @@
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Form Permintaan Cek / BG (FPG) </h2>
-                    <ol class="breadcrumb"
+                    <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
                         </li>
@@ -80,7 +80,9 @@
 
                               <tr>
                                 <th> No FPG </th>
-                                <td> <input type='text' class='input-sm form-control nofpg' value="" name="nofpg" readonly="">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type="hidden" class="valcabang" name="cabang"> </td>
+                                <td> <input type='text' class='input-sm form-control nofpg' value="" name="nofpg" readonly="">     <input type="hidden" name="_token" value="{{ csrf_token() }}"> <input type="hidden" class="valcabang" name="cabang">
+                                <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
+                                </td>
                               </tr>
                               <tr>
                                 <th> Tanggal </th>
@@ -1569,16 +1571,7 @@
                             }
                     }
 	
-						$sisaterbayar2 = $('.sisatrbyr').val();
-                        $sisaterbayar = $sisaterbayar2.replace(/,/g, '');
-                        cnkanan2 = $('.cnkanan').val();
-                        cnkanan =   cnkanan2.replace(/,/g, '');
-                        dbkanan2 = $('.dnkanan').val();
-                        dbkanan = dbkanan2.replace(/,/g, '');
-
-                        hasilsisaterbayar = parseFloat(parseFloat($sisaterbayar) - parseFloat(dbkanan) + parseFloat(cnkanan)).toFixed(2);
-                        $('.sisatrbyr').val(addCommas(hasilsisaterbayar));
-                        $('.sisafaktur').val(addCommas(hasilsisaterbayar));
+						
 //                        alert(hasilsisaterbayar);
 
               $('.nofp').click(function(){
@@ -2059,7 +2052,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Agen  </option>");  
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                       } 
@@ -2068,7 +2061,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Outlet  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
@@ -2077,7 +2070,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Vendor  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
@@ -2086,7 +2079,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Cabang  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
