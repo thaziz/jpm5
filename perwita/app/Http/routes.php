@@ -1621,8 +1621,15 @@ Route::get('golonganactiva/editgolonganactiva/{cabang}/{id}', [
   'as'   => 'golonganactiva.edit'
 ]);
 
+Route::get('golonganactiva/hapusgolonganactiva/{cabang}/{id}', [
+  'uses' => 'MasterPurchaseController@golongan_hapus',
+  'as'   => 'golonganactiva.hapus'
+]);
+
 Route::get('golonganactiva/ask_kode/{cabang}', 'MasterPurchaseController@ask_kode');
+
 Route::post('golonganactiva/simpan', 'MasterPurchaseController@golongan_save');
+Route::post('golonganactiva/update', 'MasterPurchaseController@golongan_update');
 
 //endgolonganaktiva
 
