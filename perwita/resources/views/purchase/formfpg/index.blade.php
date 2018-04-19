@@ -36,9 +36,11 @@
                     <h5> Form Permintaan Cek / BG (FPG)
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                         @if(Auth::user()->punyaAkses('Form Permintaan Giro','tambah'))
                       <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('formfpg/createformfpg')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>
+                        @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -47,32 +49,6 @@
               <div class="box" id="seragam_box">
                
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                    <!--   <div class="box-body">
-                    <div class="form-group">
-                            
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-                                                      
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-                            
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-                                                      
-                              </select>
-                            </div>
-                          </div>
-                          </div> 
-                </div>    -->    
                     
                 <div class="box-body">
              
@@ -107,8 +83,18 @@
                         <td> - </td>
                         <td> {{$fpg->fpg_cekbg}} </td>
                         
-                        <td> <a class="btn btn-sm btn-success" href={{url('formfpg/detailformfpg/'.$fpg->idfpg.'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a> <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a> <a class="btn btn-sm btn-danger" onclick="hapusdata({{$fpg->idfpg}})"> <i class="fa fa-trash" aria-hidden="true"></i> </a>  </td>
-                        
+                        <td>
+                                @if(Auth::user()->punyaAkses('Form Permintaan Giro','ubah'))
+                        <a class="btn btn-sm btn-success" href={{url('formfpg/detailformfpg/'.$fpg->idfpg.'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a>
+                              @endif
+
+                                  @if(Auth::user()->punyaAkses('Form Permintaan Giro','print'))
+                        <a class="btn btn-sm btn-info" href="{{url('formfpg/printformfpg/'.$fpg->idfpg.'')}}"> <i class="fa fa-print" aria-hidden="true"></i> </a>
+                              @endif
+
+                             @if(Auth::user()->punyaAkses('Form Permintaan Giro','hapus'))
+                        <a class="btn btn-sm btn-danger" onclick="hapusdata({{$fpg->idfpg}})"> <i class="fa fa-trash" aria-hidden="true"></i> </a>  </td>
+                                @endif
                       </tr>
                     @endforeach
                     </tbody>
@@ -153,17 +139,49 @@
     });
     
   
-    function hapusdata($id){
-      $.ajax({
-        data : {$id},
-        url : baseUrl + '/formfpg/hapusfpg/' + $id,
-        type : "get",
-        sucess : function(){
-          alert('ok');
-        }
-      })
-    }
     
+     function hapusdata(id){
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Hapus Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+  },
+
+function(){
+     $.ajax({
+      url:baseUrl + '/formfpg/hapusfpg/' + id,
+      type:'get',
+      success:function(data){
+      
+        swal({
+        title: "Berhasil!",
+                type: 'success',
+                text: "Data Berhasil Dihapus",
+                timer: 2000,
+                showConfirmButton: true
+                },function(){
+                   location.reload();
+        });
+       
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+  });
+}
 
 </script>
 @endsection

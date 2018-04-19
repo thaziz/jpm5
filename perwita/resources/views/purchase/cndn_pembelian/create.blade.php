@@ -69,24 +69,19 @@
                             <td> Cabang </td>
                             <td> 
 
-                              @if(session::get('cabang') == 000)
-                              <select class='form-control chosen-select-width cabang'>
-                                  @foreach($data['cabang'] as $cabang)
-                                    <option value="{{$cabang->kode}}">
-                                      {{$cabang->kode}} - {{$cabang->nama}}
-                                    </option>
-                                  @endforeach
-                                  </select>
-                              @else
-                              <select class='form-control chosen-select-width cabang'>
-                                  @foreach($data['cabang'] as $cabang)
-                                    <option value="{{$cabang->kode}}" 
-                                    @if($cabang->kode == Session::get('cabang')) selected @endif>
-                                      {{$cabang->nama}}
-                                    </option>
-                                  @endforeach
-                                  </select>
-                              @endif
+                            @if(Auth::user()->punyaAkses('CN/DN Pembelian','cabang'))
+                            <select class="form-control  cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              @endforeach
+                            </select>
+                            @else
+                              <select class="form-control disabled cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                            @endif
 
                               <input type="hidden" class="valcabang" name="cabang">
                             </td>

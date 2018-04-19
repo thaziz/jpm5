@@ -241,7 +241,7 @@ Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
 Route::get('fakturpembelian/cari_outlet', 'BiayaPenerusController@cari_outlet');
-Route::post('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
+Route::get('fakturpembelian/cari_outlet1', 'BiayaPenerusController@cari_outlet1');
 // Route::get('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
 Route::get('fakturpembelian/cariNote', 'BiayaPenerusController@cari_note');
 Route::post('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');
@@ -1325,6 +1325,7 @@ Route::get('sales/pilih_invoice_pembetulan', 'sales\invoice_pembetulan_controlle
 Route::get('sales/simpan_invoice_pembetulan', 'sales\invoice_pembetulan_controller@simpan_invoice_pembetulan');
 Route::get('sales/update_invoice_pembetulan', 'sales\invoice_pembetulan_controller@update_invoice_pembetulan');
 Route::get('sales/hapus_invoice_pembetulan', 'sales\invoice_pembetulan_controller@hapus_invoice_pembetulan');
+Route::get('sales/cetak_nota_pembetulan/{id}', 'sales\invoice_pembetulan_controller@cetak_nota_pembetulan');
 
 // update faktur 
 

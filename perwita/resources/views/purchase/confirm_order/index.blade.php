@@ -71,13 +71,9 @@
                         <td> {{$co->spp_cabang}} </td>
                         <td>  {{ Carbon\Carbon::parse($co->spp_tgldibutuhkan)->format('d-M-Y ') }}  </td>
 
+                            @if(Auth::user()->punyaAkses('Konfirmasi Order','ubah'))
                         <td> <a class="btn btn-xs btn-danger" href="{{url('konfirmasi_order/konfirmasi_orderdetail/'. $co->co_idspp.'')}}"> <i> Lihat Detail </i> </a> </td>
-                     <!--    
-                        <td> {{$co->mng_umum_approved}} </td>
-                        <td> {{$co->co_staffpemb_approved}}  </td>
-                        <td> {{$co->co_mng_pem_approved}} </td> -->
-
-          
+                            @endif
 
                           @if($co->co_mng_pem_approved == 'BELUM DI SETUJUI')
                                  <td> <span class="label label-info"> {{$co->co_mng_pem_approved}} </span></td>     

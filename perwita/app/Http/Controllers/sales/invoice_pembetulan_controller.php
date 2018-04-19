@@ -12,6 +12,35 @@ use carbon\carbon;
 use DB;
 class invoice_pembetulan_controller extends Controller
 {
+
+      public function penyebut($nilai=null) {
+        $_this = new self;
+    $nilai = abs($nilai);
+    $huruf = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
+    $temp = "";
+    if ($nilai < 12) {
+      $temp = " ". $huruf[$nilai];
+    } else if ($nilai <20) {
+      $temp = $_this->penyebut($nilai - 10). " belas";
+    } else if ($nilai < 100) {
+      $temp = $_this->penyebut($nilai/10)." puluh". $_this->penyebut($nilai % 10);
+    } else if ($nilai < 200) {
+      $temp = " seratus" . $_this->penyebut($nilai - 100);
+    } else if ($nilai < 1000) {
+      $temp = $_this->penyebut($nilai/100) . " ratus" . $_this->penyebut($nilai % 100);
+    } else if ($nilai < 2000) {
+      $temp = " seribu" . $_this->penyebut($nilai - 1000);
+    } else if ($nilai < 1000000) {
+      $temp = $_this->penyebut($nilai/1000) . " ribu" . $_this->penyebut($nilai % 1000);
+    } else if ($nilai < 1000000000) {
+      $temp = $_this->penyebut($nilai/1000000) . " juta" . $_this->penyebut($nilai % 1000000);
+    } else if ($nilai < 1000000000000) {
+      $temp = $_this->penyebut($nilai/1000000000) . " milyar" . $_this->penyebut(fmod($nilai,1000000000));
+    } else if ($nilai < 1000000000000000) {
+      $temp = $_this->penyebut($nilai/1000000000000) . " trilyun" . $_this->penyebut(fmod($nilai,1000000000000));
+    }     
+    return $temp;
+    }
    public function index()
  	{
  		$cabang = auth::user()->kode_cabang;
@@ -47,10 +76,12 @@ class invoice_pembetulan_controller extends Controller
  	}
 
  	public function cari_invoice_pembetulan(request $request)
- 	{
- 		   $data = DB::table('invoice')
- 				        ->join('customer','kode','=','i_kode_customer')
-	              ->where('i_kode_cabang',$request->cabang)
+ 	{     
+ 		  $data = DB::table('invoice')
+                ->join('customer','kode','=','i_kode_customer')
+ 				        ->leftjoin('invoice_pembetulan','ip_nomor','=','i_nomor')
+                ->where('i_kode_cabang',$request->cabang)
+	              ->where('ip_nomor','=',null)
 	              ->where('i_sisa_akhir','!=',0)
 	              ->get();
 
@@ -214,7 +245,7 @@ class invoice_pembetulan_controller extends Controller
                                               'update_at'         => Carbon::now(),
                                               'ipd_tgl_do'        => $do->tanggal,
                                               'ipd_jumlah'        => $request->dd_jumlah[$i],
-                                              'ipd_keterangan'    => $do->deskripsi,
+                                              'ipd_keterangan'    => $do->keterangan_tarif,
                                               'ipd_harga_satuan'  => $request->dd_harga[$i],
                                               'ipd_harga_bruto'   => $request->dd_total[$i],
                                               'ipd_diskon'        => $request->dd_diskon[$i],
@@ -828,6 +859,37 @@ class invoice_pembetulan_controller extends Controller
              return response()->json(['status' =>1, 'nota'=>$request->nota_cndn]);    
 
     });
+  }
+
+  public function cetak_nota_pembetulan($id)
+  {
+    $head = DB::table('invoice_pembetulan')
+                  ->join('customer','kode','=','ip_kode_customer')
+                  ->where('ip_nomor',$id)
+                  ->first();
+        $detail = DB::table('invoice_pembetulan_d')
+                    ->where('ipd_nomor_invoice',$id)
+                    ->get();
+        $counting = count($detail); 
+  
+        if ($counting < 30) {
+          $hitung =30 - $counting;
+          for ($i=0; $i < $hitung; $i++) { 
+            $push[$i]=' ';
+          }
+        }else{
+          $push = [];
+        }
+
+        
+
+        // return $push;
+        $terbilang = $this->penyebut($head->ip_total_tagihan);
+        if ($head->ip_pendapatan == 'PAKET') {
+          return view('sales.invoice_pembetulan.print',compact('head','detail','terbilang','push'));
+        }else{
+          return view('sales.invoice_pembetulan.print_1',compact('head','detail','terbilang','push'));
+        }
   }
 
 }

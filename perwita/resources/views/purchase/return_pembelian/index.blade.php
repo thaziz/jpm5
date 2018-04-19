@@ -36,9 +36,11 @@
                     <h5> Return Pembelian
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                         @if(Auth::user()->punyaAkses('Return Pembelian','tambah'))
                       <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('returnpembelian/createreturnpembelian')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>
+                    @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">

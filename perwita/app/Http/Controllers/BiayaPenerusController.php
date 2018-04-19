@@ -377,6 +377,7 @@ class BiayaPenerusController extends Controller
 			});
 		}
 		public function edit($id){
+			if (Auth::user()->punyaAKses('Faktur Pembelian','ubah')) {
 			$cari_fp = DB::table('faktur_pembelian')
 						 ->where('fp_idfaktur',$id)
 						 ->first();
@@ -416,12 +417,51 @@ class BiayaPenerusController extends Controller
 				
 				$jt = Carbon::now()->subDays(-30)->format('d/m/Y');
 
-				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt'));
+				return view('purchase/fatkur_pembelian/edit_biaya_penerus',compact('data','date','agen','vendor','now','jt','akun','bp','bpd','cari_fp','cabang','form_tt','id'));
 
 			} elseif ($cari_fp->fp_jenisbayar == 7){
 
+				$date = Carbon::now()->format('d/m/Y');
+
+				$agen = DB::table('agen')
+						  ->where('kategori','OUTLET')
+						  ->orWhere('kategori','AGEN DAN OUTLET')
+						  ->get();
+
+				$akun_biaya = DB::table('akun_biaya')
+						  ->get();
+				$first = Carbon::now();
+		        $second = Carbon::now()->format('d/m/Y');
+		        // $start = $first->subMonths(1)->startOfMonth();
+		        $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
+		        $jt = Carbon::now()->subDays(-30)->format('d/m/Y');
+
+		        $data = DB::table('faktur_pembelian')
+		        		  ->join('pembayaran_outlet','fp_nofaktur','=','pot_faktur')
+		        		  ->join('agen','kode','=','fp_supplier')
+		        		  ->first();
+
+		       	$data_dt = DB::table('pembayaran_outlet_dt')
+		       				 ->where('potd_potid',$data->pot_id)
+		       				 ->get();
+
+		       	$valid_cetak = DB::table('form_tt')
+		       					 ->where('tt_nofp',$data->fp_nofaktur)
+		       					 ->first();
+
+		       	// dd($valid_cetak);
+			return view('purchase/fatkur_pembelian/editOutlet',compact('date','agen','akun_biaya','second','start','jt','data','data_dt','valid_cetak','id'));
+
 			}elseif ($cari_fp->fp_jenisbayar == 9){
 
+
+
+			}
+
+
+
+			}else{
+				return redirect()->back();
 			}
 			
 		 	
@@ -678,67 +718,53 @@ class BiayaPenerusController extends Controller
         
 		}
 
-		public function cari_outlet1(request $request,$agen){
-			// dd($request->all());
-			$ini = DB::table('master_note')
-					->max('mn_id');
-			if($ini == ''){
-				$ini = 1;
-			}else{
-				$ini+=1;
-			}
-			
-			$cari_note = DB::table('master_note')
-							->where('mn_keterangan',$request->note)
-							->get();
-
-
-			if ($cari_note == null) {
-				// return 'asd';
-				if($request->note != ''){
-					master_note::create([
-							'mn_id'			=> $ini,
-							'mn_keterangan' => $request->note,
-							'created_at'	=> Carbon::now()
-					]);
-				}
-			}
+		public function cari_outlet1(request $request){
 		
-		 $id = $request->id;
-		 $tgl = explode('-',$request->rangepicker);
-		 $tgl = str_replace(' ', '', $tgl);
+		 // dd($request->all());
+
+		$id = $request->id;
+		$tgl = explode('-',$request->reportrange);
+
 		for ($i=0; $i < count($tgl); $i++) { 
 			$tgl[$i] = str_replace('/', '-', $tgl[$i]);
 			$tgl[$i] = Carbon::parse($tgl[$i])->format('Y-m-d');
 		}
+
+		$id = DB::table('faktur_pembelian')
+				->join('pembayaran_outlet','pot_faktur','=','fp_nofaktur')
+				->where('fp_idfaktur',$id)
+				->first();
+		// return $tgl;
 		if(isset($tgl[1])){
 
-			$list = DB::select("SELECT agen.kode_cabang,nomor,tanggal,nama_pengirim,nama_penerima,asal.nama as asal,asal.id as id_asal,
-			 							tujuan.nama as tujuan,tujuan.id as id_tujuan,status,agen.nama as nama_agen,tarif_dasar,biaya_komisi
+			$list = DB::select("SELECT potd_pod,potd_potid,potd_pod,agen.kode_cabang,nomor,tanggal,nama_pengirim,nama_penerima,asal.nama as asal,asal.id as id_asal,
+			 							tujuan.nama as tujuan,tujuan.id as id_tujuan,status,agen.nama as nama_agen,tarif_dasar,biaya_komisi,total_net
 					 					FROM delivery_order
 										LEFT JOIN agen on agen.kode = kode_outlet
 										LEFT JOIN 
 										(SELECT id,nama FROM kota) as asal on id_kota_asal = asal.id
 										LEFT JOIN 
 										(SELECT id,nama FROM kota) as tujuan on id_kota_tujuan = tujuan.id
+										LEFT JOIN
+										pembayaran_outlet_dt on potd_pod = nomor
 										WHERE delivery_order.tanggal >= '$tgl[0]'
 										AND delivery_order.tanggal <= '$tgl[1]'
-										AND delivery_order.kode_outlet = '$agen'
+										AND delivery_order.kode_outlet = '$request->selectOutlet'
 										order by tanggal desc");
 
 
-			$persen = DB::table('master_persentase')
-			 			 ->where('kode_akun',5317)
-			 			 ->get();
-			
+			$persen = DB::table('agen')
+			 			 ->where('kode',$request->selectOutlet)
+			 			 ->first();
+				
 			$data = array();
 	        foreach ($list as $r) {
 	            $data[] = (array) $r;
 	        }
-	 
 	        foreach ($data as $i => $key) {
 	            
-	            $data[$i]['komisi']	= round($data[$i]['tarif_dasar']*($persen[0]->persen/100),2);
+	            $data[$i]['komisi']	= round($data[$i]['total_net']*($persen->komisi/100),2);
+	            $data[$i]['total_komisi']	= ((float)$data[$i]['total_net']*(float)($persen->komisi/100))+$data[$i]['biaya_komisi'];
 	          
 	        }
 	        return view('purchase/fatkur_pembelian/detailTableOutlet',compact('data','id'));
@@ -750,14 +776,14 @@ class BiayaPenerusController extends Controller
 
 
 		public function notaoutlet(request $request){
-
+			// dd($request->all());	
 			$year =Carbon::now()->format('y'); 
 			$month =Carbon::now()->format('m'); 
 			$mon =Carbon::now(); 
 
 			$idfaktur =   fakturpembelian::where('fp_comp' , $request->cab)
-											->where('fp_nofaktur','LIKE','%'.'O-0'.'%')
-											->where('created_at','>=',$mon)
+											->where('fp_jenisbayar','7')
+											// ->where('created_at','>=',$mon)
 											->max('fp_nofaktur');
 		//	dd($nosppid);
 			if(isset($idfaktur)) {
