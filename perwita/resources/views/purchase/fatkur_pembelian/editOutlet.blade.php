@@ -90,9 +90,9 @@
       <td>Pilih Outlet</td>
       <td width="10">:</td>
       <td>
-        <select class="form-control selectOutlet chosen-select-width1" name="selectOutlet">
+        <select class="form-control selectOutlet chosen-select-width" name="selectOutlet">
           @foreach($agen as $val)
-          <option @if() selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+          <option @if($val) selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
           @endforeach
         </select>
       </td>
@@ -123,7 +123,8 @@
      <button type="button" class="btn btn-primary pull-right cari_outlet" onclick="cari_outlet()"><i class="fa fa-search">&nbsp;Search</i></button>
     </form>
 </div>  
-<div class="col-sm-6 outlet">
+<hr>
+<div class="col-sm-12 outlet">
   
 </div>
 </div>
@@ -132,7 +133,27 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+ function cari_outlet() {
+  var  selectOutlet = $('.selectOutlet').val();
+  var  cabang     = $('.cabang').val();
+  var  reportrange  = $('.reportrange').val();
+  var  id  = '{{$id}}';
+  $.ajax({
+      url:baseUrl +'/fakturpembelian/cari_outlet1',
+      data: {selectOutlet,cabang,reportrange,id},
+      success:function(data){
+    
+        $('.outlet').html(data);
 
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+ }
+
+$(document).ready(function(){
+  cari_outlet();
+});
 
 
 $.fn.serializeArray = function () {

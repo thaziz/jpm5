@@ -718,43 +718,22 @@ class BiayaPenerusController extends Controller
         
 		}
 
-		public function cari_outlet1(request $request,$agen){
-			// dd($request->all());
-			$ini = DB::table('master_note')
-					->max('mn_id');
-			if($ini == ''){
-				$ini = 1;
-			}else{
-				$ini+=1;
-			}
-			
-			$cari_note = DB::table('master_note')
-							->where('mn_keterangan',$request->note)
-							->get();
-
-
-			if ($cari_note == null) {
-				// return 'asd';
-				if($request->note != ''){
-					master_note::create([
-							'mn_id'			=> $ini,
-							'mn_keterangan' => $request->note,
-							'created_at'	=> Carbon::now()
-					]);
-				}
-			}
+		public function cari_outlet1(request $request){
 		
-		 $id = $request->id;
-		 $tgl = explode('-',$request->rangepicker);
-		 $tgl = str_replace(' ', '', $tgl);
+		 // dd($request->all());
+
+		$id = $request->id;
+		$tgl = explode('-',$request->reportrange);
+
 		for ($i=0; $i < count($tgl); $i++) { 
 			$tgl[$i] = str_replace('/', '-', $tgl[$i]);
 			$tgl[$i] = Carbon::parse($tgl[$i])->format('Y-m-d');
 		}
+		// return $tgl;
 		if(isset($tgl[1])){
 
 			$list = DB::select("SELECT agen.kode_cabang,nomor,tanggal,nama_pengirim,nama_penerima,asal.nama as asal,asal.id as id_asal,
-			 							tujuan.nama as tujuan,tujuan.id as id_tujuan,status,agen.nama as nama_agen,tarif_dasar,biaya_komisi
+			 							tujuan.nama as tujuan,tujuan.id as id_tujuan,status,agen.nama as nama_agen,tarif_dasar,biaya_komisi,total_net
 					 					FROM delivery_order
 										LEFT JOIN agen on agen.kode = kode_outlet
 										LEFT JOIN 
@@ -763,22 +742,22 @@ class BiayaPenerusController extends Controller
 										(SELECT id,nama FROM kota) as tujuan on id_kota_tujuan = tujuan.id
 										WHERE delivery_order.tanggal >= '$tgl[0]'
 										AND delivery_order.tanggal <= '$tgl[1]'
-										AND delivery_order.kode_outlet = '$agen'
+										AND delivery_order.kode_outlet = '$request->selectOutlet'
 										order by tanggal desc");
 
 
-			$persen = DB::table('master_persentase')
-			 			 ->where('kode_akun',5317)
-			 			 ->get();
-			
+			$persen = DB::table('agen')
+			 			 ->where('kode',$request->selectOutlet)
+			 			 ->first();
+				
 			$data = array();
 	        foreach ($list as $r) {
 	            $data[] = (array) $r;
 	        }
-	 
 	        foreach ($data as $i => $key) {
 	            
-	            $data[$i]['komisi']	= round($data[$i]['tarif_dasar']*($persen[0]->persen/100),2);
+	            $data[$i]['komisi']	= round($data[$i]['total_net']*($persen->komisi/100),2);
+	            $data[$i]['total_komisi']	= ((float)$data[$i]['total_net']*(float)($persen->komisi/100))+$data[$i]['biaya_komisi'];
 	          
 	        }
 	        return view('purchase/fatkur_pembelian/detailTableOutlet',compact('data','id'));
