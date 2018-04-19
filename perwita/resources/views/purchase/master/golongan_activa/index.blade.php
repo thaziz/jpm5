@@ -69,27 +69,6 @@
                     </thead>
                     
                     <tbody>
-                    <tr>
-                      <td> ASD </td>
-                      <td> ASAL </td>
-                      <td> 8 </td>
-                      <td> 12.5 </td>
-                      <td> 8 </td>
-                      <td>  4 </td>
-                      <td> 25  </td>
-                      <td> Komersial </td>
-                    </tr>
-                   
-                    <tr>
-                      <td> F123 </td>
-                      <td> FISKAL 123 </td>
-                      <td> 4 </td>
-                      <td> 12.5 </td>
-                      <td> 8 </td>
-                      <td>  4 </td>
-                      <td> 25  </td>
-                      <td> FISIKAL </td>
-                    </tr>
 
                     </tbody>
                    
