@@ -125,38 +125,31 @@
 </div>  
 <hr>
 <div class="col-sm-12 outlet">
-
-  <div class="col-sm-1">
-<h3>Tabel Detail Resi</h3>
-  <hr>
-    <div class="col-sm-5">
-
-    <table class="table table-stripped header_total_outlet1">
-  {{ csrf_field() }}
-      
+  <div class="col-sm-5">
+    <table class="table table-stripped">
       <tr>
         <td>Total Tarif</td>
         <td>:</td>
-        <td><input style="width: 150px;" readonly="" type="text" name="total_tarif" class="form-control total_tarif form-inline"></td>
+        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_tarif)}}" name="total_tarif" class="form-control form-inline"></td>
       </tr>
       <tr>
         <td>Total Komisi Outlet</td>
         <td>:</td>
-        <td><input style="width: 150px;" readonly="" type="text" name="total_komisi_outlet" class="form-control total_komisi_outlet form-inline"></td>
+        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_komisi_outlet)}}" name="total_komisi_outlet" class="form-control form-inline"></td>
       </tr>
     </table>
     </div>
     <div class="col-sm-5" style="margin-left: 10%">
-    <table class="table table-stripped header_total_outlet2">
+    <table class="table table-stripped">
       <tr>
         <td>Total Komisi Tambahan</td>
         <td>:</td>
-        <td><input style="width: 150px;" readonly="" type="text" name="total_komisi_tambahan" class="form-control total_komisi_tambahan form-inline"></td>
+        <td><input style="text-align: right"  readonly="" type="text" name="total_komisi_tambahan" value="{{'Rp ' . number_format($data->pot_total_komisi_tambah)}}" class="form-control form-inline"></td>
       </tr>
       <tr>
         <td>Total Jumlah Komisi</td>
         <td>:</td>
-        <td><input style="width: 150px;" readonly="" type="text" name="total_all_komisi" class="form-control total_all_komisi form-inline"></td>
+        <td><input style="text-align: right"  readonly="" type="text" name="total_all_komisi" value="{{'Rp ' . number_format($data->pot_total_komisi)}}" class="form-control form-inline"></td>
       </tr>
     </table>
     </div>
@@ -164,27 +157,17 @@
       <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
       <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
       <button type="button" class="btn btn-primary pull-right disabled" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
-        
+      <hr>
       <div class="loading text-center" style="display: none;">
           <img src="{{ asset('assets/img/loading1.gif') }}" width="100px">
         </div>
       <thead align="center">
         <tr>
-        <th><input type="checkbox" class="form-control parent_check" onchange="check_parent()"></th>
         <th>
           No.Order
         </th>
         <th>
           Tanggal
-        </th>
-        <th>
-          Kota Asal
-        </th>
-        <th>
-          Kota Tujuan
-        </th>
-        <th>
-          Status
         </th>
         <th>
           Tarif
@@ -201,53 +184,33 @@
         </tr>
       </thead> 
       <tbody align="center" class="body-outlet">
-        @foreach($data as $index => $val)
-        @if($data[$index]['potd_pod'] == null or $data[$index]['potd_potid'] == $id->pot_id)
+
+        @foreach($data_dt as $index => $val)
         <tr>
-          <td><input @if($data[$index]['potd_pod'] != null ) checked="" @endif type="checkbox" name="chck[]" onchange="hitung_outlet(this)" class="form-control child_check" ></td>
           <td >
-            {{$data[$index]['nomor']}}
-            <input type="hidden" name="no_resi[]" class="form-control" value="{{$data[$index]['nomor']}}">
+            {{$val->potd_pod}}
           </td>
           <td>
-          <?php echo date('d/m/Y',strtotime($data[$index]['tanggal'])); ?>
-            <input type="hidden" name="tgl[]" class="form-control" value="{{$data[$index]['tanggal']}}">
+            {{$val->potd_tgl}}
           </td>
           <td>
-            {{$data[$index]['asal']}}
-            <!-- <input type="hidden" name="kota_asal[]" class="form-control" value="{{$data[$index]['id_asal']}}"> -->
+            {{$val->potd_tarif_resi}}
           </td>
           <td>
-            {{$data[$index]['tujuan']}}
-            <!-- <input type="hidden" name="kota_tujuan[]" class="form-control" value="{{$data[$index]['id_tujuan']}}"> -->
+            {{$val->potd_komisi}}
           </td>
           <td>
-            {{$data[$index]['status']}}
-            <!-- <input type="hidden" name="status[]" class="form-control" value="{{$data[$index]['status']}}"> -->
+            {{$val->potd_komisi_tambahan}}
           </td>
           <td>
-            {{$data[$index]['total_net']}}
-            <input type="hidden" name="tarif[]" class="form-control tarif_dasar" value="{{$data[$index]['total_net']}}">
-          </td>
-          <td>
-            {{$data[$index]['komisi']}}
-            <input type="hidden" name="komisi[]" class="form-control komisi" value="{{$data[$index]['komisi']}}">
-            <input type="hidden" name="comp[]" class="form-control" value="{{$data[$index]['kode_cabang']}}">
-          </td>
-          <td>
-            {{$data[$index]['biaya_komisi']}}
-            <input type="hidden" name="komisi_tambahan[]" onload="hitung_komisi(this)" class="form-control komisi_tambah" value="{{$data[$index]['biaya_komisi']}}">
-          </td>
-          <td >
-            <span class="komisi_total">{{$data[$index]['total_komisi']}}</span>
-            <input type="hidden" name="total_komisi[]" class="form-control total_komisi" value="{{$data[$index]['total_komisi']}}">
+            {{$val->potd_komisi_total}}
           </td>
         </tr>
-        @endif
         @endforeach
-      </tbody>    
+      </tbody>
       </table>
-  </div>
+    </div>
+
 </div>
 </div>
 
@@ -273,9 +236,6 @@
     })
  }
 
-$(document).ready(function(){
-  cari_outlet();
-});
 
 
 $.fn.serializeArray = function () {
