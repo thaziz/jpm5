@@ -4,6 +4,39 @@
 
 @section('content')
 
+<style>
+     #table_form input{
+      padding-left: 5px;
+    }
+
+    #table_form td,
+    #table_form th{
+      padding:10px 0px;
+    }
+
+    .table-form{
+      border-collapse: collapse;
+    }
+
+    .table-form th{
+      font-weight: 600;
+    }
+
+    .table-form th,
+    .table-form td{
+      padding: 2px 0px;
+    }
+
+    .table-form input{
+      font-size: 10pt;
+    }
+
+    .table-detail{
+      font-size: 8pt;
+    }
+
+</style>
+
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2>Golongan Activa</h2>
@@ -23,9 +56,29 @@
 
                     </ol>
                 </div>
-                <div class="col-lg-2">
+               <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
+                <table border="0" width="100%" id="table_form">
+                  <tr>
+                    <th width="15%" class="text-center">Menampilkan Cabang : </th>
+                    <td width="17%">
 
-                </div>
+                        <select class="form-control chosen-select"id="cabang" name="cabang" style="background:; width: 90%">
+                          @foreach ($cab as $cabangs)
+                            <?php 
+                                $selected = ($cabangs->kode == $cabang) ? "selected" : "";
+                            ?>
+                            <option value="{{ $cabangs->kode }}" {{ $selected }}>{{ $cabangs->nama }}</option>
+                          @endforeach
+                        </select>
+
+                    </td>
+
+                    <td>
+                      <button class="btn btn-success btn-sm" id="filter">Filter</button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
 
 
@@ -38,7 +91,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                       <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" href="{{ url('golonganactiva/creategolonganactiva')}}"> <i class="fa fa-plus"> Tambah Golongan Activa</i> </a> 
+                       <a class="btn btn-success btn-sm" aria-hidden="true" href="{{ url('golonganactiva/creategolonganactiva')}}"> <i class="fa fa-plus"> &nbsp;Tambah Golongan Activa</i> </a> 
                     </div>
 
                 </div>
@@ -52,24 +105,43 @@
                     
                 <div class="box-body">
                 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-item">
+                  <table id="addColumn" class="table table-bordered table-striped tbl-item" style="font-size: 8pt;">
                     <thead>
                      <tr>
-                        <th style="width:10px">Kode Golongan</th>
-                        <th> Nama Golongan </th>
+                        <th width="10%">Golongan</th>
+                        <th width="15%"> Nama Golongan </th>
+                        <th width="20%"> Keterangan </th>
                         <th> Masa Manfaat </th>
-                        <th> Garis Lurus Prosent </th>
-                        <th> Garus Lurus Tahunan </th>
-                        <th> Saldo Menurun Prosent </th>
-                        <th> Saldo Menurun Tahun </th>
-                        <th> Fisikal / Komersial  </th>
+                        <th> Tarif Garis Lurus </th>
+                        <th> Tarif Saldo Menurun </th>
+                        <th width="10%"> Aksi </th>
                                            
                     </tr>
                  
                     </thead>
                     
-                    <tbody>
+                    <tbody id="data-body">
+                        @foreach($data as $golongan)
+                            <tr>
+                                <td class="text-center">{{ $golongan->id }}</td>
+                                <td class="text-center">{{ $golongan->nama_golongan }}</td>
+                                <td class="text-center">{{ $golongan->keterangan_golongan }}</td>
+                                <td class="text-center">{{ $golongan->masa_manfaat }}</td>
+                                <td class="text-center">{{ $golongan->persentase_garis_lurus }}%</td>
+                                <td class="text-center">{{ $golongan->persentase_saldo_menurun }}%</td>
+                                <td class="text-center">
+                                  <div class="btn-group ">
+                                    @if(Auth::user()->PunyaAkses('Golongan Activa','ubah'))
+                                      <a class="btn btn-xs btn-warning" href="{{ route("golonganactiva.edit", [$golongan->kode_cabang, $golongan->id]) }}"><i class="fa fa-pencil"></i></a>
+                                    @endif
 
+                                    @if(Auth::user()->PunyaAkses('Golongan Activa','hapus'))
+                                      <a class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
+                                    @endif
+                                  </div>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                    
                   </table>
@@ -106,6 +178,10 @@
             "pageLength": 10,
             "language": dataTableLanguage,
     });
+
+    $("#filter").click(function(){
+      window.location = baseUrl+"/golonganactiva/golonganactiva/"+$('#cabang').val();
+    })
 
     $('.date').datepicker({
         autoclose: true,

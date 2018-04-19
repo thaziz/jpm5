@@ -57,7 +57,8 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                  <form class="form-horizontal" id="form-data" action="post" method="POST"> 
+                  <form class="form-horizontal" id="form-data" action="post" method="POST">
+                    <input type="hidden" readonly value="{{ csrf_token() }}" name="_token"> 
                   <div class="box-body">
                        <div class="row">
                           <div class="col-xs-6">
@@ -72,7 +73,10 @@
                                <select name="cabang" class="form-control chosen-select select_validate" id="cab" required>
                                   <option value="---">- Pilih Cabang</option>
                                   @foreach ($cab as $cabang)
-                                    <option value="{{ $cabang->kode }}">{{ $cabang->nama }}</option>
+                                    <?php 
+                                        $selected = ($cabang->kode == Session::get("cabang")) ? "selected" : "";
+                                    ?>
+                                    <option value="{{ $cabang->kode }}" {{ $selected }}>{{ $cabang->nama }}</option>
                                   @endforeach
                                 </select>
                             </td>
@@ -95,7 +99,7 @@
                               &nbsp;&nbsp;&nbsp;&nbsp; 
                                 <i data-toggle="tooltip" data-placement="top" title="Klik Untuk Membuat Kode Golongan Aktiva" class="fa fa-refresh" style="cursor: pointer;" id="generate_kode"></i>
                               &nbsp;
-                                <span class="text-muted" style="font-style: italic; display: none;" id="kode_info"></span>
+                                <span class="text-muted" style="font-style: italic; display: none; color: #1ab394;" id="kode_info"></span>
                             </td>
                           </tr>
 
@@ -229,7 +233,7 @@
                 <div class="box-footer">
                   <div class="pull-right">
                   
-                    <a class="btn btn-warning btn-sm" href={{url('golonganactiva/golonganactiva')}}  style="font-size: 8pt;"> Kembali </a>
+                    <a class="btn btn-warning btn-sm" href={{url('golonganactiva/golonganactiva/'.Session::get("cabang"))}}  style="font-size: 8pt;"> Kembali </a>
                       <button type="button" id="submit" name="submit" class="btn btn-success btn-sm" style="font-size: 8pt;">Simpan</button>
                     
                     </div>
@@ -306,10 +310,44 @@
         btn.text("Menyimpan...");
 
         if(validate_form()){
-          alert("ready");
+
+          $.ajax(baseUrl+"/golonganactiva/simpan",{
+          type: "post",
+          timeout: 15000,
+          data: $("#form-data").serialize(),
+          dataType: 'json',
+          success: function(response){
+            console.log(response);
+            if(response.status == "sukses"){
+              toastr.success('Data Golongan Aktiva Berhasil Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+
+              form_reset();
+            }else if(response.status == "exist"){
+              toastr.error('Kode Golongan Aktiva Sudah Ada. Silahkan Membuat Kode Golongan Lagi.');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+            }
+          },
+          error: function(request, status, err) {
+              if (status == "timeout") {
+                toastr.error('Request Timeout. Data Gagal Disimpan');
+                btn.removeAttr("disabled");
+                btn.text("Simpan");
+              } else {
+                toastr.error('Internal Server Error. Data Gagal Disimpan');
+                btn.removeAttr("disabled");
+                btn.text("Simpan");
+              }
+
+              $("#simpan").removeAttr("disabled");
+          }
+
+        })
         }else{
           btn.removeAttr("disabled");
-        btn.text("Simpan");
+          btn.text("Simpan");
         }
 
       })
@@ -367,6 +405,19 @@
         })
 
         return a;
+      }
+
+      function form_reset(){
+        $(".input_validate").each(function(){
+          if($(this).attr("id") == "sk_view")
+            $(this).val("K")
+          else
+            $(this).val("");
+        })
+
+        $("#cab").val("---");
+        $('#cab').trigger("chosen:updated"); 
+        $("#s_k").val("K");
       }
     })
 
