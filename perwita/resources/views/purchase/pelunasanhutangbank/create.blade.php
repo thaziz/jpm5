@@ -3,6 +3,12 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+  .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
@@ -59,7 +65,7 @@
 
                           <tr>
                            
-                               @if(Auth::user()->PunyaAkses('Faktur Cabang','aktif'))
+                               @if(Auth::user()->PunyaAkses('Pelunasan Hutang','aktif'))
                             <tr>
                             <td width="150px"> Cabang </td>
                             <td>
@@ -80,7 +86,7 @@
                             <tr>
                             <td width="150px"> Cabang </td>
                             <td>
-                              <select class='form-control chosen-select-width1 cabang' disabled="" name="cabang">
+                              <select class='form-control disabeld cabang' name="cabang">
                                   <option value="">
                                     Pilih Cabang
                                   </option>

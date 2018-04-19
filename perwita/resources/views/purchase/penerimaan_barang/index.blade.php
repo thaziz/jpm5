@@ -85,18 +85,7 @@
 								</tr>					  
 								</thead>
 								<tbody>
-								<!--   @for($j=0; $j < count($data['terima']); $j++)
-								 
-								  <tr>
-									<td> {{$j + 1}} </td>
-									<td>  {{$data['terima'][$j]->bt_notransaksi}} </td>
-									<td>  {{$data['terima'][$j]->nama_supplier}} </td>
-									<td> <span class="label label-info"> {{$data['terima'][$j]->bt_statuspenerimaan}} </span> </td> 
-									<td>      <a class="btn btn-sm btn-success" href={{url('penerimaanbarang/detailterimabarang/'. $data['terima'][$j]->bt_id . '/' . $data['terima'][$j]->bt_flag  .'')}}> <i class="fa fa-arrow-right" aria-hidden="true"></i> </a> &nbsp;
 								
-									</td>                        
-								  </tr>
-								  @endfor -->
 								</tbody>   
 							</table>
 							</div><!-- /.box-body -->

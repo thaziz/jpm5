@@ -63,8 +63,15 @@ class uangmukaController extends Controller
 }
 
 	public function index(){
-		$data = DB::table('d_uangmuka')->orderBy('um_id', 'DESC')
+		$cabang = session::get('cabang');
+		if(Auth::user()->punyaAkses('Uang Muka','all')){
+			$data = DB::table('d_uangmuka')->orderBy('um_id', 'DESC')
 				->get();
+		}
+		else {
+			$data = DB::table('d_uangmuka')->where('um_comp' , $cabang)->orderBy('um_id', 'DESC')
+				->get();
+		}
 		return view('uangmuka.index',compact('data'));
 	}
 	public function ajax(Request $request){

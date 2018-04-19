@@ -72,27 +72,23 @@ class cndnController extends Controller
 				$jenisbayar = $cndn[$i]->cndn_jenissup;
 				$cndn_id = $cndn[$i]->cndn_id;
 				if($jenisbayar == 2){
-					$cn= DB::select("select * from cndnpembelian , supplier where cndn_supplier = idsup and cndn_id ='$cndn_id' and cndn_jenissup = '$jenisbayar' ");					
+					$cn= DB::select("select * from cndnpembelian , supplier where cndn_supplier = idsup and cndn_id ='$cndn_id' and cndn_jenissup = '$jenisbayar' ");		
 				} 
 			
 				if($jenisbayar == 6) {
 					$cn = DB::select("select * from   cndnpembelian LEFT OUTER JOIN  agen on cndn_agen = kode where cndn_id ='$cndn_id' and cndn_jenissup = '$jenisbayar'");
-
 				}
 				if($jenisbayar == 7){
 					$cn = DB::select("select * from   cndnpembelian LEFT OUTER JOIN  agen on cndn_agen = kode where cndn_id ='$cndn_id' and cndn_jenissup = '$jenisbayar'");
-
 				}
 
 				if ($jenisbayar == 9){
 					$cn = DB::select("select * from   cndnpembelian LEFT OUTER JOIN  subcon on cndn_agen = kode where cndn_id ='$cndn_id' and cndn_jenissup = '$jenisbayar'");
-					
 				}
+
 				$data['cndnt'][] = $cn;
-			
 				$data['jenisbayar'][] = $jenisbayar;
 			}
-			
 		}
 		else {
 			$datacn = DB::select("select * from cndnpembelian where cndn_comp = '$cabang'");
@@ -237,7 +233,7 @@ class cndnController extends Controller
 				$cndn->cndn_jeniscndn = 'D';
 
 			}
-			$cndn->cndn_postingfpg = 'NOT';
+			
 			$cndn->update_by	 = $request->username;
 			$cndn->save();
 			
@@ -273,6 +269,7 @@ class cndnController extends Controller
 					$cndt->cndt_nettocn = $nettocn;
 					$cndt->cndt_bruto = $bruto;
 					$cndt->cndt_dpp = $dppcn;
+					$cndt->cndt_statusfpg = 'NOT';
 
 					
 					if(isset($request->inputppn[$i])) {
