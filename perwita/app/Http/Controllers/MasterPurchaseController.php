@@ -1470,7 +1470,12 @@ class MasterPurchaseController extends Controller
 	}
 
 	public function editgolonganactiva($cabang, $id){
-		return $cabang;
+		$data = DB::table("d_golongan_aktiva")
+				->join("cabang", "cabang.kode", "=", "d_golongan_aktiva.kode_cabang")
+				->where("id", $id)
+				->where("kode_cabang", $cabang)
+				->select("d_golongan_aktiva.*", "cabang.nama")->first();
+		return view('purchase/master/golongan_activa/edit')->withData($data);
 	}
 
 	public function ask_kode($cabang){
@@ -1510,6 +1515,7 @@ class MasterPurchaseController extends Controller
 		$golongan->nama_golongan = $request->nama_golongan;
 		$golongan->keterangan_golongan = $request->keterangan;
 		$golongan->masa_manfaat = $request->masa_manfaat;
+		$golongan->fiskal_komersial = $request->s_k;
 		$golongan->masa_manfaat_garis_lurus = $request->masa_manfaat_gl;
 		$golongan->persentase_garis_lurus = $request->persentase_gl;
 		$golongan->masa_manfaat_saldo_menurun = $request->masa_manfaat_sm;
@@ -1517,6 +1523,33 @@ class MasterPurchaseController extends Controller
 
 		if($golongan->save())
 			return json_encode($response);
+	}
+
+	public function golongan_update(Request $request){
+		// return json_encode($request->all());
+
+		$response = [
+			"status"	=> "sukses",
+			"content"	=> null
+		];
+
+		DB::table("d_golongan_aktiva")->where("kode_cabang", $request->kode_cabang)->where("id", $request->kode_golongan)->update([
+			"nama_golongan" => $request->nama_golongan,
+			"keterangan_golongan" => $request->keterangan
+		]);
+		
+		return json_encode($response);
+	}
+
+	public function golongan_hapus($cabang, $id){
+		DB::table("d_golongan_aktiva")
+			->join("cabang", "cabang.kode", "=", "d_golongan_aktiva.kode_cabang")
+			->where("id", $id)
+			->where("kode_cabang", $cabang)
+			->select("d_golongan_aktiva.*", "cabang.nama")->delete();
+
+		Session::flash('sukses', 'Data Berhasil Dihapus...');
+		return redirect(url("golonganactiva/golonganactiva/".Session::get("cabang")));
 	}
 
 	// Fungsi-Fungsi Golongan Aktiva Berhenti Dari Sini

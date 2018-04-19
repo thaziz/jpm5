@@ -136,7 +136,7 @@
                                     @endif
 
                                     @if(Auth::user()->PunyaAkses('Golongan Activa','hapus'))
-                                      <a class="btn btn-xs btn-danger"><i class="fa fa-times"></i></a>
+                                      <a class="btn btn-xs btn-danger" onclick="return confirm('Apa Anda Yakin Ingin Menghapus Data ini ?')" href="{{ route("golonganactiva.hapus", [$golongan->kode_cabang, $golongan->id]) }}"><i class="fa fa-times"></i></a>
                                     @endif
                                   </div>
                                 </td>
@@ -170,6 +170,9 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+    @if(Session::has("sukses"))
+      toastr.success('{{ Session::get("sukses") }}');
+    @endif
 
     tableDetail = $('.tbl-item').DataTable({
             responsive: true,
