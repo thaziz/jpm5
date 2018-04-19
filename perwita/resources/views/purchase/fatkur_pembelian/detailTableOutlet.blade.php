@@ -134,7 +134,7 @@
 	            "language": dataTableLanguage,
 	    });
 
-	    $('.total_komisi').each(function(){
+	   $('.total_komisi').each(function(){
 	    	var par 	= this.parentNode.parentNode;
 	    	var kom_out = $(par).find('.komisi').val();
 	    	var kom_tam = $(par).find('.komisi_tambah').val();
@@ -161,7 +161,7 @@
 	    	var temp3  			= 0;
 	    	var temp4  			= 0;
 
-	    	if (child_check=='on') {
+	    	if (child_check == 'on') {
 	    		tar_das.push(tarif_dasar);
 	    		kom_tam.push(komisi_tambah)
 	    		tot_kom.push(total_komisi)
@@ -175,16 +175,18 @@
 	    		for(var i=0; i<kom_tam.length;i++) {
 	    			temp2 += parseInt(kom_tam[i]);
 	    		}
+
 	    		for(var i=0; i<tot_kom.length;i++) {
 	    			temp3 += parseInt(tot_kom[i]);
 	    		}
+
 	    		for(var i=0; i<kom.length;i++) {
-	    			temp4 += parseInt(kom[i]);
+	    			temp4 += parseInt(kom[i]);	
 	    		}
-	    	
+	    		console.log(temp3);
 	    		temp1 = accounting.formatMoney(temp1, "Rp ", 2, ".",',');
 	    		$('.total_tarif').val(temp1);
-	    		
+
 	    		temp4 = accounting.formatMoney(temp4, "Rp ", 2, ".",',');
 		    	$('.total_komisi_outlet').val(temp4);
 
@@ -193,7 +195,6 @@
 
 		    	temp3 = accounting.formatMoney(temp3, "Rp ", 2, ".",',');
 		    	$('.total_all_komisi').val(temp3);
-		    	$('.total_terima').val(temp3);
 
 
 	    	}else{
@@ -227,7 +228,6 @@
 		    	$('.total_komisi_tambahan').val(temp2);
 		    	temp3 = accounting.formatMoney(temp3, "Rp ", 2, ".",',');
 		    	$('.total_all_komisi').val(temp3);
-		    	$('.total_terima').val(temp3);
 	    	}
 
 
@@ -238,7 +238,7 @@ function check_parent(){
   if (parent_check.length >0) {
     datatable2.$('.child_check:checkbox').prop('checked',true);
   }else if(parent_check.length==0) {
-    datatable2.$('.child_check:checkbox').removeAttr('checked');;
+    datatable2.$('.child_check:checkbox').removeAttr('checked');
   }
 
   if(parent_check.length >0) {
@@ -293,7 +293,8 @@ function check_parent(){
 		$('.total_komisi_tambahan').val(temp2);
 		temp3 = accounting.formatMoney(temp3, "Rp ", 2, ".",',');
 		$('.total_all_komisi').val(temp3);
-		$('.total_terima').val(temp3);
+	    $('#save_update_outlet').addClass('disabled');
+
 	}else{
 	  tar_das.splice(0,tar_das.length);
 	  kom.splice(0,kom.length);
@@ -308,7 +309,7 @@ function check_parent(){
 	  $('.total_komisi_tambahan').val(temp2);
 	  temp3 = accounting.formatMoney(0, "Rp ", 2, ".",',');
 	  $('.total_all_komisi').val(temp3);
-	  $('.total_terima').val(temp3);
+	  $('#save_update_outlet').addClass('disabled');
 	}
 
 }

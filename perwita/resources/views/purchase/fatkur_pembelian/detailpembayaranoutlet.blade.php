@@ -648,7 +648,7 @@ function simpan_tt() {
                     timer: 900,
                     showConfirmButton: true
                     },function(){
-                      $('#save_update_outlet').removeClass('disabled');
+                      $('#save_update_outlet').removefClass('disabled');
                     });
           },
           error:function(data){

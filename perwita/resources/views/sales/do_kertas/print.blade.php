@@ -276,7 +276,7 @@
      </tr>
      @foreach($detail as $val)
      <tr>
-       <td class="bot left right">{{$val->dd_kode_item}}</td>
+       <td class="bot left right">{{$val->nomor}}</td>
        @if($val->dd_id_kontrak == 0)
        <td class="bot center left right">{{$val->dd_kode_item}}</td>
        @else
