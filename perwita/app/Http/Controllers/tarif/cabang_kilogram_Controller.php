@@ -11,8 +11,9 @@ use carbon\carbon;
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
-      
+        
         $cabang = Auth::user()->kode_cabang;
+
       if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','all')) {
         $sql = "    SELECT t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
                     FROM tarif_cabang_kilogram t
@@ -1371,6 +1372,8 @@ class cabang_kilogram_Controller extends Controller
         $cabang = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY nama ASC "));
         $akun= DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $prov = DB::select(DB::raw("SELECT p.id,k.id_provinsi,p.nama FROM kota as k left join  provinsi as p on p.id =k.id_provinsi group by p.id,k.id_provinsi order by p.id"));
+
+        
         return view('tarif.cabang_kilogram.index',compact('kota','cabang','akun','prov'));
     }
 

@@ -2129,7 +2129,27 @@ class LaporanMasterController extends Controller
    		
    		return view('purchase/master/master_penjualan/laporan/lap_piutang',compact('data'));
    }
+   public function rekap_customer(){
+   		$cabang = DB::table('cabang')->get();
+   		return view('purchase/master/master_penjualan/laporan/do_total/rekap_customer/lap_rekapcustomer',compact('cabang'));
+   }
+   public function cari_rekapcustomer(Request $request){
+   		$cabang = $request->cabang;
+   		$view = $request->rekap;
+   		$awal = $request->awal;
+   		$akir = $request->akir;
 
+   		if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
+   			return 'a';
+   		}
+   		elseif ($awal == $awal && $akir == $akir && $cabang == $cabang && $view == $view) {
+   			return 'b';
+   		}
+   		
+
+
+   		return view('purchase/master/master_penjualan/laporan/do_total/rekap_customer/ajax_lap_rekapcustomer');
+   }
    //END OF
 
 

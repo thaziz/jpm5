@@ -198,6 +198,9 @@ class cabang_sepeda_Controller extends Controller
       for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
                 
 
+if ($cek > 0 ) {
+    return 'b';
+}else{
 
 
           if ($crud =='N') {
@@ -327,6 +330,8 @@ class cabang_sepeda_Controller extends Controller
             $simpan = DB::table('tarif_cabang_sepeda')->insert($moge);
         }
       }
+}
+
     }else{
         $kode_reguler = $kodekota.'/'.'D'.'R'.$kodecabang.$kode_utama;            
                      
