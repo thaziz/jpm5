@@ -3554,6 +3554,8 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				$fatkurpembeliand->fp_status = 'Released';
 				$fatkurpembeliand->fp_tipe = 'PO';
 				$fatkurpembelian->fp_acchutang = $request->acchutangdagang;
+				$fatkurpembelian->created_by = $request->username;
+				$fatkurpembelian->updated_by = $request->username;
 				//$fatkurpembelian->fp_accpph = $request->accPph;
 				$fatkurpembeliand->save();
 
@@ -5569,6 +5571,7 @@ public function kekata($x) {
 								'fp_dpp'	=> $dpp,
 								'fp_netto' => $netto,
 								'fp_sisapelunasan' => $netto,
+								'updated_by' => $request->username,
 							]);
 
 		//UPDATE TT
