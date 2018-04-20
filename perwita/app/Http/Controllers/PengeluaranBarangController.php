@@ -13,11 +13,12 @@ use Response;
 Use Carbon\Carbon;
 use Session;
 use Mail;
+
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 // use Datatables;
 
-use app\barang_terima;
+use App\barang_terima;
 
 
 class PengeluaranBarangController extends Controller
@@ -309,9 +310,7 @@ class PengeluaranBarangController extends Controller
 				}
 			}
 		}
-		// return $gudang;	
-		// return $jumlah;
-		// $data_dt[1][0]->sum;
+		
 		return view('purchase/konfirmasi_pengeluaranbarang/detail',compact('data','temp','temp1','data_dt','tgl','jumlah','id','gudang'));
 	}
 	public function approve(request $request){
@@ -343,6 +342,35 @@ class PengeluaranBarangController extends Controller
 							'pbg_comp' 		  => $data->pb_comp
 						]);
 			
+			//save barang terima
+			$lastid = barang_terima::max('bt_id'); 
+
+			if(isset($lastid)) {
+				$idbarangterima = $lastid;
+				$idbarangterima = (int)$idbarangterima + 1;
+				
+			}
+
+			else {
+				$idbarangterima = 1;
+				
+			}	
+				$idtransaksi = $request->id;
+				$datapb = DB::select("select * from pengeluaran_barang where pb_id = '$idtransaksi'");
+				$idsupplier = $datapb[0]->pb_comp;
+				
+				$barangterima = new barang_terima();
+				$barangterima->bt_id = $idbarangterima;
+				$barangterima->bt_flag = 'PBG';
+				$barangterima->bt_notransaksi = $datapb[0]->pb_nota;
+				$barangterima->bt_supplier = $idsupplier;
+				$barangterima->bt_idtransaksi = $idtransaksi;
+				$barangterima->bt_statuspenerimaan = 'BELUM DI TERIMA';
+				$barangterima->bt_gudang = $request->nama_gudang[$i];
+				$barangterima->bt_tipe = 'S';
+				$barangterima->bt_cabangpo = $datapb[0]->pb_peminta;
+				$barangterima->save();
+
 			$cari_sm = DB::table('stock_mutation')
 						 ->where('sm_stock',$request->sg_id[$i])
 						 ->where('sm_sisa','!=','0')

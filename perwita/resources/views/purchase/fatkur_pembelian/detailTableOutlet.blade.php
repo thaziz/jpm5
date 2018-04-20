@@ -355,7 +355,7 @@
 	 	}
 function check_parent(){
   var parent_check = $('.parent_check:checkbox:checked');
-
+  console.log(parent_check);
   if (parent_check.length >0) {
     datatable2.$('.child_check:checkbox').prop('checked',true);
   }else if(parent_check.length==0) {
@@ -718,7 +718,6 @@ $.fn.serializeArray = function () {
 }
     
  $(document).ready(function(){
- 	hitung_komisi();
  	check_parent();
  })
 </script>
