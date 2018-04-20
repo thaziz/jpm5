@@ -301,6 +301,7 @@ class PurchaseController extends Controller
        		 $year = Carbon::now()->format('Y');
 
 			$spp = new spp_purchase();
+
 			$spp->spp_nospp = strtoupper($request->nospp);
 			$spp->spp_id = strtoupper($idspp);
 			$spp->spp_tgldibutuhkan = strtoupper($request->tgl_dibutuhkan);
@@ -360,7 +361,7 @@ class PurchaseController extends Controller
 			$co->co_mng_pem_approved = $status;
 		//	$co->co_time_mng_pem_approved = $time;
 			$co->co_staffpemb_approved = $status;
-			$co->co_comp = $request->cabang;
+			$co->co_cabang = $request->cabang;
 			$co->create_by = $request->username;
 			$co->update_by  = $request->username;
 		//	$co->co_time_staffpemb_approved = $status;
