@@ -426,54 +426,7 @@ $('.modal_outlet_tt').click(function(){
 
 
 
-function simpan_tt() {
- 	var totalterima_tt = $('.totalterima_tt').val();
- 	if (totalterima_tt == 'Rp 0,00') {
- 		toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
- 	}
-      swal({
-        title: "Apakah anda yakin?",
-        text: "Simpan Data!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Ya, Simpan!",
-        cancelButtonText: "Batal",
-        closeOnConfirm: true
-      },
-      function(){
-           $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-          $.ajax({
-          url:baseUrl + '/fakturpembelian/simpan_tt',
-          type:'get',
-          data:$('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
-          success:function(response){
-                swal({
-                    title: "Berhasil!",
-                    type: 'success',
-                    text: "Data berhasil disimpan",
-                    timer: 900,
-                    showConfirmButton: true
-                    },function(){
-                      $('#save_update_outlet').removefClass('disabled');
-                    });
-          },
-          error:function(data){
-            swal({
-            title: "Terjadi Kesalahan",
-                    type: 'error',
-                    timer: 900,
-                   showConfirmButton: true
 
-        });
-       }
-      });  
-     });
-  }
 
   function tt_penerus_outlet() {
 

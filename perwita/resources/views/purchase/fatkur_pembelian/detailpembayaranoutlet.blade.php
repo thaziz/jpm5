@@ -44,7 +44,7 @@
 
 	    <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
 	    <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-	    <button type="button" class="btn btn-primary pull-right disabled" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
+	    <button type="button" class="btn btn-primary pull-right disabled save_update_outlet" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
 	    	
 	    <div class="loading text-center" style="display: none;">
           <img src="{{ asset('assets/img/loading1.gif') }}" width="100px">
@@ -506,7 +506,7 @@ function hitung_komisi(o){
 
       $.ajax({
       url:baseUrl + '/fakturpembelian/save_outlet',
-      type:'get',
+      type:'post',
       data: $('.head_outlet :input').serialize()+'&'+$('.head1 :input').serialize()+'&'+datatable2.$('input').serialize()+'&'+$('.header_total_outlet1 :input').serialize()+'&'+$('.header_total_outlet2 :input').serialize(),
       success:function(response){
         swal({
@@ -537,12 +537,11 @@ function hitung_komisi(o){
                   $(".tmbhdatasubcon").css('background','none');
                   $(".tmbhdatasubcon").css('color','none');
 
-                  $('#save-update').addClass('disabled');
+                  $('.save_update_outlet').addClass('disabled');
                   $('.cari-pod').addClass('disabled');
                   
-                  $('.modal_penerus_tt').addClass('disabled');
+                  $('.modal_outlet_tt').addClass('disabled');
                   $('.print-penerus').removeClass('disabled');
-                  $('#save_update_outlet').removeClass('disabled');
                   $('.idfaktur').val(response.id);
 
         });
@@ -587,35 +586,11 @@ $('.modal_outlet_tt').click(function(){
 });
 
 
-$('.simpan_outlet').click(function(){
 
- 	cabang = $('.cabang').val();
- 	selectOutlet = $('.selectOutlet').val();
-
- 	totalterima_tt = $('.totalterima_tt').val();
-
-// return 1;
-	if (totalterima_tt != 'Rp 0,00') {
-
-
-
-     	$.ajax({    
-            type :"get",
-            data : $('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
-            url : baseUrl + '/fakturpembelian/simpan_tt1',
-            dataType:'json',
-            success : function(data){
-            	toastr.success('Form Tanda terima berhasil disimpan');
-            	$('.save_biaya').removeClass('disabled');
-            }
-        })
- 	}else{
-		toastr.warning('Periksa Kembali Data Anda');
-	}
-})
 
 function simpan_tt() {
  	var totalterima_tt = $('.totalterima_tt').val();
+	var selectOutlet = $('.selectOutlet').val();
  	if (totalterima_tt == 'Rp 0,00') {
  		toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
  	}

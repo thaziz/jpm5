@@ -914,7 +914,7 @@ class BiayaPenerusController extends Controller
 
 		      	$valid_notafp =DB::table('form_tt')
 		      					 ->where('tt_noform',$request->nota_tt)
-		      					 ->get();
+		      					 ->first();
 
 		      	if($valid_notafp == null){
 			        $save = DB::table('form_tt')
@@ -940,7 +940,6 @@ class BiayaPenerusController extends Controller
 			    	$save = DB::table('form_tt')
 			    				->where('tt_noform',$request->nota_tt)
 			        			->update([
-			        				'tt_idform'		 	 => $id,
 			        				'tt_tgl'   			 => $tgl,
 			        				'tt_lainlain'		 => $request->lainlain_penerus,
 			        				'tt_tglkembali' 	 => $tgl_kembali,
@@ -951,11 +950,10 @@ class BiayaPenerusController extends Controller
 			        				'tt_suratperan'	 	 => strtoupper($Peranan),
 			        				'tt_suratjalanasli'	 => strtoupper($Jalan),
 			        				'tt_faktur'			 => strtoupper($Faktur),
-			        				'tt_noform'			 => $request->nota_tt,
-			        				'tt_nofp'			 => $request->nofaktur,
 			        				'tt_idagen'			 => $request->supplier_tt,
 			        				'tt_idcabang'		 => $request->cabang
 			        			]);
+
 			    	return response()->json(['status' => '0']);
 			    }
 
@@ -1366,64 +1364,30 @@ class BiayaPenerusController extends Controller
 			 }else{
 			 	$id+=1;
 			 }
+
+
+
+			 if($cari_id == null){
+			 	$cari_id=1;
+			 }else{
+			 	$cari_id+=1;
+			 }
 			$akun_hutang = DB::table('agen')
 							 ->where('kode',$request->selectOutlet)
 							 ->first();
 			$akun_hutang = $akun_hutang->acc_hutang;
-			// return $akun_hutang;
-			$idfaktur = DB::table('form_tt')->where('tt_idcabang' , '001')
-									   ->where('tt_noform','LIKE','%'.'P-0'.'%')
-									   ->max('tt_noform');
-			//	dd($nosppid);
-				if(isset($idfaktur)) {
-					$explode  = explode("/", $idfaktur);
-					$idfaktur = $explode[2];
-					$idfaktur = filter_var($idfaktur, FILTER_SANITIZE_NUMBER_INT);
-					$idfaktur = str_replace('-', '', $idfaktur) ;
-					$string = (int)$idfaktur + 1;
-					$idfaktur = str_pad($string, 3, '0', STR_PAD_LEFT);
-				}
-
-				else {
-					$idfaktur = '001';
-				}
-
-				$nota = 'TT' . $month . $year . '/' . '' . '/P-' .  $idfaktur;
-
-			$save = DB::table('form_tt')
-			        			->insert([
-			        				'tt_idform'		 	 => $id,
-			        				'tt_tgl'   			 => Carbon::parse($tgl[1])->format('Y-m-d'),
-			        				'tt_idagen' 	 	 => $request->selectOutlet,
-			        				'tt_totalterima'	 => round($request->total_all_komisi,2),
-			        				'created_at'		 => Carbon::now(),
-			        				'tt_tglkembali'	 	 => Carbon::now(),
-			        				'updated_at'	 	 => Carbon::now(),
-			        				'tt_kwitansi'	 	 => 'ADA',
-			        				'tt_suratperan'	 	 => 'ADA',
-			        				'tt_suratjalanasli'	 => 'ADA',
-			        				'tt_faktur'			 => 'ADA',
-			        				'tt_noform'			 => $nota,
-			        				'tt_nofp'			 => $request->nofaktur,
-			        				'tt_idcabang'		 =>'001'
-			        			]);
-
-
-		     if($cari_id == null){
-		     	$cari_id = 1;
-		     }else{
-		     	$cari_id+=1;
-		     }
+			
 		   	
 		   $cari_tt = DB::table('form_tt')
 		    			 ->where('tt_nofp',$request->nofaktur)
 		    			 ->get();
-			fakturpembelian::create([
+
+			$save = DB::table('faktur_pembelian')->insert([
 								'fp_idfaktur'		=> $cari_id,
 								'fp_nofaktur'		=> $request->nofaktur,
 								'fp_tgl'			=> Carbon::now(),
 								'fp_jenisbayar' 	=> 7,
-								'fp_comp'			=> '001',
+								'fp_comp'			=> $request->cabang,
 								'created_at'		=> Carbon::now(),
 								'fp_keterangan'		=> $request->note,
 								'fp_status'			=> 'Released',
@@ -1432,7 +1396,10 @@ class BiayaPenerusController extends Controller
 								'fp_netto'			=> round($request->total_all_komisi,2),
 								'fp_sisapelunasan'  => round($request->total_all_komisi,2),
 								'fp_edit'			=> 'UNALLOWED',
-								'fp_idtt'			=> $cari_tt[0]->tt_idform
+								'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->jatuh_tempo_outlet))->format('Y-m-d'),
+								'fp_idtt'			=> $cari_tt[0]->tt_idform,
+								'created_by'  		=> Auth::user()->m_username,
+								'updated_by'  		=> Auth::user()->m_username,
 								]);
 
 			
@@ -1476,13 +1443,17 @@ class BiayaPenerusController extends Controller
 				     	$potd_id+=1;
 				     }
 
+				     $pod = DB::table('delivery_order')
+				     		  ->where('nomor',$request->no_resi[$i])
+				     		  ->first();
+
 					$save_potdt = DB::table('pembayaran_outlet_dt')
 									->insert([
 										'potd_id'				=> $potd_id,
 										'potd_potid'			=> $cari_potid,
 										'potd_potdetail'		=> $pot_dt+1,
 										'potd_pod'				=> $request->no_resi[$i],
-										'potd_tgl'				=> Carbon::now(),
+										'potd_tgl'				=> $pod->tanggal,
 										'potd_tarif_resi'		=> $request->tarif[$i],
 										'potd_komisi'			=> $request->komisi[$i],
 										'potd_komisi_tambahan'	=> $request->komisi_tambahan[$i],
@@ -1497,26 +1468,26 @@ class BiayaPenerusController extends Controller
 			}
 
 
-			return response()->json(['id'=>$request->nofaktur]);
+			return response()->json(['id'=>$cari_id]);
 			
 		}
 
 		public function update_outlet(request $request){
 
-			dd($request->all());
+			// dd($request->all());
 			$cari_nota  = DB::table('faktur_pembelian')
 							->where('fp_idfaktur',$request->id)
 							->first();
 			$cari_pot  = DB::table('pembayaran_outlet')
 							->where('pot_faktur',$cari_nota->fp_nofaktur)
 							->first();
-			$request->total_tarif = filter_var($request->total_tarif, FILTER_SANITIZE_NUMBER_FLOAT);
+			$request->total_tarif = filter_var($request->total_tarif, FILTER_SANITIZE_NUMBER_FLOAT)/100;
 
-			$request->total_komisi_outlet = filter_var($request->total_komisi_outlet, FILTER_SANITIZE_NUMBER_FLOAT);
+			$request->total_komisi_outlet = filter_var($request->total_komisi_outlet, FILTER_SANITIZE_NUMBER_FLOAT)/100;
 
-			$request->total_komisi_tambahan = filter_var($request->total_komisi_tambahan, FILTER_SANITIZE_NUMBER_FLOAT);
+			$request->total_komisi_tambahan = filter_var($request->total_komisi_tambahan, FILTER_SANITIZE_NUMBER_FLOAT)/100;
 
-			$request->total_all_komisi = filter_var($request->total_all_komisi, FILTER_SANITIZE_NUMBER_FLOAT);
+			$request->total_all_komisi = filter_var($request->total_all_komisi, FILTER_SANITIZE_NUMBER_FLOAT)/100;
 
 			$tgl = explode('-',$request->rangepicker);
 			$tgl[0] = str_replace('/', '-', $tgl[0]);

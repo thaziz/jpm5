@@ -154,12 +154,12 @@
       <tr>
         <td>Total Tarif</td>
         <td>:</td>
-        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_tarif)}}" name="total_tarif" class="form-control form-inline total_tarif"></td>
+        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_tarif,2,",",".")}}" name="total_tarif" class="form-control form-inline total_tarif"></td>
       </tr>
       <tr>
         <td>Total Komisi Outlet</td>
         <td>:</td>
-        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_komisi_outlet)}}" name="total_komisi_outlet" class="form-control form-inline total_komisi_outlet"></td>
+        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_komisi_outlet,2,",",".")}}" name="total_komisi_outlet" class="form-control form-inline total_komisi_outlet"></td>
       </tr>
     </table>
     </div>
@@ -169,12 +169,12 @@
       <tr>
         <td>Total Komisi Tambahan</td>
         <td>:</td>
-        <td><input style="text-align: right"  readonly="" type="text" name="total_komisi_tambahan" value="{{'Rp ' . number_format($data->pot_total_komisi_tambah)}}" class="form-control form-inline total_komisi_tambahan"></td>
+        <td><input style="text-align: right"  readonly="" type="text" name="total_komisi_tambahan" value="{{'Rp ' . number_format($data->pot_total_komisi_tambah,2,",",".")}}" class="form-control form-inline total_komisi_tambahan"></td>
       </tr>
       <tr>
         <td>Total Jumlah Komisi</td>
         <td>:</td>
-        <td><input style="text-align: right"  readonly="" type="text" name="total_all_komisi" value="{{'Rp ' . number_format($data->pot_total_komisi)}}" class="form-control form-inline total_all_komisi"></td>
+        <td><input style="text-align: right"  readonly="" type="text" name="total_all_komisi" value="{{"Rp " . number_format($data->pot_total_komisi,2,",",".")}}" class="form-control form-inline total_all_komisi"></td>
       </tr>
     </table>
     </div>
@@ -214,7 +214,10 @@
         <tr>
           <td >
             {{$val->potd_pod}}
-          </td><input type="hidden" name="chck[]" value="on" class="form-control child_check" >
+          </td>
+           <input type="hidden" name="chck[]" value="on" class="form-control child_check" >
+            <input type="hidden" name="no_resi[]" class="form-control" value="{{$val->potd_pod}}">
+          </td>
           <td>
             {{$val->potd_tgl}}
           </td>
@@ -429,7 +432,7 @@ $(document).ready(function(){
 
       $.ajax({
       url:baseUrl + '/fakturpembelian/update_outlet',
-      type:'get',
+      type:'post',
       data: $('.head_outlet :input').serialize()+'&'+datatable2.$('input').serialize()+'&'+$('.header_total_outlet1 :input').serialize()+'&'+$('.header_total_outlet2 :input').serialize()+'&id='+'{{$id}}',
       success:function(response){
         swal({
@@ -456,6 +459,55 @@ $(document).ready(function(){
  });
 }
 
+
+function simpan_tt() {
+  var totalterima_tt = $('.totalterima_tt').val();
+  var  selectOutlet = $('.selectOutlet').val();
+  var cabang = $('.cabang').val();
+
+      swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+          $.ajax({
+          url:baseUrl + '/fakturpembelian/simpan_tt',
+          type:'get',
+          data:$('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+          success:function(response){
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                    showConfirmButton: true
+                    },function(){
+                    $('.save_update_outlet').removeClass('disabled');
+                    });
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
+        });
+       }
+      });  
+     });
+  }
  function print_penerus() {
     var idfaktur = $('.idfaktur').val();
      window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
