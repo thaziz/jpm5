@@ -428,29 +428,37 @@ class BiayaPenerusController extends Controller
 						  ->orWhere('kategori','AGEN DAN OUTLET')
 						  ->get();
 
+				$data = DB::table('faktur_pembelian')
+		        		  ->join('pembayaran_outlet','fp_nofaktur','=','pot_faktur')
+		        		  ->join('agen','kode','=','fp_supplier')
+		        		  ->where('fp_nofaktur',$cari_fp->fp_nofaktur)
+		        		  ->first();
+		        $cabang  = DB::table('cabang')
+		        			 ->get();
+		        $data_dt = DB::table('pembayaran_outlet_dt')
+		        		  ->join('pembayaran_outlet','potd_potid','=','pot_id')
+		        		  ->join('delivery_order','nomor','=','potd_pod')
+		       				 ->where('potd_potid',$data->pot_id)
+		       				 ->orderBy('pot_tgl','ASC')
+		       				 ->get();
+
 				$akun_biaya = DB::table('akun_biaya')
 						  ->get();
-				$first = Carbon::now();
+				$exp = explode('-',$data_dt[0]->pot_tgl);
+				$first = Carbon::createFromDate($exp[0], $exp[1], $exp[2]);
 		        $second = Carbon::now()->format('d/m/Y');
-		        // $start = $first->subMonths(1)->startOfMonth();
 		        $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
 		        $jt = Carbon::now()->subDays(-30)->format('d/m/Y');
 
-		        $data = DB::table('faktur_pembelian')
-		        		  ->join('pembayaran_outlet','fp_nofaktur','=','pot_faktur')
-		        		  ->join('agen','kode','=','fp_supplier')
-		        		  ->first();
+		        
 
-		       	$data_dt = DB::table('pembayaran_outlet_dt')
-		       				 ->where('potd_potid',$data->pot_id)
-		       				 ->get();
 
 		       	$valid_cetak = DB::table('form_tt')
 		       					 ->where('tt_nofp',$data->fp_nofaktur)
 		       					 ->first();
 
 		       	// dd($valid_cetak);
-			return view('purchase/fatkur_pembelian/editOutlet',compact('date','agen','akun_biaya','second','start','jt','data','data_dt','valid_cetak','id'));
+			return view('purchase/fatkur_pembelian/editOutlet',compact('date','agen','akun_biaya','second','start','jt','data','data_dt','valid_cetak','id','cabang'));
 
 			}elseif ($cari_fp->fp_jenisbayar == 9){
 
@@ -913,7 +921,7 @@ class BiayaPenerusController extends Controller
 			        			->insert([
 			        				'tt_idform'		 	 => $id,
 			        				'tt_tgl'   			 => $tgl,
-			        				'tt_lainlain'		 => $request->lainlain,
+			        				'tt_lainlain'		 => $request->lainlain_penerus,
 			        				'tt_tglkembali' 	 => $tgl_kembali,
 			        				'tt_totalterima'	 => round($total,2),
 			        				'created_at'		 => Carbon::now(),
@@ -934,7 +942,7 @@ class BiayaPenerusController extends Controller
 			        			->update([
 			        				'tt_idform'		 	 => $id,
 			        				'tt_tgl'   			 => $tgl,
-			        				'tt_lainlain'		 => $request->lainlain,
+			        				'tt_lainlain'		 => $request->lainlain_penerus,
 			        				'tt_tglkembali' 	 => $tgl_kembali,
 			        				'tt_totalterima'	 => round($total,2),
 			        				'created_at'		 => Carbon::now(),
@@ -1010,13 +1018,19 @@ class BiayaPenerusController extends Controller
 			    
 
 		}
-		public function cetak_tt(request $request){
+		public function cetak_tt($id){
+			$id =str_replace('-', '/', $id);
+
+			$cari_tt = DB::table('form_tt')
+						   ->where('tt_noform',$id)
+						   ->first();
 
 			$cari_tipe = DB::table('faktur_pembelian')
-						   ->where('fp_idfaktur',$request->id)
+						   ->where('fp_nofaktur',$cari_tt->tt_nofp)
 						   ->get();
+
 			if ($cari_tipe[0]->fp_jenisbayar == 6) {
-			    $nota = $request->nota;
+			    $nota = $id;
 				$data = DB::table('form_tt')
 						  ->join('biaya_penerus','bp_faktur','=','tt_nofp')
 						  ->join('faktur_pembelian','fp_nofaktur','=','tt_nofp')
@@ -1049,7 +1063,7 @@ class BiayaPenerusController extends Controller
 				return view('purchase/fatkur_pembelian/cetaktt',compact('nota','data','tgl','terbilang','cari_tipe'));
 			}else if($cari_tipe[0]->fp_jenisbayar == 7){
 
-				$nota = $request->nota;
+				$nota = $id;
 				$data = DB::table('form_tt')
 						  ->join('pembayaran_outlet','pot_faktur','=','tt_nofp')
 						  ->join('faktur_pembelian','fp_nofaktur','=','tt_nofp')
@@ -1084,7 +1098,7 @@ class BiayaPenerusController extends Controller
 				return view('purchase/fatkur_pembelian/cetaktt',compact('nota','data','tgl','terbilang','cari_tipe'));
 			}else if($cari_tipe[0]->fp_jenisbayar == 9){
 
-				$nota = $request->nota;
+				$nota = $id;
 				$data = DB::table('form_tt')
 						  ->join('pembayaran_subcon','pb_faktur','=','tt_nofp')
 						  ->join('faktur_pembelian','fp_nofaktur','=','tt_nofp')
@@ -1497,16 +1511,12 @@ class BiayaPenerusController extends Controller
 							->where('pot_faktur',$cari_nota->fp_nofaktur)
 							->first();
 			$request->total_tarif = filter_var($request->total_tarif, FILTER_SANITIZE_NUMBER_FLOAT);
-			$request->total_tarif = $request->total_tarif/100;
 
 			$request->total_komisi_outlet = filter_var($request->total_komisi_outlet, FILTER_SANITIZE_NUMBER_FLOAT);
-			$request->total_komisi_outlet = $request->total_komisi_outlet/100;
 
 			$request->total_komisi_tambahan = filter_var($request->total_komisi_tambahan, FILTER_SANITIZE_NUMBER_FLOAT);
-			$request->total_komisi_tambahan = $request->total_komisi_tambahan/100;
 
 			$request->total_all_komisi = filter_var($request->total_all_komisi, FILTER_SANITIZE_NUMBER_FLOAT);
-			$request->total_all_komisi = $request->total_all_komisi/100;
 
 			$tgl = explode('-',$request->rangepicker);
 			$tgl[0] = str_replace('/', '-', $tgl[0]);
@@ -1521,7 +1531,8 @@ class BiayaPenerusController extends Controller
 							  	'fp_netto'				=> round($request->total_all_komisi,2),
 								'fp_sisapelunasan'  	=> round($request->total_all_komisi,2),
 								'fp_pending_status'  	=> 'APPROVED',
-							  	'updated_at'			=> Carbon::now()
+							  	'updated_at'			=> Carbon::now(),
+							  	'updated_by'  			=> Auth::user()->m_username,
 							]);
 
 			$update_pot = DB::table('pembayaran_outlet')
@@ -1535,7 +1546,7 @@ class BiayaPenerusController extends Controller
 							  	'pot_total_komisi'			=> round($request->total_all_komisi,2),
 							  	'pot_tgl'					=> Carbon::parse($tgl[0])->format('Y-m-d'),
 							  	'pot_tgl_kembali'			=> Carbon::parse($tgl[1])->format('Y-m-d'),
-							  	'updated_at'				=> Carbon::now()
+							  	'updated_at'				=> Carbon::now(),
 							]);
 			$delete_potd = DB::table('pembayaran_outlet_dt')
 							 ->where('potd_potid',$cari_pot->pot_id)

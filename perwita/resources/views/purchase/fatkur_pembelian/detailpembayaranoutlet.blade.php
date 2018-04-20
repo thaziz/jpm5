@@ -210,7 +210,7 @@
                Lain Lain
               </td>
               <td>                      
-                <input type="text" class="form-control lain_outlet" name="lainlain">
+                <input type="text" class="form-control lain_outlet" name="lainlain_penerus">
               </td>
             </tr>
             <tr>
@@ -573,7 +573,6 @@ $('.modal_outlet_tt').click(function(){
 	            dataType:'json',
 	            success : function(data){
 	            	$('.supplier_tt').val(data.sup.nama);
-	            	$('.notandaterima').val(data.nota);
 	            	$('.jatuhtempo_tt').val(jatuh_tempo_outlet);
 	            	if (total_all_komisi != '') {
 	            		$('.totalterima_tt').val(total_all_komisi);
@@ -672,7 +671,6 @@ function simpan_tt() {
       data: {cabang},
       dataType:'json',
       success:function(data){
-        $('.notandaterima').val(data.nota);
         var agen_vendor = $('.selectOutlet').val();
         var jatuh_tempo = $('.jatuh_tempo_outlet').val();
         var total_jml   = $('.total_all_komisi').val();
@@ -714,5 +712,18 @@ $.fn.serializeArray = function () {
         };
     }).get();
 }
-    
+$(document).ready(function(){
+	var cabang = $('.cabang').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang},
+      dataType:'json',
+      success:function(data){
+        $('.notandaterima').val(data.nota);
+       
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+})
 </script>

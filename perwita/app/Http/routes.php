@@ -228,7 +228,7 @@ Route::get('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');
 Route::get('fakturpembelian/simpan_tt', 'BiayaPenerusController@simpan_tt');
 Route::get('fakturpembelian/simpan_tt1', 'BiayaPenerusController@simpan_tt1');
 Route::get('fakturpembelian/simpan_tt_subcon', 'BiayaPenerusController@simpan_tt_subcon');
-Route::get('fakturpembelian/cetak_tt', 'BiayaPenerusController@cetak_tt');
+Route::get('fakturpembelian/cetak_tt/{id}', 'BiayaPenerusController@cetak_tt');
 Route::get('fakturpembelian/hapusbiayapenerus/{id}', 'BiayaPenerusController@hapus_biaya');
 Route::get('fakturpembelian/detailbiayapenerus/{id}', 'BiayaPenerusController@detailbiayapenerus')->name('detailbiayapenerus');
 Route::get('fakturpembelian/buktibiayapenerus/{id}', 'BiayaPenerusController@buktibiayapenerus')->name('buktibiayapenerus');
@@ -247,6 +247,7 @@ Route::get('fakturpembelian/cariNote', 'BiayaPenerusController@cari_note');
 Route::post('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');
 Route::get('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');
 Route::post('fakturpembelian/update_outlet', 'BiayaPenerusController@update_outlet');
+Route::get('fakturpembelian/update_outlet', 'BiayaPenerusController@update_outlet');
 //PEMBAYARAN SUBCON
 Route::get('fakturpembelian/getpembayaransubcon', 'BiayaPenerusController@getpembayaransubcon')->name('getpembayaransubcon');
 Route::get('fakturpembelian/cari_subcon', 'BiayaPenerusController@cari_subcon');
