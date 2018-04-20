@@ -35,24 +35,13 @@
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
-              <div class="form-row">
-                <div class="form-group col-md-2">
-                  <input type="text" class="date form-control" readonly="" id="date_awal" name="">
-                </div>
-                <div class="form-group col-md-2">
-                  <input type="text" class="date form-control" readonly="" id="date_akir" name="">
-                </div>
-                <div class="form-group col-md-2">
-                  <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
-                </div>
-              </div>  
+             
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                    <div id="container" style="height: 400px"></div>
-                    <table class="table table-bordered datatable table-striped" style="margin-top: 100px;">
+                    <table class="table table-bordered datatable table-striped">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -134,6 +123,13 @@
                         </tr>
                       <br>
                       </table>
+                      <div class="row pull-right" style="margin-top: 0px;margin-right: 3px;"> &nbsp; &nbsp; 
+                        <select class="chosen-select-width form-control" onchange="location = this.value;">
+                          <option selected="" disabled="">- Jenis Laporan -</option>
+                          <option value="{{ url('rekap_customer/rekap_customer') }}">Rekap Customer</option>
+                        </select>
+                      </div>
+
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                     </div>
                 </form>
@@ -239,7 +235,7 @@
                   init: function(api, node, config) {
                   $(node).removeClass('btn-default'),
                   $(node).addClass('btn-warning'),
-                  $(node).css({'margin-top': '-50px','margin-left': '80px'})
+                  $(node).css({'margin-top': '-63px','margin-left': '80px'})
                   },
                   exportOptions: {
                   modifier: {
@@ -361,300 +357,6 @@
       });
     }
 
-
-    function cari(){
-      var date_awal = $('#date_awal').val();
-      var date_akir = $('#date_akir').val();
-      
-      if(date_awal == ''){
-          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
-          toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-          }
-          return false;
-      }
-
-      if(date_akir == ''){
-          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
-          toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-          }
-          return false;
-      }
-      $.ajax({
-        data: {a:date_awal,b:date_akir},
-        url: baseUrl + '/cari_paket/cari_paket',
-        type: "get",
-       success : function(data){
-        console.log(data);
-        Highcharts.chart('container', {
-        chart: {
-            type: 'column',
-          
-        },
-        title: {
-            text: 'Laporan'
-        },
-        subtitle: {
-            text: 'PENJUALAN PAKET'
-        },
-        plotOptions: {
-            column: {
-                depth: 100
-            }
-        },
-        xAxis: {
-            categories: ['TAMPILAN'],
-            labels: {
-                skew3d: true,
-                style: {
-                    fontSize: '16px'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: null
-            }
-        },
-        series: [{
-            name: 'DOKUMEN',
-            data: [data.dokumen]
-        },{
-            name: 'KILOGRAM',
-            data: [data.kilogram]
-        },{
-            name: 'KOLI',
-            data: [data.koli]
-        },{
-            name: 'SEPEDA',
-            data: [data.sepeda]
-        },
-
-        ],
-      });
-        }
-      });
-    }
-
-var date = new Date();
-    var y = date.getFullYear();
-
-Highcharts.chart('container', {
-
-    chart: {
-        type: 'column'
-    },
- xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    },
-    title: {
-        text: 'DIAGRAM BATANG PENJUALAN TAHUN '+ y
-    },
-
-    yAxis: [{
-        className: 'highcharts-color-0',
-        title: {
-            text: 'Data Delivery Order'
-        }
-    }, {
-        className: 'highcharts-color-1',
-        opposite: true,
-        title: {
-            text: 'Data Delivery Order'
-        }
-    }],
-
-    plotOptions: {
-        column: {
-            borderRadius: 0
-        }
-    },
-
-   
-    series: [{
-        name: 'PAKET',
-        data: [
-        {{ $paket[0]}},
-        {{ $paket[1]}},
-        {{ $paket[2]}},
-        {{ $paket[3]}},
-        {{ $paket[4]}},
-        {{ $paket[5]}},
-        {{ $paket[6]}},
-        {{ $paket[7]}},
-        {{ $paket[8]}},
-        {{ $paket[9]}},
-        {{ $paket[10]}},
-        {{ $paket[11]}},
-        ]
-    },{
-        name: 'KORAN',
-        data: [
-        {{ $koran[0]}},
-        {{ $koran[1]}},
-        {{ $koran[2]}},
-        {{ $koran[3]}},
-        {{ $koran[4]}},
-        {{ $koran[5]}},
-        {{ $koran[6]}},
-        {{ $koran[7]}},
-        {{ $koran[8]}},
-        {{ $koran[9]}},
-        {{ $koran[10]}},
-        {{ $koran[11]}},
-        ]
-    },
-    {
-        name: 'KARGO',
-        data: [
-        {{ $kargo[0]}},
-        {{ $kargo[1]}},
-        {{ $kargo[2]}},
-        {{ $kargo[3]}},
-        {{ $kargo[4]}},
-        {{ $kargo[5]}},
-        {{ $kargo[6]}},
-        {{ $kargo[7]}},
-        {{ $kargo[8]}},
-        {{ $kargo[9]}},
-        {{ $kargo[10]}},
-        {{ $kargo[11]}},
-        ]
-    ,
-    }]
-
-});
-
-
-
- function cari(){
-      var date_awal = $('#date_awal').val();
-      var date_akir = $('#date_akir').val();
-      
-      if(date_awal == ''){
-          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
-          toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-          }
-          return false;
-      }
-
-      if(date_akir == ''){
-          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
-          toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-          }
-          return false;
-      }
-      $.ajax({
-        data: {a:date_awal,b:date_akir},
-        url: baseUrl + '/carideliveryorder_total/carideliveryorder_total',
-        type: "get",
-       success : function(data){
-        console.log(data);
-        Highcharts.chart('container', {
-        chart: {
-            type: 'column',
-          
-        },
-        title: {
-            text: 'Laporan'
-        },
-        subtitle: {
-            text: 'PENJUALAN PAKET'
-        },
-        plotOptions: {
-            column: {
-                depth: 100
-            }
-        },
-        xAxis: {
-            categories: ['LAPORAN'],
-            labels: {
-                skew3d: true,
-                style: {
-                    fontSize: '16px'
-                }
-            }
-        },
-        yAxis: {
-            title: {
-                text: null
-            }
-        },
-        series: [{
-            name: 'PAKET',
-            data: [data.paket]
-        },{
-            name: 'KORAN',
-            data: [data.koran]
-        },{
-            name: 'KARGO',
-            data: [data.kargo]
-        },
-
-        ],
-      });
-        }
-      });
-    }
 
 
 </script>
