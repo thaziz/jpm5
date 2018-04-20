@@ -497,12 +497,16 @@ Route::get('masterjenisitem/detailmasterjenisitem/{id}', 'MasterPurchaseControll
 Route::delete('masterjenisitem/deletemasterjenisitem/{id}', 'MasterPurchaseController@deletemasterjenisitem');
 Route::post('masterjenisitem/kodejenis', 'MasterPurchaseController@kodejenisitem');
 
+// master aktiva start
 
-Route::get('masteractiva/masteractiva', 'MasterPurchaseController@masteractiva');
+Route::get('masteractiva/masteractiva/{id}', 'MasterPurchaseController@masteractiva');
+
 Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailmasteractiva');
 Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
 Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
 Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
+
+// end master aktiva
 
 Route::get('notadebit/notadebit', 'MasterPurchaseController@nota_debit');
 Route::get('notadebit/detailnotadebit', 'MasterPurchaseController@detailnota_debit');

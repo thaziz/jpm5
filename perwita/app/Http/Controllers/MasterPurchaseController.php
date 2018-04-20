@@ -1416,8 +1416,25 @@ class MasterPurchaseController extends Controller
 		return $data;
 	}
 
-	public function masteractiva() {
-		return view('purchase/master/master_activa/index');
+	// Fungsi-Fungsi Golongan Aktiva Mulai Dari Sini
+
+	public function masteractiva($cabang) {
+		if(!Auth::user()->PunyaAkses('Master Activa','all') && $cabang != Session::get("cabang")){
+			return redirect(url("masteractiva/masteractiva/".Session::get("cabang")));
+		}
+
+		if(Auth::user()->PunyaAkses('Master Activa','all')){
+			$cab  = DB::table('cabang')
+                	->select("kode", "nama")->get();
+        }else{
+        	$cab  = DB::table('cabang')
+                	->select("kode", "nama")
+                	->where("kode", Session::get("cabang"))->get();
+        }
+
+        $data = DB::table('d_golongan_aktiva')->where("kode_cabang", $cabang)->get();
+
+		return view('purchase/master/master_activa/index')->withCab($cab)->withData($data)->withCabang($cabang);;
 	}
 	
 	public function createmasteractiva() {
@@ -1435,6 +1452,9 @@ class MasterPurchaseController extends Controller
 	public function detailsaldomenurunmasteractiva() {
 		return view('purchase/master/master_activa/detailsaldomenurun');
 	}
+
+	// Fungsi-Fungsi Golongan Aktiva Berhenti Dari Sini
+
 
 	// Fungsi-Fungsi Golongan Aktiva Mulai Dari Sini
 

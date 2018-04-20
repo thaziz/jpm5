@@ -1107,7 +1107,7 @@
                         {{Request::is('masteractiva/masteractiva') ? 'active' : '' || 
                             Request::is('masteractiva/masteractiva/*') ? 'active' : ''}}
 
-                        " href="{{ url('masteractiva/masteractiva')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Activa </a>
+                        " href="{{ url('masteractiva/masteractiva/'.Session::get('cabang'))}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Activa </a>
                         </li>
                         @endif
                         @if(Auth::user()->PunyaAkses('Golongan Activa','aktif'))
