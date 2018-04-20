@@ -3,6 +3,12 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+.disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+</style>
 
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
@@ -58,24 +64,24 @@
                     <form method="post" action="{{url('masteritem/saveitem')}}"  enctype="multipart/form-data" class="form-horizontal">
                     <table class="table" border="0">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
-                  
+                       
 
                        <tr>
                         <td> Cabang </td>
                         <td>  
-                        @if(Session::get('cabang') != 000)
-                        <select class="form-control disabled chosen-select-width cabang" name="cabang">
-                            @foreach($data['cabang'] as $cabang)
-                          <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
-                          @endforeach
-                        </select>
-                        @else
-                          <select class="form-control cabang" name="cabang">
-                            @foreach($data['cabang'] as $cabang)
-                            <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
-                            @endforeach
-                          </select> 
-                        @endif
+                         @if(Auth::user()->punyaAkses('Master Supplier','cabang'))
+                            <select class="form-control  cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              @endforeach
+                            </select>
+                            @else
+                              <select class="form-control disabled cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                            @endif
                         
                         </td>
                        </tr>

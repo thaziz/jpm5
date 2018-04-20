@@ -102,7 +102,7 @@ class do_kertas_Controller extends Controller
         $index = (integer)$cari_nota[0]->id + 1;
         $index = str_pad($index, 5, '0', STR_PAD_LEFT);
 
-        $nota = 'KTS' . $cabang . $bulan . $tahun . $index;
+        $nota = 'KRN' . $cabang . $bulan . $tahun . $index;
         return response()->json(['nota'=>$nota]);
     }
 
@@ -220,7 +220,7 @@ class do_kertas_Controller extends Controller
                 $index = (integer)$cari_nota[0]->id + 1;
                 $index = str_pad($index, 5, '0', STR_PAD_LEFT);
 
-                $nota = 'KTS' . $cabang . $bulan . $tahun . $index;
+                $nota = 'KRN' . $cabang . $bulan . $tahun . $index;
 
                 $save_head = DB::table('delivery_order')
                                ->insert([

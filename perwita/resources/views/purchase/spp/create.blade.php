@@ -78,16 +78,16 @@
                                               <td> Cabang </td>
                                               <td>                                              
 
-                                              @if(Session::get('cabang') != 000)
-                                              <select class="form-control disabled cabang" name="cabang">
+                                               @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','cabang'))
+                                              <select class="form-control  cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
-                                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->kode}} -  {{$cabang->nama}} </option>
+                                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                                                 @endforeach
                                               </select>
                                               @else
-                                                <select class="form-control cabang" name="cabang">
+                                                <select class="form-control disabled cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
-                                                  <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
+                                                  <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                                                   @endforeach
                                                 </select> 
                                               @endif

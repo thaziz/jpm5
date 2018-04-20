@@ -3,6 +3,12 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+.disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+</style>
 
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
@@ -64,12 +70,20 @@
                         <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                         <tr>
                           <td> Pengajuan dari Cabang : </td>
-                          <td>    <select class="form-control cabang" disabled="">
-                                  @foreach($data['cabang'] as $cabang) 
-                                    
-                                    <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif >{{$cabang->nama}}</option>                         
-                                  @endforeach
-                                 </select> 
+                          <td> 
+                            @if(Auth::user()->punyaAkses('Master Bank','cabang'))
+                            <select class="form-control  cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              @endforeach
+                            </select>
+                            @else
+                              <select class="form-control disabled cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                            @endif
 
                                  <input type="hidden" class="valcabang" name="cabang">
 

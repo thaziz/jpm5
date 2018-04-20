@@ -160,6 +160,7 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btn_modal_do"   ><i class="glyphicon glyphicon-plus"></i>Pilih Nomor DO</button>
                             <button type="button" class="btn btn-success simpan" onclick="simpan()" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-warning disabled print" onclick="ngeprint()" ><i class="glyphicon glyphicon-print"></i> Print</button>
                             <button type="button" class="btn btn-warning cndn disabled" onclick="cndn()" ><i class="glyphicon glyphicon-eye-open"></i> Lihat Di CNDN</button>
                             <button type="button" class="btn btn-danger kanan pull-right reload" id="reload" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i> Reload</button>
                         </div>
@@ -1029,5 +1030,11 @@ $('#cb_pendapatan').change(function(){
         $('#cb_jenis_ppn').val(1);
     }
 })
+
+
+function ngeprint(){
+   var id = $('#nota_invoice').val();
+    window.open('{{url('sales/cetak_nota_pembetulan')}}'+'/'+id);
+}
 </script>
 @endsection

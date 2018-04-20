@@ -66,7 +66,8 @@ Route::get('setting/hak_akses/cari_data', 'setting\hak_akses_Controller@cari_dat
 Route::get('setting/hak_akses/add_level', 'setting\hak_akses_Controller@form');
 Route::get('setting/hak_akses/simpan_perubahan', 'setting\hak_akses_Controller@simpan_perubahan');
 Route::post('setting/hak_akses/simpan_perubahan', 'setting\hak_akses_Controller@simpan_perubahan');
-Route::get('setting/hak_akses/{level}/edit_level', 'setting\hak_akses_Controller@form');
+Route::get('setting/hak_akses/{level}/edit_level', 'setting\hak_akses_Controller@edit');
+Route::post('setting/hak_akses/edit_data', 'setting\hak_akses_Controller@edit_data');
 Route::get('setting/hak_akses/tabel', 'setting\hak_akses_Controller@table_data');
 Route::get('setting/hak_akses/datatable_hak_akses', 'setting\hak_akses_Controller@datatable_hak_akses')->name('datatable_hak_akses');
 //Route::get('setting/hak_akses/get_data', 'setting\hak_akses_Controller@get_data');
@@ -240,7 +241,7 @@ Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
 Route::get('fakturpembelian/cari_outlet', 'BiayaPenerusController@cari_outlet');
-Route::post('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
+Route::get('fakturpembelian/cari_outlet1', 'BiayaPenerusController@cari_outlet1');
 // Route::get('fakturpembelian/cari_outlet1/{agen}', 'BiayaPenerusController@cari_outlet1');
 Route::get('fakturpembelian/cariNote', 'BiayaPenerusController@cari_note');
 Route::post('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');
@@ -405,6 +406,7 @@ Route::post('formfpg/deletedetailformfpg', 'PurchaseController@deletedetailformf
 Route::post('formfpg/deletedetailbankformfpg', 'PurchaseController@deletedetailbankformfpg');
 Route::get('formfpg/printformfpg/{id}', 'PurchaseController@printformfpg');
 Route::get('formfpg/getnofpg', 'PurchaseController@getnofpg');
+Route::get('formfpg/hapusfpg/{id}', 'PurchaseController@hapusfpg');
 
 
 Route::get('pelaporanfakturpajakmasukan/pelaporanfakturpajakmasukan', 'PurchaseController@pelaporanfakturpajakmasukan');
@@ -501,10 +503,6 @@ Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailma
 Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
 Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
 Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
-
-
-Route::get('golonganactiva/golonganactiva', 'MasterPurchaseController@golonganactiva');
-Route::get('golonganactiva/creategolonganactiva', 'MasterPurchaseController@creategolonganactiva');
 
 Route::get('notadebit/notadebit', 'MasterPurchaseController@nota_debit');
 Route::get('notadebit/detailnotadebit', 'MasterPurchaseController@detailnota_debit');
@@ -1186,24 +1184,24 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 ////////////
 
 
-Route::get('sales/deliveryorder', 'sales\do_Controller@index');
-Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
-Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
-Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
-Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
-Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
-Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
-Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
-Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
+// Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+// Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
+// Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
+// Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
+// Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
+// Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
+// Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
+// Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
+// Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
 
-Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
-Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
-Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
-Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');
-Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_Controller@hapus_data_detail');
-Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller@form_update_status');
-Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
-Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
+// Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+// Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+// Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
+// Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');
+// Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_Controller@hapus_data_detail');
+// Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller@form_update_status');
+// Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
+// Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
 
 
@@ -1333,6 +1331,7 @@ Route::get('sales/pilih_invoice_pembetulan', 'sales\invoice_pembetulan_controlle
 Route::get('sales/simpan_invoice_pembetulan', 'sales\invoice_pembetulan_controller@simpan_invoice_pembetulan');
 Route::get('sales/update_invoice_pembetulan', 'sales\invoice_pembetulan_controller@update_invoice_pembetulan');
 Route::get('sales/hapus_invoice_pembetulan', 'sales\invoice_pembetulan_controller@hapus_invoice_pembetulan');
+Route::get('sales/cetak_nota_pembetulan/{id}', 'sales\invoice_pembetulan_controller@cetak_nota_pembetulan');
 
 // update faktur 
 
@@ -1617,6 +1616,28 @@ Route::get('suratketerangankerjapengajuankpr', 'SuratController@pdf_suratketeran
 
 
 //********KEUANGAN********
+
+//golongan_aktiva
+
+Route::get('golonganactiva/golonganactiva/{cabang}', 'MasterPurchaseController@golonganactiva');
+Route::get('golonganactiva/creategolonganactiva', 'MasterPurchaseController@creategolonganactiva');
+
+Route::get('golonganactiva/editgolonganactiva/{cabang}/{id}', [
+  'uses' => 'MasterPurchaseController@editgolonganactiva',
+  'as'   => 'golonganactiva.edit'
+]);
+
+Route::get('golonganactiva/hapusgolonganactiva/{cabang}/{id}', [
+  'uses' => 'MasterPurchaseController@golongan_hapus',
+  'as'   => 'golonganactiva.hapus'
+]);
+
+Route::get('golonganactiva/ask_kode/{cabang}', 'MasterPurchaseController@ask_kode');
+
+Route::post('golonganactiva/simpan', 'MasterPurchaseController@golongan_save');
+Route::post('golonganactiva/update', 'MasterPurchaseController@golongan_update');
+
+//endgolonganaktiva
 
 Route::get('master_keuangan/err_cek', function(){
   return view('keuangan.err.err_laporan');

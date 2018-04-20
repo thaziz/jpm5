@@ -474,6 +474,8 @@ public function simpan_invoice(request $request)
     $do_awal        = Carbon::parse($do_awal)->format('Y-m-d');
     $do_akhir       = Carbon::parse($do_akhir)->format('Y-m-d');
     $ed_jatuh_tempo = Carbon::parse($ed_jatuh_tempo)->format('Y-m-d');
+    $tgl = str_replace('/', '-', $request->tgl);
+    $tgl = Carbon::parse($tgl)->format('Y-m-d');
 
     $total_tagihan  = filter_var($request->total_tagihan, FILTER_SANITIZE_NUMBER_FLOAT)/100;
     $netto_total    = filter_var($request->netto_total, FILTER_SANITIZE_NUMBER_FLOAT)/100;
@@ -530,7 +532,7 @@ public function simpan_invoice(request $request)
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
                                           'i_nomor'              =>  $request->nota_invoice,
-                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
                                           'i_tgl_sampai_do'      =>  $do_akhir,
@@ -822,7 +824,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
              $save_header_invoice = DB::table('invoice')
                                      ->insert([
                                           'i_nomor'              =>  $nota,
-                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
                                           'i_tgl_sampai_do'      =>  $do_akhir,
@@ -1076,7 +1078,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
             $save_header_invoice = DB::table('invoice')
                                      ->insert([
                                           'i_nomor'              =>  $request->nota_invoice,
-                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
                                           'i_tgl_sampai_do'      =>  $do_akhir,
@@ -1345,7 +1347,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
              $save_header_invoice = DB::table('invoice')
                                      ->insert([
                                           'i_nomor'              =>  $nota,
-                                          'i_tanggal'            =>  Carbon::now(),
+                                          'i_tanggal'            =>  $tgl,
                                           'i_keterangan'         =>  $request->ed_keterangan,
                                           'i_tgl_mulai_do'       =>  $do_awal,
                                           'i_tgl_sampai_do'      =>  $do_akhir,

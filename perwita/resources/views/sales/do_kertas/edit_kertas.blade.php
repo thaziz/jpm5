@@ -28,7 +28,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> DO KERTAS
+                    <h5> DO KORAN
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <a href="../deliveryorderkertas" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>

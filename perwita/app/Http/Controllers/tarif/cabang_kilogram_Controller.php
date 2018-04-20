@@ -11,12 +11,26 @@ use carbon\carbon;
 class cabang_kilogram_Controller extends Controller
 {
     public function table_data () {
+        
+        $cabang = Auth::user()->kode_cabang;
+
+      if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','all')) {
         $sql = "    SELECT t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
                     FROM tarif_cabang_kilogram t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
                     LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkilogram
                     ORDER BY t.kode_detail_kilo DESC ";
+        }else{
+             $sql = "    SELECT t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
+                    FROM tarif_cabang_kilogram t
+                    LEFT JOIN kota k ON k.id=t.id_kota_asal 
+                    LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkilogram
+                    where t.kode_cabang = '$cabang'
+                    ORDER BY t.kode_detail_kilo DESC ";
+        }
+
         
         $list = DB::select(DB::raw($sql));
         $data = array();
@@ -26,36 +40,56 @@ class cabang_kilogram_Controller extends Controller
         $i=0;
        foreach ($data as $key) {
                         // add new button
-        
-                       
-                           
                                 
-                                        if ($data[$i]['crud'] == 'E') {
+            if ($data[$i]['crud'] == 'E') {
 
-                                            $data[$i]['button'] =' <div class="btn-group">
-                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                                           
-                                                            <button type="button" disabled="" id="'.$data[$i]['kode_sama_kilo'].'" name="'.$data[$i]['kode_sama_kilo'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+              $div_1  =   '<div class="btn-group">';
+              if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','ubah')) {
+              $div_2  = '<div class="btn-group">
+                                <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+              }else{
+                $div_2 = '';
+              }
+              if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','hapus')) {
+              $div_3  = '<button type="button" disabled="" id="'.$data[$i]['kode_sama_kilo'].'" name="'.$data[$i]['kode_sama_kilo'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button><button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+              }else{
+                $div_3 = '';
+              }
+              $div_4   = '</div>';
+            $all_div = $div_1 . $div_2 . $div_3 . $div_4;
 
-                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
-                                                        </div> ';
-                                            $i++;
-                                            
-                                        }else if(($data[$i]['crud'] == 'N')){
-                                                $data[$i]['button'] =' <div class="btn-group">
-                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                                           
-                                                            <button type="button" id="'.$data[$i]['kode_sama_kilo'].'" name="'.$data[$i]['kode_sama_kilo'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+            $data[$i]['button'] = $all_div;
+           
+            $i++;
 
-                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
-                                                        </div> ';
-                                        $i++;
-                                        }
+            }else if(($data[$i]['crud'] == 'N')){
+
+                 $div_1  =   '<div class="btn-group">';
+                  if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','ubah')) {
+                  $div_2  = '<button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                  }else{
+                    $div_2 = '';
+                  }
+                  if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','hapus')) {
+                  $div_3  = '<button type="button" id="'.$data[$i]['kode_sama_kilo'].'" name="'.$data[$i]['kode_sama_kilo'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+
+                                 <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                  }else{
+                    $div_3 = '';
+                  }
+                  $div_4   = '</div>';
+                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+
+                $data[$i]['button'] = $all_div;
+               
+                $i++;
+                   
+            }
                                 
                             
                         
                         
-                                        }
+      }
         // return $data;
         $datax = array('data' => $data);
         echo json_encode($datax);
@@ -1338,6 +1372,8 @@ class cabang_kilogram_Controller extends Controller
         $cabang = DB::select(DB::raw(" SELECT kode,nama FROM cabang ORDER BY nama ASC "));
         $akun= DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $prov = DB::select(DB::raw("SELECT p.id,k.id_provinsi,p.nama FROM kota as k left join  provinsi as p on p.id =k.id_provinsi group by p.id,k.id_provinsi order by p.id"));
+
+        
         return view('tarif.cabang_kilogram.index',compact('kota','cabang','akun','prov'));
     }
 

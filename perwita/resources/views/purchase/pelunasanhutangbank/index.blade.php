@@ -36,9 +36,11 @@
                     <h5> Pelunasan Hutang / Pembayaran Bank
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                         @if(Auth::user()->punyaAkses('Pelunasan Hutang','tambah'))
                       <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('pelunasanhutangbank/createpelunasanbank')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>
+                    @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -77,7 +79,15 @@
                         <td> {{$bbk->bbk_cekbg}} </td>
                         <td> {{$bbk->bbk_biaya}}  </td>
                         <td> {{$bbk->bbk_total}} </td>
-                        <td> <a class="btn btn-sm btn-success text-right" href={{url('pelunasanhutangbank/detailpelunasanbank/'.$bbk->bbk_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> &nbsp; <a class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'. $bbk->bbk_id.'')}}" type="button"> <i class="fa fa-print" aria-hidden="true"></i> </a>  </td>
+                        <td>
+                               @if(Auth::user()->punyaAkses('Pelunasan Hutang','ubah'))     
+                        <a class="btn btn-sm btn-success text-right" href={{url('pelunasanhutangbank/detailpelunasanbank/'.$bbk->bbk_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i></a> &nbsp; 
+                                @endif
+
+                                 @if(Auth::user()->punyaAkses('Pelunasan Hutang','ubah')) 
+                        <a class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'. $bbk->bbk_id.'')}}" type="button"> <i class="fa fa-print" aria-hidden="true"></i> </a>
+                                @endif
+                        </td>
                     </tr>
                     @endforeach
                    </tbody>

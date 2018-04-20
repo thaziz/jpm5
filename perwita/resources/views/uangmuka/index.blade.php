@@ -40,9 +40,11 @@
                     <h5> 
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                            @if(Auth::user()->punyaAkses('Uang Muka','tambah'))
                       <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('uangmuka/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>
+                    @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -80,9 +82,17 @@
                        {{--  <td> {{$a->um_keterangan}} </td> --}}
                         <td ><o style="float: left;">Rp.</o> <o style="float: right;">{{number_format($a->um_jumlah,2,',','.')}}</o></td>
                         <td>
+                              @if(Auth::user()->punyaAkses('Uang Muka','ubah'))
                           <a href="uangmuka/edituangmuka/{{$a->um_id}}"><i class="btn btn-primary fa fa-cog "></i></a>
+                            @endif
+
+                            @if(Auth::user()->punyaAkses('Uang Muka','hapus'))
                           <a href="uangmuka/hapusuangmuka/{{$a->um_id}}"><i class="btn btn-danger fa fa-trash "></i></a>
+                            @endif
+
+                             @if(Auth::user()->punyaAkses('Uang Muka','print'))
                            <a href="uangmuka/print_uangmuka/{{$a->um_id}}"><i class="btn btn-info fa fa-print "></i></a>
+                              @endif
                         </td>
                       </tr>
                       @endforeach

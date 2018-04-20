@@ -40,7 +40,9 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
+                      @if(Auth::user()->punyaAkses('Agen','tambah'))
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
+                       @endif
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -128,13 +130,24 @@
                                 
                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
+                                    @if(Auth::user()->punyaAkses('Agen','cabang'))
                                     <td>
                                         <select class="form-control" name="cb_cabang">
                                             @foreach ($cabang as $row)
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                             @endforeach
                                         </select>
                                     </td>
+                                    @else
+                                    <td class="disabled">
+                                        <select class="form-control" name="cb_cabang">
+                                            @foreach ($cabang as $row)
+                                            <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    @endif
+
                                     <td style="padding-top: 0.4cm">Kota</td>
                                     <td>   
                                         <select class="form-control"  name="cb_kota" style="width:100%">
@@ -341,7 +354,6 @@
         $("input[name='ed_nama']").val('');
         $("input[name='ed_kode_area']").val('');
         $("select[name='cb_kategori']").val('');
-        $("select[name='cb_cabang']").val('');
         $("select[name='cb_kota']").val('').trigger('chosen:updated');
         $("select[name='cb_acc_penjualan']").val('').trigger('chosen:updated');
         $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');

@@ -210,7 +210,9 @@
       });
     });
 }
-
+function ngeprint(id){
+    window.open('{{url('sales/cetak_nota_pembetulan')}}'+'/'+id);
+}
 
 </script>
 @endsection

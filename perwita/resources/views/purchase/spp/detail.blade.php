@@ -150,7 +150,7 @@
               <div class="wrapper wrapper-content animated fadeInRight">
                   <table border=0> 
                  
-
+                  @if(Auth::user()->punyaAkses('Purchase Order','ubah'))
                     @if($data['countcodt'] < 1)
 
                     <td>  <h4> Edit Data Barang ? </h4> </td>
@@ -160,7 +160,7 @@
                   </tr>
 
                   @endif
-
+                  @endif
                   </table>
                 
                 <div class="box-body">

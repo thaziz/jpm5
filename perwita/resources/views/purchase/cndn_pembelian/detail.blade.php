@@ -71,7 +71,7 @@
                             <td> 
 
                               @if(session::get('cabang') == 000)
-                              <select class='form-control chosen-select-width cabang'>
+                              <select class='form-control chosen-select-width cabang disabled'>
                                   @foreach($data['cabang'] as $cabang)
                                     <option value="{{$cabang->kode}}" @if($cabang->kode == $data['cndn'][0]->cndn_comp) selected @endif>
                                       {{$cabang->nama}}
@@ -95,7 +95,8 @@
 
                           <tr>
                             <td> Jenis : </td>
-                            <td> <select class="form-control jeniscndn" name="jeniscndn"><option value="{{$data['cndn'][0]->cndn_jeniscndn}}">
+                            <td> <select class="form-control jeniscndn disabled" >
+                            <option value="CN">
                                     CREDIT NOTA
                                 </option>
                                 <option value="DN">
@@ -103,6 +104,8 @@
                                 </option>
                                 </select>
                             </td>
+
+                            <input type="text" class="valjeniscndn" value="{{$data['cndn'][0]->cndn_jeniscndn}}" name="jeniscndn">
                           </tr>
 
                           </tr>
@@ -115,7 +118,7 @@
 
                           <tr>
                             <td> Jenis Faktur </td>
-                            <td> <select class="form-control jenissup" name="jenissup" value="{{$data['cndn'][0]->cndn_jenissup}}">
+                            <td> <select class="form-control jenissup disabled" >
                                     <option value="2">
                                       Supplier Hutang Dagang
                                     </option>
@@ -133,6 +136,8 @@
                                     </option>
                                 </select>
                             </td>
+
+                            <input type="hidden" class="valjenissup" value="{{$data['cndn'][0]->cndn_jenissup}}" name="jenissup">
                           </tr>
 
                            <tr>
@@ -143,18 +148,38 @@
                             
                               @if($data['cndn'][0]->cndn_jenissup == '2')
 
-                                <select class="form-control chosen-select-width jenisbayar2" >
+                                <select class="form-control chosen-select-width jenisbayar2 disabled" >
                                  @foreach($data['supplier'] as $supplier)
                                   <option value="{{$supplier->idsup}}" @if($data['cndn'][0]->cndn_supplier == $supplier->idsup) selected @endif> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}} </option>
                                 @endforeach
                                   </select>
-                              @else
-                              
+                              <input type="hidden" class="supplier2" name="supplier" value="{{$data['cndn'][0]->cndn_supplier}}">
+                              @elseif($data['cndn'][0]->cndn_jenissup == '6')
+                              <select class="form-control chosen-select-width jenisbayar2 disabled" >
+                                 @foreach($data['agen'] as $supplier)
+                                  <option value="{{$supplier->kode}}" @if($data['cndn'][0]->cndn_agen == $supplier->kode) selected @endif> {{$supplier->kode}} - {{$supplier->nama}} </option>
+                                @endforeach
+                                  </select>
+                               <input type="hidden" class="supplier2" name="supplier" value="{{$data['cndn'][0]->cndn_agen}}">   
+                              @elseif($data['cndn'][0]->cndn_jenissup == '7')
+                               <select class="form-control chosen-select-width jenisbayar2 disabled" >
+                                 @foreach($data['outlet'] as $supplier)
+                                  <option value="{{$supplier->kode}}" @if($data['cndn'][0]->cndn_agen == $supplier->kode) selected @endif> {{$supplier->kode}} - {{$supplier->nama}} </option>
+                                @endforeach
+                                  </select>
+                                  <input type="hidden" class="supplier2" name="supplier" value="{{$data['cndn'][0]->cndn_agen}}">
+                                @elseif($data['cndn'][0]->cndn_jenissup == '9')
+                              <select class="form-control chosen-select-width jenisbayar2 disabled" >
+                               @foreach($data['outlet'] as $supplier)
+                                <option value="{{$supplier->kode}}" @if($data['cndn'][0]->cndn_agen == $supplier->kode) selected @endif> {{$supplier->kode}} - {{$supplier->nama}} </option>
+                              @endforeach
+                                </select>
+                                <input type="hidden" class="supplier2" name="supplier" value="{{$data['cndn'][0]->cndn_agen}}">
                               @endif
                                
                             
 
-                              <input type="hidden" class="supplier2" name="supplier" value="{{$data['cndn'][0]->cndn_supplier}}">
+                            
                             </td>
                           </tr>
 
@@ -220,16 +245,7 @@
                               </select>
                               </td>
                             </tr>
-                          <!--   <tr>
-                              <td> <b> Acc PPn </b> </td>
-                              <td> <input type="text" class="form-control input-sm accppn" name="accppn" readonly=""> </td>
-                            </tr>
-
-                            <tr>
-                              <td> <b> Acc PPH </b> </td>
-                              <td> <input type="text" class="form-control input-sm accpph" name="accpph"> </td>
-                            </tr> -->
-                            
+                        
                           </table>
                         </div>                    
                       </div>
@@ -321,10 +337,11 @@
                                             <td> Netto Hutang </td>
                                             <td> <input type="text" class="form-control input-sm nettoheader clear" readonly="" style="text-align: right"> </td>
                                         </tr>
-                                         <tr>
+                                        <tr>
                                             <td> Sisa Terbayar </td>
                                             <td> <input type="text" class="form-control input-sm sisaterbayarheader clear" readonly="" style="text-align: right"> </td>
                                         </tr>
+                                        
                                     </table>
                                 </div>
 
@@ -395,6 +412,12 @@
                                           <td> Netto </td>
                                           <td> <input type="text" class="form-control input-sm  nettohutangcn clear" style="text-align: right" readonly=""></td>
                                        </tr>
+
+                                      <tr>
+                                        <td> Total Sisa Hutang  </td>
+                                        <td> <input type="text" class="form-control input-sm hasilakhir" readonly="" style="text-align: right"> </td>
+                                      </tr>
+
                                     </table>
                                 </div>
 
@@ -462,9 +485,17 @@
 
                                   <td style='text-align:right'>   <p class="pph_text"> {{ number_format($cndt->fp_pph, 2) }} </p> <input type='hidden' class='nilaipph form-control input-sm' value="{{ number_format($cndt->cndt_hasilpph, 2) }}" readonly style='text-align:right' name='nilaipph[]'> <input type='hidden' class='form-control input-sm inputpph' value="{{$cndt->cndt_nilaipph}}" readonly style='text-align:right' name='inputpph[]'> <input type='hidden' class=' form-control input-sm jenispph' value="{{$cndt->cndt_jenispph}}" readonly style='text-align:right' name='jenispph[]'></td>  <!--pph-->
 
-                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> <input type='hidden' class='brutocn2' value="{{ number_format($cndt->cndt_bruto, 2) }}" name='brutocn[]'> <input type='hidden' class='dppcn2' value="{{ number_format($cndt->cndt_dpp, 2) }}" name='dppcn[]'>  </td> <!-- nettocdcn -->
+                                  <td> <p class='cndn_text'>  {{ number_format($cndt->cndt_nettocn, 2) }} </p> <input type='hidden' class='form-control input-sm cndn' style='text-align:right' value="{{ number_format($cndt->cndt_nettocn, 2) }}" readonly name='nettocn[]'> <input type='hidden' class='brutocn2' value="{{ number_format($cndt->cndt_bruto, 2) }}" name='brutocn[]'> <input type='hidden' class='dppcn2' value="{{ number_format($cndt->cndt_dpp, 2) }}" name='dppcn[]'> <input class="hasilakhir2" type="hidden" value="{{ number_format($cndt->fp_sisapelunasan, 2) }}" name="hasilakhir[]">  </td> <!-- nettocdcn -->
 
-                                  <td>  <a class='btn btn-xs btn-warning' onclick="edit(this)" data-id="{{$index + 1}}" type='button'><i class='fa fa-pencil'></i> </a> <a class='btn btn-xs btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </a>   </td>
+                                  <td> 
+                                  @if($cndt->cndt_statusfpg == 'YES')
+                                    <p style="color:red"> <i> Data sudah Posting FPG tidak bisa di edit </i></p>
+                                  @else
+                                    <a class='btn btn-xs btn-warning' onclick="edit(this)" data-id="{{$index + 1}}" type='button'><i class='fa fa-pencil'></i> </a> <a class='btn btn-xs btn-danger removes-btn' data-id="{{$index + 1}}" type='button'><i class='fa fa-trash'></i> </a>
+
+                                  @endif                                  
+
+                                  </td>
                               </tr>
                               @endforeach
                               </tbody>
@@ -635,6 +666,17 @@
             "language": dataTableLanguage,
     });
 
+  jeniscndn = $('.valjeniscndn').val();
+  if(jeniscndn == 'K'){
+      $('.jeniscndn').val("CN");
+  }
+  else {
+        $('.jeniscndn').val("DN");
+  }
+
+  jenissup = $('.valjenissup').val();
+  $('.jenissup').val(jenissup);
+
  function pembayaran(id,jenisbayar){
  
       $.ajax({
@@ -698,6 +740,14 @@
        var idcndt = $(par).find('.idcndtn').val();
        var idcndn = $(par).find('.idcndn').val();
        var idfaktur = $(par).find('.idfaktur').val();
+
+               cndn = $('.cndn').val();
+
+              sisaterbayars = sisahutang.replace(/,/g, '');
+              cndns = cndn.replace(/,/g, '');
+
+              hasilsisaterbyr = parseFloat(parseFloat(sisaterbayars) - parseFloat(cndns)).toFixed(2);
+
       // alert(jenispph);
            $('.nofakturheader').val(nomorfaktur);
             $('.jatuhtempheader').val(jatuhtempo);
@@ -709,13 +759,17 @@
             $('.nilaipphheader').val(inputpph);
             $('.hasilpphheader').val(nilaipph);
             $('.nettoheader').val(addCommas(netto));
-            $('.sisaterbayarheader').val(addCommas(sisahutang));
+            $('.sisaterbayarheader').val(addCommas(hasilsisaterbyr));
            $('.idfakturheader').val(idfaktur);
+
+
+
 
            if(idcndt === undefined){
               bruto = $('.brutocn2').val();
               dpp = $('.dppcn2').val();
               cndn = $('.cndn').val();
+
 
              $('.brutocn').val(bruto);
               $('.dppcn').val(dpp);
@@ -1039,6 +1093,24 @@
                     $('.dppcn').val(addCommas(numeric2));
                 }
 
+                jeniscn = $('.jeniscndn').val();
+                if(jeniscn == 'CN'){
+                   nettohutangcn2 = $('.nettohutangcn').val();
+                    nettohutangcn = nettohutangcn2.replace(/,/g, '');
+                    sisaterbayar2 = $('.sisaterbayarheader').val();
+                    sisaterbayar = sisaterbayar2.replace(/,/g, '');
+                    $hasil = parseFloat(parseFloat(nettohutangcn) + parseFloat(sisaterbayar)).toFixed(2);
+                    $('.hasilakhir').val(addCommas($hasil));
+                }
+                else {
+                    nettohutangcn2 = $('.nettohutangcn').val();
+                    nettohutangcn = nettohutangcn2.replace(/,/g, '');
+                    sisaterbayar2 = $('.sisaterbayarheader').val();
+                    sisaterbayar = sisaterbayar2.replace(/,/g, '');
+                    $hasil = parseFloat(parseFloat(sisaterbayar) - parseFloat(nettohutangcn)).toFixed(2);
+                    $('.hasilakhir').val(addCommas($hasil));
+                }
+               
 
             })
   
@@ -1046,6 +1118,7 @@
   trlenght = $('.datafaktur').length;
   var noappend = trlenght + 1;
   $('#append').click(function(){
+ 
       nettocn = $('.nettohutangcn').val();
       nofaktur = $('.nofakturheader').val();
      
@@ -1102,6 +1175,8 @@
     inputpphfp = $('.inputpphfp').val();
     hasilpphfp = $('.hasilpphfp').val();
 
+    hasilakhir = $('.hasilakhir').val();
+
      if(nilaippn == ''){
       nilaippn = 0.00;
      }
@@ -1136,7 +1211,7 @@
 
                            '<td style="text-align:right">   <p class="pph_text"> '+addCommas(nilaipph)+' </p> <input type="hidden" class="nilaipph form-control input-sm" value="'+nilaipph+'" readonly style="text-align:right" name="nilaipph[]"> <input type="hidden" class="form-control input-sm inputpph" value="'+inputpph+'" readonly style="text-align:right" name="inputpph[]"> <input type="hidden" class="form-control input-sm jenispph" value="'+jenispph+'" readonly style="text-align:right" name="jenispph"></td>' + //pph
 
-                                 ' <td> <p class="cndn_text">  '+nilaicndn+' </p> <input type="hidden" class="form-control input-sm cndn" style="text-align:right" value="'+nilaicndn+'" readonly name="nettocn[]"> </td>' + // <!-- nettocdcn -->
+                                 ' <td> <p class="cndn_text">  '+nilaicndn+' </p> <input type="hidden" class="form-control input-sm cndn" style="text-align:right" value="'+nilaicndn+'" readonly name="nettocn[]"> <input type="text" class="form-control hasilakhir2" name="hasilakhir[]" value='+hasilakhir+'> </td>' + // <!-- nettocdcn -->
 
                                 ' <td>  <a class="btn btn-xs btn-warning" onclick="edit(this)" data-id='+noappend+' type="button"><i class="fa fa-pencil"></i> </a> <a class="btn btn-xs btn-danger removes-btn" data-id='+noappend+' type="button"><i class="fa fa-trash"></i> </a>   </td>' +
                               '</tr>';
@@ -1191,7 +1266,7 @@
          }
       })
       $('.bruto').val(addCommas($nilaicndn));
-
+     
        $('.sisahutang').each(function(){
               val = $(this).val();
               aslihutang = val.replace(/,/g, '');
@@ -1213,7 +1288,7 @@
         jenisppn = $('.jenisppncn').val();
         inputppn = $('.inputppncn').val();
 
-
+        hasilakhir = $('.hasilakhir').val();
 
 
          var a                = $('.nofaktur2'+idfaktur);
@@ -1234,6 +1309,7 @@
 
          $(par).find('.cndn').val(nettocn);
 
+         $('.hasilakhir2').val(hasilakhir);
       
          if(nilaippn == ''){
           nilaippn = 0.00;
@@ -1246,15 +1322,67 @@
           $(par).find('.ppn_text').text(addCommas(nilaippn));
           $(par).find('.pph_text').text(addCommas(nilaipph));
            
-            $(par).find('.cndn_text').text(addCommas(nettocn));
-             $('.clear').val(''); 
+          $(par).find('.cndn_text').text(addCommas(nettocn));
+          $('.clear').val(''); 
+
+
+          $('.clear').val(''); 
+
+          $nilaipph = 0;
+      $('.nilaipph').each(function(){
+         val = $(this).val(); 
+         if(val == ''){
+
+         }
+         else {
+            nilaipph = val.replace(/,/g, '');   
+          $nilaipph = parseFloat(parseFloat($nilaipph) + parseFloat(nilaipph)).toFixed(2);
+         }
+         $('.hasilpphatas').val(addCommas($nilaipph));
+      })
+
+      $nilaippn = 0;
+      $('.nilaippn').each(function(){
+        val = $(this).val(); 
+         if(val == ''){
+
+         }
+         else {
+          nilaippn = val.replace(/,/g, '');   
+          $nilaippn = parseFloat(parseFloat($nilaippn) + parseFloat(nilaippn)).toFixed(2);
+         }
+         $('.hasilppnatas').val(addCommas($nilaippn));
+      })
+
+      $nilaicndn = 0;
+      $('.cndn').each(function(){
+        val = $(this).val(); 
+
+        if(val == ''){
+
+        }
+        else {
+          nilaicn = val.replace(/,/g, '');   
+             
+         $nilaicndn = parseFloat(parseFloat($nilaicndn) + parseFloat(nilaicn)).toFixed(2);
+      
+         }
+      })
+      $('.bruto').val(addCommas($nilaicndn));
+     
+      $sisahutang = 0;
+      $('.sisahutang').each(function(){
+              val = $(this).val();
+              aslihutang = val.replace(/,/g, '');
+             // alert(aslihutang);
+             // alert($sisahutang);
+
+              $sisahutang = parseFloat(parseFloat($sisahutang) + parseFloat(aslihutang)).toFixed(2);
+            })
+
+            $('.jumlahfaktur').val(addCommas($sisahutang));
       }
 
-             
-    
-
-
-   
   })
 
 jenisbayar2 = $('.jenisbayar2').val();
@@ -1278,7 +1406,52 @@ jenisbayar2 = $('.jenisbayar2').val();
 
     })
 
-    
+       $('.cabang').change(function(){
+       val = $('.jeniscndn').val();
+        comp = $('.cabang').val();
+        $.ajax({    
+            type :"get",
+            data : {comp},
+            url : baseUrl + '/cndnpembelian/getnota',
+            dataType:'json',
+            success : function(data){
+                var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+
+                  if(val == 'CN') {
+                    nospp = 'CN' + month + year2 + '/' + comp + '/' +  data.idcndn;
+                  }
+                  else {
+                    nospp = 'DN' + month + year2 + '/' + comp + '/' + data.idcndn
+                  }
+            
+                $('.notacndn').val(nospp);
+                 nospp = $('.notacndn').val();
+               
+            },
+            error : function(){
+              location.reload();
+            }
+        })
+    })
 
      $('.jenissup').change(function(){
       idjenis = $('.jenissup').val();
@@ -1490,20 +1663,7 @@ jenisbayar2 = $('.jenisbayar2').val();
 
           
             $('.accpph').val(faktur[0][0].fp_accpph);
-          /*  for(i = 0; i < faktur.length; i++ ){
-              $nomor++;
-              var row = "<tr class='data"+i+"'>" +
-                          "<td style='text-align:center'> "+$nomor+" </td>" +
-                          "<td style='text-align:center'>"+faktur[i][0].fp_nofaktur+" </td>" +
-                          "<td style='text-align:center'>"+faktur[i][0].fp_jatuhtempo+"</td>" +
-                          "<td style='text-align:right'>"+addCommas(faktur[i][0].fp_netto)+"</td>" +
-                          "<td style='text-align:right'> <input type='text' class='sisahutang form-control input-sm' value='"+addCommas(faktur[i][0].fp_sisapelunasan)+"' readonly style='text-align:right'></td>" +
-                          "<td> <input type='text' class='form-control input-sm cndn' style='text-align:right'> </td>" +
-                          "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+i+"' type='button'><i class='fa fa-trash'></i> </button>  </td>" +
-                        "</tr>";
-              $('#tbl-faktur').append(row);
-
-            }*/
+        
 
            $(document).on('click','.removes-btn',function(){
                     var id = $(this).data('id');
@@ -1513,46 +1673,6 @@ jenisbayar2 = $('.jenisbayar2').val();
 
 
          
-             /* $('.cndn').change(function(){
-                 val = $(this).val();     
-                 val = accounting.formatMoney(val, "", 2, ",",'.');
-                 $(this).val(val);
-                  $nilaicndn = 0;
-                 $('.cndn').each(function(){
-                    val = $(this).val(); 
-
-                    if(val == ''){
-
-                    }
-                    else {
-
-
-                      nilaicn = val.replace(/,/g, '');   
-                         
-                     $nilaicndn = parseFloat(parseFloat($nilaicndn) + parseFloat(nilaicn)).toFixed(2);
-                   //    alert($nilaicndn + 'nilaicndn');
-                     }
-                   
-                 })
-
-
-                   $('.bruto').val(addCommas($nilaicndn));
-                    bruto = $('.bruto').val();
-                    biayafaktur = $('.biayafaktur').val();
-                    nilaibruto = bruto.replace(/,/g,'');
-                    nilaibiaya = biayafaktur.replace(/,/g,'');
-                    alert(nilaibruto + 'nilaibruto');
-                    alert(nilaibiaya + 'nilaibiaya');
-                    if(parseFloat(nilaibruto) > parseFloat(nilaibiaya)){
-                      toastr.info('Nilai CN / DN tidak cukup pada jumlah faktur :)');
-                      $(this).val('');
-                      $('.bruto').val('');
-                    }
-                    else {
-
-                    }
-              })*/
-            
             
             $('.brutocn').change(function(){
               val = $(this).val();
@@ -1745,6 +1865,23 @@ jenisbayar2 = $('.jenisbayar2').val();
                     $('.dppcn').val(addCommas(numeric2));
                 }
 
+                jeniscn = $('.jeniscndn').val();
+                if(jeniscn == 'CN'){
+                   nettohutangcn2 = $('.nettohutangcn').val();
+                    nettohutangcn = nettohutangcn2.replace(/,/g, '');
+                    sisaterbayar2 = $('.sisaterbayarheader').val();
+                    sisaterbayar = sisaterbayar2.replace(/,/g, '');
+                    $hasil = parseFloat(parseFloat(nettohutangcn) + parseFloat(sisaterbayar)).toFixed(2);
+                    $('.hasilakhir').val(addCommas($hasil));
+                }
+                else {
+                    nettohutangcn2 = $('.nettohutangcn').val();
+                    nettohutangcn = nettohutangcn2.replace(/,/g, '');
+                    sisaterbayar2 = $('.sisaterbayarheader').val();
+                    sisaterbayar = sisaterbayar2.replace(/,/g, '');
+                    $hasil = parseFloat(parseFloat(sisaterbayar) - parseFloat(nettohutangcn)).toFixed(2);
+                    $('.hasilakhir').val(addCommas($hasil));
+                }
 
             })
 
@@ -1753,54 +1890,7 @@ jenisbayar2 = $('.jenisbayar2').val();
        }
     })
 
-     val = $('.jeniscndn').val();
-     comp = $('.cabang').val();
-     $('.valcabang').val(comp);
-        $.ajax({    
-            type :"get",
-            data : {comp},
-            url : baseUrl + '/cndnpembelian/getnota',
-            dataType:'json',
-            success : function(data){
-             // alert(comp);
-                var d = new Date();
-                
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
-
-                if(month < 10) {
-                  month = '0' + month1;
-                }
-                
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-                  if(val == 'CN') {
-                    nospp = 'CN' + month + year2 + '/' + comp + '/' +  data.idcndn;
-                  }
-                  else {
-                    nospp = 'DN' + month + year2 + '/' + comp + '/' + data.idcndn
-                  }
-            
-                $('.notacndn').val(nospp);
-                 nospp = $('.notacndn').val();
-
-                 accppn = data['ppn'][0].id_akun;
-                // alert(accppn);
-                 $('.accppn').val(accppn);
-               
-            }
-        })
-
+   
      
       
 

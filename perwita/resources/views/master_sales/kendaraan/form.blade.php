@@ -85,24 +85,38 @@
                                 <td style="width:120px; padding-top: 0.4cm">Status</td>
                                 <td>
                                     <select class="form-control" name="cb_status" >                                    
+                                        <option value="0">Pilih - Status</option>
+                                        <option value="DPT">DPT</option>
                                         <option value="OWN">OWN</option>
                                         <option value="SUB">SUB</option>
-                                        <option value="DPT">DPT</option>
                                     </select>
                                 </td>
+
+                                @if(Auth::user()->punyaAkses('Kendaraan','cabang'))
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td>
                                     <select class="form-control" name="cb_cabang" >
                                     @foreach ($cabang as $row)
-                                        <option value="{{ $row->kode }}">{{ $row->nama }}</option>
+                                        <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
                                     @endforeach
                                     </select>
                                 </td>
+                                @else
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td class="disabled">
+                                    <select class="form-control chosen-select-width" name="cb_cabang" >
+                                    @foreach ($cabang as $row)
+                                        <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
+                                    @endforeach
+                                    </select>
+                                </td>
+                                @endif
+
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Subcon</td>
                                 <td colspan="3">
-                                    <select class="form-control" name="cb_subcon" >
+                                    <select class="form-control chosen-select-width" name="cb_subcon" >
                                         <option value="0">NON SUBCON</option>
                                     @foreach ($subcon as $row)
                                         <option value="{{$row->kode}}">{{$row->nama}}</option>
@@ -114,14 +128,16 @@
                                 <td style="width:120px; padding-top: 0.4cm">Divisi</td>
                                 <td>
                                     <select class="form-control" name="cb_divisi" >                                    
+                                        <option value="0">Pilih - Divisi</option>
                                         <option value="KARGO">KARGO</option>
-                                        <option value="SUB">SUB</option>
-                                        <option value="DPT">DPT</option>
+                                        <option value="PAKET">PAKET</option>
+                                        <option value="KORAN">KORAN</option>
                                     </select>
                                 </td>
                                 <td style="width:110px; padding-top: 0.4cm">Tipe Angkutan</td>
                                 <td>
                                     <select class="form-control" name="cb_tipe_angkutan" >
+                                        <option value="0">Pilih - Angkutan</option>
                                     @foreach ($tipe_angkutan as $row)
                                         <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                     @endforeach
@@ -332,11 +348,11 @@
 @section('extra_scripts')
 <script type="text/javascript">
     $(document).ready( function () {
-        $("select[name='cb_cabang']").val('{{ $data->kode_cabang or ''  }}');
-        $("select[name='cb_status']").val('{{ $data->status or ''  }}');
-        $("select[name='cb_divisi']").val('{{ $data->divisi or ''  }}');
-        $("select[name='cb_subcon']").val('{{ $data->kode_subcon or ''  }}');
-        $("select[name='cb_tipe_angkutan']").val('{{ $data->tipe_angkutan or ''  }}');
+        $("select[name='cb_cabang']").val('{{ $data->kode_cabang or Auth::user()->kode_cabang  }}');
+        $("select[name='cb_status']").val('{{ $data->status or '0'  }}');
+        $("select[name='cb_divisi']").val('{{ $data->divisi or '0'  }}');
+        $("select[name='cb_subcon']").val('{{ $data->kode_subcon or '0'  }}');
+        $("select[name='cb_tipe_angkutan']").val('{{ $data->tipe_angkutan or '0'  }}');
         
         
         var config = {

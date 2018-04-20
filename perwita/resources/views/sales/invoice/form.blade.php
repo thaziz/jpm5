@@ -94,7 +94,7 @@
                                     <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $i=> $val)
-                                        <option value="{{$customer[$i]->kode}}" data-accpiutang="{{$customer[$i]->acc_piutang}}"> {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
+                                        <option value="{{$customer[$i]->kode}}" data-accpiutang="{{$customer[$i]->acc_piutang}}" data-jt="{{$customer[$i]->acc_piutang}}"> {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -266,7 +266,7 @@
                 </form>
                 <!-- modal -->
                 <div id="modal_do" class="modal" >
-                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
+                  <div class="modal-dialog" style="min-width: 1000px;max-width: 1000px">
                     <div class="modal-content">
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -456,6 +456,7 @@
             }
         });
     });
+
 
 
    $('#cb_pendapatan').change(function(){

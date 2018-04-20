@@ -11,7 +11,9 @@ use carbon\carbon;
 class cabang_dokumen_Controller extends Controller
 {
     public function table_data () {
-        $sql = " SELECT t.crud,t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+      $cabang = Auth::user()->kode_cabang;
+      if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','all')) {
+         $sql = " SELECT t.crud,t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,
         kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
                     FROM tarif_cabang_dokumen t
@@ -19,6 +21,18 @@ class cabang_dokumen_Controller extends Controller
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
                     LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabdokumen
                     ORDER BY t.kode_detail DESC ";
+      }else{
+         $sql = " SELECT t.crud,t.id_provinsi_cabdokumen,p.nama provinsi,t.kode_detail,t.acc_penjualan,t.csf_penjualan,t.kode_sama,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        t.id_kota_tujuan,
+        kk.nama tujuan, t.harga, t.jenis, t.waktu, t.tipe  
+                    FROM tarif_cabang_dokumen t
+                    LEFT JOIN kota k ON k.id=t.id_kota_asal 
+                    LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabdokumen
+                    where t.kode_cabang = '$cabang'
+                    ORDER BY t.kode_detail DESC ";
+      }
+       
         
         $list = DB::select(DB::raw($sql));
         $data = array();
@@ -29,66 +43,75 @@ class cabang_dokumen_Controller extends Controller
        
                     foreach ($data as $key) {
                         // add new button
-        
-                        if ($kodecabang = Auth::user()->m_level == 'ADMINISTRATOR'  ) {
-                            if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdokumen'] == '') {
-                                $data[$i]['button'] =' <div class="btn-group">
-                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdokumen'] == '') {
 
-                                                        <button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
-                                                            
-                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                    
-                                                        </div> ';
-                                $i++;
-                                }
-                                else{
-                                 if ($data[$i]['crud'] == 'E') {
+                                $div_1  =   '<div class="btn-group">';
+                                  if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','ubah')) {
+                                  $div_2  = '<button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" >'.'<i class="glyphicon glyphicon-pencil"></i></button>';
+                                  }else{
+                                    $div_2 = '';
+                                  }
+                                  if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','hapus')) {
+                                  $div_3  = '<button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                  }else{
+                                    $div_3 = '';
+                                  }
+                                  $div_4   = '</div>';
+                                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
 
-                                            $data[$i]['button'] =' <div class="btn-group">
-                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                                           
-                                                            <button type="button" disabled="" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
-
-                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
-                                                        </div> ';
-                                            $i++;
-                                            
-                                        }else if(($data[$i]['crud'] == 'N')){
-                                                $data[$i]['button'] =' <div class="btn-group">
-
-                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                                           
-                                                            <button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
-
-                                                             <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                     
-                                                        </div> ';
+                                $data[$i]['button'] = $all_div;
+                               
                                 $i++;
 
-                                        }
+}else{
 
-                            }
-                        }else{
-                             if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdokumen'] == '') {
-                                    $data[$i]['button'] =' <div class="btn-group">
-                                                            <button type="button" disabled="" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+    if ($data[$i]['crud'] == 'E') {
 
-                                                            <button type="button" disabled="" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>                                    
-                                                        </div> ';
-                                $i++;
-                                }
-                                else{
-                                $data[$i]['button'] =' <div class="btn-group">
-                                                            <button type="button" disabled="" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                                           
-                                                            <button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+                                     $div_1  =   '<div class="btn-group">';
+                                      if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','ubah')) {
+                                      $div_2  = '<button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                                      }else{
+                                        $div_2 = '';
+                                      }
+                                      if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','hapus')) {
+                                      $div_3  = '<button type="button" disabled="" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                      }else{
+                                        $div_3 = '';
+                                      }
+                                      $div_4   = '</div>';
+                                    $all_div = $div_1 . $div_2 . $div_3 . $div_4;
 
-                                                            <button type="button" disabled="" data-toggle="tooltip" title="Delete" style="color:white;" class="btn btn-purple btn-xs btndelete" ><i class="glyphicon glyphicon-trash"></i></button>                                   
-                                                        </div> ';
-                                $i++;
-                            }
-                        }
+                                    $data[$i]['button'] = $all_div;
+                                   
+                                    $i++;
+
+    }else if(($data[$i]['crud'] == 'N')){
+
+                                        $div_1  =   '<div class="btn-group">';
+                                          if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','ubah')) {
+                                          $div_2  = ' <button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                                          }else{
+                                            $div_2 = '';
+                                          }
+                                          if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','hapus')) {
+                                          $div_3  = '<button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                          }else{
+                                            $div_3 = '';
+                                          }
+                                          $div_4   = '</div>';
+                                        $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+
+                                        $data[$i]['button'] = $all_div;
+                                       
+                                        $i++;
+
+
+    }
+
+}
+
+}
                         
-                }
                 
         
 

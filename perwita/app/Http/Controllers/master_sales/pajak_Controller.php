@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
+use Auth;
 
 
 class pajak_Controller extends Controller
@@ -17,12 +18,31 @@ class pajak_Controller extends Controller
         }
         $i=0;
         foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
+
+
+
+            $div_1  =   '<div class="btn-group">';
+                              if (Auth::user()->punyaAkses('Pajak','ubah')) {
+                              $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" >'.'<i class="fa fa-pencil"></i></button>';
+                              }else{
+                                $div_2 = '';
+                              }
+                              if (Auth::user()->punyaAkses('Pajak','hapus')) {
+                              $div_3  = '<button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" >'.
+                                        '<i class="fa fa-trash"></i></button>';
+                              }else{
+                                $div_3 = '';
+                              }
+                              $div_4   = '</div>';
+            $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+
+            $data[$i]['button'] = $all_div;
+
             $i++;
+
+
+
+             
         }
         $datax = array('data' => $data);
         echo json_encode($datax);

@@ -11,7 +11,15 @@ use Auth;
 class penerus_default_Controller extends Controller
 {
     public function table_data () {
+
+        $cabang = Auth::user()->kode_cabang;
+      if (Auth::user()->punyaAkses('Tarif Penerus Default','all')) {
         $list = DB::table('tarif_penerus_default')->select('tarif_penerus_default.*','cabang.nama as cabang')->join('cabang','cabang.kode','=','tarif_penerus_default.cabang_default')->get();
+        }else{
+            $list = DB::table('tarif_penerus_default')->select('tarif_penerus_default.*','cabang.nama as cabang')->join('cabang','cabang.kode','=','tarif_penerus_default.cabang_default')->where('cabang_default',$cabang)->get();
+        }
+
+
         // return $list;
         $data = array();
         foreach ($list as $r) {
@@ -20,11 +28,25 @@ class penerus_default_Controller extends Controller
         $i=0;
         foreach ($data as $key) {
             // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['id'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['id'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
+
+            $div_1  =   '<div class="btn-group">';
+                                  if (Auth::user()->punyaAkses('Tarif Penerus Default','ubah')) {
+                                  $div_2  = '<button type="button" id="'.$data[$i]['id'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                                  }else{
+                                    $div_2 = '';
+                                  }
+                                  if (Auth::user()->punyaAkses('Tarif Penerus Default','hapus')) {
+                                  $div_3  = '<button type="button" id="'.$data[$i]['id'].'" name="'.$data[$i]['id'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>';
+                                  }else{
+                                    $div_3 = '';
+                                  }
+                                  $div_4   = '</div>';
+                                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+
+                                $data[$i]['button'] = $all_div;
+                               
+                                $i++;
+         
         }
         $datax = array('data' => $data);
         echo json_encode($datax);

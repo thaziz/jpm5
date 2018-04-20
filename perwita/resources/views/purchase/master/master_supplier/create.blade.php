@@ -4,6 +4,13 @@
 
 @section('content')
 
+<style type="text/css">
+.disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+</style>
+
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Master Supplier </h2>
@@ -64,19 +71,19 @@
                           <tr>
                           <td> Cabang </td>
                           <td>  
-                          @if(Session::get('cabang') != 000)
-                          <select class="form-control disabled cabang" name="cabang">
-                              @foreach($data['cabang'] as $cabang)
-                            <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
-                            @endforeach
-                          </select>
-                          @else
-                            <select class="form-control cabang" name="cabang">
-                              @foreach($data['cabang'] as $cabang)
+                           @if(Auth::user()->punyaAkses('Faktur Pembelian','cabang'))
+                            <select class="form-control  cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                               @endforeach
-                            </select> 
-                          @endif
+                            </select>
+                            @else
+                              <select class="form-control disabled cabang" name="cabang">
+                                @foreach($data['cabang'] as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                            @endif
                           
                           </td>
                          </tr>

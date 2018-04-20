@@ -36,9 +36,11 @@
                     <h5> CN / DN Pembelian
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                         @if(Auth::user()->punyaAkses('CN/DN Pembelian','tambah'))
                       <div class="text-right">
                        <a class="btn btn-sm btn-success" aria-hidden="true" href="{{ url('cndnpembelian/createcndnpembelian')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>
+                        @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -67,28 +69,38 @@
                     </thead>
                     <tbody>
                     <?php $n = 1 ?>
-                    @for($i = 0; $i < count($data['cndn']); $i++)
+
+                    @if(count($data['cndnt']) > 0)
+
+                    @for($i = 0; $i < count($data['cndnt']); $i++)
                      
                       <tr>
                         <td> <?php echo $n ?> </td>
-                        <td>  {{$data['cndn'][$i][0]->cndn_nota}}  </td>
+                        <td>  {{$data['cndnt'][$i][0]->cndn_nota}}  </td>
                         <td>  @if($data['jenisbayar'][$i] == 2)
-                               {{$data['cndn'][$i][0]->nama_supplier}}
+                               {{$data['cndnt'][$i][0]->nama_supplier}}
                               @else
-                                 {{$data['cndn'][$i][0]->nama}}
+                                 {{$data['cndnt'][$i][0]->nama}}
                               @endif
                         </td>
-                        <td> {{$data['cndn'][$i][0]->cndn_jeniscndn}} </td>
-                        <td style='text-align: right'> {{ number_format($data['cndn'][$i][0]->cndn_bruto, 2) }} </td>
-                        <td> {{$data['cndn'][$i][0]->cndn_keterangan}} </td>
+                        <td> {{$data['cndnt'][$i][0]->cndn_jeniscndn}} </td>
+                        <td style='text-align: right'> {{ number_format($data['cndnt'][$i][0]->cndn_bruto, 2) }} </td>
+                        <td> {{$data['cndnt'][$i][0]->cndn_keterangan}} </td>
                       
-                        <td> <a class="btn btn-sm btn-success" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndn'][$i][0]->cndn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  <a class="btn btn-sm btn-danger" onclick="hapusData({{$data['cndn'][$i][0]->cndn_id.''}})"><i class="fa fa-trash" aria-hidden="true"></i> </a> </td>
-                        
+                        <td> 
+                            @if(Auth::user()->punyaAkses('CN/DN Pembelian','ubah'))
+                        <a class="btn btn-sm btn-success" href={{url('cndnpembelian/detailcndnpembelian/'. $data['cndnt'][$i][0]->cndn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>
+                            @endif
+
+                             @if(Auth::user()->punyaAkses('CN/DN Pembelian','hapus'))
+                        <a class="btn btn-sm btn-danger" onclick="hapusData({{$data['cndnt'][$i][0]->cndn_id.''}})"><i class="fa fa-trash" aria-hidden="true"></i> </a> </td>
+                            @endif
                       </tr>
                       <?php $n++ ?>
                    
                      
                    @endfor
+                   @endif
                     </tbody>
                    
                   </table>
@@ -145,7 +157,7 @@ function(){
       type:'get',
       dataType : 'json',
       success:function(data){
-       if(data.status == "gagal"){       
+       if(data.status == 'gagal'){       
           swal({
               title: "error",
               text: data.info,

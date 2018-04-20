@@ -39,7 +39,9 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
+                      @if(Auth::user()->punyaAkses('Customer','tambah'))
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
+                       @endif
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -128,17 +130,31 @@
                                     <td>Plafon</td>
                                     <td colspan="1"><input type="text" class="form-control" name="ed_plafon"></td>
                                 </tr>
+                                @if(Auth::user()->punyaAkses('Customer','cabang'))
                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>
                                         <select class="chosen-select-width" name="cabang">
                                             <option value="0">Pilih - Cabang</option>
                                             @foreach($cabang as $val)
-                                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                            <option @if(Auth::user()->kode_cabang == $val->kode) selected="" @endif  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                             @endforeach
                                         </select>
                                     </td>
                                 </tr>
+                                @else
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td class="disabled">
+                                        <select class="chosen-select-width" name="cabang">
+                                            <option value="0">Pilih - Cabang</option>
+                                            @foreach($cabang as $val)
+                                            <option @if(Auth::user()->kode_cabang == $val->kode) selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                @endif
                                 <tr>
                                     <td>Groups</td>
                                     <td colspan="1">
@@ -396,7 +412,6 @@
         $("select[name='cb_type_faktur']").val('');
         $("input[name='ed_alamat']").val('');
         $("input[name='ed_syarat_kredit']").val('0');
-        $("select[name='cabang']").val('').trigger('chosen:updated');
         $("select[name='ed_acc_piutang']").val('').trigger('chosen:updated');
         $("select[name='ed_csf_piutang']").val('').trigger('chosen:updated');
         $("select[name='ed_kode_bank']").val('').trigger('chosen:updated');

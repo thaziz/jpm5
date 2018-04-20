@@ -3,7 +3,47 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+  .table-biaya{
+    overflow-x: auto;
+  }
+  tbody tr{
+    cursor: pointer;
+  }
+  th{
+    text-align: center !important;
+  }
+  .tengah{
+    text-align: center;
+  }
+  .kecil{
+    width: 50px;
+    
+  }
+  .datatable tbody tr td{
+    padding-top: 16px;
+  }
+  .dataTables_paginate{
+    float: right;
+  }
+  #modal-biaya .modal-dialog .modal-body{
+    min-height: 340px;
+  }
+  .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+  .right{
+      text-align: right;
+  }
+  .table-hover tbody tr{
+    cursor: pointer;
+  }
 
+  .center{
+      text-align: center;
+  }
+</style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Pembelian Order </h2>
@@ -58,14 +98,14 @@
                         <tr>
                          
                           <td>  
-                          @if(Session::get('cabang') != 000)
-                          <select class="form-control disabled cabang" name="cabang">
+                          @if(Auth::user()->punyaAkses('Konfirmasi Order','cabang'))
+                          <select class="form-control  cabang" name="cabang">
                               @foreach($data['cabang'] as $cabang)
                             <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                             @endforeach
                           </select>
                           @else
-                            <select class="form-control cabang" name="cabang">
+                            <select class="form-control disabled cabang" name="cabang">
                               @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                               @endforeach

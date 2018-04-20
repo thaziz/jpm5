@@ -59,8 +59,12 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
+                      @if(Auth::user()->punyaAkses('Tarif Cabang Kilogram','tambah'))
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
+                       @endif
+                      @if(Auth::user()->punyaAkses('Tarif Cabang Kilogram','print'))
                        <a href="{{ url('/laporan_master_penjualan/tarif_cabang_kilogram') }}" class="btn btn-warning"><i class="glyphicon glyphicon-print"></i>Laporan</a>
+                       @endif
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -132,17 +136,31 @@
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
                                     </td>
                                 </tr>
-                                <tr>
+                                 @if(Auth::user()->punyaAkses('Tarif Cabang Kilogram','cabang'))
+                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
                                     <td>   
-                                        <select class="chosen-select-width b"  name="cb_cabang" style="width:100%">
+                                        <select class="chosen-select-width b"  name="cb_cabang" id="ed_harga"  style="width:100%">
                                             <option value="" selected="" disabled="">-- Pilih Cabang --</option>
                                         @foreach ($cabang as $row)
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                             <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @endforeach
                                         </select>
                                     </td>
                                 </tr>
+                                @else
+                                 <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td class="disabled">   
+                                        <select class="chosen-select-width b"  name="cb_cabang" id="ed_harga" style="width:100%">
+                                            <option value="" selected="" disabled="">-- Pilih Cabang --</option>
+                                        @foreach ($cabang as $row)
+                                            <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                @endif
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kota Asal</td>
                                     <td>   
@@ -433,7 +451,6 @@
         $("select[name='cb_csf_penjualan']").val('').trigger('chosen:updated');
         $("select[name='cb_acc_penjualan']").change();
         $("select[name='cb_csf_penjualan']").change();
-        $("select[name='cb_cabang']").val('').trigger('chosen:updated');
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
     });
