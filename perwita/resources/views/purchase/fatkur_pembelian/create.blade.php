@@ -743,7 +743,7 @@
                                                 </select>                                        
                                             </td>
                                             </td>
-                                            <input type="hidden" class="acchutangdagang_po" name="acchutangdagang">
+                                            <input type="text" class="acchutangdagang_po" name="acchutangdagang">
 
                                           </tr>
 

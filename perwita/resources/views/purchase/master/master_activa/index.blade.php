@@ -4,12 +4,45 @@
 
 @section('content')
 
+<style>
+     #table_form input{
+      padding-left: 5px;
+    }
+
+    #table_form td,
+    #table_form th{
+      padding:10px 0px;
+    }
+
+    .table-form{
+      border-collapse: collapse;
+    }
+
+    .table-form th{
+      font-weight: 600;
+    }
+
+    .table-form th,
+    .table-form td{
+      padding: 2px 0px;
+    }
+
+    .table-form input{
+      font-size: 10pt;
+    }
+
+    .table-detail{
+      font-size: 8pt;
+    }
+
+</style>
+
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Master Activa </h2>
+                    <h2>Master Activa</h2>
                     <ol class="breadcrumb">
                         <li>
-                            <a >Home</a>
+                            <a>Home</a>
                         </li>
                         <li>
                             <a>Purchase</a>
@@ -18,26 +51,49 @@
                           <a> Master Purchase</a>
                         </li>
                         <li class="active">
-                            <strong> Master Activa </strong>
+                            <strong>Master Activa</strong>
                         </li>
 
                     </ol>
                 </div>
-                <div class="col-lg-2">
+               <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
+                <table border="0" width="100%" id="table_form">
+                  <tr>
+                    <th width="15%" class="text-center">Menampilkan Cabang : </th>
+                    <td width="17%">
 
-                </div>
+                        <select class="form-control chosen-select"id="cabang" name="cabang" style="background:; width: 90%">
+                          @foreach ($cab as $cabangs)
+                            <?php 
+                                $selected = ($cabangs->kode == $cabang) ? "selected" : "";
+                            ?>
+                            <option value="{{ $cabangs->kode }}" {{ $selected }}>{{ $cabangs->nama }}</option>
+                          @endforeach
+                        </select>
+
+                    </td>
+
+                    <td>
+                      <button class="btn btn-success btn-sm" id="filter">Filter</button>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
+
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Master Activa
+                    <h5> Daftar Master Activa
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                       <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" href="{{ url('masteractiva/createmasteractiva')}}"> <i class="fa fa-plus"> Tambah Data Activa</i> </a> 
+                        @if(Auth::user()->PunyaAkses('Master Activa','tambah'))
+                            <a class="btn btn-success btn-sm" aria-hidden="true" href="{{ url('golonganactiva/creategolonganactiva')}}"> <i class="fa fa-plus"> &nbsp;Tambah Master Activa</i> </a>
+                        @endif
                     </div>
 
                 </div>
@@ -46,38 +102,28 @@
             <div class="col-xs-12">
               
               <div class="box" id="seragam_box">
-               
+             
+
                     
                 <div class="box-body">
                 
-                  <table id="addColumn" class="table table-bordered table-striped tbl-item">
+                  <table id="addColumn" class="table table-bordered table-striped tbl-item" style="font-size: 8pt;">
                     <thead>
                      <tr>
-                        <th style="width:10px">Kode Activa</th>
-                        <th> Nama Activa </th>
-                        <th> Tanggal </th>
-                        <th> Nilai Perolehan </th>
-                        <th> Garis Lurus </th>
-                        <th> Saldo Menurun </th>
-                        <th> Detail  </th>
+                        <th width="10%">Golongan</th>
+                        <th width="15%"> Nama Golongan </th>
+                        <th width="20%"> Keterangan </th>
+                        <th> Masa Manfaat </th>
+                        <th> Tarif Garis Lurus </th>
+                        <th> Tarif Saldo Menurun </th>
+                        <th width="10%"> Aksi </th>
                                            
                     </tr>
                  
                     </thead>
                     
-                    <tbody>
-                    <tr>
-                      <td> ACTIVA1 </td>
-                      <td> Mobil Mobilan </td>
-                      <td> 11 Agustus 2009 </td>
-                      <td> Rp 1.000.000 </td>
-                      <td> ASD &nbsp; <!-- <a class="fa fa-arrow-right" aria-hidden="true" href={{url('masteractiva/detailgarislurusmasteractiva')}}> </a> -->   </td>
-                      <td>  F123 &nbsp; <!-- <a class="fa fa-arrow-right" aria-hidden="true" href={{url('masteractiva/detailsaldomenurunmasteractiva')}}> </a>  --> </td>
-                      <td> <a class="btn btn-success" href={{url('masteractiva/detailmasteractiva')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> </td>
-                    </tr>
-                   
-
-
+                    <tbody id="data-body">
+                        
                     </tbody>
                    
                   </table>
@@ -106,6 +152,9 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+    @if(Session::has("sukses"))
+      toastr.success('{{ Session::get("sukses") }}');
+    @endif
 
     tableDetail = $('.tbl-item').DataTable({
             responsive: true,
@@ -114,6 +163,10 @@
             "pageLength": 10,
             "language": dataTableLanguage,
     });
+
+    $("#filter").click(function(){
+      window.location = baseUrl+"/golonganactiva/golonganactiva/"+$('#cabang').val();
+    })
 
     $('.date').datepicker({
         autoclose: true,
