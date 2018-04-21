@@ -113,7 +113,7 @@
 	<div class="col-sm-5" style="margin-left: 100px;">
 	<table class="table" >
 	     <div align="center" style="width: 100%;" >	
-			<h3 >Detail Kontrak Subcon</h3>
+			<h3 >Form Kontrak Subcon</h3>
 		 </div>	
 		  <tr>
 			<td style="width: 100px">Nomor</td>
