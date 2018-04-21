@@ -14,7 +14,7 @@ class do_kertas_Controller extends Controller
     
     public function index(){
         $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if (Auth::user()->punyaAkses('Delivery Order Koran','all')) {
             $data = DB::table('delivery_order')
                       ->join('customer','kode','=','kode_customer')
                       ->where('jenis','KORAN')

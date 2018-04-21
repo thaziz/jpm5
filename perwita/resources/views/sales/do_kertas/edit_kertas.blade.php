@@ -72,7 +72,7 @@
                                     </div>
                                 </td>
                             </tr>                        
-                           @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
+                           @if(Auth::user()->punyaAkses('Delivery Order Koran','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4" class="cabang_td disabled" >
