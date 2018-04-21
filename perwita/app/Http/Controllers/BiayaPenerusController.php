@@ -1572,8 +1572,7 @@ class BiayaPenerusController extends Controller
 			$akun = DB::table('master_persentase')
 					  ->get();
 
-			$subcon = DB::table('kontrak_subcon')
-					  ->join('subcon','kode','=','ks_nama')
+			$subcon = DB::table('subcon')
 					  ->get();
 			$akun_biaya = DB::table('akun')
 					  ->get();
@@ -2154,44 +2153,27 @@ class BiayaPenerusController extends Controller
 
 public function cari_do_subcon(request $request)
 {
-	// dd($request->all());
-	$cari_do = DB::table('delivery_order')
-				 ->where('jenis','KARGO')
-				 ->where('kode_subcon',$request->sc)
-				 ->where('kode_cabang',$request->cabang)
-				 ->get();
-	$asal = DB::table('delivery_order')
-				 ->join('kota','id','=','id_kota_asal')
-				 ->where('jenis','KARGO')
-				 ->where('kode_subcon',$request->sc)
-				 ->where('kode_cabang',$request->cabang)
-				 ->get();
+	$data = DB::table('delivery_order')
+			  ->leftjoin('pembayaran_subcon_dt','pbd_resi','=','nomor')
+			  ->where('status_kendaraan','SUB')
+			  ->where('kode_subcon',$request->selectOutlet)
+			  ->where('kode_cabang',$request->cabang)
+			  ->where('pbd_resi',null)
+			  ->get();
+	$kota = DB::table('kota')
+			  ->get();
 
-	$tujuan = DB::table('delivery_order')
-				 ->join('kota','id','=','id_kota_tujuan')
-				 ->where('jenis','KARGO')
-				 ->where('kode_subcon',$request->sc)
-				 ->where('kode_cabang',$request->cabang)
-				 ->get();
-
-	$angkutan = DB::table('delivery_order')
-				 ->join('tipe_angkutan','kode','=','tipe_kendaraan')
-				 ->where('jenis','KARGO')
-				 ->where('kode_subcon',$request->sc)
-				 ->where('kode_cabang',$request->cabang)
-				 ->get();
-
-	for ($i=0; $i < count($cari_do); $i++) { 
-			$fix[$i]['d_nomor'] = $cari_do[$i]->nomor;
-			$fix[$i]['d_total_net'] = $cari_do[$i]->total_net;
-			$fix[$i]['d_tanggal'] = $cari_do[$i]->tanggal;
-			$fix[$i]['d_jenis_tarif'] = $cari_do[$i]->jenis;
-			$fix[$i]['d_asal'] = $asal[$i]->nama;
-			$fix[$i]['d_tujuan'] = $tujuan[$i]->nama;
-			$fix[$i]['d_angkutan'] = $angkutan[$i]->nama;
-			$fix[$i]['ksd_id_angkutan'] = $angkutan[$i]->kode;
+	for ($i=0; $i < count($data); $i++) { 
+		for ($a=0; $a < count($kota); $a++) { 
+			if ($kota[$a]->id == $data[$i]->id_kota_asal) {
+				$data[$i]->nama_asal = $kota[$a]->nama;
+			}
+			if ($kota[$a]->id == $data[$i]->id_kota_tujuan) {
+				$data[$i]->nama_tujuan = $kota[$a]->nama;
+			}
+		}
 	}
-	return view('purchase.fatkur_pembelian.tabelSubcon',compact('fix'));
+	return view('purchase.fatkur_pembelian.tabelSubcon',compact('data'));
 }
 
 }

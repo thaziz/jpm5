@@ -104,13 +104,13 @@
                             @if(Auth::user()->punyaAkses('Faktur Pembelian','cabang'))
                             <select class="form-control  cabang" name="cabang">
                                 @foreach($data['cabang'] as $cabang)
-                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
                               @endforeach
                             </select>
                             @else
                               <select class="form-control disabled cabang" name="cabang">
                                 @foreach($data['cabang'] as $cabang)
-                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
                                 @endforeach
                               </select> 
                             @endif
