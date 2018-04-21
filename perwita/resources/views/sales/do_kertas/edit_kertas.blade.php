@@ -75,10 +75,10 @@
                            @if(Auth::user()->punyaAkses('Delivery Order','cabang'))
                             <tr class="">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="4" class="cabang_td">
+                                <td colspan="4" class="cabang_td disabled" >
                                     <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                     @foreach ($cabang as $row)
-                                        @if(Auth::user()->kode_cabang == $row->kode)
+                                        @if($data->kode_cabang == $row->kode)
                                         <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
                                         @else
                                         <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
@@ -93,7 +93,7 @@
                                 <td colspan="4">
                                     <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                     @foreach ($cabang as $row)
-                                        @if(Auth::user()->kode_cabang == $row->kode)
+                                        @if($data->kode_cabang == $row->kode)
                                         <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @else
                                         <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
