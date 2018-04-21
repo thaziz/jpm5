@@ -97,6 +97,7 @@ class do_kertas_Controller extends Controller
                                         WHERE kode_cabang = '$cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
                                         AND jenis = 'KORAN'
+                                        AND nomor like 'KRN%'
                                         AND to_char(tanggal,'YY') = '$tahun'");
 
         $index = (integer)$cari_nota[0]->id + 1;

@@ -254,7 +254,7 @@ public function nota_invoice(request $request){
 public function jatuh_tempo_customer(request $request)
 {
     $cus = DB::table('customer')
-             ->where('kode',$request->customer)
+             ->where('kode',$request->cus)
              ->first();
     $jt = $cus->syarat_kredit;
     $tgl = str_replace('/', '-' ,$request->tgl);

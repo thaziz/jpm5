@@ -293,10 +293,10 @@ class do_kargo_Controller extends Controller
         $bulan  = Carbon::now()->format('m');
         $tahun  = Carbon::now()->format('y');
         $cabang = $request->cabang;
-        $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
+         $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
                                         WHERE kode_cabang = '$cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
-                                        AND jenis = 'KARGO'
+                                        AND nomor like 'KGO%'
                                         AND to_char(tanggal,'YY') = '$tahun'");
 
         $index = (integer)$cari_nota[0]->id + 1;
