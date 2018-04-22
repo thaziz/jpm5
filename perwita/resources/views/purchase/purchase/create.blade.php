@@ -398,7 +398,7 @@
           dataType:'json',
           success : function(response){
           cabang = $('.cabang').val();
-          var simpan ='<br> <button class="btn btn-success save" type="submit" > Simpan </button> </form>';
+          var simpan ='<br> <button class="btn btn-sm btn-success save" type="submit" > <i class="fa fa-upload"> </i> Simpan </button> </form>';
 
          $('.simpan').html(simpan);
 
@@ -449,20 +449,20 @@
          for(var i=0 ; i< response.spp.length; i++) {
           
           var angka = 1 + i;
-            var rowTable = '<div class="table-resposive"> <table class="table" border="0">' +
-            '<tr> <th style="width:210px"> No SPP </th> <th style="width:20px"> : </th> <th> '+response.spp[i][0].spp_nospp+' </th> <input type="hidden" value='+response.spp[i][0].cotb_id+' name="idcotbsetuju[]">  </tr>' +
-            '<tr> <th>  Keperluan  </th> <th> : </th> <td>'+response.spp[i][0].spp_keperluan+'</td> </tr>' +
-            '<tr> <th>  Tgl di Butuhkan </th> <th> : </th> <td>'+response.spp[i][0].spp_tgldibutuhkan+'</td> </tr>' +
-            '<tr> <th> Pembayaran </th> <td> : </td> <td> '+response.spp[i][0].spptb_bayar+' hari </td> </tr>' +
-            '<tr> <th> Total Biaya di Perlukan </th> <th> : </th><th> Rp '+ addCommas(response.spp[i][0].cotb_totalbiaya) +'</th> </tr>' +
-            '<tr> <th> Cabang Pemohon </th> <th> :  </th> <td>'+response.spp[i][0].nama  +'</td> </tr> </div>';
+            var rowTable = '<table class="table" border="0">' +
+            '<tr> <td style="width:210px"> No SPP </td> <td> : </td> <td> '+response.spp[i][0].spp_nospp+' </th> <input type="hidden" value='+response.spp[i][0].cotb_id+' name="idcotbsetuju[]">  </tr>' +
+            '<tr> <td>  Keperluan  </th> <td> : </td> <td>'+response.spp[i][0].spp_keperluan+'</td> </tr>' +
+            '<tr> <td>  Tgl di Butuhkan </td> <td> : </td> <td>'+response.spp[i][0].spp_tgldibutuhkan+'</td> </tr>' +
+            '<tr> <td> Pembayaran </td> <td> : </td> <td> '+response.spp[i][0].spptb_bayar+' hari </td> </tr>' +
+            '<tr> <td> Total Biaya di Perlukan </td> <td> : </td><th> Rp '+ addCommas(response.spp[i][0].cotb_totalbiaya) +'</th> </tr>' +
+            '<tr> <td> Cabang Pemohon </td> <td> :  </td> <td>'+response.spp[i][0].nama  +'</td> </tr>';
 
             if(response.spp[i][0].mg_namagudang == undefined) {
 
             }
             else {
               
-              rowTable += '<tr> <th> Lokasi Gudang </th> <td> : </td> <td>'+ response.spp[i][0].mg_namagudang +'</td>' +
+              rowTable += '<tr> <td> Lokasi Gudang </td> <td> : </td> <td>'+ response.spp[i][0].mg_namagudang +'</td>' +
               '</tr>';            
             }
 
