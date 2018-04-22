@@ -33,14 +33,29 @@ class PengeluaranBarangController extends Controller
 		return view('purchase/pengeluaran_barang/index',compact('data'));
 	}
 	public function create() {
+		$now   = Carbon::now()->format('d/m/Y');
 
+		$cabang = DB::table('cabang')
+					->get();
+		$item   = DB::table('masteritem')
+					->get();
+
+        $gudang = DB::table('mastergudang')
+            ->get();
+        $kodecabang = session::get('cabang');
+        $namacabang = DB::select(" SELECT nama FROM cabang WHERE kode = '$kodecabang' ");
+        return view('purchase/pengeluaran_barang/create', compact('pb','now','cabang','item','gudang','kodecabang','namacabang'));
+	}
+
+	public function ganti_nota(request $request)
+	{
 		$id = DB::table('pengeluaran_barang')
-	    		->where('pb_comp','000')
+	    		->where('pb_comp',$request->cabang)
+	    		->where('pb_tgl','>=',carbon::now()->format('Y-m-d'))
 	    		->max('pb_nota');
 
 	    $year  = Carbon::now()->format('Y'); 
 		$month = Carbon::now()->format('m');  	
-		$now   = Carbon::now()->format('d/m/Y');
 		
 	   	if(isset($id)) {
 
@@ -61,17 +76,8 @@ class PengeluaranBarangController extends Controller
 	    $second = Carbon::now()->format('d/m/Y');
 	    $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
 
-		$pb 	= 'SPPB-' . $month . $year . '/'. '000' . '/' .  $id;
-		$cabang = DB::table('cabang')
-					->get();
-		$item   = DB::table('masteritem')
-					->get();
-
-        $gudang = DB::table('mastergudang')
-            ->get();
-        $kodecabang = session::get('cabang');
-        $namacabang = DB::select(" SELECT nama FROM cabang WHERE kode = '$kodecabang' ");
-        return view('purchase/pengeluaran_barang/create', compact('pb','now','cabang','item','gudang','kodecabang','namacabang'));
+		$pb 	= 'SPPB-' . $month . $year . '/'. $request->cabang . '/' .  $id;
+		return response()->json(['nota'=> $pb]);
 	}
 
 	public function detail() {
@@ -84,6 +90,7 @@ class PengeluaranBarangController extends Controller
 								   join masteritem
 								   on kode_item = sg_item
 								   where sg_item = '$request->id'
+								   and sg_cabang = '$request->cabang'
 								   group by unitstock");
 		if ($data == null) {
 			$data = 1;
@@ -140,7 +147,7 @@ class PengeluaranBarangController extends Controller
 							'created_at'   		=> Carbon::now(),
 							'updated_at'   		=> Carbon::now(),
 							'pb_status'   		=> 'Released',
-							'pb_comp'			=> $request->cabang_penyedia,
+							'pb_comp'			=> $request->cabang,
 							'pb_jenis_keluar'	=> $request->jp
 						]);
 
@@ -185,7 +192,7 @@ class PengeluaranBarangController extends Controller
 		$delete = DB::table('pengeluaran_barang_dt')
 					->where('pbd_pb_id',$id)
 					->delete();
-
+		return redirect()->back();
 	}
 
 	public function edit($id){
@@ -275,7 +282,7 @@ class PengeluaranBarangController extends Controller
 							  ->join('mastergudang','sg_gudang','=','mg_id')
 							  ->select('mg_namagudang','mg_id','sg_id')
 							  ->where('sg_item',$temp1[$i])
-							  ->where('sg_cabang',$data->pb_comp)
+							  // ->where('sg_cabang',$data->pb_comp)
 							  // ->orderBy('mg_id')
 							  ->orderBy('mg_id','ASC')
 							  ->get();

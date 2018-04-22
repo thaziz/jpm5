@@ -50,7 +50,7 @@
             <tr>
               <td>Kode SPPB</td>
               <td>
-                <input type="text" readonly="" name="no_sppb" class="form-control no_sppb input-sm" value="{{$pb}}">
+                <input type="text" readonly="" name="no_sppb" class="form-control no_sppb input-sm" value="">
                 <input type="hidden"   class="form-control id_sppb input-sm" value="">
               </td>
             </tr>
@@ -75,30 +75,35 @@
                 <input type="text" name="keperluan" class="form-control input-sm keperluan" value="">
               </td>
             </tr>
+            @if(Auth::user()->punyaAkses('Pengeluaran Barang','cabang'))
             <tr>
               <td>Cabang Penyedia</td>
-              <td><select class="form-control cabang_penyedia" name="cabang_penyedia" readonly> 
-                <option value="{{$kodecabang}}">{{$kodecabang}} - {{$namacabang[0]->nama}} </option>
-                 <!--  @foreach($cabang as $val)
-                    @if('$val->kode' == '001')
-                      <option selected="" value="$val->kode">{{$val->kode}} - {{$val->nama}}</option>
-                    @else
-                      <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                    @endif
-                  @endforeach -->
+              <td>
+                <select class="form-control cabang" name="cabang" onchange="ganti_nota()" > 
+                  @foreach($cabang as $val)
+                    <option @if(Auth::user()->kode_cabang == $val->kode) selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                  @endforeach
                 </select>
               </td>
             </tr>
+            @else
+            <tr>
+              <td>Cabang Penyedia</td>
+              <td class="disabled">
+                <select class="form-control cabang" name="cabang" onchange="ganti_nota()"> 
+                  @foreach($cabang as $val)
+                    <option @if(Auth::user()->kode_cabang == $val->kode) selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                  @endforeach
+                </select>
+              </td>
+            </tr>
+            @endif
             <tr>
               <td>Cabang Bagian Peminta</td>
               <td>
                 <select class="form-control cabang_peminta" id="cabang" name="cabang_peminta" onchange="getCabang()"> 
                   @foreach($cabang as $val)
-                    @if('$val->kode' == '001')
-                      <option selected="" value="$val->kode">{{$val->kode}} - {{$val->nama}}</option>
-                    @else
-                      <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                    @endif
+                    <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                   @endforeach
                 </select>
               </td>
@@ -263,13 +268,14 @@ function append(p){
   $('.cari_stock').change(function(){
   var id = $(this).val();
   var par = $(this).parents('tr');
+  var cabang = $('.cabang').val();
 
 
 
 
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
-    data:'id='+id,
+    data:{id,cabang},
     success:function(response){
 
       if (response.data != 1) {
@@ -313,8 +319,34 @@ function remove_append(p){
 }
 
 $(document).ready(function(){
+  var cabang = $('.cabang').val();
+        $.ajax({
+            type: "GET",
+            data : {cabang},
+            url : baseUrl + "/pengeluaranbarang/ganti_nota",
+            dataType:'json',
+            success: function(data)
+            {   
+              $('.no_sppb').val(data.nota);
+            }
+        })
+
   getCabang();
 });
+
+function ganti_nota() {
+  var cabang = $('.cabang').val();
+        $.ajax({
+            type: "GET",
+            data : {cabang},
+            url : baseUrl + "/pengeluaranbarang/ganti_nota",
+            dataType:'json',
+            success: function(data)
+            {   
+              $('.no_sppb').val(data.nota);
+            }
+        })
+}
 
  function getCabang(){
 
@@ -341,11 +373,11 @@ $(document).ready(function(){
  $('.cari_stock').change(function(){
   var id = $(this).val();
   var par = $(this).parents('tr');
-
+ var cabang = $('.cabang').val();
 
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
-    data:'id='+id,
+    data:{id,cabang},
     success:function(response){
       // console.log(response.data[0].sg_qty);
       if (response.data != 1) {

@@ -140,6 +140,7 @@ Route::get('pengeluaranbarang/pengeluaranbarang', 'PengeluaranBarangController@i
 Route::get('pengeluaranbarang/edit/{id}', 'PengeluaranBarangController@edit');
 Route::get('pengeluaranbarang/cari_stock', 'PengeluaranBarangController@cari_stock');
 Route::get('pengeluaranbarang/createpengeluaranbarang', 'PengeluaranBarangController@create');
+Route::get('pengeluaranbarang/ganti_nota', 'PengeluaranBarangController@ganti_nota');
 Route::get('pengeluaranbarang/save_pengeluaran', 'PengeluaranBarangController@save_pengeluaran');
 Route::get('pengeluaranbarang/update_pengeluaran/{id}', 'PengeluaranBarangController@update_pengeluaran');
 Route::get('pengeluaranbarang/hapus/{id}', 'PengeluaranBarangController@hapus');

@@ -148,6 +148,7 @@
                               <span class='label label-warning '> {{$po->po_setujufinance}}</span> @endif
                             @if($po->po_setujufinance == 'DISETUJUI')
                             <button class="btn btn-sm btn-info print" type="button" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"> </i> </button>
+                            @endif
                            @endif
                              </td>
                       </tr>
