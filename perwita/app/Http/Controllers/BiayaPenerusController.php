@@ -2043,12 +2043,12 @@ class BiayaPenerusController extends Controller
 
 	}
 
-	public function cari_kontrak_subcon($id){
+	public function cari_kontrak_subcon(request $request){
 
 		$kontrak = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('tipe_angkutan','kode','=','ksd_angkutan')
-					 ->where('ks_nama',$id)
+					 ->where('ks_nama',$request->selectOutlet)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -2056,7 +2056,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_asal')
 					 ->select('nama as asal')
-					 ->where('ks_nama',$id)
+					 ->where('ks_nama',$request->selectOutlet)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -2064,7 +2064,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_tujuan')
 					 ->select('nama as tujuan')
-					 ->where('ks_nama',$id)
+					 ->where('ks_nama',$request->selectOutlet)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -2082,7 +2082,7 @@ class BiayaPenerusController extends Controller
 			return view('purchase/fatkur_pembelian/tabelModalSubcon',compact('fix'));
 	}
 
-	public function cari_kontrak_subcon1($id){
+	public function cari_kontrak_subcon1(request $request){
 		$kontrak = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('tipe_angkutan','kode','=','ksd_angkutan')

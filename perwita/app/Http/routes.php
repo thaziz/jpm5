@@ -222,7 +222,7 @@ Route::get('fakturpembelian/cari_do_subcon', 'BiayaPenerusController@cari_do_sub
 Route::post('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/edit_penerus/{i}', 'BiayaPenerusController@edit');
-Route::get('fakturpembelian/cari_kontrak_subcon/{i}', 'BiayaPenerusController@cari_kontrak_subcon');
+Route::get('fakturpembelian/cari_kontrak_subcon', 'BiayaPenerusController@cari_kontrak_subcon');
 Route::get('fakturpembelian/getdatapenerusedit', 'BiayaPenerusController@getdatapenerusedit');
 Route::post('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');
 Route::get('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');

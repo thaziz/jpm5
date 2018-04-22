@@ -368,27 +368,9 @@
 </div>
 
 
-<!-- modal DO-->
-<div id="modal_do" class="modal" >
-  <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Pilih Nomor DO</h4>
-      </div>
-      <div class="modal-body">
-            <form class="form-horizontal  tabel_subcon_detail">
-               
-            </form>
-          </div>
-          <div class="modal-footer">
-          </div>
-    </div>
-  </div>
-</div>
 
 <!-- modal DO-->
-<div id="modal_do" class="modal" >
+<div id="modal_do" class="modal fade" >
   <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
     <div class="modal-content">
       <div class="modal-header">
@@ -447,6 +429,30 @@ $('.m_do_subcon').focus(function(){
 	    })
 })
 
+$('.nota_subcon').focus(function(){
+	  var  selectOutlet = $('.nama_sc').val();
+	  if (selectOutlet == '0') {
+	  	toastr.warning('Harap Pilih Customer');
+	  	return 1;
+	  }
+
+	  var  cabang     = $('.cabang').val();
+
+	  $.ajax({
+	      url:baseUrl +'/fakturpembelian/cari_kontrak_subcon',
+	      data: {selectOutlet,cabang},
+	      success:function(data){
+	        $('.subcon_modal').html(data);
+			$('#modal_subcon').modal('show');
+	      },error:function(){
+	        toastr.warning('Terjadi Kesalahan');
+	      }
+	    })
+})
+
+
+
+
 function pilih_do_subcon(par) {
 	var d_nomor_do = $(par).find('.d_nomor_do').val();
 	var d_tanggal = $(par).find('.d_tanggal').val();
@@ -473,6 +479,33 @@ function pilih_do_subcon(par) {
 
 
 
+}
+
+function pilih_kontrak(asd){
+	var id = $(asd).find('.id_kontrak').val();
+	// var dt = $(asd).find('.dt_kontrak').val();
+
+	$.ajax({
+		url : baseUrl +'/fakturpembelian/pilih_kontrak',
+	    data: 'id='+id,
+	    type:'get',
+	    dataType:'json',
+	    success:function(response){
+	    	console.log(response.subcon_dt[0].ksd_nota);
+	    	$('.nota_subcon').val(response.subcon_dt[0].ksd_nota);
+	    	$('.sc_biaya_subcon').val(response.subcon_dt[0].ksd_harga);
+	    	$('.sc_biaya_subcon_dt').val(response.subcon_dt[0].ksd_harga2);
+	    	$('.id_subcon').val(response.subcon_dt[0].ksd_id);
+	    	$('.dt_subcon').val(response.subcon_dt[0].ksd_dt);
+	    	$('.sc_tarif_subcon').val(response.subcon_dt[0].ksd_jenis_tarif);
+	    	$('.kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
+	    	$('.table_filter_subcon').removeClass('disabled');
+
+	    
+	    }
+	})
+
+	$('#modal_subcon').modal('hide');
 }
 
 function cariSUB(){
