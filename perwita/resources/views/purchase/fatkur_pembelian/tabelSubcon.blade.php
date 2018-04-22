@@ -3,6 +3,8 @@
         <tr>
             <th>Nomor DO</th>
             <th>Tgl Order</th>
+            <th>Jenis</th>
+            <th>Angkutan</th>
             <th>Jumlah</th>
             <th>Satuan</th>
             <th>Asal</th>
@@ -19,6 +21,14 @@
            <td>
             {{carbon\carbon::parse($val->tanggal)->format('d/m/Y')}}
             <input type="hidden" class="d_tanggal" value="{{carbon\carbon::parse($val->tanggal)->format('d/m/Y')}}">
+           </td>
+           <td>
+            <p class="d_jenis_tarif_text">{{$val->nama_tarif}}</p>
+            <input type="hidden" class="d_jenis_tarif" value="{{$val->jenis_tarif}}">
+           </td>
+           <td>
+           <p class="d_tipe_angkutan_text"> {{$val->nama_angkutan}}</p>
+            <input type="hidden" class="d_tipe_angkutan" value="{{$val->kode_tipe_angkutan}}">
            </td>
            <td>
             {{$val->jumlah}}

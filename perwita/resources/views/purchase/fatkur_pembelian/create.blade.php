@@ -1063,7 +1063,6 @@
           type : "GET",
           dataType : 'json',
           success : function(response){
-              alert('hell');
                $('.gudang').empty();
                       $('.gudang').append(" <option value=''>  -- Pilih Gudang -- </option> ");
                   $.each(response.gudang, function(i , obj) {

@@ -2160,7 +2160,14 @@ public function cari_do_subcon(request $request)
 			  ->where('kode_cabang',$request->cabang)
 			  ->where('pbd_resi',null)
 			  ->get();
+
+	$jenis_tarif = DB::table('jenis_tarif')
+					 ->get();
+					 
 	$kota = DB::table('kota')
+			  ->get();
+
+	$tipe_angkutan = DB::table('tipe_angkutan')
 			  ->get();
 
 	for ($i=0; $i < count($data); $i++) { 
@@ -2172,7 +2179,20 @@ public function cari_do_subcon(request $request)
 				$data[$i]->nama_tujuan = $kota[$a]->nama;
 			}
 		}
+
+		for ($b=0; $b < count($tipe_angkutan); $b++) { 
+			if ((integer)$data[$i]->kode_tipe_angkutan == $tipe_angkutan[$b]->kode) {
+				$data[$i]->nama_angkutan = $tipe_angkutan[$b]->nama;
+			}
+		}
+
+		for ($c=0; $c < count($jenis_tarif); $c++) { 
+			if ((integer)$data[$i]->jenis_tarif == $jenis_tarif[$c]->jt_id) {
+				$data[$i]->nama_tarif = $jenis_tarif[$c]->jt_nama_tarif;
+			}
+		}
 	}
+
 	return view('purchase.fatkur_pembelian.tabelSubcon',compact('data'));
 }
 
