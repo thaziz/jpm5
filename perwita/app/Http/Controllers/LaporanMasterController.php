@@ -2249,16 +2249,13 @@ class LaporanMasterController extends Controller
 				   				and tanggal<='$akir'
 				                group by d.kode_customer,c.kode");	
 				   			
-				   			for ($i=0; $i <count($data_awal); $i++) { 
-				   			 	$doc[$i] = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
+				   			 	$doc = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'
 				   				and type_kiriman = 'DOKUMEN'
-				   				and kode_customer = '$data_awal[$i]->kode_customer'
 				   				group by d.kode_customer");	
-				   			 }
-				   			return $doc;
+					   			return $doc;
 
 				   			$kilo = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
 				   				where kode_cabang = '$cabang'
