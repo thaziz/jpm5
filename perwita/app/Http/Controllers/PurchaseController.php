@@ -165,7 +165,7 @@ class PurchaseController extends Controller
 		
 
 		$cabang = $request->comp;
-		  $bulan = Carbon::now()->format('m');
+		$bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
 
 
@@ -3933,9 +3933,9 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				$fatkurpembeliand->fp_pending_status = 'APPROVED';
 				$fatkurpembeliand->fp_status = 'Released';
 				$fatkurpembeliand->fp_tipe = 'PO';
-				$fatkurpembelian->fp_acchutang = $request->acchutangdagang;
-				$fatkurpembelian->created_by = $request->username;
-				$fatkurpembelian->updated_by = $request->username;
+				$fatkurpembeliand->fp_acchutang = $request->acchutangdagang;
+				$fatkurpembeliand->created_by = $request->username;
+				$fatkurpembeliand->updated_by = $request->username;
 				//$fatkurpembelian->fp_accpph = $request->accPph;
 				$fatkurpembeliand->save();
 
@@ -4798,9 +4798,20 @@ if($request->jenisppn=='I'){
 
 	public function getbiayalain (Request $request){
 		$cabang = $request->cabang;
-		
+		$flag = $request->a;
 
-		$faktur = DB::select("select * from faktur_pembelian where fp_comp = '$cabang' order by fp_idfaktur desc limit 1");
+		$bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
+		if($flag == ''){
+				$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/I-%' order by fp_idfaktur desc limit 1");
+
+		}
+		else {
+
+		$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/$flag-%' order by fp_idfaktur desc limit 1");
+
+		}
 
 		//return $idbbk;
 		if(count($faktur) > 0) {
