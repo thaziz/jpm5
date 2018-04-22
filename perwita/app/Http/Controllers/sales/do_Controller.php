@@ -428,7 +428,7 @@ class do_Controller extends Controller
                 'jenis_ppn' => $request->cb_jenis_ppn,
                 'acc_penjualan' => $request->acc_penjualan,
 
-                //'total_net' => filter_var($request->ed_total_net, FILTER_SANITIZE_NUMBER_INT),
+                'total_net' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
             );
 
             if ($data['kode_satuan'] == "SEPEDA"){

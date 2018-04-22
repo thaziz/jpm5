@@ -91,7 +91,7 @@
                                 {{-- {{dd($customer)}} --}}
                                 <td style="padding-top: 0.4cm" >Customer</td>
                                 <td colspan="4" class="">                                    
-                                    <select class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
+                                    <select onchange="ganti_jt()" class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $i=> $val)
                                         <option value="{{$customer[$i]->kode}}" data-accpiutang="{{$customer[$i]->acc_piutang}}" data-jt="{{$customer[$i]->acc_piutang}}"> {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
@@ -104,7 +104,7 @@
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td >
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl" name="tgl" value="{{$tgl}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input onchange="ganti_jt()" type="text" class="form-control tgl" name="tgl" value="{{$tgl}}">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
@@ -378,6 +378,18 @@
     $('.date').datepicker({
         format:'dd/mm/yyyy',
     });
+       function ganti_jt() {
+        var cus = $('#customer').val();
+        var tgl = $('.tgl').val();
+        $.ajax({
+            url:baseUrl+'/sales/jatuh_tempo_customer',
+            data:{cus,tgl},
+            dataType : 'json',
+            success:function(response){
+                $('.ed_jatuh_tempo').val(response.tgl);
+            }
+        });
+   }
     //ajax cari nota
     $(document).ready(function(){
         var cabang = $('.cabang').val();
@@ -402,6 +414,7 @@
             location.reload();
         }
         });
+        ganti_jt();
     });
     // ganti nota untuk admin
     function ganti_nota(argument) {
@@ -444,20 +457,8 @@
         });
     }
 
-   $('.tgl').change(function(){
-        var cus = $('#customer').val();
-        var tgl = $('.tgl').val();
-        $.ajax({
-            url:baseUrl+'/sales/jatuh_tempo_customer',
-            data:{cus,tgl},
-            dataType : 'json',
-            success:function(response){
-                $('.ed_jatuh_tempo').val(response.tgl);
-            }
-        });
-    });
 
-
+        
 
    $('#cb_pendapatan').change(function(){
         $('.ed_pendapatan').val($(this).val());

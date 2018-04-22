@@ -101,7 +101,7 @@
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
-                                        <input  type="text" class="form-control tgl " name="tgl" value="{{\Carbon\Carbon::parse($data->i_tanggal)->format('d/m/Y')}}">
+                                        <input onchange="ganti_jt()"  type="text" class="form-control tgl " name="tgl" value="{{\Carbon\Carbon::parse($data->i_tanggal)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Jatuh Tempo</td>
@@ -498,6 +498,19 @@
     $('.date').datepicker({
         format:'dd/mm/yyyy',
     });
+
+    function ganti_jt() {
+        var cus = $('#customer').val();
+        var tgl = $('.tgl').val();
+        $.ajax({
+            url:baseUrl+'/sales/jatuh_tempo_customer',
+            data:{cus,tgl},
+            dataType : 'json',
+            success:function(response){
+                $('.ed_jatuh_tempo').val(response.tgl);
+            }
+        });
+   }
     //ajax cari nota
     $(document).ready(function(){
         // $('.diskon2').maskMoney({precision:0,thousands:'.'})

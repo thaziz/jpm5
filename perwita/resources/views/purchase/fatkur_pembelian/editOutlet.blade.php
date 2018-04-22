@@ -86,13 +86,35 @@
       {{ csrf_field() }}
     <table class="table head_outlet">
     <h3 style="text-align: center;">Form Pembayaran Outlet</h3>
-     <tr>
-      <td>Pilih Outlet</td>
-      <td width="10">:</td>
+    <tr>
+      <td>No Faktur</td>
+      <td>:</td>
       <td>
+         <input type="text" value="{{$data->fp_nofaktur}}" class="form-control nofaktur" name="nofaktur" required="" readonly="">
+         <input type="hidden" value="{{$data->fp_idfaktur}}" class="form-control idfaktur" name="idfaktur" required="" readonly="">
+      
+          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+      </td>
+    </tr>
+    <tr>
+      <td> Cabang </td>
+      <td>:</td>
+      <td>  
+        <select class="form-control disabled cabang" name="cabang">
+          @foreach($cabang as $i)
+          <option value="{{$i->kode}}" @if($i->kode == $data->fp_comp) selected @endif> {{$i->nama}} </option>
+          @endforeach
+        </select> 
+      </td>
+     </tr>
+     <tr>
+      
+      <td>Outlet</td>
+      <td width="10">:</td>
+      <td class="disabled">
         <select class="form-control selectOutlet chosen-select-width" name="selectOutlet">
           @foreach($agen as $val)
-          <option @if($val) selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+          <option @if($val->kode == $data->fp_supplier) selected="" @endif value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
           @endforeach
         </select>
       </td>
@@ -115,48 +137,51 @@
       <td width="111">Note</td>
       <td width="20">:</td>
       <td>
-        <textarea onkeyup="autoNote()" class="form-control note_po" id="note" name="note" style="min-height: 100px"></textarea> 
+        <textarea onkeyup="autoNote()" class="form-control note_po" id="note" name="note" style="min-height: 100px">{{$data->fp_keterangan}}</textarea> 
       </td>
      </tr>
      </table>
-     <button type="button" class="btn btn-warning pull-left disabled print-penerus" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
+     <button style="margin-right: 20px" type="button" class="btn btn-warning pull-left  print-penerus" id="print-penerus" onclick="print_penerus()" ><i class="fa fa-print"></i> Print</button>
+      <button type="button" class="btn btn-warning pull-left print-penerus" id="print-penerus" onclick="print_penerus_tt()" ><i class="fa fa-print"></i> Print Tanda Terima</button>
      <button type="button" class="btn btn-primary pull-right cari_outlet" onclick="cari_outlet()"><i class="fa fa-search">&nbsp;Search</i></button>
     </form>
 </div>  
 <hr>
 <div class="col-sm-12 outlet">
+    <h3>Tabel Detail Resi</h3>
   <div class="col-sm-5">
-    <table class="table table-stripped">
+    <table class="table table-stripped header_total_outlet1">
       <tr>
         <td>Total Tarif</td>
         <td>:</td>
-        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_tarif)}}" name="total_tarif" class="form-control form-inline"></td>
+        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_tarif,2,",",".")}}" name="total_tarif" class="form-control form-inline total_tarif"></td>
       </tr>
       <tr>
         <td>Total Komisi Outlet</td>
         <td>:</td>
-        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_komisi_outlet)}}" name="total_komisi_outlet" class="form-control form-inline"></td>
+        <td><input style="text-align: right" readonly="" type="text" value="{{'Rp ' . number_format($data->pot_total_komisi_outlet,2,",",".")}}" name="total_komisi_outlet" class="form-control form-inline total_komisi_outlet"></td>
       </tr>
     </table>
     </div>
+
     <div class="col-sm-5" style="margin-left: 10%">
-    <table class="table table-stripped">
+    <table class="table table-stripped header_total_outlet2">
       <tr>
         <td>Total Komisi Tambahan</td>
         <td>:</td>
-        <td><input style="text-align: right"  readonly="" type="text" name="total_komisi_tambahan" value="{{'Rp ' . number_format($data->pot_total_komisi_tambah)}}" class="form-control form-inline"></td>
+        <td><input style="text-align: right"  readonly="" type="text" name="total_komisi_tambahan" value="{{'Rp ' . number_format($data->pot_total_komisi_tambah,2,",",".")}}" class="form-control form-inline total_komisi_tambahan"></td>
       </tr>
       <tr>
         <td>Total Jumlah Komisi</td>
         <td>:</td>
-        <td><input style="text-align: right"  readonly="" type="text" name="total_all_komisi" value="{{'Rp ' . number_format($data->pot_total_komisi)}}" class="form-control form-inline"></td>
+        <td><input style="text-align: right"  readonly="" type="text" name="total_all_komisi" value="{{"Rp " . number_format($data->pot_total_komisi,2,",",".")}}" class="form-control form-inline total_all_komisi"></td>
       </tr>
     </table>
     </div>
 
       <table class="table table-bordered table-hover table_outlet" style="font-size: 12px; ">
       <button onclick="tt_penerus_outlet()" class="btn btn-info modal_outlet_tt" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-      <button type="button" class="btn btn-primary pull-right disabled" id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
+      <button type="button" class="btn btn-primary pull-right " id="save_update_outlet" onclick="save_outlet()" data-dismiss="modal">Simpan Data</button>
       <hr>
       <div class="loading text-center" style="display: none;">
           <img src="{{ asset('assets/img/loading1.gif') }}" width="100px">
@@ -190,20 +215,28 @@
           <td >
             {{$val->potd_pod}}
           </td>
+           <input type="hidden" name="chck[]" value="on" class="form-control child_check" >
+            <input type="hidden" name="no_resi[]" class="form-control" value="{{$val->potd_pod}}">
+          </td>
           <td>
             {{$val->potd_tgl}}
           </td>
           <td>
             {{$val->potd_tarif_resi}}
+            <input type="hidden" name="tarif[]" class="form-control tarif_dasar" value="{{$val->potd_tarif_resi}}">
           </td>
           <td>
             {{$val->potd_komisi}}
+            <input type="hidden" name="komisi[]" class="form-control komisi" value=" {{$val->potd_komisi}}">
+            <input type="hidden" name="comp[]" class="form-control" value=" {{$val->kode_cabang}}">
           </td>
           <td>
             {{$val->potd_komisi_tambahan}}
+            <input type="hidden" name="komisi_tambahan[]" onload="hitung_komisi(this)" class="form-control komisi_tambah" value="{{$val->potd_komisi_tambahan}}">
           </td>
           <td>
             {{$val->potd_komisi_total}}
+            <input type="hidden" name="total_komisi[]" class="form-control total_komisi" value="{{$val->potd_komisi_total}}">
           </td>
         </tr>
         @endforeach
@@ -214,10 +247,130 @@
 </div>
 </div>
 
+
+<!-- {{-- MODAL TT OUTLET --}} -->
+
+<div class="modal fade" id="modal_tt_outlet" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Form Tanda Terima</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-stripped tabel_tt_outlet">
+          <tr>
+            <td width="150px">
+                  No Tanda Terima 
+                </td>
+                <td>
+                  <input value="{{$valid_cetak->tt_noform}}" type='text' name="nota_tt" class='input-sm form-control notandaterima'>
+                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                </td>
+          </tr>
+          <tr>
+            <td> Tanggal </td>
+                <td>
+                   <div class="input-group date">
+                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" readonly="" value="{{carbon\carbon::parse($valid_cetak->tt_tgl)->format('d/m/Y')}}" name="tgl_tt">
+                  </div>
+                </td>
+          </tr>
+          <tr>
+              <td> Supplier </td>
+              <td> <input type='text' class="form-control supplier_tt" value="{{$valid_cetak->tt_idagen}}" name="supplier_tt" readonly=""></td>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                 <div class="row">
+                    <div class="col-sm-3"> 
+                      <div class="checkbox checkbox-info checkbox-circle">
+                          <input id="Kwitansi" type="checkbox" @if($valid_cetak->tt_kwitansi == 'ADA') checked="" @endif name="kwitansi">
+                            <label for="Kwitansi">
+                                Kwitansi / Invoice / No
+                            </label>
+                      </div> 
+                    </div>
+                    <div class="col-sm-3"> 
+                      <div class="checkbox checkbox-info checkbox-circle">
+                          <input id="FakturPajak" type="checkbox" @if($valid_cetak->tt_faktur == 'ADA') checked="" @endif name="faktur_pajak">
+                            <label for="FakturPajak">
+                                Faktur Pajak
+                            </label>
+                      </div> 
+                    </div>
+
+                    <div class="col-sm-3"> 
+                      <div class="checkbox checkbox-info checkbox-circle">
+                          <input id="SuratPerananAsli" type="checkbox" @if($valid_cetak->tt_suratperan == 'ADA') checked="" @endif name="surat_peranan">
+                            <label for="SuratPerananAsli">
+                                Surat Peranan Asli
+                            </label>
+                      </div> 
+                    </div>
+
+                     <div class="col-sm-3"> 
+                      <div class="checkbox checkbox-info checkbox-circle">
+                          <input id="SuratJalanAsli" type="checkbox" @if($valid_cetak->tt_suratjalanasli == 'ADA') checked="" @endif name="surat_jalan">
+                            <label for="SuratJalanAsli">
+                               Surat Jalan Asli
+                            </label>
+                      </div> 
+                    </div>
+                  </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+               Lain Lain
+              </td>
+              <td>                      
+                <input type="text" value="{{$valid_cetak->tt_lainlain}}" class="form-control lain_outlet" name="lainlain_penerus">
+              </td>
+            </tr>
+            <tr>
+              <td> Tanggal Kembali </td>
+              <td><div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input value="{{$valid_cetak->tt_tglkembali}}" type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Total di Terima</td>
+              <td>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <label class="col-sm-3 label-control"> Rp </label>
+                  </div>
+                  <div class="col-sm-9">
+                    <input type="text" value="{{$valid_cetak->tt_tglkembali}}" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly="">
+                  </div>
+                </div>
+              </td>
+            </tr>
+        </table>
+      </div>
+      <div class="modal-footer inline-form">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+        <button type="button" class="btn btn-primary simpan_outlet" onclick="simpan_tt()" data-dismiss="modal">Simpan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @endsection
 @section('extra_scripts')
 <script type="text/javascript">
-
+var datatable2 = $('.table_outlet').DataTable({
+              responsive: true,
+              searching:false,
+              //paging: false,
+              "pageLength": 10,
+              "language": dataTableLanguage,
+      });
  function cari_outlet() {
   var  selectOutlet = $('.selectOutlet').val();
   var  cabang     = $('.cabang').val();
@@ -227,7 +380,7 @@
       url:baseUrl +'/fakturpembelian/cari_outlet1',
       data: {selectOutlet,cabang,reportrange,id},
       success:function(data){
-    
+        datatable2.clear().draw();
         $('.outlet').html(data);
 
       },error:function(){
@@ -236,7 +389,136 @@
     })
  }
 
+$(document).ready(function(){
+  $('.reportrange').daterangepicker({
+          autoclose: true,
+          "opens": "right",
+          locale: {
+          format: 'DD/MM/YYYY'
+      }         
+});
+})
 
+  function tt_penerus_outlet() {
+
+    var total_all_komisi  = $('.total_all_komisi').val();
+    var jatuh_tempo_outlet  = $('.jatuh_tempo_outlet').val();
+
+    $('.jatuhtempo_tt').val(jatuh_tempo_outlet);
+    $('.totalterima_tt').val(total_all_komisi);
+
+
+  }
+
+
+   function save_outlet(){
+
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Simpan Data Pembayaran Outlet!",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Simpan!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: true
+  },
+  function(){
+       $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+      $.ajax({
+      url:baseUrl + '/fakturpembelian/update_outlet',
+      type:'post',
+      data: $('.head_outlet :input').serialize()+'&'+datatable2.$('input').serialize()+'&'+$('.header_total_outlet1 :input').serialize()+'&'+$('.header_total_outlet2 :input').serialize()+'&id='+'{{$id}}',
+      success:function(response){
+        swal({
+        title: "Berhasil!",
+                type: 'success',
+                text: "Data berhasil disimpan",
+                timer: 900,
+               showConfirmButton: true
+                },function(){
+       
+
+        });
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 900,
+               showConfirmButton: true
+
+    });
+   }
+  });  
+ });
+}
+
+
+function simpan_tt() {
+  var totalterima_tt = $('.totalterima_tt').val();
+  var  selectOutlet = $('.selectOutlet').val();
+  var cabang = $('.cabang').val();
+
+      swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+          $.ajax({
+          url:baseUrl + '/fakturpembelian/simpan_tt',
+          type:'get',
+          data:$('.tabel_tt_outlet :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+          success:function(response){
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                    showConfirmButton: true
+                    },function(){
+                    $('.save_update_outlet').removeClass('disabled');
+                    });
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
+        });
+       }
+      });  
+     });
+  }
+ function print_penerus() {
+    var idfaktur = $('.idfaktur').val();
+     window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
+  }
+
+  function print_penerus_tt() {
+    var idfaktur = $('.notandaterima').val();
+    idfaktur = idfaktur.replace('/','-')
+    idfaktur = idfaktur.replace('/','-')
+     window.open('{{url('fakturpembelian/cetak_tt')}}'+'/'+idfaktur);
+  }
 
 $.fn.serializeArray = function () {
     var rselectTextarea= /^(?:select|textarea)/i;

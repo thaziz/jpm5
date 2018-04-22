@@ -26,6 +26,7 @@
                     <h5> Laporan DO Koran
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                     <h5 class="pull-right"><a href="{{ url('sales/laporandeliveryorder_total') }}"><i class="fa fa-arrow-left"></i></a></h5>
                     <div class="ibox-tools">
 
                     </div>
@@ -62,7 +63,7 @@
                             <td>Cabang :</td>
                             <td>
                               <select class="chosen-select-width" name="cabang" id="cabang">
-                                  <option selected="" readonly >- Cabang -</option>
+                                  <option selected="" readonly value="">- Cabang -</option>
                                 @foreach ($cabang as $r)
                                   <option value="{{ $r->kode }}">{{ $r->kode }} - {{ $r->nama }}</option>
                                 @endforeach
@@ -73,7 +74,7 @@
                             <td>View :</td>
                             <td>
                               <select class="chosen-select-width" name="view" id="view">
-                                  <option selected="" readonly >- View -</option>
+                                  <option selected="" readonly value="">- View -</option>
                                   <option value="rekap"> Rekap</option>
                                   <option value="rekap_detail"> Rekap Detail</option>
                               </select>
@@ -82,12 +83,13 @@
                       <br>
                       </table>
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-special cetak" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </a> </div>
-                      <div class="row" style="margin-top: -39px;margin-left: 55px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
-                      <div class="row" style="margin-top: -39px;margin-left: 136px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
+                      <div class="row" style="margin-top: -39px;margin-left: 55px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="pdf()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                      <div class="row" style="margin-top: -39px;margin-left: 136px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                     </div>
-                </form>
+                
                 <div class="box-body">
                 <div id="disini" style="margin-top: 20px"></div>
+                </form>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -113,13 +115,15 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-   
-    $('#table').Datatable();
+
     $( ".date" ).datepicker();
 
       function cari(){
         var view = $('#view').val();
-        if (view == null || '') {
+        var awal = $('#min').val();
+        var akir = $('#max').val();
+
+        if (view == null || view == '') {
           Command: toastr["warning"]("View Harus Dipilih", "Peringatan!")
 
           toastr.options = {
@@ -139,28 +143,89 @@
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut"
           }
+          return false;
         }
+        if (awal == null || awal ==  '') {
+          Command: toastr["warning"]("Tanggal Harus Dipilih", "Peringatan!")
 
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+        }
+        if (akir == null || akir == '') {
+          Command: toastr["warning"]("Tanggal Harus Dipilih", "Peringatan!")
 
-          
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": true,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+        }
 
         $.ajax({
           data: $('#form_ajax').serialize(),
           url: baseUrl + '/cari_rekapcustomer/cari_rekapcustomer',
           type: "get",
-         success : function(data){
-            $('#disini').html(data);
+          success : function(data){
+            if (data.data == '0') {
+               Command: toastr["warning"]("Data Terkait Tidak Ditemukan", "Peringatan!")
+
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": false,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": true,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+              $('#disini').html('');
+
+            }else{
+              $('#disini').html(data);
+            }
           }
         });
       }
 
-      function cetak(){
-      var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < asd.length; i++){
-           asw[i] =  $(asd[i][0]).val();
-       }
-
+    function excel(){
+     
       $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -168,14 +233,40 @@
       });
 
       $.ajax({
-        data: {a:asw,c:'download'},
-        url: baseUrl + '/reportkwitansi/reportkwitansi',
-        type: "post",
+        data: $('#form_ajax').serialize(),
+        url: baseUrl + '/report_rekapcustomer/report_rekapcustomer',
+        type: "get",
+        complete:function(data){
+        window.open(this.url,'_blank');
+        },
        success : function(data){
-        var win = window.open();
-            win.document.write(data);
+           
         }
       });
     }
+
+
+    function pdf(){
+     
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+      $.ajax({
+        data: $('#form_ajax').serialize(),
+        url: baseUrl + '/reportpdf_rekapcustomer/reportpdf_rekapcustomer',
+        type: "get",
+        complete:function(data){
+        window.open(this.url,'_blank');
+        },
+       success : function(data){
+           
+        }
+      });
+    }
+
+
 </script>
 @endsection
