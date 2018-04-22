@@ -140,6 +140,7 @@ Route::get('pengeluaranbarang/pengeluaranbarang', 'PengeluaranBarangController@i
 Route::get('pengeluaranbarang/edit/{id}', 'PengeluaranBarangController@edit');
 Route::get('pengeluaranbarang/cari_stock', 'PengeluaranBarangController@cari_stock');
 Route::get('pengeluaranbarang/createpengeluaranbarang', 'PengeluaranBarangController@create');
+Route::get('pengeluaranbarang/ganti_nota', 'PengeluaranBarangController@ganti_nota');
 Route::get('pengeluaranbarang/save_pengeluaran', 'PengeluaranBarangController@save_pengeluaran');
 Route::get('pengeluaranbarang/update_pengeluaran/{id}', 'PengeluaranBarangController@update_pengeluaran');
 Route::get('pengeluaranbarang/hapus/{id}', 'PengeluaranBarangController@hapus');
@@ -221,7 +222,7 @@ Route::get('fakturpembelian/cari_do_subcon', 'BiayaPenerusController@cari_do_sub
 Route::post('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/save_agen', 'BiayaPenerusController@save_agen');
 Route::get('fakturpembelian/edit_penerus/{i}', 'BiayaPenerusController@edit');
-Route::get('fakturpembelian/cari_kontrak_subcon/{i}', 'BiayaPenerusController@cari_kontrak_subcon');
+Route::get('fakturpembelian/cari_kontrak_subcon', 'BiayaPenerusController@cari_kontrak_subcon');
 Route::get('fakturpembelian/getdatapenerusedit', 'BiayaPenerusController@getdatapenerusedit');
 Route::post('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');
 Route::get('fakturpembelian/update_agen', 'BiayaPenerusController@update_agen');

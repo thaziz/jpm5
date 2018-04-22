@@ -2136,8 +2136,8 @@ class LaporanMasterController extends Controller
    public function cari_rekapcustomer(Request $request){
    		$cabang = $request->cabang;
    		$view = $request->view;
-   		$awal = $request->min;
-   		$akir = $request->max;
+   		$awal = carbon::parse($request->min)->format('Y-m-d');
+   		$akir = carbon::parse($request->max)->format('Y-m-d');
    		if ($view == 'rekap') {
 			   		if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
 			   				return $data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
@@ -2207,7 +2207,6 @@ class LaporanMasterController extends Controller
    		}else{
    			// return 'U';
 		   			if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
-   			return 'A';
 
 				   				$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
 				   				join customer c on d.kode_customer = c.kode
