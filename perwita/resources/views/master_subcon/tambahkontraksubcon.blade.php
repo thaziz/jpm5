@@ -140,88 +140,7 @@
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
-                <!-- modal -->
-                <div id="modal" class="modal" >
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Insert Edit Subcon</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-horizontal  kirim">
-                                    <table id="table_data" class="table table-striped table-bordered table-hover">
-                                        <tbody>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm">Kota Asal</td>
-                                                <td>   
-                                                    <select class="chosen-select-width asal"  name="asal" id="cb_kota_asal" style="width:100%">
-                                                        <option value="0">- Pilih Asal -</option>
-                                                        @foreach($kota as $val)
-                                                        <option value="{{$val->id}}">{{$val->nama}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                    <input type="hidden" class="form-control" name="crud" class="form-control">
-                                                    <input type="hidden" class="form-control id_edit" class="form-control">
-                                                    <input type="hidden" class="form-control" name="ed_nomor_kontrak" class="form-control">
-                                                    <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm">Kota Tujuan</td>
-                                                <td>   
-                                                    <select class="chosen-select-width tujuan"  name="tujuan" style="width:100%">
-                                                        <option value="0">- Pilih Tujuan -</option>
-                                                         @foreach($kota as $val)
-                                                        <option value="{{$val->id}}">{{$val->nama}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width:110px; padding-top: 0.4cm">Tipe Angkutan</td>
-                                                <td>
-                                                    <select class="form-control chosen-select-width angkutan" name="angkutan" >
-                                                        <option value="0">- Pilih Angkutan -</option>
-                                                        @foreach($angkutan as $val)
-                                                        <option value="{{$val->kode}}">{{$val->nama}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width:110px; padding-top: 0.4cm">Jenis Tarif</td>
-                                                <td>
-                                                    <select class="form-control tarif" name="tarif" >
-                                                       @foreach($jenis_tarif as $val)
-                                                          <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
-                                                       @endforeach
-                                                    </select>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding-top: 0.4cm;">Harga</td>
-                                                <td>
-                                                    <input type="text" name="harga" class="form-control harga" style="text-transform: uppercase;text-align:right">
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
-                                                <td>
-                                                    <input type="text" name="keterangan" class="form-control keterangan" style="text-transform: uppercase" >
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <div class="tambah"><button type="submit" class="btn btn-primary " onclick="tambah()" id="btnsave">Save changes</button></div>
-                                <div hidden=""  class="updt"><button type="submit" class="btn btn-primary " onclick="updt()" id="update">Update</button></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                   <!-- modal -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -237,7 +156,88 @@
     </div>
 </div>
 
+<div id="modal_sub" class="modal_sub modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Kontrak Customer</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal  kirim">
+                    <table id="table_data" class="table table-striped table-bordered table-hover">
+                        <tbody>
+                            <tr>
+                                <td style="padding-top: 0.4cm">Kota Asal</td>
+                                <td>   
+                                    <select class="chosen-select-width asal"  name="asal" id="cb_kota_asal" style="width:100%">
+                                        <option value="0">- Pilih Asal -</option>
+                                        @foreach($kota as $val)
+                                        <option value="{{$val->id}}">{{$val->nama}}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" class="form-control" name="crud" class="form-control">
+                                    <input type="hidden" class="form-control id_edit" class="form-control">
+                                    <input type="hidden" class="form-control" name="ed_nomor_kontrak" class="form-control">
+                                    <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm">Kota Tujuan</td>
+                                <td>   
+                                    <select class="chosen-select-width tujuan"  name="tujuan" style="width:100%">
+                                        <option value="0">- Pilih Tujuan -</option>
+                                         @foreach($kota as $val)
+                                        <option value="{{$val->id}}">{{$val->nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Tipe Angkutan</td>
+                                <td>
+                                    <select class="form-control chosen-select-width angkutan" name="angkutan" >
+                                        <option value="0">- Pilih Angkutan -</option>
+                                        @foreach($angkutan as $val)
+                                        <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Jenis Tarif</td>
+                                <td>
+                                    <select class="form-control tarif" name="tarif" >
+                                       @foreach($jenis_tarif as $val)
+                                          <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                       @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding-top: 0.4cm;">Harga</td>
+                                <td>
+                                    <input type="text" name="harga" class="form-control harga" style="text-transform: uppercase;text-align:right">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
+                                <td>
+                                    <input type="text" name="keterangan" class="form-control keterangan" style="text-transform: uppercase" >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="tambah"><button type="submit" class="btn btn-primary " onclick="tambah()" id="btnsave">Append</button></div>
+                <div hidden=""  class="updt"><button type="submit" class="btn btn-primary " onclick="updt()" id="update">Update</button></div>
+            </div>
+    </div>
 
+  </div>
+</div>
 
 <div class="row" style="padding-bottom: 50px;"></div>
 
@@ -307,7 +307,7 @@ $('#btnadd').click(function(){
   $('.keterangan').val('');
   $('.id_edit').val('');
 
-  $('.modal').modal('show');
+  $('.modal_sub').modal('show');
 });
 
 var datatable = $('#table_data').DataTable({
@@ -351,7 +351,7 @@ function tambah(){
 
   $(harga).css('text-align','right');
 
-  $('.modal').modal('hide');
+  $('.modal_sub').modal('hide');
 }
   
 function hapus(p){
@@ -378,7 +378,7 @@ var id = $(par).find('.id_table').val();
   $('.id_edit').val(id);
   $('.updt').attr('hidden',false);
   $('.tambah').attr('hidden',true);
-  $('.modal').modal('show');
+  $('.modal_sub').modal('show');
 }
 
 function updt(){
@@ -411,7 +411,7 @@ function updt(){
   $(par).find('.harga_tb').val(harga);
   $(par).find('.keterangan_tb').val(keterangan);
 
-  $('.modal').modal('hide');
+  $('.modal_sub').modal('hide');
 }
 
 $('#btnsimpan').click(function(){

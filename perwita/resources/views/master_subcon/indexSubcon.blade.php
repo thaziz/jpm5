@@ -41,7 +41,7 @@
                     <h5> Kontrak Subcon
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     @if(Auth::user()->PunyaAkses('Master subcon','tambah'))
+                     @if(Auth::user()->PunyaAkses('Kontrak Subcon','tambah'))
                       <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('master_subcon/tambahkontraksubcon')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                     </div>
