@@ -4105,7 +4105,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 
 
 		$datafaktur = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
-	//	return count($request->item_po);
+	
 
 		for($i = 0 ; $i < count($request->item_po); $i++){
 				$hargabarang = str_replace(',', '', $request->hpp[$i]);									
@@ -4131,7 +4131,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				
 				$fatkurpembeliandt2 = new fakturpembeliandt();
 				$fatkurpembeliandt2->fpdt_id = $idfakturdt;
-				$fatkurpembeliandt2->fpdt_idfp = '1';
+				$fatkurpembeliandt2->fpdt_idfp = $idfaktur;
 				$fatkurpembeliandt2->fpdt_kodeitem = $request->item_po[$i];
 				$fatkurpembeliandt2->fpdt_qty = $request->qty[$i];
 				/*$fatkurpembeliandt->fpdt_gudang = $request->pb_gudang[$i];*/
