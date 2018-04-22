@@ -365,18 +365,22 @@ class PengeluaranBarangController extends Controller
 				$idtransaksi = $request->id;
 				$datapb = DB::select("select * from pengeluaran_barang where pb_id = '$idtransaksi'");
 				$idsupplier = $datapb[0]->pb_comp;
+				$jeniskeluar = $datapb[0]->pb_jenis_keluar;
 				
-				$barangterima = new barang_terima();
-				$barangterima->bt_id = $idbarangterima;
-				$barangterima->bt_flag = 'PBG';
-				$barangterima->bt_notransaksi = $datapb[0]->pb_nota;
-				$barangterima->bt_supplier = $idsupplier;
-				$barangterima->bt_idtransaksi = $idtransaksi;
-				$barangterima->bt_statuspenerimaan = 'BELUM DI TERIMA';
-				$barangterima->bt_gudang = $request->nama_gudang[$i];
-				$barangterima->bt_tipe = 'S';
-				$barangterima->bt_cabangpo = $datapb[0]->pb_peminta;
-				$barangterima->save();
+				if($jeniskeluar == 'Moving Gudang') {
+					$barangterima = new barang_terima();
+					$barangterima->bt_id = $idbarangterima;
+					$barangterima->bt_flag = 'PBG';
+					$barangterima->bt_notransaksi = $datapb[0]->pb_nota;
+					$barangterima->bt_agen = $idsupplier;
+					$barangterima->bt_idtransaksi = $idtransaksi;
+					$barangterima->bt_statuspenerimaan = 'BELUM DI TERIMA';
+					$barangterima->bt_gudang = $request->nama_gudang[$i];
+					$barangterima->bt_tipe = 'S';
+					$barangterima->bt_cabangpo = $datapb[0]->pb_peminta;
+					$barangterima->save();
+
+				}
 
 			$cari_sm = DB::table('stock_mutation')
 						 ->where('sm_stock',$request->sg_id[$i])
