@@ -248,7 +248,7 @@ function approved(){
       $.ajax({
         url:baseUrl+'/konfirmasipengeluaranbarang/approve',
         data: $('.form_input').serialize()+'&id='+'{{$id}}',
-        type:'post',
+        type:'get',
       success:function(response){
         if (response.status == 1) {
             swal({

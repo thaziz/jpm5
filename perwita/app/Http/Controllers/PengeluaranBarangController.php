@@ -321,7 +321,8 @@ class PengeluaranBarangController extends Controller
 		return view('purchase/konfirmasi_pengeluaranbarang/detail',compact('data','temp','temp1','data_dt','tgl','jumlah','id','gudang'));
 	}
 	public function approve(request $request){
-		// dd($request); 	
+		// dd($request->all()); 	
+   		return DB::transaction(function() use ($request) {  
 
 		$total = [];
 		$data = DB::table('pengeluaran_barang')
@@ -329,6 +330,7 @@ class PengeluaranBarangController extends Controller
 			      // ->join('pengeluaran_barang_gudang','pbg_pbd_id','=','pbd_id')
 				  ->where('pb_id',$request->id)
 				  ->first();
+
 		for ($i=0; $i < count($request->pbd_nama_barang); $i++) { 
 			// save pbg
 			$cari_id_pbg = DB::table('pengeluaran_barang_gudang')
@@ -389,12 +391,20 @@ class PengeluaranBarangController extends Controller
 						 ->orderBy('sm_date','ASC')
 						 ->get();
 			$kurang = $request->jumlah_setuju[$i];
+
 			for ($a=0; $a < count($cari_sm); $a++) { 
 
 				$sisa = $cari_sm[$a]->sm_sisa - $kurang;
+				$pengurangan_sisa = $kurang - $cari_sm[$a]->sm_sisa;
+				$sm_use_new = $kurang - $pengurangan_sisa;
 				if ($sisa < 0) {
 					$sisa = 0;
 				}
+
+				if ($pengurangan_sisa < 0) {
+					$pengurangan_sisa = 0;
+				}
+				// dd($pengurangan_sisa);
 
 				$update_sm_sisa = DB::table('stock_mutation')
 									->where('sm_id','=',$cari_sm[$a]->sm_id)
@@ -406,7 +416,7 @@ class PengeluaranBarangController extends Controller
 						 ->where('sm_id','=',$cari_sm[$a]->sm_id)
 						 ->first();
 
-				$sm_use = $cari_sm[$a]->sm_qty - $cari_sm_use->sm_sisa;
+				$sm_use = $cari_sm_use->sm_qty - $cari_sm_use->sm_sisa;
 
 
 
@@ -419,6 +429,7 @@ class PengeluaranBarangController extends Controller
 				$cari_sm_use = DB::table('stock_mutation')
 						 ->where('sm_id','=',$cari_sm[$a]->sm_id)
 						 ->first();
+
 
 
 				if ($kurang > 0) {
@@ -436,8 +447,8 @@ class PengeluaranBarangController extends Controller
 												'sm_date'		=> Carbon::now(),
 												'sm_item'		=> $request->pbd_nama_barang[$i],
 												'sm_mutcat'		=> 2,
-												'sm_qty'		=> $cari_sm_use->sm_use,
-												'sm_use'		=> $cari_sm_use->sm_use,
+												'sm_qty'		=> $sm_use_new,
+												'sm_use'		=> $sm_use_new,
 												'sm_hpp'		=> $cari_sm_use->sm_hpp,
 												'sm_spptb'		=> $data->pb_nota,
 												'created_at'	=> Carbon::now(),
@@ -479,7 +490,7 @@ class PengeluaranBarangController extends Controller
 						 ->where('sm_id','=',$cari_sm[$a]->sm_id)
 						 ->first();
 
-				$kurang -= $cari_kurang->sm_use;
+				$kurang = $pengurangan_sisa;
 
 				
 
@@ -533,6 +544,7 @@ class PengeluaranBarangController extends Controller
 			
 
 		return response()->json(['status'=>1]);
+	});
 	}
 
 	public function printing($id){
