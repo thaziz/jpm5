@@ -846,6 +846,23 @@
         $('#type_kiriman').change()
     }
     */
+
+    $("input[name='ed_diskon_h']").keyup(function(){
+        if ($(this).val() != 0) {
+            $("input[name='ed_diskon_v']").attr('readonly',true);
+        }else{
+            $("input[name='ed_diskon_v']").attr('readonly',false);
+        }
+    })
+
+    $("#ed_diskon_v").keyup(function(){
+        console.log('asd');
+        if ($(this).val() != 0) {
+            $("input[name='ed_diskon_h']").attr('readonly',true);
+        }else{
+            $("input[name='ed_diskon_h']").attr('readonly',false);
+        }
+    })
     
     function hitung(){
         var tarif_dasar = $("input[name='ed_tarif_dasar']").val();
@@ -873,19 +890,28 @@
             biaya_komisi = 0;
         }
         var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+        //--
         if (diskon != 0) {
-            $("input[name='ed_diskon_v']").attr('readonly',true);
-            total = total - (total * diskon / 100);
+            // $("input[name='ed_diskon_v']").attr('readonly',true);
+            // total = total - (total * diskon / 100);
+
+            var diskon_value_utama = diskon / 100 * total;
+
+            $("input[name='ed_diskon_v']").val(diskon_value_utama);
+
         }else if (diskon == 0) {
-            $("input[name='ed_diskon_v']").attr('readonly',false);
+            // $("input[name='ed_diskon_v']").attr('readonly',false);
         }
         if (diskon_value != 0) {
-            $("input[name='ed_diskon_h']").attr('readonly',true);
+            if (diskon  == 0) {
+            // $("input[name='ed_diskon_h']").attr('readonly',true);
+            }
             total = total - (diskon_value);
-            
+
         }else if (diskon_value == 0) {
-                $("input[name='ed_diskon_h']").attr('readonly',false);
+                // $("input[name='ed_diskon_h']").attr('readonly',false);
         }
+        //--
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
             ppn =Math.round(parseFloat(total) * parseFloat(0.1));
