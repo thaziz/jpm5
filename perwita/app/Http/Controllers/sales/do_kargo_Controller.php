@@ -293,10 +293,10 @@ class do_kargo_Controller extends Controller
         $bulan  = Carbon::now()->format('m');
         $tahun  = Carbon::now()->format('y');
         $cabang = $request->cabang;
-        $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
+         $cari_nota = DB::select("SELECT  substring(max(nomor),11) as id from delivery_order
                                         WHERE kode_cabang = '$cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
-                                        AND jenis = 'KARGO'
+                                        AND nomor like 'KGO%'
                                         AND to_char(tanggal,'YY') = '$tahun'");
 
         $index = (integer)$cari_nota[0]->id + 1;
@@ -516,7 +516,7 @@ class do_kargo_Controller extends Controller
                                 'company_name_penerima' => strtoupper($request->company_),
                                 'nama_penerima'         => strtoupper($request->nama_penerima),
                                 'alamat_penerima'       => strtoupper($request->alamat_penerima),
-                                'kode_pos_penerima'     => strtoupper($request->telpon_penerima),
+                                'kode_pos_penerima'     => strtoupper($request->kode_pos_penerima),
                                 'telpon_penerima'       => strtoupper($request->telpon_penerima),
                                 'instruksi'             => strtoupper($request->intruksi_penerima),
                                 'deskripsi'             => strtoupper($request->deskripsi_penerima),
@@ -599,8 +599,8 @@ class do_kargo_Controller extends Controller
                                 'telpon_pengirim'       => strtoupper($request->telpon_pengirim),
                                 'company_name_penerima' => strtoupper($request->company_),
                                 'nama_penerima'         => strtoupper($request->nama_penerima),
-                                'alamat_penerima'       => strtoupper($request->nama_penerima),
-                                'kode_pos_penerima'     => strtoupper($request->telpon_penerima),
+                                'alamat_penerima'       => strtoupper($request->alamat_penerima),
+                                'kode_pos_penerima'     => strtoupper($request->kode_pos_penerima),
                                 'telpon_penerima'       => strtoupper($request->telpon_penerima),
                                 'instruksi'             => strtoupper($request->intruksi_penerima),
                                 'deskripsi'             => strtoupper($request->deskripsi_penerima),

@@ -3,21 +3,44 @@
         <tr>
             <th>Nomor DO</th>
             <th>Tgl Order</th>
-            <th>Total DO</th>
-            <th>Jenis Tarif</th>
+            <th>Jumlah</th>
+            <th>Satuan</th>
             <th>Asal</th>
             <th>Tujuan</th>
         </tr>
     </thead>
     <tbody>
-        @foreach($fix as $i=> $val)
-        <tr>
+        @foreach($data as $i=> $val)
+        <tr onclick="pilih_do_subcon(this)">
            <td>
-            {{$fix[$i]['d_nomor']}}
-            <input type="hidden" class="d_nomor_do" value="{{$fix[$i]['d_nomor']}}">
+            {{$val->nomor}}
+            <input type="hidden" class="d_nomor_do" value="{{$val->nomor}}">
            </td>
-           <td>{{$fix[$i]['d_nomor']}}</td>
+           <td>
+            {{carbon\carbon::parse($val->tanggal)->format('d/m/Y')}}
+            <input type="hidden" class="d_tanggal" value="{{carbon\carbon::parse($val->tanggal)->format('d/m/Y')}}">
+           </td>
+           <td>
+            {{$val->jumlah}}
+            <input type="hidden" class="d_jumlah" value="{{$val->jumlah}}">
+           </td>
+           <td>
+            {{$val->kode_satuan}}
+            <input type="hidden" class="d_satuan" value="{{$val->kode_satuan}}">
+           </td>
+           <td>
+            <p class="d_asal_text">{{$val->nama_asal}}</p>
+            <input type="hidden" class="d_asal" value="{{$val->id_kota_asal}}">
+           </td>
+           <td>
+            <p class="d_tujuan_text">{{$val->nama_tujuan}}</p>
+            <input type="hidden" class="d_tujuan" value="{{$val->id_kota_tujuan}}">
+           </td>
         </tr>
         @endforeach
     </tbody>
 </table>
+
+<script>
+    var table_data_do = $('#table_data_do').DataTable();
+</script>

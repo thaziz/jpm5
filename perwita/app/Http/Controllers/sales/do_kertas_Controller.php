@@ -14,7 +14,7 @@ class do_kertas_Controller extends Controller
     
     public function index(){
         $cabang = auth::user()->kode_cabang;
-        if (Auth::user()->m_level == 'ADMINISTRATOR' || Auth::user()->m_level == 'SUPERVISOR') {
+        if (Auth::user()->punyaAkses('Delivery Order Koran','all')) {
             $data = DB::table('delivery_order')
                       ->join('customer','kode','=','kode_customer')
                       ->where('jenis','KORAN')
@@ -97,6 +97,7 @@ class do_kertas_Controller extends Controller
                                         WHERE kode_cabang = '$cabang'
                                         AND to_char(tanggal,'MM') = '$bulan'
                                         AND jenis = 'KORAN'
+                                        AND nomor like 'KRN%'
                                         AND to_char(tanggal,'YY') = '$tahun'");
 
         $index = (integer)$cari_nota[0]->id + 1;

@@ -448,6 +448,7 @@ class PengeluaranBarangController extends Controller
 					$create_psm = DB::table('pengeluaran_stock_mutasi')
 											->insert([
 												'psm_id'    => $psm_id,
+												'psm_pb_id' => $request->id,
 												'psm_harga' => $cari_sm_use->sm_hpp,
 												'psm_sm_id' => $cari_id_sm,
 												'psm_qty'   => $cari_sm_use->sm_use,

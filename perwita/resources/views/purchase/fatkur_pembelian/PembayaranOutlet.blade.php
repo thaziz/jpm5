@@ -71,6 +71,14 @@ $('.jatuh_tempo_outlet').datepicker({
 	format:'dd/mm/yyyy'
 });
 
+$('.reportrange').daterangepicker({
+          autoclose: true,
+          "opens": "left",
+          locale: {
+          format: 'DD/MM/YYYY'
+      }         
+});
+
 function autoNote(){
 
     var note = $('#note').val();

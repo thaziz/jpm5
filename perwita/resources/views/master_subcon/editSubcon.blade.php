@@ -174,16 +174,25 @@
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
-                <!-- modal -->
-                <div id="modal" class="modal" >
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Insert Edit Subcon</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-horizontal  kirim">
+               
+          </div><!-- /.row -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+ <!-- modal -->
+                <div id="modal_sub" class="modal_sub modal fade" role="dialog">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Kontrak Customer</h4>
+                      </div>
+                      <div class="modal-body">
+                        <form class="form-horizontal  kirim">
                                     <table id="table_data" class="table table-striped table-bordered table-hover">
                                         <tbody>
                                             <tr>
@@ -253,26 +262,10 @@
                                 <div class="tambah"><button type="submit" class="btn btn-primary " onclick="tambah()" id="btnsave">Append</button></div>
                                 <div hidden=""  class="updt"><button type="submit" class="btn btn-primary " onclick="updt()" id="update">Update</button></div>
                             </div>
-                        </div>
                     </div>
+
+                  </div>
                 </div>
-                  <!-- modal -->
-                <div class="box-footer">
-                  <div class="pull-right">
-
-
-                  </div><!-- /.box-footer -->
-              </div><!-- /.box -->
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 <div class="row" style="padding-bottom: 50px;"></div>
 
 
@@ -322,7 +315,7 @@ $('#btnadd').click(function(){
   $('.keterangan').val('');
   $('.id_edit').val('');
 
-  $('.modal').modal('show');
+  $('#modal_sub').modal('show');
 });
 
 var datatable = $('#table_data').DataTable({
@@ -375,7 +368,7 @@ function tambah(){
 
   $(harga).css('text-align','right');
 
-  $('.modal').modal('hide');
+  $('#modal_sub').modal('hide');
 }
   
 function hapus(p){
@@ -404,7 +397,7 @@ var id = $(par).find('.id_table').val();
   $('.id_edit').val(id);
   $('.updt').attr('hidden',false);
   $('.tambah').attr('hidden',true);
-  $('.modal').modal('show');
+  $('#modal_sub').modal('show');
 }
 
 function updt(){
@@ -437,7 +430,7 @@ function updt(){
   $(par).find('.harga_tb').val(harga);
   $(par).find('.keterangan_tb').val(keterangan);
 
-  $('.modal').modal('hide');
+  $('#modal_sub').modal('hide');
 }
 
 $('#btnsimpan').click(function(){
