@@ -101,6 +101,9 @@
                     /* Pajak */
                     Request::is('master_sales/pajak') ? 'active' : '' || 
                     Request::is('master_sales/pajak/*') ? 'active' : '' ||
+                    /* master perusahaan */
+                    Request::is('master/master_perusahaan') ? 'active' : '' || 
+                    Request::is('master/master_perusahaan/*') ? 'active' : '' ||
                     /* Sales Provnsi */
                     Request::is('sales/provinsi') ? 'active' : '' || 
                     Request::is('sales/provinsi/*') ? 'active' : '' ||
@@ -280,6 +283,9 @@
                     /* Pajak */
                     Request::is('master_sales/pajak') ? 'active' : '' || 
                     Request::is('master_sales/pajak/*') ? 'active' : '' ||
+                    /* master perusahaan */
+                    Request::is('master/master_perusahaan') ? 'active' : '' || 
+                    Request::is('master/master_perusahaan/*') ? 'active' : '' ||
                     /* Sales Provnsi */
                     Request::is('sales/provinsi') ? 'active' : '' || 
                     Request::is('sales/provinsi/*') ? 'active' : '' ||
@@ -311,6 +317,12 @@
                  Request::is('master_sales/pajak/*') ? 'active' : ''}}" href="{{ url('master_sales/pajak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pajak</a>
                 </li>
                 @endif
+                 {{-- @if(Auth::user()->PunyaAkses('perusahaan','aktif')) --}}
+                <li>
+                    <a class="{{Request::is('master/master_perusahaan') ? 'active' : '' ||
+                 Request::is('master/master_perusahaan/*') ? 'active' : ''}}" href="{{ url('master/master_perusahaan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Perusahaan</a>
+                </li>
+                {{-- @endif --}}
                 @if(Auth::user()->PunyaAkses('Provinsi','aktif'))
                 <li >
                     <a class="sidebar master-perusahaan {{Request::is('sales/provinsi') ? 'active' : '' || 

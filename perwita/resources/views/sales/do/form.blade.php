@@ -388,6 +388,7 @@
                                                         <input type="text" class="form-control" name="ed_total_h" id="ed_total_h" style="text-align:right" readonly="readonly" tabindex="-1"@if ($do === null) value="0" @else value="{{ number_format($do->total, 0, ",", ".") }}" @endif>
                                                     </td>
                                                 </tr>
+                                                <input type="hidden" name="ed_total_total">
                                             </tbody>
                                         </table>
                                     </div>
@@ -537,8 +538,9 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
-                                        <button type="button" class="btn btn-success " id="btnsimpan_tambah" name="btnsimpan_tambah" ><i class="glyphicon glyphicon-save"></i>Simpan & Tambah Baru</button>
+                                        <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i> Simpan</button>
+                                        <button type="button" class="btn btn-success " onclick="cetak()"><i class="glyphicon glyphicon-print "></i> Cetak</button>
+                                        <button type="button" class="btn btn-success " id="btnsimpan_tambah" name="btnsimpan_tambah" ><i class="glyphicon glyphicon-save"></i> Simpan & Tambah Baru</button>
                                     </div>
 
                                     
@@ -890,6 +892,7 @@
             biaya_komisi = 0;
         }
         var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+        var total_total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus);
         //--
         if (diskon != 0) {
             // $("input[name='ed_diskon_v']").attr('readonly',true);
@@ -933,6 +936,7 @@
       //  }
         $("input[name='ed_jml_ppn']").val(ppn.format());
         $("input[name='ed_total_h']").val(total.format());
+        $("input[name='ed_total_total']").val(total_total.format());
     }
 
     $('#cb_outlet').change(function(){
@@ -2402,6 +2406,16 @@
             $('#ed_diskon_v').val(parseInt(maxvalue));
         }
         hitung();   
+    }
+    function cetak(){
+        $.ajax({
+            data:$('#form_header').serialize(),
+            type:'get',
+            url: baseUrl + 'cetak_deliveryorderform/cetak_deliveryorderform',
+            success:function(){
+                
+            }
+        })
     }
 
 </script>
