@@ -86,7 +86,7 @@
                                 <tr>
                                     <th>Gambar</th>
                                     <td>:</td>
-                                    <td><img src="/jpm5/perwita/storage/app/upload/images.jpg" width="200" height="100"></td>
+                                    <td><img src="{{ asset('perwita/storage/app/upload/images.jpg') }}" width="200" height="100"></td>
                                 </tr>
 
                             </table>
