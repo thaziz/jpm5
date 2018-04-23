@@ -2821,11 +2821,7 @@ $indexakun=0;
 
 			$query6 = stock_gudang::where([['sg_gudang' , '=' , $datagudang],['sg_cabang' , '=' , $datacomp] , ['sg_item' , '=' , $iditem]]);
 			$query6->update([
-<<<<<<< HEAD
 				'sg_qty' => $hasilakhirqty,
-=======
-				'sg_qty' => $hasilakhirqty
->>>>>>> 4dbdbe4035b4f0922708008ade7e1ff159fb2db9
 				]);
 
 			
