@@ -992,7 +992,7 @@ $notable++;
                       dataType : 'json',
                       success : function(response){
                          alertSuccess(); 
-                          location.reload();
+                         // location.reload();
                          $('.qtyreceive2').attr('disabled', 'true');
                          $('.suratjalan' + id).attr('readonly' , true);
                       }
@@ -1540,7 +1540,7 @@ $notable++;
                       dataType : 'json',
                       success : function(response){
                          alertSuccess(); 
-                          location.reload();
+                       //   location.reload();
                          $('.qtyreceive2').attr('disabled', 'true');
                          $('.suratjalan' + id).attr('readonly' , true);
                       }
