@@ -256,20 +256,20 @@
 					<img class="img" width="150" height="80" src="{{ asset('assets/img/dboard/logo/logo_jpm.png') }}">
 				</td>
 			</table>
-			<table class="inlineTable size" style="margin-bottom: 10px;" >
-				<tr>
-					<th>PT. JAWA PRATAMA MANDIRI</th>
-				</tr>
-				<tr>
-					<td>Gedung Temprina Lt. 1 Jl. Wringin Anom KM 30-31 Sumengko Gresik</td>
-				</tr>
-				<tr>
-					<td>Telp.(031) 8986777, 89868888, Fax. (031) 89839999</td>
-				</tr>
-				<tr>
-					<td>Email : ekspedisi@jawapos.co.id</td>
-				</tr>
-			</table>
+			<table class="inlineTable size" style="margin-bottom: -20px;margin-top: 20px;">
+    <tr>
+      <th>{{perusahaan()->mp_nama}}</th>
+    </tr>
+     <tr>
+       <td>{{perusahaan()->mp_alamat}}</td>
+     </tr>
+     <tr>
+       <td>Telp.{{perusahaan()->mp_tlp}}</td>
+     </tr>
+     <tr>
+       <td>Email : ekspedisi@jawapos.co.id</td>
+     </tr>
+   </table>
 		</div>
 		<div class="Kwitansi bold">
 				<p>KWITANSI</p>

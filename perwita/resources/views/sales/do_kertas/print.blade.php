@@ -204,13 +204,13 @@
    </table>
    <table class="inlineTable size" style="margin-bottom: -20px;margin-top: 20px;">
     <tr>
-      <th>PT. JAWA PRATAMA MANDIRI</th>
+      <th>{{perusahaan()->mp_nama}}</th>
     </tr>
      <tr>
-       <td></td>
+       <td>{{perusahaan()->mp_alamat}}</td>
      </tr>
      <tr>
-       <td>Telp.(031) 8986777, 89868888, Fax. (031) 89839999</td>
+       <td>Telp.{{perusahaan()->mp_tlp}}</td>
      </tr>
      <tr>
        <td>Email : ekspedisi@jawapos.co.id</td>
