@@ -80,6 +80,9 @@ class do_Controller extends Controller
         $data = DB::select($sql);
         echo json_encode($data);
     }
+    public function cetak_form(Request $request){
+        return 'a';
+    }
 
     public function save_data(Request $request)
     {
@@ -419,8 +422,8 @@ class do_Controller extends Controller
                 'instruksi' => strtoupper($request->ed_instruksi),
                 'deskripsi' => strtoupper($request->ed_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
-                'total' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
-                'diskon' => filter_var($request->ed_diskon_h, FILTER_SANITIZE_NUMBER_INT),
+                'total' => filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT),
+                'diskon' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
                 'kode_satuan' => $kode_satuan,

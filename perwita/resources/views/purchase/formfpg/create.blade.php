@@ -480,9 +480,7 @@
                                         </tr>
                                         <tr>
                                           <td> <select class="form-control selectOutlet chosen-select-width1 bank" name="selectOutlet">
-                                                  <!--   <option value="1, BANK A, 1245"> Bank A </option>
-                                                    <option value="2, BANK B, 234"> Bank B </option>
-                                                    <option value="3, BANK C, 235"> Bank C </option> -->
+                                               
                                                     <option value=""> Pilih Data Bank </option>
 
                                                     @foreach($data['bank'] as $bank)

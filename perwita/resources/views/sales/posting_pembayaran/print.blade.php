@@ -243,7 +243,7 @@
    <table class="inlineTable">
      
    </style>
-      <td><img class="img" width="150" height="80" src="{{ asset('assets/img/dboard/logo/logo_jpm.png') }}"></td>
+      <td><img class="img" width="150" height="80" src="{{ asset('perwita/storage/app/upload/images.jpg') }}"></td>
    </table>
    <table class="inlineTable size" style="font-size:11px;margin-bottom: 5px;">
     <tr>

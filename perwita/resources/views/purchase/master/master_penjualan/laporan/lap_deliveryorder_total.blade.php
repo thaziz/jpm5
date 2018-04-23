@@ -41,7 +41,7 @@
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                    <table class="table table-bordered datatable table-striped">
+                    <table class="table datatable" border="0">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -54,7 +54,7 @@
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                       <tr>
+                       {{-- <tr>
                         <th> Nama Pengirim : </th> 
                           <td> 
                                 <input id="nama_pengirim" type="text" class="form-control ">
@@ -63,25 +63,25 @@
                             <td> 
                                 <input id="nama_penerima" type="text" class="form-control" >
                             </td>
-                      </tr>
+                      </tr> --}}
 
                         <tr >
                            <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td >
-                          <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
+                          <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal" onchange="filterColumn()">
+                            <option value="" disabled="" selected=""> --Asal --</option>
                             @foreach ($kota1 as $asal)
-                                <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
+                                <option value="{{ $asal->asal }}">{{ $asal->asal }}</option>
                             @endforeach
                           </select>
                           </td>
                         
                           <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="kota_tujuan"  onchange="filterColumn1()">
+                            <option value="" disabled="" selected=""> --Tujuan --</option>
                             @foreach ($kota as $tujuan)
-                                <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
+                                <option value="{{ $tujuan->tujuan }}">{{ $tujuan->tujuan }}</option>
                             @endforeach
                            </select>
                           </td>
@@ -90,15 +90,17 @@
                            <th style="width: 100px; padding-top: 16px"> Tipe </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="" disabled="" selected=""> --Tipe --</option>
                             <option value="DOKUMEN">DOKUMEN</option>
                             <option value="KILOGRAM">KILOGRAM</option>
                             <option value="KOLI">KOLI</option>
                             <option value="SEPEDA">SEPEDA</option>
+                            <option value="KORAN">KORAN</option>
+                            <option value="KARGO">KARGO</option>
                            </select>
                           </td>
                         
-                           <th style="width: 100px; padding-top: 16px"> Jenis </th>
+                           {{-- <th style="width: 100px; padding-top: 16px"> Jenis </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
@@ -106,19 +108,28 @@
                             <option value="EXPRESS">EXPRESS</option>
                             <option value="OUTLET">OUTLET</option>
                            </select>
-                          </td>
-                        </tr>
-                        <tr>
-                           <th style="width: 100px; padding-top: 16px"> Status </th>
+                          </td> --}}
+                          <th style="width: 100px; padding-top: 16px"> Status </th>
                           <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn4()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status" onchange="filterColumn4()">
+                            <option value="" disabled="" selected=""> --Status --</option>
                             <option value="MANIFESTED">MANIFESTED</option>
                             <option value="TRANSIT">TRANSIT</option>
                             <option value="RECEIVED">RECEIVED</option>
                             <option value="DELIVERED">DELIVERED</option>
                             <option value="DELIVERED OK">DELIVERED OK</option>
                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th style="width: 100px; padding-top: 16px">Cabang</th>
+                          <td colspan="3">
+                            <select class="chosen-select-width" id="cabang" onchange="filterColumn5()">
+                              <option></option>
+                              @foreach ($cabang as $element)
+                                <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                              @endforeach
+                            </select>
                           </td>
                         </tr>
                       <br>
@@ -146,15 +157,16 @@
                             <th> Kota Asal </th>
                             <th> Kota Tujuan </th>
                             <th> Kec Tujuan </th>
-                            <th> Pendapatan </th>
+                            {{-- <th> Pendapatan </th> --}}
                             <th> Tipe </th>
-                            <th> Jenis </th>
+                            {{-- <th> Jenis </th> --}}
                             <th> Status </th>
-                            <th> Tarif Dasar </th>
+                          {{--   <th> Tarif Dasar </th>
                             <th> Tarif Penerus </th>
                             <th> Biaya Tambabahan </th>
-                            <th> diskon </th>
+                            <th> diskon </th> --}}
                             <th> Tarif Keseluruhan </th>
+                            <th hidden=""></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -169,15 +181,16 @@
                             <td>{{ $row->asal }}</td>
                             <td>{{ $row->tujuan }}</td>
                             <td>{{ $row->kecamatan }}</td>
-                            <td>{{ $row->pendapatan }}</td>
+                            {{-- <td>{{ $row->pendapatan }}</td> --}}
                             <td>{{ $row->type_kiriman }}</td>
-                            <td>{{ $row->jenis_pengiriman }}</td>
+                            {{-- <td>{{ $row->jenis_pengiriman }}</td> --}}
                             <td>{{ $row->status }}</td>
-                            <td align="right">{{ number_format($row->tarif_dasar,0,',','.')  }}</td>
+                            {{-- <td align="right">{{ number_format($row->tarif_dasar,0,',','.')  }}</td>
                             <td align="right">{{ number_format($row->tarif_penerus,0,',','.') }}</td>
                             <td align="right">{{ number_format($row->biaya_tambahan,0,',','.') }}</td>
-                            <td align="right">{{ number_format($row->diskon,0,',','.')}}</td>
-                            <td align="right">{{ number_format($row->total,0,',','.') }}</td>
+                            <td align="right">{{ number_format($row->diskon,0,',','.')}}</td> --}}
+                            <td align="right">{{ number_format($row->total_net,0,',','.') }}</td>
+                            <td hidden="">{{ $row->kode_cabang }}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -304,31 +317,35 @@
     } );
 
     function filterColumn () {
-    $('#addColumn').DataTable().column(0).search(
-        $('.select-picker1').val()).draw();    
+    $('#addColumn').DataTable().column(6).search(
+        $('#kota_asal').val()).draw();    
     }
     function filterColumn1 () {
-        $('#addColumn').DataTable().column(1).search(
-            $('.select-picker2').val()).draw();    
+        $('#addColumn').DataTable().column(7).search(
+            $('#kota_tujuan').val()).draw();    
     }
     function filterColumn2 () {
-        $('#addColumn').DataTable().column(10).search(
+        $('#addColumn').DataTable().column(9).search(
             $('.select-picker3').val()).draw(); 
      }
-     function filterColumn3 () {
-        $('#addColumn').DataTable().column(11).search(
-            $('.select-picker4').val()).draw(); 
-     }
+     // function filterColumn3 () {
+     //    $('#addColumn').DataTable().column(11).search(
+     //        $('.select-picker4').val()).draw(); 
+     // }
      function filterColumn4 () {
-        $('#addColumn').DataTable().column(12).search(
-            $('.select-picker5').val()).draw(); 
+        $('#addColumn').DataTable().column(10).search(
+            $('#status').val()).draw(); 
      }
-     $('#nama_pengirim').on( 'keyup', function () {
-         table.column(4).search( this.value ).draw();
-      });  
-     $('#nama_penerima').on( 'keyup', function () {
-        table.column(5).search( this.value ).draw();
-      });  
+     function filterColumn5 () {
+        $('#addColumn').DataTable().column(12).search(
+            $('#cabang').val()).draw(); 
+     }
+     // $('#nama_pengirim').on( 'keyup', function () {
+     //     table.column(4).search( this.value ).draw();
+     //  });  
+     // $('#nama_penerima').on( 'keyup', function () {
+     //    table.column(5).search( this.value ).draw();
+     //  });  
 
       function cetak(){
       var asw=[];
