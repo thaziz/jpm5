@@ -247,8 +247,10 @@
        <td valign="top"> 
           @if($data['flag'] == 'FP')
           {{$data['judul']['0']->fp_nofaktur}}
-          @else if ($data['flag'] == 'PO'  )
+          @elseif ($data['flag'] == 'PO'  )
           {{$data['judul']['0']->po_no}}
+          @else
+          {{$data['judul']['0']->pb_nota}}
           @endif
        </td>
      </tr>
@@ -288,8 +290,8 @@
            <td class="right bot" align="center"> {{$data['barang'][$i][$j]->nama_masteritem}}</td>
            <td class="right bot" align="center"> {{$data['barang'][$i][$j]->unitstock}} </td>
            <td class="right bot" align="center"> {{$data['barang'][$i][$j]->pbdt_qty}}</td>
-           <td class="right bot" align="right">Rp {{ number_format($data['barang'][$i][$j]->pbdt_hpp, 2) }} </td>
-           <td class="bot" align="right">Rp {{ number_format($data['barang'][$i][$j]->pbdt_totalharga, 2) }} </td>
+           <td class="right bot" align="right">Rp  </td>
+           <td class="bot" align="right">Rp  </td>
            <span hidden="true"></span>
            <span hidden="true" align="right"></span>
        </tr>
@@ -298,6 +300,70 @@
       @endfor
       
       <tr>
+         <td class="right bot" height="20px"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="bot"></td>
+         <span hidden="true"></span>
+         <span hidden="true"></span>
+       </tr>
+        <tr>
+         <td class="right bot" height="20px"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="bot"></td>
+         <span hidden="true"></span>
+         <span hidden="true"></span>
+       </tr> <tr>
+         <td class="right bot" height="20px"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="bot"></td>
+         <span hidden="true"></span>
+         <span hidden="true"></span>
+       </tr> <tr>
+         <td class="right bot" height="20px"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="bot"></td>
+         <span hidden="true"></span>
+         <span hidden="true"></span>
+       </tr> <tr>
+         <td class="right bot" height="20px"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="bot"></td>
+         <span hidden="true"></span>
+         <span hidden="true"></span>
+       </tr> <tr>
+         <td class="right bot" height="20px"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="bot"></td>
+         <span hidden="true"></span>
+         <span hidden="true"></span>
+       </tr> <tr>
+         <td class="right bot" height="20px"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="right bot"></td>
+         <td class="bot"></td>
+         <span hidden="true"></span>
+         <span hidden="true"></span>
+       </tr> <tr>
          <td class="right bot" height="20px"></td>
          <td class="right bot"></td>
          <td class="right bot"></td>

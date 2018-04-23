@@ -91,7 +91,9 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                       <div class="text-right">
-                       <a class="btn btn-success btn-sm" aria-hidden="true" href="{{ url('golonganactiva/creategolonganactiva')}}"> <i class="fa fa-plus"> &nbsp;Tambah Golongan Activa</i> </a> 
+                        @if(Auth::user()->PunyaAkses('Golongan Activa','tambah'))
+                            <a class="btn btn-success btn-sm" aria-hidden="true" href="{{ url('golonganactiva/creategolonganactiva')}}"> <i class="fa fa-plus"> &nbsp;Tambah Golongan Activa</i> </a> 
+                        @endif
                     </div>
 
                 </div>
