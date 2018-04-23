@@ -154,6 +154,7 @@ class subconController extends Controller
 
 
 	}
+
 	public function edit_subcon($id){
 		$data = DB::table('kontrak_subcon')
 				 ->join('cabang','kode','=','ks_cabang')
@@ -182,10 +183,12 @@ class subconController extends Controller
 								 	    on tujuan.id = ksd_tujuan
 								 	    inner join
 								 	    (SELECT kode,nama from tipe_angkutan) as angkutan
-								 	    on angkutan.kode  = ksd_angkutan");
-		 for ($i=0; $i < count($subcon_dt); $i++) { 
+								 	    on angkutan.kode  = ksd_angkutan
+								 	    where ks_id = '$id'");
+
+		for ($i=0; $i < count($subcon_dt); $i++) { 
 		 	$subcon_dt[$i]->ksd_harga = round($subcon_dt[$i]->ksd_harga);
-		 }
+		}
 		
 
 		$sub = DB::table('subcon')
@@ -233,15 +236,11 @@ class subconController extends Controller
 								'updated_by'	=>  Auth::user()->m_username,
 							]);
 
-		 $delete = DB::table('kontrak_subcon_dt')
-				->where('ksd_ks_id',$request->id)
-				->delete();
-	
+
 		for ($i=0; $i < count($request->asal_tb); $i++) { 
 
-
 			$harga=str_replace('.', '', $request->harga_tb[$i]);
-			// return $request->harga_tb[$i];
+
 			$id_dt = DB::table('kontrak_subcon_dt')
 					   ->max('ksd_id');
 
@@ -251,9 +250,22 @@ class subconController extends Controller
 				$id_dt+=1;
 			}
 
-			
-
-			$kontrak_subcon_dt = DB::table('kontrak_subcon_dt')
+			if ($request->id_ksd[$i] != '0') {
+				$kontrak_subcon_dt = DB::table('kontrak_subcon_dt')
+									->where('ksd_id',$request->id_ksd[$i])
+								    ->update([
+								   		'ksd_ks_id'			=> $request->id,
+								   		'ksd_ks_dt'			=> $i+1,
+								   		'ksd_keterangan'	=> $request->keterangan_tb[$i],
+								   		'ksd_asal'			=> $request->asal_tb[$i],
+								   		'ksd_tujuan'		=> $request->tujuan_tb[$i],
+								   		'ksd_angkutan'		=> $request->angkutan_tb[$i],
+								   		'ksd_harga'			=> $harga,
+								   		'ksd_jenis_tarif'	=> $request->tarif_tb[$i],
+								   		'updated_at'		=>	Carbon::now(),
+								   ]);
+			}else{
+				$kontrak_subcon_dt = DB::table('kontrak_subcon_dt')
 								   ->insert([
 								   		'ksd_id'			=> $id_dt,
 								   		'ksd_ks_id'			=> $request->id,
@@ -267,6 +279,8 @@ class subconController extends Controller
 								   		'updated_at'		=>	Carbon::now(),
 										'created_at'		=>	Carbon::now()
 								   ]);
+			}
+			
 		}
 		// return $db = DB::table('kontrak_subcon_dt')
 		// 				->get();

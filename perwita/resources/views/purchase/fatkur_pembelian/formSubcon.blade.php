@@ -116,12 +116,7 @@
 			<input type="text" readonly="" class="form-control m_tipe_kendaraan" >
 		</td>
 	 </tr>
-	 <tr>
-	 	<td colspan="3">
-	 		<button class="btn btn-info modal_tt_subcon pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
-		    <button type="button" class="btn btn-primary pull-right disabled" onclick="cariSUB()"><i class="fa fa-plus">&nbsp;Append</i></button>
-	 	</td>
-	 </tr>
+	
      </table>
     </form>
 </div>
@@ -188,7 +183,11 @@
 				<input type="hidden" class="form-control sc_kode_angkutan" style="width: 250px;">
 			</td>
 		  </tr>
-		  <tr class="hd2 tr_disabled">
+		   <tr>
+		 	<td colspan="3">
+		 		<button class="btn btn-info modal_tt_subcon pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+			    <button type="button" class="btn btn-primary pull-right" onclick="cariSUB()"><i class="fa fa-plus">&nbsp;Append</i></button>
+		 	</td>
 		 </tr>
 	</table>
 	</div>
@@ -210,7 +209,7 @@
     </form>
 </div>
 
- <div class=" col-sm-12 tb_sb_hidden" hidden="">
+ <div class=" col-sm-12 tb_sb_hidden">
  	<h3>Tabel Detail Resi</h3>
  	<hr>
 	    <table class="table table-bordered table-hover tabel_subcon">
@@ -219,8 +218,9 @@
 				<th>No</th>
 				<th width="90">Nomor Resi</th>
 				<th>Harga Resi</th>
-				<th>Tarif Subcon</th>
-				<th>Multiply</th>
+				<th>Asal Subcon</th>
+				<th>Tujuan Subcon</th>
+				<th>Jenis Tarif</th>
 				<th>Keterangan</th>
 				<th width="50">Aksi</th>
 				</tr>
@@ -498,7 +498,9 @@ function pilih_kontrak(asd){
 	    	$('.id_subcon').val(response.subcon_dt[0].ksd_id);
 	    	$('.dt_subcon').val(response.subcon_dt[0].ksd_dt);
 	    	$('.sc_tarif_subcon').val(response.subcon_dt[0].ksd_jenis_tarif);
-	    	$('.kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
+	    	$('.sc_asal_subcon').val(response.subcon_dt[0].ksd_asal);
+	    	$('.sc_tujuan_subcon').val(response.subcon_dt[0].ksd_tujuan);
+	    	$('.sc_kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
 	    	$('.table_filter_subcon').removeClass('disabled');
 
 	    
@@ -510,15 +512,29 @@ function pilih_kontrak(asd){
 
 function cariSUB(){
 
-
+var m_seq = $('.m_seq').val();
+var d_nomor_do = $('.d_nomor_do').val();
+var sc_biaya_subcon_dt = $('.sc_biaya_subcon_dt').val();
+var sc_biaya_subcon = $('.sc_biaya_subcon').val();
+var sc_asal_subcon = $('.sc_asal_subcon').val();
+var sc_tujuan_subcon = $('.sc_tujuan_subcon').val();
+var sc_tarif_subcon = $('.sc_tarif_subcon').val();
+var sc__do_memo = $('.sc__do_memo').val();
 	      subcon.row.add( [
-                  seq+'<input type="hidden" class="seq_sub sub_seq_'+seq+'"  value="'+seq+'" >'
-                  +'<input type="hidden" name="comp_subcon[]" value="'+comp+'" >',
-                  valPo+'<input type="hidden" class="dt_resi_subcon"  name="resi_subcon[]" value="'+valPo+'" >',
-                  Math.round(bayar).toFixed(2)+'<input type="hidden" class="harga_resi"  name="harga_resi[]" value="'+bayar+'" >',
-                  Math.round(tot_sub).toFixed(2)+'<input type="hidden" name="harga_tarif[]" class="harga_tarif" value="'+tot_sub+'" >',
-                  html,
-                  ket+'<input type="hidden" name=ket_subcon[]" value="'+ket+'" >',
+                  m_seq+'<input type="hidden" class="seq_sub sub_seq_'+m_seq+'"  value="'+m_seq+'" >',
+
+                  d_nomor_do+'<input type="hidden" class="dt_resi_subcon"  name="resi_subcon[]" value="'+d_nomor_do+'" >',
+
+                  sc_biaya_subcon+'<input type="hidden" name="harga_tarif[]" class="harga_tarif" value="'+sc_biaya_subcon_dt+'" >',
+
+                  sc_asal_subcon+'<input type="hidden" name="asal_tarif[]" class="asal_tarif" value="'+sc_asal_subcon+'" >',
+
+                  sc_tujuan_subcon+'<input type="hidden" name="tujuan_tarif[]" class="tujuan_tarif" value="'+sc_tujuan_subcon+'" >',
+
+                  sc_tarif_subcon+'<input type="hidden" name="jenis_tarif[]" class="jenis_tarif" value="'+sc_tarif_subcon+'" >',
+
+                  sc__do_memo+'<input type="hidden" name=ket_subcon[]" value="'+sc__do_memo+'" >',
+
                   '<a class="btn btn-danger fa fa-trash" align="center" onclick="hapus_subcon(this)" title="hapus"></i></a>'
               ] ).draw( false );   
 

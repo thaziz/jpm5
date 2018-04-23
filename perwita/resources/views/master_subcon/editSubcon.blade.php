@@ -142,7 +142,7 @@
                           <div class="asal_text">{{$val->asal}}</div>
                           <input type="hidden" class="asal_tb hitung_{{$i}}" name="asal_tb[]" value="{{$val->id_asal}}">
                           <input type="hidden" class="id_table" value="{{$i}}">
-                          <input type="hidden" class="id_ksd" value="{{$val->ksd_id}}">
+                          <input type="hidden" class="id_ksd" name="id_ksd[]" value="{{$val->ksd_id}}">
                         </td>
                         <td>
                           <div class="tujuan_text">{{$val->tujuan}}</div>
@@ -349,7 +349,7 @@ function tambah(){
 
 
   datatable.row.add([
-        '<div class="asal_text">'+asal+'</div>'+'<input type="hidden" class="asal_tb hitung_'+count+'" name="asal_tb[]" value="'+asal_dt+'" >'+'<input type="hidden" class="id_table" value="'+count+'" >'+'<input type="hidden" class="id_ksd" value="0">',
+        '<div class="asal_text">'+asal+'</div>'+'<input type="hidden" class="asal_tb hitung_'+count+'" name="asal_tb[]" value="'+asal_dt+'" >'+'<input type="hidden" class="id_table" value="'+count+'" >'+'<input type="hidden" class="id_ksd" name="id_ksd[]" value="0">',
         '<div class="tujuan_text">'+tujuan+'</div>'+'<input type="hidden" class="tujuan_tb" name="tujuan_tb[]" value="'+tujuan_dt+'" >',
         '<div class="angkutan_text">'+angkutan+'</div>'+'<input type="hidden" class="angkutan_tb" name="angkutan_tb[]" value="'+angkutan_dt+'" >',
         '<div class="tarif_text">'+tarif+'</div>'+'<input type="hidden" class="tarif_tb" name="tarif_tb[]" value="'+tarif+'" >',
