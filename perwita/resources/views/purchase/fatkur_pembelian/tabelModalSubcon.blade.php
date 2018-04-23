@@ -8,6 +8,7 @@
 		<th>Jenis Tarif</th>
 	</thead>
 	<tbody>
+	@if(isset($fix))
 	  @foreach( $fix as $val )
 	  <tr style="cursor: pointer;" onclick="pilih_kontrak(this)">
 		<td style="width: 20px; text-align: center;">
@@ -21,6 +22,7 @@
 		<td>{{$val['ksd_jenis_tarif']}}</td>
 	  </tr>
 	  @endforeach
+	  @endif
 	</tbody>
 </table>
 

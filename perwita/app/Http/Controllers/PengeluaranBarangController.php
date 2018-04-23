@@ -33,14 +33,29 @@ class PengeluaranBarangController extends Controller
 		return view('purchase/pengeluaran_barang/index',compact('data'));
 	}
 	public function create() {
+		$now   = Carbon::now()->format('d/m/Y');
 
+		$cabang = DB::table('cabang')
+					->get();
+		$item   = DB::table('masteritem')
+					->get();
+
+        $gudang = DB::table('mastergudang')
+            ->get();
+        $kodecabang = session::get('cabang');
+        $namacabang = DB::select(" SELECT nama FROM cabang WHERE kode = '$kodecabang' ");
+        return view('purchase/pengeluaran_barang/create', compact('pb','now','cabang','item','gudang','kodecabang','namacabang'));
+	}
+
+	public function ganti_nota(request $request)
+	{
 		$id = DB::table('pengeluaran_barang')
-	    		->where('pb_comp','000')
+	    		->where('pb_comp',$request->cabang)
+	    		->where('pb_tgl','>=',carbon::now()->format('Y-m-d'))
 	    		->max('pb_nota');
 
 	    $year  = Carbon::now()->format('Y'); 
 		$month = Carbon::now()->format('m');  	
-		$now   = Carbon::now()->format('d/m/Y');
 		
 	   	if(isset($id)) {
 
@@ -61,17 +76,8 @@ class PengeluaranBarangController extends Controller
 	    $second = Carbon::now()->format('d/m/Y');
 	    $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
 
-		$pb 	= 'SPPB-' . $month . $year . '/'. '000' . '/' .  $id;
-		$cabang = DB::table('cabang')
-					->get();
-		$item   = DB::table('masteritem')
-					->get();
-
-        $gudang = DB::table('mastergudang')
-            ->get();
-        $kodecabang = session::get('cabang');
-        $namacabang = DB::select(" SELECT nama FROM cabang WHERE kode = '$kodecabang' ");
-        return view('purchase/pengeluaran_barang/create', compact('pb','now','cabang','item','gudang','kodecabang','namacabang'));
+		$pb 	= 'SPPB-' . $month . $year . '/'. $request->cabang . '/' .  $id;
+		return response()->json(['nota'=> $pb]);
 	}
 
 	public function detail() {
@@ -84,6 +90,7 @@ class PengeluaranBarangController extends Controller
 								   join masteritem
 								   on kode_item = sg_item
 								   where sg_item = '$request->id'
+								   and sg_cabang = '$request->cabang'
 								   group by unitstock");
 		if ($data == null) {
 			$data = 1;
@@ -140,7 +147,7 @@ class PengeluaranBarangController extends Controller
 							'created_at'   		=> Carbon::now(),
 							'updated_at'   		=> Carbon::now(),
 							'pb_status'   		=> 'Released',
-							'pb_comp'			=> $request->cabang_penyedia,
+							'pb_comp'			=> $request->cabang,
 							'pb_jenis_keluar'	=> $request->jp
 						]);
 
@@ -185,7 +192,7 @@ class PengeluaranBarangController extends Controller
 		$delete = DB::table('pengeluaran_barang_dt')
 					->where('pbd_pb_id',$id)
 					->delete();
-
+		return redirect()->back();
 	}
 
 	public function edit($id){
@@ -275,7 +282,7 @@ class PengeluaranBarangController extends Controller
 							  ->join('mastergudang','sg_gudang','=','mg_id')
 							  ->select('mg_namagudang','mg_id','sg_id')
 							  ->where('sg_item',$temp1[$i])
-							  ->where('sg_cabang',$data->pb_comp)
+							  // ->where('sg_cabang',$data->pb_comp)
 							  // ->orderBy('mg_id')
 							  ->orderBy('mg_id','ASC')
 							  ->get();
@@ -314,7 +321,8 @@ class PengeluaranBarangController extends Controller
 		return view('purchase/konfirmasi_pengeluaranbarang/detail',compact('data','temp','temp1','data_dt','tgl','jumlah','id','gudang'));
 	}
 	public function approve(request $request){
-		// dd($request); 	
+		// dd($request->all()); 	
+   		return DB::transaction(function() use ($request) {  
 
 		$total = [];
 		$data = DB::table('pengeluaran_barang')
@@ -322,6 +330,7 @@ class PengeluaranBarangController extends Controller
 			      // ->join('pengeluaran_barang_gudang','pbg_pbd_id','=','pbd_id')
 				  ->where('pb_id',$request->id)
 				  ->first();
+
 		for ($i=0; $i < count($request->pbd_nama_barang); $i++) { 
 			// save pbg
 			$cari_id_pbg = DB::table('pengeluaran_barang_gudang')
@@ -358,18 +367,22 @@ class PengeluaranBarangController extends Controller
 				$idtransaksi = $request->id;
 				$datapb = DB::select("select * from pengeluaran_barang where pb_id = '$idtransaksi'");
 				$idsupplier = $datapb[0]->pb_comp;
+				$jeniskeluar = $datapb[0]->pb_jenis_keluar;
 				
-				$barangterima = new barang_terima();
-				$barangterima->bt_id = $idbarangterima;
-				$barangterima->bt_flag = 'PBG';
-				$barangterima->bt_notransaksi = $datapb[0]->pb_nota;
-				$barangterima->bt_supplier = $idsupplier;
-				$barangterima->bt_idtransaksi = $idtransaksi;
-				$barangterima->bt_statuspenerimaan = 'BELUM DI TERIMA';
-				$barangterima->bt_gudang = $request->nama_gudang[$i];
-				$barangterima->bt_tipe = 'S';
-				$barangterima->bt_cabangpo = $datapb[0]->pb_peminta;
-				$barangterima->save();
+				if($jeniskeluar == 'Moving Gudang') {
+					$barangterima = new barang_terima();
+					$barangterima->bt_id = $idbarangterima;
+					$barangterima->bt_flag = 'PBG';
+					$barangterima->bt_notransaksi = $datapb[0]->pb_nota;
+					$barangterima->bt_agen = $idsupplier;
+					$barangterima->bt_idtransaksi = $idtransaksi;
+					$barangterima->bt_statuspenerimaan = 'BELUM DI TERIMA';
+					$barangterima->bt_gudang = $request->nama_gudang[$i];
+					$barangterima->bt_tipe = 'S';
+					$barangterima->bt_cabangpo = $datapb[0]->pb_peminta;
+					$barangterima->save();
+
+				}
 
 			$cari_sm = DB::table('stock_mutation')
 						 ->where('sm_stock',$request->sg_id[$i])
@@ -378,12 +391,20 @@ class PengeluaranBarangController extends Controller
 						 ->orderBy('sm_date','ASC')
 						 ->get();
 			$kurang = $request->jumlah_setuju[$i];
+
 			for ($a=0; $a < count($cari_sm); $a++) { 
 
 				$sisa = $cari_sm[$a]->sm_sisa - $kurang;
+				$pengurangan_sisa = $kurang - $cari_sm[$a]->sm_sisa;
+				$sm_use_new = $kurang - $pengurangan_sisa;
 				if ($sisa < 0) {
 					$sisa = 0;
 				}
+
+				if ($pengurangan_sisa < 0) {
+					$pengurangan_sisa = 0;
+				}
+				// dd($pengurangan_sisa);
 
 				$update_sm_sisa = DB::table('stock_mutation')
 									->where('sm_id','=',$cari_sm[$a]->sm_id)
@@ -395,7 +416,7 @@ class PengeluaranBarangController extends Controller
 						 ->where('sm_id','=',$cari_sm[$a]->sm_id)
 						 ->first();
 
-				$sm_use = $cari_sm[$a]->sm_qty - $cari_sm_use->sm_sisa;
+				$sm_use = $cari_sm_use->sm_qty - $cari_sm_use->sm_sisa;
 
 
 
@@ -408,6 +429,7 @@ class PengeluaranBarangController extends Controller
 				$cari_sm_use = DB::table('stock_mutation')
 						 ->where('sm_id','=',$cari_sm[$a]->sm_id)
 						 ->first();
+
 
 
 				if ($kurang > 0) {
@@ -425,8 +447,8 @@ class PengeluaranBarangController extends Controller
 												'sm_date'		=> Carbon::now(),
 												'sm_item'		=> $request->pbd_nama_barang[$i],
 												'sm_mutcat'		=> 2,
-												'sm_qty'		=> $cari_sm_use->sm_use,
-												'sm_use'		=> $cari_sm_use->sm_use,
+												'sm_qty'		=> $sm_use_new,
+												'sm_use'		=> $sm_use_new,
 												'sm_hpp'		=> $cari_sm_use->sm_hpp,
 												'sm_spptb'		=> $data->pb_nota,
 												'created_at'	=> Carbon::now(),
@@ -448,6 +470,7 @@ class PengeluaranBarangController extends Controller
 					$create_psm = DB::table('pengeluaran_stock_mutasi')
 											->insert([
 												'psm_id'    => $psm_id,
+												'psm_pb_id' => $request->id,
 												'psm_harga' => $cari_sm_use->sm_hpp,
 												'psm_sm_id' => $cari_id_sm,
 												'psm_qty'   => $cari_sm_use->sm_use,
@@ -467,7 +490,7 @@ class PengeluaranBarangController extends Controller
 						 ->where('sm_id','=',$cari_sm[$a]->sm_id)
 						 ->first();
 
-				$kurang -= $cari_kurang->sm_use;
+				$kurang = $pengurangan_sisa;
 
 				
 
@@ -521,6 +544,7 @@ class PengeluaranBarangController extends Controller
 			
 
 		return response()->json(['status'=>1]);
+	});
 	}
 
 	public function printing($id){

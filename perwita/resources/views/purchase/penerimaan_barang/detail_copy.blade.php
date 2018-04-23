@@ -66,7 +66,7 @@
                     <div class="col-xs-12">
                     <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
                     <!-- KONTEN PAKE FP -->
-                    @if($data['flag'] == 'FP')
+                    @if($data['flag'] == 'FP') <!-- FP -->
                     <input type="hidden" class="flag" value="FP" name="flag">
                     <table border="0" class="table">
                     
@@ -233,7 +233,7 @@
 
                       
 
-                    @else <!-- END FP -->
+                    @elseif($data['flag'] == 'PO') <!-- END FP -->
                       
                   <!-- KONTEN PAKE PO -->
                     <table border="0" class="table">
@@ -403,7 +403,163 @@
 				</div>
 				</div>
         </div>
+          @else <!-- PENGELUARAN BARANG -->
+           <input type="hidden" class="flag" value="PBG" name="flag">
+                    <table border="0" class="table">
                     
+                     <tr>
+                        <input type="hidden" name="idpbg" value="{{$data['pbg'][0]->pb_id}}" class="idpbg">
+                        <input type="hidden" name="idsup" value="{{$data['pbg'][0]->pb_comp}}">
+            
+                    
+                        <input type="hidden" name="gudang" value="{{$data['header'][0]->bt_gudang}}">
+                       <input type="hidden" name="ref" value="{{$data['header'][0]->bt_id}}">
+                        <input type="hidden" name="comp" value="{{$data['comp']}}">
+                        <input type="hidden" name="comp_po" value="{{$data['header'][0]->bt_cabangpo}}">
+                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+
+
+                        
+
+                        <th style="width:200px"> Pengirim Barang </th>
+                        <td style="width:400px"> <h3> {{$data['pbg'][0]->nama}}</h3> </td>
+                      
+                      </tr>
+
+                      <tr>
+                        <th class="suratjalan" style="width:200px"> No Surat Jalan </th>
+                        <td style="width:400px"> <input type="text" class="form-control suratjalan" name="suratjalan">  </td>
+                      </tr>
+
+                      <tr>
+                        <th class="suratjalan" style="width:200px"> Diterima dari </th>
+                        <td style="width:400px"> <input type="text" class="form-control diterimadari" name="diterimadari">  </td>
+                      </tr>
+
+                      <tr>
+                        <th class="tgl suratjalan"> Tanggal di Terima </th>
+                        <td>
+                          <div class="input-group date tgl">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tgl_dibutuhkan" required>
+                          </div>
+                        
+                          <td>
+                          <div class="checkbox checkbox-primary cek2">
+                            <input id="lengkap" type="checkbox" class="lengkap">
+                            <label for="checkbox2">
+                              Lengkap
+                            </label>
+                           </div>
+                         </td>
+                      </tr>
+                   
+                        <tr >
+                          <th style="width:200px"> No PBG </th>
+                          <td style="width:400px"> {{$data['pbg'][0]->pb_nota}} </td>
+                           
+                        </tr>
+
+
+                        <tr>
+                          <th> Update Stock </th>
+                          <td> 
+                                <input type="text" class="form-control" readonly="" value="IYA" name="updatestock">
+                            
+                          </td>
+                        </tr>                      
+                      </table>
+
+                      <br>
+                      <br>
+                        <h4> Data Detail Barang </h4>
+                         <table id="addColumn" class="table table-bordered table-striped tbl-penerimabarang" > 
+                           <tr>
+                              <th> No </th>
+                              <th> Nama Barang </th>
+                              <th> Satuan </th>
+                              <th> Jumlah dikirim </th>
+                              <th class="jmlhditerima"> Jumlah yang diterima </th>
+                              <th> Sisa </th>
+                              <th> Tambahan Qty Sampling </th>
+                           </tr>
+                          
+                           <?php $n = 0 ?>
+                           @for($x=0 ; $x < count($data['pbgdt']); $x++)
+                            <tr class="databarang">
+                              <td> {{$x + 1}}</td>
+                              <td> {{$data['pbgdt'][$x]->nama_masteritem}}</td>
+                              <td> {{$data['pbgdt'][$x]->unitstock}}</td>
+                              
+                              <td> {{$data['pbgdt'][$x]->pbd_jumlah_barang}} </td> <!--qty dikirim -->
+                              <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_jumlah_barang}}" class=qtykirim<?php echo $n?> data-id=<?php echo $n ?> name="qtydikirim[]">
+                              <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_nama_barang}}" name="kodeitem[]" class="item kodeitem{{$x}}"> <!--kodeitem-->
+                             
+                         <input type="hidden" name="accpersediaan" value="{{$data['pbgdt'][$x]->acc_persediaan}}">
+                         <input type="hidden" name="acchpp" value="{{$data['pbgdt'][$x]->acc_hpp}}">
+
+
+                              <td> <input type="number" class="form-control qtyreceive qtyterima{{$x}}" name="qtyterima[]" id=qtyterima<?php echo $n?> data-kodeitem="{{$data['pbgdt'][$x]->pbd_nama_barang}}" data-id=<?php echo $n?>> </td>
+                              
+                              <input type="hidden" value="{{$data['pbgdt'][$x]->pb_total}}" name="jumlahharga[]">
+                             
+                              <td> 
+                              @for($c=0; $c < count($data['sisa'][$x]); $c++)
+                                @if( $data['pbgdt'][$x]->pbd_id == $data['sisa'][$x][$c]->pbd_id)
+                                  
+                                        <input type="text" data-id=<?php echo $n ?> class="form-control sisa" id=sisa<?php echo $n ?> value=" {{$data['pbgdt'][$x]->pbd_jumlah_barang - $data['sisa'][$x][$c]->sum}}" readonly="">
+                                 
+                                  @endif
+                              @endfor
+                              </td>
+
+
+                              <td>   <button class='btn btn-xs btn-info sampling' type='button' data-kodeitem="{{$data['pbgdt'][$x]->pbd_nama_barang}}"   data-id=<?php echo $n ?> style="display:block" id=sampling<?php echo $n ?>> <i class="fa fa-plus" aria-hidden="true"> </i>  Sampling </button> <div class="row"> <div class="col-md-6"> <input type='text' class="form-control qtysampling" id=qtysampling<?php echo $n?> style="display:none" data-id=<?php echo $n ?> name="qtysampling[]" > </div> <div class="col-md-3"> <button type='button' data-id=<?php echo $n ?> class='btn btn-circle btn-success' id=close<?php echo $n ?> style="display: none" name="close"> <i class='fa fa-times'> </i> </button> </div> </div></td>
+                            </tr>
+                            <?php $n++; ?>
+                           @endfor
+                          </table>
+
+                        <div class="text-left">
+                           <input type="submit"  class="simpan btn btn-success" value="Simpan" >   
+                      </div>
+    </div><!-- /.box -->
+            </div><!-- /.col -->
+          </div><!-- /.row -->
+                </div>
+            </div>
+    </div>
+    
+    <br>
+
+
+    <div class="row">
+         <div class="col-lg-12" >
+        <div class="ibox float-e-margins">
+          <div class="ibox-title">
+            <h5> Data Penerimaan Barang
+             <!-- {{Session::get('comp_year')}} -->
+             </h5>   
+          </div>
+
+           <div class="ibox-content">
+             <div class="row">
+              <div class="col-xs-12">
+              <div class="box">
+              
+              <div class="box-body">
+
+                <div class="judul"> </div>                     
+                 <div class="tampildata"> </div> </td>
+
+
+              </div>
+              </div>
+              </div>
+             </div>
+           </div>
+        </div>
+        </div>
+        </div>          
               
     @endif
              
@@ -648,7 +804,7 @@
     }
       
 
-		if(flag == 'PO') {
+		if(flag == 'PO') { // FLAG PO
 			 po_id = $('.po_id').val();
       var url = baseUrl + '/penerimaanbarang/gettampil';
       $.ajax({    
@@ -931,7 +1087,7 @@ $notable++;
       })
 		} /*<!--end flag po -->*/
 		
-		else { /*<!-- flag FP -->*/
+		else if(flag == 'FP') { /*<!-- FLAG FP -->*/
      var url = baseUrl + '/penerimaanbarang/gettampil';
 			var idfp = $('.idfp').val();
       $.ajax({    
@@ -1201,8 +1357,281 @@ $notable++;
 				  }
 			  }
 			})
-		} <!-- end flag fp -->
-		
+		}
+     /*<!-- end flag fp -->*/
+		else { /*flag pengeluaran barang*/
+      var url = baseUrl + '/penerimaanbarang/gettampil';
+      var idpbg = $('.idpbg').val();
+      $.ajax({    
+        type :"get",
+        data : {kodeitem, idpbg,flag},
+        url : url,
+        dataType:'json',
+        success : function(response){
+      
+        $noajax = 1;
+        if(response.judul.length != 0) {
+          $('#lengkap').attr('disabled' , true);
+          console.log('ok');
+          var qtykirim = [];
+          var qtyditerima = [];
+          
+          /*var judulpenerimaan = "<h4> Data Penerimaan Barang </h4>";
+          $('.judul').html(judulpenerimaan);*/
+          $notable = 1;
+          for(var j = 0 ; j < response.judul.length; j++) {
+          console.log(j);
+            $no = 1;
+          var rowtampil = "<br> <br><table class='table'> <tr> <td style='width:200px'> No LPB </td> <td> : </td> <td>" + response.judul[j].pb_lpb + "</td> </tr>" + //no lpb
+                  "<tr> <td> No Surat Jalan </td> <td> : </td> <td> <input type='text' class='input-sm form-control suratjalan"+$notable+"' value="+response.judul[j].pb_suratjalan+" readonly></td> </tr>" +
+                  "<tr> <td> Tgl di Terima </td> <td style='width:20px'> :</td> <td>"+ response.judul[j].pb_date + "</td>  </tr> " +
+                  "<tr> <td> Status Penerimaan Barang </td> <td> </td> <td> "+response.judul[j].pb_status+" </div> </td> </tr>" +
+                  "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" +
+                  "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_fp+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_fp+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> </tr>" +
+                  "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
+                  "</table>";
+            rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FP </th> </tr>"; // judul
+
+             for(var x =0; x < response.barang[j].length; x++) {
+            //  console.log(x);
+                rowtampil += "<tr> <td style='width:20px'>"+ $no +"</td>" + 
+                    "<td> "+ response.barang[j][x].nama_masteritem +"</td>" +// no
+                    "<td>" + response.barang[j][x].unitstock + "</td>" +
+                    "<td style='text-right'>" + addCommas(response.barang[j][x].fpdt_harga)  + "</td> <input type='hidden' class='harga"+$noajax+"' value='"+response.barang[j][x].fpdt_harga+"'>";    
+                     rowtampil +=    "<td style='text-right'> <input type='text' class='input-sm form-control biaya2"+$notable+" biaya"+$noajax+"' value='"+addCommas(response.barang[j][x].pbdt_totalharga)+"' readonly></td>" +                    
+                    "<td>"+ response.barang[j][x].fpdt_qty +"</td>" +
+                    "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima2[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled></td>" +
+                    "<input type='hidden' class='status2"+$notable+" status4"+$noajax+"' value='"+response.barang[j][x].pbdt_status+"'> " +
+                    "<input type='hidden' value='"+response.barang[j][x].fpdt_qty+"' class='qtykirim2"+$noajax+"' data-id="+$noajax+" name='qtydikirim2[]'>" +
+                    "<input type='hidden' value='"+response.barang[j][x].pbdt_qty+"' class='qtyterima3"+$noajax+"' data-id="+$noajax+"> "+
+                    "<input type='hidden' class='kodeitem4"+$noajax+" kodeitem2"+$notable+"' value="+response.barang[j][x].kode_item+">" +
+                    "<input type='hidden' class='idpbdt"+$noajax+" idpbdt2"+$notable+"' value="+response.barang[j][x].pbdt_id+">" +
+                    "<input type='hidden' class='idpb2"+$notable+"' value="+response.barang[j][x].pbdt_idpb+">" +
+                    "<td>"+ response.barang[j][x].fp_nofaktur +"</td> </tr>";
+                    qtykirim.push(response.barang[j][x].podt_qtykirim);
+                    qtyditerima.push(response.barang[j][x].pbdt_qty);
+                    $no++;
+                    $noajax++;
+                    var sisa = parseInt(response.barang[j][x].podt_qtykirim) - parseInt(response.barang[j][x].pbdt_qty);
+              }
+               
+               var lengthjudul = 0;
+               $('.tampildata').append(rowtampil); 
+               $notable++;                                
+            }
+
+                $('.hapusdata').click(function(){
+                       id = $(this).data('id');
+                       idtransaksi = $(this).data('idtransaksi');
+                       flag = 'FP';
+                       swal({
+                        title: "Apakah anda yakin?",
+                        text: "Hapus Data!",
+                        type: "warning",
+                        showCancelButton: true,
+                        showLoaderOnConfirm: true,
+                        confirmButtonColor: "#DD6B55",
+                        confirmButtonText: "Ya, Hapus!",
+                        cancelButtonText: "Batal",
+                        closeOnConfirm: true
+                      },
+                      function(){
+                        $.ajax({
+                         
+                          type : "get",
+                          url : baseUrl + '/penerimaanbarang/hapusdatapenerimaan',
+                          data : {id,idtransaksi,flag},
+                          dataType : 'json',
+                          success : function(response){
+                                
+                                  if(response == 'sukses'){
+                                  swal({
+                                  title: "Berhasil!",
+                                          type: 'success',
+                                          text: "Data Berhasil Dihapus",
+                                          timer: 2000,
+                                          showConfirmButton: true
+                                          },function(){
+                                             location.reload();
+                                  });
+                                }else{
+                                 swal({
+                                title: "Data Tidak Bisa Dihapus",
+                                        type: 'error',
+                                        timer: 1000,
+                                        showConfirmButton: false
+                            });
+                                }
+                          },
+                            error:function(data){
+
+                              swal({
+                              title: "Terjadi Kesalahan",
+                                      type: 'error',
+                                      timer: 2000,
+                                      showConfirmButton: false
+                          });
+                         }
+                        })
+                      })
+                      
+                  })
+
+              $('.editdata').click(function(){
+                id = $(this).data('id');
+                noajax = $(this).data('ajax');
+                $('.qtyreceive3' + id).attr('disabled' , false);
+                $('.suratjalan' + id).attr('readonly' , false);
+                simpan4 = "<button class='btn btn-xs btn-success simpan4' data-id='"+id+"' type='button'> <i class='fa fa-check'> </i> Simpan </button>";
+                $('.simpan2' + id).html(simpan4);
+
+
+                $('.simpan4').click(function(){
+                  id = $(this).data('id');
+                  suratjalan = $('.suratjalan' + id).val();
+                  arrqty = [];
+                  $('.qtyreceive3' + id).each(function(){
+                    val = $(this).val();
+                    arrqty.push(val);
+                  })                  
+                  idpb = $('.idpb2' + id).val();
+                //  idpb = response.pbdt[0].pbdt_idpb;
+                  arridpbdt = [];
+                  $('.idpbdt2' + id).each(function(){
+                    val = $(this).val();
+                    arridpbdt.push(val);
+                  })
+
+                  arrstatus = [];
+                  $('.status2' + id).each(function(){
+                    val = $(this).val();
+                    arrstatus.push(val);
+                  })
+
+                  arrkodeitem = [];
+                  $('.kodeitem2' + id).each(function(){
+                    val = $(this).val();
+                    arrkodeitem.push(val);
+                  })
+
+                  arrharga = [];
+                  $('.biaya2' + id).each(function(){
+                    val = $(this).val();
+                    arrharga.push(val);
+                  })
+                  idpbdt = $('.idpbdt2' + id).val();
+                  status = $('.status2' + id).val();
+                  kodeitem = $('.kodeitem2' + id).val();
+                  flag = $('.flag').val();
+                  if(flag == 'FP'){
+                    iddetail = $('.idfp').val();
+                  }
+                  else if(flag == 'PO'){
+                    iddetail = $('.idpo').val();
+                  }
+
+                  $.ajax({
+                      type : "post",
+                      url : baseUrl + '/penerimaanbarang/updatepenerimaanbarang',
+                      data : {arrqty, arrstatus, arrkodeitem, idpb, suratjalan, arridpbdt, arrharga,iddetail,flag},
+                      dataType : 'json',
+                      success : function(response){
+                         alertSuccess(); 
+                          location.reload();
+                         $('.qtyreceive2').attr('disabled', 'true');
+                         $('.suratjalan' + id).attr('readonly' , true);
+                      }
+
+                  })
+
+                })
+
+
+
+              })
+
+              $('.qtyreceive2').change(function(){
+                      val = $(this).val();
+                      id = $(this).data('id');
+                      kodeitem = $(this).data('kodeitem');
+                      idpbdt = $(this).data('idpbdt');
+                      rowidpbdt = "<input type='text' value="+idpbdt+" >";
+                      
+                      $('.idpbdt').val(idpbdt);
+                      console.log(kodeitem);
+                      sppid = $(this).data('spp');
+                 
+                      //appendkodeitem
+                      qtykirim = $('.qtykirim2' + id).val();
+                      qtyterima = $('.qtyterima3' + id).val();
+                      $('.kodeitem4' + id).val(kodeitem);
+                      
+                      console.log(qtykirim + 'qtykirim');
+                      harga = $('.harga' + id).val();
+                      harga2 = harga.replace(/,/g, '');
+
+                      biaya = parseFloat(harga2 * val).toFixed(2);
+                      $('.biaya' + id).val(addCommas(biaya)); 
+
+
+                      po_id = $('.po_id').val();
+                      idspp = sppid;
+                      flag = $('.flag').val();
+                      idpbg = $('.idpbg').val();
+                      alert(idpbg);
+                      urlterima = baseUrl + '/penerimaanbarang/changeqtyterima';
+                       $.ajax({    
+                          type :"get",
+                          data : {kodeitem, po_id, idspp, flag, idpbg},
+                          url : urlterima,
+                          dataType:'json',
+                          success : function(response){
+                          
+                            lengthresp = response.pbdt.length;
+                            qty = 0;
+                            for(var i = 0; i < lengthresp; i++) {
+                              qty = qty + response.pbdt[i].pbdt_qty
+                            }
+
+                            console.log(qtyterima + 'qtyterima');
+
+                            hasilqty = parseInt((parseInt(val) + parseInt(qty)) - parseInt(qtyterima));
+                            console.log('hasilqty');
+                            console.log(hasilqty + 'hasilqty');
+                            
+                            if(hasilqty > qtykirim) {
+                              toastr.info('tidak bisa mengisi angka di bawah jumlah angka yang diterima dari yang dikirim :) ');
+                              kosong = '';
+                             $('.status4' + id).val('');
+                             $('.qtyterima2' + id).val('');
+                            }
+
+
+                            qtykirim = $('.qtykirim2' + id).val();
+                       //     hasilterima = parseInt(qty) + parseInt(val) - ;
+                            console.log(qty + 'qty');
+                            console.log(val + 'val');
+                            if(qtykirim == hasilqty){
+
+                               status = "<input type='text' class='status2"+$noajax+"' name='status2[]' value='LENGKAP'> ";
+                               $('.status4' + id).val('LENGKAP');
+                            }
+                            else {
+                             /*  status = "TIDAK LENGKAP";*/
+                                status = "<input type='text' class='status2"+$noajax+"' name='status2[]' value='TIDAK LENGKAP'> ";
+                               $('.status4' + id).val('TIDAK LENGKAP');
+                            }
+
+                          }
+                      })
+                }) 
+          }
+          else {
+          console.log('else');
+          }
+        }
+      })
+    } /*end pengeluaran barang*/
      
  
     $('#lengkap').change(function(){   
@@ -1287,10 +1716,11 @@ $notable++;
       po_id = $('.po_id').val();
       idspp = sppid;
       flag = $('.flag').val();
+      idpbg = $('.idpbg').val();
       urlterima = baseUrl + '/penerimaanbarang/changeqtyterima';
        $.ajax({    
           type :"get",
-          data : {kodeitem, po_id, idspp, flag, idfp},
+          data : {kodeitem, po_id, idspp, flag, idfp, idpbg},
           url : urlterima,
           dataType:'json',
           success : function(response){

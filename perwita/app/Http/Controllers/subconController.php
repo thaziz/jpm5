@@ -21,7 +21,6 @@ class subconController extends Controller
 {
 	public function subcon(){
 		$cabang =Auth::user()->kode_cabang;
-		if (Auth::user()->punyaAkses('Kontrak Subcon','all')){
 			$data = DB::table('kontrak_subcon')
 				 ->join('cabang','kode','=','ks_cabang')
 				 ->orderBy('ks_id','asc')
@@ -31,20 +30,7 @@ class subconController extends Controller
 				 ->join('subcon','kode','=','ks_nama')
 				 ->orderBy('ks_id','asc')
 				 ->get();
-		}else{
-			$data = DB::table('kontrak_subcon')
-				 ->join('cabang','kode','=','ks_cabang')
-				 ->where('ks_cabang',$cabang)
-				 ->orderBy('ks_id','asc')
-				 ->get();
 
-			$subcon = DB::table('kontrak_subcon')
-				 ->join('subcon','kode','=','ks_nama')
-				 ->where('ks_cabang',$cabang)
-				 ->orderBy('ks_id','asc')
-				 ->get();
-		}
-		 
 		 
 
 		for ($i=0; $i < count($data); $i++) { 
