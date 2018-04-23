@@ -2607,6 +2607,11 @@
                                 </li>
 
                                 <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('lap_ttt/lap_ttt') ? 'active' : '' || 
+                            Request::is('lap_ttt/lap_ttt/*') ? 'active' : ''}}" href="{{ url('lap_ttt/lap_ttt')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Form Tanda Terima </a>
+                                </li>
+
+                                <li >
                                     <a class="sidebar master-perusahaan {{Request::is('reportkartuhutang/reportkartuhutang') ? 'active' : '' || 
                             Request::is('reportkartuhutang/reportkartuhutang/*') ? 'active' : ''}}" href="{{ url('reportkartuhutang/reportkartuhutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kartu Hutang </a>
                                 </li>

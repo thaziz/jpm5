@@ -1,6 +1,12 @@
 
 <?php
 
+	function perusahaan(){
+		$pt_nama = DB::table('master_perusahaan')->first();
+
+		return $pt_nama;
+	}
+
 	function print_tes(){
 		return "okee";
 	}
