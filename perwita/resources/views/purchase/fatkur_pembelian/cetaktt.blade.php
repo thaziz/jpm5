@@ -68,7 +68,7 @@
   		<td>Rupiah</td>
   	</tr>
   	<tr  style="border-bottom: none;">
-  		<td align="center"><?php echo date('d-m-Y',strtotime($data[0]->tt_tgl))?></td>
+  		<td align="center"><?php echo date('d-m-Y',strtotime($data[0]->tt_tgl));?></td>
   		<td align="left">{{$data[0]->tt_noform}}</td>
   		<td align="right">{{"Rp " . number_format($data[0]->tt_totalterima,2,",",".")}}</td>
   		<td align="left">&nbsp;{{$data[0]->fp_keterangan}}</td>
@@ -87,7 +87,7 @@
   	<tr>
   		<td colspan="6">
   			Harap Kembali:&nbsp;&nbsp;<label style="border-bottom: 1px solid black; margin-right: 70px">{{$tgl}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-  			Tanggal:&nbsp;&nbsp;<label style="border-bottom: 1px solid black;margin-right: 20px"><?php echo date('d-m-Y',strtotime($data[0]->tt_tglkembali))?></label>
+  			Tanggal:&nbsp;&nbsp;<label style="border-bottom: 1px solid black;margin-right: 20px"><?php echo date('d-m-Y',strtotime($data[0]->tt_tglkembali));?></label>
   			Atau menghubungi dulu kantor kami melalui Telepon No.______________
   		</td>	
   	</tr>
