@@ -22,13 +22,7 @@ table, th, td {
       <th> Diskon</th>
       <th> Netto</th>
     </tr>
-    <tr>
-      <th>type</th>
-      <th>qty</th>
-      <th>&nbsp;</th>
-      <th>&nbsp;</th>
-      <th>&nbsp;</th>
-    </tr>
+    
   </thead>
   <tbody>
    @foreach ($data_awal as $index => $e) 
@@ -40,14 +34,7 @@ table, th, td {
       <td align="right">{{ number_format($e->diskon,0,',','.') }}</td>
       <td align="right">{{ number_format($e->total_net,0,',','.') }}</td>
     </tr>
-    <tr>
-      <td>dokumen</td>
-      <td>kilogram</td>
-      <td>koli</td>
-      <td>sepeda</td>
-      <td>koran</td>
-      <td>kargo</td>
-    </tr>
+    
    @endforeach
    <tr>
       <th colspan="2" height="23">Grand total</th>
