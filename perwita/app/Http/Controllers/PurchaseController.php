@@ -2777,7 +2777,7 @@ $indexakun=0;
 
 			$query6 = stock_gudang::where([['sg_cabang' , '=' , $datagudang],['sg_comp' , '=' , $datacomp]]);
 			$query6->update([
-				'sg_qty' => $hasilakhirqty;
+				'sg_qty' => $hasilakhirqty
 				]);
 
 			$updatedetail = penerimaan_barangdt::where([['pbdt_idpb', '=', $idpb], ['pbdt_id' , '=' , $request->arridpbdt[$i]], ['pbdt_item' , '=' , $request->arrkodeitem[$i]]]);

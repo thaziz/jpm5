@@ -200,7 +200,7 @@
  <div class="wrapper">
   <div class="position-fixed">
    <table class="inlineTable">
-      <td><img class="img" width="80" height="40" src="{{ asset('perwita/storage/app/uopload/images.jpg') }}"></td>
+      <td><img class="img" width="80" height="40" src="{{ asset('perwita/storage/app/upload/images.jpg') }}"></td>
    </table>
    <table class="inlineTable size" style="margin-bottom: -20px;margin-top: 20px;">
     <tr>
