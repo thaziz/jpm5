@@ -513,14 +513,29 @@ function pilih_kontrak(asd){
 function cariSUB(){
 
 var m_seq = $('.m_seq').val();
-var d_nomor_do = $('.d_nomor_do').val();
+var nota_subcon = $('.nota_subcon').val();
+var m_do_subcon = $('.m_do_subcon').val();
+
+if (m_do_subcon == '') {
+	toastr.warning('POD Harus Diisi !')
+	return 1;
+}
+
+if (nota_subcon == '') {
+	toastr.warning('Harap Memasukkan Kontrak Subcon !')
+	return 1;
+}
 var sc_biaya_subcon_dt = $('.sc_biaya_subcon_dt').val();
 var sc_biaya_subcon = $('.sc_biaya_subcon').val();
 var sc_asal_subcon = $('.sc_asal_subcon').val();
 var sc_tujuan_subcon = $('.sc_tujuan_subcon').val();
 var sc_tarif_subcon = $('.sc_tarif_subcon').val();
 var sc__do_memo = $('.sc__do_memo').val();
-	      subcon.row.add( [
+
+
+
+
+	    subcon.row.add([
                   m_seq+'<input type="hidden" class="seq_sub sub_seq_'+m_seq+'"  value="'+m_seq+'" >',
 
                   d_nomor_do+'<input type="hidden" class="dt_resi_subcon"  name="resi_subcon[]" value="'+d_nomor_do+'" >',
@@ -536,16 +551,11 @@ var sc__do_memo = $('.sc__do_memo').val();
                   sc__do_memo+'<input type="hidden" name=ket_subcon[]" value="'+sc__do_memo+'" >',
 
                   '<a class="btn btn-danger fa fa-trash" align="center" onclick="hapus_subcon(this)" title="hapus"></i></a>'
-              ] ).draw( false );   
+            ]).draw( false );   
 
-	   	 $('.pod_subcon ').focus();
-	   	 $('.pod_subcon ').val('');
-	   	 $('.tarif_pod_subcon ').val('');
-	   	 $('.total_subcon ').val('');
-	   	 $('.trip_subcon ').val('');
-	   	 $('.berat_subcon ').val('');
+	  	array_do.push(d_nomor_do);
+	   	$('.')
 
-	
 }
 
 
@@ -561,9 +571,6 @@ function hapus_subcon(o){
 }
 
 
-function nama_sc() {
-	// body...
-}
 
 function save_subcon(){
 	var id_subcon = $('.id_subcon').val();
