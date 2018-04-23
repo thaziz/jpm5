@@ -1,12 +1,5 @@
 
-
 <?php
-use DB;	
-	$pt_nama = DB::table('master_perusahaan')->first();
-
-	$nama = $pt_nama->mp_nama;
-	$alamat = $pt_nama->mp_alamat;
-	$tlp = $pt_nama->mp_tlp;
 
 	function print_tes(){
 		return "okee";
