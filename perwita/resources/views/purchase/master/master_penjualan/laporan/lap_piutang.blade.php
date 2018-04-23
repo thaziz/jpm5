@@ -87,23 +87,24 @@
                         </tr>
                     </thead>
                     <tbody>
-                      @foreach ($data as $index =>$e)
-                        <tr>
-                        
-                        <td><input type="hidden" value="{{ $e->kode }}" name="nomor">{{ $e->kode }}</td>
-                        <td>{{ $e->tanggal }}</td>
-                        <td>{{ $e->keterangan }}</td>
-                        <td align="right"> 
-                        @if ($e->flag == 'D' or substr($e->kode,0,3) == 'INV')
-                          {{ $e->total }}
-                        @else 
-                          0
-                        @endif
-                        </td>
-                        
-                        <td></td>
-                        </tr>
-                      @endforeach
+                      @foreach ($data_i as $a => $element)
+                         <tr>
+                           <td colspan="10">{{ $data_i[$a]->i_kode_customer }}</td>
+                         </tr>
+                         
+                      <tr style="text-align: right;background-color: #e6ffda;">
+                         
+                           @foreach ($data_p as $e => $element)
+                            @if ($data_i[$a]->i_kode_customer == $data_p[$e]->i_kode_customer)
+                                  <td>{{ $data_p[$e]->i_kode_customer }}</td>
+                                  <td>{{ $data_p[$e]->i_kode_customer }}</td>
+                                  <td>{{ $data_p[$e]->i_kode_customer }}</td>
+                                  <td>{{ $data_p[$e]->i_kode_customer }}</td>
+                            @endif
+                           
+                        @endforeach
+                      </tr>
+                    @endforeach
                     </tbody>
 
                   </table>
@@ -141,35 +142,35 @@
 
     var table;
    
-   table = $('#addColumn').DataTable( {
-      responsive: true,
-              searching: true,
-              //paging: false,
-              "pageLength": 10,
-              "language": dataTableLanguage,
-         dom: 'Bfrtip',
-         buttons: [
-            {
-                  extend: 'excel',
-                 /* messageTop: 'Hasil pencarian dari Nama : ',*/
-                  text: ' Excel',
-                  className:'excel',
-                  title:'LAPORAN TARIF CABANG KOLI',
-                  filename:'CABANGKOLI-'+a+b+c,
-                  init: function(api, node, config) {
-                  $(node).removeClass('btn-default'),
-                  $(node).addClass('btn-warning'),
-                  $(node).css({'margin-top': '-50px','margin-left': '80px'})
-                  },
-                  exportOptions: {
-                  modifier: {
-                      page: 'all'
-                  }
-              }
+   // table = $('#addColumn').DataTable( {
+   //    responsive: true,
+   //            searching: true,
+   //            //paging: false,
+   //            "pageLength": 10,
+   //            "language": dataTableLanguage,
+   //       dom: 'Bfrtip',
+   //       buttons: [
+   //          {
+   //                extend: 'excel',
+   //               /* messageTop: 'Hasil pencarian dari Nama : ',*/
+   //                text: ' Excel',
+   //                className:'excel',
+   //                title:'LAPORAN TARIF CABANG KOLI',
+   //                filename:'CABANGKOLI-'+a+b+c,
+   //                init: function(api, node, config) {
+   //                $(node).removeClass('btn-default'),
+   //                $(node).addClass('btn-warning'),
+   //                $(node).css({'margin-top': '-50px','margin-left': '80px'})
+   //                },
+   //                exportOptions: {
+   //                modifier: {
+   //                    page: 'all'
+   //                }
+   //            }
               
-              }
-          ]
-    });
+   //            }
+   //        ]
+   //  });
      $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
