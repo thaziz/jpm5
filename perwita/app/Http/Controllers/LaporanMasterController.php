@@ -674,7 +674,7 @@ class LaporanMasterController extends Controller
 		$cabang = $request->c;
 
 		if ($cabang == '' or null) {
-			$data =DB::table('delivery_order as do')
+		$data =DB::table('delivery_order as do')
 				->where('pendapatan','=','PAKET')
 				->where('tanggal','>=',$awal)
 				->where('tanggal','<=',$akir)
@@ -2108,26 +2108,31 @@ class LaporanMasterController extends Controller
 
    public function kartupiutang(){
    		
-   		$data_p = DB::table('invoice')->select('i_nomor','i_kode_customer','i_kode_cabang','i_tanggal')->get();
+   		 $data_i = DB::select('SELECT i_kode_customer from invoice group by i_kode_customer order by i_kode_customer');
+   		 $data_p = DB::select('SELECT i_kode_customer,count(i_nomor) as do,count(i_nomor) as non from invoice group by i_kode_customer order by i_kode_customer');
    		
-   		$a = DB::table('invoice')->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total')
-   				->where('i_kode_customer','CS-012/00159');
 
-   		$b = DB::table('cn_dn_penjualan')->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total')
-   				->where('cd_customer','CS-012/00159');
+   		$a = DB::table('invoice')->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
 
-   		$c = DB::table('kwitansi')->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
-   				->where('k_kode_customer','CS-012/00159');
+   		$b = DB::table('cn_dn_penjualan')->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
 
-   		$d = DB::table('kwitansi')->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
-   				->where('k_kode_customer','CS-012/00159');
+   		$c = DB::table('kwitansi')->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
+
+   		$d = DB::table('kwitansi')
+   			->select('k_create_by','nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
+   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
+   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
 
 
    		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
 
+   		/*return*/ $ds = DB::table('kwitansi')
+   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto','nomor')
+   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
+   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran')->get();
 
    		
-   		return view('purchase/master/master_penjualan/laporan/lap_piutang',compact('data'));
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang',compact('data','data_i','data_p'));
    }
    public function rekap_customer(){
    		$cabang = DB::table('cabang')->get();
@@ -2140,11 +2145,12 @@ class LaporanMasterController extends Controller
    		$akir = carbon::parse($request->max)->format('Y-m-d');
    		if ($view == 'rekap') {
 			   		if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
-			   				return $data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+			   				$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
 			   				join customer c on d.kode_customer = c.kode
 			   				where tanggal>='$awal'
 			   				and tanggal<='$akir'
-			                group by d.kode_customer,c.kode");	
+			                group by d.kode_customer,c.kode
+			                order by d.kode_customer");	
 			   			if ($data_awal == null) {
 			   				return response()->json(['data'=>'0']); 
 			   			}else{
@@ -2177,7 +2183,8 @@ class LaporanMasterController extends Controller
 			   				where kode_cabang = '$cabang'
 			   				and tanggal>='$awal'
 			   				and tanggal<='$akir'
-			                group by d.kode_customer,c.kode");	
+			                group by d.kode_customer,c.kode
+			                order by d.kode_customer");	
 			   			if ($data_awal == null) {
 			   				return response()->json(['data'=>'0']); 
 			   			}else{
@@ -2212,7 +2219,8 @@ class LaporanMasterController extends Controller
 				   				join customer c on d.kode_customer = c.kode
 				   				where tanggal>='$awal'
 				   				and tanggal<='$akir'
-				                group by d.kode_customer,c.kode");	
+				                group by d.kode_customer,c.kode
+				                order by d.kode_customer");	
 				   			if ($data_awal == null) {
 				   				return response()->json(['data'=>'0']); 
 				   			}else{
@@ -2241,58 +2249,74 @@ class LaporanMasterController extends Controller
 				   		elseif ($awal == $awal && $akir == $akir && $cabang == $cabang && $view == $view) {
    			// return 'B';
 
-				   			 $data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+				   			$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
 				   				join customer c on d.kode_customer = c.kode
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'
-				                group by d.kode_customer,c.kode");	
+				                group by d.kode_customer,c.kode
+				                order by d.kode_customer");	
 				   			
-				   			 	$doc = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
+				   			$cust = DB::select("SELECT kode_customer from delivery_order d 
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'
 				   				and type_kiriman = 'DOKUMEN'
-				   				group by d.kode_customer");	
-					   			return $doc;
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
 
-				   			$kilo = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
+				   			/*return*/ $doc = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'DOKUMEN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+					   			// return $doc;
+
+				   			$kilo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'
 				   				and type_kiriman = 'KILOGRAM'
-				   				group by d.kode_customer");	
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
 
-				   			$koli = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
+				   			$koli = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'
 				   				and type_kiriman = 'KOLI'
-				   				group by d.kode_customer");	
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
 
-				   			$sepeda = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
+				   			$sepeda = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'
 				   				and type_kiriman = 'SEPEDA'
-				   				group by d.kode_customer");	
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
 
-				   			$kargo = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
+				   			$kargo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'
 				   				and type_kiriman = 'KARGO'
-				   				group by d.kode_customer");	
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
 
-				   			$koran = DB::select("SELECT kode_customer,count(d.nomor) as do from delivery_order d 
+				   			$koran = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'
 				   				and type_kiriman = 'KORAN'
-				   				group by d.kode_customer");	
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
 
 
-				   			// return [$doc,$kilo,$koli,$sepeda,$kargo,$koran];
+
+				   			// return [$data_awal,$doc,$kilo,$koli,$sepeda,$kargo,$koran];
 
 				   			if ($data_awal == null) {
 				   				return response()->json(['data'=>'0']); 
@@ -2325,7 +2349,7 @@ class LaporanMasterController extends Controller
    		
    		//end rekap
    		// return $view;
-   		return view('purchase/master/master_penjualan/laporan/do_total/rekap_customer/ajax_lap_rekapcustomer',compact('data_awal','total','total_net','diskon','do','view','doc'));
+   		return view('purchase/master/master_penjualan/laporan/do_total/rekap_customer/ajax_lap_rekapcustomer',compact('data_awal','total','total_net','diskon','do','view','doc','cust','kilo','koli','sepeda','koran','kargo'));
    }
    public function report_rekapcustomer(Request $request){
    		$cabang = $request->cabang;
@@ -2333,86 +2357,269 @@ class LaporanMasterController extends Controller
    		$awal = $request->min;
    		$akir = $request->max;
 
-   		if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
-   			$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
-   				join customer c on d.kode_customer = c.kode
-   				where tanggal>='$awal'
-   				and tanggal<='$akir'
-                group by d.kode_customer,c.kode");	
-   			if ($data_awal == null) {
-   				return response()->json(['data'=>'0']); 
-   			}else{
-   				for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat[$i] = $data_awal[$i]->total_net;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat1[$i] = $data_awal[$i]->total;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat2[$i] = $data_awal[$i]->diskon;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat3[$i] = $data_awal[$i]->do;
-	   			}
-	   			
-	   			$total =  array_sum($dat);
+   		if ($view == 'rekap') {
+			   		if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
+			   				$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+			   				join customer c on d.kode_customer = c.kode
+			   				where tanggal>='$awal'
+			   				and tanggal<='$akir'
+			                group by d.kode_customer,c.kode
+			                order by d.kode_customer");	
+			   			if ($data_awal == null) {
+			   				return response()->json(['data'=>'0']); 
+			   			}else{
+			   				for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat[$i] = $data_awal[$i]->total_net;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat1[$i] = $data_awal[$i]->total;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat2[$i] = $data_awal[$i]->diskon;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat3[$i] = $data_awal[$i]->do;
+				   			}
+				   			
+				   			$total =  array_sum($dat);
 
-	   			$total_net = array_sum($dat1);
-	   			
-	   			$diskon = array_sum($dat2);
+				   			$total_net = array_sum($dat1);
+				   			
+				   			$diskon = array_sum($dat2);
 
-	   			$do = array_sum($dat3);
-   			}
-   		}
-   		elseif ($awal == $awal && $akir == $akir && $cabang == $cabang && $view == $view) {
+				   			$do = array_sum($dat3);
+			   			}
+			   			$date =  date('B'.'s'.'H');
 
-   			$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
-   				join customer c on d.kode_customer = c.kode
-   				where kode_cabang = '$cabang'
-   				and tanggal>='$awal'
-   				and tanggal<='$akir'
-                group by d.kode_customer,c.kode");	
-   			if ($data_awal == null) {
-   				return response()->json(['data'=>'0']); 
-   			}else{
-   				for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat[$i] = $data_awal[$i]->total_net;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat1[$i] = $data_awal[$i]->total;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat2[$i] = $data_awal[$i]->diskon;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat3[$i] = $data_awal[$i]->do;
-	   			}
-	   			
-	   			$total =  array_sum($dat);
+				   			Excel::create('Kartuhutang'.$date, function($excel) use ($data_awal,$total_net,$total,$diskon,$do){
 
-	   			$total_net = array_sum($dat1);
-	   			
-	   			$diskon = array_sum($dat2);
+								    $excel->sheet('New sheet', function($sheet) use ($data_awal,$total_net,$total,$diskon,$do) {
+								        $sheet->loadView('purchase/master/master_penjualan/laporan/do_total/excel/excel_lap_rekapcustomer')
+								        ->with('data_awal',$data_awal)
+								        ->with('total_net',$total_net)
+								        ->with('total',$total)
+								        ->with('diskon',$diskon)
+								        ->with('do',$do);
+								    });
 
-	   			$do = array_sum($dat3);
-   			}
-   			
+								})->download('csv');
+			   		}
+			   		elseif ($awal == $awal && $akir == $akir && $cabang == $cabang && $view == $view) {
+
+			   			 $data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+			   				join customer c on d.kode_customer = c.kode
+			   				where kode_cabang = '$cabang'
+			   				and tanggal>='$awal'
+			   				and tanggal<='$akir'
+			                group by d.kode_customer,c.kode
+			                order by d.kode_customer");	
+			   			if ($data_awal == null) {
+			   				return response()->json(['data'=>'0']); 
+			   			}else{
+			   				for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat[$i] = $data_awal[$i]->total_net;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat1[$i] = $data_awal[$i]->total;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat2[$i] = $data_awal[$i]->diskon;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat3[$i] = $data_awal[$i]->do;
+				   			}
+				   			
+				   			$total =  array_sum($dat);
+
+				   			$total_net = array_sum($dat1);
+				   			
+				   			$diskon = array_sum($dat2);
+
+				   			$do = array_sum($dat3);
+			   			}
+			   			
+			   		}
+			   		$date =  date('B'.'s'.'H');
+
+				   			Excel::create('Kartuhutang'.$date, function($excel) use ($data_awal,$total_net,$total,$diskon,$do){
+
+								    $excel->sheet('New sheet', function($sheet) use ($data_awal,$total_net,$total,$diskon,$do) {
+								        $sheet->loadView('purchase/master/master_penjualan/laporan/do_total/excel/excel_lap_rekapcustomer')
+								        ->with('data_awal',$data_awal)
+								        ->with('total_net',$total_net)
+								        ->with('total',$total)
+								        ->with('diskon',$diskon)
+								        ->with('do',$do);
+								    });
+
+								})->download('csv');
+   		}else{
+   			// return 'U';
+		   			if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
+   					// return 'A';
+
+				   				$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+				   				join customer c on d.kode_customer = c.kode
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				                group by d.kode_customer,c.kode
+				                order by d.kode_customer");	
+				   			if ($data_awal == null) {
+				   				return response()->json(['data'=>'0']); 
+				   			}else{
+				   				for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat[$i] = $data_awal[$i]->total_net;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat1[$i] = $data_awal[$i]->total;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat2[$i] = $data_awal[$i]->diskon;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat3[$i] = $data_awal[$i]->do;
+					   			}
+					   			
+					   			$total =  array_sum($dat);
+
+					   			$total_net = array_sum($dat1);
+					   			
+					   			$diskon = array_sum($dat2);
+
+					   			$do = array_sum($dat3);
+				   			}
+				   			$date =  date('B'.'s'.'H');
+
+				   			Excel::create('Kartuhutang'.$date, function($excel) use ($data_awal,$total_net,$total,$diskon,$do){
+
+								    $excel->sheet('New sheet', function($sheet) use ($data_awal,$total_net,$total,$diskon,$do) {
+								        $sheet->loadView('purchase/master/master_penjualan/laporan/do_total/excel/excel_lap_rekapcustomer')
+								        ->with('data_awal',$data_awal)
+								        ->with('total_net',$total_net)
+								        ->with('total',$total)
+								        ->with('diskon',$diskon)
+								        ->with('do',$do);
+								    });
+
+								})->download('csv');
+				   		}
+				   		elseif ($awal == $awal && $akir == $akir && $cabang == $cabang && $view == $view) {
+   			// return 'B';
+
+				   			$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+				   				join customer c on d.kode_customer = c.kode
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				                group by d.kode_customer,c.kode
+				                order by d.kode_customer");	
+				   			
+				   		
+				   			/*return*/ $doc = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'DOKUMEN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+					   			// return $doc;
+
+				   			$kilo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KILOGRAM'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$koli = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KOLI'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$sepeda = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'SEPEDA'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$kargo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KARGO'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$koran = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KORAN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+
+
+				   			// return [$data_awal,$doc,$kilo,$koli,$sepeda,$kargo,$koran];
+
+				   			if ($data_awal == null) {
+				   				return response()->json(['data'=>'0']); 
+				   			}else{
+				   				for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat[$i] = $data_awal[$i]->total_net;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat1[$i] = $data_awal[$i]->total;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat2[$i] = $data_awal[$i]->diskon;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat3[$i] = $data_awal[$i]->do;
+					   			}
+					   			
+					   			$total =  array_sum($dat);
+
+					   			$total_net = array_sum($dat1);
+					   			
+					   			$diskon = array_sum($dat2);
+
+					   			$do = array_sum($dat3);
+				   			}
+				   			
+				   		}
+			   			$date =  date('B'.'s'.'H');
+
+				   		$date =  date('B'.'s'.'H');
+
+			   			Excel::create('Kartuhutang'.$date, function($excel) use ($data_awal,$total_net,$total,$diskon,$do,$doc,$kilo,$koli,$sepeda,$kargo,$koran){
+
+							    $excel->sheet('New sheet', function($sheet) use ($data_awal,$total_net,$total,$diskon,$do,$doc,$kilo,$koli,$sepeda,$kargo,$koran) {
+							        $sheet->loadView('purchase/master/master_penjualan/laporan/do_total/excel/excel_detail_lap_rekapcustomer')
+							        ->with('data_awal',$data_awal)
+							        ->with('total_net',$total_net)
+							        ->with('total',$total)
+							        ->with('diskon',$diskon)
+							        ->with('do',$do)
+							        ->with('doc',$doc)
+							        ->with('kilo',$kilo)
+							        ->with('koli',$koli)
+							        ->with('sepeda',$sepeda)
+							        ->with('kargo',$kargo)
+							        ->with('koran',$koran);
+							    });
+
+							})->download('csv');
+						
    		}
    		// return $total_net;
-		 $date =  date('B'.'s'.'H');
-
-   			Excel::create('Kartuhutang'.$date, function($excel) use ($data_awal,$total_net,$total,$diskon,$do){
-
-				    $excel->sheet('New sheet', function($sheet) use ($data_awal,$total_net,$total,$diskon,$do) {
-				        $sheet->loadView('purchase/master/master_penjualan/laporan/do_total/excel/excel_lap_rekapcustomer')
-				        ->with('data_awal',$data_awal)
-				        ->with('total_net',$total_net)
-				        ->with('total',$total)
-				        ->with('diskon',$diskon)
-				        ->with('do',$do);
-				    });
-
-				})->download('csv');
+		 
    }
    //END OF
 
@@ -2422,79 +2629,225 @@ class LaporanMasterController extends Controller
    		$awal = $request->min;
    		$akir = $request->max;
 
-   		if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
-   			$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
-   				join customer c on d.kode_customer = c.kode
-   				where tanggal>='$awal'
-   				and tanggal<='$akir'
-                group by d.kode_customer,c.kode");	
-   			if ($data_awal == null) {
-   				return response()->json(['data'=>'0']); 
-   			}else{
-   				for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat[$i] = $data_awal[$i]->total_net;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat1[$i] = $data_awal[$i]->total;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat2[$i] = $data_awal[$i]->diskon;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat3[$i] = $data_awal[$i]->do;
-	   			}
-	   			
-	   			$total =  array_sum($dat);
+   		if ($view == 'rekap') {
+			   		if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
+			   				$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+			   				join customer c on d.kode_customer = c.kode
+			   				where tanggal>='$awal'
+			   				and tanggal<='$akir'
+			                group by d.kode_customer,c.kode
+			                order by d.kode_customer");	
+			   			if ($data_awal == null) {
+			   				return response()->json(['data'=>'0']); 
+			   			}else{
+			   				for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat[$i] = $data_awal[$i]->total_net;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat1[$i] = $data_awal[$i]->total;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat2[$i] = $data_awal[$i]->diskon;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat3[$i] = $data_awal[$i]->do;
+				   			}
+				   			
+				   			$total =  array_sum($dat);
 
-	   			$total_net = array_sum($dat1);
-	   			
-	   			$diskon = array_sum($dat2);
+				   			$total_net = array_sum($dat1);
+				   			
+				   			$diskon = array_sum($dat2);
 
-	   			$do = array_sum($dat3);
-   			}
-   		}
-   		elseif ($awal == $awal && $akir == $akir && $cabang == $cabang && $view == $view) {
+				   			$do = array_sum($dat3);
+			   			}
+			   		}
+			   		elseif ($awal == $awal && $akir == $akir && $cabang == $cabang && $view == $view) {
 
-   			$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
-   				join customer c on d.kode_customer = c.kode
-   				where kode_cabang = '$cabang'
-   				and tanggal>='$awal'
-   				and tanggal<='$akir'
-                group by d.kode_customer,c.kode");	
-   			if ($data_awal == null) {
-   				return response()->json(['data'=>'0']); 
-   			}else{
-   				for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat[$i] = $data_awal[$i]->total_net;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat1[$i] = $data_awal[$i]->total;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat2[$i] = $data_awal[$i]->diskon;
-	   			}
-	   			for ($i=0; $i <count($data_awal) ; $i++) { 
-	   					$dat3[$i] = $data_awal[$i]->do;
-	   			}
-	   			
-	   			$total =  array_sum($dat);
+			   			 $data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+			   				join customer c on d.kode_customer = c.kode
+			   				where kode_cabang = '$cabang'
+			   				and tanggal>='$awal'
+			   				and tanggal<='$akir'
+			                group by d.kode_customer,c.kode
+			                order by d.kode_customer");	
+			   			if ($data_awal == null) {
+			   				return response()->json(['data'=>'0']); 
+			   			}else{
+			   				for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat[$i] = $data_awal[$i]->total_net;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat1[$i] = $data_awal[$i]->total;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat2[$i] = $data_awal[$i]->diskon;
+				   			}
+				   			for ($i=0; $i <count($data_awal) ; $i++) { 
+				   					$dat3[$i] = $data_awal[$i]->do;
+				   			}
+				   			
+				   			$total =  array_sum($dat);
 
-	   			$total_net = array_sum($dat1);
-	   			
-	   			$diskon = array_sum($dat2);
+				   			$total_net = array_sum($dat1);
+				   			
+				   			$diskon = array_sum($dat2);
 
-	   			$do = array_sum($dat3);
-   			}
-   			
-   		}
-   		// return $data_awal;
-   		// return $total_net;
-		 $date =  date('B'.'s'.'H');
+				   			$do = array_sum($dat3);
+			   			}
+			   			
+			   		}
+			   		$date =  date('B'.'s'.'H');
 		 	
-		 	$pdf = PDF::loadView('purchase/master/master_penjualan/laporan/do_total/pdf/pdf_lap_rekapcustomer',compact('data_awal','total_net','total','diskon','do'))->setPaper('a4','potrait'); 
-			return $pdf->stream('rekap_customer'.$date.'.pdf');
+				 	$pdf = PDF::loadView('purchase/master/master_penjualan/laporan/do_total/pdf/pdf_lap_rekapcustomer',compact('data_awal','total_net','total','diskon','do'))->setPaper('a4','potrait'); 
+					return $pdf->stream('rekap_customer'.$date.'.pdf');
+   		}else{
+   			// return 'U';
+		   			if ($awal == $awal && $akir == $akir && $cabang == null || '' && $view == $view) {
+   					// return 'A';
+
+				   				$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+				   				join customer c on d.kode_customer = c.kode
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				                group by d.kode_customer,c.kode
+				                order by d.kode_customer");	
+				   			if ($data_awal == null) {
+				   				return response()->json(['data'=>'0']); 
+				   			}else{
+				   				for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat[$i] = $data_awal[$i]->total_net;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat1[$i] = $data_awal[$i]->total;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat2[$i] = $data_awal[$i]->diskon;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat3[$i] = $data_awal[$i]->do;
+					   			}
+					   			
+					   			$total =  array_sum($dat);
+
+					   			$total_net = array_sum($dat1);
+					   			
+					   			$diskon = array_sum($dat2);
+
+					   			$do = array_sum($dat3);
+				   			}
+				   		}
+				   		elseif ($awal == $awal && $akir == $akir && $cabang == $cabang && $view == $view) {
+   			// return 'B';
+
+				   			$data_awal = DB::select("SELECT c.nama as nama,kode_customer, sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net  from delivery_order d
+				   				join customer c on d.kode_customer = c.kode
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				                group by d.kode_customer,c.kode
+				                order by d.kode_customer");	
+				   			
+				   			$cust = DB::select("SELECT kode_customer from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'DOKUMEN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			/*return*/ $doc = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'DOKUMEN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+					   			// return $doc;
+
+				   			$kilo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KILOGRAM'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$koli = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KOLI'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$sepeda = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'SEPEDA'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$kargo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KARGO'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$koran = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where kode_cabang = '$cabang'
+				   				and tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KORAN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+
+
+				   			// return [$data_awal,$doc,$kilo,$koli,$sepeda,$kargo,$koran];
+
+				   			if ($data_awal == null) {
+				   				return response()->json(['data'=>'0']); 
+				   			}else{
+				   				for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat[$i] = $data_awal[$i]->total_net;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat1[$i] = $data_awal[$i]->total;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat2[$i] = $data_awal[$i]->diskon;
+					   			}
+					   			for ($i=0; $i <count($data_awal) ; $i++) { 
+					   					$dat3[$i] = $data_awal[$i]->do;
+					   			}
+					   			
+					   			$total =  array_sum($dat);
+
+					   			$total_net = array_sum($dat1);
+					   			
+					   			$diskon = array_sum($dat2);
+
+					   			$do = array_sum($dat3);
+				   			}
+				   			
+				   		}
+			   			$date =  date('B'.'s'.'H');
+
+				   		return view('purchase/master/master_penjualan/laporan/do_total/pdf/pdf_detail_lap_rekapcustomer',compact('data_awal','total_net','total','diskon','do','doc','koli','kilo','kargo','koran','sepeda')); 
+						
+   		}
+   		// return 'a';
+   		// return $total_net;
+		 
 
    }
+
+
+
 
 
    }

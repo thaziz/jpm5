@@ -15,11 +15,11 @@
 			{{$val['ksd_id']}}
 			<input type="hidden" class="id_kontrak" value="{{$val['ksd_id']}}">
 		</td>
-		<td>{{$val['ksd_asal']}}</td>
-		<td>{{$val['ksd_tujuan']}}</td>
-		<td>{{$val['ksd_angkutan']}}</td>
-		<td>{{number_format($val['ksd_harga'])}}</td>
-		<td>{{$val['ksd_jenis_tarif']}}</td>
+		<td><p class="ksd_asal">{{$val['ksd_asal']}}</p></td>
+		<td><p class="ksd_tujuan">{{$val['ksd_tujuan']}}</p></td>
+		<td><p class="ksd_angkutan">{{$val['ksd_angkutan']}}</p></td>
+		<td><p class="ksd_harga">{{number_format($val['ksd_harga'])}}</p></td>
+		<td><p class="ksd_jenis_tarif">{{$val['ksd_jenis_tarif']}}</p></td>
 	  </tr>
 	  @endforeach
 	  @endif

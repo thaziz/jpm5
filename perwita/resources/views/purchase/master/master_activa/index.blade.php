@@ -92,7 +92,7 @@
                      </h5>
                       <div class="text-right">
                         @if(Auth::user()->PunyaAkses('Master Activa','tambah'))
-                            <a class="btn btn-success btn-sm" aria-hidden="true" href="{{ url('golonganactiva/creategolonganactiva')}}"> <i class="fa fa-plus"> &nbsp;Tambah Master Activa</i> </a>
+                            <a class="btn btn-success btn-sm" aria-hidden="true" href="{{ url('masteractiva/createmasteractiva')}}"> <i class="fa fa-plus"> &nbsp;Tambah Master Activa</i> </a>
                         @endif
                     </div>
 

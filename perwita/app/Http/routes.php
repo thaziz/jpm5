@@ -948,6 +948,7 @@ Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@re
  Route::get('cari_rekapcustomer/cari_rekapcustomer','LaporanMasterController@cari_rekapcustomer');
  Route::get('report_rekapcustomer/report_rekapcustomer', 'LaporanMasterController@report_rekapcustomer')->name('report_rekapcustomer');
  Route::get('reportpdf_rekapcustomer/reportpdf_rekapcustomer', 'LaporanMasterController@reportpdf_rekapcustomer')->name('reportpdf_rekapcustomer');
+ 
  //END OF 
 
 //---
@@ -1167,6 +1168,7 @@ Route::get('sales/deliveryordercabangtracking/autocomplete','trackingdoControlle
 Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoController@getdata');
 // delivery order
 Route::get('sales/deliveryorder', 'sales\do_controller@index');
+Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_controller@cetak_form');
 Route::get('sales/deliveryorderform', 'sales\do_controller@form');
 Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
 Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
@@ -2790,6 +2792,6 @@ Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstocko
 //MASTER PERUSAHAAN
 
 Route::get('master/master_perusahaan', 'MasterPerusahaanController@index');
-Route::get('master/master_perusahaan/save_data', 'perusahaanController@save_data');
+Route::post('master/master_perusahaan/save_data', 'MasterPerusahaanController@simpan');
 
 //END OF
