@@ -96,12 +96,12 @@
 
                       <tr>
                         <th class="suratjalan" style="width:200px"> No Surat Jalan </th>
-                        <td style="width:400px"> <input type="text" class="form-control suratjalan" name="suratjalan">  </td>
+                        <td style="width:400px"> <input type="text" class="form-control suratjalan" name="suratjalan" required="">  </td>
                       </tr>
 
                       <tr>
                         <th class="suratjalan" style="width:200px"> Diterima dari </th>
-                        <td style="width:400px"> <input type="text" class="form-control diterimadari" name="diterimadari">  </td>
+                        <td style="width:400px"> <input type="text" class="form-control diterimadari" name="diterimadari" required="">  </td>
                       </tr>
 
                       <tr>
@@ -241,7 +241,7 @@
                       <tr>
                         <th style="width:200px"> Supplier </th>
                         <td style="width:400px"> <h3> {{$data['po'][0]->nama_supplier}} </h3> </td>
-                      
+                           <input type="hidden" name="idpo" value="{{$data['po'][0]->po_id}}" class="idpo">
                         <input type="hidden" name="acchutangsupplierpo" value="{{$data['po'][0]->acc_hutang}}">
                         <input type="hidden" name="ppn_po" value="{{$data['po'][0]->po_ppn}}">
                         <input type="hidden" name="diskon_po" value="{{$data['po'][0]->po_diskon}}">
@@ -1423,7 +1423,7 @@ $notable++;
                 $('.hapusdata').click(function(){
                        id = $(this).data('id');
                        idtransaksi = $(this).data('idtransaksi');
-                       flag = 'FP';
+                       flag = 'PBG';
                        swal({
                         title: "Apakah anda yakin?",
                         text: "Hapus Data!",
@@ -1452,7 +1452,7 @@ $notable++;
                                           timer: 2000,
                                           showConfirmButton: true
                                           },function(){
-                                             location.reload();
+                                            // location.reload();
                                   });
                                 }else{
                                  swal({
