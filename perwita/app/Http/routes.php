@@ -1168,6 +1168,7 @@ Route::get('sales/deliveryordercabangtracking/autocomplete','trackingdoControlle
 Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoController@getdata');
 // delivery order
 Route::get('sales/deliveryorder', 'sales\do_controller@index');
+Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_controller@cetak_form');
 Route::get('sales/deliveryorderform', 'sales\do_controller@form');
 Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
 Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
