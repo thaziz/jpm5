@@ -738,12 +738,12 @@
                                             <td>   <select class="form-control idsup_po chosen-select-width" name="supplier_po" novalidate required=""> 
                                                     <option value=""> -- Pilih Supplier -- </option>
                                                 @foreach($data['supplier'] as $supplier)
-                                                    <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                                                    <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}},{{$supplier->acc_hutang}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
                                                 @endforeach
                                                 </select>                                        
                                             </td>
                                             </td>
-                                            <input type="text" class="acchutangdagang_po" name="acchutangdagang">
+                                            <input type="text" class="acchutangdagang_po" name="acchutangdagang"> acchutang
 
                                           </tr>
 
@@ -1063,7 +1063,6 @@
           type : "GET",
           dataType : 'json',
           success : function(response){
-              alert('hell');
                $('.gudang').empty();
                       $('.gudang').append(" <option value=''>  -- Pilih Gudang -- </option> ");
                   $.each(response.gudang, function(i , obj) {
@@ -1423,7 +1422,7 @@
       $('.cabang2').val(cabang);
        $.ajax({
           type : "get",
-          data : {cabang},
+          data : {cabang,a},
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
@@ -3308,7 +3307,11 @@
         }
         else {
 
-
+            supplieracc = $('.idsup_po').val();
+            split = supplieracc.split(",");
+            acchutang= split[3];
+          
+            $('.acchutangdagang_po').val(acchutang);
 
           $.ajax({    
           type :"get",
@@ -3319,8 +3322,7 @@
             console.log(response);
            $('.loading').css('display', 'none');
 
-            acchutangdagang = $(this).data("accHutang");
-            $('.acchutangdagang_po').val(acchutangdagang);
+           
             //setting jatuh tempo
              if(tanggal != '') {
                syaratkredit = parseInt(response.supplier[0].syarat_kredit);
@@ -4810,9 +4812,10 @@ $(document).ready(function(){
 ///////////////////////////////////////////////
 $('#tmbhdataitem').click(function(){
        cabang = $('.cabang').val();
+       a = 'I';
        $.ajax({
           type : "get",
-          data : {cabang},
+          data : {cabang,a},
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
@@ -4858,9 +4861,10 @@ $('#tmbhdataitem').click(function(){
 
     $('#tmbhdatapo').click(function(){
      cabang = $('.cabang').val();
+     a = 'PO';
        $.ajax({
           type : "get",
-          data : {cabang},
+          data : {cabang,a},
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     

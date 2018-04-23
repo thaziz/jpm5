@@ -82,11 +82,11 @@
             </tr>
             <tr>
               <td>Cabang Penyedia</td>
-              <td>
-                <select class="form-control cabang_penyedia" name="cabang_penyedia"> 
+              <td class="disabled">
+                <select class="form-control cabang" name="cabang"> 
                   @foreach($cabang as $val)
                     @if($val->kode == $data->pb_comp)
-                      <option selected="" value="$val->kode">{{$val->kode}} - {{$val->nama}}</option>
+                      <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                     @else
                       <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                     @endif
@@ -330,11 +330,12 @@ function append(p){
  $('.cari_stock').change(function(){
   var id = $(this).val();
   var par = $(this).parents('tr');
+ var cabang = $('.cabang').val();
 
 
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
-    data:'id='+id,
+    data:{id,cabang},
     success:function(response){
       
       if (response.data != null) {
@@ -381,10 +382,12 @@ $(document).ready(function(){
   $('.cari_stock').each(function(){
   var id = $(this).val();
   var par = $(this).parents('tr');
+ var cabang = $('.cabang').val();
+ console.log(cabang);
   console.log(id);
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
-    data:'id='+id,
+    data:{id,cabang},
     success:function(response){
       
       if (response.data != null) {
@@ -423,11 +426,12 @@ $(document).ready(function(){
  $('.cari_stock').change(function(){
   var id = $(this).val();
   var par = $(this).parents('tr');
+ var cabang = $('.cabang').val();
 
 
   $.ajax({
     url:baseUrl + '/pengeluaranbarang/cari_stock',
-    data:'id='+id,
+    data:{id,cabang},
     success:function(response){
       
       if (response.data != null) {

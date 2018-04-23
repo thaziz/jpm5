@@ -126,15 +126,15 @@
 
     cabang = $('.cabang').val();
     $.ajax({
-    	url : baseUrl + '/penerimaanbarang/valgudang',
+    	url : baseUrl + '/penerimaanbarang/cekgudang',
     	data :{cabang},
-    	type : "GET",
+    	type : "POST",
     	dataType : 'json',
-    	success : function(response){
+    	success : function(data){
 
     		   $('.gudang').empty();
                   $('.gudang').append(" <option value=''>  -- Pilih Gudang -- </option> ");
-	            $.each(response.gudang, function(i , obj) {
+	            $.each(data.gudang, function(i , obj) {
 	      //        console.log(obj.is_kodeitem);
 	              $('.gudang').append("<option value="+obj.mg_id+"> <h5> "+obj.mg_namagudang+" </h5> </option>");
 	            })
@@ -144,14 +144,13 @@
             tablepenerimaan.clear().draw();            	
 									
             var n = 1;
-            for(var j = 0; j < data.terima.length; j++){   
-	          
-	            console.log('a');          
+             for(var j = 0; j < data.terimasaja.length; j++){   
+	         
 	                var html2 = "<tr> <td>"+ n +" </td>" +
-	                                "<td>  "+data.terima[j].bt_notransaksi+"</td>" +
-									"<td>  "+data.terima[j].nama_supplier+" </td>" +
-									"<td> <span class='label label-info'> "+data.terima[j].bt_statuspenerimaan+" </span> </td>" + 
-									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terima[j].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a> &nbsp;" +
+	                                "<td>  "+data.terimasaja[j][0].bt_notransaksi+"</td>" +
+									"<td>  "+data.terimasaja[j][0].nama_supplier+" </td>" +
+									"<td> <span class='label label-info'> "+data.terimasaja[j][0].bt_statuspenerimaan+" </span> </td>" + 
+									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terimasaja[j][0].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a> &nbsp;" +
 									"</td>";                        
 	                                  	                                  
 	                              html2 +=  "</tr>";
@@ -183,16 +182,15 @@
   			success : function (data){
   			var tablepenerimaan = $('#addColumn').DataTable();
             tablepenerimaan.clear().draw();            	
-									
+			console.log(data.terimasaja.length);
             var n = 1;
-            for(var j = 0; j < data.terima.length; j++){   
-	          
-	            console.log('a');          
+            for(var j = 0; j < data.terimasaja.length; j++){   
+	                
 	                var html2 = "<tr> <td>"+ n +" </td>" +
-	                                "<td>  "+data.terima[j].bt_notransaksi+"</td>" +
-									"<td>  "+data.terima[j].nama_supplier+" </td>" +
-									"<td> <span class='label label-info'> "+data.terima[j].bt_statuspenerimaan+" </span> </td>" + 
-									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terima[j].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a> &nbsp;" +
+	                                "<td>  "+data.terimasaja[j][0].bt_notransaksi+"</td>" +
+									"<td>  "+data.terimasaja[j][0].namasupplier+" </td>" +
+									"<td> <span class='label label-info'> "+data.terimasaja[j][0].bt_statuspenerimaan+" </span> </td>" + 
+									"<td>      <a class='btn btn-sm btn-success' href={{url('penerimaanbarang/detailterimabarang')}}"+'/' +data.terimasaja[j][0].bt_id+"> <i class='fa fa-arrow-right' aria-hidden='true'></i></a> &nbsp;" +
 									"</td>";                        
 	                                  	                                  
 	                              html2 +=  "</tr>";

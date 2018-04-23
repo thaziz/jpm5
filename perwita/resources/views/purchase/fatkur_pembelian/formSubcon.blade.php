@@ -69,6 +69,13 @@
 		</td>
 	  </tr>
 	  <tr>
+	 	<td style="width: 100px">Jenis Angkutan DO</td>
+	 	<td width="10">:</td>
+		<td width="200">
+			<input type="text" readonly="" class="form-control m_jenis_angkutan_do" >
+		</td>
+	 </tr>
+	  <tr>
 		<td style="width: 100px">Tanggal</td>
 		<td width="10">:</td>
 		<td width="200">
@@ -99,6 +106,14 @@
 	 	<td width="10">:</td>
 		<td width="200">
 			<input type="text" readonly="" class="form-control m_do_tujuan" >
+		</td>
+	 </tr>
+
+	 <tr>
+	 	<td style="width: 100px">Tipe Kendaraan DO</td>
+	 	<td width="10">:</td>
+		<td width="200">
+			<input type="text" readonly="" class="form-control m_tipe_kendaraan" >
 		</td>
 	 </tr>
 	 <tr>
@@ -242,7 +257,7 @@
 {{-- MODAL TT SUBCON --}}
 
 <div class="modal fade" id="modal_tt_subcon" tabindex="-1" role="dialog"  aria-hidden="true">
-  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
+  <div class="modal-dialog" role="document" style="min-width: 1000px !important; min-height: 1000px">
     <div class="modal-content">
       <div class="modal-header">
         <h2 class="modal-title">Form Tanda Terima</h2>
@@ -353,27 +368,9 @@
 </div>
 
 
-<!-- modal DO-->
-<div id="modal_do" class="modal" >
-  <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Pilih Nomor DO</h4>
-      </div>
-      <div class="modal-body">
-            <form class="form-horizontal  tabel_subcon_detail">
-               
-            </form>
-          </div>
-          <div class="modal-footer">
-          </div>
-    </div>
-  </div>
-</div>
 
 <!-- modal DO-->
-<div id="modal_do" class="modal" >
+<div id="modal_do" class="modal fade" >
   <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
     <div class="modal-content">
       <div class="modal-header">
@@ -432,6 +429,30 @@ $('.m_do_subcon').focus(function(){
 	    })
 })
 
+$('.nota_subcon').focus(function(){
+	  var  selectOutlet = $('.nama_sc').val();
+	  if (selectOutlet == '0') {
+	  	toastr.warning('Harap Pilih Customer');
+	  	return 1;
+	  }
+
+	  var  cabang     = $('.cabang').val();
+
+	  $.ajax({
+	      url:baseUrl +'/fakturpembelian/cari_kontrak_subcon',
+	      data: {selectOutlet,cabang},
+	      success:function(data){
+	        $('.subcon_modal').html(data);
+			$('#modal_subcon').modal('show');
+	      },error:function(){
+	        toastr.warning('Terjadi Kesalahan');
+	      }
+	    })
+})
+
+
+
+
 function pilih_do_subcon(par) {
 	var d_nomor_do = $(par).find('.d_nomor_do').val();
 	var d_tanggal = $(par).find('.d_tanggal').val();
@@ -441,19 +462,50 @@ function pilih_do_subcon(par) {
 	var d_tujuan = $(par).find('.d_tujuan').val();
 	var d_asal_text = $(par).find('.d_asal_text').text();
 	var d_tujuan_text = $(par).find('.d_tujuan_text').text();
-	console.log(d_asal_text);
-	console.log(d_satuan);
+	var d_jenis_tarif_text = $(par).find('.d_jenis_tarif_text').text();
+	var d_tipe_angkutan_text = $(par).find('.d_tipe_angkutan_text').text();
+
 	$('.m_do_subcon').val(d_nomor_do);
 	$('.m_do_tanggal').val(d_tanggal);
 	$('.m_do_jumlah').val(d_jumlah);
 	$('.m_satuan').text(d_satuan);
 	$('.m_do_asal').val(d_asal_text);
 	$('.m_do_tujuan').val(d_tujuan_text);
+	$('.m_jenis_angkutan_do').val(d_jenis_tarif_text);
+	$('.m_tipe_kendaraan').val(d_tipe_angkutan_text);
+	
 	$('#modal_do').modal('hide');
 
 
 
 
+}
+
+function pilih_kontrak(asd){
+	var id = $(asd).find('.id_kontrak').val();
+	// var dt = $(asd).find('.dt_kontrak').val();
+
+	$.ajax({
+		url : baseUrl +'/fakturpembelian/pilih_kontrak',
+	    data: 'id='+id,
+	    type:'get',
+	    dataType:'json',
+	    success:function(response){
+	    	console.log(response.subcon_dt[0].ksd_nota);
+	    	$('.nota_subcon').val(response.subcon_dt[0].ksd_nota);
+	    	$('.sc_biaya_subcon').val(response.subcon_dt[0].ksd_harga);
+	    	$('.sc_biaya_subcon_dt').val(response.subcon_dt[0].ksd_harga2);
+	    	$('.id_subcon').val(response.subcon_dt[0].ksd_id);
+	    	$('.dt_subcon').val(response.subcon_dt[0].ksd_dt);
+	    	$('.sc_tarif_subcon').val(response.subcon_dt[0].ksd_jenis_tarif);
+	    	$('.kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
+	    	$('.table_filter_subcon').removeClass('disabled');
+
+	    
+	    }
+	})
+
+	$('#modal_subcon').modal('hide');
 }
 
 function cariSUB(){
