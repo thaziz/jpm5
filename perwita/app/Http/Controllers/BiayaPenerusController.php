@@ -44,7 +44,8 @@ use Auth;
 
 class BiayaPenerusController extends Controller
 {
-	public function getdatapenerus(){		
+	public function getdatapenerus(){
+		
 			$data = DB::table('akun')
 					  ->get();
 			$date = Carbon::now()->format('d/m/Y');
