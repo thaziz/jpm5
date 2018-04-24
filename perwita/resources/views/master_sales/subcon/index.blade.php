@@ -94,6 +94,9 @@
                             <th> Alamat </th>
                             <th> Telpon </th>
                             <th> Fax </th>
+                            <th> Persentase </th>
+                            <th> acc </th>
+                            <th> csf </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -113,7 +116,6 @@
                         <form class="form-horizontal  kirim">
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                             <tbody>
-                                <input type="hidden" name="id_subcon">
                                 <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
                                     <td>
@@ -121,6 +123,7 @@
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
+                                        <input type="hidden" name="id_subcon">
                                     </td>
                                 </tr>
                                 <tr>
@@ -170,10 +173,42 @@
                                         <input type="text" class="form-control" name="ed_email" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
+
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kontak Person</td>
                                     <td colspan="3">
                                         <input type="text" class="form-control" name="ed_kontak_person" style="text-transform: uppercase" >
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Acc Akun</td>
+                                    <td colspan="3">
+                                      <select name="acc_code"  class="form-control acc_code chosen-select-width">
+                                          <option value="0">Pilih - Akun</option>
+                                        @foreach($akun as $i)
+                                          <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+                                        @endforeach
+                                      </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Csf Akun</td>
+                                    <td colspan="3">
+                                      <select name="csf_code" class="form-control csf_code chosen-select-width">
+                                          <option value="0">Pilih - Akun</option>
+                                        @foreach($akun as $i)
+                                          <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+                                          @endforeach
+                                      </select>  
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Persentase</td>
+                                    <td colspan="3">
+                                      <div class="input-group " style="width: 100%;text-align: right">
+                                        <input type="text" class="form-control" readonly="" value="80" name="persen" style="text-transform: uppercase;text-align: right" >
+                                        <span class="input-group-addon"><i class="fa fa-percent"></i></span>
+                                      </div>
                                     </td>
                                 </tr>
                                 
@@ -234,6 +269,9 @@
             { "data": "alamat" },
             { "data": "telpon" },
             { "data": "fax" },
+            { "data": "persen" },
+            { "data": "acc_code" },
+            { "data": "csf_code" },
             { "data": "button" },
             ]
         });
@@ -262,9 +300,13 @@
         $("input[name='ed_nomor_kontrak']").val('');
         $("input[name='ed_penanggung_jawab']").val('');
         $("input[name='ed_alamat']").val('');
+        $(".acc_code").val('0').trigger('chosen:updated');
+        $(".csf_code").val('0').trigger('chosen:updated');
         $("input[name='ed_telpon']").val('');
         $("input[name='ed_fax']").val('');
         $("input[name='ed_kontak_person']").val('');
+        $("input[name='persen']").val('80');
+        $("input[name='persen']").prop('readonly',true);
         $("input[name='ed_email']").val('');
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
@@ -283,6 +325,7 @@
             dataType:'json',
             success: function(data, textStatus, jqXHR)
             {
+                console.log(data.acc_code);
                 $("input[name='crud']").val('E');
                 $("input[name='ed_kode']").val(data.kode);
                 $("input[name='id_subcon']").val(data.id_subcon);
@@ -292,6 +335,10 @@
                 $("input[name='ed_nomor_kontrak']").val(data.nomor_kontrak);
                 $("input[name='ed_penanggung_jawab']").val(data.penanggung_jawab);
                 $("input[name='ed_alamat']").val(data.alamat);
+                $("input[name='persen']").val(data.persen);
+                $(".acc_code").val(data.acc_code).trigger('chosen:updated');
+                $(".csf_code").val(data.csf_code).trigger('chosen:updated');
+                $("input[name='persen']").prop('readonly',false);
                 $("input[name='ed_telpon']").val(data.telpon);
                 $("input[name='ed_fax']").val(data.fax);
                 $("input[name='ed_email']").val(data.email);
@@ -335,6 +382,7 @@
               "showMethod": "fadeIn",
               "hideMethod": "fadeOut"
             }
+            return 1;
        }
        else if (c== '' || c == null)  {
             Command: toastr["warning"]("Nomor Kontrak Tidak Boleh Kosong", "Peringatan!")
@@ -356,6 +404,7 @@
               "showMethod": "fadeIn",
               "hideMethod": "fadeOut"
             }
+            return 1;
        }
        else if (d== '' || d == null)  {
             Command: toastr["warning"]("Penanggung Jawab Tidak Boleh Kosong", "Peringatan!")
@@ -377,6 +426,7 @@
               "showMethod": "fadeIn",
               "hideMethod": "fadeOut"
             }
+            return 1;
        }
        else if (e== '' || e == null)  {
             Command: toastr["warning"]("Alamat Tidak Boleh Kosong", "Peringatan!")
@@ -398,6 +448,7 @@
               "showMethod": "fadeIn",
               "hideMethod": "fadeOut"
             }
+            return 1;
        }
 
 

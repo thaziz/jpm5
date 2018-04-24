@@ -36,7 +36,7 @@ class subcon_Controller extends Controller
     }
 
     public function save_data (Request $request) {
-        // dd($request);
+        // dd($request->all());
         $simpan='';
         $crud = $request->crud;
 
@@ -89,6 +89,9 @@ class subcon_Controller extends Controller
                 'kontak_person' => strtoupper($request->ed_kontak_person),
                 'email' => strtoupper($request->ed_email),
                 'keterangan' => strtoupper($request->ed_keterangan),
+                'persen' => (integer)$request->persen,
+                'acc_code' => $request->acc_code,
+                'csf_code' => $request->csf_code,
             );
             $simpan = DB::table('subcon')->insert($data);
         }elseif ($crud == 'E') {
@@ -105,6 +108,9 @@ class subcon_Controller extends Controller
                 'kontak_person' => strtoupper($request->ed_kontak_person),
                 'email' => strtoupper($request->ed_email),
                 'keterangan' => strtoupper($request->ed_keterangan),
+                'persen' => (integer)$request->persen,
+                'acc_code' => $request->acc_code,
+                'csf_code' => $request->csf_code,
             );
             $simpan = DB::table('subcon')->where('kode', $request->ed_kode_old)->update($data);
         }
@@ -135,7 +141,10 @@ class subcon_Controller extends Controller
 
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
-        return view('master_sales.subcon.index',compact('kota'));
+        $akun = DB::table('d_akun')
+                  ->where('id_akun','like','2'.'%')
+                  ->get();
+        return view('master_sales.subcon.index',compact('kota','akun'));
     }
 
 }
