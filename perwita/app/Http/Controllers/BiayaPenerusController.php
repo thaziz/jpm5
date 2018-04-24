@@ -44,7 +44,8 @@ use Auth;
 
 class BiayaPenerusController extends Controller
 {
-	public function getdatapenerus(){		
+	public function getdatapenerus(){
+		
 			$data = DB::table('akun')
 					  ->get();
 			$date = Carbon::now()->format('d/m/Y');
@@ -1633,7 +1634,7 @@ class BiayaPenerusController extends Controller
 
 		}
 
-		public function pilih_kontrak(request $request){
+	public function pilih_kontrak(request $request){
 
 		$kontrak = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
@@ -1676,7 +1677,56 @@ class BiayaPenerusController extends Controller
 			return Response()->json([
 								'subcon_dt' => $fix
 							   ]);
+	}
+
+	public function pilih_kontrak_all($value='')
+	{
+		$kontrak = DB::table('kontrak_subcon_dt')
+				 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
+				 ->join('tipe_angkutan','kode','=','ksd_angkutan')
+				 ->where('ksd_id',$request->id)
+				 ->orderBy('ksd_ks_dt','ASC')
+				 ->get();
+
+		$asal = DB::table('kontrak_subcon_dt')
+					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
+					 ->join('kota','id','=','ksd_asal')
+					 ->select('nama as asal')
+					 ->where('ksd_id',$request->id)
+					 ->orderBy('ksd_ks_dt','ASC')
+					 ->get();
+
+		$tujuan = DB::table('kontrak_subcon_dt')
+					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
+					 ->join('kota','id','=','ksd_tujuan')
+					 ->select('nama as tujuan')
+					 ->where('ksd_id',$request->id)
+					 ->orderBy('ksd_ks_dt','ASC')
+					 ->get();
+
+
+
+		
+
+		$fix=[];
+		for ($i=0; $i < count($kontrak); $i++) { 
+			$fix[$i]['ksd_id'] = $kontrak[$i]->ksd_ks_id;
+			$fix[$i]['ks_nama'] = $kontrak[$i]->ks_nama;
+			$fix[$i]['ksd_dt'] = $kontrak[$i]->ksd_ks_dt;
+			$fix[$i]['ksd_nota'] = $kontrak[$i]->ks_nota;
+			$fix[$i]['ksd_harga'] = number_format($kontrak[$i]->ksd_harga,2,',','.'	); 
+			$fix[$i]['ksd_harga2'] = $kontrak[$i]->ksd_harga; 
+			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
+			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
+			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
+			$fix[$i]['ksd_angkutan'] = $kontrak[$i]->nama;
+			$fix[$i]['ksd_id_angkutan'] = $kontrak[$i]->kode;
 		}
+			return Response()->json([
+								'kontrak' => $fix,
+								'do' => $fix,
+							   ]);
+	}
 
 	public function subcon_save(request $request){
 		
@@ -1940,13 +1990,25 @@ class BiayaPenerusController extends Controller
 
 public function cari_do_subcon(request $request)
 {
-	$data = DB::table('delivery_order')
+	if (isset($request->array_do)) {
+		$data = DB::table('delivery_order')
+			  ->leftjoin('pembayaran_subcon_dt','pbd_resi','=','nomor')
+			  ->where('status_kendaraan','SUB')
+			  ->where('kode_subcon',$request->selectOutlet)
+			  ->where('kode_cabang',$request->cabang)
+			  ->whereNotIN('nomor',$request->array_do)
+			  ->where('pbd_resi',null)
+			  ->get();
+	}else{
+		$data = DB::table('delivery_order')
 			  ->leftjoin('pembayaran_subcon_dt','pbd_resi','=','nomor')
 			  ->where('status_kendaraan','SUB')
 			  ->where('kode_subcon',$request->selectOutlet)
 			  ->where('kode_cabang',$request->cabang)
 			  ->where('pbd_resi',null)
 			  ->get();
+	}
+	
 
 	$jenis_tarif = DB::table('jenis_tarif')
 					 ->get();
