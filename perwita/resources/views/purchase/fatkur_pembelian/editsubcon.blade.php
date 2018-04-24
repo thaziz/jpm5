@@ -361,7 +361,7 @@ No Faktur
   <hr>
       <button type="button" class="btn btn-primary pull-right save_subcon disabled" id="save_subcon" onclick="save_subcon()"><i class="fa fa-save"></i> Simpan Data</button>
       <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print_subcon disabled" id="print_subcon" onclick="print_penerus()"><i class="fa fa-print"></i> Print</button>
-      <button type="button" style="margin-right: 20px" class="btn btn-warning pull-left print-penerus" id="print-penerus" onclick="print_penerus_tt()" ><i class="fa fa-print"></i> Print Tanda Terima</button>
+      <button type="button" style="margin-right: 20px" class="btn btn-warning pull-right print-penerus" id="print-penerus" onclick="print_penerus_tt()" ><i class="fa fa-print"></i> Print Tanda Terima</button>
 
 
       <table class="table table-bordered table-hover tabel_subcon" style="font-size: 12px;">
