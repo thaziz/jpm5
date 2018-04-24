@@ -2108,7 +2108,7 @@ class LaporanMasterController extends Controller
 
    public function kartupiutang(){
    		
-   		 $data_i = DB::select("SELECT i_kode_customer from invoice  group by i_kode_customer order by i_kode_customer");
+   		 $data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
    		 $data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer from invoice group by i_nomor order by i_nomor");
    		
 

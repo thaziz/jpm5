@@ -63,28 +63,6 @@
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                        <tr>
-                          {{--   <th style="width: 100px; padding-top: 16px"> Satuan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($sat as $sat)
-                              <option value="{{ $sat->kode }}">{{ $sat->kode }} - {{ $sat->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td>
- --}}
-                           {{-- <th style="width: 100px; padding-top: 16px"> Customer </th>
-                          <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option selected="">- Pilih Customer -</option>
-                            @foreach ($cus as $c)
-                              <option value="{{ $c->nama }}" >{{ $c->kode }} - {{ $c->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td> --}}
-                        </tr>
-                       
                       <br>
                       </table>
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
@@ -105,12 +83,13 @@
                     <tbody>
                       @foreach ($data_i as $a => $element)
                          <tr>
-                           <td colspan="6">{{ $data_i[$a]->i_kode_customer }}</td>
+                           <td colspan="6">{{ $data_i[$a]->i_kode_customer }}  - {{ $data_i[$a]->cnama }}</td>
                          </tr>
                          @foreach ($data as $e => $element)
                       <tr style="text-align: right;background-color: #e6ffda;">
                           
                             @if ($data_i[$a]->i_kode_customer == $data[$e]->cutomer)
+
                                     <td><input type="hidden" value="{{ $data[$e]->kode }}" name="nomor">{{ $data[$e]->kode }}</td>
                                     <td>{{ $data[$e]->tanggal }}</td>
                                     <td align="left">{{ $data[$e]->keterangan }}</td>
@@ -118,6 +97,7 @@
                                     @if ($data[$e]->flag == 'D' or substr($data[$e]->kode,0,3) == 'INV')
                                       {{ $data[$e]->total }}
                                       <input type="hidden" class="debet" value="{{ $data[$e]->total }}" name="">
+                                      <input type="hidden" class="debet_percabang" value="{{ $data[$e]->total }}" name="">
                                     @else 
                                       0
                                       <input type="hidden" class="debet" value="0" name="">
@@ -136,15 +116,12 @@
 
                                     <td ><input type="text" name="" readonly="" class="saldo" style="text-align: right"></td>
                             @endif 
-                           {{--  @if ($data_i[$a]->i_kode_customer == $data_p[$e]->i_kode_customer)
-                                  <td>{{ $data_p[$e]->i_nomor }}</td>
-                                  <td>{{ $data_p[$e]->i_tanggal }}</td>
-                                  <td>{{ $data_p[$e]->i_keterangan }}</td>
-                            @endif --}}
-
                       </tr>
                         @endforeach
-                        
+                          <tr>
+                            <td colspan="3">Total</td>
+                            <td class="debet_perc"></td>
+                          </tr>
                     @endforeach
                     <tr>
                           <th colspan="3" align="right">total</th>
@@ -189,7 +166,14 @@
 
     var table;
    
-   
+   var awal = 0;
+  $('.debet_perc').each(function(){
+    var total = parseInt($(this).val());
+    awal += total;
+    console.log(awal);
+  });
+  $('.debet_perc').val(accounting.formatMoney(awal,"",0,'.',','));
+
   var awal = 0;
   $('.debet').each(function(){
     var total = parseInt($(this).val());
