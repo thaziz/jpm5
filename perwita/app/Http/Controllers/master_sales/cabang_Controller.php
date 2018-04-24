@@ -53,8 +53,16 @@ class cabang_Controller extends Controller
     public function save_data (Request $request) {
         $simpan='';
         $crud = $request->crud;
+
+        $kode = DB::table('cabang')->max('kode');
+        if ($kode == null or 0) {
+            $kode = 001;
+        }else{
+            $kode = $kode;
+            $kode = str_pad($kode+1, 3, '0', STR_PAD_LEFT);
+        }
         $data = array(
-                'kode' => strtoupper($request->ed_kode),
+                'kode' => $kode,
                 'nama' => strtoupper($request->ed_nama),
                 'id_kota' => strtoupper($request->cb_kota),
                 'alamat' => strtoupper($request->ed_alamat),

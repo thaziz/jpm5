@@ -2108,15 +2108,18 @@ class LaporanMasterController extends Controller
 
    public function kartupiutang(){
    		
-   		 $data_i = DB::select('SELECT i_kode_customer from invoice group by i_kode_customer order by i_kode_customer');
-   		 $data_p = DB::select('SELECT i_kode_customer,count(i_nomor) as do,count(i_nomor) as non from invoice group by i_kode_customer order by i_kode_customer');
+   		 $data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
+   		 $data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer from invoice group by i_nomor order by i_nomor");
    		
 
-   		$a = DB::table('invoice')->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
+   		$a = DB::table('invoice')
+   			->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
 
-   		$b = DB::table('cn_dn_penjualan')->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
+   		$b = DB::table('cn_dn_penjualan')
+   			->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
 
-   		$c = DB::table('kwitansi')->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
+   		$c = DB::table('kwitansi')
+   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
 
    		$d = DB::table('kwitansi')
    			->select('k_create_by','nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
@@ -2124,7 +2127,7 @@ class LaporanMasterController extends Controller
    			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
 
 
-   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
+   		 $data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
 
    		/*return*/ $ds = DB::table('kwitansi')
    			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto','nomor')
