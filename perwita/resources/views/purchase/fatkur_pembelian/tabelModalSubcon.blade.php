@@ -12,7 +12,7 @@
 	  @foreach( $fix as $val )
 	  <tr style="cursor: pointer;" onclick="pilih_kontrak(this)">
 		<td style="width: 20px; text-align: center;">
-			{{$val['ksd_id']}}
+			{{$val['ksd_nota']}}
 			<input type="hidden" class="id_kontrak" value="{{$val['ksd_id']}}">
 		</td>
 		<td><p class="ksd_asal">{{$val['ksd_asal']}}</p></td>

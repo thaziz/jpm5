@@ -49,11 +49,11 @@
 <div class="col-sm-12 detail_subcon"  >
 	<div class="col-sm-5 table_filter_subcon"   >
     <form class="form">
-	  <table class="table">
+	  <table class="table table_resi">
 	  	<div align="center" style="width: 100%;">	
 			<h3 >Form Resi Subcon</h3>
 		</div>	
-	  <tr>
+	  <tr hidden="">
 		<td style="width: 100px">Nomor Seq</td>
 		<td width="10">:</td>
 		<td width="200">
@@ -121,7 +121,7 @@
     </form>
 </div>
 	<div class="col-sm-5" style="margin-left: 100px;">
-	<table class="table" >
+	<table class="table table_kontrak" >
 	     <div align="center" style="width: 100%;" >	
 			<h3 >Form Kontrak Subcon</h3>
 		 </div>	
@@ -185,7 +185,7 @@
 		  </tr>
 		   <tr>
 		 	<td colspan="3">
-		 		<button class="btn btn-info modal_tt_subcon pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+		 		<button class="btn btn-info modal_tt_subcon disabled pull-left" style="margin-right: 10px;" type="button" data-toggle="modal" data-target="#modal_tt_outlet" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
 			    <button type="button" class="btn btn-primary pull-right" onclick="cariSUB()"><i class="fa fa-plus">&nbsp;Append</i></button>
 		 	</td>
 		 </tr>
@@ -212,6 +212,8 @@
  <div class=" col-sm-12 tb_sb_hidden">
  	<h3>Tabel Detail Resi</h3>
  	<hr>
+	    <button type="button" class="btn btn-primary pull-right disabled" id="save-update" onclick="save_subcon()"><i class="fa fa-save"></i> Simpan Data</button>
+
 	    <table class="table table-bordered table-hover tabel_subcon">
 			<thead align="center">
 				<tr>
@@ -222,14 +224,13 @@
 				<th>Tujuan Subcon</th>
 				<th>Jenis Tarif</th>
 				<th>Keterangan</th>
-				<th width="50">Aksi</th>
+				<th width="100">Aksi</th>
 				</tr>
 			</thead> 
 			<tbody align="center" class="body-biaya">
 
 			</tbody>   	
 	    </table>
-	    <button type="button" class="btn btn-primary pull-right" id="save-update" onclick="save_subcon()" data-dismiss="modal">Simpan Data</button>
 	</div>
 	
 <div id="modal_subcon" class="modal fade" role="dialog">
@@ -419,7 +420,7 @@ $('.m_do_subcon').focus(function(){
 
 	  $.ajax({
 	      url:baseUrl +'/fakturpembelian/cari_do_subcon',
-	      data: {selectOutlet,cabang},
+	      data: {selectOutlet,cabang,array_do},
 	      success:function(data){
 	        $('.tabel_subcon_detail').html(data);
 			$('#modal_do').modal('show');
@@ -531,36 +532,43 @@ var sc_asal_subcon = $('.sc_asal_subcon').val();
 var sc_tujuan_subcon = $('.sc_tujuan_subcon').val();
 var sc_tarif_subcon = $('.sc_tarif_subcon').val();
 var sc__do_memo = $('.sc__do_memo').val();
-
-
+var m_seq = $('.m_seq').val();
+var id_subcon = $('.id_subcon').val();
 
 
 	    subcon.row.add([
-                  m_seq+'<input type="hidden" class="seq_sub sub_seq_'+m_seq+'"  value="'+m_seq+'" >',
+                  m_seq+'<input type="hidden" class="seq_sub sub_seq_'+m_do_subcon+'"  value="'+m_seq+'" >'+
+                  '<input type="hidden" class="d_ksd_id"  value="'+id_subcon+'" >',
 
-                  d_nomor_do+'<input type="hidden" class="dt_resi_subcon"  name="resi_subcon[]" value="'+d_nomor_do+'" >',
+                  m_do_subcon+'<input type="hidden" class="d_resi_subcon"  name="d_resi_subcon[]" value="'+m_do_subcon+'" >',
 
-                  sc_biaya_subcon+'<input type="hidden" name="harga_tarif[]" class="harga_tarif" value="'+sc_biaya_subcon_dt+'" >',
+                  sc_biaya_subcon+'<input type="hidden" name="d_harga_subcon[]" class="d_harga_subcon" value="'+sc_biaya_subcon_dt+'" >',
 
-                  sc_asal_subcon+'<input type="hidden" name="asal_tarif[]" class="asal_tarif" value="'+sc_asal_subcon+'" >',
+                  sc_asal_subcon+'<input type="hidden" name="d_asal_subcon[]" class="d_asal_subcon" value="'+sc_asal_subcon+'" >',
 
-                  sc_tujuan_subcon+'<input type="hidden" name="tujuan_tarif[]" class="tujuan_tarif" value="'+sc_tujuan_subcon+'" >',
+                  sc_tujuan_subcon+'<input type="hidden" name="d_tujuan_subcon[]" class="d_tujuan_subcon" value="'+sc_tujuan_subcon+'" >',
 
-                  sc_tarif_subcon+'<input type="hidden" name="jenis_tarif[]" class="jenis_tarif" value="'+sc_tarif_subcon+'" >',
+                  sc_tarif_subcon+'<input type="hidden" name="d_jenis_tarif_subcon[]" class="d_jenis_tarif_subcon" value="'+sc_tarif_subcon+'" >',
 
-                  sc__do_memo+'<input type="hidden" name=ket_subcon[]" value="'+sc__do_memo+'" >',
-
-                  '<a class="btn btn-danger fa fa-trash" align="center" onclick="hapus_subcon(this)" title="hapus"></i></a>'
+                  sc__do_memo+'<input type="hidden" class="d_memo_subcon" name=d_memo_subcon[]" value="'+sc__do_memo+'" >',
+                  '<div class="btn-group">'+
+                  '<a class="btn btn-sm btn-warning fa fa-pencil" align="center" onclick="edit_subcon(this)" title="edit"></i></a>'+
+                  '<a class="btn btn-sm btn-danger fa fa-trash" align="center" onclick="hapus_subcon(this)" title="hapus"></i></a>'+
+                  '<div>'
             ]).draw( false );   
+	    m_seq++;
 
-	  	array_do.push(d_nomor_do);
-	   	$('.')
+	  	array_do.push(m_do_subcon);
+	   	$('.table_resi input').val('');
+	   	$('.table_kontrak input').val('');
+	   	$('.m_seq').val(m_seq);
+	   	toastr.success('Append Berhasil, Silahkan Membuat Form Tanda Terima.');
 
 }
 
 
 function hapus_subcon(o){
-    var ini = o.parentNode.parentNode;
+    var ini = $(o).parents('tr');
     var cari = $(ini).find('.dt_resi_subcon').val();
     var temp1=0;
     var cariIndex = sequence.indexOf(cari);
@@ -568,6 +576,41 @@ function hapus_subcon(o){
     
  
     subcon.row(ini).remove().draw(false);
+}
+
+function edit_subcon(a) {
+    var par = $(a).parents('tr');
+	var d_resi_subcon = $(par).find('.d_resi_subcon');
+	var d_ksd_id = $(par).find('.d_ksd_id');
+
+	$.ajax({
+		url : baseUrl +'/fakturpembelian/pilih_kontrak_all',
+	    data: 'id='+id,
+	    type:'get',
+	    dataType:'json',
+	    success:function(response){
+	    	console.log(response.kontrak.ksd_nota);
+	    	$('.nota_subcon').val(response.kontrak.ksd_nota);
+	    	$('.sc_biaya_subcon').val(response.kontrak.ksd_harga);
+	    	$('.sc_biaya_subcon_dt').val(response.kontrak.ksd_harga2);
+	    	$('.id_subcon').val(response.kontrak.ksd_id);
+	    	$('.dt_subcon').val(response.kontrak.ksd_dt);
+	    	$('.sc_tarif_subcon').val(response.kontrak.ksd_jenis_tarif);
+	    	$('.sc_asal_subcon').val(response.kontrak.ksd_asal);
+	    	$('.sc_tujuan_subcon').val(response.kontrak.ksd_tujuan);
+	    	$('.sc_kendaraan_subcon').val(response.kontrak.ksd_angkutan);
+	    	$('.table_filter_subcon').removeClass('disabled');
+
+	    	$('.m_do_subcon').val(response.do.);
+			$('.m_do_tanggal').val(response.do.);
+			$('.m_do_jumlah').val(response.do.);
+			$('.m_satuan').text(response.do.);
+			$('.m_do_asal').val(response.do.);
+			$('.m_do_tujuan').val(response.do.);
+			$('.m_jenis_angkutan_do').val(response.do.);
+			$('.m_tipe_kendaraan').val(response.do.);
+	    }
+	})
 }
 
 
