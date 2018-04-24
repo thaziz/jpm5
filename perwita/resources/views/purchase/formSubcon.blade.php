@@ -544,15 +544,6 @@ function save_subcon(){
  });
 
 
-var saldo = 0;
-
-$('.debet').each(function(){
-	var par = $(this).parents('tr');
-	var kredit = $(par).find('.kredit').val();
-	var hasil = $(this).val() - kredit;
-	hasil += saldo;
-	$('.saldo').val(hasil);
-})
 
 
 </script>

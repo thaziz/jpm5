@@ -1575,7 +1575,7 @@ class BiayaPenerusController extends Controller
 
 			$subcon = DB::table('subcon')
 					  ->get();
-			$akun_biaya = DB::table('akun')
+			$akun_biaya = DB::table('d_akun')
 					  ->get();
 			$kota   = DB::table('kota')
 					->get();
@@ -1679,12 +1679,13 @@ class BiayaPenerusController extends Controller
 							   ]);
 	}
 
-	public function pilih_kontrak_all($value='')
+	public function pilih_kontrak_all(request $request)
 	{
+		
 		$kontrak = DB::table('kontrak_subcon_dt')
 				 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 				 ->join('tipe_angkutan','kode','=','ksd_angkutan')
-				 ->where('ksd_id',$request->id)
+				 ->where('ksd_id',$request->d_ksd_id)
 				 ->orderBy('ksd_ks_dt','ASC')
 				 ->get();
 
@@ -1692,7 +1693,7 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_asal')
 					 ->select('nama as asal')
-					 ->where('ksd_id',$request->id)
+					 ->where('ksd_id',$request->d_ksd_id)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
@@ -1700,13 +1701,53 @@ class BiayaPenerusController extends Controller
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_tujuan')
 					 ->select('nama as tujuan')
-					 ->where('ksd_id',$request->id)
+					 ->where('ksd_id',$request->d_ksd_id)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
 
 
+		$do     = DB::table('delivery_order')
+					->where('nomor',$request->d_resi_subcon)
+					->first();
 
-		
+
+		$jenis_tarif = DB::table('jenis_tarif')
+						 ->get();
+
+		$kota = DB::table('kota')
+			  ->get();
+
+		$tipe_angkutan = DB::table('tipe_angkutan')
+			  ->get();
+
+		for ($i=0; $i < count($jenis_tarif); $i++) { 
+
+			if ((integer)$do->jenis_tarif == $jenis_tarif[$i]->jt_id) {
+				$do->nama_tarif = $jenis_tarif[$i]->jt_nama_tarif;
+			}
+		}
+
+
+		for ($i=0; $i < count($kota); $i++) { 
+
+			if ((integer)$do->id_kota_asal == $kota[$i]->id ) {
+				$do->nama_asal = $kota[$i]->nama;
+			}
+
+			if ((integer)$do->id_kota_tujuan == $kota[$i]->id ) {
+				$do->nama_tujuan = $kota[$i]->nama;
+			}
+
+		}
+
+		for ($i=0; $i < count($tipe_angkutan); $i++) { 
+			if ((integer)$do->kode_tipe_angkutan == $tipe_angkutan[$i]->kode) {
+				$do->nama_angkutan = $tipe_angkutan[$i]->nama;
+			}
+		}
+
+		$do->tanggal = carbon::parse($do->tanggal)->format('d/m/Y');
+
 
 		$fix=[];
 		for ($i=0; $i < count($kontrak); $i++) { 
@@ -1724,12 +1765,116 @@ class BiayaPenerusController extends Controller
 		}
 			return Response()->json([
 								'kontrak' => $fix,
-								'do' => $fix,
+								'do' => $do,
 							   ]);
 	}
 
 	public function subcon_save(request $request){
-		
+
+   		return DB::transaction(function() use ($request) {  
+   			dd($request->all());
+			$tgl_biaya_head = carbon::parse(str_replace('/', '-', $request->tgl_biaya_head))->format('Y-m-d');
+
+			$total_subcon = filter_var($request->total_subcon, FILTER_SANITIZE_NUMBER_FLOAT);
+
+			$cari_tt = DB::table('form_tt')
+						 ->where('tt_nofp',$request->nofaktur)
+						 ->first();
+			$cari_id = DB::table('faktur_pembelian')
+						 ->max('fp_idfaktur');
+
+			if ($cari_id == null) {
+				$cari_id = 1;
+			}else{
+				$cari_id += 1;
+			}
+			$valid = DB::table('faktur_pembelian')
+						 ->where('fp_nofaktur',$request->nofaktur)
+						 ->first();
+
+			if ($valid == null) {
+
+				$save = DB::table('faktur_pembelian')->insert([
+							'fp_idfaktur'		=> $cari_id,
+							'fp_nofaktur'		=> $request->nofaktur,
+							'fp_tgl'			=> $tgl_biaya_head,
+							'fp_jenisbayar' 	=> 9,
+							'fp_comp'			=> $request->cabang,
+							'created_at'		=> Carbon::now(),
+							'fp_keterangan'		=> $request->keterangan_subcon,
+							'fp_status'			=> 'Released',
+							'fp_noinvoice'		=> $request->invoice_subcon,
+							'fp_pending_status'	=> 'PENDING',
+							'fp_supplier'		=> $request->nama_subcon,
+							'fp_netto'			=> round($request->total_subcon,2),
+							'fp_sisapelunasan'  => round($request->total_subcon,2),
+							'fp_edit'			=> 'UNALLOWED',
+							'fp_jatuhtempo'		=> carbon::parse(str_replace('/', '-', $request->tempo_subcon))->format('Y-m-d'),
+							'fp_idtt'			=> $cari_tt->tt_idform,
+							'created_by'  		=> Auth::user()->m_username,
+							'updated_by'  		=> Auth::user()->m_username,
+						]);
+
+				$id_pb = DB::table('pembayaran_subcon')
+						 ->max('pb_id');
+
+				if ($id_pb == null) {
+					$id_pb = 1;
+				}else{
+					$id_pb += 1;
+				}
+
+				$subcon = DB::table('kontrak_subcon')
+							->where('ks_nama',$request->nama_subcon)
+							->first();
+
+				$save = DB::table('pembayaran_subcon')->insert([
+							  'pb_id'  			  => $id_pb,
+							  'pb_faktur'  		  => $request->nofaktur,
+							  'pb_status'  		  => 'Released',
+							  'pb_kode_subcon'    => $request->nama_subcon,
+							  'pb_keterangan' 	  => $request->keterangan_subcon,
+							  'updated_at' 		  => Carbon::now(),
+							  'created_at' 	      => Carbon::now(),
+							  'pb_acc'	      	  => $subcon->acc_kode,
+							  'pb_csf'	 		  => $subcon->csf_kode,
+						]);
+				for ($i=0; $i < count($request->d_resi_subcon); $i++) { 
+					$id_pbd = DB::table('pembayaran_subcon_dt')
+						 ->max('pbd_id');
+
+					if ($id_pbd == null) {
+						$id_pbd = 1;
+					}else{
+						$id_pbd += 1;
+					}
+
+					$cari_do = DB::table('delivery_order')
+								 ->where('nomor',$request->d_resi_subcon[$i])
+								 ->first();
+
+					  
+					$save = DB::table('pembayaran_subcon_dt')->insert([
+								  'pbd_id'   		 => $id_pbd,
+								  'pbd_pb_id'   	 => $id_pb,
+								  'pbd_ksd_id'   	 => $request->d_ksd_id[$i],
+								  'pbd_pb_dt'   	 => $i+1,
+								  'pbd_resi'  	 	 => $request->d_resi_subcon[$i],
+								  'pbd_jumlah'    	 => $request->d_harga_subcon[$i],
+								  'pbd_tarif_resi' 	 => $cari_do->total_net,
+								  'pbd_keterangan' 	 => $request->d_memo_subcon[$i],
+								  'updated_at'     	 => Carbon::now(),
+								  'created_at'     	 => Carbon::now(),
+								  'pbd_tarif_harga'  => $request->d_harga_subcon[$i],
+								  'pbd_acc'	      	 => $subcon->acc_kode,
+							  	  'pbd_csf'	 		 => $subcon->csf_kode,
+					]);
+				}
+			}else{
+
+			}
+			
+		});
 	}
 
 	public function subcon_update(request $request){
@@ -2020,6 +2165,7 @@ public function cari_do_subcon(request $request)
 			  ->get();
 
 	for ($i=0; $i < count($data); $i++) { 
+
 		for ($a=0; $a < count($kota); $a++) { 
 			if ($kota[$a]->id == $data[$i]->id_kota_asal) {
 				$data[$i]->nama_asal = $kota[$a]->nama;

@@ -5,6 +5,13 @@
 <div class="col-sm-6">
 <table class="table	head_subcon">
 	<h3 style="text-align: center;">Form Subcon</h3>
+<tr>
+ 	<td style="width: 100px">Tanggal</td>
+ 	<td width="10">:</td>
+ 	<td width="200">
+ 		<input type="text" name="tgl_biaya_head" class="form-control tgl-biaya" value="{{$date}}" readonly="" style="">
+ 	</td>
+ </tr>
  <tr>
  	<td style="width: 100px">Jatuh Tempo</td>
  	<td width="10">:</td>
@@ -42,7 +49,7 @@
  <tr>
  	<td style="width: 100px">Total Biaya</td>
  	<td width="10">:</td>
-	<td width="200"><input type="text" readonly=""  class="form-control total_subcon" ></td>
+	<td width="200"><input type="text" readonly="" style="text-align: right"  class="form-control total_subcon" name="total_subcon" ></td>
  </tr>
 </table>
 </div>
@@ -152,6 +159,26 @@
 			</td>
 		  </tr>
 		  <tr>
+			<td style="width: 100px">Akun</td>
+			<td width="10">:</td>
+			<td width="200">
+				<select class="form-control chosen-select-width1 sc_akun">
+					@foreach($akun_biaya as $i)
+						<option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+					@endforeach
+				</select>
+			</td>
+		  </tr>
+	{{-- 	  <tr>
+		 	<td style="width: 100px">Jumlah</td>
+		 	<td width="10">:</td>
+			<td width="200">
+				<div class="input-group" style="width: 100%">
+	                <input readonly=""  style="width: 100%" class="form-control sc_jumlah" type="text" value="" >
+             	</div>
+			</td>
+		 </tr> --}}
+		  <tr>
 		 	<td style="width: 100px">Memo</td>
 		 	<td width="10">:</td>
 			<td width="200">
@@ -212,7 +239,7 @@
  <div class=" col-sm-12 tb_sb_hidden">
  	<h3>Tabel Detail Resi</h3>
  	<hr>
-	    <button type="button" class="btn btn-primary pull-right disabled" id="save-update" onclick="save_subcon()"><i class="fa fa-save"></i> Simpan Data</button>
+	    <button type="button" class="btn btn-primary pull-right save_update_subcon disabled" id="save_update_subcon" onclick="save_subcon()"><i class="fa fa-save"></i> Simpan Data</button>
 
 	    <table class="table table-bordered table-hover tabel_subcon">
 			<thead align="center">
@@ -223,6 +250,7 @@
 				<th>Asal Subcon</th>
 				<th>Tujuan Subcon</th>
 				<th>Jenis Tarif</th>
+				<th>Akun</th>
 				<th>Keterangan</th>
 				<th width="100">Aksi</th>
 				</tr>
@@ -267,7 +295,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <table class="table table-stripped tabel_tt_outlet">
+        <table class="table table-stripped tabel_tt_subcon">
         	<tr>
         		<td width="150px">
                   No Tanda Terima 
@@ -335,7 +363,7 @@
                Lain Lain
               </td>
               <td>                      
-                <input type="text" class="form-control lain_subcon" name="lainlain">
+                <input type="text" class="form-control lain_subcon" name="lainlain_penerus">
               </td>
             </tr>
             <tr>
@@ -353,7 +381,7 @@
               			<label class="col-sm-3 label-control"> Rp </label>
               		</div>
               		<div class="col-sm-9">
-              			<input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly="">
+              			<input type="text" class="form-control totalterima_tt_subcon" name="total_diterima" style="text-align:right;" readonly="">
               		</div>
               	</div>
               </td>
@@ -362,7 +390,7 @@
       </div>
       <div class="modal-footer inline-form">
         <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-        <button type="button" class="btn btn-primary simpan_subcon" data-dismiss="modal">Simpan</button>
+        <button type="button" class="btn btn-primary simpan_subcon" onclick="simpan_tt()" data-dismiss="modal">Simpan</button>
       </div>
     </div>
   </div>
@@ -406,7 +434,9 @@ var subcon = $('.tabel_subcon').DataTable({
 					'searching':false
 				});
 
-$('.tempo_subcon').datepicker();
+$('.tempo_subcon').datepicker({
+	format:'dd/mm/yyyy'
+});
 
 
 $('.m_do_subcon').focus(function(){
@@ -502,6 +532,7 @@ function pilih_kontrak(asd){
 	    	$('.sc_asal_subcon').val(response.subcon_dt[0].ksd_asal);
 	    	$('.sc_tujuan_subcon').val(response.subcon_dt[0].ksd_tujuan);
 	    	$('.sc_kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
+	    	$('.sc_jumlah').val(response.subcon_dt[0].ksd_harga);
 	    	$('.table_filter_subcon').removeClass('disabled');
 
 	    
@@ -511,46 +542,63 @@ function pilih_kontrak(asd){
 	$('#modal_subcon').modal('hide');
 }
 
+function hitung_subcon() {
+	var temp = 0;
+	$('.d_harga_subcon').each(function(){
+		var total_subcon = $(this).val();
+        ini = total_subcon.replace(/[^0-9\-]+/g,"")/100;
+        ini = parseFloat(ini);
+		temp += ini;
+	})
+
+	$('.total_subcon').val(accounting.formatMoney(temp, "Rp ", 2, ".",','));
+}
+
 function cariSUB(){
 
-var m_seq = $('.m_seq').val();
-var nota_subcon = $('.nota_subcon').val();
-var m_do_subcon = $('.m_do_subcon').val();
+	var m_seq = $('.m_seq').val();
+	var nota_subcon = $('.nota_subcon').val();
+	var m_do_subcon = $('.m_do_subcon').val();
 
-if (m_do_subcon == '') {
-	toastr.warning('POD Harus Diisi !')
-	return 1;
-}
+	if (m_do_subcon == '') {
+		toastr.warning('POD Harus Diisi !')
+		return 1;
+	}
 
-if (nota_subcon == '') {
-	toastr.warning('Harap Memasukkan Kontrak Subcon !')
-	return 1;
-}
-var sc_biaya_subcon_dt = $('.sc_biaya_subcon_dt').val();
-var sc_biaya_subcon = $('.sc_biaya_subcon').val();
-var sc_asal_subcon = $('.sc_asal_subcon').val();
-var sc_tujuan_subcon = $('.sc_tujuan_subcon').val();
-var sc_tarif_subcon = $('.sc_tarif_subcon').val();
-var sc__do_memo = $('.sc__do_memo').val();
-var m_seq = $('.m_seq').val();
-var id_subcon = $('.id_subcon').val();
+	if (nota_subcon == '') {
+		toastr.warning('Harap Memasukkan Kontrak Subcon !')
+		return 1;
+	}
 
+	var sc_biaya_subcon_dt = $('.sc_biaya_subcon_dt').val();
+	var sc_biaya_subcon = $('.sc_biaya_subcon').val();
+	var sc_asal_subcon = $('.sc_asal_subcon').val();
+	var sc_tujuan_subcon = $('.sc_tujuan_subcon').val();
+	var sc_tarif_subcon = $('.sc_tarif_subcon').val();
+	var sc__do_memo = $('.sc__do_memo').val();
+	var m_seq = $('.m_seq').val();
+	var sc_akun = $('.sc_akun').val();
+	var id_subcon = $('.id_subcon').val();
+	var index = array_do.indexOf(m_do_subcon);
 
+	if (index == -1) {
 	    subcon.row.add([
                   m_seq+'<input type="hidden" class="seq_sub sub_seq_'+m_do_subcon+'"  value="'+m_seq+'" >'+
-                  '<input type="hidden" class="d_ksd_id"  value="'+id_subcon+'" >',
+                  '<input type="hidden" name="d_ksd_id[]" class="d_ksd_id"  value="'+id_subcon+'" >',
 
-                  m_do_subcon+'<input type="hidden" class="d_resi_subcon"  name="d_resi_subcon[]" value="'+m_do_subcon+'" >',
+                  '<p class="d_resi_subcon_text">'+m_do_subcon+'</p>'+'<input type="hidden" class="d_resi_subcon"  name="d_resi_subcon[]" value="'+m_do_subcon+'" >',
 
-                  sc_biaya_subcon+'<input type="hidden" name="d_harga_subcon[]" class="d_harga_subcon" value="'+sc_biaya_subcon_dt+'" >',
+                  '<p class="d_harga_subcon_text">'+sc_biaya_subcon+'</p>'+'<input type="hidden" name="d_harga_subcon[]" class="d_harga_subcon" value="'+sc_biaya_subcon_dt+'" >',
 
-                  sc_asal_subcon+'<input type="hidden" name="d_asal_subcon[]" class="d_asal_subcon" value="'+sc_asal_subcon+'" >',
+                  '<p class="d_asal_subcon_text">'+sc_asal_subcon+'</p>'+'<input type="hidden" name="d_asal_subcon[]" class="d_asal_subcon" value="'+sc_asal_subcon+'" >',
 
-                  sc_tujuan_subcon+'<input type="hidden" name="d_tujuan_subcon[]" class="d_tujuan_subcon" value="'+sc_tujuan_subcon+'" >',
+                  '<p class="d_tujuan_subcon_text">'+sc_tujuan_subcon+'</p>'+'<input type="hidden" name="d_tujuan_subcon[]" class="d_tujuan_subcon" value="'+sc_tujuan_subcon+'" >',
 
-                  sc_tarif_subcon+'<input type="hidden" name="d_jenis_tarif_subcon[]" class="d_jenis_tarif_subcon" value="'+sc_tarif_subcon+'" >',
+                  '<p class="d_jenis_tarif_subcon_text">'+sc_tarif_subcon+'</p>'+'<input type="hidden" name="d_jenis_tarif_subcon[]" class="d_jenis_tarif_subcon" value="'+sc_tarif_subcon+'" >',
 
-                  sc__do_memo+'<input type="hidden" class="d_memo_subcon" name=d_memo_subcon[]" value="'+sc__do_memo+'" >',
+                  '<p class="d_akun_text">'+sc_akun+'</p>'+'<input type="hidden" class="d_akun" name=d_akun[]" value="'+sc_akun+'">',
+
+                  '<p class="d_memo_subcon_text">'+sc__do_memo+'</p>'+'<input type="hidden" class="d_memo_subcon" name=d_memo_subcon[]" value="'+sc__do_memo+'" >',
                   '<div class="btn-group">'+
                   '<a class="btn btn-sm btn-warning fa fa-pencil" align="center" onclick="edit_subcon(this)" title="edit"></i></a>'+
                   '<a class="btn btn-sm btn-danger fa fa-trash" align="center" onclick="hapus_subcon(this)" title="hapus"></i></a>'+
@@ -562,8 +610,30 @@ var id_subcon = $('.id_subcon').val();
 	   	$('.table_resi input').val('');
 	   	$('.table_kontrak input').val('');
 	   	$('.m_seq').val(m_seq);
+	   	$('.modal_tt_subcon').removeClass('disabled');
 	   	toastr.success('Append Berhasil, Silahkan Membuat Form Tanda Terima.');
-
+	}else{
+		var par = $('.sub_seq_'+m_do_subcon).parents('tr');
+		$(par).find('.d_resi_subcon').val(m_do_subcon);
+		$(par).find('.d_harga_subcon').val(sc_biaya_subcon);
+		$(par).find('.d_asal_subcon').val(sc_asal_subcon);
+		$(par).find('.d_tujuan_subcon').val(sc_tujuan_subcon);
+		$(par).find('.d_jenis_tarif_subcon').val(sc_tarif_subcon);
+		$(par).find('.d_memo_subcon').val(sc__do_memo);
+		$(par).find('.d_ksd_id').val(id_subcon);
+		$(par).find('.d_akun').val(sc_akun);
+		$(par).find('.d_akun_text').text(sc_akun);
+		$(par).find('.d_resi_subcon_text').text(m_do_subcon);
+		$(par).find('.d_harga_subcon_text').text(sc_biaya_subcon);
+		$(par).find('.d_asal_subcon_text').text(sc_asal_subcon);
+		$(par).find('.d_tujuan_subcon_text').text(sc_tujuan_subcon);
+		$(par).find('.d_jenis_tarif_subcon_text').text(sc_tarif_subcon);
+		$(par).find('.d_memo_subcon_text').text(sc__do_memo);
+	   	toastr.success('Update Berhasil, Silahkan Membuat Form Tanda Terima.');
+	   	$('.table_resi input').val('');
+	   	$('.table_kontrak input').val('');
+	}
+	hitung_subcon();
 }
 
 
@@ -571,47 +641,78 @@ function hapus_subcon(o){
     var ini = $(o).parents('tr');
     var cari = $(ini).find('.dt_resi_subcon').val();
     var temp1=0;
-    var cariIndex = sequence.indexOf(cari);
-    sequence.splice(cariIndex,1);
+    var cariIndex = array_do.indexOf(cari);
+    array_do.splice(cariIndex,1);
     
  
     subcon.row(ini).remove().draw(false);
+    hitung_subcon();
 }
 
 function edit_subcon(a) {
+	console.log('asd');
     var par = $(a).parents('tr');
-	var d_resi_subcon = $(par).find('.d_resi_subcon');
-	var d_ksd_id = $(par).find('.d_ksd_id');
-
+	var d_resi_subcon = $(par).find('.d_resi_subcon').val();
+	var d_ksd_id = $(par).find('.d_ksd_id').val();
+	var d_memo_subcon = $(par).find('.d_memo_subcon').val();
+	var d_akun = $(par).find('.d_akun').val();
 	$.ajax({
 		url : baseUrl +'/fakturpembelian/pilih_kontrak_all',
-	    data: 'id='+id,
+	    data: {d_resi_subcon,d_ksd_id},
 	    type:'get',
 	    dataType:'json',
 	    success:function(response){
-	    	console.log(response.kontrak.ksd_nota);
-	    	$('.nota_subcon').val(response.kontrak.ksd_nota);
-	    	$('.sc_biaya_subcon').val(response.kontrak.ksd_harga);
-	    	$('.sc_biaya_subcon_dt').val(response.kontrak.ksd_harga2);
-	    	$('.id_subcon').val(response.kontrak.ksd_id);
-	    	$('.dt_subcon').val(response.kontrak.ksd_dt);
-	    	$('.sc_tarif_subcon').val(response.kontrak.ksd_jenis_tarif);
-	    	$('.sc_asal_subcon').val(response.kontrak.ksd_asal);
-	    	$('.sc_tujuan_subcon').val(response.kontrak.ksd_tujuan);
-	    	$('.sc_kendaraan_subcon').val(response.kontrak.ksd_angkutan);
+	    	console.log(response.kontrak[0].ksd_nota);
+	    	$('.nota_subcon').val(response.kontrak[0].ksd_nota);
+	    	$('.sc_biaya_subcon').val(response.kontrak[0].ksd_harga);
+	    	$('.sc_biaya_subcon_dt').val(response.kontrak[0].ksd_harga2);
+	    	$('.id_subcon').val(response.kontrak[0].ksd_id);
+	    	$('.dt_subcon').val(response.kontrak[0].ksd_dt);
+	    	$('.sc_tarif_subcon').val(response.kontrak[0].ksd_jenis_tarif);
+	    	$('.sc_asal_subcon').val(response.kontrak[0].ksd_asal);
+	    	$('.sc_tujuan_subcon').val(response.kontrak[0].ksd_tujuan);
+	    	$('.sc_kendaraan_subcon').val(response.kontrak[0].ksd_angkutan);
 	    	$('.table_filter_subcon').removeClass('disabled');
+	    	$('.sc__do_memo').val(d_memo_subcon);	
+	    	$('.sc_akun').val(d_akun).trigger('chosen:updated');	
+	    	$('.m_do_subcon').val(response.do.nomor);
+			$('.m_do_tanggal').val(response.do.tanggal);
+			$('.m_satuan').text(response.do.kode_satuan);
+			$('.m_do_asal').val(response.do.nama_asal);
+			$('.m_do_tujuan').val(response.do.nama_tujuan);
+			$('.m_jenis_angkutan_do').val(response.do.nama_tarif);
+			$('.m_tipe_kendaraan').val(response.do.nama_tujuan);
+			$('.m_do_jumlah').val(response.do.jumlah);
 
-	    	$('.m_do_subcon').val(response.do.);
-			$('.m_do_tanggal').val(response.do.);
-			$('.m_do_jumlah').val(response.do.);
-			$('.m_satuan').text(response.do.);
-			$('.m_do_asal').val(response.do.);
-			$('.m_do_tujuan').val(response.do.);
-			$('.m_jenis_angkutan_do').val(response.do.);
-			$('.m_tipe_kendaraan').val(response.do.);
 	    }
 	})
 }
+
+$('.modal_tt_subcon').click(function(){
+
+	var cabang = $('.cabang').val();
+    $.ajax({
+      url:baseUrl +'/fakturpembelian/nota_tt',
+      data: {cabang},
+      dataType:'json',
+      success:function(data){
+        var total_subcon = $('.total_subcon').val();
+		var tempo_subcon = $('.tempo_subcon').val();
+		var nama_sc  	 = $('.nama_sc').val();
+        total_subcon       = total_subcon.replace(/[^0-9\-]+/g,"")/100;
+        $('.notandaterima').val(data.nota);
+        $('.supplier_tt').val(nama_sc);
+        $('.jatuhtempo_tt').val(tempo_subcon);
+        $('.tgl_tt').val('{{carbon\carbon::now()->format('d/m/Y')}}');
+        $('.totalterima_tt_subcon').val(accounting.formatMoney(total_subcon, "Rp ", 2, ".",','));
+		$('#modal_tt_subcon').modal('show');
+      },error:function(){
+        toastr.warning('Terjadi Kesalahan');
+      }
+    })
+	
+})
+
 
 
 
@@ -643,16 +744,9 @@ function save_subcon(){
 
       $.ajax({
      	url:baseUrl + '/fakturpembelian/subcon_save',
-		data:'id='+id_subcon
-				+'&'+'dt='+dt_subcon
-				+'&'+'ts='+tarif_subcon
-				+'&'+'angkutan='+jenis_kendaraan
-				+'&'+'tempo='+tempo_subcon
-				+'&'+'nota='+nota_subcon
-				+'&'+'invoice='+invoice_subcon
-				+'&'+subcon.$('input').serialize()
-				+'&'+$('.head1 .nofaktur').serialize()
-				+'&'+$('.head_subcon :input').serialize(),
+		data:subcon.$('input').serialize()
+			 +'&'+$('.head1 :input').serialize()
+			 +'&'+$('.head_subcon :input').serialize(),
 		type:'GET',
       success:function(response){
 
@@ -691,5 +785,56 @@ function save_subcon(){
  });
 }
 
+
+function simpan_tt() {
+	var selectOutlet = $('.nama_sc').val();
+	var cabang = $('.cabang').val();
+	var totalterima_tt_subcon = $('.totalterima_tt_subcon').val();
+ 	if (totalterima_tt_subcon == 'Rp 0,00') {
+ 		toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
+ 	}
+      swal({
+        title: "Apakah anda yakin?",
+        text: "Simpan Data!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Simpan!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: true
+      },
+      function(){
+           $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+          $.ajax({
+          url:baseUrl + '/fakturpembelian/simpan_tt',
+          type:'get',
+          data:$('.tabel_tt_subcon :input').serialize()+'&'+'agen='+selectOutlet+'&'+$('.head1 .nofaktur').serialize()+'&cabang='+cabang,
+          success:function(response){
+                swal({
+                    title: "Berhasil!",
+                    type: 'success',
+                    text: "Data berhasil disimpan",
+                    timer: 900,
+                    showConfirmButton: true
+                    },function(){
+                      $('.save_update_subcon').removeClass('disabled');
+                    });
+          },
+          error:function(data){
+            swal({
+            title: "Terjadi Kesalahan",
+                    type: 'error',
+                    timer: 900,
+                   showConfirmButton: true
+
+        });
+       }
+      });  
+     });
+  }
 
 </script>

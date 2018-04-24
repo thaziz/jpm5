@@ -590,6 +590,7 @@ $('.modal_outlet_tt').click(function(){
 
 function simpan_tt() {
  	var totalterima_tt = $('.totalterima_tt').val();
+ 	var cabang = $('.cabang').val();
 	var selectOutlet = $('.selectOutlet').val();
  	if (totalterima_tt == 'Rp 0,00') {
  		toastr.warning('Nilai Tanda Terima Tidak Boleh Nol');
@@ -650,6 +651,7 @@ function simpan_tt() {
         var jatuh_tempo = $('.jatuh_tempo_outlet').val();
         var total_jml   = $('.total_all_komisi').val();
         total_jml       = total_jml.replace(/[^0-9\-]+/g,"")/100;
+        $('.notandaterima').val(data.nota);
         $('.supplier_tt').val(agen_vendor);
         $('.jatuhtempo_tt').val(jatuh_tempo);
         $('.tgl_tt').val('{{carbon\carbon::now()->format('d/m/Y')}}');

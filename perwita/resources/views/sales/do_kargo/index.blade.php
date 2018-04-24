@@ -59,6 +59,7 @@
                             <tr>
                                 <th> No DO</th>
                                 <th> Tanggal </th>
+                                <th> Cabang </th>
                                 <th> Pengirim </th>
                                 <th> Penerima </th>
                                 <th> Kota Asal </th>
@@ -73,6 +74,7 @@
                             <tr>
                                 <td><a href="{{ url('sales/detail_do_kargo')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
                                 <td>{{ $row->tanggal }}</td>
+                                <td>{{ $row->nama }}</td>
                                 <td>{{ $row->nama_pengirim }}</td>
                                 <td>{{ $row->nama_penerima }}</td>
                                 @foreach($kota as $val)
