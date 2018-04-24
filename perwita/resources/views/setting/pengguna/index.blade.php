@@ -213,6 +213,7 @@
             },
             "columns": [
             { "data": "m_username" },
+            { "data": "m_name" },
             { "data": "m_level" },
             { "data": "cabang" },
             { "data": "button" },
@@ -222,6 +223,7 @@
 
     $(document).on("click","#btn_add",function(){
         $("input[name='crud']").val('N');
+        $("input[name='ed_username']").val('');
         $("input[name='ed_nama']").val('');
         $("input[name='ed_nama_old']").val('');
         $("input[name='ed_kata_sandi']").val('');
@@ -245,8 +247,9 @@
             success: function(data, textStatus, jqXHR)
             {
                 $("input[name='crud']").val('E');
-                $("input[name='ed_nama']").val(data.m_username);
-                $("input[name='ed_nama_old']").val(data.m_username);
+                $("input[name='ed_username']").val(data.m_username);
+                $("input[name='ed_nama']").val(data.m_name);
+                $("input[name='ed_nama_old']").val(data.m_id);
                 $("select[name='cb_level']").val(data.m_level);
                 $("select[name='cb_cabang']").val(data.kode_cabang);
                 $("#modal").modal('show');
