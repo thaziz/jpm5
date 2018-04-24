@@ -98,8 +98,9 @@
                   <table id="table_data" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th> Username </th>
                             <th> Nama </th>
-                            <th> Level </th>
+                            <th> Jabatan </th>
                             <th> Cabang </th>
                             <th> Aksi </th>
                         </tr>
@@ -121,16 +122,20 @@
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                            <tbody>
                                 <tr>
-                                    <td style="width:120px; padding-top: 0.4cm">Kode</td>
+                                    <td style="width:120px; padding-top: 0.4cm">Username</td>
                                     <td>
-                                        <input type="text" name="ed_nama" class="form-control kode" >
+                                        <input type="text" name="ed_username" class="form-control kode" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_nama_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding-top: 0.4cm">Kata Sandi</td>
+                                    <td style="padding-top: 0.4cm">Nama</td>
+                                    <td><input type="text" class="form-control" name="ed_nama" ></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Password</td>
                                     <td><input type="password" class="form-control pass" name="ed_kata_sandi" ></td>
                                 </tr>
                                 <tr>

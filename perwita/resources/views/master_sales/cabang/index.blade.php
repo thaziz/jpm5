@@ -117,9 +117,9 @@
                           <table id="table_data" class="table table-striped table-bordered table-hover">
                             <tbody>
                                 <tr>
-                                    <td style="width:120px; padding-top: 0.4cm">Kode</td>
+                                    <td style="width:120px; padding-top: 0.4cm" hidden="" colspan="3">Kode</td>
                                     <td>
-                                        <input type="text" id="ed_kode" name="ed_kode" class="form-control" style="text-transform: uppercase" >
+                                        <input type="hidden" id="ed_kode" name="ed_kode" class="form-control" style="text-transform: uppercase" >
                                         <input type="hidden" id="_token" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" id="ed_kode_old" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" id="crud" name="crud" class="form-control" >
@@ -304,28 +304,7 @@
         var ed_telpon = $("#ed_telpon").val();
         var ed_fax = $("#ed_fax").val();        
         var crud   = $("#crud").val();
-        if(ed_kode == '' || ed_kode == null ){
-            Command: toastr["warning"]('Kolom "Kode" tidak boleh kosong ', "Peringatan !")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": false,
-              "newestOnTop": true,
-              "progressBar": false,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "3000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
-        }
+     
         if(ed_nama == '' || ed_nama == null ){
             Command: toastr["warning"]('Kolom "Nama" tidak boleh kosong ', "Peringatan !")
 
