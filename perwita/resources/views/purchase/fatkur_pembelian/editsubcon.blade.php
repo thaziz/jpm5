@@ -1241,9 +1241,10 @@ function simpan_tt() {
 
 
   function print_penerus_tt() {
-    var idfaktur = $('.notandaterima').val();
+    var idfaktur = $('.nota_no_tt').val();
     idfaktur = idfaktur.replace('/','-')
     idfaktur = idfaktur.replace('/','-')
+    
      window.open('{{url('fakturpembelian/cetak_tt')}}'+'/'+idfaktur);
   }
 </script>
