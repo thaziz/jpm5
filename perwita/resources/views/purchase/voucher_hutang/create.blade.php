@@ -60,29 +60,26 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                         <div class="row">
-                        @if(session::get('cabang') != 000)
+                      
                          <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label> Cabang  </label>
-                          <select class="form-control chosen-select-width disabled cabang" name="cabang">
-                            @foreach($cabang as $cabang)
-                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
-                            @endforeach
-                          </select>                          
+                          @if(Auth::user()->punyaAkses('Uang Muka','cabang'))
+                            <select class="form-control chosen-select-width cabang" name="cabang">
+                                @foreach($cabang as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              @endforeach
+                            </select>
+                            @else
+                              <select class="form-control disabled cabang" name="cabang">
+                                @foreach($cabang as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                            @endif                        
                         </div>
                         </div>
-                        @else
-                          <div class="form-group">
-                         <div class="col-sm-8 col-sm-offset-2">
-                          <label> Cabang  </label>
-                          <select class="form-control cabang" name="cabang">
-                            @foreach($cabang as $cabang)
-                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
-                            @endforeach
-                          </select>                          
-                        </div>
-                        </div>
-                        @endif  
+                  
 
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
@@ -415,7 +412,7 @@
          
             swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Uang Muka!",
+            text: "Simpan Data Voucher Hutang!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -449,33 +446,37 @@
               url : baseUrl + '/voucherhutang/getnota',
              dataType : 'json',
               success : function(data){
-              
-                  var d = new Date();
+                  if(data.status == 'sukses'){
+                    var d = new Date();
                   
-                  //tahun
-                  var year = d.getFullYear();
-                  //bulan
-                  var month = d.getMonth();
-                  var month1 = parseInt(month + 1)
-                  console.log(d);
-                  console.log();
-                  console.log(year);
+                    //tahun
+                    var year = d.getFullYear();
+                    //bulan
+                    var month = d.getMonth();
+                    var month1 = parseInt(month + 1)
+                    console.log(d);
+                    console.log();
+                    console.log(year);
 
-                  if(month < 10) {
-                    month = '0' + month1;
+                    if(month < 10) {
+                      month = '0' + month1;
+                    }
+
+                    console.log(d);
+
+                    tahun = String(year);
+    //                console.log('year' + year);
+                    year2 = tahun.substring(2);
+                    //year2 ="Anafaradina";
+                  
+                     nota = 'VC' + month + year2 + '/' + comp + '/' +  data.idvhc;
+                    console.log(nota);
+                    $('.bukti').val(nota);
                   }
-
-                  console.log(d);
-
-                  tahun = String(year);
-  //                console.log('year' + year);
-                  year2 = tahun.substring(2);
-                  //year2 ="Anafaradina";
-
-                
-                   nota = 'VC' + month + year2 + '/' + comp + '/' +  data.idvc;
-                  console.log(nota);
-                  $('.bukti').val(nota);
+                  else {
+                    location.reload();
+                  }
+                  
               }
           })
       })
@@ -488,32 +489,36 @@
            dataType : 'json',
             success : function(data){
             
-                var d = new Date();
-                
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                 if(data.status == 'sukses'){
+                    var d = new Date();
+                  
+                    //tahun
+                    var year = d.getFullYear();
+                    //bulan
+                    var month = d.getMonth();
+                    var month1 = parseInt(month + 1)
+                    console.log(d);
+                    console.log();
+                    console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
-                }
+                    if(month < 10) {
+                      month = '0' + month1;
+                    }
 
-                console.log(d);
+                    console.log(d);
 
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nota = 'VC' + month + year2 + '/' + comp + '/' +  data.idvc;
-                console.log(nota);
-                $('.bukti').val(nota);
+                    tahun = String(year);
+    //                console.log('year' + year);
+                    year2 = tahun.substring(2);
+                    //year2 ="Anafaradina";
+                  
+                     nota = 'VC' + month + year2 + '/' + comp + '/' +  data.data;
+                    console.log(nota);
+                    $('.bukti').val(nota);
+                  }
+                  else {
+                    location.reload();
+                  }
             }
         })
 

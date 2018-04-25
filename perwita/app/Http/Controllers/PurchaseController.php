@@ -5644,7 +5644,9 @@ public function kekata($x) {
 			$idbbk = '001';
 		}
 
-		return json_encode($idbbk) ;
+		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
+
+		return json_encode($datainfo) ;
 	}
 	
 	public function simpanbbk (Request $request){
@@ -5679,6 +5681,8 @@ public function kekata($x) {
 		$bbk->bbk_cabang = $request->cabang;
 		$bbk->bbk_flag = $request->flag;
 		$bbk->bbk_tgl = $request->tglbbk;
+		$bbk->create_by = $request->username;
+		$bbk->update_by = $request->username;
 		$bbk->save();
 
 
@@ -5785,7 +5789,8 @@ public function kekata($x) {
 							'bbk_cekbg' => $cekbg,
 							'bbk_biaya' => $biaya,
 							'bbk_total' => $total,
-							'bbk_tgl' => $request->tglbbk
+							'bbk_tgl' => $request->tglbbk,
+							'update_by' => $request->username
 						]);
 		$data['bbk'] = DB::select("select * from bukti_bank_keluar where bbk_id = '$idbbk'");
 
