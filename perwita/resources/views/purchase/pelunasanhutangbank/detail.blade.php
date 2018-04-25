@@ -4,6 +4,13 @@
 
 @section('content')
 
+<style type="text/css">
+  .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Pelunasan Hutang / Pembayaran Bank </h2>
@@ -79,7 +86,7 @@
                             <td>
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk" value='{{$data['bbk'][0]->bbk_nota}}'>
                               <input type="hidden" class="input-sm form-control" readonly="" name="bbkid" value='{{$data['bbk'][0]->bbk_id}}'>
-
+                              <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                             </td>
                           </tr>
 
@@ -194,8 +201,8 @@
                               <div class="col-lg-12">
                                   <div class="tabs-container">
                                       <ul class="nav nav-tabs">
-                                          <li class="active" id="tabmenu"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
-                                          <li class="" id="tabmenu"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
+                                          <li class="active" id="tabcekbg"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
+                                          <li class="" id="tabbiaya"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
                                       </ul>
                                       <div class="tab-content">
                                           <div id="tab-1" class="tab-pane active">
@@ -268,9 +275,12 @@
                                                         <td> {{$index + 1}} </td>
                                                         <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbk_nota}}" readonly=""> </td>
                                                         <td> <input type="text" class="form-control input-sm" value="{{$bbkd->nama_akun}}"  readonly=""> <input type='hidden' name="akun[]" value="{{$bbkd->bbkb_akun}}"> </td>
-                                                        <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkb_dk}}" name="dk[]"> </td>
-                                                        <td style='text-align: right'> <input type="text" class="form-control input-sm" value="{{ number_format($bbkd->bbkb_nominal, 2) }}" name="jumlah[]"> </td>
+                                                        <td> <input type="text" class="form-control input-sm" value="{{$bbkd->bbkb_dk}}" name="dk[]" readonly=""> </td>
+
+                                                        <td style='text-align: right'> <input type="text" class="form-control input-sm nominalbiaya" value="{{ number_format($bbkd->bbkb_nominal, 2) }}" name="jumlah[]" style="text-align: right"> </td>
+
                                                         <td> <input type="text" class="form-control" value="{{$bbkd->bbkb_keterangan}}" name="keterangan[]"> </td>
+
                                                         <td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="{{$index + 1}}" data-cek='"{{$bbkd->bbkb_akun}}"' data-nominal="{{ number_format($bbkd->bbkb_nominal, 2) }}"><i class='fa fa-trash'></i></button> </td>
                                                       </tr>
                                                       @endforeach
@@ -394,7 +404,7 @@
 
                                                       <tr>
                                                         <th> D / K </th>
-                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya"> </div> </td>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya" readonly=""> </div> </td>
                                                       </tr>
 
                                                       <tr>
@@ -501,10 +511,12 @@
       if(flag == 'CEKBG') {
           $('#tab-1').addClass('active');
            $('#tab-2').removeClass("active");
+           $('#tabbiaya').addClass("disabled");
       }
       else {
           $('#tab-2').addClass('active');
            $('#tab-1').removeClass("active");
+           $('#tabcekbg').addClass("disabled");
       }
 
      $('#formbbk').submit(function(){
@@ -858,6 +870,25 @@
 
     })
     
+    $('.nominalbiaya').change(function(){
+        val = $(this).val();
+        val = accounting.formatMoney(val, "", 2, ",",'.');
+        $(this).val(val);
+
+        nilaitotal = 0;
+        $('.nominalbiaya').each(function(){
+          val = $(this).val();
+
+          if(val != ''){
+            val2 = val.replace(/,/g, '');
+            nilaitotal = parseFloat(parseFloat(nilaitotal) + parseFloat(val2)).toFixed(2);
+          }
+
+          $('.totalbiaya').val(addCommas(nilaitotal));
+          $('.total').val(addCommas(nilaitotal));
+        })
+
+    })
 
     //BIAYA BIAYA
       $('.akun').change(function(){
