@@ -136,7 +136,7 @@ class v_hutangController extends Controller
     }
     public function createvoucherhutang() {
       $data = DB::table('v_hutang')->get();
-      $sup = DB::table('supplier')->where('status' , '=' , 'setuju')->where('active' , '=' , 'AKTIF')->get();
+      $sup = DB::select("select * from supplier where status ='SETUJU' and active = 'AKTIF' ");
        $akunselect = DB::table('d_akun')->get();
       //CREATE NOMER VOUCHER HUTANG
       

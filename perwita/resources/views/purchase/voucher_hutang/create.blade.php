@@ -225,7 +225,7 @@
                    '<b class="tengah">' + lol +' </b>',
                   '<input type="text" name="accountid[]" class="form-control f accc" readonly>'+ '&nbsp;&nbsp;' +'<select class="form-control chosen-select-width3 suppilerid hasil" name="supplierid"><option value="" selected="" disabled="">--Pilih Akun--</option>@foreach($akunselect as $a)<option value="{{$a->id_akun}}">{{$a->nama_akun}}</option>@endforeach</select>',
                   '<input type="text" name="keterangan[]" class="form-control g">',
-                  '<input type="text" name="nominal[]" onkeyup="hitung(this)" class="nominal form-control h textright" id="nominal">',
+                  '<input type="text" name="nominal[]" onkeyup="hitung(this)" class="nominal nilaiuang form-control h textright" id="nominal">',
                   '<a class="remove textcenter pull-right" onclick="hapus(this)"><i class="btn btn-danger fa fa-minus"></i></a>'
                 ]).draw(false);
              anjay.push('123');
@@ -233,8 +233,16 @@
             $('.hasil').change(function(a) {
               var parent = $(this).parents('tr');
               var angka = $(parent).find('.accc').val($(this).val());
-          });
+            });
+
+            $('.nominal').change(function(){
+              val = $(this).val();
+               val = accounting.formatMoney(val, "", 2, ",",'.');
+               $(this).val(val);
+            })
           }); 
+
+
 
           var hasil = [];
           function hapus(h){
@@ -261,14 +269,16 @@
       $('.nominal').each(function(i){
         if ($(this).val() != '') {
             hasil[i] = $(this).val();
+            
         }
         else {
          hasil[i] = 0; 
         }
       })
+
        for (var i=0  ; i < hasil.length ;i++){
           temp += parseInt(hasil[i]);
-      }
+        }
         var money = temp.toLocaleString('de-DE');
         var hasilakir = money.replace(/[^0-9\,-]+/g,"");
         var total = $(".hasil").val("Rp."+money+',00');

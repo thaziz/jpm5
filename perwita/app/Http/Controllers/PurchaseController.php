@@ -200,7 +200,7 @@ class PurchaseController extends Controller
 
 	/*	$data['barang'] = DB::select("select distinct is_kodeitem, unitstock, is_harga, sg_qty, nama_masteritem from  supplier, masteritem, itemsupplier LEFT OUTER JOIN stock_gudang on sg_item = is_kodeitem where is_kodeitem = kode_item and is_supplier = no_supplier");
 */
-		$data['barangfull'] = DB::select("select * from supplier, masteritem, itemsupplier where is_kodeitem = kode_item and is_supplier = no_supplier and status = 'SETUJU'");
+		$data['barangfull'] = DB::select("select * from supplier, masteritem, itemsupplier where is_kodeitem = kode_item and is_supplier = no_supplier and status = 'SETUJU' and active = 'AKTIF'");
 
 		$data['cabang'] = master_cabang::all();	
 
@@ -223,9 +223,9 @@ class PurchaseController extends Controller
 		//$array = $id;
 		
 	
-		$data['supplier'] = DB::select("select * from masteritem, itemsupplier, supplier  where is_supplier = no_supplier and kode_item = '$id' and kode_item = is_kodeitem and status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from masteritem, itemsupplier, supplier  where is_supplier = no_supplier and kode_item = '$id' and kode_item = is_kodeitem and status = 'SETUJU' and active = 'AKTIF'");
 		$data['stock'] = DB::select("select * from  masteritem LEFT OUTER JOIN stock_gudang on kode_item = sg_item where kode_item = '$id'");
-		$data['mastersupplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['mastersupplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
 		return json_encode($data);
 	}
@@ -625,12 +625,12 @@ class PurchaseController extends Controller
 
 		$data['count_brg'] = count($data['sppdt_barang']);
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 		$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem ORDER BY kode_item DESC");
 
 		$data['cabang'] = master_cabang::all();			        
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
 		$data['department'] = master_department::all();
 
@@ -673,7 +673,7 @@ class PurchaseController extends Controller
 
 		$data['count_brg'] = count($data['sppdt_barang']);
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 		$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem   ORDER BY kode_item DESC");
 
 		$data['count_po'] = DB::select("select count(*) as total from pembelian_orderdt where podt_idspp = '$id' ");
@@ -748,7 +748,7 @@ class PurchaseController extends Controller
 
 		$data['cabang'] = master_cabang::all();			        
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
 		$data['department'] = master_department::all();
 
@@ -820,7 +820,7 @@ class PurchaseController extends Controller
 
 		$data['count_brg'] = count($data['sppdt_barang']);
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 		$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem   ORDER BY kode_item DESC");
 
 		$barang = array();
@@ -6163,6 +6163,7 @@ public function kekata($x) {
 		
 			$cabang = $request->cabang;
 			$idsup = $request->idsup;
+			$nosupplier = $request->nosupplier;
 			$idjenisbayar = $request->idjenisbayar;
 
 				
@@ -6192,9 +6193,28 @@ public function kekata($x) {
 				}
 				else if($idjenisbayar == '9'){
 					$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+					
+					$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+
 				}
 				else if($idjenisbayar == '3'){
-					$datas['fp']  = DB::select("select * from v_hutang, cabang, supplier where v_supplier = '$idsup' and vc_comp = kode and v_supplier = idsup and v_pelunasan != '0.00' and vc_comp = '$cabang' ");
+					$datas['fp']  = DB::select("select * from v_hutang, cabang, supplier where v_supid = '$nosupplier' and vc_comp = kode and v_supid = no_supplier and v_pelunasan != '0.00' and vc_comp = '$cabang' ");
+
+					$datas['fp1']  = DB::select("select * from v_hutang, cabang, supplier where v_supid = '$nosupplier' and vc_comp = kode and v_supid = no_supplier and v_pelunasan != '0.00' and vc_comp = '$cabang' ");
+					if(count($request->arrnofaktur) != 0){
+						for($i = 0 ; $i < count($datas['fp']); $i++){
+							for($j = 0; $j < count($request->arrnofaktur); $j++){
+								if($request->arrnofaktur[$j] == $datas['fp'][$i]->v_nomorbukti){
+									unset($datas['fp1'][$i]);
+								}
+							}
+						}
+						$datas['fp1'] = array_values($datas['fp1']);
+           				$data['fakturpembelian'] = $datas['fp1'];
+					}
+					else {
+						$data['fakturpembelian'] = $datas['fp1'];
+					}
 					
 				}
 				else if($idjenisbayar == '4'){ //uang muka pembelian
