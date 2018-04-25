@@ -19,6 +19,7 @@ use App\masterbank;
 use App\masterbank_dt;
 
 use App\d_golongan_aktiva;
+use App\d_master_aktiva;
 
 use Auth;
 
@@ -1432,14 +1433,121 @@ class MasterPurchaseController extends Controller
                 	->where("kode", Session::get("cabang"))->get();
         }
 
-        $data = DB::table('d_golongan_aktiva')->where("kode_cabang", $cabang)->get();
+        $data = DB::table('d_master_aktiva')
+        		->join('d_golongan_aktiva', 'd_golongan_aktiva.id', "=", "d_master_aktiva.kode_golongan")
+        		->where("d_master_aktiva.kode_cabang", $cabang)
+        		->select("d_master_aktiva.nama_aktiva", "d_golongan_aktiva.nama_golongan", "d_master_aktiva.nilai_perolehan", "d_master_aktiva.tanggal_perolehan", "d_golongan_aktiva.persentase_garis_lurus", "d_golongan_aktiva.persentase_saldo_menurun", "d_master_aktiva.kode_cabang", "d_master_aktiva.id")->get();
+
+        // return $data;
 
 		return view('purchase/master/master_activa/index')->withCab($cab)->withData($data)->withCabang($cabang);;
 	}
 	
 	public function createmasteractiva() {
-		return view('purchase/master/master_activa/create');
+		if(Auth::user()->PunyaAkses('Master Activa','cabang')){
+			$cab = DB::table("cabang")->select("kode", "nama")->get();
+			$gol = DB::table("d_golongan_aktiva")->select("*")->get();
+		}else{
+			$cab = DB::table("cabang")->select("kode", "nama")->where("kode", Session::get("cabang"))->get();
+			$gol = DB::table("d_golongan_aktiva")->where("kode_cabang", Session::get('cabang'))->select("*")->get();
+		}
+
+		$akun = DB::table("d_akun")
+					->whereNotIn("id_akun", function($query){
+			    		$query->select("id_parrent")
+			    			  ->whereNotNull("id_parrent")
+			    			  ->from("d_akun")->get();
+			    	})->select(["id_akun", "nama_akun"])->get();
+
+		return view('purchase/master/master_activa/create')->withCab($cab)->withGol(json_encode($gol))->withAkun($akun);
 	}
+
+	public function editmasteractiva($cabang, $id){
+		$data = DB::table("d_master_aktiva")
+				->join("cabang", "cabang.kode", "=", "d_master_aktiva.kode_cabang")
+				->join("d_golongan_aktiva", "d_master_aktiva.kode_golongan", "=", "d_golongan_aktiva.id")
+				->where("d_master_aktiva.id", $id)
+				->where("d_master_aktiva.kode_cabang", $cabang)
+				->select("d_master_aktiva.*", "d_golongan_aktiva.nama_golongan", "d_golongan_aktiva.masa_manfaat_garis_lurus", "d_golongan_aktiva.persentase_garis_lurus", "d_golongan_aktiva.masa_manfaat_saldo_menurun", "d_golongan_aktiva.persentase_saldo_menurun", "cabang.nama")->first();
+
+		// return json_encode($data);
+
+		return view('purchase/master/master_activa/edit')->withData($data);
+	}
+
+	public function simpan_master_aktiva(Request $request){
+		// return json_encode($request->all());
+		$response = [
+			"status"	=> "sukses",
+			"content"	=> null
+		];
+
+		$cek = DB::table("d_master_aktiva")->where("kode_cabang", $request->cabang)->where("id", $request->kode_golongan)->get();
+
+		// return $cek;
+
+		if(count($cek) > 0){
+			$response = [
+				"status" 	=> "exist",
+				"content"	=> null
+			];
+
+			return json_encode($response);
+		}
+
+		$aktiva = new d_master_aktiva;
+		$aktiva->id = $request->kode_aktiva;
+		$aktiva->kode_cabang = $request->cabang;
+		$aktiva->nama_aktiva = $request->nama_aktiva;
+		$aktiva->tanggal_perolehan = $request->tanggal_perolehan;
+		$aktiva->nilai_perolehan = str_replace('.', '', explode(',', $request->nilai_perolehan)[0]);
+		$aktiva->acc_debet = $request->acc_debet;
+		$aktiva->csf_kredit = $request->csf_kredit;
+		$aktiva->keterangan = $request->keterangan;
+		$aktiva->kode_golongan = $request->kode_golongan;
+
+		if($aktiva->save())
+			return json_encode($response);
+	}
+
+	public function aktiva_update(Request $request){
+		// return json_encode($request->all());
+
+		$response = [
+			"status"	=> "sukses",
+			"content"	=> null
+		];
+
+		DB::table("d_master_aktiva")->where("kode_cabang", $request->kode_cabang)->where("id", $request->kode_aktiva)->update([
+			"nama_aktiva" => $request->nama_aktiva,
+			"keterangan" => $request->keterangan
+		]);
+		
+		return json_encode($response);
+	}
+
+	public function aktiva_hapus($cabang, $id){
+		DB::table("d_master_aktiva")
+			->join("cabang", "cabang.kode", "=", "d_master_aktiva.kode_cabang")
+			->where("id", $id)
+			->where("kode_cabang", $cabang)
+			->select("d_master_aktiva.*", "cabang.nama")->delete();
+
+		Session::flash('sukses', 'Data Berhasil Dihapus...');
+		return redirect(url("masteractiva/masteractiva/".Session::get("cabang")));
+	}
+
+	public function ask_kode_master_aktiva($cabang){
+		$data = DB::table("d_master_aktiva")
+				->select(DB::raw("max(to_number(substring(id, 6), '99G999D9S')) as id"))
+				->where("kode_cabang", $cabang)->first();
+
+		$response = (count($data) > 0) ? ($data->id + 1) : $data->id;
+
+		return json_encode($response);
+	}
+
+	// Fungsi-Fungsi master Aktiva Berhenti Dari Sini
 
 	public function detailmasteractiva() {
 		return view('purchase/master/master_activa/detail');
@@ -1452,8 +1560,6 @@ class MasterPurchaseController extends Controller
 	public function detailsaldomenurunmasteractiva() {
 		return view('purchase/master/master_activa/detailsaldomenurun');
 	}
-
-	// Fungsi-Fungsi Golongan Aktiva Berhenti Dari Sini
 
 
 	// Fungsi-Fungsi Golongan Aktiva Mulai Dari Sini

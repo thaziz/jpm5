@@ -776,10 +776,6 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                       return json_encode($dataInfo);
         }
       }
-
-
-
-            
             $id_jurnal=d_jurnal::max('jr_id')+1;
             $id_jrdt=1;
                 foreach ($akun as $key => $data) {   
@@ -799,13 +795,10 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                         'jr_ref'=>  $request->nota_invoice,
                         'jr_note'=> 'INVOICE',
                         ]);
+
             d_jurnal_dt::insert($jurnal_dt);
-           
 
-
-
-
-             return response()->json(['status' => 1]);
+            return response()->json(['status' => 1]);
 
         }else{
 

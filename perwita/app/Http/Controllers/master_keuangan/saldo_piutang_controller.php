@@ -108,6 +108,7 @@ class saldo_piutang_controller extends Controller
         for ($i=0; $i < count($request["customer"]); $i++) {
             $jml = str_replace(".", "", explode(",", $request["jumlah"][$i])[0]);
             $id = (DB::table("d_saldo_piutang")->max("id") == null) ? 1 : (DB::table("d_saldo_piutang")->max("id")+1);
+            $cust = DB::table("customer")->where("kode", $request["customer"][$i])->select("nama")->first();
 
             // return $jml;
 
@@ -120,19 +121,24 @@ class saldo_piutang_controller extends Controller
                 "tanggal_buat"      => date("Y-m-d H:i:s"),
                 "terakhir_diupdate" => date("Y-m-d H:i:s"),
             ]);
+
+            $ids = (DB::table('d_saldo_piutang_detail')->where("id_saldo_piutang", $id)->max("id_detail") == null) ? 1 : (DB::table('d_saldo_piutang_detail')->where("id_saldo_piutang", $id)->max("id_detail")+1);
+
+            // DB::table("d_saldo_piutang_detail")->insert([
+            //     "id_saldo_piutang"  => $id,
+            //     "id_detail"         => $ids,
+            //     "id_referensi"      => "-",
+            //     "jumlah"            => $jml,
+            //     "tanggal"           => date("Y-m-d H:i:s"),
+            //     "jatuh_tempo"       => null,
+            //     "keterangan"        => "Saldo Awal ".$cust->nama." Periode ".$request["periode"],
+            // ]);
         }
 
         // return json_encode($ids);
 
         // foreach($request['detail'] as $detail){
-        //     $ids = (DB::table('d_saldo_piutang_detail')->where("id_saldo_piutang", $id)->max("id_detail") == null) ? 1 : (DB::table('d_saldo_piutang_detail')->where("id_saldo_piutang", $id)->max("id_detail")+1);
-
-        //     DB::table("d_saldo_piutang_detail")->insert([
-        //         "id_saldo_piutang"  => $id,
-        //         "id_detail"         => $ids,
-        //         "id_referensi"      => $detail["nomor_faktur"],
-        //         "jumlah"            => $detail["jumlah"]
-        //     ]);
+            
 
         // }
 
@@ -168,6 +174,7 @@ class saldo_piutang_controller extends Controller
                 "tanggal"           => null,
                 "jatuh_tempo"       => null,
                 "keterangan"        => "Saldo Awal Periode ".$date,
+                "jenis"             => "DEBET"
             ]);
 
             $saldo += $data->jumlah;
@@ -196,6 +203,44 @@ class saldo_piutang_controller extends Controller
                 ]);
 
                 $saldo += $invoice->total;
+            }
+
+            $cndn = DB::table("cn_dn_penjualan")
+                    ->join("cn_dn_penjualan_d", "cn_dn_penjualan.cd_id", "=", "cn_dn_penjualan_d.cdd_id")
+                    ->where(DB::raw("date_part('month', cn_dn_penjualan.cd_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
+                    ->where(DB::raw("date_part('year', cn_dn_penjualan.cd_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))
+                    ->whereIn('cn_dn_penjualan_d.cdd_nomor_invoice', function ($query) use ($date_init, $piutang){
+
+                        $query->select('i_nomor')
+                              ->from('invoice')
+                              ->where("i_kode_cabang", $piutang->kode_cabang)
+                              ->where("i_kode_customer", $piutang->kode_customer)
+                              ->where(DB::raw("date_part('month', i_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
+                              ->where(DB::raw("date_part('year', i_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))->get();
+
+                    })->select("cn_dn_penjualan.cd_nomor", "cn_dn_penjualan.cd_tanggal", "cn_dn_penjualan.cd_keterangan", "cn_dn_penjualan.cd_jenis", "cn_dn_penjualan_d.cdd_netto_akhir")
+                    ->get();
+
+            foreach ($cndn as $cndn) {
+                $ids = (DB::table("d_saldo_piutang_detail")->where("id_saldo_piutang", $id)->max("id_detail") == null) ? 1 : (DB::table("d_saldo_piutang_detail")->where("id_saldo_piutang", $id)->max("id_detail")+1);
+
+                $jenis = ($cndn->cd_jenis == "D") ? "DEBET" : "KREDIT";
+
+                DB::table("d_saldo_piutang_detail")->insert([
+                    "id_saldo_piutang"  => $id,
+                    "id_detail"         => $ids,
+                    "id_referensi"      => $cndn->cd_nomor,
+                    "jumlah"            => $cndn->cdd_netto_akhir,
+                    "tanggal"           => $cndn->cd_tanggal,
+                    "jatuh_tempo"       => null,
+                    "keterangan"        => $cndn->cd_keterangan,
+                    "jenis"             => $jenis
+                ]);
+
+                if($jenis == "DEBET")
+                  $saldo += $cndn->cdd_netto_akhir;
+                else
+                  $saldo -= $cndn->cdd_netto_akhir;
             }
 
             $kwt = DB::table("kwitansi")
@@ -294,29 +339,45 @@ class saldo_piutang_controller extends Controller
         $date = date("m/Y", strtotime("-1 months", strtotime($date_init)));
 
         $data = DB::table("d_saldo_piutang")
-                ->where("kode_cabang", "001")
-                ->where("kode_customer", "CA/03/0020")
+                ->where("kode_cabang", "007")
+                ->where("kode_customer", "CS-004/00027")
                 ->where("periode", $date)
                 ->select("jumlah")->first();
 
         $inv = DB::table("invoice")
-               ->where("i_kode_cabang", "001")
-               ->where("i_kode_customer", "CA/03/0020")
+               ->where("i_kode_cabang", "007")
+               ->where("i_kode_customer", "CS-004/00027")
                ->where(DB::raw("date_part('month', i_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
                ->where(DB::raw("date_part('year', i_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))
                ->select(DB::raw('coalesce(invoice.i_total, 0) as total'), 'invoice.i_nomor', 'invoice.i_tanggal', 'invoice.i_jatuh_tempo', 'invoice.i_keterangan')
                ->groupBy('invoice.i_nomor', 'invoice.i_tanggal', 'invoice.i_jatuh_tempo', 'invoice.i_keterangan')->get();
 
+        $cndn = DB::table("cn_dn_penjualan")
+                ->join("cn_dn_penjualan_d", "cn_dn_penjualan.cd_id", "=", "cn_dn_penjualan_d.cdd_id")
+                ->where(DB::raw("date_part('month', cn_dn_penjualan.cd_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
+                ->where(DB::raw("date_part('year', cn_dn_penjualan.cd_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))
+                ->whereIn('cn_dn_penjualan_d.cdd_nomor_invoice', function ($query) use ($date_init){
+
+                    $query->select('i_nomor')
+                          ->from('invoice')
+                          ->where("i_kode_cabang", "007")
+                          ->where("i_kode_customer", "CS-004/00027")
+                          ->where(DB::raw("date_part('month', i_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
+                          ->where(DB::raw("date_part('year', i_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))->get();
+
+                })->select("cn_dn_penjualan.cd_nomor", "cn_dn_penjualan.cd_tanggal", "cn_dn_penjualan.cd_keterangan", "cn_dn_penjualan.cd_jenis", "cn_dn_penjualan_d.cdd_netto_akhir")
+                ->get();
+
         $kwt = DB::table("kwitansi")
                ->join("kwitansi_d", "kwitansi.k_nomor", "=", "kwitansi_d.kd_k_nomor")
-               ->where("kwitansi.k_kode_customer", 'CA/03/0020')
-               ->where("kwitansi.k_kode_cabang", "001")
+               ->where("kwitansi.k_kode_customer", 'CS-004/00027')
+               ->where("kwitansi.k_kode_cabang", "007")
                ->where(DB::raw("substring(kd_nomor_invoice,1,3)"), "INV")
                ->where(DB::raw("date_part('month', k_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
                ->where(DB::raw("date_part('year', k_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))
                ->where('kwitansi.k_jenis_pembayaran', 'T')
-               ->orWhere("kwitansi.k_kode_customer", 'CA/03/0020')
-               ->where("kwitansi.k_kode_cabang", "001")
+               ->orWhere("kwitansi.k_kode_customer", 'CS-004/00027')
+               ->where("kwitansi.k_kode_cabang", "007")
                ->where(DB::raw("substring(kd_nomor_invoice,1,3)"), "INV")
                ->where(DB::raw("date_part('month', k_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
                ->where(DB::raw("date_part('year', k_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))
@@ -332,14 +393,14 @@ class saldo_piutang_controller extends Controller
                         $query->select('k_nomor')
                               ->from('kwitansi')
                               ->join("kwitansi_d", "kwitansi.k_nomor", "=", "kwitansi_d.kd_k_nomor")
-                              ->where("kwitansi.k_kode_customer", 'CA/03/0020')
-                              ->where("kwitansi.k_kode_cabang", "001")
+                              ->where("kwitansi.k_kode_customer", 'CS-004/00027')
+                              ->where("kwitansi.k_kode_cabang", "007")
                               ->where(DB::raw("substring(kd_nomor_invoice,1,3)"), "INV")
                               ->where(DB::raw("date_part('month', k_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
                               ->where(DB::raw("date_part('year', k_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))
                               ->where('kwitansi.k_jenis_pembayaran', 'C')
-                              ->orWhere("kwitansi.k_kode_customer", 'CA/03/0020')
-                              ->where("kwitansi.k_kode_cabang", "001")
+                              ->orWhere("kwitansi.k_kode_customer", 'CS-004/00027')
+                              ->where("kwitansi.k_kode_cabang", "007")
                               ->where(DB::raw("substring(kd_nomor_invoice,1,3)"), "INV")
                               ->where(DB::raw("date_part('month', k_tanggal)"), date('m', strtotime("-1 months", strtotime($date_init))))
                               ->where(DB::raw("date_part('year', k_tanggal)"), date('Y', strtotime("-1 months", strtotime($date_init))))
@@ -347,7 +408,7 @@ class saldo_piutang_controller extends Controller
                     })->select("posting_pembayaran.nomor", "posting_pembayaran.keterangan", DB::raw('sum(posting_pembayaran_d.jumlah)'), 'posting_pembayaran.tanggal')
                    ->groupBy("posting_pembayaran.nomor", "posting_pembayaran.tanggal", "posting_pembayaran.keterangan")->get();
 
-        return $posting;
+        return json_encode($cndn);
 
         // return number_format(($inv->total + $data->jumlah), 2);
 
