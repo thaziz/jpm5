@@ -12,7 +12,8 @@
         "yajra/laravel-datatables-oracle": "~6.0",
         "crabbly/fpdf-laravel": "^1.0",
         "anouar/fpdf": "^1.0",
-        "barryvdh/laravel-debugbar": "^2.4"
+        "barryvdh/laravel-debugbar": "^2.4",
+        "guzzlehttp/guzzle": "^6.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

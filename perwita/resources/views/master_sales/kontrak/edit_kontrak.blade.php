@@ -122,6 +122,9 @@
                             <th>Tipe Angkutan</th>
                             <th>Harga</th>
                             <th>Keterangan</th>
+                            @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+                            <th>Active</th>
+                            @endif
                             <th style="text-align: center;">Aksi</th>
                         </tr>
                     </thead>
@@ -157,6 +160,11 @@
                             <td>
                                 <input type="text" class="keterangan form-control" value="{{$val->kcd_keterangan}}" name="keterangan[]">
                             </td>
+                            @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+                            <td>
+                                <input @if($val->kcd_active == true) checked="" @endif type="checkbox" class="aktif form-control"  name="aktif[]">
+                            </td>
+                            @endif
                             <td align="center">
                                 <div class="btn-group">
                                    <button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">
@@ -607,7 +615,9 @@ $('#btnsimpan').click(function(){
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    showLoaderOnConfirm :true,
+    closeOnConfirm: false,
+    
   },
   function(){
        $.ajaxSetup({
@@ -643,5 +653,31 @@ $('#btnsimpan').click(function(){
   });  
  });
 });
+
+$.fn.serializeArray = function () {
+    var rselectTextarea= /^(?:select|textarea)/i;
+    var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;
+    var rCRLF = /\r?\n/g;
+    
+    return this.map(function () {
+        return this.elements ? jQuery.makeArray(this.elements) : this;
+    }).filter(function () {
+        return this.name && !this.disabled && (this.checked || rselectTextarea.test(this.nodeName) || rinput.test(this.type) || this.type == "checkbox");
+    }).map(function (i, elem) {
+        var val = jQuery(this).val();
+        if (this.type == 'checkbox' && this.checked === false) {
+            val = 'off';
+        }
+        return val == null ? null : jQuery.isArray(val) ? jQuery.map(val, function (val, i) {
+            return {
+                name: elem.name,
+                value: val.replace(rCRLF, "\r\n")
+            };
+        }) : {
+            name: elem.name,
+            value: val.replace(rCRLF, "\r\n")
+        };
+    }).get();
+}
 </script>
 @endsection
