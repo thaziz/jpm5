@@ -169,7 +169,7 @@
                         </td>
                         @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
                         <td>
-                            <input @if($val->kcd_active == true) checked="" @endif type="checkbox" class="aktif form-control"  name="aktif[]">
+                            <input @if($val->ksd_active == true) checked="" @endif type="checkbox" class="aktif form-control"  name="aktif[]">
                         </td>
                         @endif
                         <td>

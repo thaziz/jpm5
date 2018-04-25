@@ -254,6 +254,12 @@ class subconController extends Controller
 				$id_dt+=1;
 			}
 
+			if ($request->aktif[$i] == 'on') {
+               $kcd_aktif[$i] = true;
+            }else{
+               $kcd_aktif[$i] = false;
+            }
+
 			if ($request->id_ksd[$i] != '0') {
 				$kontrak_subcon_dt = DB::table('kontrak_subcon_dt')
 									->where('ksd_id',$request->id_ksd[$i])
@@ -266,6 +272,7 @@ class subconController extends Controller
 								   		'ksd_angkutan'		=> $request->angkutan_tb[$i],
 								   		'ksd_harga'			=> $harga,
 								   		'ksd_jenis_tarif'	=> $request->tarif_tb[$i],
+								   		'ksd_active'		=> $kcd_aktif[$i],
 								   		'updated_at'		=>	Carbon::now(),
 								   ]);
 			}else{
@@ -281,11 +288,29 @@ class subconController extends Controller
 								   		'ksd_harga'			=> $harga,
 								   		'ksd_jenis_tarif'	=> $request->tarif_tb[$i],
 								   		'updated_at'		=>	Carbon::now(),
+								   		'ksd_active'		=> $kcd_aktif[$i],
 										'created_at'		=>	Carbon::now()
 								   ]);
 			}
 			
 		}
+
+		 $data = ['kontrak'=>url('master_subcon/edit_subcon/'.$request->id),'status'=>'Subcon'];
+         if (in_array(false, $kcd_aktif)) {
+           Mail::send('hello', $data, function ($mail)
+          {
+            // Email dikirimkan ke address "momo@deviluke.com" 
+            // dengan nama penerima "Momo Velia Deviluke"
+            $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+            $mail->to('dewa17a@gmail.com', 'Admin');
+       
+            // Copy carbon dikirimkan ke address "haruna@sairenji" 
+            // dengan nama penerima "Haruna Sairenji"
+            $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+       
+            $mail->subject('KONTRAK VERIFIKASI');
+          });
+         }
 		// return $db = DB::table('kontrak_subcon_dt')
 		// 				->get();
 		return 'Success';

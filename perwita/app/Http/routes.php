@@ -45,27 +45,7 @@ Route::get('purchase/suratpermintaanpembelian', function(){
         return view('purchase.spp.index');
 });
 //email
-Route::get('email', function()
-{
- 
-    // Variable data ini yang berupa array ini akan bisa diakses di dalam "view".
-    $data = ['prize' => 'Peke', 'total' => 3 ];
- 
-    // "emails.hello" adalah nama view.
-    Mail::send('hello', $data, function ($mail)
-    {
-      // Email dikirimkan ke address "momo@deviluke.com" 
-      // dengan nama penerima "Momo Velia Deviluke"
-      $mail->to('dewa17a@gmail.com', 'Admin');
- 
-      // Copy carbon dikirimkan ke address "haruna@sairenji" 
-      // dengan nama penerima "Haruna Sairenji"
-      $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
- 
-      $mail->subject('KONTRAK VERIFIKASI');
-    });
- 
-});
+
 //********SETTING********
 //pengguna
 Route::get('setting/pengguna', 'setting\pengguna_Controller@index');
@@ -185,7 +165,7 @@ Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detail
 Route::get('stockopname/stockopname' , 'PengeluaranBarangController@stockopname');
 Route::get('stockopname/cari_sm/{id}' , 'PengeluaranBarangController@cari_sm');
 Route::get('stockopname/berita_acara/{id}' , 'PengeluaranBarangController@berita_acara');
-Route::get('stockopname/createstockopname' , 'PengeluaranBarangController@createstockopname');
+Route::get('stockopname/createstockopname' , 'StockOpnameController@createstockopname');
 Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstockopname');
 Route::get('stockopname/save_stock_opname' , 'PengeluaranBarangController@save_stock_opname');
 Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detailstockopname');
