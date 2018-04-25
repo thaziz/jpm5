@@ -21,9 +21,10 @@
 
 <script>
     $(document).ready(function() {
-        var cabang   = '{{$cabang}}';
-        var customer = '{{$customer}}';
-        var id       = '{{$id}}';
+        var cabang      = '{{$cabang}}';
+        var customer    = '{{$customer}}';
+        var id          = '{{$id}}';
+        var jenis_tarif = '{{$jenis_tarif}}';
         var array_simpan = [];
         var array_edit = [];
         var array_harga = [];
@@ -55,7 +56,7 @@
         serverSide: true,
         ajax: {
             url:'{{ route('datatable_detail_invoice') }}',
-            data:{cabang,customer,array_simpan,array_edit,array_harga,id}
+            data:{cabang,customer,array_simpan,array_edit,array_harga,id,jenis_tarif}
         },
         columnDefs: [
           {
