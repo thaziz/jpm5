@@ -132,6 +132,9 @@
                             <th>Tarif</th>
                             <th>Harga</th>
                             <th>Keterangan</th>
+                            @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+                            <th>Active</th>
+                            @endif
                             <th style="text-align: center;">Aksi</th>
                         </tr>
                     </thead>
@@ -164,6 +167,11 @@
                             <div class="keterangan_text">{{$val->ksd_keterangan}}</div>
                             <input type="hidden" class="keterangan_tb" name="keterangan_tb[]" value="{{$val->ksd_keterangan}}" >
                         </td>
+                        @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+                        <td>
+                            <input @if($val->kcd_active == true) checked="" @endif type="checkbox" class="aktif form-control"  name="aktif[]">
+                        </td>
+                        @endif
                         <td>
                             <button align="center" type="button" class="btn btn-xs edit btn-warning" onclick="edit(this)">
                             <i class="fa fa-pencil"></i></button>&nbsp;
@@ -345,9 +353,7 @@ function tambah(){
   var keterangan  = $('.keterangan').val();
   // console.log(asal);
 
-
-
-
+  @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
   datatable.row.add([
         '<div class="asal_text">'+asal+'</div>'+'<input type="hidden" class="asal_tb hitung_'+count+'" name="asal_tb[]" value="'+asal_dt+'" >'+'<input type="hidden" class="id_table" value="'+count+'" >'+'<input type="hidden" class="id_ksd" name="id_ksd[]" value="0">',
         '<div class="tujuan_text">'+tujuan+'</div>'+'<input type="hidden" class="tujuan_tb" name="tujuan_tb[]" value="'+tujuan_dt+'" >',
@@ -355,9 +361,26 @@ function tambah(){
         '<div class="tarif_text">'+tarif+'</div>'+'<input type="hidden" class="tarif_tb" name="tarif_tb[]" value="'+tarif+'" >',
         '<div class="harga_text">'+Harga+'</div>'+'<input type="hidden" class="harga_tb" name="harga_tb[]" value="'+Harga+'" >',
         '<div class="keterangan_text">'+keterangan+'</div>'+'<input type="hidden" class="keterangan_tb" name="keterangan_tb[]" value="'+keterangan+'" >',
+        '<input type="checkbox" class="aktif form-control"  name="aktif[]">',
         '<button align="center" type="button" class="btn btn-xs edit btn-warning" onclick="edit(this)"><i class="fa fa-pencil"></i></button>'+'&nbsp;<button align="center" type="button" class="btn btn-xs hapus btn-danger" onclick="hapus(this)"><i class="fa fa-trash"></i></button>',
         
     ]).draw(false);
+  @else
+  datatable.row.add([
+        '<div class="asal_text">'+asal+'</div>'+'<input type="hidden" class="asal_tb hitung_'+count+'" name="asal_tb[]" value="'+asal_dt+'" >'+'<input type="hidden" class="id_table" value="'+count+'" >'+'<input type="hidden" class="id_ksd" name="id_ksd[]" value="0">',
+        '<div class="tujuan_text">'+tujuan+'</div>'+'<input type="hidden" class="tujuan_tb" name="tujuan_tb[]" value="'+tujuan_dt+'" >',
+        '<div class="angkutan_text">'+angkutan+'</div>'+'<input type="hidden" class="angkutan_tb" name="angkutan_tb[]" value="'+angkutan_dt+'" >',
+        '<div class="tarif_text">'+tarif+'</div>'+'<input type="hidden" class="tarif_tb" name="tarif_tb[]" value="'+tarif+'" >',
+        '<div class="harga_text">'+Harga+'</div>'+'<input type="hidden" class="harga_tb" name="harga_tb[]" value="'+Harga+'" >',
+        '<div class="keterangan_text">'+keterangan+'</div>'+'<input type="hidden" class="keterangan_tb" name="keterangan_tb[]" value="'+keterangan+'" >',
+
+        '<button align="center" type="button" class="btn btn-xs edit btn-warning" onclick="edit(this)"><i class="fa fa-pencil"></i></button>'+'&nbsp;<button align="center" type="button" class="btn btn-xs hapus btn-danger" onclick="hapus(this)"><i class="fa fa-trash"></i></button>',
+        
+    ]).draw(false);
+  @endif
+
+
+  
   // console.log('asd');
   count++;
   var edit = $('.edit').closest('td');
@@ -479,5 +502,30 @@ $('#btnsimpan').click(function(){
   });  
  });
 });
+$.fn.serializeArray = function () {
+    var rselectTextarea= /^(?:select|textarea)/i;
+    var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;
+    var rCRLF = /\r?\n/g;
+    
+    return this.map(function () {
+        return this.elements ? jQuery.makeArray(this.elements) : this;
+    }).filter(function () {
+        return this.name && !this.disabled && (this.checked || rselectTextarea.test(this.nodeName) || rinput.test(this.type) || this.type == "checkbox");
+    }).map(function (i, elem) {
+        var val = jQuery(this).val();
+        if (this.type == 'checkbox' && this.checked === false) {
+            val = 'off';
+        }
+        return val == null ? null : jQuery.isArray(val) ? jQuery.map(val, function (val, i) {
+            return {
+                name: elem.name,
+                value: val.replace(rCRLF, "\r\n")
+            };
+        }) : {
+            name: elem.name,
+            value: val.replace(rCRLF, "\r\n")
+        };
+    }).get();
+}
 </script>
 @endsection

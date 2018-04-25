@@ -492,6 +492,8 @@ var tipe_angkutan            = $('.tipe_angkutan_modal').val();
 console.log(id_detail);
 
     if (id_detail == '') {
+    @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+
         datatable.row.add([
                kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+count+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
                '<input type="hidden" class="seq" value="'+count+'">' ,
@@ -509,6 +511,71 @@ console.log(id_detail);
                '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
 
                '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
+               '<input type="checkbox" class="aktif form-control"  name="aktif[]">',
+               '<div class="btn-group">'+
+               '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
+               '<label class="fa fa-pencil"></label></button>'+
+               '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+               '<label class="fa fa-trash"></label></button>'+
+               '</div>'+
+               '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
+               '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
+          
+        ]).draw();
+    @else
+    datatable.row.add([
+               kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+count+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
+               '<input type="hidden" class="seq" value="'+count+'">' ,
+
+               kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
+
+               jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
+               '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
+
+               satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+
+               tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
+
+               '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
+               '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
+
+               '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
+               '<div class="btn-group">'+
+               '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
+               '<label class="fa fa-pencil"></label></button>'+
+               '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
+               '<label class="fa fa-trash"></label></button>'+
+               '</div>'+
+               '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
+               '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
+          
+        ]).draw();
+    @endif
+        count++;
+    }else{
+        var par = $('.urut_ke_'+id_detail).parents('tr');
+        datatable.row(par).remove().draw(false);
+        @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+
+        datatable.row.add([
+               kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+id_detail+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
+               '<input type="hidden" class="seq" value="'+id_detail+'">',
+
+               kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
+
+               jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
+               '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
+
+               satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
+
+               tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
+
+               '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
+               '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
+
+               '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
+               
+               '<input type="checkbox" class="aktif form-control"  name="aktif[]">',
 
                '<div class="btn-group">'+
                '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
@@ -520,11 +587,7 @@ console.log(id_detail);
                '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
           
         ]).draw();
-        count++;
-    }else{
-        var par = $('.urut_ke_'+id_detail).parents('tr');
-        datatable.row(par).remove().draw(false);
-
+        @else
         datatable.row.add([
                kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+id_detail+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
                '<input type="hidden" class="seq" value="'+id_detail+'">',
@@ -553,6 +616,7 @@ console.log(id_detail);
                '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
           
         ]).draw();
+        @endif
     }
   // console.log('asd');
   $('.id_detail').val('');
@@ -617,7 +681,7 @@ $('#btnsimpan').click(function(){
     cancelButtonText: "Batal",
     showLoaderOnConfirm :true,
     closeOnConfirm: false,
-    
+
   },
   function(){
        $.ajaxSetup({
