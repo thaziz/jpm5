@@ -16,9 +16,13 @@ use Session;
 use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
+use Illuminate\Foundation\Auth\RedirectsUsers;
+
 
 class subconController extends Controller
 {
+	use BiayaPenerusController;
+
 	public function subcon(){
 		$cabang =Auth::user()->kode_cabang;
 			$data = DB::table('kontrak_subcon')
@@ -346,4 +350,7 @@ public function nota_kontrak_subcon(request $request)
 }
 }
 
-?>
+trait BiayaPenerusController
+{
+	public $asd = 'asd';
+}

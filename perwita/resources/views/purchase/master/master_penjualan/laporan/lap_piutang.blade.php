@@ -11,7 +11,23 @@
 
   }
   .dataTables_filter, .dataTables_info { display: none; }
-
+  .saldo{
+    border: none;
+    background-color: #e6ffda;
+    color: #676a6c;
+  }
+  #total_debet{
+    border: none;
+    color: #676a6c;
+  }
+  #total_kredit{
+    border: none;
+    color: #676a6c;
+  }
+  #total_total{
+    border: none;
+    color: #676a6c;
+  }
 </style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -47,63 +63,72 @@
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                        <tr>
-                          {{--   <th style="width: 100px; padding-top: 16px"> Satuan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($sat as $sat)
-                              <option value="{{ $sat->kode }}">{{ $sat->kode }} - {{ $sat->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td>
- --}}
-                           {{-- <th style="width: 100px; padding-top: 16px"> Customer </th>
-                          <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option selected="">- Pilih Customer -</option>
-                            @foreach ($cus as $c)
-                              <option value="{{ $c->nama }}" >{{ $c->kode }} - {{ $c->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td> --}}
-                        </tr>
-                       
                       <br>
                       </table>
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                     </div>
                 </form>
                 <div class="box-body">
-                <table id="addColumn" class="table table-bordered table-striped">
+                <table id="addColumn" class="table table-bordered table-striped" width="100%">
                     <thead>
                         <tr>
-                            <th> Kode</th>
-                            <th> Tgl </th>
-                            <th> Keterangan </th>
-                            <th> Debet(+) </th>
-                            <th> Kredit(-) </th>
-                            <th> saldo </th>
+                            <th width="10%"> Kode</th>
+                            <th width="10%"> Tgl </th>
+                            <th width="10%"> Keterangan </th>
+                            <th width="10%"> Debet(+) </th>
+                            <th width="10%"> Kredit(-) </th>
+                            <th width="10%"> saldo </th>
                         </tr>
                     </thead>
                     <tbody>
-                      @foreach ($data as $index =>$e)
-                        <tr>
-                        
-                        <td><input type="hidden" value="{{ $e->kode }}" name="nomor">{{ $e->kode }}</td>
-                        <td>{{ $e->tanggal }}</td>
-                        <td>{{ $e->keterangan }}</td>
-                        <td align="right"> 
-                        @if ($e->flag == 'D' or substr($e->kode,0,3) == 'INV')
-                          {{ $e->total }}
-                        @else 
-                          0
-                        @endif
-                        </td>
-                        
-                        <td></td>
+                      @foreach ($data_i as $a => $element)
+                         <tr>
+                           <td colspan="6">{{ $data_i[$a]->i_kode_customer }}  - {{ $data_i[$a]->cnama }}</td>
+                         </tr>
+                         @foreach ($data as $e => $element)
+                      <tr style="text-align: right;background-color: #e6ffda;">
+                          
+                            @if ($data_i[$a]->i_kode_customer == $data[$e]->cutomer)
+
+                                    <td><input type="hidden" value="{{ $data[$e]->kode }}" name="nomor">{{ $data[$e]->kode }}</td>
+                                    <td>{{ $data[$e]->tanggal }}</td>
+                                    <td align="left">{{ $data[$e]->keterangan }}</td>
+                                    <td align="right" > 
+                                    @if ($data[$e]->flag == 'D' or substr($data[$e]->kode,0,3) == 'INV')
+                                      {{ $data[$e]->total }}
+                                      <input type="hidden" class="debet" value="{{ $data[$e]->total }}" name="">
+                                      <input type="hidden" class="debet_percabang" value="{{ $data[$e]->total }}" name="">
+                                    @else 
+                                      0
+                                      <input type="hidden" class="debet" value="0" name="">
+                                    @endif
+                                    </td>
+
+                                    <td align="right"> 
+                                    @if ($data[$e]->flag == 'K' or substr($data[$e]->kode,0,2) == 'KN' or substr($data[$e]->kode,0,3) == 'KWT' or substr($data[$e]->kode,0,3) == 'PST')
+                                      <input type="hidden" class="kredit" value="{{ $data[$e]->total }}" name="">
+                                      {{ $data[$e]->total }}
+                                    @else 
+                                      0
+                                      <input type="hidden" class="kredit" value="0" name="">
+                                    @endif
+                                    </td>
+
+                                    <td ><input type="text" name="" readonly="" class="saldo" style="text-align: right"></td>
+                            @endif 
+                      </tr>
+                        @endforeach
+                          <tr>
+                            <td colspan="3">Total</td>
+                            <td class="debet_perc"></td>
+                          </tr>
+                    @endforeach
+                    <tr>
+                          <th colspan="3" align="right">total</th>
+                          <td><input type="text" id="total_debet" readonly="" name="" style="text-align: right;font-weight: bold;"></td>
+                          <td><input type="text" id="total_kredit" readonly="" name="" style="text-align: right;font-weight: bold;"></td>
+                          <td><input type="text" id="total_total" readonly="" name="" style="text-align: right;font-weight: bold;"></td>
                         </tr>
-                      @endforeach
                     </tbody>
 
                   </table>
@@ -141,35 +166,42 @@
 
     var table;
    
-   table = $('#addColumn').DataTable( {
-      responsive: true,
-              searching: true,
-              //paging: false,
-              "pageLength": 10,
-              "language": dataTableLanguage,
-         dom: 'Bfrtip',
-         buttons: [
-            {
-                  extend: 'excel',
-                 /* messageTop: 'Hasil pencarian dari Nama : ',*/
-                  text: ' Excel',
-                  className:'excel',
-                  title:'LAPORAN TARIF CABANG KOLI',
-                  filename:'CABANGKOLI-'+a+b+c,
-                  init: function(api, node, config) {
-                  $(node).removeClass('btn-default'),
-                  $(node).addClass('btn-warning'),
-                  $(node).css({'margin-top': '-50px','margin-left': '80px'})
-                  },
-                  exportOptions: {
-                  modifier: {
-                      page: 'all'
-                  }
-              }
-              
-              }
-          ]
-    });
+   var awal = 0;
+  $('.debet_perc').each(function(){
+    var total = parseInt($(this).val());
+    awal += total;
+    console.log(awal);
+  });
+  $('.debet_perc').val(accounting.formatMoney(awal,"",0,'.',','));
+
+  var awal = 0;
+  $('.debet').each(function(){
+    var total = parseInt($(this).val());
+    awal += total;
+    console.log(awal);
+  });
+  $('#total_debet').val(accounting.formatMoney(awal,"",0,'.',','));
+
+  var kred = 0;
+  $('.kredit').each(function(){
+    var total = parseInt($(this).val());
+    kred += total;
+    console.log(kred);
+  });
+  $('#total_kredit').val(accounting.formatMoney(kred,"",0,'.',','));
+
+
+  var saldo = 0;
+  $('.debet').each(function(){
+    var par = $(this).parents('tr');
+    var kredit = $(par).find('.kredit').val();
+    var hasil = $(this).val() - kredit;
+    saldo += hasil;
+    $(par).find('.saldo').val(saldo);
+  })
+  $('#total_total').val(accounting.formatMoney(saldo,"",0,'.',','));
+
+
      $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'

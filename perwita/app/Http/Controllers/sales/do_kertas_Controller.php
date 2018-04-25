@@ -26,6 +26,16 @@ class do_kertas_Controller extends Controller
                       ->where('kode_cabang',$cabang)
                       ->get();
         }
+        $cabang = DB::table('cabang')
+                    ->get();
+
+        for ($i=0; $i < count($data); $i++) { 
+            for ($a=0; $a < count($cabang); $a++) { 
+                if ($data[$i]->kode_cabang == $cabang[$a]->kode) {
+                    $data[$i]->nama_cabang = $cabang[$a]->nama;
+                }
+            }
+        }
         return view('sales.do_kertas.index',compact('data'));
     }
 

@@ -318,7 +318,7 @@
                Lain Lain
               </td>
               <td>                      
-                <input type="text" class="form-control lain_penerus" name="lainlain">
+                <input type="text" class="form-control lain_penerus" name="lainlain_penerus">
               </td>
             </tr>
             <tr>

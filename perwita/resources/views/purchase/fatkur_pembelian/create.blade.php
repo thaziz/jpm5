@@ -100,22 +100,24 @@
                          <table class="table head1">    
                            <tr>
                             <td> Cabang </td>
-                            <td>  
                             @if(Auth::user()->punyaAkses('Faktur Pembelian','cabang'))
-                            <select class="form-control  cabang" name="cabang">
+                            <td>  
+                            <select class="form-control chosen-select-width cabang" name="cabang">
                                 @foreach($data['cabang'] as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
                               @endforeach
                             </select>
+                            </td>
                             @else
-                              <select class="form-control disabled cabang" name="cabang">
+                              <td class="disabled"> 
+                              <select class="form-control chosen-select-width disabled cabang" name="cabang">
                                 @foreach($data['cabang'] as $cabang)
                                 <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif>{{$cabang->kode}} - {{$cabang->nama}} </option>
                                 @endforeach
                               </select> 
+                              </td>
                             @endif
                             
-                            </td>
                            </tr>
 
                           <tr>

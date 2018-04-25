@@ -197,12 +197,14 @@ class penerimaan_penjualan_Controller extends Controller
     public function datatable_detail_invoice(request $request)
     {   
         // return $request->customer;
+
+      // dd($request->all());
         $temp_1  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
-                  ->orWhere('k_nomor','=',$request->id)
                   ->where('i_kode_cabang',$request->cabang)
+                  ->orWhere('k_nomor',$request->id)
                   ->get();
 
         if (isset($request->array_edit)) {
