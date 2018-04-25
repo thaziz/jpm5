@@ -74,7 +74,7 @@
  				<td>{{$val->type_kiriman}}</td>
  				<td>{{$val->status}}</td>
  				<td align="right">{{"Rp " . number_format($val->pbd_tarif_resi,2,",",".")}}</td>
- 				<td align="right">{{"Rp " . number_format($cari_fp[0]->fp_netto,2,",",".")}}</td>
+ 				<td align="right">{{"Rp " . number_format($val->pbd_tarif_harga,2,",",".")}}</td>
  			</tr>
  			@endif
  			@endforeach

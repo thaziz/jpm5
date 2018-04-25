@@ -113,14 +113,19 @@
                        @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
                          <td align="center"> 
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
-                            <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
-                            <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                            </a> 
+                              @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
+                                <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/edit_penerus/'.$faktur->fp_idfaktur.'')}}>
+                                <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                                </a> 
+                              @endif
                             @endif
+
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
-                            <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus({{$faktur->fp_idfaktur}})">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                            </a> 
+                              @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
+                                <a title="Hapus" class="btn btn-sm btn-danger" onclick="hapus({{$faktur->fp_idfaktur}})">
+                                <i class="fa fa-trash" aria-hidden="true"></i>
+                                </a> 
+                              @endif
                             @endif
                           <input type="hidden" value="{{$faktur->fp_jenisbayar}}">
                          </td> 
@@ -128,13 +133,17 @@
                         <td align="center">
 
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
-                          <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
+                              @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
+                                <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
+                              @endif
                             @endif
                           @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))
-                            <a title="Hapus" class="btn btn-sm btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
-                              <i class="fa fa-trash" aria-hidden="true"></i>
-                            </a> 
+                              @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
+                                <a title="Hapus" class="btn btn-sm btn-success" onclick="hapus({{$faktur->fp_idfaktur}})">
+                                  <i class="fa fa-trash" aria-hidden="true"></i>
+                                </a> 
+                              @endif
                             @endif
 
                           @else

@@ -17,11 +17,13 @@ class do_kargo_Controller extends Controller
         $cabang = auth::user()->kode_cabang;
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
             $data = DB::table('delivery_order')
+                      ->join('cabang','kode','=','kode_cabang')
                       ->where('jenis','KARGO')
                       ->orderBy('tanggal','DESC')
                       ->get();
         }else{
             $data = DB::table('delivery_order')
+                      ->join('cabang','kode','=','kode_cabang')
                       ->where('jenis','KARGO')
                       ->where('kode_cabang',$cabang)
                       ->orderBy('tanggal','DESC')

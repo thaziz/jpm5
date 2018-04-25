@@ -2108,26 +2108,34 @@ class LaporanMasterController extends Controller
 
    public function kartupiutang(){
    		
-   		$data_p = DB::table('invoice')->select('i_nomor','i_kode_customer','i_kode_cabang','i_tanggal')->get();
+   		 $data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
+   		 $data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer from invoice group by i_nomor order by i_nomor");
    		
-   		$a = DB::table('invoice')->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total')
-   				->where('i_kode_customer','CS-012/00159');
 
-   		$b = DB::table('cn_dn_penjualan')->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total')
-   				->where('cd_customer','CS-012/00159');
+   		$a = DB::table('invoice')
+   			->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
 
-   		$c = DB::table('kwitansi')->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
-   				->where('k_kode_customer','CS-012/00159');
+   		$b = DB::table('cn_dn_penjualan')
+   			->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
 
-   		$d = DB::table('kwitansi')->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
-   				->where('k_kode_customer','CS-012/00159');
+   		$c = DB::table('kwitansi')
+   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
+
+   		$d = DB::table('kwitansi')
+   			->select('k_create_by','nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
+   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
+   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
 
 
-   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
+   		 $data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
 
+   		/*return*/ $ds = DB::table('kwitansi')
+   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto','nomor')
+   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
+   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran')->get();
 
    		
-   		return view('purchase/master/master_penjualan/laporan/lap_piutang',compact('data'));
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang',compact('data','data_i','data_p'));
    }
    public function rekap_customer(){
    		$cabang = DB::table('cabang')->get();

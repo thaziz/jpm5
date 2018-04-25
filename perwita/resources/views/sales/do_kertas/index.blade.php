@@ -59,6 +59,7 @@
                             <tr>
                                 <th>Nomor</th>
                                 <th>Tanggal </th>
+                                <th>Cabang </th>
                                 <th>Customer</th>
                                 <th>Diskon </th>
                                 <th>Total </th>
@@ -70,6 +71,7 @@
                             <tr>
                                 <td><a href="{{ url('sales/detail_do_kertas')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
                                 <td>{{ $row->tanggal }}</td>
+                                <td>{{ $row->nama_cabang }}</td>
                                 <td>{{ $row->nama }}</td>
                                 <td style="text-align:right"> {{ number_format($row->diskon, 0, ",", ".") }} </td>
                                 <td style="text-align:right"> {{ number_format($row->total_net, 0, ",", ".") }} </td>
