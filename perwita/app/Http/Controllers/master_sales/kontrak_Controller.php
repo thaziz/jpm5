@@ -154,6 +154,30 @@ class kontrak_Controller extends Controller
                                 'kc_aktif'          => $kc_aktif,
                                 'kc_nomor'          => $request->kontrak_nomor
                               ]);
+                              
+            for ($i=0; $i < count($request->kota_asal); $i++) { 
+
+              $save_detail = DB::table('kontrak_customer_d')
+                               ->insert([
+                                  'kcd_id'            => $id,
+                                  'kcd_dt'            => $i+1,
+                                  'kcd_kota_asal'     => $request->kota_asal[$i],
+                                  'kcd_kota_tujuan'   => $request->kota_tujuan[$i],
+                                  'kcd_jenis'         => $request->jenis_modal[$i],
+                                  'kcd_harga'         => filter_var($request->harga[$i], FILTER_SANITIZE_NUMBER_INT),
+                                  'kcd_keterangan'    => $request->keterangan[$i],
+                                  'kcd_kode_satuan'   => $request->satuan[$i],
+                                  'kcd_type_tarif'    => $request->type_tarif[$i],
+                                  'kcd_jenis_tarif'   => $request->jenis_tarif[$i],
+                                  'kcd_kode_angkutan' => $request->tipe_angkutan[$i],
+                                  'kcd_acc_penjualan' => $request->akun_acc[$i],
+                                  'kcd_csf_penjualan' => $request->akun_csf[$i],
+                                  'kcd_kode'          => $request->kontrak_nomor,
+                               ]);
+            }
+
+            return response()->json(['status'=>1]);
+
         }else{
 
             $month    = Carbon::now()->format('m');
@@ -207,33 +231,35 @@ class kontrak_Controller extends Controller
                                 'kc_nomor'          => $request->$nota
                               ]);
 
+            for ($i=0; $i < count($request->kota_asal); $i++) { 
+
+              $save_detail = DB::table('kontrak_customer_d')
+                               ->insert([
+                                  'kcd_id'            => $id,
+                                  'kcd_dt'            => $i+1,
+                                  'kcd_kota_asal'     => $request->kota_asal[$i],
+                                  'kcd_kota_tujuan'   => $request->kota_tujuan[$i],
+                                  'kcd_jenis'         => $request->jenis_modal[$i],
+                                  'kcd_harga'         => filter_var($request->harga[$i], FILTER_SANITIZE_NUMBER_INT),
+                                  'kcd_keterangan'    => $request->keterangan[$i],
+                                  'kcd_kode_satuan'   => $request->satuan[$i],
+                                  'kcd_type_tarif'    => $request->type_tarif[$i],
+                                  'kcd_jenis_tarif'   => $request->jenis_tarif[$i],
+                                  'kcd_kode_angkutan' => $request->tipe_angkutan[$i],
+                                  'kcd_acc_penjualan' => $request->akun_acc[$i],
+                                  'kcd_csf_penjualan' => $request->akun_csf[$i],
+                                  'kcd_kode'          => $request->kontrak_nomor,
+                               ]);
+            }   
+
             return response()->json(['status'=>2,'nomor'=>$nota]);
         }
 
-        for ($i=0; $i < count($request->kota_asal); $i++) { 
-
-            $save_detail = DB::table('kontrak_customer_d')
-                             ->insert([
-                                'kcd_id'            => $id,
-                                'kcd_dt'            => $i+1,
-                                'kcd_kota_asal'     => $request->kota_asal[$i],
-                                'kcd_kota_tujuan'   => $request->kota_tujuan[$i],
-                                'kcd_jenis'         => $request->jenis_modal[$i],
-                                'kcd_harga'         => filter_var($request->harga[$i], FILTER_SANITIZE_NUMBER_INT),
-                                'kcd_keterangan'    => $request->keterangan[$i],
-                                'kcd_kode_satuan'   => $request->satuan[$i],
-                                'kcd_type_tarif'    => $request->type_tarif[$i],
-                                'kcd_jenis_tarif'   => $request->jenis_tarif[$i],
-                                'kcd_kode_angkutan' => $request->tipe_angkutan[$i],
-                                'kcd_acc_penjualan' => $request->akun_acc[$i],
-                                'kcd_csf_penjualan' => $request->akun_csf[$i],
-                                'kcd_kode'          => $request->kontrak_nomor,
-                             ]);
-        }
-
-        return response()->json(['status'=>1]);
+        
 
     }
+
+
     public function hapus_kontrak(request $request)
     {
         $hapus_detail = DB::table('kontrak_customer')
@@ -292,7 +318,6 @@ class kontrak_Controller extends Controller
     }
     public function update_kontrak(request $request)
     {   
-        // dd($request->all());
        $cari_kontrak = DB::table('kontrak_customer')
                           ->where('kc_nomor',$request->kontrak_nomor)
                           ->first();
