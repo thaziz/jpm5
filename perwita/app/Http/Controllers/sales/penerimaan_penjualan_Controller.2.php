@@ -186,24 +186,26 @@ class penerimaan_penjualan_Controller extends Controller
         $array_simpan = $request->array_simpan;
         $array_edit   = $request->array_edit;
         $array_harga  = $request->array_harga;
+        $jenis_tarif  = $request->jenis_tarif;
         if (isset($request->id)) {
           $id         = $request->id;
         }else{
           $id         = 0;
         }
 
-        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan','array_edit','array_harga','id'));
+        return view('sales.penerimaan_penjualan.tabel_invoice',compact('cabang','customer','array_simpan','array_edit','array_harga','id','jenis_tarif'));
     }
     public function datatable_detail_invoice(request $request)
     {   
         // return $request->customer;
 
       // dd($request->all());
-        $temp_1  = DB::table('invoice')
+       $temp_1  = DB::table('invoice')
                   ->leftjoin('kwitansi','k_nomor','=','i_nomor')
                   ->where('i_kode_customer',$request->customer)
                   ->where('i_sisa_akhir','!=',0)
                   ->where('i_kode_cabang',$request->cabang)
+                  ->where('i_pendapatan',$request->jenis_tarif)
                   ->orWhere('k_nomor',$request->id)
                   ->get();
 
@@ -387,6 +389,7 @@ class penerimaan_penjualan_Controller extends Controller
                                 'k_id' => $k_id,
                                 'k_nomor' => $request->nota,
                                 'k_tanggal'=> $tgl,
+                                'k_jenis_tarif'=> $request->jenis_tarif,
                                 'k_kode_customer' => $request->customer,
                                 'k_jumlah' => $request->jumlah_bayar,
                                 'k_keterangan' => $request->ed_keterangan,
@@ -457,8 +460,9 @@ class penerimaan_penjualan_Controller extends Controller
                     }
                     
                     array_push($memorial_array, $memorial);
-
-
+                    $acc = DB::table('customer')
+                             ->where('kode',$request->customer)
+                             ->first();
                     $save_detail = DB::table('kwitansi_d')
                                      ->insert([
                                           'kd_id'             => $k_id,
@@ -471,6 +475,8 @@ class penerimaan_penjualan_Controller extends Controller
                                           'kd_total_bayar'    => $request->i_bayar[$i] ,
                                           'kd_biaya_lain'     => $i_biaya_admin[$i],
                                           'kd_memorial'       => $memorial,
+                                          'kd_kode_akun_acc'  => $acc->acc_piutang,
+                                          'kd_kode_akun_csf'  => $acc->csf_piutang,
                                           'kd_debet'          => $request->i_debet[$i],
                                           'kd_kredit'         => $request->i_kredit[$i],
                                      ]);

@@ -62,7 +62,7 @@
                     <th width="15%" class="text-center">Menampilkan Cabang : </th>
                     <td width="17%">
 
-                        <select class="form-control chosen-select"id="cabang" name="cabang" style="background:; width: 90%">
+                        <select class="form-control chosen-select" id="cabang" name="cabang" style="background:; width: 90%">
                           @foreach ($cab as $cabangs)
                             <?php 
                                 $selected = ($cabangs->kode == $cabang) ? "selected" : "";
@@ -110,10 +110,10 @@
                   <table id="addColumn" class="table table-bordered table-striped tbl-item" style="font-size: 8pt;">
                     <thead>
                      <tr>
-                        <th width="10%">Golongan</th>
-                        <th width="15%"> Nama Golongan </th>
-                        <th width="20%"> Keterangan </th>
-                        <th> Masa Manfaat </th>
+                        <th width="15%">Nama Aktiva</th>
+                        <th width="15%"> Golongan </th>
+                        <th width="15%"> Nilai Perolehan </th>
+                        <th> Tanggal Perolehan </th>
                         <th> Tarif Garis Lurus </th>
                         <th> Tarif Saldo Menurun </th>
                         <th width="10%"> Aksi </th>
@@ -123,7 +123,27 @@
                     </thead>
                     
                     <tbody id="data-body">
-                        
+                        @foreach($data as $aktiva)
+                          <tr>
+                            <td class="text-center">{{ $aktiva->nama_aktiva }}</td>
+                            <td class="text-center">{{ $aktiva->nama_golongan }}</td>
+                            <td class="text-center">{{ number_format($aktiva->nilai_perolehan) }}</td>
+                            <td class="text-center">{{ date("d-m-Y", strtotime($aktiva->tanggal_perolehan)) }}</td>
+                            <td class="text-center">{{ $aktiva->persentase_garis_lurus }}%</td>
+                            <td class="text-center">{{ $aktiva->persentase_saldo_menurun }}%</td>
+                            <td class="text-center">
+                              <div class="btn-group ">
+                                @if(Auth::user()->PunyaAkses('Master Activa','ubah'))
+                                  <a class="btn btn-xs btn-warning" href="{{ route("master_aktiva.edit", [$aktiva->kode_cabang, $aktiva->id]) }}"><i class="fa fa-pencil"></i></a>
+                                @endif
+
+                                @if(Auth::user()->PunyaAkses('Master Activa','hapus'))
+                                  <a class="btn btn-xs btn-danger" onclick="return confirm('Apa Anda Yakin Ingin Menghapus Data ini ?')" href="{{ route("master_aktiva.hapus", [$aktiva->kode_cabang, $aktiva->id]) }}"><i class="fa fa-times"></i></a>
+                                @endif
+                              </div>
+                            </td>
+                          </tr>
+                        @endforeach
                     </tbody>
                    
                   </table>
@@ -165,7 +185,7 @@
     });
 
     $("#filter").click(function(){
-      window.location = baseUrl+"/golonganactiva/golonganactiva/"+$('#cabang').val();
+      window.location = baseUrl+"/masteractiva/masteractiva/"+$('#cabang').val();
     })
 
     $('.date').datepicker({

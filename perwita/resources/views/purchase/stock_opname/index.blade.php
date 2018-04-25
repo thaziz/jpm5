@@ -70,7 +70,7 @@
                           <td>{{$tgl[$i]}}</td>
                           <td>{{$val->mg_namagudang}}</td>
                           @if($val->so_status == 'TIDAK')
-                          <td align="center"><label class="label label-warning">TIDAK SESUASI</label></td>
+                          <td align="center"><label  class="label label-warning">TIDAK SESUASI</label></td>
                           <td align="center"><a href="{{url('stockopname/berita_acara')}}/{{$val->so_id}}" class="btn btn-warning"><i class="fa fa-book"></i> Buat Berita Acara</a></td>
                           @else
                           <td align="center"><label class="label label-success">SESUASI</label></td>
@@ -79,7 +79,7 @@
                           </td>
                           @endif 
                           <td align="center">
-                            <a title="detail" class="btn btn-success btn-sm" href={{url('konfirmasipengeluaranbarang/detailkonfirmasipengeluaranbarang')}}>
+                            <a title="detail" class="btn btn-success btn-sm" href={{url('stockopname/detailstockopname')}}>
                               <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             </a>
                           </td>

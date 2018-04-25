@@ -457,6 +457,7 @@
 
     $("#okee").on("click", ".tampilkan", function(evt){
       // alert("okee");
+      detail_reset();
       evt.stopImmediatePropagation()
       $id = $(this).data("id");
 
@@ -476,6 +477,14 @@
       $("#keterangan_view").val($(this).data("keterangan"));
       $("#jumlah_view").val($(this).data("jumlah"));
     });
+
+    function detail_reset(){
+      $("#nomor_faktur_view").val("");
+      $("#tanggal_faktur_view").val("");
+      $("#jatuh_tempo_view").val("");
+      $("#keterangan_view").val("");
+      $("#jumlah_view").val("");
+    }
 
     function initiate_saldo($idx, $id){
       id = $idx
@@ -498,9 +507,9 @@
         $.each(detail, function(i, n){
           if(n.id_saldo_piutang == $id){
 
-            $a = n.id_referensi.substring(0, 3);
+            $a = n.jenis;
 
-            if($a == "KWT" || $a == "PST"){
+            if($a == "KREDIT"){
               $total -= parseInt(n.jumlah);
               $b = '('+addCommas(n.jumlah)+',00)';
             }

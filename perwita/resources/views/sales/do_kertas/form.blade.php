@@ -128,6 +128,7 @@
                                     </div> 
                                 </td>
                             </tr>
+                            
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Diskon</td>
                                 <td colspan="3">
@@ -136,10 +137,24 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:110px; padding-top: 0.4cm">Total</td>
+                                <td style="width:110px; padding-top: 0.4cm">Total Tarif</td>
                                 <td colspan="3">
                                     <input type="text" class="form-control ed_total_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0" >
                                     <input type="hidden" class="form-control ed_total_m" name="ed_total_m" readonly="readonly" tabindex="-1"  style="text-align:right" >
+                                     
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Biaya Tambahan</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control biaya_tambahan" onkeyup="hitung_total() " tabindex="-1"  style="text-align:right" value="0" name="biaya_tambahan">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Total Netto</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control total_net_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0" >
+                                    <input type="hidden" class="form-control total_net_m" name="total_net_m" readonly="readonly" tabindex="-1"  style="text-align:right" >
                                      
                                 </td>
                             </tr>
@@ -369,6 +384,7 @@ $('.date').datepicker({
 
 
 
+   $('.biaya_tambahan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 $('.ed_diskon_modal').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 $('.ed_harga').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 $(document).ready(function(){
@@ -490,6 +506,17 @@ function tambah_kertas() {
         }
     }) 
 
+}
+
+function hitung_total() {
+    var ed_total_m = $('.ed_total_m').val();
+    var biaya_tambahan   = $('.biaya_tambahan').val();
+    biaya_tambahan  = biaya_tambahan.replace(/[^0-9\-]+/g,"");
+    biaya_tambahan  = parseInt(biaya_tambahan);
+    ed_total_m  = parseInt(ed_total_m);
+
+    $('.total_net_m').val(ed_total_m+biaya_tambahan);
+    $('.total_net_h').val(accounting.formatMoney(ed_total_m+biaya_tambahan,"",2,'.',','));
 }
 function hitung() {
    var ed_harga  = $('.ed_harga').val();
@@ -698,6 +725,7 @@ if (old_id == '') {
     $('.customer_td').addClass('disabled');
     $('.cabang_td').addClass('disabled');
     hitung_all();
+    hitung_total();
 }
 function format ( d ) {
     // console.log(d);
@@ -761,6 +789,7 @@ function hapus_detail(p) {
         $('.cabang_td').removeClass('disabled');
     }
     hitung_all();
+    hitung_total();
 }
 
 function edit_detail(p) {
