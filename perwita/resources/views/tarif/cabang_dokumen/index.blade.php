@@ -103,7 +103,7 @@
                         <table class="table table-bordered datatable table-striped">
                       <br>
                                                                                 
-                        <tr >
+                     {{--    <tr >
                            <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td colspan="2">
                           <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
@@ -124,7 +124,7 @@
                            </select>
                           </td>
                         </tr>
-                        
+                         --}}
                         
                     </table>
                     </form>
