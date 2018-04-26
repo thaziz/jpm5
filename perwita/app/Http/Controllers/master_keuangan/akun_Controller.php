@@ -17,8 +17,8 @@ class akun_Controller extends Controller
 
     public function index(){
 
-        if(cek_periode() == 0)
-            return view("keuangan.err.err_periode");
+        // if(cek_periode() == 0)
+        //     return view("keuangan.err.err_periode");
 
         $data = master_akun::whereNull("id_parrent")->orderBy("id_akun")->get();
         //return json_encode($data);
@@ -31,7 +31,12 @@ class akun_Controller extends Controller
         $data = master_akun::whereNull("id_parrent")->get();
         $nama = "Tidak Memiliki Parrent";
         $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
-        $cabang = DB::table("cabang")->orderBy("nama", "asc")->select("kode", "nama")->get();
+
+        $cabang = DB::table("cabang")
+                  ->join("kota", "kota.id", "=", "cabang.id_kota")
+                  ->join("provinsi", "kota.id_provinsi", "=", "provinsi.id")
+                  ->orderBy("cabang.nama", "asc")->select("cabang.kode as kode_cabang", "cabang.nama as nama_cabang", "provinsi.id as id_provinsi", "provinsi.nama as nama_provinsi")->get();
+
         $subakun = master_akun::orderBy("nama_akun", "asc")->get();
         $namakota = "";
 
@@ -43,11 +48,15 @@ class akun_Controller extends Controller
             $namakota = DB::table("kota")->where("id", $nama->id_kota)->first();
         }
 
+        // return $cabang;
+
+
+
         return view("keuangan.master_akun.insert")
             ->withData($data)
             ->withParrent($parrent)
             ->withProvinsi($provinsi)
-            ->withCabang($cabang)
+            ->withCabang($cabang)->withCabangjson(json_encode($cabang))
             ->withNama($nama)
             ->withNamakota($namakota)
             ->withSubakun($subakun);
@@ -69,138 +78,27 @@ class akun_Controller extends Controller
         //return json_encode(explode(",", str_replace(".", "", substr($request->saldo_awal, 3)))[0]);
 
         $response = [
-            'status'    => 'berhasil',
-            'content'   => $request->all()
+            "status" => "sukses",
+            "content" => "null"
         ];
 
-        $rules = [
-            'nama_akun'         => 'required'
-        ];
+        $cek = DB::table('d_akun')->where('id_akun', $request->kode_akun.$request->add_kode)->first();
 
-        $messages = [
-            'nama_akun.required'    => 'Inputan Nama Akun Tidak Boleh Kosong',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if($validator->fails()){
+        if(count($cek) > 0){
             $response = [
-                'status'    => 'gagal',
-                'content'   => $validator->errors()->first()
+                "status" => "exist",
+                "content" => "null"
             ];
 
             return json_encode($response);
         }
 
-        if($request->sebagai == 1){
-            $cek = master_akun::find($request->id_akun);
+        $akun = new d_akun;
+        $akun->id_akun = $request->kode_akun.$request->add_kode;
+        $akun->nama_akun = $request->nama_akun;
+        $akun->id_parrent = '\n';
 
-            if(count($cek) > 0){
-                $response = [
-                    'status'    => 'gagal',
-                    'content'   => "Inputan Id Akun Sudah Ada Di Database"
-                ];
-
-                return json_encode($response);
-            }
-
-            $id = $request->id_akun;
-            $akun = new master_akun;
-            $akun->id_akun = $request->id_akun;
-            $akun->nama_akun = ucwords($request->nama_akun);
-            $akun->akun_dka = $request->akun_dka;
-            $akun->type_akun = $request->type;
-
-            $akun->is_active = $request->is_active;
-
-            if($akun->save()){
-                $saldo = new master_akun_saldo;
-                $saldo->id_akun = $id;
-                $saldo->tahun = date("Y");
-                $saldo->saldo_akun = null ;
-                $saldo->is_active = "0";
-
-                if($saldo->save())
-                    return json_encode($response);
-            }
-        }else if($request->sebagai == 2){
-            //return json_encode($request->all());
-            $cek = master_akun::find($request->akun_parent.$request->id_akun);
-            $parrent = master_akun::find($request->parrent);
-
-            //return json_encode($parrent);
-
-            if(count($cek) > 0){
-                $response = [
-                    'status'    => 'gagal',
-                    'content'   => "Inputan Id Akun Sudah Ada Di Database"
-                ];
-
-                return json_encode($response);
-            }
-
-            $id = $request->akun_parent.$request->id_akun;
-            $akun = new master_akun;
-            $akun->nama_akun = ucwords($request->nama_akun);
-            $akun->akun_dka = $parrent->akun_dka;
-            $akun->id_akun = $request->akun_parent.$request->id_akun;
-            $akun->id_parrent = $request->parrent;
-            $akun->kode_cabang = $parrent->kode_cabang;
-            $akun->id_provinsi = $parrent->id_provinsi;
-
-            if($parrent->kode_cabang == ""){
-                if($request->id_cabang != 0)
-                    $akun->kode_cabang = "C".$request->id_cabang;
-            }
-
-            if($parrent->id_provinsi == ""){
-                if($request->id_kota != 0)
-                    $akun->id_provinsi = $request->id_kota;
-            }
-
-            $akun->is_active = $request->is_active;
-            //return json_encode($akun);
-            if($akun->save()){
-                if(isset($request->saldo)){
-                    $saldo = new master_akun_saldo;
-                    $saldo->id_akun = $id;
-                    $saldo->tahun = date("Y");
-                    $saldo->saldo_akun = explode(",", str_replace(".", "", substr($request->saldo_awal, 3)))[0];
-
-                    if(explode(",", str_replace(".", "", substr($request->saldo_debet, 3)))[0] != 0){
-                        if($parrent->akun_dka == "D"){
-                            //return json_encode("aaa");
-                            $saldo->saldo_akun = explode(",", str_replace(".", "", substr($request->saldo_debet, 3)))[0];
-                        }
-                        else
-                            $saldo->saldo_akun = (explode(",", str_replace(".", "", substr($request->saldo_debet, 3)))[0] * -1);
-                    }else{
-                        if($parrent->akun_dka == "K")
-                            $saldo->saldo_akun = explode(",", str_replace(".", "", substr($request->saldo_kredit, 3)))[0];
-                        else
-                            $saldo->saldo_akun = (explode(",", str_replace(".", "", substr($request->saldo_kredit, 3)))[0] * -1);
-                    }
-
-                    $saldo->is_active = "1";
-                    $saldo->bulan = date("m");
-
-                    if($saldo->save())
-                        return json_encode($response);
-                }else{
-                    $saldo = new master_akun_saldo;
-                    $saldo->id_akun = $id;
-                    $saldo->tahun = date("Y");
-                    $saldo->saldo_akun = null ;
-                    $saldo->is_active = "1";
-                    $saldo->bulan = date("m");
-
-                    if($saldo->save())
-                        return json_encode($response);
-                }
-                return json_encode($response);
-            }
-        }
-
+        return json_encode($response);
     }
 
     public function edit($parrent){

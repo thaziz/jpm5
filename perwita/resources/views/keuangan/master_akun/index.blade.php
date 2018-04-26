@@ -267,7 +267,7 @@
       //alert($("#modal_tambah_akun .modal-header .parrent").val())
 
       $.ajax(baseUrl+"/master_keuangan/add/"+$("#modal_tambah_akun .modal-header .parrent").val(), {
-         timeout: 5000,
+         timeout: 15000,
          dataType: "html",
          success: function (data) {
              $("#modal_tambah_akun .modal-body").html(data);
