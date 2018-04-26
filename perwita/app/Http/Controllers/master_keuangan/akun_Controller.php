@@ -20,10 +20,14 @@ class akun_Controller extends Controller
         // if(cek_periode() == 0)
         //     return view("keuangan.err.err_periode");
 
-        $data = master_akun::whereNull("id_parrent")->orderBy("id_akun")->get();
-        //return json_encode($data);
+        $data = DB::table("d_akun")
+                ->join("cabang", "cabang.kode", "=", "d_akun.kode_cabang")
+                ->where("id_parrent", "\\n")
+                ->select("d_akun.*", "cabang.nama as nama_cabang")
+                ->orderBy("id_akun")->get();
+        // return json_encode($data);
         return view("keuangan.master_akun.index")->withData($data);
-        //return $data;
+        return $data;
     }
 
     public function add($parrent){
@@ -93,10 +97,49 @@ class akun_Controller extends Controller
             return json_encode($response);
         }
 
-        $akun = new d_akun;
+        $prov = DB::table("cabang")
+                ->join("kota", "cabang.id_kota", "=", "kota.id")
+                ->join("provinsi", "kota.id_provinsi", "=", "provinsi.id")
+                ->where("cabang.kode", $request->kode_cabang)
+                ->select("provinsi.id")->first();
+
+        $akun = new master_akun;
         $akun->id_akun = $request->kode_akun.$request->add_kode;
         $akun->nama_akun = $request->nama_akun;
         $akun->id_parrent = '\n';
+        $akun->id_provinsi = $prov->id;
+        $akun->akun_dka = $request->posisi_dk;
+        $akun->is_active = $request->status_aktif;
+        $akun->kode_cabang = $request->kode_cabang;
+        $akun->type_akun = $request->type_akun;
+
+        if($akun->save()){
+            if(isset($request->saldo)){
+                $saldo = new master_akun_saldo;
+                $saldo->id_akun = $request->kode_akun.$request->add_kode;
+                $saldo->tahun = date("Y");
+                $saldo->is_active = 1;
+                $saldo->bulan = date("m");
+
+                $saldo_debet = str_replace(".", "", explode(",", $request->saldo_debet)[0]);
+                $saldo_kredit = str_replace(".", "", explode(",", $request->saldo_kredit)[0]);
+
+                if($saldo_debet == 0 && $saldo_kredit == 0){
+                    $saldo->saldo_akun = 0;
+                }else{
+                    if($saldo_debet == 0){
+                        $saldo->saldo_akun = ($request->posisi_dk == "D") ? ($saldo_kredit * -1) : $saldo_kredit;
+                    }else if($saldo_kredit == 0){
+                        $saldo->saldo_akun = ($request->posisi_dk == "D") ? $saldo_debet : ($saldo_debet * -1);
+                    }
+                }
+
+                $saldo->save();
+            }
+
+            return json_encode($response);
+        }
+
 
         return json_encode($response);
     }

@@ -173,8 +173,8 @@
       evt.preventDefault();
 
       btn = $(this);
-      btn.attr("disabled", "disabled");
-      btn.text("Menyimpan...");
+      // btn.attr("disabled", "disabled");
+      // btn.text("Menyimpan...");
 
       if(validate_form()){
         $.ajax(baseUrl+"/master_keuangan/akun/save_data",{
