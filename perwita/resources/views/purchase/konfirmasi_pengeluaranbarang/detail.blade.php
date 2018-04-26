@@ -167,10 +167,10 @@ margin-right: 80px;
                                     <td align="center"><span class="jumlah_digudang">{{$jumlah[$i][$a]['qty']}}</span></td>
                                     <td align="center">
                                       @if($gudang[$i][$a]['mg_namagudang'] != 'null')
-                                      <input type="text" value="" class="form-control" style="width: 50px"  name="jumlah_setuju[]">
+                                      <input type="text" value="" class="jumlah_setuju form-control" style="width: 50px"  name="jumlah_setuju[]">
                                       <input type="hidden" value="{{$gudang[$i][$a]['sg_id']}}" class="form-control" style="width: 50px"  name="sg_id[]">
                                       @else
-                                      <input type="text" class="form-control" style="width: 50px" value="" readonly=""  name="jumlah_setuju[]">
+                                      <input type="text" class="jumlah_setuju form-control" style="width: 50px" value="" readonly=""  name="jumlah_setuju[]">
                                       <input type="hidden" value="0" class="form-control" style="width: 50px"  name="sg_id[]">
                                       @endif
                                     </td>
@@ -227,7 +227,13 @@ margin-right: 80px;
 // var datatable = $('#addColumn').DataTable();
 
 function approved(){
+     jumlah_setuju = $('.jumlah_setuju').val();
+     if(jumlah_setuju == ''){
+        toastr.info("Jumlah Qty belum diisi :)");
+        return false;
+       }
 
+     /*  alert(jumlah_setuju);*/
    swal({
     title: "Apakah anda yakin?",
     text: "Setujui Data!",
@@ -244,6 +250,8 @@ function approved(){
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+    
 
       $.ajax({
         url:baseUrl+'/konfirmasipengeluaranbarang/approve',

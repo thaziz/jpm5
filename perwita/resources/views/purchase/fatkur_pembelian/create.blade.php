@@ -1089,32 +1089,38 @@
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
-  
-               var d = new Date();
+              
+              if(response.status == 'sukses'){
+                  var d = new Date();
                 
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
-                }
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
 
-                console.log(d);
+                  console.log(d);
 
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-                 nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.idfaktur ;
-                $('.aslinofaktur').val(nofaktur);
-                $('.nofaktur').val(nofaktur);
-                $('.no_faktur').val(nofaktur);
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+                   nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
+                  $('.aslinofaktur').val(nofaktur);
+                  $('.nofaktur').val(nofaktur);
+                  $('.no_faktur').val(nofaktur);
+              }
+              else {
+                  location.reload();
+              }
+               
 
                 
           },
@@ -1428,42 +1434,37 @@
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
-           /* $('.biayalain_po').empty();     
-            for(var i = 0; i < response.biaya.length; i++){
-               $('.biayalain_po').append("<option value='"+response.biaya[i].id_akun+"''>"+response.biaya[i].nama_akun+"</option>"); 
-                 $('.biayalain_po').trigger("chosen:updated");
-                 $('.biayalain_po').trigger("liszt:updated");
-            }*/
-
             
-
-               var d = new Date();
+              if(response.status == 'sukses'){
+                  var d = new Date();
                 
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
-                }
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
 
-                console.log(d);
+                  console.log(d);
 
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.idfaktur ;
-                $('.aslinofaktur').val(nofaktur);
-                $('.nofaktur').val(nofaktur);
-                $('.no_faktur').val(nofaktur);
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+                   nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
+                  $('.aslinofaktur').val(nofaktur);
+                  $('.nofaktur').val(nofaktur);
+                  $('.no_faktur').val(nofaktur);
+              }
+              else {
+                  location.reload();
+              }
           },
         })
     })
@@ -4821,41 +4822,38 @@ $('#tmbhdataitem').click(function(){
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
-           /* $('.biayalain_po').empty();     
-            for(var i = 0; i < response.biaya.length; i++){
-               $('.biayalain_po').append("<option value='"+response.biaya[i].id_akun+"''>"+response.biaya[i].nama_akun+"</option>"); 
-                 $('.biayalain_po').trigger("chosen:updated");
-                 $('.biayalain_po').trigger("liszt:updated");
-            }*/
-
             
-
-               var d = new Date();
+              if(response.status == 'sukses'){
+                  var d = new Date();
                 
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
-                }
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
 
-                console.log(d);
+                  console.log(d);
 
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+                   nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + a + '-' + response.data ;
+                  $('.aslinofaktur').val(nofaktur);
+                  $('.nofaktur').val(nofaktur);
+                  $('.no_faktur').val(nofaktur);
+              }
+              else {
+                  location.reload();
+              }
 
-              
-                 nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + 'I-' + response.idfaktur ;
-                $('.aslinofaktur').val(nofaktur);
-                $('.nofaktur').val(nofaktur);
           },
         })
      
@@ -4870,42 +4868,37 @@ $('#tmbhdataitem').click(function(){
           url : baseUrl + '/fakturpembelian/getbiayalain',
           dataType : 'json',
           success : function (response){     
-           /* $('.biayalain_po').empty();     
-            for(var i = 0; i < response.biaya.length; i++){
-               $('.biayalain_po').append("<option value='"+response.biaya[i].id_akun+"''>"+response.biaya[i].nama_akun+"</option>"); 
-                 $('.biayalain_po').trigger("chosen:updated");
-                 $('.biayalain_po').trigger("liszt:updated");
-            }*/
-
-            
-
-               var d = new Date();
+             
+              if(response.status == 'sukses'){
+                  var d = new Date();
                 
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
-                }
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
 
-                console.log(d);
+                  console.log(d);
 
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + 'PO-' + response.idfaktur ;
-                $('.aslinofaktur').val(nofaktur);
-                $('.nofaktur').val(nofaktur);
-                $('.no_faktur').val(nofaktur);
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+                   nofaktur = 'FP' + month + year2 + '/' + cabang + '/' + 'PO' + '-' + response.data ;
+                  $('.aslinofaktur').val(nofaktur);
+                  $('.nofaktur').val(nofaktur);
+                  $('.no_faktur').val(nofaktur);
+              }
+              else {
+                  location.reload();
+              }
           },
         })
     })
