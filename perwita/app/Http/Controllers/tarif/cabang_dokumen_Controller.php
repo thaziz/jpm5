@@ -52,7 +52,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                                     $div_2 = '';
                                   }
                                   if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','hapus')) {
-                                  $div_3  = '<button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                  $div_3  = '<button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_provinsi_cabdokumen'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
                                   }else{
                                     $div_3 = '';
                                   }
@@ -74,7 +74,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                                         $div_2 = '';
                                       }
                                       if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','hapus')) {
-                                      $div_3  = '<button type="button" disabled="" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                      $div_3  = '<button type="button" disabled="" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_provinsi_cabdokumen'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
                                       }else{
                                         $div_3 = '';
                                       }
@@ -94,7 +94,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                                             $div_2 = '';
                                           }
                                           if (Auth::user()->punyaAkses('Tarif Cabang Dokumen','hapus')) {
-                                          $div_3  = '<button type="button" id="'.$data[$i]['kode_sama'].'" name="'.$data[$i]['kode_sama'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                          $div_3  = '<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_provinsi_cabdokumen'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>'.'<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
                                           }else{
                                             $div_3 = '';
                                           }
@@ -118,7 +118,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
 
         // maksudku ngene
         
-    
+      
         $datax = array('data' => $data);
         echo json_encode($datax);
     }
@@ -219,18 +219,20 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                               ->where('jenis','OUTLET')
                               ->get();
                     }
+                    // return $cari_old0;
 
                     $cari_nota0 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
                                                 WHERE kode_cabang = '$request->ed_cabang'
                                                 and jenis = 'REGULER'");
 
                     $cari_nota1 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
-                                                        WHERE kode_cabang = '$request->ed_cabang'
-                                                        and jenis = 'EXPRESS'");
+                                                WHERE kode_cabang = '$request->ed_cabang'
+                                                and jenis = 'EXPRESS'");
 
                     $cari_nota2 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
-                                                        WHERE kode_cabang = '$request->ed_cabang'
-                                                        and jenis = 'OUTLET'");
+                                                WHERE kode_cabang = '$request->ed_cabang'
+                                                and jenis = 'OUTLET'");
+                    // return $cari_nota1;
                     $id1 = (integer)$cari_nota0[0]->id+1;
                     $id2 = (integer)$cari_nota1[0]->id+1;
                     $id3 = (integer)$cari_nota2[0]->id+1;
@@ -334,7 +336,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
             if ($request->cb_provinsi_tujuan != null or '') {
                 for ($i=0; $i < count($cari); $i++) { 
 
-                    
+                    // return $cari;
                     for ($a=0; $a < count($array_harga); $a++) { 
                         $kode_detail = DB::table('tarif_cabang_dokumen')
                                 ->max('kode_detail');
@@ -344,12 +346,14 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                             $kode_detail += 1;
                         }
 
-                        
+                        // return ${'cari_old'.$a}[$i][0]->kode;
+
                         if (isset(${'cari_old'.$a}[$i][0])) {
                             if ($array_harga[$a] != '') {
-                                if (${'cari_old'.$a}[$i][0]->id_kota_asal != $request->cb_kota_asal and
-                                    ${'cari_old'.$a}[$i][0]->id_kota_tujuan != $cari[$i]->id and
-                                    ${'cari_old'.$a}[$i][0]->kode_cabang != $request->ed_cabang ) {
+                                if (isset(${'cari_old'.$a}[$i][0]->id_kota_asal) != $request->cb_kota_asal and
+                                    isset(${'cari_old'.$a}[$i][0]->id_kota_tujuan )!= $cari[$i]->id and
+                                   isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->ed_cabang ) {
+                                  // return 'a';
 
                                         $data = DB::table('tarif_cabang_dokumen')
                                         ->insert([
@@ -385,24 +389,31 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                             }
                         }else{
                             // return 'asd';
+                          // return $array_harga[$a] ;
                             if ($array_harga[$a] != '') {
-                                // return $array_harga[$a];
-                                $data = DB::table('tarif_cabang_dokumen')
-                                ->insert([
-                                        'kode_sama' => $cari_kode_sama,
-                                        'kode_detail'=>$kode_detail,
-                                        'kode'=>$array_note[$a][$i],
-                                        'id_kota_asal' => $request->cb_kota_asal,
-                                        'id_kota_tujuan' => $cari[$i]->id,
-                                        'kode_cabang' => $request->ed_cabang,
-                                        'jenis' => $array_jenis[$a],
-                                        'harga' => $array_harga[$a],
-                                        'waktu' => $array_waktu[$a],
-                                        'acc_penjualan'=>$request->ed_acc_penjualan,
-                                        'csf_penjualan'=>$request->ed_csf_penjualan,
-                                        'id_provinsi_cabdokumen'=>$request->cb_provinsi_tujuan,
-                                        'crud'=>$crud,
-                                ]);
+                                if (isset(${'cari_old'.$a}[$i][0]->id_kota_asal) != $request->cb_kota_asal and
+                                    isset(${'cari_old'.$a}[$i][0]->id_kota_tujuan) != $cari[$i]->id and
+                                    isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->ed_cabang ) {
+                                  // return 'a';
+
+                                        $data = DB::table('tarif_cabang_dokumen')
+                                        ->insert([
+                                                'kode_sama' => $cari_kode_sama,
+                                                'kode_detail'=>$kode_detail,
+                                                'kode'=>$array_note[$a][$i],
+                                                'id_kota_asal' => $request->cb_kota_asal,
+                                                'id_kota_tujuan' => $cari[$i]->id,
+                                                'kode_cabang' => $request->ed_cabang,
+                                                'jenis' => $array_jenis[$a],
+                                                'harga' => $array_harga[$a],
+                                                'waktu' => $array_waktu[$a],
+                                                'acc_penjualan'=>$request->ed_acc_penjualan,
+                                                'csf_penjualan'=>$request->ed_csf_penjualan,
+                                                'id_provinsi_cabdokumen'=>$request->cb_provinsi_tujuan,
+                                                'crud'=>$crud,
+                                      ]);
+                                }
+                                
                             }
                         }
                         
@@ -619,9 +630,11 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
     
     }
     public function hapus_data (Request $request) {
+      // dd($request->all());
         $hapus='';
         $id=$request->id;
-        $hapus = DB::table('tarif_cabang_dokumen')->where('kode_sama' ,'=', $id)->where('crud','!=','E')->delete();
+        $tujuan=$request->name;
+        $hapus = DB::table('tarif_cabang_dokumen')->where('id_kota_asal' ,'=', $id)->where('id_provinsi_cabdokumen','=',$tujuan)->where('crud','!=','E')->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
@@ -656,8 +669,10 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
         $accpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         $csfpenjualan = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY id_akun ASC "));
         
-
-        return view('tarif.cabang_dokumen.index',compact('kota','cabang_default','accpenjualan','csfpenjualan','prov'));
+        // $kota = DB::select("SELECT id, nama,kode_kota as tujuan from kota");
+      $kota1 = DB::select("SELECT id, nama as asal,kode_kota from kota");
+      $kota2 = DB::select("SELECT id, nama as tujuan ,kode_kota from kota");
+        return view('tarif.cabang_dokumen.index',compact('kota','cabang_default','accpenjualan','csfpenjualan','prov','kota','kota1','kota2'));
     }
 
 }
