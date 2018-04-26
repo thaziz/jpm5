@@ -44,6 +44,7 @@ Route::get('seragam', function(){
 Route::get('purchase/suratpermintaanpembelian', function(){
         return view('purchase.spp.index');
 });
+//email
 
 //********SETTING********
 //pengguna

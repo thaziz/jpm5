@@ -1191,8 +1191,8 @@
                     $('.pembayaran').val('0.00');
                   }
                   
-
-                      cndn = data.cndn;
+                      if(jenisbayar == '2'){
+                        cndn = data.cndn;
                   /*    $("table#table-debit tr#datacredit").remove();
                       $("table#table-kredit tr#datadebit").remove();*/
 
@@ -1233,6 +1233,8 @@
                           }                         
                         }
                   
+                      }
+                      
                        /* $jumlahdebit = 0;
                         $('.dnbruto').each(function(){
                           val = $(this).val();
@@ -2034,7 +2036,7 @@
                           $('.jenisbayar2').append("<option value='' selected> Pilih Supplier </option>");                
                       for(var j=0; j<response.length; j++){  
                                     
-                         $('.jenisbayar2').append("<option value="+response[j].idsup+">"+response[j].no_supplier+" - "+response[j].nama_supplier+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].idsup+","+response[j].no_supplier+">"+response[j].no_supplier+" - "+response[j].nama_supplier+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                       }                     
@@ -2104,7 +2106,10 @@
               var tablefaktur = $('#tbl-faktur').DataTable();
               tablefaktur.clear().draw();
 
-              var idsup = $('.jenisbayar2').val();
+              var val = $('.jenisbayar2').val();
+              split = val.split(",");
+              idsup = split[0];
+              nosupplier = split[1];
               var idjenisbayar = $('.jenisbayar').val();
               var cabang = $('.cabang').val();
               $('.hsljenisbayar').val(idsup);
@@ -2124,7 +2129,7 @@
              // alert(idsup);
                $.ajax({
                   url : baseUrl + '/formfpg/changesupplier',
-                  data : {idsup, idjenisbayar,cabang, arrnofaktur},
+                  data : {idsup, idjenisbayar,cabang, arrnofaktur,nosupplier},
                   type : "get",
                   dataType : "json",
                   success : function(data) {
@@ -2142,9 +2147,9 @@
                       $('.supfaktur').show();
                       $('.invfaktur').show();
                        $('.jthtmpo_bank').val(fp[0].fp_jatuhtempo);
-                          console.log(fp.length);
+                         
                              for(var i = 0; i < fp.length; i++){ 
-                              alert(i);
+                             
                                    var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
                                            "<td>"+fp[i].nama+"</td>" +
                                           "<td>"+fp[i].fp_nofaktur+"</td>" +
@@ -2264,17 +2269,9 @@
                     else if(idjenisbayar == '3'){
                       $('.supfaktur').show();
                       $('.invfaktur').show();
-
-                        if($('tr.field').length != 0 ){
-                          $('tr.field').each(function(){
-                            nobukti = $(this).data('nota');
-                           // alert(nobukti);
-                            hslnota.push(nobukti);
-                          })
-
-                           for(var k = 0; k < hslnota.length; k++){
+                      alert(fp.length);
                              for(var i = 0; i < fp.length; i++){ 
-                                if(hslnota[k] != fp[i].v_nomorbukti) {
+                            
                                    var html2 = "<tr class='data"+n+"' id='data"+fp[i].v_nomorbukti+"'> <td>"+n+"</td>" +
                                              "<td>"+fp[i].nama+"</td>" +
                                             "<td>"+fp[i].v_nomorbukti+"</td>" +
@@ -2293,37 +2290,7 @@
                                    html2 +=  "</tr>"; 
                                    tablefaktur.rows.add($(html2)).draw(); 
                                   n++; 
-
-                                  console.log(n +'n');
-                                }
-                             }
-                           }
-                        }
-                        else{
-                            for(var i = 0; i < fp.length; i++){                                    
-                            var html2 = "<tr class='data"+n+"' id='data"+fp[i].v_nomorbukti+"'> <td>"+n+"</td>" +
-                                             "<td>"+fp[i].nama+"</td>" +
-                                            "<td>"+fp[i].v_nomorbukti+"</td>" +
-                                            "<td> - </td>" +                                       
-                                          
-                                            "<td>"+fp[i].nama_supplier +"</td>"+
-                                            "<td> - </td>" +
-                                            "<td>"+fp[i].v_tempo+"</td>" +
-                                            "<td>"+fp[i].v_pelunasan+"</td> ";
-
-                                         
-                                          html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].v_id+","+fp[i].v_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                        "<label></label>" +
-                                        "</div></td>";
-                                            
-                             html2 +=  "</tr>"; 
-                             tablefaktur.rows.add($(html2)).draw(); 
-                            n++; 
-
-                            console.log(n +'n');
-                         }
-                        }
-                        
+                             }                        
                     } // END IF JENS
                     else if(idjenisbayar == '4'){
                       $('.invfaktur').hide();

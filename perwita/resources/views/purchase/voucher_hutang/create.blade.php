@@ -60,29 +60,26 @@
                 </div><!-- /.box-header -->
                 <div class="box-body">
                         <div class="row">
-                        @if(session::get('cabang') != 000)
+                      
                          <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
                           <label> Cabang  </label>
-                          <select class="form-control chosen-select-width disabled cabang" name="cabang">
-                            @foreach($cabang as $cabang)
-                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
-                            @endforeach
-                          </select>                          
+                          @if(Auth::user()->punyaAkses('Uang Muka','cabang'))
+                            <select class="form-control chosen-select-width cabang" name="cabang">
+                                @foreach($cabang as $cabang)
+                              <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                              @endforeach
+                            </select>
+                            @else
+                              <select class="form-control disabled cabang" name="cabang">
+                                @foreach($cabang as $cabang)
+                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                @endforeach
+                              </select> 
+                            @endif                        
                         </div>
                         </div>
-                        @else
-                          <div class="form-group">
-                         <div class="col-sm-8 col-sm-offset-2">
-                          <label> Cabang  </label>
-                          <select class="form-control cabang" name="cabang">
-                            @foreach($cabang as $cabang)
-                            <option value="{{$cabang->kode}}" @if(Auth()->user()->kode_cabang == $cabang->kode) selected @endif> {{$cabang->nama}} </option>
-                            @endforeach
-                          </select>                          
-                        </div>
-                        </div>
-                        @endif  
+                  
 
                         <div class="form-group">
                          <div class="col-sm-8 col-sm-offset-2">
@@ -228,7 +225,7 @@
                    '<b class="tengah">' + lol +' </b>',
                   '<input type="text" name="accountid[]" class="form-control f accc" readonly>'+ '&nbsp;&nbsp;' +'<select class="form-control chosen-select-width3 suppilerid hasil" name="supplierid"><option value="" selected="" disabled="">--Pilih Akun--</option>@foreach($akunselect as $a)<option value="{{$a->id_akun}}">{{$a->nama_akun}}</option>@endforeach</select>',
                   '<input type="text" name="keterangan[]" class="form-control g">',
-                  '<input type="text" name="nominal[]" onkeyup="hitung(this)" class="nominal form-control h textright" id="nominal">',
+                  '<input type="text" name="nominal[]" onkeyup="hitung(this)" class="nominal nilaiuang form-control h textright" id="nominal">',
                   '<a class="remove textcenter pull-right" onclick="hapus(this)"><i class="btn btn-danger fa fa-minus"></i></a>'
                 ]).draw(false);
              anjay.push('123');
@@ -236,8 +233,16 @@
             $('.hasil').change(function(a) {
               var parent = $(this).parents('tr');
               var angka = $(parent).find('.accc').val($(this).val());
-          });
+            });
+
+            $('.nominal').change(function(){
+              val = $(this).val();
+               val = accounting.formatMoney(val, "", 2, ",",'.');
+               $(this).val(val);
+            })
           }); 
+
+
 
           var hasil = [];
           function hapus(h){
@@ -264,14 +269,16 @@
       $('.nominal').each(function(i){
         if ($(this).val() != '') {
             hasil[i] = $(this).val();
+            
         }
         else {
          hasil[i] = 0; 
         }
       })
+
        for (var i=0  ; i < hasil.length ;i++){
           temp += parseInt(hasil[i]);
-      }
+        }
         var money = temp.toLocaleString('de-DE');
         var hasilakir = money.replace(/[^0-9\,-]+/g,"");
         var total = $(".hasil").val("Rp."+money+',00');
@@ -415,7 +422,7 @@
          
             swal({
             title: "Apakah anda yakin?",
-            text: "Simpan Data Uang Muka!",
+            text: "Simpan Data Voucher Hutang!",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -449,33 +456,37 @@
               url : baseUrl + '/voucherhutang/getnota',
              dataType : 'json',
               success : function(data){
-              
-                  var d = new Date();
+                  if(data.status == 'sukses'){
+                    var d = new Date();
                   
-                  //tahun
-                  var year = d.getFullYear();
-                  //bulan
-                  var month = d.getMonth();
-                  var month1 = parseInt(month + 1)
-                  console.log(d);
-                  console.log();
-                  console.log(year);
+                    //tahun
+                    var year = d.getFullYear();
+                    //bulan
+                    var month = d.getMonth();
+                    var month1 = parseInt(month + 1)
+                    console.log(d);
+                    console.log();
+                    console.log(year);
 
-                  if(month < 10) {
-                    month = '0' + month1;
+                    if(month < 10) {
+                      month = '0' + month1;
+                    }
+
+                    console.log(d);
+
+                    tahun = String(year);
+    //                console.log('year' + year);
+                    year2 = tahun.substring(2);
+                    //year2 ="Anafaradina";
+                  
+                     nota = 'VC' + month + year2 + '/' + comp + '/' +  data.idvhc;
+                    console.log(nota);
+                    $('.bukti').val(nota);
                   }
-
-                  console.log(d);
-
-                  tahun = String(year);
-  //                console.log('year' + year);
-                  year2 = tahun.substring(2);
-                  //year2 ="Anafaradina";
-
-                
-                   nota = 'VC' + month + year2 + '/' + comp + '/' +  data.idvc;
-                  console.log(nota);
-                  $('.bukti').val(nota);
+                  else {
+                    location.reload();
+                  }
+                  
               }
           })
       })
@@ -488,32 +499,36 @@
            dataType : 'json',
             success : function(data){
             
-                var d = new Date();
-                
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                 if(data.status == 'sukses'){
+                    var d = new Date();
+                  
+                    //tahun
+                    var year = d.getFullYear();
+                    //bulan
+                    var month = d.getMonth();
+                    var month1 = parseInt(month + 1)
+                    console.log(d);
+                    console.log();
+                    console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
-                }
+                    if(month < 10) {
+                      month = '0' + month1;
+                    }
 
-                console.log(d);
+                    console.log(d);
 
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nota = 'VC' + month + year2 + '/' + comp + '/' +  data.idvc;
-                console.log(nota);
-                $('.bukti').val(nota);
+                    tahun = String(year);
+    //                console.log('year' + year);
+                    year2 = tahun.substring(2);
+                    //year2 ="Anafaradina";
+                  
+                     nota = 'VC' + month + year2 + '/' + comp + '/' +  data.data;
+                    console.log(nota);
+                    $('.bukti').val(nota);
+                  }
+                  else {
+                    location.reload();
+                  }
             }
         })
 

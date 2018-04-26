@@ -140,10 +140,24 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:110px; padding-top: 0.4cm">Total</td>
+                                <td style="width:110px; padding-top: 0.4cm">Total Tarif</td>
                                 <td colspan="3">
                                     <input type="text" class="form-control ed_total_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0" >
                                     <input type="hidden" class="form-control ed_total_m" name="ed_total_m" readonly="readonly" tabindex="-1"  style="text-align:right" >
+                                     
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Biaya Tambahan</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control biaya_tambahan"  onkeyup="hitung_total() " tabindex="-1"  style="text-align:right" value="{{number_format($data->biaya_tambahan, 0, ",", ".")}}" name="biaya_tambahan">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Total Netto</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control total_net_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0" >
+                                    <input type="hidden" class="form-control total_net_m" name="total_net_m" readonly="readonly" tabindex="-1"  style="text-align:right" >
                                      
                                 </td>
                             </tr>
@@ -374,6 +388,7 @@ $('.date').datepicker({
 
 
 
+   $('.biaya_tambahan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 $('.ed_diskon_modal').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 $('.ed_harga').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 
@@ -423,7 +438,16 @@ function cari_customer() {
     })
 }
 var count = 1;
+function hitung_total() {
+    var ed_total_m = $('.ed_total_m').val();
+    var biaya_tambahan   = $('.biaya_tambahan').val();
+    biaya_tambahan  = biaya_tambahan.replace(/[^0-9\-]+/g,"");
+    biaya_tambahan  = parseInt(biaya_tambahan);
+    ed_total_m  = parseInt(ed_total_m);
 
+    $('.total_net_m').val(ed_total_m+biaya_tambahan);
+    $('.total_net_h').val(accounting.formatMoney(ed_total_m+biaya_tambahan,"",2,'.',','));
+}
 $(document).ready(function(){
 cari_customer();
 
@@ -503,8 +527,6 @@ count+=1;
         array_kontrak.push(dd_kode_item);
         array_kontrak_id.push(dd_id_kontrak);
     // }
-    console.log(array_kontrak_id);
-    hitung_all();
 
        $.ajax({
         url:baseUrl + '/sales/ganti_item',
@@ -517,6 +539,8 @@ count+=1;
             toastr.warning('Terjadi Kesalahan Silahkan Coba Lagi');
         }
     }) 
+       hitung_all();
+       hitung_total()
 @endforeach
 });
 

@@ -113,6 +113,7 @@
                             <td>
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk">
                              <input type="hidden" class="valcabang" readonly="" name="cabang">
+                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                             </td>
                           </tr>
 
@@ -475,9 +476,8 @@
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
-  
-               var d = new Date();
-                
+              if(response.status = 'sukses'){
+                var d = new Date();                
                 //tahun
                 var year = d.getFullYear();
                 //bulan
@@ -497,8 +497,13 @@
 //                console.log('year' + year);
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
-                 nofaktur = 'BBK' + month + year2 + '/' + cabang + '/' +  response ;
+                 nofaktur = 'BBK' + month + year2 + '/' + cabang + '/' +  response.data ;
                 $('.nobbk').val(nofaktur);
+              }
+              else {
+                location.reload();
+              }
+               
               
           },
         })
@@ -645,33 +650,39 @@
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',
             success : function(data){
-               console.log(data);
-                var d = new Date();
+               
+                 if(response.status = 'sukses'){
+                 
+                  var d = new Date();
+                  
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
+
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
+
+                  console.log(d);
+
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+
                 
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
-
-                if(month < 10) {
-                  month = '0' + month1;
-                }
-
-                console.log(d);
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data;
-              //  console.log(nospp);
-                $('.nobbk').val(nobbk);
+                   nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data;
+                //  console.log(nospp);
+                  $('.nobbk').val(nobbk);
+                 }
+                 else {
+                  location.reload();
+                 }
             }
         })
 

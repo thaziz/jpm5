@@ -7,6 +7,8 @@ use redirect;
 use App\d_uangmuka;
 use Carbon\carbon;
 use App\Http\Controllers\Controller;
+use Session;
+use Auth;
 class uangmukaController extends Controller
 {
 	public function kekata($x) {
@@ -96,10 +98,13 @@ class uangmukaController extends Controller
 
 
 	public function getnota(Request $request){
-		$cabang = $request->cabang;
+	  $cabang = $request->cabang;
 		
+	     
+      $bulan = Carbon::now()->format('m');
+      $tahun = Carbon::now()->format('y');
 
-		$um = DB::select("select * from d_uangmuka where um_comp = '$cabang' order by um_id desc limit 1");
+		$um = DB::select("select * from d_uangmuka where um_comp = '$cabang' and to_char(um_tgl, 'MM') = '$bulan' and to_char(um_tgl, 'YY') = '$tahun' order by um_id desc limit 1");
 
 		//return $idbbk;
 		if(count($um) > 0) {
@@ -118,7 +123,9 @@ class uangmukaController extends Controller
 			$data['idum'] = '001';
 		}
 
-		return json_encode($data);
+		$datainfo = ['status' => 'sukses' , 'data' => $data['idum']];
+
+		return json_encode($datainfo);
 	}
 
 	public function create(Request $request){
@@ -154,6 +161,7 @@ class uangmukaController extends Controller
 		$b = DB::table('agen')->select('kode','nama');
 		$c = DB::table('subcon')->select('kode','nama');
 		$cabang = DB::select("select * from cabang");
+		/*$data['cabang'] = DB::select("select * from cabang");*/
 		$data = $a->union($b)->union($c)->get();
 
 	    $sup = $request->suppliering;

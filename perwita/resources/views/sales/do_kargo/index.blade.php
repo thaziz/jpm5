@@ -88,7 +88,7 @@
                                     @endif
                                 @endforeach
                                 <td>{{ $row->status }}</td>
-                                <td>{{ $row->total }}</td>
+                                <td>{{ $row->total_net }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
                                         @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah'))
@@ -148,25 +148,7 @@
 <script type="text/javascript">
     $(document).ready( function () {
         $('#tabel_data').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            order: [[ 1, "desc" ]],
-            "info": false,
-            "responsive": true,
-            "pageLength": 10,
-            "retrieve" : true,
-            "columns": [
-            { "data": "nomor" },
-            { "data": "tanggal" },
-            { "data": "nama_pengirim" },
-            { "data": "nama_penerima" },
-            { "data": "asal" },
-            { "data": "tujuan" },
-            { "data": "status" },
-            { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "button" },
-            ]
+
       });
     });
 
