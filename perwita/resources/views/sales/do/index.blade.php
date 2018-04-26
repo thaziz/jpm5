@@ -48,22 +48,106 @@
                 </div>
                 <div class="ibox-content">
                         <div class="row">
+                            <table class="table  datatable ">
+                         <tr>
+                        <td> Dimulai : </td> <td> <div class="input-group">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                          <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
+                                              date" onchange="tgl()">
+
+                              </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                          <input type="text" class=" date form-control date_to date_range_filter
+                                              date" name="max" id="max" onchange="tgl()" >
+                              </div> </td>
+                      </tr>
+                       <tr>
+                        <th> Nama Pengirim : </th> 
+                          <td> 
+                                <input id="nama_pengirim" type="text" class="form-control ">
+                          </td>  
+                          <th> Nama Penerima : </th> 
+                            <td> 
+                                <input id="nama_penerima" type="text" class="form-control" >
+                            </td>
+                      </tr>
+
+                        <tr >
+                           <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
+                          <td >
+                          <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            @foreach ($kota1 as $asal)
+                                <option value="{{ $asal->nama }}">{{ $asal->nama }}</option>
+                            @endforeach
+                          </select>
+                          </td>
+                        
+                          <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            @foreach ($kota as $tujuan)
+                                <option value="{{ $tujuan->nama }}">{{ $tujuan->nama }}</option>
+                            @endforeach
+                           </select>
+                          </td>
+                        </tr>
+                        <tr>
+                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="DOKUMEN">DOKUMEN</option>
+                            <option value="KILOGRAM">KILOGRAM</option>
+                            <option value="KOLI">KOLI</option>
+                            <option value="SEPEDA">SEPEDA</option>
+                           </select>
+                          </td>
+                        
+                           <th style="width: 100px; padding-top: 16px"> Jenis </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="REGULER">REGULER</option>
+                            <option value="EXPRESS">EXPRESS</option>
+                            <option value="OUTLET">OUTLET</option>
+                           </select>
+                          </td>
+                        </tr>
+                        <tr>
+                           <th style="width: 100px; padding-top: 16px"> Status </th>
+                          <td colspan="3"> 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn4()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="MANIFESTED">MANIFESTED</option>
+                            <option value="TRANSIT">TRANSIT</option>
+                            <option value="RECEIVED">RECEIVED</option>
+                            <option value="DELIVERED">DELIVERED</option>
+                            <option value="DELIVERED OK">DELIVERED OK</option>
+                           </select>
+                          </td>
+                        </tr>
+                      </table>
             <div class="col-xs-12">
 
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 <div class="box-body">
-
-                    <table id="tabel_data" class="table table-bordered table-striped" cellspacing="10">
+                    
+                    <table id="addColumn" class="table table-bordered table-striped" cellspacing="10">
                         <thead>
                             <tr>
                                 <th> No DO</th>
                                 <th> Tanggal </th>
+                                <th> Customer </th>
                                 <th> Pengirim </th>
                                 <th> Penerima </th>
                                 <th> Kota Asal </th>
                                 <th> Kota Tujuan </th>
                                 <th> Status </th>
+                                <th> Tipe </th>
+                                <th> Jenis </th>
                                 <th> Tarif </th>
                                 <th style="width:110px"> Aksi </th>
                             </tr>
@@ -73,11 +157,14 @@
                             <tr>
                                 <td>{{ $row->nomor }}</td>
                                 <td>{{ $row->tanggal }}</td>
+                                <td>{{ $row->cus }}</td>
                                 <td>{{ $row->nama_pengirim }}</td>
                                 <td>{{ $row->nama_penerima }}</td>
                                 <td>{{ $row->asal }}</td>
                                 <td>{{ $row->tujuan }}</td>
                                 <td>{{ $row->status }}</td>
+                                <td>{{ $row->type_kiriman }}</td>
+                                <td>{{ $row->jenis_pengiriman }}</td>
                                 <td>{{ $row->total }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
@@ -123,8 +210,8 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-    $(document).ready( function () {
-        $('#tabel_data').DataTable({
+    
+      var table =  $('#addColumn').DataTable({
             "paging": true,
             "lengthChange": true,
             "searching": true,
@@ -138,16 +225,19 @@
             "columns": [
             { "data": "nomor" },
             { "data": "tanggal" },
+            { "data": "cus" },
             { "data": "nama_pengirim" },
             { "data": "nama_penerima" },
             { "data": "asal" },
             { "data": "tujuan" },
             { "data": "status" },
+            { "data": "type_kiriman" },
+            { "data": "jenis_pengiriman" },
             { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
             ]
       });
-    });
+    
 
 
     $(document).on("click","#btn_add_order",function(){
@@ -194,6 +284,90 @@ return false;
     $(document).on( "click",".btnhapus", function(){
         if(!confirm("Hapus Data ?")) return false;
     });
+
+     $('.date').datepicker({
+        autoclose: true,
+        format: 'yyyy-mm-dd'
+    });
+            $("#min").datepicker({format:"dd/mm/yyyy"});
+            $("#max").datepicker({format:"dd/mm/yyyy"});
+
+       function tgl(){
+         var tgl1   = $("#min").val();
+         var tgl2   = $("#max").val();
+          if(tgl1 != "" && tgl2 != ""){
+          }
+
+            $(document).ready(function(){
+        $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var min = $('#min').datepicker("getDate");
+            // console.log(min);
+            var max = $('#max').datepicker("getDate");
+            // console.log(max);
+
+            var startDate = new Date(data[1]);
+            // console.log(startDate);
+            if (min == null || min == '' && max == null || max == '') { return true; }
+            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
+            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
+            if (startDate <= max && startDate >= min) { return true; }
+            return false;
+        }
+        );
+            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+           
+
+            // Event listener to the two range filtering inputs to redraw on input
+            $('#min, #max').change(function () {
+                /*if($('#max').val() == '' || $('#max').val() == null ){
+                    $('#max').val(0);
+                }*/
+                table.draw();
+            });
+        });
+          }
+   
+ 
+    $(document).ready(function() {
+        $('.tbl-item').DataTable();
+     
+        $('input.global_filter').on( 'keyup click', function () {
+            filterGlobal();
+        } );
+     
+        $('input.column_filter').on( 'keyup click', function () {
+            filterColumn( $(this).parents('tr').attr('data-column') );
+        } );
+    } );
+
+    function filterColumn () {
+    $('#addColumn').DataTable().column(5).search(
+        $('.select-picker1').val()).draw();    
+    }
+    function filterColumn1 () {
+        $('#addColumn').DataTable().column(6).search(
+            $('.select-picker2').val()).draw();    
+    }
+    function filterColumn2 () {
+        $('#addColumn').DataTable().column(8).search(
+            $('.select-picker3').val()).draw(); 
+     }
+     function filterColumn3 () {
+        $('#addColumn').DataTable().column(9).search(
+            $('.select-picker4').val()).draw(); 
+     }
+     function filterColumn4 () {
+        $('#addColumn').DataTable().column(7).search(
+            $('.select-picker5').val()).draw(); 
+     }
+     $('#nama_pengirim').on( 'keyup', function () {
+         table.column(3).search( this.value ).draw();
+      });  
+     $('#nama_penerima').on( 'keyup', function () {
+        table.column(4).search( this.value ).draw();
+      });  
 
 
 </script>

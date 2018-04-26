@@ -112,7 +112,7 @@ class penerus_dokumen_Controller extends Controller
     }
 
     public function save_data (Request $request) {
-        // dd($request);   
+        dd($request);   
 
         $id_incremet = DB::table('tarif_penerus_dokumen')->select('id_increment_dokumen')->max('id_increment_dokumen');    
         if ($id_incremet == '') {

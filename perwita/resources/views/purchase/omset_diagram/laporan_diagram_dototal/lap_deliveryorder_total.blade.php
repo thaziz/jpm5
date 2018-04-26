@@ -28,7 +28,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Laporan Delivery order paket
+                    <h5> Laporan Diagram Omset Penjualan
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -37,51 +37,113 @@
                 </div>
                 
                 <div class="ibox-content" style="min-height: 550px;">
-                        <div class="row">
-            <div class="col-xs-12">
-              <div class="form-row">
-                <div class="form-group col-md-2">
-                  <input type="text" class="date form-control" readonly="" id="date_awal" name="">
-                </div>
-                <div class="form-group col-md-2">
-                  <input type="text" class="date form-control" readonly="" id="date_akir" name="">
-                </div>
-                <div class="form-group col-md-2">
-                  <select id="cabang" class="chosen-select-width" id="cabang">
-                      <option value="">- cabang -</option>
-                    @foreach ($cabang as $element)
-                      <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
-                    @endforeach
-                  </select>
-                </div>
-                <div class="form-group col-md-2">
-                  <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
-                </div>
-              </div>  
-              
-                    <div id="container" style="height: 400px"></div>
-                  
+                    <div class="row">
+                        <div class="col-xs-12">
+                          <div class="form-row">
+                            <div class="form-group col-md-2">
+                              <input type="text" class="date form-control" readonly="" id="date_awal" name="">
+                            </div>
+                            <div class="form-group col-md-2">
+                              <input type="text" class="date form-control" readonly="" id="date_akir" name="">
+                            </div>
+                            <div class="form-group col-md-6">
+                              <select id="cabang" class="chosen-select-width" id="cabang">
+                                  <option value="">- cabang -</option>
+                                @foreach ($cabang as $element)
+                                  <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                              <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
+                            </div>
+                          </div>  
+                          
+                                <div id="container" style="height: 400px"></div>
+                              
 
-                 <div id="bawah">
-                  
-                    <span><li class="badge " style="background-color: rgb(124, 181, 236);color: white;">Pendapatan Paket Hari ini Sebanyak <t style="color: white;">Rp.{{ number_format($paket,0,'.',',') }}      </t></li>
-                          <li class="badge " style="background-color: rgb(67, 67, 72);color: white;">Pendapatan Koran Hari ini Sebanyak <t style="color: white;">Rp.{{ number_format($koran,0,'.',',') }}</t></li>
-                          <li class="badge " style="background-color: rgb(144, 237, 125);color: white;">Pendapatan Kargo Hari ini Sebanyak <t style="color: white;">Rp.{{ number_format($kargo,0,'.',',') }}</t></li>
-                          </span>  
+                             <div id="bawah">
+                              
+                                <span><li class="badge " style="background-color: rgb(124, 181, 236);color: white;">Pendapatan Paket Hari ini Sebanyak <t style="color: white;">Rp.{{ number_format($paket,0,'.',',') }}      </t></li>
+                                      <li class="badge " style="background-color: rgb(67, 67, 72);color: white;">Pendapatan Koran Hari ini Sebanyak <t style="color: white;">Rp.{{ number_format($koran,0,'.',',') }}</t></li>
+                                      <li class="badge " style="background-color: rgb(144, 237, 125);color: white;">Pendapatan Kargo Hari ini Sebanyak <t style="color: white;">Rp.{{ number_format($kargo,0,'.',',') }}</t></li>
+                                      </span>  
 
-                 </div> 
-                <div class="box-footer">
-                  <div class="pull-right">
-                    </div>
-              </div><!-- /.box -->
-            </div><!-- /.col -->
-          </div><!-- /.row -->
+                             </div> 
+                            <div class="box-footer">
+                              <div class="pull-right">
+                                </div>
+                          </div><!-- /.box -->
+                        </div><!-- /.col -->
+                      </div><!-- /.row -->
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5> Laporan Diagram Invoice (Perbulan)
+                     <!-- {{Session::get('comp_year')}} -->
+                     </h5>
+                    <div class="ibox-tools">
+
+                    </div>
+                </div>
+                
+                <div class="ibox-content" style="min-height: 550px;">
+                    <div class="row">
+                        <div class="col-xs-12">
+                          <div class="form-row">
+                            <div class="form-group col-md-2">
+                              <input type="text" class="date form-control" readonly="" id="date_awal_invoice" name="">
+                            </div>
+                            <div class="form-group col-md-2">
+                              <input type="text" class="date form-control" readonly="" id="date_akir_invoice" name="">
+                            </div>
+                            <div class="form-group col-md-3">
+                              <select class="chosen-select-width" id="cabang_invoice">
+                                  <option value="">- cabang -</option>
+                                @foreach ($cabang as $element)
+                                  <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                            <div class="form-group col-md-3">
+                              <select class="chosen-select-width" id="customer_invoice">
+                                  <option value="">- Customer -</option>
+                                @foreach ($customer as $e)
+                                  <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                              <button  class="btn btn-info" onclick="cari_invoice()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
+                            </div>
+                          </div>  
+                          
+                                <div id="container_invoice" style="height: 400px"></div>
+                             <div id="bawah">
+ 
+                             </div> 
+                            <div class="box-footer">
+                              <div class="pull-right">
+                                </div>
+                          </div><!-- /.box -->
+                        </div><!-- /.col -->
+                      </div><!-- /.row -->
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div class="row" style="padding-bottom: 50px;"></div>
@@ -101,6 +163,8 @@
 
 
     var table;
+
+   
    
    table = $('#addColumn').DataTable( {
       responsive: true,
@@ -243,7 +307,7 @@
     }
 
 
-
+//-----------------------PUNYA PENJUALAN 
 
 var date = new Date();
 console.log(date);
@@ -257,7 +321,7 @@ Highcharts.chart('container', {
     chart: {
         type: 'column'
     },
- xAxis: {
+   xAxis: {
         categories: ['']
     },
     title: {
@@ -280,6 +344,9 @@ Highcharts.chart('container', {
     plotOptions: {
         column: {
             borderRadius: 0
+        },
+        series:{
+          pointWidth: 40
         }
     },
 
@@ -395,8 +462,8 @@ Highcharts.chart('container', {
                 text: 'PENJUALAN PAKET'
             },
             plotOptions: {
-                column: {
-                    depth: 100
+                series:{
+                  pointWidth: 40
                 }
             },
             xAxis: {
@@ -426,7 +493,7 @@ Highcharts.chart('container', {
 
             ],
           });
-          $('.highcharts-title').html('Menampilkan Diagram Tanggal '+data.a+' Hingga '+data.b)
+          // $('.highcharts-title').html('Menampilkan Diagram Tanggal '+data.a+' Hingga '+data.b)
              
         }else {
           Highcharts.chart('container', {
@@ -442,6 +509,9 @@ Highcharts.chart('container', {
             plotOptions: {
                 column: {
                     depth: 100
+                },
+                series:{
+                  pointWidth: 40
                 }
             },
             xAxis: {
@@ -472,7 +542,7 @@ Highcharts.chart('container', {
             ],
           });
 
-          $('.highcharts-title').html('Menampilkan Diagram Tanggal '+data.a+' Hingga '+data.b)
+          // $('.highcharts-title').html('Menampilkan Diagram Tanggal '+data.a+' Hingga '+data.b)
 
         }
         console.log(data);
@@ -480,7 +550,225 @@ Highcharts.chart('container', {
         }
       });
     }
+//-----------------------END OF PENJUALAN 
 
+
+//----------------------- INVOICE
+
+ Highcharts.chart('container_invoice', {
+
+    chart: {
+        type: 'column'
+    },
+   xAxis: {
+          categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    },
+    title: {
+        text: 'DIAGRAM BATANG INVOICE TAHUN '+ y
+    },
+
+    yAxis: [{
+        className: 'highcharts-color-0',
+        title: {
+            text: ''
+        }
+    }, {
+        className: 'highcharts-color-1',
+        opposite: true,
+        title: {
+            text: ''
+        }
+    }],
+
+    plotOptions: {
+        column: {
+            borderRadius: 0
+        }
+    },
+
+     
+    series: [
+    {
+        name: 'INVOICE',
+        data: [
+        {{ $invoice[0]}},
+        {{ $invoice[1]}},
+        {{ $invoice[2]}},
+        {{ $invoice[3]}},
+        {{ $invoice[4]}},
+        {{ $invoice[5]}},
+        {{ $invoice[6]}},
+        {{ $invoice[7]}},
+        {{ $invoice[8]}},
+        {{ $invoice[9]}},
+        {{ $invoice[10]}},
+        {{ $invoice[11]}},
+        ]
+    ,
+    }]
+
+});
+
+
+function cari_invoice(){
+      var date_awal = $('#date_awal_invoice').val();
+      var date_akir = $('#date_akir_invoice').val();
+      var cabang_invoice = $('#cabang_invoice').val();
+      var customer_invoice = $('#customer_invoice').val();
+      
+      if(date_awal == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+
+      if(date_akir == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+      $.ajax({
+        data: {a:date_awal,b:date_akir,c:cabang_invoice,d:customer_invoice},
+        url: baseUrl + '/cari_lap_invoice/cari_lap_invoice',
+        type: "get",
+       success : function(data){
+        // console.log(data);
+        if (data.data == null) {
+          Command: toastr["warning"](data.response, "Peringatan !")
+
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          Highcharts.chart('container_invoice', {
+            chart: {
+                type: 'column',
+              
+            },
+            title: {
+                text: 'INVOICE'
+            },
+            subtitle: {
+                text: ''
+            },
+            plotOptions: {
+                series: {
+                    pointWidth: 40
+                }
+            },
+            xAxis: {
+                categories: ['LAPORAN'],
+                labels: {
+                    skew3d: true,
+                    style: {
+                        fontSize: '16px'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: null
+                }
+            },
+            series: [{
+                name: 'INVOICE',
+                data: [0]
+            },
+
+            ],
+          });
+          
+        }else{
+            
+            
+            Highcharts.chart('container_invoice', {
+            chart: {
+                type: 'column',
+              
+            },
+            title: {
+                text: 'INVOICE'
+            },
+            subtitle: {
+                text: ''
+            },
+            plotOptions: {
+                series: {
+                    pointWidth: 40
+                }
+            },
+            xAxis: {
+                categories: ['LAPORAN'],
+                labels: {
+                    skew3d: true,
+                    style: {
+                        fontSize: '16px'
+                    }
+                }
+            },
+            yAxis: {
+                title: {
+                    text: null
+                }
+            },
+            series: [{
+                name: 'INVOICE',
+                data: [data.data]
+            },
+
+            ],
+          });
+
+        }
+        }
+      });
+    }
+//----------------------- END OF INVOICE 
 
 </script>
 @endsection

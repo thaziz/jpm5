@@ -38,21 +38,21 @@ class laporanOmsetController extends Controller
 				->where('pendapatan','=','PAKET')
 				->get();
 		$dat1 =DB::table('delivery_order as do')
-			->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-			->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-			->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-			->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-			->whereDate('tanggal','=',$sre)
-			->where('pendapatan','=','KORAN')
-			->get();
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->whereDate('tanggal','=',$sre)
+				->where('pendapatan','=','KORAN')
+				->get();
 		$dat2 =DB::table('delivery_order as do')
-			->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-			->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-			->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-			->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-			->whereDate('tanggal','=',$sre)
-			->where('pendapatan','=','KARGO')
-			->get();
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				->whereDate('tanggal','=',$sre)
+				->where('pendapatan','=','KARGO')
+				->get();
 
 		if ($dat == null) {
 			$paket = 0;
@@ -84,7 +84,46 @@ class laporanOmsetController extends Controller
 		}
 		
 		$cabang = DB::table('cabang')->get();
-		return view('purchase/omset_diagram/laporan_diagram_dototal/lap_deliveryorder_total',compact('paket','koran','kargo','cabang'));
+		$customer = DB::table('customer')->get();
+
+
+		//INVOICE 
+
+		$data = DB::table('invoice')->get();
+
+		$array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+		$tahun = carbon::now();
+		$tahun =  $tahun->year;
+
+		for ($i=0; $i <count($array_bulan) ; $i++) { 
+			$dat_inv[$i] =	DB::table('invoice')
+						->select('i_tanggal','i_total')
+						->whereMonth('i_tanggal','=',$array_bulan[$i])
+						->whereYear('i_tanggal','=',$tahun)
+						->get();
+		}
+		
+		for ($i=0; $i < count($dat_inv); $i++) { 
+			if ($dat_inv[$i] != null) {
+				for ($a=0; $a < count($dat_inv[$i]); $a++) { 
+					$anjay[$i][$a] = $dat_inv[$i][$a]->i_total;
+				}
+			}else{
+				$anjay[$i] = 0;
+			}
+		}
+		
+
+		for ($i=0; $i < count($anjay); $i++) { 
+			if ($anjay[$i] != 0) {
+				for ($a=0; $a < count($anjay[$i]); $a++) { 
+					$invoice[$i] = array_sum($anjay[$i]);
+				}
+			}else{
+				$invoice[$i] = 0;
+			}
+		}
+		return view('purchase/omset_diagram/laporan_diagram_dototal/lap_deliveryorder_total',compact('paket','koran','kargo','cabang','data','invoice','customer'));
 	}
 	public function caridiagram_penjualan(Request $request){
 		$awal = $request->a;

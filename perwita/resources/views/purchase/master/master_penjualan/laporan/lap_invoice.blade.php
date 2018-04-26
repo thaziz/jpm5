@@ -58,8 +58,7 @@
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                  <div id="container" style="height: 400px"></div>
-                    <table class="table table-bordered datatable table-striped" style="margin-top: 100px;">
+                    <table class="table " style="margin-top: 100px;">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -103,38 +102,57 @@
                 <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                          
                             <th> No Inv</th>
                             <th> Tanggal </th>
                             <th> Jatuh Tempo </th>
                             <th> Customer </th>
-                            <th> Total </th>
+                            <th> Brutto </th>
                             <th> Diskon Do </th>
-                            <th> Netto detil</th>
                             <th> Diskon Inv </th>
-                            <th> Netto DPP </th>
                             <th> PPN </th>
                             <th> PPH </th>
+                            <th> Netto DPP </th>
+                            <th> Netto detil</th>
                             <th> Total Tagihan </th>
                         </tr>
                     </thead>
                     <tbody>
+                      @foreach (  $cust as $element)
+                        <tr>
+                          <td colspan="12">{{  $element->i_kode_customer}} - {{  $element->cus}}</td>
+                        </tr>
                       @foreach ($data as $index =>$e)
                         <tr>
+                          @if ($e->i_kode_customer == $element->i_kode_customer)
                         <td><input type="hidden" value="{{ $e->i_nomor }}" name="nomor">{{ $e->i_nomor }}</td>
                         <td>{{ $e->i_tanggal }}</td>
                         <td>{{ $e->i_jatuh_tempo }}</td>
                         <td>{{ $e->i_kode_customer }}</td>
-                        <td align="right">{{ number_format($e->i_total,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_diskon1,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_netto,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_diskon2,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_netto_detail,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_ppnrp,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_pajak_lain,0,',','.') }}</td>
-                        <td align="right">{{ number_format($e->i_total_tagihan,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_total }}" class="total_brutto" name="">{{ number_format($e->i_total,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_diskon1 }}" class="total_diskondo" name="">{{ number_format($e->i_diskon1,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_diskon2 }}" class="total_diskoninv" name="">{{ number_format($e->i_diskon2,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_ppnrp }}" class="total_ppn" name="">{{ number_format($e->i_ppnrp,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_pajak_lain }}" class="total_pajak_lain" name="">{{ number_format($e->i_pajak_lain,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_netto }}" class="total_netto" name="">{{ number_format($e->i_netto,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_netto_detail }}" class="total_netto_detil" name="">{{ number_format($e->i_netto_detail,0,',','.') }}</td>
+                        <td align="right"><input type="hidden" value="{{ $e->i_total_tagihan }}" class="total_net" name=""> {{ number_format($e->i_total_tagihan,0,',','.') }}</td>
+                        @endif
                         </tr>
+
                       @endforeach
+                      
+                    @endforeach
+                      <tr align="right">
+                        <th colspan="4">Total</th>
+                        <td id="brutto_grandtotal"></td>
+                        <td id="diskondo_grandtotal"></td>
+                        <td id="diskoninv_grandtotal"></td>
+                        <td id="ppn_grandtotal"></td>
+                        <td id="pajaklain_grandtotal"></td>
+                        <td id="netto_grandtotal"></td>
+                        <td id="nettodetil_grandtotal"></td>
+                        <td id="total_grandtotal"></td>
+                      </tr>
                     </tbody>
 
                   </table>
@@ -163,7 +181,75 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-   
+
+  $('.date').datepicker({
+        autoclose: true,
+        format: 'yyyy-mm-dd',
+        /*minViewMode:1,*/
+    });
+
+    var total = 0;
+    $('.total_net').each(function(){
+        var parents_net = parseInt($(this).val());
+        total += parents_net;
+    });
+    $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
+
+    var brutto = 0;
+    $('.total_brutto').each(function(){
+        var parents_brutto = parseInt($(this).val());
+        brutto += parents_brutto;
+    });
+    $('#brutto_grandtotal').text(accounting.formatMoney(brutto,"",0,'.',','));
+
+    var netto = 0;
+    $('.total_netto_detil').each(function(){
+        var parents_netto = parseInt($(this).val());
+        netto += parents_netto;
+    });
+    $('#netto_grandtotal').text(accounting.formatMoney(netto,"",0,'.',','));
+
+    var netto_detil = 0;
+    $('.total_netto').each(function(){
+        var parents_netto_detil = parseInt($(this).val());
+        netto_detil += parents_netto_detil;
+    });
+    $('#nettodetil_grandtotal').text(accounting.formatMoney(netto_detil,"",0,'.',','));
+
+     var ppn = 0;
+    $('.total_ppn').each(function(){
+        var parents_ppn = parseInt($(this).val());
+        ppn += parents_ppn;
+    });
+    $('#ppn_grandtotal').text(accounting.formatMoney(ppn,"",0,'.',','));
+
+     var diskon_do = 0;
+    $('.total_diskondo').each(function(){
+        var parents_diskon_do = parseInt($(this).val());
+        diskon_do += parents_diskon_do;
+    });
+    $('#diskondo_grandtotal').text(accounting.formatMoney(diskon_do,"",0,'.',','));
+
+     var diskon_inv = 0;
+    $('.total_diskoninv').each(function(){
+        var parents_diskon_inv = parseInt($(this).val());
+        diskon_inv += parents_diskon_inv;
+    });
+    $('#diskoninv_grandtotal').text(accounting.formatMoney(diskon_inv,"",0,'.',','));
+
+     var pajak_lain = 0;
+    $('.total_pajak_lain').each(function(){
+        var parents_pajak_lain = parseInt($(this).val());
+        pajak_lain += parents_pajak_lain;
+    });
+    $('#pajaklain_grandtotal').text(accounting.formatMoney(pajak_lain,"",0,'.',','));
+
+    console.log(netto_detil);
+    console.log(netto);
+    console.log(total);
+    console.log(brutto);
+
+
     var d = new Date();
     var a = d.getDate();
     var b = d.getSeconds();
@@ -171,102 +257,6 @@
 
 
     var table;
-   
-   table = $('#addColumn').DataTable( {
-      responsive: true,
-              searching: true,
-              //paging: false,
-              "pageLength": 10,
-              "language": dataTableLanguage,
-         dom: 'Bfrtip',
-         buttons: [
-            {
-                  extend: 'excel',
-                 /* messageTop: 'Hasil pencarian dari Nama : ',*/
-                  text: ' Excel',
-                  className:'excel',
-                  title:'LAPORAN TARIF CABANG KOLI',
-                  filename:'CABANGKOLI-'+a+b+c,
-                  init: function(api, node, config) {
-                  $(node).removeClass('btn-default'),
-                  $(node).addClass('btn-warning'),
-                  $(node).css({'margin-top': '-50px','margin-left': '80px'})
-                  },
-                  exportOptions: {
-                  modifier: {
-                      page: 'all'
-                  }
-              }
-              
-              }
-          ]
-    });
-
-     $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
-            $("#min").datepicker({format:"dd/mm/yyyy"});
-            $("#max").datepicker({format:"dd/mm/yyyy"});
-
-       function tgl(){
-         var tgl1   = $("#min").val();
-         var tgl2   = $("#max").val();
-          if(tgl1 != "" && tgl2 != ""){
-          }
-
-            $(document).ready(function(){
-        $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#min').datepicker("getDate");
-            // console.log(min);
-            var max = $('#max').datepicker("getDate");
-            // console.log(max);
-
-            var startDate = new Date(data[1]);
-            // console.log(startDate);
-            if (min == null || min == '' && max == null || max == '') { return true; }
-            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
-            if (startDate <= max && startDate >= min) { return true; }
-            return false;
-        }
-        );
-            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-           
-
-            // Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max').change(function () {
-                /*if($('#max').val() == '' || $('#max').val() == null ){
-                    $('#max').val(0);
-                }*/
-                table.draw();
-            });
-        });
-          }
-   
- 
-    $(document).ready(function() {
-        $('.tbl-item').DataTable();
-     
-        $('input.global_filter').on( 'keyup click', function () {
-            filterGlobal();
-        } );
-     
-        $('input.column_filter').on( 'keyup click', function () {
-            filterColumn( $(this).parents('tr').attr('data-column') );
-        } );
-    } );
-
-    
-   
-    function filterColumn2 () {
-        $('#addColumn').DataTable().column(3).search(
-            $('.select-picker5').val()).draw(); 
-     }
-     
-
       function cetak(){
       var asw=[];
        var asd = table.rows( { filter : 'applied'} ).data(); 
@@ -301,194 +291,12 @@
     //chart 
 
 
-var date = new Date();
-var y = date.getFullYear();
 
-
-    Highcharts.chart('container', {
-
-    chart: {
-        type: 'column',
-         options3d: {
-                enabled: true,
-                alpha: 15,
-                beta: 15,
-                depth: 50
-            }
-    },
- xAxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    },
-    title: {
-        text: 'DIAGRAM BATANG PENJUALAN TAHUN '+ y
-    },
-
-    yAxis: [{
-        className: 'highcharts-color-0',
-        title: {
-            text: ''
-        }
-    }, {
-        className: 'highcharts-color-1',
-        opposite: true,
-        title: {
-            text: ''
-        }
-    }],
-
-    plotOptions: {
-        column: {
-            borderRadius: 0
-        }
-    },
-
-     
-    series: [
-    {
-        name: 'INVOICE',
-        data: [
-        {{ $invoice[0]}},
-        {{ $invoice[1]}},
-        {{ $invoice[2]}},
-        {{ $invoice[3]}},
-        {{ $invoice[4]}},
-        {{ $invoice[5]}},
-        {{ $invoice[6]}},
-        {{ $invoice[7]}},
-        {{ $invoice[8]}},
-        {{ $invoice[9]}},
-        {{ $invoice[10]}},
-        {{ $invoice[11]}},
-        ]
-    ,
-    }]
-
-});
-    
    
 
 //cari 
 
-function cari(){
-      var date_awal = $('#date_awal').val();
-      var date_akir = $('#date_akir').val();
-      
-      if(date_awal == ''){
-          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
-          toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-          }
-          return false;
-      }
 
-      if(date_akir == ''){
-          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
-          toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-          }
-          return false;
-      }
-      $.ajax({
-        data: {a:date_awal,b:date_akir},
-        url: baseUrl + '/cari_lap_invoice/cari_lap_invoice',
-        type: "get",
-       success : function(data){
-        // console.log(data);
-        if (data.data == null) {
-          Command: toastr["warning"](data.response, "Peringatan !")
-
-          toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-          }
-          $('#container').html('');
-          
-        }else{
-            var awal = $.datepicker.formatDate("dd MM yy", new Date(data.awal))
-            var akir = $.datepicker.formatDate("dd MM yy", new Date(data.akir))
-              $('#replace').html('Tampilkan Data ' + awal + ' S/D ' + akir);
-            Highcharts.chart('container', {
-            chart: {
-                type: 'column',
-              
-            },
-            title: {
-                text: 'Laporan'
-            },
-            subtitle: {
-                text: 'PENJUALAN PAKET'
-            },
-            plotOptions: {
-                column: {
-                    depth: 100
-                }
-            },
-            xAxis: {
-                categories: ['LAPORAN'],
-                labels: {
-                    skew3d: true,
-                    style: {
-                        fontSize: '16px'
-                    }
-                }
-            },
-            yAxis: {
-                title: {
-                    text: null
-                }
-            },
-            series: [{
-                name: 'INVOICE',
-                data: [data.data]
-            },
-
-            ],
-          });
-        }
-        }
-      });
-    }
 
 </script>
 @endsection

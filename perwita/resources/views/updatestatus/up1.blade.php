@@ -65,6 +65,23 @@
                                                 @endif
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td style="padding-top: 0.4cm">Nama Penerima</td>
+                                                <td>
+                                                    <input type="text" name="namapenerima" class="form-control" value="{{old('catatan')}}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding-top: 0.4cm">Barang Berada</td>
+                                                <td>
+                                                    <select class="chosen-select-width" name="barangberada">
+                                                      <option>- Barang Saat ini -</option>
+                                                      @foreach ($kota as $element)
+                                                        <option value="{{ $element->id }}">{{ $element->nama }}</option>
+                                                      @endforeach
+                                                    </select>
+                                            </td>
+                                        </tr>
                                     </tbody>
                                 </table>
 

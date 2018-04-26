@@ -20,8 +20,9 @@ class update_o_Controller extends Controller
 		return view('updatestatus.index');
 	}
 	public function up1(){
-    $data = DB::table('surat_jalan_trayek')->limit(1000)->get();
-		return view('updatestatus/up1',compact('data'));
+    $data = DB::table('surat_jalan_trayek')->get();
+    $kota = DB::table('kota')->get();
+		return view('updatestatus/up1',compact('data','kota'));
 	}
   public function data1(Request $request , $nomor_do){
       /*dd($nomor_do);*/
@@ -47,8 +48,9 @@ class update_o_Controller extends Controller
   }
 
 	public function up2(){
-    $nodo = DB::table('delivery_order')->orderBy('tanggal','DESC')->limit(5000)->get();
-		return view('updatestatus/up2',compact('nodo'));
+    $nodo = DB::table('delivery_order')->orderBy('tanggal','DESC')->get();
+    $kota = DB::table('kota')->get();
+		return view('updatestatus/up2',compact('nodo','kota'));
 	}
   public function autocomplete(Request $request){
   
@@ -74,12 +76,21 @@ class update_o_Controller extends Controller
     }
 	public function store1(Request $request){
 		  // return $request->asw;
-    //    dd($request);
+       // dd($request);
        $store = new updateso;
        $store->u_o_nomor=$request->a[0]['value'];
        $store->Status=$request->a[1]['value'];
        $store->catatan=$request->a[2]['value'];
        $store->save();
+
+                    // 'no_do' => strtoupper($request->ed_nomor),
+                    // 'status' => 'MANIFESTED',
+                    // 'nama' => strtoupper($request->ed_nama_pengirim),
+                    // 'catatan' => '-',
+                    // 'asal_barang' => $request->cb_kota_asal,
+                    // 'id'=>$increment,
+
+
        $anj = DB::table('update_detail1')->max('id');
        if ($anj == '' ) {
          $anj=1;
@@ -101,6 +112,8 @@ class update_o_Controller extends Controller
        $store1->nomor_surat_jalan_trayek=$request->b[0]['value'];
        $store1->nomor_do=$request->asw[$i];
        $store1->status=$request->b[1]['value'];
+       $store1->asal_barang=$request->a[4]['value'];
+       $store1->catatan=$request->a[2]['value'];
        $store1->save();
        }
        // return 'a';
@@ -128,13 +141,19 @@ class update_o_Controller extends Controller
 	public function store2(Request $request){
 				// dd($request);
 				// return $request->asw;
-
+        $increment = DB::table('u_s_order_do')->max('id');
+                if ($increment == 0) {
+                    $increment = 1;
+                }else{
+                    $increment+=1;
+                }
        $store = new updatesodo;
 			 $store->no_do=$request->a[0]['value'];
-       $store->status=$request->a[1]['value'];
-       $store->catatan=$request->a[2]['value'];
-       $store->nama=$request->a[3]['value'];
-       $store->id=$request->a[4]['value'];
+       $store->status=$request->a[2]['value'];
+       $store->catatan=$request->a[3]['value'];
+       $store->nama=$request->a[4]['value'];
+       $store->asal_barang=$request->a[5]['value'];
+       $store->id=$increment;
        $store->save();
 
        $a = DB::table('update_detail1')->max('id');
@@ -158,6 +177,8 @@ class update_o_Controller extends Controller
        $store1->id_u=$v;
        $store1->nomor_do=$request->b[0]['value'];
        $store1->status=$request->b[1]['value'];
+       $store1->asal_barang=$request->a[5]['value'];
+       $store1->catatan=$request->a[3]['value'];
        $store1->save();
 			 }
         

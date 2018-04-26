@@ -937,8 +937,9 @@ Route::get('sales/laporan_posting_bayar','LaporanMasterController@posting_bayar'
 Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@reportposting_bayar')->name('reportposting_bayar');
 //END OF LAPORAN BAYAR PENJUALAN
 
-//LAPORAN KARTU HUTANG
+//LAPORAN KARTU PIUTANG
 Route::get('laporan_sales/kartu_piutang','LaporanMasterController@kartupiutang');
+Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_kartupiutang');
 Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@reportkartupiutang')->name('reportkartupiutang');
 //END OF 
 
@@ -1189,6 +1190,8 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
 
 
+// Route::get('sales/cari_modaldeliveryorder', 'sales\do_controller@cari_modaldeliveryorder');
+// Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
 
 
 
@@ -1215,8 +1218,8 @@ Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@s
 Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
 
-
-
+Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');
+Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_Controller@tarif_penerus_dokumen_indentdo');
 
 //end delivery order
 
