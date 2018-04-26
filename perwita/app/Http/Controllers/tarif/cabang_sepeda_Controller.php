@@ -134,7 +134,7 @@ class cabang_sepeda_Controller extends Controller
         // dd($request);
         $asal = $request->asal;
         $tujuan = $request->tujuan;
-        $sql = "    SELECT t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,k.kode_kota,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        $sql = "    SELECT t.kode_cabang,t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,k.kode_kota,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,
 
         kk.nama tujuan, t.harga, t.jenis, t.waktu

@@ -1497,6 +1497,9 @@
             },
         })
     }
+    function kilogram_tipe(){
+        
+    }
     function save_penerus(){
         var penerus_tipe = $('select[name="ed_tipe"]').val();
         var penerus_prov = $('select[name="ed_provinsi"]').val();
