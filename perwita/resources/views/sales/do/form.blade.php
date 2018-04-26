@@ -2536,33 +2536,39 @@
         }
 
     }
+                function BeratDefault(){
+                    var tipetipe = $('#type_kiriman').val();
+                    if (tipetipe == 'KOLI') {
+                        // alert('a');
+                        var berat = $("input[name='ed_berat']").val();
+                        if (berat > 50) {
+                            Command: toastr["warning"]("Maksimal berat KOLI yang dilayani 50 Kg", "Peringatan !")
 
-    function BeratDefault(){
-        var berat = $("input[name='ed_berat']").val();
-        if (berat > 50) {
-            Command: toastr["warning"]("Maksimal berat KOLI yang dilayani 50 Kg", "Peringatan !")
-
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            $("input[name='ed_berat']").val(1);
-            return false;
-        }
-    }
+                            toastr.options = {
+                              "closeButton": false,
+                              "debug": true,
+                              "newestOnTop": false,
+                              "progressBar": true,
+                              "positionClass": "toast-top-right",
+                              "preventDuplicates": false,
+                              "onclick": null,
+                              "showDuration": "300",
+                              "hideDuration": "1000",
+                              "timeOut": "5000",
+                              "extendedTimeOut": "1000",
+                              "showEasing": "swing",
+                              "hideEasing": "linear",
+                              "showMethod": "fadeIn",
+                              "hideMethod": "fadeOut"
+                            }
+                            $("input[name='ed_berat']").val(1);
+                            return false;
+                        }
+                    }else{
+                        // alert('b');
+                    }
+                    
+                }
 
     function setMaxDisc(){
         var cabang = $("select[name='cb_cabang']").val();

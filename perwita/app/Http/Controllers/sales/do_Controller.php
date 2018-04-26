@@ -1277,7 +1277,9 @@ class do_Controller extends Controller
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus,
                     'harga' => $tarif[0]->harga,
-                    'acc_penjualan' => $tarif[0]->acc_penjualan
+                    'acc_penjualan' => $tarif[0]->acc_penjualan,
+                    'create_indent' => 1,
+                    'tipe' => $tipe,
                 ]);
             }
             else{

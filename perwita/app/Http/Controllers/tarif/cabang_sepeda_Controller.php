@@ -155,6 +155,7 @@ class cabang_sepeda_Controller extends Controller
   public function save_data (Request $request) {
         // dd($request);
         $simpan='';
+        $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
         $crud = $request->crud;
         $kode_sama_sepeda = DB::table('tarif_cabang_sepeda')->select('kode_sama_sepeda')->max('kode_sama_sepeda');    
         if ($kode_sama_sepeda == '') {
@@ -176,7 +177,13 @@ class cabang_sepeda_Controller extends Controller
             $kode_detail_sepedatambah1+1;  
          }
         
-
+         if ($request->cb_provinsi_tujuan != null or '') {
+            $cari = DB::table('kota')  
+                  ->where('id_provinsi',$request->cb_provinsi_tujuan)
+                  ->get();
+          }else{
+              $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
+          }
 
         $kodekota = $request->kodekota;
         $kodecabang = Auth::user()->kode_cabang;
@@ -193,14 +200,30 @@ class cabang_sepeda_Controller extends Controller
               json_encode($id_provinsi_loop); 
      
         
-            $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
      if ($request->cb_kota_tujuan == '' ) {  
       for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
                 
+        $s = DB::table('tarif_cabang_sepeda')
+                ->where('id_kota_asal',$request->cb_kota_asal)
+                ->where('id_kota_tujuan',$id_provinsi_loop[$save])
+                ->where('kode_cabang',$request->ed_cabang)
+                ->get();
+        $cek = count($s);
 
-if ($cek > 0 ) {
-    return 'b';
-}else{
+      if ($cek > 0 ) {
+        $jenis = ['moge','laki_sport','bebek_matik','sepeda_pancal'];
+          for ($i=0; $i < count($cari); $i++) { 
+            for ($o=0; $o <count($jenis) ; $o++) { 
+                    $cari_old0[$i] = DB::table('tarif_cabang_dokumen')
+                              ->where('id_kota_asal',$request->cb_kota_asal)
+                              ->where('id_kota_tujuan',$cari[$i]->id)
+                              ->where('kode_cabang',$jenis[$o])
+                              ->where('jenis','REGULER')
+                              ->get();
+              }
+            }
+                return $cari_old0;
+      }else{
 
 
           if ($crud =='N') {
