@@ -135,11 +135,12 @@
                            
                              
                               @endif
-                                <input type="hidden" value="{{$fpg->fpg_supplier}}" name='kodejenisbayar' class="kodejenisbayar">
+                               
                                 @if($data['jenisbayar'] == '2')
                                 <input type="hidden" value="{{$fpg->syarat_kredit}}"  class="syaratkreditsupplier">
+                                <input type="hidden" value="{{$fpg->fpg_supplier}}" name='kodejenisbayar' class="kodejenisbayar">
                                 @else
-
+                                <input type="hidden" value="{{$fpg->fpg_agen}}" name='kodejenisbayar' class="kodejenisbayar">
                                 @endif
                                  </h4> </td>
                             </tr>
@@ -286,7 +287,7 @@
                                                                 <th style="width:40%"> Tanggal </th>
                                                                 <th style="width:100%"> Jumlah Bayar </th>
                                                               </tr>
-                                                                  @if($data['jenisbayar'] != '5')
+                                                                  @if($data['jenisbayar'] == '2' || $data['jenisbayar'] == '6' || $data['jenisbayar'] == '7' || $data['jenisbayar'] == '9')
                                                                <?php $no = 1; ?>  
                                                              @for($p = 0; $p < count($data['cndn']); $p++)
                                                                                  
@@ -324,7 +325,7 @@
                                                                 <th style="width:40%"> Tanggal </th>
                                                                 <th style="width:100%"> Jumlah Bayar </th>
                                                               </tr>
-                                                                  @if($data['jenisbayar'] != '5')
+                                                                  @if($data['jenisbayar'] == '2' || $data['jenisbayar'] == '6' || $data['jenisbayar'] == '7' || $data['jenisbayar'] == '9')
                                                                  @for($p = 0; $p < count($data['cndn']); $p++)                     
                                                                @for($c = 0 ; $c < count($data['cndn'][$p]); $c++)
                                                                @if($data['cndn'][$p][$c]->cndn_jeniscndn == 'D')
@@ -425,11 +426,11 @@
                                     <div class="col-sm-12">
                                         <table class="table tbl-item" id="tbl-item">
                                           <tr>
-                                             <th> No </th>  <th> No Faktur </th>  <th> Tanggal </th> <th> Jatuh Tempo </th> <th> Netto Hutang </th> <th> Pelunasan </th> <th> Pembayaran </th> <th> Sisa Terbayar </th> <th> Aksi </th>
+                                             <th> No </th>  <th> No Faktur </th>  <th> Tanggal </th> <th> Jatuh Tempo </th> <th> Netto Hutang </th> <th> Pelunasan </th> <th> Pembayaran </th> <th> Sisa Terbayar </th> <th> Keuangan </th> <th> Aksi </th>
                                           </tr>
                                           @if($data['fpg'][0]->fpg_jenisbayar == 2 || $data['fpg'][0]->fpg_jenisbayar == 6 || $data['fpg'][0]->fpg_jenisbayar == 7 || $data['fpg'][0]->fpg_jenisbayar == 9 )
                                             @foreach($data['fpgd'] as $index=>$fpgd)
-                                             <tr class='dataitemfaktur' id="field{{$index + 1}}">
+                                             <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota={{$fpgd->fp_nofaktur}}>
                                             <td> {{$index + 1}} </td>
                                             <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->fp_nofaktur}} </a>  <!-- {{$fpgd->fp_nofaktur}} --> <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->fp_nofaktur}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->fp_idfaktur}}" name='idfaktur[]'> </td>
                                             <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
@@ -453,7 +454,7 @@
 
                                           @elseif($data['fpg'][0]->fpg_jenisbayar == 3)
                                             @foreach($data['fpgd'] as $index=>$fpgd)
-                                            <tr class='dataitemfaktur' id="field{{$index + 1}}">
+                                            <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota="{{$fpgd->v_nomorbukti}}">
                                             <td> {{$index + 1}} </td>
                                             <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->v_nomorbukti}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->v_nomorbukti}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->v_id}}" name='idfaktur[]'> </td>
                                             <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
@@ -468,7 +469,7 @@
                                             <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->v_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
                                             <!-- SISA PELUNASAN -->
 
-                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly=""></td>
+                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td> 
 
                                             <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->v_nomorbukti}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
 
@@ -477,7 +478,7 @@
 
                                            @elseif($data['fpg'][0]->fpg_jenisbayar == 1)
                                             @foreach($data['fpgd'] as $index=>$fpgd)
-                                            <tr class='dataitemfaktur' id="field{{$index + 1}}">
+                                            <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota="{{$fpgd->ik_total}}">
                                             <td> {{$index + 1}} </td>
                                             <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->ik_nota}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->ik_nota}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->ik_id}}" name='idfaktur[]'> </td>
                                             <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
@@ -492,7 +493,7 @@
                                             <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->ik_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
                                             <!-- SISA PELUNASAN -->
 
-                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly=""></td>
+                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
 
                                             <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->ik_nota}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
 
@@ -503,7 +504,7 @@
                                           
                                           @elseif($data['fpg'][0]->fpg_jenisbayar == 4)
                                             @foreach($data['fpgd'] as $index=>$fpgd)
-                                            <tr class='dataitemfaktur' id="field{{$index + 1}}">
+                                            <tr class='field dataitemfaktur' id="field{{$index + 1}}" data-nota="{{$fpgd->um_nomorbukti}}">
                                             <td> {{$index + 1}} </td>
                                             <td> <a class='nofp nofp{{$index + 1}}' data-id="{{$index + 1}}"> {{$fpgd->fpgdt_nofaktur}} </a>   <input type='hidden' class="datanofaktur nofaktur{{$index + 1}}" value="{{$fpgd->fpgdt_nofaktur}}" name='nofaktur[]'>  <input type='hidden'  value="{{$fpgd->fpgdt_id}}" name='idfaktur[]'> </td>
                                             <td> {{ Carbon\Carbon::parse($fpgd->fpgdt_tgl)->format('d-M-Y ') }}  </td> <!-- Format Tgl -->
@@ -518,7 +519,7 @@
                                             <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->um_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
                                             <!-- SISA PELUNASAN -->
 
-                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly=""></td>
+                                            <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
 
                                             <td> <button class='btn btn-danger removes-btn' data-id="{{$index + 1}}" data-nmrfaktur="+nmrf[i]+" data-faktur="{{$fpgd->fpgdt_nofaktur}}" data-idfpgdt="{{$fpgd->fpgdt_id}}" data-idfp="{{$fpgd->fpgdt_idfp}}" type='button'><i class='fa fa-trash'></i></button> </td>
 
@@ -697,7 +698,7 @@
                                       <td> <input type="text" class="input-sm form-control norekening" name="norekening"></td>
                                      
                                      <th> Nama Rekening </th>
-                                      <td> <input type="text" class="input-sm form-control norekening" name="norekening"></td>
+                                      <td> <input type="text" class="input-sm form-control norekening" name="norekening" readonly=""></td>
 
                                     </tr>
 
@@ -758,7 +759,7 @@
                                       </td>
                                      
                                      <th> Nama Rekening </th>
-                                      <td> <input type="text" class="input-sm form-control nmbank1" name="nama"></td> 
+                                      <td> <input type="text" class="input-sm form-control nmbank1" name="nama" readonly=""></td> 
 
                                     </tr>
 
@@ -947,6 +948,82 @@
         }
       })
 
+
+       $('.bank1').change(function(){
+      val = $(this).val();
+      string = val.split(",");
+      namabank = string[1];
+      alamat = string[2];
+      account = string[3];
+      id = string[0];
+
+      $('.nmbank1').val(namabank);
+     /* $.ajax({
+          type : "post",
+          data : {id},
+          url : baseUrl+'/formfpg/getkodeakun',
+          dataType : 'json',
+          success : function (response){
+            table = response.table;
+            console.log(table);
+
+          var tablecek = $('#tbl-cheuque').DataTable();
+          tablecek.clear().draw();
+            var nmrbnk = 1;
+            for(var i = 0; i < table.length; i++){                                   
+                var html2 = "<tr class='bank"+nmrbnk+"' id='datacek"+nmrbnk+"'> <td>"+nmrbnk+"</td>" +
+                                  "<td>"+table[i].mb_kode+"</td>" +
+                                  "<td>"+table[i].mb_nama+"</td>"+
+                                  "<td>"+table[i].mbdt_noseri+"</td>";
+                                  if(table[i].mbdt_nofpg == null){
+                                  html2 +=  "<td> </td>";
+                                  }
+                                  else {
+                                     html2 +=  "<td>"+table[i].mbdt_nofpg+"</td>";
+                                  }
+                                   if(table[i].mbdt_nominal == null || table[i].mbdt_nominal == 0.00 ){
+                                      html2 +=  "<td> </td>";
+                                  }
+                                  else {
+                                     html2 +=  "<td>"+table[i].mbdt_nominal+"</td>";
+                                  }
+                                  
+                                  if(table[i].mbdt_setuju == null || table[i].mbdt_setuju == ''){
+                                     html2 +=  "<td> </td>";
+                                  }
+                                  else {
+                                     html2 +=  "<td>"+table[i].mbdt_setuju+"</td>";
+                                  }
+
+                                   if(table[i].mbdt_rusak == null || table[i].mbdt_rusak == ''){
+                                     html2 +=  "<td> </td>";
+                                  }
+                                  else {
+                                     html2 +=  "<td>"+table[i].mbdt_rusak+"</td>";
+                                  }
+
+
+                          if(table[i].mbdt_nofpg == null || table[i].mbdt_nofpg  == '' ){
+                             html2 += "<td><div class='checkbox'> <input type='checkbox' id="+table[i].mbdt_id+","+nmrbnk+" class='checkcek' value='option1' aria-label='Single checkbox One'>";
+                          }
+                          else {
+                            html2 += "<td> </td>";
+                          }
+
+                   
+                html2 +=  "<label></label>" +
+                  "</div></td>";
+                                
+                 html2 +=  "</tr>"; 
+                 tablecek.rows.add($(html2)).draw(); 
+                nmrbnk++; 
+               }    
+          }
+
+     })*/
+
+    })
+
       $('#getbank2').click(function(){
           metodebayar = $('.metodebayar:checked').val();
           //alert(metodebayar);
@@ -1015,6 +1092,8 @@
             $('.transferbank').hide();
           }
       })
+
+
 
 
        $('.jenisbayarbanktfacc').change(function(){
@@ -1111,7 +1190,7 @@
 
         $('.keteranganitem').each(function(){
           valketerangan = $(this).val();
-          if(valpelunasan == ''){
+          if(valketerangan == ''){
             tempketerangan = tempketerangan + 1;
           }
         })
@@ -1269,14 +1348,20 @@
 
      $('.btnfaktur').click(function(){
               var idsup = $('.kodejenisbayar').val();
-         
+              var nosupplier = $('.kodejenisbayar').val();
               var idjenisbayar = $('.jenisbayarheader').val();
               var cabang = $('.cabang').val();
-              console.log(arrfaktur);
+                
+                 arrnofaktur = [];
+                 $('tr.field').each(function(){
+                    nobukti = $(this).data('nota');
+                   // alert(nobukti);
+                    arrnofaktur.push(nobukti);
+                 })     
 
                 $.ajax({
                   url : baseUrl + '/formfpg/changesupplier',
-                  data : {idsup,idjenisbayar,cabang},
+                  data : {idsup,idjenisbayar,cabang,nosupplier,arrnofaktur},
                   type : "get",
                   dataType : "json",
                   success : function(data) {
@@ -1289,43 +1374,45 @@
                     var tablefaktur = $('#tbl-faktur').DataTable();
                     tablefaktur.clear().draw();
                     var n = 1;
-                    if(idjenisbayar == '2'){
-                        
+                    if(idjenisbayar == '2'){                        
                         for(var j =0; j < fp.length; j++){
-                            var nmx = 0;
-                            for(var i = 0; i < arrfaktur.length; i++){   
-                              if(fp[j].fp_nofaktur == arrfaktur[i]){
-                                nmx = nmx + 1;
-                              }
-
-                             }
-                                if(nmx == 1){
-
-                                }
-                                else {
-                             
-                                  var html2 = "<tr class='data"+n+"' id='data"+fp[j].fp_nofaktur+"'> <td>"+n+"</td>" +
-                                        "<td>"+fp[j].nama+"</td>" +
-                                        "<td>"+fp[j].fp_nofaktur+"</td>" +
-                                        "<td>"+fp[j].fp_noinvoice+"</td>" +            
-                                        "<td>"+fp[j].nama_supplier +"</td>"+
-                                        "<td>"+fp[j].tt_noform+"</td>" +
-                                        "<td>"+fp[j].fp_jatuhtempo+"</td>" +
-                                        "<td>"+fp[j].fp_sisapelunasan+"</td> ";
-                                    html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[j].fp_idfaktur+","+fp[j].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                            "<label></label>" +
-                                            "</div></td>";
-                                                
-                                 html2 +=  "</tr>"; 
-                                 tablefaktur.rows.add($(html2)).draw(); 
-                                 n++; 
-                             
-
-                                }                                                      
-                        }
+                            var html2 = "<tr class='data"+n+"' id='data"+fp[j].fp_nofaktur+"'> <td>"+n+"</td>" +
+                                  "<td>"+fp[j].nama+"</td>" +
+                                  "<td>"+fp[j].fp_nofaktur+"</td>" +
+                                  "<td>"+fp[j].fp_noinvoice+"</td>" +            
+                                  "<td>"+fp[j].nama_supplier +"</td>"+
+                                  "<td>"+fp[j].tt_noform+"</td>" +
+                                  "<td>"+fp[j].fp_jatuhtempo+"</td>" +
+                                  "<td>"+addCommas(fp[j].fp_sisapelunasan)+"</td> ";
+                              html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[j].fp_idfaktur+","+fp[j].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div></td>";
+                                          
+                           html2 +=  "</tr>"; 
+                           tablefaktur.rows.add($(html2)).draw(); 
+                           n++; 
                         }
                       }
-                    
+                    else if(idjenisbayar == '3'){
+                      for(var j =0; j < fp.length; j++){
+                            var html2 = "<tr class='data"+n+"' id='data"+fp[j].v_nomorbukti+"'> <td>"+n+"</td>" +
+                                  "<td>"+fp[j].nama+"</td>" +
+                                  "<td>"+fp[j].v_nomorbukti+"</td>" +
+                                  "<td> - </td>" +            
+                                  "<td>"+fp[j].nama_supplier +"</td>"+
+                                  "<td> - </td>" +
+                                  "<td> - </td>" +
+                                  "<td>"+addCommas(fp[j].v_pelunasan)+"</td> ";
+                              html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[j].v_id+","+fp[j].v_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div></td>";
+                                          
+                           html2 +=  "</tr>"; 
+                           tablefaktur.rows.add($(html2)).draw(); 
+                           n++; 
+                        }
+                    }
+                   } 
                 })
      })
 
@@ -1465,8 +1552,9 @@
                   else {
                     $('.pembayaran').val('0.00');
                   }
-                  
-
+                    
+                    
+                      if(jenisbayar == '2' || jenisbayar == '6' || jenisbayar == '7' || jenisbayar == '9') {
                       cndn = data.cndn;
                   /*    $("table#table-debit tr#datacredit").remove();
                       $("table#table-kredit tr#datadebit").remove();*/
@@ -1508,7 +1596,7 @@
                           }                         
                         }
                   
-
+                      }
                     console.log(data);
                     $('#myModal5').modal('hide');
                       $('.check').attr('checked' , false);
@@ -1641,7 +1729,7 @@
 
                                   "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].v_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
-                                  "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
+                                  "<td> <input type='text' class='input-sm form-control keteranganitem' name='fpgdt_keterangan[]'> </td>" +
 
                                   "<td> <button class='btn btn-danger removes-btn' data-id='"+nmr+"' data-nmrfaktur="+nmrf[i]+" data-faktur="+data.faktur[i][0].v_nomorbukti+" data-idfaktur="+data.faktur[i][0].v_id+" type='button'><i class='fa fa-trash'></i></button> </td>" +
                                   "</tr>";
@@ -1816,24 +1904,33 @@
                 sisapelunasan =   $('.sisapelunasan' + id).val();
                 sisaterbayar =   $('.sisa_terbayar' + id).val();
                 netto = $('.netto' + id).val();
-                creditnota = $('.creditnota' + id).val();
-                debitnota = $('.debitnota' + id).val();
-                if(creditnota == 'null'){
-                  creditnota = parseFloat(0.00).toFixed(2);
-                }
-                else {
-                  creditnota = creditnota;
-                }
-
-                if(debitnota == 'null'){
-                  debitnota = parseFloat(0.00).toFixed(2);
-                }
-                else {
-                  debitnota = debitnota;
-                }
                 
-                $('.dnkanan').val(addCommas(debitnota));
-                $('.cnkanan').val(addCommas(creditnota));
+                jenisbayar = $('.jenisbayar').val();
+                if(jenisbayar == '2' || jenisbayar == '6' || jenisbayar == '7' || jenisbayar == '9'){
+                    creditnota = $('.creditnota' + id).val();
+                    debitnota = $('.debitnota' + id).val();
+
+                    if(creditnota == 'null'){
+                      creditnota = parseFloat(0.00).toFixed(2);
+                    }
+                    else {
+                      creditnota = creditnota;
+                    }
+
+                    if(debitnota == 'null'){
+                      debitnota = parseFloat(0.00).toFixed(2);
+                    }
+                    else {
+                      debitnota = debitnota;
+                    }
+                    
+                    $('.dnkanan').val(addCommas(debitnota));
+                    $('.cnkanan').val(addCommas(creditnota));
+                     cnkanan2 = $('.cnkanan').val();
+                  cnkanan =   cnkanan2.replace(/,/g, '');
+                  dbkanan2 = $('.dnkanan').val();
+                  dbkanan = dbkanan2.replace(/,/g, '');
+                }
 
                 //NILAI DI HEADER
                 $('.pelunasan').attr('readonly' , false);
@@ -1892,10 +1989,7 @@
 
                   $sisaterbayar2 = $('.sisatrbyr').val();
                   $sisaterbayar = $sisaterbayar2.replace(/,/g, '');
-                  cnkanan2 = $('.cnkanan').val();
-                  cnkanan =   cnkanan2.replace(/,/g, '');
-                  dbkanan2 = $('.dnkanan').val();
-                  dbkanan = dbkanan2.replace(/,/g, '');
+                 
 
                   $('.sisafaktur').val(addCommas(tmbhnpelunasan));
 

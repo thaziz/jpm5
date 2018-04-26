@@ -138,7 +138,7 @@
                           <table class='table table-bordered table-striped tbl-jenisbayar' style="width:100%">
                             <tr>
                               <th> Kode  </th>
-                              <td> <select class='form-control  chosen-select-width  jenisbayar2' name="kodebayar">  </select> <input type="hidden" class="hsljenisbayar" name="kodebayar">  </td>
+                              <td> <select class='form-control  chosen-select-width  jenisbayar2'>  </select> <input type="hidden" class="hsljenisbayar" name="kodebayar">  </td>
                             </tr>
 
                             <tr>
@@ -574,7 +574,7 @@
                                       <td> <input type="text" class="input-sm form-control norekening" name="norekening"></td>
                                      
                                      <th> Nama Rekening </th>
-                                      <td> <input type="text" class="input-sm form-control norekening" name="norekening"></td>
+                                      <td> <input type="text" class="input-sm form-control norekening" name="norekening" readonly=""></td>
 
                                     </tr>
 
@@ -634,8 +634,8 @@
                                                 </select>
                                       </td>
                                      
-                                     <th> Nama Rekening </th>
-                                      <td> <input type="text" class="input-sm form-control nmbank1" name="nama"></td> 
+                                     <th> Nama Rekening Tujuan </th>
+                                      <td> <input type="text" class="input-sm form-control nmbank1" name="nama" readonly=""></td> 
 
                                     </tr>
 
@@ -1110,8 +1110,6 @@
 
       // NO REFERENSI DICEK
     
-
-   
      $('#buttongetid').click(function(){
 
         jenisbayar = $('.jenisbayar').val();
@@ -1148,6 +1146,10 @@
             }
           }
           
+          if(checked.length == 0){
+            toastr.info("Mohon untuk check data nya :) ");
+          }
+
           $.ajax({ //AJAX
                   url : baseUrl + '/formfpg/getfaktur',
                   data : {idfp, jenisbayar,nofaktur},
@@ -1937,7 +1939,7 @@
       id = string[0];
 
       $('.nmbank1').val(namabank);
-      $.ajax({
+     /* $.ajax({
           type : "post",
           data : {id},
           url : baseUrl+'/formfpg/getkodeakun',
@@ -1999,7 +2001,7 @@
                }    
           }
 
-     })
+     })*/
 
     })
 
@@ -2112,7 +2114,7 @@
               nosupplier = split[1];
               var idjenisbayar = $('.jenisbayar').val();
               var cabang = $('.cabang').val();
-              $('.hsljenisbayar').val(idsup);
+              $('.hsljenisbayar').val(val);
 
               if(idsup == ''){
                 toastr.info("Data Supplier belum ada :)");
@@ -2143,7 +2145,8 @@
                   
                     var n = 1;
                     if(idjenisbayar == '2' ){
-
+                       var tablefaktur = $('#tbl-faktur').DataTable();
+                       tablefaktur.clear().draw();
                       $('.supfaktur').show();
                       $('.invfaktur').show();
                        $('.jthtmpo_bank').val(fp[0].fp_jatuhtempo);
@@ -2269,7 +2272,8 @@
                     else if(idjenisbayar == '3'){
                       $('.supfaktur').show();
                       $('.invfaktur').show();
-                      alert(fp.length);
+                       var tablefaktur = $('#tbl-faktur').DataTable();
+                       tablefaktur.clear().draw();
                              for(var i = 0; i < fp.length; i++){ 
                             
                                    var html2 = "<tr class='data"+n+"' id='data"+fp[i].v_nomorbukti+"'> <td>"+n+"</td>" +
@@ -2280,7 +2284,7 @@
                                             "<td>"+fp[i].nama_supplier +"</td>"+
                                             "<td> - </td>" +
                                             "<td>"+fp[i].v_tempo+"</td>" +
-                                            "<td>"+fp[i].v_pelunasan+"</td> ";
+                                            "<td>"+addCommas(fp[i].v_pelunasan)+"</td> ";
 
                                          
                                           html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].v_id+","+fp[i].v_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
@@ -2313,7 +2317,7 @@
                                                 " <td class='invfaktur'> </td> <td class='supfaktur'> </td>" +
                                                 "<td> - </td>" +
                                                 "<td> - </td>" +
-                                                "<td>"+fp[i].um_pelunasan+"</td> ";
+                                                "<td>"+addCommas(fp[i].um_pelunasan)+"</td> ";
                                               html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].um_id+","+fp[i].um_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
                                             "<label></label>" +
                                             "</div></td>";
@@ -2376,7 +2380,7 @@
                                             "<td>"+fp[i].nama +"</td>"+
                                             "<td> - </td>" +
                                             "<td> - </td>" +
-                                            "<td>"+fp[i].ik_pelunasan+"</td> ";
+                                            "<td>"+addCommas(fp[i].ik_pelunasan)+"</td> ";
 
                                          
                                           html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].ik_id+","+fp[i].ik_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +

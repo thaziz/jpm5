@@ -490,8 +490,8 @@
                               <td> {{$data['pbgdt'][$x]->nama_masteritem}}</td>
                               <td> {{$data['pbgdt'][$x]->unitstock}}</td>
                               
-                              <td> {{$data['pbgdt'][$x]->pbd_jumlah_barang}} </td> <!--qty dikirim -->
-                              <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_jumlah_barang}}" class=qtykirim<?php echo $n?> data-id=<?php echo $n ?> name="qtydikirim[]">
+                              <td>  {{ (int) $data['pbgdt'][$x]->pbd_disetujui}} </td> <!--qty dikirim -->
+                              <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_disetujui}}" class=qtykirim<?php echo $n?> data-id=<?php echo $n ?> name="qtydikirim[]">
                               <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_nama_barang}}" name="kodeitem[]" class="item kodeitem{{$x}}"> <!--kodeitem-->
                              
                          <input type="hidden" name="accpersediaan" value="{{$data['pbgdt'][$x]->acc_persediaan}}">
@@ -506,7 +506,7 @@
                               @for($c=0; $c < count($data['sisa'][$x]); $c++)
                                 @if( $data['pbgdt'][$x]->pbd_id == $data['sisa'][$x][$c]->pbd_id)
                                   
-                                        <input type="text" data-id=<?php echo $n ?> class="form-control sisa" id=sisa<?php echo $n ?> value=" {{$data['pbgdt'][$x]->pbd_jumlah_barang - $data['sisa'][$x][$c]->sum}}" readonly="">
+                                        <input type="text" data-id=<?php echo $n ?> class="form-control sisa" id=sisa<?php echo $n ?> value=" {{$data['pbgdt'][$x]->pbd_disetujui - $data['sisa'][$x][$c]->sum}}" readonly="">
                                  
                                   @endif
                               @endfor
@@ -1399,20 +1399,20 @@ $notable++;
                     "<td>" + response.barang[j][x].unitstock + "</td>" +
                     "<td style='text-right'>" + addCommas(response.barang[j][x].fpdt_harga)  + "</td> <input type='hidden' class='harga"+$noajax+"' value='"+response.barang[j][x].fpdt_harga+"'>";    
                      rowtampil +=    "<td style='text-right'> <input type='text' class='input-sm form-control biaya2"+$notable+" biaya"+$noajax+"' value='"+addCommas(response.barang[j][x].pbdt_totalharga)+"' readonly></td>" +                    
-                    "<td>"+ response.barang[j][x].pbd_jumlah_barang +"</td>" +
+                    "<td>"+ response.barang[j][x].pbd_disetujui +"</td>" +
                     "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima2[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled></td>" +
                     "<input type='hidden' class='status2"+$notable+" status4"+$noajax+"' value='"+response.barang[j][x].pbdt_status+"'> " +
-                    "<input type='hidden' value='"+response.barang[j][x].pbd_jumlah_barang+"' class='qtykirim2"+$noajax+"' data-id="+$noajax+" name='qtydikirim2[]'>" +
+                    "<input type='hidden' value='"+response.barang[j][x].pbd_disetujui+"' class='qtykirim2"+$noajax+"' data-id="+$noajax+" name='qtydikirim2[]'>" +
                     "<input type='hidden' value='"+response.barang[j][x].pbdt_qty+"' class='qtyterima3"+$noajax+"' data-id="+$noajax+"> "+
                     "<input type='hidden' class='kodeitem4"+$noajax+" kodeitem2"+$notable+"' value="+response.barang[j][x].kode_item+">" +
                     "<input type='hidden' class='idpbdt"+$noajax+" idpbdt2"+$notable+"' value="+response.barang[j][x].pbdt_id+">" +
                     "<input type='hidden' class='idpb2"+$notable+"' value="+response.barang[j][x].pbdt_idpb+">" +
                     "<td>"+ response.barang[j][x].pb_nota +"</td> </tr>";
-                    qtykirim.push(response.barang[j][x].pbd_jumlah_barang);
+                    qtykirim.push(response.barang[j][x].pbd_disetujui);
                     qtyditerima.push(response.barang[j][x].pbdt_qty);
                     $no++;
                     $noajax++;
-                    var sisa = parseInt(response.barang[j][x].pbd_jumlah_barang) - parseInt(response.barang[j][x].pbdt_qty);
+                    var sisa = parseInt(response.barang[j][x].pbd_disetujui) - parseInt(response.barang[j][x].pbdt_qty);
               }
                
                var lengthjudul = 0;

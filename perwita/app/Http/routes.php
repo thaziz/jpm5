@@ -162,7 +162,7 @@ Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detail
 //stock opname
 
 Route::get('stockopname/stockopname' , 'PengeluaranBarangController@stockopname');
-Route::get('stockopname/cari_sm/{id}' , 'PengeluaranBarangController@cari_sm');
+Route::get('stockopname/cari_sm' , 'PengeluaranBarangController@cari_sm');
 Route::get('stockopname/berita_acara/{id}' , 'PengeluaranBarangController@berita_acara');
 Route::get('stockopname/createstockopname' , 'PengeluaranBarangController@createstockopname');
 Route::get('stockopname/detailstockopname' , 'StockOpnameController@detailstockopname');

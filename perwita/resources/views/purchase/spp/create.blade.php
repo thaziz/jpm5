@@ -353,33 +353,37 @@
             url : baseUrl + '/suratpermintaanpembelian/getnospp',
             dataType:'json',
             success : function(data){
-             console.log(data);
-                var d = new Date();
-                
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                if(data.status == 'sukses'){
+                      var d = new Date();               
+                      //tahun
+                      var year = d.getFullYear();
+                      //bulan
+                      var month = d.getMonth();
+                      var month1 = parseInt(month + 1)
+                      console.log(d);
+                      console.log();
+                      console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
+                      if(month < 10) {
+                        month = '0' + month1;
+                      }
+                      console.log(d);
+
+                      tahun = String(year);
+      //                console.log('year' + year);
+                      year2 = tahun.substring(2);
+                      //year2 ="Anafaradina";
+
+                    
+                       nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
+                      console.log(nospp);
+                      $('.nospp').val(nospp);
+                       nospp = $('.nospp').val();
                 }
-                console.log(d);
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
+                else {
+                    location.reload();
+                }
               
-                 nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data;
-                console.log(nospp);
-                $('.nospp').val(nospp);
-                 nospp = $('.nospp').val();
                 if(nospp === ''){
                     location.reload();
                 }

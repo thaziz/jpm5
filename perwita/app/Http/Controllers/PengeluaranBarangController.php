@@ -572,14 +572,18 @@ class PengeluaranBarangController extends Controller
 			$tgl[$i] = Carbon::parse($data[$i]->so_bulan)->format('F');
 		}
 
+	/*	$data['brggudang'] = DB::select("select * from stock_gudang where ")*/
+
 
 		return view('purchase/stock_opname/index',compact('data','tgl'));
 	}
 
 	public function createstockopname() {
 
-		$cabang  = DB::table('mastergudang')
+		$cabang  = DB::table('cabang')
 					 ->get();
+		$gudang = DB::table('mastergudang')
+					->get();			 
 		$now = Carbon::now()->format('F');
 
 		$id = DB::table('stock_opname')
@@ -610,6 +614,8 @@ class PengeluaranBarangController extends Controller
 	    $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
 
 		$pb  = 'SO-' . $month . $year . '/'. '000' . '/' .  $id;
+
+		
 		return view('purchase/stock_opname/create',compact('cabang','now','pb'));
 	}
 
@@ -621,11 +627,14 @@ class PengeluaranBarangController extends Controller
 	}
 
 	
-	public function cari_sm($id){
+	public function cari_sm(Request $request){
+		$idgudang = $request->idgudang;
+		$idcabang = $request->idcabang;
 
 		$data = DB::table('stock_gudang')
 				  ->join('masteritem','kode_item','=','sg_item')
-				  ->where('sg_gudang',$id)
+				  ->where('sg_gudang',$idgudang)
+				  ->where('sg_cabang' , $idcabang )
 				  ->get();
 
 
