@@ -120,6 +120,19 @@
                                     </select>
                                 </td>
                             </tr>
+                            <tr>
+                                <td style="width:110px;">Jenis Tarif</td>
+                                <td colspan="20" class="jenis_tarif_td">
+
+                                    <select  class="form-control jenis_tarif" onchange="nota_tes()" name="jenis_tarif" >
+                                        <option value="0">Pilih - Jenis</option>
+                                        <option value="PAKET"> PAKET </option>
+                                        <option value="KORAN"> KORAN </option>
+                                    <option value="KARGO"> KARGO </option>
+                                        
+                                    </select>
+                                </td>
+                            </tr>
                             @if(Auth::user()->punyaAkses('Kwitansi','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td> 
@@ -990,10 +1003,11 @@ $('.tambah_invoice').click(function(){
     
     var cb_cabang = $('.cb_cabang').val();
     var cb_customer = $('.customer').val();
+    var jenis_tarif = $('.jenis_tarif').val();
 
     $.ajax({
         url:baseUrl + '/sales/cari_invoice',
-        data:{cb_cabang,cb_customer,array_simpan},
+        data:{cb_cabang,cb_customer,array_simpan,jenis_tarif},
         success:function(data){
 
 
@@ -1056,6 +1070,7 @@ $('#btnsave').click(function(){
                  $(this).select();
             });
             $('.jenis_pembayaran_td').addClass('disabled');
+            $('.jenis_tarif_td').addClass('disabled');
             $('.cabang_td').addClass('disabled');
             $('.customer_td').addClass('disabled');
             $('.akun_bank_td').addClass('disabled');
@@ -1410,6 +1425,7 @@ function hapus_detail(o) {
     })
     if (temp == 0) {
         $('.jenis_pembayaran_td').removeClass('disabled');
+        $('.jenis_tarif_td').removeClass('disabled');
         $('.cabang_td').removeClass('disabled');
         $('.customer_td').removeClass('disabled');
         $('.akun_bank_td').removeClass('disabled');

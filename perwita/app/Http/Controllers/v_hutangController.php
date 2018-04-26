@@ -12,6 +12,8 @@ use DB;
 use App\Http\Controllers\v_hutangController;
 use Validator;
 use App\Http\Controllers\Controller;
+use Session;
+use Auth;
 
 class v_hutangController extends Controller
 {
@@ -134,7 +136,7 @@ class v_hutangController extends Controller
     }
     public function createvoucherhutang() {
       $data = DB::table('v_hutang')->get();
-      $sup = DB::table('supplier')->get();
+      $sup = DB::select("select * from supplier where status ='SETUJU' and active = 'AKTIF' ");
        $akunselect = DB::table('d_akun')->get();
       //CREATE NOMER VOUCHER HUTANG
       
@@ -180,9 +182,13 @@ class v_hutangController extends Controller
 
 
     public function getnota(Request $request){
+
+
       $cabang = $request->comp;
-      
-      $vc = DB::select("select * from v_hutang where vc_comp = '$cabang' order by v_id desc limit 1");
+      $bulan = Carbon::now()->format('m');
+      $tahun = Carbon::now()->format('y');
+
+      $vc = DB::select("select * from v_hutang where vc_comp = '$cabang' and to_char(v_tgl, 'MM') = '$bulan' and to_char(v_tgl, 'YY') = '$tahun' order by v_id desc limit 1");
 
 //      return $vc;
       if(count($vc) > 0) {
@@ -192,16 +198,18 @@ class v_hutangController extends Controller
       
 
         $idnota = (int)$idnota + 1;
-        $data['idvc'] = str_pad($idnota, 3, '0', STR_PAD_LEFT);
+        $idvhc = str_pad($idnota, 3, '0', STR_PAD_LEFT);
         
       }
 
       else {
     
-        $data['idvc'] = '001';
+        $idvhc = '001';
       }
 
-      return json_encode($data);
+      $datainfo = ['status' => 'sukses' , 'data' => $idvhc];
+
+      return json_encode($datainfo);
   }
 
 

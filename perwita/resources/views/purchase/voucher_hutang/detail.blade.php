@@ -144,7 +144,7 @@
 
                 <div class="box-footer">
                   <div class="pull-right">
-                    <a class="btn btn-warning" href={{url('voucherhutang/voucherhutang')}}> Kembali </a>      
+                    <a class="btn btn-md btn-warning" href={{url('voucherhutang/voucherhutang')}}> <i class="fa fa-arrow-left"> </i> &nbsp; Kembali </a>      
                     </div>
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->

@@ -614,6 +614,8 @@ class PengeluaranBarangController extends Controller
 	}
 
 
+	
+
 	public function detailstockopname() {
 		return view('purchase/stock_opname/detail');
 	}

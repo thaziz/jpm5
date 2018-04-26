@@ -11,31 +11,18 @@
       overflow-y: scroll;
     }
 
-    #table{
-      width: 100%;
+    #form-table{
+      font-size: 8pt;
     }
 
-    #table td{
-      padding: 8px 20px;
+    #form-table td{
+      padding: 5px 0px;
     }
 
-    #table_form, #table-filter{
-      border:0px solid black;
-      width: 100%;
-    }
-
-    #table_form input,{
-      padding-left: 5px;
-    }
-
-    #table_form td{
-      padding: 10px 0px 0px 0px;
-      vertical-align: top;
-    }
-
-    #table-filter td,
-    #table-filter th{
-      padding:10px 0px;
+    #form-table .form-control{
+      height: 30px;
+      width: 90%;
+      font-size: 8pt;
     }
 
     .error-badge{
@@ -45,10 +32,6 @@
 
     .error-badge small{
       display: none;
-    }
-
-    #table_form .right_side{
-      padding-left: 10px;
     }
 
     .modal-open{
@@ -79,24 +62,25 @@
     </div>
 
     <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
-      <table border="0" width="100%" id="table-filter">
-        <tr>
-          <th width="7%" class="text-center">Pencarian Berdasarkan : </th>
-          <td width="10%">
-            &nbsp;&nbsp;<select style="width:90%; border: 0px; border-bottom: 1px solid #aaa; cursor: pointer;" id="berdasarkan">
+      <table border="0" id="form-table" class="col-md-7">
+      <tr>
+        <td width="15%" class="text-center">Pencarian Berdasarkan : </td>
+        <td width="18%">
+          <select class="form-control" style="width:90%; height: 30px" id="berdasarkan">
               <option value="semua">Semua</option>
               <option value="id_akun">Kode Akun</option>
               <option value="nama_akun">Nama Akun</option>
               <option value="dka">Posisi Debet/Kredit</option>
             </select>
-          </td>
+        </td>
 
-          <th width="5%" class="text-center">Kata Kunci : </th>
-          <td width="8%">
-            &nbsp;&nbsp;<input style="width:90%; padding-left: 3px;" data-toggle="tooltip" id="filter" placeholder="Masukkan Kata Kunci">
-          </td>
-        </tr>
-      </table>
+        <td width="15%" class="text-center">Kata Kunci : </td>
+        <td width="18%">
+          <input class="form-control" style="width:90%; height: 30px;" data-toggle="tooltip" id="filter" placeholder="Masukkan Kata Kunci">
+        </td>
+      </tr>
+
+    </table>
     </div>
 </div>
 
@@ -109,14 +93,6 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        <button class="btn btn-sm btn-success" id="collapsed" data-toggle="tooltip" data-placement="top" title="Sembunyikan Semua Sub Akun">
-                          <i class="fa fa-archive fa-fw"></i>
-                        </button>
-                        
-                        <button class="btn btn-sm btn-success" id="expand" data-toggle="tooltip" data-placement="top" title="Tampilkan Semua Sub Akun">
-                          <i class="fa fa-code-fork fa-fw"></i>
-                        </button>
-
                         <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
                           <i class="fa fa-plus"></i> &nbsp;Tambah Data Akun
                         </button>
@@ -131,14 +107,15 @@
                           </div><!-- /.box-header -->
                           <div class="box-body" style="min-height: 330px;">
 
-                            <table id="table" width="100%" class="table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
+                            <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; font-size: 8pt;">
                               <thead>
                                 <tr>
-                                  <th width="15%" style="padding:8px 0px" class="text-center">Kode Akun</ht>
-                                  <th width="50%" style="padding:8px 0px" class="text-center">Nama Akun</ht>
-                                  <th style="padding:8px 0px" class="text-center">Posisi Debet/Kredit</th>
+                                  <th width="15%" class="text-center">Kode Akun</th>
+                                  <th width="30%" class="text-center">Nama Akun</th>
+                                  <th class="text-center">Cabang</th>
+                                  <th class="text-center">Posisi Debet/Kredit</th>
                                   {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
-                                  <th width="20%" style="padding:8px 0px" width="20%" class="text-center">Aksi</th>
+                                  <th width="20%" width="20%" class="text-center">Aksi</th>
 
                                 </tr>
                               </thead>
@@ -149,29 +126,21 @@
                                   <tr class="treegrid-{{ $dataAkun->id_akun }} expanded">
                                       <td class="id_akun">{{ $dataAkun->id_akun }}</td>
                                       <td class="nama_akun">{{ $dataAkun->nama_akun }}</td>
+                                      <td class="nama_cabang text-center">{{ $dataAkun->nama_cabang }}</td>
                                       <td class="text-center dka">{{ ($dataAkun->akun_dka == "D") ? "DEBET" : "KREDIT" }}</td>
                                       {{-- <td></td> --}}
                                       <td class="text-center">
-
-                                        <span data-toggle="tooltip" data-placement="top" title="Tambahkan Akun Di {{ $dataAkun->nama_akun }}">
-                                          <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_tambah_akun" class="btn btn-xs btn-primary tambahAkun"><i class="fa fa-folder-open fa-fw"></i></button>
-                                        </span>
 
                                         <span data-toggle="tooltip" data-placement="top" title="Edit Akun {{ $dataAkun->nama_akun }}">
                                             <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_edit_akun" class="btn btn-xs btn-warning editAkun"><i class="fa fa-pencil-square fa-fw"></i></button>
                                         </span>
 
-                                        @if($dataAkun->cek_parrent($dataAkun->id_akun) == 0 && $dataAkun->id_parrent != null)
-                                          @if($dataAkun->cek_jurnal($dataAkun->id_akun) == 0)
-                                            <a onclick="return confirm('Apakah Anda Yakin, Semua Data Sub Akun Yang Terkait Dengan Akun Ini Juga Akan Dihapus ??')" href="{{ route("akun.hapus", $dataAkun->id_akun) }}">
-                                              <button data-toggle="tooltip" data-placement="top" title="Hapus Akun {{ $dataAkun->nama_akun }}" class="btn btn-xs btn-danger"><i class="fa fa-eraser fa-fw"></i></button>
-                                            </a>
-                                          @endif
-                                        @endif
+                                        <a onclick="return confirm('Apakah Anda Yakin, Semua Data Sub Akun Yang Terkait Dengan Akun Ini Juga Akan Dihapus ??')" href="{{ route("akun.hapus", $dataAkun->id_akun) }}">
+                                          <button data-toggle="tooltip" data-placement="top" title="Hapus Akun {{ $dataAkun->nama_akun }}" class="btn btn-xs btn-danger"><i class="fa fa-eraser fa-fw"></i></button>
+                                        </a>
+
                                       </td>
                                   </tr>
-
-                                  {!! $dataAkun->getSubAkun($dataAkun->id_akun) !!}
                                   
                                 @endforeach
                                 
@@ -244,14 +213,14 @@
 
 
 
-    // tableDetail = $('.tbl-penerimabarang').DataTable({
-    //       responsive: true,
-    //       searching: true,
-    //       sorting: false,
-    //       paging: false,
-    //       //"pageLength": 10,
-    //       "language": dataTableLanguage,
-    // });
+    tableDetail = $('.tbl-penerimabarang').DataTable({
+          responsive: true,
+          searching: false,
+          sorting: false,
+          paging: true,
+          //"pageLength": 10,
+          "language": dataTableLanguage,
+    });
 
     $(".tambahAkun").on("click", function(){
       $("#modal_tambah_akun .modal-header .parrent").val($(this).data("parrent"));
@@ -267,7 +236,7 @@
       //alert($("#modal_tambah_akun .modal-header .parrent").val())
 
       $.ajax(baseUrl+"/master_keuangan/add/"+$("#modal_tambah_akun .modal-header .parrent").val(), {
-         timeout: 5000,
+         timeout: 15000,
          dataType: "html",
          success: function (data) {
              $("#modal_tambah_akun .modal-body").html(data);
@@ -310,11 +279,6 @@
         } 
       });
     })
-
-    $("#table").treegrid({
-          treeColumn: 1,
-          initialState: "expanded"
-    });
 
     $("#collapsed").click(function(){
       $('#table').treegrid('collapseAll');

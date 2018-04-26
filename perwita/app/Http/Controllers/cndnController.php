@@ -426,9 +426,11 @@ class cndnController extends Controller
 
 		if(count($request->arrnofaktur) != 0){
 			for($i = 0; $i < count($request->arrnofaktur); $i++){
-				$nofaktur = $request->arrnofaktur[$i]	;
+				$nofaktur = $request->arrnofaktur[$i];
 					if($idjenisbayar == '2' ){
 						$data['fakturpembelian'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_nofaktur != '$nofaktur'");
+
+						
 						
 					}
 					else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){

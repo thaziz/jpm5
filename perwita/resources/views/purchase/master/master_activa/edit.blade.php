@@ -70,15 +70,9 @@
                            Untuk Cabang
                             </td>
                             <td>
-                               <select name="cabang" class="form-control chosen-select select_validate" id="cab" required>
-                                  <option value="---">- Pilih Cabang</option>
-                                  @foreach ($cab as $cabang)
-                                    <?php 
-                                        $selected = ($cabang->kode == Session::get("cabang")) ? "selected" : "";
-                                    ?>
-                                    <option value="{{ $cabang->kode }}" {{ $selected }}>{{ $cabang->nama }}</option>
-                                  @endforeach
-                                </select>
+                               <input type="text" name="cabang" class="form-control select_validate" id="cab" required readonly value="{{ $data->nama }}">
+
+                               <input type="hidden" readonly value="{{ $data->kode_cabang }}" name="kode_cabang">
                             </td>
                           </tr>
 
@@ -93,13 +87,7 @@
                            Kode Activa
                             </td>
                             <td>
-                               <input type="text" class="form-control input_validate" readonly placeholder="Kode Aktiva Otomatis" name="kode_aktiva" id="kode_aktiva" required>
-                            </td>
-                            <td>
-                              &nbsp;&nbsp;&nbsp;&nbsp; 
-                                <i data-toggle="tooltip" data-placement="top" title="Klik Untuk Membuat Kode Aktiva" class="fa fa-refresh" style="cursor: pointer;" id="generate_kode"></i>
-                              &nbsp;
-                                <span class="text-muted" style="font-style: italic; display: none; color: #1ab394;" id="kode_info"></span>
+                               <input type="text" class="form-control input_validate" readonly placeholder="Kode Aktiva Otomatis" name="kode_aktiva" id="kode_aktiva" required value="{{ $data->id }}">
                             </td>
                           </tr>
 
@@ -112,7 +100,7 @@
                           <tr>
                             <td>Nama Activa </td>
                             <td>
-                              <input type="text" class="form-control input_validate" placeholder="Masukkan Nama Aktiva" name="nama_aktiva" id="nama_aktiva" required>
+                              <input type="text" class="form-control input_validate" placeholder="Masukkan Nama Aktiva" name="nama_aktiva" id="nama_aktiva" required value="{{ $data->nama_aktiva }}">
                             </td>
                           </tr>
 
@@ -125,7 +113,7 @@
                           <tr>
                             <td>Tanggal Perolehan </td>
                             <td>
-                              <input type="text" class="form-control input_validate date" placeholder="Pilih Tanggal" name="tanggal_perolehan" id="tanggal_perolehan" required readonly style="cursor: pointer;" value="{{ date("Y/m/d") }}">
+                              <input type="text" class="form-control input_validate date" placeholder="Pilih Tanggal" name="tanggal_perolehan" id="tanggal_perolehan" required readonly style="cursor: pointer;" value="{{ date("d-m-Y", strtotime($data->tanggal_perolehan)) }}">
                             </td>
                           </tr>
 
@@ -138,7 +126,7 @@
                           <tr>
                             <td>Nilai Perolehan</td>
                             <td>
-                              <input type="text" class="form-control input_validate currency text-right" name="nilai_perolehan" id="nilai_perolehan" required>
+                              <input type="text" class="form-control input_validate currency text-right" name="nilai_perolehan" id="nilai_perolehan" required value="{{ $data->nilai_perolehan }}" readonly>
                             </td>
                           </tr>
 
@@ -151,12 +139,7 @@
                           <tr>
                             <td>ACC Debet </td>
                             <td>
-                              <select name="acc_debet" class="form-control chosen-select select_validate" id="acc_debet" required>
-                                  <option value="---">- Pilih ACC</option>
-                                  @foreach ($akun as $data_akun)
-                                    <option value="{{ $data_akun->id_akun }}">{{ $data_akun->nama_akun }}</option>
-                                  @endforeach
-                                </select>
+                              <input type="text" readonly name="acc_debet" class="form-control select_validate" id="acc_debet" required value="{{ $data->acc_debet }}">
                             </td>
                           </tr>
 
@@ -169,12 +152,7 @@
                           <tr>
                             <td>CSF Kredit</td>
                             <td>
-                              <select name="csf_kredit" class="form-control chosen-select select_validate" id="csf_kredit" required>
-                                  <option value="---">- Pilih CSF</option>
-                                  @foreach ($akun as $data_akun2)
-                                    <option value="{{ $data_akun2->id_akun }}">{{ $data_akun2->nama_akun }}</option>
-                                  @endforeach
-                                </select>
+                              <input type="text" readonly name="csf_kredit" class="form-control select_validate" id="csf_kredit" required value="{{ $data->csf_kredit }}">
                             </td>
                           </tr>
 
@@ -195,7 +173,7 @@
                           <tr>
                             <td>Keterangan </td>
                             <td>
-                              <input type="text" class="form-control input_validate" placeholder="Masukkan Keterangan" name="keterangan" id="keterangan" required>
+                              <input type="text" class="form-control input_validate" placeholder="Masukkan Keterangan" name="keterangan" id="keterangan" required value="{{ $data->keterangan }}">
                             </td>
                           </tr>
 
@@ -210,9 +188,7 @@
                               Nama Golongan
                             </td>
                             <td id="gol">
-                                <select name="nama_golongan" class="form-control chosen-select select_validate" id="nama_golongan" required>
-                                  
-                                </select>
+                                <input type="text" name="nama_golongan" class="form-control select_validate" id="nama_golongan" required value="{{ $data->nama_golongan }}" readonly>
                             </td>
                           </tr>
 
@@ -225,13 +201,13 @@
                           <tr>
                             <td>Kode Golongan </td>
                             <td>
-                              <input type="text" class="form-control input_validate golongan" placeholder="Nama Golongan Otomatis" name="kode_golongan" id="kode_golongan" required readonly>
+                              <input type="text" class="form-control input_validate golongan" placeholder="Nama Golongan Otomatis" name="kode_golongan" id="kode_golongan" required readonly value="{{ $data->kode_golongan }}">
                             </td>
                           </tr>
 
                           </table>
 
-                          <table class="table table-bordered table-striped tbl-item m-t-lg">
+                          <table class="table table-bordered tbl-item m-t-lg">
                           <thead>
                           <tr>
                             <th class="text-center" width="30%" style="font-weight: normal;">
@@ -252,10 +228,10 @@
                                 Garis Lurus
                               </td>
                               <td>
-                                <input placeholder="Otomatis" type="number" min="1" class="form-control input_validate golongan" name="masa_manfaat_gl" id="masa_manfaat_gl" required readonly>
+                                <input placeholder="Otomatis" type="number" min="1" class="form-control input_validate golongan" name="masa_manfaat_gl" id="masa_manfaat_gl" required readonly value="{{ $data->masa_manfaat_garis_lurus }}">
                               </td>
                               <td>
-                                <input placeholder="Otomatis" type="number" min="1" readonly class="form-control input_validate golongan" name="persentase_gl" id="persentase_gl" required>
+                                <input placeholder="Otomatis" type="number" min="1" readonly class="form-control input_validate golongan" name="persentase_gl" id="persentase_gl" required value="{{ $data->persentase_garis_lurus }}">
                               </td>
                             </tr>
                            
@@ -263,10 +239,10 @@
                               <td>  Saldo Menurun
                               </td>
                               <td>
-                                <input placeholder="Otomatis" type="number" min="1" class="form-control input_validate golongan" name="masa_manfaat_sm" id="masa_manfaat_sm" required readonly>
+                                <input placeholder="Otomatis" type="number" min="1" class="form-control input_validate golongan" name="masa_manfaat_sm" id="masa_manfaat_sm" required readonly value="{{ $data->masa_manfaat_saldo_menurun }}">
                               </td>
                               <td>
-                                <input placeholder="Otomatis" type="number" min="1" readonly class="form-control input_validate golongan" name="persentase_sm" id="persentase_sm" required>
+                                <input placeholder="Otomatis" type="number" min="1" readonly class="form-control input_validate golongan" name="persentase_sm" id="persentase_sm" required value="{{ $data->persentase_saldo_menurun }}">
                               </td>
                             </tr>
                           </tbody>
@@ -317,13 +293,11 @@
      
     $(document).ready(function(){
 
-      var golongan = {!! $gol !!};
-      generate_gol("{{ Session::get("cabang") }}");
 
-      console.log(golongan);
+      // console.log(golongan);
 
       $('[data-toggle="tooltip"]').tooltip();
-      $(".chosen-select").chosen({width: '100%'});
+      // $(".chosen-select").chosen({width: '100%'});
       $('.date').datepicker({
           format: "yyyy/mm/dd",
       });
@@ -386,7 +360,7 @@
 
         if(validate_form()){
 
-          $.ajax(baseUrl+"/master_aktiva/simpan",{
+          $.ajax(baseUrl+"/master_aktiva/update",{
           type: "post",
           timeout: 15000,
           data: $("#form-data").serialize(),
@@ -398,7 +372,6 @@
               btn.removeAttr("disabled");
               btn.text("Simpan");
 
-              form_reset();
             }else if(response.status == "exist"){
               toastr.error('Kode Master Aktiva Sudah Ada. Silahkan Membuat Kode Master Lagi.');
               btn.removeAttr("disabled");
