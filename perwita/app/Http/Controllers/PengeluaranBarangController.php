@@ -396,6 +396,10 @@ class PengeluaranBarangController extends Controller
 
 				$sisa = $cari_sm[$a]->sm_sisa - $kurang;
 				$pengurangan_sisa = $kurang - $cari_sm[$a]->sm_sisa;
+				if ($pengurangan_sisa<0) {
+					$pengurangan_sisa = 0;
+				}
+				
 				$sm_use_new = $kurang - $pengurangan_sisa;
 				if ($sisa < 0) {
 					$sisa = 0;
@@ -613,6 +617,8 @@ class PengeluaranBarangController extends Controller
 		return view('purchase/stock_opname/create',compact('cabang','now','pb'));
 	}
 
+
+	
 
 	public function detailstockopname() {
 		return view('purchase/stock_opname/detail');

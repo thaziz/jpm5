@@ -24,7 +24,7 @@
                           <a> Transaksi Purchase</a>
                         </li>
                         <li class="active">
-                            <strong> Create Pelunasan Hutang / Pembayaran Bank </strong>
+                            <stronbg> Create Pelunasan Hutang / Pembayaran Bank </strong>
                         </li>
 
                     </ol>
@@ -70,9 +70,7 @@
                             <td width="150px"> Cabang </td>
                             <td>
                               <select class='form-control chosen-select-width1 cabang' name="cabang">
-                                  <option value="">
-                                    Pilih-Cabang
-                                  </option>
+                                 
 
                                   @foreach($data['cabang'] as $cabang)
                                     <option value="{{$cabang->kode}}">
@@ -115,6 +113,7 @@
                             <td>
                              <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk">
                              <input type="hidden" class="valcabang" readonly="" name="cabang">
+                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                             </td>
                           </tr>
 
@@ -215,9 +214,9 @@
                           <div class="row">
                               <div class="col-lg-12">
                                   <div class="tabs-container">
-                                      <ul class="nav nav-tabs">
-                                          <li class="active" id="tabmenu"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
-                                          <li class="" id="tabmenu"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
+                                      <ul class="nav nav-tabs" id="tabmenu">
+                                          <li class="active" id="tabcekbg"><a data-toggle="tab" href="#tab-1"> Detail Cek / BG </a></li>
+                                          <li class="" id="tabbiaya"><a data-toggle="tab" href="#tab-2"> Biaya - Biaya </a></li>
                                       </ul>
                                       <div class="tab-content">
                                           <div id="tab-1" class="tab-pane active">
@@ -329,7 +328,7 @@
 
                                                       <tr>
                                                         <th> D / K </th>
-                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya"> </div> </td>
+                                                        <td> <div class="col-sm-3"><input type="text" class="input-sm form-control dk biaya" readonly=""> </div> </td>
                                                       </tr>
 
                                                       <tr>
@@ -477,9 +476,8 @@
           url : baseUrl + '/pelunasanhutangbank/getnota',
           dataType : 'json',
           success : function (response){     
-  
-               var d = new Date();
-                
+              if(response.status = 'sukses'){
+                var d = new Date();                
                 //tahun
                 var year = d.getFullYear();
                 //bulan
@@ -499,8 +497,13 @@
 //                console.log('year' + year);
                 year2 = tahun.substring(2);
                 //year2 ="Anafaradina";
-                 nofaktur = 'BBK' + month + year2 + '/' + cabang + '/' +  response ;
+                 nofaktur = 'BBK' + month + year2 + '/' + cabang + '/' +  response.data ;
                 $('.nobbk').val(nofaktur);
+              }
+              else {
+                location.reload();
+              }
+               
               
           },
         })
@@ -593,11 +596,16 @@
     $('.nocheck').click(function(){
         kodebank = $('.kodebank').val();
          $('.loading').css('display', 'block');
-     
+
+         arrtransaksi = [];
+        $('.transaksi').each(function(){
+          transaksi = $(this).data('transaksi');
+          arrtransaksi.push(transaksi);
+        })
 
         $.ajax({
           type : "get",
-          data : {kodebank},
+          data : {kodebank,arrtransaksi},
           url : baseUrl + '/pelunasanhutangbank/nocheck',
           dataType : "json",
           success : function(response){
@@ -614,29 +622,15 @@
               var tablecek = $('#tbl-cheuque').DataTable();
               tablecek.clear().draw();
 
-              if(length != 0){
-                 for(j = 0 ; j < length; j++){
                   for(i = 0; i < databank.length; i++){
-                    
-                    if(arrtransaksi[j] ==  databank[i].fpgb_nocheckbg){
-
-                    }
-                    else {
-                      row = "<tr class='datacek"+databank[i].fpgb_nocheckbg+"' id='transaksi"+databank[i].fpgb_nocheckbg+"'> <td>"+$no+"</td> <td>"+databank[i].fpgb_nocheckbg+"</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
-                     $no++;
-                     tablecek.rows.add($(row)).draw(); 
-                    }
-                      
-                  }
-                }
-              }
-              else {
-                 for(i = 0; i < databank.length; i++){
                     row = "<tr class='datacek"+databank[i].fpgb_nocheckbg+"' id='transaksi"+databank[i].fpgb_nocheckbg+"'> <td>"+$no+"</td> <td>"+databank[i].fpgb_nocheckbg+"</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
                      $no++;
                      tablecek.rows.add($(row)).draw(); 
-                 }
-              }
+                
+                      
+                  }
+              
+            
              
           }
         })
@@ -656,33 +650,39 @@
             url : baseUrl + '/pelunasanhutangbank/getnota',
             dataType:'json',
             success : function(data){
-               console.log(data);
-                var d = new Date();
+               
+                 if(response.status = 'sukses'){
+                 
+                  var d = new Date();
+                  
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
+
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
+
+                  console.log(d);
+
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+
                 
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
-
-                if(month < 10) {
-                  month = '0' + month1;
-                }
-
-                console.log(d);
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data;
-              //  console.log(nospp);
-                $('.nobbk').val(nobbk);
+                   nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data;
+                //  console.log(nospp);
+                  $('.nobbk').val(nobbk);
+                 }
+                 else {
+                  location.reload();
+                 }
             }
         })
 
@@ -729,7 +729,7 @@
       idbank = $('.idbank').val();
       jenissup = $('.jenissup').val();
 
-      row = "<tr class='transaksi bayar"+$nomr+"' id='datacek"+notransaksi+"'>" +
+      row = "<tr class='transaksi bayar"+$nomr+"' id='datacek"+notransaksi+"' data-transaksi="+notransaksi+">" +
           "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
@@ -792,6 +792,7 @@
           return this.id;
         }).toArray();
 
+        $('#tabbiaya').addClass('disabled');
 
         $('.loadingcek').css('display' , 'block');
          data = checked;
@@ -803,6 +804,8 @@
           idfpgb.push(string[0]);    
           idfpg.push(string[1]);
         }
+
+       
 
         $.ajax({
             url : baseUrl + '/pelunasanhutangbank/getcek',
@@ -887,6 +890,8 @@
           kodecabang = $('.kodebank').val();
          // alert(kodecabang);
           $('.valkodebank').val(kodecabang);
+
+          $('#tabcekbg').addClass('disabled');
 
           if(flag == 'CEKBG'){
             toastr.info("Anda sudah mengisi form 'CEK BG' mohon untuk dilanjutkan :)");

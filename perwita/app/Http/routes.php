@@ -44,6 +44,7 @@ Route::get('seragam', function(){
 Route::get('purchase/suratpermintaanpembelian', function(){
         return view('purchase.spp.index');
 });
+//email
 
 //********SETTING********
 //pengguna
@@ -500,16 +501,6 @@ Route::get('masterjenisitem/detailmasterjenisitem/{id}', 'MasterPurchaseControll
 Route::delete('masterjenisitem/deletemasterjenisitem/{id}', 'MasterPurchaseController@deletemasterjenisitem');
 Route::post('masterjenisitem/kodejenis', 'MasterPurchaseController@kodejenisitem');
 
-// master aktiva start
-
-Route::get('masteractiva/masteractiva/{id}', 'MasterPurchaseController@masteractiva');
-
-Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailmasteractiva');
-Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
-Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
-Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
-
-// end master aktiva
 
 Route::get('notadebit/notadebit', 'MasterPurchaseController@nota_debit');
 Route::get('notadebit/detailnotadebit', 'MasterPurchaseController@detailnota_debit');
@@ -1652,6 +1643,34 @@ Route::post('golonganactiva/simpan', 'MasterPurchaseController@golongan_save');
 Route::post('golonganactiva/update', 'MasterPurchaseController@golongan_update');
 
 //endgolonganaktiva
+
+
+// master aktiva start
+
+Route::get('masteractiva/masteractiva/{id}', 'MasterPurchaseController@masteractiva');
+
+Route::get('master_aktiva/ask_kode_master_aktiva/{cabang}', 'MasterPurchaseController@ask_kode_master_aktiva');
+Route::post('master_aktiva/simpan', 'MasterPurchaseController@simpan_master_aktiva');
+Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
+
+Route::get('masteractiva/editmasteraktiva/{cabang}/{id}', [
+  'uses' => 'MasterPurchaseController@editmasteractiva',
+  'as'   => 'master_aktiva.edit'
+]);
+
+Route::get('masteractiva/hapusmasteractiva/{cabang}/{id}', [
+  'uses' => 'MasterPurchaseController@aktiva_hapus',
+  'as'   => 'master_aktiva.hapus'
+]);
+
+Route::post('master_aktiva/update', 'MasterPurchaseController@aktiva_update');
+
+Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailmasteractiva');
+Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
+Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
+
+// end master aktiva
+
 
 Route::get('master_keuangan/err_cek', function(){
   return view('keuangan.err.err_laporan');

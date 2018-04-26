@@ -306,12 +306,18 @@
                                         </td>
                                         <td>Tarif Dasar</td>
                                         <td>
-                                            <input type="text" class="form-control tarif_dasar_text" style="text-align:right" readonly="readonly" value="{{number_format($data->total, 2, ",", ".")}}">
-                                            <input type="hidden" class="form-control tarif_dasar" name="tarif_dasar" style="text-align:right" readonly="readonly" value="{{$data->total}}">
+                                            <input type="text" class="form-control tarif_dasar_text" style="text-align:right" readonly="readonly" value="{{number_format($data->tarif_dasar * $data->jumlah, 2, ",", ".")}}">
+                                            <input type="hidden" class="form-control tarif_dasar" name="tarif_dasar" style="text-align:right" readonly="readonly" value="{{$data->tarif_dasar * $data->jumlah}}">
                                             <input type="hidden" name="harga_master" class="harga_master" value="{{$data->tarif_dasar}}" >
                                             <input type="hidden" id="kode_tarif" name="kode_tarif" value="{{$data->kode_tarif}}">
                                             <input type="hidden" class="kcd_id" name="kcd_id" value="{{$data->kontrak_cus}}">
                                             <input type="hidden" class="kcd_dt" name="kcd_dt" value="{{$data->kontrak_cus_dt}}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Biaya Tambahan</td>
+                                        <td colspan="3">
+                                            <input type="text" onkeyup="hitung()" value="{{number_format($data->biaya_tambahan, 0, ",", ".")}}" name="biaya_tambahan" class=" form-control biaya_tambahan input-sm">
                                         </td>
                                     </tr>
                                     <tr>
@@ -530,7 +536,8 @@ $(document).ready(function(){
    $('.cabang_input').val(cabang);
    $('.jenis_tarif_do').val(jenis_tarif_do);
    $('.jenis_tarif_temp').val(jenis_tarif_do);
-   $('.discount').maskMoney({precision:0,thousands:'.'});
+   $('.discount').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+   $('.biaya_tambahan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 
     var status_kendaraan = $('.status_kendaraan').val();
     var nama_subcon      = $('.nama_subcon').val();
@@ -740,16 +747,19 @@ function hitung() {
     var tarif_dasar      = $('.harga_master').val();
     var tarif_dasar1      = $('.tarif_dasar').val();
     var discount         = $('.discount').val();
+    var biaya_tambahan   = $('.biaya_tambahan').val();
     var master_diskon    = $('.master_diskon').val();
     if (master_diskon == 'NONE') {
         master_diskon = 100;
     }
     discount        = discount.replace(/[^0-9\-]+/g,"");
+    biaya_tambahan  = biaya_tambahan.replace(/[^0-9\-]+/g,"");
     var temp        = 0;
     var temp1       = 0;
     jumlah          = parseInt(jumlah);
     tarif_dasar     = parseInt(tarif_dasar);
     discount        = parseInt(discount);
+    biaya_tambahan  = parseInt(biaya_tambahan);
     if (discount == '') {
         discount = 0;
     }
@@ -761,7 +771,7 @@ function hitung() {
         toastr.warning('MAX Diskon '+master_diskon+'%');
     }
     temp1           = jumlah * tarif_dasar;
-    temp            = temp1  - discount;
+    temp            = temp1  - discount + biaya_tambahan;
     if (temp < 0) {
         temp = 0;
     }

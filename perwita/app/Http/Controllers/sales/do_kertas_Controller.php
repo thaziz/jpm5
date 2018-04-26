@@ -26,6 +26,16 @@ class do_kertas_Controller extends Controller
                       ->where('kode_cabang',$cabang)
                       ->get();
         }
+        $cabang = DB::table('cabang')
+                    ->get();
+
+        for ($i=0; $i < count($data); $i++) { 
+            for ($a=0; $a < count($cabang); $a++) { 
+                if ($data[$i]->kode_cabang == $cabang[$a]->kode) {
+                    $data[$i]->nama_cabang = $cabang[$a]->nama;
+                }
+            }
+        }
         return view('sales.do_kertas.index',compact('data'));
     }
 
@@ -162,14 +172,16 @@ class do_kertas_Controller extends Controller
                                 'pendapatan'        => 'KORAN',
                                 'kode_cabang'       => $request->cb_cabang,
                                 'diskon'            => $request->ed_diskon_m,
-                                'total_net'         => $request->ed_total_m,
+                                'total_net'         => $request->total_net_m,
+                                'total'             => $request->ed_total_m+$request->ed_diskon_m,
+                                'biaya_tambahan'    => filter_var($request->biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
                                 'jenis'             => 'KORAN',
                                 'kontrak'           => $request->check,
                                 'status_do'         => 'Released',
                                 'created_by'        =>  Auth::user()->m_name,
                                 'created_at'        =>  Carbon::now(),
-                                'updated_by'         =>  Auth::user()->m_name,
-                                'updated_at'         =>  Carbon::now(),
+                                'updated_by'        =>  Auth::user()->m_name,
+                                'updated_at'        =>  Carbon::now(),
                                 
                                ]);
 
@@ -232,7 +244,9 @@ class do_kertas_Controller extends Controller
                                 'diskon'            => $request->ed_diskon_m,
                                 'kontrak'           => $request->check,
                                 'kode_cabang'       => $request->cb_cabang,
-                                'total_net'         => $request->ed_total_m,
+                                'total_net'         => $request->total_net_m,
+                                'total'             => $request->ed_total_m+$request->ed_diskon_m,
+                                'biaya_tambahan'    => filter_var($request->biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
                                 'jenis'             => 'KORAN',
                                 'created_by'        =>  Auth::user()->m_name,
                                 'created_at'        =>  Carbon::now(),

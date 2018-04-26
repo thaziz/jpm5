@@ -66,13 +66,13 @@
 
                              @if(Auth::user()->punyaAkses('Uang Muka','cabang'))
                             <select class="form-control chosen-select-width cabang" name="cabang">
-                                @foreach($data['cabang'] as $cabang)
+                                @foreach($cabang as $cabang)
                               <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                               @endforeach
                             </select>
                             @else
                               <select class="form-control disabled cabang" name="cabang">
-                                @foreach($data['cabang'] as $cabang)
+                                @foreach($cabang as $cabang)
                                 <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                                 @endforeach
                               </select> 
@@ -184,33 +184,40 @@
             url : baseUrl + '/uangmuka/getnota',
            dataType : 'json',
             success : function(data){
-            
-                var d = new Date();
+
+                if(data.status == 'sukses'){
+                  var d = new Date();
                 
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
+
+                  console.log(d);
+
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+
+                
+                   nota = 'UM' + month + year2 + '/' + comp + '/' +  data.data;
+                  console.log(nota);
+                  $('.bukti').val(nota);
                 }
+                else {
+                  location.reload();
+                }
+            
 
-                console.log(d);
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nota = 'UM' + month + year2 + '/' + comp + '/' +  data.idum;
-                console.log(nota);
-                $('.bukti').val(nota);
             }
         })
     })
@@ -223,32 +230,37 @@
            dataType : 'json',
             success : function(data){
             
-                var d = new Date();
+                if(data.status == 'sukses'){
+                  var d = new Date();
                 
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+                  //tahun
+                  var year = d.getFullYear();
+                  //bulan
+                  var month = d.getMonth();
+                  var month1 = parseInt(month + 1)
+                  console.log(d);
+                  console.log();
+                  console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
+                  if(month < 10) {
+                    month = '0' + month1;
+                  }
+
+                  console.log(d);
+
+                  tahun = String(year);
+  //                console.log('year' + year);
+                  year2 = tahun.substring(2);
+                  //year2 ="Anafaradina";
+
+                
+                   nota = 'UM' + month + year2 + '/' + comp + '/' +  data.data;
+                  console.log(nota);
+                  $('.bukti').val(nota);
                 }
-
-                console.log(d);
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nota = 'UM' + month + year2 + '/' + comp + '/' +  data.idum;
-                console.log(nota);
-                $('.bukti').val(nota);
+                else {
+                  location.reload();
+                }
             }
         })
 

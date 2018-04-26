@@ -279,6 +279,12 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td>Biaya Tambahan</td>
+                                        <td colspan="3">
+                                            <input type="text" onkeyup="hitung()" value="0" name="biaya_tambahan" class=" form-control biaya_tambahan input-sm">
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>Discount</td>
                                         <td colspan="">
                                             <input type="text" onkeyup="hitung()" value="0" name="discount" class=" form-control discount input-sm">
@@ -484,6 +490,7 @@ $(document).ready(function(){
    $('.jenis_tarif_do').val(jenis_tarif_do);
    $('.jenis_tarif_temp').val(jenis_tarif_do);
    $('.discount').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+   $('.biaya_tambahan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
    $.ajax({
         url:baseUrl + '/sales/nomor_do_kargo',
         data:{cabang},
@@ -692,18 +699,21 @@ $('.jumlah').focus(function(){
 function hitung() {
     var jumlah           = $('.jumlah').val();
     var tarif_dasar      = $('.harga_master').val();
-    var tarif_dasar1      = $('.tarif_dasar').val();
+    var tarif_dasar1     = $('.tarif_dasar').val();
     var discount         = $('.discount').val();
+    var biaya_tambahan   = $('.biaya_tambahan').val();
     var master_diskon    = $('.master_diskon').val();
     if (master_diskon == 'NONE') {
         master_diskon = 100;
     }
     discount        = discount.replace(/[^0-9\-]+/g,"");
+    biaya_tambahan  = biaya_tambahan.replace(/[^0-9\-]+/g,"");
     var temp        = 0;
     var temp1       = 0;
     jumlah          = parseInt(jumlah);
     tarif_dasar     = parseInt(tarif_dasar);
     discount        = parseInt(discount);
+    biaya_tambahan  = parseInt(biaya_tambahan);
     if (discount == '') {
         discount = 0;
     }
@@ -715,7 +725,7 @@ function hitung() {
         toastr.warning('MAX Diskon '+master_diskon+'%');
     }
     temp1           = jumlah * tarif_dasar;
-    temp            = temp1  - discount;
+    temp            = temp1  - discount + biaya_tambahan;
     if (temp < 0) {
         temp = 0;
     }
