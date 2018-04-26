@@ -8,7 +8,7 @@ use App\Http\Requests;
 use carbon\carbon;
 use Auth;
 use Session;
-
+use Mail;
 class kontrak_Controller extends Controller
 {
 
@@ -356,6 +356,13 @@ class kontrak_Controller extends Controller
                             ->where('kcd_id',$cari_kontrak->kc_id)
                             ->delete();
         for ($i=0; $i < count($request->kota_asal); $i++) { 
+
+            if ($request->aktif[$i] == 'on') {
+               $kcd_aktif[$i] = true;
+            }else{
+               $kcd_aktif[$i] = false;
+            }
+
             $save_detail = DB::table('kontrak_customer_d')
                              ->insert([
                                 'kcd_id'            => $cari_kontrak->kc_id,
@@ -372,8 +379,27 @@ class kontrak_Controller extends Controller
                                 'kcd_acc_penjualan' => $request->akun_acc[$i],
                                 'kcd_csf_penjualan' => $request->akun_csf[$i],
                                 'kcd_kode'          => $request->kontrak_nomor,
+                                'kcd_active'        => $kcd_aktif[$i],
                              ]);
         }
+
+         $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$cari_kontrak->kc_id),'status'=>'Customer'];
+         if (in_array(false, $kcd_aktif)) {
+           Mail::send('hello', $data, function ($mail)
+          {
+            // Email dikirimkan ke address "momo@deviluke.com" 
+            // dengan nama penerima "Momo Velia Deviluke"
+            $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+            $mail->to('dewa17a@gmail.com', 'ADMIN JPM');
+       
+            // Copy carbon dikirimkan ke address "haruna@sairenji" 
+            // dengan nama penerima "Haruna Sairenji"
+            $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+       
+            $mail->subject('KONTRAK VERIFIKASI');
+          });
+         }
+         
         return response()->json(['status'=>1]);
 
     }

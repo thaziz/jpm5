@@ -46,6 +46,7 @@
 
               <div class="box" id="seragam_box">
                 <div class="box-header">
+                    {{$DATA}}
                 </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
@@ -55,6 +56,8 @@
                             <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
                             <div class="col-sm-2">
                              <select id="bulan_id" name="bulan_id" class="form-control">
+                                    
+
                                                       <option value="">Pilih Bulan</option>
 
                               </select>

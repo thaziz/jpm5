@@ -1,447 +1,138 @@
 
+<style type="text/css">
+  
+  #form-table{
+    font-size: 8pt;
+  }
+
+  #form-table td{
+    padding: 5px 0px;
+  }
+
+  #form-table .form-control{
+    height: 30px;
+    width: 90%;
+    font-size: 8pt;
+  }
+</style>
+
 <div class="row">
-  <form class="form-horizontal kirim" id="form_tambah_akun">
-    <div class="col-md-12" style="background:;">
-      @if($parrent == 0)
-        <table id="table_form" width="100%" border="0">
-          <tbody>
-            <tr>
-              <td width="17%">Kode Akun<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-              <td width="35%">
+  <form id="akun_form">
+    <input type="hidden" readonly value="{{ csrf_token() }}" name="_token">
+  <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+    <table border="0" id="form-table" class="col-md-12">
+      <tr>
+        <td width="15%" class="text-center">Kode Akun</td>
+        <td width="18%">
+          <input type="text" display: inline-block;" class="form_validate form-control text-center" name="kode_akun" placeholder="Kode Akun" id="kode_akun">
+        </td>
 
-                <input data-toggle="tooltip" data-placement="top" title="Kode Parrent. Secara Default Ditulis Di Awal Kode Akun" class="validate" readonly style="width: 50%; background: #eee; text-align: center;border:1px solid #ccc;" type="text" name="akun_parent" required id="akun_parent">
+        <td width="18%" data-toggle="tooltip" data-placement="top" title="Tambahan Kode Akun. Sesuai Dengan Cabang Yang Dipilih">
+          <input type="text" display: inline-block;" class="form_validate form-control text-center" name="add_kode" id="add_kode" placeholder="Otomatis" readonly>
+        </td>
+      </tr>
 
-                <input data-toggle="tooltip" id="id_akun" data-placement="top" title="Sebagai Pembeda Antara ID Akun" class="validate" style="width: 20%" type="text" name="id_akun">
-                  
-              </td>
-              <td width="20%">Nama Akun</td>
-              <td>
-                <input data-toggle="tooltip" data-placement="top" title="Inputan Ini Tidak boleh Kosong" class="validate" required type="text" name="nama_akun" style="width:85%">
-              </td>
-              
-            </tr>
+      <tr>
+        <td width="15%" class="text-center">Nama Akun</td>
+        <td colspan="2">
+          <input type="text" class="form_validate form-control" name="nama_akun" placeholder="Masukkan Nama Akun" id="nama_akun">
+        </td>
 
-            <tr>
+        <td width="15%" class="text-center">Cabang</td>
+        <td colspan="2">
+          <select name="kode_cabang" class="select_validate form-control chosen-select" id="kode_cabang">
+            <option value="---"> -- Pilih Cabang</option>
 
-              <td>
-                Sebagai
-              </td>
-              <td>
-                <input type="hidden" readonly name="sebagai" value="2">
-                <select id="sebagai" disabled="" class="form-control" style="width: 80%;">
-                  <option value="1">Header</option>
-                  <option value="2" selected>Sub Akun Dari</option>
-                </select>
-              </td>
+            @foreach($cabang as $cab)
+              <option value="{{ $cab->kode_cabang }}">{{ $cab->nama_cabang }}</option>
+            @endforeach
 
-              <td width="10%" class="parrent" style="display: none;">Parrent</td>
-              <td class="parrent" style="display: none;">
-                  <select name="parrent" class="chosen-select" id="parrent" data-toggle="tooltip" data-placement="top" title="Warna Merah Berarti Akun Sudah Memiliki Saldo. Tidak Bisa Dijadikan Parrent">
-                    @foreach($subakun as $dataSubakun)
-                      @if(!$dataSubakun->hasSaldo($dataSubakun->id_akun))
-                        <option value="{{ $dataSubakun->id_akun }}">{{ $dataSubakun->nama_akun }}</option>
-                      @else
-                        <option value="{{ $dataSubakun->id_akun }}" disabled style="background: #ed5565;color:white;">{{ $dataSubakun->nama_akun }}</option>
-                      @endif
-                    @endforeach
-                  </select>
-              </td>
-            </tr>
+          </select>
+        </td>
+      </tr>
 
-            <tr class="prok" style="display: none;">
-                <td width="17%">Provinsi<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                <td>
-                    <select data-toggle="tooltip" data-placement="top" name="id_kota" style="width:100%" id="id_kota" class="chosen-select">
-                      <option value="0">Pilih Provinsi</option>
-                      @foreach($provinsi as $dataProvinsi)
-                        <option value="{{ $dataProvinsi->id }}">{{ $dataProvinsi->nama }}</option>
+      <tr>
+        <td width="15%" class="text-center">Posisi D/K</td>
+        <td colspan="2">
+          <select name="posisi_dk" class="select_validate form-control" id="posisi_dk">
+            <option value="---"> -- Pilih Posisi D/K</option>
+            <option value="D">DEBET</option>
+            <option value="K">KREDIT</option>
+          </select>
+        </td>
 
-                      @endforeach
-                    </select>
-                </td>
+        <td width="15%" class="text-center">Type</td>
+        <td colspan="2">
+          <select name="type_akun" class="select_validate form-control" id="type_akun">
+            <option value="---"> -- Pilih Type Akun</option>
+            <option value="ICF">ICF</option>
+            <option value="OCF">OCF</option>
+            <option value="FCF">FCF</option>
+          </select>
+        </td>
+      </tr>
 
-                <td width="17%">Cabang<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                <td>
-                    <select data-toggle="tooltip" data-placement="top" name="id_cabang" style="width:100%" id="id_cabang" class="chosen-select" disabled>
-                      <option value="0">Pilih Cabang</option>
-                      @foreach($cabang as $data_cabang)
-                        <option value="{{ $data_cabang->kode }}">{{ $data_cabang->nama }}</option>
+      <tr>
+        <td width="15%" class="text-center">Status Aktif</td>
+        <td colspan="2">
+          <select name="status_aktif" class="select_validate form-control" id="status_aktif">
+            <option value="---"> -- Pilih Status Aktif</option>
+            <option value="1"> Aktif</option>
+            <option value="2"> Tidak</option>
+          </select>
+        </td>
+      </tr>
 
-                      @endforeach
-                    </select>
-                </td>
-            </tr>
+    </table>
+  </div>
 
-            <tr>
-              <td class="akun_dka">Posisi D/K</td>
-              <td class="akun_dka">
-                <select class="validate" name="akun_dka" id="akun_dka">
-                  <option value="D">DEBET</option>
-                  <option value="K">KREDIT</option>
-                </select>
-              </td>
-            </tr>
-
-            <tr>
-              <td style="padding-top: 15px;">Aktif</td>
-              <td style="padding-top: 15px;">
-                <select class="validate" name="is_active">
-                  <option value="1">Ya</option>
-                  <option value="0">Tidak</option>
-                </select>
-              </td>
-
-              <td width="17%">Type</td>
-              <td>
-                  <select data-toggle="tooltip" data-placement="top" name="type" style="width:100%" id="type">
-                    <option value="OCF">OCF</option>
-                    <option value="ICF">ICF</option>
-                    <option value="FCF">FCF</option>
-                  </select>
-              </td>
-            </tr>
-          </tbody>
-      </table>
-    </div>
-      
-      <div class="col-md-12" style="margin-top: 20px;margin-bottom: 20px;display: none;" id='saldo-wrap'>
-        <input type="checkbox" id="saldo" name="saldo"> &nbsp;<small>Akun Ini Memiliki Saldo. (Anda Juga Bisa Mengisi Saldo Awal Di Halaman Saldo Akun)</small>
-        <table id="table_saldo" width="100%" border="1" style="margin-top: 10px;">
-          <thead>
-            <tr>
-              <th class="text-center" width="26%" style="padding: 5px 0px; border:1px solid #eee">Keterangan</th>
-              <th class="text-center" width="37%" style="padding: 5px 0px; border:1px solid #eee">Debet</th>
-              <th class="text-center" style="padding: 5px 0px; border:1px solid #eee">Kredit</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
-              <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
-                <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal" type="text" disabled required name="saldo_debet" value="0" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
-              </td>
-
-              <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
-                <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal" type="text" disabled required name="saldo_kredit" value="0" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-      @else
-
-        <table id="table_form" width="100%" border="0">
-          <tbody>
-            <tr>
-              <td width="17%">Kode Akun<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-              <td width="35%">
-
-                <input data-toggle="tooltip" data-placement="top" title="Kode Parrent. Secara Default Ditulis Di Awal Kode Akun" class="validate" readonly style="width: 50%; background: #eee; text-align: center;border:1px solid #ccc;" value="{{ $nama->id_akun }}" type="text" name="akun_parent" required id="akun_parent">
-
-                <input data-toggle="tooltip" data-placement="top" title="Sebagai Pembeda Antara ID Akun" class="validate" style="width: 20%" type="text" name="id_akun">
-                  
-              </td>
-              <td width="20%">Nama Akun</td>
-              <td>
-                <input data-toggle="tooltip" data-placement="top" title="Inputan Ini Tidak boleh Kosong" class="validate" required type="text" name="nama_akun" style="width:85%">
-              </td>
-              
-            </tr>
-
-            <tr>
-
-              <td>
-                Sebagai
-              </td>
-              <td>
-                <input type="text" disabled value="Sub Akun Dari">
-                <input type="hidden" readonly name="sebagai" value="2">
-              </td>
-
-              <td width="10%" class="parrent" style="display:;">Parrent</td>
-              <td class="parrent" style="display:;">
-                  <input type="text" class="text-center" disabled value="{{ $nama->nama_akun }}">
-                  <input type="hidden" id ="parrent" readonly name="parrent" value="{{ $parrent }}">
-              </td>
-            </tr>
-
-            <tr class="prok" style="display:;">
-                <td width="17%">Provinsi<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                <td>
-                    <select data-toggle="tooltip" data-placement="top" name="id_kota" style="width:100%" id="id_kota" class="chosen-select">
-                      <option value="0">Pilih Provinsi</option>
-                      @foreach($provinsi as $dataProvinsi)
-                        <option value="{{ $dataProvinsi->id }}">{{ $dataProvinsi->nama }}</option>
-
-                      @endforeach
-                    </select>
-                </td>
-
-                <td width="17%">Cabang<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                <td>
-                    <select data-toggle="tooltip" data-placement="top" name="id_cabang" style="width:100%" id="id_cabang" class="chosen-select" disabled>
-                      <option value="0">Pilih Cabang</option>
-                      @foreach($cabang as $data_cabang)
-                        <option value="{{ $data_cabang->kode }}">{{ $data_cabang->nama }}</option>
-
-                      @endforeach
-                    </select>
-                </td>
-            </tr>
-
-            <tr>
-              <td style="padding-top: 15px;">Aktif</td>
-              <td style="padding-top: 15px;">
-                <select class="validate" name="is_active">
-                  <option value="1">Ya</option>
-                  <option value="0">Tidak</option>
-                </select>
-              </td>
-
-              <td width="17%">Type</td>
-              <td>
-                  <select data-toggle="tooltip" data-placement="top" name="type" style="width:100%" id="type">
-                    <option value="OCF">OCF</option>
-                    <option value="ICF">ICF</option>
-                    <option value="FCF">FCF</option>
-                  </select>
-              </td>
-            </tr>
-          </tbody>
-      </table>
-    </div>
-      
-      <div class="col-md-12" style="margin-top: 20px;margin-bottom: 20px;display:;" id='saldo-wrap'>
-        <input type="checkbox" id="saldo" name="saldo"> &nbsp;<small>Akun Ini Memiliki Saldo. (Anda Juga Bisa Mengisi Saldo Awal Di Halaman Saldo Akun)</small>
-        <table id="table_saldo" width="100%" border="1" style="margin-top: 10px;">
-          <thead>
-            <tr>
-              <th class="text-center" width="26%" style="padding: 5px 0px; border:1px solid #eee">Keterangan</th>
-              <th class="text-center" width="37%" style="padding: 5px 0px; border:1px solid #eee">Debet</th>
-              <th class="text-center" style="padding: 5px 0px; border:1px solid #eee">Kredit</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
-              <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
-                <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal" type="text" disabled required name="saldo_debet" value="0" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
-              </td>
-
-              <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
-                <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal" type="text" disabled required name="saldo_kredit" value="0" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      @endif
-      
-      </div>
+  <div class="col-md-12 m-t-lg" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+    <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Isian Saldo Akun</small></span>
     
-    <div class="col-md-8">
-      <small class="pull-right" id="message_server" style="padding-top: 15px;color: #ed5565; font-weight: 600"></small>
-    </div>
-    <input type="submit" class="btn btn-sm btn-primary col-md-3" id="btn_simpan" value="Simpan Data Akun">    
-
-    <!--<div class="col-md-12" style="height: 180px; overflow-y: scroll; margin-top: 20px;">
-    <table class="scroll table table-bordered tbl_isi_akun" id="table_data">
+    <input type="checkbox" id="saldo" name="saldo" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Memiliki Saldo. (Anda Juga Bisa Mengisi Saldo Awal Di Halaman Saldo Akun)</small>
+    <table id="form-table" width="100%" border="1" style="margin-top: 10px;">
       <thead>
         <tr>
-          <th width="10%" class="text-center">No</th>
-          <th class="text-center">Kode Akun</th>
-          <th class="text-center">Nama Akun</th>
+          <th class="text-center" width="26%" style="padding: 5px 0px; border:1px solid #eee">Keterangan</th>
+          <th class="text-center" width="37%" style="padding: 5px 0px; border:1px solid #eee">Debet</th>
+          <th class="text-center" style="padding: 5px 0px; border:1px solid #eee">Kredit</th>
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
+          <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
+            <center>
+              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_debet" value="0" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
+            </center>
+          </td>
 
-        <?php $no = 1; ?>
-
-        @foreach($data as $dataAkun)
-          <tr>
-            <td class="text-center">{{ $no }}</td>
-            <td class="text-center">{{ $dataAkun->id_akun }}</td>
-            <td class="text-center">{{ $dataAkun->nama_akun }}</td>
-          </tr>
-          <?php $no++; ?>
-        @endforeach
-
+          <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
+            <center>
+              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_kredit" value="0" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
+            </center>
+          </td>
+        </tr>
       </tbody>
-      </th>
     </table>
-  </div>-->
-</div>
+  </div>
+
   </form>
 
-<script type="text/javascript">
+  <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
+    <button class="btn btn-primary btn-sm pull-right" id="simpan">Simpan</button>
+  </div>
+</div>
+
+<script>
   $(document).ready(function(){
 
-    $.fn.initiate = function(id){
-      //alert(id)
-      $.ajax(baseUrl+"/master_keuangan/akun/cek_parrent/"+id, {
-         timeout: 5000,
-         type: "GET",
-         dataType: "json",
-         success: function (response) {
-            console.log(response);
-            if(response.data.id_provinsi != null){
-              $("#id_kota").val(response.data.id_provinsi)
-              $("#id_kota").attr("disabled", "disabled")
-              $('#id_kota').trigger("chosen:updated");
-            }else{
-              $("#id_kota").val("0")
-              $("#id_kota").removeAttr("disabled")
-              $('#id_kota').trigger("chosen:updated")
-            }
+    $(".chosen-select").chosen();
+    $('[data-toggle="tooltip"]').tooltip();
 
-            if(response.data.kode_cabang != null){
-              $("#id_cabang").val(response.data.kode_cabang.substring(1))
-              $("#id_cabang").attr("disabled", "disabled")
-              $('#id_cabang').trigger("chosen:updated");
-            }else{
-              $("#id_cabang").val("0")
-              //$("#id_cabang").removeAttr("disabled")
-              $('#id_cabang').trigger("chosen:updated")
-            }
+    var cabang = {!! $cabangjson !!};
 
-            $("#akun_parent").val(response.data.id_akun)
-         }
-      })
-    }
-
-    @if($parrent == 0)
-      cekForm();
-    @endif
-
-    $change = false;
-
-     $(".chosen-select").chosen({width: '150px'})
-
-     $parrent = "{{ $parrent }}";
-
-      if($parrent != 0)
-        $(this).initiate($("#parrent").val())
-
-    $('.tbl_isi_akun').DataTable({
-          responsive: true,
-          searching: false,
-          sorting: false,
-          paging: false,
-          //"pageLength": 10,
-          "language": dataTableLanguage,
-    });
-
-    $('[data-toggle="tooltip"]').tooltip()
-
-    $("#form_tambah_akun").submit(function(){
-
-      $("#btn_simpan").attr("disabled", "disabled");
-      $("#message_server").html('');
-
-      if($("#akun_parent").val() == "" && $("#id_akun").val() == ""){
-        $("#id_akun").focus();$("#btn_simpan").removeAttr("disabled");
-        $("#message_server").html('<i class="fa fa-times-circle"></i> &nbsp;Gagal Disimpan. Akun Header Wajib Memiliki ID Akun!');
-        return false
-      }
-
-      if(this.checkValidity()){
-        $.ajax(baseUrl+"/master_keuangan/akun/save_data", {
-           timeout: 5000,
-           type: "POST",
-           data: $(this).serialize(),
-           dataType: "json",
-           success: function (data) {
-              console.log(data);
-              if(data.status == "gagal"){
-                $("#message_server").html('<i class="fa fa-times-circle"></i> &nbsp;Gagal Disimpan. '+data.content+'!');
-              }else if(data.status == "berhasil"){
-                $("#message_server").html('<i class="fa fa-check-circle"></i> &nbsp;Data Berhasil Disimpan!');
-                $("#table_data").prepend('<tr><td class="text-center">+</td><td class="text-center">'+data.content.id_akun+'</td><td class="text-center">'+data.content.nama_akun+'</td></tr>')
-
-                $change = true;
-              }
-
-              $("#btn_simpan").removeAttr("disabled");
-           }
-        })
-        return false
-      }
-      else{
-        $("#btn_simpan").removeAttr("disabled");
-        return false
-      }
-    })
-
-    $("input:text").on("change", function(){
-      $(this).val($(this).val().toUpperCase())
-    })
-
-    $("input").on("invalid", function(){
-      this.setCustomValidity("ada yang salah dengan inputan ini");
-    })
-
-    $("input").on("change", function(){
-      this.setCustomValidity("");
-    })
-
-    // $("#id_kota").change(function(){
-    //   if($(this).val() != 0)
-    //     $("#akun_parent").val('{{ $parrent }}'+$(this).val())
-    //   else
-    //     $("#akun_parent").val('{{ $parrent }}')
-
-    //   $.ajax(baseUrl+"/master_keuangan/akun/kota/"+$(this).val(), {
-    //      timeout: 5000,
-    //      type: "GET",
-    //      dataType: "html",
-    //      success: function (data) {
-    //         $("#id_kota").html(data);
-    //      }
-    //   })
-    // })
-
-    $("#id_kota").change(function(){
-      
-      if($(this).val() != 0){
-        $("#id_cabang").removeAttr("disabled")
-        $("#akun_parent").val($("#parrent").val()+""+$(this).val())
-      } else{
-        $("#id_cabang").attr("disabled", "disabled")
-        $("#akun_parent").val($("#parrent").val())
-      }
-      $("#id_cabang").val(0)
-      $('#id_cabang').trigger("chosen:updated");
-    })
-
-    $("#id_cabang").change(function(){
-      if($(this).val() != 0)
-        $("#akun_parent").val($("#parrent").val()+''+$("#id_kota").val()+""+$(this).val())
-      else{
-        $("#akun_parent").val($("#parrent").val()+''+$("#id_kota").val())
-      }
-    })
-
-    $("#sebagai").change(function(){
-      if($(this).val() == 2){
-        $(".parrent").css("display", "")
-        $(".akun_dka").css("display", "none");
-        $("#akun_dka").attr("disabled", "disabled");
-        $(".prok").css("display", "");
-        $("#saldo-wrap").css("display", "");
-        $(this).initiate($("#parrent").val())
-      }
-      else{
-        $(".parrent").css("display", "none")
-        $(".prok").css("display", "none");
-        $(".akun_dka").css("display", "");
-        $("#akun_dka").removeAttr("disabled");
-        $("#saldo-wrap").css("display", "none");
-        $("#akun_parent").val("")
-      }
-    })
-
-    $("#parrent").change(function(){
-      $(this).initiate($(this).val())
-    })
+    // console.log(cabang);
 
     $("#saldo").on("change", function(){
       if($(this).is(":checked")){
@@ -450,7 +141,84 @@
       }
       else{
         $(".saldo_awal").attr("disabled", "disabled");
+        $(".saldo_awal").val(0);
       }
+    })
+
+    $("#kode_cabang").change(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      if($(this).val() !== "---"){
+        idx = cabang.findIndex(c => c.kode_cabang === $(this).val());
+        $("#add_kode").val(cabang[idx].id_provinsi+""+cabang[idx].kode_cabang);
+      }else{
+        $("#add_kode").val("");
+      }
+
+    })
+
+    $("#kode_akun").keypress(function(evt){
+      // console.log(evt)
+
+      if(evt.charCode < 48 || evt.charCode > 57)
+        return false;
+      else if($(this).val().length == 0 && evt.which == 48)
+          return false;
+
+    })
+
+    $('#simpan').click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      btn = $(this);
+      // btn.attr("disabled", "disabled");
+      // btn.text("Menyimpan...");
+
+      if(validate_form()){
+        $.ajax(baseUrl+"/master_keuangan/akun/save_data",{
+          type: "post",
+          timeout: 15000,
+          data: $("#akun_form").serialize(),
+          dataType: 'json',
+          success: function(response){
+            console.log(response);
+            if(response.status == "sukses"){
+              toastr.success('Data Master Akun Berhasil Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+
+              form_reset();
+            }else if(response.status == "exist"){
+              toastr.error('Kode Master Akun Sudah Ada. Silahkan Membuat Kode Akun Lagi.');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+            }
+          },
+          error: function(request, status, err) {
+              if (status == "timeout") {
+                toastr.error('Request Timeout. Data Gagal Disimpan');
+                btn.removeAttr("disabled");
+                btn.text("Simpan");
+              } else {
+                toastr.error('Internal Server Error. Data Gagal Disimpan');
+                btn.removeAttr("disabled");
+                btn.text("Simpan");
+              }
+              btn.removeAttr("disabled");
+          }
+        })
+      }else{
+        btn.removeAttr("disabled");
+        btn.text("simpan");
+      }
+
+      return false;
+    })
+
+    $("#nama_akun").on("keyup", function(){
+      $(this).val($(this).val().toUpperCase())
     })
 
     $('.currency').inputmask("currency", {
@@ -458,28 +226,51 @@
         groupSeparator: ".",
         digits: 2,
         autoGroup: true,
-        prefix: 'Rp ', //Space after $, this will not truncate the first character.
+        prefix: '', //Space after $, this will not truncate the first character.
         rightAlign: false,
         oncleared: function () { self.Value(''); }
     });
 
-    function cekForm(){
-      if($("#sebagai").val() == 2){
-        $(".parrent").css("display", "")
-        $(".akun_dka").css("display", "none");
-        $("#akun_dka").attr("disabled", "disabled");
-        $(".prok").css("display", "");
-        $("#saldo-wrap").css("display", "");
-        $("#sebagai").initiate($("#parrent").val())
-      }
-      else{
-        $(".parrent").css("display", "none")
-        $(".prok").css("display", "none");
-        $(".akun_dka").css("display", "");
-        $("#akun_dka").removeAttr("disabled");
-        $("#saldo-wrap").css("display", "none");
-        $("#akun_parent").val("")
-      }
+    function validate_form(){
+      a = true;
+      $(".form_validate").each(function(i, e){
+        if($(this).val() == ""){
+          a = false;
+          $(this).focus();
+          toastr.warning('Harap Lengkapi Data Diatas');
+          return false;
+        }
+      })
+
+      $(".select_validate").each(function(i, e){
+        if($(this).val() == "---"){
+          a = false;
+          $(this).focus();
+          toastr.warning('Harap Lengkapi Data Diatas');
+          return false;
+        }
+      })
+
+      // if($("#saldo").is(":checked")){
+      //   alert($("#DEBET").val());
+      // }
+
+      return a;
+    }
+
+    function form_reset(){
+      $(".form_validate").each(function(){
+        $(this).val("");
+      })
+
+      $(".select_validate").each(function(){
+          $(this).val("---");
+      })
+
+      $('#kode_cabang').trigger("chosen:updated");
+      $('#saldo').prop('checked', false);
+      $(".saldo_awal").attr("disabled", "disabled");
+      $(".saldo_awal").val(0);
     }
   })
 </script>
