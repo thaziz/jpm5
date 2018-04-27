@@ -138,6 +138,7 @@
                                 <th> Provinsi Tujuan </th>
                                 <th> Tarif </th>
                                 <th> Jenis </th>
+                                <th> Cabang </th>
                                 <th> Waktu (Hari) </th>
                                 <th style="width:100px"> Aksi </th>
                             </tr>
@@ -388,6 +389,7 @@
             { "data": "provinsi" },
             { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "jenis", },
+            { "data": "cabang", },
             { "data": "waktu","sClass": "cssright" },
             //{ "data": "tipe" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button",render: $.fn.dataTable.render.number( '.'),"sClass": "cssmid"  },
