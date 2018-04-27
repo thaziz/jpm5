@@ -1089,6 +1089,7 @@
         var angkutan = $("select[name='cb_angkutan']").val();
         var cabang = $("select[name='cb_cabang']").val();
         var berat = $("input[name='ed_berat']").val();
+        var berat = berat.replace(/[A-Za-z$. ,-]/g, "");
         var jenis_sepeda;
         var input = document.getElementsByClassName( 'jns_unit' ),
         jenis_sepeda  = [].map.call(input, function( input ) {
@@ -1262,7 +1263,7 @@
             jenis: $("select[name='jenis_kiriman']").val(),
             angkutan: $("select[name='cb_angkutan']").val(),
             cabang: $("select[name='cb_cabang']").val(),
-            berat : $("input[name='ed_berat']").val(),
+            berat : berat,
             kecamatan : $("select[name='cb_kecamatan_tujuan']").val(),
             sepeda: jenis_sepeda,
             berat_sepeda: berat_sepeda
