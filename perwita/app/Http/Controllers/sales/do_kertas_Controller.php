@@ -328,7 +328,10 @@ class do_kertas_Controller extends Controller
                    ->where('nomor',$request->id)
                    ->delete();
 
-     
+        $del = DB::table('delivery_order')
+                   ->where('nomor',$request->id)
+                   ->get();
+        dd($del);
 
         return response()->json(['status'=>1]);
     }
