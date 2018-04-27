@@ -62,7 +62,7 @@
     </div>
 
     <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
-      <table border="0" id="form-table" class="col-md-7">
+      <table border="0" id="form-table" class="col-md-10">
       <tr>
         <td width="15%" class="text-center">Pencarian Berdasarkan : </td>
         <td width="18%">
@@ -74,9 +74,19 @@
             </select>
         </td>
 
-        <td width="15%" class="text-center">Kata Kunci : </td>
         <td width="18%">
+          <select class="form-control" style="width:90%; height: 30px" id="yang">
+              <option value="1">Yang Mengandung</option>
+            </select>
+        </td>
+
+        <td width="15%" class="text-center">Kata Kunci : </td>
+        <td width="20%">
           <input class="form-control" style="width:90%; height: 30px;" data-toggle="tooltip" id="filter" placeholder="Masukkan Kata Kunci">
+        </td>
+
+        <td width="15%" class="text-left">
+          <button class="btn btn-success btn-sm" id="set" style="font-size: 8pt;"> Terapkan</button>
         </td>
       </tr>
 
@@ -130,6 +140,10 @@
                                       <td class="text-center dka">{{ ($dataAkun->akun_dka == "D") ? "DEBET" : "KREDIT" }}</td>
                                       {{-- <td></td> --}}
                                       <td class="text-center">
+
+                                        <span data-toggle="tooltip" data-placement="top" title="Saldo Awal Bulan Ini {{ number_format($dataAkun->saldo,2) }}">
+                                            <button class="btn btn-xs btn-info editAkun"><i class="fa fa-money fa-fw"></i></button>
+                                        </span>
 
                                         <span data-toggle="tooltip" data-placement="top" title="Edit Akun {{ $dataAkun->nama_akun }}">
                                             <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_edit_akun" class="btn btn-xs btn-warning editAkun"><i class="fa fa-pencil-square fa-fw"></i></button>
@@ -216,7 +230,7 @@
     tableDetail = $('.tbl-penerimabarang').DataTable({
           responsive: true,
           searching: false,
-          sorting: false,
+          sorting: true,
           paging: true,
           //"pageLength": 10,
           "language": dataTableLanguage,
@@ -293,25 +307,51 @@
         format: 'yyyy-mm-dd'
     });
 
-    $('#filter').keyup(function () {
-        $val = $(this).val().toUpperCase();
+    $("#berdasarkan").change(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      html = '<option value="1">Yang Mengandung</option>';
+
+      if($(this).val() != "semua"){
+        html = '<option value="1">Yang Mengandung</option> <option value="2">Yang Berawalan</option>';
+      }
+
+      $("#yang").html(html);
+    })
+
+    $('#set').click(function () {
+        $val = $('#filter').val().toUpperCase();
         if($("#berdasarkan").val() == "semua"){
-          var rex = new RegExp($(this).val(), 'i');
+          var rex = new RegExp($('#filter').val(), 'i');
           $('.searchable tr').hide();
           $('.searchable tr').filter(function () {
               return rex.test($(this).text());
           }).show();
         }else{
-          $(".searchable ."+$("#berdasarkan").val()).each(function(){
-            $str = $(this).text().toUpperCase()
+          if($("#yang").val() == 1)
+            $(".searchable ."+$("#berdasarkan").val()).each(function(){
+              $str = $(this).text().toUpperCase()
 
-            if($str.indexOf($val) != -1){
-              $(this).parents("tr").show();
-            }else{
-              $(this).parents("tr").hide();
-            }
-            
-          })
+              if($str.indexOf($val) != -1){
+                $(this).parents("tr").show();
+              }else{
+                $(this).parents("tr").hide();
+              }
+              
+            })
+          else{
+            $(".searchable ."+$("#berdasarkan").val()).each(function(){
+              $str = $(this).text().substring(0, $val.length).toUpperCase();
+
+              if($str == $val){
+                $(this).parents("tr").show();
+              }else{
+                $(this).parents("tr").hide();
+              }
+              
+            })
+          }
         }
     })
 
