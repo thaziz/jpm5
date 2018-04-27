@@ -1013,7 +1013,6 @@ Route::post('master_sales/pajak/hapus_data', 'master_sales\pajak_Controller@hapu
 
 //item
 Route::get('master_sales/item', 'master_sales\item_Controller@index');
-Route::get('master_sales/item/pilih_nota', 'master_sales\item_Controller@pilih_nota');
 Route::get('master_sales/item/tabel', 'master_sales\item_Controller@table_data');
 Route::get('master_sales/item/get_data', 'master_sales\item_Controller@get_data');
 Route::get('master_sales/item/save_data', 'master_sales\item_Controller@save_data');

@@ -1319,7 +1319,7 @@
                         var hit = parseInt($("input[name='ed_koli']").val())  * data.harga;
                     }
                     var acc_penjualan = data.acc_penjualan;
-                    $("input[name='ed_tarif_dasar']").val(accounting.formatMoney(hit,"",2,'.',','));
+                    $("input[name='ed_tarif_dasar']").val(accounting.formatMoney(hit,"",0,'.',','));
                     // $("input[name='ed_tarif_dasar']").val(hit);
                     $("input[name='ed_tarif_penerus']").val(biaya);
                     $("input[name='ed_tarif_penerus']").attr('width','100%');
