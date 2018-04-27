@@ -36,18 +36,20 @@
 
         <td width="15%" class="text-center">Cabang</td>
         <td colspan="2">
-          <input type="text" class="form-control" id="cabang" name="cabang" readonly value="{{ $data->kode_cabang }}">
+          <input type="text" class="form-control" id="cabang" name="cabang" readonly value="{{ $data->nama_cabang }}">
         </td>
       </tr>
 
       <tr>
         <td width="15%" class="text-center">Posisi D/K</td>
         <td colspan="2">
-          <input type="text" class="form-control" id="d/k" name="d/k" readonly value="{{ $data->akun_dka }}">
+          <?php $dk = ($data->akun_dka == "D") ? "DEBET" : "KREDIT"; ?>
+          <input type="text" class="form-control" id="d/k" name="d/k" readonly value="{{ $dk }}">
         </td>
 
         <td width="15%" class="text-center">Type</td>
         <td colspan="2">
+          
           <input type="text" class="form-control" id="type" name="type" readonly value="{{ $data->type_akun }}">
         </td>
       </tr>
@@ -55,7 +57,8 @@
       <tr>
         <td width="15%" class="text-center">Status Aktif</td>
         <td colspan="2">
-          <input type="text" class="form-control" id="status" name="status" readonly value="{{ $data->is_active }}">
+          <?php $status = ($data->is_active == "1") ? "Aktif" : "Tidak Aktif"; ?>
+          <input type="text" class="form-control" id="status" name="status" readonly value="{{ $status }}">
         </td>
       </tr>
 
@@ -75,16 +78,37 @@
       </thead>
       <tbody>
         <tr>
+
+          <?php
+            $debet = 0; $kredit = 0;
+
+            if($data->akun_dka == "D"){
+              if($data->saldo >= 0){
+                $debet = $data->saldo;
+              }else{
+                $kredit = ($data->saldo * -1);
+              }
+            }
+
+            if($data->akun_dka == "K"){
+              if($data->saldo <= 0){
+                $kredit = $data->saldo;
+              }else{
+                $debet = ($data->saldo * -1);
+              }
+            }
+          ?>
+
           <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
           <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
             <center>
-              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_debet" value="0" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
+              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_debet" value="{{ $debet }}" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
             </center>
           </td>
 
           <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
             <center>
-              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_kredit" value="0" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
+              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_kredit" value="{{ $kredit }}" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
             </center>
           </td>
         </tr>
@@ -150,7 +174,7 @@
       btn.text("Menyimpan...");
 
       if(validate_form()){
-        $.ajax(baseUrl+"/master_keuangan/akun/save_data",{
+        $.ajax(baseUrl+"/master_keuangan/akun/update_data",{
           type: "post",
           timeout: 15000,
           data: $("#akun_form").serialize(),
@@ -158,11 +182,11 @@
           success: function(response){
             console.log(response);
             if(response.status == "sukses"){
-              toastr.success('Data Master Akun Berhasil Disimpan');
+              toastr.success('Data Master Akun Berhasil Diubah');
               btn.removeAttr("disabled");
               btn.text("Simpan");
 
-              form_reset();
+              // form_reset();
             }else if(response.status == "exist"){
               toastr.error('Kode Master Akun Sudah Ada Dengan Nama '+response.content+'. Silahkan Membuat Kode Akun Lagi.');
               btn.removeAttr("disabled");

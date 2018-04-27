@@ -1841,7 +1841,7 @@ Route::post('master_keuangan/akun/save_data', [
   'as'   => 'akun.save'
 ]);
 
-Route::post('master_keuangan/akun/update_data/{id}', [
+Route::post('master_keuangan/akun/update_data', [
   'uses' => 'master_keuangan\akun_controller@update_data',
   'as'   => 'akun.update'
 ]);
