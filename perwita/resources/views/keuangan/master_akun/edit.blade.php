@@ -1,147 +1,256 @@
+
+<style type="text/css">
+  
+  #form-table{
+    font-size: 8pt;
+  }
+
+  #form-table td{
+    padding: 5px 0px;
+  }
+
+  #form-table .form-control{
+    height: 30px;
+    width: 90%;
+    font-size: 8pt;
+  }
+</style>
+
 <div class="row">
-  <form class="form-horizontal kirim" id="form_tambah_akun">
-    <table id="table_form" width="100%" border="0">
+  <form id="akun_form">
+    <input type="hidden" readonly value="{{ csrf_token() }}" name="_token">
+  <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+    <table border="0" id="form-table" class="col-md-12">
+      <tr>
+        <td width="15%" class="text-center">Kode Akun</td>
+        <td width="35%" colspan="2">
+          <input type="text" readonly class="form_validate form-control text-center" name="kode_akun" placeholder="Kode Akun" id="kode_akun" value="{{ $data->id_akun }}">
+        </td>
+      </tr>
+
+      <tr>
+        <td width="15%" class="text-center">Nama Akun</td>
+        <td colspan="2">
+          <input type="text" class="form_validate form-control" name="nama_akun" placeholder="Masukkan Nama Akun" id="nama_akun" value="{{ $data->nama_akun }}">
+        </td>
+
+        <td width="15%" class="text-center">Cabang</td>
+        <td colspan="2">
+          <input type="text" class="form-control" id="cabang" name="cabang" readonly value="{{ $data->kode_cabang }}">
+        </td>
+      </tr>
+
+      <tr>
+        <td width="15%" class="text-center">Posisi D/K</td>
+        <td colspan="2">
+          <input type="text" class="form-control" id="d/k" name="d/k" readonly value="{{ $data->akun_dka }}">
+        </td>
+
+        <td width="15%" class="text-center">Type</td>
+        <td colspan="2">
+          <input type="text" class="form-control" id="type" name="type" readonly value="{{ $data->type_akun }}">
+        </td>
+      </tr>
+
+      <tr>
+        <td width="15%" class="text-center">Status Aktif</td>
+        <td colspan="2">
+          <input type="text" class="form-control" id="status" name="status" readonly value="{{ $data->is_active }}">
+        </td>
+      </tr>
+
+    </table>
+  </div>
+
+  <div class="col-md-12 m-t-lg" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+    <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small> Informasi Saldo Akun</small></span>
+
+    <table id="form-table" width="100%" border="1" style="margin-top: 10px;">
+      <thead>
+        <tr>
+          <th class="text-center" width="26%" style="padding: 5px 0px; border:1px solid #eee">Keterangan</th>
+          <th class="text-center" width="37%" style="padding: 5px 0px; border:1px solid #eee">Debet</th>
+          <th class="text-center" style="padding: 5px 0px; border:1px solid #eee">Kredit</th>
+        </tr>
+      </thead>
       <tbody>
         <tr>
-          <td width="17%">Kode Akun<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-          <td width="35%">
-            <input required class="validate" readonly style="width: 90%;background: #eee; border:1px solid #ccc" type="text" name="id_akun" id="id_akun" value="{{ $data->id_akun }}" required>
-              
+          <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
+          <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
+            <center>
+              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_debet" value="0" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
+            </center>
           </td>
-          <td>Nama Akun</td>
-          <td>
-            <input data-toggle="tooltip" data-placement="top" title="Inputan Ini Tidak boleh Kosong" class="validate" required type="text" value="{{ $data->nama_akun }}" name="nama_akun" style="width:85%">
-          </td>
-        </tr>
 
-        <tr>
-          <td>Aktif</td>
-          <td>
-            <select class="validate" name="is_active" id="aktif">
-              <option value="1">Ya</option>
-              <option value="0">Tidak</option>
-            </select>
+          <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
+            <center>
+              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_kredit" value="0" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
+            </center>
           </td>
         </tr>
       </tbody>
     </table>
-    
-    <div class="col-md-8">
-      <small class="pull-right" id="message_server" style="padding-top: 15px;color: #ed5565; font-weight: 600"></small>
-    </div>
+  </div>
 
-    <input type="submit" class="btn btn-sm btn-primary col-md-3" id="btn_simpan" value="Simpan Data Akun">
-
-</div>
   </form>
 
-<script type="text/javascript">
+  <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
+    <button class="btn btn-primary btn-sm pull-right" id="simpan">Simpan</button>
+  </div>
+</div>
+
+<script>
   $(document).ready(function(){
 
-    $change = false;
-    $("#aktif").val("{{ $data->is_active }}")
-    //alert("{{ $data->is_active }}")
+    $(".chosen-select").chosen();
+    $('[data-toggle="tooltip"]').tooltip();
 
-    $('.tbl_isi_akun').DataTable({
-          responsive: true,
-          searching: false,
-          sorting: false,
-          paging: false,
-          //"pageLength": 10,
-          "language": dataTableLanguage,
-    });
+    // console.log(cabang);
 
-    $('[data-toggle="tooltip"]').tooltip()
-
-    $("#form_tambah_akun").submit(function(){
-
-      $("#btn_simpan").attr("disabled", "disabled");
-
-      if(this.checkValidity()){
-
-        if($("#aktif").val() != "{{ $data->is_active }}"){
-          cfr = confirm("Mengubah Status Aktif. Juga Akan Mempengaruhi Status Pada Sub Akun Yang Terkait Dengan Akun Ini. Apakah Anda Yakin Ingin Tetap Melanjutkan Perubahan Ini ??");
-
-          if(cfr){
-            $.ajax(baseUrl+"/master_keuangan/akun/update_data/"+$("#id_akun").val(), {
-               timeout: 5000,
-               type: "POST",
-               data: $(this).serialize(),
-               dataType: "json",
-               success: function (data) {
-                  console.log(data);
-                  if(data.status == "gagal"){
-                    $("#message_server").html('<i class="fa fa-times-circle"></i> &nbsp;Gagal Disimpan. '+data.content+'!');
-                  }else if(data.status == "berhasil"){
-                    $("#message_server").html('<i class="fa fa-check-circle"></i> &nbsp;Data Berhasil Diupdate!');
-                  }
-
-                  $change = true;
-                  $("#btn_simpan").removeAttr("disabled");
-               }
-            })
-          }else{
-            $("#btn_simpan").removeAttr("disabled");
-          }
-
-        }else{
-          $.ajax(baseUrl+"/master_keuangan/akun/update_data/"+$("#id_akun").val(), {
-               timeout: 5000,
-               type: "POST",
-               data: $(this).serialize(),
-               dataType: "json",
-               success: function (data) {
-                  console.log(data);
-                  if(data.status == "gagal"){
-                    $("#message_server").html('<i class="fa fa-times-circle"></i> &nbsp;Gagal Disimpan. '+data.content+'!');
-                  }else if(data.status == "berhasil"){
-                    $("#message_server").html('<i class="fa fa-check-circle"></i> &nbsp;Data Berhasil Diupdate!');
-                  }
-
-                  $change = true;
-                  $("#btn_simpan").removeAttr("disabled");
-               }
-            })
-        }
-        
-        return false
+    $("#saldo").on("change", function(){
+      if($(this).is(":checked")){
+        $(".saldo_awal").removeAttr("disabled");
+        $("#"+$("#akun_dka_view").val()).focus();
       }
       else{
-        $("#btn_simpan").removeAttr("disabled");
-        return false
+        $(".saldo_awal").attr("disabled", "disabled");
+        $(".saldo_awal").val(0);
       }
     })
 
-    $("input").on("invalid", function(){
-      this.setCustomValidity("ada yang salah dengan inputan ini");
+    $("#kode_cabang").change(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      if($(this).val() !== "---"){
+        idx = cabang.findIndex(c => c.kode_cabang === $(this).val());
+        $("#add_kode").val(cabang[idx].id_provinsi+""+cabang[idx].kode_cabang);
+      }else{
+        $("#add_kode").val("");
+      }
+
     })
 
-    $("input").on("change", function(){
-      this.setCustomValidity("");
+    $("#kode_akun").keypress(function(evt){
+      // console.log(evt)
+
+      if(evt.charCode < 48 || evt.charCode > 57)
+        return false;
+      else if($(this).val().length == 0 && evt.which == 48)
+          return false;
+
     })
 
-    // $("#id_provinsi").change(function(){
-    //   if($(this).val() != 0)
-    //     $("#akun_parent").val('-'+$(this).val())
-    //   else
-    //     $("#akun_parent").val('-')
+    $('#simpan').click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
 
-    //   $.ajax(baseUrl+"/master_keuangan/akun/kota/"+$(this).val(), {
-    //        timeout: 5000,
-    //        type: "GET",
-    //        dataType: "html",
-    //        success: function (data) {
-    //           $("#id_kota").html(data);
-    //        }
-    //     })
-    // })
+      btn = $(this);
+      btn.attr("disabled", "disabled");
+      btn.text("Menyimpan...");
 
-    // $("#id_kota").change(function(){
-    //   if($(this).val() != 0)
-    //     $("#akun_parent").val('-'+$(this).val())
-    //   else
-    //     $("#akun_parent").val('-'+$("#id_provinsi").val())
-    // })
+      if(validate_form()){
+        $.ajax(baseUrl+"/master_keuangan/akun/save_data",{
+          type: "post",
+          timeout: 15000,
+          data: $("#akun_form").serialize(),
+          dataType: 'json',
+          success: function(response){
+            console.log(response);
+            if(response.status == "sukses"){
+              toastr.success('Data Master Akun Berhasil Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+
+              form_reset();
+            }else if(response.status == "exist"){
+              toastr.error('Kode Master Akun Sudah Ada Dengan Nama '+response.content+'. Silahkan Membuat Kode Akun Lagi.');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+            }
+          },
+          error: function(request, status, err) {
+              if (status == "timeout") {
+                toastr.error('Request Timeout. Data Gagal Disimpan');
+                btn.removeAttr("disabled");
+                btn.text("Simpan");
+              } else {
+                toastr.error('Internal Server Error. Data Gagal Disimpan');
+                btn.removeAttr("disabled");
+                btn.text("Simpan");
+              }
+              btn.removeAttr("disabled");
+          }
+        })
+      }else{
+        btn.removeAttr("disabled");
+        btn.text("Simpan");
+      }
+
+      return false;
+    })
+
+    $("#nama_akun").on("keyup", function(){
+      $(this).val($(this).val().toUpperCase())
+    })
+
+    $('.currency').inputmask("currency", {
+        radixPoint: ",",
+        groupSeparator: ".",
+        digits: 2,
+        autoGroup: true,
+        prefix: '', //Space after $, this will not truncate the first character.
+        rightAlign: false,
+        oncleared: function () { self.Value(''); }
+    });
+
+    function validate_form(){
+      a = true;
+      $(".form_validate").each(function(i, e){
+        if($(this).val() == ""){
+          a = false;
+          $(this).focus();
+          toastr.warning('Harap Lengkapi Data Diatas');
+          return false;
+        }
+      })
+
+      $(".select_validate").each(function(i, e){
+        if($(this).val() == "---"){
+          a = false;
+          $(this).focus();
+          toastr.warning('Harap Lengkapi Data Diatas');
+          return false;
+        }
+      })
+
+      if($("#saldo").is(":checked") && $("#DEBET").val() == '0,00' && $("#KREDIT").val() == '0,00'){
+        a = false;
+        $("#saldo_debet").focus()
+        toastr.warning('Jika Akun Ini Memiliki Saldo Maka Saldo Tidak Boleh 0.');
+      }
+
+      // if($("#saldo").is(":checked")){
+      //   alert($("#DEBET").val());
+      // }
+
+      return a;
+    }
+
+    function form_reset(){
+      $(".form_validate").each(function(){
+        $(this).val("");
+      })
+
+      $(".select_validate").each(function(){
+          $(this).val("---");
+      })
+
+      $('#kode_cabang').trigger("chosen:updated");
+      $('#saldo').prop('checked', false);
+      $(".saldo_awal").attr("disabled", "disabled");
+      $(".saldo_awal").val(0);
+    }
   })
 </script>
 

@@ -91,7 +91,7 @@ class akun_Controller extends Controller
         if(count($cek) > 0){
             $response = [
                 "status" => "exist",
-                "content" => "null"
+                "content" => $cek->nama_akun
             ];
 
             return json_encode($response);
@@ -124,15 +124,20 @@ class akun_Controller extends Controller
                 $saldo_debet = str_replace(".", "", explode(",", $request->saldo_debet)[0]);
                 $saldo_kredit = str_replace(".", "", explode(",", $request->saldo_kredit)[0]);
 
-                if($saldo_debet == 0 && $saldo_kredit == 0){
-                    $saldo->saldo_akun = 0;
-                }else{
-                    if($saldo_debet == 0){
-                        $saldo->saldo_akun = ($request->posisi_dk == "D") ? ($saldo_kredit * -1) : $saldo_kredit;
-                    }else if($saldo_kredit == 0){
-                        $saldo->saldo_akun = ($request->posisi_dk == "D") ? $saldo_debet : ($saldo_debet * -1);
-                    }
+                if($saldo_debet == 0){
+                    $saldo->saldo_akun = ($request->posisi_dk == "D") ? ($saldo_kredit * -1) : $saldo_kredit;
+                }else if($saldo_kredit == 0){
+                    $saldo->saldo_akun = ($request->posisi_dk == "D") ? $saldo_debet : ($saldo_debet * -1);
                 }
+
+                $saldo->save();
+            }else{
+                $saldo = new master_akun_saldo;
+                $saldo->id_akun = $request->kode_akun.$request->add_kode;
+                $saldo->tahun = date("Y");
+                $saldo->is_active = 1;
+                $saldo->bulan = date("m");
+                $saldo->saldo_akun = 0;
 
                 $saldo->save();
             }
@@ -148,6 +153,8 @@ class akun_Controller extends Controller
 
         $data = master_akun::find($parrent);
         $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
+
+        return $data;
 
         return view("keuangan.master_akun.edit")
             ->withData($data)
