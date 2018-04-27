@@ -1156,6 +1156,7 @@ class do_Controller extends Controller
         elseif ($tipe == 'KOLI'){
             //dd($request);
             $berat = $request->berat;
+            $koli = $request->koli;
             $tarif = null;
             $biaya_penerus = null;
             if ($berat < 10){

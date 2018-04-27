@@ -873,6 +873,7 @@
         var tarif_dasar = $("input[name='ed_tarif_dasar']").val();
         var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
         var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
+
         var diskon  = $("input[name='ed_diskon_h']").val();
         var diskon_value  = $("input[name='ed_diskon_v']").val();
         var diskon_val  = $("input[name='ed_diskon_h']").val();
@@ -1306,9 +1307,20 @@
                    
                 } else if (data.create_indent == 1) {
                     var harga = convertToRupiah(parseInt(data.harga));
+                    
+                    var koli_dikali =$("input[name='ed_koli']").val() ;
+                    // alert(koli_dikali);
                     var biaya = convertToRupiah(parseInt(data.biaya_penerus));
+                    if (koli_dikali == 0 ) {
+                        // alert('a');
+                        var hit = data.harga  * 1;
+                    }else{
+                        // alert('b');
+                        var hit = parseInt($("input[name='ed_koli']").val())  * data.harga;
+                    }
                     var acc_penjualan = data.acc_penjualan;
-                    $("input[name='ed_tarif_dasar']").val(harga);
+                    $("input[name='ed_tarif_dasar']").val(accounting.formatMoney(hit,"",2,'.',','));
+                    // $("input[name='ed_tarif_dasar']").val(hit);
                     $("input[name='ed_tarif_penerus']").val(biaya);
                     $("input[name='ed_tarif_penerus']").attr('width','100%');
                     $("#button_a").hide();
@@ -1353,7 +1365,7 @@
                         if (data.tipe == 'DOKUMEN') {
                         $("#button_a").html('<button class="btn btn-warning" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'KILOGRAM') {
-                            $("#button_a").html('<button class="btn btn-info" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-info" style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()" ><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'KOLI') {
                             $("#button_a").html('<button class="btn btn-primary" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'SEPEDA') {
@@ -1366,6 +1378,7 @@
                     penerus = penerus.replace(/[A-Za-z$. ,-]/g, "");
                     var hasil = parseInt(dasar)+parseInt(penerus);
                     maxvalue = hasil*maxdiskon/100;
+                    // alert(hit);
                     hitung();
                 } else if (data.create_indent == 2) {
                     var harga = convertToRupiah(parseInt(data.harga));
@@ -1498,7 +1511,7 @@
         })
     }
     function kilogram_tipe(){
-        
+        alert('a');
     }
     function save_penerus(){
         var penerus_tipe = $('select[name="ed_tipe"]').val();
@@ -2467,6 +2480,7 @@
         $('#jurnal').modal('show');
     }
 
+    // call
 
   //called when key is pressed in textbox
   $(".kodepospengirim").keypress(function (e) {
@@ -2536,11 +2550,22 @@
         }
 
     }
+            $('#type_kiriman').change(function(){
+                var cek_tipe = $(this).val();
+                if (cek_tipe == 'KILOGRAM') {
+                        var berat = $("input[name='ed_berat']").val(0);
+                        var berat = $("input[name='ed_koli']").val(0);
+                }else{
+                        var berat = $("input[name='ed_berat']").val(0);
+                        var berat = $("input[name='ed_koli']").val(0);
+                }
+            })
                 function BeratDefault(){
                     var tipetipe = $('#type_kiriman').val();
                     if (tipetipe == 'KOLI') {
                         // alert('a');
                         var berat = $("input[name='ed_berat']").val();
+
                         if (berat > 50) {
                             Command: toastr["warning"]("Maksimal berat KOLI yang dilayani 50 Kg", "Peringatan !")
 
