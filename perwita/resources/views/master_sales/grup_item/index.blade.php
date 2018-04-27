@@ -115,7 +115,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Acc Piutang</td>
                                     <td>
-                                        <select name="acc_piutang" class="acc_piutang form-control">
+                                        <select name="acc_piutang" class="acc_piutang form-control chosen-select-width">
                                             <option value="0">Pilih - Akun</option>
                                             @foreach($akun as $i)
                                             <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
@@ -126,7 +126,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Csf Piutang</td>
                                     <td>
-                                        <select name="csf_piutang" class="csf_piutang form-control">
+                                        <select name="csf_piutang" class="csf_piutang form-control chosen-select-width">
                                             <option value="0">Pilih - Akun</option>
                                             @foreach($akun as $i)
                                             <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>

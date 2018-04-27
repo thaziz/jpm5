@@ -195,7 +195,7 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Csf Penjualan</td>
                                     <td>
-                                       <select class="form-control chosen-select-width"  name="ed_acc_penjualan" style="width:100%">
+                                       <select class="form-control chosen-select-width"  name="ed_csf_penjualan" style="width:100%">
                                         @foreach ($akun1 as $a)
                                             <option value="{{ $a->id_akun }}">{{ $a->id_akun }} - {{ $a->nama_akun }} </option>
                                         @endforeach
@@ -292,6 +292,7 @@
         $("input[name='crud']").val('N');
         $("input[name='ed_kode']").val('');
         $("input[name='ed_kode_old']").val('');
+        $(".grup_item").val('0');
         $("input[name='ed_nama']").val('');
         $("input[name='ed_keterangan']").val('');
         $("input[name='ed_harga']").val(0);
