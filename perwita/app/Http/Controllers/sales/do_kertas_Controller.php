@@ -328,6 +328,8 @@ class do_kertas_Controller extends Controller
                    ->where('nomor',$request->id)
                    ->delete();
 
+     
+
         return response()->json(['status'=>1]);
     }
 
