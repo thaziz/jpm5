@@ -296,21 +296,21 @@ class subconController extends Controller
 		}
 
 		 $data = ['kontrak'=>url('master_subcon/edit_subcon/'.$request->id),'status'=>'Subcon'];
-         if (in_array(false, $kcd_aktif)) {
-           Mail::send('hello', $data, function ($mail)
-          {
-            // Email dikirimkan ke address "momo@deviluke.com" 
-            // dengan nama penerima "Momo Velia Deviluke"
-            $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-            $mail->to('dewa17a@gmail.com', 'Admin');
+         // if (in_array(false, $kcd_aktif)) {
+         //   Mail::send('hello', $data, function ($mail)
+         //  {
+         //    // Email dikirimkan ke address "momo@deviluke.com" 
+         //    // dengan nama penerima "Momo Velia Deviluke"
+         //    $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+         //    $mail->to('dewa17a@gmail.com', 'Admin');
        
-            // Copy carbon dikirimkan ke address "haruna@sairenji" 
-            // dengan nama penerima "Haruna Sairenji"
-            $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+         //    // Copy carbon dikirimkan ke address "haruna@sairenji" 
+         //    // dengan nama penerima "Haruna Sairenji"
+         //    $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
        
-            $mail->subject('KONTRAK VERIFIKASI');
-          });
-         }
+         //    $mail->subject('KONTRAK VERIFIKASI');
+         //  });
+         // }
 		// return $db = DB::table('kontrak_subcon_dt')
 		// 				->get();
 		return 'Success';

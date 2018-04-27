@@ -384,21 +384,21 @@ class kontrak_Controller extends Controller
         }
 
          $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$cari_kontrak->kc_id),'status'=>'Customer'];
-         if (in_array(false, $kcd_aktif)) {
-           Mail::send('hello', $data, function ($mail)
-          {
-            // Email dikirimkan ke address "momo@deviluke.com" 
-            // dengan nama penerima "Momo Velia Deviluke"
-            $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-            $mail->to('dewa17a@gmail.com', 'ADMIN JPM');
+         // if (in_array(false, $kcd_aktif)) {
+         //   Mail::send('hello', $data, function ($mail)
+         //  {
+         //    // Email dikirimkan ke address "momo@deviluke.com" 
+         //    // dengan nama penerima "Momo Velia Deviluke"
+         //    $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+         //    $mail->to('dewa17a@gmail.com', 'ADMIN JPM');
        
-            // Copy carbon dikirimkan ke address "haruna@sairenji" 
-            // dengan nama penerima "Haruna Sairenji"
-            $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+         //    // Copy carbon dikirimkan ke address "haruna@sairenji" 
+         //    // dengan nama penerima "Haruna Sairenji"
+         //    $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
        
-            $mail->subject('KONTRAK VERIFIKASI');
-          });
-         }
+         //    $mail->subject('KONTRAK VERIFIKASI');
+         //  });
+         // }
          
         return response()->json(['status'=>1]);
 
