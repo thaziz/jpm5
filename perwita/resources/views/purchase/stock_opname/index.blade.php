@@ -91,8 +91,8 @@
                 <div class="box-footer">
                   <div class="pull-right">
             
-                   <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-info">
-         
+                 <!--   <input type="submit" id="submit" name="submit" value="Simpan" class="btn btn-info">
+          -->
                     
                     
                     </div>

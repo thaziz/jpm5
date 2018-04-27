@@ -25,6 +25,8 @@ class trackingdoController extends Controller
               ->where('nomor','=',$nomor)
               ->get();
       $data3 = DB::table('update_detail1')
+              ->select('update_detail1.*','kota.nama as namakot')
+              ->leftjoin('kota','kota.id','=','update_detail1.asal_barang')
               ->where('nomor_do','=',$nomor)
               ->get();
       $getdata = DB::table('delivery_order')

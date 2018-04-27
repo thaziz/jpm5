@@ -770,7 +770,9 @@ class do_Controller extends Controller
                     ORDER BY d.tanggal DESC LIMIT 1000 ";
 
         $do = DB::select($sql);
-        return view('sales.do.index', compact('do'));
+        $kota = DB::table('kota')->get();
+        $kota1= DB::table('kota')->get();
+        return view('sales.do.index', compact('do','kota','kota1'));
     }
 
     public function form($nomor = null)

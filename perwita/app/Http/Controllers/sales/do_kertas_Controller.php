@@ -28,7 +28,26 @@ class do_kertas_Controller extends Controller
         }
         $cabang = DB::table('cabang')
                     ->get();
+        // $delete = DB::table('delivery_order')
+        //             ->delete();
 
+        // $delete = DB::table('delivery_orderd')
+        //             ->delete();
+
+        // $delete = DB::table('invoice')
+        //             ->delete();
+
+        // $delete = DB::table('invoice_pembetulan')
+        //             ->delete();
+
+        // $delete = DB::table('kwitansi')
+        //             ->delete();
+
+        // $delete = DB::table('cn_dn_penjualan')
+        //             ->delete();
+
+        // $delete = DB::table('uang_muka_penjualan')
+        //             ->delete();
         for ($i=0; $i < count($data); $i++) { 
             for ($a=0; $a < count($cabang); $a++) { 
                 if ($data[$i]->kode_cabang == $cabang[$a]->kode) {
@@ -216,6 +235,7 @@ class do_kertas_Controller extends Controller
                                     'dd_id_kota_tujuan' => $request->d_tujuan[$i],
                                     'dd_keterangan' => strtoupper($request->d_keterangan[$i]),
                                     'dd_acc_penjualan' => strtoupper($request->d_acc[$i]),
+                                    'dd_csf_penjualan' => strtoupper($request->d_acc[$i]),
 
                                  ]);
                 }

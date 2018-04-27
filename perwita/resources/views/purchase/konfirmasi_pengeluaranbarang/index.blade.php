@@ -127,8 +127,9 @@
     });
     
 
-function printing(){
-  var id = $('.pb_id').val();
+function printing(par){
+  var par = $(par).parents('tr')
+  var id = $(par).find('.pb_id').val();
   window.open("{{url('konfirmasipengeluaranbarang/printing')}}"+'/'+id)
 }
 </script>

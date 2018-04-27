@@ -66,10 +66,10 @@
                             @if(Session::get('cabang') == '000')
                             <tr>
                               <td width="150px">
-                                Cabang
+                                Lokasi Cabang
                               </td>
                               <td>
-                                <select class="form-control chosen-select-width5 cabangselect idcabang" onchange="getGudang()">
+                                <select class="form-control chosen-select-width5 cabangselect" onchange="getGudang()">
                                   <option value="">- Pilih - Cabang -</option>
                                   @foreach($cabang as $val)
                                   <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -83,10 +83,10 @@
                               Lokasi Gudang
                             </td>
                             <td>
-                              <select class="form-control cabang_head idgudang" id="selectgudang" onchange="cabang()">
+                              <select class="form-control cabang_head" id="selectgudang" onchange="cabang()">
                                 @if(Session::get('cabang') != '000')
                                   @foreach($gudang as $data)
-                                    <option value="{{ $data->mg_id }}"> {{ $data->mg_namagudang }}</option>
+                                    <option value="{{ $data->mg_id }}">{{ $data->mg_namagudang }}</option>
                                   @endforeach
                                 @endif
                               </select>
@@ -227,12 +227,9 @@
    
    function cabang(){
     var val = $('.cabang_head').val();
-    idgudang = $('.idgudang').val();
-    idcabang = $('.idcabang').val();
+    
     $.ajax({
-      url:baseUrl + '/stockopname/cari_sm',
-      data : {idgudang,idcabang},
-      type : "get",
+      url:baseUrl + '/stockopname/cari_sm/' + val,
       success:function(response){
         $('.append').html('');
 
@@ -299,7 +296,6 @@ function status(p){
 
 $('.simpan').click(function(){
   var val = $('.cabang_head').val();
-  alert(val);
    swal({
     title: "Apakah anda yakin?",
     text: "Setujui Data!",

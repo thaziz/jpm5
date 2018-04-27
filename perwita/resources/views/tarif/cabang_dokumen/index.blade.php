@@ -100,6 +100,33 @@
 
 
                         </div>
+                        <table class="table table-bordered datatable table-striped">
+                      <br>
+                                                                                
+                     {{--    <tr >
+                           <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
+                          <td colspan="2">
+                          <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            @foreach ($kota1 as $asal)
+                                <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
+                            @endforeach
+                          </select>
+                          </td>
+                        
+                          <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
+                          <td colspan="2"> 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            @foreach ($kota2 as $tujuan)
+                                <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
+                            @endforeach
+                           </select>
+                          </td>
+                        </tr>
+                         --}}
+                        
+                    </table>
                     </form>
                 <div class="box-body">
                     <table id="table_data" class="table table-bordered table-striped">
@@ -111,6 +138,7 @@
                                 <th> Provinsi Tujuan </th>
                                 <th> Tarif </th>
                                 <th> Jenis </th>
+                                <th> Cabang </th>
                                 <th> Waktu (Hari) </th>
                                 <th style="width:100px"> Aksi </th>
                             </tr>
@@ -338,7 +366,7 @@
     })
 
 
-    $(document).ready( function () {
+    
         $('#table_data').DataTable({
             
             "paging": true,
@@ -361,6 +389,7 @@
             { "data": "provinsi" },
             { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "jenis", },
+            { "data": "cabang", },
             { "data": "waktu","sClass": "cssright" },
             //{ "data": "tipe" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button",render: $.fn.dataTable.render.number( '.'),"sClass": "cssmid"  },
@@ -377,8 +406,18 @@
                 $(selector).chosen(config[selector]);
             }
         $("input[name='ed_harga'],input[name='ed_waktu']").maskMoney({thousands:'.', decimal:',', precision:-1});
-    });
-
+    
+     function filterColumn () {
+    $('#table_data').DataTable().column(1).search(
+        $('.select-picker1').val()
+    ).draw();    
+    }
+    function filterColumn1 () {
+        $('#table_data').DataTable().column(2).search(
+            $('.select-picker2').val()
+        ).draw();    
+    }
+    
     $(document).on("click","#btn_add",function(){
         $("input[name='crud']").val('N');
         $("input[name='id_reguler']").val('');
@@ -530,7 +569,7 @@
         var id = $(this).attr("id");
         if(!confirm("Hapus Data seluruh" + asal +' menuju ke '+ prov + " ?")) return false;
         var value = {
-            id: id,
+            id: id,name:name,
             _token: "{{ csrf_token() }}"
         };
         $.ajax({

@@ -70,10 +70,21 @@
                                                     <input type="text" name="namapenerima" class="form-control" value="{{old('catatan')}}">
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td style="padding-top: 0.4cm">Barang Berada</td>
+                                                <td>
+                                                    <select class="chosen-select-width" name="barangberada">
+                                                      <option>- Barang Saat ini -</option>
+                                                      @foreach ($kota as $element)
+                                                        <option value="{{ $element->id }}">{{ $element->nama }}</option>
+                                                      @endforeach
+                                                    </select>
+                                            </td>
+                                        </tr>
                                           <tr>
-                                            <td style="width:120px; padding-top: 0.4cm">ID Penerima</td>
-                                            <td>
-                                                <input type="number" name="idpenerima" class="form-control" id="ed_id" >
+                                            {{-- <td style="width:120px; padding-top: 0.4cm">ID Penerima</td> --}}
+                                            <td hidden="">
+                                                <input type="number"  name="idpenerima" class="form-control" id="ed_id" >
                                                 <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }} " id="ed_token" >
                                                 @if($errors->has('u_o_nomor'))
                                                     <small style="color: #ed5565">{{ $errors->first('u_o_nomor')}}</small>

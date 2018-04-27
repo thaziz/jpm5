@@ -44,7 +44,6 @@ Route::get('seragam', function(){
 Route::get('purchase/suratpermintaanpembelian', function(){
         return view('purchase.spp.index');
 });
-//email
 
 //********SETTING********
 //pengguna
@@ -501,6 +500,16 @@ Route::get('masterjenisitem/detailmasterjenisitem/{id}', 'MasterPurchaseControll
 Route::delete('masterjenisitem/deletemasterjenisitem/{id}', 'MasterPurchaseController@deletemasterjenisitem');
 Route::post('masterjenisitem/kodejenis', 'MasterPurchaseController@kodejenisitem');
 
+// master aktiva start
+
+Route::get('masteractiva/masteractiva/{id}', 'MasterPurchaseController@masteractiva');
+
+Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailmasteractiva');
+Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
+Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
+Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
+
+// end master aktiva
 
 Route::get('notadebit/notadebit', 'MasterPurchaseController@nota_debit');
 Route::get('notadebit/detailnotadebit', 'MasterPurchaseController@detailnota_debit');
@@ -928,8 +937,9 @@ Route::get('sales/laporan_posting_bayar','LaporanMasterController@posting_bayar'
 Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@reportposting_bayar')->name('reportposting_bayar');
 //END OF LAPORAN BAYAR PENJUALAN
 
-//LAPORAN KARTU HUTANG
+//LAPORAN KARTU PIUTANG
 Route::get('laporan_sales/kartu_piutang','LaporanMasterController@kartupiutang');
+Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_kartupiutang');
 Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@reportkartupiutang')->name('reportkartupiutang');
 //END OF 
 
@@ -1180,6 +1190,8 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
 
 
+// Route::get('sales/cari_modaldeliveryorder', 'sales\do_controller@cari_modaldeliveryorder');
+// Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
 
 
 
@@ -1206,8 +1218,8 @@ Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@s
 Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
 
-
-
+Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');
+Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_Controller@tarif_penerus_dokumen_indentdo');
 
 //end delivery order
 
@@ -1640,34 +1652,6 @@ Route::post('golonganactiva/simpan', 'MasterPurchaseController@golongan_save');
 Route::post('golonganactiva/update', 'MasterPurchaseController@golongan_update');
 
 //endgolonganaktiva
-
-
-// master aktiva start
-
-Route::get('masteractiva/masteractiva/{id}', 'MasterPurchaseController@masteractiva');
-
-Route::get('master_aktiva/ask_kode_master_aktiva/{cabang}', 'MasterPurchaseController@ask_kode_master_aktiva');
-Route::post('master_aktiva/simpan', 'MasterPurchaseController@simpan_master_aktiva');
-Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
-
-Route::get('masteractiva/editmasteraktiva/{cabang}/{id}', [
-  'uses' => 'MasterPurchaseController@editmasteractiva',
-  'as'   => 'master_aktiva.edit'
-]);
-
-Route::get('masteractiva/hapusmasteractiva/{cabang}/{id}', [
-  'uses' => 'MasterPurchaseController@aktiva_hapus',
-  'as'   => 'master_aktiva.hapus'
-]);
-
-Route::post('master_aktiva/update', 'MasterPurchaseController@aktiva_update');
-
-Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailmasteractiva');
-Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
-Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
-
-// end master aktiva
-
 
 Route::get('master_keuangan/err_cek', function(){
   return view('keuangan.err.err_laporan');

@@ -547,6 +547,7 @@ class LaporanMasterController extends Controller
 				->leftjoin('invoice_d','invoice_d.id_nomor_do','=','do.nomor')
 				->where('do.status','=','DELIVERED OK')
 				->get();
+		
 
 		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 		 $tahun = carbon::now();
@@ -1449,31 +1450,90 @@ class LaporanMasterController extends Controller
 				$invoice[$i] = 0;
 			}
 		}
+		// return $invoice;
+		$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->get();
 
 		
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
-		return view('purchase/master/master_penjualan/laporan/lap_invoice',compact('data','kota','kota1','ket','cus','invoice'));
+		return view('purchase/master/master_penjualan/laporan/lap_invoice',compact('data','kota','kota1','ket','cus','invoice','cust'));
 	}
 
 		public function cari_lap_invoice(Request $request){
 
 		$awal = $request->a;
 		$akir = $request->b;
-		$data = DB::table('invoice')
+		$cabang = $request->c;
+		$customer = $request->d;
+		if ($cabang == null && $customer == null) {
+			$data = DB::table('invoice')
+				->select('i_tanggal','i_kode_cabang','i_total_tagihan')
 				->where('i_tanggal','>=',$awal)
 				->where('i_tanggal','<=',$akir)
 				->get();
 
 		
-		for ($i=0; $i <count($data); $i++) { 
-			$dat[$i] = $data[$i]->i_total;
+			for ($i=0; $i <count($data); $i++) { 
+				$dat[$i] = $data[$i]->i_total_tagihan;
 
-			$array = array_sum($dat);
+				$array = array_sum($dat);
 
+			}
+			// return $array;
+		}elseif ($cabang != null && $customer != null) {
+			return 'a';
+			$data = DB::table('invoice')
+				->select('i_tanggal','i_kode_cabang','i_total_tagihan','i_kode_customer')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->where('i_kode_cabang','<=',$cabang)
+				->where('i_kode_customer','<=',$customer)
+				->get();
+
+			for ($i=0; $i <count($data); $i++) { 
+				$dat[$i] = $data[$i]->i_total_tagihan;
+
+				$array = array_sum($dat);
+
+			}
+		}elseif($cabang == null && $customer != null) {
+			// return 'b';
+			$data = DB::table('invoice')
+				->select('i_tanggal','i_kode_cabang','i_total_tagihan','i_kode_customer')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->where('i_kode_customer','=',$customer)
+				->get();
+
+		
+			for ($i=0; $i <count($data); $i++) { 
+				$dat[$i] = $data[$i]->i_total_tagihan;
+
+				$array = array_sum($dat);
+
+			}
+			// return $array;
+		}elseif ($cabang != null && $customer == null) {
+			// return 'c';
+			$data = DB::table('invoice')
+				->select('i_tanggal','i_kode_cabang','i_total_tagihan','i_kode_customer')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->where('i_kode_cabang','=',$cabang)
+				->get();
+
+		
+			for ($i=0; $i <count($data); $i++) { 
+				$dat[$i] = $data[$i]->i_total_tagihan;
+
+				$array = array_sum($dat);
+
+			}
 		}
+		
+		
 				
 		
 		
@@ -2108,8 +2168,9 @@ class LaporanMasterController extends Controller
 
    public function kartupiutang(){
    		
-   		 $data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
-   		 $data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer from invoice group by i_nomor order by i_nomor");
+   		$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
+
+   		$data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer from invoice group by i_nomor order by i_nomor");
    		
 
    		$a = DB::table('invoice')
@@ -2126,16 +2187,92 @@ class LaporanMasterController extends Controller
    			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
    			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
 
+   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
 
-   		 $data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
-
-   		/*return*/ $ds = DB::table('kwitansi')
+   		$ds = DB::table('kwitansi')
    			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto','nomor')
    			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
    			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran')->get();
-
+   		$customer = DB::table('customer')->orderBy('kode','ASC')->get();
+   		 // $invo = DB::select("SELECT invoice.i_kode_customer,customer.nama as cnama,sum(invoice.i_total)  from invoice join customer on customer.kode = invoice.i_kode_customer  group by i_kode_customer,customer.nama order by i_kode_customer");
    		
-   		return view('purchase/master/master_penjualan/laporan/lap_piutang',compact('data','data_i','data_p'));
+   		 // $cndn = DB::select("SELECT sum(cd_total),cd_customer from cn_dn_penjualan group by cd_customer order by cd_customer");
+   		 // return [$invo,$cndn];
+
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang/lap_piutang',compact('data','data_i','data_p','customer'));
+   }
+   public function cari_kartupiutang(Request $request){
+   		$awal = substr($request->min,-2);
+   		$akir = substr($request->max,-2);
+   		$customer = $request->customer;
+
+   		if ($customer == null or '') {
+   			$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama 
+   										from invoice 
+   										join customer on customer.kode = invoice.i_kode_customer 
+   										group by i_kode_customer,customer.nama 
+   										order by i_kode_customer");
+
+	   		$data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer 
+	   										from invoice 
+	   										where date_part('month',i_tanggal) >= '$awal' 
+	   										and date_part('month',i_tanggal) <= '$akir' 
+	   										group by i_nomor 
+	   										order by i_nomor");
+	   		
+
+	   		$a = DB::table('invoice')
+	   			->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
+
+	   		$b = DB::table('cn_dn_penjualan')
+	   			->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
+
+	   		$c = DB::table('kwitansi')
+	   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
+
+	   		$d = DB::table('kwitansi')
+	   			->select('k_create_by','nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
+	   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
+	   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
+
+	   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
+   		}else{
+   			$data_i = DB::select("SELECT i_kode_customer,customer.nama as cnama 
+   										from invoice 
+   										join customer on customer.kode = invoice.i_kode_customer 
+   										where i_kode_customer = '$customer' 
+   										group by i_kode_customer,customer.nama 
+   										order by i_kode_customer");
+
+	   		$data_p = DB::select("SELECT i_nomor,i_tanggal,i_keterangan,i_kode_customer 
+	   										from invoice 
+	   										where i_kode_customer = '$customer' 
+	   										and date_part('month',i_tanggal) >= '$awal' 
+	   										and date_part('month',i_tanggal) <= '$akir' 
+	   										group by i_nomor 
+	   										order by i_nomor");
+	   		
+
+	   		$a = DB::table('invoice')
+	   			->select('i_tipe as flag','i_nomor as kode','i_kode_customer as cutomer','i_tanggal as tanggal','i_keterangan as keterangan','i_total_tagihan as total');
+
+	   		$b = DB::table('cn_dn_penjualan')
+	   			->select('cd_jenis','cd_nomor','cd_customer','cd_tanggal','cd_keterangan','cd_total');
+
+	   		$c = DB::table('kwitansi')
+	   			->select('k_create_by','k_nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto');
+
+	   		$d = DB::table('kwitansi')
+	   			->select('k_create_by','nomor','k_kode_customer','k_tanggal','k_keterangan','k_netto')
+	   			->join('posting_pembayaran_d','posting_pembayaran_d.nomor_penerimaan_penjualan','=','kwitansi.k_nomor')
+	   			->join('posting_pembayaran','posting_pembayaran.nomor','=','posting_pembayaran_d.nomor_posting_pembayaran');
+
+	   		$data = $a->union($b)->union($c)->union($d)->orderBy('kode','asc')->get();
+   		}
+   		
+   		
+   		return view('purchase/master/master_penjualan/laporan/lap_piutang/ajax_lap_piutang',compact('data','data_i','data_p','customer'));
+
    }
    public function rekap_customer(){
    		$cabang = DB::table('cabang')->get();
@@ -2759,7 +2896,7 @@ class LaporanMasterController extends Controller
 				   				group by d.kode_customer
 				   				order by d.kode_customer");	
 
-				   			/*return*/ $doc = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   			$doc = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
 				   				where kode_cabang = '$cabang'
 				   				and tanggal>='$awal'
 				   				and tanggal<='$akir'

@@ -55,7 +55,7 @@
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="search" action="post" method="POST">
                   <div class="box-body">
-                    <table class="table table-bordered datatable table-striped">
+                    <table class="table datatable ">
                         <tr>
                         <td> Dimulai : </td> 
                         <td> 
@@ -94,9 +94,8 @@
                     </div>
                 </form>
                 <div class="box-body">
-                <div id="disini"></div>
-                <div id="hilang" style="background-color: red;">
-                <table id="addColumn" class="table table-bordered table-striped" width="100%" >
+                <div id="disini">
+                <table id="addColumn" class="table table-bordered table-striped" width="100%" hidden="" >
                     <thead>
                         <tr>
                             <th width="10%"> Kode</th>
@@ -199,18 +198,16 @@
 
     var table;
   
-    
-
    var awal = 0;
-  $('.debet').each(function(){
+    $('.debet').each(function(){
     var total = parseInt($(this).val());
     awal += total;
     // console.log(awal);
-  });
-  $('#total_debet').val(accounting.formatMoney(awal,"",0,'.',','));
+    });
+    $('#total_debet').val(accounting.formatMoney(awal,"",0,'.',','));
 
   var kred = 0;
-  $('.kredit').each(function(){
+    $('.kredit').each(function(){
     var total = parseInt($(this).val());
     kred += total;
     // console.log(kred);
@@ -295,9 +292,8 @@ Highcharts.chart('container', {
       type:'get',
       url:baseUrl + '/cari_kartupiutang/cari_kartupiutang',
       success : function(data){
-        
         $('#disini').html(data);
-
+        $('#container').hide();
       }
     })
  }

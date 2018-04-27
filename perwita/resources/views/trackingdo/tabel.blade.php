@@ -76,7 +76,8 @@
                                 <th  hidden="">noll</th>
                                 <th  hidden="">noll</th>
                                 <th>Status Tgl Pengiriman</th>
-                                <th>Kota</th>
+                                <th>Catatan Admin</th>
+                                <th>Barang Saai ini</th>
                                 <th>Status Pengiriman</th>
                             </tr>
                         </thead>
@@ -86,7 +87,8 @@
                                 <td hidden=""></td>
                                 <td hidden="">{{$c->nomor_do}}</td>
                                 <td>{{$c->created_at}}{{-- {{ \Carbon\Carbon::parse($c->created_at)->format('d F Y')}} --}}</td>
-                                <td>Surabaya</td>
+                                <td>{{$c->catatan}}</td>
+                                <td>{{$c->asal_barang}} - {{ $c->namakot }}</td>
                                 <td>{{$c->status}}</td>
                             </tr>
                             @endforeach

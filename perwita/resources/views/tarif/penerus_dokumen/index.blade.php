@@ -80,13 +80,15 @@
                         <thead>
                             <tr>
                                 <th hidden="" align="center"> Kota Asal</th>
-                        <th hidden="" align="center">id Kota Asal</th>
-                        <th align="center"> Kota Asal</th>
-                        <th align="center"> Kota Tujuan</th>
-                        <th align="center">kode</th>
-                        <th align="center"> Jenis </th>
-                        <th align="center"> Waktu </th>
-                        <th align="center"> Tarif</th>
+                                <th hidden="" align="center">id Kota Asal</th>
+                                <th align="center"> Kode</th>
+                                <th align="center"> Prov Tujuan</th>
+                                <th align="center"> Kota Tujuan</th>
+                                <th align="center"> Jenis </th>
+                                <th align="center"> tipe </th>
+                                <th align="center"> Tarif Reg</th>
+                                <th align="center"> Tarif Ex</th>
+                                <th align="center"> Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -143,7 +145,7 @@
                                         <select readonly   name="ed_kota" id="kota"  class="form-control">
                                             <option disabled="" selected="">-</option>  
                                             @foreach ($kota as $b)
-                                                <option value="{{ $b->id }}">{{ $b->nama }}</option>
+                                                <option value="{{ $b->id }}" data-kota="{{ $b->kode_kota }}">{{ $b->nama }}</option>
                                            @endforeach      
                                         </select>
                                     </td>
