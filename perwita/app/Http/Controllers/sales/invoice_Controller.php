@@ -84,6 +84,9 @@ class invoice_Controller extends Controller
         $kota     = DB::table('kota')
                       ->get();
 
+        $gp     = DB::table('grup_item')
+                      ->get();
+
         for ($i=0; $i < count($customer); $i++) { 
           for ($a=0; $a < count($kota); $a++) { 
             if ($customer[$i]->kota == $kota[$a]->id) {
@@ -98,7 +101,7 @@ class invoice_Controller extends Controller
         $pajak    = DB::table('pajak')
                       ->get();
 
-        return view('sales.invoice.form',compact('customer','cabang','tgl','tgl1','pajak'));
+        return view('sales.invoice.form',compact('customer','cabang','tgl','tgl1','pajak','gp'));
     }
 
 

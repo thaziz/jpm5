@@ -133,6 +133,18 @@
                                     </select>
                                 </td>
                             </tr>
+                            <tr class="grup_item_tr" hidden="">
+                                <td style="padding-top: 0.4cm" >Grup Item</td>
+                                <td colspan="4" class="">                                    
+                                    <select class="chosen-select-width form-control"   name="grup_item" id="grup_item" style="width:100%" >
+                                        <option value="0">Pilih - Grup</option>
+                                    @foreach ($gp as $i=> $val)
+                                        <option value="{{$gp[$i]->kode}}" data-accpiutang="{{$gp[$i]->acc_piutang}}" data-csfpiutang="{{$gp[$i]->csf_piutang}}"> {{$gp[$i]->kode}} - {{$gp[$i]->nama}}</option>
+                                    @endforeach
+                                    </select>
+                                    <input type="hidden" class="ed_customer" name="ed_customer" value="" >
+                                </td>
+                            </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="4">
@@ -547,8 +559,14 @@
    $('.cus_disabled').change(function(){
         $('.ed_customer').val($(this).val());
    });
-   $('#cb_pendapatan').change(function(){
+    $('#cb_pendapatan').change(function(){
+    if ($(this).val() == 'KORAN') {
+        $('.grup_item_tr').prop('hidden',false);
+    }else{
+        $('.grup_item_tr').prop('hidden',true);
+    }
         $('.ed_pendapatan').val($(this).val());
+
    })
    //modal do
   $('#btn_modal_do').click(function(){
