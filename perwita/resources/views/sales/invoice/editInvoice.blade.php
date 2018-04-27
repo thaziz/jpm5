@@ -88,7 +88,7 @@
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                        @if($row->kode == $data->i_kode_customer)
-                                        <option selected="" value="{{$row->kode}}"  data-accpiutang="{{$row->acc_piutang}}"> {{$row->kode}} - {{$row->nama}} </option>
+                                        <option selected="" value="{{$row->kode}}"  > {{$row->kode}} - {{$row->nama}} </option>
                                        @endif
                                     @endforeach
                                     </select>
@@ -136,7 +136,7 @@
                             <tr class="grup_item_tr" hidden="">
                                 <td style="padding-top: 0.4cm" >Grup Item</td>
                                 <td colspan="4" class="">                                    
-                                    <select class="chosen-select-width form-control"   name="grup_item" id="grup_item" style="width:100%" >
+                                    <select class="chosen-select-width form-control grup_item"   name="grup_item" id="grup_item" style="width:100%" >
                                         <option value="0">Pilih - Grup</option>
                                     @foreach ($gp as $i=> $val)
                                         <option value="{{$gp[$i]->kode}}" data-accpiutang="{{$gp[$i]->acc_piutang}}" data-csfpiutang="{{$gp[$i]->csf_piutang}}"> {{$gp[$i]->kode}} - {{$gp[$i]->nama}}</option>
@@ -564,6 +564,7 @@
         $('.grup_item_tr').prop('hidden',false);
     }else{
         $('.grup_item_tr').prop('hidden',true);
+        $('.grup_item').val('0');
     }
         $('.ed_pendapatan').val($(this).val());
 
@@ -578,6 +579,7 @@
         var do_akhir      = $('.do_akhir').val();
         var cabang        = $('.cabang').val();
         var id            = "{{$id}}";
+        var grup_item     = $('.grup_item').val();
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -593,7 +595,7 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang,id},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang,id,grup_item},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);
@@ -922,7 +924,8 @@ function hitung_pajak_lain(){
 
     // SIMPAN DATA
     function simpan(){
-        var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
+        var accPiutang=$(".grup_item").find(':selected').data('accpiutang'); 
+        var csfPiutang=$(".grup_item").find(':selected').data('csfpiutang'); 
         var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
         var ed_pendapatan = $('#cb_pendapatan').val();
         var ed_customer = $('#customer').val();
@@ -953,6 +956,7 @@ function hitung_pajak_lain(){
                +'&ed_pendapatan='+ed_pendapatan
                +'&ed_customer='+ed_customer
                +'&accPiutang='+accPiutang
+               +'&csfPiutang='+csfPiutang
                +'&pajak_lain='+pajak_lain,
           success:function(response){
             

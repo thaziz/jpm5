@@ -287,8 +287,14 @@ public function cari_do_invoice(request $request)
     $jenis = $request->cb_pendapatan;
     $id = '0';
     if ($request->cb_pendapatan == 'KORAN') {
-
-     $temp = DB::table('delivery_order')
+     $grup_item = DB::table('item')
+                    ->where('kode_grup_item',$request->grup_item)
+                    ->get();
+      $item = [];
+      for ($i=0; $i < count($grup_item); $i++) { 
+        $item[$i] = $grup_item[$i]->kode;
+      }
+    $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
               ->leftjoin('invoice_pembetulan_d','delivery_orderd.dd_id','=','invoice_pembetulan_d.ipd_nomor_do_dt')
@@ -297,6 +303,7 @@ public function cari_do_invoice(request $request)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
+              ->whereIn('delivery_orderd.dd_kode_item',$item)  
               ->orderBy('tanggal','desc')
               ->get();
 
@@ -309,6 +316,7 @@ public function cari_do_invoice(request $request)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
+              ->whereIn('delivery_orderd.dd_kode_item',$item)  
               ->orderBy('tanggal','desc')
               ->get();
 
@@ -693,6 +701,7 @@ if(count($dataItem)==0){
               DB::rollback();
               return json_encode($dataInfo);
         }
+      
 
         // return $cabang;
         // return$request->accPiutang;
