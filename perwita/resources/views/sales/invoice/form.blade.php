@@ -94,7 +94,11 @@
                                     <select onchange="ganti_jt()" class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $i=> $val)
-                                        <option value="{{$customer[$i]->kode}}" > {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
+                                        @foreach($kota as $kot)
+                                          @if($kot->id == $val->kota)
+                                            <option value="{{$val->kode}}"  > {{$val->kode}} - {{$val->nama}} - {{ $kot->nama }}</option>
+                                          @endif
+                                        @endforeach
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -739,10 +743,10 @@ function hitung_total_tagihan(){
                     for(var i = 0 ; i < response.data.length;i++){
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail,
+                            index_detail+'<p class="indexing"></p>',
                             response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].dd_nomor+'" name="do_detail[]">',
                             response.data[i].tanggal+'<input type="hidden" class="dd_id" value="'+response.data[i].dd_id+'" name="do_id[]">',
-                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].dd_acc_penjualan+'" name="akun[]">',
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
                             accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
                             accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
@@ -762,7 +766,7 @@ function hitung_total_tagihan(){
                         ///////////////////////////////////////
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail,
+                            index_detail+'<p class="indexing"></p>',
                             response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
                             response.data[i].tanggal,
                             response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
@@ -779,6 +783,7 @@ function hitung_total_tagihan(){
                     hitung();
                     
                     $('.customer_td').addClass('disabled');
+                    $('.grup_item_tr').addClass('disabled');
                     $('#cb_pendapatan').attr('disabled',true);
                     /////////////////////////////////////
                 }
@@ -811,9 +816,14 @@ function hitung_total_tagihan(){
             table_detail.row(par).remove().draw(false);
         }
 
-        if (length == 1) {
-            
-            $('.cus_disabled').attr('disabled',false).trigger("chosen:updated");
+        var temp = 0;
+        $('.indexing').each(function(){
+            temp+=1;
+        })
+
+        if (temp == 0) {
+            $('.customer_td').removeClass('disabled');
+            $('.grup_item_tr').removeClass('disabled');
             $('#cb_pendapatan').attr('disabled',false);
         }
 

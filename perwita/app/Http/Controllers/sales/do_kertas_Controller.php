@@ -249,6 +249,7 @@ class do_kertas_Controller extends Controller
                                     'dd_csf_penjualan' => strtoupper($request->d_csf_penjualan[$i]),
                                     'dd_acc_piutang' => strtoupper($request->d_acc_piutang[$i]),
                                     'dd_csf_piutang' => strtoupper($request->d_csf_piutang[$i]),
+                                    'dd_grup' => strtoupper( $kcd->kcd_grup),
 
 
                                  ]);
@@ -302,6 +303,10 @@ class do_kertas_Controller extends Controller
                     }else{
                         $d_kcd_dt[$i] = $request->d_kcd_dt[$i];
                     }
+                    $kcd = DB::table('kontrak_customer_d')
+                             ->where('kcd_kode',$request->d_kode_item[$i])
+                             ->where('kcd_dt',$d_kcd_dt[$i])
+                             ->first();
                     $save_detail = DB::table('delivery_orderd')
                                  ->insert([
                                     'dd_id' => $id,
@@ -321,6 +326,7 @@ class do_kertas_Controller extends Controller
                                     'dd_csf_penjualan' => strtoupper($request->d_csf_penjualan[$i]),
                                     'dd_acc_piutang' => strtoupper($request->d_acc_piutang[$i]),
                                     'dd_csf_piutang' => strtoupper($request->d_csf_piutang[$i]),
+                                    'dd_grup' => strtoupper( $kcd->kcd_grup),
 
                                  ]);
                 }
