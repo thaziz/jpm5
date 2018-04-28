@@ -642,7 +642,6 @@ class do_Controller extends Controller
                     }
                 }
             }
-
             $result['crud'] = $crud;
 
             DB::commit();

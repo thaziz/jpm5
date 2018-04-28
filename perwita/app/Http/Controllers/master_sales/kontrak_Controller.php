@@ -42,11 +42,12 @@ class kontrak_Controller extends Controller
         $jenis_tarif = DB::table('jenis_tarif')
                          ->orderBy('jt_id','ASC')
                          ->get();
+        $grup_item = DB::select(DB::raw(" SELECT kode,nama FROM grup_item ORDER BY nama ASC "));
         $now1    = Carbon::now()->subDay(-30)->format('d/m/Y');
         $now    = Carbon::now()->format('d/m/Y');
 
         
-        return view('master_sales.kontrak.form',compact('kota','customer','data','cabang','satuan','tipe_angkutan','akun','now','now1','jenis_tarif'));
+        return view('master_sales.kontrak.form',compact('kota','customer','data','cabang','satuan','tipe_angkutan','akun','now','now1','jenis_tarif','grup_item'));
     }
     public function drop_cus(request $request)
     {
@@ -101,14 +102,14 @@ class kontrak_Controller extends Controller
     public function set_kode_akun_acc(request $request)
     {   
        $data = DB::table('d_akun')
-                 // ->where('kode_cabang',$request->cabang)
+                 ->where('id_akun','like','4'.'%')
                  ->get();
        return view('master_sales.kontrak.acc_drop',compact('data'));
     }
      public function set_kode_akun_csf(request $request)
     {
        $data = DB::table('d_akun')
-                 // ->where('kode_cabang',$request->cabang)
+                 ->where('id_akun','like','4'.'%')
                  ->get();
        return view('master_sales.kontrak.csf_drop',compact('data'));
     }
@@ -173,6 +174,7 @@ class kontrak_Controller extends Controller
                                   'kcd_acc_penjualan' => $request->akun_acc[$i],
                                   'kcd_csf_penjualan' => $request->akun_csf[$i],
                                   'kcd_kode'          => $request->kontrak_nomor,
+                                  'kcd_grup'          => $request->grup_item[$i],
                                ]);
             }
 
@@ -249,6 +251,7 @@ class kontrak_Controller extends Controller
                                   'kcd_acc_penjualan' => $request->akun_acc[$i],
                                   'kcd_csf_penjualan' => $request->akun_csf[$i],
                                   'kcd_kode'          => $request->kontrak_nomor,
+                                  'kcd_grup'          => $request->grup_item[$i],
                                ]);
             }   
 
@@ -380,6 +383,7 @@ class kontrak_Controller extends Controller
                                 'kcd_csf_penjualan' => $request->akun_csf[$i],
                                 'kcd_kode'          => $request->kontrak_nomor,
                                 'kcd_active'        => $kcd_aktif[$i],
+                                  'kcd_grup'          => $request->grup_item[$i],
                              ]);
         }
 
