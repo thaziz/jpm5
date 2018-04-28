@@ -784,6 +784,8 @@ class do_Controller extends Controller
 
     public function index()
     {
+        $authe = Auth::user()->kode_cabang; 
+        if ($authe == '000') {
         $sql = "SELECT d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
@@ -791,6 +793,17 @@ class do_Controller extends Controller
                     join customer c on d.kode_customer = c.kode 
                     WHERE d.jenis='PAKET'
                     ORDER BY d.tanggal DESC LIMIT 1000 ";
+        }
+        else{
+        $sql = "SELECT d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+                    FROM delivery_order d
+                    LEFT JOIN kota k ON k.id=d.id_kota_asal
+                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    join customer c on d.kode_customer = c.kode 
+                    WHERE d.jenis='PAKET'
+                    and kode_customer = '$authe'
+                    ORDER BY d.tanggal DESC LIMIT 1000 ";
+        }
 
         $do = DB::select($sql);
         $kota = DB::table('kota')->get();
@@ -799,7 +812,8 @@ class do_Controller extends Controller
     }
 
     public function form($nomor = null)
-    {
+    {   
+        // return 'a';
 
         $jurnal_dt = null;
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
@@ -809,7 +823,12 @@ class do_Controller extends Controller
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
         $outlet = DB::select(" SELECT kode,nama FROM agen WHERE kode<>'NON OUTLET' ");
-        $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y group by kode order by kode asc ");
+        $authe = Auth::user()->kode_cabang; 
+        if ($authe == '000') {
+            $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y group by kode order by kode asc ");
+        }else{
+            $cabang = DB::select(" select kode, nama, (select dc_diskon from d_disc_cabang x where dc_cabang = y.kode and dc_jenis = 'PAKET') diskon from cabang y where kode = '$authe' group by kode order by kode asc ");
+        }
 
         $kec = null;
         $do = null;
