@@ -22,12 +22,13 @@ class akun_Controller extends Controller
 
         $data = DB::table("d_akun")
                 ->join("cabang", "cabang.kode", "=", "d_akun.kode_cabang")
-                ->where("id_parrent", "\\n")
-                ->select("d_akun.*", "cabang.nama as nama_cabang")
+                ->join('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
+                ->where("d_akun_saldo.bulan", date('m'))
+                ->where("d_akun_saldo.tahun", date('Y'))
+                ->select("d_akun.*", "cabang.nama as nama_cabang", "d_akun_saldo.saldo_akun as saldo")
                 ->orderBy("id_akun")->get();
         // return json_encode($data);
         return view("keuangan.master_akun.index")->withData($data);
-        return $data;
     }
 
     public function add($parrent){
@@ -91,7 +92,7 @@ class akun_Controller extends Controller
         if(count($cek) > 0){
             $response = [
                 "status" => "exist",
-                "content" => "null"
+                "content" => $cek->nama_akun
             ];
 
             return json_encode($response);
@@ -124,15 +125,20 @@ class akun_Controller extends Controller
                 $saldo_debet = str_replace(".", "", explode(",", $request->saldo_debet)[0]);
                 $saldo_kredit = str_replace(".", "", explode(",", $request->saldo_kredit)[0]);
 
-                if($saldo_debet == 0 && $saldo_kredit == 0){
-                    $saldo->saldo_akun = 0;
-                }else{
-                    if($saldo_debet == 0){
-                        $saldo->saldo_akun = ($request->posisi_dk == "D") ? ($saldo_kredit * -1) : $saldo_kredit;
-                    }else if($saldo_kredit == 0){
-                        $saldo->saldo_akun = ($request->posisi_dk == "D") ? $saldo_debet : ($saldo_debet * -1);
-                    }
+                if($saldo_debet == 0){
+                    $saldo->saldo_akun = ($request->posisi_dk == "D") ? ($saldo_kredit * -1) : $saldo_kredit;
+                }else if($saldo_kredit == 0){
+                    $saldo->saldo_akun = ($request->posisi_dk == "D") ? $saldo_debet : ($saldo_debet * -1);
                 }
+
+                $saldo->save();
+            }else{
+                $saldo = new master_akun_saldo;
+                $saldo->id_akun = $request->kode_akun.$request->add_kode;
+                $saldo->tahun = date("Y");
+                $saldo->is_active = 1;
+                $saldo->bulan = date("m");
+                $saldo->saldo_akun = 0;
 
                 $saldo->save();
             }
@@ -146,23 +152,32 @@ class akun_Controller extends Controller
 
     public function edit($parrent){
 
-        $data = master_akun::find($parrent);
+        $data = DB::table("d_akun")
+                ->join("cabang", "cabang.kode", "=", "d_akun.kode_cabang")
+                ->join('d_akun_saldo', 'd_akun_saldo.id_akun', '=', 'd_akun.id_akun')
+                ->where("d_akun.id_akun", $parrent)
+                ->where("d_akun_saldo.bulan", date('m'))
+                ->where("d_akun_saldo.tahun", date('Y'))
+                ->select("d_akun.*", "cabang.nama as nama_cabang", "d_akun_saldo.saldo_akun as saldo")
+                ->orderBy("id_akun")->first();
         $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
+
+        // return json_encode($data);
 
         return view("keuangan.master_akun.edit")
             ->withData($data)
             ->withProvinsi($provinsi);
     }
 
-    public function update_data(Request $request, $id){
+    public function update_data(Request $request){
+        // return json_encode($request->all());
         $response = [
-            'status'    => 'berhasil',
+            'status'    => 'sukses',
             'content'   => $request->all()
         ];
 
-        $akun = master_akun::find($id);
+        $akun = master_akun::find($request->kode_akun);
         $akun->nama_akun = $request->nama_akun;
-        $akun->is_active = $request->is_active;
 
         if($akun->save()){
             return json_encode($response);

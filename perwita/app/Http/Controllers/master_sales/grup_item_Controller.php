@@ -107,8 +107,8 @@ class grup_item_Controller extends Controller
 
     public function index(){
         //$kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
-        $akun  = DB::table('d_akun')
-                   ->where('id_akun','like','4'.'%')
+       $akun  = DB::table('d_akun')
+                   ->where('id_akun','like','13'.'%')
                    ->get();
         return view('master_sales.grup_item.index',compact('akun'));
     }

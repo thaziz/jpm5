@@ -94,7 +94,7 @@
                                     <select onchange="ganti_jt()" class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $i=> $val)
-                                        <option value="{{$customer[$i]->kode}}" data-accpiutang="{{$customer[$i]->acc_piutang}}" data-jt="{{$customer[$i]->acc_piutang}}"> {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
+                                        <option value="{{$customer[$i]->kode}}" > {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -137,6 +137,18 @@
                                         <option value="KOLI">KOLI</option>
                                     </select>
                                     <input type="hidden" name="ed_type_kiriman" value="{{ $data->type_kiriman or null }}" >
+                                </td>
+                            </tr>
+                            <tr class="grup_item_tr" hidden="">
+                                <td style="padding-top: 0.4cm" >Grup Item</td>
+                                <td colspan="4" class="">                                    
+                                    <select class="chosen-select-width form-control grup_item"   name="grup_item" id="grup_item" style="width:100%" >
+                                        <option value="0">Pilih - Grup</option>
+                                    @foreach ($gp as $i=> $val)
+                                        <option value="{{$gp[$i]->kode}}" data-accpiutang="{{$gp[$i]->acc_piutang}}" data-csfpiutang="{{$gp[$i]->csf_piutang}}"> {{$gp[$i]->kode}} - {{$gp[$i]->nama}}</option>
+                                    @endforeach
+                                    </select>
+                                    <input type="hidden" class="ed_customer" name="ed_customer" value="" >
                                 </td>
                             </tr>
                             <tr>
@@ -461,7 +473,14 @@
         
 
    $('#cb_pendapatan').change(function(){
+    if ($(this).val() == 'KORAN') {
+        $('.grup_item_tr').prop('hidden',false);
+    }else{
+        $('.grup_item_tr').prop('hidden',true);
+        $('.grup_item').val('0');
+    }
         $('.ed_pendapatan').val($(this).val());
+
    })
    //modal do
    $('#btn_modal_do').click(function(){
@@ -472,6 +491,7 @@
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
         var cabang        = $('.cabang').val();
+        var grup_item     = $('.grup_item').val();
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -487,7 +507,7 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang,grup_item},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);
@@ -826,7 +846,8 @@ function hitung_total_tagihan(){
         closeOnConfirm: true
       },
       function(){
-            var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
+            var accPiutang=$(".grup_item").find(':selected').data('accpiutang'); 
+            var csfPiutang=$(".grup_item").find(':selected').data('csfpiutang'); 
             var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
             var ed_customer=$("#customer").val(); 
                // alert(accPiutang);
@@ -844,6 +865,7 @@ function hitung_total_tagihan(){
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
                +'&accPiutang='+accPiutang
+               +'&csfPiutang='+csfPiutang
                +'&pajak_lain='+pajak_lain
                +'&ed_customer='+ed_customer,
           success:function(response){

@@ -1,0 +1,3 @@
+- rule akun
+	. apabila akun saldo tidak dicentang maka saldo akun secara otomatis 0;
+	. apabila akun saldo dicentang maka form saldo tidak boleh 0

@@ -382,11 +382,10 @@ class do_Controller extends Controller
                 $dataInfo = ['status' => 'gagal', 'info' => 'Akun Pada Master Item Belum Ada Atau Pencarian Harga Belum Di Lakukan'];
                 return json_encode($dataInfo);
             }
-            
             $data = array(
                 'nomor' => strtoupper($request->ed_nomor),
                 'tanggal' => $request->ed_tanggal,
-                    'catatan' => '-',
+                'catatan_admin' => '-',
                 'id_kota_asal' => $request->cb_kota_asal,
                 'id_kota_tujuan' => $request->cb_kota_tujuan,
                 'id_kecamatan_tujuan' => $request->cb_kecamatan_tujuan,
@@ -452,7 +451,7 @@ class do_Controller extends Controller
                     $increment+=1;
                 }
 
-                 $data = array(
+                 $data1 = array(
                     'no_do' => strtoupper($request->ed_nomor),
                     'status' => 'MANIFESTED',
                     'nama' => strtoupper($request->ed_nama_pengirim),
@@ -460,9 +459,9 @@ class do_Controller extends Controller
                     'asal_barang' => $request->cb_kota_asal,
                     'id'=>$increment,
                 );
-                $simpan = DB::table('u_s_order_do')->insert($data);
-
+                $simpan = DB::table('u_s_order_do')->insert($data1);
                 //auto number
+
                 if ($data['nomor'] == '') {
                     $tanggal = strtoupper($request->ed_tanggal);
                     $kode_cabang = strtoupper($request->cb_cabang);

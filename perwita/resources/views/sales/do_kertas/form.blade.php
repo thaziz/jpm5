@@ -61,6 +61,7 @@
                                     <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                     <input type="hidden" class="form-control" name="ed_tampil" >
+                                    <input type="hidden" class="form-control success" name="success" >
                                     <input type="hidden" class="form-control" name="crud_h" class="form-control" @if ($data === null) value="N" @else value="E" @endif>
                                 </td>
                             </tr>
@@ -243,6 +244,9 @@
                                                     <input type="text" class="form-control ed_total_text" readonly="readonly" name="ed_total" tabindex="-1" style="text-align: right;">
                                                     <input type="hidden" class="form-control ed_total" readonly="readonly" name="ed_total" tabindex="-1" style="text-align: right;">
                                                     <input type="hidden" readonly="readonly" class="form-control acc_penjualan" name="acc_penjualan" value="" >
+                                                    <input type="hidden" readonly="readonly" class="form-control csf_penjualan" name="csf_penjualan" value="" >
+                                                    <input type="hidden" readonly="readonly" class="form-control acc_piutang" name="acc_piutang" value="" >
+                                                    <input type="hidden" readonly="readonly" class="form-control csf_piutang" name="csf_piutang" value="" >
                                                 </td>
                                             </tr>
                                             <tr>
@@ -577,7 +581,12 @@ function cari_item() {
             }
             $('.ed_satuan').val(data.kode_satuan);
             $('.ed_harga').val(data.harga);
-            $('.acc_penjualan').val(data.acc_penjualan)
+            $('.acc_penjualan').val(data.acc_penjualan);
+            $('.csf_penjualan').val(data.csf_penjualan);
+
+            $('.acc_piutang').val(data.acc_piutang);
+            $('.csf_piutang').val(data.csf_piutang);
+
             $('.ed_jumlah').val(1);
             
             hitung();
@@ -619,10 +628,13 @@ function simpan_modal() {
     var cb_kota_tujuan      = $('.cb_kota_tujuan').val();
     var ed_keterangan       = $('.ed_keterangan').val();
     var acc_penjualan       = $('.acc_penjualan').val();
+    var csf_penjualan       = $('.csf_penjualan').val();
+    var csf_piutang         = $('.csf_piutang').val();
+    var acc_piutang         = $('.acc_piutang').val();
     var cb_kota_asal_text   = $('.cb_kota_asal option:selected').text();
     var cb_kota_tujuan_text = $('.cb_kota_tujuan option:selected').text();
     if ($('.status_kontrak').is(':checked') == true) {
-        var item_text       = $('.nama_kontrak ').val();
+        var item_text       = $('.nama_kontrak').val();
     }else{
         var item_text       = $('.item option:selected').text();
     }
@@ -644,7 +656,10 @@ if (old_id == '') {
         'Kode Item':'<p class="kode_item_text">'+item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
         '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
-        '<input type="hidden" name="d_acc[]" class="d_acc" value="'+acc_penjualan+'">',
+        '<input type="hidden" name="d_acc_penjualan[]" class="d_acc_penjualan" value="'+acc_penjualan+'">'+
+        '<input type="hidden" name="d_csf_penjualan[]" class="d_csf_penjualan" value="'+csf_penjualan+'">'+
+        '<input type="hidden" name="d_acc_piutang[]" class="d_acc_piutang" value="'+acc_piutang+'">'+
+        '<input type="hidden" name="d_csf_piutang[]" class="d_csf_piutang" value="'+csf_piutang+'">',
 
         'Nama Item':'<p class="nama_item">'+item_text+'</p>',
 
@@ -690,7 +705,11 @@ if (old_id == '') {
 
         'Kode Item':'<p class="kode_item_text">'+item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
-        '<input type="hidden" name="d_acc[]" class="d_acc" value="'+acc_penjualan+'">',
+        '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
+        '<input type="hidden" name="d_acc_penjualan[]" class="d_acc" value="'+acc_penjualan+'">'+
+        '<input type="hidden" name="d_csf_penjualan[]" class="d_acc" value="'+csf_penjualan+'">'+
+        '<input type="hidden" name="d_acc_piutang[]" class="d_acc" value="'+acc_piutang+'">'+
+        '<input type="hidden" name="d_csf_piutang[]" class="d_acc" value="'+csf_piutang+'">',
 
         'Nama Item':'<p class="nama_item">'+item_text+'</p>',
 
@@ -801,7 +820,10 @@ function edit_detail(p) {
     var d_harga  = $(par).find('.d_harga').val();
     var d_diskon  = $(par).find('.d_diskon').val();
     var d_asal  = $(par).find('.d_asal').val();
-    var d_acc  = $(par).find('.d_acc').val();
+    var d_acc_penjualan  = $(par).find('.d_acc_penjualan').val();
+    var d_csf_penjualan  = $(par).find('.d_csf_penjualan').val();
+    var d_acc_piutang  = $(par).find('.d_acc_piutang').val();
+    var d_csf_piutang  = $(par).find('.d_csf_piutang').val();
     var d_tujuan  = $(par).find('.d_tujuan').val();
     var d_keterangan  = $(par).find('.d_keterangan').val();
     var kcd_dt  = $(par).find('.d_kcd_dt').val();
@@ -827,7 +849,10 @@ function edit_detail(p) {
     $('.ed_diskon').val(d_diskon);
     $('.ed_diskon_modal').val(accounting.formatMoney(d_diskon,"",0,'.',','));
     $('.ed_keterangan').val(d_keterangan);
-    $('.acc_penjualan').val(d_acc);
+    $('.acc_penjualan').val(d_acc_penjualan);
+    $('.csf_penjualan').val(d_csf_penjualan);
+    $('.acc_piutang').val(d_acc_piutang);
+    $('.csf_piutang').val(d_csf_piutang);
     hitung();    
     $('#modal').modal('show');
 }
@@ -932,6 +957,7 @@ function pilih_kontrak(a) {
                     toastr.warning('No invoice telah diganti menjadi ' + response.nota)
                     $('#btnsimpan').addClass('disabled');
                         $('#print').removeClass('disabled');
+                        $('.success').val(response.berhasil);
                 });
              }
 
@@ -944,6 +970,7 @@ function pilih_kontrak(a) {
                    showConfirmButton: true
                     },function(){
                         // location.reload();
+                        $('.success').val(response.berhasil);
                         $('#btnsimpan').addClass('disabled');
                         $('#print').removeClass('disabled');
 
@@ -967,7 +994,10 @@ function pilih_kontrak(a) {
 
     window.onbeforeunload = function(event)
 {       
+    var valid = $('.success').val();
+    if (valid == '') {
        return confirm();
+    }
 
 };
 </script>

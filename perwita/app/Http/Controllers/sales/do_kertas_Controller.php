@@ -28,6 +28,7 @@ class do_kertas_Controller extends Controller
         }
         $cabang = DB::table('cabang')
                     ->get();
+
         // $delete = DB::table('delivery_order')
         //             ->delete();
 
@@ -161,7 +162,8 @@ class do_kertas_Controller extends Controller
     public function cari_item(request $request)
     {
         $data = DB::table('item')
-                  ->where('kode',$request->item)
+                  ->join('grup_item','kode_grup_item','=','grup_item.kode')
+                  ->where('item.kode',$request->item)
                   ->first();
 
         
@@ -234,12 +236,15 @@ class do_kertas_Controller extends Controller
                                     'dd_id_kontrak'   => $d_kcd_dt[$i],
                                     'dd_id_kota_tujuan' => $request->d_tujuan[$i],
                                     'dd_keterangan' => strtoupper($request->d_keterangan[$i]),
-                                    'dd_acc_penjualan' => strtoupper($request->d_acc[$i]),
-                                    'dd_csf_penjualan' => strtoupper($request->d_acc[$i]),
+                                    'dd_acc_penjualan' => strtoupper($request->d_acc_penjualan[$i]),
+                                    'dd_csf_penjualan' => strtoupper($request->d_csf_penjualan[$i]),
+                                    'dd_acc_piutang' => strtoupper($request->d_acc_piutang[$i]),
+                                    'dd_csf_piutang' => strtoupper($request->d_csf_piutang[$i]),
+
 
                                  ]);
                 }
-                return response()->json(['status'=>1]);
+                return response()->json(['status'=>1,'berhasil'=>'success']);
             }else{
                 $bulan  = Carbon::now()->format('m');
                 $tahun  = Carbon::now()->format('y');
@@ -303,12 +308,15 @@ class do_kertas_Controller extends Controller
                                     'dd_id_kota_asal' => $request->d_asal[$i],
                                     'dd_id_kota_tujuan' => $request->d_tujuan[$i],
                                     'dd_keterangan' => strtoupper($request->d_keterangan[$i]),
-                                    'dd_acc_penjualan' => strtoupper($request->d_acc[$i]),
+                                    'dd_acc_penjualan' => strtoupper($request->d_acc_penjualan[$i]),
+                                    'dd_csf_penjualan' => strtoupper($request->d_csf_penjualan[$i]),
+                                    'dd_acc_piutang' => strtoupper($request->d_acc_piutang[$i]),
+                                    'dd_csf_piutang' => strtoupper($request->d_csf_piutang[$i]),
 
                                  ]);
                 }
 
-                    return response()->json(['nota'=>$nota,'status'=>2]);
+                    return response()->json(['nota'=>$nota,'status'=>2,'berhasil'=>'success']);
 
             }
         });
@@ -319,6 +327,8 @@ class do_kertas_Controller extends Controller
         $hapus = DB::table('delivery_order')
                    ->where('nomor',$request->id)
                    ->delete();
+
+     
 
         return response()->json(['status'=>1]);
     }
@@ -339,6 +349,7 @@ class do_kertas_Controller extends Controller
 
         $data_dt = DB::table('delivery_order')
                   ->join('delivery_orderd','dd_nomor','=','nomor')
+                  ->leftjoin('item','dd_kode_item','=','item.kode')
                   ->where('nomor',$id)
                   ->get();
 
@@ -366,6 +377,7 @@ class do_kertas_Controller extends Controller
 
         $data_dt = DB::table('delivery_order')
                   ->join('delivery_orderd','dd_nomor','=','nomor')
+                  ->leftjoin('item','dd_kode_item','=','item.kode')
                   ->where('nomor',$id)
                   ->get();
 
