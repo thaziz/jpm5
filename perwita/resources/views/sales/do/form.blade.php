@@ -1348,14 +1348,14 @@
                         $("#button_a").show();
 
                         if (data.tipe == 'DOKUMEN') {
-                        $("#button_a").html('<button class="btn btn-warning" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'KILOGRAM') {
                             $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-info" style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'KOLI') {
-                            $("#button_a").html('<button class="btn btn-primary" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'SEPEDA') {
-                            $("#button_a").html('<button class="btn btn-danger" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
                         }   
                     }
                     if (data.jumlah_data == 0){
@@ -1364,14 +1364,15 @@
                         $("#button_a").show();
 
                         if (data.tipe == 'DOKUMEN') {
-                        $("#button_a").html('<button class="btn btn-warning" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'KILOGRAM') {
-                            $("#button_a").html('<button class="btn btn-info" style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()" ><i class="fa fa-plus"></i></button>')
+                            $("input[name='ed_tarif_penerus']").css('width','220px');
+                            $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'KOLI') {
-                            $("#button_a").html('<button class="btn btn-primary" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'SEPEDA') {
-                            $("#button_a").html('<button class="btn btn-danger" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
-                        }
+                            $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                        } 
                     }
                     var dasar = $('input[name="ed_tarif_dasar"]').val();
                     dasar = dasar.replace(/[A-Za-z$. ,-]/g, "");
@@ -1392,13 +1393,14 @@
 
 
                     if (data.tipe == 'DOKUMEN') {
-                        $("#button_a").html('<button class="btn btn-warning" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
+                        $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
                     }else if (data.tipe == 'KILOGRAM') {
-                        $("#button_a").html('<button class="btn btn-info" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                        $("input[name='ed_tarif_penerus']").css('width','220px');
+                        $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
                     }else if (data.tipe == 'KOLI') {
-                        $("#button_a").html('<button class="btn btn-primary" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                        $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
                     }else if (data.tipe == 'SEPEDA') {
-                        $("#button_a").html('<button class="btn btn-danger" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                        $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
                     }   
 
 
@@ -1446,7 +1448,7 @@
     
     function dokumen_tipe(){
         $.ajax({
-            url:baseUrl+'/sales/cari_modaldeliveryorder',
+            url:baseUrl+'/sales/cari_modaldeliveryorder_dokumen',
             type:'get',
             success:function(data){
                 $('#taruh_sini').html(data);
@@ -1512,8 +1514,72 @@
         })
     }
     function kilogram_tipe(){
-        alert('a');
+        $.ajax({
+            url:baseUrl+'/sales/cari_modaldeliveryorder_kilogram',
+            type:'get',
+            success:function(data){
+                $('#taruh_sini').html(data);
+                $("#modal").modal("show");
+
+                $('#provinsi').change(function(){
+                    var prov = $('#provinsi').find(':selected').val();
+                     $.ajax({
+                        type: "GET",
+                        data : {kota:prov},
+                        url : baseUrl + "/sales/tarif_penerus_dokumen/get_kota",
+                        dataType:'json',
+                        success: function(data)
+                        {   
+                            console.log(data);
+                             var kotakota = '<option value="" selected="" disabled="">-- Pilih Kota --</option>';
+
+                             $.each(data, function(i,n){
+                                kotakota = kotakota + '<option value="'+n.id+'" data-kota="'+n.kode_kota+'">'+n.nama+'</option>';
+                             })
+                            $('#kota_penerus').addClass('form-control'); 
+                            $('#kota_penerus').attr('readonly',false); 
+                            $('#kota_penerus').html(kotakota); 
+                            $('#kota_penerus').change(function(){
+                                var kode_kota = $(this).find(':selected').data('kota');
+                                $('input[name="kode_kota"]').val(kode_kota);
+                            })
+                            $('#kecamatan_penerus').html('<option value="" selected="" disabled=""></option>'); 
+                        }
+                    });
+                });
+
+
+                $('#kota_penerus').change(function(){
+                    var kot = $(this).find(':selected').val();
+                     $.ajax({
+                        type: "GET",
+                        data : {kecamatan:kot},
+                        url : baseUrl + "/sales/tarif_penerus_dokumen/get_kec",
+                        dataType:'json',
+                        success: function(data)
+                        {   
+                            console.log(data);
+                             var kecamatan = '<option value="" selected="" disabled="">-- Pilih Kecamatan --</option>';
+
+                             $.each(data, function(i,n){
+                                kecamatan = kecamatan + '<option value="'+n.id+'">'+n.nama+'</option>';
+                             })
+                            $('#kecamatan_penerus').addClass('form-control'); 
+                            $('#kecamatan_penerus').html(kecamatan); 
+                            $('#kecamatan_penerus').attr('readonly',false); 
+
+                        }
+                    })
+                });
+
+
+
+
+
+            },
+        })
     }
+
     function save_penerus(){
         var penerus_tipe = $('select[name="ed_tipe"]').val();
         var penerus_prov = $('select[name="ed_provinsi"]').val();
