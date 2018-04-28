@@ -980,6 +980,7 @@ function pilih_kontrak(a) {
                 });
              }
 
+            
              if (response.status == 1) {
                 swal({
                     title: "Berhasil!",

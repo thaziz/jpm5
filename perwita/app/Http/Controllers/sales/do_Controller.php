@@ -382,6 +382,19 @@ class do_Controller extends Controller
                 $dataInfo = ['status' => 'gagal', 'info' => 'Akun Pada Master Item Belum Ada Atau Pencarian Harga Belum Di Lakukan'];
                 return json_encode($dataInfo);
             }
+
+            $select_akun = DB::table('d_akun')
+                         ->where('id_akun','like','1303'.'%')
+                         ->where('kode_cabang',$request->cb_cabang)
+                         ->first();
+
+            if ($select_akun == null) {
+                $dataInfo = ['status' => 'gagal', 'info' => 'Akun Piutang Pada Cabang Ini Belum Tersedia'];
+                return json_encode($dataInfo);
+            }else{
+              $akun_piutang = $select_akun->id_akun;
+            }
+
             $data = array(
                 'nomor' => strtoupper($request->ed_nomor),
                 'tanggal' => $request->ed_tanggal,
@@ -430,6 +443,8 @@ class do_Controller extends Controller
                 'jumlah' => $jumlah,
                 'jenis_ppn' => $request->cb_jenis_ppn,
                 'acc_penjualan' => $request->acc_penjualan,
+                'acc_piutang_do'        => $akun_piutang,
+                'csf_piutang_do'        => $akun_piutang,
 
                 'total_net' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
             );
