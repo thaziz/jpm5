@@ -89,17 +89,26 @@ class do_kertas_Controller extends Controller
            $detail =DB::select("   SELECT d.*,i.nama FROM delivery_orderd d,item i
                                 WHERE i.kode=d.dd_kode_item AND d.dd_nomor='$nomor'  ORDER BY dd_id");
         }else{
-            $det = DB::table('delivery_orderd')
-                     ->join('kontrak_customer_d','dd_kode_item','=','kcd_kode')
-                     ->where('dd_nomor',$nomor)
-                     ->get();
-            $detail =DB::table('delivery_order')
-                       ->join('delivery_orderd','nomor','=','dd_nomor')
-                       ->join('kontrak_customer_d','kcd_kode','=','dd_kode_item')
-                       ->where('dd_nomor',$nomor)
-                       ->where('dd_kode_item',$det[0]->dd_kode_item)
-                       ->where('kcd_dt',$det[0]->dd_id_kontrak)
-                       ->get();
+           $array_valid = DB::table('delivery_order')
+                  ->join('delivery_orderd','dd_nomor','=','nomor')
+                  ->where('nomor',$nomor)
+                  ->get();
+
+            for ($i=0; $i < count($array_valid); $i++) { 
+                $valid[$i] =$array_valid[$i]->dd_id_kontrak;
+                $dd_id[$i] =$array_valid[$i]->dd_id;
+                $no_kon[$i] =$array_valid[$i]->dd_kode_item;
+            }
+
+
+            for ($i=0; $i < count($dd_id); $i++) { 
+                $detail[$i]=DB::table('delivery_orderd')
+                              ->join('kontrak_customer_d','kcd_dt','=','dd_id_kontrak')
+                              ->where('kcd_kode',$no_kon[$i])
+                              ->where('kcd_dt',$valid[$i])
+                              ->get();
+            }
+            
         }
         // return $nomor;
         // return $detail;
@@ -346,12 +355,35 @@ class do_kertas_Controller extends Controller
         $data = DB::table('delivery_order')
                   ->where('nomor',$id)
                   ->first();
+        if ($data->kontrak == true) {
+            $array_valid = DB::table('delivery_order')
+                  ->join('delivery_orderd','dd_nomor','=','nomor')
+                  ->where('nomor',$id)
+                  ->get();
 
-        $data_dt = DB::table('delivery_order')
+            for ($i=0; $i < count($array_valid); $i++) { 
+                $valid[$i] =$array_valid[$i]->dd_id_kontrak;
+                $dd_id[$i] =$array_valid[$i]->dd_id;
+                $no_kon[$i] =$array_valid[$i]->dd_kode_item;
+            }
+
+
+            for ($i=0; $i < count($dd_id); $i++) { 
+                $data_dt[$i]=DB::table('delivery_orderd')
+                              ->join('kontrak_customer_d','kcd_dt','=','dd_id_kontrak')
+                              ->where('kcd_kode',$no_kon[$i])
+                              ->where('kcd_dt',$valid[$i])
+                              ->get();
+            }
+
+        }else{
+            $data_dt = DB::table('delivery_order')
                   ->join('delivery_orderd','dd_nomor','=','nomor')
                   ->leftjoin('item','dd_kode_item','=','item.kode')
                   ->where('nomor',$id)
                   ->get();
+        }
+        
 
         return view('sales.do_kertas.edit_kertas',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','item','id','data_dt'));
     }
@@ -408,8 +440,22 @@ class do_kertas_Controller extends Controller
                       ->where('kc_aktif','AKTIF')
                       ->where('kcd_jenis','KORAN')
                       ->where('kc_kode_customer',$request->customer)
-                      ->whereNotIn('kcd_dt',$array_kontrak)
                       ->get();
+        $gp = DB::table('grup_item')
+                ->get();
+
+        for ($i=0; $i < count($cari_kontrak); $i++) { 
+            for ($a=0; $a < count($gp); $a++) { 
+                if ($cari_kontrak[$i]->kcd_grup == $gp[$a]->kode) {
+                    $cari_kontrak[$i]->acc_piutang = $gp[$a]->acc_piutang;
+                    $cari_kontrak[$i]->csf_piutang = $gp[$a]->csf_piutang;
+                }else{
+                    $cari_kontrak[$i]->acc_piutang = 0;
+                    $cari_kontrak[$i]->csf_piutang = 0;
+                }
+            }
+        }
+
         // dd($request->all());
 
         $kota = DB::table('kota')

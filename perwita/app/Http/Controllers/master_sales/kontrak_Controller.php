@@ -21,11 +21,13 @@ class kontrak_Controller extends Controller
         if (Auth::user()->punyaAkses('Kontrak Customer','all')) {
             $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
+                   ->orderBy('kc_tanggal','DESC')
                    ->get();
         }else{
             $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
                    ->where('kc_kode_cabang',$cabang)
+                   ->orderBy('kc_tanggal','DESC')
                    ->get(); 
         }
         
@@ -54,7 +56,7 @@ class kontrak_Controller extends Controller
         // $cabang = session::get('cabang');
         // $cabang = Auth::user()->kode_cabang;
         $customer = DB::table('customer')
-                      ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
+                      // ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
                       // ->where('kc_kode_cabang',$request->cabang)
                       // ->where('kc_kode_customer',null)
                       ->get();
@@ -285,6 +287,7 @@ class kontrak_Controller extends Controller
         $kota    = DB::table('kota')
                   ->get();
 
+        $grup_item = DB::select(DB::raw(" SELECT kode,nama FROM grup_item ORDER BY nama ASC "));
                   
         for ($i=0; $i < count($data_dt); $i++) { 
           for ($a=0; $a < count($kota); $a++) { 
@@ -317,7 +320,7 @@ class kontrak_Controller extends Controller
         }
         
 
-        return view('master_sales.kontrak.edit_kontrak',compact('data','data_dt','kota','customer','data','cabang','satuan','tipe_angkutan','now','now1','jenis_tarif'));
+        return view('master_sales.kontrak.edit_kontrak',compact('data','data_dt','kota','customer','data','cabang','satuan','tipe_angkutan','now','now1','jenis_tarif','grup_item'));
     }
     public function update_kontrak(request $request)
     {   
@@ -383,7 +386,7 @@ class kontrak_Controller extends Controller
                                 'kcd_csf_penjualan' => $request->akun_csf[$i],
                                 'kcd_kode'          => $request->kontrak_nomor,
                                 'kcd_active'        => $kcd_aktif[$i],
-                                  'kcd_grup'          => $request->grup_item[$i],
+                                'kcd_grup'          => $request->grup_item[$i],
                              ]);
         }
 
