@@ -366,13 +366,15 @@ public function cari_do_invoice(request $request)
     }
     $data = array_values($data);
     $data1 = array_values($data1);
-
-    for ($i=0; $i < count($data1); $i++) { 
-      if ($data1[$i]->ipd_nomor_invoice !=null) {
-          unset($data[$i]);
+    if (!isset($request->flag)) {
+      for ($i=0; $i < count($data1); $i++) { 
+        if ($data1[$i]->ipd_nomor_invoice !=null) {
+            unset($data[$i]);
+        }
       }
+
+      $data = array_values($data);
     }
-    $data = array_values($data);
     $customer = DB::table('customer')
                       ->get();
     for ($i=0; $i < count($data); $i++) { 
@@ -382,7 +384,6 @@ public function cari_do_invoice(request $request)
         }
       }
     }
-    // return $data;
    $id = $request->id;
     return view('sales.invoice.tableDo',compact('data','jenis','id'));
 }

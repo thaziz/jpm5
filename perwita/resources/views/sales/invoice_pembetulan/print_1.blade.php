@@ -447,7 +447,7 @@
 				<td class="borderrighttabel textcenter" width="26%">(Finance Manager)</td>
 				<td class="borderrighttabel textcenter" width="26.2%" style="margin-bottom: 10px;">(Account Dept)</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Jumlah</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->ip_total_tagihan, 2, ",", ".") }}</td>
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->ip_total_revisi, 2, ",", ".") }}</td>
 			</tr>
 		</table>
 </body>

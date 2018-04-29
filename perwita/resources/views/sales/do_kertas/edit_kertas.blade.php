@@ -485,36 +485,37 @@ cari_customer();
         @endforeach
 
     @else
-        var temp = "{{$data_dt[$a][0]->kcd_keterangan}}"
-        var dd_diskon = "{{$data_dt[$a][0]->dd_diskon}}";
-        var dd_harga = "{{$data_dt[$a][0]->dd_harga}}";
-        var dd_total = "{{$data_dt[$a][0]->dd_total}}";
-        var dd_kode_satuan = "{{$data_dt[$a][0]->dd_kode_satuan}}";
-        var dd_jumlah = "{{$data_dt[$a][0]->dd_jumlah}}";
-        var dd_id_kota_asal = "{{$data_dt[$a][0]->dd_id_kota_asal}}";
-        var dd_id_kota_tujuan = "{{$data_dt[$a][0]->dd_id_kota_tujuan}}";
-        var dd_kode_item = "{{$data_dt[$a][0]->dd_kode_item}}";
-        var dd_id_kontrak = "{{$data_dt[$a][0]->dd_id_kontrak}}";
-        var dd_acc_penjualan = "{{$data_dt[$a][0]->dd_acc_penjualan}}";
-        var dd_csf_penjualan = "{{$data_dt[$a][0]->dd_csf_penjualan}}";
-        var dd_acc_piutang = "{{$data_dt[$a][0]->dd_acc_piutang}}";
-        var dd_csf_piutang = "{{$data_dt[$a][0]->dd_csf_piutang}}";
-        var dd_keterangan = "{{$data_dt[$a][0]->dd_keterangan}}";
+        var temp = "{{$data_dt[$a]->nama_item}}"
+        var dd_diskon = "{{$data_dt[$a]->dd_diskon}}";
+        var dd_harga = "{{$data_dt[$a]->dd_harga}}";
+        var dd_id = "{{$data_dt[$a]->dd_id}}";
+        var dd_total = "{{$data_dt[$a]->dd_total}}";
+        var dd_kode_satuan = "{{$data_dt[$a]->dd_kode_satuan}}";
+        var dd_jumlah = "{{$data_dt[$a]->dd_jumlah}}";
+        var dd_id_kota_asal = "{{$data_dt[$a]->dd_id_kota_asal}}";
+        var dd_id_kota_tujuan = "{{$data_dt[$a]->dd_id_kota_tujuan}}";
+        var dd_kode_item = "{{$data_dt[$a]->dd_kode_item}}";
+        var dd_id_kontrak = "{{$data_dt[$a]->dd_id_kontrak}}";
+        var dd_acc_penjualan = "{{$data_dt[$a]->dd_acc_penjualan}}";
+        var dd_csf_penjualan = "{{$data_dt[$a]->dd_csf_penjualan}}";
+        var dd_acc_piutang = "{{$data_dt[$a]->dd_acc_piutang}}";
+        var dd_csf_piutang = "{{$data_dt[$a]->dd_csf_piutang}}";
+        var dd_keterangan = "{{$data_dt[$a]->dd_keterangan}}";
 
         @foreach($kota as $i)
 
-            @if ($i->id == $data_dt[$a][0]->dd_id_kota_asal)
+            @if ($i->id == $data_dt[$a]->dd_id_kota_asal)
             var temp1 = "{{$i->nama}}" 
             @endif
 
-            @if ($i->id == $data_dt[$a][0]->dd_id_kota_tujuan)
+            @if ($i->id == $data_dt[$a]->dd_id_kota_tujuan)
             var temp2 = "{{$i->nama}}" 
             @endif
 
         @endforeach
     @endif
 
-
+    console.log(dd_id);
 
 table_detail.row.add({
         'id':'<p class="id_text">'+count+'</p>'+
@@ -530,6 +531,7 @@ table_detail.row.add({
 
         'Kode Item':'<p class="kode_item_text">'+dd_kode_item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+dd_kode_item+'">'+
+        '<input type="hidden" name="d_id[]" class="d_id" value="'+dd_id+'">'+
         '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+dd_kode_item+'">'+
         '<input type="hidden" name="d_acc_penjualan[]" class="d_acc_penjualan" value="'+dd_acc_penjualan+'">'+
         '<input type="hidden" name="d_csf_penjualan[]" class="d_csf_penjualan" value="'+dd_csf_penjualan+'">'+
@@ -760,6 +762,7 @@ if (old_id == '') {
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
         '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
         '<input type="hidden" name="d_acc_penjualan[]" class="d_acc_penjualan" value="'+acc_penjualan+'">'+
+        '<input type="hidden" name="d_id[]" class="d_id" value="">'+
         '<input type="hidden" name="d_csf_penjualan[]" class="d_csf_penjualan" value="'+csf_penjualan+'">'+
         '<input type="hidden" name="d_acc_piutang[]" class="d_acc_piutang" value="'+acc_piutang+'">'+
         '<input type="hidden" name="d_csf_piutang[]" class="d_csf_piutang" value="'+csf_piutang+'">',
@@ -810,6 +813,7 @@ if (old_id == '') {
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
         '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
         '<input type="hidden" name="d_acc_penjualan[]" class="d_acc" value="'+acc_penjualan+'">'+
+        '<input type="hidden" name="d_id[]" class="d_id" value="">'+
         '<input type="hidden" name="d_csf_penjualan[]" class="d_acc" value="'+csf_penjualan+'">'+
         '<input type="hidden" name="d_acc_piutang[]" class="d_acc" value="'+acc_piutang+'">'+
         '<input type="hidden" name="d_csf_piutang[]" class="d_acc" value="'+csf_piutang+'">',

@@ -277,7 +277,7 @@
      @if($head->kontrak==false)
          @foreach($detail as $val)
          <tr>
-           <td class="bot left right">{{$val->dd_nomor}}</td>
+           <td class="bot left right">{{$val->dd_nomor}} - {{$val->dd_nomor_dt}}</td>
            @if($val->dd_id_kontrak == 0)
            <td class="bot center left right">{{$val->dd_kode_item}}</td>
            @else
@@ -296,20 +296,20 @@
       @else
          @foreach($detail as $i=>$val)
          <tr>
-           <td class="bot left right">{{$detail[$i][0]->dd_nomor}}</td>
-           @if($detail[$i][0]->dd_id_kontrak == 0)
-           <td class="bot center left right">{{$detail[$i][0]->dd_kode_item}}</td>
+           <td class="bot left right">{{$val->dd_nomor}} - {{$val->dd_nomor_dt}}</td>
+           @if($val->dd_id_kontrak == 0)
+           <td class="bot center left right">{{$val->dd_kode_item}}</td>
            @else
-           <td class="bot center left right">{{$detail[$i][0]->dd_id_kontrak}}</td>
+           <td class="bot center left right">{{$val->dd_id_kontrak}}</td>
            @endif
 
-           @if(isset($detail[$i][0]->kcd_keterangan))
-           <td class="bot left right">{{$detail[$i][0]->kcd_keterangan}}</td>
+           @if(isset($val->nama_item))
+           <td class="bot left right">{{$val->nama_item}}</td>
            @else
-           <td class="bot left right">{{$detail[$i][0]->nama}}</td>
+           <td class="bot left right">{{$val->nama}}</td>
            @endif
-           <td class="bot left right" >{{$detail[$i][0]->dd_keterangan}}</td>
-           <td class="bot center left right">{{$detail[$i][0]->dd_jumlah}} {{$detail[$i][0]->dd_kode_satuan}}</td>
+           <td class="bot left right" >{{$val->dd_keterangan}}</td>
+           <td class="bot center left right">{{$val->dd_jumlah}} {{$val->dd_kode_satuan}}</td>
          </tr>
          @endforeach
       @endif
