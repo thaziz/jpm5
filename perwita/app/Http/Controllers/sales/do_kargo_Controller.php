@@ -490,7 +490,15 @@ class do_kargo_Controller extends Controller
             $discount = $request->discount;
         }
         // dd($discount);
-
+        $select_akun = DB::table('d_akun')
+                         ->where('id_akun','like','1302'.'%')
+                         ->where('kode_cabang',$request->cabang)
+                         ->first();
+        if ($select_akun == null) {
+              return response()->json(['status'=>4]);
+        }else{
+          $akun_piutang = $select_akun->id_akun;
+        }
             $save_do = DB::table('delivery_order')
                          ->insert([
                                 'nomor'                 => strtoupper($request->nomor_do),
@@ -543,13 +551,16 @@ class do_kargo_Controller extends Controller
                                 'kontrak'               => $kontrak,
                                 'created_by'            =>  Auth::user()->m_name,
                                 'created_at'            =>  Carbon::now(),
-                                'updated_by'             =>  Auth::user()->m_name,
-                                'updated_at'             =>  Carbon::now(),
+                                'updated_by'            =>  Auth::user()->m_name,
+                                'updated_at'            =>  Carbon::now(),
                                 'kode_tarif'            => $request->kode_tarif,
                                 'keterangan_tarif'      => $request->keterangan_detail,
                                 'acc_penjualan'         => $request->acc_penjualan,
+                                'acc_piutang_do'        => $akun_piutang,
+                                'csf_piutang_do'        => $akun_piutang,
                                 'status_do'             => 'Released'
                          ]);
+
             $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->nomor_do)
                       ->first();
@@ -576,6 +587,16 @@ class do_kargo_Controller extends Controller
                 $discount = 0;
             }else{
                 $discount = $request->discount;
+            }
+
+            $select_akun = DB::table('d_akun')
+                         ->where('id_akun','like','1302'.'%')
+                         ->where('kode_cabang',$request->cabang)
+                         ->first();
+            if ($select_akun == null) {
+              return response()->json(['status'=>4]);
+            }else{
+              $akun_piutang = $select_akun->id_akun;
             }
 
             $save_do = DB::table('delivery_order')
@@ -632,6 +653,8 @@ class do_kargo_Controller extends Controller
                                 'kontrak'               => $kontrak,
                                 'kode_satuan'           => strtoupper($request->satuan),
                                 'acc_penjualan'         => $request->acc_penjualan,
+                                'acc_piutang_do'        => $akun_piutang,
+                                'csf_piutang_do'        => $akun_piutang,
                                 'status_do'             => 'Released'
                          ]);
             return response()->json(['nota'=>$nota,'status'=>2]);

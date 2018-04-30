@@ -87,13 +87,7 @@ class invoice_Controller extends Controller
         $gp     = DB::table('grup_item')
                       ->get();
 
-        for ($i=0; $i < count($customer); $i++) { 
-          for ($a=0; $a < count($kota); $a++) { 
-            if ($customer[$i]->kota == $kota[$a]->id) {
-               $customer[$i]->nama_kota = $kota[$a]->nama;
-            }
-          }
-        }
+ 
         // return $customer;
         $tgl      = Carbon::now()->format('d/m/Y');
         $tgl1     = Carbon::now()->subDays(30)->format('d/m/Y');
@@ -101,7 +95,7 @@ class invoice_Controller extends Controller
         $pajak    = DB::table('pajak')
                       ->get();
 
-        return view('sales.invoice.form',compact('customer','cabang','tgl','tgl1','pajak','gp'));
+        return view('sales.invoice.form',compact('customer','cabang','tgl','tgl1','pajak','gp','kota'));
     }
 
 
@@ -280,6 +274,7 @@ public function drop_cus(request $request)
 }
 public function cari_do_invoice(request $request)
 {   
+    // dd($request->all());
     $do_awal = str_replace('/', '-' ,$request->do_awal);
     $do_akhir = str_replace('/', '-' ,$request->do_akhir);
     $do_awal = Carbon::parse($do_awal)->format('Y-m-d');
@@ -287,13 +282,7 @@ public function cari_do_invoice(request $request)
     $jenis = $request->cb_pendapatan;
     $id = '0';
     if ($request->cb_pendapatan == 'KORAN') {
-     $grup_item = DB::table('item')
-                    ->where('kode_grup_item',$request->grup_item)
-                    ->get();
-      $item = [];
-      for ($i=0; $i < count($grup_item); $i++) { 
-        $item[$i] = $grup_item[$i]->kode;
-      }
+     
     $temp = DB::table('delivery_order')
               ->join('delivery_orderd','delivery_orderd.dd_nomor','=','delivery_order.nomor')
               ->leftjoin('invoice_d','delivery_orderd.dd_id','=','invoice_d.id_nomor_do_dt')
@@ -303,7 +292,7 @@ public function cari_do_invoice(request $request)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
-              ->whereIn('delivery_orderd.dd_kode_item',$item)  
+              ->where('delivery_orderd.dd_grup',$request->grup_item)  
               ->orderBy('tanggal','desc')
               ->get();
 
@@ -316,7 +305,7 @@ public function cari_do_invoice(request $request)
               ->where('delivery_order.tanggal','<=',$do_akhir)
               ->where('delivery_order.jenis',$request->cb_pendapatan)
               ->where('delivery_order.kode_customer',$request->customer)
-              ->whereIn('delivery_orderd.dd_kode_item',$item)  
+              ->where('delivery_orderd.dd_grup',$request->grup_item)  
               ->orderBy('tanggal','desc')
               ->get();
 
@@ -377,13 +366,15 @@ public function cari_do_invoice(request $request)
     }
     $data = array_values($data);
     $data1 = array_values($data1);
-
-    for ($i=0; $i < count($data1); $i++) { 
-      if ($data1[$i]->ipd_nomor_invoice !=null) {
-          unset($data[$i]);
+    if (!isset($request->flag)) {
+      for ($i=0; $i < count($data1); $i++) { 
+        if ($data1[$i]->ipd_nomor_invoice !=null) {
+            unset($data[$i]);
+        }
       }
+
+      $data = array_values($data);
     }
-    $data = array_values($data);
     $customer = DB::table('customer')
                       ->get();
     for ($i=0; $i < count($data); $i++) { 
@@ -393,7 +384,6 @@ public function cari_do_invoice(request $request)
         }
       }
     }
-    // return $data;
    $id = $request->id;
     return view('sales.invoice.tableDo',compact('data','jenis','id'));
 }
@@ -571,6 +561,7 @@ public function simpan_invoice(request $request)
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
                                           'update_at'            =>  Carbon::now(),
+                                          'i_grup_item'          =>  $request->grup_item,
                                           'i_pendapatan'         =>  $request->ed_pendapatan
                                      ]);
 
@@ -612,7 +603,7 @@ public function simpan_invoice(request $request)
                                               'id_kuantum'       => $do->jumlah,
                                               'id_kode_item'     => 'tidak ada',
                                               'id_tipe'          => 'tidak tahu',
-                                              'id_acc_penjualan' => $do->acc_penjualan
+                                              'id_acc_penjualan' => $request->akun[$i],
                                           ]);
                 $update_do = DB::table('delivery_order')
                                    ->where('nomor',$request->do_detail[$i])
@@ -856,6 +847,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'create_by'            =>  Auth::user()->m_name,
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
+                                          'i_grup_item'          =>  $request->grup_item,
                                           'update_at'            =>  Carbon::now(),
                                           'i_pendapatan'         =>  $request->ed_pendapatan
                                      ]);
@@ -894,7 +886,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_kuantum'       => $do->jumlah,
                                               'id_kode_item'     => 'tidak ada',
                                               'id_tipe'          => 'tidak tahu',
-                                              'id_acc_penjualan' => $do->acc_penjualan
+                                              'id_acc_penjualan' => $request->akun[$i]
                                           ]);
                     $update_do = DB::table('delivery_order')
                                    ->where('nomor',$request->do_detail[$i])
@@ -1110,6 +1102,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'create_by'            =>  Auth::user()->m_name,
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
+                                          'i_grup_item'          =>  $request->grup_item,
                                           'update_at'            =>  Carbon::now(),
                                           'i_pendapatan'         =>  $request->ed_pendapatan
                                      ]);
@@ -1148,7 +1141,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_kuantum'       => $do->dd_jumlah,
                                               'id_kode_item'     => $do->dd_kode_item,
                                               'id_tipe'          => 'tidak tahu',
-                                              'id_acc_penjualan' => $do->dd_acc_penjualan,
+                                              'id_acc_penjualan' => $request->akun[$i],
                                               'id_nomor_do_dt'   => $request->do_id[$i]
                                           ]);
                   $update_do = DB::table('delivery_order')
@@ -1380,6 +1373,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
                                           'update_at'            =>  Carbon::now(),
+                                          'i_grup_item'          =>  $request->grup_item,
                                           'i_pendapatan'         =>  $request->ed_pendapatan
                                      ]);
 
@@ -1418,7 +1412,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                               'id_kuantum'       => $do->dd_jumlah,
                                               'id_kode_item'     => $do->dd_kode_item,
                                               'id_tipe'          => 'tidak tahu',
-                                              'id_acc_penjualan' => $do->dd_acc_penjualan,
+                                              'id_acc_penjualan' => $request->akun[$i],
                                               'id_nomor_do_dt'   => $request->do_id[$i]
                                           ]);
                   $update_do = DB::table('delivery_order')
@@ -1472,7 +1466,8 @@ public function edit_invoice($id)
 
       $customer = DB::table('customer')
                   ->get();
-
+      $kota     = DB::table('kota')
+                      ->get();     
       $cabang   = DB::table('cabang')
                   ->get();
       $tgl      = Carbon::now()->format('d/m/Y');
@@ -1481,12 +1476,17 @@ public function edit_invoice($id)
       $pajak    = DB::table('pajak')
                   ->get();
 
+      $gp     = DB::table('grup_item')
+                      ->get();
+
+
+
       $jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
                           FROM d_akun a join d_jurnal_dt jd
                           on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                           (select j.jr_id from d_jurnal j where jr_ref='$id' and jr_note='INVOICE')")); 
 
-      return view('sales.invoice.editInvoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt','jurnal_dt'));
+      return view('sales.invoice.editInvoice',compact('customer','cabang','tgl','tgl1','pajak','id','data','data_dt','jurnal_dt','kota','gp'));
     }else{
       return redirect()->back();
     }

@@ -391,7 +391,7 @@ $('.date').datepicker({
 
 
 
-   $('.biaya_tambahan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+$('.biaya_tambahan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 $('.ed_diskon_modal').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 $('.ed_harga').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 
@@ -454,40 +454,68 @@ function hitung_total() {
 $(document).ready(function(){
 cari_customer();
 
-@foreach($data_dt as $val)
-    @if ($val->dd_kode_item != null)
+@foreach($data_dt as $a => $val)
+    @if ($data->kontrak == false)
         var temp = "{{$val->nama}}"
+        var dd_diskon = "{{$val->dd_diskon}}";
+        var dd_harga = "{{$val->dd_harga}}";
+        var dd_total = "{{$val->dd_total}}";
+        var dd_kode_satuan = "{{$val->dd_kode_satuan}}";
+        var dd_jumlah = "{{$val->dd_jumlah}}";
+        var dd_id_kota_asal = "{{$val->dd_id_kota_asal}}";
+        var dd_id_kota_tujuan = "{{$val->dd_id_kota_tujuan}}";
+        var dd_kode_item = "{{$val->dd_kode_item}}";
+        var dd_id_kontrak = "{{$val->dd_id_kontrak}}";
+        var dd_acc_penjualan = "{{$val->dd_acc_penjualan}}";
+        var dd_csf_penjualan = "{{$val->dd_csf_penjualan}}";
+        var dd_acc_piutang = "{{$val->dd_acc_piutang}}";
+        var dd_csf_piutang = "{{$val->dd_csf_piutang}}";
+        var dd_keterangan = "{{$val->dd_keterangan}}";
+
+        @foreach($kota as $i)
+
+            @if ($i->id == $val->dd_id_kota_asal)
+            var temp1 = "{{$i->nama}}" 
+            @endif
+
+            @if ($i->id == $val->dd_id_kota_tujuan)
+            var temp2 = "{{$i->nama}}" 
+            @endif
+
+        @endforeach
+
     @else
-        var temp = "-"
+        var temp = "{{$data_dt[$a]->nama_item}}"
+        var dd_diskon = "{{$data_dt[$a]->dd_diskon}}";
+        var dd_harga = "{{$data_dt[$a]->dd_harga}}";
+        var dd_id = "{{$data_dt[$a]->dd_id}}";
+        var dd_total = "{{$data_dt[$a]->dd_total}}";
+        var dd_kode_satuan = "{{$data_dt[$a]->dd_kode_satuan}}";
+        var dd_jumlah = "{{$data_dt[$a]->dd_jumlah}}";
+        var dd_id_kota_asal = "{{$data_dt[$a]->dd_id_kota_asal}}";
+        var dd_id_kota_tujuan = "{{$data_dt[$a]->dd_id_kota_tujuan}}";
+        var dd_kode_item = "{{$data_dt[$a]->dd_kode_item}}";
+        var dd_id_kontrak = "{{$data_dt[$a]->dd_id_kontrak}}";
+        var dd_acc_penjualan = "{{$data_dt[$a]->dd_acc_penjualan}}";
+        var dd_csf_penjualan = "{{$data_dt[$a]->dd_csf_penjualan}}";
+        var dd_acc_piutang = "{{$data_dt[$a]->dd_acc_piutang}}";
+        var dd_csf_piutang = "{{$data_dt[$a]->dd_csf_piutang}}";
+        var dd_keterangan = "{{$data_dt[$a]->dd_keterangan}}";
+
+        @foreach($kota as $i)
+
+            @if ($i->id == $data_dt[$a]->dd_id_kota_asal)
+            var temp1 = "{{$i->nama}}" 
+            @endif
+
+            @if ($i->id == $data_dt[$a]->dd_id_kota_tujuan)
+            var temp2 = "{{$i->nama}}" 
+            @endif
+
+        @endforeach
     @endif
 
-
-    @foreach($kota as $i)
-
-        @if ($i->id == $val->dd_id_kota_asal)
-        var temp1 = "{{$i->nama}}" 
-        @endif
-
-        @if ($i->id == $val->dd_id_kota_tujuan)
-        var temp2 = "{{$i->nama}}" 
-        @endif
-
-    @endforeach
-
-var dd_diskon = "{{$val->dd_diskon}}";
-var dd_harga = "{{$val->dd_harga}}";
-var dd_total = "{{$val->dd_total}}";
-var dd_kode_satuan = "{{$val->dd_kode_satuan}}";
-var dd_jumlah = "{{$val->dd_jumlah}}";
-var dd_id_kota_asal = "{{$val->dd_id_kota_asal}}";
-var dd_id_kota_tujuan = "{{$val->dd_id_kota_tujuan}}";
-var dd_kode_item = "{{$val->dd_kode_item}}";
-var dd_id_kontrak = "{{$val->dd_id_kontrak}}";
-var dd_acc_penjualan = "{{$val->dd_acc_penjualan}}";
-var dd_csf_penjualan = "{{$val->dd_csf_penjualan}}";
-var dd_acc_piutang = "{{$val->dd_acc_piutang}}";
-var dd_csf_piutang = "{{$val->dd_csf_piutang}}";
-var dd_keterangan = "{{$val->dd_keterangan}}";
+    console.log(dd_id);
 
 table_detail.row.add({
         'id':'<p class="id_text">'+count+'</p>'+
@@ -503,6 +531,7 @@ table_detail.row.add({
 
         'Kode Item':'<p class="kode_item_text">'+dd_kode_item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+dd_kode_item+'">'+
+        '<input type="hidden" name="d_id[]" class="d_id" value="'+dd_id+'">'+
         '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+dd_kode_item+'">'+
         '<input type="hidden" name="d_acc_penjualan[]" class="d_acc_penjualan" value="'+dd_acc_penjualan+'">'+
         '<input type="hidden" name="d_csf_penjualan[]" class="d_csf_penjualan" value="'+dd_csf_penjualan+'">'+
@@ -572,6 +601,9 @@ function tambah_kertas() {
     $('.ed_total').val('0');
     $('.ed_satuan').val('');
     $('.acc_penjualan').val('');
+    $('.csf_penjualan').val('');
+    $('.acc_piutang').val('');
+    $('.csf_piutang').val('');
     $('.kcd_dt').val('');
     $('.asal_td').removeClass('disabled');
     $('.tujuan_td').removeClass('disabled');
@@ -730,6 +762,7 @@ if (old_id == '') {
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
         '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
         '<input type="hidden" name="d_acc_penjualan[]" class="d_acc_penjualan" value="'+acc_penjualan+'">'+
+        '<input type="hidden" name="d_id[]" class="d_id" value="">'+
         '<input type="hidden" name="d_csf_penjualan[]" class="d_csf_penjualan" value="'+csf_penjualan+'">'+
         '<input type="hidden" name="d_acc_piutang[]" class="d_acc_piutang" value="'+acc_piutang+'">'+
         '<input type="hidden" name="d_csf_piutang[]" class="d_csf_piutang" value="'+csf_piutang+'">',
@@ -780,6 +813,7 @@ if (old_id == '') {
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
         '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
         '<input type="hidden" name="d_acc_penjualan[]" class="d_acc" value="'+acc_penjualan+'">'+
+        '<input type="hidden" name="d_id[]" class="d_id" value="">'+
         '<input type="hidden" name="d_csf_penjualan[]" class="d_acc" value="'+csf_penjualan+'">'+
         '<input type="hidden" name="d_acc_piutang[]" class="d_acc" value="'+acc_piutang+'">'+
         '<input type="hidden" name="d_csf_piutang[]" class="d_acc" value="'+csf_piutang+'">',
@@ -964,6 +998,10 @@ function pilih_kontrak(a) {
     var kcd_kode_satuan = $(a).find('.kcd_kode_satuan').val();
     var kcd_dt          = $(a).find('.kcd_dt_m').val();
     var acc_penjualan   = $(a).find('.acc_kontrak').val();
+    var csf_penjualan   = $(a).find('.csf_kontrak').val();
+    var acc_piutang     = $(a).find('.acc_kontrak_piutang').val();
+    var csf_piutang     = $(a).find('.csf_kontrak_piutang').val();
+    var kcd_keterangan  = $(a).find('.kcd_keterangan').val();
 
     $('.item').val(kc_nomor);
     $('.ed_satuan').val(kcd_kode_satuan);
@@ -974,7 +1012,13 @@ function pilih_kontrak(a) {
     $('.tujuan_td').addClass('disabled');
     $('.cb_kota_tujuan').val(kcd_kota_tujuan).trigger('chosen:updated');
     $('.acc_penjualan').val(acc_penjualan);
+    $('.csf_penjualan').val(acc_penjualan);
+    $('.acc_piutang').val(acc_piutang);
+    $('.csf_piutang').val(csf_piutang);
+    $('.nama_kontrak').val(kcd_keterangan);
     $('.ed_jumlah').val(1);
+    $('.ed_diskon_modal').val(0);
+    $('.ed_diskon').val(0);
     hitung();
     $('#modal_kontrak').modal('hide');
 

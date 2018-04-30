@@ -274,24 +274,45 @@
        <th class="textcenter bot right top" width="10%">Kode</th>
        <th class="textcenter bot right top" width="10%">Nama</th>
      </tr>
-     @foreach($detail as $val)
-     <tr>
-       <td class="bot left right">{{$val->dd_nomor}}</td>
-       @if($val->dd_id_kontrak == 0)
-       <td class="bot center left right">{{$val->dd_kode_item}}</td>
-       @else
-       <td class="bot center left right">{{$val->dd_id_kontrak}}</td>
-       @endif
+     @if($head->kontrak==false)
+         @foreach($detail as $val)
+         <tr>
+           <td class="bot left right">{{$val->dd_nomor}} - {{$val->dd_nomor_dt}}</td>
+           @if($val->dd_id_kontrak == 0)
+           <td class="bot center left right">{{$val->dd_kode_item}}</td>
+           @else
+           <td class="bot center left right">{{$val->dd_id_kontrak}}</td>
+           @endif
 
-       @if(isset($val->kcd_keterangan))
-       <td class="bot left right">{{$val->kcd_keterangan}}</td>
-       @else
-       <td class="bot left right">{{$val->nama}}</td>
-       @endif
-       <td class="bot left right" >{{$val->dd_keterangan}}</td>
-       <td class="bot center left right">{{$val->dd_jumlah}} {{$val->dd_kode_satuan}}</td>
-     </tr>
-     @endforeach
+           @if(isset($val->kcd_keterangan))
+           <td class="bot left right">{{$val->kcd_keterangan}}</td>
+           @else
+           <td class="bot left right">{{$val->nama}}</td>
+           @endif
+           <td class="bot left right" >{{$val->dd_keterangan}}</td>
+           <td class="bot center left right">{{$val->dd_jumlah}} {{$val->dd_kode_satuan}}</td>
+         </tr>
+         @endforeach
+      @else
+         @foreach($detail as $i=>$val)
+         <tr>
+           <td class="bot left right">{{$val->dd_nomor}} - {{$val->dd_nomor_dt}}</td>
+           @if($val->dd_id_kontrak == 0)
+           <td class="bot center left right">{{$val->dd_kode_item}}</td>
+           @else
+           <td class="bot center left right">{{$val->dd_id_kontrak}}</td>
+           @endif
+
+           @if(isset($val->nama_item))
+           <td class="bot left right">{{$val->nama_item}}</td>
+           @else
+           <td class="bot left right">{{$val->nama}}</td>
+           @endif
+           <td class="bot left right" >{{$val->dd_keterangan}}</td>
+           <td class="bot center left right">{{$val->dd_jumlah}} {{$val->dd_kode_satuan}}</td>
+         </tr>
+         @endforeach
+      @endif
      @foreach($array as $val)
      <tr>
        <td class=" left ">&nbsp;</td>

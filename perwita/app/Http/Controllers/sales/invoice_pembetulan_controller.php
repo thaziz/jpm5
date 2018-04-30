@@ -72,7 +72,10 @@ class invoice_pembetulan_controller extends Controller
         $pajak    = DB::table('pajak')
                       ->get();
 
-        return view('sales.invoice_pembetulan.invoice_pembetulan_create',compact('customer','cabang','tgl','tgl1','pajak'));
+        $gp     = DB::table('grup_item')
+                      ->get();
+
+        return view('sales.invoice_pembetulan.invoice_pembetulan_create',compact('customer','cabang','tgl','tgl1','pajak','gp'));
  	}
 
  	public function cari_invoice_pembetulan(request $request)
@@ -215,6 +218,7 @@ class invoice_pembetulan_controller extends Controller
                                           'create_at'             =>  Carbon::now(),
                                           'update_by'             =>  Auth::user()->m_name,
                                           'update_at'             =>  Carbon::now(),
+                                          'ip_grup'               =>  $request->grup_item,
                                           'ip_pendapatan'         =>  $request->cb_pendapatan
                                      ]);
 
@@ -457,6 +461,9 @@ class invoice_pembetulan_controller extends Controller
                   ->where('ip_nomor',$id)
                   ->first();
 
+        $gp     = DB::table('grup_item')
+                      ->get();
+
         $data_dt = DB::table('invoice_pembetulan_d')
                   ->join('invoice_pembetulan','ip_nomor','=','ipd_nomor_invoice')
                   ->join('delivery_order','nomor','=','ipd_nomor_do')
@@ -464,7 +471,7 @@ class invoice_pembetulan_controller extends Controller
                   ->where('ip_nomor',$id)
                   ->get();
 
-        return view('sales.invoice_pembetulan.invoice_pembetulan_edit',compact('customer','cabang','tgl','tgl1','pajak','data','data_dt','i_awal'));
+        return view('sales.invoice_pembetulan.invoice_pembetulan_edit',compact('customer','cabang','tgl','tgl1','pajak','data','data_dt','i_awal','gp'));
     }else{
       return redirect()->back();
     }
@@ -662,6 +669,7 @@ class invoice_pembetulan_controller extends Controller
                                           'ip_kode_customer'      =>  $request->ed_customer,
                                           'ip_kode_cabang'        =>  $cabang,
                                           'update_by'             =>  Auth::user()->m_name,
+                                          'ip_grup'               =>  $request->grup_item,
                                           'update_at'             =>  Carbon::now(),
                                           'ip_pendapatan'         =>  $request->cb_pendapatan
                                      ]);

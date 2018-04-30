@@ -88,7 +88,11 @@
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $row)
                                        @if($row->kode == $data->i_kode_customer)
-                                        <option selected="" value="{{$row->kode}}"  > {{$row->kode}} - {{$row->nama}} </option>
+                                       @foreach($kota as $kot)
+                                          @if($kot->id == $row->kota)
+                                            <option selected="" value="{{$row->kode}}"  > {{$row->kode}} - {{$row->nama}} - {{ $kot->nama }}</option>
+                                          @endif
+                                        @endforeach
                                        @endif
                                     @endforeach
                                     </select>
@@ -133,13 +137,13 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr class="grup_item_tr" hidden="">
+                            <tr class="grup_item_tr disabled" hidden="">
                                 <td style="padding-top: 0.4cm" >Grup Item</td>
                                 <td colspan="4" class="">                                    
                                     <select class="chosen-select-width form-control grup_item"   name="grup_item" id="grup_item" style="width:100%" >
                                         <option value="0">Pilih - Grup</option>
                                     @foreach ($gp as $i=> $val)
-                                        <option value="{{$gp[$i]->kode}}" data-accpiutang="{{$gp[$i]->acc_piutang}}" data-csfpiutang="{{$gp[$i]->csf_piutang}}"> {{$gp[$i]->kode}} - {{$gp[$i]->nama}}</option>
+                                        <option @if($data->i_grup_item == $gp[$i]->kode) selected="" @endif value="{{$gp[$i]->kode}}" data-accpiutang="{{$gp[$i]->acc_piutang}}" data-csfpiutang="{{$gp[$i]->csf_piutang}}"> {{$gp[$i]->kode}} - {{$gp[$i]->nama}}</option>
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -197,7 +201,7 @@
                           @if($data->i_pendapatan == 'KORAN')
                           <tr>
                             <td>
-                                {{$i+1}}
+                                {{$i+1}}<p class="indexing"></p>
                             </td>
                             <td>
                                 {{$val->id_nomor_do}}
@@ -526,6 +530,13 @@
     //ajax cari nota
     $(document).ready(function(){
         // $('.diskon2').maskMoney({precision:0,thousands:'.'})
+        if ($('#cb_pendapatan').val() == 'KORAN') {
+            $('.grup_item_tr').prop('hidden',false);
+        }else{
+            $('.grup_item_tr').prop('hidden',true);
+            $('.grup_item').val('0');
+        }
+        $('.ed_pendapatan').val($('#cb_pendapatan').val());
         hitung();
     });
 
@@ -827,10 +838,10 @@ function hitung_pajak_lain(){
                     for(var i = 0 ; i < response.data.length;i++){
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail,
+                            index_detail+'<p class="indexing"></p>',
                             response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].dd_nomor+'" name="do_detail[]">',
                             response.data[i].tanggal+'<input type="hidden" class="dd_id" value="'+response.data[i].dd_id+'" name="do_id[]">',
-                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].dd_acc_penjualan+'" name="akun[]">',
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
                             accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
                             accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
@@ -850,7 +861,7 @@ function hitung_pajak_lain(){
                         ///////////////////////////////////////
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail,
+                            index_detail+'<p class="indexing"></p>',
                             response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
                             response.data[i].tanggal,
                             response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
@@ -866,7 +877,8 @@ function hitung_pajak_lain(){
 
                     hitung();
                     
-                    $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
+                    $('.customer_td').addClass('disabled');
+                    $('.grup_item_tr').addClass('disabled');
                     $('#cb_pendapatan').attr('disabled',true);
                     /////////////////////////////////////
                 }
@@ -892,7 +904,6 @@ function hitung_pajak_lain(){
             var index = array_simpan.indexOf(arr);
             array_simpan.splice(index,1);
             table_detail.row(par).remove().draw(false);
-    console.log(arr);
 
         }else if (jenis == 'PAKET' || jenis == 'KARGO'){
             var arr = $(par).find('.nomor_detail').val();
@@ -900,12 +911,17 @@ function hitung_pajak_lain(){
             array_simpan.splice(index,1);
             table_detail.row(par).remove().draw(false);
 
-    console.log(arr);
         }
+        var temp = 0;
+        $('.indexing').each(function(){
+            temp+=1;
+        })
 
-
-    console.log(array_simpan);
-
+        if (temp == 0) {
+            $('.customer_td').removeClass('disabled');
+            $('.grup_item_tr').removeClass('disabled');
+            $('#cb_pendapatan').attr('disabled',false);
+        }
         hitung();
             
    }

@@ -426,7 +426,7 @@ $('#btnadd').click(function(){
     var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
-    var customer                = $('.customer').val();
+    var customer                 = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var cb_grup_item             = $('.cb_grup_item').val('0').trigger('chosen:updated');
     var validasi                 = [];
