@@ -1749,6 +1749,30 @@ Route::post('master_keuangan/kelompok_akun/save_data', 'master_keuangan\kelompok
 Route::post('master_keuangan/kelompok_akun/hapus_data', 'master_keuangan\kelompok_akun_Controller@hapus_data');
 // end kelompok akun
 
+//kelompok akun
+
+Route::get('master_keuangan/group_akun', 'master_keuangan\group_akun_controller@index');
+Route::get('master_keuangan/group_akun/add', 'master_keuangan\group_akun_controller@add');
+
+Route::post('master_keuangan/group_akun/save', [
+    'uses' => 'master_keuangan\group_akun_controller@save',
+    'as'  => 'group_akun.save'
+]);
+
+Route::get('master_keuangan/group_akun/edit/{id}', 'master_keuangan\group_akun_controller@edit');
+
+Route::post('master_keuangan/group_akun/update', [
+    'uses' => 'master_keuangan\group_akun_controller@update',
+    'as'  => 'group_akun.update'
+]);
+
+Route::get('master_keuangan/group_akun/hapus/{id}', [
+    'uses' => 'master_keuangan\group_akun_controller@hapus',
+    'as'  => 'group_akun.hapus'
+]);
+
+// end kelompok akun
+
 //saldo akun
 
 Route::get('master_keuangan/saldo_akun', [

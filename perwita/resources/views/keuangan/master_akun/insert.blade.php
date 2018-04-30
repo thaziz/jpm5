@@ -163,8 +163,6 @@
 
       if(evt.charCode < 48 || evt.charCode > 57)
         return false;
-      else if($(this).val().length == 0 && evt.which == 48)
-          return false;
 
     })
 
