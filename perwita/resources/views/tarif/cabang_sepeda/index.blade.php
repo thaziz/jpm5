@@ -126,6 +126,7 @@
                                 <th> Provinsi Tujuan </th>
                                 <th> Tarif </th>
                                 <th> Jenis </th>
+                                <th> Cabang </th>
                                 <th> Waktu (Hari) </th>
                                 <th style="width:100px"> Aksi </th>
                             </tr>
@@ -354,6 +355,7 @@
             { "data": "provinsi" },
             { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "jenis", },
+            { "data": "cabang", },
             { "data": "waktu","sClass": "cssright" },
             //{ "data": "tipe" , render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
@@ -374,28 +376,25 @@
 
     $(document).on("click","#btn_add",function(){
         $("input[name='crud']").val('N');
-        $("input[name='id_reguler']").val('');
-        $("input[name='id_express']").val('');
-        $("input[name='id_outlet']").val('');
-        //
-        $("input[name='harga_regular']").val('');
-        $("input[name='harga_express']").val('');
-        $("input[name='harga_outlet']").val('');
-        //
-        $("input[name='waktu_regular']").val('');
-        $("input[name='waktu_express']").val('');
-        //  
-        $("input[name='jenis_reguler']").val('');
-        $("input[name='jenis_express']").val('');
-        $("input[name='jenis_outlet']").val('');
-        $("input[name='kodekota']").val('');
-       
-         $('#hilang').show();
+        $("input[name='sepeda_pancal']").val('');
+        $("input[name='bebek_matik']").val('');
+        $("input[name='laki_sport']").val('');
 
-          $('#hilang2').show();      
+        $("input[name='kodekota']").val('');
+
+          
+        $("input[name='id_matik_edit']").val('');
+        $("input[name='id_sport_edit']").val('');
+        $("input[name='id_sepeda_edit']").val('');
+
+
+        $("input[name='ed_kode_old']").val('');
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
         $("select[name='cb_kota_tujuan']").val('').trigger('chosen:updated');
+        $("select[name='ed_cabang']").val('').trigger('chosen:updated');
         $("select[name='cb_provinsi_tujuan']").val('').trigger('chosen:updated');
+        $("select[name='ed_acc_penjualan']").val('').trigger('chosen:updated');
+        $("select[name='ed_csf_penjualan']").val('').trigger('chosen:updated');
         $("#modal").modal("show");
     });
 
@@ -469,7 +468,215 @@
 
     $(document).on("click","#btnsave",function(){
         var data = $('.kirim :input').serialize();
-        
+
+        var a = $('#cb_kota_asal').val();
+        var b = $("select[name='ed_cabang']").val();
+        var c = $("select[name='ed_acc_penjualan']").val();
+        var d = $("select[name='ed_csf_penjualan']").val();
+        var e = $("input[name='sepeda_pancal']").val();
+        var f = $("input[name='bebek_matik']").val();
+        var g = $("input[name='laki_sport']").val();
+        var h = $("input[name='moge']").val();
+        var i = $("input[name='waktu']").val();
+
+        if (a == '' || a == null) {
+          Command: toastr["warning"]("Kota Asal Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if (b == '' || b == null) {
+          Command: toastr["warning"]("Cabang Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if (c == '' || c == null) {
+          Command: toastr["warning"]("Akun Penjualan Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if (d == '' || d == null) {
+          Command: toastr["warning"]("Csf Penjualan Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if (e == '' || e == null) {
+          Command: toastr["warning"]("Kolom Sepeda Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if (f == '' || f == null) {
+          Command: toastr["warning"]("Kolom Bebek/Matik Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if (g == '' || g == null) {
+          Command: toastr["warning"]("Kolom Laki/Sport Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if (h == '' || h == null) {
+          Command: toastr["warning"]("Kolom Moge Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
+        if (i == '' || i == null) {
+          Command: toastr["warning"]("Kolom Waktu Harus Di isi", "Peringatan!")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": false,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            return false;
+        }
         console.log(data);
         $.ajax(
         {
@@ -513,9 +720,12 @@
     $(document).on( "click",".btndelete", function() {
         var name = $(this).attr("name");
         var id = $(this).attr("id");
-        if(!confirm("Hapus Data " +name+ " ?")) return false;
+        var a = $(this).data("asal");
+        var p = $(this).data("prov");
+        if(!confirm("Hapus Data " +a+ ' Menuju ke '+p+" ?")) return false;
         var value = {
             id: id,
+            name: name,
             _token: "{{ csrf_token() }}"
         };
         $.ajax({

@@ -487,6 +487,9 @@ function tambah_kertas() {
     $('.ed_total').val('0');
     $('.ed_satuan').val('');
     $('.acc_penjualan').val('');
+    $('.csf_penjualan').val('');
+    $('.acc_piutang').val('');
+    $('.csf_piutang').val('');
     $('.kcd_dt').val('');
     $('.asal_td').removeClass('disabled');
     $('.tujuan_td').removeClass('disabled');
@@ -690,6 +693,14 @@ if (old_id == '') {
         var id = $('.old_id').val();
         var par = $('.id_'+id).parents('tr');
         table_detail.row(par).remove().draw(false);
+        if ($('.status_kontrak').is(':checked') == true) {
+        var nomo = $(par).find('.d_kcd_dt').val();
+            array_kontrak_id.splice(nomo,1);
+            console.log(array_kontrak_id);
+        }else{
+        var nomo = $(par).find('.d_kode_item').val();
+            array_kontrak.splice(nomo,1);
+        }
 
         table_detail.row.add({
         'id':'<p class="id_text">'+count+'</p>'+
@@ -892,6 +903,9 @@ function pilih_kontrak(a) {
     var kcd_kode_satuan = $(a).find('.kcd_kode_satuan').val();
     var kcd_dt          = $(a).find('.kcd_dt_m').val();
     var acc_penjualan   = $(a).find('.acc_kontrak').val();
+    var csf_penjualan   = $(a).find('.csf_kontrak').val();
+    var acc_piutang     = $(a).find('.acc_kontrak_piutang').val();
+    var csf_piutang     = $(a).find('.csf_kontrak_piutang').val();
     var kcd_keterangan  = $(a).find('.kcd_keterangan').val();
 
     $('.item').val(kc_nomor);
@@ -903,7 +917,12 @@ function pilih_kontrak(a) {
     $('.tujuan_td').addClass('disabled');
     $('.cb_kota_tujuan').val(kcd_kota_tujuan).trigger('chosen:updated');
     $('.acc_penjualan').val(acc_penjualan);
+    $('.csf_penjualan').val(acc_penjualan);
+    $('.acc_piutang').val(acc_piutang);
+    $('.csf_piutang').val(csf_piutang);
     $('.ed_jumlah').val(1);
+    $('.ed_diskon_modal').val(0);
+    $('.ed_diskon').val(0);
     $('.nama_kontrak').val(kcd_keterangan);
     hitung();
     $('#modal_kontrak').modal('hide');
@@ -961,6 +980,7 @@ function pilih_kontrak(a) {
                 });
              }
 
+            
              if (response.status == 1) {
                 swal({
                     title: "Berhasil!",

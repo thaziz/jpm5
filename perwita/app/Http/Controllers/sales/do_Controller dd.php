@@ -83,7 +83,7 @@ class do_Controller extends Controller
 
     public function save_data(Request $request)
     {
-        //dd($request);
+        // dd($request);
 /*        return DB::transaction(function () use ($request) {
             $simpan = '';
             $crud = $request->crud_h;
@@ -350,7 +350,7 @@ class do_Controller extends Controller
             $result['crud'] = $crud;
             echo json_encode($result);
         });*/
-
+        // return 'a';
 
 
         DB::beginTransaction();
@@ -642,7 +642,6 @@ class do_Controller extends Controller
                     }
                 }
             }
-
             $result['crud'] = $crud;
 
             DB::commit();
