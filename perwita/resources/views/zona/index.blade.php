@@ -45,8 +45,10 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <div class="text-right">
+                      @if(Auth::user()->punyaAkses('Zona','tambah'))
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal" onclick="tambah()"><i class="fa fa"></i>Tambah</button>
                     </div>
+                    @endif
                 </div>
 
                 <div class="ibox-content">
@@ -76,15 +78,21 @@
                     <tbody>
                        @foreach($data as $index => $a)
                       <tr>
-                        <td> {{$index+1}} </td>
+                        <td align="center"> {{$index+1}} </td>
                         <td> {{$a->nama}}  </td>
                         <td> {{$a->harga_zona}} </td>
                         <td> {{$a->jarak_awal}} </td>
                         <td> {{$a->jarak_akir}} </td>
                         <td> {{$a->keterangan}} </td>
-                        <td>
+                        <td align="center">
+                          <div class="btn-group">
+                          @if(Auth::user()->punyaAkses('Zona','ubah'))
                            <button type="button" data-toggle="modal" data-target="#modal" id="edit" data-edit="{{ $a->id_zona }}"  onclick="editing(this.getAttribute('data-edit'))" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+                           @endif
+                           @if(Auth::user()->punyaAkses('Zona','hapus'))
                            <button type="button" id="hapus" data-hapus="{{ $a->id_zona }}"  onclick="hapusing(this.getAttribute('data-hapus'))" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+                           @endif
+                           </div>
                         </td>
                       </tr>
                       @endforeach

@@ -33,9 +33,11 @@
                     <h5> Diskon Penjualan
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                     @if(Auth::user()->punyaAkses('Diskon Penjualan','tambah'))
                    <div class="text-right">
                        <a class="btn btn-success" onclick="tambah()" aria-hidden="true" data-toggle="modal" data-target="#myModal"> <i class="fa fa-plus"></i> Tambah Data</a> 
                     </div>
+                    @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -72,8 +74,12 @@
                           <td class="tdket">{{ $data->dc_note }}</td>
                           <td class="text-center">
                             <div class="btn-group">
+                              @if(Auth::user()->punyaAkses('Diskon Penjualan','ubah'))
                               <button type="button" onclick="edit({{ $data->dc_id }})" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="glyphicon glyphicon-pencil"></i></button>
-                              <button type="button" onclick="hapus({{ $data->dc_id }})" title="Delete" class="btn btn-danger btn-xs btndelete"><i class="glyphicon glyphicon-remove"></i></button>                                     
+                              @endif
+                              @if(Auth::user()->punyaAkses('Diskon Penjualan','hapus'))
+                              <button type="button" onclick="hapus({{ $data->dc_id }})" title="Delete" class="btn btn-danger btn-xs btndelete"><i class="glyphicon glyphicon-remove"></i></button>  
+                              @endif                         
                             </div>
                           </td>
                         </tr>
@@ -109,6 +115,7 @@
                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
                   <tr>
                     <td class=""><strong>Cabang</strong></td>
+                    @if(Auth::user()->punyaAkses('Diskon Penjualan','cabang'))
                     <td colspan="5">
                       <input type="hidden" name="id_dc" value="" id="id_dc">
                       <select class="form-control chosen-select-width" onchange="getAkun()" name="cabang" style="width:100%" id="cabang">
@@ -122,6 +129,21 @@
                       @endif
                       </select>
                     </td>
+                    @else
+                    <td colspan="5" class="disabled">
+                      <input type="hidden" name="id_dc" value="" id="id_dc">
+                      <select class="form-control chosen-select-width" onchange="getAkun()" name="cabang" style="width:100%" id="cabang">
+                      @if(count($cabang) == 1)
+                        <option value="{{ $cabang[0]->kode }}"> {{ $cabang[0]->nama }} </option>
+                      @else
+                          <option value="ALL"> Global</option>
+                        @foreach ($cabang as $row)
+                          <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                        @endforeach
+                      @endif
+                      </select>
+                    </td>
+                    @endif
                   </tr>
                   <tr>
                     <td class=""><strong>Diskon</strong></td>

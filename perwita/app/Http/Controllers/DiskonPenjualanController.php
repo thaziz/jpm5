@@ -7,17 +7,28 @@ use Illuminate\Http\Request;
 use DB;
 use App\Http\Requests;
 use Session;
+use Auth;
 
 class DiskonPenjualanController extends Controller
 {
     public function index()
     {
-
-        $data = DB::table('d_disc_cabang')
+        $cabang = Auth::user()->kode_cabang;
+        if (Auth::user()->punyaAkses('Diskon Penjualan','all')) {
+            $data = DB::table('d_disc_cabang')
             ->join('cabang', 'kode', '=', 'dc_cabang')
             ->join('d_akun', 'id_akun', '=', 'dc_kode')
             ->select('dc_cabang', 'nama', 'nama_akun', 'id_akun', 'dc_jenis', 'dc_diskon', 'dc_note', 'dc_kode', 'dc_id')
             ->get();
+        }else{
+            $data = DB::table('d_disc_cabang')
+            ->join('cabang', 'kode', '=', 'dc_cabang')
+            ->join('d_akun', 'id_akun', '=', 'dc_kode')
+            ->select('dc_cabang', 'nama', 'nama_akun', 'id_akun', 'dc_jenis', 'dc_diskon', 'dc_note', 'dc_kode', 'dc_id')
+            ->where('dc_cabang',$cabang)
+            ->get();
+        }
+        
 
         $status = Session::get('cabang');
 
