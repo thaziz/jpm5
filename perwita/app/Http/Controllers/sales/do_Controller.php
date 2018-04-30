@@ -800,7 +800,7 @@ class do_Controller extends Controller
     public function index()
     {
         $authe = Auth::user()->kode_cabang; 
-        if ($authe == '000') {
+        if (Auth::user()->punyaAkses('Delivery Order','all')) {
         $sql = "SELECT d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
@@ -816,7 +816,7 @@ class do_Controller extends Controller
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
                     join customer c on d.kode_customer = c.kode 
                     WHERE d.jenis='PAKET'
-                    and kode_customer = '$authe'
+                    and kode_cabang = '$authe'
                     ORDER BY d.tanggal DESC LIMIT 1000 ";
         }
 
@@ -1291,6 +1291,10 @@ class do_Controller extends Controller
                         ->get();
                 }
             }
+            // return $request->berat;
+            // return $jenis;
+            // return $tarif;
+            return count($biaya_penerus);
 
             if ($tarif != null) {
                 if (count($biaya_penerus) < 1){
@@ -1300,20 +1304,27 @@ class do_Controller extends Controller
                         ->where('tipe_kiriman', '=', 'KOLI')
                         ->get();
 
+                            return count($biaya_penerus);
+
                     if (count($biaya_penerus) < 1){
                         $biaya_penerus = 0;
                     } else {
                     	$biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                     }
                 } else {
+                        return count($biaya_penerus);
                     $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                 }
+                // return $tipe;
+                // return count($biaya_penerus);
+                // return $biaya_penerus;
                 return response()->json([
                     'biaya_penerus' => $biaya_penerus,
                     'harga' => $tarif[0]->harga,
                     'acc_penjualan' => $tarif[0]->acc_penjualan,
                     'create_indent' => 1,
                     'tipe' => $tipe,
+                    'jenis' => $jenis,
                 ]);
             }
             else{

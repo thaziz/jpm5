@@ -1355,10 +1355,10 @@
                             $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'KOLI') {
                             $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="koli_tipe()" ><i class="fa fa-plus"></i></button>')
                         }else if (data.tipe == 'SEPEDA') {
                             $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" ><i class="fa fa-plus"></i></button>')
+                            $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;"  onclick="sepeda_tipe()"><i class="fa fa-plus"></i></button>')
                         }   
                     }
                     if (data.jumlah_data == 0){
