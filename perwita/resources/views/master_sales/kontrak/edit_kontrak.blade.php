@@ -735,6 +735,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
+                    $('.success').val('success');
                    location.reload();
         });
       },
