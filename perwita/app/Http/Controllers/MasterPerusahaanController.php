@@ -35,7 +35,9 @@ class MasterPerusahaanController extends Controller
 	    		'mp_nama' => $request->ed_nama,
 	    		'mp_alamat' => $request->ed_alamat,
 	    		'mp_tlp'=>$request->ed_tlp,
-	    		'mp_img'=>$filename,
+                'mp_img'=>$filename,
+                'mp_signature1'=>$request->mp_signature1,
+	    		'mp_signature2'=>$request->mp_signature2,
     		]);
     	}else{
 
@@ -44,7 +46,9 @@ class MasterPerusahaanController extends Controller
 	    		'mp_nama' => $request->ed_nama,
 	    		'mp_alamat' => $request->ed_alamat,
 	    		'mp_tlp'=>$request->ed_tlp,
-	    		'mp_img'=>$filename,
+                'mp_img'=>$filename,
+                'mp_signature1'=>$request->mp_signature1,
+	    		'mp_signature2'=>$request->mp_signature2,
     		]);
     	}
         return redirect('master/master_perusahaan');
