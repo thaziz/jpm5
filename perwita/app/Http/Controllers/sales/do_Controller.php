@@ -1524,14 +1524,23 @@ class do_Controller extends Controller
         }
     }
 
-    public function cari_modaldeliveryorder(Request $request){
+    public function cari_modaldeliveryorder_dokumen(Request $request){
         $kota = DB::select(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC ");
         $provinsi = DB::select(" SELECT id,nama FROM provinsi ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
         $zona = DB::select(" SELECT id_zona,nama as nama_zona,harga_zona FROM zona ORDER BY nama ASC ");
         $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
 
-        return view('sales/do/ajax_form_penerus',compact('kota','kecamatan','customer','provinsi','zona'));
+        return view('sales/do/ajax_form_penerus_dokumen',compact('kota','kecamatan','customer','provinsi','zona'));
+    }
+    public function cari_modaldeliveryorder_kilogram(Request $request){
+        $kota = DB::select(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC ");
+        $provinsi = DB::select(" SELECT id,nama FROM provinsi ORDER BY nama ASC ");
+        $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
+        $zona = DB::select(" SELECT id_zona,nama as nama_zona,harga_zona FROM zona ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
+
+        return view('sales/do/ajax_form_penerus_kilogram',compact('kota','kecamatan','customer','provinsi','zona'));
     }
     public function tarif_penerus_dokumen_indentdo(Request $request){
         // dd($request->all());
@@ -1573,6 +1582,60 @@ class do_Controller extends Controller
             }elseif ($request->j == 'EXPRESS') {
                $total_penerus = $request->i;
             }
+            // return $total_penerus;
+        if($simpan == TRUE){
+            $result['error']=[$data,$total_penerus];
+            $result['result']=1;
+        }else{
+            $result['error']='ERROR PAK!';
+            $result['result']=0;
+        }
+        $result['crud']='sukses';
+        echo json_encode($result);
+    }
+    public function tarif_penerus_kilogram_indentdo(Request $request){
+        // dd($request->all());
+         $id_incremet = DB::table('tarif_penerus_kilogram')->select('id_increment_kilogram')->max('id_increment_kilogram');    
+        if ($id_incremet == '') {
+            $id_incremet = 1;
+        }else{
+            $id_incremet += 1;
+        }
+        // return $id_incremet;
+        $kode_id = DB::table('tarif_penerus_kilogram')->select('id_increment_kilogram')->max('id_increment_kilogram');    
+       
+
+        $kode_id = $kode_id+1;
+        $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
+        
+        $kode_kota = $request->p;
+        $kode_cabang = Auth::user()->kode_cabang;
+
+        $kodeutama = $kode_kota.'/'.$kode_cabang.'/'.$kode_id;
+        // return $kodeutama;
+        $simpan='';
+        // return $crud = $request->crud;
+           $data = array(
+                'id_tarif_kilogram' => $kodeutama,
+                'id_provinsi_kilo'=> $request->b,
+                'id_kota_kilo' =>$request->c,
+                'id_kecamatan_kilo'=>$request->d,
+                'tarif_10reguler_kilo'=>$request->h,
+                'tarif_10express_kilo'=>$request->j,
+                'tarif_20express_kilo'=>$request->i,
+                'tarif_20reguler_kilo'=>$request->k,
+                'type_kilo' =>$request->a,
+                'id_increment_kilogram'=>$id_incremet,
+            );
+           // return $data;
+            $simpan = DB::table('tarif_penerus_kilogram')->insert($data);
+            // return $request->j;
+            if ($request->n == 'REGULER') {
+               $total_penerus = 'REGULER';
+            }elseif ($request->n == 'EXPRESS') {
+               $total_penerus = 'EXPRESS';
+            }
+
             // return $total_penerus;
         if($simpan == TRUE){
             $result['error']=[$data,$total_penerus];
