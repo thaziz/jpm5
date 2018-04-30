@@ -144,7 +144,7 @@
                                             <button data-parrent="{{ $group->id }}" data-toggle="modal" data-target="#modal_edit" class="btn btn-xs btn-warning edit"><i class="fa fa-pencil-square fa-fw"></i></button>
                                         </span>
 
-                                        <a onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Group Ini ??')" href="{{ route("group_akun.hapus", $group->id) }}">
+                                        <a onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Group \'{{ $group->nama_group }}\' Ini ??')" href="{{ route("group_akun.hapus", $group->id) }}">
                                           <button data-toggle="tooltip" data-placement="top" title="Hapus Group {{ $group->nama_group }}" class="btn btn-xs btn-danger"><i class="fa fa-eraser fa-fw"></i></button>
                                         </a>
 
