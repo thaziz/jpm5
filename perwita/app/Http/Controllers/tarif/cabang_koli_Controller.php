@@ -12,18 +12,20 @@ class cabang_koli_Controller extends Controller
     public function table_data () {
         $cabang = Auth::user()->kode_cabang;
       if (Auth::user()->punyaAkses('Tarif Cabang Koli','all')) {
-            $sql = "    SELECT t.crud,t.id_provinsi_cabkoli,p.nama provinsi,t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan  
+            $sql = "    SELECT c.nama as cabang,t.crud,t.id_provinsi_cabkoli,p.nama provinsi,t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan  
                     FROM tarif_cabang_koli t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
                     LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkoli
+                    left join cabang c on c.kode = t.kode_cabang
                     ORDER BY t.kode_detail_koli DESC ";
         }else{
-             $sql = "    SELECT t.crud,t.id_provinsi_cabkoli,p.nama provinsi,t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan  
+             $sql = "    SELECT c.nama as cabang,t.crud,t.id_provinsi_cabkoli,p.nama provinsi,t.kode_detail_koli,t.kode_sama_koli,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan  
                     FROM tarif_cabang_koli t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
                     LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkoli
+                    left join cabang c on c.kode = t.kode_cabang
                     where t.kode_cabang = '$cabang'
                     ORDER BY t.kode_detail_koli DESC ";
         }

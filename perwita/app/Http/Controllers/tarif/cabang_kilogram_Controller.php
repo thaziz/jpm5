@@ -15,18 +15,20 @@ class cabang_kilogram_Controller extends Controller
         $cabang = Auth::user()->kode_cabang;
 
       if (Auth::user()->punyaAkses('Tarif Cabang Kilogram','all')) {
-        $sql = "    SELECT t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
+        $sql = "    SELECT c.nama as cabang,t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
                     FROM tarif_cabang_kilogram t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
                     LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkilogram
+                    left join cabang c on c.kode = t.kode_cabang
                     ORDER BY t.kode_detail_kilo DESC ";
         }else{
-             $sql = "    SELECT t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
+             $sql = "    SELECT c.nama as cabang,t.crud,t.id_provinsi_cabkilogram,t.kode_detail_kilo,t.kode_sama_kilo,t.kode, t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.keterangan ,p.nama provinsi 
                     FROM tarif_cabang_kilogram t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
                     LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabkilogram
+                    left join cabang c on c.kode = t.kode_cabang
                     where t.kode_cabang = '$cabang'
                     ORDER BY t.kode_detail_kilo DESC ";
         }

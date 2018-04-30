@@ -120,6 +120,7 @@
                                 <th> Tujuan </th>
                                 <th> Provinsi Tujuan </th>
                                 <th> Jenis </th>
+                                <th> Cabang </th>
                                 <th> Angkutan </th>
                                 <th> Tarif </th>
                                 <th> Waktu (Hari) </th>
@@ -352,6 +353,7 @@
             { "data": "tujuan" },
             { "data": "provinsi" },
             { "data": "tarifnama" },
+            { "data": "cabang" },
             { "data": "angkutan" },
             { "data": "harga", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "waktu", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
