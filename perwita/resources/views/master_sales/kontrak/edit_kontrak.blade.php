@@ -35,6 +35,7 @@
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
                                     <input type="text" name="kontrak_nomor" value="{{$data->kc_nomor}}" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" >
+                                    <input type="hidden" readonly="readonly" class="form-control success" >
                                 </td>
                             </tr>
                             <tr>
@@ -717,6 +718,16 @@ $('#btnsimpan').click(function(){
   });  
  });
 });
+
+
+    window.onbeforeunload = function(event)
+{       
+    var valid = $('.success').val();
+    if (valid == '') {
+       return confirm();
+    }
+
+};
 
 $.fn.serializeArray = function () {
     var rselectTextarea= /^(?:select|textarea)/i;
