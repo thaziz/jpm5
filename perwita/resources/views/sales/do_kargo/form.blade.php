@@ -865,6 +865,15 @@ $('.save').click(function(){
                     // $('#seragam_box').addClass('disabled');
                        
             });
+            
+        }else if (response.status == 4) {
+                swal({
+                    title: "Akun Piutang Untuk Cabang Ini Belum Tersedia",
+                            type: 'error',
+                            timer: 900,
+                            showConfirmButton: true
+
+                });
         }else{
             swal({
                 title: "Data "+response.text+" Harus Diisi",

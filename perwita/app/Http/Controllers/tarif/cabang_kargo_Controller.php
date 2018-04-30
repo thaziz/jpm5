@@ -12,22 +12,24 @@ class cabang_kargo_Controller extends Controller
     public function table_data () {
       $cabang = Auth::user()->kode_cabang;
       if (Auth::user()->punyaAkses('Tarif Cabang Kargo','all')) {
-        $sql = "    SELECT t.kode_provinsi,jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
+        $sql = "    SELECT  c.nama as cabang,t.kode_provinsi,jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
                     FROM tarif_cabang_kargo t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
                     LEFT JOIN tipe_angkutan a ON a.kode=t.kode_angkutan
                     LEFT JOIN jenis_tarif jj ON jj.jt_id=t.jenis
                     LEFT JOIN provinsi p ON p.id=t.kode_provinsi
+                    left join cabang c on c.kode = t.kode_cabang
                     ORDER BY  t.kode_detail_kargo DEsC";
         }else{
-            $sql = "    SELECT t.kode_provinsi,jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
+            $sql = "    SELECT  c.nama as cabang,t.kode_provinsi,jj.jt_nama_tarif tarifnama,k.kode_kota,t.kode,p.nama provinsi, t.kode_detail_kargo,t.id_kota_asal, k.nama asal,t.id_kota_tujuan, kk.nama tujuan, t.harga, t.jenis, t.waktu, t.kode_angkutan, a.nama AS angkutan 
                     FROM tarif_cabang_kargo t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
                     LEFT JOIN tipe_angkutan a ON a.kode=t.kode_angkutan
                     LEFT JOIN jenis_tarif jj ON jj.jt_id=t.jenis
                     LEFT JOIN provinsi p ON p.id=t.kode_provinsi
+                    left join cabang c on c.kode = t.kode_cabang
                     where t.kode_cabang = '$cabang'
                     ORDER BY  t.kode_detail_kargo DEsC";
         }

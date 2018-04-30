@@ -108,6 +108,18 @@
                                     <input type="hidden" class="ed_pendapatan" name="ed_pendapatan" value="" >
                                 </td>
                             </tr>
+                            <tr class="grup_item_tr disabled" hidden="">
+                                <td style="padding-top: 0.4cm" >Grup Item</td>
+                                <td colspan="4" class="">                                    
+                                    <select class="chosen-select-width form-control grup_item"   name="grup_item" id="grup_item" style="width:100%" >
+                                        <option value="0">Pilih - Grup</option>
+                                    @foreach ($gp as $i=> $val)
+                                        <option value="{{$gp[$i]->kode}}" data-accpiutang="{{$gp[$i]->acc_piutang}}" data-csfpiutang="{{$gp[$i]->csf_piutang}}"> {{$gp[$i]->kode}} - {{$gp[$i]->nama}}</option>
+                                    @endforeach
+                                    </select>
+                                    <input type="hidden" class="ed_customer" name="ed_customer" value="" >
+                                </td>
+                            </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="5">
@@ -481,6 +493,9 @@
        ]
 
     });
+    @foreach($data_dt as $val)
+    array_simpan.push('{{$val->ipd_nomor_do_dt}}');
+    @endforeach
     // cari invoice
     $('.cari_invoice').click(function(){
         var cabang = $('.cabang').val();
@@ -493,6 +508,15 @@
             }
         });
     });
+
+    if ('{{$data->ip_pendapatan}}'== 'KORAN') {
+        console.log('asd');
+        $('.grup_item').val('{{$data->ip_grup}}').trigger('chosen:updated');
+        $('.grup_item_tr').prop('hidden',false);
+    }else{
+        $('.grup_item').val('0').trigger('chosen:updated');
+        $('.grup_item_tr').prop('hidden',true);
+    }
    var index_detail = 1;
     // pilih_invoice
     function pilih_invoice(a) {
@@ -515,6 +539,7 @@
                 $('.pajak_lain').val(data.data.i_kode_pajak);
                 $('#cb_jenis_ppn').val(data.data.i_jenis_ppn);
                 $('.diskon2').val(data.data.i_diskon2);
+
                 $('.tagihan_awal').val(accounting.formatMoney(data.data.i_total_tagihan, "", 2, ".",','));
                 $('.sisa_tagihan').val( accounting.formatMoney(data.data.i_sisa_pelunasan, "", 2, ".",','));
                 table_detail.clear().draw();
@@ -626,7 +651,9 @@
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
         var cabang        = $('.cabang').val();
-        var id          = $('#nota_invoice').val();
+        var id            = $('#nota_invoice').val();
+        var grup_item     = $('.grup_item').val();
+        var flag          = 'PEMBETULAN';
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -642,7 +669,7 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang,id},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang,id,grup_item,flag},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);
@@ -978,7 +1005,7 @@ $(document).ready(function(){
             array_simpan.splice(index,1);
             table_detail.row(par).remove().draw(false);
         }
-
+        console.log(array_simpan);
         // var sisa = 0 - total_tagihan;
         // $('.selisih_tagihan').val(accounting.formatMoney(sisa, "", 2, ".",','));
 

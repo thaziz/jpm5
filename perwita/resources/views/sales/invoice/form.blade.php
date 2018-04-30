@@ -94,7 +94,11 @@
                                     <select onchange="ganti_jt()" class="chosen-select-width cus_disabled form-control"   name="customer" id="customer" style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                     @foreach ($customer as $i=> $val)
-                                        <option value="{{$customer[$i]->kode}}" data-accpiutang="{{$customer[$i]->acc_piutang}}" data-jt="{{$customer[$i]->acc_piutang}}"> {{$customer[$i]->kode}} - {{$customer[$i]->nama}}</option>
+                                        @foreach($kota as $kot)
+                                          @if($kot->id == $val->kota)
+                                            <option value="{{$val->kode}}"  > {{$val->kode}} - {{$val->nama}} - {{ $kot->nama }}</option>
+                                          @endif
+                                        @endforeach
                                     @endforeach
                                     </select>
                                     <input type="hidden" class="ed_customer" name="ed_customer" value="" >
@@ -137,6 +141,18 @@
                                         <option value="KOLI">KOLI</option>
                                     </select>
                                     <input type="hidden" name="ed_type_kiriman" value="{{ $data->type_kiriman or null }}" >
+                                </td>
+                            </tr>
+                            <tr class="grup_item_tr" hidden="">
+                                <td style="padding-top: 0.4cm" >Grup Item</td>
+                                <td colspan="4" class="">                                    
+                                    <select class="chosen-select-width form-control grup_item"   name="grup_item" id="grup_item" style="width:100%" >
+                                        <option value="0">Pilih - Grup</option>
+                                    @foreach ($gp as $i=> $val)
+                                        <option value="{{$gp[$i]->kode}}" data-accpiutang="{{$gp[$i]->acc_piutang}}" data-csfpiutang="{{$gp[$i]->csf_piutang}}"> {{$gp[$i]->kode}} - {{$gp[$i]->nama}}</option>
+                                    @endforeach
+                                    </select>
+                                    <input type="hidden" class="ed_customer" name="ed_customer" value="" >
                                 </td>
                             </tr>
                             <tr>
@@ -461,7 +477,14 @@
         
 
    $('#cb_pendapatan').change(function(){
+    if ($(this).val() == 'KORAN') {
+        $('.grup_item_tr').prop('hidden',false);
+    }else{
+        $('.grup_item_tr').prop('hidden',true);
+        $('.grup_item').val('0');
+    }
         $('.ed_pendapatan').val($(this).val());
+
    })
    //modal do
    $('#btn_modal_do').click(function(){
@@ -472,6 +495,7 @@
         var do_awal       = $('.do_awal').val();
         var do_akhir      = $('.do_akhir').val();
         var cabang        = $('.cabang').val();
+        var grup_item     = $('.grup_item').val();
 
         if (customer == 0) {
             array_validasi.push(0)
@@ -487,7 +511,7 @@
         if (index == -1) {
             $.ajax({
               url:baseUrl + '/sales/cari_do_invoice',
-              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang},
+              data:{customer,cb_pendapatan,do_awal,do_akhir,array_simpan,cabang,grup_item},
               success:function(data){
                 $('#modal_do').modal('show');
                 $('.kirim').html(data);
@@ -719,10 +743,10 @@ function hitung_total_tagihan(){
                     for(var i = 0 ; i < response.data.length;i++){
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail,
+                            index_detail+'<p class="indexing"></p>',
                             response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].dd_nomor+'" name="do_detail[]">',
                             response.data[i].tanggal+'<input type="hidden" class="dd_id" value="'+response.data[i].dd_id+'" name="do_id[]">',
-                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].dd_acc_penjualan+'" name="akun[]">',
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
                             accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
                             accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
@@ -742,7 +766,7 @@ function hitung_total_tagihan(){
                         ///////////////////////////////////////
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail,
+                            index_detail+'<p class="indexing"></p>',
                             response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
                             response.data[i].tanggal,
                             response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
@@ -759,6 +783,7 @@ function hitung_total_tagihan(){
                     hitung();
                     
                     $('.customer_td').addClass('disabled');
+                    $('.grup_item_tr').addClass('disabled');
                     $('#cb_pendapatan').attr('disabled',true);
                     /////////////////////////////////////
                 }
@@ -791,9 +816,14 @@ function hitung_total_tagihan(){
             table_detail.row(par).remove().draw(false);
         }
 
-        if (length == 1) {
-            
-            $('.cus_disabled').attr('disabled',false).trigger("chosen:updated");
+        var temp = 0;
+        $('.indexing').each(function(){
+            temp+=1;
+        })
+
+        if (temp == 0) {
+            $('.customer_td').removeClass('disabled');
+            $('.grup_item_tr').removeClass('disabled');
             $('#cb_pendapatan').attr('disabled',false);
         }
 
@@ -826,7 +856,8 @@ function hitung_total_tagihan(){
         closeOnConfirm: true
       },
       function(){
-            var accPiutang=$("#customer").find(':selected').data('accpiutang'); 
+            var accPiutang=$(".grup_item").find(':selected').data('accpiutang'); 
+            var csfPiutang=$(".grup_item").find(':selected').data('csfpiutang'); 
             var pajak_lain=$("#pajak_lain").find(':selected').data('pph'); 
             var ed_customer=$("#customer").val(); 
                // alert(accPiutang);
@@ -844,6 +875,7 @@ function hitung_total_tagihan(){
                +'&'+table_detail.$('input').serialize()
                +'&'+$('.table_pajak :input').serialize()
                +'&accPiutang='+accPiutang
+               +'&csfPiutang='+csfPiutang
                +'&pajak_lain='+pajak_lain
                +'&ed_customer='+ed_customer,
           success:function(response){

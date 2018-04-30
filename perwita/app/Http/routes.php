@@ -1191,13 +1191,15 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
 
 
+
 // Route::get('sales/cari_modaldeliveryorder', 'sales\do_controller@cari_modaldeliveryorder');
 // Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
 
+// Route::get('sales/cari_modaldeliveryorder_dokumen', 'sales\do_controller@cari_modaldeliveryorder_dokumen');
+// Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
 
-
-////////////
-
+// Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_controller@cari_modaldeliveryorder_koli');
+// Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_controller@tarif_penerus_koli_indentdo');
 
 Route::get('sales/deliveryorder', 'sales\do_Controller@index');
 Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
@@ -1221,6 +1223,12 @@ Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_no
 
 Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');
 Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_Controller@tarif_penerus_dokumen_indentdo');
+
+Route::get('sales/cari_modaldeliveryorder_kilogram', 'sales\do_Controller@cari_modaldeliveryorder_kilogram');
+Route::get('sales/tarif_penerus_kilogram_indentdo/save_data', 'sales\do_Controller@tarif_penerus_kilogram_indentdo');
+
+Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_Controller@cari_modaldeliveryorder_koli');
+Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_Controller@tarif_penerus_koli_indentdo');
 
 //end delivery order
 
@@ -1257,6 +1265,7 @@ Route::post('sales/deliveryorderkargoform/hapus_data_detail', 'sales\do_kargo_Co
 Route::get('sales/deliveryorderkargoform/{nomor}/update_status', 'sales\do_kargo_Controller@form_update_status');
 Route::post('sales/deliveryorderkargoform/save_update_status', 'sales\do_kargo_Controller@save_update_status');
 Route::get('sales/deliveryorderkargoform/nota/{nomor}', 'sales\do_kargo_Controller@cetak_nota');
+
 
 //end delivery order kargo
 

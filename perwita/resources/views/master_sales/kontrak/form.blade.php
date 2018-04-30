@@ -34,6 +34,7 @@
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
                                     <input type="text" name="kontrak_nomor" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" >
+                                    <input type="hidden" readonly="readonly" class="form-control success" >
                                 </td>
                             </tr>
                             <tr>
@@ -186,6 +187,17 @@
                                         <option value="KARGO">KARGO</option>
                                     </select>
                                 </td>
+                            </tr>
+                            <tr class="grup_item_tr">
+                                <td>Grup Item</td>
+                                <td>
+                                    <select class="form-control chosen-select-width cb_grup_item"  name="cb_grup_item" style="width:100%">
+                                        <option value="0"> Pilih - Group </option>
+                                    @foreach ($grup_item as $row)
+                                        <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                    @endforeach
+                                    </select>
+                                <td>
                             </tr>
                             <tr class="type_tarif_tr">
                                 <td>Tipe Tarif</td>
@@ -415,9 +427,9 @@ $('#btnadd').click(function(){
     var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
-
-    var customer                = $('.customer').val();
+    var customer                 = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
+    var cb_grup_item             = $('.cb_grup_item').val('0').trigger('chosen:updated');
     var validasi                 = [];
 
 
@@ -444,9 +456,15 @@ $('#btnadd').click(function(){
 $('.jenis_modal').change(function(){
     if ($(this).val() == 'PAKET') {
         $('.type_tarif_tr').attr('hidden',false);
+        $('.grup_item_tr').prop('hidden',true);
+    }else if($(this).val() == 'KORAN'){
+        $('.grup_item_tr').prop('hidden',false);
+        $('.type_tarif_tr').prop('hidden',true);
+        $('.type_tarif_modal').val(0).trigger('chosen:updated');
     }else{
         $('.type_tarif_modal').val(0).trigger('chosen:updated');
         $('.type_tarif_tr').attr('hidden',true);
+        $('.grup_item_tr').prop('hidden',true);
     }
 });
 var datatable = $('#table_data').DataTable({
@@ -489,7 +507,6 @@ var tipe_angkutan_text       = $('.tipe_angkutan_modal option:selected').text();
 var id_detail                = $('.id_detail').val();
 var harga_modal              = $('.harga_modal').val();
 var keterangan_modal         = $('.keterangan_modal ').val();
-
 var kota_asal_modal          = $('.kota_asal_modal').val();
 var type_tarif_modal         = $('.type_tarif_modal').val();
 var kota_tujuan_modal        = $('.kota_tujuan_modal ').val();
@@ -499,6 +516,7 @@ var acc_akun_modal           = $('.acc_akun_modal ').val();
 var csf_akun_modal           = $('.csf_akun_modal').val();
 var satuan_modal             = $('.satuan_modal').val();
 var tipe_angkutan            = $('.tipe_angkutan_modal').val();
+var cb_grup_item             = $('.cb_grup_item').val();
 console.log(id_detail);
 
     if (id_detail == '') {
@@ -509,7 +527,8 @@ console.log(id_detail);
                kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
 
                jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
-               '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
+               '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">'+
+               '<input type="hidden" class="grup_item" value="'+cb_grup_item+'" name="grup_item[]">',
 
                satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
 
@@ -542,7 +561,8 @@ console.log(id_detail);
                kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
 
                jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
-               '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">',
+               '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">'+
+               '<input type="hidden" class="grup_item" value="'+cb_grup_item+'" name="grup_item[]">',
 
                satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
 
@@ -590,9 +610,15 @@ var keterangan = $(par).find('.keterangan').val();
 var akun_acc = $(par).find('.akun_acc').val();
 var akun_csf = $(par).find('.akun_csf').val();
 var seq = $(par).find('.seq').val();
+var grup_item = $(par).find('.grup_item').val();
 if (jenis_detail == 'PAKET') {
     $('.type_tarif_tr').prop('hidden',false);
+    $('.grup_item_tr').prop('hidden',true);
+}else if(jenis_detail == 'KORAN'){
+    $('.grup_item_tr').prop('hidden',false);
+    $('.type_tarif_tr').prop('hidden',true);
 }else{
+    $('.grup_item_tr').prop('hidden',true);
     $('.type_tarif_tr').prop('hidden',true);
 }
   $('.kota_asal_modal').val(kota_asal).trigger('chosen:updated');
@@ -609,6 +635,7 @@ if (jenis_detail == 'PAKET') {
   $('.acc_akun_modal').val(akun_acc).trigger('chosen:updated');
   $('.csf_akun_modal').val(akun_csf).trigger('chosen:updated');
   $('.id_detail').val(seq);
+  $('.cb_grup_item').val(grup_item).trigger('chosen:updated');
   
   $('#modal_customer').modal('show');
 }
@@ -646,6 +673,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
+                    $('.success').val('success');
                    location.reload();    
         });
       },
@@ -661,5 +689,15 @@ $('#btnsimpan').click(function(){
   });  
  });
 });
+
+
+    window.onbeforeunload = function(event)
+{       
+    var valid = $('.success').val();
+    if (valid == '') {
+       return confirm();
+    }
+
+};
 </script>
 @endsection
