@@ -120,7 +120,7 @@
               <tr>
                 <td>Nama Pembiayaan</td>
                 <td>
-                  <input type="text" name="pembiayaan" class="form-control pembiayaan" placeholder="pembiayaan">
+                  <input type="text" style="text-transform: uppercase;" name="pembiayaan" class="form-control pembiayaan" placeholder="pembiayaan">
                   <input type="hidden" name="kode" class="form-control kode_id" placeholder="pembiayaan">
                 </td>
               </tr>
@@ -165,7 +165,7 @@
               <tr>
                 <td>Keterangan</td>
                 <td>
-                    <textarea style="min-width: 100%; max-height: 300px;max-width: 365px;" name="keterangan" class="form-control keter"></textarea>
+                    <textarea style="min-width: 100%; max-height: 300px;max-width: 365px;text-transform: uppercase;" name="keterangan" class="form-control keter"></textarea>
                 </td>
               </tr>
             </table>
@@ -371,7 +371,7 @@ function dropdown(d){
     type:'get',
     success:function(response){
       $('.akun_modal').html(response);
-      $('.nama_akun_dropdown').val(d).trigger('chosen:updated');
+      $('.nama_akun_dropdown').val('0').trigger('chosen:updated');
 
     }
   })
