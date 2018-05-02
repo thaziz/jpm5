@@ -280,6 +280,7 @@ Route::get('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_updat
 Route::get('biaya_penerus/index', 'KasController@index');
 Route::get('biaya_penerus/createkas', 'KasController@create');
 Route::get('biaya_penerus/getbbm/{id}', 'KasController@getbbm');
+Route::get('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresiedit', 'KasController@cariresiedit');
 Route::post('biaya_penerus/save_penerus', 'KasController@save_penerus');

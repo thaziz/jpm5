@@ -94,12 +94,12 @@
                         <td align="center"><input type="checkbox" class="allow" name="cek[]"></td>
                         <td align="left" style="width: 6%">
                           @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','ubah'))
-                           @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) != 0)
+                           @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) == 0)
                            <a class="fa asw fa-pencil" align="center" href="{{route('editkas', ['id' => $val->bpk_id])}}" title="edit"> Edit</a><br>
                            @endif
                           @endif
                           @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','hapus'))
-                          @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) != 0)
+                          @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) == 0)
                             <a class="fa fa-trash asw" align="center" onclick="hapus({{$val->bpk_id}})" title="hapus"> Hapus</a>
                           @endif
                           @endif
