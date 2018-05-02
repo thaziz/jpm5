@@ -23,7 +23,7 @@
                           <a> Warehouse Purchase</a>
                         </li>
                         <li class="active">
-                            <strong> Create Stock Opname </strong>
+                            <strong> Detail Stock Opname </strong>
                         </li>
 
                     </ol>
@@ -57,39 +57,40 @@
                       <div class="row">
                       <div class="col-xs-6">
                            <table border="0" class="header table">
+                           @foreach($data['stockopname'] as $so)
                             <tr>
                               <td>No Stock Opname</td>
                               <td>
-                                <input type="text" readonly="" value="{{$pb}}" class="so form-control" name="so">
+                                <input type="text" readonly="" value="{{$so->so_nota}}" class="so form-control" name="so">
                               </td>
                             </tr>
-                            @if(Session::get('cabang') == '000')
+                           
                             <tr>
                               <td width="150px">
                                 Lokasi Cabang
                               </td>
                               <td>
-                                <input type="text" readonly="" value="{{Session::get('cabang')}} - {{$namacabang[0]->nama}}" 
+                                <input type="text" readonly="" value="{{$so->kode}} - {{$so->nama}}" 
                                 class="so form-control" name="so">
                               </td>
                             </tr>
-                            @endif
+                            
                           <tr>
                             <td width="150px">
                               Lokasi Gudang
                             </td>
                             <td>
-                              <input type="text" readonly="" value="{{ $mastergudang[0]->mg_namagudang }}" 
+                              <input type="text" readonly="" value="{{ $so->mg_namagudang }}" 
                                class="so form-control" name="so">
                             </td>
                           </tr>
                           <tr>
                             <td> Bulan </td>
                             <td>   <div class="input-group date">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="{{Carbon\Carbon::parse($data[0]->so_bulan)->format('d-M-Y')}}" disabled readonly>
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" value="{{Carbon\Carbon::parse($so->so_bulan)->format('d-M-Y')}}" disabled readonly>
                               </div>  </td>
                           </tr>
-
+                          @endforeach
                           </table>
 
                       </div>
@@ -97,12 +98,16 @@
                     
                       </div>
 
-                      <hr>
-                      
-                      <h4> Detail Barang </h4>
-                      <br>
-                       <!-- <a class="btn btn-success" id="tmbh_data_barang"> Tambah Data </a> -->
-                       <br>
+                     
+                      <table class="table">
+                        <tr>
+                          <td style="width:120px">
+                          <h4> Detail Barang </h4> </td>
+                        
+                          <td>  <a class="btn btn-sm btn-warning" id="editdata"> <i class="fa fa-pencil"> </i> Edit Data </a> </td>
+                        </tr>
+                       
+                      </table>
                       <div class="table-responsive">
                       <table class="table table-bordered  tbl-penerimabarang" id="addColumn">
                       <tr>
@@ -137,24 +142,44 @@
                       </tr>
 
                       <tbody class="append">
-                        @foreach($detail as $index=>$val)
+                        @foreach($data['stockopnamedt'] as $index=>$sodt)
                           <tr>
                               <td align="center">
                               {{$index+1}}
                               </td><td align="left">
-                              {{$val->nama_masteritem}}
+                              {{$sodt->nama_masteritem}}
                               </td><td align="left">
-                              {{$val->unitstock}}
+                              {{$sodt->unitstock}}
                               </td><td align="right">
-                              {{round($val->sod_jumlah_stock)}}
+                              <input type="text" readonly value="{{round($sodt->sod_jumlah_stock)}}" class="form-control fisik" name="stock[]" readonly=""> 
                               </td><td align="right">
-                              {{round($val->sod_jumlah_real)}}
+                              <input type="number" class="form-control real edit" onkeyup="status(this)" name="real[]" value="{{round($sodt->sod_jumlah_real)}}" readonly="">
                               </td><td align="left">
-                              {{$val->sod_status}}
-                              </td><td align="right">
-                              {{round($val->sod_jumlah_status)}}
-                              </td><td align="left">
-                              {{$val->sod_keterangan}}
+
+                              <select class="form-control status  readonly" name="status[]">
+                                @if($sodt->sod_status == 'lebih')
+                                  <option value="lebih" selected="">Lebih</option>
+                                  <option value="kurang">Kurang</option>
+                                  <option value="sama">Sama</option>
+                                @elseif($sodt->sod_status == 'kurang')
+                                  <option value="lebih">Lebih</option>
+                                  <option value="kurang" selected="">Kurang</option>
+                                  <option value="sama">Sama</option>
+                                @else
+                                  <option value="lebih">Lebih</option>
+                                  <option value="kurang" >Kurang</option>
+                                  <option value="sama" selected="">Sama</option>
+                               
+                                @endif
+                              </select>
+                              </td>
+                              
+                              <td align="right">
+                               <input type="number" readonly class="form-control val_status" name="val_status[]" value="{{(int)$sodt->sod_jumlah_status}}" readonly="">
+                              </td>
+
+                              <td align="left">
+                              <input type="text" class="form-control keterangan edit" readonly name="keterangan[]" value="{{$sodt->sod_keterangan}}"> </td> 
                               </td>
                           </tr>
                         @endforeach 
@@ -174,10 +199,11 @@
 
                 <div class="box-footer">
                   <div class="pull-right">
-                  
-                    
-         
-                    
+                      <button class="btn btn-sm btn-success simpandata">
+                        <i class="fa fa-upload">
+                        </i>
+                        &nbsp; Simpan
+                      </button>
                     
                     </div>
                   </div><!-- /.box-footer -->
@@ -208,6 +234,36 @@
   });
   @endif
 
+  $('#editdata').click(function(){
+    $('.edit').attr('readonly' , false);
+    $('.simpandata').show();
+  })
+
+  $('.simpandata').hide();
+
+  function status(p){
+  var par = p.parentNode.parentNode;
+  var val = parseInt(p.value);
+  var ss  = parseInt($(par).find('.fisik').val());
+
+  if (val == ss) {
+    $(par).find('.status').val('sama');
+    $(par).find('.val_status').val('0');
+  } else if (val > ss) {
+    $(par).find('.status').val('lebih');
+
+    var temp = val - ss ;
+
+    $(par).find('.val_status').val(temp);
+  } else if (val < ss) {
+    $(par).find('.status').val('kurang');
+
+    var temp = ss - val ;
+    $(par).find('.val_status').val(temp);
+
+  }
+  // console.log(val);
+}
 
     $('.date').datepicker({
       format: "MM",

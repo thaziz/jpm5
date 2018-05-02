@@ -43,7 +43,7 @@ use App\bukti_bank_keluar_dt;
 use App\bukti_bank_keluar_biaya;
 use App\master_akun;
 Use App\d_jurnal;
-use App\cndn;
+use App\cndn;,
 use App\cndn_dt;
 Use App\d_jurnal_dt;
 use App\fakturpajakmasukan;
@@ -163,12 +163,9 @@ class PurchaseController extends Controller
 	
 	public function getnospp(Request $request){
 		
-
 		$cabang = $request->comp;
 		$bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
-
-
 
 		//return $mon;
 		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
@@ -2623,7 +2620,7 @@ public function purchase_order() {
 				$stock_mutation->sm_sisa = $request->qtyterima[$i];
 				$stock_mutation->sm_flag = 'PO';
 				$stock_mutation->created_by = $request->username;
-				$stock_mutation->update_by = $request->username;
+				$stock_mutation->updated_by = $request->username;
 				$stock_mutation->save();
 			}
 			else if($flag == 'FP') {
@@ -2657,7 +2654,7 @@ public function purchase_order() {
 				$stock_mutation->sm_sisa = $request->qtyterima[$i];
 				$stock_mutation->sm_flag = 'FP';
 				$stock_mutation->created_by = $request->username;
-				$stock_mutation->update_by = $request->username;
+				$stock_mutation->updated_by = $request->username;
 				$stock_mutation->save();
 			}
 			else {
@@ -2691,7 +2688,7 @@ public function purchase_order() {
 				$stock_mutation->sm_sisa = $request->qtyterima[$i];
 				$stock_mutation->sm_flag = 'PBG';
 				$stock_mutation->created_by = $request->username;
-				$stock_mutation->update_by = $request->username;
+				$stock_mutation->updated_by = $request->username;
 				$stock_mutation->save();
 			}
 		
@@ -6220,6 +6217,24 @@ public function kekata($x) {
 				}
 				else if($idjenisbayar == '4'){ //uang muka pembelian
 					$datas['fp']  = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang'");
+
+					$datas['fp1']  = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang'");
+
+					if(count($request->arrnofaktur) != 0){
+						for($i = 0 ; $i < count($datas['fp']); $i++){
+							for($j = 0; $j < count($request->arrnofaktur); $j++){
+								if($request->arrnofaktur[$j] == $datas['fp'][$i]->um_nomorbukti){
+									unset($datas['fp1'][$i]);
+								}
+							}
+						}
+						$datas['fp1'] = array_values($datas['fp1']);
+           				$data['fakturpembelian'] = $datas['fp1'];
+					}
+					else {
+						$data['fakturpembelian'] = $datas['fp1'];
+					}
+
 				}
 				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
 					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$idsup' and ik_comp = kode and ik_status = 'APPROVED'");
