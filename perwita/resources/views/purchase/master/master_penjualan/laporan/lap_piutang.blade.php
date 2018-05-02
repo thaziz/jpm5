@@ -28,6 +28,11 @@
     border: none;
     color: #676a6c;
   }
+  .btn-special{
+    background-color: #6d2db3;
+    border-color: #6d2db3;
+    color: #FFFFFF;
+  }
 </style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -48,28 +53,50 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                  <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
+                  <form class="form-horizontal" id="search" action="post" method="POST">
                   <div class="box-body">
                     <table class="table table-bordered datatable table-striped">
-                         <tr>
-                        <td> Dimulai : </td> <td> <div class="input-group">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
-                                              date" onchange="tgl()">
-
-                              </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input type="text" class=" date form-control date_to date_range_filter
-                                              date" name="max" id="max" onchange="tgl()" >
-                              </div> </td>
+                        <tr>
+                        <td> Dimulai : </td> 
+                        <td> 
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
+                                date">
+                          </div> 
+                        </td>  
+                        <td> Diakhiri : </td> 
+                        <td> 
+                          <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                            <input type="text" class=" date form-control date_to date_range_filter
+                                date" name="max" id="max"  >
+                          </div> 
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Customer</td>
+                        <td>
+                          <select class="chosen-select-width" name="customer" >
+                            <option value="">- Customer -</option>
+                            @foreach ($customer as $e)
+                              <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
+                            @endforeach
+                          </select>
+                        </td>
                       </tr>
                       <br>
                       </table>
-                      <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                      <div id="container" style="height: 400px"></div>
+                      <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-special cetak" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </a> </div>
+                      <div class="row" style="margin-top: -39px;margin-left: 55px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="pdf()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                      <div class="row" style="margin-top: -39px;margin-left: 136px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                     </div>
                 </form>
                 <div class="box-body">
-                <table id="addColumn" class="table table-bordered table-striped" width="100%">
+                <div id="disini"></div>
+                <div id="hilang" style="background-color: red;">
+                <table id="addColumn" class="table table-bordered table-striped" width="100%" >
                     <thead>
                         <tr>
                             <th width="10%"> Kode</th>
@@ -84,43 +111,48 @@
                       @foreach ($data_i as $a => $element)
                          <tr>
                            <td colspan="6">{{ $data_i[$a]->i_kode_customer }}  - {{ $data_i[$a]->cnama }}</td>
+                           <input type="hidden" name="" class="gege" value="{{ $data_i[$a]->i_kode_customer }}">
                          </tr>
                          @foreach ($data as $e => $element)
-                      <tr style="text-align: right;background-color: #e6ffda;">
-                          
-                            @if ($data_i[$a]->i_kode_customer == $data[$e]->cutomer)
+                        <tr style="text-align: right;background-color: #e6ffda;">
+                              @if ($data_i[$a]->i_kode_customer == $data[$e]->cutomer)
 
-                                    <td><input type="hidden" value="{{ $data[$e]->kode }}" name="nomor">{{ $data[$e]->kode }}</td>
-                                    <td>{{ $data[$e]->tanggal }}</td>
-                                    <td align="left">{{ $data[$e]->keterangan }}</td>
-                                    <td align="right" > 
-                                    @if ($data[$e]->flag == 'D' or substr($data[$e]->kode,0,3) == 'INV')
-                                      {{ $data[$e]->total }}
-                                      <input type="hidden" class="debet" value="{{ $data[$e]->total }}" name="">
-                                      <input type="hidden" class="debet_percabang" value="{{ $data[$e]->total }}" name="">
-                                    @else 
-                                      0
-                                      <input type="hidden" class="debet" value="0" name="">
-                                    @endif
-                                    </td>
+                                      <td><input type="hidden" value="{{ $data[$e]->kode }}" name="nomor">{{ $data[$e]->kode }}</td>
+                                      <td>{{ $data[$e]->tanggal }}</td>
+                                      <td align="left">{{ $data[$e]->keterangan }}</td>
+                                      <td align="right" > 
+                                      @if ($data[$e]->flag == 'D' or substr($data[$e]->kode,0,3) == 'INV')
+                                        {{ number_format($data[$e]->total,0,',','.') }}
+                                        <input type="hidden" class="debet" value="{{ $data[$e]->total }}" name="">
+                                      @else 
+                                        0
+                                        <input type="hidden" class="debet" value="0" name="">
+                                      @endif
+                                      </td>
 
-                                    <td align="right"> 
-                                    @if ($data[$e]->flag == 'K' or substr($data[$e]->kode,0,2) == 'KN' or substr($data[$e]->kode,0,3) == 'KWT' or substr($data[$e]->kode,0,3) == 'PST')
-                                      <input type="hidden" class="kredit" value="{{ $data[$e]->total }}" name="">
-                                      {{ $data[$e]->total }}
-                                    @else 
-                                      0
-                                      <input type="hidden" class="kredit" value="0" name="">
-                                    @endif
-                                    </td>
+                                      <td align="right"> 
+                                      @if ($data[$e]->flag == 'K' or substr($data[$e]->kode,0,2) == 'KN' or substr($data[$e]->kode,0,3) == 'KWT' or substr($data[$e]->kode,0,3) == 'PST')
+                                        <input type="hidden" class="kredit" value="{{ $data[$e]->total }}" name="">
+                                        {{ number_format($data[$e]->total,0,',','.') }}
+                                      @else 
+                                        0
+                                        <input type="hidden" class="kredit" value="0" name="">
+                                      @endif
+                                      </td>
 
-                                    <td ><input type="text" name="" readonly="" class="saldo" style="text-align: right"></td>
-                            @endif 
-                      </tr>
+                                      <td>
+                                        <input type="text" name="" readonly="" class="saldo" style="text-align: right">
+                                      </td>
+
+                              @endif 
+                        </tr>
+
                         @endforeach
                           <tr>
                             <td colspan="3">Total</td>
-                            <td class="debet_perc"></td>
+                            <td class="debet_perc" align="right"></td>
+                            <td class="kredit_perc" align="right"></td>
+                            <td class="total_perc" align="right"></td>
                           </tr>
                     @endforeach
                     <tr>
@@ -132,6 +164,7 @@
                     </tbody>
 
                   </table>
+                  </div>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -165,20 +198,14 @@
 
 
     var table;
-   
-   var awal = 0;
-  $('.debet_perc').each(function(){
-    var total = parseInt($(this).val());
-    awal += total;
-    console.log(awal);
-  });
-  $('.debet_perc').val(accounting.formatMoney(awal,"",0,'.',','));
+  
+    
 
-  var awal = 0;
+   var awal = 0;
   $('.debet').each(function(){
     var total = parseInt($(this).val());
     awal += total;
-    console.log(awal);
+    // console.log(awal);
   });
   $('#total_debet').val(accounting.formatMoney(awal,"",0,'.',','));
 
@@ -186,7 +213,7 @@
   $('.kredit').each(function(){
     var total = parseInt($(this).val());
     kred += total;
-    console.log(kred);
+    // console.log(kred);
   });
   $('#total_kredit').val(accounting.formatMoney(kred,"",0,'.',','));
 
@@ -197,78 +224,19 @@
     var kredit = $(par).find('.kredit').val();
     var hasil = $(this).val() - kredit;
     saldo += hasil;
-    $(par).find('.saldo').val(saldo);
+    $(par).find('.saldo').val(accounting.formatMoney(saldo,"",0,'.',','));
   })
   $('#total_total').val(accounting.formatMoney(saldo,"",0,'.',','));
 
 
+
      $('.date').datepicker({
         autoclose: true,
-        format: 'yyyy-mm-dd'
+        format: 'yyyy-mm',
+        minViewMode:1,
     });
-            $("#min").datepicker({format:"dd/mm/yyyy"});
-            $("#max").datepicker({format:"dd/mm/yyyy"});
-
-       function tgl(){
-         var tgl1   = $("#min").val();
-         var tgl2   = $("#max").val();
-          if(tgl1 != "" && tgl2 != ""){
-          }
-
-            $(document).ready(function(){
-        $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#min').datepicker("getDate");
-            // console.log(min);
-            var max = $('#max').datepicker("getDate");
-            // console.log(max);
-
-            var startDate = new Date(data[1]);
-            // console.log(startDate);
-            if (min == null || min == '' && max == null || max == '') { return true; }
-            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
-            if (startDate <= max && startDate >= min) { return true; }
-            return false;
-        }
-        );
-            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
            
 
-            // Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max').change(function () {
-                /*if($('#max').val() == '' || $('#max').val() == null ){
-                    $('#max').val(0);
-                }*/
-                table.draw();
-            });
-        });
-          }
-   
- 
-    $(document).ready(function() {
-        $('.tbl-item').DataTable();
-     
-        $('input.global_filter').on( 'keyup click', function () {
-            filterGlobal();
-        } );
-     
-        $('input.column_filter').on( 'keyup click', function () {
-            filterColumn( $(this).parents('tr').attr('data-column') );
-        } );
-    } );
-
-    
-    // function filterColumn1 () {
-    //     $('#addColumn').DataTable().column(3).search(
-    //         $('.select-picker3').val()).draw();    
-    // }
-    function filterColumn2 () {
-        $('#addColumn').DataTable().column(2).search(
-            $('.select-picker5').val()).draw(); 
-     }
-     
 
       function cetak(){
       var asw=[];
@@ -296,5 +264,42 @@
         }
       });
     }
+
+
+Highcharts.chart('container', {
+    chart: {
+        type: 'column',
+        width: 1000
+    },
+    title: {
+        text: 'Total Piutang Seluruh cutomer'
+    },
+
+    xAxis: {
+        categories: ['Saldo'],
+                
+    },
+    plotOptions:{
+      series:{
+        pointWidth:40
+      }
+    },
+    series: [{
+        data: [saldo]
+    }]
+});
+
+ function cari(){
+    $.ajax({
+      data:$('#search').serialize(),
+      type:'get',
+      url:baseUrl + '/cari_kartupiutang/cari_kartupiutang',
+      success : function(data){
+        
+        $('#disini').html(data);
+
+      }
+    })
+ }
 </script>
 @endsection

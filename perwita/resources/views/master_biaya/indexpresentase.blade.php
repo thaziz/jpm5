@@ -60,12 +60,13 @@
                                 <input type="hidden" value="{{$val->cabang}}" class="cabang_tabel">
                             </td>
                             <td class="">
-                               {{$val->nama}}
-                                <input type="hidden" value="{{$val->nama}}" class="nama_tabel">
+                               {{$val->nama}} {{$val->last_name}}
+                                <input type="hidden" value="{{$val->jenis_bbm}}" class="nama_tabel">
+                                <input type="hidden" value="{{$val->last_name}}" class="last_name_tabel">
                             </td>
                             <td>
                               {{$val->mjb_nama}}
-                              <input type="hidden" value="{{$val->mjb_nama}}" class="jenis_biaya_detail">
+                              <input type="hidden" value="{{$val->mjb_id}}" class="jenis_biaya_detail">
                             </td>
                             <td class="">
                                 {{$val->keterangan}}
@@ -107,7 +108,7 @@
 
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog" role="document" style="max-width: 800px; min-width: 800px;">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -116,21 +117,28 @@
         <div class="modal-body">
           <div>
             <form class="form table_member">
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered table-striped modal_form">
               <tr>
                 <td>Nama Pembiayaan</td>
                 <td>
-                  <input type="text" name="pembiayaan" class="form-control pembiayaan" placeholder="pembiayaan">
+                    <select  class="form-control first_name chosen-select-width" name="first_name">
+                        @foreach($bbm as $val)
+                        <option value="{{$val->jb_id}}">{{$val->jb_nama}}</option>
+                        @endforeach
+                    </select>
                   <input type="hidden" name="kode" class="form-control kode_id" placeholder="pembiayaan">
+                </td>
+                <td>
+                  <input type="text" name="last_name" class="form-control last_name" placeholder="last name" style="text-transform: uppercase;">
                 </td>
               </tr>
               <tr>
                 <td>Persentase</td>
-                <td><input type="text" name="persentase" class="form-control persentase" placeholder="persen"></td>
+                <td colspan="2"><input type="text" name="persentase" class="form-control persentase" placeholder="persen"></td>
               </tr>
               <tr>
                 <td>Cabang</td>
-                <td >
+                <td colspan="2">
                     <select onchange="dropdown()" class="form-control cabang chosen-select-width" name="cabang">
                         <option selected="" value="0">- pilih-cabang -</option>
                         <option value="GLOBAL">GLOBAL</option>
@@ -142,7 +150,7 @@
               </tr>
               <tr>
                 <td>Kode Akun</td>
-                <td class="akun_modal">
+                <td colspan="2" class="akun_modal">
                     <select style="display: inline-block; " class="form-control nama_akun_dropdown chosen-select-width1" name="nama_akun">
                         <option selected="" disabled="" value="0">- pilih-akun -</option>
                         @foreach($akun as $val)
@@ -153,7 +161,7 @@
               </tr>
               <tr>
                 <td>Jenis Biaya</td>
-                <td class="">
+                <td colspan="2" class="">
                     <select style="display: inline-block; " class="form-control jenis_biaya chosen-select-width1" name="jenis_biaya">
                         <option>- Jenis - Biaya -</option>     
                         @foreach($jenis_bayar as $val)
@@ -164,8 +172,8 @@
               </tr>
               <tr>
                 <td>Keterangan</td>
-                <td>
-                    <textarea style="min-width: 100%; max-height: 300px;max-width: 365px;" name="keterangan" class="form-control keter"></textarea>
+                <td colspan="2" >
+                    <textarea style="min-width: 100%; max-height: 300px;max-width: 365px;text-transform: uppercase;" name="keterangan" class="form-control keter"></textarea>
                 </td>
               </tr>
             </table>
@@ -221,7 +229,7 @@ function tambah(){
   $('.kode_id').val('');
   $('.nama_akun_dropdown').val('0').trigger('chosen:updated');
   $('.cabang').val('0').trigger('chosen:updated');
-
+  $('.jenis_biaya').val('0').trigger('chosen:updated');
   $('.keter').val('');
   $('#myModal').modal('show');
 }
@@ -284,7 +292,7 @@ if (kode_id == '') {
           $.ajax({
           url:baseUrl+'/presentase/tambah',
           type:'get',
-          data:'biaya='+biaya+'&'+'persen='+persen+'&'+'cabang='+cabang+'&'+'akun='+akun+'&'+'ket='+ket+'&jb='+jenis_biaya,
+          data: $('.modal_form :input').serialize(),
           success:function(response){
             swal({
             title: "Berhasil!",
@@ -293,7 +301,7 @@ if (kode_id == '') {
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                       location.reload();
+                       location.reload
             });
           },
           error:function(data){
@@ -331,7 +339,7 @@ if (kode_id == '') {
           $.ajax({
           url:baseUrl+'/presentase/update',
           type:'get',
-          data:'kode='+kode_id+'&'+'biaya='+biaya+'&'+'persen='+persen+'&'+'cabang='+cabang+'&'+'akun='+akun+'&'+'ket='+ket+'&jb='+jenis_biaya,
+          data:'kode='+kode_id+'&'+$('.modal_form :input').serialize(),
           success:function(response){
             swal({
             title: "Berhasil!",
@@ -371,7 +379,11 @@ function dropdown(d){
     type:'get',
     success:function(response){
       $('.akun_modal').html(response);
-      $('.nama_akun_dropdown').val(d).trigger('chosen:updated');
+      if (d != undefined) {
+        $('.nama_akun_dropdown').val(d).trigger('chosen:updated');
+      }else{
+        $('.nama_akun_dropdown').val('0').trigger('chosen:updated');
+      }
 
     }
   })
@@ -384,21 +396,23 @@ function edit_modal(p){
   var pembiayaan  = $(par).find('.nama_tabel').val();
   var persen  = $(par).find('.persen_tabel').val();
   var cabang  = $(par).find('.cabang_tabel').val();
-  var kode_akun  = $(par).find('.akun_tabel').val();
+  var akun_tabel  = $(par).find('.akun_tabel').val();
   var keterangan  = $(par).find('.keterangan_tabel').val();
   var kode_master  = $(par).find('.kode_master').val();
+  var last_name_tabel  = $(par).find('.last_name_tabel').val();
   var jenis_biaya  = $(par).find('.jenis_biaya_detail').val();
+
  // console.log(kode_akun);
-  $('.pembiayaan').val(pembiayaan);
+  $('.first_name').val(pembiayaan).trigger('chosen:updated');
   $('.persentase').val(persen);
-  $('.persentase').val(persen);
+  $('.last_name').val(last_name_tabel);
   $('.kode_id').val(persen);
   $('.cabang').val(cabang).trigger('chosen:updated');
-  dropdown(kode_akun);
+  $('.nama_akun_dropdown').val(akun_tabel).trigger('chosen:updated');
   $('.keter').val(keterangan);
   $('.kode_id').val(kode_master);
-  $('.jenis_biaya').val(jenis_biaya).trigger('chosen:updated');;
-  // console.log(kode_akun);
+  $('.jenis_biaya').val(jenis_biaya).trigger('chosen:updated');
+  dropdown(akun_tabel);
   $('#myModal').modal('show');
   
 }

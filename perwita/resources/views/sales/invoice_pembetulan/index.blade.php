@@ -62,6 +62,7 @@
                                 <th>Customer</th>
                                 <th>JT</th>
                                 <th>Tagihan </th>
+                                <th>Tagihan Revisi</th>
                                 <th>Keterangan </th>
                                 <th style="width:10%"> Aksi </th>
                             </tr>
@@ -74,6 +75,7 @@
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->ip_jatuh_tempo }}</td>
                                 <td style="text-align:right"> {{ number_format($row->ip_total_tagihan, 2, ",", ".") }} </td>
+                                <td style="text-align:right"> {{ number_format($row->ip_total_revisi, 2, ",", ".") }} </td>
                                 <td>{{ $row->ip_keterangan }}</td>
                                 <td class="text-center">
                                     <div class="btn-group ">

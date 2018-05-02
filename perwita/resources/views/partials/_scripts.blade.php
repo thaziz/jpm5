@@ -102,6 +102,7 @@
 
         var dataTableLanguage = {
            "emptyTable": "Tidak ada data",
+           "sInfoFiltered": ". Telah Di Filter Dari _MAX_ total Data",
            "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
            "sSearch": 'Pencarian..',
            "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
@@ -109,8 +110,8 @@
            "paginate": {
                 "previous": "Sebelumnya",
                 "next": "Selanjutnya",
-             }
-          }
+            },
+        }
 
         var baseUrl = '{{ url('/') }}';
         //alert(baseUrl);

@@ -5,6 +5,9 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .center{
+        text-align: center;
+    }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -127,9 +130,28 @@
                           <table  class="table table-striped table-bordered table-hover">
                             <tbody>
                                 <tr>
+                                    <td style="width:120px; padding-top: 0.4cm">Group Item</td>
+                                    <td>
+                                        <select class="form-control chosen-select-width cb_grup_item"  name="cb_grup_item" style="width:100%">
+                                            <option value="'0'"> Pilih - Group </option>
+                                        @foreach ($grup_item as $row)
+                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                        @endforeach
+                                        </select>
+                                    <td>
+                                        <div >
+                                            <label for="checkbox1">
+                                                <input type="checkbox" name="ck_pakai_angkutan"> Pakai Angkutan
+                                            </label>
+                                        </div>
+                                    </td>
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="width:120px; padding-top: 0.4cm">Kode</td>
                                     <td>
-                                        <input type="text" name="ed_kode" class="form-control" style="text-transform: uppercase" >
+                                        <input type="text" readonly="" name="ed_kode" class="form-control ed_kode" style="text-transform: uppercase" >
                                         <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
                                         <input type="hidden" name="ed_kode_old" class="form-control" >
                                         <input type="hidden" class="form-control" name="crud" class="form-control" >
@@ -148,22 +170,7 @@
                                     <td style="padding-top: 0.4cm">Keterangan</td>
                                     <td><input type="text" class="form-control" name="ed_keterangan" style="text-transform: uppercase" ></td>
                                 </tr>
-                                <tr>
-                                    <td style="width:120px; padding-top: 0.4cm">Group Item</td>
-                                    <td>
-                                        <select class="form-control"  name="cb_grup_item" style="width:100%">
-                                        @foreach ($grup_item as $row)
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
-                                        @endforeach
-                                        </select>
-                                    <td>
-                                        <div >
-                                            <label for="checkbox1"> <input type="checkbox" name="ck_pakai_angkutan"> Pakai Angkutan </label>
-                                        </div>
-                                    </td>
-                                        
-                                    </td>
-                                </tr>
+                                
 
                                 <tr>
                                     <td style="padding-top: 0.4cm">Satuan</td>
@@ -185,6 +192,17 @@
                                         </select>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Csf Penjualan</td>
+                                    <td>
+                                       <select class="form-control chosen-select-width"  name="ed_csf_penjualan" style="width:100%">
+                                        @foreach ($akun1 as $a)
+                                            <option value="{{ $a->id_akun }}">{{ $a->id_akun }} - {{ $a->nama_akun }} </option>
+                                        @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+
                                {{--  <tr>
                                     <td style="padding-top: 0.4cm">CSF Penjualan</td>
                                     <td>
@@ -255,7 +273,17 @@
             { "data": "grup_item" },
             { "data": "satuan" },
             { "data": "button" },
-            ]
+            ],
+            columnDefs: [
+              {
+                 targets: 6 ,
+                 className: 'center'
+              },
+              {
+                 targets: 0 ,
+                 className: 'center'
+              },
+           ]
         });
         $("input[name='ed_harga']").maskMoney({thousands:'.', decimal:',', precision:-1});
     });
@@ -263,8 +291,8 @@
     $(document).on("click","#btn_add",function(){
         $("input[name='crud']").val('N');
         $("input[name='ed_kode']").val('');
-        $("input[name='ed_kode']").attr('readonly',false); 
         $("input[name='ed_kode_old']").val('');
+        $(".grup_item").val('0');
         $("input[name='ed_nama']").val('');
         $("input[name='ed_keterangan']").val('');
         $("input[name='ed_harga']").val(0);
@@ -384,5 +412,27 @@
 
 
     });
+
+    $('.cb_grup_item').change(function(){
+
+        var cb_grup_item = $('.cb_grup_item').val();
+        if (cb_grup_item != '0') {
+            $.ajax({
+                type: "get",
+                url : baseUrl + "/master_sales/item/pilih_nota",
+                dataType:"JSON",
+                data: {cb_grup_item},
+                success: function(data)
+                {
+                   $('.ed_kode').val(data.kode);
+
+                },
+                error: function(jqXHR, textStatus, errorThrown)
+                {
+                    swal("Error!", textStatus, "error");
+                }
+            });
+        }
+    })
 </script>
 @endsection

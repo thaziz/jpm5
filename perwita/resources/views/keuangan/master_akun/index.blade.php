@@ -62,21 +62,31 @@
     </div>
 
     <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
-      <table border="0" id="form-table" class="col-md-7">
+      <table border="0" id="form-table" class="col-md-10">
       <tr>
-        <td width="15%" class="text-center">Pencarian Berdasarkan : </td>
+        <td width="15%" class="text-center">Filter Berdasarkan : </td>
         <td width="18%">
           <select class="form-control" style="width:90%; height: 30px" id="berdasarkan">
-              <option value="semua">Semua</option>
-              <option value="id_akun">Kode Akun</option>
-              <option value="nama_akun">Nama Akun</option>
-              <option value="dka">Posisi Debet/Kredit</option>
+              <option value="0">Kode Akun</option>
+              <option value="1">Nama Akun</option>
+              <option value="2">Posisi Debet/Kredit</option>
+            </select>
+        </td>
+
+        <td width="18%">
+          <select class="form-control" style="width:90%; height: 30px" id="yang">
+              <option value="1">Yang Mengandung</option>
+              <option value="2">Yang Berawalan</option>
             </select>
         </td>
 
         <td width="15%" class="text-center">Kata Kunci : </td>
-        <td width="18%">
+        <td width="20%">
           <input class="form-control" style="width:90%; height: 30px;" data-toggle="tooltip" id="filter" placeholder="Masukkan Kata Kunci">
+        </td>
+
+        <td width="15%" class="text-left">
+          <button class="btn btn-success btn-sm" id="set" style="font-size: 8pt;"> Terapkan</button>
         </td>
       </tr>
 
@@ -130,6 +140,10 @@
                                       <td class="text-center dka">{{ ($dataAkun->akun_dka == "D") ? "DEBET" : "KREDIT" }}</td>
                                       {{-- <td></td> --}}
                                       <td class="text-center">
+
+                                        <span data-toggle="tooltip" data-placement="top" title="Saldo Awal Bulan Ini {{ number_format($dataAkun->saldo,2) }}">
+                                            <button class="btn btn-xs btn-info editAkun"><i class="fa fa-money fa-fw"></i></button>
+                                        </span>
 
                                         <span data-toggle="tooltip" data-placement="top" title="Edit Akun {{ $dataAkun->nama_akun }}">
                                             <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_edit_akun" class="btn btn-xs btn-warning editAkun"><i class="fa fa-pencil-square fa-fw"></i></button>
@@ -215,8 +229,8 @@
 
     tableDetail = $('.tbl-penerimabarang').DataTable({
           responsive: true,
-          searching: false,
-          sorting: false,
+          searching: true,
+          sorting: true,
           paging: true,
           //"pageLength": 10,
           "language": dataTableLanguage,
@@ -265,7 +279,7 @@
       //alert($("#modal_edit_akun .modal-header .parrent").val())
 
       $.ajax(baseUrl+"/master_keuangan/edit/"+$("#modal_edit_akun .modal-header .parrent").val(), {
-         timeout: 5000,
+         timeout: 15000,
          dataType: "html",
          success: function (data) {
              $("#modal_edit_akun .modal-body").html(data);
@@ -293,25 +307,21 @@
         format: 'yyyy-mm-dd'
     });
 
-    $('#filter').keyup(function () {
-        $val = $(this).val().toUpperCase();
-        if($("#berdasarkan").val() == "semua"){
-          var rex = new RegExp($(this).val(), 'i');
-          $('.searchable tr').hide();
-          $('.searchable tr').filter(function () {
-              return rex.test($(this).text());
-          }).show();
-        }else{
-          $(".searchable ."+$("#berdasarkan").val()).each(function(){
-            $str = $(this).text().toUpperCase()
+    $('#set').click(function () {
+        $val = $('#filter').val().toUpperCase();
 
-            if($str.indexOf($val) != -1){
-              $(this).parents("tr").show();
-            }else{
-              $(this).parents("tr").hide();
-            }
-            
-          })
+        if($("#yang").val() == 1)
+          tableDetail.columns($("#berdasarkan").val()).every( function () {
+              var that = this;
+              // console.log(that);
+              that.search($val).draw();
+          });
+        else{
+          tableDetail.columns($("#berdasarkan").val()).every( function () {
+              var that = this;
+              // console.log(that);
+              that.search('^' + $val, true, false).draw();
+          });
         }
     })
 

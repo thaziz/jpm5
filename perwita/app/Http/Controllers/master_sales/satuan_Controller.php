@@ -17,9 +17,9 @@ class satuan_Controller extends Controller
         $hak_akses['tambah'] = $data->tambah;
         $hak_akses['ubah'] = $data->ubah;
         $hak_akses['hapus'] = $data->hapus;
-        $hak_akses['function1'] = $data->function1;
-        $hak_akses['function2'] = $data->function2;
-        $hak_akses['function3'] = $data->function3;
+        $hak_akses['cabang'] = $data->cabang;
+        $hak_akses['print'] = $data->print;
+        $hak_akses['all'] = $data->all;
         return ($hak_akses);
     }
     
@@ -28,6 +28,7 @@ class satuan_Controller extends Controller
     }
 
     public function table_data () {
+
         $list = DB::table('satuan')->get();
         $data = array();
         foreach ($list as $r) {
@@ -36,11 +37,31 @@ class satuan_Controller extends Controller
         $i=0;
         foreach ($data as $key) {
             // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
+
+
+            // $data[$i]['button'] = ' <div class="btn-group">
+            //                             <button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
+            //                             <button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
+            //                         </div> ';
+            // $i++;
+
+            $div_1  =   '<div class="btn-group">';
+                                  if (Auth::user()->punyaAkses('Satuan','ubah')) {
+                                  $div_2  = '<button type="button" id="'.$data[$i]['kode'].'" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                                  }else{
+                                    $div_2 = '';
+                                  }
+                                  if (Auth::user()->punyaAkses('Satuan','hapus')) {
+                                  $div_3  = '<button type="button" id="'.$data[$i]['kode'].'" name="'.$data[$i]['nama'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>';
+                                  }else{
+                                    $div_3 = '';
+                                  }
+                                  $div_4   = '</div>';
+                                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+
+                                $data[$i]['button'] = $all_div;
+                               
+                                $i++;
         }
         $datax = array('data' => $data);
         echo json_encode($datax);
@@ -62,9 +83,9 @@ class satuan_Controller extends Controller
                 'isi' => strtoupper($request->ed_isi),
             );
 
-        if ($crud == 'N' && $hak_akses['tambah'] == true) {
+        if ($crud == 'N' ) {
             $simpan = DB::table('satuan')->insert($data);
-        }elseif ($crud == 'E' && $hak_akses['ubah'] == true) {
+        }elseif ($crud == 'E') {
             $simpan = DB::table('satuan')->where('kode', $request->ed_kode_old)->update($data);
         }
         if($simpan == TRUE){
@@ -81,8 +102,7 @@ class satuan_Controller extends Controller
     public function hapus_data (Request $request) {
         $hapus='';
         $id=$request->id;
-        $hak_akses = $this->cek_hak_akses();
-        if ($hak_akses['hapus'] == true) {
+        if (Auth::user()->punyaAkses('Satuan','hapus')) {
             $hapus = DB::table('satuan')->where('kode' ,'=', $id)->delete();
         }
         if($hapus == TRUE){

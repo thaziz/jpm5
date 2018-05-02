@@ -144,8 +144,29 @@ class item_Controller extends Controller
     public function index(){
         $grup_item = DB::select(DB::raw(" SELECT kode,nama FROM grup_item ORDER BY nama ASC "));
         $satuan = DB::select(DB::raw(" SELECT kode,nama FROM satuan ORDER BY nama ASC "));
-        $akun = DB::select(DB::raw(" SELECT id_akun,nama_akun FROM d_akun ORDER BY nama_akun ASC "));
-        return view('master_sales.item.index',compact('satuan','grup_item','akun'));
+        $akun = DB::table('d_akun')
+                   ->where('id_akun','like','4'.'%')
+                  ->get();
+        $akun1 = DB::table('d_akun')
+                   ->where('id_akun','like','4'.'%')
+                  ->get();
+
+        return view('master_sales.item.index',compact('satuan','grup_item','akun','akun1'));
+    }
+    public function pilih_nota(request $request)
+    {
+        $kode = DB::table('item')
+                  ->where('kode','like',$request->cb_grup_item.'%')
+                  ->max('kode');
+        $kode = filter_var($kode, FILTER_SANITIZE_NUMBER_INT);
+        if ($kode == null) {
+          $kode = $request->cb_grup_item.'1';
+        }else{
+          $kode += 1;
+          $kode = $request->cb_grup_item.$kode;
+        }
+
+        return response()->json(['kode'=>$kode]);
     }
 
 }

@@ -3,7 +3,11 @@
 @section('title', 'dashboard')
 
 @section('content')
-
+<style type="text/css" media="screen">
+    .center{
+        text-align: center;
+    }
+</style>
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> GROUP ITEM </h2>
@@ -46,36 +50,9 @@
 
               <div class="box" id="seragam_box">
                 <div class="box-header">
-                    {{$DATA}}
-                </div><!-- /.box-header -->
+                    </div><!-- /.box-header -->
                     <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                         <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                    
-
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
                             <div class="row">
                                 <table class="table table-striped table-bordered dt-responsive nowrap table-hover">
                                     
@@ -97,6 +74,8 @@
                             <th> Kode</th>
                             <th> Nama </th>
                             <th> Keterangan </th>
+                            <th> Acc Piutang </th>
+                            <th> Csf Piutang </th>
                             <th> Aksi </th>
                         </tr>
                     </thead>
@@ -132,6 +111,28 @@
                                 <tr>
                                     <td style="padding-top: 0.4cm">Keterangan</td>
                                     <td><input type="text" class="form-control" name="ed_keterangan" style="text-transform: uppercase" ></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Acc Piutang</td>
+                                    <td>
+                                        <select name="acc_piutang" class="acc_piutang form-control chosen-select-width">
+                                            <option value="0">Pilih - Akun</option>
+                                            @foreach($akun as $i)
+                                            <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Csf Piutang</td>
+                                    <td>
+                                        <select name="csf_piutang" class="csf_piutang form-control chosen-select-width">
+                                            <option value="0">Pilih - Akun</option>
+                                            @foreach($akun as $i)
+                                            <option value="{{$i->id_akun}}">{{$i->id_akun}} - {{$i->nama_akun}}</option>
+                                            @endforeach
+                                        </select>
+                                    </td>
                                 </tr>
                             </tbody>
                           </table>
@@ -188,8 +189,20 @@
             { "data": "kode" },
             { "data": "nama" },
             { "data": "keterangan" },
+            { "data": "acc_piutang" },
+            { "data": "csf_piutang" },
             { "data": "button" },
-            ]
+            ],
+            columnDefs: [
+              {
+                 targets: 5 ,
+                 className: 'center'
+              },
+              {
+                 targets: 0 ,
+                 className: 'center'
+              },
+           ]
         });
         $("input[name='ed_harga']").maskMoney({thousands:'.', decimal:',', precision:-1});
     });
@@ -200,6 +213,8 @@
         $("input[name='ed_kode_old']").val('');
         $("input[name='ed_nama']").val('');
         $("input[name='ed_keterangan']").val('');
+        $(".acc_piutang").val('0');
+        $(".csf_piutang").val('0');
         $("#modal").modal("show");
         $("input[name='ed_kode']").focus();
     });
@@ -222,6 +237,8 @@
                 $("input[name='ed_kode_old']").val(data.kode);
                 $("input[name='ed_nama']").val(data.nama);
                 $("input[name='ed_keterangan']").val(data.keterangan);
+                $(".acc_piutang").val(data.acc_piutang);
+                $(".csf_piutang").val(data.csf_piutang);
                 $("#modal").modal('show');
                 $("input[name='ed_kode']").focus();
             },

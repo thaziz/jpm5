@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Auth;
+use carbon\carbon;
 
 class grup_item_Controller extends Controller
 {
@@ -41,24 +42,42 @@ class grup_item_Controller extends Controller
         echo json_encode($datax);
     }
 
-    public function get_data (Request $request) {
+    public function get_data (Request $request) 
+    {
         $id =$request->input('id');
         $data = DB::table('grup_item')->where('kode', $id)->first();
         echo json_encode($data);
     }
 
-    public function save_data (Request $request) {
+    public function save_data (Request $request) 
+    {
         $simpan='';
         $crud = $request->crud;
-        $data = array(
+        
+        
+        if ($crud == 'N') {
+            $data = array(
                 'kode' => strtoupper($request->ed_kode),
                 'nama' => strtoupper($request->ed_nama),
                 'keterangan' => strtoupper($request->ed_keterangan),
+                'acc_piutang' => strtoupper($request->acc_piutang),
+                'csf_piutang' => strtoupper($request->csf_piutang),
+                'create_at' => carbon::now(),
+                'update_at' => carbon::now(),
+                'create_by' => Auth::user()->m_username,
+                'update_by' => Auth::user()->m_username,
             );
-        
-        if ($crud == 'N') {
             $simpan = DB::table('grup_item')->insert($data);
         }elseif ($crud == 'E') {
+            $data = array(
+                'kode' => strtoupper($request->ed_kode),
+                'nama' => strtoupper($request->ed_nama),
+                'keterangan' => strtoupper($request->ed_keterangan),
+                'acc_piutang' => strtoupper($request->acc_piutang),
+                'csf_piutang' => strtoupper($request->csf_piutang),
+                'update_at' => carbon::now(),
+                'update_by' => Auth::user()->m_username,
+            );
             $simpan = DB::table('grup_item')->where('kode', $request->ed_kode_old)->update($data);
         }
         if($simpan == TRUE){
@@ -88,7 +107,10 @@ class grup_item_Controller extends Controller
 
     public function index(){
         //$kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
-        return view('master_sales.grup_item.index');
+       $akun  = DB::table('d_akun')
+                   ->where('id_akun','like','13'.'%')
+                   ->get();
+        return view('master_sales.grup_item.index',compact('akun'));
     }
 
 }

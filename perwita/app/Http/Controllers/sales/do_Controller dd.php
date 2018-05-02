@@ -83,7 +83,7 @@ class do_Controller extends Controller
 
     public function save_data(Request $request)
     {
-        //dd($request);
+        // dd($request);
 /*        return DB::transaction(function () use ($request) {
             $simpan = '';
             $crud = $request->crud_h;
@@ -350,7 +350,7 @@ class do_Controller extends Controller
             $result['crud'] = $crud;
             echo json_encode($result);
         });*/
-
+        // return 'a';
 
 
         DB::beginTransaction();
@@ -642,7 +642,6 @@ class do_Controller extends Controller
                     }
                 }
             }
-
             $result['crud'] = $crud;
 
             DB::commit();
@@ -770,7 +769,9 @@ class do_Controller extends Controller
                     ORDER BY d.tanggal DESC LIMIT 1000 ";
 
         $do = DB::select($sql);
-        return view('sales.do.index', compact('do'));
+        $kota = DB::table('kota')->get();
+        $kota1= DB::table('kota')->get();
+        return view('sales.do.index', compact('do','kota','kota1'));
     }
 
     public function form($nomor = null)

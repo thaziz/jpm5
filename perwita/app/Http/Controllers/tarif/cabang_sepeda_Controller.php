@@ -13,19 +13,21 @@ class cabang_sepeda_Controller extends Controller
 
         $cabang = Auth::user()->kode_cabang;
       if (Auth::user()->punyaAkses('Tarif Cabang Sepeda','all')) {
-          $sql = "    SELECT t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+          $sql = "    SELECT c.nama as cabang,t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,kk.nama tujuan, t.harga, t.jenis, t.waktu
                     FROM tarif_cabang_sepeda t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    left join cabang c on c.kode = t.kode_cabang
                     LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabsepeda
                     ORDER BY t.kode_detail_sepeda DESC ";
       }else{
-          $sql = "    SELECT t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+          $sql = "    SELECT c.nama as cabang,t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,kk.nama tujuan, t.harga, t.jenis, t.waktu
                     FROM tarif_cabang_sepeda t
                     LEFT JOIN kota k ON k.id=t.id_kota_asal 
                     LEFT JOIN kota kk ON kk.id=t.id_kota_tujuan 
+                    left join cabang c on c.kode = t.kode_cabang
                     LEFT JOIN provinsi p ON p.id=t.id_provinsi_cabsepeda
                     where t.kode_cabang = '$cabang'
                     ORDER BY t.kode_detail_sepeda DESC ";
@@ -56,7 +58,7 @@ class cabang_sepeda_Controller extends Controller
                                   if (Auth::user()->punyaAkses('Tarif Cabang Sepeda','hapus')) {
                                   $div_3  = '<button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
 
-                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_provinsi_cabsepeda'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
                                   }else{
                                     $div_3 = '';
                                   }
@@ -81,7 +83,8 @@ class cabang_sepeda_Controller extends Controller
                                           if (Auth::user()->punyaAkses('Tarif Cabang Sepeda','hapus')) {
                                           $div_3  = '<button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
 
-                                                            <button type="button" disabled="" data-toggle="tooltip" title="Delete" style="color:white;" class="btn btn-purple btn-xs btndelete" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                          <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_provinsi_cabsepeda'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                                          
                                           }else{
                                             $div_3 = '';
                                           }
@@ -101,7 +104,7 @@ class cabang_sepeda_Controller extends Controller
                                             $div_2 = '';
                                           }
                                           if (Auth::user()->punyaAkses('Tarif Cabang Sepeda','hapus')) {
-                                          $div_3  = '<button type="button" id="'.$data[$i]['kode_sama_sepeda'].'" name="'.$data[$i]['kode_sama_sepeda'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+                                          $div_3  = '<button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_provinsi_cabsepeda'].'"  data-asal="'.$data[$i]['asal'].'" data-prov="'.$data[$i]['provinsi'].'" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
 
                                                              <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_kota_tujuan'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button> ';
                                           }else{
@@ -134,7 +137,7 @@ class cabang_sepeda_Controller extends Controller
         // dd($request);
         $asal = $request->asal;
         $tujuan = $request->tujuan;
-        $sql = "    SELECT t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,k.kode_kota,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
+        $sql = "    SELECT t.kode_cabang,t.crud,t.kode_sama_sepeda,t.id_provinsi_cabsepeda,k.kode_kota,p.nama provinsi,t.kode_detail_sepeda,t.acc_penjualan,t.csf_penjualan,t.kode_sama_sepeda,t.kode, t.id_kota_asal,k.kode_kota, k.nama asal,
         t.id_kota_tujuan,
 
         kk.nama tujuan, t.harga, t.jenis, t.waktu
@@ -155,6 +158,7 @@ class cabang_sepeda_Controller extends Controller
   public function save_data (Request $request) {
         // dd($request);
         $simpan='';
+        $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
         $crud = $request->crud;
         $kode_sama_sepeda = DB::table('tarif_cabang_sepeda')->select('kode_sama_sepeda')->max('kode_sama_sepeda');    
         if ($kode_sama_sepeda == '') {
@@ -176,7 +180,7 @@ class cabang_sepeda_Controller extends Controller
             $kode_detail_sepedatambah1+1;  
          }
         
-
+         
 
         $kodekota = $request->kodekota;
         $kodecabang = Auth::user()->kode_cabang;
@@ -192,15 +196,109 @@ class cabang_sepeda_Controller extends Controller
              $id_provinsi_loop =explode(' ', $id_provinsi_loop);
               json_encode($id_provinsi_loop); 
      
-        
-            $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
+     if ($request->cb_provinsi_tujuan != null or '') {
+        $cari = DB::table('kota')  
+              ->where('id_provinsi',$request->cb_provinsi_tujuan)
+              ->get();
+      }else{
+          $provinsi = DB::table('kota')->where('id','=',$request->cb_kota_tujuan)->get(); 
+      }
+
      if ($request->cb_kota_tujuan == '' ) {  
       for ($save=1; $save <count($id_provinsi_loop) ; $save++) {
                 
+        $s = DB::table('tarif_cabang_sepeda')
+                ->where('id_kota_asal',$request->cb_kota_asal)
+                ->where('id_kota_tujuan',$id_provinsi_loop[$save])
+                ->where('kode_cabang',$request->ed_cabang)
+                ->get();
+        $cek = count($s);
 
-if ($cek > 0 ) {
-    return 'b';
-}else{
+      if ($cek > 0 ) {
+        $array_jenis = ['moge','laki_sport','bebek_matik','sepeda_pancal'];
+        $array_harga = [$request->sepeda_pancal,$request->bebek_matik,$request->laki_sport,$request->moge];
+        // return $cari;
+
+          for ($i=0; $i < count($cari); $i++) { 
+            for ($o=0; $o <count($cari[$i]) ; $o++) { 
+              // return $cari[$i]->id;
+                    $cari_old[$i] = DB::table('tarif_cabang_sepeda')
+                              ->where('id_kota_asal',$request->cb_kota_asal)
+                              ->where('id_kota_tujuan',$cari[$i]->id)
+                              ->where('kode_cabang',$request->ed_cabang)
+                              // ->where('jenis','REGULER') 
+                              ->orderBy('kode','ASC')
+                              ->get();
+              }
+            }
+            // return $cari_old;
+            $cari_nota0 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_sepeda
+                                                WHERE kode_cabang = '$request->ed_cabang'");
+            $id1 = (integer)$cari_nota0[0]->id+1;
+
+             for ($a=0; $a < count($array_jenis); $a++) { 
+                            
+                            $index = $id1;
+                            $index = str_pad($index, 5, '0', STR_PAD_LEFT);
+                            $array_note = $kodekota . '/' .  'SPD' .$request->ed_cabang .  $index;
+                            
+              }
+              $id1++;
+
+              // return $nota0;
+              // return $array_note;
+             for ($i=0; $i <count($cari) ; $i++) { 
+              for ($a=0; $a <count($array_jenis) ; $a++) { 
+                // return $cari_old[$i][$a]->kode;
+
+                if (isset($cari_old[$i][$a])) {
+                  // return $cari_old[$i][$a]->kode;
+                  // return $cari_old[$i][$a]->id_kota_tujuan;
+                  if (isset($cari_old[$i][$a]->id_kota_asal) != $request->cb_kota_asal and
+                      isset($cari_old[$i][$a]->id_kota_tujuan )!= $cari[$i]->id and
+                      isset($cari_old[$i][$a]->kode_cabang) != $request->ed_cabang ) {
+
+                        $simpan = DB::table('tarif_cabang_sepeda')
+                            ->insert([
+                                    'kode_sama_sepeda' => $kode_sama_sepeda,
+                                    'kode_detail_sepeda'=>$kode_detail_sepeda,
+                                    'kode'=>$array_note[$a][$i],
+                                    'id_kota_asal' => $request->cb_kota_asal,
+                                    'id_kota_tujuan' => $cari[$i][$a]->id_kota_tujuan,
+                                    'kode_cabang' => $request->ed_cabang,
+                                    'jenis' => $array_jenis[$a],
+                                    'harga' => $array_harga[$a],
+                                    'waktu' => $request->waktu,
+                                    'acc_penjualan'=>$request->ed_acc_penjualan,
+                                    'csf_penjualan'=>$request->ed_csf_penjualan,
+                                    'id_provinsi_cabsepeda'=>$request->cb_provinsi_tujuan,
+                                    'crud'=>$crud,
+                          ]);
+
+                  }else{
+                    // return $cari_old[$i][$a]->kode;
+                      // return $cari_old;
+                    if ($cari_old[$i][$a]->crud != 'E') {
+                      // return 'a';
+                                $simpan = DB::table('tarif_cabang_sepeda')
+                                ->where('kode',$cari_old[$i][$a]->kode)
+                                ->orderBy('kode','ASC')
+                                ->update([
+                                        'harga' => $array_harga[$a],
+                                        'waktu' => $request->waktu,
+                                        'acc_penjualan'=>$request->ed_acc_penjualan,
+                                        'csf_penjualan'=>$request->ed_csf_penjualan,
+                                        'crud'=>'N',
+                                ]);
+                            }
+                  }
+                }else{
+                  return 'b';
+                }
+              }
+             }
+
+      }else{
 
 
           if ($crud =='N') {
@@ -577,7 +675,7 @@ if ($cek > 0 ) {
             $result['error']='';
             $result['result']=1;
         }else{
-            $result['error']='error';
+            $result['error']='ERROR BOS ! ';
             $result['result']=0;
         }
         $result['crud']=$crud;
@@ -587,8 +685,9 @@ if ($cek > 0 ) {
 
     public function hapus_data (Request $request) {
         $hapus='';
-        $id=$request->id;
-        $hapus = DB::table('tarif_cabang_sepeda')->where('kode_sama_sepeda' ,'=', $id)->where('crud','!=','E')->delete();
+        $asal=$request->id;
+        $tujuan=$request->name;
+        $hapus = DB::table('tarif_cabang_sepeda')->where('id_kota_asal' ,'=', $asal)->where('id_provinsi_cabsepeda','=',$tujuan)->where('crud','!=','E')->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;
@@ -604,7 +703,7 @@ if ($cek > 0 ) {
         $hapus='';
         $asal=$request->id;
         $tujuan=$request->name;
-        $hapus = DB::table('tarif_cabang_sepeda')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->where('crud','!=','E')->delete();
+        $hapus = DB::table('tarif_cabang_sepeda')->where('id_kota_asal' ,'=', $asal)->where('id_kota_tujuan','=',$tujuan)->delete();
         if($hapus == TRUE){
             $result['error']='';
             $result['result']=1;

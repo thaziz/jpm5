@@ -44,7 +44,6 @@ Route::get('seragam', function(){
 Route::get('purchase/suratpermintaanpembelian', function(){
         return view('purchase.spp.index');
 });
-//email
 
 //********SETTING********
 //pengguna
@@ -163,7 +162,7 @@ Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detail
 //stock opname
 
 Route::get('stockopname/stockopname' , 'PengeluaranBarangController@stockopname');
-Route::get('stockopname/cari_sm' , 'PengeluaranBarangController@cari_sm');
+Route::get('stockopname/cari_sm/{id}' , 'PengeluaranBarangController@cari_sm');
 Route::get('stockopname/berita_acara/{id}' , 'PengeluaranBarangController@berita_acara');
 Route::get('stockopname/createstockopname' , 'PengeluaranBarangController@createstockopname');
 /*Route::get('stockopname/save_stock_opname' , 'PengeluaranBarangController@save_stock_opname');
@@ -284,8 +283,12 @@ Route::get('biaya_penerus/getbbm/{id}', 'KasController@getbbm');
 Route::post('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresiedit', 'KasController@cariresiedit');
 Route::post('biaya_penerus/save_penerus', 'KasController@save_penerus');
+Route::get('biaya_penerus/save_penerus', 'KasController@save_penerus');
 Route::post('biaya_penerus/update_penerus', 'KasController@update_penerus');
+Route::get('biaya_penerus/akun_kas', 'KasController@akun_kas');
+Route::get('biaya_penerus/nopol', 'KasController@nopol');
 Route::get('biaya_penerus/editkas', 'KasController@edit')->name('editkas');
+Route::get('biaya_penerus/ganti_nota', 'KasController@ganti_nota')->name('ganti_nota');
 Route::get('biaya_penerus/hapuskas/{id}', 'KasController@hapus')->name('hapuskas');
 Route::get('biaya_penerus/buktikas', 'KasController@buktikas')->name('buktikas');
 Route::get('biaya_penerus/detailkas', 'KasController@detailkas')->name('detailkas');
@@ -505,6 +508,16 @@ Route::get('masterjenisitem/detailmasterjenisitem/{id}', 'MasterPurchaseControll
 Route::delete('masterjenisitem/deletemasterjenisitem/{id}', 'MasterPurchaseController@deletemasterjenisitem');
 Route::post('masterjenisitem/kodejenis', 'MasterPurchaseController@kodejenisitem');
 
+// master aktiva start
+
+Route::get('masteractiva/masteractiva/{id}', 'MasterPurchaseController@masteractiva');
+
+Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailmasteractiva');
+Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
+Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
+Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
+
+// end master aktiva
 
 Route::get('notadebit/notadebit', 'MasterPurchaseController@nota_debit');
 Route::get('notadebit/detailnotadebit', 'MasterPurchaseController@detailnota_debit');
@@ -932,8 +945,9 @@ Route::get('sales/laporan_posting_bayar','LaporanMasterController@posting_bayar'
 Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@reportposting_bayar')->name('reportposting_bayar');
 //END OF LAPORAN BAYAR PENJUALAN
 
-//LAPORAN KARTU HUTANG
+//LAPORAN KARTU PIUTANG
 Route::get('laporan_sales/kartu_piutang','LaporanMasterController@kartupiutang');
+Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_kartupiutang');
 Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@reportkartupiutang')->name('reportkartupiutang');
 //END OF 
 
@@ -1008,6 +1022,7 @@ Route::post('master_sales/pajak/hapus_data', 'master_sales\pajak_Controller@hapu
 //item
 Route::get('master_sales/item', 'master_sales\item_Controller@index');
 Route::get('master_sales/item/tabel', 'master_sales\item_Controller@table_data');
+Route::get('master_sales/item/pilih_nota', 'master_sales\item_Controller@pilih_nota');
 Route::get('master_sales/item/get_data', 'master_sales\item_Controller@get_data');
 Route::get('master_sales/item/save_data', 'master_sales\item_Controller@save_data');
 Route::post('master_sales/item/hapus_data', 'master_sales\item_Controller@hapus_data');
@@ -1162,7 +1177,11 @@ Route::get('sales/deliveryordercabangtracking','trackingdoController@index');
 Route::get('sales/deliveryordercabangtracking/table','trackingdoController@getdata');
 Route::get('sales/deliveryordercabangtracking/autocomplete','trackingdoController@autocomplete');
 Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoController@getdata');
+
+
 // delivery order
+
+
 // Route::get('sales/deliveryorder', 'sales\do_controller@index');
 // Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_controller@cetak_form');
 // Route::get('sales/deliveryorderform', 'sales\do_controller@form');
@@ -1183,11 +1202,20 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::post('sales/deliveryorderform/save_update_status', 'sales\do_controller@save_update_status');
 // Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
 
+// Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_controller@cari_kodenomor');
 
 
+// Route::get('sales/cari_modaldeliveryorder', 'sales\do_controller@cari_modaldeliveryorder');
+// Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
 
+// Route::get('sales/cari_modaldeliveryorder_dokumen', 'sales\do_controller@cari_modaldeliveryorder_dokumen');
+// Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
 
-////////////
+// Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_controller@cari_modaldeliveryorder_koli');
+// Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_controller@tarif_penerus_koli_indentdo');
+
+// Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_controller@cari_modaldeliveryorder_sepeda');
+// Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_controller@tarif_penerus_sepeda_indentdo');
 
 
 Route::get('sales/deliveryorder', 'sales\do_Controller@index');
@@ -1209,10 +1237,20 @@ Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller
 Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
 Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
+Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_Controller@cari_kodenomor');
 
 
+Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');
+Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_Controller@tarif_penerus_dokumen_indentdo');
 
+Route::get('sales/cari_modaldeliveryorder_kilogram', 'sales\do_Controller@cari_modaldeliveryorder_kilogram');
+Route::get('sales/tarif_penerus_kilogram_indentdo/save_data', 'sales\do_Controller@tarif_penerus_kilogram_indentdo');
 
+Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_Controller@cari_modaldeliveryorder_koli');
+Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_Controller@tarif_penerus_koli_indentdo');
+
+Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_Controller@cari_modaldeliveryorder_sepeda');
+Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller@tarif_penerus_sepeda_indentdo');
 //end delivery order
 
 // delivery order kargo
@@ -1248,6 +1286,7 @@ Route::post('sales/deliveryorderkargoform/hapus_data_detail', 'sales\do_kargo_Co
 Route::get('sales/deliveryorderkargoform/{nomor}/update_status', 'sales\do_kargo_Controller@form_update_status');
 Route::post('sales/deliveryorderkargoform/save_update_status', 'sales\do_kargo_Controller@save_update_status');
 Route::get('sales/deliveryorderkargoform/nota/{nomor}', 'sales\do_kargo_Controller@cetak_nota');
+
 
 //end delivery order kargo
 
@@ -1645,34 +1684,6 @@ Route::post('golonganactiva/update', 'MasterPurchaseController@golongan_update')
 
 //endgolonganaktiva
 
-
-// master aktiva start
-
-Route::get('masteractiva/masteractiva/{id}', 'MasterPurchaseController@masteractiva');
-
-Route::get('master_aktiva/ask_kode_master_aktiva/{cabang}', 'MasterPurchaseController@ask_kode_master_aktiva');
-Route::post('master_aktiva/simpan', 'MasterPurchaseController@simpan_master_aktiva');
-Route::get('masteractiva/createmasteractiva', 'MasterPurchaseController@createmasteractiva');
-
-Route::get('masteractiva/editmasteraktiva/{cabang}/{id}', [
-  'uses' => 'MasterPurchaseController@editmasteractiva',
-  'as'   => 'master_aktiva.edit'
-]);
-
-Route::get('masteractiva/hapusmasteractiva/{cabang}/{id}', [
-  'uses' => 'MasterPurchaseController@aktiva_hapus',
-  'as'   => 'master_aktiva.hapus'
-]);
-
-Route::post('master_aktiva/update', 'MasterPurchaseController@aktiva_update');
-
-Route::get('masteractiva/detailmasteractiva', 'MasterPurchaseController@detailmasteractiva');
-Route::get('masteractiva/detailgarislurusmasteractiva', 'MasterPurchaseController@detailgarislurusmasteractiva');
-Route::get('masteractiva/detailsaldomenurunmasteractiva', 'MasterPurchaseController@detailsaldomenurunmasteractiva');
-
-// end master aktiva
-
-
 Route::get('master_keuangan/err_cek', function(){
   return view('keuangan.err.err_laporan');
 });
@@ -1768,6 +1779,30 @@ Route::post('master_keuangan/kelompok_akun/save_data', 'master_keuangan\kelompok
 Route::post('master_keuangan/kelompok_akun/hapus_data', 'master_keuangan\kelompok_akun_Controller@hapus_data');
 // end kelompok akun
 
+//kelompok akun
+
+Route::get('master_keuangan/group_akun', 'master_keuangan\group_akun_controller@index');
+Route::get('master_keuangan/group_akun/add', 'master_keuangan\group_akun_controller@add');
+
+Route::post('master_keuangan/group_akun/save', [
+    'uses' => 'master_keuangan\group_akun_controller@save',
+    'as'  => 'group_akun.save'
+]);
+
+Route::get('master_keuangan/group_akun/edit/{id}', 'master_keuangan\group_akun_controller@edit');
+
+Route::post('master_keuangan/group_akun/update', [
+    'uses' => 'master_keuangan\group_akun_controller@update',
+    'as'  => 'group_akun.update'
+]);
+
+Route::get('master_keuangan/group_akun/hapus/{id}', [
+    'uses' => 'master_keuangan\group_akun_controller@hapus',
+    'as'  => 'group_akun.hapus'
+]);
+
+// end kelompok akun
+
 //saldo akun
 
 Route::get('master_keuangan/saldo_akun', [
@@ -1861,7 +1896,7 @@ Route::post('master_keuangan/akun/save_data', [
   'as'   => 'akun.save'
 ]);
 
-Route::post('master_keuangan/akun/update_data/{id}', [
+Route::post('master_keuangan/akun/update_data', [
   'uses' => 'master_keuangan\akun_controller@update_data',
   'as'   => 'akun.update'
 ]);

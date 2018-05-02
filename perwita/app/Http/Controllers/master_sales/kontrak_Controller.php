@@ -21,11 +21,13 @@ class kontrak_Controller extends Controller
         if (Auth::user()->punyaAkses('Kontrak Customer','all')) {
             $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
+                   ->orderBy('kc_tanggal','DESC')
                    ->get();
         }else{
             $data =  DB::table('kontrak_customer')
                    ->join('customer','kode','=','kc_kode_customer')
                    ->where('kc_kode_cabang',$cabang)
+                   ->orderBy('kc_tanggal','DESC')
                    ->get(); 
         }
         
@@ -42,18 +44,19 @@ class kontrak_Controller extends Controller
         $jenis_tarif = DB::table('jenis_tarif')
                          ->orderBy('jt_id','ASC')
                          ->get();
+        $grup_item = DB::select(DB::raw(" SELECT kode,nama FROM grup_item ORDER BY nama ASC "));
         $now1    = Carbon::now()->subDay(-30)->format('d/m/Y');
         $now    = Carbon::now()->format('d/m/Y');
 
         
-        return view('master_sales.kontrak.form',compact('kota','customer','data','cabang','satuan','tipe_angkutan','akun','now','now1','jenis_tarif'));
+        return view('master_sales.kontrak.form',compact('kota','customer','data','cabang','satuan','tipe_angkutan','akun','now','now1','jenis_tarif','grup_item'));
     }
     public function drop_cus(request $request)
     {
         // $cabang = session::get('cabang');
         // $cabang = Auth::user()->kode_cabang;
         $customer = DB::table('customer')
-                      ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
+                      // ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
                       // ->where('kc_kode_cabang',$request->cabang)
                       // ->where('kc_kode_customer',null)
                       ->get();
@@ -101,14 +104,14 @@ class kontrak_Controller extends Controller
     public function set_kode_akun_acc(request $request)
     {   
        $data = DB::table('d_akun')
-                 // ->where('kode_cabang',$request->cabang)
+                 ->where('id_akun','like','4'.'%')
                  ->get();
        return view('master_sales.kontrak.acc_drop',compact('data'));
     }
      public function set_kode_akun_csf(request $request)
     {
        $data = DB::table('d_akun')
-                 // ->where('kode_cabang',$request->cabang)
+                 ->where('id_akun','like','4'.'%')
                  ->get();
        return view('master_sales.kontrak.csf_drop',compact('data'));
     }
@@ -173,6 +176,7 @@ class kontrak_Controller extends Controller
                                   'kcd_acc_penjualan' => $request->akun_acc[$i],
                                   'kcd_csf_penjualan' => $request->akun_csf[$i],
                                   'kcd_kode'          => $request->kontrak_nomor,
+                                  'kcd_grup'          => $request->grup_item[$i],
                                ]);
             }
 
@@ -249,6 +253,7 @@ class kontrak_Controller extends Controller
                                   'kcd_acc_penjualan' => $request->akun_acc[$i],
                                   'kcd_csf_penjualan' => $request->akun_csf[$i],
                                   'kcd_kode'          => $request->kontrak_nomor,
+                                  'kcd_grup'          => $request->grup_item[$i],
                                ]);
             }   
 
@@ -282,6 +287,7 @@ class kontrak_Controller extends Controller
         $kota    = DB::table('kota')
                   ->get();
 
+        $grup_item = DB::select(DB::raw(" SELECT kode,nama FROM grup_item ORDER BY nama ASC "));
                   
         for ($i=0; $i < count($data_dt); $i++) { 
           for ($a=0; $a < count($kota); $a++) { 
@@ -314,7 +320,7 @@ class kontrak_Controller extends Controller
         }
         
 
-        return view('master_sales.kontrak.edit_kontrak',compact('data','data_dt','kota','customer','data','cabang','satuan','tipe_angkutan','now','now1','jenis_tarif'));
+        return view('master_sales.kontrak.edit_kontrak',compact('data','data_dt','kota','customer','data','cabang','satuan','tipe_angkutan','now','now1','jenis_tarif','grup_item'));
     }
     public function update_kontrak(request $request)
     {   
@@ -380,25 +386,26 @@ class kontrak_Controller extends Controller
                                 'kcd_csf_penjualan' => $request->akun_csf[$i],
                                 'kcd_kode'          => $request->kontrak_nomor,
                                 'kcd_active'        => $kcd_aktif[$i],
+                                'kcd_grup'          => $request->grup_item[$i],
                              ]);
         }
 
          $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$cari_kontrak->kc_id),'status'=>'Customer'];
-         if (in_array(false, $kcd_aktif)) {
-           Mail::send('hello', $data, function ($mail)
-          {
-            // Email dikirimkan ke address "momo@deviluke.com" 
-            // dengan nama penerima "Momo Velia Deviluke"
-            $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-            $mail->to('dewa17a@gmail.com', 'ADMIN JPM');
+         // if (in_array(false, $kcd_aktif)) {
+         //   Mail::send('hello', $data, function ($mail)
+         //  {
+         //    // Email dikirimkan ke address "momo@deviluke.com" 
+         //    // dengan nama penerima "Momo Velia Deviluke"
+         //    $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+         //    $mail->to('dewa17a@gmail.com', 'ADMIN JPM');
        
-            // Copy carbon dikirimkan ke address "haruna@sairenji" 
-            // dengan nama penerima "Haruna Sairenji"
-            $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+         //    // Copy carbon dikirimkan ke address "haruna@sairenji" 
+         //    // dengan nama penerima "Haruna Sairenji"
+         //    $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
        
-            $mail->subject('KONTRAK VERIFIKASI');
-          });
-         }
+         //    $mail->subject('KONTRAK VERIFIKASI');
+         //  });
+         // }
          
         return response()->json(['status'=>1]);
 

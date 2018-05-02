@@ -1,4 +1,4 @@
-<table class="table table-bordered  table-hover table-striped tabel_tarif">
+    <table class="table table-bordered  table-hover table-striped tabel_tarif">
     <thead>
         <tr>
             <th>No Kontrak</th>
@@ -20,6 +20,9 @@
                 <input type="hidden" value="{{$val->kcd_kota_asal}}" class="kcd_kota_asal">
                 <input type="hidden" value="{{$val->kcd_dt}}" class="kcd_dt_m">
                 <input type="hidden" value="{{$val->kcd_acc_penjualan}}" class="acc_kontrak">
+                <input type="hidden" value="{{$val->kcd_csf_penjualan}}" class="csf_kontrak">
+                <input type="hidden" value="{{$val->acc_piutang}}" class="acc_kontrak_piutang">
+                <input type="hidden" value="{{$val->csf_piutang}}" class="csf_kontrak_piutang">
                 <input type="hidden" value="{{$val->kcd_keterangan}}" class="kcd_keterangan">
             </td>
             <td>

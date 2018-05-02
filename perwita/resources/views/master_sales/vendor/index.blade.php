@@ -38,9 +38,14 @@
                     <h5> VENDOR
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <div class="text-right">
+                      @if(Auth::user()->punyaAkses('Vendor','tambah'))
+                      <div class="text-right">
                        <button  type="button" class="btn btn-success " id="btn_add" name="btnok"><i class="glyphicon glyphicon-plus"></i>Tambah Data</button>
-                    </div>
+                      </div>
+                      @endif
+
+                     
+
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -156,13 +161,23 @@
                                 
                                 <tr>
                                     <td style="padding-top: 0.4cm">Cabang</td>
+                                    @if(Auth::user()->punyaAkses('Agen','cabang'))
                                     <td>
                                         <select class="form-control" name="cb_cabang">
                                             @foreach ($cabang as $row)
-                                            <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
+                                            <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                             @endforeach
                                         </select>
                                     </td>
+                                    @else
+                                    <td class="disabled">
+                                        <select class="form-control" name="cb_cabang">
+                                            @foreach ($cabang as $row)
+                                            <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                            @endforeach
+                                        </select>
+                                    </td>
+                                    @endif
                                     <td style="padding-top: 0.4cm">Alamat</td>
                                     <td>
                                         <input type="text" class="form-control" name="ed_alamat" style="text-transform: uppercase" >

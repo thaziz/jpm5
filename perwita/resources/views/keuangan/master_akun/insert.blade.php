@@ -89,7 +89,7 @@
   <div class="col-md-12 m-t-lg" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
     <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Isian Saldo Akun</small></span>
     
-    <input type="checkbox" id="saldo" name="saldo" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Memiliki Saldo. (Anda Juga Bisa Mengisi Saldo Awal Di Halaman Saldo Akun)</small>
+    <input type="checkbox" id="saldo" name="saldo" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Memiliki Saldo. (<b>Apabila Saldo Akun 0, Maka Tidak Perlu Memilih Opsi Ini</b>)</small>
     <table id="form-table" width="100%" border="1" style="margin-top: 10px;">
       <thead>
         <tr>
@@ -163,8 +163,6 @@
 
       if(evt.charCode < 48 || evt.charCode > 57)
         return false;
-      else if($(this).val().length == 0 && evt.which == 48)
-          return false;
 
     })
 
@@ -173,8 +171,8 @@
       evt.preventDefault();
 
       btn = $(this);
-      // btn.attr("disabled", "disabled");
-      // btn.text("Menyimpan...");
+      btn.attr("disabled", "disabled");
+      btn.text("Menyimpan...");
 
       if(validate_form()){
         $.ajax(baseUrl+"/master_keuangan/akun/save_data",{
@@ -191,7 +189,7 @@
 
               form_reset();
             }else if(response.status == "exist"){
-              toastr.error('Kode Master Akun Sudah Ada. Silahkan Membuat Kode Akun Lagi.');
+              toastr.error('Kode Master Akun Sudah Ada Dengan Nama '+response.content+'. Silahkan Membuat Kode Akun Lagi.');
               btn.removeAttr("disabled");
               btn.text("Simpan");
             }
@@ -211,7 +209,7 @@
         })
       }else{
         btn.removeAttr("disabled");
-        btn.text("simpan");
+        btn.text("Simpan");
       }
 
       return false;
@@ -250,6 +248,12 @@
           return false;
         }
       })
+
+      if($("#saldo").is(":checked") && $("#DEBET").val() == '0,00' && $("#KREDIT").val() == '0,00'){
+        a = false;
+        $("#saldo_debet").focus()
+        toastr.warning('Jika Akun Ini Memiliki Saldo Maka Saldo Tidak Boleh 0.');
+      }
 
       // if($("#saldo").is(":checked")){
       //   alert($("#DEBET").val());
