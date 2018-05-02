@@ -1190,6 +1190,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::post('sales/deliveryorderform/save_update_status', 'sales\do_controller@save_update_status');
 // Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
 
+// Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_controller@cari_kodenomor');
 
 
 // Route::get('sales/cari_modaldeliveryorder', 'sales\do_controller@cari_modaldeliveryorder');
@@ -1200,6 +1201,10 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 
 // Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_controller@cari_modaldeliveryorder_koli');
 // Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_controller@tarif_penerus_koli_indentdo');
+
+// Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_controller@cari_modaldeliveryorder_sepeda');
+// Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_controller@tarif_penerus_sepeda_indentdo');
+
 
 Route::get('sales/deliveryorder', 'sales\do_Controller@index');
 Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
@@ -1219,6 +1224,8 @@ Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_Controller@ha
 Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller@form_update_status');
 Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
 Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
+
+Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_Controller@cari_kodenomor');
 
 
 Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');
