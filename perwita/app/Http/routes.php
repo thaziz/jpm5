@@ -279,8 +279,12 @@ Route::get('biaya_penerus/getbbm/{id}', 'KasController@getbbm');
 Route::post('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresiedit', 'KasController@cariresiedit');
 Route::post('biaya_penerus/save_penerus', 'KasController@save_penerus');
+Route::get('biaya_penerus/save_penerus', 'KasController@save_penerus');
 Route::post('biaya_penerus/update_penerus', 'KasController@update_penerus');
+Route::get('biaya_penerus/akun_kas', 'KasController@akun_kas');
+Route::get('biaya_penerus/nopol', 'KasController@nopol');
 Route::get('biaya_penerus/editkas', 'KasController@edit')->name('editkas');
+Route::get('biaya_penerus/ganti_nota', 'KasController@ganti_nota')->name('ganti_nota');
 Route::get('biaya_penerus/hapuskas/{id}', 'KasController@hapus')->name('hapuskas');
 Route::get('biaya_penerus/buktikas', 'KasController@buktikas')->name('buktikas');
 Route::get('biaya_penerus/detailkas', 'KasController@detailkas')->name('detailkas');
@@ -1763,6 +1767,30 @@ Route::get('master_keuangan/kelompok_akun/tabel', 'master_keuangan\kelompok_akun
 Route::get('master_keuangan/kelompok_akun/get_data', 'master_keuangan\kelompok_akun_Controller@get_data');
 Route::post('master_keuangan/kelompok_akun/save_data', 'master_keuangan\kelompok_akun_Controller@save_data');
 Route::post('master_keuangan/kelompok_akun/hapus_data', 'master_keuangan\kelompok_akun_Controller@hapus_data');
+// end kelompok akun
+
+//kelompok akun
+
+Route::get('master_keuangan/group_akun', 'master_keuangan\group_akun_controller@index');
+Route::get('master_keuangan/group_akun/add', 'master_keuangan\group_akun_controller@add');
+
+Route::post('master_keuangan/group_akun/save', [
+    'uses' => 'master_keuangan\group_akun_controller@save',
+    'as'  => 'group_akun.save'
+]);
+
+Route::get('master_keuangan/group_akun/edit/{id}', 'master_keuangan\group_akun_controller@edit');
+
+Route::post('master_keuangan/group_akun/update', [
+    'uses' => 'master_keuangan\group_akun_controller@update',
+    'as'  => 'group_akun.update'
+]);
+
+Route::get('master_keuangan/group_akun/hapus/{id}', [
+    'uses' => 'master_keuangan\group_akun_controller@hapus',
+    'as'  => 'group_akun.hapus'
+]);
+
 // end kelompok akun
 
 //saldo akun

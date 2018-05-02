@@ -1064,6 +1064,9 @@
                             /* kelompok_akun */
                             Request::is('master_keuangan/kelompok_akun') ? 'active' : '' || 
                             Request::is('master_keuangan/kelompok_akun/*') ? 'active' : '' ||
+                            /* group_akun */
+                            Request::is('master_keuangan/group_akun') ? 'active' : '' || 
+                            Request::is('master_keuangan/group_akun/*') ? 'active' : '' ||
                             /* Transaksi */
                             Request::is('master-transaksi/index') ? 'active' : '' || 
                             Request::is('master-transaksi/index/*') ? 'active' : '' ||
@@ -1078,18 +1081,42 @@
                        <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Master Keuangan <span class="fa arrow"></span></a>
                         <ul class="nav nav-third-level" style="font-size:90%">
 
-                        @if(Auth::user()->PunyaAkses('Saldo Akun','aktif'))
+                        {{-- @if(Auth::user()->PunyaAkses('Group Akun','aktif')) --}}
+                        <li>
+                            <a class="sidebar master-perusahaan 
+
+                        {{ Request::is('master_keuangan/group_akun') ? 'active' : '' || 
+                            Request::is('master_keuangan/group_akun/*') ? 'active' : ''}} 
+
+                        <?php $cabang = Session::get('cabang');?>
+
+                        " href="{{ url('master_keuangan/group_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Group Akun</a>
+                        </li>
+                        {{-- @endif --}}
+
+                        @if(Auth::user()->PunyaAkses('Akun','aktif'))
                         <li >
+                            <a class="sidebar master-perusahaan 
+
+                        {{Request::is('master_keuangan/akun') ? 'active' : '' || 
+                            Request::is('master_keuangan/akun/*') ? 'active' : ''}} 
+
+                        " href="{{ url('master_keuangan/akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Master Akun</a>
+                        </li>
+                        @endif
+
+                        @if(Auth::user()->PunyaAkses('Saldo Akun','aktif'))
+                        <li>
                             <a class="sidebar master-perusahaan 
 
                         {{ Request::is('master_keuangan/saldo_akun') ? 'active' : '' || 
                             Request::is('master_keuangan/saldo_akun/*') ? 'active' : ''}} 
 
-                        " href="{{ url('master_keuangan/saldo_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Akun</a>
+                        " href="{{ url('master_keuangan/saldo_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Saldo Akun</a>
                         </li>
                         @endif
                         @if(Auth::user()->PunyaAkses('Saldo Piutang','aktif'))
-                        <li >
+                        <li>
                             <a class="sidebar master-perusahaan 
 
                         {{ Request::is('master_keuangan/saldo_piutang') ? 'active' : '' || 
@@ -1097,7 +1124,7 @@
 
                         <?php $cabang = Session::get('cabang');?>
 
-                        " href="{{ url('master_keuangan/saldo_piutang/'.$cabang)}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Saldo Piutang</a>
+                        " href="{{ url('master_keuangan/saldo_piutang/'.$cabang)}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Saldo Piutang</a>
                         </li>
                         @endif
                         @if(Auth::user()->PunyaAkses('Master Bank','aktif'))
@@ -1137,7 +1164,7 @@
                         {{Request::is('notadebit/notadebit') ? 'active' : '' || 
                             Request::is('notadebit/notadebit/*') ? 'active' : ''}}
 
-                        " href="{{ url('notadebit/notadebit')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Nota Debit / Kredit Aktiva </a>
+                        " href="{{ url('notadebit/notadebit')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Nota D/K Aktiva </a>
                         </li>
                         @endif
                         @if(Auth::user()->PunyaAkses('Kelompok Akun','aktif'))
@@ -1147,7 +1174,7 @@
                         {{Request::is('master_keuangan/kelompok_akun') ? 'active' : '' || 
                             Request::is('master_keuangan/kelompok_akun/*') ? 'active' : ''}}
 
-                         " href="{{ url('master_keuangan/kelompok_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Kelompok Akun</a>
+                         " href="{{ url('master_keuangan/kelompok_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kelompok Akun</a>
                         </li>
                         @endif
                         @if(Auth::user()->PunyaAkses('Transaksi','aktif'))
@@ -1157,19 +1184,10 @@
                         {{Request::is('master-transaksi/index') ? 'active' : '' || 
                             Request::is('master-transaksi/index/*') ? 'active' : ''}} 
 
-                        " href="{{ url('master-transaksi/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Transaksi</a>
+                        " href="{{ url('master-transaksi/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Transaksi</a>
                         </li>
                         @endif
-                        @if(Auth::user()->PunyaAkses('Akun','aktif'))
-                        <li >
-                            <a class="sidebar master-perusahaan 
-
-                        {{Request::is('master_keuangan/akun') ? 'active' : '' || 
-                            Request::is('master_keuangan/akun/*') ? 'active' : ''}} 
-
-                        " href="{{ url('master_keuangan/akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Akun</a>
-                        </li>
-                        @endif
+                        
                         </ul>
                         </li>
                        

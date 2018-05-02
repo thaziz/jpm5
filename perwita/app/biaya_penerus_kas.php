@@ -29,6 +29,8 @@ class biaya_penerus_kas extends Model
 							  	'bpk_tipe_angkutan',
 							  	'bpk_biaya_lain',
 							  	'bpk_jarak',
+							  	'created_by',
+							  	'updated_by',
 							  	'bpk_harga_bbm'
 						);
   

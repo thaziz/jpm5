@@ -46,7 +46,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2> Master Akun </h2>
+        <h2> Master Group Akun </h2>
         <ol class="breadcrumb">
             <li>
                 <a>Home</a>
@@ -55,7 +55,7 @@
                 <a>Keuangan</a>
             </li>
             <li class="active">
-                <strong> Master Akun  </strong>
+                <strong> Master Group Akun  </strong>
             </li>
 
         </ol>
@@ -67,9 +67,9 @@
         <td width="15%" class="text-center">Filter Berdasarkan : </td>
         <td width="18%">
           <select class="form-control" style="width:90%; height: 30px" id="berdasarkan">
-              <option value="0">Kode Akun</option>
-              <option value="1">Nama Akun</option>
-              <option value="2">Posisi Debet/Kredit</option>
+              <option value="0">Kode Group</option>
+              <option value="1">Nama Group</option>
+              <option value="2">Jenis Group</option>
             </select>
         </td>
 
@@ -99,12 +99,12 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Data Akun
+                    <h5> Data Group Akun
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah_akun">
-                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Akun
+                        <button class="btn btn-sm btn-primary tambahAkun" data-parrent="0" data-toggle="modal" data-target="#modal_tambah">
+                          <i class="fa fa-plus"></i> &nbsp;Tambah Data Group Akun
                         </button>
                     </div>
                 </div>
@@ -120,10 +120,10 @@
                             <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; font-size: 8pt;">
                               <thead>
                                 <tr>
-                                  <th width="15%" class="text-center">Kode Akun</th>
-                                  <th width="30%" class="text-center">Nama Akun</th>
-                                  <th class="text-center">Cabang</th>
-                                  <th class="text-center">Posisi Debet/Kredit</th>
+                                  <th width="15%" class="text-center">Kode Group</th>
+                                  <th width="30%" class="text-center">Nama Group</th>
+                                  <th class="text-center">Jenis Group</th>
+                                  <th class="text-center">Tanggal Buat</th>
                                   {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
                                   <th width="20%" width="20%" class="text-center">Aksi</th>
 
@@ -131,31 +131,25 @@
                               </thead>
                               <tbody  class="searchable">
 
-                                @foreach($data as $dataAkun)
+                                @foreach($data as $group)
+                                  <tr>
+                                    <td class="id">{{ $group->id }}</td>
+                                    <td class="nama_group">{{ $group->nama_group }}</td>
+                                    <td class="jenis_group text-center">{{ $group->jenis_group }}</td>
+                                    <td class="tanggal_buat text-center">{{ date("d-m-Y", strtotime($group->tanggal_buat)) }}</td>
 
-                                  <tr class="treegrid-{{ $dataAkun->id_akun }} expanded">
-                                      <td class="id_akun">{{ $dataAkun->id_akun }}</td>
-                                      <td class="nama_akun">{{ $dataAkun->nama_akun }}</td>
-                                      <td class="nama_cabang text-center">{{ $dataAkun->nama_cabang }}</td>
-                                      <td class="text-center dka">{{ ($dataAkun->akun_dka == "D") ? "DEBET" : "KREDIT" }}</td>
-                                      {{-- <td></td> --}}
-                                      <td class="text-center">
+                                    <td class="text-center">
 
-                                        <span data-toggle="tooltip" data-placement="top" title="Saldo Awal Bulan Ini {{ number_format($dataAkun->saldo,2) }}">
-                                            <button class="btn btn-xs btn-info editAkun"><i class="fa fa-money fa-fw"></i></button>
+                                        <span data-toggle="tooltip" data-placement="top" title="Edit Group {{ $group->nama_group }}">
+                                            <button data-parrent="{{ $group->id }}" data-toggle="modal" data-target="#modal_edit" class="btn btn-xs btn-warning edit"><i class="fa fa-pencil-square fa-fw"></i></button>
                                         </span>
 
-                                        <span data-toggle="tooltip" data-placement="top" title="Edit Akun {{ $dataAkun->nama_akun }}">
-                                            <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_edit_akun" class="btn btn-xs btn-warning editAkun"><i class="fa fa-pencil-square fa-fw"></i></button>
-                                        </span>
-
-                                        <a onclick="return confirm('Apakah Anda Yakin, Semua Data Sub Akun Yang Terkait Dengan Akun Ini Juga Akan Dihapus ??')" href="{{ route("akun.hapus", $dataAkun->id_akun) }}">
-                                          <button data-toggle="tooltip" data-placement="top" title="Hapus Akun {{ $dataAkun->nama_akun }}" class="btn btn-xs btn-danger"><i class="fa fa-eraser fa-fw"></i></button>
+                                        <a onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Group \'{{ $group->nama_group }}\' Ini ??')" href="{{ route("group_akun.hapus", $group->id) }}">
+                                          <button data-toggle="tooltip" data-placement="top" title="Hapus Group {{ $group->nama_group }}" class="btn btn-xs btn-danger"><i class="fa fa-eraser fa-fw"></i></button>
                                         </a>
 
                                       </td>
                                   </tr>
-                                  
                                 @endforeach
                                 
                               </tbody>
@@ -171,12 +165,12 @@
 </div>
 
  <!-- modal -->
-<div id="modal_tambah_akun" class="modal">
+<div id="modal_tambah" class="modal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Tambah Data Akun</h4>
+        <h4 class="modal-title">Form Tambah Data Master Group Akun</h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body">
@@ -189,13 +183,13 @@
   <!-- modal -->
 
 <!-- modal -->
-<div id="modal_edit_akun" class="modal">
+<div id="modal_edit" class="modal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Edit Data Akun</h4>
-        <input type="hidden" class="parrent"/>
+        <h4 class="modal-title">Form Edit Data Master Group Akun</h4>
+        <input type="hidden" readonly class="parrent"/>
       </div>
       <div class="modal-body">
         <center class="text-muted">Menyiapkan Form</center>
@@ -225,70 +219,68 @@
         alert("{{ Session::get('terpakai') }}")
     @endif
 
-
-
     tableDetail = $('.tbl-penerimabarang').DataTable({
-          responsive: true,
-          searching: true,
-          sorting: true,
-          paging: true,
-          //"pageLength": 10,
-          "language": dataTableLanguage,
+      responsive: true,
+      searching: true,
+      sorting: true,
+      paging: true,
+      //"pageLength": 10,
+      "language": dataTableLanguage,
     });
 
     $(".tambahAkun").on("click", function(){
-      $("#modal_tambah_akun .modal-header .parrent").val($(this).data("parrent"));
+      $("#modal_tambah .modal-header .parrent").val($(this).data("parrent"));
     })
 
-    $("#modal_tambah_akun").on("hidden.bs.modal", function(e){
-      $("#modal_tambah_akun .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
+    $("#modal_tambah").on("hidden.bs.modal", function(e){
+      $("#modal_tambah .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
       if($change)
         window.location = baseUrl+"/master_keuangan/akun";
     })
 
-    $("#modal_tambah_akun").on("shown.bs.modal", function(e){
-      //alert($("#modal_tambah_akun .modal-header .parrent").val())
+    $("#modal_tambah").on("shown.bs.modal", function(e){
+      // alert("aa");
 
-      $.ajax(baseUrl+"/master_keuangan/add/"+$("#modal_tambah_akun .modal-header .parrent").val(), {
+      $.ajax(baseUrl+"/master_keuangan/group_akun/add", {
          timeout: 15000,
          dataType: "html",
          success: function (data) {
-             $("#modal_tambah_akun .modal-body").html(data);
+             $("#modal_tambah .modal-body").html(data);
          },
          error: function(request, status, err) {
             if (status == "timeout") {
-              $("#modal_tambah_akun .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+              $("#modal_tambah .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
             } else {
-              $("#modal_tambah_akun .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+              $("#modal_tambah .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
             }
         } 
       });
     })
 
-    $(".editAkun").on("click", function(){
-      $("#modal_edit_akun .modal-header .parrent").val($(this).data("parrent"));
+    $(".edit").on("click", function(){
+      $("#modal_edit .modal-header .parrent").val($(this).data("parrent"));
     })
 
-    $("#modal_edit_akun").on("hidden.bs.modal", function(e){
-      $("#modal_edit_akun .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
+    $("#modal_edit").on("hidden.bs.modal", function(e){
+      $("#modal_edit .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
       if($change)
         window.location = baseUrl+"/master_keuangan/akun";
     })
 
-    $("#modal_edit_akun").on("shown.bs.modal", function(e){
+    $("#modal_edit").on("shown.bs.modal", function(e){
       //alert($("#modal_edit_akun .modal-header .parrent").val())
 
-      $.ajax(baseUrl+"/master_keuangan/edit/"+$("#modal_edit_akun .modal-header .parrent").val(), {
+      $.ajax(baseUrl+"/master_keuangan/group_akun/edit/"+$("#modal_edit .modal-header .parrent").val(), {
          timeout: 15000,
          dataType: "html",
          success: function (data) {
-             $("#modal_edit_akun .modal-body").html(data);
+             $("#modal_edit .modal-body").html(data);
          },
          error: function(request, status, err) {
             if (status == "timeout") {
-              $("#modal_edit_akun .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+              $("#modal_edit .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
             } else {
-              $("#modal_edit_akun .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+              $("#modal_edit .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
             }
         } 
       });

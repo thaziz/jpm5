@@ -66,14 +66,17 @@ class MasterPenerusController extends Controller
 				 ->orderBy('kode','asc')
 				 ->get();
 		$akun = DB::table('d_akun')
-				  ->where('id_parrent',5)
+				  ->where('id_akun','like','5'.'%')
 				  ->get();
 		$cabang = DB::table('cabang')
 				  ->get();
 
 		$jenis_bayar = DB::table('master_jenis_biaya')
 				  ->get();
-		return view('master_biaya.indexpresentase',compact('data','akun','cabang','jenis_bayar'));
+
+		$bbm = DB::table('jenis_bbm')
+				  ->get();
+		return view('master_biaya.indexpresentase',compact('data','akun','cabang','jenis_bayar','bbm'));
 	}
 	public function presentase_update($a, $b, $c){
 
@@ -85,7 +88,7 @@ class MasterPenerusController extends Controller
 		 return '1';
 	}
 	public function tambah(request $request){
-		// dd($request);
+		// dd($request->all());
 
 		$id = DB::table('master_persentase')
 				->max('kode');
@@ -96,16 +99,22 @@ class MasterPenerusController extends Controller
 			$id = 1;
 		}
 
+		$bbm = DB::table('jenis_bbm')
+				 ->where('jb_id',$request->first_name)
+				 ->first();
+
 		$request->persentase = round($request->persentase,2);
 		$save = DB::table('master_persentase')
 				  ->insert([
 				  		'kode'		=>	$id,
-				  		'nama'		=>  strtoupper($request->biaya),
-				  		'persen'	=>  $request->persen,
+				  		'nama'		=>  strtoupper($bbm->jb_nama),
+				  		'persen'	=>  $request->persentase,
 				  		'cabang'	=>  $request->cabang,
-				  		'kode_akun' =>  $request->akun,
-				  		'keterangan'=>  strtoupper($request->ket),
-				  		'jenis_biaya'=>  $request->jb
+				  		'kode_akun' =>  $request->nama_akun,
+				  		'keterangan'=>  strtoupper($request->keterangan),
+				  		'last_name'=>  strtoupper($request->last_name),
+				  		'jenis_bbm'=>  strtoupper($request->first_name),
+				  		'jenis_biaya'=>  $request->jenis_biaya
 				  	]);
 	}
 
@@ -119,13 +128,12 @@ class MasterPenerusController extends Controller
 	public function dropdown(request $request){
 		if ($request->id == 'GLOBAL') {
 			$data = DB::table('d_akun')
-				  ->where('id_parrent',5)
+				  ->where('id_akun','like','5'.'%')
 				  ->get();
 		}else{
 			$data = DB::table('d_akun')
 				  ->where('kode_cabang',$request->id)
-				  ->where('id_parrent','LIKE','%'.'5'.'%')
-				  ->whereRaw('LENGTH(id_parrent) > ?', [1])
+				  ->where('id_akun','LIKE','5'.'%')
 				  ->get();
 		}
 
@@ -135,16 +143,23 @@ class MasterPenerusController extends Controller
 		return view('master_biaya/dropdown',compact('data'));
 	}
 	public function update(request $request){
-		// dd($request);
+		// dd($request->all());
+
+		$bbm = DB::table('jenis_bbm')
+				 ->where('jb_id',$request->first_name)
+				 ->first();
+
 		$update = DB::table('master_persentase')
 					->where('kode',$request->kode)
 					->update([
-						'nama'		=>  strtoupper($request->biaya),
-				  		'persen'	=>  $request->persen,
+				  		'nama'		=>  strtoupper($bbm->jb_nama),
+				  		'persen'	=>  $request->persentase,
 				  		'cabang'	=>  $request->cabang,
-				  		'kode_akun' =>  $request->akun,
-				  		'keterangan'=>  strtoupper($request->ket),
-				  		'jenis_biaya'=>  $request->jb
+				  		'kode_akun' =>  $request->nama_akun,
+				  		'keterangan'=>  strtoupper($request->keterangan),
+				  		'jenis_bbm'=>  strtoupper($request->first_name),
+				  		'last_name'=>  strtoupper($request->last_name),
+				  		'jenis_biaya'=>  $request->jenis_biaya
 
 					]);
 	}

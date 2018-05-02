@@ -48,9 +48,11 @@
                     <h5> Pembayaran Kas
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                    @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','tambah'))
                       <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('biaya_penerus/createkas')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
-                    </div>
+                      </div>
+                    @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -82,13 +84,25 @@
                         <td>{{$val->nama}}</td>
                         <td align="center">{{"Rp " . number_format($val->bpk_tarif_penerus,2,",",".")}}</td>
                         <td align="left" style="width: 9%">
-                          <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailkas', ['id' => $val->bpk_id])}}"> detail</a><br>
-                          <a class="fa asw fa-print" align="center"  title="print" href="{{route('buktikas', ['id' => $val->bpk_id])}}"> Bukti Kas</a>
+                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','print'))
+                            <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailkas', ['id' => $val->bpk_id])}}"> detail</a><br>
+                          @endif
+                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','print'))
+                            <a class="fa asw fa-print" align="center"  title="print" href="{{route('buktikas', ['id' => $val->bpk_id])}}"> Bukti Kas</a>
+                          @endif
                         </td>
                         <td align="center"><input type="checkbox" class="allow" name="cek[]"></td>
                         <td align="left" style="width: 6%">
-                          <a class="fa asw fa-pencil" align="center" href="{{route('editkas', ['id' => $val->bpk_id])}}" title="edit"> Edit</a><br>
-                          <a class="fa fa-trash asw" align="center" onclick="hapus({{$val->bpk_id}})" title="hapus"> Hapus</a>
+                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','ubah'))
+                           @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) != 0)
+                           <a class="fa asw fa-pencil" align="center" href="{{route('editkas', ['id' => $val->bpk_id])}}" title="edit"> Edit</a><br>
+                           @endif
+                          @endif
+                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','hapus'))
+                          @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) != 0)
+                            <a class="fa fa-trash asw" align="center" onclick="hapus({{$val->bpk_id}})" title="hapus"> Hapus</a>
+                          @endif
+                          @endif
                         </td>
                       </tr>
                       @endforeach 

@@ -409,7 +409,7 @@ class do_kertas_Controller extends Controller
                     }
                 }
             }
-
+            
         }else{
             $data_dt = DB::table('delivery_order')
                   ->join('delivery_orderd','dd_nomor','=','nomor')
