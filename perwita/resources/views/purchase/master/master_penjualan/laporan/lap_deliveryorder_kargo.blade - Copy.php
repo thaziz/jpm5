@@ -35,24 +35,17 @@
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                     <table class="table table-bordered datatable table-striped">
-                      <tr>
-                        <th> dari Tgl : </th> 
-                          <td> 
-                            <div class="input-group">
+                         <tr>
+                        <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                           <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
                                               date" onchange="tgl()">
 
-                            </div> 
-                          </td>  
-                          <th> sampai tgl : </th> 
-                            <td> 
-                              <div class="input-group">
-                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                      <input type="text" class=" date form-control date_to date_range_filter
-                                          date" name="max" id="max" onchange="tgl()" >
-                              </div> 
-                            </td>
+                              </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
+                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                          <input type="text" class=" date form-control date_to date_range_filter
+                                              date" name="max" id="max" onchange="tgl()" >
+                              </div> </td>
                       </tr>
                        <tr>
                         <th> Nama Pengirim : </th> 
@@ -211,35 +204,38 @@
     var table;
    
    table = $('#addColumn').DataTable( {
-       dom: 'Bfrtip',
-       stateSave: true,
-       buttons: [
-          {
-                extend: 'excel',
-               /* messageTop: 'Hasil pencarian dari Nama : ',*/
-                text: ' Excel',
-                className:'excel',
-                title:'LAPORAN INVOCE',
-                filename:'INVOICE-'+a+b+c,
-                init: function(api, node, config) {
-                $(node).removeClass('btn-default'),
-                $(node).addClass('btn-warning'),
-                $(node).css({'margin-left': '80px','margin-top':'-50px'})
-                },
-                exportOptions: {
-                modifier: {
-                    page: 'all'
-                }
-            }
-            
-            }
-    ]
- 
-          });
-        $('.date').datepicker({
+      responsive: true,
+              searching: true,
+              //paging: false,
+              "pageLength": 10,
+              "language": dataTableLanguage,
+         dom: 'Bfrtip',
+         buttons: [
+            {
+                  extend: 'excel',
+                 /* messageTop: 'Hasil pencarian dari Nama : ',*/
+                  text: ' Excel',
+                  className:'excel',
+                  title:'LAPORAN TARIF CABANG KOLI',
+                  filename:'CABANGKOLI-'+a+b+c,
+                  init: function(api, node, config) {
+                  $(node).removeClass('btn-default'),
+                  $(node).addClass('btn-warning'),
+                  $(node).css({'margin-top': '-50px','margin-left': '80px'})
+                  },
+                  exportOptions: {
+                  modifier: {
+                      page: 'all'
+                  }
+              }
+              
+              }
+          ]
+    });
+     $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
-        });
+    });
             $("#min").datepicker({format:"dd/mm/yyyy"});
             $("#max").datepicker({format:"dd/mm/yyyy"});
 
@@ -257,21 +253,15 @@
             var max = $('#max').datepicker("getDate");
             // console.log(max);
 
-            var startDate = new Date(data[1]);
-            
-            if (min == null || min == '' && max == null || max == '') { return true; 
-            }
-            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;
-            }
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;
-            }
-            if (startDate <= max && startDate >= min) { return true; 
-            }
+            var startDate = new Date(data[3]);
+            // console.log(startDate);
+            if (min == null || min == '' && max == null || max == '') { return true; }
+            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
+            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
+            if (startDate <= max && startDate >= min) { return true; }
             return false;
         }
         );
-
-       
             $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
             $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
            
@@ -286,6 +276,18 @@
         });
           }
    
+ 
+    $(document).ready(function() {
+        $('.tbl-item').DataTable();
+     
+        $('input.global_filter').on( 'keyup click', function () {
+            filterGlobal();
+        } );
+     
+        $('input.column_filter').on( 'keyup click', function () {
+            filterColumn( $(this).parents('tr').attr('data-column') );
+        } );
+    } );
 
     function filterColumn () {
     $('#addColumn').DataTable().column(0).search(
@@ -308,23 +310,35 @@
             $('.select-picker5').val()).draw(); 
      }
      $('#nama_pengirim').on( 'keyup', function () {
-         table.DataTable().column(4).search( this.value ).draw();
+         table.column(4).search( this.value ).draw();
       });  
      $('#nama_penerima').on( 'keyup', function () {
-        table.DataTable().column(4).search( this.value ).draw();
+        table.column(5).search( this.value ).draw();
       });  
 
       function cetak(){
+      var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
+
+           asw[i] =  $(asd[i][2]).val();
+  
+       }
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
 
       $.ajax({
-        data: {a:z,b:z1,c:'download'},
+        data: {a:asw,c:'download'},
         url: baseUrl + '/reportdeliveryorder/reportdeliveryorder',
-        type: "get",
-         complete : function(){
-        window.open(this.url,'_blank');
-        },     
-        success : function(data){
-        // window.open(this.data,'_blank');  
+        type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
         }
       });
     }

@@ -1,7 +1,8 @@
 
 <style>
 	.pembungkus{
-		width: 1000px;
+		width: 900px;
+    font: 12px;
 	}
 	table {
     border-collapse: collapse;
@@ -9,6 +10,7 @@
 	table,th,td{
 		border :1px solid black;
 	}
+
 </style>
 
 <div class=" pembungkus">

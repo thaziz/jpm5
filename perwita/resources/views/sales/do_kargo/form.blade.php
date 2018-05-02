@@ -1,4 +1,4 @@
-@extends('main')
+ @extends('main')
 
 @section('title', 'dashboard')
 
@@ -473,7 +473,7 @@ $(document).ready(function(){
    $('.jenis_tarif_temp').val(jenis_tarif_do);
    $('.discount').maskMoney({precision:0,thousands:'.'});
    $.ajax({
-        url:baseUrl + '/sales/nomor_do_kargo',
+        url:baseUrl + '/sales/nota_do_kertas',
         data:{cabang},
         dataType:'json',
         success:function(data){

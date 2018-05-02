@@ -842,7 +842,7 @@
                     timer: 900,
                    showConfirmButton: true
                     },function(){
-                    toastr.warning('No invoice telah diganti menjadi ' + response.nota)
+                    toastr.warning('No DO telah diganti menjadi ' + response.nota)
                 });
              }
 

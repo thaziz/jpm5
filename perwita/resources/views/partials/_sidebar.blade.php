@@ -1257,7 +1257,7 @@
                             " href="{{ url('sales/deliveryorderkertas')}}"><i class="fa fa-building" aria-hidden="true"></i>Delivery Order (DO) Koran</a>
                             </li>
                             @endif
-                             <li >
+                          {{--    <li >
                                 <a class="sidebar master-perusahaan 
 
                                 {{Request::is('sales/salesorder') ? 'active' : '' || 
@@ -1265,7 +1265,7 @@
 
                                 " href="{{ url('sales/salesorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Sales Order (SO)</a>
                             </li>
-                         
+                          --}}
                             <!--
                             <li class="sidebar master-perusahaan {{Request::is('sales/deliveryorder') ? 'active' : ''}} ">
                                 <a href="{{ url('sales/deliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
@@ -1851,6 +1851,12 @@
                             /* do */
                             Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder/*') ? 'active' : ''||
+                             /* do kargo */
+                            Request::is('sales/laporandeliveryorder_kargo') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_kargo/*') ? 'active' : ''||
+                            /* do koran*/
+                            Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : '' ||
                             /* penjualan */
                             Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
                             Request::is('sales/laporaninvoicepenjualan/*') ? 'active' : ''||
@@ -1949,6 +1955,12 @@
                             /* do */
                             Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
                             Request::is('sales/laporandeliveryorder/*') ? 'active' : ''||
+                            /* do kargo */
+                            Request::is('sales/laporandeliveryorder_kargo') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_kargo/*') ? 'active' : ''||
+                            /* do koran*/
+                            Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : '' ||
                             /* penjualan */
                             Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
                             Request::is('sales/laporaninvoicepenjualan/*') ? 'active' : ''||
@@ -2003,7 +2015,15 @@
                                 </li> --}}
                                 <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Delivery Order (DO)</a>
+                            Request::is('sales/laporandeliveryorder/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Paket</a>
+                                </li>
+                                 <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_koran')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Koran</a>
+                                </li>
+                                 <li >
+                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_kargo') ? 'active' : '' || 
+                            Request::is('sales/laporandeliveryorder_kargo/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Kargo</a>
                                 </li>
                          {{--        <li >
                                     <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 

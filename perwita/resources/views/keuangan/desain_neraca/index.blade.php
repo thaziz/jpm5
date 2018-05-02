@@ -148,19 +148,25 @@
                           <td class="text-center">{{ Date("d M Y", strtotime($dataDesain->tanggal_buat)) }}</td>
                           <td class="text-center" style="color:{{$color}}; font-weight: 600;"><small>{{ $status }}</small></td>
                           <td class="text-center">
-                            <div class="btn-group">
-                                <button data-toggle="tooltip" data-placement="top" title="Tampilkan Desain" class="btn btn-success btn-xs tampilkan" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-external-link-square fa-fw"></i></button>
+                            <span data-toggle="tooltip" data-placement="top" title="Tampilkan Desain">
+                                <button class="btn btn-xs btn-success tampilkan" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-external-link-square"></i></button>
+                            </span>
 
-                                <button data-toggle="tooltip" data-placement="top" title="Perbarui Desain" class="btn btn-warning btn-xs editDesain" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-pencil-square fa-fw"></i></button>
+                            <span data-toggle="tooltip" data-placement="top" title="Perbarui Desain">
+                                <button class="btn btn-xs btn-warning editDesain" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-pencil-square"></i></button>
+                            </span>
 
-                                @if($dataDesain->is_active != 1)
-                                    <button data-toggle="tooltip" data-placement="top" title="Aktifkan Desain Ini" class="btn btn-primary btn-xs aktifkan" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-check-square fa-fw"></i></button>
-                                @endif
+                            @if($dataDesain->is_active != 1)
+                              <span data-toggle="tooltip" data-placement="top" title="Aktifkan Desain Ini">
+                                  <button class="btn btn-xs btn-primary aktifkan" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-check-square"></i></button>
+                              </span>
+                            @endif
 
-                                @if($dataDesain->is_active != 1)
-                                    <button data-toggle="tooltip" data-placement="top" title="Hapus Desain" class="btn btn-danger btn-xs hapus" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-eraser fa-fw"></i></button>
-                                @endif
-                            </div>
+                            @if($dataDesain->is_active != 1)
+                              <span data-toggle="tooltip" data-placement="top" title="Hapus Desain">
+                                  <button class="btn btn-xs btn-danger hapus" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-eraser"></i></button>
+                              </span>
+                            @endif
                           </td>
                         </tr>
 
