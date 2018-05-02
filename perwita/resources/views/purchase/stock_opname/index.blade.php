@@ -71,17 +71,26 @@
                           <td>{{$val->mg_namagudang}}</td>
                           @if($val->so_status == 'TIDAK')
                           <td align="center"><label  class="label label-warning">TIDAK SESUASI</label></td>
-                          <td align="center"><a href="{{url('stockopname/berita_acara')}}/{{$val->so_id}}" class="btn btn-warning"><i class="fa fa-book"></i> Buat Berita Acara</a></td>
+                          <td align="center"><a href="{{url('stockopname/berita_acara')}}/{{$val->so_id}}" class="btn btn-md btn-info"><i class="fa fa-book"></i> Buat Berita Acara</a></td>
                           @else
                           <td align="center"><label class="label label-success">SESUASI</label></td>
                           <td align="center">
-                            <a href="{{url('stockopname/berita_acara')}}/{{$val->so_id}}" class="btn btn-success"><i class="fa fa-book"></i> Buat Laporan Stock</a>
+                            <a href="{{url('stockopname/berita_acara')}}/{{$val->so_id}}" class="btn btn-md btn-success"><i class="fa fa-book"></i> Buat Laporan Stock</a>
                           </td>
                           @endif 
                           <td align="center">
-                            <a title="detail" class="btn btn-success btn-sm" href={{url('stockopname/detailstockopname')}}>
+                            <a title="detail" class="btn btn-md btn-success btn-sm" href={{url('stockopname/detailstockopname/'. $val->so_id .'')}}>
                               <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             </a>
+
+                            <a class="btn btn-sm btn-danger" onclick="hapusdata({{$val->so_id}})">
+                              <i class="fa fa-trash"> </i> 
+                            </a>
+
+                            <a class="btn btn-sm btn-info" href="{{url('stockopname/print/'. $val->so_id .'')}}">
+                              <i class="fa fa-print"> </i> 
+                            </a>
+
                           </td>
                         </tr>
                       @endforeach
@@ -131,38 +140,47 @@
         format: 'yyyy-mm-dd'
     });
     
-   /* $('#tmbh_data_barang').click(function(){
-      $("#addColumn").append('<tr> <td rowspan="3"> 1 </td> <td rowspan="3"> </td> <td rowspan="3"> </td>  <td rowspan="3"> </td> <td> halo </td> <td> 3000 </td>  <tr> <td> halo </td> <td>  5.000 </td> </tr> <tr><td> halo </td> <td> 3000 </td> </tr>');
-    })*/
-     $no = 0;
-    $('#tmbh_data_barang').click(function(){
-         $no++;
-     $("#addColumn").append('<tr id=field-'+$no+'> <td> <b>' + $no +' </b> </td> <td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]">  <option value=""> -- Pilih Data Barang -- </option> <option value="">  Barang 1 </option> <option value="">  Barang 2 </option> </td> <td> </td>  <td> </td> <td> </td> <td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]"> <option value=""> -- Pilih Data Supplier -- </option> <option value="">  Supplier 1 </option> <option value="">  Supplier 2 </option> </td> <td> 3000 </td> <td> <button class="btn btn-danger remove-btn" data-id='+$no+' type="button"><i class="fa fa-trash"></i></button> </td> </tr>');
+    function hapusdata(id){
 
+       swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+      },
+     $.ajax({
+      data : {id},
+      url : baseUrl + '/stockopname/delete',
+      type : "get",
+      success : function(response){
+           swal({
+            title: "Berhasil!",
+                    type: 'success',
+                    text: "Data Berhasil Dihapus",
+                    timer: 2000,
+                    showConfirmButton: true
+                    },function(){
+                       location.reload();
+            });
+           
+      },
+      error:function(data){
 
-
-      $(document).on('click','.remove-btn',function(){
-              var id = $(this).data('id');
-              var parent = $('#field-'+id);
-
-              parent.remove();
-          })
-    })
-
-      $('#tmbh_supplier').click(function(){
-            $no++;
-        $("#addColumn").append('<tr id=supp-'+$no+'> <td> <b>  </b> </td> <td> </td> <td> </td>  <td> </td> <td> </td><td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]"> <option value=""> -- Pilih Data Supplier -- </option> <option value="">  Supplier 1 </option> <option value="">  Supplier 2 </option>  </td> <td> 3000 </td> <td> <button class="btn btn-danger removes-btn" data-id='+$no+' type="button"><i class="fa fa-trash"></i></button>  </td> </tr>');
-
-
-        $(document).on('click','.removes-btn',function(){
-              var id = $(this).data('id');
-       //       alert(id);
-              var parent = $('#supp-'+id);
-
-             parent.remove();
-          })
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
      })
-  
+
+    }
     
 
 </script>

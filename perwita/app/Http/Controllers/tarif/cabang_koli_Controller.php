@@ -304,7 +304,7 @@ class cabang_koli_Controller extends Controller
                     if (isset(${'cari_old'.$s}[$i][$a]->id_kota_asal) != $request->cb_kota_asal and
                         isset(${'cari_old'.$s}[$i][$a]->id_kota_tujuan )!= $cari[$i]->id and
                         isset(${'cari_old'.$s}[$i][$a]->kode_cabang) != $request->ed_cabang) {
-                      return 'c';
+                      // return 'c';
 
                       $simpan = DB::table('tarif_cabang_dokumen')
                                 ->insert([

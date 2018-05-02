@@ -458,6 +458,7 @@ cari_customer();
     @if ($data->kontrak == false)
         var temp = "{{$val->nama}}"
         var dd_diskon = "{{$val->dd_diskon}}";
+        var dd_id = "{{$data_dt[$a]->dd_id}}";
         var dd_harga = "{{$val->dd_harga}}";
         var dd_total = "{{$val->dd_total}}";
         var dd_kode_satuan = "{{$val->dd_kode_satuan}}";
@@ -515,7 +516,6 @@ cari_customer();
         @endforeach
     @endif
 
-    console.log(dd_id);
 
 table_detail.row.add({
         'id':'<p class="id_text">'+count+'</p>'+
