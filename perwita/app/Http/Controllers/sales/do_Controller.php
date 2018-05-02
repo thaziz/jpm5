@@ -395,7 +395,13 @@ class do_Controller extends Controller
             }else{
               $akun_piutang = $select_akun->id_akun;
             }
-
+            $namanama  = Auth::user()->m_nama;
+            
+            if ($namanama == null) {
+                $namanama  = Auth::user()->m_nama;
+            }else{
+                $namanama  = Auth::user()->m_username;
+            }
             $data = array(
                 'nomor' => strtoupper($request->ed_nomor),
                 'tanggal' => $request->ed_tanggal,
@@ -446,6 +452,8 @@ class do_Controller extends Controller
                 'acc_penjualan' => $request->acc_penjualan,
                 'acc_piutang_do'        => $akun_piutang,
                 'csf_piutang_do'        => $akun_piutang,
+                'created_by'        => $namanama ,
+                'updated_by'        => $namanama,
 
                 'total_net' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
             );
@@ -462,7 +470,7 @@ class do_Controller extends Controller
 
                 $increment = DB::table('u_s_order_do')->max('id');
                 // return $increment;
-                
+
                 if ($increment == 0) {
                     $increment = 1;
                 }else{

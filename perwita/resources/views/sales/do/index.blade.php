@@ -149,6 +149,7 @@
                                 <th> Tipe </th>
                                 <th> Jenis </th>
                                 <th> Tarif </th>
+                                <th> Total Net </th>
                                 <th style="width:110px"> Aksi </th>
                             </tr>
                         </thead>
@@ -166,6 +167,7 @@
                                 <td>{{ $row->type_kiriman }}</td>
                                 <td>{{ $row->jenis_pengiriman }}</td>
                                 <td>{{ $row->total }}</td>
+                                <td>{{ $row->total_net }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
                                         <a href="{{ url('sales/deliveryorderform/'.$row->nomor.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
