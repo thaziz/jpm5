@@ -391,7 +391,7 @@
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Total</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control" name="ed_total_h" id="ed_total_h" style="text-align:right" readonly="readonly" tabindex="-1"@if ($do === null) value="0" @else value="{{ number_format($do->total, 0, ",", ".") }}" @endif>
+                                                        <input type="text" class="form-control" name="ed_total_h" id="ed_total_h" style="text-align:right" readonly="readonly" tabindex="-1"@if ($do === null) value="0" @else value="{{ number_format($do->total_net, 0, ",", ".") }}" @endif>
                                                     </td>
                                                 </tr>
                                                 <input type="hidden" name="ed_total_total">
@@ -801,7 +801,7 @@
             // alert(hit_das_rep);
 
             var tot_tot = parseInt(hit_pen_rep)+parseInt(hit_das_rep);
-            
+
             // alert(tot_tot);
             var hit_tot = parseInt(hit_disc)/parseInt(tot_tot)*100;
             // alert(hit_tot);
