@@ -32,6 +32,7 @@ use Session;
 use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
+use Auth;
 
 class KasController extends Controller
 {
@@ -100,62 +101,31 @@ class KasController extends Controller
 
 	public function create(){
 
-	    $id = DB::table('biaya_penerus_kas')
-	    		->where('bpk_comp','001')
-	    		->max('bpk_nota');
-
 	    $year  = Carbon::now()->format('Y'); 
 		$month = Carbon::now()->format('m');  	
 		$now   = Carbon::now()->format('d-m-Y');
-		
-	   	if(isset($id)) {
-
-			$explode = explode("/", $id);
-		    $id = $explode[3];
-			$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
-			$string = (int)$id + 1;
-			$id = str_pad($string, 3, '0', STR_PAD_LEFT);
-
-		}
-
-		else {
-			$id = '001';
-		}
-
-		$kk = 'KK' . $month . $year . '/' .'SURABAYA'. '/' . '001' . '/' .  $id;
-
-		$akun = DB::table('d_akun')
-				  ->where('id_parrent',1001)
-				  ->get();
-
-		$akun_biaya_cargo1 = DB::table('master_persentase')
-				  ->where('kode_akun','LIKE','%'.'5205'.'%')
-				  ->orderBy('kode','ASC')
-				  ->get();
-		$akun_biaya_cargo2 = DB::table('master_persentase')
-				  ->where('kode_akun','LIKE','%'.'5405'.'%')
-				  ->orderBy('kode','ASC')
-				  ->get();
-		$akun_biaya_paket = DB::table('master_persentase')
-				  ->where('kode_akun','LIKE','%'.'53'.'%')
-				  ->orderBy('kode_akun','ASC')
-				  ->get();
+		$cabang = DB::table('cabang')
+					->get();
 		$angkutan = DB::table('tipe_angkutan')
-				  ->get();
+					->get();
+		$akun_persen     = DB::table('master_persentase')
+					  ->where('cabang','GLOBAL')
+					  ->get();
 
-		$akun_biaya_cargo = array_merge($akun_biaya_cargo1,$akun_biaya_cargo2);
+		$akun_paket  = DB::table('master_persentase')
+					  ->where('cabang','GLOBAL')
+					  ->where('jenis_biaya',1)
+					  ->get();
 
-		$satu = count($akun_biaya_cargo1);
-		$dua  = count($akun_biaya_cargo2);
-		$count = $satu+$dua;
-
-
-
-		return view('purchase/kas/createkas',compact('kk','now','akun','akun_biaya_cargo','akun_biaya_paket','angkutan'));
+		$akun_kargo  = DB::table('master_persentase')
+					  ->where('cabang','GLOBAL')
+					  ->where('jenis_biaya',5)
+					  ->get();
+		return view('purchase/kas/createkas',compact('now','akun','akun_persen','cabang','angkutan','akun_kargo','akun_paket'));
 	}
 	public function getbbm($id){
 		// $id = (string)$id;
-		return $angkutan = DB::table('tipe_angkutan')
+		 $angkutan = DB::table('tipe_angkutan')
 					// ->select('bbm_per_liter','tipe_angkutan.kode')
 					->join('master_bbm','bahan_bakar','=','master_bbm.mb_id')
 					->where('kode','=',$id)
@@ -1167,6 +1137,52 @@ $cabang='001';
             $key++;
         }                
         return $groups;
+    }
+
+    public function ganti_nota(request $request)
+    {
+	    $bulan = Carbon::now()->format('m');
+	    $tahun = Carbon::now()->format('y');
+
+	    $cari_nota = DB::select("SELECT  substring(max(bpk_nota),12) as id from biaya_penerus_kas
+	                                    WHERE bpk_comp = '$request->cabang'
+	                                    AND to_char(bpk_tanggal,'MM') = '$bulan'
+	                                    AND to_char(bpk_tanggal,'YY') = '$tahun'");
+	    $index = (integer)$cari_nota[0]->id + 1;
+	    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+
+		
+
+		
+
+		$nota = 'BK' . $bulan . $tahun . '/' . $request->cabang . '/' .$index;
+		/*dd($data['nofp']);*/
+
+		return response()->json(['nota' => $nota]);
+    }
+    public function akun_kas(request $request)
+    {
+    	$data = DB::table('d_akun')
+    			  ->where('id_akun','like','1003'.'%')
+    			  ->where('kode_cabang',$request->cabang)
+    			  ->get();
+
+    	return view('purchase/kas/akun_kas',compact('data'));
+    }
+    public function nopol(request $request)
+    {
+    	$data = DB::table('kendaraan')
+    			   ->where('tipe_angkutan',$request->jenis)
+    			   ->where('status','!=','SUB')
+    			   ->get();
+
+
+    	$tipe = DB::table('tipe_angkutan')
+    			   ->where('kode',$request->jenis)
+    			   ->first();
+
+    	return view('purchase/kas/nopol',compact('data','tipe'));
+
     }
 }
 

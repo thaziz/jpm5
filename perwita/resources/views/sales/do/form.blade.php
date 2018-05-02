@@ -352,7 +352,7 @@
                                                     <td style="padding-top: 0.4cm" id="div_kom">Discount</td>
                                                     <td  id="div_kom">
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control" name="ed_diskon_h" id="ed_diskon_h" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->diskon, 0, ",", ".") }}" @endif>
+                                                            <input type="text" class="form-control" name="ed_diskon_h" id="ed_diskon_h" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->diskon, 0, "", "") }}" @endif>
                                                             <span class="input-group-addon">%</span>
                                                         </div>
                                                     </td>
@@ -882,11 +882,11 @@
         var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
         var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
         var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
-        var diskon = diskon.replace(/[A-Za-z$. ,-]/g, "");
+        // var diskon = diskon.replace(/[A-Za-z$. ,-]/g, "");
         var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
         if (diskon > 0 && biaya_tambahan > 0) {
             alert("Diskon dan biaya tambahan di isi salah satu");
-            $("input[name='ed_diskon_h']").val(0);
+            parseFloat($("input[name='ed_diskon_h']").val(0));
             $("input[name='ed_biaya_tambahan']").val(0);
             diskon = 0;
             biaya_tambahan = 0;
@@ -1716,6 +1716,35 @@
             type: "get",
             dataType:"JSON",
             data : {a:penerus_tipe,b:penerus_prov,c:penerus_kota,d:penerus_kec,h:h,i:i,j:j,k:k,l:l,m:m,n:n,p:penerus_kode_kota},
+            success: function(data, textStatus, jqXHR)
+            {
+                        $("#modal").modal('hide');
+                        // alert('data berhasil di simpan');
+                        var replace_data = $('input[name="ed_tarif_penerus"]').val();
+                        console.log(data);
+                        $('#kecamatan').val(data.error[0].id_kecamatan);
+                        alert('Untuk perubahaan Silahkan Tekan Tombol "Search" sekali lagi');
+                        $("input[name='ed_tarif_penerus']").css('width','290px');
+                        // $('#kecamatan').val(data.error[0].id_kecamatan);
+
+            },
+            error: function(jqXHR, textStatus, errorThrown)
+            {
+               swal("Data sudah ada di Database!", 'Cek Data Sekali lagi!', "warning");
+            }
+        });
+    }
+
+    function save_penerus_koli(){
+        var j = $('select[name="jenis_kiriman"]').find(':selected').val();
+        
+
+        $.ajax(
+        {
+            url : baseUrl + "/sales/tarif_penerus_koli_indentdo/save_data",
+            type: "get",
+            dataType:"JSON",
+            data : $('#form_peneruskoli').serialize()+'&j='+j ,
             success: function(data, textStatus, jqXHR)
             {
                         $("#modal").modal('hide');
@@ -2666,6 +2695,15 @@
     // call
 
   //called when key is pressed in textbox
+  // $("#ed_diskon_h").keypress(function (e) {
+  //    //if the letter is not digit then display error and don't type anything
+  //    if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+  //       //display error message
+  //       $("#errmsg").html("Hanya angka yang diperbolehkan").show().fadeOut(1500);
+  //       $("#errmsg").css('color','red');
+  //              return false;
+  //   }
+  //  });
   $(".kodepospengirim").keypress(function (e) {
      //if the letter is not digit then display error and don't type anything
      if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {

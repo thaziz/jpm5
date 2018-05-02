@@ -1294,7 +1294,7 @@ class do_Controller extends Controller
             // return $request->berat;
             // return $jenis;
             // return $tarif;
-            return count($biaya_penerus);
+            // return count($biaya_penerus);
 
             if ($tarif != null) {
                 if (count($biaya_penerus) < 1){
@@ -1304,7 +1304,7 @@ class do_Controller extends Controller
                         ->where('tipe_kiriman', '=', 'KOLI')
                         ->get();
 
-                            return count($biaya_penerus);
+                            // return count($biaya_penerus);
 
                     if (count($biaya_penerus) < 1){
                         $biaya_penerus = 0;
@@ -1312,7 +1312,7 @@ class do_Controller extends Controller
                     	$biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                     }
                 } else {
-                        return count($biaya_penerus);
+                        // return count($biaya_penerus);
                     $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
                 }
                 // return $tipe;
@@ -1504,6 +1504,7 @@ class do_Controller extends Controller
                         $totalHarga = $totalHarga + $tarif[0]->harga;
                         $biaya_penerus = $biaya_penerus + $penerus;
                         $acc_penjualan = $tarif[0]->acc_penjualan;
+
                     }
                     else{
                         return response()->json([
@@ -1530,7 +1531,11 @@ class do_Controller extends Controller
             return response()->json([
                 'biaya_penerus' => $biaya_penerus,
                 'harga' => $totalHarga,
-                'acc_penjualan' => $acc_penjualan
+                'acc_penjualan' => $acc_penjualan,
+                'create_indent' => 1,
+                'tipe' => $tipe,
+                'jenis' => $jenisSepeda,
+
             ]);
         }
     }
@@ -1552,6 +1557,15 @@ class do_Controller extends Controller
         $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
 
         return view('sales/do/ajax_form_penerus_kilogram',compact('kota','kecamatan','customer','provinsi','zona'));
+    }
+    public function cari_modaldeliveryorder_koli(Request $request){
+        $kota = DB::select(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC ");
+        $provinsi = DB::select(" SELECT id,nama FROM provinsi ORDER BY nama ASC ");
+        $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
+        $zona = DB::select(" SELECT id_zona,nama as nama_zona,harga_zona FROM zona ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
+
+        return view('sales/do/ajax_form_penerus_koli',compact('kota','kecamatan','customer','provinsi','zona'));
     }
     public function tarif_penerus_dokumen_indentdo(Request $request){
         // dd($request->all());
@@ -1658,6 +1672,75 @@ class do_Controller extends Controller
         $result['crud']='sukses';
         echo json_encode($result);
     }
+
+    public function tarif_penerus_koli_indentdo(Request $request){
+        // dd($request->all());
+         $id_incremet = DB::table('tarif_penerus_koli')->select('id_increment_koli')->max('id_increment_koli');    
+        if ($id_incremet == '') {
+            $id_incremet = 1;
+        }else{
+            $id_incremet += 1;
+        }
+        // return $id_incremet;
+
+        $kode_id = DB::table('tarif_penerus_koli')->select('id_increment_koli')->max('id_increment_koli');    
+       
+
+        $kode_id = $kode_id+1;
+        $kode_id = str_pad($kode_id, 5,'0',STR_PAD_LEFT);
+        
+        $kode_kota = $request->kode_kota;
+        $kode_cabang = Auth::user()->kode_cabang;
+
+        $kodeutama = $kode_kota.'/'.$kode_cabang.'/'.$kode_id;
+        // return $kodeutama;
+        $simpan='';
+       
+
+           $data = array(
+                'id_tarif_koli' => $kodeutama,
+                'id_provinsi_koli'=> $request->ed_provinsi,
+                'id_kota_koli' =>$request->ed_kota,
+                'id_kecamatan_koli'=>$request->ed_kecamatan,
+                
+                'tarif_10reguler_koli'=>$request->ed_10_reguler,
+                'tarif_10express_koli'=>$request->ed_10_express,
+
+                'tarif_20reguler_koli'=>$request->ed_20_reguler,
+                'tarif_20express_koli'=>$request->ed_20_express,
+
+                'tarif_30reguler_koli'=>$request->ed_30_reguler,
+                'tarif_30express_koli'=>$request->ed_30_express,
+
+                'tarif_>30reguler_koli'=>$request->ed_lebih_30_reguler,
+                'tarif_>30express_koli'=>$request->ed_lebih_30_express,
+
+                'type_koli' =>$request->ed_tipe,
+
+                'id_increment_koli'=>$id_incremet,
+
+            );
+           
+            $simpan = DB::table('tarif_penerus_koli')->insert($data);
+       
+            if ($request->j == 'REGULER') {
+               $total_penerus = 'REGULER';
+            }elseif ($request->j == 'EXPRESS') {
+               $total_penerus = 'EXPRESS';
+            }
+
+            // return $total_penerus;
+        if($simpan == TRUE){
+            $result['error']=[$data,$total_penerus];
+            $result['result']=1;
+        }else{
+            $result['error']='ERROR PAK!';
+            $result['result']=0;
+        }
+        $result['crud']='sukses';
+        echo json_encode($result);
+    }
+
     public function cetak_nota($nomor = null)
     {
         $sql = " SELECT d.*,k.nama asal, kk.nama tujuan, (d.panjang * d.lebar * d.tinggi) dimensi FROM delivery_order d

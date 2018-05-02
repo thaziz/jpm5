@@ -91,6 +91,7 @@
                                 <td>{{ $row->total_net }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
+
                                         @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah'))
                                             @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
                                             <a type="button" href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>

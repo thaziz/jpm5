@@ -1,3 +1,12 @@
+ <style type="text/css">
+    .cssright { text-align: right; }
+    .modal-dialog {
+    width: 900px;
+    margin: 30px auto;
+    }.pad{
+        padding: 10px;
+    }
+ </style>
  <div id="modal" class="modal" >
                   <div class="modal-dialog ">
                     <div class="modal-content">
@@ -6,13 +15,13 @@
                         <h4 class="modal-title">Insert Edit Tarif Penerus Dokumen</h4>
                       </div>
                       <div class="modal-body">
-                        <form class="form-horizontal kirim">
+                        <form class="form-horizontal kirim" id="form_peneruskoli">
                           <table class="table table-striped table-bordered table-hover ">
                             <tbody>
                                 
                                 <tr>
                                     <td style="padding-top: 0.4cm">Kode</td>
-                                    <td><input type="text" name="ed_kode" class="form-control" placeholder="OTOMATIS"></td>
+                                    <td><input type="text" name="ed_kode" class="form-control" placeholder="OTOMATIS" readonly=""></td>
                                     <input type="hidden" name="ed_kode_old">
                                     <input type="hidden" name="ed_kode_lama">
                                     <input type="hidden" name="crud">
@@ -21,7 +30,7 @@
                                <tr>
                                     <td style="padding-top: 0.4cm">Tipe Kiriman</td>
                                     <td>{{-- <input type="text" value="DOKUMEN" readonly="" > --}}
-                                        <select  name="ed_tipe" class="form-control">
+                                        <select  name="ed_tipe" id="penerus_tipekoli"  class="form-control">
                                           <option value="">Pilih - Tipe</option>
                                           <option value="DOKUMEN">DOKUMEN</option>
                                           <option value="KILOGRAM">KILOGRAM</option>
@@ -33,7 +42,7 @@
                                <tr>
                                    <td style="padding-top: 0.4cm"> Provinsi </td>
                                    <td>
-                                       <select name="ed_provinsi" id="provinsi" class="form-control">
+                                       <select name="ed_provinsi" id="penerus_provinsikoli" class="form-control">
                                            <option>-- Pilih Provinsi Terlebih dahulu --</option>
                                            @foreach ($provinsi as $a)
                                                 <option value="{{ $a->id }}">{{ $a->nama }}</option>
@@ -45,10 +54,10 @@
                                <tr>
                                    <td style="padding-top: 0.4cm"> Kota </td>
                                    <td>
-                                        <select name="ed_kota" id="kota"  class="form-control">
+                                        <select name="ed_kota" id="penerus_kotakoli"  class="form-control">
                                             <option disabled="" selected="">-- --</option>  
                                             @foreach ($kota as $b)
-                                                <option value="{{ $b->id }}">{{ $b->nama }}</option>
+                                                <option value="{{ $b->id }}" data-kota="{{ $b->kode_kota }}">{{ $b->nama }}</option>
                                            @endforeach      
                                         </select>
                                     </td>
@@ -57,7 +66,7 @@
                                <tr>
                                    <td style="padding-top: 0.4cm"> kecamatan </td>
                                    <td>
-                                        <select name="ed_kecamatan" id="kecamatan"  class="form-control">
+                                        <select name="ed_kecamatan" id="penerus_kecamatankoli"  class="form-control">
                                             <option disabled="" selected="">-- --</option>
                                             @foreach ($kecamatan as $c)
                                                 <option value="{{ $c->id }}">{{ $c->nama }}</option>
@@ -65,7 +74,7 @@
                                         </select>
                                     </td>
                                </tr>
-                                <input type="hidden" name="kode_kota">
+                                <input type="hidden" name="kode_kota" id="penerus_kodekotakoli">
                             </tbody>
                           </table>
                          <table class="table-striped table-bordered" width="48%"> 

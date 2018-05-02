@@ -85,10 +85,39 @@
             {{ csrf_field() }}
             <tr>
               <td>No Transaksi</td>
-              <td><input readonly="" value="{{$kk}}" class="form-control" type="text" name="no_trans">
-                <input readonly="" value="CREATE" class="form-control" type="hidden" name="tipe_data">
+              <td>
+                <input readonly="" value="" class="form-control no_trans" type="text" name="no_trans">
+                <input readonly="" value="CREATE" class="form-control tipe_data" type="hidden" name="tipe_data">
                 <input readonly="" value="" class="form-control id" type="hidden" name="id">
               </td>
+            </tr>
+            <tr>
+                <td>Cabang</td>
+                <td>
+
+                    @if(Auth::user()->punyaAkses('Biaya Penerus Kas','cabang'))
+                        <select onchange="ganti_nota()" class="form-control cabang_select">
+                        @foreach($cabang as $val)
+                            @if(Auth()->user()->kode_cabang == $val->kode)
+                            <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                            @else
+                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                            @endif
+                        @endforeach
+                        </select>
+                    @else
+                        <select disabled="" class="form-control cabang_select">
+                        @foreach($cabang as $val)
+                        @if(Auth::user()->kode_cabang == $val->kode)
+                            <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                        @else
+                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                        @endif
+                        @endforeach
+                        </select>
+                    @endif
+                    <input type="hidden" name="cabang_input" class="cabang_input form-control input-sm">
+                </td>
             </tr>
             <tr>
               <td>Tanggal</td>
@@ -107,18 +136,8 @@
               {{ csrf_field() }}  
               <tr>
                 <td>Akun Kas</td>
-                <td class="form-inline">
-                  <input readonly="" class="form-control kode_kas" type="text" name="kode_kas" value="100111001" style="width: 29%;">
-                  <select class="form-control nama_kas" type="text" style="width: 70%">
-                    <option value="0" selected>- Pilih Akun Kas -</option>
-                    @foreach($akun as $val)
-                    @if($val->id_akun == '100111001')
-                    <option selected="" value="{{$val->id_akun}}">{{$val->nama_akun}}</option>
-                    @else
-                    <option value="{{$val->id_akun}}">{{$val->nama_akun}}</option>
-                    @endif
-                    @endforeach
-                  </select>
+                <td class="form-inline akun_kas_td">
+                 
                 </td>
               </tr>
               <tr>
@@ -141,21 +160,19 @@
                 </td>
                 <!-- PAKET DROPDOWN-->
                 <td hidden="" class="pembiayaan_paket">
-                  <select  class="form-control pembiayaan pembiayaan_paket chosen-select-width1" type="text" name="pembiayaan_paket">
-                    <option value="0" selected>- Pilih Jenis Biaya -</option>
-                    @foreach($akun_biaya_paket as $val)
-                    <option value="{{$val->kode}}">{{$val->kode_akun}} - {{$val->nama}}</option>
+                   <select class="form-control " name="pembiayaan_paket" >
+                    @foreach($akun_paket as $val)
+                     <option value="{{ $val->kode }}">{{ $val->kode}} - {{ $val->nama }}</option>
                     @endforeach
-                  </select>
+                   </select>
                 </td>
                 <!-- CARGO DROPDOWN-->
                 <td hidden="" class="pembiayaan_cargo">
-                  <select  class="form-control pembiayaan pembiayaan_cargo chosen-select-width1" type="text" name="pembiayaan_cargo">
-                    <option value="0" selected>- Pilih Jenis Biaya -</option>
-                    @foreach($akun_biaya_cargo as $val)
-                    <option value="{{$val->kode}}">{{$val->kode_akun}} - {{$val->nama}}</option>
+                    <select class="form-control " name="pembiayaan_cargo" >
+                     @foreach($akun_kargo as $val)
+                     <option value="{{ $val->kode }}">{{ $val->cabang }} - {{ $val->nama }}</option>
                     @endforeach
-                  </select>
+                    </select>
                 </td>
 
               </tr>
@@ -196,7 +213,7 @@
               </tr>
               <tr>
                 <td>Nopol Kendaraan</td>
-                <td>
+                <td class="nopol_td">
                   <input  class="form-control nopol" type="text" name="nopol" value="" onkeyup="cariDATA()" placeholder="nomor polisi">
                 </td>
               </tr>
@@ -270,10 +287,60 @@ var datatable;
               for (var selector in config1) {
                $(selector).chosen(config1[selector]);
               }  
-    });
+
+    var cabang = $('.cabang_select').val();
+    $.ajax({
+        url:baseUrl + '/biaya_penerus/ganti_nota',
+        data:{cabang},
+        dataType:'json',
+        success:function(data){
+            $('.no_trans').val(data.nota);
+        },
+        error:function(){
+            // location.reload();
+        }
+    })
+
+    $.ajax({
+        url:baseUrl + '/biaya_penerus/akun_kas',
+        data:{cabang},
+        success:function(data){
+            $('.akun_kas_td').html(data);
+        },
+        error:function(){
+            // location.reload();
+        }
+    })
+
+
+  });
    var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
 
-   
+   function ganti_nota() {
+     var cabang = $('.cabang_select').val();
+      $.ajax({
+          url:baseUrl + '/biaya_penerus/ganti_nota',
+          data:{cabang},
+          dataType:'json',
+          success:function(data){
+              $('.no_trans').val(data.nota);
+          },
+          error:function(){
+              // location.reload();
+          }
+      })
+
+      $.ajax({
+          url:baseUrl + '/biaya_penerus/akun_kas',
+          data:{cabang},
+          success:function(data){
+              $('.akun_kas_td').html(data);
+          },
+          error:function(){
+              // location.reload();
+          }
+      })
+   }
 
 
 
@@ -406,7 +473,16 @@ var datatable;
 
     })
 
-
+  $.ajax({
+          url:baseUrl + '/biaya_penerus/nopol',
+          data:{jenis},
+          success:function(data){
+              $('.nopol_td').html(data);
+          },
+          error:function(){
+              // location.reload();
+          }
+      })
 
  }
  //////////////////////////////////////////////
@@ -612,7 +688,7 @@ function cariDATA(){
 
 }
 function reload(){
-  location.reload();
+  // location.reload();
 }
 
 </script>

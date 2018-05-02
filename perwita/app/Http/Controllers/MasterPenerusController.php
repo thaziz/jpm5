@@ -66,7 +66,7 @@ class MasterPenerusController extends Controller
 				 ->orderBy('kode','asc')
 				 ->get();
 		$akun = DB::table('d_akun')
-				  ->where('id_parrent',5)
+				  ->where('id_akun','like','5'.'%')
 				  ->get();
 		$cabang = DB::table('cabang')
 				  ->get();
@@ -119,13 +119,12 @@ class MasterPenerusController extends Controller
 	public function dropdown(request $request){
 		if ($request->id == 'GLOBAL') {
 			$data = DB::table('d_akun')
-				  ->where('id_parrent',5)
+				  ->where('id_akun','like','5'.'%')
 				  ->get();
 		}else{
 			$data = DB::table('d_akun')
 				  ->where('kode_cabang',$request->id)
-				  ->where('id_parrent','LIKE','%'.'5'.'%')
-				  ->whereRaw('LENGTH(id_parrent) > ?', [1])
+				  ->where('id_akun','LIKE','5'.'%')
 				  ->get();
 		}
 
