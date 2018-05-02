@@ -235,6 +235,7 @@
             { "data": "status" },
             { "data": "type_kiriman" },
             { "data": "jenis_pengiriman" },
+            { "data": "total", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
             ]
