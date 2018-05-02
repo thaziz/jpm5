@@ -29,14 +29,15 @@ class desain_neracaController extends Controller
     }
 
     public function add(){
-        $datadetail = DB::table("d_akun")
-                      ->whereIn("id_akun", function($query){
-                        $query->select("id_akun")
-                                ->from("d_akun_saldo")
-                                ->where("is_active", 1)->get();
-                      })->get();
+        $data_akun = DB::table("d_akun")->select("*")->get();
 
-    	return view("keuangan.desain_neraca.form_tambah")->withDatadetail(json_encode($datadetail));
+        $data_group = DB::table("d_group_akun")->where("jenis_group", "Neraca/Balance Sheet")->select("*")->orderBy("nama_group", "asc")->get();
+
+        // return json_encode($data_akun);
+        // return json_encode($data_group);
+    	return view("keuangan.desain_neraca.form_tambah")
+               ->withData_akun(json_encode($data_akun))
+               ->withData_group(json_encode($data_group));
     }
 
     public function save(Request $request){
