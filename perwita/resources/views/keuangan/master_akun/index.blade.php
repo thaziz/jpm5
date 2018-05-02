@@ -123,67 +123,64 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                        <div class="row">
-            <div class="col-xs-12">
-              
-              <div class="box" id="seragam_box">
-                <div class="box-header">
-                </div><!-- /.box-header -->
-                <div class="box-body" style="min-height: 330px;">
-
-                  <table id="table" width="100%" class="table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
-                    <thead>
-                      <tr>
-                        <th width="15%" style="padding:8px 0px" class="text-center">Kode Akun</ht>
-                        <th width="50%" style="padding:8px 0px" class="text-center">Nama Akun</ht>
-                        <th style="padding:8px 0px" class="text-center">Posisi Debet/Kredit</th>
-                        {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
-                        <th width="20%" style="padding:8px 0px" width="20%" class="text-center">Aksi</th>
-
-                      </tr>
-                    </thead>
-                    <tbody  class="searchable">
-
-                      @foreach($data as $dataAkun)
-
-                        <tr class="treegrid-{{ $dataAkun->id_akun }} expanded">
-                            <td class="id_akun">{{ $dataAkun->id_akun }}</td>
-                            <td class="nama_akun">{{ $dataAkun->nama_akun }}</td>
-                            <td class="text-center dka">{{ ($dataAkun->akun_dka == "D") ? "DEBET" : "KREDIT" }}</td>
-                            {{-- <td></td> --}}
-                            <td class="text-center">
-
-                              <span data-toggle="tooltip" data-placement="top" title="Tambahkan Akun Di {{ $dataAkun->nama_akun }}">
-                                <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_tambah_akun" class="btn btn-xs btn-primary tambahAkun"><i class="fa fa-folder-open"></i></button>
-                              </span>
-
-                              <span data-toggle="tooltip" data-placement="top" title="Edit Akun {{ $dataAkun->nama_akun }}">
-                                  <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_edit_akun" class="btn btn-xs btn-warning editAkun"><i class="fa fa-pencil-square"></i></button>
-                              </span>
-
-                              <a onclick="return confirm('Apakah Anda Yakin, Semua Data Sub Akun Yang Terkait Dengan Akun Ini Juga Akan Dihapus ??')" href="{{ route("akun.hapus", $dataAkun->id_akun) }}">
-                                <button data-toggle="tooltip" data-placement="top" title="Hapus Akun {{ $dataAkun->nama_akun }}" class="btn btn-xs btn-danger"><i class="fa fa-eraser"></i></button>
-                              </a>
-                            </td>
-                        </tr>
-
-                        {!! $dataAkun->getSubAkun($dataAkun->id_akun) !!}
+                    <div class="row">
+                      <div class="col-xs-12">
                         
-                      @endforeach
-                      
-                    </tbody>
-                    
-                   
-                  </table>
-                </div><!-- /.box-body -->
-                <div class="box-footer">
-                  <div class="pull-right">  
-                    
-                    </div>
-                  </div><!-- /.box-footer --> 
-              </div><!-- /.box -->
-            </div><!-- /.col -->
-          </div><!-- /.row -->
+                        <div class="box" id="seragam_box">
+                          <div class="box-header">
+                          </div><!-- /.box-header -->
+                          <div class="box-body" style="min-height: 330px;">
+
+                            <table id="table" width="100%" class="table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
+                              <thead>
+                                <tr>
+                                  <th width="15%" style="padding:8px 0px" class="text-center">Kode Akun</ht>
+                                  <th width="50%" style="padding:8px 0px" class="text-center">Nama Akun</ht>
+                                  <th style="padding:8px 0px" class="text-center">Posisi Debet/Kredit</th>
+                                  {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
+                                  <th width="20%" style="padding:8px 0px" width="20%" class="text-center">Aksi</th>
+
+                                </tr>
+                              </thead>
+                              <tbody  class="searchable">
+
+                                @foreach($data as $dataAkun)
+
+                                  <tr class="treegrid-{{ $dataAkun->id_akun }} expanded">
+                                      <td class="id_akun">{{ $dataAkun->id_akun }}</td>
+                                      <td class="nama_akun">{{ $dataAkun->nama_akun }}</td>
+                                      <td class="text-center dka">{{ ($dataAkun->akun_dka == "D") ? "DEBET" : "KREDIT" }}</td>
+                                      {{-- <td></td> --}}
+                                      <td class="text-center">
+
+                                        <span data-toggle="tooltip" data-placement="top" title="Tambahkan Akun Di {{ $dataAkun->nama_akun }}">
+                                          <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_tambah_akun" class="btn btn-xs btn-primary tambahAkun"><i class="fa fa-folder-open fa-fw"></i></button>
+                                        </span>
+
+                                        <span data-toggle="tooltip" data-placement="top" title="Edit Akun {{ $dataAkun->nama_akun }}">
+                                            <button data-parrent="{{ $dataAkun->id_akun }}" data-toggle="modal" data-target="#modal_edit_akun" class="btn btn-xs btn-warning editAkun"><i class="fa fa-pencil-square fa-fw"></i></button>
+                                        </span>
+
+                                        @if($dataAkun->cek_parrent($dataAkun->id_akun) == 0 && $dataAkun->id_parrent != null)
+                                          @if($dataAkun->cek_jurnal($dataAkun->id_akun) == 0)
+                                            <a onclick="return confirm('Apakah Anda Yakin, Semua Data Sub Akun Yang Terkait Dengan Akun Ini Juga Akan Dihapus ??')" href="{{ route("akun.hapus", $dataAkun->id_akun) }}">
+                                              <button data-toggle="tooltip" data-placement="top" title="Hapus Akun {{ $dataAkun->nama_akun }}" class="btn btn-xs btn-danger"><i class="fa fa-eraser fa-fw"></i></button>
+                                            </a>
+                                          @endif
+                                        @endif
+                                      </td>
+                                  </tr>
+
+                                  {!! $dataAkun->getSubAkun($dataAkun->id_akun) !!}
+                                  
+                                @endforeach
+                                
+                              </tbody>
+                            </table>
+                          </div><!-- /.box-body -->
+                      </div><!-- /.box -->
+                    </div><!-- /.col -->
+                  </div><!-- /.row -->
                 </div>
             </div>
         </div>
@@ -241,6 +238,8 @@
 
     @if(Session::has('sukses'))
         alert("{{ Session::get('sukses') }}")
+    @elseif(Session::has('terpakai'))
+        alert("{{ Session::get('terpakai') }}")
     @endif
 
 

@@ -1149,6 +1149,20 @@ Route::get('suratketerangankerjapengajuankpr', 'SuratController@pdf_suratketeran
 
 //********KEUANGAN********
 
+//periode keuangan
+
+Route::post('master_keuangan/periode_keuangan/tambah', [
+    'uses'  => 'master_keuangan\periode_keuangan_controller@make',
+    'as'    => 'periode_keuangan.add'
+]);
+
+Route::post('master_keuangan/periode_keuangan/setting', [
+    'uses'  => 'master_keuangan\periode_keuangan_controller@setting',
+    'as'    => 'periode_keuangan.setting'
+]);
+
+//end periode keuangan
+
 //neraca
 
 Route::get('master_keuangan/neraca/{throtle}', [
@@ -1274,43 +1288,43 @@ Route::get('keuangan/jurnal_umum/show-detail/{id}', [
 
 //akun
 Route::get('master_keuangan/akun', [
-  'uses' => 'master_keuangan\akun_Controller@index',
+  'uses' => 'master_keuangan\akun_controller@index',
   'as'   => 'akun.index'
 ]);
 
 Route::get('master_keuangan/add/{parrent}', [
-  'uses' => 'master_keuangan\akun_Controller@add',
+  'uses' => 'master_keuangan\akun_controller@add',
   'as'   => 'akun.add'
 ]);
 
 Route::get('master_keuangan/edit/{parrent}', [
-  'uses' => 'master_keuangan\akun_Controller@edit',
+  'uses' => 'master_keuangan\akun_controller@edit',
   'as'   => 'akun.edit'
 ]);
 
 Route::post('master_keuangan/akun/save_data', [
-  'uses' => 'master_keuangan\akun_Controller@save_data',
+  'uses' => 'master_keuangan\akun_controller@save_data',
   'as'   => 'akun.save'
 ]);
 
 Route::post('master_keuangan/akun/update_data/{id}', [
-  'uses' => 'master_keuangan\akun_Controller@update_data',
+  'uses' => 'master_keuangan\akun_controller@update_data',
   'as'   => 'akun.update'
 ]);
 
 Route::get('master_keuangan/akun/kota/{id_provinsi}', [
-  'uses' => 'master_keuangan\akun_Controller@kota',
+  'uses' => 'master_keuangan\akun_controller@kota',
   'as'   => 'akun.kota'
 ]);
 
 Route::get('master_keuangan/akun/hapus_data/{id}', [
-  'uses'=> 'master_keuangan\akun_Controller@hapus_data',
+  'uses'=> 'master_keuangan\akun_controller@hapus_data',
   'as'  => 'akun.hapus'
 
 ]);
 
 Route::get('master_keuangan/akun/cek_parrent/{id}', [
-  'uses'=> 'master_keuangan\akun_Controller@cek_parrent',
+  'uses'=> 'master_keuangan\akun_controller@cek_parrent',
   'as'  => 'akun.cek_parrent'
 
 ]);

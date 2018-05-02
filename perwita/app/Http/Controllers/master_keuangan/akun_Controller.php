@@ -14,10 +14,15 @@ use Session;
 
 class akun_Controller extends Controller
 {
+
     public function index(){
+
+        if(cek_periode() == 0)
+            return view("keuangan.err.err_periode");
+
         $data = master_akun::whereNull("id_parrent")->get();
         //return json_encode($data);
-        return view("keuangan.master_akun.idx")->withData($data);
+        return view("keuangan.master_akun.index")->withData($data);
         //return $data;
     }
 
@@ -26,7 +31,7 @@ class akun_Controller extends Controller
         $data = master_akun::whereNull("id_parrent")->get();
         $nama = "Tidak Memiliki Parrent";
         $provinsi = DB::table("provinsi")->orderBy("nama", "asc")->get();
-        $cabang = DB::table("cabang")->orderBy("nama", "asc")->select(DB::raw("substr(kode, 2) as kode"), "nama")->get();
+        $cabang = DB::table("cabang")->orderBy("nama", "asc")->select("kode", "nama")->get();
         $subakun = master_akun::orderBy("nama_akun", "asc")->get();
         $namakota = "";
 
@@ -38,7 +43,7 @@ class akun_Controller extends Controller
             $namakota = DB::table("kota")->where("id", $nama->id_kota)->first();
         }
 
-        return view("keuangan.master_akun.form-insert")
+        return view("keuangan.master_akun.insert")
             ->withData($data)
             ->withParrent($parrent)
             ->withProvinsi($provinsi)
@@ -60,7 +65,7 @@ class akun_Controller extends Controller
     }
 
     public function save_data(Request $request){
-        //return json_encode($request->all());
+        // return json_encode($request->all());
         //return json_encode(explode(",", str_replace(".", "", substr($request->saldo_awal, 3)))[0]);
 
         $response = [
@@ -177,6 +182,7 @@ class akun_Controller extends Controller
                     }
 
                     $saldo->is_active = "1";
+                    $saldo->bulan = date("m");
 
                     if($saldo->save())
                         return json_encode($response);
@@ -185,7 +191,8 @@ class akun_Controller extends Controller
                     $saldo->id_akun = $id;
                     $saldo->tahun = date("Y");
                     $saldo->saldo_akun = null ;
-                    $saldo->is_active = "0";
+                    $saldo->is_active = "1";
+                    $saldo->bulan = date("m");
 
                     if($saldo->save())
                         return json_encode($response);
@@ -222,15 +229,16 @@ class akun_Controller extends Controller
     }
 
     public function hapus_data($id){
-        $data = master_akun::where("id_parrent", "=", $id)->get();
 
-        foreach ($data as $dataSubAkun) {
-            DB::table('d_akun')->where("id_akun", '=', $dataSubAkun->id_akun)->delete();
-            $this->hapus_data($dataSubAkun->id_akun);
-         }
+        $cek = DB::table("d_jurnal_dt")->where("jrdt_acc", $id)->select("*")->get();
 
-        DB::table('d_akun_saldo')->where("id_akun", '=', $id)->delete();
+        if(count($cek) > 0){
+            Session::flash('terpakai', "Akun Ini Terpakai Di Jurnal, Sehingga Tidak Bisa Dihapus.");
+            return redirect(route("akun.index"));
+        }
+
         DB::table('d_akun')->where("id_akun", '=', $id)->delete();
+        DB::table('d_akun_saldo')->where("id_akun", '=', $id)->delete();
         Session::flash('sukses', "Data Akun Berhasil Dihapus.");
         return redirect(route("akun.index"));
     }

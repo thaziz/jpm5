@@ -31,23 +31,8 @@
                     <a href="#" ><i class="fa fa-suitcase" aria-hidden="true"></i><span class="nav-label">Setting</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                         <li class="sidebar {{Request::is('setting/pengguna') ? 'active' : '' || Request::is('setting/pengguna/*') ? 'active' : '' }} ">
-                            <a href="{{ url('setting/pengguna')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Pengguna</a>
+                            <a href="{{ url('setting/pengguna')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Pengguna</a>
                         </li>
-
-                        <li>
-                                <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
-                                <ul class="nav nav-third-level">
-                                    <li>
-                                        <a href="#" id="setting_periode"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Tambah Periode</a>
-                                    </li>
-
-                                    <li>
-                                        <a href="#" id="option_periode"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Setting Periode</a>
-                                    </li>
-
-                                </ul>
-                            </li>
-
                     </ul>
                 </li>
                 <!-- end Setting -->
@@ -2179,40 +2164,37 @@
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Keuangan <span class="fa arrow"></span></a>
                             <ul class="nav nav-third-level">
 
-                                {{-- <li >
+                                <li >
                                     <a class="sidebar master-perusahaan {{Request::is('reportmasteritem/reportmasteritem') ? 'active' : '' || 
                             Request::is('reportmasteritem/reportmasteritem/*') ? 'active' : ''}}"  href={{url('reportmasteritem/reportmasteritem')}}><i class="fa fa-folder-open-o" aria-hidden="true"></i> Arus Kas/Bank</a>
-                                </li> --}}
+                                </li>
 
-                                {{-- <li >
+                                <li >
                                     <a class="sidebar master-perusahaan {{Request::is('reportmastergroupitem/reportmastergroupitem') ? 'active' : '' || 
                             Request::is('reportmastergroupitem/reportmastergroupitem/*') ? 'active' : ''}}" href="{{url('reportmastergroupitem/reportmastergroupitem')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Buku Besar</a>
-                                </li> --}}
-
-                                <li>
-                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/laba_rugi') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-laba-rugi/*') ? 'active' : ''}} " href="{{ route("laba_rugi.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laba Rugi</a>
+                                </li>
+                                <li >
+                                    <a class="sidebar master-perusahaan  {{Request::is('master-keuangan/laporan-laba-rugi') ? 'active' : '' || 
+                            Request::is('master-keuangan/laporan-laba-rugi/*') ? 'active' : ''}} " href="{{url('master-keuangan/laporan-laba-rugi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laba Rugi</a>
                                 </li>
 
                                 <li >
-                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Neraca </a>
+                                    <a class="sidebar master-perusahaan  {{Request::is('master-keuangan/laporan-neraca') ? 'active' : '' || 
+                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{url('master-keuangan/laporan-neraca')}}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Neraca </a>
                                 </li>
-
                                 <li >
-                                    <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca-saldo') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca_saldo.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Neraca Saldo</a>
-                                </li>
-                                {{-- <li >
                                     <a class="sidebar master-perusahaan  {{Request::is('laporan-neraca/index') ? 'active' : '' || 
                             Request::is('laporan-neraca/index/*') ? 'active' : ''}}" href="{{url('laporan-neraca/index')}}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Neraca1 </a>
-                                </li> --}}
+                                </li>
                             </ul>
                         </li>
                         <!-- end Laporan keuangan -->
                     </ul>
 
                 </li>
+
+                
+                
                 
                
 

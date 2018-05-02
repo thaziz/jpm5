@@ -6,20 +6,22 @@
           <tr>
             <td width="17%">Pilih Akun<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
             <td width="35%">
-             <select name="id_akun" style="width: 80%" data-toggle="tooltip" data-placement="top" title="Hanya Menampilkan Akun Yang Tidak Memiliki Subakun Dan Belum Memiliki Saldo Di Tahun Ini.">
+             <select name="id_akun" style="width: 80%" data-toggle="tooltip" data-placement="top" title="Hanya Menampilkan Akun Yang Tidak Memiliki Subakun Dan Belum Memiliki Saldo Di Periode Ini.">
                @foreach($data as $dataAkun)
-                  @if(!$dataAkun->hasSaldo($dataAkun->id_akun))
+                  @if(!$dataAkun->hasSaldo($dataAkun->id_akun) )
                     <option value="{{ $dataAkun->id_akun }}">{{ $dataAkun->nama_akun }}</option>
                   @endif
                @endforeach
              </select>
                 
             </td>
-            <td width="20%">
-              Tahun Periode
+            <td width="15%">
+              Periode
             </td>
             <td>
-              <input class="validate" style="text-align: center;" type="text" required readonly name="tahun" value="{{ date("Y") }}">
+              <input class="validate text-center" style="text-align: center; width: 40%;" type="text" required readonly name="tahun" value="{{ date("m") }}">
+
+              <input class="validate text-center" style="text-align: center; width: 40%;" type="text" required readonly name="tahun" value="{{ date("Y") }}">
             </td>
           </tr>
         </tbody>
