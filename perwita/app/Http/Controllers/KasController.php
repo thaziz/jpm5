@@ -134,17 +134,37 @@ class KasController extends Controller
 		return response()->json(['angkutan'=>$angkutan]);
 	}
 	public function cari_resi(Request $request){
-		// dd($request);
-		$cari_persen = DB::table('master_persentase')
+
+
+		dd($request->all());
+		if ($request->jenis_pembiayaan == 'PAKET') {
+
+			$cari_persen = DB::table('master_persentase')
 	    		  ->where('kode',$request->pembiayaan_paket)
-	    		  ->where('cabang','001')
-	    		  ->get();
-	    if ($cari_persen == null) {
-	    	$cari_persen = DB::table('master_persentase')
-	    		  ->where('kode',$request->pembiayaan_paket)
-	    		  ->where('cabang','GLOBAL')
-	    		  ->get();
-	    }
+	    		  ->where('cabang',$request->cabang)
+	    		  ->first();
+
+		    if ($cari_persen == null) {
+		    	$cari_persen = DB::table('master_persentase')
+		    		  ->where('kode',$request->pembiayaan_paket)
+		    		  ->where('cabang','GLOBAL')
+		    		  ->get();
+
+		    }
+		    
+		}else{
+			$cari_persen = DB::table('master_persentase')
+	    		  ->where('kode',$request->pembiayaan_cargo)
+	    		  ->where('cabang',$request->cabang)
+	    		  ->first();
+		    if ($cari_persen == null) {
+		    	$cari_persen = DB::table('master_persentase')
+		    		  ->where('kode',$request->pembiayaan_cargo)
+		    		  ->where('cabang','GLOBAL')
+		    		  ->get();
+		    }
+		}
+		
 	    
 		$biaya_bbm 	  = filter_var($request->total_bbm, FILTER_SANITIZE_NUMBER_INT);
 		$biaya_dll 	  = filter_var($request->biaya_dll, FILTER_SANITIZE_NUMBER_INT);
@@ -242,7 +262,7 @@ class KasController extends Controller
 	}
 	public function save_penerus(request $request){
 		return DB::transaction(function() use ($request) {  
-		 
+		 dd($request->all());
 		// dd($request->pembiayaan_paket);
 		$cari_persen = DB::table('master_persentase')
 	    		  ->where('kode',$request->pembiayaan_paket)

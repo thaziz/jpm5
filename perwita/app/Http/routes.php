@@ -279,6 +279,7 @@ Route::get('biaya_penerus/getbbm/{id}', 'KasController@getbbm');
 Route::post('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresiedit', 'KasController@cariresiedit');
 Route::post('biaya_penerus/save_penerus', 'KasController@save_penerus');
+Route::get('biaya_penerus/save_penerus', 'KasController@save_penerus');
 Route::post('biaya_penerus/update_penerus', 'KasController@update_penerus');
 Route::get('biaya_penerus/akun_kas', 'KasController@akun_kas');
 Route::get('biaya_penerus/nopol', 'KasController@nopol');

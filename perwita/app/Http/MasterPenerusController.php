@@ -69,7 +69,10 @@ class MasterPenerusController extends Controller
 				  ->get();
 		$cabang = DB::table('cabang')
 				  ->get();
-		return view('master_biaya.indexpresentase',compact('data','akun','cabang'));
+
+		$bbm = DB::table('jenis_bbm')
+				  ->get();
+		return view('master_biaya.indexpresentase',compact('data','akun','cabang','bbm'));
 	}
 	public function presentase_update($a, $b, $c){
 

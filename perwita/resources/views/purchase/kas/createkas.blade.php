@@ -96,7 +96,7 @@
                 <td>
 
                     @if(Auth::user()->punyaAkses('Biaya Penerus Kas','cabang'))
-                        <select onchange="ganti_nota()" class="form-control cabang_select">
+                        <select onchange="ganti_nota()" class="form-control cabang_select" name="cabang">
                         @foreach($cabang as $val)
                             @if(Auth()->user()->kode_cabang == $val->kode)
                             <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -106,7 +106,7 @@
                         @endforeach
                         </select>
                     @else
-                        <select disabled="" class="form-control cabang_select">
+                        <select disabled="" class="form-control cabang_select" name="cabang">
                         @foreach($cabang as $val)
                         @if(Auth::user()->kode_cabang == $val->kode)
                             <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -162,7 +162,7 @@
                 <td hidden="" class="pembiayaan_paket">
                    <select class="form-control " name="pembiayaan_paket" >
                     @foreach($akun_paket as $val)
-                     <option value="{{ $val->kode }}">{{ $val->kode}} - {{ $val->nama }}</option>
+                     <option value="{{ $val->jenis_bbm }}">{{ $val->kode}} - {{ $val->nama }}</option>
                     @endforeach
                    </select>
                 </td>
@@ -170,7 +170,7 @@
                 <td hidden="" class="pembiayaan_cargo">
                     <select class="form-control " name="pembiayaan_cargo" >
                      @foreach($akun_kargo as $val)
-                     <option value="{{ $val->kode }}">{{ $val->cabang }} - {{ $val->nama }}</option>
+                     <option value="{{ $val->jenis_bbm }}">{{ $val->kode }} - {{ $val->nama }}</option>
                     @endforeach
                     </select>
                 </td>
@@ -232,7 +232,7 @@
               <tr>
                 <td>Nota Resi (dipisah dengan spasi)<span class="require" style="color: red"> *</span></td>
                 <td>
-                  <textarea style="height: 100px" class="form-control resi" id="resi" name="resi" value="" placeholder="Nota Resi" ></textarea>
+                  <textarea style="height: 100px" class="form-control resi" id="resi"  value="" placeholder="Nota Resi" ></textarea>
                   <br><label>Untuk Pembiayaan Lintas, hanya di isi No Resi Lintas</label>
                 </td>
               </tr>
@@ -297,7 +297,7 @@ var datatable;
             $('.no_trans').val(data.nota);
         },
         error:function(){
-            // location.reload();
+            location.reload();
         }
     })
 
@@ -308,7 +308,7 @@ var datatable;
             $('.akun_kas_td').html(data);
         },
         error:function(){
-            // location.reload();
+            location.reload();
         }
     })
 
@@ -326,7 +326,7 @@ var datatable;
               $('.no_trans').val(data.nota);
           },
           error:function(){
-              // location.reload();
+              location.reload();
           }
       })
 
@@ -337,7 +337,7 @@ var datatable;
               $('.akun_kas_td').html(data);
           },
           error:function(){
-              // location.reload();
+              location.reload();
           }
       })
    }
@@ -425,11 +425,11 @@ var datatable;
       url:baseUrl + '/biaya_penerus/getbbm/'+id,
       type:'get',
       success:function(data){
-        bbm_liter = data[0].bbm_per_liter;
-        harga_bbm = data[0].mb_harga;
+        var bbm_liter = data.angkutan[0].bbm_per_liter;
+        var harga_bbm = data.angkutan[0].mb_harga;
         $('.km_liter').val(bbm_liter);
         $('.bbm').val(harga_bbm);
-
+        
         if(km != "" && jk != "0"){
           parseInt(km);
           hasil = km/bbm_liter;
@@ -480,7 +480,7 @@ var datatable;
               $('.nopol_td').html(data);
           },
           error:function(){
-              // location.reload();
+              location.reload();
           }
       })
 
@@ -565,7 +565,11 @@ var datatable;
  }
 
 function search(){
-
+  var resi = $('#resi').val();
+  var head = $('.table_header :input').serializeArray();
+  var data = $('.table_data :input').serializeArray();
+  var resi_array = resi.split(" ");
+  // data.push(resi_array);
   $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -575,7 +579,7 @@ function search(){
   $.ajax({
       url:baseUrl + '/biaya_penerus/cariresi',
       type:'post',
-      data: $('.table_header :input').serialize()+'&'+$('.table_data :input').serialize(),
+      data: {head,data,resi_array},
       success:function(data){
         $('.resi_body').html('');
         if(typeof data.status !== 'undefined'){
@@ -613,7 +617,7 @@ function(){
 
       $.ajax({
       url:baseUrl + '/biaya_penerus/save_penerus',
-      type:'POST',
+      type:'get',
       data: datatable.$('input').serialize()+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize(),
       success:function(data){
         if(data.status == '0'){
@@ -688,7 +692,7 @@ function cariDATA(){
 
 }
 function reload(){
-  // location.reload();
+  location.reload();
 }
 
 </script>
