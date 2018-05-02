@@ -37,10 +37,12 @@
                     <h5 style="margin : 8px 5px 0 0"> RUTE
                           <!-- {{Session::get('comp_year')}} -->
                     </h5>
-
+                     @if(Auth::user()->punyaAkses('Rute','tambah'))
                     <div class="text-right" style="">
                        <button  type="button" style="margin-right :12px; width:110px" class="btn btn-success " id="btn_add_order" name="btnok"></i>Tambah Data</button>
                     </div>
+                    @endif
+
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -69,8 +71,12 @@
                                 <td>{{ $row->cabang }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
+                                        @if(Auth::user()->punyaAkses('Rute','ubah'))
                                         <a href="{{ url('master_sales/ruteform/'.$row->kode.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                        @endif
+                                        @if(Auth::user()->punyaAkses('Rute','hapus'))
                                         <a href="{{ url('master_sales/ruteform/'.$row->kode.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>
