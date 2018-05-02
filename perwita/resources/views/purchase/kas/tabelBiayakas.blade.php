@@ -58,16 +58,16 @@
     	<input type="hidden" name="status[]" value="{{$data[$index][0]->status}}">
     	{{$data[$index][0]->status}}
     </td>
-    <td>
-    	<input type="hidden" name="tarif[]" value="{{$data[$index][0]->tarif_dasar}}">
+    <td align="right">
+    	<input type="hidden" name="tarif[]" value="{{$data[$index][0]->total_net}}">
     	<input type="hidden" name="total_tarif" value="{{$total_tarif}}">
-    	{{$data[$index][0]->tarif_dasar}}
+      {{number_format($data[$index][0]->total_net, 2, ",", ".")}}
     </td>
-    <td>
+    <td align="right">
     	<input type="hidden" name="penerus[]" value="{{$penerus[$index]}}">
     	<input type="hidden" name="total_penerus" value="{{$total_penerus}}">
     	<input type="hidden" name="comp[]" value="{{$data[$index][0]->kode_cabang}}">
-    	{{$penerus[$index]}}
+    	{{number_format($penerus[$index], 2, ",", ".")}}
     </td>
   </tr>
   @endforeach
