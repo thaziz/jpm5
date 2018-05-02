@@ -2,6 +2,9 @@
     .nav-third-level li a.active{
         color: white;
     }
+    .nav > li.active{
+        color: white;
+    }
 </style>
 <nav class="navbar-default navbar-static-side" role="navigation">
     <div class="sidebar-collapse">
@@ -756,7 +759,7 @@
                     </li>
                     @endif
 
-                    @if(Auth::user()->PunyaAkses('Diskon','aktif'))
+                    {{-- @if(Auth::user()->PunyaAkses('Diskon','aktif'))
                     <li >
                     <a class="sidebar master-perusahaan 
 
@@ -765,7 +768,7 @@
 
                     " href="{{ url('master_sales/komisi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Diskon</a>
                     </li>
-                    @endif
+                    @endif --}}
                     @if(Auth::user()->PunyaAkses('Diskon Penjualan','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan {{Request::is('master_sales/diskonpenjualan') ? 'active' : '' || Request::is('master_sales/diskonpenjualan/*') ? 'active' : ''}}" href="{{ url('master_sales/diskonpenjualan')}}">
@@ -795,7 +798,7 @@
                     </li>
                     @endif
 
-                    @if(Auth::user()->PunyaAkses('Biaya','aktif'))
+                   {{--  @if(Auth::user()->PunyaAkses('Biaya','aktif'))
                     <li >
                         <a class="sidebar master-perusahaan 
 
@@ -804,7 +807,7 @@
 
                     " href="{{ url('master_sales/biaya')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Biaya</a>
                     </li>
-                    @endif
+                    @endif --}}
 
                     @if(Auth::user()->PunyaAkses('Saldo Piutang Penjualan','aktif'))
                     <li >
@@ -2405,6 +2408,127 @@
                             <a href="#"><i class="fa fa-folder-o" aria-hidden="true"></i> Penjualan <span class="fa arrow"></span></a>
                             @endif
                             <ul class="nav nav-third-level" style="font-size:85%">
+                                {{-- ANALISAN PUIUTANG --}}
+                                     <li class="
+
+                        {{
+
+                              /*============== sub PENJUALAN LAPORAN========================*/
+                            
+                            
+                            /* lpoan cabang dokumen */
+                            Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : '' ||
+                            /* koli */
+                            Request::is('laporan_master_penjualan/tarif_cabang_koli') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_koli/*') ? 'active' : ''||
+                            /* kargo */
+                            Request::is('laporan_master_penjualan/tarif_cabang_kargo') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kargo/*') ? 'active' : ''||
+                             /* Kilogram */
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram/*') ? 'active' : ''||
+                            /* sepeda */
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda/*') ? 'active' : ''||
+                            /*  batas*/
+                            /* lpoan cabang dokumen */
+                            Request::is('laporan_master_penjualan/tarif_penerus_dokumen') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_dokumen/*') ? 'active' : '' ||
+                            /* koli */
+                            Request::is('laporan_master_penjualan/tarif_penerus_koli') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_koli/*') ? 'active' : ''||
+                            /* kargo */
+                            Request::is('laporan_master_penjualan/tarif_penerus_kargo') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_kargo/*') ? 'active' : ''||
+                             /* Kilogram */
+                            Request::is('laporan_master_penjualan/tarif_penerus_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_kilogram/*') ? 'active' : ''||
+                            /* sepeda */
+                            Request::is('laporan_master_penjualan/tarif_penerus_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_sepeda/*') ? 'active' : ''
+
+                           
+                     /*============== END sub PENJUALAN ===================*/
+
+                        }}
+
+                        ">
+                            @if(Auth::user()->PunyaAkses('Laporan Penjualan','aktif'))
+                            <a href="#" style="font-size:110%" ><i class="fa fa-folder-o" aria-hidden="true"></i> Master Penj <span class="fa arrow"></span></a>
+                            @endif
+                            <ul class="nav nav-third-level" style="font-size:90%">
+                                <li>
+                              <a class="sidebar master-perusahaan {{Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
+                                Request::is('laporanbersama/laporanbersama/*') ? 'active' : ''}} " href="{{ url('laporanbersama/laporanbersama')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Bersama<i class="fa fa-cog fa-spin pull-right" style="color: #19ecdd;"  aria-hidden="true"></i></a>
+                                </li>
+                                <li >
+                                        <a class=" sidebar master-perusahaan {{Request::is('laporanmasterdo/laporanmasterdo') ? 'active' : '' || 
+                                Request::is('laporanmasterdo/laporanmasterdo/*') ? 'active' : ''}} " href="{{ url('laporanmasterdo/laporanmasterdo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master DO<i class="fa fa-cog fa-spin pull-right " style="color: #19ecdd;" aria-hidden="true"></i></a>
+                                    </li>
+                                    <li >
+                                        <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
+                                Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_dokumen')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Dokumen</a>
+                                    </li>
+                                    <li >
+                                        <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_koli') ? 'active' : '' || 
+                                Request::is('laporan_master_penjualan/tarif_cabang_koli/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Koli</a>
+                                    </li>
+                           
+                                </ul>
+                            </li>
+                            <li >
+                                 
+                                {{-- OPERASIONAL --}}
+                            <li class="
+
+                        {{
+
+                              /*============== sub PENJUALAN LAPORAN========================*/
+                            
+                            
+                            /* lpoan cabang dokumen */
+                            Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : '' ||
+                            /* koli */
+                            Request::is('laporan_master_penjualan/tarif_cabang_koli') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_koli/*') ? 'active' : ''||
+                            /* kargo */
+                            Request::is('laporan_master_penjualan/tarif_cabang_kargo') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kargo/*') ? 'active' : ''||
+                             /* Kilogram */
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram/*') ? 'active' : ''||
+                            /* sepeda */
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda/*') ? 'active' : ''||
+                            /*  batas*/
+                            /* lpoan cabang dokumen */
+                            Request::is('laporan_master_penjualan/tarif_penerus_dokumen') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_dokumen/*') ? 'active' : '' ||
+                            /* koli */
+                            Request::is('laporan_master_penjualan/tarif_penerus_koli') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_koli/*') ? 'active' : ''||
+                            /* kargo */
+                            Request::is('laporan_master_penjualan/tarif_penerus_kargo') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_kargo/*') ? 'active' : ''||
+                             /* Kilogram */
+                            Request::is('laporan_master_penjualan/tarif_penerus_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_kilogram/*') ? 'active' : ''||
+                            /* sepeda */
+                            Request::is('laporan_master_penjualan/tarif_penerus_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_sepeda/*') ? 'active' : ''
+
+                           
+                     /*============== END sub PENJUALAN ===================*/
+
+                        }}
+
+                        ">
+                            @if(Auth::user()->PunyaAkses('Laporan Penjualan','aktif'))
+                            <a href="#" style="font-size:110%" ><i class="fa fa-folder-o" aria-hidden="true"></i> Operasional Penj <span class="fa arrow"></span></a>
+                            @endif
+                            <ul class="nav nav-third-level" style="font-size:90%">
                             <li >
                                  <a class="sidebar master-perusahaan {{Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
                             Request::is('laporanbersama/laporanbersama/*') ? 'active' : ''}} " href="{{ url('laporanbersama/laporanbersama')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Bersama<i class="fa fa-cog fa-spin pull-right" style="color: #19ecdd;"  aria-hidden="true"></i></a>
@@ -2421,126 +2545,82 @@
                                     <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_koli') ? 'active' : '' || 
                             Request::is('laporan_master_penjualan/tarif_cabang_koli/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Koli</a>
                                 </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_kargo') ? 'active' : '' || 
-                            Request::is('laporan_master_penjualan/tarif_cabang_kargo/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Kargo</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_kilogram') ? 'active' : '' || 
-                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Kilogram</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{ Request::is('laporan_master_penjualan/tarif_cabang_sepeda') ? 'active' : '' || 
-                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Sepeda</a>
-                                </li>
+                           
+                                </ul>
+                            </li>
+                            {{-- ANALISAN PUIUTANG --}}
+                                     <li class="
 
-                                {{-- batas --}}
+                        {{
 
+                              /*============== sub PENJUALAN LAPORAN========================*/
+                            
+                            
+                            /* lpoan cabang dokumen */
+                            Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : '' ||
+                            /* koli */
+                            Request::is('laporan_master_penjualan/tarif_cabang_koli') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_koli/*') ? 'active' : ''||
+                            /* kargo */
+                            Request::is('laporan_master_penjualan/tarif_cabang_kargo') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kargo/*') ? 'active' : ''||
+                             /* Kilogram */
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_kilogram/*') ? 'active' : ''||
+                            /* sepeda */
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_sepeda/*') ? 'active' : ''||
+                            /*  batas*/
+                            /* lpoan cabang dokumen */
+                            Request::is('laporan_master_penjualan/tarif_penerus_dokumen') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_dokumen/*') ? 'active' : '' ||
+                            /* koli */
+                            Request::is('laporan_master_penjualan/tarif_penerus_koli') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_koli/*') ? 'active' : ''||
+                            /* kargo */
+                            Request::is('laporan_master_penjualan/tarif_penerus_kargo') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_kargo/*') ? 'active' : ''||
+                             /* Kilogram */
+                            Request::is('laporan_master_penjualan/tarif_penerus_kilogram') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_kilogram/*') ? 'active' : ''||
+                            /* sepeda */
+                            Request::is('laporan_master_penjualan/tarif_penerus_sepeda') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_penerus_sepeda/*') ? 'active' : ''
 
-                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_penerus_dokumen') ? 'active' : '' || 
-                            Request::is('laporan_master_penjualan/tarif_penerus_dokumen/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_penerus_dokumen')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif penerus Dokumen</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_penerus_koli') ? 'active' : '' || 
-                            Request::is('laporan_master_penjualan/tarif_penerus_koli/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_penerus_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif penerus Koli</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_penerus_default') ? 'active' : '' || 
-                            Request::is('laporan_master_penjualan/tarif_penerus_default/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_penerus_default')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif penerus default</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_penerus_kilogram') ? 'active' : '' || 
-                            Request::is('laporan_master_penjualan/tarif_penerus_kilogram/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_penerus_kilogram')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif penerus Kilogram</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{ Request::is('laporan_master_penjualan/tarif_penerus_sepeda') ? 'active' : '' || 
-                            Request::is('laporan_master_penjualan/tarif_penerus_sepeda/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_penerus_sepeda')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif penerus Sepeda</a>
-                                </li>
+                           
+                     /*============== END sub PENJUALAN ===================*/
 
+                        }}
 
-                               {{--  <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporansalesorder') ? 'active' : '' || 
-                            Request::is('sales/laporansalesorder/*') ? 'active' : ''}} " href="{{ url('sales/laporansalesorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Sales Order (SO)</a>
-                                </li> --}}
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_penjualan') ? 'active' : '' || 
-                            Request::is('sales/laporan_penjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporan_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Penjualan</a>
+                        ">
+                            @if(Auth::user()->PunyaAkses('Laporan Penjualan','aktif'))
+                            <a href="#" style="font-size:110%" ><i class="fa fa-folder-o" aria-hidden="true"></i> Analisa Penj <span class="fa arrow"></span></a>
+                            @endif
+                            <ul class="nav nav-third-level" style="font-size:90%">
+                            <li >
+                                 <a class="sidebar master-perusahaan {{Request::is('laporanbersama/laporanbersama') ? 'active' : '' || 
+                            Request::is('laporanbersama/laporanbersama/*') ? 'active' : ''}} " href="{{ url('laporanbersama/laporanbersama')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Bersama<i class="fa fa-cog fa-spin pull-right" style="color: #19ecdd;"  aria-hidden="true"></i></a>
+                            </li>
+                            <li >
+                                    <a class=" sidebar master-perusahaan {{Request::is('laporanmasterdo/laporanmasterdo') ? 'active' : '' || 
+                            Request::is('laporanmasterdo/laporanmasterdo/*') ? 'active' : ''}} " href="{{ url('laporanmasterdo/laporanmasterdo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master DO<i class="fa fa-cog fa-spin pull-right " style="color: #19ecdd;" aria-hidden="true"></i></a>
                                 </li>
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('diagram_penjualan/diagram_penjualan') ? 'active' : '' || 
-                            Request::is('diagram_penjualan/diagram_penjualan/*') ? 'active' : ''}} " href="{{ url('diagram_penjualan/diagram_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Omset Penjualan</a>
+                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_dokumen') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_dokumen/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_dokumen')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Dokumen</a>
                                 </li>
                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_total') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_total/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_total')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Analisa</a>
+                                    <a class="sidebar master-perusahaan {{Request::is('laporan_master_penjualan/tarif_cabang_koli') ? 'active' : '' || 
+                            Request::is('laporan_master_penjualan/tarif_cabang_koli/*') ? 'active' : ''}} " href="{{ url('laporan_master_penjualan/tarif_cabang_koli')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Tarif Cabang Koli</a>
                                 </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Paket</a>
-                                </li>
-                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_koran') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_koran/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_koran')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Koran</a>
-                                </li>
-                                 <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporandeliveryorder_kargo') ? 'active' : '' || 
-                            Request::is('sales/laporandeliveryorder_kargo/*') ? 'active' : ''}} " href="{{ url('sales/laporandeliveryorder_kargo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> DO Kargo</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_invoice') ? 'active' : '' || 
-                            Request::is('sales/laporan_invoice/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_invoice_lain') ? 'active' : '' || 
-                            Request::is('sales/laporan_invoice_lain/*') ? 'active' : ''}} " href="{{ url('sales/laporan_invoice_lain')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Invoice Lain</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_cndn') ? 'active' : '' || 
-                            Request::is('sales/laporan_cndn/*') ? 'active' : ''}} " href="{{ url('sales/laporan_cndn')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> CN/DN</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_uangmuka_penjualan') ? 'active' : '' || 
-                            Request::is('sales/laporan_uangmuka_penjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporan_uangmuka_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Uangmuka</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_posting_bayar') ? 'active' : '' || 
-                            Request::is('sales/laporan_posting_bayar/*') ? 'active' : ''}} " href="{{ url('sales/laporan_posting_bayar')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Posting Bayar</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporan_kwitansi') ? 'active' : '' || 
-                            Request::is('sales/laporan_kwitansi/*') ? 'active' : ''}} " href="{{ url('sales/laporan_kwitansi')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kwitansi</a>
-                                </li>
-                         {{--        <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualan') ? 'active' : '' || 
-                            Request::is('sales/laporaninvoicepenjualan/*') ? 'active' : ''}} " href="{{ url('sales/laporaninvoicepenjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Penjualan</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporaninvoicepenjualanperitem') ? 'active' : '' || 
-                            Request::is('sales/laporaninvoicepenjualanperitem/*') ? 'active' : ''}} " href="{{ url('sales/laporaninvoicepenjualanperitem')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Penjualan Per Item</a>
-                                </li> --}}
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('sales/laporanfakturpajak') ? 'active' : '' || 
-                            Request::is('sales/laporanfakturpajak/*') ? 'active' : ''}} " href="{{ url('sales/laporanfakturpajak')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Faktur Pajak</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_sales/kartu_piutang') ? 'active' : '' || 
-                            Request::is('laporan_sales/kartu_piutang/*') ? 'active' : ''}} " href="{{ url('laporan_sales/kartu_piutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kartu Piutang</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_sales/analisa_piutang') ? 'active' : '' || 
-                            Request::is('laporan_sales/analisa_piutang/*') ? 'active' : ''}} " href="{{ url('laporan_sales/analisa_piutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Analisa Piutang</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{Request::is('laporan_sales/mutasi_piutang') ? 'active' : '' || 
-                            Request::is('laporan_sales/mutasi_piutang/*') ? 'active' : ''}} " href="{{ url('laporan_sales/mutasi_piutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Mutasi Piutang</a>
-                                </li>
-                                <li >
-                                    <a class="sidebar master-perusahaan {{ Request::is('sales/laporanpiutangjatuhtempo') ? 'active' : '' || 
-                            Request::is('sales/laporanpiutangjatuhtempo/*') ? 'active' : ''}} " href="{{ url('sales/laporanpiutangjatuhtempo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Piutang Jatuh Tempo</a>
-                                </li>
+                           
+                                </ul>
+                            </li>
+
                             </ul>
                         </li>
+                          
                         <!-- end Laporan penjualan -->
 
                         <!-- Laporan pembelian -->

@@ -812,20 +812,22 @@ class do_Controller extends Controller
     {
         $authe = Auth::user()->kode_cabang; 
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
-        $sql = "SELECT d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
                     join customer c on d.kode_customer = c.kode 
+                    join cabang cc on d.kode_cabang = cc.kode 
                     WHERE d.jenis='PAKET'
                     ORDER BY d.tanggal DESC LIMIT 1000 ";
         }
         else{
-        $sql = "SELECT d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
                     join customer c on d.kode_customer = c.kode 
+                    join cabang cc on d.kode_cabang = cc.kode 
                     WHERE d.jenis='PAKET'
                     and kode_cabang = '$authe'
                     ORDER BY d.tanggal DESC LIMIT 1000 ";
@@ -835,7 +837,8 @@ class do_Controller extends Controller
         $do = DB::select($sql);
         $kota = DB::table('kota')->get();
         $kota1= DB::table('kota')->get();
-        return view('sales.do.index', compact('do','kota','kota1'));
+        $cabang= DB::table('cabang')->get();
+        return view('sales.do.index', compact('do','kota','kota1','cabang'));
     }
     public function cari_kodenomor(Request $request){
         

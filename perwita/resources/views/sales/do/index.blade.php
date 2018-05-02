@@ -116,8 +116,9 @@
                           </td>
                         </tr>
                         <tr>
+
                            <th style="width: 100px; padding-top: 16px"> Status </th>
-                          <td colspan="3"> 
+                          <td > 
                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn4()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
                             <option value="MANIFESTED">MANIFESTED</option>
@@ -125,6 +126,16 @@
                             <option value="RECEIVED">RECEIVED</option>
                             <option value="DELIVERED">DELIVERED</option>
                             <option value="DELIVERED OK">DELIVERED OK</option>
+                           </select>
+                          </td>
+
+                          <th style="width: 100px; padding-top: 16px"> Cabang </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker6 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn5()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            @foreach ($cabang as $cabang)
+                                <option value="{{ $cabang->nama }}">{{ $cabang->kode }} - {{ $cabang->nama }}</option>
+                            @endforeach
                            </select>
                           </td>
                         </tr>
@@ -148,6 +159,7 @@
                                 <th> Status </th>
                                 <th> Tipe </th>
                                 <th> Jenis </th>
+                                <th> Cabang </th>
                                 <th> Tarif </th>
                                 <th> Total Net </th>
                                 <th style="width:110px"> Aksi </th>
@@ -166,6 +178,7 @@
                                 <td>{{ $row->status }}</td>
                                 <td>{{ $row->type_kiriman }}</td>
                                 <td>{{ $row->jenis_pengiriman }}</td>
+                                <td>{{ $row->cab }}</td>
                                 <td>{{ $row->total }}</td>
                                 <td>{{ $row->total_net }}</td>
                                 <td class="text-center">
@@ -235,6 +248,7 @@
             { "data": "status" },
             { "data": "type_kiriman" },
             { "data": "jenis_pengiriman" },
+            { "data": "cab" },
             { "data": "total", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
             { "data": "button" },
@@ -364,6 +378,10 @@ return false;
      function filterColumn4 () {
         $('#addColumn').DataTable().column(7).search(
             $('.select-picker5').val()).draw(); 
+     }
+      function filterColumn5 () {
+        $('#addColumn').DataTable().column(10).search(
+            $('.select-picker6').val()).draw(); 
      }
      $('#nama_pengirim').on( 'keyup', function () {
          table.column(3).search( this.value ).draw();
