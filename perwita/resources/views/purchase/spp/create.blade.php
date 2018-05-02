@@ -97,8 +97,7 @@
                                               
                                           </tr>
 
-                                        
-
+                                      
                                           <tr>
                                               <td>
                                                 Tanggal di butuhkan 
@@ -271,6 +270,13 @@
         return true;
     })
 
+     $('.date').datepicker({
+        autoclose: true,
+        format: 'dd-MM-yyyy',
+        endDate: 'today'
+    }).datepicker("setDate", "0");
+
+
     cabang = $('.cabang').val();
     $('.valcabang').val(cabang);
 
@@ -301,12 +307,7 @@
      
     })
 
-    $('.date').datepicker({
-        autoclose: true,
-        format: 'dd-MM-yyyy',
-        endDate: 'today'
-
-    }).datepicker("setDate", "0");
+  
     
     
     
@@ -391,7 +392,7 @@
                
             },
             error : function(){
-               // location.reload();
+               location.reload();
             }
         })
 

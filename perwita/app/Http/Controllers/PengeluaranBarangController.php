@@ -624,7 +624,33 @@ class PengeluaranBarangController extends Controller
 	}
 
 
-	
+	public function getnotaopname(Request $request){
+		$cabang = $request->comp;
+		$bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
+		//return $mon;
+		$idnota = DB::select("select * from stock_opname where so_comp = '$cabang'  and to_char(so_tgl, 'MM') = '$bulan' and to_char(so_tgl, 'YY') = '$tahun' order by so_id desc limit 1");
+
+	//	$idspp =   spp_purchase::where('spp_cabang' , $request->comp)->max('spp_id');
+		if(count($idnota) != 0) {
+		
+			$explode = explode("/", $idnota[0]->so_nota);
+			$idnota = $explode[2];
+
+			$string = (int)$idnota + 1;
+			$idnota = str_pad($string, 3, '0', STR_PAD_LEFT);
+		}
+
+		else {
+		
+			$idnota = '001';
+		}
+
+
+		$datainfo =['status' => 'sukses' , 'data' => $idnota];
+		return json_encode($datainfo) ;
+	}
 
 	public function detailstockopname() {
 		return view('purchase/stock_opname/detail');
@@ -650,10 +676,13 @@ class PengeluaranBarangController extends Controller
 
 
 	public function save_stock_opname(request $request){
-		// dd($request->all());	
-		$tgl = Carbon::parse($request->tgl)->format('Y-m-d');
-		$gudang = DB::table('mastergudang')
-					 ->where('mg_id',$request->cabang)
+		/*dd($request->all());	*/
+		
+		/*$explode = explode("/", $request->tgl);
+		$tgl = $explode[1];*/
+		return DB::transaction(function() use ($request) {  
+			$gudang = DB::table('mastergudang')
+					 ->where('mg_id',$request->cabang2)
 					 ->first();
 		$cari_max_id = DB::table('stock_opname')
 					     ->max('so_id');
@@ -670,17 +699,21 @@ class PengeluaranBarangController extends Controller
 		}
 
 		// return $status;
+		$today = date("Y-m-d");
 		$save_stock_opname = DB::table('stock_opname')
 							   ->insert([
 							   	'so_id'       => $cari_max_id,
-							   	'so_gudang'   => $request->cabang,
-							   	'so_bulan'    => $tgl,
+							   	'so_gudang'   => $request->gudang,
+							   	'so_bulan'    => $request->tgl,
 							   	'so_nota'     => $request->so,
-							   	'so_comp'     => $gudang->mg_cabang,
-							   	'so_user'  	  => 'inori',
+							   	'so_comp'     => $request->cabang2,
+							   	'so_user'  	  => $request->username,
 								'so_status'   => $status,
 							   	'created_at'  => Carbon::now(),
-							   	'updated_at'  => Carbon::now()	
+							   	'updated_at'  => Carbon::now(),
+							   	'so_tgl'      => $today,
+							   	'create_by'   => $request->username,
+							   	'update_by'   => $request->username,
 							]);
 
 		for ($i=0; $i < count($request->id_stock); $i++) { 
@@ -708,17 +741,18 @@ class PengeluaranBarangController extends Controller
 
 
 				$stock = DB::table('stock_mutation')
-						   ->where('sm_stock',$request->id_stock[$i])
-						   ->where('sm_mutcat',1)
-						   ->where('sm_flag','PO')
-						   ->orderBy('sm_date','ASC')
+						   ->where('sm_stock', '=' , $request->id_stock[$i])
+						   ->where('sm_mutcat', '=' ,1)
+						   ->where('sm_flag','=','PO')
+						   ->where('sm_sisa','<>' , 0 )
+						   ->orderBy('sm_id', '=' ,'ASC')
 						   ->get();
 
 				$insert_data = DB::table('stock_mutation')
 										->insert([
 											'sm_id' 		=> $cari_max_sm,
 											'sm_stock'		=> $request->id_stock[$i],
-											'sm_comp'		=> $gudang->mg_cabang,
+											'sm_comp'		=> $request->cabang2,
 											'sm_date'   	=> Carbon::now(),
 											'sm_item'		=> $request->sg_item[$i],
 											'sm_mutcat' 	=> 1,
@@ -731,7 +765,9 @@ class PengeluaranBarangController extends Controller
 											'sm_po'			=> $cari_max_id,
 											'sm_id_gudang'  => $stock[0]->sm_id_gudang,
 											'sm_sisa'		=> $request->val_status[$i],
-											'sm_flag'		=> 'SO+'
+											'sm_flag'		=> 'SO+',
+											'created_by'		=> $request->username,
+											'updated_by'		=> $request->username,
 										]);
 
 				$cari_stock_gudang = DB::table('stock_gudang')
@@ -748,11 +784,11 @@ class PengeluaranBarangController extends Controller
 			}else if($request->status[$i] == 'kurang'){
 
 				$stock = DB::table('stock_mutation')
-						   ->where('sm_stock',$request->id_stock[$i])
-						   ->where('sm_mutcat',1)
+						   ->where('sm_stock', '=' , $request->id_stock[$i])
+						   ->where('sm_mutcat', '=' , 1)
 						   ->where('sm_sisa','!=',0)
-						   ->where('sm_flag','PO')
-						   ->orderBy('sm_date','ASC')
+						   ->where('sm_flag', '=' ,'PO')
+						   ->orderBy('sm_id', '=' , 'ASC')
 						   ->get();
 				$kurang = $request->val_status[$i];
 				for ($a=0; $a < count($stock); $a++) { 
@@ -767,6 +803,7 @@ class PengeluaranBarangController extends Controller
 								   ->where('sm_id',$stock[$a]->sm_id)
 								   ->update([
 								   	'sm_sisa' => $sm_sisa,
+								   	'updated_by' => $request->username,
 								   ]);
 
 					$cari_sm_use = DB::table('stock_mutation')
@@ -778,7 +815,8 @@ class PengeluaranBarangController extends Controller
 					$update_sm_use = DB::table('stock_mutation')
 									   ->where('sm_id',$cari_sm_use->sm_id)
 									   ->update([
-									   	'sm_use' => $sm_use
+									   	'sm_use' => $sm_use,
+									   	'updated_by' => $request->username,
 									   ]);
 					$cari_sm_last = DB::table('stock_mutation')
 									  ->where('sm_id',$cari_sm_use->sm_id)
@@ -795,7 +833,7 @@ class PengeluaranBarangController extends Controller
 												->insert([
 													'sm_stock'		=> $stock[$a]->sm_stock,
 													'sm_id'			=> $cari_id_sm,
-													'sm_comp'		=> $gudang->mg_cabang,
+													'sm_comp'		=> $request->cabang,
 													'sm_date'		=> Carbon::now(),
 													'sm_item'		=> $request->sg_item[$i],
 													'sm_mutcat'		=> 2,
@@ -808,7 +846,9 @@ class PengeluaranBarangController extends Controller
 													'sm_po'			=> $cari_max_id,
 													'sm_id_gudang'	=> $request->nama_gudang[$i],
 													'sm_sisa'		=> 0,
-													'sm_flag'		=> 'SO-'
+													'sm_flag'		=> 'SO-',
+													'created_by' 	=> $request->username,
+													'updated_by' => $request->username,
 												]);
 					}
 
@@ -834,6 +874,7 @@ class PengeluaranBarangController extends Controller
 
 			}
 
+
 		}
 
 		
@@ -849,6 +890,15 @@ class PengeluaranBarangController extends Controller
 					$cari_max_sod = 1;
 				}
 
+				$item = $request->sg_item[$i];
+				$cabang = $request->cabang2;
+				$gudang = $request->gudang;
+
+				$dataselisih = DB::select("select * from stock_mutation where sm_item = '$item' and sm_mutcat = '1' and sm_comp = '$cabang' and sm_id_gudang = '$gudang' and sm_sisa != '0' order by sm_id asc");
+
+				return $dataselisih;
+				$selisihharga = $dataselisih[0]->sm_hpp;
+				$harga = $request->val_status[$i] * $selisihharga;
 				$save_stock_opname_dt = DB::table('stock_opname_dt')
 							   ->insert([
 							   	'sod_id'       		=> $cari_max_sod,
@@ -861,11 +911,15 @@ class PengeluaranBarangController extends Controller
 							   	'sod_jumlah_status' => $request->val_status[$i],
 							   	'sod_keterangan'  	=> $request->keterangan[$i],
 							   	'created_at'   		=> Carbon::now(),
-							   	'updated_at'   		=> Carbon::now()	
+							   	'updated_at'   		=> Carbon::now(),
+							   	'sod_hargaselisih'  => $harga,	
 							]);
 			}	
 
-			return response()->json(['status' => 1]);			  
+			return response()->json(['status' => 1]);	
+
+		});
+				  
 			
 	}
 

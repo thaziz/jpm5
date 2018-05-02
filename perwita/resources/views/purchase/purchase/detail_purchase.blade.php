@@ -187,6 +187,7 @@
                 @else
                   <button class="btn-sm btn btn-info edit" type="button"> Edit Data </button>
                 @endif
+                @endif
 
                 <div class="row">
                   <div class="col-xs-12"> 
