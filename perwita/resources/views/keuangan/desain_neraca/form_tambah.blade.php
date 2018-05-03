@@ -200,7 +200,7 @@
                               </td>
 
                               <td colspan="3">
-                                <select disabled id="detail_total" class="select_validate form-control" style="display:none;">
+                                <select disabled id="detail_total" class="form-control" style="display:none;">
                                   <option value="---"> -- Dari Penjumlahan</option>
                                 </select>
                               </td>
@@ -221,6 +221,7 @@
                         <div class="col-md-12 text-right" style="padding: 0px;">
                             <button class="btn btn-success btn-sm" id="masukkan" style="font-size:8pt;" type="button">Masukkan Ke Desain</button>
                             <button disabled class="btn btn-primary btn-sm" id="tambah_detail" style="font-size:8pt;" type="button">Tambahkan Group Neraca</button>
+                            <button disabled class="btn btn-warning btn-sm" id="update_detail" style="font-size:8pt;" type="button">Update</button>
                             <button disabled class="btn btn-danger btn-sm" id="hapus_detail" style="font-size:8pt;" type="button">Hapus</button>
                         </div>
 
@@ -229,8 +230,9 @@
                         <div class="col-md-12 m-t" style="padding: 0px; height: 146px; overflow-x: scroll">
                           <table border="0" class="table table-bordered" style="font-size: 8pt;">
                             <tr>
-                              <th width="30%" class="text-center">Id Grup Akun</th>
-                              <th width="70%" class="text-center">Nama Grup Akun</th>
+                              <th width="25%" class="text-center">Id Detail Referensi</th>
+                              <th width="45%" class="text-center">Nama Detail Referensi</th>
+                              <th width="30%" class="text-center">Referensi Dari</th>
                             </tr>
                             
                             <tbody id="group_show">
@@ -343,27 +345,43 @@
       $('#aktiva_tree').on("select_node.jstree", function (e, data) { 
         // console.log(data);
 
-        $("#hapus_detail").removeAttr("disabled");
+        if(data.node.type != "demo"){
+          $("#masukkan").attr("disabled", "disabled");
+          $("#hapus_detail").removeAttr("disabled");
+          $('#update_detail').removeAttr("disabled");
+          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
 
-        idx = data_neraca.findIndex(n => n.nomor_id == data.node.id);
-        parrent = (data.node.parent == "#") ? data_neraca[idx].nomor_id.substring(0, data_neraca[idx].level) : data_neraca[idx].id_parrent+".";
+          idx = data_neraca.findIndex(n => n.nomor_id == data.node.id);
+          parrent = (data.node.parent == "#") ? data_neraca[idx].nomor_id.substring(0, data_neraca[idx].level) : data_neraca[idx].id_parrent+".";
 
-        // alert(parrent);
+          // alert(parrent);
 
-        $("#cancel").css("display", "inline-block");
-        $("#level").val(data_neraca[idx].level); $("#level").attr("disabled", "disabled");
-        $("#state_id").text(parrent);
-        $("#nomor_id").val(data_neraca[idx].nomor_id.substring(parrent.length));
-        $("#parrent").val((data_neraca[idx].id_parrent == null) ? "---" : data_neraca[idx].id_parrent);
+          $("#cancel").css("display", "inline-block");
+          $("#level").val(data_neraca[idx].level); $("#level").attr("disabled", "disabled");
+          $("#state_id").text(parrent);
+          $("#nomor_id").val(data_neraca[idx].nomor_id.substring(parrent.length));
+          // $("#parrent").val((data_neraca[idx].id_parrent == null) ? "---" : data_neraca[idx].id_parrent);
 
-        if(data_neraca[idx].id_parrent == null){
-          $("#parrent_name").val("---");
+          if(data_neraca[idx].id_parrent == null){
+            $("#parrent_name").val("---");
+          }else{
+            $("#parrent_name").val(data_neraca[data_neraca.findIndex(n => n.nomor_id == data_neraca[idx].id_parrent)].keterangan);
+          }
+
+          $("#parrent").attr("disabled", "disabled");
+          $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
+          $("#keterangan").val(data_neraca[idx].keterangan);
+
+          if(data_neraca[idx].jenis == 4){
+            $("#keterangan").attr("readonly", "readonly");
+          }
+
         }else{
-          $("#parrent_name").val(data_neraca[data_neraca.findIndex(n => n.nomor_id == data_neraca[idx].id_parrent)].keterangan);
-        }
 
-        $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
-        $("#keterangan").val(data_neraca[idx].keterangan)
+          toastr.error('Detail Referensi. Tidak Bisa Diedit');
+          form_reset();
+
+        }
       });
 
       $("#level").on("focusin", function(){
@@ -427,9 +445,41 @@
 
         if(val == "2"){
           $("#tambah_detail").removeAttr("disabled");
+          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+          $("#group_show").html("");
         }else if(val == "1" || val == "4"){
           $("#tambah_detail").attr("disabled", "disabled");
           $("#group_show").html("");
+          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+
+          if(val == 4){
+            $("#keterangan").val("."); $("#keterangan").attr("readonly", "readonly");
+          }
+        }else if(val == "3"){
+          $("#detail_total").css("display", "inline-block"); $("#detail_total").removeAttr("disabled");
+          $("#tambah_detail").attr("disabled", "disabled");
+          $("#group_show").html("");
+
+          grab_detail_total();
+        }
+
+      })
+
+      $("#detail_total").change(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+        select = $(this);
+
+        if(select.val() != "---"){
+          group = data_neraca.findIndex(n => n.nomor_id == select.val());
+          html = '<tr id="'+data_neraca[group].nomor_id+'" data-nama = "'+data_neraca[group].keterangan+'" class="search">'+
+                  '<td>'+data_neraca[group].nomor_id+'</td>'+
+                  '<td>'+data_neraca[group].keterangan+'</td>'+
+                  '<td class="text-center">Detail Neraca</td>'+
+                '<tr>';
+
+          $("#group_show").append(html);
+          $("#detail_total option:selected").attr("disabled", "disabled");
         }
 
       })
@@ -455,11 +505,16 @@
         evt.stopImmediatePropagation();
         evt.preventDefault();
 
+        if(chosen_group == ""){
+          return false;
+        }
+
         group = data_group.findIndex(n => n.id == chosen_group);
 
         html = '<tr id="'+data_group[group].id+'" data-nama = "'+data_group[group].nama_group+'" class="search">'+
                   '<td>'+data_group[group].id+'</td>'+
                   '<td>'+data_group[group].nama_group+'</td>'+
+                  '<td class="text-center">Detail Neraca</td>'+
                 '<tr>';
 
         $("#group_show").append(html);
@@ -474,6 +529,30 @@
         $(this).css("display", "none");
         $("#hapus_detail").attr("disabled", "disabled");
         form_reset();
+      })
+
+      $("#hapus_detail").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        id = $("#state_id").text()+""+$("#nomor_id").val();
+
+        $.each($.grep(data_neraca, function(a){ return a.nomor_id === id || a.id_parrent === id }), function(i, n){
+          idx = data_neraca.findIndex(a => a.nomor_id === n.nomor_id);
+
+          if(n.jenis == 2 || n.jenis == 3){
+            delete_detail(n.nomor_id);
+          }
+
+          data_neraca.splice(idx, 1);
+        })
+
+        $('#'+state+'_tree').jstree().delete_node(id);
+        form_reset();
+        grab_parrent();
+
+        console.log(data_neraca);
+        console.log(data_detail);
       })
 
       $("#masukkan").click(function(evt){
@@ -497,7 +576,12 @@
 
           if(jenis == 2){
             if($("#group_show").find(".search").length == 0){
-              alert("Harap Pilih Group Neraca Terlebih Dahulu.");
+              alert("Harap Pilih Detail Group Neraca Terlebih Dahulu.");
+              return false;
+            }
+          }else if(jenis == 3){
+            if($("#group_show").find(".search").length == 0){
+              alert("Harap Pilih Detail Penjumlahan Terlebih Dahulu.");
               return false;
             }
           }
@@ -513,7 +597,7 @@
             "type" : state
           };
 
-          if(jenis == 2){
+          if(jenis == 2 || jenis == 3){
             $("#group_show .search").each(function(){
               text = $(this).data("nama"); ids = $(this).attr("id");
               createNode(id, id+"."+ids, text, "last", text, open, "demo");
@@ -540,6 +624,23 @@
 
         $("#modal_detail").modal("show");
         grab_detail();
+      })
+
+      $('#update_detail').click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        id = $("#state_id").text()+""+$("#nomor_id").val();
+        idx = data_neraca.findIndex(n => n.nomor_id === id);
+        node_ket = $("#keterangan").val().toUpperCase()+' ('+$("#state_id").text()+''+$("#nomor_id").val()+')';
+        data_neraca[idx].keterangan = $("#keterangan").val();
+
+        $('#'+state+'_tree').jstree('rename_node', id , node_ket);
+
+        form_reset();
+
+        console.log(data_neraca);
+        console.log(data_detail);
       })
 
       function createNode(parent_node, new_node_id, new_node_text, position, keterangan, open = false, type = "default") {
@@ -575,26 +676,30 @@
         $("#parrent").val("---"); $("#parrent").attr("disabled", "disabled");
         $("#parrent_name").val("---");
         $("#jenis").val(1); $('#jenis').removeAttr("disabled");
-        $("#keterangan").val("");
+        $("#keterangan").val(""); $("#keterangan").removeAttr("readonly");
         $("#state_id").text((state == "aktiva") ? "A" : "P");
-        $("#tambah_detail").attr("disabled", "disabled"); $("#hapus_detail").attr("disabled", "disabled");
+        $("#tambah_detail").attr("disabled", "disabled"); $("#hapus_detail").attr("disabled", "disabled"); $('#update_detail').attr("disabled", "disabled"); $("#masukkan").removeAttr("disabled");
         $("#group_show").html("");
+        $("#cancel").css("display", "none");
+        $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled"); 
 
         grab_id();
       }
 
       function grab_id(){
         cek = $("#state_id").text(); idle = $("#state_id").text().length; level = $("#level").val();
-        count = $.grep(data_neraca, function(n){ return n.nomor_id.substring(0, idle) == cek && n.level == level }).length;
+        data = $.grep(data_neraca, function(n){ return n.nomor_id.substring(0, idle) == cek && n.level == level });
+        count = data.length;
 
-        // console.log(count);
-        $("#nomor_id").val((count+1));
+        idx = (count == 0) ? 0 : data[count-1].nomor_id.substring(idle);
+
+        $("#nomor_id").val((parseInt(idx)+1));
       }
 
       function grab_detail(){
         html = "";
         $.each(data_group, function(i, n){
-          if($("#group_show").find("#"+n.id).length == 0){
+          if($("#group_show").find("#"+n.id).length == 0 && data_detail.findIndex(a => a.id_group === n.id) < 0){
             html = html+'<tr data-id="'+n.id+'" class="row" id="'+n.id+'">'+
                   '<td>'+n.nama_group+'</td>'+
                 '</tr>';
@@ -626,14 +731,35 @@
         $("#detail_group").html(html);
       }
 
+      function grab_detail_total(){
+        pieces = (state == "aktiva") ? "A" : "P";
+        html = '<option value="---" id="first">-- Dari Penjumlahan</option>';
+
+        $.each($.grep(data_neraca, function(n){ return n.jenis == 2 }), function(i, a){
+          html = html + '<option value="'+a.nomor_id+'" id="'+a.nomor_id+'">'+a.keterangan+'</option>';
+        })
+
+        // alert(html);
+        $('#detail_total').html(html);
+
+      }
+
       function grab_parrent(){
         html = '<option value="---">- Pilih Parrent</option>';
 
-        $.each($.grep(data_neraca, function(n){ return n.id_parrent == null && n.type == state }), function(i, n){
+        $.each($.grep(data_neraca, function(n){ return n.id_parrent == null && n.type == state && n.jenis == 1 }), function(i, n){
           html = html+'<option value="'+n.nomor_id+'">'+n.nomor_id+'</option>';
         })
 
         $('#parrent').html(html);
+      }
+
+      function delete_detail(parrent){
+        $.each($.grep(data_detail, function(a){ return a.id_parrent === parrent }), function(i, n){
+          idx = data_detail.findIndex(a => a.nomor_id === n.nomor_id);
+
+          data_detail.splice(idx, 1);
+        })
       }
 
     })
