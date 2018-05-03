@@ -31,7 +31,7 @@
   }
   .disabled {
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 0.8;
   }
   .search{
     margin-left: 5px;
@@ -86,42 +86,29 @@
             <tr>
               <td>No Transaksi</td>
               <td>
-                <input readonly="" value="" class="form-control no_trans" type="text" name="no_trans">
-                <input readonly="" value="CREATE" class="form-control tipe_data" type="hidden" name="tipe_data">
+                <input readonly="" value="{{ $data->bpk_nota }}" class="form-control no_trans" type="text" name="no_trans">
+                <input readonly="" value="EDIT" class="form-control tipe_data" type="hidden" name="tipe_data">
                 <input readonly="" value="" class="form-control id" type="hidden" name="id">
               </td>
             </tr>
             <tr>
                 <td>Cabang</td>
-                <td>
-
-                    @if(Auth::user()->punyaAkses('Biaya Penerus Kas','cabang'))
-                        <select onchange="ganti_nota()" class="form-control cabang_select" name="cabang">
+                <td class="disabled">
+                    <select class="form-control cabang_select" name="cabang">
                         @foreach($cabang as $val)
-                            @if(Auth()->user()->kode_cabang == $val->kode)
-                            <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                            @else
-                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                            @endif
-                        @endforeach
-                        </select>
-                    @else
-                        <select disabled="" class="form-control cabang_select" name="cabang">
-                        @foreach($cabang as $val)
-                        @if(Auth::user()->kode_cabang == $val->kode)
+                        @if($data->bpk_comp == $val->kode)
                             <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                         @else
                             <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                         @endif
                         @endforeach
-                        </select>
-                    @endif
+                    </select>
                     <input type="hidden" name="cabang_input" class="cabang_input form-control input-sm">
                 </td>
             </tr>
             <tr>
               <td>Tanggal</td>
-              <td><input readonly="" class="form-control" value="{{$now}}" type="text" name="tN"></td>
+              <td><input readonly="" class="form-control" value="{{ carbon\carbon::parse($data->bpk_tanggal)->format('d-m-Y') }}" type="text" name="tN"></td>
             </tr>
           </table>
         </div>
@@ -137,7 +124,12 @@
               <tr>
                 <td>Akun Kas</td>
                 <td class="form-inline akun_kas_td">
-                 
+                 <select style="display: inline-block; " class="form-control nama_kas chosen-select-width1" name="nama_kas">
+                     <option selected=""  value="0">- pilih-akun -</option>
+                     @foreach($akun_kas as $val)
+                     <option @if($val->id_akun == $data->bpk_kode_akun) selected="" @endif value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
+                     @endforeach
+                  </select>
                 </td>
               </tr>
               <tr>
@@ -145,8 +137,8 @@
                 <td>
                   <select class="form-control jenis_pembiayaan" type="text" name="jenis_pembiayaan">
                     <option value="0" selected>- Pilih Jenis Pembiayaan -</option>
-                    <option value="PAKET">PAKET</option>
-                    <option value="CARGO">CARGO</option>
+                    <option @if($data->bpk_jenis_biaya == 'PAKET') selected="" @endif value="PAKET">PAKET</option>
+                    <option @if($data->bpk_jenis_biaya == 'KARGO') selected="" @endif value="KARGO">CARGO</option>
                   </select>
                 </td>
               </tr>
@@ -162,7 +154,7 @@
                 <td hidden="" class="pembiayaan_paket">
                    <select class="form-control " name="pembiayaan_paket" >
                     @foreach($akun_paket as $val)
-                     <option value="{{ $val->jenis_bbm }}">{{ $val->kode}} - {{ $val->nama }}</option>
+                     <option @if($data->bpk_pembiayaan == $val->kode) selected="" @endif value="{{ $val->jenis_bbm }}">{{ $val->kode}} - {{ $val->nama }}</option>
                     @endforeach
                    </select>
                 </td>
@@ -170,7 +162,7 @@
                 <td hidden="" class="pembiayaan_cargo">
                     <select class="form-control " name="pembiayaan_cargo" >
                      @foreach($akun_kargo as $val)
-                     <option value="{{ $val->jenis_bbm }}">{{ $val->kode }} - {{ $val->nama }}</option>
+                     <option @if($data->bpk_pembiayaan == $val->kode) selected="" @endif value="{{ $val->jenis_bbm }}">{{ $val->kode }} - {{ $val->nama }}</option>
                     @endforeach
                     </select>
                 </td>
@@ -182,7 +174,7 @@
                   <select class="form-control jenis_kendaraan chosen-select-width1" type="text" name="jenis_kendaraan" onchange="jenis_kendaraan()">
                     <option value="0">- Pilih Jenis Kendaraan -</option>
                     @foreach($angkutan as $val)
-                    <option value="{{$val->kode}}">{{$val->nama}}</option>
+                    <option @if($data->bpk_tipe_angkutan == $val->kode) selected="" @endif value="{{$val->kode}}">{{$val->nama}}</option>
                     @endforeach
                   </select>
                 </td>
@@ -190,14 +182,14 @@
               <tr>
                 <td>Biaya Parkir & Tol</td>
                 <td>
-                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp " placeholder="Biaya Lain Lain" >
+                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp {{ number_format($data->bpk_biaya_lain,0) }}" placeholder="Biaya Lain Lain" >
                 </td>
               </tr>
             
               <tr>
                 <td>
                   Biaya Bahan Bakar :
-                  <input readonly="" class="form-control total_bbm" type="text" name="total_bbm" value="Rp 0" placeholder="" >
+                  <input readonly="" class="form-control total_bbm" type="text" name="total_bbm" value="Rp {{ number_format($data->bpk_harga_bbm,0) }}" placeholder="" >
                 </td>
                 <td style="color: red">
                   Total Biaya Keseluruhan :
@@ -207,7 +199,7 @@
               <tr>
                 <td>Kilometer (KM)</td>
                 <td>
-                  <input class="form-control kilometer" type="text" name="km" value="" placeholder="kilometer" onkeyup="hitung_bbm()">
+                  <input class="form-control kilometer" type="text" name="km" value="{{ $data->bpk_jarak }}" placeholder="kilometer" onkeyup="hitung_bbm()">
                   <input class="form-control km_liter" type="hidden">
                   <input class="form-control bbm" type="hidden" name="km_val">
                 </td>
@@ -221,19 +213,19 @@
               <tr>
                 <td>Nama sopir</td>
                 <td>
-                  <input  class="form-control nama_sopir" type="text" name="nama_sopir" value="" placeholder="nama sopir">
+                  <input  class="form-control nama_sopir" type="text" name="nama_sopir" value="{{ $data->bpk_sopir }}" placeholder="nama sopir">
                 </td>
               </tr>
               <tr>
                 <td>Note</td>
                 <td>
-                  <textarea class="form-control note" name="note" value="" placeholder="fill this note" ></textarea>
+                  <textarea class="form-control note" name="note" value="{{ $data->bpk_keterangan }}" placeholder="fill this note" >{{ $data->bpk_keterangan }}</textarea>
                 </td>
               </tr>
               <tr>
                 <td>Nota Resi (dipisah dengan spasi)<span class="require" style="color: red"> *</span></td>
                 <td>
-                  <textarea style="height: 100px" class="form-control resi" id="resi"  value="" placeholder="Nota Resi" ></textarea>
+                  <textarea style="height: 100px" class="form-control resi" id="resi"  value="" placeholder="Nota Resi" >{{$resi}}</textarea>
                   <br><label>Untuk Pembiayaan Lintas, hanya di isi No Resi Lintas</label>
                 </td>
               </tr>
@@ -289,59 +281,43 @@ var datatable;
                $(selector).chosen(config1[selector]);
               }  
 
-    var cabang = $('.cabang_select').val();
+    var ini = $('.jenis_pembiayaan').val();
+    var jenis = $('.jenis_kendaraan').val();
+    var nama_kas = $('.nama_kas').val();
+    var jenis_pembiayaan = $('.jenis_pembiayaan').val();
+    var pembiayaan = $('.pembiayaan').val();
+
+    
+    if (jenis != 0 && nama_kas != 0 && jenis_pembiayaan != 0 ){
+      $('.search').attr('disabled',false);
+    }
+    if(ini == 'PAKET'){
+  
+      $('.pembiayaan_paket').attr('hidden',false);
+      $('.pembiayaan_cargo').attr('hidden',true);
+      $('.pembiayaan').attr('hidden',true);
+    }else if(ini == 'CARGO'){
+      $('.pembiayaan_paket').attr('hidden',true);
+      $('.pembiayaan_cargo').attr('hidden',false);
+      $('.pembiayaan').attr('hidden',true);
+    }
+    jenis_kendaraan();
+    var id_nopol = "{{ $data->bpk_nopol }}";
     $.ajax({
-        url:baseUrl + '/biaya_penerus/ganti_nota',
-        data:{cabang},
-        dataType:'json',
-        success:function(data){
-            $('.no_trans').val(data.nota);
-        },
-        error:function(){
-            location.reload();
-        }
-    })
+          url:baseUrl + '/biaya_penerus/nopol',
+          data:{jenis,id_nopol},
+          success:function(data){
+              $('.nopol_td').html(data);
 
-    $.ajax({
-        url:baseUrl + '/biaya_penerus/akun_kas',
-        data:{cabang},
-        success:function(data){
-            $('.akun_kas_td').html(data);
-        },
-        error:function(){
-            location.reload();
-        }
-    })
-
-
+          },
+          error:function(){
+              location.reload();
+          }
+      })
+    hitung();
+    search();
   });
    var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
-
-   function ganti_nota() {
-     var cabang = $('.cabang_select').val();
-      $.ajax({
-          url:baseUrl + '/biaya_penerus/ganti_nota',
-          data:{cabang},
-          dataType:'json',
-          success:function(data){
-              $('.no_trans').val(data.nota);
-          },
-          error:function(){
-              location.reload();
-          }
-      })
-
-      $.ajax({
-          url:baseUrl + '/biaya_penerus/akun_kas',
-          data:{cabang},
-          success:function(data){
-              $('.akun_kas_td').html(data);
-          },
-          error:function(){
-              location.reload();
-          }
-      })
-   }
 
 
 
@@ -474,11 +450,12 @@ var datatable;
 
     })
 
-  $.ajax({
+      $.ajax({
           url:baseUrl + '/biaya_penerus/nopol',
           data:{jenis},
           success:function(data){
               $('.nopol_td').html(data);
+
           },
           error:function(){
               location.reload();
@@ -570,6 +547,8 @@ function search(){
   var head = $('.table_header :input').serializeArray();
   var data = $('.table_data :input').serializeArray();
   var resi_array = resi.split(" ");
+  var id = '{{ $id }}'
+  // console.log(id);
   // data.push(resi_array);
   $.ajaxSetup({
         headers: {
@@ -578,9 +557,9 @@ function search(){
         });
 
   $.ajax({
-      url:baseUrl + '/biaya_penerus/cariresi',
+      url:baseUrl + '/biaya_penerus/cariresiedit',
       type:'get',
-      data: {head,data,resi_array},
+      data: {head,data,resi_array,id},
       success:function(data){
         $('.resi_body').html('');
         if(typeof data.status !== 'undefined'){
@@ -599,7 +578,7 @@ function search(){
 }
 
 function save_data(){
-
+var id  =  '{{ $id }}';
   swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Biaya Penerus!",
@@ -619,9 +598,9 @@ function(){
         });
 
       $.ajax({
-      url:baseUrl + '/biaya_penerus/save_penerus',
+      url:baseUrl + '/biaya_penerus/update_penerus',
       type:'post',
-      data: datatable.$('input').serialize()+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize(),
+      data: datatable.$('input').serialize()+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize()+'&id='+id,
       success:function(data){
         if(data.status == '0'){
           swal({
@@ -679,11 +658,11 @@ function(){
 }
 
 function detailkas(){
-  var id = $('.id').val();
+  var id = '{{ $id }}';
   window.open("{{url('biaya_penerus/detailkas')}}"+'?id='+id);
 }
 function buktikas(){
-  var id = $('.id').val();
+  var id = '{{ $id }}';
   window.open("{{url('biaya_penerus/buktikas')}}"+'?id='+id);
 }
 
