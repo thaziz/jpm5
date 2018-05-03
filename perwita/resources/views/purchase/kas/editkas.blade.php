@@ -36,6 +36,13 @@
   .search{
     margin-left: 5px;
   }
+  h3{
+    margin: 20px 5px;
+
+  }
+  .my-bg{
+    background: #f0b7d6;
+  }
 </style>
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -61,9 +68,9 @@
 
                 </div>
  </div>
-@if(Session::has('message'))
-<p class="alert {{ Session::get('alert-class', 'alert-info') }}">{{ Session::get('message') }}</p>
-@endif
+<div hidden="" class="alert-class alert-info row wrapper border-bottom my-bg page-heading " style="margin-top: 10px; padding: 0 0;">
+<h3 class="pending" style="padding: 10px 0 margin:0px 0px !important;"></h3>
+</div>
 <div class="wrapper wrapper-content animated fadeInRight">
   <div class="row">
     <!-- HEADER -->
@@ -75,18 +82,46 @@
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">
           <table class="table table_header">
-            {{ csrf_field() }}  
+            {{ csrf_field() }}
             <tr>
               <td>No Transaksi</td>
               <td>
-                <input readonly="" value="{{$data[0]->bpk_nota}}" class="form-control" type="text" name="no_trans">
-                <input readonly="" value="EDIT" class="form-control" type="hidden" name="tipe_data">
-                <input readonly="" value="{{$data[0]->bpk_id}}" class="form-control id" type="hidden" name="id">
+                <input readonly="" value="" class="form-control no_trans" type="text" name="no_trans">
+                <input readonly="" value="CREATE" class="form-control tipe_data" type="hidden" name="tipe_data">
+                <input readonly="" value="" class="form-control id" type="hidden" name="id">
               </td>
             </tr>
             <tr>
+                <td>Cabang</td>
+                <td>
+
+                    @if(Auth::user()->punyaAkses('Biaya Penerus Kas','cabang'))
+                        <select onchange="ganti_nota()" class="form-control cabang_select" name="cabang">
+                        @foreach($cabang as $val)
+                            @if(Auth()->user()->kode_cabang == $val->kode)
+                            <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                            @else
+                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                            @endif
+                        @endforeach
+                        </select>
+                    @else
+                        <select disabled="" class="form-control cabang_select" name="cabang">
+                        @foreach($cabang as $val)
+                        @if(Auth::user()->kode_cabang == $val->kode)
+                            <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                        @else
+                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                        @endif
+                        @endforeach
+                        </select>
+                    @endif
+                    <input type="hidden" name="cabang_input" class="cabang_input form-control input-sm">
+                </td>
+            </tr>
+            <tr>
               <td>Tanggal</td>
-              <td><input readonly="" class="form-control" value="{{$data[0]->bpk_tanggal}}" type="text" name="tN"></td>
+              <td><input readonly="" class="form-control" value="{{$now}}" type="text" name="tN"></td>
             </tr>
           </table>
         </div>
@@ -96,19 +131,13 @@
     <div class="ibox" style="padding-top: 10px;">
       <div class="ibox-title"><h5>Form Biaya Penerus Kas</h5></div>
       <div class="ibox-content col-sm-12">
-        <div class="col-sm-8" style="margin: 0 15%">  
-        {{ csrf_field() }}   
+        <div class="col-sm-8" style="margin: 0 15%">          
             <table class="table table_data">
+              {{ csrf_field() }}  
               <tr>
                 <td>Akun Kas</td>
-                <td class="form-inline">
-                  <input readonly="" class="form-control kode_kas" type="text" name="kode_kas" value="{{$data[0]->bpk_kode_akun}}" style="width: 19.8%;">
-                  <select class="form-control nama_kas" type="text" style="width: 79.2%">
-                    <option value="0" selected>- Pilih Akun Kas -</option>
-                    @foreach($akun as $val)
-                    <option value="{{$val->id_akun}}">{{$val->nama_akun}}</option>
-                    @endforeach
-                  </select>
+                <td class="form-inline akun_kas_td">
+                 
                 </td>
               </tr>
               <tr>
@@ -131,28 +160,26 @@
                 </td>
                 <!-- PAKET DROPDOWN-->
                 <td hidden="" class="pembiayaan_paket">
-                  <select  class="form-control pembiayaan pembiayaan_paket" type="text" name="pembiayaan_paket">
-                    <option value="0" selected>- Pilih Jenis Biaya -</option>
-                    @foreach($akun_biaya_paket as $val)
-                    <option value="{{$val->kode}}">{{$val->kode_akun}} - {{$val->nama}}</option>
+                   <select class="form-control " name="pembiayaan_paket" >
+                    @foreach($akun_paket as $val)
+                     <option value="{{ $val->jenis_bbm }}">{{ $val->kode}} - {{ $val->nama }}</option>
                     @endforeach
-                  </select>
+                   </select>
                 </td>
                 <!-- CARGO DROPDOWN-->
                 <td hidden="" class="pembiayaan_cargo">
-                  <select  class="form-control pembiayaan pembiayaan_cargo" type="text" name="pembiayaan_cargo">
-                    <option value="0" selected>- Pilih Jenis Biaya -</option>
-                    @foreach($akun_biaya_cargo as $val)
-                    <option value="{{$val->kode}}">{{$val->kode_akun}} - {{$val->nama}}</option>
+                    <select class="form-control " name="pembiayaan_cargo" >
+                     @foreach($akun_kargo as $val)
+                     <option value="{{ $val->jenis_bbm }}">{{ $val->kode }} - {{ $val->nama }}</option>
                     @endforeach
-                  </select>
+                    </select>
                 </td>
 
               </tr>
               <tr>
                 <td>Jenis Kendaraan</td>
                 <td>
-                  <select class="form-control jenis_kendaraan" type="text" name="jenis_kendaraan" onchange="jenis_kendaraan()">
+                  <select class="form-control jenis_kendaraan chosen-select-width1" type="text" name="jenis_kendaraan" onchange="jenis_kendaraan()">
                     <option value="0">- Pilih Jenis Kendaraan -</option>
                     @foreach($angkutan as $val)
                     <option value="{{$val->kode}}">{{$val->nama}}</option>
@@ -161,19 +188,12 @@
                 </td>
               </tr>
               <tr>
-                <td>Biaya Lain-Lain</td>
+                <td>Biaya Parkir & Tol</td>
                 <td>
-                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="" placeholder="Biaya Lain-Lain" >
+                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp " placeholder="Biaya Lain Lain" >
                 </td>
               </tr>
-              <tr>
-                <td>Kilometer (KM)</td>
-                <td>
-                  <input class="form-control kilometer" type="text" name="km" value="" placeholder="kilometer" onkeyup="hitung_bbm()">
-                  <input class="form-control km_liter" type="hidden">
-                  <input class="form-control bbm" type="hidden" name="km_val">
-                </td>
-              </tr>
+            
               <tr>
                 <td>
                   Biaya Bahan Bakar :
@@ -185,34 +205,41 @@
                 </td>
               </tr>
               <tr>
-                <td>Nopol Kendaraan</td>
+                <td>Kilometer (KM)</td>
                 <td>
-                  <input  class="form-control nopol" type="text" name="nopol" value="{{$data[0]->bpk_nopol}}" >
+                  <input class="form-control kilometer" type="text" name="km" value="" placeholder="kilometer" onkeyup="hitung_bbm()">
+                  <input class="form-control km_liter" type="hidden">
+                  <input class="form-control bbm" type="hidden" name="km_val">
+                </td>
+              </tr>
+              <tr>
+                <td>Nopol Kendaraan</td>
+                <td class="nopol_td">
+                  <input  class="form-control nopol" type="text" name="nopol" value="" onkeyup="cariDATA()" placeholder="nomor polisi">
                 </td>
               </tr>
               <tr>
                 <td>Nama sopir</td>
                 <td>
-                  <input  class="form-control nama_sopir" type="text" name="nama_sopir" value="{{$data[0]->bpk_sopir}}" placeholder="nama sopir">
+                  <input  class="form-control nama_sopir" type="text" name="nama_sopir" value="" placeholder="nama sopir">
                 </td>
               </tr>
               <tr>
                 <td>Note</td>
                 <td>
-                  <textarea class="form-control note" name="note"  placeholder="fill this note" >{{$data[0]->bpk_keterangan}}</textarea>
+                  <textarea class="form-control note" name="note" value="" placeholder="fill this note" ></textarea>
                 </td>
               </tr>
               <tr>
                 <td>Nota Resi (dipisah dengan spasi)<span class="require" style="color: red"> *</span></td>
                 <td>
-                  <textarea class="form-control resi" id="resi" name="resi" value="" placeholder="Nota Resi" >
-                  </textarea>
+                  <textarea style="height: 100px" class="form-control resi" id="resi"  value="" placeholder="Nota Resi" ></textarea>
                   <br><label>Untuk Pembiayaan Lintas, hanya di isi No Resi Lintas</label>
                 </td>
               </tr>
               <tr>
                 <td colspan="2">
-                  <button class="search btn btn-success pull-right" onclick="search()"><i class="fa fa-search"> Update Data</i></button>
+                  <button class="search cari btn btn-success pull-right" onclick="search()"><i class="fa fa-search"> Search</i></button>
                 </td>
               </tr>
             </table>          
@@ -245,106 +272,77 @@
 
 <script src="{{ asset('assets/vendors/chosen/chosen.jquery.js') }}"></script>
 <script type="text/javascript">
-
+var datatable;
   $(document).ready(function(){
-    $('.hid').attr('hidden',true);
-    $('.search').attr('disabled',false);
-    $('.nama_kas').val({{$data[0]->bpk_kode_akun}});
-    $('.jenis_pembiayaan').val("{{$data[0]->bpk_jenis_biaya}}");
-    $('.jenis_kendaraan').val("{{$data[0]->bpk_tipe_angkutan}}");
-    $('.biaya_dll').val("{{"Rp " . number_format($data[0]->bpk_biaya_lain,0,",",".")}}");
-    $('.kilometer').val("{{$data[0]->bpk_jarak}}");
+    // $('.hid').attr('hidden',true);
+    $('.search').attr('disabled',true);
 
-    var id = $('.jenis_kendaraan').val();
-    var dll = $('.biaya_dll').val();
-    var km = $('.kilometer').val();
-    var bbm_liter = parseInt($('.km_liter').val());
-    var harga_bbm = parseInt($('.bbm').val());
-    var hasil  = 0;
-    var temp   = 0;
-    var jk     = $('.jenis_kendaraan').val();
-    var bayar = $('.biaya_dll').val();
-    $('.biaya_dll').maskMoney({precision:0, prefix:'Rp ',thousands:'.'});
+    var config1 = {
+               '.chosen-select'           : {},
+               '.chosen-select-deselect'  : {allow_single_deselect:true},
+               '.chosen-select-no-single' : {disable_search_threshold:10},
+               '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+               '.chosen-select-width1'     : {width:"100%"}
+             }
 
+              for (var selector in config1) {
+               $(selector).chosen(config1[selector]);
+              }  
 
-    if ('{{$data[0]->bpk_jenis_biaya}}' =='PAKET') {
-      $('.pembiayaan_paket').attr('hidden',false);
-      $('.pembiayaan_cargo').attr('hidden',true);
-      $('.pembiayaan').attr('hidden',true);
-      $('.pembiayaan_paket').val("{{$data[0]->bpk_pembiayaan}}");
-    }else if('{{$data[0]->bpk_jenis_biaya}}' =='CARGO'){
-      $('.pembiayaan_paket').attr('hidden',true);
-      $('.pembiayaan_cargo').attr('hidden',false);
-      $('.pembiayaan').attr('hidden',true);
-      $('.pembiayaan_cargo').val("{{$data[0]->bpk_pembiayaan}}");
-    }
-    console.log(id); 
+    var cabang = $('.cabang_select').val();
     $.ajax({
-      url:baseUrl + '/biaya_penerus/getbbm/'+id,
-      type:'get',
-      success:function(data){
-
-
-        bbm_liter = data[0].bbm_per_liter;
-        harga_bbm = data[0].mb_harga;
-        $('.km_liter').val(bbm_liter);
-        $('.bbm').val(harga_bbm);
-
-        if(km != "" && jk != "0"){
-          
-          parseInt(km);
-          hasil = km/bbm_liter;
-          hasil = hasil * harga_bbm;
-          hasil = Math.round(hasil);
-          hasil = hasil.toLocaleString();
-          hasil = 'Rp ' + hasil;
-          $('.total_bbm').val(hasil);
-          var hitung = bayar.replace(/[^0-9\-]+/g,"");
-          total[0] = hitung;
-
-
-          total[1] = hasil;
-          if(total[0]=="" ){
-            total[0]=0;
-          }
-          total[1] = total[1].replace("Rp ","");
-          total[1] = total[1].replace(/[^0-9\.-]+/g,"");
-
-          for(var i = 0 ; i<total.length;i++){
-            temp+=parseInt(total[i]);
-          }
-          temp = temp.toLocaleString()
-          temp = 'Rp ' + temp;
-          $('.total').val(temp);
-          $('.search').click();
-
-
-        }else if(km == ""){
-          $('.total_bbm').val(0);
-          total[1] = 0;
-          if(total[0]==""){
-            total[0]=0;
-          }
-          for(var i = 0 ; i<total.length;i++){
-            temp+=parseInt(total[i]);
-          }
-          temp = temp.toLocaleString()
-          temp = 'Rp ' + temp;
-      
-          $('.total').val(temp);
-          $('.search').click();
+        url:baseUrl + '/biaya_penerus/ganti_nota',
+        data:{cabang},
+        dataType:'json',
+        success:function(data){
+            $('.no_trans').val(data.nota);
+        },
+        error:function(){
+            location.reload();
         }
-      }
-
     })
-    var resi='';
-   @foreach($string_resi as $index => $val)
-     resi+='{{$string_resi[$index]}}'+' ';
-   @endforeach
-   $('#resi').val(resi);
 
-   
+    $.ajax({
+        url:baseUrl + '/biaya_penerus/akun_kas',
+        data:{cabang},
+        success:function(data){
+            $('.akun_kas_td').html(data);
+        },
+        error:function(){
+            location.reload();
+        }
+    })
+
+
   });
+   var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
+
+   function ganti_nota() {
+     var cabang = $('.cabang_select').val();
+      $.ajax({
+          url:baseUrl + '/biaya_penerus/ganti_nota',
+          data:{cabang},
+          dataType:'json',
+          success:function(data){
+              $('.no_trans').val(data.nota);
+          },
+          error:function(){
+              location.reload();
+          }
+      })
+
+      $.ajax({
+          url:baseUrl + '/biaya_penerus/akun_kas',
+          data:{cabang},
+          success:function(data){
+              $('.akun_kas_td').html(data);
+          },
+          error:function(){
+              location.reload();
+          }
+      })
+   }
+
 
 
   // $('.resi').keyup(function() {
@@ -428,11 +426,11 @@
       url:baseUrl + '/biaya_penerus/getbbm/'+id,
       type:'get',
       success:function(data){
-        bbm_liter = data[0].bbm_per_liter;
-        harga_bbm = data[0].mb_harga;
+        var bbm_liter = data.angkutan[0].bbm_per_liter;
+        var harga_bbm = data.angkutan[0].mb_harga;
         $('.km_liter').val(bbm_liter);
         $('.bbm').val(harga_bbm);
-
+        
         if(km != "" && jk != "0"){
           parseInt(km);
           hasil = km/bbm_liter;
@@ -476,17 +474,26 @@
 
     })
 
-
+  $.ajax({
+          url:baseUrl + '/biaya_penerus/nopol',
+          data:{jenis},
+          success:function(data){
+              $('.nopol_td').html(data);
+          },
+          error:function(){
+              location.reload();
+          }
+      })
 
  }
  //////////////////////////////////////////////
  var total = [];
  function hitung(){
   var bayar = $('.biaya_dll').val();
-  var hitung = bayar.replace(/[^0-9\-]+/g,"");
-  // conssol
+  var hitung = bayar.replace(/[^0-9\.-]+/g,"");
   total[0] = hitung;
   var temp = 0;
+  
    if(total[0]==""){
       total[0]=0;
     }
@@ -500,9 +507,9 @@
    }
   temp = temp.toLocaleString()
   $('.total').val('Rp '+temp);
-
-   $('.valid_key').attr('hidden',true);
+  $('.valid_key').attr('hidden',true);
   $('.resi_body').html('');
+
  }
 
  function hitung_bbm(){
@@ -554,13 +561,16 @@
     temp = 'Rp ' + temp;
     $('.total').val(temp);
   }
-
-   $('.valid_key').attr('hidden',true);
+  $('.valid_key').attr('hidden',true);
   $('.resi_body').html('');
  }
 
 function search(){
-
+  var resi = $('#resi').val();
+  var head = $('.table_header :input').serializeArray();
+  var data = $('.table_data :input').serializeArray();
+  var resi_array = resi.split(" ");
+  // data.push(resi_array);
   $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -568,14 +578,16 @@ function search(){
         });
 
   $.ajax({
-      url:baseUrl + '/biaya_penerus/cariresiedit',
-      type:'post',
-      data:'id='+'{{$id_edit}}'+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize(),
+      url:baseUrl + '/biaya_penerus/cariresi',
+      type:'get',
+      data: {head,data,resi_array},
       success:function(data){
         $('.resi_body').html('');
         if(typeof data.status !== 'undefined'){
                   console.log(data.status);
-          toastr.warning('data tidak ada');
+          toastr.warning('data tidak ada/sudah ada');
+        }else if (data.status == 0){
+          toastr.warning('data sudah ada');
         }else{
           $('.valid_key').attr('hidden',false);
           $('.resi_body').html(data);
@@ -590,7 +602,7 @@ function save_data(){
 
   swal({
     title: "Apakah anda yakin?",
-    text: "Update Data Biaya Penerus!",
+    text: "Simpan Data Biaya Penerus!",
     type: "warning",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
@@ -607,31 +619,51 @@ function(){
         });
 
       $.ajax({
-      url:baseUrl + '/biaya_penerus/update_penerus',
+      url:baseUrl + '/biaya_penerus/save_penerus',
       type:'post',
       data: datatable.$('input').serialize()+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize(),
       success:function(data){
-        if(data.status == '1'){
+        if(data.status == '0'){
+          swal({
+          title: "Gagal menyimpan, Data Sudah Ada",
+                type: 'error',
+                timer: 900,
+                showConfirmButton: true
+          });
+        }else if(data.status == '1'){
           swal({
           title: "Berhasil!",
                   type: 'success',
-                  text: "Data berhasil diUpdate",
+                  text: "Data berhasil disimpan",
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     window.location = baseUrl+ '/biaya_penerus/index';
+
+                    
           });
+          $('.process').addClass('disabled');
+          $('.cari').addClass('disabled');
+          $('.asd').attr('hidden',false);
+          $('.id').val(data.id);
         }else if(data.status == '2'){
+          $('.pending').html("Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")");
+          $("html, body").animate({ scrollTop: 0 }, "slow");
+          $('.my-bg').attr('hidden',false);
           swal({
           title: "Berhasil!",
                   type: 'warning',
-                  text: "Data berhasil diupdate dengan status PENDING, biaya minimal adalah ("+data.minimal+")",
+                  text: "Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")",
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     window.location = baseUrl + '/biaya_penerus/index';
+        
           });
+          $('.id').val(data.id);
+          $('.asd').attr('hidden',false);
+          $('.process').addClass('disabled');
+          $('.cari').addClass('disabled');
         }
+        
         $('.asd').attr('hidden',false);
       },
       error:function(data){
@@ -645,6 +677,7 @@ function(){
   });  
  });
 }
+
 function detailkas(){
   var id = $('.id').val();
   window.open("{{url('biaya_penerus/detailkas')}}"+'?id='+id);
@@ -655,6 +688,19 @@ function buktikas(){
 }
 
 
+function cariDATA(){
+    $( ".nopol" ).autocomplete({
+      source:baseUrl + '/biaya_penerus/carinopol', 
+      minLength: 3,
+       change: function(event, ui) {
+       }
+
+  });
+
+}
+function reload(){
+  location.reload();
+}
 
 </script>
 @endsection

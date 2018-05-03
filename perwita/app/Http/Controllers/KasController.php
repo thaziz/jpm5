@@ -146,7 +146,7 @@ class KasController extends Controller
 		    	$cari_persen = DB::table('master_persentase')
 		    		  ->where('jenis_bbm',$request->data[3]['value'])
 		    		  ->where('cabang','GLOBAL')
-		    		  ->get();
+		    		  ->first();
 
 		    }
 		    
@@ -161,7 +161,7 @@ class KasController extends Controller
 		    	$cari_persen = DB::table('master_persentase')
 		    		  ->where('jenis_bbm',$request->data[4]['value'])
 		    		  ->where('cabang','GLOBAL')
-		    		  ->get();
+		    		  ->first();
 
 		    }
 
@@ -178,39 +178,68 @@ class KasController extends Controller
 		$penerus      = [];
 		$total_penerus= 0;
 		$tipe_data    = $request->head[2]['value'];
+		$jenis_biaya  = $cari_persen->jenis_bbm;
+		$cabang 	  = $request->head[4]['value'];
 		$resi 		  = [];
+		$now 		  = Carbon::now()->format('Y-m-d');
 
-		for ($i=0 ; $i < count($request->resi_array); $i++) { 
-			$resi[$i]=$request->resi[$i];
-			$bpk = DB::table('biaya_penerus_kas_detail')
-				  ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
-				  ->join('master_persentase','bpk_pembiayaan','=','kode')
-				  ->where('bpkd_no_resi',$resi[$i])
-				  ->get();
+		for ($i=0; $i < count($request->resi_array); $i++) { 
+			$cari_resi = DB::table('delivery_order')
+						   ->whereIn('nomor',$request->resi_array)
+						   ->orderBy('nomor','ASC')
+						   ->get();
 
-
-		   	$bpk_dt[$i]   = $bpk;
+			$cari_resi1 = DB::table('delivery_order')
+						   ->select('bpkd_no_resi')
+						   ->leftjoin('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+						   ->whereIn('nomor',$request->resi_array)
+						   ->groupBy('bpkd_no_resi')
+						   ->orderBy('bpkd_no_resi','ASC')
+						   ->get();
 		}
+		// return $cari_resi1;
+		for ($i=0; $i < count($cari_resi); $i++) { 
+			$resi[$i] = $cari_resi[$i]->nomor;
+			if (isset($cari_resi1[$i])) {
+				if ($cari_resi1[$i]->bpkd_no_resi != null) {
+					if ($jenis_biaya == '3') {
+						// shuttle
+						$tarif_shuttle = $cari_resi[$i]->total_net;
 
-		// dd($bpk_dt);
-		for ($i=0; $i < count($bpk_dt); $i++) { 
-			if($bpk_dt[$i]!=null){
-				if($bpk_dt[$i][0]->jenis_bbm == "3" ){
-					
-				} elseif ($bpk_dt[$i][0]->jenis_biaya == '4') {
+						$cari_resi_shuttle = DB::table('biaya_penerus_kas_detail')
+											   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
+											   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
+											   ->where('bpk_jenis_bbm',$jenis_biaya)
+											   ->get();
+						$terbayar = [];
+						for ($a=0; $a < count($cari_resi_shuttle); $a++) { 
+							$terbayar[$a] = $cari_resi_shuttle[$a]->bpkd_tarif_penerus;
+						}
+						$terbayar = array_sum($terbayar);
+						if ($terbayar >= $tarif_shuttle) {
+							unset($resi[$i]);
+						}
 
-					for ($a=0; $a < count($bpk_dt[$i]); $a++) { 
-						$comp[$a] = (float)$bpk_dt[$i][$a]->bpk_tarif_penerus;
-					}
+					}elseif ($jenis_biaya == '4' or $jenis_biaya == '7'){
+						// lintas  dan penyebrangan
+						$cari_resi_lintas = DB::table('biaya_penerus_kas_detail')
+											   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
+											   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
+											   ->where('biaya_penerus_kas_detail.bpk_comp',$cabang)
+											   ->get();
 
-					if (in_array($request->head[4]['value'],$comp)) {
+						if ($cari_resi_lintas != null) {
+							unset($resi[$i]);
+						}
+
+					}else{
 						unset($resi[$i]);
 					}
-
-				}else{
+				}elseif($cari_resi[$i]->jenis_tarif == 9){
 					unset($resi[$i]);
 				}
 			}
+
 		}
 
 		$resi = array_values($resi);
@@ -219,14 +248,13 @@ class KasController extends Controller
 
 			$cari = DB::table('delivery_order')
 				  ->join('kota','id','=','id_kota_asal')
-				  ->where('nomor',$request->resi_array[$i])
-				  ->where('kode_cabang',$request->head[4]['value'])
+				  ->where('nomor',$resi[$i])
 				  ->get();
 
 			$cari1 = DB::table('delivery_order')
 				  ->select('nama','id')
 				  ->join('kota','id','=','id_kota_asal')
-				  ->where('nomor',$request->resi_array[$i])
+				  ->where('nomor',$resi[$i])
 				  ->get();
 
 		   	$data[$i]   = $cari;
@@ -266,7 +294,6 @@ class KasController extends Controller
 	public function save_penerus(request $request){
 		return DB::transaction(function() use ($request) {  
 		 // dd($request->all());
-		// dd($request->pembiayaan_paket);
 		if ($request->jenis_pembiayaan == 'PAKET') {
 
 			$cari_persen = DB::table('master_persentase')
@@ -308,38 +335,58 @@ class KasController extends Controller
 	    $request->biaya_dll = filter_var($request->biaya_dll, FILTER_SANITIZE_NUMBER_FLOAT);
 	    $request->total_bbm = filter_var($request->total_bbm, FILTER_SANITIZE_NUMBER_FLOAT);
 	    
-
+	    $terbayar   = [];
+	    $pembayaran = [];
+	    $bayar 		= [];
+	    $sisa 		= [];
 		if ($cari_persen->jenis_bbm == '3') {
 
+
+
 			for ($i=0; $i < count($request->no_resi); $i++) { 
-				$bpk = DB::table('biaya_penerus_kas_detail')
-							->where('bpkd_no_resi',$request->no_resi[$i])
-							->get();
-				$bpk_dt[$i] = $bpk;
-			}
-			for ($i=0; $i < count($bpk_dt); $i++) { 
-				for ($a=0; $a < count($bpk_dt[$i]); $a++) { 
-					$jml[$a] = $bpk_dt[$i][$a]->bpkd_tarif_penerus;
+
+
+				$cari_do[$i] = DB::table('delivery_order')
+								 ->where('nomor',$request->no_resi[$i])
+								 ->get();
+
+				$cari_bpkd[$i] = DB::table('biaya_penerus_kas')
+								 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+								 ->where('bpkd_no_resi',$request->no_resi[$i])
+								 ->get();
+
+				for ($a=0; $a < count($cari_bpkd[$i]); $a++) { 
+					$bayar[$a] = $cari_bpkd[$i][$a]->bpkd_tarif_penerus;
 				}
-				if (isset($jml)) {
-					$jml_dt[$i] = array_sum($jml);
-				}
-				
+
+				$terbayar[$i]   = array_sum($bayar);
+				$pembayaran[$i] = $cari_do[$i][0]->total_net;
+
+				$sisa[$i] 		= $pembayaran[$i] - $terbayar[$i];
 			}
-			if (isset($jml_dt)) {
-				$fix = array_sum($jml_dt);
-			}else{
-				$fix = 0;
-			}
-	
-			$tot_pen = array_sum($request->penerus);
-			$fix = $fix + $tot_pen;
+			$terbayar = array_sum($terbayar);
+			// dd($sisa);
+
+			$sisa = array_sum($sisa);
+			$fix  = array_sum($request->penerus)+$terbayar;
 
 		}else{
-			$fix = array_sum($request->penerus);
+
+			for ($i=0; $i < count($request->no_resi); $i++) { 
+
+				$cari_do[$i] = DB::table('delivery_order')
+								 ->where('nomor',$request->no_resi[$i])
+								 ->get();
+
+				$pembayaran[$i] = $cari_do[$i][0]->total_net;
+
+			}
+			
+			$sisa = array_sum($pembayaran);
+			$fix  = array_sum($request->penerus);
 		}
 
-
+		// return $fix;
 		$fix_tarif_penerus = array_sum($request->penerus);
 		$persen = $cari_persen->persen/100;
 		$total_tarif = $request->total_tarif*$persen;
@@ -402,6 +449,7 @@ class KasController extends Controller
 		  	'bpk_biaya_lain'	 => round($request->biaya_dll,2),
 		  	'bpk_jarak'	 		 => $request->km,
 		  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
+			'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
 		  	'created_by'		 => Auth::user()->m_name,
 		  	'updated_by'		 => Auth::user()->m_name,
 		  ]);
@@ -442,6 +490,7 @@ class KasController extends Controller
 						'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
 						'created_at'			=> Carbon::now(),
 						'bpk_comp'				=> $request->cabang,
+						'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
 						'bpkd_pembiayaan'		=> $request->tarif[$i]
 
 				 	 ]);
@@ -599,7 +648,7 @@ $cabang=$request->cabang;
 		  	return response()->json(['status' => '1','id'=>$cari_id[0]->bpk_id]);
 		  }else{
 		  	
-		  	return response()->json(['status' => '2','minimal' => $total_tarif,'id'=>$cari_id[0]->bpk_id]);
+		  	return response()->json(['status' => '2','minimal' => $sisa,'id'=>$cari_id[0]->bpk_id]);
 		  }
 
 

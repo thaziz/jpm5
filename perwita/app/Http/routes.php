@@ -280,6 +280,7 @@ Route::get('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_updat
 Route::get('biaya_penerus/index', 'KasController@index');
 Route::get('biaya_penerus/createkas', 'KasController@create');
 Route::get('biaya_penerus/getbbm/{id}', 'KasController@getbbm');
+Route::get('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresiedit', 'KasController@cariresiedit');
 Route::post('biaya_penerus/save_penerus', 'KasController@save_penerus');
@@ -849,7 +850,9 @@ Route::get('caridiagram_penjualan/caridiagram_penjualan','LaporanOmsetController
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN OMSET PENJUALAN ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
 
 //=================================== LAPORAN PENJUALAN BERAWAL =========================================//
-
+//laporan master tarif 
+Route::get('laporan_master_penjualan/tarif_cabang_master','LaporanMasterController@tarif_cabang_master');
+//end of 
 //LAPORAN TARIF
 Route::get('laporan_master_penjualan/tarif_cabang_dokumen', 'LaporanMasterController@tarif_cabang_dokumen');
 Route::get('laporan_master_penjualan/tarif_cabang_koli', 'LaporanMasterController@tarif_cabang_koli');
@@ -1219,6 +1222,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 
 
 Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_Controller@cetak_form');
 Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
 Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
 Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');

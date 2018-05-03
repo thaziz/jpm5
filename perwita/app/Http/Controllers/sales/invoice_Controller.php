@@ -486,6 +486,20 @@ public function simpan_invoice(request $request)
     $total_ppn      = filter_var($request->ppn, FILTER_SANITIZE_NUMBER_FLOAT)/100;
     $total_pph      = filter_var($request->pph, FILTER_SANITIZE_NUMBER_FLOAT)/100;
 
+    if ($request->ed_pendapatan == 'PAKET') {
+      $cari_acc_piutang = DB::table('d_akun')
+                            ->where('id_akun','like','1303'.'%')
+                            ->where('kode_cabang',$cabang)
+                            ->first();
+      $request->accPiutang = $cari_acc_piutang->id_akun;
+    }else if($request->ed_pendapatan == 'KARGO'){
+      $cari_acc_piutang = DB::table('d_akun')
+                            ->where('id_akun','like','1302'.'%')
+                            ->where('kode_cabang',$cabang)
+                            ->first();
+      $request->accPiutang = $cari_acc_piutang->id_akun;
+    }
+
     $cari_no_invoice = DB::table('invoice')
                          ->where('i_nomor',$request->nota_invoice)
                          ->first();
@@ -561,6 +575,9 @@ public function simpan_invoice(request $request)
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
                                           'update_at'            =>  Carbon::now(),
+                                          'i_grup_item'          =>  $request->grup_item,
+                                          'i_acc_piutang'        =>  $request->accPiutang,
+                                          'i_csf_piutang'        =>  $request->accPiutang,
                                           'i_grup_item'          =>  $request->grup_item,
                                           'i_pendapatan'         =>  $request->ed_pendapatan
                                      ]);
@@ -846,6 +863,8 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_kode_cabang'        =>  $cabang,
                                           'create_by'            =>  Auth::user()->m_name,
                                           'create_at'            =>  Carbon::now(),
+                                          'i_acc_piutang'        =>  $request->accPiutang,
+                                          'i_csf_piutang'        =>  $request->accPiutang,
                                           'update_by'            =>  Auth::user()->m_name,
                                           'i_grup_item'          =>  $request->grup_item,
                                           'update_at'            =>  Carbon::now(),
@@ -1100,6 +1119,8 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_kode_customer'      =>  $request->ed_customer,
                                           'i_kode_cabang'        =>  $cabang,
                                           'create_by'            =>  Auth::user()->m_name,
+                                          'i_acc_piutang'        =>  $request->accPiutang,
+                                          'i_csf_piutang'        =>  $request->accPiutang,
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
                                           'i_grup_item'          =>  $request->grup_item,
@@ -1262,7 +1283,7 @@ if(count($dataItem)==0){
 if($request->cb_jenis_ppn!=4){
       $akunPPN=master_akun::
                   select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$akunPPH.'%')                                    
+                  ->where('id_akun','like', '2302'.'%')                                    
                   ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first(); 
@@ -1362,6 +1383,8 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
                                           'i_statusprint'        =>  'Released',
+                                          'i_acc_piutang'        =>  $request->accPiutang,
+                                          'i_csf_piutang'        =>  $request->accPiutang,
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_ppnrp'              =>  $total_ppn,
                                           'i_kode_pajak'         =>  $request->kode_pajak_lain,
@@ -1395,7 +1418,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
-                                              'id_nomor_invoice' => $request->nota_invoice,
+                                              'id_nomor_invoice' => $nota,
                                               'id_nomor_do'      => $request->do_detail[$i],
                                               'create_by'        => Auth::user()->m_name,
                                               'create_at'        => Carbon::now(),
@@ -1443,9 +1466,164 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                       $dataItem[$i]['pajak_lain']=$totalStlhDiskon*($request->pajak_lain/100);
              }
 
+
+             $jurnal=d_jurnal::where('jr_ref', $request->nota_invoice)->where('jr_note','INVOICE');
+            if(count($jurnal->first())!=0){
+              $jurnal->delete();
+            }
+      if(count($dataItem)==0){
+          return response()->json(['status' => 1,'display'=>0]);
+      }
+               $Nilaijurnal=$this->groupJurnal($dataItem);
+
+            foreach ($Nilaijurnal as  $indexakun=> $dataJurnal) {  
+              
+        if($dataJurnal['acc_penjualan']=='' || $dataJurnal['acc_penjualan']=="null"){
+            $dataInfo=['status'=>'gagal','info'=>'Akun Pendapatan Pada DO Belum Ada.'];
+              DB::rollback();
+              return json_encode($dataInfo);
+        }
+
+        // return $dataxJurnal['acc_penjualan'];
+       $acc=master_akun::
+                  select('id_akun','nama_akun')
+                  ->where('id_akun','like', ''.$dataJurnal['acc_penjualan'].'%')
+                  // ->where('kode_cabang',$cabang)
+                  ->orderBy('id_akun')
+                  ->first();                   
+        if(count($acc)!=0){
+        $akun[$indexakun]['id_akun']=$acc->id_akun;
+        $akun[$indexakun]['value']=round($dataJurnal['totalInvoice'],2);
+        $akun[$indexakun]['dk']='K';
+        $indexakun++;              
+        }
+        else{
+            $dataInfo=['status'=>'gagal','info'=>'Akun Pendapatan Untuk Cabang Belum Tersedia'];
+      DB::rollback();
+            return json_encode($dataInfo);
+        }        
+      
+    }  
+
+      if($request->accPiutang==''){
+            $dataInfo=['status'=>'gagal','info'=>'Akun Piutang Pada Customer Belum Ada.'];
+              DB::rollback();
+              return json_encode($dataInfo);
+        }
+      $akunPiutang=master_akun::
+                  select('id_akun','nama_akun')
+                  ->where('id_akun','like', ''.$request->accPiutang.'%')                                    
+                  // ->where('kode_cabang',$cabang)
+                  ->orderBy('id_akun')
+                  ->first();                    
+
+                  if(count($akunPiutang)==0){
+                        $dataInfo=['status'=>'gagal','info'=>'Akun Piutang Untuk Cabang Belum Tersedia'];
+                        DB::rollback();
+                        return json_encode($dataInfo);
+                    }
+
+                $akun[$indexakun]['id_akun']=$akunPiutang->id_akun;
+                $akun[$indexakun]['value']=round($total_tagihan,2);
+                $akun[$indexakun]['dk']='D';
+                $indexakun++;
+
+
+
+    if($request->diskon1!=0 || $request->diskon2!=0){
+        $akunDiskon=master_akun::
+                  select('id_akun','nama_akun')
+                  ->where('id_akun','like', '5298%')                                    
+                  ->where('kode_cabang',$cabang)
+                  ->orderBy('id_akun')
+                  ->first(); 
+
+        if(count($akunDiskon)!=0){
+                $akun[$indexakun]['id_akun']=$akunDiskon->id_akun;
+                $akun[$indexakun]['value']=-(round($diskon1+$diskon2,2));
+                $akun[$indexakun]['dk']='D';
+                $indexakun++;
+        }
+        else{
+            $dataInfo=['status'=>'gagal','info'=>'Akun Diskon Untuk Cabang Belum Tersedia'];
+                      return json_encode($dataInfo);
+        } 
+    }
+
+
+if($request->cb_jenis_ppn!=4){
+      $akunPPN=master_akun::
+                  select('id_akun','nama_akun')
+                  ->where('id_akun','like', '2302'.'%')                                    
+                  ->where('kode_cabang',$cabang)
+                  ->orderBy('id_akun')
+                  ->first(); 
+
+        if(count($akunPPN)!=0){
+
+                $akun[$indexakun]['id_akun']=$akunPPN->id_akun;
+                $akun[$indexakun]['value']=round($total_ppn,2);
+                $akun[$indexakun]['dk']='K';
+                $indexakun++;
+        }
+        else{            
+            $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
+                      return json_encode($dataInfo);
+        }
+}
+
+
+if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lain!='undefined'){
+          $akunPPH=master_akun::
+                  select('id_akun','nama_akun')
+                  ->where('id_akun','like', '2305%')                                    
+                  ->where('kode_cabang',$cabang)
+                  ->orderBy('id_akun')
+                  ->first(); 
+
+        if(count($akunPPH)!=0){            
+                $akun[$indexakun]['id_akun']=$akunPPH->id_akun;
+                $akun[$indexakun]['value']=-$total_pph;                
+                $akun[$indexakun]['dk']='D';
+                $indexakun++;
+            }                    
+        else{            
+            $dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Belum Tersedia'];
+                      return json_encode($dataInfo);
+        }
+      }
+
+
+
+            
+            $id_jurnal=d_jurnal::max('jr_id')+1;
+            $id_jrdt=1;
+                foreach ($akun as $key => $data) {   
+                        
+                        $jurnal_dt[$key]['jrdt_jurnal']=$id_jurnal;
+                        $jurnal_dt[$key]['jrdt_detailid']=$id_jrdt;
+                        $jurnal_dt[$key]['jrdt_acc']=$data['id_akun'];
+                        $jurnal_dt[$key]['jrdt_value']=$data['value'];
+                        $jurnal_dt[$key]['jrdt_statusdk']=$data['dk'];
+                        $id_jrdt++;
+                }
+            d_jurnal::create([
+                        'jr_id'=>$id_jurnal,
+                        'jr_year'=> date('Y',strtotime($do_awal)),
+                        'jr_date'=> $do_awal,
+                        'jr_detail'=> 'INVOICE'.' '.$request->ed_pendapatan,
+                        'jr_ref'=>  $nota
+                        ,
+                        'jr_note'=> 'INVOICE',
+                        ]);
+            d_jurnal_dt::insert($jurnal_dt);
+           
+
+
              return response()->json(['status' => 2,'nota'=>$nota]);
         }
     }
+
      });
         
 }

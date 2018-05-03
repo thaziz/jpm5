@@ -12,7 +12,7 @@
 
 @endif
 
-<a class="fa asw fa-save btn btn-primary pull-right" align="center"  title="print" onclick="save_data()"> Process</a>
+<a class="fa asw process fa-save btn btn-primary pull-right" align="center"  title="print" onclick="save_data()"> Process</a>
 
 <thead>
  <tr>

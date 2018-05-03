@@ -193,6 +193,7 @@
                   <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp " placeholder="Biaya Lain Lain" >
                 </td>
               </tr>
+            
               <tr>
                 <td>
                   Biaya Bahan Bakar :
@@ -238,7 +239,7 @@
               </tr>
               <tr>
                 <td colspan="2">
-                  <button class="search btn btn-success pull-right" onclick="search()"><i class="fa fa-search"> Search</i></button>
+                  <button class="search cari btn btn-success pull-right" onclick="search()"><i class="fa fa-search"> Search</i></button>
                 </td>
               </tr>
             </table>          
@@ -578,13 +579,15 @@ function search(){
 
   $.ajax({
       url:baseUrl + '/biaya_penerus/cariresi',
-      type:'post',
+      type:'get',
       data: {head,data,resi_array},
       success:function(data){
         $('.resi_body').html('');
         if(typeof data.status !== 'undefined'){
                   console.log(data.status);
-          toastr.warning('data tidak ada');
+          toastr.warning('data tidak ada/sudah ada');
+        }else if (data.status == 0){
+          toastr.warning('data sudah ada');
         }else{
           $('.valid_key').attr('hidden',false);
           $('.resi_body').html(data);
@@ -617,7 +620,7 @@ function(){
 
       $.ajax({
       url:baseUrl + '/biaya_penerus/save_penerus',
-      type:'get',
+      type:'post',
       data: datatable.$('input').serialize()+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize(),
       success:function(data){
         if(data.status == '0'){
@@ -638,6 +641,8 @@ function(){
 
                     
           });
+          $('.process').addClass('disabled');
+          $('.cari').addClass('disabled');
           $('.asd').attr('hidden',false);
           $('.id').val(data.id);
         }else if(data.status == '2'){
@@ -655,6 +660,8 @@ function(){
           });
           $('.id').val(data.id);
           $('.asd').attr('hidden',false);
+          $('.process').addClass('disabled');
+          $('.cari').addClass('disabled');
         }
         
         $('.asd').attr('hidden',false);
