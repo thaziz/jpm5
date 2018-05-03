@@ -200,41 +200,44 @@ class KasController extends Controller
 		// return $cari_resi1;
 		for ($i=0; $i < count($cari_resi); $i++) { 
 			$resi[$i] = $cari_resi[$i]->nomor;
-			if ($cari_resi1[$i]->bpkd_no_resi != null) {
-				if ($jenis_biaya == '3') {
-					// shuttle
-					$tarif_shuttle = $cari_resi[$i]->total_net;
+			if (isset($cari_resi1[$i])) {
+				if ($cari_resi1[$i]->bpkd_no_resi != null) {
+					if ($jenis_biaya == '3') {
+						// shuttle
+						$tarif_shuttle = $cari_resi[$i]->total_net;
 
-					$cari_resi_shuttle = DB::table('biaya_penerus_kas_detail')
-										   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
-										   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
-										   ->where('bpk_jenis_bbm',$jenis_biaya)
-										   ->get();
-					$terbayar = [];
-					for ($a=0; $a < count($cari_resi_shuttle); $a++) { 
-						$terbayar[$a] = $cari_resi_shuttle[$a]->bpkd_tarif_penerus;
-					}
-					$terbayar = array_sum($terbayar);
-					if ($terbayar >= $tarif_shuttle) {
+						$cari_resi_shuttle = DB::table('biaya_penerus_kas_detail')
+											   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
+											   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
+											   ->where('bpk_jenis_bbm',$jenis_biaya)
+											   ->get();
+						$terbayar = [];
+						for ($a=0; $a < count($cari_resi_shuttle); $a++) { 
+							$terbayar[$a] = $cari_resi_shuttle[$a]->bpkd_tarif_penerus;
+						}
+						$terbayar = array_sum($terbayar);
+						if ($terbayar >= $tarif_shuttle) {
+							unset($resi[$i]);
+						}
+
+					}elseif ($jenis_biaya == '4' or $jenis_biaya == '7'){
+						// lintas  dan penyebrangan
+						$cari_resi_lintas = DB::table('biaya_penerus_kas_detail')
+											   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
+											   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
+											   ->where('biaya_penerus_kas_detail.bpk_comp',$cabang)
+											   ->get();
+
+						if ($cari_resi_lintas != null) {
+							unset($resi[$i]);
+						}
+
+					}else{
 						unset($resi[$i]);
 					}
-
-				}elseif ($jenis_biaya == '4' or $jenis_biaya == '7'){
-					// lintas  dan penyebrangan
-					$cari_resi_lintas = DB::table('biaya_penerus_kas_detail')
-										   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
-										   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
-										   ->where('biaya_penerus_kas_detail.bpk_comp',$cabang)
-										   ->get();
-
-					if ($cari_resi_lintas != null) {
-						unset($resi[$i]);
-					}
-
-				}else{
-					unset($resi[$i]);
 				}
 			}
+
 		}
 
 		$resi = array_values($resi);
@@ -289,7 +292,6 @@ class KasController extends Controller
 	public function save_penerus(request $request){
 		return DB::transaction(function() use ($request) {  
 		 // dd($request->all());
-		// dd($request->pembiayaan_paket);
 		if ($request->jenis_pembiayaan == 'PAKET') {
 
 			$cari_persen = DB::table('master_persentase')
@@ -331,35 +333,54 @@ class KasController extends Controller
 	    $request->biaya_dll = filter_var($request->biaya_dll, FILTER_SANITIZE_NUMBER_FLOAT);
 	    $request->total_bbm = filter_var($request->total_bbm, FILTER_SANITIZE_NUMBER_FLOAT);
 	    
-
+	    $terbayar   = [];
+	    $pembayaran = [];
+	    $bayar 		= [];
+	    $sisa 		= [];
 		if ($cari_persen->jenis_bbm == '3') {
 
+
+
 			for ($i=0; $i < count($request->no_resi); $i++) { 
-				$bpk = DB::table('biaya_penerus_kas_detail')
-							->where('bpkd_no_resi',$request->no_resi[$i])
-							->get();
-				$bpk_dt[$i] = $bpk;
-			}
-			for ($i=0; $i < count($bpk_dt); $i++) { 
-				for ($a=0; $a < count($bpk_dt[$i]); $a++) { 
-					$jml[$a] = $bpk_dt[$i][$a]->bpkd_tarif_penerus;
+
+
+				$cari_do[$i] = DB::table('delivery_order')
+								 ->where('nomor',$request->no_resi[$i])
+								 ->get();
+
+				$cari_bpkd[$i] = DB::table('biaya_penerus_kas')
+								 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+								 ->where('bpkd_no_resi',$request->no_resi[$i])
+								 ->get();
+
+				for ($a=0; $a < count($cari_bpkd[$i]); $a++) { 
+					$bayar[$a] = $cari_bpkd[$i][$a]->bpkd_tarif_penerus;
 				}
-				if (isset($jml)) {
-					$jml_dt[$i] = array_sum($jml);
-				}
-				
+
+				$terbayar[$i]   = array_sum($bayar);
+				$pembayaran[$i] = $cari_do[$i][0]->total_net;
+				$sisa[$i] 		= $pembayaran[$i] - $terbayar[$i];
 			}
-			if (isset($jml_dt)) {
-				$fix = array_sum($jml_dt);
-			}else{
-				$fix = 0;
-			}
-	
-			$tot_pen = array_sum($request->penerus);
-			$fix = $fix + $tot_pen;
+
+			// dd($sisa);
+
+			$sisa = array_sum($sisa);
+			$fix  = array_sum($request->penerus);
 
 		}else{
-			$fix = array_sum($request->penerus);
+
+			for ($i=0; $i < count($request->no_resi); $i++) { 
+
+				$cari_do[$i] = DB::table('delivery_order')
+								 ->where('nomor',$request->no_resi[$i])
+								 ->get();
+
+				$pembayaran[$i] = $cari_do[$i][0]->total_net;
+
+			}
+			
+			$sisa = array_sum($pembayaran);
+			$fix  = array_sum($request->penerus);
 		}
 
 
@@ -624,7 +645,7 @@ $cabang=$request->cabang;
 		  	return response()->json(['status' => '1','id'=>$cari_id[0]->bpk_id]);
 		  }else{
 		  	
-		  	return response()->json(['status' => '2','minimal' => $total_tarif,'id'=>$cari_id[0]->bpk_id]);
+		  	return response()->json(['status' => '2','minimal' => $sisa,'id'=>$cari_id[0]->bpk_id]);
 		  }
 
 

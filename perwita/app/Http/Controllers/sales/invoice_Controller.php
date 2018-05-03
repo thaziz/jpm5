@@ -417,7 +417,7 @@ public function append_do(request $request)
 
         }
 
-    }else if ($jenis == 'PAKET' || $jenis == 'KARGO') {
+    }else if ($jenis == 'PAKET') {
 
         $cari_do = DB::table('delivery_order')
                      ->whereIn('delivery_order.nomor',$request->nomor_do)
@@ -435,10 +435,30 @@ public function append_do(request $request)
                    $cari_do[$i]->nama_kota_tujuan = $cari_kota[$a]->nama;
                }
            }
-            $cari_do[$i]->harga_netto = $cari_do[$i]->total - $cari_do[$i]->diskon;
+           $cari_do[$i]->harga_netto = $cari_do[$i]->total + $cari_do[$i]->biaya_tambahan - $cari_do[$i]->diskon;
 
         }
 
+    }elseif($jenis == 'KARGO'){
+       $cari_do = DB::table('delivery_order')
+                     ->whereIn('delivery_order.nomor',$request->nomor_do)
+                     ->get();
+
+        $cari_kota  = DB::table('kota')
+                        ->get();
+
+        for ($i=0; $i < count($cari_do); $i++) { 
+           for ($a=0; $a < count($cari_kota); $a++) { 
+               if ($cari_kota[$a]->id == $cari_do[$i]->id_kota_asal) {
+                   $cari_do[$i]->nama_kota_asal = $cari_kota[$a]->nama;
+               }
+               if ($cari_kota[$a]->id == $cari_do[$i]->id_kota_tujuan) {
+                   $cari_do[$i]->nama_kota_tujuan = $cari_kota[$a]->nama;
+               }
+           }
+            $cari_do[$i]->harga_netto = $cari_do[$i]->total + $cari_do[$i]->diskon;
+
+        }
     }
         
     return response()->json([
