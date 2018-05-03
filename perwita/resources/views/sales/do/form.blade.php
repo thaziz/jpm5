@@ -1009,27 +1009,27 @@
         //--
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
-            ppn =Math.round(parseFloat(total) * parseFloat(0.1));
+            ppn =parseFloat(total) * parseFloat(0.1);
             total = total + ppn;
         }else if (jenis_ppn == 2) {
-            ppn =Math.round(parseFloat(total) * parseFloat(0.01));
+            ppn =parseFloat(total) * parseFloat(0.01);
             total = total + ppn;
         }else if (jenis_ppn == 4) {
             ppn =0;
         }else if (jenis_ppn == 3) {
-            ppn =Math.round(parseFloat(total) / parseFloat(100.1));
+            ppn =parseFloat(total) / parseFloat(100.1);
             //total = total - ppn;
         }else if (jenis_ppn == 5) {
-            ppn =Math.round(parseFloat(total) / parseFloat(10.1));
+            ppn =parseFloat(total) / parseFloat(10.1);
             total = total - ppn;
         }
       
         // console.log(diskon_value_utama);
-        $("input[name='ed_jml_ppn']").val(ppn);
+        $("input[name='ed_jml_ppn']").val(Math.round(ppn));
         
-        $("input[name='ed_total_h']").val(total-diskon_value_utama);
+        $("input[name='ed_total_h']").val(Math.round(total-diskon_value_utama));
         
-        $("input[name='ed_total_total']").val(total_total);
+        $("input[name='ed_total_total']").val(Math.round(total_total));
     }
 
     $('#cb_outlet').change(function(){
@@ -3394,24 +3394,24 @@
         //--
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
-            ppn =Math.round(parseFloat(total) * parseFloat(0.1));
+            ppn =parseFloat(total) * parseFloat(0.1);
             total = total + ppn;
         }else if (jenis_ppn == 2) {
-            ppn =Math.round(parseFloat(total) * parseFloat(0.01));
+            ppn =parseFloat(total) * parseFloat(0.01);
             total = total + ppn;
         }else if (jenis_ppn == 4) {
             ppn =0;
         }else if (jenis_ppn == 3) {
-            ppn =Math.round(parseFloat(total) / parseFloat(100.1));
+            ppn =parseFloat(total) / parseFloat(100.1);
             //total = total - ppn;
         }else if (jenis_ppn == 5) {
-            ppn =Math.round(parseFloat(total) / parseFloat(10.1));
+            ppn =parseFloat(total) / parseFloat(10.1);
             total = total - ppn;
         }
 
         var diskon_tot = parseFloat(diskon_value)/parseFloat(total_total)*100;
         
-        $('#ed_diskon_h').val(parseFloat(diskon_tot).toFixed(2));
+        $('#ed_diskon_h').val(Math.round(diskon_tot));
         if(diskon_value == 0){
             $('#ed_diskon_h').val(0);
         }
@@ -3445,11 +3445,13 @@
             $('#ed_diskon_v').val(0);
             $('#ed_diskon_h').val(0);
             var anj = $('#ed_diskon_v').val();
+            $("input[name='ed_total_h']").val(total);
             console.log(anj);
         }
-        $("input[name='ed_jml_ppn']").val(ppn);
-        $("input[name='ed_total_h']").val(total-diskon_value);
-        $("input[name='ed_total_total']").val(total_total);
+        $("input[name='ed_jml_ppn']").val(Math.round(ppn));
+        $("input[name='ed_total_h']").val(Math.round(total-diskon_value_utama));
+        
+        $("input[name='ed_total_total']").val(Math.round(total_total));
         // hitung();   
     }
     function cetak(){
