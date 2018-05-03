@@ -156,12 +156,12 @@
                                   
                                    <tr>
                                   <td> Sub Total </td>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal"> </div></td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal" readonly=""> </div></td>
                               </tr>
 
                               <tr>
                                   <td> Jenis PPn </td>
-                                  <td> <div class="col-sm-7"> <select class="form-control jenisppn" name="jenisppn">
+                                  <td> <div class="col-sm-7"> <select class="form-control jenisppn disabled" name="jenisppn">
                                           <option value="T">
                                               Tanpa
                                           </option>
@@ -177,11 +177,11 @@
                               </tr>
                               <tr>
                                   <td> PPn </td>
-                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn"></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn"> </div></td>
+                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn" readonly=""></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn"> </div></td>
                               </tr>
                               <tr>
                                   <td> Total </td>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total"></div> </td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total" readonly=""></div> </td>
                               </tr>
                               </table>
                               
@@ -493,6 +493,9 @@
             
                 $('.notareturn').val(nospp);
               
+            },
+            error : function(){
+              location.reload();
             }
         })
     })
@@ -532,6 +535,9 @@
             
                 $('.notareturn').val(nospp);
               
+            },
+            error : function(){
+              location.reload();
             }
         })
 
@@ -728,9 +734,11 @@
   
    $('#createmodal_po').click(function(){
       supplier = $('.supplier').val();
+      cabang = $('.cabang').val();
+      idpo = $('.idpo').val();
         $.ajax({    
           type :"get",
-          data : {supplier},
+          data : {supplier,cabang,idpo},
           url : baseUrl + '/returnpembelian/getpo',
           dataType:'json',
           success : function(response){

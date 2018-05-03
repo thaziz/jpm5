@@ -83,7 +83,17 @@ class ReturnPembelianController extends Controller
 
 	public function getpo(Request $request){
 		$supplier = $request->supplier;
-		$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF'");
+		$cabang = $request->cabang;
+		$idpo = $request->idpo;
+		if(count($idpo) == 0){
+		
+							$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang' and po_id != '$idpo' ");
+			
+		}
+		else {
+							$data['po'] = DB::select("select * from pembelian_order where po_supplier = '$supplier' and po_idfaktur is null and po_setujufinance = 'DISETUJUI' and po_statusreturn = 'AKTIF' and po_cabang = '$cabang'  ");
+				
+		}
 
 		return json_encode($data);
 	}
@@ -410,7 +420,7 @@ class ReturnPembelianController extends Controller
 										$updatesmt->update([
 											'sm_qty' => 0,
 											'sm_sisa' => 0,
-											'update_by' => $request->username
+											'updated_by' => $request->username
 											]);
 										//$sisa = (int)$jumlahperitem - (int)$request->qtyreturn[$k];
 									} // END SAMA
@@ -435,7 +445,7 @@ class ReturnPembelianController extends Controller
 										$updatesmt->update([
 											'sm_qty' => $hasilselisih,
 											'sm_sisa' => $hasilselisih,
-											'update_by' => $request->username
+											'updated_by' => $request->username
 											]);
 									}
 								}
@@ -468,7 +478,7 @@ class ReturnPembelianController extends Controller
 													$updatesmt->update([
 														'sm_qty' => 0,
 														'sm_sisa' => 0,
-														'update_by' => $request->username
+														'updated_by' => $request->username
 														]);	
 													$return = (int)$return - (int)$qty;										
 												}
@@ -489,7 +499,7 @@ class ReturnPembelianController extends Controller
 													$updatesmt->update([
 														'sm_qty' => $hasilqty,
 														'sm_sisa' => $hasilqty,
-														'update_by' => $request->username
+														'updated_by' => $request->username
 														]);	
 													$return = (int)$return - (int)$qty;	
 												}
@@ -508,7 +518,7 @@ class ReturnPembelianController extends Controller
 													$updatesmt->update([
 														'sm_qty' => 0,
 														'sm_sisa' => 0,
-														'update_by' => $request->username
+														'updated_by' => $request->username
 														]);
 												}
 											}
@@ -608,7 +618,7 @@ class ReturnPembelianController extends Controller
 						$lokasigudang = $request->lokasigudang[$j];
 
 						$stockgudang = DB::select("select * from stock_gudang where sg_gudang = '$lokasigudang' and sg_cabang = '$cabang' and sg_item = '$iditem' ");
-
+					/*	return $iditem . $cabang . $lokasigudang;*/
 						//return $stockgudang[0]->sg_qty;
 						$hasilstockgudang = (int)$stockgudang[0]->sg_qty - (int)$request->qtyreturn[$j];
 

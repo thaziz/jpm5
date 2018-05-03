@@ -22,7 +22,7 @@ class StockOpnameController extends Controller
     public function detailstockopname($id) {
         $data['stockopname'] = DB::select("select * from stock_opname, cabang, mastergudang where so_id = '$id' and so_gudang = mg_id and so_comp = kode");
 
-        $data['stockopnamedt'] = DB::select("select * from stock_opname_dt , stock_opname, masteritem where sod_so_id = so_id and so_id = '$id' and sod_item = kode_item");
+        $data['stockopnamedt'] = DB::select("select * from stock_opname_dt , stock_opname, masteritem  where sod_so_id = so_id and so_id = '$id' and sod_item = kode_item");
         /*dd($data);*/
 
         return view('purchase/stock_opname/detail' , compact('data'));
@@ -39,9 +39,11 @@ class StockOpnameController extends Controller
         return view('purchase/stock_opname/print_laporan_opname' , compact('data'));
     }
 
-    public function deletestockopname(Request $request){
-        $id = $request->id;
+    public function deletestockopname($id){
+      /*  $id = $request->id;*/
         $dataso = DB::select("select * from stock_opname, stock_opname_dt where sod_so_id = so_id and so_id = '$id'");
+        $gudang = $dataso[0]->so_gudang;
+        $comp = $dataso[0]->so_comp;
         for($i = 0; $i < count($dataso); $i++){
             $status = $dataso[$i]->sod_status;
             if($status == 'kurang'){
@@ -64,16 +66,47 @@ class StockOpnameController extends Controller
                         ->update([
                             'sm_use' => $sm_use,
                             'sm_sisa' => $sm_sisa,                                        
-                        ]);    
-                    
+                        ]); 
 
+                     $datagudang = DB::select("select * from stock_gudang where sg_gudang = '$gudang' and sg_cabang = '$comp' and sg_item = '$item'");
+                    $qty = $datagudang[0]->sg_qty;
+                    
+                    $hasilqty = $qty + $smtqty;
+                    $updatesm = DB::table('stock_gudang')
+                            ->where([['sg_gudang' , '=' ,$gudang],['sg_cabang' , '=' , $comp] , ['sg_item' , '=' , $item]])
+                            ->update([
+                                'sg_qty' => $hasilqty,                                        
+                            ]);     
                 }
+
+               
+            }
+            else if($status == 'lebih') {
+                 $qtyselisih = $dataso[$i]->sod_jumlah_status;
+                 $item = $dataso[$i]->sod_item;
+                 $idso = $dataso[$i]->so_id;
+                 $datasm = DB::select("select * from stock_opname_sm where smt_idso = '$idso' and smt_kodeitem = '$item'");
+    
+
+                    $datagudang = DB::select("select * from stock_gudang where sg_gudang = '$gudang' and sg_cabang = '$comp' and sg_item = '$item'");
+                    $qty = $datagudang[0]->sg_qty;
+                    
+                    $hasilqty = $qty - $qtyselisih;
+                    $updatesm = DB::table('stock_gudang')
+                            ->where([['sg_gudang' , '=' ,$gudang],['sg_cabang' , '=' , $comp] , ['sg_item' , '=' , $item]])
+                            ->update([
+                                'sg_qty' => $hasilqty,                                        
+                            ]);   
 
             }
             
+
         }
 
-        DB::delete("DELETE from  stock_mutation where sm_po = '$id' and sm_flag = 'SO'");
+        $datastock = DB::select("select * from  stock_mutation where sm_po = '$id' and sm_flag = 'SO'");
+        if(count($datastock) != 0){
+             DB::delete("DELETE from  stock_mutation where sm_po = '$id' and sm_flag = 'SO'");
+        }    
         DB::delete("DELETE from  stock_opname where so_id = '$id'");
 
     }
@@ -88,11 +121,9 @@ class StockOpnameController extends Controller
         }else{
             $cari_max_id = 1;
         }
-        if (in_array('lebih', $request->status) || in_array('kurang', $request->status)) {
-            $status = 'TIDAK';
-        }else{
-            $status = 'SESUAI';
-        }
+       
+
+        $statusakhir = 0;
         $today = date("Y-m-d");
         $save_stock_opname = DB::table('stock_opname')
                            ->insert([
@@ -102,7 +133,7 @@ class StockOpnameController extends Controller
                             'so_nota'     => $request->so,
                             'so_comp'     => $request->cabang2,
                             'so_user'     => $request->username,
-                            'so_status'   => $status,
+                           
                             'created_at'  => Carbon::now(),
                             'updated_at'  => Carbon::now(),
                             'so_tgl'      => $today,
@@ -121,6 +152,14 @@ class StockOpnameController extends Controller
             $idstock = $explodeitem[1];
             $cabang = $request->cabang2;
             $gudang = $request->gudang;
+
+
+            if($status == 'sama') {
+               $statusakhir = 0;
+            }else{
+                $statusakhir = $statusakhir + 1;
+            } 
+
 
             $dataselisih = DB::select("select * from stock_mutation where sm_item = '$item' and sm_mutcat = '1' and sm_comp = '$cabang' and sm_id_gudang = '$gudang' and sm_sisa != '0' order by sm_id asc");
 
@@ -255,7 +294,8 @@ class StockOpnameController extends Controller
 									'created_at'        => Carbon::now(),
 									'updated_at'        => Carbon::now(),
 									'sod_hargaselisih'  => $selisihharga,
-									'sod_jumlahselisih' => $harga, 
+                                    'sod_jumlahselisih' => $harga, 
+									'sod_idstock'       => $idstock, 
 								]);
 
             }
@@ -427,9 +467,9 @@ class StockOpnameController extends Controller
                                 'sod_jumlah_status' => $val_status,
                                 'sod_keterangan'    => $request->keterangan[$i],
                                 'created_at'        => Carbon::now(),
-                                'updated_at'        => Carbon::now(),
-                                
+                                'updated_at'        => Carbon::now(),                               
                                 'sod_jumlahselisih' => $hargahasil, 
+                                'sod_idstock'       => $idstock, 
                             ]);
                 } // lebih dari satu kali 
             } //sama
@@ -462,6 +502,7 @@ class StockOpnameController extends Controller
                                 'sod_keterangan'    => $request->keterangan[$i],
                                 'created_at'        => Carbon::now(),
                                 'updated_at'        => Carbon::now(),
+                                'sod_idstock'       => $idstock, 
                             ]);
             }
 
@@ -501,10 +542,34 @@ class StockOpnameController extends Controller
                                     'sg_qty'  =>   $hasilqty
                                   ]);
             }
-        
+
+                
 		}
+        
+        if($statusakhir == 0){
+             $setuju_dt = DB::table('stock_opname')
+            ->where('so_id' , $cari_max_id)
+            ->update([
+                'so_status' => 'SESUAI',
+            ]);     
+        }
+        else {
+            $setuju_dt = DB::table('stock_opname')
+            ->where('so_id' , $cari_max_id)
+            ->update([
+                'so_status' => 'TIDAK SESUAI',
+            ]);     
+        }
 
         }); //save return
     }
+
+    public function updatestockopname(Request $request){
+        $idstockopname = $request->so_id;
+
+        $this->deletestockopname($idstockopname);
+        $this->savestockopname($request);
+        return json_encode('sukses');
+     }  
 
 }
