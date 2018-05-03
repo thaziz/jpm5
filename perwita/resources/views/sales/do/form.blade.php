@@ -188,7 +188,7 @@
                                                             <option selected="true" value="" ></option>
                                                         @foreach ($cabang as $row)
                                                             @if($row->diskon != null)
-                                                            <option value="{{ $row->kode }}"> {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                            <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}"> {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
                                                             @else
                                                             <option value="{{ $row->kode }}"> {{ $row->nama }}</option>
                                                             @endif
@@ -955,6 +955,31 @@
         var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
         // var diskon = diskon.replace(/[A-Za-z$. ,-]/g, "");
         var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
+        var this_selected_value = $('#cb_cabang').find(':selected').data('diskon');
+        // alert(this_selected_value);
+            if(diskon_val > this_selected_value){
+                 Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": true,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": true,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+                $("input[name='ed_diskon_h']").val(0);
+            }
+        // 
         if (diskon > 0 && biaya_tambahan > 0) {
             alert("Diskon dan biaya tambahan di isi salah satu");
             parseFloat($("input[name='ed_diskon_h']").val(0));
@@ -3390,8 +3415,13 @@
         if(diskon_value == 0){
             $('#ed_diskon_h').val(0);
         }
-        if (diskon_value > maxvalue) {
-            console.log('asdas');
+        // alert(maxvalue);
+        // var max_dis = 
+        var this_selected_value = $('#cb_cabang').find(':selected').data('diskon');
+        // alert(this_selected_value);
+        var tot = parseFloat(this_selected_value)*parseFloat(total_total)/100; 
+           
+        if (diskon_value > tot) {
             
             Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
 
@@ -3418,7 +3448,7 @@
             console.log(anj);
         }
         $("input[name='ed_jml_ppn']").val(ppn);
-        $("input[name='ed_total_h']").val(total-diskon_value_utama);
+        // $("input[name='ed_total_h']").val(total-diskon_value);
         $("input[name='ed_total_total']").val(total_total);
         // hitung();   
     }
