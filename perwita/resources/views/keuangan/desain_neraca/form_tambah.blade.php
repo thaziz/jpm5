@@ -138,7 +138,7 @@
                               <button href="#pasiva" aria-controls="pasiva" role="tab" data-toggle="tab" class="btn btn-white btn-sm switch" data-for="pasiva" style="font-size: 8pt;" type="button">Pasiva</button>
                           </div>
 
-                          <span class="pull-right text-disabled" style="font-weight: 600; font-style: italic; font-size: 7pt;">{{ date("m-d-Y") }}</span>
+                          <span class="pull-right text-disabled" style="font-weight: 600; font-style: italic; font-size: 7pt;">{{ date("d-m-Y") }}</span>
                         </div>
                         
                         <div class="col-md-12" style="border-top: 1px solid #eee; margin: 10px 0px"></div>
