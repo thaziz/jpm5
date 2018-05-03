@@ -3449,7 +3449,7 @@
             console.log(anj);
         }
         $("input[name='ed_jml_ppn']").val(Math.round(ppn));
-        $("input[name='ed_total_h']").val(Math.round(total-diskon_value_utama));
+        $("input[name='ed_total_h']").val(Math.round(total-diskon_value));
         
         $("input[name='ed_total_total']").val(Math.round(total_total));
         // hitung();   
