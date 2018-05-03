@@ -31,6 +31,7 @@ class biaya_penerus_kas extends Model
 							  	'bpk_jarak',
 							  	'created_by',
 							  	'updated_by',
+							  	'bpk_jenis_bbm',
 							  	'bpk_harga_bbm'
 						);
   

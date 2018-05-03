@@ -62,6 +62,30 @@
                               </div> </td>
                       </tr>
                        <tr>
+                          <th style="width: 100px; padding-top: 16px"> Cabang </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker6 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn5()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            @foreach ($cabang as $cabang)
+                                <option value="{{ $cabang->nama }}">{{ $cabang->kode }} - {{ $cabang->nama }}</option>
+                            @endforeach
+                           </select>
+                          </td>
+                          
+                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="DOKUMEN">DOKUMEN</option>
+                            <option value="KILOGRAM">KILOGRAM</option>
+                            <option value="KOLI">KOLI</option>
+                            <option value="SEPEDA">SEPEDA</option>
+                           </select>
+                          </td>
+                        
+                           
+                        </tr>
+                       <tr>
                         <th> Nama Pengirim : </th> 
                           <td> 
                                 <input id="nama_pengirim" type="text" class="form-control ">
@@ -93,28 +117,7 @@
                            </select>
                           </td>
                         </tr>
-                        <tr>
-                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="DOKUMEN">DOKUMEN</option>
-                            <option value="KILOGRAM">KILOGRAM</option>
-                            <option value="KOLI">KOLI</option>
-                            <option value="SEPEDA">SEPEDA</option>
-                           </select>
-                          </td>
-                        
-                           <th style="width: 100px; padding-top: 16px"> Jenis </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="REGULER">REGULER</option>
-                            <option value="EXPRESS">EXPRESS</option>
-                            <option value="OUTLET">OUTLET</option>
-                           </select>
-                          </td>
-                        </tr>
+
                         <tr>
 
                            <th style="width: 100px; padding-top: 16px"> Status </th>
@@ -129,13 +132,13 @@
                            </select>
                           </td>
 
-                          <th style="width: 100px; padding-top: 16px"> Cabang </th>
+                          <th style="width: 100px; padding-top: 16px"> Jenis </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker6 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn5()">
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
                             <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($cabang as $cabang)
-                                <option value="{{ $cabang->nama }}">{{ $cabang->kode }} - {{ $cabang->nama }}</option>
-                            @endforeach
+                            <option value="REGULER">REGULER</option>
+                            <option value="EXPRESS">EXPRESS</option>
+                            <option value="OUTLET">OUTLET</option>
                            </select>
                           </td>
                         </tr>

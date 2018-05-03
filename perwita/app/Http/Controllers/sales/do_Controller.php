@@ -81,8 +81,54 @@ class do_Controller extends Controller
         echo json_encode($data);
     }
     public function cetak_form(Request $request){
+        // dd($request->all());     
+        $nomor = $request->ed_nomor;
 
-        return view('sales/do/cetak_delivery_order');
+        $get_asal = $request->cb_kota_asal;
+        $get_tujuan = $request->cb_kota_tujuan;
+
+        $db_asal = DB::table('kota')->select('id','nama')->where('id','=',$get_asal)->get();
+        $db_tujuan = DB::table('kota')->select('id','nama')->where('id','=',$get_tujuan)->get();
+
+        $asal = $db_asal[0]->nama;
+        $tujuan = $db_tujuan[0]->nama;
+
+        $type_kiriman = $request->type_kiriman;
+        $jenis_pembayaran = '';
+        $instruksi = $request->ed_instruksi;
+        $tanggal = $request->ed_tanggal;
+
+        $nama_pengirim = $request->ed_nama_pengirim;
+        $alamat_pengirim = $request->ed_alamat_pengirim;
+        $telpon_pengirim = $request->ed_telpon_pengirim;
+        $nama_penerima = $request->ed_nama_penerima;
+        $alamat_penerima = $request->ed_alamat_penerima;
+        $telpon_penerima = $request->ed_telpon_penerima;
+
+        $total = $request->ed_total_h;
+
+        if ($type_kiriman == 'DOKUMEN') {
+            $koli = 0;
+            $kg = 0;
+            $volume = 0;
+        }elseif ($type_kiriman == 'SEPEDA') {
+            $koli = $request->cb_jml_unit;
+                for ($i=0; $i <count($request->cb_berat_unit) ; $i++) { 
+                    $dd[$i] = $request->cb_berat_unit[$i];
+                }
+            $kg = array_sum($dd);
+            $volume = 0;
+        }elseif ($type_kiriman == 'KILOGRAM') {
+            $koli = $request->ed_koli;
+            $kg = $request->ed_berat;
+            $volume = $request->ed_panjang.' x '.$request->ed_lebar.' x '.$request->ed_tinggi;
+        }elseif ($type_kiriman == 'KOLI'){
+            $koli = $request->ed_koli;
+            $kg = $request->ed_berat;
+            $volume = 0;
+        }
+
+        return view('sales/do/cetak_delivery_order',compact('nomor','asal','tujuan','type_kiriman','jenis_pembayaran','instruksi','tanggal','nama_pengirim','alamat_pengirim','telpon_pengirim','nama_penerima','alamat_penerima','telpon_penerima','total','koli','kg','volume'));
     }
 
     public function save_data(Request $request)

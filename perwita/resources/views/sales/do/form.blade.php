@@ -181,6 +181,21 @@
                                                         </select>
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                                    <td colspan="5">
+                                                        <select class="form-control"  name="cb_cabang" onclick="setMaxDisc()" style="width:100%" id="cb_cabang">
+                                                            <option selected="true" value="" ></option>
+                                                        @foreach ($cabang as $row)
+                                                            @if($row->diskon != null)
+                                                            <option value="{{ $row->kode }}"> {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                            @else
+                                                            <option value="{{ $row->kode }}"> {{ $row->nama }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
                                                 <tr id="jenis_kendaraan">
                                                     <td style="width:120px; padding-top: 0.4cm">Jenis Kendaraan</td>
                                                     <td colspan="5">
@@ -294,21 +309,7 @@
                                                         <input type="text" class="form-control" name="ed_koli" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->koli, 0, ",", ".") }}" @endif>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                                    <td colspan="5">
-                                                        <select class="form-control"  name="cb_cabang" onclick="setMaxDisc()" style="width:100%" id="cb_cabang">
-                                                            <option selected="true" value="" ></option>
-                                                        @foreach ($cabang as $row)
-                                                            @if($row->diskon != null)
-                                                            <option value="{{ $row->kode }}"> {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
-                                                            @else
-                                                            <option value="{{ $row->kode }}"> {{ $row->nama }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                        </select>
-                                                    </td>
-                                                </tr>
+                                                
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">DO Outlet</td>
                                                     <td colspan="4">
@@ -446,20 +447,21 @@
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Alamat</td>
                                                     <td>
-                                                        <input type="text" class="form-control alamatpengirim" name="ed_alamat_pengirim"  style="text-transform: uppercase" value="{{ $do->alamat_pengirim or null }}">
+                                                        <input type="text" class="form-control alamatpengirim hanyaangka" name="ed_alamat_pengirim"  style="text-transform: uppercase" value="{{ $do->alamat_pengirim or null }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
                                                     <td>
-                                                        <input type="text" class="form-control kodepospengirim" name="ed_kode_pos_pengirim"  style="text-transform: uppercase" value="{{ $do->kode_pos_pengirim or null }}">
+                                                        <input type="text" class="form-control kodepospengirim hanyaangka" name="ed_kode_pos_pengirim"  style="text-transform: uppercase" value="{{ $do->kode_pos_pengirim or null }}">
                                                         <span id="errmsg"></span>
                                                     </td>
                                                 </tr>
                                                 <tr>    
                                                     <td style="width:110px; padding-top: 0.4cm">Telpon</td>
                                                     <td>
-                                                        <input type="text" class="form-control teleponpengirim" name="ed_telpon_pengirim"  style="text-transform: uppercase" value="{{ $do->telpon_pengirim or null }}">
+                                                        <input type="text" class="form-control teleponpengirim hanyaangka" name="ed_telpon_pengirim"  style="text-transform: uppercase" value="{{ $do->telpon_pengirim or null }}">
+                                                        <span id="errmsg"></span>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -509,14 +511,15 @@
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Kode Pos</td>
                                                     <td>
-                                                        <input type="text" class="form-control kodepospenerima" name="ed_kode_pos_penerima"  style="text-transform: uppercase" value="{{ $do->kode_pos_penerima or null }}">
-                                                        <span id="errmsgpenerima"></span>
+                                                        <input type="text" class="form-control kodepospenerima hanyaangka" name="ed_kode_pos_penerima"  style="text-transform: uppercase" value="{{ $do->kode_pos_penerima or null }}">
+                                                        <span id="errmsg"></span>
                                                     </td>
                                                 </tr>
                                                 <tr>    
                                                     <td style="width:110px; padding-top: 0.4cm">Telpon</td>
                                                     <td>
-                                                        <input type="text" class="form-control teleponpenerima" name="ed_telpon_penerima"  style="text-transform: uppercase" value="{{ $do->telpon_penerima or null }}">
+                                                        <input type="text" class="form-control teleponpenerima hanyaangka" name="ed_telpon_penerima"  style="text-transform: uppercase" value="{{ $do->telpon_penerima or null }}">
+                                                        <span id="errmsg"></span>
                                                     </td>
                                                 </tr>
                                                 <tr>    
@@ -777,8 +780,18 @@
                type:'get',
                data:{cabang_this:cabang_this,tanggal_this:tanggal_this},
                success:function(data){
-                console.log(data.data);
-                $('#ed_nomor').val(data.data);
+                    if ($('#ed_nomor').val() == '') {
+                            $('#ed_nomor').val(data.data);
+                    }else{
+                        var rep = $('#ed_nomor').val();
+                        var rep_nom = rep.substr(0,3);
+                        console.log(rep_nom);
+                            if (rep_nom == 'PAK') {
+                                $('#ed_nomor').val(data.data);
+                            }else{
+
+                            }
+                    }
                }
            })
         }else{
@@ -867,7 +880,7 @@
                 '.chosen-select'           : {search_contains:true},
                 '.chosen-select-deselect'  : {allow_single_deselect:true},
                 '.chosen-select-no-single' : {disable_search_threshold:10},
-                '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
+                '.chosen-select-no-results': {form_header:'Oops, nothing found!'},
                 '.chosen-select-width'     : {width:"100%",search_contains:true}
                 }
             for (var selector in config) {
@@ -3041,6 +3054,7 @@
                     if(data.result != 1){
                         alert("Gagal menyimpan data!");
                     }else{
+
                            Command: toastr["success"]("Data Telah Tersimpan", "Pemberitahuan !")
 
                             toastr.options = {
@@ -3061,8 +3075,8 @@
                               "hideMethod": "fadeOut"
                             }
                             return false;
-                            $('input[name="btnsimpan"]').attr('disabled','true');
-                            $('input[name="btnsimpan_tambah"]').attr('disabled','true');
+                            $('input[name="btnsimpan"]').prop('disabled','true');
+                            $('input[name="btnsimpan_tambah"]').prop('disabled','true');
 
                         
                         // window.location.href = baseUrl + '/sales/deliveryorderform'
@@ -3091,8 +3105,11 @@
                               "hideMethod": "fadeOut"
                             }
                             return false;
-                            $('input[name="btnsimpan"]').attr('disabled','true');
-                            $('input[name="btnsimpan_tambah"]').attr('disabled','true');
+                            $('input[name="btnsimpan"]').prop('disabled','true');
+                            $('input[name="btnsimpan_tambah"]').prop('disabled','true');
+                            $("form").each(function(){
+                                $(this).find(':input') //<-- Should return all input elements in that specific form.
+                            });
                     }
                 }else{
                     swal("Error","invalid order","error");
@@ -3202,24 +3219,16 @@
   //              return false;
   //   }
   //  });
-  $(".kodepospengirim").keypress(function (e) {
+  $(".hanyaangka").keypress(function (e) {
      //if the letter is not digit then display error and don't type anything
      if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
         //display error message
-        $("#errmsg").html("Hanya angka yang diperbolehkan").show().fadeOut(1500);
-        $("#errmsg").css('color','red');
+        $(".errmsg").html("Hanya angka yang diperbolehkan").show().fadeOut(1500);
+        $(".errmsg").css('color','red');
                return false;
     }
    });
-   $(".kodepospenerima").keypress(function (e) {
-     //if the letter is not digit then display error and don't type anything
-     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-        //display error message
-        $("#errmsgpenerima").html("Hanya angka yang diperbolehkan").show().fadeOut(1500);
-        $("#errmsgpenerima").css('color','red');
-               return false;
-    }
-   });
+   
 
    function convertToRupiah(angka) {
         var rupiah = '';        
