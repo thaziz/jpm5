@@ -457,7 +457,7 @@ public function pajak_lain(request $request)
 public function simpan_invoice(request $request)
 {
 
-  dd($request->all());
+  // dd($request->all());
    return DB::transaction(function() use ($request) {  
 
 
@@ -485,6 +485,7 @@ public function simpan_invoice(request $request)
     $ed_total       = filter_var($request->ed_total, FILTER_SANITIZE_NUMBER_FLOAT)/100;
     $total_ppn      = filter_var($request->ppn, FILTER_SANITIZE_NUMBER_FLOAT)/100;
     $total_pph      = filter_var($request->pph, FILTER_SANITIZE_NUMBER_FLOAT)/100;
+
     if ($request->ed_pendapatan == 'PAKET') {
       $cari_acc_piutang = DB::table('d_akun')
                             ->where('id_akun','like','1303'.'%')
@@ -498,6 +499,7 @@ public function simpan_invoice(request $request)
                             ->first();
       $request->accPiutang = $cari_acc_piutang->id_akun;
     }
+
     $cari_no_invoice = DB::table('invoice')
                          ->where('i_nomor',$request->nota_invoice)
                          ->first();
@@ -861,6 +863,8 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_kode_cabang'        =>  $cabang,
                                           'create_by'            =>  Auth::user()->m_name,
                                           'create_at'            =>  Carbon::now(),
+                                          'i_acc_piutang'        =>  $request->accPiutang,
+                                          'i_csf_piutang'        =>  $request->accPiutang,
                                           'update_by'            =>  Auth::user()->m_name,
                                           'i_grup_item'          =>  $request->grup_item,
                                           'update_at'            =>  Carbon::now(),
@@ -1115,6 +1119,8 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_kode_customer'      =>  $request->ed_customer,
                                           'i_kode_cabang'        =>  $cabang,
                                           'create_by'            =>  Auth::user()->m_name,
+                                          'i_acc_piutang'        =>  $request->accPiutang,
+                                          'i_csf_piutang'        =>  $request->accPiutang,
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
                                           'i_grup_item'          =>  $request->grup_item,
@@ -1377,6 +1383,8 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                                           'i_jenis_ppn'          =>  $request->cb_jenis_ppn,
                                           'i_ppntpe'             =>  $ppn_type,
                                           'i_statusprint'        =>  'Released',
+                                          'i_acc_piutang'        =>  $request->accPiutang,
+                                          'i_csf_piutang'        =>  $request->accPiutang,
                                           'i_ppnrte'             =>  $ppn_persen,
                                           'i_ppnrp'              =>  $total_ppn,
                                           'i_kode_pajak'         =>  $request->kode_pajak_lain,
@@ -1604,12 +1612,13 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
                         'jr_year'=> date('Y',strtotime($do_awal)),
                         'jr_date'=> $do_awal,
                         'jr_detail'=> 'INVOICE'.' '.$request->ed_pendapatan,
-                        'jr_ref'=>  $nota,
+                        'jr_ref'=>  $nota
+                        ,
                         'jr_note'=> 'INVOICE',
                         ]);
             d_jurnal_dt::insert($jurnal_dt);
            
-             
+
 
              return response()->json(['status' => 2,'nota'=>$nota]);
         }
