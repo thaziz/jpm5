@@ -42,6 +42,14 @@
                 <div class="form-group col-md-2">
                   <input type="text" class="date form-control" readonly="" id="date_akir" name="">
                 </div>
+                <div class="form-group col-md-4">
+                  <select id="cabang" class="form-control chosen-select-width">
+                    <option value="" selected="">- Cabang -</option>
+                      @foreach ($cabang as $e)
+                        <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
+                      @endforeach
+                  </select>
+                </div>
                 <div class="form-group col-md-2">
                   <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
                 </div>
@@ -53,87 +61,103 @@
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
                     <div id="container" style="height: 400px"></div>
-                    <table class="table table-bordered datatable table-striped" style="margin-top: 100px;">
-                         <tr>
-                        <td> Dimulai : </td> <td> <div class="input-group">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
-                                              date" onchange="tgl()">
+                       <table class="table " style="margin-top: 100px">
+                           <tr>
+                              <td> Dimulai : </td>
+                              <td>
+                                <div class="input-group">
+                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                      <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
+                                          date" onchange="tgl()">
 
-                              </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input type="text" class=" date form-control date_to date_range_filter
-                                              date" name="max" id="max" onchange="tgl()" >
-                              </div> </td>
-                      </tr>
-                       <tr>
-                        <th> Nama Pengirim : </th> 
-                          <td> 
-                                <input id="nama_pengirim" type="text" class="form-control ">
-                          </td>  
-                          <th> Nama Penerima : </th> 
-                            <td> 
-                                <input id="nama_penerima" type="text" class="form-control" >
-                            </td>
-                      </tr>
+                                  </div> 
+                              </td> 
+                              <td> Diakhiri : </td> 
+                              <td> 
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" class=" date form-control date_to date_range_filter
+                                        date" name="max" id="max" onchange="tgl()" >
+                                </div> 
+                              </td>
+                            </tr>
+                            <tr>
+                                <th style="width: 100px; padding-top: 16px"> Cabang </th>
+                                  <td> 
+                                   <select style="width: 200px; margin-top: 20px;" class="select-picker6 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn5()">
+                                      <option value="" disabled="" selected=""> --Pilih --</option>
+                                      @foreach ($cabang as $cabang)
+                                          <option value="{{ $cabang->nama }}">{{ $cabang->kode }} - {{ $cabang->nama }}</option>
+                                      @endforeach
+                                   </select>
+                                  </td>
+                                
+                                <th style="width: 100px; padding-top: 16px"> Tipe </th>
+                                  <td> 
+                                   <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
+                                      <option value="" disabled="" selected=""> --Pilih --</option>
+                                      <option value="DOKUMEN">DOKUMEN</option>
+                                      <option value="KILOGRAM">KILOGRAM</option>
+                                      <option value="KOLI">KOLI</option>
+                                      <option value="SEPEDA">SEPEDA</option>
+                                   </select>
+                                  </td>
+                            </tr>
+                            <tr>
+                                <th> Nama Pengirim : </th> 
+                                  <td> 
+                                      <input id="nama_pengirim" type="text" class="form-control ">
+                                  </td>  
+                                <th> Nama Penerima : </th> 
+                                  <td> 
+                                      <input id="nama_penerima" type="text" class="form-control" >
+                                  </td>
+                            </tr>
+                            <tr >
+                                <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
+                                  <td >
+                                    <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
+                                        <option value="" disabled="" selected=""> --Pilih --</option>
+                                        @foreach ($kota1 as $asal)
+                                            <option value="{{ $asal->asal }}">{{ $asal->asal }}</option>
+                                        @endforeach
+                                    </select>
+                                  </td>
+                          
+                                <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
+                                  <td > 
+                                     <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
+                                        <option value="" disabled="" selected=""> --Pilih --</option>
+                                        @foreach ($kota as $tujuan)
+                                            <option value="{{ $tujuan->tujuan }}">{{ $tujuan->tujuan }}</option>
+                                        @endforeach
+                                     </select>
+                                  </td>
+                            </tr>
 
-                        <tr >
-                           <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
-                          <td >
-                          <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($kota1 as $asal)
-                                <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
-                            @endforeach
-                          </select>
-                          </td>
-                        
-                          <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($kota as $tujuan)
-                                <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
-                            @endforeach
-                           </select>
-                          </td>
-                        </tr>
-                        <tr>
-                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="DOKUMEN">DOKUMEN</option>
-                            <option value="KILOGRAM">KILOGRAM</option>
-                            <option value="KOLI">KOLI</option>
-                            <option value="SEPEDA">SEPEDA</option>
-                           </select>
-                          </td>
-                        
-                           <th style="width: 100px; padding-top: 16px"> Jenis </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="REGULER">REGULER</option>
-                            <option value="EXPRESS">EXPRESS</option>
-                            <option value="OUTLET">OUTLET</option>
-                           </select>
-                          </td>
-                        </tr>
-                        <tr>
-                           <th style="width: 100px; padding-top: 16px"> Status </th>
-                          <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn4()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="MANIFESTED">MANIFESTED</option>
-                            <option value="TRANSIT">TRANSIT</option>
-                            <option value="RECEIVED">RECEIVED</option>
-                            <option value="DELIVERED">DELIVERED</option>
-                            <option value="DELIVERED OK">DELIVERED OK</option>
-                           </select>
-                          </td>
-                        </tr>
-                      <br>
+                            <tr>
+                                 <th style="width: 100px; padding-top: 16px"> Status </th>
+                                  <td > 
+                                     <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn4()">
+                                        <option value="" disabled="" selected=""> --Pilih --</option>
+                                        <option value="MANIFESTED">MANIFESTED</option>
+                                        <option value="TRANSIT">TRANSIT</option>
+                                        <option value="RECEIVED">RECEIVED</option>
+                                        <option value="DELIVERED">DELIVERED</option>
+                                        <option value="DELIVERED OK">DELIVERED OK</option>
+                                     </select>
+                                  </td>
+
+                                  <th style="width: 100px; padding-top: 16px"> Jenis </th>
+                                    <td > 
+                                       <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
+                                          <option value="" disabled="" selected=""> --Pilih --</option>
+                                          <option value="REGULER">REGULER</option>
+                                          <option value="EXPRESS">EXPRESS</option>
+                                          <option value="OUTLET">OUTLET</option>
+                                       </select>
+                                    </td>
+                            </tr>
                       </table>
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                     </div>
@@ -222,34 +246,34 @@
 
     var table;
    
-   table = $('#addColumn').DataTable( {
-      responsive: true,
+    table = $('#addColumn').DataTable( {
+              responsive: true,
               searching: true,
               //paging: false,
               "pageLength": 10,
               "language": dataTableLanguage,
-         dom: 'Bfrtip',
-         buttons: [
-            {
-                  extend: 'excel',
-                 /* messageTop: 'Hasil pencarian dari Nama : ',*/
-                  text: ' Excel',
-                  className:'excel',
-                  title:'LAPORAN TARIF CABANG KOLI',
-                  filename:'CABANGKOLI-'+a+b+c,
-                  init: function(api, node, config) {
-                  $(node).removeClass('btn-default'),
-                  $(node).addClass('btn-warning'),
-                  $(node).css({'margin-top': '-50px','margin-left': '80px'})
-                  },
-                  exportOptions: {
-                  modifier: {
-                      page: 'all'
-                  }
-              }
-              
-              }
-          ]
+               dom: 'Bfrtip',
+               buttons: [
+                  {
+                        extend: 'excel',
+                       /* messageTop: 'Hasil pencarian dari Nama : ',*/
+                        text: ' Excel',
+                        className:'excel',
+                        title:'LAPORAN TARIF CABANG KOLI',
+                        filename:'CABANGKOLI-'+a+b+c,
+                        init: function(api, node, config) {
+                        $(node).removeClass('btn-default'),
+                        $(node).addClass('btn-warning'),
+                        $(node).css({'margin-top': '-50px','margin-left': '80px'})
+                        },
+                        exportOptions: {
+                        modifier: {
+                            page: 'all'
+                        }
+                    }
+                    
+                    }
+                ]
     });
      $('.date').datepicker({
         autoclose: true,
@@ -309,31 +333,35 @@
     } );
 
     function filterColumn () {
-    $('#addColumn').DataTable().column(0).search(
+    $('#addColumn').DataTable().column(5).search(
         $('.select-picker1').val()).draw();    
     }
     function filterColumn1 () {
-        $('#addColumn').DataTable().column(1).search(
+        $('#addColumn').DataTable().column(6).search(
             $('.select-picker2').val()).draw();    
     }
     function filterColumn2 () {
-        $('#addColumn').DataTable().column(10).search(
+        $('#addColumn').DataTable().column(8).search(
             $('.select-picker3').val()).draw(); 
      }
      function filterColumn3 () {
-        $('#addColumn').DataTable().column(11).search(
+        $('#addColumn').DataTable().column(9).search(
             $('.select-picker4').val()).draw(); 
      }
      function filterColumn4 () {
-        $('#addColumn').DataTable().column(12).search(
+        $('#addColumn').DataTable().column(7).search(
             $('.select-picker5').val()).draw(); 
      }
+      function filterColumn5 () {
+        $('#addColumn').DataTable().column(10).search(
+            $('.select-picker6').val()).draw(); 
+     }
      $('#nama_pengirim').on( 'keyup', function () {
-         table.column(4).search( this.value ).draw();
+         table.column(3).search( this.value ).draw();
       });  
      $('#nama_penerima').on( 'keyup', function () {
-        table.column(5).search( this.value ).draw();
-      });  
+        table.column(4).search( this.value ).draw();
+      });   
 
       function cetak(){
       var asw=[];
@@ -366,6 +394,7 @@
     function cari(){
       var date_awal = $('#date_awal').val();
       var date_akir = $('#date_akir').val();
+      var cabang = $('#cabang').val();
       
       if(date_awal == ''){
           Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
@@ -411,7 +440,7 @@
           return false;
       }
       $.ajax({
-        data: {a:date_awal,b:date_akir},
+        data: {a:date_awal,b:date_akir,c:cabang},
         url: baseUrl + '/cari_paket/cari_paket',
         type: "get",
        success : function(data){

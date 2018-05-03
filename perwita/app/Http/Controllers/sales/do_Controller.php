@@ -448,9 +448,6 @@ class do_Controller extends Controller
             }else{
                 $namanama  = Auth::user()->m_username;
             }
-            $total1  = filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT);
-            $total2  = filter_var($request->ed_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT);
-            $total  = $total1 + $total2;
             $data = array(
                 'nomor' => strtoupper($request->ed_nomor),
                 'tanggal' => $request->ed_tanggal,
@@ -491,7 +488,7 @@ class do_Controller extends Controller
                 'instruksi' => strtoupper($request->ed_instruksi),
                 'deskripsi' => strtoupper($request->ed_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
-                'total' => $total,
+                'total' => filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
@@ -938,6 +935,7 @@ class do_Controller extends Controller
         $kec = null;
         $do = null;
         $do_dt = null;
+
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
 
@@ -957,12 +955,18 @@ class do_Controller extends Controller
                     ->get();
             }
 
+            
+
+
         } else {
             $do = null;
             $jml_detail = 0;
         }
-//dd($do);
-        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt'));
+
+        
+        // return $cek_data;
+       
+        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data'));
     }
 
     public function form_update_status($nomor = null)
