@@ -449,7 +449,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
     // global variabel
-    var index_detail = 0;
+    var index_detail = 1;
     var array_simpan = [];
     @if($data->i_pendapatan == 'KORAN')
         @foreach($data_dt as $i=>$val)

@@ -677,7 +677,7 @@ class invoice_pembetulan_controller extends Controller
               $delete = DB::table('invoice_pembetulan_d')
                           ->where('ipd_nomor_invoice',$request->nota_invoice)
                           ->delete();
-
+              // dd($request->all());
               if ($request->cb_pendapatan == 'PAKET' or $request->cb_pendapatan == 'KARGO') {
                 // dd('asd');
                 for ($i=0; $i < count($request->do_detail); $i++) { 
@@ -719,6 +719,7 @@ class invoice_pembetulan_controller extends Controller
 
                 }
               }else{
+
                 for ($i=0; $i < count($request->do_detail); $i++) { 
 
                 $cari_id = DB::table('invoice_pembetulan_d')
