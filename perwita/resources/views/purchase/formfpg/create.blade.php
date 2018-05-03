@@ -63,7 +63,7 @@
                                    @if(Auth::user()->punyaAkses('Form Permintaan Giro','cabang'))
                                 <select class="form-control chosen-select-width  cabang" name="cabang">
                                     @foreach($data['cabang'] as $cabang)
-                                  <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                  <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->kode}} - {{$cabang->nama}} </option>
                                   @endforeach
                                 </select>
                                 @else
@@ -2300,61 +2300,27 @@
                       $('.invfaktur').hide();
                       $('.supfaktur').hide();
 
-                       if($('tr.field').length != 0 ){
-                           $('tr.field').each(function(){
-                            nobukti = $(this).data('nota');
-                           // alert(nobukti);
-                            hslnota.push(nobukti);
-                          })
-
-                           for(var k = 0; k < hslnota.length; k++){
-                             for(var i = 0; i < fp.length; i++){ 
-                               if(hslnota[k] != fp[i].um_nomorbukti) {
-                                 var html2 = "<tr class='data"+n+"' id='data"+fp[i].um_nomorbukti+"'>"+
-                                                " <td>"+n+"</td>" +
-                                                "<td>"+fp[i].nama+"</td>" +
-                                                "<td>"+fp[i].um_nomorbukti+"</td>" +
-                                                " <td class='invfaktur'> </td> <td class='supfaktur'> </td>" +
-                                                "<td> - </td>" +
-                                                "<td> - </td>" +
-                                                "<td>"+addCommas(fp[i].um_pelunasan)+"</td> ";
-                                              html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].um_id+","+fp[i].um_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                            "<label></label>" +
-                                            "</div></td>";
-                                                
-                                 html2 +=  "</tr>"; 
-                               
-                                 tablefaktur.rows.add($(html2)).draw(); 
-                                n++; 
-                                console.log(n +'n');
-                              }                                                   
-                             } 
-                           
-                           }
-                            
-                      }
-                      else {
-                        for(var i = 0; i < fp.length; i++){                       
-                            var html2 = "<tr class='data"+n+"' id='data"+fp[i].um_nomorbukti+"'>"+
-                                            " <td>"+n+"</td>" +
-                                            "<td>"+fp[i].nama+"</td>" +
-                                            "<td>"+fp[i].um_nomorbukti+"</td>" +
-                                            " <td class='invfaktur'> </td> <td class='supfaktur'> </td>" +
-                                            "<td> - </td>" +
-                                            "<td> - </td>" +
-                                            "<td>"+fp[i].um_pelunasan+"</td> ";
-                                          html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].um_id+","+fp[i].um_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                        "<label></label>" +
-                                        "</div></td>";
-                                            
-                             html2 +=  "</tr>"; 
-                           
-                             tablefaktur.rows.add($(html2)).draw(); 
-                            n++; 
-                            console.log(n +'n');
-                           } 
-                       } // END ELSE
+                       for(var i = 0; i < fp.length; i++){ 
+                           var html2 = "<tr class='data"+n+"' id='data"+fp[i].um_nomorbukti+"'>"+
+                                          " <td>"+n+"</td>" +
+                                          "<td>"+fp[i].nama+"</td>" +
+                                          "<td>"+fp[i].um_nomorbukti+"</td>" +
+                                        
+                                          "<td> - </td>" +
+                                          "<td> - </td>" +
+                                          "<td>"+addCommas(fp[i].um_pelunasan)+"</td> ";
+                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].um_id+","+fp[i].um_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                      "<label></label>" +
+                                      "</div></td>";
+                                          
+                           html2 +=  "</tr>"; 
+                         
+                           tablefaktur.rows.add($(html2)).draw(); 
+                          n++;
+                          console.log(n +'n');                                                           
+                       } 
                       
+                    
                       $('.invfaktur').hide();
                       $('.supfaktur').hide(); 
                     }
