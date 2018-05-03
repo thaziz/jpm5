@@ -448,8 +448,8 @@ class do_Controller extends Controller
             }else{
                 $namanama  = Auth::user()->m_username;
             }
-            $total1  = filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT)
-            $total2  = filter_var($request->ed_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT)
+            $total1  = filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT);
+            $total2  = filter_var($request->ed_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT);
             $total  = $total1 + $total2;
             $data = array(
                 'nomor' => strtoupper($request->ed_nomor),
