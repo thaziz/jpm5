@@ -16,6 +16,12 @@ use Auth;
 use Excel;
 class LaporanMasterController extends Controller
 {
+
+	//laporan master penghbung
+		public function tarif_cabang_master(){
+			return view('purchase/master_tarif/lap_mastertarif',compact('data','kota','kota1'));
+		}
+	//end of
 														
 //❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤ LAPORAN OPERASIONAL PENJUALAN ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤
 								
@@ -756,7 +762,7 @@ class LaporanMasterController extends Controller
 				->join('kota as ka','do.id_kota_asal','=','ka.id')
 				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
 				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-				->where('nomor','like','%PAK%')
+				->where('pendapatan','=','PAKET')
 				->get();
 
 		//DATA DOKUMEN PER BULAN
@@ -1119,54 +1125,108 @@ class LaporanMasterController extends Controller
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
-		return view('purchase/master/master_penjualan/laporan/lap_deliveryorder_paket',compact('data','kota','kota1','ket','count_get_data','arraybulan_dokumen','arraybulan_kilogram','arraybulan_koli','arraybulan_sepeda'));
+		$cabang = DB::select("SELECT kode, nama from cabang");
+		return view('purchase/master/master_penjualan/laporan/lap_deliveryorder_paket',compact('cabang','data','kota','kota1','ket','count_get_data','arraybulan_dokumen','arraybulan_kilogram','arraybulan_koli','arraybulan_sepeda'));
 	}
 	public function cari_paket(Request $request){
+		dd($request->all());
 		$awal = $request->a;
 		$akir = $request->b;
-		$data =DB::table('delivery_order as do')
-				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-				->join('kota as ka','do.id_kota_asal','=','ka.id')
-				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-				->where('nomor','like','%PAK%')
-				->where('type_kiriman','=','DOKUMEN')
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
+		$cabang = $request->c;
+		if ($cabang != '') {
+			$data =DB::table('delivery_order as do')
+					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+					->join('kota as ka','do.id_kota_asal','=','ka.id')
+					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+					->where('nomor','like','%PAK%')
+					->where('type_kiriman','=','DOKUMEN')
+					->where('tanggal','>=',$awal)
+					->where('tanggal','<=',$akir)
+					->get();
 
-		$data1 =DB::table('delivery_order as do')
-				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-				->join('kota as ka','do.id_kota_asal','=','ka.id')
-				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-				->where('nomor','like','%PAK%')
-				->where('type_kiriman','=','KILOGRAM')
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
+			$data1 =DB::table('delivery_order as do')
+					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+					->join('kota as ka','do.id_kota_asal','=','ka.id')
+					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+					->where('nomor','like','%PAK%')
+					->where('type_kiriman','=','KILOGRAM')
+					->where('tanggal','>=',$awal)
+					->where('tanggal','<=',$akir)
+					->get();
 
-		$data2 =DB::table('delivery_order as do')
-				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-				->join('kota as ka','do.id_kota_asal','=','ka.id')
-				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-				->where('nomor','like','%PAK%')
-				->where('type_kiriman','=','KOLI')
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
+			$data2 =DB::table('delivery_order as do')
+					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+					->join('kota as ka','do.id_kota_asal','=','ka.id')
+					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+					->where('nomor','like','%PAK%')
+					->where('type_kiriman','=','KOLI')
+					->where('tanggal','>=',$awal)
+					->where('tanggal','<=',$akir)
+					->get();
 
-		$data3 =DB::table('delivery_order as do')
-				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-				->join('kota as ka','do.id_kota_asal','=','ka.id')
-				->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-				->where('nomor','like','%PAK%')
-				->where('type_kiriman','=','SEPEDA')
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
+			$data3 =DB::table('delivery_order as do')
+					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+					->join('kota as ka','do.id_kota_asal','=','ka.id')
+					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+					->where('nomor','like','%PAK%')
+					->where('type_kiriman','=','SEPEDA')
+					->where('tanggal','>=',$awal)
+					->where('tanggal','<=',$akir)
+					->get();
+		}else{
+			$data =DB::table('delivery_order as do')
+					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+					->join('kota as ka','do.id_kota_asal','=','ka.id')
+					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+					->where('nomor','like','%PAK%')
+					->where('type_kiriman','=','DOKUMEN')
+					->where('tanggal','>=',$awal)
+					->where('tanggal','<=',$akir)
+					->where('kode_cabang','<=',$cabang)
+					->get();
+
+			$data1 =DB::table('delivery_order as do')
+					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+					->join('kota as ka','do.id_kota_asal','=','ka.id')
+					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+					->where('nomor','like','%PAK%')
+					->where('type_kiriman','=','KILOGRAM')
+					->where('tanggal','>=',$awal)
+					->where('tanggal','<=',$akir)
+					->where('kode_cabang','<=',$cabang)
+					->get();
+
+			$data2 =DB::table('delivery_order as do')
+					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+					->join('kota as ka','do.id_kota_asal','=','ka.id')
+					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+					->where('nomor','like','%PAK%')
+					->where('type_kiriman','=','KOLI')
+					->where('tanggal','>=',$awal)
+					->where('tanggal','<=',$akir)
+					->where('kode_cabang','<=',$cabang)
+					->get();
+
+			$data3 =DB::table('delivery_order as do')
+					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+					->join('kota as ka','do.id_kota_asal','=','ka.id')
+					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+					->where('nomor','like','%PAK%')
+					->where('type_kiriman','=','SEPEDA')
+					->where('tanggal','>=',$awal)
+					->where('tanggal','<=',$akir)
+					->where('kode_cabang','<=',$cabang)
+					->get();
+		}
+		
 
 		if ($data != null || $data1 != null || $data2 != null || $data3 != null) {
         	return response()->json(['dokumen'=>count($data),'kilogram'=>count($data1),'koli'=>count($data2),'sepeda'=>count($data3),'awal'=> $awal,'akir' => $akir]);			

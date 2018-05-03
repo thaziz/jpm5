@@ -238,7 +238,7 @@
               </tr>
               <tr>
                 <td colspan="2">
-                  <button class="search btn btn-success pull-right" onclick="search()"><i class="fa fa-search"> Search</i></button>
+                  <button class="search cari btn btn-success pull-right" onclick="search()"><i class="fa fa-search"> Search</i></button>
                 </td>
               </tr>
             </table>          
@@ -619,7 +619,7 @@ function(){
 
       $.ajax({
       url:baseUrl + '/biaya_penerus/save_penerus',
-      type:'get',
+      type:'post',
       data: datatable.$('input').serialize()+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize(),
       success:function(data){
         if(data.status == '0'){
@@ -641,6 +641,7 @@ function(){
                     
           });
           $('.process').addClass('disabled');
+          $('.cari').addClass('disabled');
           $('.asd').attr('hidden',false);
           $('.id').val(data.id);
         }else if(data.status == '2'){
@@ -659,6 +660,7 @@ function(){
           $('.id').val(data.id);
           $('.asd').attr('hidden',false);
           $('.process').addClass('disabled');
+          $('.cari').addClass('disabled');
         }
         
         $('.asd').attr('hidden',false);
