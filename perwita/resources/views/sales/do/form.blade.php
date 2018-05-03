@@ -3448,7 +3448,7 @@
             console.log(anj);
         }
         $("input[name='ed_jml_ppn']").val(ppn);
-        // $("input[name='ed_total_h']").val(total-diskon_value);
+        $("input[name='ed_total_h']").val(total-diskon_value);
         $("input[name='ed_total_total']").val(total_total);
         // hitung();   
     }
