@@ -488,7 +488,7 @@ class do_Controller extends Controller
                 'instruksi' => strtoupper($request->ed_instruksi),
                 'deskripsi' => strtoupper($request->ed_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
-                'total' => filter_var($request->ed_total_total+$request->ed_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
+                'total' => filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT)+filter_var($request->ed_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
