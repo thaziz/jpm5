@@ -1220,6 +1220,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 
 
 Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_Controller@cetak_form');
 Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
 Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
 Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
