@@ -193,6 +193,7 @@
                   <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp " placeholder="Biaya Lain Lain" >
                 </td>
               </tr>
+            
               <tr>
                 <td>
                   Biaya Bahan Bakar :
@@ -584,7 +585,7 @@ function search(){
         $('.resi_body').html('');
         if(typeof data.status !== 'undefined'){
                   console.log(data.status);
-          toastr.warning('data tidak ada');
+          toastr.warning('data tidak ada/sudah ada');
         }else if (data.status == 0){
           toastr.warning('data sudah ada');
         }else{

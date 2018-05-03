@@ -235,6 +235,8 @@ class KasController extends Controller
 					}else{
 						unset($resi[$i]);
 					}
+				}elseif($cari_resi[$i]->jenis_tarif == 9){
+					unset($resi[$i]);
 				}
 			}
 
@@ -359,13 +361,14 @@ class KasController extends Controller
 
 				$terbayar[$i]   = array_sum($bayar);
 				$pembayaran[$i] = $cari_do[$i][0]->total_net;
+
 				$sisa[$i] 		= $pembayaran[$i] - $terbayar[$i];
 			}
-
+			$terbayar = array_sum($terbayar);
 			// dd($sisa);
 
 			$sisa = array_sum($sisa);
-			$fix  = array_sum($request->penerus);
+			$fix  = array_sum($request->penerus)+$terbayar;
 
 		}else{
 
@@ -383,7 +386,7 @@ class KasController extends Controller
 			$fix  = array_sum($request->penerus);
 		}
 
-
+		// return $fix;
 		$fix_tarif_penerus = array_sum($request->penerus);
 		$persen = $cari_persen->persen/100;
 		$total_tarif = $request->total_tarif*$persen;
