@@ -575,7 +575,7 @@ public function simpan_invoice(request $request)
                                           'create_at'            =>  Carbon::now(),
                                           'update_by'            =>  Auth::user()->m_name,
                                           'update_at'            =>  Carbon::now(),
-                                          'i_grup_item'          =>  $req,
+                                          'i_grup_item'          =>  $request->grup_item,
                                           'i_acc_piutang'        =>  $request->accPiutang,
                                           'i_csf_piutang'        =>  $request->accPiutang,
                                           'i_grup_item'          =>  $request->grup_item,
