@@ -449,6 +449,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
     // global variabel
+    var index_detail = 0;
     var array_simpan = [];
     @if($data->i_pendapatan == 'KORAN')
         @foreach($data_dt as $i=>$val)
@@ -459,6 +460,10 @@
             array_simpan.push("{{$val->id_nomor_do}}");
         @endforeach
     @endif
+
+    @foreach($data_dt as $i=>$a)
+    index_detail+=1;
+    @endforeach
     console.log(array_simpan);
     // chosen select
     var config = {
@@ -804,8 +809,8 @@ function hitung_pajak_lain(){
    }
    
    // untuk mengirim yang di check ke controller dengan ajax
-   var index_detail = 0;
-   $('#btnsave').click(function(){
+   
+      $('#btnsave').click(function(){
 
         var nomor_dt = [];
         var nomor_do = [];
