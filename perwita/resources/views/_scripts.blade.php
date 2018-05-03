@@ -31,6 +31,7 @@
 
     <!-- Datatable -->
     <script type="text/javascript" src="{{asset('assets/vendors/datatables/datatables.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('assets/vendors/datatables/dataTables.responsive.min.js')}}"></script>
 	
 	  <!-- bootbox  -->    
     <script src="{{ asset('assets/vendors/bootbox/bootbox.js') }}"></script>

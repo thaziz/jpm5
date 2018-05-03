@@ -355,7 +355,7 @@
                                                     <td style="padding-top: 0.4cm" id="div_kom">Discount</td>
                                                     <td  id="div_kom">
                                                         <div class="input-group">
-                                                            <input type="text" class="form-control" name="ed_diskon_h" id="ed_diskon_h" style="text-align:right" 
+                                                            <input type="text" class="form-control hanyaangkadiskon" name="ed_diskon_h" id="ed_diskon_h" style="text-align:right" 
                                                             @if ($do === null) value="0" 
                                                             @else value="{{ number_format($do->diskon, 0, "", "") }}" 
                                                             @endif>
@@ -392,7 +392,11 @@
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Total</td>
                                                     <td colspan="2" id="div_kom">
-                                                        <input type="text" class="form-control" name="ed_total_h" id="ed_total_h" style="text-align:right" readonly="readonly" tabindex="-1"@if ($do === null) value="0" @else value="{{ number_format($do->total_net, 0, ",", ".") }}" @endif>
+                                                        <input type="text" class="form-control" name="ed_total_h" id="ed_total_h" style="text-align:right" readonly="readonly" tabindex="-1"
+                                                        @if ($do === null) value="0" 
+                                                        @else value="{{ number_format($do->total_net, 0, ",", ".") }}" 
+                                                        @endif
+                                                    >
                                                     </td>
                                                 </tr>
                                                 <input type="hidden" name="ed_total_total">
@@ -928,7 +932,7 @@
     })
 
     $("#ed_diskon_v").keyup(function(){
-        console.log('asd');
+        // console.log('asd');
         if ($(this).val() != 0) {
             $("input[name='ed_diskon_h']").attr('readonly',true);
         }else{
@@ -966,25 +970,17 @@
         var total_total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus);
         //--
         if (diskon != 0) {
-            // $("input[name='ed_diskon_v']").attr('readonly',true);
-            // total = total - (total * diskon / 100);
 
             var diskon_value_utama = diskon / 100 * total;
 
             $("input[name='ed_diskon_v']").val(diskon_value_utama);
 
         }else if (diskon == 0) {
-            // $("input[name='ed_diskon_v']").attr('readonly',false);
-        }
-        if (diskon_value != 0) {
-            if (diskon  == 0) {
-            // $("input[name='ed_diskon_h']").attr('readonly',true);
-            }
-            total = total - (diskon_value);
+            var diskon_value_utama = diskon / 100 * total;
 
-        }else if (diskon_value == 0) {
-                // $("input[name='ed_diskon_h']").attr('readonly',false);
+            $("input[name='ed_diskon_v']").val(diskon_value_utama);
         }
+       
         //--
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
@@ -1002,12 +998,13 @@
             ppn =Math.round(parseFloat(total) / parseFloat(10.1));
             total = total - ppn;
         }
-      //  if ($("input[name='ck_ppn']").is(':checked') ) {
-      //      total = parseFloat(total) + parseFloat(ppn);
-      //  }
-        $("input[name='ed_jml_ppn']").val(ppn.format());
-        $("input[name='ed_total_h']").val(total.format());
-        $("input[name='ed_total_total']").val(total_total.format());
+      
+        // console.log(diskon_value_utama);
+        $("input[name='ed_jml_ppn']").val(ppn);
+        
+        $("input[name='ed_total_h']").val(total-diskon_value_utama);
+        
+        $("input[name='ed_total_total']").val(total_total);
     }
 
     $('#cb_outlet').change(function(){
@@ -3221,10 +3218,18 @@
   //  });
   $(".hanyaangka").keypress(function (e) {
      //if the letter is not digit then display error and don't type anything
-     if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+     if (e.which != 8 && e.which != 0  && (e.which < 48 || e.which > 57)) {
         //display error message
-        $(".errmsg").html("Hanya angka yang diperbolehkan").show().fadeOut(1500);
-        $(".errmsg").css('color','red');
+        
+               return false;
+    }
+   });
+
+  $(".hanyaangkadiskon").keypress(function (e) {
+     //if the letter is not digit then display error and don't type anything
+     if (e.which != 8 && e.which != 0 && e.which != 46 && (e.which < 48 || e.which > 57)) {
+        //display error message
+        
                return false;
     }
    });
@@ -3333,8 +3338,60 @@
         }
     }
     function dikonval(){
-        var data_value = $('#ed_diskon_v').val();
-        if (data_value > maxvalue) {
+        var tarif_dasar = $("input[name='ed_tarif_dasar']").val();
+        var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
+        var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
+
+        var diskon  = $("input[name='ed_diskon_h']").val();
+        var diskon_value  = $("input[name='ed_diskon_v']").val();
+        var diskon_val  = $("input[name='ed_diskon_h']").val();
+        var biaya_komisi  = $("input[name='ed_biaya_komisi']").val();
+        var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+        var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
+        var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+        var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
+        // var diskon = diskon.replace(/[A-Za-z$. ,-]/g, "");
+        var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
+        if (diskon > 0 && biaya_tambahan > 0) {
+            alert("Diskon dan biaya tambahan di isi salah satu");
+            parseFloat($("input[name='ed_diskon_h']").val(0));
+            $("input[name='ed_biaya_tambahan']").val(0);
+            diskon = 0;
+            biaya_tambahan = 0;
+            $("input[name='ed_biaya_tambahan']").focus();
+        }
+        if ($("select[name='cb_outlet']").val() == '' ) {
+            biaya_komisi = 0;
+        }
+        var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+        var total_total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus);
+        //--
+        //--
+        var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
+        if (jenis_ppn == 1) {
+            ppn =Math.round(parseFloat(total) * parseFloat(0.1));
+            total = total + ppn;
+        }else if (jenis_ppn == 2) {
+            ppn =Math.round(parseFloat(total) * parseFloat(0.01));
+            total = total + ppn;
+        }else if (jenis_ppn == 4) {
+            ppn =0;
+        }else if (jenis_ppn == 3) {
+            ppn =Math.round(parseFloat(total) / parseFloat(100.1));
+            //total = total - ppn;
+        }else if (jenis_ppn == 5) {
+            ppn =Math.round(parseFloat(total) / parseFloat(10.1));
+            total = total - ppn;
+        }
+
+        var diskon_tot = parseFloat(diskon_value)/parseFloat(total_total)*100;
+        
+        $('#ed_diskon_h').val(parseFloat(diskon_tot).toFixed(2));
+        if(diskon_value == 0){
+            $('#ed_diskon_h').val(0);
+        }
+        if (diskon_value > maxvalue) {
+            console.log('asdas');
             
             Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
 
@@ -3355,11 +3412,15 @@
               "showMethod": "fadeIn",
               "hideMethod": "fadeOut"
             }
-            
-        
-            $('#ed_diskon_v').val(parseInt(maxvalue));
+            $('#ed_diskon_v').val(0);
+            $('#ed_diskon_h').val(0);
+            var anj = $('#ed_diskon_v').val();
+            console.log(anj);
         }
-        hitung();   
+        $("input[name='ed_jml_ppn']").val(ppn);
+        $("input[name='ed_total_h']").val(total-diskon_value_utama);
+        $("input[name='ed_total_total']").val(total_total);
+        // hitung();   
     }
     function cetak(){
         $.ajax({

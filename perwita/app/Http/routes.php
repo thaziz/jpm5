@@ -850,7 +850,9 @@ Route::get('caridiagram_penjualan/caridiagram_penjualan','LaporanOmsetController
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ END OF LAPORAN OMSET PENJUALAN ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥
 
 //=================================== LAPORAN PENJUALAN BERAWAL =========================================//
-
+//laporan master tarif 
+Route::get('laporan_master_penjualan/tarif_cabang_master','LaporanMasterController@tarif_cabang_master');
+//end of 
 //LAPORAN TARIF
 Route::get('laporan_master_penjualan/tarif_cabang_dokumen', 'LaporanMasterController@tarif_cabang_dokumen');
 Route::get('laporan_master_penjualan/tarif_cabang_koli', 'LaporanMasterController@tarif_cabang_koli');

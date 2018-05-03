@@ -935,6 +935,7 @@ class do_Controller extends Controller
         $kec = null;
         $do = null;
         $do_dt = null;
+
         if ($nomor != null) {
             $do = DB::table('delivery_order')->where('nomor', $nomor)->first();
 
@@ -954,12 +955,27 @@ class do_Controller extends Controller
                     ->get();
             }
 
+            $cekdata = DB::table('delivery_order')->where('nomor', $nomor)->first();
+
+            foreach ($cekdata as $key => $value) {
+                $cek_data = $cekdata->total_net;
+            }
+
+
         } else {
             $do = null;
             $jml_detail = 0;
         }
-//dd($do);
-        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt'));
+
+        
+        if ($cek_data != null) {
+            $cek_data = $cek_data;
+        }else{
+            $cek_data = null;
+        }
+        // return $cek_data;
+        
+        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data'));
     }
 
     public function form_update_status($nomor = null)
