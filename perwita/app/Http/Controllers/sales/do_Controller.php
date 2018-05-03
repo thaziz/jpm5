@@ -448,9 +448,6 @@ class do_Controller extends Controller
             }else{
                 $namanama  = Auth::user()->m_username;
             }
-            $total1  = filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT);
-            $total2  = filter_var($request->ed_biaya_tambahan, FILTER_SANITIZE_NUMBER_INT);
-            $total  = $total1 + $total2;
             $data = array(
                 'nomor' => strtoupper($request->ed_nomor),
                 'tanggal' => $request->ed_tanggal,
@@ -491,7 +488,7 @@ class do_Controller extends Controller
                 'instruksi' => strtoupper($request->ed_instruksi),
                 'deskripsi' => strtoupper($request->ed_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
-                'total' => $total,
+                'total' => filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
@@ -958,11 +955,7 @@ class do_Controller extends Controller
                     ->get();
             }
 
-            $cekdata = DB::table('delivery_order')->where('nomor', $nomor)->first();
-
-            foreach ($cekdata as $key => $value) {
-                $cek_data = $cekdata->total_net;
-            }
+            
 
 
         } else {
@@ -971,13 +964,8 @@ class do_Controller extends Controller
         }
 
         
-        if ($cek_data != null) {
-            $cek_data = $cek_data;
-        }else{
-            $cek_data = null;
-        }
         // return $cek_data;
-        
+       
         return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data'));
     }
 
