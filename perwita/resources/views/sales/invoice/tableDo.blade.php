@@ -36,7 +36,43 @@
         @endforeach
     </tbody>
 </table>
-@else
+@elseif($jenis == 'PAKET')
+<table id="table_data_do" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+           <th>No</th>
+           <th>Nomor Order</th>
+           <th>Tgl Order</th>
+           <th>Nama Customer</th>
+           <th>Keterangan</th>
+           <th>Harga Bruto</th>
+           <th style="text-align: center;"><input type="checkbox" class="parent_check" onchange="check_parent()"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($data as $i=>$val)
+        @if($val->id_nomor_do == null or $val->id_nomor_invoice == $id)
+                <tr>
+                    <td align="center">
+                        {{$i+1}}
+                    </td>
+                    <td>
+                        {{$val->nomor}}
+                        <input type="hidden" value="{{$val->nomor}}" class="nomor_do" name="nomor_do">
+                    </td>
+                    <td>{{$val->tanggal}}</td>
+                    <td>{{$val->nama_customer}}</td>
+                    <td>{{$val->keterangan_tarif}}</td>
+                    <td align="right"> {{number_format($val->total+$val->biaya_tambahan, 2, ",", ".")}}</td>
+                    <td align="center">
+                        <input class="tanda" type="checkbox"  name="tanda">
+                    </td>
+                </tr>
+        @endif
+        @endforeach
+    </tbody>
+</table>
+@elseif($jenis == 'KARGO')
 <table id="table_data_do" class="table table-bordered table-striped">
     <thead>
         <tr>

@@ -23,6 +23,30 @@
       font-size: 8pt;
     }
 
+    .table-group{
+      font-size: 8pt;
+    }
+
+    .table-group tbody tr{
+      cursor: pointer;
+    }
+
+    .table-group tbody tr:hover{
+      background: #1ab394;
+      color: white;
+    }
+
+    .table-group tbody tr.aktif{
+      background: #1ab394;
+      color: white;
+    }
+
+    .table-group tbody tr.chosen{
+      background: #eee;
+      color: #909090;
+      cursor: no-drop
+    }
+
     .switch.aktif{
       background: #1ab394;
       color: white;
@@ -36,6 +60,10 @@
         width: 0;
     }
 
+    .modal-open{
+      overflow: inherit;
+    }
+
   </style>
 
 @endsection
@@ -45,19 +73,22 @@
 
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2>Master Activa</h2>
+                    <h2>Desain Neraca</h2>
                     <ol class="breadcrumb">
                         <li>
-                            <a href="index-2.html">Home</a>
+                            <a>Home</a>
                         </li>
                         <li>
-                            <a>Purchase</a>
+                            <a>Operasional</a>
                         </li>
                         <li>
-                          <a> Master Purchase</a>
+                            <a>Keuangan</a>
+                        </li>
+                        <li>
+                            <a>Desain Neraca</a>
                         </li>
                         <li class="active">
-                            <strong>Create Master Activa</strong>
+                            <strong> Create Desain Neraca  </strong>
                         </li>
 
                     </ol>
@@ -72,7 +103,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Tambah Data Master Activa
+                    <h5> Tambah Data Desain Neraca
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
@@ -106,6 +137,8 @@
 
                               <button href="#pasiva" aria-controls="pasiva" role="tab" data-toggle="tab" class="btn btn-white btn-sm switch" data-for="pasiva" style="font-size: 8pt;" type="button">Pasiva</button>
                           </div>
+
+                          <span class="pull-right text-disabled" style="font-weight: 600; font-style: italic; font-size: 7pt;">{{ date("d-m-Y") }}</span>
                         </div>
                         
                         <div class="col-md-12" style="border-top: 1px solid #eee; margin: 10px 0px"></div>
@@ -187,24 +220,24 @@
 
                         <div class="col-md-12 text-right" style="padding: 0px;">
                             <button class="btn btn-success btn-sm" id="masukkan" style="font-size:8pt;" type="button">Masukkan Ke Desain</button>
-                            <button class="btn btn-primary btn-sm tambah_detail" style="font-size:8pt;" type="button">Tambahkan Detail</button>
-                            <button class="btn btn-danger btn-sm hapus" style="font-size:8pt;" type="button">Hapus</button>
+                            <button disabled class="btn btn-primary btn-sm" id="tambah_detail" style="font-size:8pt;" type="button">Tambahkan Group Neraca</button>
+                            <button disabled class="btn btn-danger btn-sm" id="hapus_detail" style="font-size:8pt;" type="button">Hapus</button>
                         </div>
 
                         <div class="col-md-12" style="border-top: 1px solid #eee; margin: 5px 0px"></div>
 
-                        <div class="col-md-12 m-t" style="padding: 0px;">
+                        <div class="col-md-12 m-t" style="padding: 0px; height: 146px; overflow-x: scroll">
                           <table border="0" class="table table-bordered" style="font-size: 8pt;">
                             <tr>
-                              <th class="text-center">Id Grup Akun</th>
-                              <th class="text-center">Nama Grup Akun</th>
+                              <th width="30%" class="text-center">Id Grup Akun</th>
+                              <th width="70%" class="text-center">Nama Grup Akun</th>
                             </tr>
+                            
+                            <tbody id="group_show">
 
-                            <tr>
-                              <td>GA-001</td>
-                              <td>Kas</td>
-                            </tr>
+                            </tbody>
                           </table>
+                            
                         </div>
 
                       </div>
@@ -215,6 +248,53 @@
         </div>
     </div>
 </div>
+
+<!-- modal -->
+<div id="modal_detail" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Form Tambah Group Akun</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-5" style="padding: 0px;">
+            <div id="d" style="height: 430px; overflow-x: scroll">
+              <table border="1" width="100%" class="table table-bordered table-group">
+                <tbody id="detail_body">
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="col-md-7">
+            <div id="d" style="height: 430px; overflow-x: scroll">
+              <table border="1" width="100%" class="table table-bordered" style="font-size: 8pt;">
+                <tbody id="detail_group">
+                  <tr>
+                    <td class="text-center">Detail Akun Akan Tampil Disini</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div class="col-md-12" style="border-top: 1px solid #eee; margin: 5px 0px"></div>
+
+          <div class="col-md-12 m-t">
+            <button class="btn btn-primary btn-sm" style="font-size: 8pt;" id="confirm_detail">Masukkan Grup Ke Detail</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- modal -->
 
 @endsection
 
@@ -229,7 +309,62 @@
     $(document).ready(function(){
 
       data = []; data_neraca = []; data_detail = [];
-      state = "aktiva";
+      data_akun = {!! $data_akun !!}; data_group = {!! $data_group !!};
+
+      // console.log(data_akun);
+      // console.log(data_group);
+
+      state = "aktiva"; chosen_group = "";
+
+      grab_detail();
+
+      $('#aktiva_tree').jstree({
+        plugins: ["types"],
+        "types" : {
+          "default" : {
+            "icon" : "fa fa-folder"
+          },
+          "demo" : {
+            "icon" : "fa fa-book"
+          },
+          "total" : {
+            "icon" : "fa fa-calculator"
+          },
+          "space" : {
+            "icon" : "fa fa-arrow-right"
+          }
+        },
+        core: {
+          data: data,
+          "check_callback": true
+        },
+      });
+
+      $('#aktiva_tree').on("select_node.jstree", function (e, data) { 
+        // console.log(data);
+
+        $("#hapus_detail").removeAttr("disabled");
+
+        idx = data_neraca.findIndex(n => n.nomor_id == data.node.id);
+        parrent = (data.node.parent == "#") ? data_neraca[idx].nomor_id.substring(0, data_neraca[idx].level) : data_neraca[idx].id_parrent+".";
+
+        // alert(parrent);
+
+        $("#cancel").css("display", "inline-block");
+        $("#level").val(data_neraca[idx].level); $("#level").attr("disabled", "disabled");
+        $("#state_id").text(parrent);
+        $("#nomor_id").val(data_neraca[idx].nomor_id.substring(parrent.length));
+        $("#parrent").val((data_neraca[idx].id_parrent == null) ? "---" : data_neraca[idx].id_parrent);
+
+        if(data_neraca[idx].id_parrent == null){
+          $("#parrent_name").val("---");
+        }else{
+          $("#parrent_name").val(data_neraca[data_neraca.findIndex(n => n.nomor_id == data_neraca[idx].id_parrent)].keterangan);
+        }
+
+        $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
+        $("#keterangan").val(data_neraca[idx].keterangan)
+      });
 
       $("#level").on("focusin", function(){
 
@@ -251,7 +386,28 @@
               $("#parrent").removeAttr("disabled");
             }else if(input.val() == 1){
               $("#parrent").val("---"); $("#parrent").attr("disabled", "disabled");
+              $("#state_id").text((state == "aktiva") ? "A" : "P");
+
+              grab_id();
             }
+      })
+
+      $("#parrent").change(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        val = $(this).val();
+        idx = data_neraca.findIndex(n => n.nomor_id === val);
+
+        if(val === "---"){
+          $("#parrent_name").val("---");
+        }
+        else{
+          $("#parrent_name").val(data_neraca[idx].keterangan);
+          $('#state_id').text(data_neraca[idx].nomor_id+".");
+
+          grab_id();
+        }
       })
 
       $(".switch").click(function(evt){
@@ -264,27 +420,61 @@
         state = btn.data("for");
       })
 
-      $('#aktiva_tree').jstree({
-        plugins: ["dnd","contextmenu", "types"],
-        "types" : {
-          "default" : {
-            "icon" : "fa fa-folder"
-          },
-          "demo" : {
-            "icon" : "fa fa-book"
-          },
-          "total" : {
-            "icon" : "fa fa-calculator"
-          },
-          "space" : {
-            "icon" : "fa fa-arrow-right"
-          }
-        },
-        core: {
-          data: data,
-          "check_callback": true
-        },
-      });
+      $("#jenis").change(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+        val = $(this).val();
+
+        if(val == "2"){
+          $("#tambah_detail").removeAttr("disabled");
+        }else if(val == "1" || val == "4"){
+          $("#tambah_detail").attr("disabled", "disabled");
+          $("#group_show").html("");
+        }
+
+      })
+
+      $("#detail_body").on("click", ".row", function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        row = $(this);
+
+        $("#detail_body tr").removeClass("aktif");
+        row.addClass("aktif");
+
+        grab_detail_grup(row.data("id"));
+
+        if(!row.hasClass("chosen"))
+          chosen_group = row.data("id");
+
+        // console.log(row.data("id"));
+      })
+
+      $('#confirm_detail').click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        group = data_group.findIndex(n => n.id == chosen_group);
+
+        html = '<tr id="'+data_group[group].id+'" data-nama = "'+data_group[group].nama_group+'" class="search">'+
+                  '<td>'+data_group[group].id+'</td>'+
+                  '<td>'+data_group[group].nama_group+'</td>'+
+                '<tr>';
+
+        $("#group_show").append(html);
+        $("#detail_body").find("#"+data_group[group].id).addClass("chosen");
+        chosen_group = "";
+      })
+
+      $("#cancel").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        $(this).css("display", "none");
+        $("#hapus_detail").attr("disabled", "disabled");
+        form_reset();
+      })
 
       $("#masukkan").click(function(evt){
         evt.stopImmediatePropagation();
@@ -305,6 +495,13 @@
           else if(jenis == "4")
             type = "space";
 
+          if(jenis == 2){
+            if($("#group_show").find(".search").length == 0){
+              alert("Harap Pilih Group Neraca Terlebih Dahulu.");
+              return false;
+            }
+          }
+
           createNode(parrent, id, id, "last", keterangan, open, type);
 
           data_neraca[data_neraca.length] = {
@@ -313,18 +510,41 @@
             "id_parrent": parrent,
             "level" : level,
             "jenis" : jenis,
-            "type" : type
+            "type" : state
           };
 
-          console.log(data_neraca);
-          form_reset();
-        }
+          if(jenis == 2){
+            $("#group_show .search").each(function(){
+              text = $(this).data("nama"); ids = $(this).attr("id");
+              createNode(id, id+"."+ids, text, "last", text, open, "demo");
 
+              data_detail[data_detail.length] = {
+                "id_group"   : ids,
+                "nomor_id"   : id+"."+ids,
+                "id_parrent" : id,
+                "nama"       : text
+              }
+            })
+          }
+
+          console.log(data_neraca);
+          console.log(data_detail);
+          form_reset();
+          grab_parrent();
+        }
       })
 
-      function createNode(parent_node, new_node_id, new_node_text, position, keterangan, state = false, type = "default") {
-        // alert("okee");
-        $('#aktiva_tree').jstree('create_node', parent_node, { "text":keterangan+" ("+new_node_id+")", "type": type, "id":new_node_id , "data":{"id": new_node_text, "id_parrent":parent_node}, state: {"opened": state}}, position, false, false); 
+      $("#tambah_detail").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        $("#modal_detail").modal("show");
+        grab_detail();
+      })
+
+      function createNode(parent_node, new_node_id, new_node_text, position, keterangan, open = false, type = "default") {
+        // alert(state);
+        $('#'+state+'_tree').jstree('create_node', parent_node, { "text":keterangan+" ("+new_node_id+")", "type": type, "id":new_node_id , "data":{"id": new_node_text, "id_parrent":parent_node}, state: {"opened": open}}, position, false, false); 
       }
 
       function validate_form(){
@@ -351,19 +571,69 @@
       }
 
       function form_reset(){
-        $("#level").val(1);
-        $("#parrent").val("---"); $("#parrent").attr("disabled, disabled");
+        $("#level").val(1); $('#level').removeAttr("disabled");
+        $("#parrent").val("---"); $("#parrent").attr("disabled", "disabled");
         $("#parrent_name").val("---");
-        $("#nomor_id").val(grab_id);
-        $("#jenis").val(1);
+        $("#jenis").val(1); $('#jenis').removeAttr("disabled");
         $("#keterangan").val("");
+        $("#state_id").text((state == "aktiva") ? "A" : "P");
+        $("#tambah_detail").attr("disabled", "disabled"); $("#hapus_detail").attr("disabled", "disabled");
+        $("#group_show").html("");
+
+        grab_id();
       }
 
       function grab_id(){
-        cek = $("#state_id").text(); idle = $("#state_id").text().length; fcs = "A";
-        count = $.grep(data_neraca, function(n){ return n.nomor_id.substring(0, idle) == fcs }).length;
+        cek = $("#state_id").text(); idle = $("#state_id").text().length; level = $("#level").val();
+        count = $.grep(data_neraca, function(n){ return n.nomor_id.substring(0, idle) == cek && n.level == level }).length;
 
-        return (count+1);
+        // console.log(count);
+        $("#nomor_id").val((count+1));
+      }
+
+      function grab_detail(){
+        html = "";
+        $.each(data_group, function(i, n){
+          if($("#group_show").find("#"+n.id).length == 0){
+            html = html+'<tr data-id="'+n.id+'" class="row" id="'+n.id+'">'+
+                  '<td>'+n.nama_group+'</td>'+
+                '</tr>';
+          }else{
+            html = html+'<tr data-id="'+n.id+'" class="row chosen" id="'+n.id+'" title="Sudah Dipilih">'+
+                  '<td>'+n.nama_group+'</td>'+
+                '</tr>';
+          }
+          
+        })
+
+        $("#detail_body").html(html);
+      }
+
+      function grab_detail_grup(id){
+        html = "";
+        $.each($.grep(data_akun, function(n) { return n.group_neraca == id }), function(i, n){
+          html = html+'<tr>'+
+                  '<td>'+n.nama_akun+'</td>'+
+                '</tr>';
+        })
+
+        if($.grep(data_akun, function(n) { return n.group_neraca == id }).length == 0){
+          html = html+'<tr>'+
+                  '<td class="text-center">Tidak Ada Akun Di Group Ini</td>'+
+                '</tr>';
+        }
+
+        $("#detail_group").html(html);
+      }
+
+      function grab_parrent(){
+        html = '<option value="---">- Pilih Parrent</option>';
+
+        $.each($.grep(data_neraca, function(n){ return n.id_parrent == null && n.type == state }), function(i, n){
+          html = html+'<option value="'+n.nomor_id+'">'+n.nomor_id+'</option>';
+        })
+
+        $('#parrent').html(html);
       }
 
     })

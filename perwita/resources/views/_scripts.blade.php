@@ -67,6 +67,9 @@
 
 
     <script>
+
+        var regex_huruf = replace(/[A-Za-z$. ,-]/g, "");
+        var regex_angka = replace(/[^0-9\-]+/g,"");
           $('[data-toggle="tooltip"]').tooltip({container : 'body'});
 //          if(screen.width > 768){
 //              alert('besar');
