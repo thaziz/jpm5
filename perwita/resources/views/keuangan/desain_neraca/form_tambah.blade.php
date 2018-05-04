@@ -114,19 +114,21 @@
                   <div class="row">
                     <div class="col-md-6">
                       <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 1px; padding: 10px; height: 500px; box-shadow: 0px 0px 10px #eee;">
-                        <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
-                          <span style="position: fixed; top: 50%; left: 16%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Aktiva</span>
-                          <div id="aktiva_tree" style="font-size: 8pt;">
-                              
-                          </div>
-                        </div>
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
+                              <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Aktiva</span>
+                              <div id="aktiva_tree" style="font-size: 8pt;">
+                                  
+                              </div>
+                            </div>
 
-                        <div role="tabpanel" class="tab-pane fade" id="pasiva">
-                          <span style="position: fixed; top: 50%; left: 16%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Pasiva</span>
-                          <div id="pasiva" style="font-size: 8pt;">
-                            
+                            <div role="tabpanel" class="tab-pane fade" id="pasiva">
+                              <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Pasiva</span>
+                              <div id="pasiva_tree" style="font-size: 8pt;">
+                                
+                              </div>
+                            </div>
                           </div>
-                        </div>
                       </div>
                     </div>
 
@@ -233,8 +235,9 @@
                           <table border="0" class="table table-bordered" style="font-size: 8pt;">
                             <tr>
                               <th width="25%" class="text-center">Id Detail Referensi</th>
-                              <th width="45%" class="text-center">Nama Detail Referensi</th>
-                              <th width="30%" class="text-center">Referensi Dari</th>
+                              <th width="40%" class="text-center">Nama Detail Referensi</th>
+                              <th width="25%" class="text-center">Referensi Dari</th>
+                              <th width="10%" class="text-center">-</th>
                             </tr>
                             
                             <tbody id="group_show">
@@ -277,7 +280,7 @@
 
           <div class="col-md-7">
             <div id="d" style="height: 430px; overflow-x: scroll">
-              <table border="1" width="100%" class="table table-bordered" style="font-size: 8pt;">
+              <table border="1" width="100%" class="table table-bordered" style="font-size: 8pt; font-weight: 600;">
                 <tbody id="detail_group">
                   <tr>
                     <td class="text-center">Detail Akun Akan Tampil Disini</td>
@@ -299,6 +302,38 @@
   </div>
 </div>
 <!-- modal -->
+
+<!-- modal -->
+<div id="modal_list_akun" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Anggota Akun Group <span id="nama_group"></span></h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <div style="height: 450px; overflow-x: scroll">
+          <table class="table table-bordered" style="font-size: 8pt;">
+            <thead>
+              <tr>
+                <th style="position: sticky; top: 0px;">ID Akun</th>
+                <th style="position: sticky; top: 0px;" width="40%">Nama Akun</th>
+                <th style="position: sticky; top: 0px;">Debet/Kredit</th>
+              </tr>
+            </thead>
+
+            <tbody id="anggota_wrap">
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+  <!-- modal -->
 
 @endsection
 
@@ -344,12 +379,35 @@
         },
       });
 
+      $('#pasiva_tree').jstree({
+        plugins: ["types"],
+        "types" : {
+          "default" : {
+            "icon" : "fa fa-folder"
+          },
+          "demo" : {
+            "icon" : "fa fa-book"
+          },
+          "total" : {
+            "icon" : "fa fa-calculator"
+          },
+          "space" : {
+            "icon" : "fa fa-arrow-right"
+          }
+        },
+        core: {
+          data: data,
+          "check_callback": true
+        },
+      });
+
       $('#aktiva_tree').on("select_node.jstree", function (e, data) { 
-        // console.log(data);
+        console.log(data);
 
         if(data.node.type != "demo"){
           $("#masukkan").attr("disabled", "disabled");
           $("#hapus_detail").removeAttr("disabled");
+          $("#tambah_detail").removeAttr("disabled");
           $('#update_detail').removeAttr("disabled");
           $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
 
@@ -376,13 +434,118 @@
 
           if(data_neraca[idx].jenis == 4){
             $("#keterangan").attr("readonly", "readonly");
+          }else if(data_neraca[idx].jenis == 2){
+            
+            $.each($.grep(data_detail, function(n){ return n.id_parrent == data_neraca[idx].nomor_id }), function(i, n){
+                html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                          '<td class="text-center">'+n.id_group+'</td>'+
+                          '<td class="text-center">'+n.nama+'</td>'+
+                          '<td class="text-center">'+n.dari+'</td>'+
+                          '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
+                        '<tr>';
+
+                $("#group_show").append(html);
+            })
+
           }
 
         }else{
+          idx = data_detail.findIndex(n => n.nomor_id == data.node.id);
+          $("#modal_list_akun").modal("show");
+          $("#nama_group").text(data.node.data.id+" ("+data_detail[idx].id_group+")");
 
-          toastr.error('Detail Referensi. Tidak Bisa Diedit');
+          html = "";
+
+          $.each($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }), function(i, n){
+            dk = (n.akun_dka == "D") ? "DEBET" : "KREDIT";
+            html = html + '<tr>'+
+                            '<td>'+n.id_akun+'</td>'+
+                            '<td class="text-center">'+n.nama_akun+'</td>'+
+                            '<td class="text-center">'+dk+'</td>'+
+                          '</tr>';
+          })
+
+          if($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }).length == 0){
+            html = html + '<tr><td colspan="3" class="text-center" style="color:#ccc;"> Tidak Ada Anggota Akun Di Group Ini.</td></tr>'
+          }
+
+          $("#anggota_wrap").html(html);
+
           form_reset();
+        }
+      });
 
+      $('#pasiva_tree').on("select_node.jstree", function (e, data) { 
+        console.log(data);
+
+        if(data.node.type != "demo"){
+          $("#masukkan").attr("disabled", "disabled");
+          $("#hapus_detail").removeAttr("disabled");
+          $("#tambah_detail").removeAttr("disabled");
+          $('#update_detail').removeAttr("disabled");
+          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+
+          idx = data_neraca.findIndex(n => n.nomor_id == data.node.id);
+          parrent = (data.node.parent == "#") ? data_neraca[idx].nomor_id.substring(0, data_neraca[idx].level) : data_neraca[idx].id_parrent+".";
+
+          // alert(parrent);
+
+          $("#cancel").css("display", "inline-block");
+          $("#level").val(data_neraca[idx].level); $("#level").attr("disabled", "disabled");
+          $("#state_id").text(parrent);
+          $("#nomor_id").val(data_neraca[idx].nomor_id.substring(parrent.length));
+          // $("#parrent").val((data_neraca[idx].id_parrent == null) ? "---" : data_neraca[idx].id_parrent);
+
+          if(data_neraca[idx].id_parrent == null){
+            $("#parrent_name").val("---");
+          }else{
+            $("#parrent_name").val(data_neraca[data_neraca.findIndex(n => n.nomor_id == data_neraca[idx].id_parrent)].keterangan);
+          }
+
+          $("#parrent").attr("disabled", "disabled");
+          $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
+          $("#keterangan").val(data_neraca[idx].keterangan);
+
+          if(data_neraca[idx].jenis == 4){
+            $("#keterangan").attr("readonly", "readonly");
+          }else if(data_neraca[idx].jenis == 2){
+            
+            $.each($.grep(data_detail, function(n){ return n.id_parrent == data_neraca[idx].nomor_id }), function(i, n){
+                html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                          '<td class="text-center">'+n.id_group+'</td>'+
+                          '<td class="text-center">'+n.nama+'</td>'+
+                          '<td class="text-center">'+n.dari+'</td>'+
+                          '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
+                        '<tr>';
+
+                $("#group_show").append(html);
+            })
+
+          }
+
+        }else{
+          idx = data_detail.findIndex(n => n.nomor_id == data.node.id);
+          $("#modal_list_akun").modal("show");
+          $("#nama_group").text(data.node.data.id+" ("+data_detail[idx].id_group+")");
+
+          html = "";
+
+          $.each($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }), function(i, n){
+            dk = (n.akun_dka == "D") ? "DEBET" : "KREDIT";
+            html = html + '<tr>'+
+                            '<td>'+n.id_akun+'</td>'+
+                            '<td class="text-center">'+n.nama_akun+'</td>'+
+                            '<td class="text-center">'+dk+'</td>'+
+                          '</tr>';
+          })
+
+          if($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }).length == 0){
+            html = html + '<tr><td colspan="3" class="text-center" style="color:#ccc;"> Tidak Ada Anggota Akun Di Group Ini.</td></tr>'
+          }
+
+          $("#anggota_wrap").html(html);
+
+          form_reset();
         }
       });
 
@@ -481,10 +644,11 @@
 
         if(select.val() != "---"){
           group = data_neraca.findIndex(n => n.nomor_id == select.val());
-          html = '<tr id="'+data_neraca[group].nomor_id+'" data-nama = "'+data_neraca[group].keterangan+'" class="search">'+
-                  '<td>'+data_neraca[group].nomor_id+'</td>'+
-                  '<td>'+data_neraca[group].keterangan+'</td>'+
+          html = '<tr id="'+data_neraca[group].nomor_id+'" data-nama = "'+data_neraca[group].keterangan+'" data-dari = "Detail Neraca" class="search">'+
+                  '<td class="text-center">'+data_neraca[group].nomor_id+'</td>'+
+                  '<td class="text-center">'+data_neraca[group].keterangan+'</td>'+
                   '<td class="text-center">Detail Neraca</td>'+
+                  '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
                 '<tr>';
 
           $("#group_show").append(html);
@@ -520,10 +684,11 @@
 
         group = data_group.findIndex(n => n.id == chosen_group);
 
-        html = '<tr id="'+data_group[group].id+'" data-nama = "'+data_group[group].nama_group+'" class="search">'+
-                  '<td>'+data_group[group].id+'</td>'+
-                  '<td>'+data_group[group].nama_group+'</td>'+
-                  '<td class="text-center">Detail Neraca</td>'+
+        html = '<tr id="'+data_group[group].id+'" data-nama = "'+data_group[group].nama_group+'" data-dari = "Group Neraca" class="search">'+
+                  '<td class="text-center">'+data_group[group].id+'</td>'+
+                  '<td class="text-center">'+data_group[group].nama_group+'</td>'+
+                  '<td class="text-center">Group Neraca</td>'+
+                  '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
                 '<tr>';
 
         $("#group_show").append(html);
@@ -538,6 +703,14 @@
         $(this).css("display", "none");
         $("#hapus_detail").attr("disabled", "disabled");
         form_reset();
+      })
+
+      $("#group_show").on("click", ".delete_detail", function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        row = $(this);
+        row.closest("tr").remove();
       })
 
       $("#hapus_detail").click(function(evt){
@@ -608,14 +781,15 @@
 
           if(jenis == 2 || jenis == 3){
             $("#group_show .search").each(function(){
-              text = $(this).data("nama"); ids = $(this).attr("id");
+              text = $(this).data("nama"); ids = $(this).attr("id"); dari = $(this).data("dari");
               createNode(id, id+"."+ids, text, "last", text, open, "demo");
 
               data_detail[data_detail.length] = {
                 "id_group"   : ids,
                 "nomor_id"   : id+"."+ids,
                 "id_parrent" : id,
-                "nama"       : text
+                "nama"       : text,
+                "dari"       : dari
               }
             })
           }
@@ -639,12 +813,28 @@
         evt.stopImmediatePropagation();
         evt.preventDefault();
 
+        if(jenis == 2){
+          if($("#group_show").find(".search").length == 0){
+            alert("Harap Pilih Detail Group Neraca Terlebih Dahulu.");
+            return false;
+          }
+        }else if(jenis == 3){
+          if($("#group_show").find(".search").length == 0){
+            alert("Harap Pilih Detail Penjumlahan Terlebih Dahulu.");
+            return false;
+          }
+        }
+
         id = $("#state_id").text()+""+$("#nomor_id").val();
         idx = data_neraca.findIndex(n => n.nomor_id === id);
         node_ket = $("#keterangan").val().toUpperCase()+' ('+$("#state_id").text()+''+$("#nomor_id").val()+')';
         data_neraca[idx].keterangan = $("#keterangan").val();
 
         $('#'+state+'_tree').jstree('rename_node', id , node_ket);
+
+        if(data_neraca[idx].jenis == 2){
+          balancing_detail(data_neraca[idx].nomor_id);
+        }
 
         form_reset();
 
@@ -700,9 +890,9 @@
         data = $.grep(data_neraca, function(n){ return n.nomor_id.substring(0, idle) == cek && n.level == level });
         count = data.length;
 
-        idx = (count == 0) ? 0 : data[count-1].nomor_id.substring(idle);
+        idxx = (count == 0) ? 0 : data[count-1].nomor_id.substring(idle);
 
-        $("#nomor_id").val((parseInt(idx)+1));
+        $("#nomor_id").val((parseInt(idxx)+1));
       }
 
       function grab_detail(){
@@ -744,7 +934,7 @@
         pieces = (state == "aktiva") ? "A" : "P";
         html = '<option value="---" id="first">-- Dari Penjumlahan</option>';
 
-        $.each($.grep(data_neraca, function(n){ return n.jenis == 2 }), function(i, a){
+        $.each($.grep(data_neraca, function(n){ return n.jenis == 2 && n.nomor_id.substring(0,1) == pieces }), function(i, a){
           html = html + '<option value="'+a.nomor_id+'" id="'+a.nomor_id+'">'+a.keterangan+'</option>';
         })
 
@@ -764,10 +954,34 @@
       }
 
       function delete_detail(parrent){
-        $.each($.grep(data_detail, function(a){ return a.id_parrent === parrent }), function(i, n){
-          idx = data_detail.findIndex(a => a.nomor_id === n.nomor_id);
+        $.each($.grep(data_detail, function(a){ return a.id_parrent == parrent }), function(i, n){
+          idxx = data_detail.findIndex(s => s.nomor_id === n.nomor_id);
 
-          data_detail.splice(idx, 1);
+          data_detail.splice(idxx, 1);
+        })
+
+        return true
+      }
+
+      function balancing_detail(parrent){
+        $.each($.grep(data_detail, function(a){ return a.id_parrent === parrent }), function(i, n){
+          idxx = data_detail.findIndex(a => a.nomor_id === n.nomor_id);
+
+          $('#'+state+'_tree').jstree().delete_node(data_detail[idxx].nomor_id);
+          data_detail.splice(idxx, 1);
+        })
+
+        $("#group_show .search").each(function(){
+          text = $(this).data("nama"); ids = $(this).attr("id"); dari = $(this).data("dari");
+          createNode(parrent, parrent+"."+ids, text, "last", text, open, "demo");
+
+          data_detail[data_detail.length] = {
+            "id_group"   : ids,
+            "nomor_id"   : parrent+"."+ids,
+            "id_parrent" : parrent,
+            "nama"       : text,
+            "dari"       : dari
+          }
         })
       }
 
