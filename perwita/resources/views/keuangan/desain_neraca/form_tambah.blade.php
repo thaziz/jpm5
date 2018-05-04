@@ -115,14 +115,16 @@
                     <div class="col-md-6">
                       <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 1px; padding: 10px; height: 500px; box-shadow: 0px 0px 10px #eee;">
                         <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
+                          <span style="position: fixed; top: 50%; left: 16%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Aktiva</span>
                           <div id="aktiva_tree" style="font-size: 8pt;">
-              
+                              
                           </div>
                         </div>
 
                         <div role="tabpanel" class="tab-pane fade" id="pasiva">
+                          <span style="position: fixed; top: 50%; left: 16%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Pasiva</span>
                           <div id="pasiva" style="font-size: 8pt;">
-                            pasiva
+                            
                           </div>
                         </div>
                       </div>
@@ -220,8 +222,8 @@
 
                         <div class="col-md-12 text-right" style="padding: 0px;">
                             <button class="btn btn-success btn-sm" id="masukkan" style="font-size:8pt;" type="button">Masukkan Ke Desain</button>
-                            <button disabled class="btn btn-primary btn-sm" id="tambah_detail" style="font-size:8pt;" type="button">Tambahkan Group Neraca</button>
                             <button disabled class="btn btn-warning btn-sm" id="update_detail" style="font-size:8pt;" type="button">Update</button>
+                            <button disabled class="btn btn-primary btn-sm" id="tambah_detail" style="font-size:8pt;" type="button">Tambahkan Group Neraca</button>
                             <button disabled class="btn btn-danger btn-sm" id="hapus_detail" style="font-size:8pt;" type="button">Hapus</button>
                         </div>
 
@@ -384,6 +386,10 @@
         }
       });
 
+      $("#keterangan").on("keyup", function(){
+        $(this).val($(this).val().toUpperCase())
+      })
+
       $("#level").on("focusin", function(){
 
             before = $(this).val();
@@ -404,6 +410,7 @@
               $("#parrent").removeAttr("disabled");
             }else if(input.val() == 1){
               $("#parrent").val("---"); $("#parrent").attr("disabled", "disabled");
+              $("#parrent_name").val("---");
               $("#state_id").text((state == "aktiva") ? "A" : "P");
 
               grab_id();
@@ -436,6 +443,8 @@
         btn.addClass("aktif");
 
         state = btn.data("for");
+
+        form_reset(); grab_parrent();
       })
 
       $("#jenis").change(function(evt){

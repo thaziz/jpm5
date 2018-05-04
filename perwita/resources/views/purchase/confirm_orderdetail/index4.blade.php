@@ -685,7 +685,10 @@
                  })
               
               }
-             }
+             },
+			 error : function(){
+				location.reload();
+			 }
 
         })
  

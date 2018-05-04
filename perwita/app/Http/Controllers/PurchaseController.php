@@ -43,7 +43,7 @@ use App\bukti_bank_keluar_dt;
 use App\bukti_bank_keluar_biaya;
 use App\master_akun;
 Use App\d_jurnal;
-use App\cndn;,
+use App\cndn;
 use App\cndn_dt;
 Use App\d_jurnal_dt;
 use App\fakturpajakmasukan;
@@ -246,7 +246,7 @@ class PurchaseController extends Controller
 	}
 
 	public function savespp(Request $request) {
-		//dd($request);
+		/*dd($request);*/
 		return DB::transaction(function() use ($request) {  
 			
 			$nospp = $request->nospp;

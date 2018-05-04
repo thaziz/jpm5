@@ -705,8 +705,14 @@ function centang() {
 //menghilangkan kontrak
 $('.jenis_tarif_do').change(function(){
     if ($(this).val() == 9) {
+        reseting(); 
         $('.kontrak_tr').attr('hidden',true);
+        $('.tarif_dasar').val(1);
         $('.harga_master').val(1);
+        $('#kode_tarif').val(0);
+        $('.kcd_id').val(0);
+        $('.kcd_dt').val(0);
+        $('.satuan').val('RP');
         $('.discount ').attr('readonly',true);
 
     }else{      
@@ -714,6 +720,7 @@ $('.jenis_tarif_do').change(function(){
         $('.jenis_tarif_temp').val($(this).val());
         $('.tarif_dasar').val(0);
         $('.discount ').attr('readonly',false);
+        reseting(); 
     }
 });
 
