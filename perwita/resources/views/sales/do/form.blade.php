@@ -820,6 +820,7 @@
             var tot_tot = parseInt(hit_pen_rep)+parseInt(hit_das_rep);
 
             // alert(tot_tot);
+            // alert(hit_disc);
             var hit_tot = parseInt(hit_disc)/parseInt(tot_tot)*100;
             // alert(hit_tot);
             $('#ed_diskon_h').val(hit_tot);
@@ -998,14 +999,15 @@
 
             var diskon_value_utama = diskon / 100 * total;
 
-            $("input[name='ed_diskon_v']").val(diskon_value_utama);
+            $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
 
         }else if (diskon == 0) {
             var diskon_value_utama = diskon / 100 * total;
 
-            $("input[name='ed_diskon_v']").val(diskon_value_utama);
+            $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
         }
        
+        // alert(diskon_value_utama);
         //--
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
@@ -3411,7 +3413,7 @@
 
         var diskon_tot = parseFloat(diskon_value)/parseFloat(total_total)*100;
         
-        $('#ed_diskon_h').val(Math.round(diskon_tot));
+        $('#ed_diskon_h').val(Math.round(diskon_tot,2));
         if(diskon_value == 0){
             $('#ed_diskon_h').val(0);
         }
@@ -3449,7 +3451,7 @@
             console.log(anj);
         }
         $("input[name='ed_jml_ppn']").val(Math.round(ppn));
-        $("input[name='ed_total_h']").val(Math.round(total-diskon_value_utama));
+        $("input[name='ed_total_h']").val(Math.round(total-diskon_value));
         
         $("input[name='ed_total_total']").val(Math.round(total_total));
         // hitung();   

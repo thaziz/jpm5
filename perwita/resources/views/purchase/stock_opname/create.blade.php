@@ -84,7 +84,7 @@
                             <td>No Stock Opname</td>
                             <td>
                               <input type="text" readonly="" class="so form-control nobukti" name="so">
-                              <input type='text' name='username' value="{{Auth::user()->m_name}}">
+                              <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                             </td>
                           </tr>
                               
@@ -170,8 +170,9 @@
 
                     </div>
                     <div style="float: right; margin-right: 0px;">                      
-                        <a class="btn btn-warning" href={{url('stockopname/stockopname')}}> Kembali </a>
-                        <input type="button" name="submit" value="Simpan"  class="btn btn-success simpan">
+                        <a class="btn btn-sm btn-warning" href={{url('stockopname/stockopname')}}> Kembali </a>
+                  
+                        <input type="button" name="submit" value="Simpan"  class="btn btn-success btn-sm simpan simpansukses">
                     </div>
                     </form>
 
@@ -266,7 +267,7 @@
                        +'<td><input type="text" readonly value="'+response.data[i].sg_qty+'" class="form-control fisik" name="stock[]"></td>'
                        +'<td><input type="number" class="form-control real" onkeyup="status(this)" name="real[]"></td>'
                        +'<td>'
-                       +'<select class="form-control status readonly">'
+                       +'<select class="form-control status disabled">'
                        +'<option value="lebih">Lebih</option>'
                        +'<option value="kurang">Kurang</option>'
                        +'<option value="sama">Sama</option>'
@@ -360,9 +361,9 @@ $('.simpan').click(function(){
             timer: 900,
             showConfirmButton: true
             },function(){
-              // location.href='../stockopname/stockopname';
-                   // location.href='../subcon';
-                     
+              location.href='../stockopname/stockopname';
+              // location.href='../subcon';
+                   /* $('.simpansukses').attr('disabled' , true);*/
             });
 
     },

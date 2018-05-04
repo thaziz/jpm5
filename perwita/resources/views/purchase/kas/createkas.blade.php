@@ -93,20 +93,21 @@
             </tr>
             <tr>
                 <td>Cabang</td>
+                @if(Auth::user()->punyaAkses('Biaya Penerus Kas','cabang'))
                 <td>
-
-                    @if(Auth::user()->punyaAkses('Biaya Penerus Kas','cabang'))
-                        <select onchange="ganti_nota()" class="form-control cabang_select" name="cabang">
-                        @foreach($cabang as $val)
-                            @if(Auth()->user()->kode_cabang == $val->kode)
-                            <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                            @else
-                            <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                            @endif
-                        @endforeach
-                        </select>
-                    @else
-                        <select disabled="" class="form-control cabang_select" name="cabang">
+                    <select onchange="ganti_nota()" class="form-control cabang_select" name="cabang">
+                    @foreach($cabang as $val)
+                        @if(Auth()->user()->kode_cabang == $val->kode)
+                        <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                        @else
+                        <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                        @endif
+                    @endforeach
+                    </select>
+                </td>
+                @else
+                <td class="disabled">
+                    <select disabled="" class="form-control cabang_select" name="cabang">
                         @foreach($cabang as $val)
                         @if(Auth::user()->kode_cabang == $val->kode)
                             <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
@@ -114,10 +115,10 @@
                             <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                         @endif
                         @endforeach
-                        </select>
-                    @endif
+                    </select>
                     <input type="hidden" name="cabang_input" class="cabang_input form-control input-sm">
                 </td>
+                @endif
             </tr>
             <tr>
               <td>Tanggal</td>
@@ -193,6 +194,7 @@
                   <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp " placeholder="Biaya Lain Lain" >
                 </td>
               </tr>
+            
               <tr>
                 <td>
                   Biaya Bahan Bakar :
@@ -578,13 +580,13 @@ function search(){
 
   $.ajax({
       url:baseUrl + '/biaya_penerus/cariresi',
-      type:'get',
+      type:'post',
       data: {head,data,resi_array},
       success:function(data){
         $('.resi_body').html('');
         if(typeof data.status !== 'undefined'){
                   console.log(data.status);
-          toastr.warning('data tidak ada');
+          toastr.warning('data tidak ada/sudah ada');
         }else if (data.status == 0){
           toastr.warning('data sudah ada');
         }else{

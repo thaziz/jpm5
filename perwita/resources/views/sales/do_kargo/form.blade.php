@@ -482,6 +482,21 @@ $('.tanggal_do').datepicker({
 $('.date').datepicker({
     format:'dd/mm/yyyy'
 })
+
+function reseting() {
+    $('.satuan').val('');
+    $('.tarif_dasar_text').val('');
+    $('.tarif_dasar').val('');
+    $('.harga_master').val('');
+    $('.harga_master').val('');
+    $('#kode_tarif').val('');
+    $('.kcd_id').val('');
+    $('.kcd_dt').val('');
+    $('.total_text').val('0');
+    $('.total').val('0');
+
+    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
+}
 //menentukan cabang
 $(document).ready(function(){
    var cabang = $('.cabang_select').val();
@@ -529,6 +544,8 @@ $('.buat_nopol').click(function(){
     window.open('{{route('form_kendaraan')}}');
 });
 
+
+
 //fungsi cari nopol
 function cari_nopol_kargo() {
     var status_kendaraan = $('.status_kendaraan').val();
@@ -549,20 +566,7 @@ $('.status_kendaraan').change(function(){
         $('.nama_subcon_detail ').val('');
     }
 })
-function reseting() {
-    $('.satuan').val('');
-    $('.tarif_dasar_text').val('');
-    $('.tarif_dasar').val('');
-    $('.harga_master').val('');
-    $('.harga_master').val('');
-    $('#kode_tarif').val('');
-    $('.kcd_id').val('');
-    $('.kcd_dt').val('');
-    $('.total_text').val('0');
-    $('.total').val('0');
 
-    toastr.info('Data Diubah Mohon Memasukan Tarif Kembali')
-}
 // cari kontrak
 function cari_kontrak() {
     var cabang      = $('.cabang_select').val();
@@ -659,8 +663,14 @@ function centang() {
 //menghilangkan kontrak
 $('.jenis_tarif_do').change(function(){
     if ($(this).val() == 9) {
+        reseting(); 
         $('.kontrak_tr').attr('hidden',true);
+        $('.tarif_dasar').val(1);
         $('.harga_master').val(1);
+        $('#kode_tarif').val(0);
+        $('.kcd_id').val(0);
+        $('.kcd_dt').val(0);
+        $('.satuan').val('RP');
         $('.discount ').attr('readonly',true);
 
     }else{      
@@ -668,6 +678,7 @@ $('.jenis_tarif_do').change(function(){
         $('.jenis_tarif_temp').val($(this).val());
         $('.tarif_dasar').val(0);
         $('.discount ').attr('readonly',false);
+        reseting(); 
     }
 });
 

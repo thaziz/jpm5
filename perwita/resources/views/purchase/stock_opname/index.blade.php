@@ -36,9 +36,11 @@
                     <h5> Stock Opname
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
+                       @if(Auth::user()->punyaAkses('Stock Opname','tambah'))
                    <div class="text-right">
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('stockopname/createstockopname')}}"> <i class="fa fa-plus"> Membuat Laporan Stok Opname </i> </a> 
                     </div>
+                    @endif
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -69,28 +71,30 @@
                           <td>{{$i+1}}</td>
                           <td>{{$tgl[$i]}}</td>
                           <td>{{$val->mg_namagudang}}</td>
-                          @if($val->so_status == 'TIDAK')
-                          <td align="center"><label  class="label label-warning">TIDAK SESUASI</label></td>
+                          @if($val->so_status == 'TIDAK SESUAI')
+                          <td align="center"><label  class="label label-warning">TIDAK SESUAI</label></td>
                           <td align="center"><a href="{{url('stockopname/berita_acara')}}/{{$val->so_id}}" class="btn btn-md btn-info"><i class="fa fa-book"></i> Buat Berita Acara</a></td>
                           @else
-                          <td align="center"><label class="label label-success">SESUASI</label></td>
+                          <td align="center"><label class="label label-success">SESUAI</label></td>
                           <td align="center">
-                            <a href="{{url('stockopname/berita_acara')}}/{{$val->so_id}}" class="btn btn-md btn-success"><i class="fa fa-book"></i> Buat Laporan Stock</a>
+                            <a href="{{url('stockopname/berita_acara')}}/{{$val->so_id}}" class="btn btn-md btn-info"><i class="fa fa-book"></i> Buat Laporan Stock</a>
                           </td>
                           @endif 
                           <td align="center">
                             <a title="detail" class="btn btn-md btn-success btn-sm" href={{url('stockopname/detailstockopname/'. $val->so_id .'')}}>
                               <i class="fa fa-arrow-right" aria-hidden="true"></i>
                             </a>
-
+                              @if(Auth::user()->punyaAkses('Stock Opname','hapus'))
                             <a class="btn btn-sm btn-danger" onclick="hapusdata({{$val->so_id}})">
                               <i class="fa fa-trash"> </i> 
                             </a>
+                            @endif
 
+                            @if(Auth::user()->punyaAkses('Stock Opname','print'))
                             <a class="btn btn-sm btn-info" href="{{url('stockopname/print/'. $val->so_id .'')}}">
                               <i class="fa fa-print"> </i> 
                             </a>
-
+                            @endif
                           </td>
                         </tr>
                       @endforeach
@@ -141,7 +145,6 @@
     });
     
     function hapusdata(id){
-
        swal({
         title: "Apakah anda yakin?",
         text: "Hapus Data!",
@@ -153,9 +156,10 @@
         cancelButtonText: "Batal",
         closeOnConfirm: false
       },
+      function(){
      $.ajax({
       data : {id},
-      url : baseUrl + '/stockopname/delete',
+      url : baseUrl + '/stockopname/delete/'+id,
       type : "get",
       success : function(response){
            swal({
@@ -169,17 +173,16 @@
             });
            
       },
-      error:function(data){
-
+      error:function(data){ 
         swal({
         title: "Terjadi Kesalahan",
                 type: 'error',
                 timer: 2000,
                 showConfirmButton: false
-    });
-   }
+        });
+      }
      })
-
+   })
     }
     
 

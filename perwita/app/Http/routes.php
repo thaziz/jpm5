@@ -162,7 +162,7 @@ Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detail
 //stock opname
 
 Route::get('stockopname/stockopname' , 'PengeluaranBarangController@stockopname');
-Route::get('stockopname/cari_sm/{id}' , 'PengeluaranBarangController@cari_sm');
+Route::get('stockopname/cari_sm' , 'PengeluaranBarangController@cari_sm');
 Route::get('stockopname/berita_acara/{id}' , 'PengeluaranBarangController@berita_acara');
 Route::get('stockopname/createstockopname' , 'PengeluaranBarangController@createstockopname');
 /*Route::get('stockopname/save_stock_opname' , 'PengeluaranBarangController@save_stock_opname');
@@ -170,8 +170,8 @@ Route::get('stockopname/createstockopname' , 'PengeluaranBarangController@create
 Route::get('stockopname/save_stock_opname' , 'StockOpnameController@savestockopname');
 Route::get('stockopname/getnota' , 'PengeluaranBarangController@getnotaopname');
 Route::get('stockopname/print/{id}' , 'StockOpnameController@printstockopname');
-Route::get('stockopname/delete' , 'StockOpnameController@deletestockopname');
-/*Route::get('stockopname/detailstockopname' , 'PengeluaranBarangController@detailstockopname');*/
+Route::get('stockopname/delete/{id}' , 'StockOpnameController@deletestockopname');
+Route::post('stockopname/updatestockopname' , 'StockOpnameController@updatestockopname');
 
 
 Route::get('stockgudang/stockgudang' , 'PurchaseController@stockgudang');
@@ -283,6 +283,7 @@ Route::get('biaya_penerus/getbbm/{id}', 'KasController@getbbm');
 Route::get('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresi', 'KasController@cari_resi');
 Route::post('biaya_penerus/cariresiedit', 'KasController@cariresiedit');
+Route::get('biaya_penerus/cariresiedit', 'KasController@cariresiedit');
 Route::post('biaya_penerus/save_penerus', 'KasController@save_penerus');
 Route::get('biaya_penerus/save_penerus', 'KasController@save_penerus');
 Route::post('biaya_penerus/update_penerus', 'KasController@update_penerus');

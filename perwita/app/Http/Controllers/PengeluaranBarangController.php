@@ -924,12 +924,14 @@ class PengeluaranBarangController extends Controller
 	}
 
 	public function berita_acara($id){
-		$data = DB::table('stock_opname')
-				  ->join('stock_opname_dt','sod_so_id','=','so_id')
-				  ->join('masteritem','kode_item','=','sod_item')
-				  ->where('so_id',$id)
-				  ->get();
-		return view('purchase/stock_opname/beritaacara',compact('data','tgl'));
+		 $data['stockopname'] = DB::select("select * from stock_opname, mastergudang where so_id = '$id' and so_gudang = mg_id");
+        for ($i=0; $i < count($data['stockopname']); $i++) { 
+            $data['tgl'][$i] = Carbon::parse($data['stockopname'][$i]->so_bulan)->format('F');
+        }
+
+        $data['stockopname_dt'] = DB::select("select * from stock_opname_dt, masteritem where sod_so_id = '$id' and sod_item = kode_item");
+
+		return view('purchase/stock_opname/print_berita_acara',compact('data'));
 	}
 
     public function get_gudang(Request $request){

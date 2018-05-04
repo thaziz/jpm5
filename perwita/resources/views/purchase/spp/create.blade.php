@@ -79,7 +79,7 @@
                                               <td>                                              
 
                                                @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','cabang'))
-                                              <select class="form-control  cabang" name="cabang">
+                                              <select class="form-control cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
                                                 <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
                                                 @endforeach
@@ -117,7 +117,7 @@
                                             </td>
 
                                             <td> 
-                                            <input type="text" class="input-sm form-control" name="keperluan" required=""> <input type="hidden" class="valcabang" name="cabang">
+                                            <input type="text" class="input-sm form-control" name="keperluan" required=""> <input type="text" class="valcabang" name="cabang">
                                             </td>
                                           </tr>
                                         
@@ -401,39 +401,52 @@
 
     $('.cabang').change(function(){    
       var comp = $(this).val();
+      $('.valcabang').val(comp);
         $.ajax({    
             type :"get",
             data : {comp},
             url : baseUrl + '/suratpermintaanpembelian/getnospp',
             dataType:'json',
             success : function(data){
-             console.log(data);
-                var d = new Date();
-                
-                //tahun
-                var year = d.getFullYear();
-                //bulan
-                var month = d.getMonth();
-                var month1 = parseInt(month + 1)
-                console.log(d);
-                console.log();
-                console.log(year);
+             if(data.status == 'sukses'){
+                      var d = new Date();               
+                      //tahun
+                      var year = d.getFullYear();
+                      //bulan
+                      var month = d.getMonth();
+                      var month1 = parseInt(month + 1)
+                      console.log(d);
+                      console.log();
+                      console.log(year);
 
-                if(month < 10) {
-                  month = '0' + month1;
+                      if(month < 10) {
+                        month = '0' + month1;
+                      }
+                      console.log(d);
+
+                      tahun = String(year);
+      //                console.log('year' + year);
+                      year2 = tahun.substring(2);
+                      //year2 ="Anafaradina";
+
+                    
+                       nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
+                      console.log(nospp);
+                      $('.nospp').val(nospp);
+                       nospp = $('.nospp').val();
+                }
+                else {
+                    location.reload();
+                }
+              
+                if(nospp === ''){
+                    location.reload();
                 }
 
-                console.log(d);
-
-                tahun = String(year);
-//                console.log('year' + year);
-                year2 = tahun.substring(2);
-                //year2 ="Anafaradina";
-
-              
-                 nospp = 'SPP' + month1 + year2 + '/' + comp + '/' +  data;
-                console.log(nospp);
-                $('.nospp').val(nospp);
+               
+            },
+            error : function(){
+               location.reload();
             }
         })
 

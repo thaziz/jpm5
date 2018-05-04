@@ -68,12 +68,15 @@ table, td, th {
 <body>
 <div class="div-width">
 	<table width="100%">
+
+	@foreach($data['stockopname'] as $i=>$val)
 		<tr>
-			<td width="125px"><img src="" width="125px" height="60px"></td>
+			<td width="125px"><img src="{{asset('perwita/storage/app/upload/images.jpg') }}" width="125px" height="60px"></td>
 			<td align="center" width="280px"><h2>BERITA ACARA STOCK OPNAME</h2></td>
-			<td class="top" width="130px">Bulan :</td>
-			<td class="top" width="240px">Lokasi Gudang :</td>
+			<td class="top" width="130px">Bulan :  {{$data['tgl'][$i]}} </td>
+			<td class="top" width="240px">Lokasi Gudang : {{$val->mg_namagudang}} </td>
 		</tr>
+		@endforeach
 	</table>
 	<table width="100%" style="border-top:hidden;">
 		<tr>
@@ -93,20 +96,29 @@ table, td, th {
 		<tr>
 			<td width="65px" class="tebal">Fisik Barang</td>
 			<td width="65px" class="tebal">Sesuai KS</td>
-			<td align="center" class="tebal" width="65px">Satuan</td>
-			<td align="center" width="65px" class="tebal">%</td>
+			<td align="center" class="tebal" width="65px">+</td>
+			<td align="center" width="65px" class="tebal">-</td>
 		</tr>
+		@foreach($data['stockopname_dt'] as $index=>$sodt)
 		<tr>
-			<td class="blank"></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
-			<td></td>
+			<td class="blank"> {{$index + 1}}</td>
+			<td> {{$sodt->nama_masteritem}}</td>
+			<td> {{$sodt->unitstock}} </td>
+			<td> {{(int)$sodt->sod_jumlah_real}}  </td>
+			<td> {{(int)$sodt->sod_jumlah_stock}} </td>
+			@if($sodt->sod_status == 'lebih')
+				<td> {{(int)$sodt->sod_jumlah_status}} </td>
+				<td> - </td>
+			@else
+				<td> - </td>
+				<td> {{(int)$sodt->sod_jumlah_status}} </td>
+			@endif
+
+			
+			<td> {{$sodt->sod_keterangan}} </td>
 			
 		</tr>
+		@endforeach
 		<tr>
 			<td class="blank"></td>
 			<td></td>
