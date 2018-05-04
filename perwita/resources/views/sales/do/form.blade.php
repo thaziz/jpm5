@@ -3314,8 +3314,19 @@
             $('#type_kiriman').change(function(){
                 var cek_tipe = $(this).val();
                 if (cek_tipe == 'KILOGRAM') {
+                    if(crud_atas == 'E'){
+                        if($("input[name='ed_berat']").val() != '' || $("input[name='ed_koli']").val() != '' ){
+                            $("input[name='ed_berat']").val({{ $do->berat }});
+                            $("input[name='ed_koli']").val({{ $do->koli }});
+                            
+                        }else{
+                            $("input[name='ed_berat']").val(0);
+                            $("input[name='ed_koli']").val(0);
+                        }
+                    }else{
                         var berat = $("input[name='ed_berat']").val(0);
                         var berat = $("input[name='ed_koli']").val(0);
+                    }  
                 }else{
                         var berat = $("input[name='ed_berat']").val(0);
                         var berat = $("input[name='ed_koli']").val(0);
@@ -3498,15 +3509,6 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
-    if(crud_atas == 'E'){
-        if($("input[name='ed_berat']").val() != '' ){
-            $("input[name='ed_berat']").val({{ $do->berat }});
-            var alol = $("input[name='ed_berat']").val();
-            alert(alol);
-        }else{
-            $("input[name='ed_berat']").val(0)
-            
-        }
-    }
+    
 </script>
 @endsection
