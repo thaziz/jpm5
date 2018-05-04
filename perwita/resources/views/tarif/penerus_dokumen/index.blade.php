@@ -145,7 +145,7 @@
                                         <select readonly   name="ed_kota" id="kota"  class="form-control">
                                             <option disabled="" selected="">-</option>  
                                             @foreach ($kota as $b)
-                                                <option value="{{ $b->id }}" data-kota="{{ $b->kode_kota }}">{{ $b->nama }}</option>
+                                                <option value="{{ $b->id }}" data-kota="{{ $b->kode_kota}}">{{ $b->nama }}</option>
                                            @endforeach      
                                         </select>
                                     </td>
