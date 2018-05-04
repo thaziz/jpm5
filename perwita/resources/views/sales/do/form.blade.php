@@ -806,6 +806,7 @@
        
     })
     if (crud_atas == 'E') {
+        
             $('#cb_cabang').attr('readonly','true');
             var hit_disc = $('#ed_diskon_h').val();
             var hit_pen = $("#ed_tarif_penerus").val();
@@ -3497,6 +3498,15 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
-
+    if(crud_atas == 'E'){
+        if($("input[name='ed_berat']").val() != '' ){
+            $("input[name='ed_berat']").val({{ $do->berat }});
+            var alol = $("input[name='ed_berat']").val();
+            alert(alol);
+        }else{
+            $("input[name='ed_berat']").val(0)
+            
+        }
+    }
 </script>
 @endsection
