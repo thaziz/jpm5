@@ -201,7 +201,7 @@ class penerus_dokumen_Controller extends Controller
     public function index(){
         $provinsi = DB::select(DB::raw("SELECT id,nama FROM provinsi ORDER BY nama ASC"));
         
-        $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
+        $kota = DB::select(DB::raw(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC "));
         $kecamatan = DB::select(DB::raw(" SELECT id,nama,id_kota FROM kecamatan ORDER BY nama ASC "));
         $zona = DB::select(DB::raw(" SELECT id_zona,nama nama_zona,harga_zona FROM zona  "));
 

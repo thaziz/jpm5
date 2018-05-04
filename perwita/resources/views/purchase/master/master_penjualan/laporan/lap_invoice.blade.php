@@ -36,70 +36,45 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                        <div class="row">
-            <div class="col-xs-12">
+                <div class="row">
+              <div class="col-xs-12">
                <div class="form-row">
-                <div class="form-group col-md-2">
-                  <input type="text" class="date form-control" readonly="" id="date_awal" name="">
-                </div>
-                <div class="form-group col-md-2">
-                  <input type="text" class="date form-control" readonly="" id="date_akir" name="">
-                </div>
-                <div class="form-group col-md-2">
-                  <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
-                </div>
-                {{-- <div class="form-group col-md-2 pull-right">
-                  <button  class="btn btn-info" onclick="reresh()"> <i class="fa fa-arrow-circle-right" aria-hidden="true"></i> Reload </button>
-                </div> --}}
+                          <div class="form-group col-md-2">
+                            <input type="text" class="date form-control" readonly="" id="date_awal" name="">
+                          </div>
+
+                          <div class="form-group col-md-2">
+                            <input type="text" class="date form-control" readonly="" id="date_akir" name="">
+                          </div>
+
+                          <div class="form-group col-md-4">
+                            <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control"   data-show-subtext="true" data-live-search="true" >
+                                <option selected="" value="">- Pilih Customer -</option>
+                                @foreach ($cus as $c)
+                                  <option value="{{ $c->kode }}" >{{ $c->kode }} - {{ $c->nama }}</option>
+                                @endforeach
+                            </select>
+                          </div>
+
+                          <div class="form-group col-md-2">
+                            <button  class="btn btn-info" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </button>
+                          </div>
+                      </div>
               </div> 
               <h3 id="replace" align="center"></h3> 
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
-                  <div class="box-body">
-                    <table class="table " style="margin-top: 100px;">
-                         <tr>
-                        <td> Dimulai : </td> <td> <div class="input-group">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
-                                              date" onchange="tgl()">
-
-                              </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
-                                          <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input type="text" class=" date form-control date_to date_range_filter
-                                              date" name="max" id="max" onchange="tgl()" >
-                              </div> </td>
-                      </tr>
-                        {{-- <tr>
-                            <th style="width: 100px; padding-top: 16px"> Satuan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn1()">
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            @foreach ($sat as $sat)
-                              <option value="{{ $sat->kode }}">{{ $sat->kode }} - {{ $sat->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td> --}}
-
-                          <th style="width: 100px; padding-top: 16px"> Customer </th>
-                          <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option selected="">- Pilih Customer -</option>
-                            @foreach ($cus as $c)
-                              <option value="{{ $c->kode }}" >{{ $c->kode }} - {{ $c->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td>
-                        </tr>
-                       
+                    <div class="box-body">
                       <br>
-                      </table>
-                      <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                      <div class="row" style="margin-top: 20px;margin-left: 30px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                      <div class="row" style="margin-top: -39px;margin-left: 98px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                     </div>
                 </form>
                 <div class="box-body">
-                <table id="addColumn" class="table table-bordered table-striped">
+                <div id="drop_here"></div>
+                <table id="addColumn" class="table table-bordered table-striped" class="hide" hidden="" >
                     <thead>
                         <tr>
                             <th> No Inv</th>
@@ -168,7 +143,6 @@
             </div>
         </div>
     </div>
-</div>
 
 
 
@@ -188,66 +162,6 @@
         /*minViewMode:1,*/
     });
 
-    var total = 0;
-    $('.total_net').each(function(){
-        var parents_net = parseInt($(this).val());
-        total += parents_net;
-    });
-    $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
-
-    var brutto = 0;
-    $('.total_brutto').each(function(){
-        var parents_brutto = parseInt($(this).val());
-        brutto += parents_brutto;
-    });
-    $('#brutto_grandtotal').text(accounting.formatMoney(brutto,"",0,'.',','));
-
-    var netto = 0;
-    $('.total_netto_detil').each(function(){
-        var parents_netto = parseInt($(this).val());
-        netto += parents_netto;
-    });
-    $('#netto_grandtotal').text(accounting.formatMoney(netto,"",0,'.',','));
-
-    var netto_detil = 0;
-    $('.total_netto').each(function(){
-        var parents_netto_detil = parseInt($(this).val());
-        netto_detil += parents_netto_detil;
-    });
-    $('#nettodetil_grandtotal').text(accounting.formatMoney(netto_detil,"",0,'.',','));
-
-     var ppn = 0;
-    $('.total_ppn').each(function(){
-        var parents_ppn = parseInt($(this).val());
-        ppn += parents_ppn;
-    });
-    $('#ppn_grandtotal').text(accounting.formatMoney(ppn,"",0,'.',','));
-
-     var diskon_do = 0;
-    $('.total_diskondo').each(function(){
-        var parents_diskon_do = parseInt($(this).val());
-        diskon_do += parents_diskon_do;
-    });
-    $('#diskondo_grandtotal').text(accounting.formatMoney(diskon_do,"",0,'.',','));
-
-     var diskon_inv = 0;
-    $('.total_diskoninv').each(function(){
-        var parents_diskon_inv = parseInt($(this).val());
-        diskon_inv += parents_diskon_inv;
-    });
-    $('#diskoninv_grandtotal').text(accounting.formatMoney(diskon_inv,"",0,'.',','));
-
-     var pajak_lain = 0;
-    $('.total_pajak_lain').each(function(){
-        var parents_pajak_lain = parseInt($(this).val());
-        pajak_lain += parents_pajak_lain;
-    });
-    $('#pajaklain_grandtotal').text(accounting.formatMoney(pajak_lain,"",0,'.',','));
-
-    console.log(netto_detil);
-    console.log(netto);
-    console.log(total);
-    console.log(brutto);
 
 
     var d = new Date();
@@ -257,14 +171,24 @@
 
 
     var table;
-      function cetak(){
-      var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < asd.length; i++){
 
-           asw[i] =  $(asd[i][0]).val();
-  
-       }
+    function cari(){
+      var awal =  $('#date_awal').val();
+      var akir =  $('#date_akir').val();
+      var customer =  $('.select-picker5').val();
+      $.ajax({
+        data: {awal:awal,akir:akir,customer:customer},
+        url: baseUrl + '/carireport_invoice/carireport_invoice',
+        type: "get",
+         success : function(data){
+          $('#drop_here').html(data);
+        }
+      });
+    }
+
+
+      function cetak(){
+    
 
       $.ajaxSetup({
         headers: {

@@ -806,6 +806,7 @@
        
     })
     if (crud_atas == 'E') {
+        
             $('#cb_cabang').attr('readonly','true');
             var hit_disc = $('#ed_diskon_h').val();
             var hit_pen = $("#ed_tarif_penerus").val();
@@ -3313,8 +3314,19 @@
             $('#type_kiriman').change(function(){
                 var cek_tipe = $(this).val();
                 if (cek_tipe == 'KILOGRAM') {
+                    if(crud_atas == 'E'){
+                        if($("input[name='ed_berat']").val() != '' || $("input[name='ed_koli']").val() != '' ){
+                            $("input[name='ed_berat']").val({{ $do->berat }});
+                            $("input[name='ed_koli']").val({{ $do->koli }});
+                            
+                        }else{
+                            $("input[name='ed_berat']").val(0);
+                            $("input[name='ed_koli']").val(0);
+                        }
+                    }else{
                         var berat = $("input[name='ed_berat']").val(0);
                         var berat = $("input[name='ed_koli']").val(0);
+                    }  
                 }else{
                         var berat = $("input[name='ed_berat']").val(0);
                         var berat = $("input[name='ed_koli']").val(0);
@@ -3422,7 +3434,7 @@
         var this_selected_value = $('#cb_cabang').find(':selected').data('diskon');
         // alert(this_selected_value);
         var tot = parseFloat(this_selected_value)*parseFloat(total_total)/100; 
-           
+        
         if (diskon_value > tot) {
             
             Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
@@ -3446,10 +3458,29 @@
             }
             $('#ed_diskon_v').val(0);
             $('#ed_diskon_h').val(0);
-            var anj = $('#ed_diskon_v').val();
-            $("input[name='ed_total_h']").val(total);
-            console.log(anj);
+            $("input[name='ed_total_h']").val(total_total);
         }
+
+        if($('#ed_biaya_tambahan').val() != 0){
+            Command: toastr["warning"]("Pilih salah Satu", "Peringatan !")
+
+            toastr.options = {
+              "closeButton": true,
+              "debug": true,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+            }
+            $('#ed_diskon_v').val(0);
+            $('#ed_diskon_h').val(0);
+            $('#ed_biaya_tambahan').val(0)
+            $("input[name='ed_total_h']").val(total_total);
+        }
+
+
+
         $("input[name='ed_jml_ppn']").val(Math.round(ppn));
         $("input[name='ed_total_h']").val(Math.round(total-diskon_value));
         
@@ -3478,6 +3509,6 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
-
+    
 </script>
 @endsection
