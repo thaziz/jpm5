@@ -296,6 +296,14 @@ Route::get('biaya_penerus/buktikas', 'KasController@buktikas')->name('buktikas')
 Route::get('biaya_penerus/detailkas', 'KasController@detailkas')->name('detailkas');
 Route::get('biaya_penerus/carinopol', 'KasController@carinopol')->name('carinopol');
 
+// BIAYA PENERUS LOADING/UNLOADING
+Route::get('biaya_penerus_loading/index', 'loadingController@index_loading');
+Route::get('biaya_penerus_loading/create', 'loadingController@create_loading');
+Route::get('biaya_penerus_loading/edit', 'loadingController@edit_loading')->name('editkasloading');
+Route::post('biaya_penerus_loading/cariresi', 'loadingController@cariresi');
+Route::get('biaya_penerus_loading/cariresiedit', 'loadingController@cariresiedit');
+Route::get('biaya_penerus_loading/save_loading', 'loadingController@save_loading');
+// 
 //BUKTI KAS KELUAR
 Route::get('buktikaskeluar/index', 'kasKeluarController@index');
 Route::get('buktikaskeluar/create', 'kasKeluarController@create');

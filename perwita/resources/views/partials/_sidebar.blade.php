@@ -2043,6 +2043,12 @@
                                         Request::is('biaya_penerus/index/*') ? 'active' : ''}}" href="{{ url('biaya_penerus/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Biaya Penerus Kas</a>
                                         </li>
                                         @endif
+                                        @if(Auth::user()->PunyaAkses('Biaya Penerus Loading','aktif'))
+                                        <li >
+                                            <a class="sidebar master-perusahaan {{Request::is('biaya_penerus_loading/index') ? 'active' : '' || 
+                                        Request::is('biaya_penerus_loading/index/*') ? 'active' : ''}}" href="{{ url('biaya_penerus_loading/index')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Biaya Penerus Loading/Unloading</a>
+                                        </li>
+                                        @endif
                                         @if(Auth::user()->PunyaAkses('Pending Kas','aktif'))
                                         <li >
                                             <a class="sidebar master-perusahaan {{Request::is('pending_kas/index') ? 'active' : '' || 
