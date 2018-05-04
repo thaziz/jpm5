@@ -921,7 +921,7 @@ Route::get('carideliveryorder_koran/carideliveryorder_koran','LaporanMasterContr
 Route::get('sales/laporan_invoice','LaporanMasterController@invoice');
 Route::get('cari_lap_invoice/cari_lap_invoice','LaporanMasterController@cari_lap_invoice');
 Route::post('reportinvoice/reportinvoice', 'LaporanMasterController@reportinvoice')->name('reportinvoice');
-Route::post('excelinvoice/excelinvoice', 'LaporanMasterController@excelinvoice')->name('excelinvoice');
+Route::get('excelinvoice/excelinvoice', 'LaporanMasterController@excelinvoice')->name('excelinvoice');
 Route::get('carireport_invoice/carireport_invoice', 'LaporanMasterController@carireport_invoice')->name('carireport_invoice');
 //END OF LAPORAN INVOICE
 

@@ -1527,25 +1527,19 @@ class LaporanMasterController extends Controller
 		$customer = $request->customer;
 		if ($customer != '') {
 			$data = DB::table('invoice')
-				// ->select('i_tanggal','i_kode_customer','')
 				->where('i_tanggal','>=',$awal)
 				->where('i_tanggal','<=',$akir)
 				->where('i_kode_customer','=',$customer)
-				// ->groupBy('i_kode_customer')
 				->get();
 			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->where('i_kode_customer','=',$customer)->groupBy('i_kode_customer','customer.nama')->get();
 		}else{
 			$data = DB::table('invoice')
 				->where('i_tanggal','>=',$awal)
 				->where('i_tanggal','<=',$akir)
-				// ->groupBy('i_kode_customer')
 				->get();
 			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->groupBy('i_kode_customer','customer.nama')->get();
 		}
-		// return $data;
-   		
 
-		
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
@@ -1554,6 +1548,73 @@ class LaporanMasterController extends Controller
 		
 		}
 
+		public function reportinvoice(Request $request){
+		
+		// dd($request->all());
+		$awal = $request->awal;
+		$akir = $request->akir;
+		$customer = $request->customer;
+		if ($customer != '') {
+			$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->where('i_kode_customer','=',$customer)
+				->get();
+			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->where('i_kode_customer','=',$customer)->groupBy('i_kode_customer','customer.nama')->get();
+		}else{
+			$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->get();
+			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->groupBy('i_kode_customer','customer.nama')->get();
+		}
+				
+		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$cus = DB::table('customer')->get();
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+
+		return view('purchase/master/master_penjualan/pdf/pdf_invoice',compact('data','cust','ket','kota','cus','kota1'));
+		
+		}
+		public function excelinvoice(){
+		$awal = $request->awal;
+		$akir = $request->akir;
+		$customer = $request->customer;
+		if ($customer != '') {
+			$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->where('i_kode_customer','=',$customer)
+				->get();
+			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->where('i_kode_customer','=',$customer)->groupBy('i_kode_customer','customer.nama')->get();
+		}else{
+			$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->get();
+			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->groupBy('i_kode_customer','customer.nama')->get();
+		}
+				
+		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$cus = DB::table('customer')->get();
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+			$date =  date('B'.'s'.'H');
+
+				   			Excel::create('Kartuhutang'.$date, function($excel) use ($data,$cust,$ket,$kota,$cus,$kota1){
+
+								    $excel->sheet('New sheet', function($sheet) use ($data,$cust,$ket,$kota,$cus,$kota1) {
+								        $sheet->loadView('purchase/master/master_penjualan/pdf/pdf_invoice')
+								        ->with('data_awal',$data_awal)
+								        ->with('total_net',$total_net)
+								        ->with('total',$total)
+								        ->with('diskon',$diskon)
+								        ->with('do',$do);
+								    });
+
+								})->download('csv');
+		}
 
 		public function cari_lap_invoice(Request $request){
 
@@ -1634,26 +1695,7 @@ class LaporanMasterController extends Controller
 
 	}
 
-		public function reportinvoice(Request $request){
-		// return 'a';
-			dd($request->all());
-		$data = $request->a;	
-   		// dd($data[0]);
-   		$dat = '';
-		for ($save=0; $save <count($data) ; $save++) { 
-			$dat = $dat.','.$data[$save];
-
-		}
-		$dat =explode(',', $dat); 
-		json_encode($dat);
-        for ($i=1; $i <count($dat); $i++) { 
 		
-		$dat1[$i] = DB::table('invoice')->where('i_nomor','=',$dat[$i])->get();
-			}
-        // dd($dat1);
-		return view('purchase/master/master_penjualan/pdf/pdf_invoice',compact('dat1'));
-		
-		}
 
 
 
