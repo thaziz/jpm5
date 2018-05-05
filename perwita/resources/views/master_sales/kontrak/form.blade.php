@@ -590,11 +590,22 @@ console.log(id_detail);
 }
   
 function hapus(p){
+var auth = '{{ Auth::user()->punyaAkses('Kontrak Customer','hapus') }}';
+
+if (auth == 0) {
+return toastr.warning('User tidak memiliki akses untuk menghapus');
+}
+
   var par = $(p).parents('tr');
   datatable.row(par).remove().draw(false);
 }
 
 function edit(p){
+var auth = '{{ Auth::user()->punyaAkses('Kontrak Customer','ubah') }}';
+
+if (auth == 0) {
+return toastr.warning('User tidak memiliki akses untuk merubah');
+}
 var par  = $(p).parents('tr');
 var kota_asal = $(par).find('.kota_asal').val();
 var kota_tujuan = $(par).find('.kota_tujuan').val();
@@ -644,6 +655,12 @@ if (jenis_detail == 'PAKET') {
 $('#btnsimpan').click(function(){
     var cabang = $('.cabang').val();
     var customer= $('.customer').val();
+    if (cabang == '0') {
+        return toastr.warning('Cabang Harus Diisi');
+    }
+    if (customer == '0') {
+        return toastr.warning('Customer Harus Diisi');
+    }
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Kontrak!",

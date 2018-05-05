@@ -1,6 +1,6 @@
 
 <select  class="chosen-select-width form-control customer"  name="id_subcon" id="customer" style="width:100%" >
-    <option selected="">- Pilih Customer -</option>
+    <option selected="" value="0">- Pilih Customer -</option>
     @foreach($customer as $val)
     @foreach($kota as $i)
       @if($i->id == $val->kota)
