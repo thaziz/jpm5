@@ -131,55 +131,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($data_dt as $i=> $val)
-                        <tr>
-                            <td>
-                                {{$val->kcd_kota_asal}} - {{$val->nama_asal}}
-                                <input type="hidden" class="kota_asal urut_ke_{{$i+1}}" value="{{$val->kcd_kota_asal}}" name="kota_asal[]">
-                                <input type="hidden" class="seq" value="{{$i+1}}">
-                            </td>
-                            <td>
-                                {{$val->kcd_kota_tujuan}} - {{$val->nama_tujuan}}
-                                <input type="hidden" class="kota_tujuan" value="{{$val->kcd_kota_tujuan}}" name="kota_tujuan[]">
-                            </td>
-                            <td>
-                                {{$val->kcd_jenis}}
-                                <input type="hidden" class="jenis_detail" value="{{$val->kcd_jenis}}" name="jenis_modal[]">
-                                <input type="hidden" class="jenis_tarif_detail" value="{{$val->kcd_jenis_tarif}}" name="jenis_tarif[]">
-                                <input type="hidden" class="grup_item" value="{{$val->kcd_grup}}" name="grup_item[]">
-                            </td>
-                            <td>
-                                {{$val->kcd_kode_satuan}}
-                                <input type="hidden" class="satuan" value="{{$val->kcd_kode_satuan}}" name="satuan[]">
-                            </td>
-                            <td>
-                                {{$val->nama}}
-                                <input type="hidden" class="tipe_angkutan" value="{{$val->kcd_kode_angkutan}}" name="tipe_angkutan[]">
-                            </td>
-                            <td>
-                                <input type="text" class="harga form-control" style="text-align:right" value="{{number_format($val->kcd_harga,0, ".", ",")}}" name="harga[]">
-                                <input type="hidden" class="type_tarif form-control" value="{{$val->kcd_type_tarif}}" name="type_tarif[]">
-                            </td>
-                            <td>
-                                <input type="text" class="keterangan form-control" value="{{$val->kcd_keterangan}}" name="keterangan[]">
-                            </td>
-                            @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
-                            <td>
-                                <input @if($val->kcd_active == true) checked="" @endif type="checkbox" class="aktif form-control"  name="aktif[]">
-                            </td>
-                            @endif
-                            <td align="center">
-                                <div class="btn-group">
-                                   <button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">
-                                   <label class="fa fa-pencil"></label></button>
-                                   <button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">
-                                   <label class="fa fa-trash"></label></button>
-                               </div>
-                                <input type="hidden" class="akun_acc form-control" value="{{$val->kcd_acc_penjualan}}" name="akun_acc[]">
-                                <input type="hidden" class="akun_csf form-control" value="{{$val->kcd_csf_penjualan}}" name="akun_csf[]">
-                            </td>
-                        </tr>
-                        @endforeach
+                        
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
