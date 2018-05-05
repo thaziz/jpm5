@@ -412,7 +412,7 @@ class kontrak_Controller extends Controller
         }
         
 
-        return view('master_sales.kontrak.detail_kontrak',compact('data','data_dt','kota','customer','data','cabang','satuan','tipe_angkutan','now','now1','jenis_tarif','grup_item'));
+        return view('master_sales.kontrak.detail_kontrak',compact('data','data_dt','kota','customer','data','cabang','satuan','tipe_angkutan','now','now1','jenis_tarif','grup_item','id'));
     }
 
     public function datatable_kontrak(request $request)
@@ -496,6 +496,9 @@ class kontrak_Controller extends Controller
                               return '-';
                           }
                            
+                        })
+                        ->addColumn('none', function ($data) {
+                            return '-';
                         })
                         ->make(true);
     }

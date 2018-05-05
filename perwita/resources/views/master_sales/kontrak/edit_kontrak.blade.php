@@ -374,6 +374,10 @@
                      className: 'center'
                   },
                   {
+                     targets: 9 ,
+                     className: 'center'
+                  },
+                  {
                      targets: 1 ,
                      className: 'lebar'
                   },
