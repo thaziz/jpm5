@@ -1170,6 +1170,7 @@ Route::get('master_sales/kontrak_set_nota', 'master_sales\kontrak_Controller@kon
 Route::get('master_sales/set_kode_akun_acc', 'master_sales\kontrak_Controller@set_kode_akun_acc');
 Route::get('master_sales/set_kode_akun_csf', 'master_sales\kontrak_Controller@set_kode_akun_csf');
 Route::get('master_sales/hapus_kontrak', 'master_sales\kontrak_Controller@hapus_kontrak');
+Route::get('master_sales/detail_kontrak/{id}', 'master_sales\kontrak_Controller@detail_kontrak');
 
 // end kontrak
 

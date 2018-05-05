@@ -410,4 +410,55 @@ class kontrak_Controller extends Controller
         return response()->json(['status'=>1]);
 
     }
+
+    public function detail_kontrak($id)
+    {
+       $data    = DB::table('kontrak_customer')
+                  ->join('customer','kode','=','kc_kode_customer')
+                  ->where('kc_id',$id)
+                  ->first();
+
+        $data_dt = DB::table('kontrak_customer_d')              
+                  ->join('jenis_tarif','jt_id','=','kcd_jenis_tarif')
+                  ->join('tipe_angkutan','kode','=','kcd_kode_angkutan')
+                  ->where('kcd_id',$id)
+                  ->get();
+        $kota    = DB::table('kota')
+                  ->get();
+
+        $grup_item = DB::select(DB::raw(" SELECT kode,nama FROM grup_item ORDER BY nama ASC "));
+                  
+        for ($i=0; $i < count($data_dt); $i++) { 
+          for ($a=0; $a < count($kota); $a++) { 
+            if ($kota[$a]->id == $data_dt[$i]->kcd_kota_asal) {
+              $data_dt[$i]->nama_asal = $kota[$a]->nama;
+            }
+            if ($kota[$a]->id == $data_dt[$i]->kcd_kota_tujuan) {
+              $data_dt[$i]->nama_tujuan = $kota[$a]->nama;
+            }
+          }
+        }
+
+        
+        $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
+        $cabang = DB::select(" SELECT kode,nama FROM cabang ORDER BY nama ASC ");
+        $customer = DB::select(" SELECT kode,nama FROM customer ORDER BY nama ASC ");
+        $tipe_angkutan = DB::select(" SELECT * FROM tipe_angkutan ORDER BY nama ASC ");
+        $satuan = DB::table('satuan')
+                         ->get();
+        $jenis_tarif = DB::table('jenis_tarif')
+                         ->orderBy('jt_id','ASC')
+                         ->get();
+        $now1    = Carbon::now()->subDay(-30)->format('d/m/Y');
+        $now    = Carbon::now()->format('d/m/Y');
+
+        for ($i=0; $i < count($kota); $i++) { 
+          if ($data->kota == $kota[$i]->id) {
+            $data->nama_kota = $kota[$i]->nama;
+          }
+        }
+        
+
+        return view('master_sales.kontrak.detail_kontrak',compact('data','data_dt','kota','customer','data','cabang','satuan','tipe_angkutan','now','now1','jenis_tarif','grup_item'));
+    }
 }
