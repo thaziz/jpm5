@@ -341,14 +341,53 @@
         dataType:'json',
         success:function(response){
             $('#ed_nomor').val(response.nota);
-            var nota = $('#ed_nomor').val();
-            console.log(nota);
-            $('#table_data').DataTable({
+            
+          
+        },
+        error:function(){
+            location.reload();
+        }
+
+    })
+
+    $.ajax({
+        url:baseUrl +'/master_sales/set_kode_akun_acc',
+        data:{cabang},
+        success:function(response){
+            $('.acc_tr').html(response);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+    $.ajax({
+        url:baseUrl +'/master_sales/set_kode_akun_csf',
+        data:{cabang},
+        success:function(response){
+            $('.csf_tr').html(response);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+
+    $.ajax({
+        url:baseUrl +'/master_sales/drop_cus',
+        data:{cabang},
+        success:function(data){
+            $('.customer_td').html(data);
+        },
+        error:function(){
+            location.reload();
+        }
+    });
+    $('#table_data').DataTable({
                   processing: true,
                   serverSide: true,
                   ajax: {
                       url:'{{ route('datatable_kontrak') }}',
-                      data:{nota}
+                      data:{nota: function() { return $('#ed_nomor').val() }}
                   },
                   columnDefs: [
                   {
@@ -390,47 +429,6 @@
                 ]
 
             });
-          
-        },
-        error:function(){
-            location.reload();
-        }
-
-    })
-
-    $.ajax({
-        url:baseUrl +'/master_sales/set_kode_akun_acc',
-        data:{cabang},
-        success:function(response){
-            $('.acc_tr').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
-
-    $.ajax({
-        url:baseUrl +'/master_sales/set_kode_akun_csf',
-        data:{cabang},
-        success:function(response){
-            $('.csf_tr').html(response);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
-
-    $.ajax({
-        url:baseUrl +'/master_sales/drop_cus',
-        data:{cabang},
-        success:function(data){
-            $('.customer_td').html(data);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
-
 
 
 });
@@ -459,7 +457,8 @@
         dataType:'json',
         success:function(response){
             $('#ed_nomor').val(response.nota);
-            $('#ed_nomor').val(response.nota);
+            var table = $('#table_data').DataTable();
+            table.ajax.reload(null,false);
         },
         error:function(){
             location.reload();

@@ -351,52 +351,53 @@
         }
     });
 
-     var nota = $('#ed_nomor').val();
      $('#table_data').DataTable({
-                  processing: true,
-                  serverSide: true,
-                  ajax: {
-                      url:'{{ route('datatable_kontrak') }}',
-                      data:{nota}
-                  },
-                  columnDefs: [
-                
-                  {
-                     targets: 0 ,
-                     className: 'center kcd_dt'
-                  },
-                  {
-                     targets: 6 ,
-                     className: 'right'
-                  },
-                  {
-                     targets: 8 ,
-                     className: 'center'
-                  },
-                  {
-                     targets: 1 ,
-                     className: 'lebar'
-                  },
-                  {
-                     targets: 2 ,
-                     className: 'lebar'
-                  },
-               
-                ],
-                columns: [
-                    {data: 'kcd_dt', name: 'kcd_dt'},
-                    {data: 'asal', name: 'asal'},
-                    {data: 'tujuan', name: 'tujuan'},
-                    {data: 'kcd_jenis', name: 'kcd_jenis'},
-                    {data: 'kcd_kode_satuan', name: 'kcd_kode_satuan'},
-                    {data: 'angkutan', name: 'angkutan'},
-                    {data: 'harga', name: 'harga'},
-                    {data: 'kcd_keterangan', name: 'kcd_keterangan'},
-                    {data: 'active', name: 'active'},
-                    {data: 'aksi', name: 'aksi'}
-                ]
+          processing: true,
+          serverSide: true,
+          ajax: {
+              url:'{{ route('datatable_kontrak') }}',
+              data:{nota: function() { return $('#ed_nomor').val() }}
+          },
+          columnDefs: [
+          {
+             targets: 7 ,
+             className: 'center'
+          },
+          {
+             targets: 0 ,
+             className: 'center kcd_dt'
+          },
+          {
+             targets: 6 ,
+             className: 'center'
+          },
+          {
+             targets: 8 ,
+             className: 'center'
+          },
+          {
+             targets: 1 ,
+             className: 'lebar'
+          },
+          {
+             targets: 2 ,
+             className: 'lebar'
+          },
+       
+        ],
+        columns: [
+            {data: 'kcd_dt', name: 'kcd_dt'},
+            {data: 'asal', name: 'asal'},
+            {data: 'tujuan', name: 'tujuan'},
+            {data: 'kcd_jenis', name: 'kcd_jenis'},
+            {data: 'kcd_kode_satuan', name: 'kcd_kode_satuan'},
+            {data: 'angkutan', name: 'angkutan'},
+            {data: 'harga', name: 'harga'},
+            {data: 'kcd_keterangan', name: 'kcd_keterangan'},
+            {data: 'aksi', name: 'aksi'}
+        ]
 
-            });
+    });
 });
 
 $('#btnadd').click(function(){

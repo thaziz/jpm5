@@ -273,7 +273,7 @@ class kontrak_Controller extends Controller
                         );
 
          // $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$request->id),'status'=>'Customer'];
-          
+
         // Mail::send('hello', $data, function ($mail)
         //     {
         //       // Email dikirimkan ke address "momo@deviluke.com" 
@@ -417,6 +417,8 @@ class kontrak_Controller extends Controller
 
     public function datatable_kontrak(request $request)
     {
+
+      // DD($request->all());
         $data = DB::table('kontrak_customer_d')
                   ->where('kcd_kode',$request->nota)
                   ->orderBy('kcd_dt','ASC')
