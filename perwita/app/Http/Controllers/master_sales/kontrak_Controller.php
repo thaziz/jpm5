@@ -272,6 +272,22 @@ class kontrak_Controller extends Controller
                             'kcd_grup'          => $request->grup_item_modal,
                         );
 
+         // $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$request->id),'status'=>'Customer'];
+          
+        // Mail::send('hello', $data, function ($mail)
+        //     {
+        //       // Email dikirimkan ke address "momo@deviluke.com" 
+        //       // dengan nama penerima "Momo Velia Deviluke"
+        //       $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+        //       $mail->to('dewa17a@gmail.com', 'Admin');
+         
+        //       // Copy carbon dikirimkan ke address "haruna@sairenji" 
+        //       // dengan nama penerima "Haruna Sairenji"
+        //       $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+         
+        //       $mail->subject('KONTRAK VERIFIKASI');
+        //     });
+
         if ($request->id_detail == 0) {
           $save_detail = DB::table('kontrak_customer_d')
                           ->insert($data_dt);
@@ -503,7 +519,6 @@ class kontrak_Controller extends Controller
     {
         // dd($request->all());
       // return dd($request->all());
-         $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$request->id),'status'=>'Customer'];
 
         if ($request->check == 'true') {
          // return $request->check;
@@ -515,19 +530,7 @@ class kontrak_Controller extends Controller
                   'kcd_active' => true 
                 ]);
 
-             Mail::send('hello', $data, function ($mail)
-            {
-              // Email dikirimkan ke address "momo@deviluke.com" 
-              // dengan nama penerima "Momo Velia Deviluke"
-              $mail->from('jpm@gmail.com', 'SYSTEM JPM');
-              $mail->to('dewa17a@gmail.com', 'Admin');
-         
-              // Copy carbon dikirimkan ke address "haruna@sairenji" 
-              // dengan nama penerima "Haruna Sairenji"
-              $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
-         
-              $mail->subject('KONTRAK VERIFIKASI');
-            });
+             
              return json_encode('success 1');
 
         }else{
