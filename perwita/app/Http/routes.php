@@ -1185,7 +1185,11 @@ Route::get('sales/salesorder', function(){
 Route::get('sales/salesorderform', function(){
         return view('sales.so.form');
 });
-
+Route::get('/hello', function(){
+        $status = 'Customer';
+        $kontrak = 'ini';
+        return view('hello',compact('status','kontrak'));
+});
 /*
 Route::get('sales/deliveryordercabangtracking','trackingdoController@index');
 Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoController@getdata');*/
