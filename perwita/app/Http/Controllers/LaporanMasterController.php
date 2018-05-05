@@ -1577,7 +1577,7 @@ class LaporanMasterController extends Controller
 		return view('purchase/master/master_penjualan/pdf/pdf_invoice',compact('data','cust','ket','kota','cus','kota1'));
 		
 		}
-		public function excelinvoice(){
+		public function excelinvoice(Request $request){
 		$awal = $request->awal;
 		$akir = $request->akir;
 		$customer = $request->customer;
@@ -1600,17 +1600,18 @@ class LaporanMasterController extends Controller
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
-			$date =  date('B'.'s'.'H');
+		$date =  date('B'.'s'.'H');
 
 				   			Excel::create('Kartuhutang'.$date, function($excel) use ($data,$cust,$ket,$kota,$cus,$kota1){
 
 								    $excel->sheet('New sheet', function($sheet) use ($data,$cust,$ket,$kota,$cus,$kota1) {
-								        $sheet->loadView('purchase/master/master_penjualan/pdf/pdf_invoice')
-								        ->with('data_awal',$data_awal)
-								        ->with('total_net',$total_net)
-								        ->with('total',$total)
-								        ->with('diskon',$diskon)
-								        ->with('do',$do);
+								        $sheet->loadView('purchase/master/master_penjualan/excel/excel_invoice')
+								        ->with('data',$data)
+								        ->with('cust',$cust)
+								        ->with('ket',$ket)
+								        ->with('kota',$kota)
+								        ->with('cus',$cus)
+								        ->with('kota1',$kota1);
 								    });
 
 								})->download('csv');

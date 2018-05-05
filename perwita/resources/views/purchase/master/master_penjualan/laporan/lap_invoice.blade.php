@@ -154,8 +154,8 @@
         url: baseUrl + '/excelinvoice/excelinvoice',
         type: "get",
        success : function(data){
-        var win = window.open();
-            win.document.write(data);
+        // var win = window.open();
+        //     win.document.write(data);
         }
       });
     }
