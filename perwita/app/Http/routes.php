@@ -1171,7 +1171,10 @@ Route::get('master_sales/set_kode_akun_acc', 'master_sales\kontrak_Controller@se
 Route::get('master_sales/set_kode_akun_csf', 'master_sales\kontrak_Controller@set_kode_akun_csf');
 Route::get('master_sales/hapus_kontrak', 'master_sales\kontrak_Controller@hapus_kontrak');
 Route::get('master_sales/detail_kontrak/{id}', 'master_sales\kontrak_Controller@detail_kontrak');
-
+Route::get('master_sales/datatable_kontrak', 'master_sales\kontrak_Controller@datatable_kontrak')->name('datatable_kontrak');
+Route::get('master_sales/set_modal', 'master_sales\kontrak_Controller@set_modal');
+Route::get('master_sales/hapus_d_kontrak', 'master_sales\kontrak_Controller@hapus_d_kontrak');
+Route::get('master_sales/check_kontrak', 'master_sales\kontrak_Controller@check_kontrak');
 // end kontrak
 
 

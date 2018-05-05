@@ -270,7 +270,7 @@
 
      $('#ed_komisi_agen').attr('readonly',true);
      $('#ed_komisi_outlet').attr('readonly',true);
-    $('#cb_kategori').change(function(){
+     $('#cb_kategori').change(function(){
         var agensel = $('#cb_kategori :selected').data('agen');
         var outletsel = $('#cb_kategori :selected').data('outlet');
         var outletsel_g = $('#cb_kategori :selected').data('outlet-g');
