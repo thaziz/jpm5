@@ -37,7 +37,7 @@
 		<td align="right" style="border: none;" width="222">&nbsp;</td>
 		@else	
 			@if($index+1 < 10)
-		<td align="left" style="border: none;" width="222">&nbsp;&nbsp;&nbsp;{{$index+1}}. {{$cari_akun[0]->kode_akun}}</td>
+		<td align="left" style="border: none;" width="222">&nbsp;&nbsp;&nbsp;{{$index+1}}. {{$cari[0]->bpk_acc_biaya}}</td>
 			@else
 		<td align="left" style="border: none;" width="222">&nbsp;&nbsp;{{$index+1}}. {{$cari_akun[0]->kode_akun}}</td>	
 			@endif

@@ -27,10 +27,10 @@
                             <a>Purchase</a>
                         </li>
                         <li>
-                          <a> Transaksi Purchase</a>
+                          <a> Transaksi Kas</a>
                         </li>
                         <li class="active">
-                            <strong> Kas </strong>
+                            <strong> Biaya Penerus Loading/Unloading </strong>
                         </li>
 
                     </ol>
@@ -45,12 +45,12 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Pembayaran Kas
+                    <h5> Biaya Penerus Loading/Unloading
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                    @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','tambah'))
+                    @if(Auth::user()->PunyaAkses('Biaya Penerus Loading','tambah'))
                       <div class="text-right">
-                       <a class="btn btn-success" aria-hidden="true" href="{{ url('biaya_penerus/createkas')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
+                       <a class="btn btn-success" aria-hidden="true" href="{{ url('biaya_penerus_loading/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
                       </div>
                     @endif
                 </div>
@@ -84,21 +84,21 @@
                         <td>{{$val->nama}}</td>
                         <td align="center">{{"Rp " . number_format($val->bpk_tarif_penerus,2,",",".")}}</td>
                         <td align="left" style="width: 9%">
-                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','print'))
+                          @if(Auth::user()->PunyaAkses('Biaya Penerus Loading','print'))
                             <a class="fa asw fa-print" align="center"  title="edit" href="{{route('detailkas', ['id' => $val->bpk_id])}}"> detail</a><br>
                           @endif
-                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','print'))
+                          @if(Auth::user()->PunyaAkses('Biaya Penerus Loading','print'))
                             <a class="fa asw fa-print" align="center"  title="print" href="{{route('buktikas', ['id' => $val->bpk_id])}}"> Bukti Kas</a>
                           @endif
                         </td>
                         <td align="center"><input type="checkbox" class="allow" name="cek[]"></td>
                         <td align="left" style="width: 6%">
-                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','ubah'))
+                          @if(Auth::user()->PunyaAkses('Biaya Penerus Loading','ubah'))
                            @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) != 0)
-                           <a class="fa asw fa-pencil" align="center" href="{{route('editkas', ['id' => $val->bpk_id])}}" title="edit"> Edit</a><br>
+                           <a class="fa asw fa-pencil" align="center" href="{{route('editkasloading', ['id' => $val->bpk_id])}}" title="edit"> Edit</a><br>
                            @endif
                           @endif
-                          @if(Auth::user()->PunyaAkses('Biaya Penerus Kas','hapus'))
+                          @if(Auth::user()->PunyaAkses('Biaya Penerus Loading','hapus'))
                           @if(cek_periode(carbon\carbon::parse($val->bpk_tanggal)->format('m'),carbon\carbon::parse($val->bpk_tanggal)->format('Y') ) != 0)
                             <a class="fa fa-trash asw" align="center" onclick="hapus({{$val->bpk_id}})" title="hapus"> Hapus</a>
                           @endif

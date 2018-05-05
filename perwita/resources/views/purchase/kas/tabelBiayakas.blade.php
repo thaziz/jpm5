@@ -65,7 +65,7 @@
     </td>
     <td align="right">
     	<input type="hidden" name="penerus[]" value="{{$penerus[$index]}}">
-    	<input type="hidden" name="total_penerus" value="{{$total_penerus}}">
+    	<input type="hidden" name="total_penerus" id="total_penerus" value="{{$total_penerus}}">
     	<input type="hidden" name="comp[]" value="{{$data[$index][0]->kode_cabang}}">
     	{{number_format($penerus[$index], 2, ",", ".")}}
     </td>
