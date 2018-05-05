@@ -503,7 +503,7 @@ class kontrak_Controller extends Controller
     {
         // dd($request->all());
       // return dd($request->all());
-         $data = ['kontrak'=>url('master_subcon/edit/'.$request->id),'status'=>'Customer'];
+         $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$request->id),'status'=>'Customer'];
 
         if ($request->check == 'true') {
          // return $request->check;
