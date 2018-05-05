@@ -45,25 +45,26 @@ class cabang_koli_Controller extends Controller
         
                             if ($data[$i]['id_provinsi_cabkoli'] == null || $data[$i]['id_provinsi_cabkoli'] == '') {
 
-                                $div_1  =   '<div class="btn-group">';
-                                  if (Auth::user()->punyaAkses('Tarif Cabang Koli','ubah')) {
-                                  $div_2  = '<button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
-                                  }else{
-                                    $div_2 = '';
-                                  }
-                                  if (Auth::user()->punyaAkses('Tarif Cabang Koli','hapus')) {
-                                  $div_3  = '<button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
+                                  $div_1  =   '<div class="btn-group">';
+                                          if (Auth::user()->punyaAkses('Tarif Cabang Koli','ubah')) {
+                                          $div_2  = '<button type="button" id="'.$data[$i]['id_kota_asal'].'" data-tujuan="'.$data[$i]['id_kota_tujuan'].'" data- data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>';
+                                          }else{
+                                            $div_2 = '';
+                                          }
+                                          if (Auth::user()->punyaAkses('Tarif Cabang Koli','hapus')) {
+                                          $div_3  = '<button type="button" disabled="" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button> 
 
-                                                            <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_provinsi_cabkoli'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
-                                  }else{
-                                    $div_3 = '';
-                                  }
-                                  $div_4   = '</div>';
-                                $all_div = $div_1 . $div_2 . $div_3 . $div_4;
+                                          <button type="button" id="'.$data[$i]['id_kota_asal'].'" name="'.$data[$i]['id_provinsi_cabkoli'].'" data-asal="'.$data[$i]['asal'].'" data-tujuan="'.$data[$i]['tujuan'].'" data-toggle="tooltip" style="color:white;" title="Delete" class="btn btn-purple btn-xs btndelete_perkota" ><i class="glyphicon glyphicon-trash"></i></button>';
+                                                          
+                                          }else{
+                                            $div_3 = '';
+                                          }
+                                          $div_4   = '</div>';
+                                        $all_div = $div_1 . $div_2 . $div_3 . $div_4;
 
-                                $data[$i]['button'] = $all_div;
-                               
-                                $i++;
+                                        $data[$i]['button'] = $all_div;
+                                       
+                                        $i++;
                                 
                                
                                 }
