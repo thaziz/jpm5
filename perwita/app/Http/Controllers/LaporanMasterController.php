@@ -608,10 +608,9 @@ class LaporanMasterController extends Controller
 				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
 				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->get();
-
+			// return 'a';
 		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 		 $tahun = carbon::now();
-		 
 		 $sre = substr($tahun,0, 10);
 		 $year =  $tahun->year;
 		 $date =  $tahun->day;
@@ -1595,23 +1594,51 @@ class LaporanMasterController extends Controller
 				->get();
 			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->groupBy('i_kode_customer','customer.nama')->get();
 		}
-				
+
+		for ($i=0; $i <count($data) ; $i++) { 
+			$data0[$i] = $data[$i]->i_total;
+			$data1[$i] = $data[$i]->i_diskon1;
+			$data2[$i] = $data[$i]->i_diskon2;
+			$data3[$i] = $data[$i]->i_ppnrp;
+			$data4[$i] = $data[$i]->i_pajak_lain;
+			$data5[$i] = $data[$i]->i_netto;
+			$data6[$i] = $data[$i]->i_netto_detail;
+			$data7[$i] = $data[$i]->i_total_tagihan;
+		}
+		$total_0 = array_sum($data0);
+		$total_1 = array_sum($data1);
+		$total_2 = array_sum($data2);
+		$total_3 = array_sum($data3);
+		$total_4 = array_sum($data4);
+		$total_5 = array_sum($data5);
+		$total_6 = array_sum($data6);
+		$total_7 = array_sum($data7);
+		// return $data2;
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
+
 		$date =  date('B'.'s'.'H');
 
-				   			Excel::create('Kartuhutang'.$date, function($excel) use ($data,$cust,$ket,$kota,$cus,$kota1){
+				   			Excel::create('Invoice'.$date, function($excel) use ($data,$cust,$ket,$kota,$cus,$kota1,$total_0,$total_1,$total_2,$total_3,$total_4,$total_5,$total_6,$total_7){
 
-								    $excel->sheet('New sheet', function($sheet) use ($data,$cust,$ket,$kota,$cus,$kota1) {
+								    $excel->sheet('New sheet', function($sheet) use ($data,$cust,$ket,$kota,$cus,$kota1,$total_0,$total_1,$total_2,$total_3,$total_4,$total_5,$total_6,$total_7) {
 								        $sheet->loadView('purchase/master/master_penjualan/excel/excel_invoice')
 								        ->with('data',$data)
 								        ->with('cust',$cust)
 								        ->with('ket',$ket)
 								        ->with('kota',$kota)
 								        ->with('cus',$cus)
-								        ->with('kota1',$kota1);
+								        ->with('kota1',$kota1)
+								        ->with('total_0',$total_0)
+								        ->with('total_1',$total_1)
+								        ->with('total_2',$total_2)
+								        ->with('total_3',$total_3)
+								        ->with('total_4',$total_4)
+								        ->with('total_5',$total_5)
+								        ->with('total_6',$total_6)
+								        ->with('total_7',$total_7);
 								    });
 
 								})->download('csv');
@@ -3115,16 +3142,7 @@ class LaporanMasterController extends Controller
 				   		return view('purchase/master/master_penjualan/laporan/do_total/pdf/pdf_detail_lap_rekapcustomer',compact('data_awal','total_net','total','diskon','do','doc','koli','kilo','kargo','koran','sepeda')); 
 						
    		}
-   		// return 'a';
-   		// return $total_net;
-		 
-
    }
-
-
-
-
-
    }
 
    

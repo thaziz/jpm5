@@ -2343,6 +2343,9 @@
                             /* mutasipiutang */
                             Request::is('laporan_sales/mutasi_piutang') ? 'active' : '' || 
                             Request::is('laporan_sales/mutasi_piutang/*') ? 'active' : ''||
+                             /* diagram_seluruhdo */
+                            Request::is('diagram_seluruhdo/diagram_seluruhdo') ? 'active' : '' || 
+                            Request::is('diagram_seluruhdo/diagram_seluruhdo/*') ? 'active' : ''||
                             /* piutang jatuh tempo */
                             Request::is('sales/laporanpiutangjatuhtempo') ? 'active' : '' || 
                             Request::is('sales/laporanpiutangjatuhtempo/*') ? 'active' : ''
@@ -2511,6 +2514,9 @@
                                 /* mutasipiutang */
                                 Request::is('laporan_sales/mutasi_piutang') ? 'active' : '' || 
                                 Request::is('laporan_sales/mutasi_piutang/*') ? 'active' : ''||
+                                /* diagram_seluruhdo */
+                                Request::is('diagram_seluruhdo/diagram_seluruhdo') ? 'active' : '' || 
+                                Request::is('diagram_seluruhdo/diagram_seluruhdo/*') ? 'active' : ''||
                                 /* piutang jatuh tempo */
                                 Request::is('sales/laporanpiutangjatuhtempo') ? 'active' : '' || 
                                 Request::is('sales/laporanpiutangjatuhtempo/*') ? 'active' : ''
@@ -2537,6 +2543,9 @@
                                         <li >
                                             <a class="sidebar master-perusahaan {{Request::is('diagram_penjualan/diagram_penjualan') ? 'active' : '' || Request::is('diagram_penjualan/diagram_penjualan/*') ? 'active' : ''}} " href="{{ url('diagram_penjualan/diagram_penjualan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Omset Penjualan</a>
                                         </li>   
+                                        <li >
+                                            <a class="sidebar master-perusahaan {{Request::is('diagram_seluruhdo/diagram_seluruhdo') ? 'active' : '' || Request::is('diagram_seluruhdo/diagram_seluruhdo/*') ? 'active' : ''}} " href="{{ url('diagram_seluruhdo/diagram_seluruhdo')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Omset DO</a>
+                                        </li> 
                                         <li>
                                             <a class="sidebar master-perusahaan {{Request::is('laporan_sales/kartu_piutang') ? 'active' : '' || 
                                             Request::is('laporan_sales/kartu_piutang/*') ? 'active' : ''}} " href="{{ url('laporan_sales/kartu_piutang')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kartu Piutang</a>
