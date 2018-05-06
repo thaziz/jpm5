@@ -86,7 +86,7 @@
                                 <td colspan="3">
                                     <select class="form-control cabang" name="cabang" >
                                       @foreach($cabang as $val)
-                                                @if(Auth::user()->kode_cabang == $val->kode)
+                                                @if($data->ks_cabang == $val->kode)
                                                 <option selected value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                                 @else
                                                 <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
