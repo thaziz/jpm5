@@ -70,7 +70,7 @@
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td>{{ $row->kc_nomor }}</td>
+                                <td><a href="{{ url('master_sales/detail_kontrak')}}/{{$row->kc_id}}">{{ $row->kc_nomor }}</a></td>
                                 <td>{{ $row->kc_tanggal }}</td>
                                 @foreach($cab as $i)
                                     @if($i->kode == $row->kc_kode_cabang )

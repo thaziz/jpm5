@@ -7,6 +7,7 @@
       .id {display:none; }
       .center {text-align:center; }
       .lebar {width:150px }
+      .right{text-align: right;}
     </style>
 
 
@@ -81,7 +82,7 @@
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td colspan="3">
                                     <input type="text" class="form-control" readonly="" value="{{$data->kc_kode_customer}}- {{$data->nama}} - {{$data->nama_kota}}">
-                                    <input type="hidden" readonly="" name="customer" id="customer" value="{{$data->kc_kode_customer}}">
+                                    <input type="hidden" readonly="" name="customer" class="customer" id="customer" value="{{$data->kc_kode_customer}}">
                                 </td>
                             </tr>
                             <tr>
@@ -106,7 +107,6 @@
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btnadd" name="btnadd" >
                                 <i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                         </div>
 
 
@@ -116,6 +116,7 @@
                   <table id="table_data" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>No</th>
                             <th>Asal</th>
                             <th>Tujuan</th>
                             <th>Jenis Tarif</th>
@@ -130,55 +131,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($data_dt as $i=> $val)
-                        <tr>
-                            <td>
-                                {{$val->kcd_kota_asal}} - {{$val->nama_asal}}
-                                <input type="hidden" class="kota_asal urut_ke_{{$i+1}}" value="{{$val->kcd_kota_asal}}" name="kota_asal[]">
-                                <input type="hidden" class="seq" value="{{$i+1}}">
-                            </td>
-                            <td>
-                                {{$val->kcd_kota_tujuan}} - {{$val->nama_tujuan}}
-                                <input type="hidden" class="kota_tujuan" value="{{$val->kcd_kota_tujuan}}" name="kota_tujuan[]">
-                            </td>
-                            <td>
-                                {{$val->kcd_jenis}}
-                                <input type="hidden" class="jenis_detail" value="{{$val->kcd_jenis}}" name="jenis_modal[]">
-                                <input type="hidden" class="jenis_tarif_detail" value="{{$val->kcd_jenis_tarif}}" name="jenis_tarif[]">
-                                <input type="hidden" class="grup_item" value="{{$val->kcd_grup}}" name="grup_item[]">
-                            </td>
-                            <td>
-                                {{$val->kcd_kode_satuan}}
-                                <input type="hidden" class="satuan" value="{{$val->kcd_kode_satuan}}" name="satuan[]">
-                            </td>
-                            <td>
-                                {{$val->nama}}
-                                <input type="hidden" class="tipe_angkutan" value="{{$val->kcd_kode_angkutan}}" name="tipe_angkutan[]">
-                            </td>
-                            <td>
-                                <input type="text" class="harga form-control" style="text-align:right" value="{{number_format($val->kcd_harga,0, ".", ",")}}" name="harga[]">
-                                <input type="hidden" class="type_tarif form-control" value="{{$val->kcd_type_tarif}}" name="type_tarif[]">
-                            </td>
-                            <td>
-                                <input type="text" class="keterangan form-control" value="{{$val->kcd_keterangan}}" name="keterangan[]">
-                            </td>
-                            @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
-                            <td>
-                                <input @if($val->kcd_active == true) checked="" @endif type="checkbox" class="aktif form-control"  name="aktif[]">
-                            </td>
-                            @endif
-                            <td align="center">
-                                <div class="btn-group">
-                                   <button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">
-                                   <label class="fa fa-pencil"></label></button>
-                                   <button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">
-                                   <label class="fa fa-trash"></label></button>
-                               </div>
-                                <input type="hidden" class="akun_acc form-control" value="{{$val->kcd_acc_penjualan}}" name="akun_acc[]">
-                                <input type="hidden" class="akun_csf form-control" value="{{$val->kcd_csf_penjualan}}" name="akun_csf[]">
-                            </td>
-                        </tr>
-                        @endforeach
+                        
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
@@ -193,23 +146,23 @@
                         <h4 class="modal-title">Kontrak Customer</h4>
                       </div>
                       <div class="modal-body">
-                        <table class="table table-striped">
+                        <table class="table table_modal table-striped">
                             <tr>
                                 <td>Kota Asal</td>
                                 <td>
-                                    <select class="kota_asal_modal form-control chosen-select-width">
+                                    <select class="kota_asal_modal form-control chosen-select-width" name="asal_modal">
                                         <option value="0">Pilih - Asal</option>
                                         @foreach($kota as $val)
                                         <option value="{{$val->id}}">{{$val->id}} - {{$val->nama}}</option>
                                         @endforeach
                                     </select>
-                                <input type="hidden" class="id_detail" name="">
                                 </td>
+                                <input type="hidden" class="id_detail" name="id_detail">
                             </tr>
                             <tr>
                                 <td>Kota Tujuan</td>
                                 <td>
-                                    <select class="kota_tujuan_modal form-control chosen-select-width">
+                                    <select class="kota_tujuan_modal form-control chosen-select-width" name="tujuan_modal">
                                         <option value="0">Pilih - Tujuan</option>
                                         @foreach($kota as $val)
                                         <option value="{{$val->id}}">{{$val->id}} - {{$val->nama}}</option>
@@ -220,7 +173,7 @@
                             <tr>
                                 <td>Jenis</td>
                                 <td>
-                                    <select class="jenis_modal form-control chosen-select-width">
+                                    <select class="jenis_modal form-control chosen-select-width" name="jenis_modal">
                                         <option value="0">Pilih - Jenis</option>
                                         <option value="PAKET">PAKET</option>
                                         <option value="KORAN">KORAN</option>
@@ -231,7 +184,7 @@
                             <tr class="grup_item_tr">
                                 <td>Grup Item</td>
                                 <td>
-                                    <select class="form-control chosen-select-width cb_grup_item"  name="cb_grup_item" style="width:100%">
+                                    <select class="form-control chosen-select-width cb_grup_item"  name="grup_item_modal" style="width:100%">
                                         <option value="0"> Pilih - Group </option>
                                     @foreach ($grup_item as $row)
                                         <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
@@ -242,7 +195,7 @@
                             <tr class="type_tarif_tr">
                                 <td>Tipe Tarif</td>
                                 <td>
-                                    <select class="type_tarif_modal form-control chosen-select-width">
+                                    <select class="type_tarif_modal form-control chosen-select-width" name="tipe_tarif_modal">
                                         <option value="0">Pilih - Jenis</option>
                                         <option value="DOKUMEN">DOKUMEN</option>
                                         <option value="KOLI">KOLI</option>
@@ -254,7 +207,7 @@
                             <tr>
                                 <td>Jenis Tarif</td>
                                 <td>
-                                    <select class="jenis_tarif_modal form-control chosen-select-width">
+                                    <select class="jenis_tarif_modal form-control chosen-select-width" name="jenis_tarif_modal">
                                         <option value="0">Pilih - Jenis Tarif</option>
                                         @foreach($jenis_tarif as $val)
                                         <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
@@ -265,7 +218,7 @@
                             <tr>
                                 <td>Tipe Angkutan</td>
                                 <td>
-                                    <select name="tipe_angkutan" class="form-control tipe_angkutan_modal chosen-select-width">
+                                    <select name="tipe_angkutan_modal" class="form-control tipe_angkutan_modal chosen-select-width" >
                                         <option value="0">Pilih - Tipe Angkutan</option>
                                         @foreach($tipe_angkutan as $val)
                                             <option value="{{$val->kode}}">{{$val->nama}}</option>
@@ -276,13 +229,13 @@
                             <tr>
                                 <td>Harga</td>
                                 <td>
-                                    <input class="form-control harga_modal" type="text" style="text-align: right">
+                                    <input class="form-control harga_modal" type="text" style="text-align: right" name="harga_modal">
                                 </td>
                             </tr>
                             <tr>
                                 <td>Satuan</td>
                                 <td>
-                                    <select class="satuan_modal form-control chosen-select-width">
+                                    <select class="satuan_modal form-control chosen-select-width" name="satuan_modal">
                                         <option value="0">Pilih - Satuan</option>
                                         @foreach($satuan as $val)
                                         <option value="{{$val->kode}}">{{$val->nama}}</option>
@@ -293,13 +246,13 @@
                             <tr>
                                 <td>Keterangan</td>
                                 <td>
-                                    <input class="form-control keterangan_modal" type="text">
+                                    <input class="form-control keterangan_modal" type="text" name="keterangan_modal">
                                 </td>
                             </tr>
                             <tr >
                                 <td>Acc Penjualan</td>
                                 <td class="acc_tr">
-                                    <select class="acc_akun_modal form-control chosen-select-width">
+                                    <select class="acc_akun_modal form-control chosen-select-width" name="acc_akun_modal">
                                         <option></option>
                                     </select>
                                 </td>
@@ -307,7 +260,7 @@
                             <tr >
                                 <td>CSF Penjualan</td>
                                 <td class="csf_tr">
-                                    <select class="csf_akun_modal form-control chosen-select-width">
+                                    <select class="csf_akun_modal form-control chosen-select-width" name="csf_akun_modal">
                                         <option></option>
                                     </select>
                                 </td>
@@ -316,7 +269,7 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" onclick="tambah()" data-dismiss="modal">Simpan</button>
+                        <button type="button" class="btn btn-primary" onclick="tambah()">Simpan</button>
                       </div>
                     </div>
 
@@ -383,7 +336,7 @@
             $('.acc_tr').html(response);
         },
         error:function(){
-            // location.reload();
+            location.reload();
         }
     });
 
@@ -394,13 +347,66 @@
             $('.csf_tr').html(response);
         },
         error:function(){
-            // location.reload();
+            location.reload();
         }
     });
+
+     var nota = $('#ed_nomor').val();
+     $('#table_data').DataTable({
+                  processing: true,
+                  serverSide: true,
+                  ajax: {
+                      url:'{{ route('datatable_kontrak') }}',
+                      data:{nota: function() { return $('#ed_nomor').val() }}
+                  },
+                  columnDefs: [
+                
+                  {
+                     targets: 0 ,
+                     className: 'center kcd_dt'
+                  },
+                  {
+                     targets: 6 ,
+                     className: 'right'
+                  },
+                  {
+                     targets: 8 ,
+                     className: 'center'
+                  },
+                  {
+                     targets: 9 ,
+                     className: 'center'
+                  },
+                  {
+                     targets: 1 ,
+                     className: 'lebar'
+                  },
+                  {
+                     targets: 2 ,
+                     className: 'lebar'
+                  },
+               
+                ],
+                columns: [
+                    {data: 'kcd_dt', name: 'kcd_dt'},
+                    {data: 'asal', name: 'asal'},
+                    {data: 'tujuan', name: 'tujuan'},
+                    {data: 'kcd_jenis', name: 'kcd_jenis'},
+                    {data: 'kcd_kode_satuan', name: 'kcd_kode_satuan'},
+                    {data: 'angkutan', name: 'angkutan'},
+                    {data: 'harga', name: 'harga'},
+                    {data: 'kcd_keterangan', name: 'kcd_keterangan'},
+                    {data: 'active', name: 'active'},
+                    {data: 'aksi', name: 'aksi'}
+                ]
+
+            });
 });
 
 $('#btnadd').click(function(){
 
+    var cabang = $('.cabang').val();
+    var customer= $('.customer').val();
     var harga_modal              = $('.harga_modal').val(0);
     var keterangan_modal         = $('.keterangan_modal ').val('');
     var kota_asal_modal          = $('.kota_asal_modal').val(0).trigger('chosen:updated');
@@ -408,14 +414,20 @@ $('#btnadd').click(function(){
     var jenis_modal              = $('.jenis_modal').val(0).trigger('chosen:updated');
     var jenis_tarif_modal        = $('.jenis_tarif_modal').val(0).trigger('chosen:updated');
     var acc_akun_modal           = $('.acc_akun_modal ').val(0).trigger('chosen:updated');
+    var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
     var csf_akun_modal           = $('.csf_akun_modal').val(0).trigger('chosen:updated');
     var satuan_modal             = $('.satuan_modal').val(0).trigger('chosen:updated');
-    var type_tarif_modal         = $('.type_tarif_modal ').val(0).trigger('chosen:updated');
     var customer                 = $('.customer').val();
     var ed_keterangan            = $('.ed_keterangan').val();
     var cb_grup_item             = $('.cb_grup_item').val('0').trigger('chosen:updated');
     var validasi                 = [];
-
+    var id_detail                = $('.id_detail').val(0);
+    if (cabang == '0') {
+        return toastr.warning('Cabang Harus Diisi');
+    }
+    if (customer == '0') {
+        return toastr.warning('Customer Harus Diisi');
+    }
 
     if (customer != 0) {
         validasi.push(1);
@@ -437,34 +449,6 @@ $('#btnadd').click(function(){
 
 
 });
-
-var datatable = $('#table_data').DataTable({
-                      // 'paging':false,
-                      columnDefs: [
-                      {
-                         targets: 6 ,
-                         className: 'center'
-                      },
-                      {
-                         targets: 7 ,
-                         className: 'center'
-                      },
-                      {
-                         targets: 0 ,
-                         className: 'lebar'
-                      },
-                      {
-                         targets: 1 ,
-                         className: 'lebar'
-                      },
-                      {
-                         targets: 5 ,
-                         className: 'center'
-                      },
-                   
-                    ]
-                });
-
 $('.jenis_modal').change(function(){
     if ($(this).val() == 'PAKET') {
         $('.type_tarif_tr').attr('hidden',false);
@@ -480,13 +464,13 @@ $('.jenis_modal').change(function(){
     }
 });
 
-var count = 1;
 
-@foreach($data_dt as $val)
-count +=1;
-@endforeach
+
+
+var count = 1;
 function tambah(){
-  
+var cabang = $('.cabang').val();
+var customer= $('.customer').val();
 var kota_asal_modal_text     = $('.kota_asal_modal  option:selected').text();
 var kota_tujuan_modal_text   = $('.kota_tujuan_modal  option:selected').text();
 var jenis_modal_text         = $('.jenis_modal option:selected').text();
@@ -498,7 +482,6 @@ var tipe_angkutan_text       = $('.tipe_angkutan_modal option:selected').text();
 var id_detail                = $('.id_detail').val();
 var harga_modal              = $('.harga_modal').val();
 var keterangan_modal         = $('.keterangan_modal ').val();
-
 var kota_asal_modal          = $('.kota_asal_modal').val();
 var type_tarif_modal         = $('.type_tarif_modal').val();
 var kota_tujuan_modal        = $('.kota_tujuan_modal ').val();
@@ -509,225 +492,55 @@ var csf_akun_modal           = $('.csf_akun_modal').val();
 var satuan_modal             = $('.satuan_modal').val();
 var tipe_angkutan            = $('.tipe_angkutan_modal').val();
 var cb_grup_item             = $('.cb_grup_item').val();
+var nota                     = $('#ed_nomor').val();
 
-    if (id_detail == '') {
-        @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
-
-            datatable.row.add([
-                   kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+count+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
-                   '<input type="hidden" class="seq" value="'+count+'">' ,
-
-                   kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
-
-                   jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
-                   '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">'+
-                   '<input type="hidden" class="grup_item" value="'+cb_grup_item+'" name="grup_item[]">',
-
-
-                   satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
-
-                   tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
-
-                   '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
-                   '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
-
-                   '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
-                   '<input type="checkbox" class="aktif form-control"  name="aktif[]">',
-                   '<div class="btn-group">'+
-                   '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
-                   '<label class="fa fa-pencil"></label></button>'+
-                   '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-                   '<label class="fa fa-trash"></label></button>'+
-                   '</div>'+
-                   '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
-                   '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
-              
-            ]).draw();
-        @else
-        datatable.row.add([
-                   kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+count+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
-                   '<input type="hidden" class="seq" value="'+count+'">' ,
-
-                   kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
-
-                   jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
-                   '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">'+
-                   '<input type="hidden" class="grup_item" value="'+cb_grup_item+'" name="grup_item[]">',
-
-
-                   satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
-
-                   tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
-
-                   '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
-                   '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
-
-                   '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
-                   '<div class="btn-group">'+
-                   '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
-                   '<label class="fa fa-pencil"></label></button>'+
-                   '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-                   '<label class="fa fa-trash"></label></button>'+
-                   '</div>'+
-                   '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
-                   '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
-              
-            ]).draw();
-        @endif
-        count++;
-    }else{
-        var par = $('.urut_ke_'+id_detail).parents('tr');
-        datatable.row(par).remove().draw(false);
-            @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
-            datatable.row.add([
-                   kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+id_detail+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
-                   '<input type="hidden" class="seq" value="'+id_detail+'">',
-
-                   kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
-
-                   jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
-                   '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">'+
-                   '<input type="hidden" class="grup_item" value="'+cb_grup_item+'" name="grup_item[]">',
-
-
-                   satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
-
-                   tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
-
-                   '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
-                   '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
-
-                   '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
-                   
-                   '<input type="checkbox" class="aktif form-control"  name="aktif[]">',
-
-                   '<div class="btn-group">'+
-                   '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
-                   '<label class="fa fa-pencil"></label></button>'+
-                   '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-                   '<label class="fa fa-trash"></label></button>'+
-                   '</div>'+
-                   '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
-                   '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
-              
-            ]).draw();
-            @else
-            datatable.row.add([
-                   kota_asal_modal_text+'<input type="hidden" class="kota_asal urut_ke_'+id_detail+'" value="'+kota_asal_modal+'" name="kota_asal[]">'+
-                   '<input type="hidden" class="seq" value="'+id_detail+'">',
-
-                   kota_tujuan_modal_text+'<input type="hidden" class="kota_tujuan" value="'+kota_tujuan_modal+'" name="kota_tujuan[]">' ,
-
-                   jenis_modal_text+'<input type="hidden" class="jenis_detail" value="'+jenis_modal+'" name="jenis_modal[]">'+
-                   '<input type="hidden" class="jenis_tarif_detail" value="'+jenis_tarif_modal+'" name="jenis_tarif[]">'+
-                   '<input type="hidden" class="grup_item" value="'+cb_grup_item+'" name="grup_item[]">',
-
-
-                   satuan_modal_text+'<input type="hidden" class="satuan" value="'+satuan_modal+'" name="satuan[]">' ,
-
-                   tipe_angkutan_text+'<input type="hidden" class="tipe_angkutan" value="'+tipe_angkutan+'" name="tipe_angkutan[]">' ,
-
-                   '<input type="text" class="harga form-control" style="text-align:right" value="'+harga_modal+'" name="harga[]">'+
-                   '<input type="hidden" class="type_tarif form-control" value="'+type_tarif_modal+'" name="type_tarif[]">',
-
-                   '<input type="text" class="keterangan form-control" value="'+keterangan_modal+'" name="keterangan[]">',
-
-                   '<div class="btn-group">'+
-                   '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'+
-                   '<label class="fa fa-pencil"></label></button>'+
-                   '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'+
-                   '<label class="fa fa-trash"></label></button>'+
-                   '</div>'+
-                   '<input type="hidden" class="akun_acc form-control" value="'+acc_akun_modal+'" name="akun_acc[]">'+
-                   '<input type="hidden" class="akun_csf form-control" value="'+csf_akun_modal+'" name="akun_csf[]">',
-              
-            ]).draw();
-            @endif
-    }
-  // console.log('asd');
-  $('.id_detail').val('');
-  $('.modal_customer').modal('hide');
+if (kota_asal_modal == '0') {
+    return toastr.warning('Kota Asal Harus Diisi');
 }
-  
-function hapus(p){
-  var par = $(p).parents('tr');
-  datatable.row(par).remove().draw(false);
+if (kota_tujuan_modal == '0') {
+    return toastr.warning('Kota Tujuan Harus Diisi');
+}
+if (kota_tujuan_modal == '0') {
+    return toastr.warning('Kota Tujuan Harus Diisi');
+}
+if (jenis_modal == '0') {
+    return toastr.warning('Jenis Harus Diisi');
+}
+if (jenis_tarif_modal == '0') {
+    return toastr.warning('Jenis Tarif Harus Diisi');
+}
+if (tipe_angkutan == '0') {
+    return toastr.warning('Tipe Angkutan Harus Diisi');
 }
 
-function edit(p){
-var par  = $(p).parents('tr');
-var kota_asal = $(par).find('.kota_asal').val();
-var kota_tujuan = $(par).find('.kota_tujuan').val();
-
-var jenis_detail = $(par).find('.jenis_detail').val();
-var jenis_tarif_detail = $(par).find('.jenis_tarif_detail').val();
-var type_tarif = $(par).find('.type_tarif').val();
-
-var satuan = $(par).find('.satuan').val();
-var tipe_angkutan = $(par).find('.tipe_angkutan').val();
-var harga = $(par).find('.harga').val();
-var keterangan = $(par).find('.keterangan').val();
-var akun_acc = $(par).find('.akun_acc').val();
-var akun_csf = $(par).find('.akun_csf').val();
-var seq = $(par).find('.seq').val();
-var grup_item = $(par).find('.grup_item').val();
-if (jenis_detail == 'PAKET') {
-    $('.type_tarif_tr').prop('hidden',false);
-    $('.grup_item_tr').prop('hidden',true);
-}else if(jenis_detail == 'KORAN'){
-    $('.grup_item_tr').prop('hidden',false);
-    $('.type_tarif_tr').prop('hidden',true);
-}else{
-    $('.grup_item_tr').prop('hidden',true);
-    $('.type_tarif_tr').prop('hidden',true);
+if (harga_modal == '0') {
+    return toastr.warning('Harga Tidak Boleh Nol');
 }
-  $('.kota_asal_modal').val(kota_asal).trigger('chosen:updated');
-  $('.kota_tujuan_modal').val(kota_tujuan).trigger('chosen:updated');
 
-  $('.jenis_modal').val(jenis_detail).trigger('chosen:updated');
-  $('.jenis_tarif_modal').val(jenis_tarif_detail).trigger('chosen:updated');
-  $('.type_tarif_modal ').val(type_tarif).trigger('chosen:updated');
+if (satuan_modal == '0') {
+    return toastr.warning('Satuan Harus Diisi');
+}
 
-  $('.tipe_angkutan_modal').val(tipe_angkutan).trigger('chosen:updated');
-  $('.harga_modal').val(harga);
-  $('.satuan_modal').val(satuan).trigger('chosen:updated');
-  $('.keterangan_modal').val(keterangan);
-  $('.acc_akun_modal').val(akun_acc).trigger('chosen:updated');
-  $('.csf_akun_modal').val(akun_csf).trigger('chosen:updated');
-  $('.id_detail').val(seq);
-  $('.cb_grup_item').val(grup_item).trigger('chosen:updated');
-  
-  $('#modal_customer').modal('show');
+if (keterangan_modal == '') {
+    return toastr.warning('Keterangan Harus Diisi');
+}
+
+if (acc_akun_modal == '0') {
+    return toastr.warning('Akun Acc Harus Diisi');
 }
 
 
-$('#btnsimpan').click(function(){
-    var cabang = $('.cabang').val();
-    var customer= $('#customer').val();
-   swal({
-    title: "Apakah anda yakin?",
-    text: "Update Data Kontrak!",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Ya, Simpan!",
-    cancelButtonText: "Batal",
-    showLoaderOnConfirm :true,
-    closeOnConfirm: false,
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-  },
-  function(){
-       $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-      $.ajax({
-      url:baseUrl + '/master_sales/update_kontrak',
-      type:'post',
-      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
-      success:function(response){
+    $.ajax({
+    url:baseUrl + '/master_sales/save_kontrak',
+    type:'post',
+    data:$('#form_header').serialize()+'&'+$('.table_modal :input').serialize()+'&cabang='+cabang+'&customer='+customer,
+    success:function(response){
         swal({
         title: "Berhasil!",
                 type: 'success',
@@ -736,31 +549,174 @@ $('#btnsimpan').click(function(){
                showConfirmButton: true
                 },function(){
                     $('.success').val('success');
-                   location.reload();
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                    $('.cabang_td').addClass('disabled');
+                    $('.customer_td').addClass('disabled');
+
         });
-      },
-      error:function(data){
+    },
+    error:function(data){
         swal({
         title: "Terjadi Kesalahan",
                 type: 'error',
                 timer: 900,
                showConfirmButton: true
 
+        });
+    }
+    }); 
+  
+  $('.id_detail').val('');
+  $('.modal_customer').modal('hide');
+}
+  
+function hapus(p){
+var auth = '{{ Auth::user()->punyaAkses('Kontrak Customer','hapus') }}';
+
+if (auth == 0) {
+return toastr.warning('User tidak memiliki akses untuk menghapus');
+}
+
+var par    = $(p).parents('tr');
+var nota   = $('#ed_nomor').val();
+var kcd_dt = $(par).find('.kcd_dt').text();
+
+swal({
+    title: "Apakah anda yakin?",
+    text: "Hapus Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+},
+
+function(){
+     $.ajax({
+      url:baseUrl + '/master_sales/hapus_d_kontrak',
+      data:{nota,kcd_dt},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
     });
    }
-  });  
- });
+  });
 });
 
 
-    window.onbeforeunload = function(event)
-{       
-    var valid = $('.success').val();
-    if (valid == '') {
-       return confirm();
-    }
+}
 
-};
+function edit(p){
+var auth = '{{ Auth::user()->punyaAkses('Kontrak Customer','ubah') }}';
+if (auth == 0) {
+return toastr.warning('User tidak memiliki akses untuk merubah');
+}
+var par = $(p).parents('tr');
+var nota   = $('#ed_nomor').val();
+var kcd_dt = $(par).find('.kcd_dt').text();
+console.log(kcd_dt);
+$.ajax({
+    url:baseUrl + '/master_sales/set_modal',
+    type:'get',
+    data:{nota,kcd_dt},
+    dataType:'json',
+    success:function(data){
+       
+        $('.cabang_td').addClass('disabled');
+        $('.customer_td').addClass('disabled');
+
+        if (data.data.kcd_jenis == 'PAKET') {
+            $('.type_tarif_tr').prop('hidden',false);
+            $('.grup_item_tr').prop('hidden',true);
+        }else if(data.data.kcd_jenis == 'KORAN'){
+            $('.grup_item_tr').prop('hidden',false);
+            $('.type_tarif_tr').prop('hidden',true);
+        }else{
+            $('.grup_item_tr').prop('hidden',true);
+            $('.type_tarif_tr').prop('hidden',true);
+        }
+        $('.kota_asal_modal').val(data.data.kcd_kota_asal).trigger('chosen:updated');
+        $('.kota_tujuan_modal').val(data.data.kcd_kota_tujuan).trigger('chosen:updated');
+        $('.jenis_modal').val(data.data.kcd_jenis).trigger('chosen:updated');
+        $('.jenis_tarif_modal').val(data.data.kcd_jenis_tarif).trigger('chosen:updated');
+        $('.type_tarif_modal ').val(data.data.kcd_type_tarif).trigger('chosen:updated');
+        $('.tipe_angkutan_modal').val(data.data.kcd_kode_angkutan).trigger('chosen:updated');
+        $('.harga_modal').val(accounting.formatMoney(data.data.kcd_harga,"",0,'.',','));
+        $('.satuan_modal').val(data.data.kcd_kode_satuan).trigger('chosen:updated');
+        $('.keterangan_modal').val(data.data.kcd_keterangan);
+        $('.acc_akun_modal').val(data.data.kcd_acc_penjualan).trigger('chosen:updated');
+        $('.csf_akun_modal').val(data.data.kcd_csf_penjualan).trigger('chosen:updated');
+        $('.id_detail').val(kcd_dt);
+        $('.cb_grup_item').val(data.data.kcd_grup).trigger('chosen:updated');
+        $('#modal_customer').modal('show');
+    },
+    error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 900,
+                showConfirmButton: true
+
+        });
+    }
+    }); 
+}
+
+function check(p) {
+
+    var par    = $(p).parents('tr');
+    var nota   = $('#ed_nomor').val();
+    var kcd_dt = $(par).find('.kcd_dt').text();
+    var check  = $(par).find('.check').is(':checked');
+    var id     = '{{ $id }}';
+
+    $.ajax({
+      url:baseUrl + '/master_sales/check_kontrak',
+      data:{nota,kcd_dt,check,id},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Diupdate",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+}
 
 $.fn.serializeArray = function () {
     var rselectTextarea= /^(?:select|textarea)/i;
