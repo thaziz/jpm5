@@ -38,13 +38,13 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="kontrak_nomor" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" value="{{$data->ks_nota}} " >
+                                    <input type="text" name="kontrak_nomor" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" value="{{$data->ks_nota}}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
-                                    <div class="input-group date">
+                                    <div class="input-group date" style="width: 100%">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl" name="ed_tanggal" value="{{$tgl3}}">
                                     </div>
                                 </td>
@@ -63,17 +63,17 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr class="">
+                            <tr class="disabled">
                                 <td style="padding-top: 0.4cm">Subcon</td>
                                 <td colspan="3">
-                                    <select class=" disabled form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
+                                    <select class="  form-control id_subcon chosen-select-width1"  name="id_subcon" id="id_subcon" style="width:100%" >
                                         <option disabled="">- Pilih Subcon -</option>
 
                                         @foreach($sub as $val)
                                         @if($data->ks_nama == $val->kode)
-                                        <option selected="" value="{{$val->kode}}">{{$val->nama}}</option>
+                                        <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                         @else
-                                        <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                        <option value="{{$val->kode}}"> {{$val->kode}} - {{$val->nama}}</option>
                                         @endif
                                         @endforeach
 
@@ -116,7 +116,6 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                         </div>
 
 
@@ -126,6 +125,7 @@
                   <table id="table_data" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>No</th>
                             <th>Asal</th>
                             <th>Tujuan</th>
                             <th>Angkutan</th>
@@ -201,7 +201,7 @@
       </div>
       <div class="modal-body">
         <form class="form-horizontal  kirim">
-                    <table id="table_data" class="table table-striped table-bordered table-hover">
+                    <table id="table_data" class="table table_modal table-striped table-bordered table-hover">
                         <tbody>
                             <tr>
                                 <td style="padding-top: 0.4cm">Kota Asal</td>
@@ -212,10 +212,7 @@
                                         <option value="{{$val->id}}">{{$val->nama}}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" class="form-control" name="crud" class="form-control">
-                                    <input type="hidden" class="form-control id_edit" class="form-control">
-                                    <input type="hidden" class="form-control" name="ed_nomor_kontrak" class="form-control">
-                                    <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
+                                    <input type="hidden" class="form-control id_detail" name="id_detail" class="form-control">
                                 </td>
                             </tr>
                             <tr>
@@ -243,7 +240,8 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Jenis Tarif</td>
                                 <td>
-                                    <select class="form-control tarif" name="tarif" >
+                                    <select class="form-control tarif chosen-select-width" name="tarif" >
+                                        <option value="0">- Pilih Tarif -</option>
                                        @foreach($jenis_tarif as $val)
                                           <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
                                        @endforeach
@@ -290,7 +288,6 @@
   $('.tgl2').datepicker();
 
  $(document).ready( function () {
-        
 
   var asd = $('.harga').maskMoney({thousands:'.', precision:0});
 
@@ -308,119 +305,249 @@
   $('.cabang').chosen(config2); 
 
 
+  $('#table_data').DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: {
+              url:'{{ route('datatable_kontrak_subcon') }}',
+              data:{nota: function() { return $('#ed_nomor').val() }}
+          },
+          columnDefs: [
+          {
+             targets: 7 ,
+             className: 'center'
+          },
+          {
+             targets: 0 ,
+             className: 'center ksd_dt'
+          },
+          {
+             targets: 5 ,
+             className: 'right'
+          },
+          {
+             targets: 1 ,
+             className: 'lebar'
+          },
+          {
+             targets: 2 ,
+             className: 'lebar'
+          },
+       
+        ],
+        columns: [
+            {data: 'ksd_ks_dt', name: 'ksd_ks_dt'},
+            {data: 'asal', name: 'asal'},
+            {data: 'tujuan', name: 'tujuan'},
+            {data: 'angkutan', name: 'angkutan'},
+            {data: 'tarif', name: 'tarif'},
+            {data: 'harga', name: 'harga'},
+            {data: 'ksd_keterangan', name: 'ksd_keterangan'},
+            {data: 'active', name: 'active'},
+            {data: 'aksi', name: 'aksi'}
+        ]
+
+    });
+
 });
 
 $('#btnadd').click(function(){
-
+  var id_subcon = $('.id_subcon').val();
+  var cabang    = $('.cabang').val();
+  if (id_subcon == '0') {
+    return toastr.warning('Harap Mengisi Nama Subcon.');
+  }
+  if (cabang == '0') {
+    return toastr.warning('Harap Mengisi Cabang.');
+  }
   $('.updt').attr('hidden',true);
   $('.tambah').attr('hidden',false);
 
   $('.asal').val('0').trigger('chosen:updated');
   $('.tujuan').val('0').trigger('chosen:updated');
   $('.angkutan').val('0').trigger('chosen:updated');
-  $('.tarif').val('');
-  $('.harga').val('');
+  $('.tarif').val('0');
+  $('.harga').val('0');
   $('.keterangan').val('');
-  $('.id_edit').val('');
+  $('.id_detail').val('');
 
-  $('#modal_sub').modal('show');
+  $('.modal_sub').modal('show');
 });
 
-var datatable = $('#table_data').DataTable({
-                      'paging':false,
-                      'searching':false,
-                      columnDefs:[
-                      {
-                         targets: 6 ,
-                         className: 'center'
-                      },
-                      ]
-                });
 var count = 0;
-$(document).ready(function(){
-count = <?php echo count($subcon_dt);?>;
-});
 function tambah(){
   
   var asal        = $('.asal option:selected').text();
   var tujuan      = $('.tujuan option:selected').text();
   var angkutan    = $('.angkutan option:selected').text();
+
   var asal_dt     = $('.asal').val();
   var tujuan_dt   = $('.tujuan').val();
   var angkutan_dt = $('.angkutan').val();
-  var tarif       = $('.tarif option:selected').text();
+  var tarif       = $('.tarif ').val();
   var Harga       = $('.harga').val();
   var keterangan  = $('.keterangan').val();
-  // console.log(asal);
+  var cabang = $('.cabang').val();
 
-  @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
-  datatable.row.add([
-        '<div class="asal_text">'+asal+'</div>'+'<input type="hidden" class="asal_tb hitung_'+count+'" name="asal_tb[]" value="'+asal_dt+'" >'+'<input type="hidden" class="id_table" value="'+count+'" >'+'<input type="hidden" class="id_ksd" name="id_ksd[]" value="0">',
-        '<div class="tujuan_text">'+tujuan+'</div>'+'<input type="hidden" class="tujuan_tb" name="tujuan_tb[]" value="'+tujuan_dt+'" >',
-        '<div class="angkutan_text">'+angkutan+'</div>'+'<input type="hidden" class="angkutan_tb" name="angkutan_tb[]" value="'+angkutan_dt+'" >',
-        '<div class="tarif_text">'+tarif+'</div>'+'<input type="hidden" class="tarif_tb" name="tarif_tb[]" value="'+tarif+'" >',
-        '<div class="harga_text">'+Harga+'</div>'+'<input type="hidden" class="harga_tb" name="harga_tb[]" value="'+Harga+'" >',
-        '<div class="keterangan_text">'+keterangan+'</div>'+'<input type="hidden" class="keterangan_tb" name="keterangan_tb[]" value="'+keterangan+'" >',
-        '<input type="checkbox" class="aktif form-control"  name="aktif[]">',
-        '<button align="center" type="button" class="btn btn-xs edit btn-warning" onclick="edit(this)"><i class="fa fa-pencil"></i></button>'+'&nbsp;<button align="center" type="button" class="btn btn-xs hapus btn-danger" onclick="hapus(this)"><i class="fa fa-trash"></i></button>',
-        
-    ]).draw(false);
-  @else
-  datatable.row.add([
-        '<div class="asal_text">'+asal+'</div>'+'<input type="hidden" class="asal_tb hitung_'+count+'" name="asal_tb[]" value="'+asal_dt+'" >'+'<input type="hidden" class="id_table" value="'+count+'" >'+'<input type="hidden" class="id_ksd" name="id_ksd[]" value="0">',
-        '<div class="tujuan_text">'+tujuan+'</div>'+'<input type="hidden" class="tujuan_tb" name="tujuan_tb[]" value="'+tujuan_dt+'" >',
-        '<div class="angkutan_text">'+angkutan+'</div>'+'<input type="hidden" class="angkutan_tb" name="angkutan_tb[]" value="'+angkutan_dt+'" >',
-        '<div class="tarif_text">'+tarif+'</div>'+'<input type="hidden" class="tarif_tb" name="tarif_tb[]" value="'+tarif+'" >',
-        '<div class="harga_text">'+Harga+'</div>'+'<input type="hidden" class="harga_tb" name="harga_tb[]" value="'+Harga+'" >',
-        '<div class="keterangan_text">'+keterangan+'</div>'+'<input type="hidden" class="keterangan_tb" name="keterangan_tb[]" value="'+keterangan+'" >',
+  if (asal_dt == 0) {
+    return toastr.warning('Harap Mengisi Asal Kota.');
+  }
 
-        '<button align="center" type="button" class="btn btn-xs edit btn-warning" onclick="edit(this)"><i class="fa fa-pencil"></i></button>'+'&nbsp;<button align="center" type="button" class="btn btn-xs hapus btn-danger" onclick="hapus(this)"><i class="fa fa-trash"></i></button>',
-        
-    ]).draw(false);
-  @endif
+  if (tujuan_dt == 0) {
+    return toastr.warning('Harap Mengisi Tujuan Kota.');
+  }
+
+  if (angkutan_dt == 0) {
+    return toastr.warning('Harap Mengisi Angkutan.');
+  }
+
+  if (tarif == 0) {
+    return toastr.warning('Harap Mengisi Tarif.');
+  }
+
+  if (Harga == 0 || Harga == '') {
+    return toastr.warning('Harga Tidak Boleh 0.');
+  }
+
+  if (keterangan == 0) {
+    return toastr.warning('Harap Mengisi Keterangan.');
+  }
 
 
-  
-  // console.log('asd');
-  count++;
-  var edit = $('.edit').closest('td');
 
-  $(edit).css('text-align','center');
+  $.ajaxSetup({
+  headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+  });
 
-  var harga = $('.harga_tb').closest('td');
+      $.ajax({
+      url:baseUrl + '/master_subcon/save_subcon',
+      type:'get',
+      data:$('#form_header').serialize()+'&'+$('.table_modal :input').serialize()+'&cabang='+cabang,
+      dataType:'json',
+      success:function(response){
+        swal({
+        title: "Berhasil!",
+                type: 'success',
+                text: "Data berhasil disimpan",
+                timer: 900,
+                showConfirmButton: true
+                },function(){
+                  var table = $('#table_data').DataTable();
+                  table.ajax.reload(null,false);
+                  $('.cabang_td').addClass('disabled');
+                  $('.customer_td').addClass('disabled');
 
-  $(harga).css('text-align','right');
+                });
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 900,
+               showConfirmButton: true
 
-  $('#modal_sub').modal('hide');
+    });
+   }
+  }); 
 }
   
 function hapus(p){
-    var id_ksd = $('.id_ksd').val();
-    var par  = p.parentNode.parentNode;
-    datatable.row(par).remove().draw(false);
+var auth = '{{ Auth::user()->punyaAkses('Kontrak Subcon','hapus') }}';
+
+if (auth == 0) {
+return toastr.warning('User tidak memiliki akses untuk menghapus');
+}
+
+var par    = $(p).parents('tr');
+var nota   = $('#ed_nomor').val();
+var ksd_dt = $(par).find('.ksd_dt').text();
+
+swal({
+    title: "Apakah anda yakin?",
+    text: "Hapus Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+},
+
+function(){
+     $.ajax({
+      url:baseUrl + '/master_subcon/hapus_d_kontrak',
+      data:{nota,ksd_dt},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+});
 
 }
 
 function edit(p){
-var par  = p.parentNode.parentNode;
-var asal = $(par).find('.asal_tb').val();
-var tujuan = $(par).find('.tujuan_tb').val();
-var angkutan = $(par).find('.angkutan_tb').val();
-var tarif = $(par).find('.tarif_tb').val();
-var harga = $(par).find('.harga_tb').val();
-var keterangan = $(par).find('.keterangan_tb').val();
-var id = $(par).find('.id_table').val();
 
-  $('.asal').val(asal).trigger('chosen:updated');
-  $('.tujuan').val(tujuan).trigger('chosen:updated');
-  $('.angkutan').val(angkutan).trigger('chosen:updated');
-  $('.tarif').val(tarif);
-  $('.harga').val(harga);
-  $('.keterangan').val(keterangan);
-  $('.id_edit').val(id);
-  $('.updt').attr('hidden',false);
-  $('.tambah').attr('hidden',true);
-  $('#modal_sub').modal('show');
+var auth = '{{ Auth::user()->punyaAkses('Kontrak Subcon','ubah') }}';
+if (auth == 0) {
+return toastr.warning('User tidak memiliki akses untuk menghapus');
+}
+
+var par = $(p).parents('tr');
+var nota   = $('#ed_nomor').val();
+var ksd_dt = $(par).find('.ksd_dt').text();
+
+$.ajax({
+    url:baseUrl + '/master_subcon/set_modal',
+    type:'get',
+    data:{nota,ksd_dt},
+    dataType:'json',
+    success:function(data){
+
+        $('.asal').val(data.data.ksd_asal).trigger('chosen:updated');
+        $('.tujuan').val(data.data.ksd_tujuan).trigger('chosen:updated');
+        $('.angkutan').val(data.data.ksd_angkutan).trigger('chosen:updated');
+        $('.tarif').val(data.data.ksd_jenis_tarif);
+        $('.harga').val(accounting.formatMoney(data.data.ksd_harga,"",0,'.',','));
+        $('.keterangan').val(data.data.ksd_keterangan);
+        $('.id_detail').val(ksd_dt);
+        // $('.updt').attr('hidden',false);
+        // $('.tambah').attr('hidden',true);
+        $('#modal_sub').modal('show');
+    },
+    error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 900,
+                showConfirmButton: true
+
+        });
+    }
+    }); 
+
+  
 }
 
 function updt(){
@@ -453,11 +580,17 @@ function updt(){
   $(par).find('.harga_tb').val(harga);
   $(par).find('.keterangan_tb').val(keterangan);
 
-  $('#modal_sub').modal('hide');
+  $('.modal_sub').modal('hide');
 }
 
 $('#btnsimpan').click(function(){
-    var cabang =$('.cabang').val();
+var count = datatable.page.info().recordsTotal;
+if (count == 0) {
+  toastr.info('Tidak Ada Data Periksa Kembali');
+  return 1;
+}
+   var cabang = $('.cabang').val();
+
    swal({
     title: "Apakah anda yakin?",
     text: "Simpan Data Subcon!",
@@ -476,9 +609,9 @@ $('#btnsimpan').click(function(){
         });
 
       $.ajax({
-      url:baseUrl + '/master_subcon/update_subcon',
+      url:baseUrl + '/master_subcon/save_subcon',
       type:'get',
-      data:'id={{$data->ks_id}}'+'&'+$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cab='+cabang,
+      data:$('#form_header').serialize()+'&'+$('#table_data input').serialize()+'cabang='+cabang,
       success:function(response){
         swal({
         title: "Berhasil!",
@@ -487,7 +620,7 @@ $('#btnsimpan').click(function(){
                 timer: 900,
                showConfirmButton: true
                 },function(){
-                   location.href='../subcon';
+                   location.href='../master_subcon/subcon';
         });
       },
       error:function(data){
@@ -502,30 +635,41 @@ $('#btnsimpan').click(function(){
   });  
  });
 });
-$.fn.serializeArray = function () {
-    var rselectTextarea= /^(?:select|textarea)/i;
-    var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;
-    var rCRLF = /\r?\n/g;
-    
-    return this.map(function () {
-        return this.elements ? jQuery.makeArray(this.elements) : this;
-    }).filter(function () {
-        return this.name && !this.disabled && (this.checked || rselectTextarea.test(this.nodeName) || rinput.test(this.type) || this.type == "checkbox");
-    }).map(function (i, elem) {
-        var val = jQuery(this).val();
-        if (this.type == 'checkbox' && this.checked === false) {
-            val = 'off';
-        }
-        return val == null ? null : jQuery.isArray(val) ? jQuery.map(val, function (val, i) {
-            return {
-                name: elem.name,
-                value: val.replace(rCRLF, "\r\n")
-            };
-        }) : {
-            name: elem.name,
-            value: val.replace(rCRLF, "\r\n")
-        };
-    }).get();
+
+function check(p) {
+
+    var par    = $(p).parents('tr');
+    var nota   = $('#ed_nomor').val();
+    var kcd_dt = $(par).find('.ksd_dt').text();
+    var check  = $(par).find('.check').is(':checked');
+    var id     = '{{ $id }}';
+
+    $.ajax({
+      url:baseUrl + '/master_subcon/check_kontrak',
+      data:{nota,kcd_dt,check,id},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Diupdate",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
 }
 </script>
 @endsection

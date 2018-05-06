@@ -253,9 +253,8 @@ Route::post('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet')
 Route::get('fakturpembelian/save_outlet', 'BiayaPenerusController@save_outlet');
 Route::post('fakturpembelian/update_outlet', 'BiayaPenerusController@update_outlet');
 Route::get('fakturpembelian/update_outlet', 'BiayaPenerusController@update_outlet');
-//PEMBAYARAN SUBCON
-Route::get('fakturpembelian/getpembayaransubcon', 'BiayaPenerusController@getpembayaransubcon')->name('getpembayaransubcon');
-Route::get('fakturpembelian/cari_subcon', 'BiayaPenerusController@cari_subcon');
+// master kontrak subcon
+
 Route::get('master_subcon/subcon', 'subconController@subcon');
 Route::get('master_subcon/tambahkontraksubcon', 'subconController@tambahkontraksubcon');
 Route::get('master_subcon/edit_subcon/{id}', 'subconController@edit_subcon');
@@ -264,13 +263,22 @@ Route::get('master_subcon/cek_hapus', 'subconController@cek_hapus');
 Route::get('master_subcon/nota_kontrak_subcon', 'subconController@nota_kontrak_subcon');
 Route::get('master_subcon/hapus_subcon', 'subconController@hapus_subcon');
 Route::get('master_subcon/save_subcon', 'subconController@save_subcon');
-Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
+Route::get('master_subcon/datatable_kontrak', 'subconController@datatable_kontrak')->name('datatable_kontrak_subcon');
+Route::get('master_subcon/set_modal', 'subconController@set_modal');
+Route::get('master_subcon/hapus_d_kontrak', 'subconController@hapus_d_kontrak');
+Route::get('master_subcon/check_kontrak', 'subconController@check_kontrak');
+
+
+//PEMBAYARAN SUBCON
 Route::get('fakturpembelian/pilih_kontrak', 'BiayaPenerusController@pilih_kontrak');
 Route::get('fakturpembelian/pilih_kontrak_all', 'BiayaPenerusController@pilih_kontrak_all');
 Route::get('fakturpembelian/caripodsubcon', 'BiayaPenerusController@caripodsubcon');
 Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
+Route::get('fakturpembelian/subcon_save', 'BiayaPenerusController@subcon_save');
 Route::get('fakturpembelian/subcon_update', 'BiayaPenerusController@subcon_update');
-
+Route::get('master_subcon/cari_kontrak', 'BiayaPenerusController@cari_kontrak');
+Route::get('fakturpembelian/getpembayaransubcon', 'BiayaPenerusController@getpembayaransubcon')->name('getpembayaransubcon');
+Route::get('fakturpembelian/cari_subcon', 'BiayaPenerusController@cari_subcon');
 
 
 

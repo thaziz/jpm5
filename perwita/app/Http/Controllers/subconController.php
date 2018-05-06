@@ -17,11 +17,11 @@ use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
 use Illuminate\Foundation\Auth\RedirectsUsers;
+use Yajra\Datatables\Datatables;
 
 
 class subconController extends Controller
 {
-	use BiayaPenerusController;
 
 	public function subcon(){
 		$cabang =Auth::user()->kode_cabang;
@@ -79,6 +79,7 @@ class subconController extends Controller
 
 	public function save_subcon(request $request){
 		// dd($request->all());
+        return DB::transaction(function() use ($request) {  
 
 		if (isset($request->ck_aktif)) {
 			$cek = 'ACTIVE';
@@ -86,77 +87,179 @@ class subconController extends Controller
 			$cek = 'NOT ACTIVE';
 		}
 
-		$id = DB::table('kontrak_subcon')
-				->max('ks_id');
-
-		if ($id == null) {
-			$id = 1;
-		}else{
-			$id+=1;
-		}
+		
 		
 		$request->kontrak_nomor = str_replace(' ', '', $request->kontrak_nomor);
 
 		$cari_nota = DB::table('kontrak_subcon')
 						->where('ks_nota',$request->kontrak_nomor)
-						->get();
+						->where('ks_cabang',$request->cabang)
+						->where('ks_nama',$request->id_subcon)
+						->first();
 
-		if($cari_nota == null){
-		$kontrak_subcon = DB::table('kontrak_subcon')
-							->insert([
-								'ks_id'			=>	$id,
-								'ks_nota'		=>	$request->kontrak_nomor,
-								'ks_tgl'		=>	Carbon::parse($request->ed_tanggal)->format('Y-m-d'),
-								'ks_tgl_mulai'	=>  Carbon::parse($request->ed_mulai)->format('Y-m-d'),
-								'ks_tgl_akhir'  =>	Carbon::parse($request->ed_akhir)->format('Y-m-d'),
-								'ks_cabang'		=>	$request->cabang,
-								'ks_keterangan' =>	$request->ed_keterangan,
-								'ks_active'		=>	$cek,	
-								'ks_edit'		=>  'UNALLOWED',
-								'ks_nama'		=>	$request->id_subcon,
-								'updated_at'	=>	Carbon::now(),
-								'created_at'	=>	Carbon::now(),
-								'updated_by'	=>  Auth::user()->m_username,
-							    'created_by'	=>  Auth::user()->m_username,
-							]);
+		if($cari_nota != null){
+			$id = $cari_nota->ks_id;
+			$data = array(
+							'ks_nota'		=>	$request->kontrak_nomor,
+							'ks_tgl'		=>	Carbon::parse($request->ed_tanggal)->format('Y-m-d'),
+							'ks_tgl_mulai'	=>  Carbon::parse($request->ed_mulai)->format('Y-m-d'),
+							'ks_tgl_akhir'  =>	Carbon::parse($request->ed_akhir)->format('Y-m-d'),
+							'ks_cabang'		=>	$request->cabang,
+							'ks_keterangan' =>	strtoupper($request->ed_keterangan),
+							'ks_active'		=>	$cek,	
+							'ks_edit'		=>  'UNALLOWED',
+							'ks_nama'		=>	$request->id_subcon,
+							'updated_at'	=>	Carbon::now(),
+							'updated_by'	=>  Auth::user()->m_username,
+						);
+
+			$kontrak_subcon = DB::table('kontrak_subcon')
+								->where('ks_id',$id)
+								->update($data);
 		}else{
-			return 'Data sudah ada';
+			$cari_id = DB::table('kontrak_subcon')
+                          ->where('ks_nota',$request->kontrak_nomor)
+                          ->first();
+
+            if ($cari_id != null) {
+              $id = $cari_id->ks_id;
+            }else{
+              $id = DB::table('kontrak_subcon')
+				->max('ks_id');
+
+			  if ($id == null) {
+				$id = 1;
+			  }else{
+				$id+=1;
+			  }
+
+            }
+
+            $data = array(
+							'ks_id'			=>	$id,
+							'ks_nota'		=>	$request->kontrak_nomor,
+							'ks_tgl'		=>	Carbon::parse($request->ed_tanggal)->format('Y-m-d'),
+							'ks_tgl_mulai'	=>  Carbon::parse($request->ed_mulai)->format('Y-m-d'),
+							'ks_tgl_akhir'  =>	Carbon::parse($request->ed_akhir)->format('Y-m-d'),
+							'ks_cabang'		=>	$request->cabang,
+							'ks_keterangan' =>	strtoupper($request->ed_keterangan),
+							'ks_active'		=>	$cek,	
+							'ks_edit'		=>  'UNALLOWED',
+							'ks_nama'		=>	$request->id_subcon,
+							'updated_at'	=>	Carbon::now(),
+							'created_at'	=>	Carbon::now(),
+							'updated_by'	=>  Auth::user()->m_username,
+						    'created_by'	=>  Auth::user()->m_username,
+						);
+
+
+            
+         
+	          if ($cari_id != null) {
+
+	            $save_kontrak = DB::table('kontrak_subcon')
+	                            ->where('ks_id',$id)
+	                            ->update($data);
+	          }else{
+	            $save_kontrak = DB::table('kontrak_subcon')
+	                            ->insert($data);
+	          }
 		}
 		
-		for ($i=0; $i < count($request->asal_tb); $i++) { 
 
 
-			$harga=str_replace('.', '', $request->harga_tb[$i]);
 
-			$id_dt = DB::table('kontrak_subcon_dt')
-					   ->max('ksd_id');
+			
 
-			if ($id_dt == null) {
-				$id_dt = 1;
-			}else{
-				$id_dt+=1;
-			}
+			
 
-			$kontrak_subcon_dt = DB::table('kontrak_subcon_dt')
-								   ->insert([
-								   		'ksd_id'			=> $id_dt,
-								   		'ksd_ks_id'			=> $id,
-								   		'ksd_ks_dt'			=> $i+1,
-								   		'ksd_keterangan'	=> $request->keterangan_tb[$i],
-								   		'ksd_asal'			=> $request->asal_tb[$i],
-								   		'ksd_tujuan'		=> $request->tujuan_tb[$i],
-								   		'ksd_angkutan'		=> $request->angkutan_tb[$i],
-								   		'ksd_harga'			=> $harga,
-								   		'ksd_jenis_tarif'	=> $request->tarif_tb[$i],
-								   		'updated_at'		=>	Carbon::now(),
-										'created_at'		=>	Carbon::now()
-										
-								   ]);
-		}
+		if ($request->id_detail == '') {
+		  $id_dt = DB::table('kontrak_subcon_dt')
+                    ->max('ksd_id');
 
-		return 'Success';
+          $dt = DB::table('kontrak_subcon_dt')
+                    ->where('ksd_nota',$request->kontrak_nomor)
+                    ->max('ksd_ks_dt');
 
+          if ($dt == null) {
+              $dt = 1;
+          }else{
+              $dt += 1;
+          }
 
+          if ($id_dt == null) {
+              $id_dt = 1;
+          }else{
+              $id_dt += 1;
+          }
+
+        }else{
+          $dt = $request->id_detail;
+        }
+        
+        
+
+        if ($request->id_detail == '') {
+
+        	$data_dt = array(
+                            'ksd_id'			=> $id_dt,
+					   		'ksd_ks_id'			=> $id,
+					   		'ksd_ks_dt'			=> $dt,
+					   		'ksd_keterangan'	=> strtoupper($request->keterangan),
+					   		'ksd_asal'			=> $request->asal,
+					   		'ksd_tujuan'		=> $request->tujuan,
+					   		'ksd_angkutan'		=> $request->angkutan,
+					   		'ksd_harga'			=> filter_var($request->harga, FILTER_SANITIZE_NUMBER_INT),
+					   		'ksd_jenis_tarif'	=> $request->tarif,
+					   		'ksd_nota'       	=> $request->kontrak_nomor,
+					   		'updated_at'		=>	Carbon::now(),
+							'created_at'		=>	Carbon::now()
+                        );
+
+         	$save_detail = DB::table('kontrak_subcon_dt')
+                          ->insert($data_dt);
+        }else{
+
+        	$data_dt = array(
+					   		'ksd_keterangan'	=> strtoupper($request->keterangan),
+					   		'ksd_asal'			=> $request->asal,
+					   		'ksd_tujuan'		=> $request->tujuan,
+					   		'ksd_angkutan'		=> $request->angkutan,
+					   		'ksd_harga'			=> filter_var($request->harga, FILTER_SANITIZE_NUMBER_INT),
+					   		'ksd_nota'       	=> $request->kontrak_nomor,
+					   		'ksd_jenis_tarif'	=> $request->tarif,
+					   		'updated_at'		=>	Carbon::now(),
+                        );
+
+          	$save_detail = DB::table('kontrak_subcon_dt')
+                          ->where('ksd_nota',$request->kontrak_nomor)
+                          ->where('ksd_ks_dt',$request->id_detail)
+                          ->update($data_dt);
+        }
+
+         // $data = ['kontrak'=>url('master_sales/edit_kontrak/'.$request->id),'status'=>'Customer'];
+
+        // Mail::send('hello', $data, function ($mail)
+        //     {
+        //       // Email dikirimkan ke address "momo@deviluke.com" 
+        //       // dengan nama penerima "Momo Velia Deviluke"
+        //       $mail->from('jpm@gmail.com', 'SYSTEM JPM');
+        //       $mail->to('dewa17a@gmail.com', 'Admin');
+         
+        //       // Copy carbon dikirimkan ke address "haruna@sairenji" 
+        //       // dengan nama penerima "Haruna Sairenji"
+        //       $mail->cc('dewa17a@gmail.com', 'ADMIN JPM');
+         
+        //       $mail->subject('KONTRAK VERIFIKASI');
+        //     });
+
+        
+
+        
+
+        return response()->json(['status'=>1]);
+
+    	});
 	}
 
 	public function edit_subcon($id){
@@ -205,12 +308,12 @@ class subconController extends Controller
 		$angkutan = DB::table('tipe_angkutan')
 					->get();
 
-		$tgl1 = Carbon::parse($data->ks_tgl_mulai)->format('d/m/Y');
-		$tgl2 = Carbon::parse($data->ks_tgl_akhir)->format('d/m/Y');
-		$tgl3 = Carbon::parse($data->ks_tgl)->format('d/m/Y');
+		$tgl1 = Carbon::parse($data->ks_tgl_mulai)->format('d-m-Y');
+		$tgl2 = Carbon::parse($data->ks_tgl_akhir)->format('d-m-Y');
+		$tgl3 = Carbon::parse($data->ks_tgl)->format('d-m-Y');
 
 
-		return view('master_subcon.editSubcon',compact('data','subcon','subcon_dt','tgl1','tgl2','tgl3','cabang','kota','angkutan','sub','jenis_tarif'));
+		return view('master_subcon.editSubcon',compact('data','subcon','subcon_dt','tgl1','tgl2','tgl3','cabang','kota','angkutan','sub','jenis_tarif','id'));
 	}
 
 	public function update_subcon(request $request){
@@ -373,9 +476,145 @@ public function nota_kontrak_subcon(request $request)
 		$nota = 'KSC' . $month . $year . '/' . $request->cabang . '/' .  $idfaktur;
 		return response()->json(['nota'=>$nota]);
 }
+
+public function datatable_kontrak(request $request)
+{
+	// dd($request->all());
+		$data = DB::table('kontrak_subcon_dt')
+                  ->where('ksd_nota',$request->nota)
+                  ->orderBy('ksd_ks_dt','ASC')
+                  ->get();
+        
+        
+        // return $data;
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('harga', function ($data) {
+                                return number_format($data->ksd_harga,0,',','.');
+                        })
+                        ->addColumn('asal', function ($data) {
+
+                          $kota = DB::table('kota')
+                                    ->get();
+
+                          $tipe_angkutan = DB::table('tipe_angkutan')
+                                    ->get();
+
+                          for ($a=0; $a < count($kota); $a++) { 
+                            if ($data->ksd_asal == $kota[$a]->id) {
+                              $kota_asal = $kota[$a]->nama;
+                            }
+                          }
+                          return $data->ksd_asal . '-' . $kota_asal;
+                                
+                        })
+                        ->addColumn('tujuan', function ($data) {
+
+                          $kota = DB::table('kota')
+                                    ->get();
+
+                          $tipe_angkutan = DB::table('tipe_angkutan')
+                                    ->get();
+
+                          for ($a=0; $a < count($kota); $a++) { 
+                            if ($data->ksd_tujuan == $kota[$a]->id) {
+                              $kota_tujuan = $kota[$a]->nama;
+                            }
+                          }
+                          return $data->ksd_tujuan . '-' . $kota_tujuan;
+                        })
+                        ->addColumn('angkutan', function ($data) {
+                          $kota = DB::table('kota')
+                                    ->get();
+
+                          $tipe_angkutan = DB::table('tipe_angkutan')
+                                    ->get();
+
+                          for ($a=0; $a < count($tipe_angkutan); $a++) { 
+                            if ($data->ksd_angkutan == $tipe_angkutan[$a]->kode) {
+                              $angkutan = $tipe_angkutan[$a]->nama;
+                            }
+                          }
+                          return $data->ksd_angkutan . '-' . $angkutan;
+                        })
+                        ->addColumn('aksi', function ($data) {
+                          return  '<div class="btn-group">'.
+                                   '<button type="button" onclick="edit(this)" class="btn btn-warning edit btn-sm" title="edit">'.
+                                   '<label class="fa fa-pencil"></label></button>'.
+                                   '<button type="button" onclick="hapus(this)" class="btn btn-danger hapus btn-sm" title="hapus">'.
+                                   '<label class="fa fa-trash"></label></button>'.
+                                  '</div>';
+                        })
+                        ->addColumn('tarif', function ($data) {
+                          $jt = DB::table('jenis_tarif')
+                                    ->get();
+                          for ($a=0; $a < count($jt); $a++) { 
+                            if ($data->ksd_jenis_tarif == $jt[$a]->jt_id) {
+                              $jt = $jt[$a]->jt_nama_tarif;
+                            }
+                          }
+                          return $jt;
+                        })
+                        ->addColumn('active', function ($data) {
+                          if (Auth::user()->punyaAkses('Verifikasi','aktif')) {
+                            if($data->ksd_active == true){
+                              return '<input checked type="checkbox" onchange="check(this)" class="form-control check">';
+                            }else{
+                              return '<input type="checkbox" onchange="check(this)" class="form-control check">';
+                            }
+                          }else{
+                              return '-';
+                          }
+                           
+                        })
+                        ->addColumn('none', function ($data) {
+                            return '-';
+                        })
+                        ->make(true);
+}
+public function set_modal(request $request)
+{
+	$data = DB::table('kontrak_subcon_dt')
+                ->where('ksd_nota',$request->nota)
+                ->where('ksd_ks_dt',$request->ksd_dt)
+                ->first();
+    return response()->json(['data'=>$data]);
 }
 
-trait BiayaPenerusController
+public function hapus_d_kontrak(request $request)
 {
-	public $asd = 'asd';
+// return $request->all();
+  $data = DB::table('kontrak_subcon_dt')
+            ->where('ksd_nota',$request->nota)
+            ->where('ksd_ks_dt',$request->ksd_dt)
+            ->delete();
 }
+public function check_kontrak(request $request)
+{
+	if ($request->check == 'true') {
+         // return $request->check;
+
+        $data_dt = DB::table('kontrak_subcon_dt')
+            ->where('ksd_nota',$request->nota)
+            ->where('ksd_ks_dt',$request->kcd_dt)
+            ->update([
+              'ksd_active' => true 
+            ]);
+
+         
+         return json_encode('success 1');
+
+    }else{
+
+      $data_dt = DB::table('kontrak_subcon_dt')
+            ->where('ksd_nota',$request->nota)
+            ->where('ksd_ks_dt',$request->kcd_dt)
+            ->update([
+              'ksd_active' => $request->check 
+            ]);
+         return json_encode('success 2');
+    }
+}
+}
+

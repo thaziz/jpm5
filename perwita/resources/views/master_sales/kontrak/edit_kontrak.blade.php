@@ -624,8 +624,6 @@ function(){
 });
 
 
-var par = $(p).parents('tr');
-datatable.row(par).remove().draw(false);
 }
 
 function edit(p){

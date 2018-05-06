@@ -7,6 +7,7 @@
       .id {display:none; }
       .center {text-align:center; }
       .lebar {width:200px }
+      .right{text-align: right;}
     </style>
 
 
@@ -688,8 +689,8 @@ function(){
 });
 
 
-var par = $(p).parents('tr');
-datatable.row(par).remove().draw(false);
+// var par = $(p).parents('tr');
+// datatable.row(par).remove().draw(false);
 }
 
 function edit(p){
