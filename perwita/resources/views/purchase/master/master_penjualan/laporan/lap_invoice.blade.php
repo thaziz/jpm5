@@ -153,11 +153,9 @@
         data: {awal:awal,akir:akir,customer:customer},
         url: baseUrl + '/excelinvoice/excelinvoice',
         type: "get",
-         complete:function(data){
-        window.open(this.url,'_blank');
-        },
        success : function(data){
-       
+        // var win = window.open();
+        //     win.document.write(data);
         }
       });
     }

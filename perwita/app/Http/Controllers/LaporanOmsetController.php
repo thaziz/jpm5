@@ -966,42 +966,6 @@ class laporanOmsetController extends Controller
 
 
 //❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤ END OFLAPORAN OPERASIONAL PENJUALAN ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤//
-	public function diagram_seluruhdo(){
-		$array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
-		 $tahun = carbon::now();
-		 $tahun =  $tahun->year;
-		
-		// return $array_bulan;
-		for ($i=0; $i <count($array_bulan) ; $i++) { 
-			$dat[$i] =DB::table('delivery_order')
-				->where('pendapatan','=','PAKET')
-				->where('type_kiriman','=','DOKUMEN')
-				->whereMonth('tanggal','=',$array_bulan[$i])
-				->whereYear('tanggal','=',$tahun)
-				->get();
-			$dat1[$i] =DB::table('delivery_order')
-				->where('pendapatan','=','PAKET')
-				->where('type_kiriman','=','KILOGRAM')
-				->whereMonth('tanggal','=',$array_bulan[$i])
-				->whereYear('tanggal','=',$tahun)
-				->get();
-			$dat2[$i] =DB::table('delivery_order')
-				->where('pendapatan','=','PAKET')
-				->where('type_kiriman','=','KOLI')
-				->whereMonth('tanggal','=',$array_bulan[$i])
-				->whereYear('tanggal','=',$tahun)
-				->get();
-			$dat3[$i] =DB::table('delivery_order')
-				->where('pendapatan','=','PAKET')
-				->where('type_kiriman','=','SEPEDA')
-				->whereMonth('tanggal','=',$array_bulan[$i])
-				->whereYear('tanggal','=',$tahun)
-				->get();
-		}
-		return $dat1;
-   		$cabang = DB::table('cabang')->get();
-   		return view('purchase/omset_diagram/laporan_diagram_seluruh_do/lap_diagram_seluruh_do',compact('paket','koran','kargo','cabang','data','invoice','customer'));
-   	}
 
 
 	}

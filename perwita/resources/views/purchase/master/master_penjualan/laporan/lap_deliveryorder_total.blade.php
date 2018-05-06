@@ -45,16 +45,16 @@
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input name="min" id="min" type="text" class="cari_semua date form-control date_to date_range_filter
+                                          <input name="min" id="min" type="text" class=" date form-control date_to date_range_filter
                                               date" onchange="tgl()">
 
                               </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                          <input type="text" class="cari_semua date form-control date_to date_range_filter
+                                          <input type="text" class=" date form-control date_to date_range_filter
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                       <tr>
+                       {{-- <tr>
                         <th> Nama Pengirim : </th> 
                           <td> 
                                 <input id="nama_pengirim" type="text" class="form-control ">
@@ -63,22 +63,12 @@
                             <td> 
                                 <input id="nama_penerima" type="text" class="form-control" >
                             </td>
-                      </tr>
-                      <tr>
-                          <th style="width: 100px; padding-top: 16px">Cabang</th>
-                          <td colspan="3">
-                            <select class="cari_semua chosen-select-width" id="cabang" onchange="filterColumn5()">
-                              <option></option>
-                              @foreach ($cabang as $element)
-                                <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
-                              @endforeach
-                            </select>
-                          </td>
-                        </tr>
+                      </tr> --}}
+
                         <tr >
                            <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td >
-                          <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker1 form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal" onchange="filterColumn()">
+                          <select style="width: 200px; margin-top: 20px;" class="select-picker1 chosen-select-width form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal" onchange="filterColumn()">
                             <option value="" disabled="" selected=""> --Asal --</option>
                             @foreach ($kota1 as $asal)
                                 <option value="{{ $asal->asal }}">{{ $asal->asal }}</option>
@@ -88,7 +78,7 @@
                         
                           <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="kota_tujuan"  onchange="filterColumn1()">
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="kota_tujuan"  onchange="filterColumn1()">
                             <option value="" disabled="" selected=""> --Tujuan --</option>
                             @foreach ($kota as $tujuan)
                                 <option value="{{ $tujuan->tujuan }}">{{ $tujuan->tujuan }}</option>
@@ -99,7 +89,7 @@
                         <tr>
                            <th style="width: 100px; padding-top: 16px"> Tipe </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker3 form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
                             <option value="" disabled="" selected=""> --Tipe --</option>
                             <option value="DOKUMEN">DOKUMEN</option>
                             <option value="KILOGRAM">KILOGRAM</option>
@@ -109,9 +99,19 @@
                             <option value="KARGO">KARGO</option>
                            </select>
                           </td>
+                        
+                           {{-- <th style="width: 100px; padding-top: 16px"> Jenis </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn3()">
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="REGULER">REGULER</option>
+                            <option value="EXPRESS">EXPRESS</option>
+                            <option value="OUTLET">OUTLET</option>
+                           </select>
+                          </td> --}}
                           <th style="width: 100px; padding-top: 16px"> Status </th>
                           <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status" onchange="filterColumn4()">
+                           <select style="width: 200px; margin-top: 20px;" class="select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status" onchange="filterColumn4()">
                             <option value="" disabled="" selected=""> --Status --</option>
                             <option value="MANIFESTED">MANIFESTED</option>
                             <option value="TRANSIT">TRANSIT</option>
@@ -121,7 +121,17 @@
                            </select>
                           </td>
                         </tr>
-                        
+                        <tr>
+                          <th style="width: 100px; padding-top: 16px">Cabang</th>
+                          <td colspan="3">
+                            <select class="chosen-select-width" id="cabang" onchange="filterColumn5()">
+                              <option></option>
+                              @foreach ($cabang as $element)
+                                <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                        </tr>
                       <br>
                       </table>
                       <div class="row pull-right" style="margin-top: 0px;margin-right: 3px;"> &nbsp; &nbsp; 
@@ -179,18 +189,13 @@
                             <td align="right">{{ number_format($row->tarif_penerus,0,',','.') }}</td>
                             <td align="right">{{ number_format($row->biaya_tambahan,0,',','.') }}</td>
                             <td align="right">{{ number_format($row->diskon,0,',','.')}}</td> --}}
-                            <td align="right"><input type="hidden" name="" class="total_net" value="{{ $row->total_net }}">{{ number_format($row->total_net,0,',','.') }}</td>
+                            <td align="right">{{ number_format($row->total_net,0,',','.') }}</td>
                             <td hidden="">{{ $row->kode_cabang }}</td>
                         </tr>
                         @endforeach
                     </tbody>
-                    <tr>
-                      <td colspan="9">Total net</td>
-                      <td id="total_grandtotal"></td>
-                    </tr>
-                  </table>
-                  {{-- {{ $data->links() }}  --}}
 
+                  </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
@@ -217,10 +222,6 @@
 @section('extra_scripts')
 <script type="text/javascript">
    
-
-
-
-
     var d = new Date();
     var a = d.getDate();
     var b = d.getSeconds();
@@ -258,44 +259,6 @@
               }
           ]
     });
-
-
-   
-    
-
-   
-      var aa=[];
-       var bb = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < bb.length; i++){
-
-           aa[i] =  $(bb[i][11]).val();
-  
-       }
-       var total = 0;
-        for (var i = 0; i < aa.length; i++) {
-            total += aa[i] << 0;
-        }
-    $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
-
-
-
-    $('.cari_semua').change(function(){
-       var aa=[];
-       var bb = table.rows( { filter : 'applied'} ).data(); 
-         for(var i = 0 ; i < bb.length; i++){
-            aa[i] =  $(bb[i][11]).val(); 
-         }
-       console.log(aa);
-       var aas = $('.select-picker1').find(':selected').val();
-       console.log(aas);
-       var total = 0;
-        for (var i = 0; i < aa.length; i++) {
-            total += aa[i] << 0;
-        }
-    $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
-
-    });
-
      $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
