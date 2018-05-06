@@ -2523,6 +2523,61 @@ class LaporanMasterController extends Controller
 				   				and tanggal<='$akir'
 				                group by d.kode_customer,c.kode
 				                order by d.kode_customer");	
+				   			
+				   			$cust = DB::select("SELECT kode_customer from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'DOKUMEN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			/*return*/ $doc = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'DOKUMEN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+					   			// return $doc;
+
+				   			$kilo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KILOGRAM'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$koli = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KOLI'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$sepeda = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'SEPEDA'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$kargo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KARGO'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$koran = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KORAN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+
+
+				   			// return [$data_awal,$doc,$kilo,$koli,$sepeda,$kargo,$koran];
+
 				   			if ($data_awal == null) {
 				   				return response()->json(['data'=>'0']); 
 				   			}else{
