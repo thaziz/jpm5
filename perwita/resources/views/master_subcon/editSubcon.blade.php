@@ -318,6 +318,10 @@
              className: 'center'
           },
           {
+             targets: 8 ,
+             className: 'center'
+          },
+          {
              targets: 0 ,
              className: 'center ksd_dt'
           },
