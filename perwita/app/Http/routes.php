@@ -86,12 +86,13 @@ Route::get('suratpermintaanpembelian/createspp' , 'PurchaseController@createspp'
 Route::get('suratpermintaanpembelian/detailspp/{id}' , 'PurchaseController@detailspp');
 Route::delete('suratpermintaanpembelian/deletespp/{id}' , 'PurchaseController@deletespp');
 Route::post('suratpermintaanpembelian/ajax_supplier' , 'PurchaseController@ajax_supplier');
-Route::get('suratpermintaanpembelian/ajax_hargasupplier/{id}', 'PurchaseController@ajax_hargasupplier');
+Route::get('suratpermintaanpembelian/ajax_hargasupplier', 'PurchaseController@ajax_hargasupplier');
 Route::post('suratpermintaanpembelian/ajax_jenisitem/', 'PurchaseController@ajax_jenisitem');
 Route::get('suratpermintaanpembelian/statusspp/{id}', 'PurchaseController@statusspp');
 Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@createPdfSpp');
 Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetakspp');
+Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
 Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
@@ -175,6 +176,7 @@ Route::post('stockopname/updatestockopname' , 'StockOpnameController@updatestock
 
 
 Route::get('stockgudang/stockgudang' , 'PurchaseController@stockgudang');
+Route::get('stockgudang/carigudang' , 'PurchaseController@carigudang');
 
 
 Route::get('pengeluaranbarang/bppb', function(){
@@ -353,8 +355,12 @@ Route::get('returnpembelian/createreturnpembelian', 'ReturnPembelianController@c
 Route::get('returnpembelian/detailreturnpembelian/{id}', 'ReturnPembelianController@detailreturnpembelian');
 Route::get('returnpembelian/getpo', 'ReturnPembelianController@getpo');
 Route::get('returnpembelian/hslfaktur', 'ReturnPembelianController@hslfaktur');
+Route::get('returnpembelian/hasilbarangpo', 'ReturnPembelianController@hasilbarangpo');
 Route::get('returnpembelian/getnota', 'ReturnPembelianController@getnota');
 Route::post('returnpembelian/save', 'ReturnPembelianController@save');
+Route::get('returnpembelian/getbarangpo', 'ReturnPembelianController@getbarangpo');
+Route::get('returnpembelian/delete/{id}', 'ReturnPembelianController@hapusdata');
+Route::post('returnpembelian/update', 'ReturnPembelianController@updatedata');
 
 Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
 Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');

@@ -81,6 +81,42 @@ class ReturnPembelianController extends Controller
 		return view('purchase/return_pembelian/create', compact('data'));
 	}
 
+	public function getbarangpo(Request $request){
+		$idpo = $request->idpo;
+
+		$datas['barang'] = DB::select("select * from pembelian_orderdt, pembelian_order, masteritem where podt_idpo = '$idpo' and podt_idpo = po_id and podt_kodeitem = kode_item");
+		$datas['barang1'] = DB::select("select * from pembelian_orderdt, pembelian_order, masteritem where podt_idpo = '$idpo' and podt_idpo = po_id and podt_kodeitem = kode_item");
+
+		if(count($request->databarang) != 0){
+			for($i = 0 ; $i < count($datas['barang']); $i++){
+				for($j = 0; $j < count($request->databarang); $j++){
+					if($request->databarang[$j] == $datas['barang'][$i]->podt_kodeitem){
+						unset($datas['barang1'][$i]);
+					}
+				}
+			}
+			$datas['barang1'] = array_values($datas['barang1']);
+			$data['podt'] = $datas['barang1'];
+		}
+		else {
+			$data['podt'] = $datas['barang1'];
+		}
+
+		$data['countpodt'] = count($data['podt']);
+		return json_encode($data);
+		
+	}
+
+	public function hasilbarangpo(Request $request){
+		for($i = 0; $i < count($request->idpo); $i++){
+			$idpo = $request->idpo[$i];
+			$kodeitem = $request->kodeitem[$i];
+			$data['po'] = DB::select("select * from pembelian_order, pembelian_orderdt, masteritem where podt_idpo = po_id and po_id = '$idpo' and podt_kodeitem = '$kodeitem' and podt_kodeitem = kode_item");
+		}
+
+		return json_encode($data);
+	}
+
 	public function getpo(Request $request){
 		$supplier = $request->supplier;
 		$cabang = $request->cabang;
@@ -105,7 +141,7 @@ class ReturnPembelianController extends Controller
 		if($cabang == 000){
 			$data['rn'] = DB::select("select * from returnpembelian, pembelian_order , supplier where rn_supplier = idsup and rn_idpotidakaktif = po_id and rn_id = '$id'");
 
-			$data['rndt'] = DB::select("select * from returnpembelian, returnpembelian_dt , pembelian_order , masteritem where rndt_id = rn_id and rn_idpotidakaktif = po_id and rndt_item = kode_item and rn_id = '$id'");
+			$data['rndt'] = DB::select("select * from returnpembelian_dt , masteritem, pembelian_orderdt, returnpembelian where rndt_idrn = rn_id and rndt_idrn = '$id' and rndt_item = kode_item and rn_idpoaktif = podt_idpo and rndt_item = podt_kodeitem");
 
 			$data['cabang'] = DB::select("select * from cabang");
 			$data['supplier'] = DB::select("select * from supplier where active = 'AKTIF' and status = 'SETUJU'");
@@ -113,7 +149,8 @@ class ReturnPembelianController extends Controller
 		else {
 		$data['rn'] = DB::select("select * from returnpembelian, pembelian_order , supplier where rn_supplier = idsup and rn_idpotidakaktif = po_id and rn_id = '$id' and rn_cabang = '$cabang'");
 
-			$data['rndt'] = DB::select("select * from returnpembelian, returnpembelian_dt , pembelian_order , masteritem where rndt_id = rn_id and rn_idpotidakaktif = po_id and rndt_item = kode_item and rn_id = '$id' and rn_cabang = '$cabang'");
+			$data['rndt'] = DB::select("select * from returnpembelian_dt , masteritem, pembelian_orderdt, returnpembelian where rndt_idrn = rn_id and rndt_idrn = '$id' and rndt_item = kode_item and rn_idpoaktif = podt_idpo and rndt_item = podt_kodeitem");
+
 			$data['cabang'] = DB::select("select * from cabang");
 			$data['supplier'] = DB::select("select * from supplier where active = 'AKTIF' and status = 'SETUJU'");
 		}
@@ -122,8 +159,102 @@ class ReturnPembelianController extends Controller
 	}
 
 	public function hapusdata ($id){
+		
+		 $datareturn = DB::select("select * from returnpembelian where rn_id = '$id'");
+		 $idpo = $datareturn[0]->rn_idpoaktif;
+		 $idpotdkaktif = $datareturn[0]->rn_idpotidakaktif;
+	
 
+		  //UPDATE STOCK MUTATION 
+		  $datasm = DB::select("select * from returnpembelian_sm where rnsm_idrn = '$id' ");
+		  for($i =0 ; $i < count($datasm); $i++){
+			  $datasmqty = $datasm[$i]->rnsm_qty;
+			  $datasmid = $datasm[$i]->rnsm_idsm;
+
+			  $datastock = DB::select("select * from stock_mutation where sm_id = '$datasmid'");
+			  $qtystock = $datastock[0]->sm_qty;
+			  $qtysisa = $datastock[0]->sm_sisa;
+			  $sm_use =  (int)$qtystock + (int)$datasmqty;
+			  $sm_sisa = (int)$qtysisa + (int)$datasmqty;
+
+			    $updatesm = DB::table('stock_mutation')
+                        ->where([['sm_id' , '=' , $datasmid]])
+                        ->update([
+                        	'sm_qty' => $sm_use,
+                            'sm_sisa' => $sm_sisa,                                        
+                        ]); 
+
+            	//UPDATE PENERIMAAN BARANG DT
+            	$idpb = $datastock[0]->sm_po;
+            	$item = $datastock[0]->sm_item;
+            	$updatepb = DB::table('penerimaan_barangdt')
+            				->where([['pbdt_idpb' , '=' , $idpb] , ['pbdt_item' , '=' , $item]])
+            				->update([
+            					'pbdt_qty' => $sm_use,
+            					'pbdt_po' => $idpotdkaktif,
+            				]);
+		  }
+
+
+		  //UPDATE STOCK GUDANG
+		 $datareturn = DB::select("select * from returnpembelian where rn_id = '$id'");
+		 $idpo = $datareturn[0]->rn_idpoaktif;
+		 $idpotdkaktif = $datareturn[0]->rn_idpotidakaktif;
+
+		 $datareturndt = DB::select("select * from returnpembelian_dt where rndt_idrn = '$id'");
+
+		 for($j = 0; $j < count($datareturndt); $j++){
+		 	$kodeitem = $datareturndt[$j]->rndt_item;
+		 	$datapo = DB::select("select * from pembelian_orderdt where podt_idpo = '$idpo' and podt_kodeitem = '$kodeitem'");
+		 	$lokasigudang = $datapo[0]->podt_lokasigudang;
+
+		 	$qty = $datareturndt[$j]->rndt_qtyreturn;
+		 	$datagudang = DB::select("select * from stock_gudang where sg_item = '$kodeitem' and sg_gudang = '$lokasigudang'");
+		 	$sgqty = $datagudang[0]->sg_qty;
+		 	$hasilqty = (int)$sgqty + (int)$qty;
+	 	 	$updatesg = DB::table('stock_gudang')
+                    ->where([['sg_item' , '=' , $kodeitem],['sg_gudang' , '=' , $lokasigudang]])
+                    ->update([
+                        'sg_qty' => $hasilqty,                                                           
+                    ]); 
+		 }
+
+		  //DELETE RETURN
+		  DB::delete("DELETE from  stock_mutation where sm_po = '$id' and sm_flag = 'RN'");
+
+
+	      $updatebt = DB::table('barang_terima')
+	                ->where([['bt_idtransaksi' , '=' , $idpo], ['bt_flag' , '=' , 'PO']])
+	                ->update([
+	                    'bt_idtransaksi' => $idpotdkaktif
+	                   ]);
+
+	        $updatepb = DB::table('penerimaan_barangdt')
+	    				->where('pbdt_po' , $idpo)
+	    				->update([
+	    					'pbdt_po' => $idpotdkaktif,
+	    				]);
+
+		  DB::delete("DELETE from  pembelian_order where po_id = '$idpo'");
+		  $updatepo = DB::table('pembelian_order')
+                    ->where('po_id' , $idpotdkaktif)
+                    ->update([
+                        'po_statusreturn' => 'AKTIF'
+                       ]);
+        
+
+	   
+
+	        DB::delete("DELETE from  returnpembelian where rn_id = '$id'");   
 	}
+
+	public function updatedata(Request $request){
+		$idrn = $request->idrn;
+		$this->hapusdata($idrn);
+        $this->save($request);
+        return json_encode('sukses');
+	}
+
 	public function hslfaktur(Request $request){
 
 		$idpo = $request->checked[0];
@@ -178,7 +309,6 @@ class ReturnPembelianController extends Controller
 			$idrn = $lastid;
 			$idrn = (int)$idrn + 1;
 		}
-
 		else {
 			$idrn = 1;
 		}
@@ -358,7 +488,24 @@ class ReturnPembelianController extends Controller
 				 	'podt_jumlahharga' => $jumlahharga,
 				 	'podt_totalharga' => $totalharga,
 			 		]);
-			}
+
+
+				//UPDATE DATA STOCK GUDANG
+				$lokasigudang = $request->lokasigudang[$j];
+				$iditem = $request->kodeitem[$j];
+				$stockgudang = DB::select("select * from stock_gudang where sg_gudang = '$lokasigudang' and sg_cabang = '$cabang' and sg_item = '$iditem' ");
+			/*	return $iditem . $cabang . $lokasigudang;*/
+				//return $stockgudang[0]->sg_qty;
+				$hasilstockgudang = (int)$stockgudang[0]->sg_qty - (int)$request->qtyreturn[$j];
+
+				$updatestockgudang = stock_gudang::where([['sg_gudang' , '=', $request->lokasigudang[$j]],['sg_cabang' , '=' , $cabang], ['sg_item' , '=' , $iditem]]);
+
+				$updatestockgudang->update([
+					'sg_qty' => $hasilstockgudang,
+					]);
+
+				}
+			
 
 
 		
@@ -387,9 +534,9 @@ class ReturnPembelianController extends Controller
 							for ($j = 0; $j < count($data['pb'][$i]); $j++){
 							$jumlahperitem = 0;
 								
-									//return $hz;
-									$jumlahperitem = $jumlahperitem + $data['pb'][$i][$hz]->pbdt_qty;
-									//	$jumlahperitem = 3;	
+							//return $hz;
+							$jumlahperitem = $jumlahperitem + $data['pb'][$i][$hz]->pbdt_qty;
+							//	$jumlahperitem = 3;	
 								
 									
 								//return $jumlahperitem . $request->qtyreturn[$k];	
@@ -422,6 +569,27 @@ class ReturnPembelianController extends Controller
 											'sm_sisa' => 0,
 											'updated_by' => $request->username
 											]);
+
+
+										$lokasigudang = $request->lokasigudang[$k];
+										$datasmt = DB::select("select * from stock_mutation where sm_flag = 'PO' and sm_po = '$idpb' and sm_id_gudang = '$lokasigudang' and sm_comp = '$cabang' and sm_item = '$iditem'");
+
+										 $cari_max_id = DB::table('returnpembelian_sm')
+										                     ->max('rnsm_id');
+										    if ($cari_max_id != null) {
+										        $cari_max_id += 1;
+										    }else{
+										        $cari_max_id = 1;
+										    }
+										   $save_rnsm = DB::table('returnpembelian_sm')
+					                           ->insert([
+					                            'rnsm_id'       => $cari_max_id,
+					                            'rnsm_idrn'     => $idrn,
+					                            'rnsm_kodeitem' => $iditem,
+					                            'rnsm_qty'      => $request->qtyreturn[$k],
+					                            'rnsm_sisa'		=>  $request->qtyreturn[$k],
+					                            'rnsm_idsm'     => $datasmt[0]->sm_id,
+					                        ]);
 										//$sisa = (int)$jumlahperitem - (int)$request->qtyreturn[$k];
 									} // END SAMA
 									else if((int)$request->qtyreturn[$k] < (int)$qty) {
@@ -447,6 +615,26 @@ class ReturnPembelianController extends Controller
 											'sm_sisa' => $hasilselisih,
 											'updated_by' => $request->username
 											]);
+
+										$lokasigudang = $request->lokasigudang[$k];
+										$datasmt = DB::select("select * from stock_mutation where sm_flag = 'PO' and sm_po = '$idpb' and sm_id_gudang = '$lokasigudang' and sm_comp = '$cabang' and sm_item = '$iditem'");
+
+										 $cari_max_id = DB::table('returnpembelian_sm')
+										                     ->max('rnsm_id');
+										    if ($cari_max_id != null) {
+										        $cari_max_id += 1;
+										    }else{
+										        $cari_max_id = 1;
+										    }
+										   $save_rnsm = DB::table('returnpembelian_sm')
+					                           ->insert([
+					                            'rnsm_id'       => $cari_max_id,
+					                            'rnsm_idrn'       => $idrn,
+					                            'rnsm_kodeitem'       => $iditem,
+					                            'rnsm_qty'       => $request->qtyreturn[$k],
+					                            'rnsm_qty'       => $request->qtyreturn[$k],
+					                            'rnsm_idsm'       => $datasmt[0]->sm_id,
+					                        ]);
 									}
 								}
 									else {
@@ -472,8 +660,33 @@ class ReturnPembelianController extends Controller
 													$idpb = $data['pb'][$i][$yz]->pbdt_idpb;
 
 
+
+
 														//update di stockmutation di penerimaan barang
 													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
+
+
+													$lokasigudang = $request->lokasigudang[$k];
+
+													$datasmt = DB::select("select * from stock_mutation where sm_flag = 'PO' and sm_po = '$idpb' and sm_id_gudang = '$lokasigudang' and sm_comp = '$cabang' and sm_item = '$iditem'");
+
+													 $cari_max_id = DB::table('returnpembelian_sm')
+													                     ->max('rnsm_id');
+													    if ($cari_max_id != null) {
+													        $cari_max_id += 1;
+													    }else{
+													        $cari_max_id = 1;
+													    }
+
+													   $save_rnsm = DB::table('returnpembelian_sm')
+								                           ->insert([
+								                            'rnsm_id'       => $cari_max_id,
+								                            'rnsm_idrn'       => $idrn,
+								                            'rnsm_kodeitem'       => $iditem,
+								                            'rnsm_qty'       => $datasmt[0]->sm_qty,
+								                            'rnsm_sisa'       => $datasmt[0]->sm_qty,
+								                            'rnsm_idsm'       => $datasmt[0]->sm_id,
+								                        ]);
 
 													$updatesmt->update([
 														'sm_qty' => 0,
@@ -496,6 +709,29 @@ class ReturnPembelianController extends Controller
 														//update di stockmutation di penerimaan barang
 													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
 
+													$lokasigudang = $request->lokasigudang[$k];
+													$datasmt = DB::select("select * from stock_mutation where sm_flag = 'PO' and sm_po = '$idpb' and sm_id_gudang = '$lokasigudang' and sm_comp = '$cabang' and sm_item = '$iditem'");
+
+													 $cari_max_id = DB::table('returnpembelian_sm')
+													                     ->max('rnsm_id');
+													    if ($cari_max_id != null) {
+													        $cari_max_id += 1;
+													    }else{
+													        $cari_max_id = 1;
+													    }
+
+													    $hasilqty2 = (int)$hasilqty - (int)$qty; 
+													   $save_rnsm = DB::table('returnpembelian_sm')
+								                           ->insert([
+								                            'rnsm_id'       => $cari_max_id,
+								                            'rnsm_idrn'       => $idrn,
+								                            'rnsm_kodeitem'       => $iditem,
+								                            'rnsm_qty'       => $return,
+								                            'rnsm_sisa'       => $return,
+								                            'rnsm_idsm'       => $datasmt[0]->sm_id,
+								 
+								                        ]);
+
 													$updatesmt->update([
 														'sm_qty' => $hasilqty,
 														'sm_sisa' => $hasilqty,
@@ -514,6 +750,29 @@ class ReturnPembelianController extends Controller
 
 														//update di stockmutation di penerimaan barang
 													$updatesmt = stock_mutation::where([['sm_flag' , '=' , 'PO'], ['sm_po' , '=' , $idpb] , ['sm_id_gudang' , '=' , $request->lokasigudang[$k] ], ['sm_comp' , '=' , $cabang] , ['sm_item' , '=' , $iditem]]);
+
+
+													$lokasigudang = $request->lokasigudang[$k];
+													$datasmt = DB::select("select * from stock_mutation where sm_flag = 'PO' and sm_po = '$idpb' and sm_id_gudang = '$lokasigudang' and sm_comp = '$cabang' and sm_item = '$iditem'");
+
+													 $cari_max_id = DB::table('returnpembelian_sm')
+													                     ->max('rnsm_id');
+													    if ($cari_max_id != null) {
+													        $cari_max_id += 1;
+													    }else{
+													        $cari_max_id = 1;
+													    }
+													   $save_rnsm = DB::table('returnpembelian_sm')
+								                           ->insert([
+								                            'rnsm_id'       => $cari_max_id,
+								                            'rnsm_idrn'       => $idrn,
+								                            'rnsm_kodeitem'       => $iditem,
+								                            'rnsm_qty'       => $datasmt[0]->sm_qty,
+								                            'rnsm_sisa'       => $datasmt[0]->sm_qty,
+								                            'rnsm_idsm'       => $datasmt[0]->sm_id,
+								                        ]);
+
+								                           
 
 													$updatesmt->update([
 														'sm_qty' => 0,
@@ -555,7 +814,7 @@ class ReturnPembelianController extends Controller
 				$data['pb'][] = DB::select("select * from penerimaan_barangdt where pbdt_po = '$idpo' and pbdt_item = '$iditem'");
 
 				//return json_encode($data);
-				if(count($data['pb'][0]) != 0 ) {
+				if(count($data['pb']) != 0 ) {
 					for($x = 0 ; $x < count($data['pb'][0]); $x++){
 						$jumlahterima = $jumlahterima + (int)$data['pb'][0][$x]->pbdt_qty;
 					}
@@ -569,17 +828,7 @@ class ReturnPembelianController extends Controller
 
 				//return $hasilqty . $jumlahterima;
 				if((int)$jumlahterima > $hasilqty){
-					//update idpo di penerimaan barang
-						$updatepb = penerimaan_barang::where('pb_po' , $idpo);
-						$updatepb->update([
-							'pb_po' => $idpo2,
-							]);
-
-						$updatepbdt =  penerimaan_barangdt::where('pbdt_po' ,$idpo);
-						$updatepbdt->update([
-							'pbdt_po' => $idpo2,
-							]);
-						
+					//update idpo di penerimaan barang					
 						//STOCK MUTATION
 						
 						$stock_mutation = new stock_mutation();
@@ -611,29 +860,24 @@ class ReturnPembelianController extends Controller
 						$stock_mutation->sm_id_gudang = $request->lokasigudang[$j];
 						$stock_mutation->sm_sisa = '0';
 						$stock_mutation->sm_flag = 'RN';
+						$stock_mutation->created_by = $request->username;
+						$stock_mutation->updated_by = $request->username;
 						$stock_mutation->save();
-						
-
-						//UPDATE DATA STOCK GUDANG
-						$lokasigudang = $request->lokasigudang[$j];
-
-						$stockgudang = DB::select("select * from stock_gudang where sg_gudang = '$lokasigudang' and sg_cabang = '$cabang' and sg_item = '$iditem' ");
-					/*	return $iditem . $cabang . $lokasigudang;*/
-						//return $stockgudang[0]->sg_qty;
-						$hasilstockgudang = (int)$stockgudang[0]->sg_qty - (int)$request->qtyreturn[$j];
-
-						$updatestockgudang = stock_gudang::where([['sg_gudang' , '=', $request->lokasigudang[$j]],['sg_cabang' , '=' , $cabang], ['sg_item' , '=' , $iditem]]);
-
-						$updatestockgudang->update([
-							'sg_qty' => $hasilstockgudang,
-							]);
-					
-				
-				
 				}
 				}
-			}
 			
+			}
+
+			/*$updatepb = penerimaan_barang::where('pb_po' , $idpo);
+						$updatepb->update([
+							'pb_po' => $idpo2,
+							]);
+
+			$updatepbdt =  penerimaan_barangdt::where('pbdt_po' ,$idpo);
+			$updatepbdt->update([
+				'pbdt_po' => $idpo2,
+				]);*/
+
 			return json_encode($data);
 		});	
 	}
