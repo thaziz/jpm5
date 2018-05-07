@@ -3,7 +3,12 @@
 @section('title', 'dashboard')
 
 @section('content')
-
+<style type="text/css">
+    .disabled {
+    pointer-events: none;
+    opacity: 1;
+  }
+</style>
 
            <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
@@ -145,13 +150,12 @@
                    @endforeach
                     </div>
                   </div>
-
-                 
+         
               <div class="wrapper wrapper-content animated fadeInRight">
                   <table border=0> 
                  
                   @if(Auth::user()->punyaAkses('Purchase Order','ubah'))
-                    @if($data['countcodt'] < 1)
+                   <!--  @if($data['countcodt'] < 1)
 
                     <td>  <h4> Edit Data Barang ? </h4> </td>
                
@@ -159,7 +163,7 @@
                    <td>     <button class="btn btn-sm btn-info edit" type="button"> Edit Data</button> </div> </td>
                   </tr>
 
-                  @endif
+                  @endif -->
                   @endif
                   </table>
                 
@@ -211,7 +215,7 @@
                       <tr class="brg{{$idbarang}} barang" data-id="{{$idbarang}}" id="brg" data-kodeitem="{{$sppd->sppd_kodeitem}}" >
                         <td>  {{$idbarang + 1}} </td>
                         <td> 
-                            <select class="chosen-select-width  itm item{{$idbarang}}"  name="item[]" id="item">
+                            <select class="chosen-select-width itm item{{$idbarang}}"  name="item[]" id="item" disabled="">
                               @foreach($data['item'] as $item)
                                <option value="{{$item->kode_item}}" @if($sppd->sppd_kodeitem == $item->kode_item) selected="" @endif>  {{$item->nama_masteritem}}
                               </option>
@@ -294,6 +298,7 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
 
     $(document).ready(function(){
       var config = {

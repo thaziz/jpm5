@@ -154,11 +154,9 @@ class StockOpnameController extends Controller
             $gudang = $request->gudang;
 
 
-            if($status == 'sama') {
-               $statusakhir = 0;
-            }else{
-                $statusakhir = $statusakhir + 1;
-            } 
+            if($status == 'lebih' || $status == 'kurang' ) {
+               $statusakhir = $statusakhir + 1;
+            }
 
 
             $dataselisih = DB::select("select * from stock_mutation where sm_item = '$item' and sm_mutcat = '1' and sm_comp = '$cabang' and sm_id_gudang = '$gudang' and sm_sisa != '0' order by sm_id asc");

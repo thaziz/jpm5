@@ -129,17 +129,21 @@
                       <td> <div class="row">
                       <div class="col-md-3">
 
-                      @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','hapus'))
+                   
                       @if($spp->spp_status == 'DITERBITKAN')
-                     <a href="#" class="btn btn-sm btn-danger" onclick="hapusData('{{$spp->spp_id}}')"> <i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
-                          {{ Form::open(['url'=>'suratpermintaanpembelian/deletespp/'. $spp->spp_id, 'method' => 'delete', 'id' => $spp->spp_id ]) }}
-                          {{ Form::close() }} </div>
+                         @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','hapus'))
+                           <a href="#" class="btn btn-sm btn-danger" onclick="hapusData('{{$spp->spp_id}}')"> <i class="fa fa-trash-o" aria-hidden="true"></i></a></li>
+                                {{ Form::open(['url'=>'suratpermintaanpembelian/deletespp/'. $spp->spp_id, 'method' => 'delete', 'id' => $spp->spp_id ]) }}
+                                {{ Form::close() }} </div>
+                                &nbsp;
+                        @endif
+                          <a class="btn btn-sm btn-warning" href="{{url('suratpermintaanpembelian/editspp/'.$spp->spp_id.'')}}"> <i class="fa fa-pencil" aria-hidden="true"></i>  </a> 
                           &nbsp;
-                      @endif
+
                       @endif
                         @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','print'))
-                          <div class="col-md-3">
-                          <a class="btn btn-sm btn-success" href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a>  </div> </div>
+        
+                          <a class="btn btn-sm btn-success" href="{{url('suratpermintaanpembelian/cetakspp/'.$spp->spp_id.'')}}"> <i class="fa fa-print" aria-hidden="true"></i>  </a>  </div> 
                           @endif
                       </td>
                       

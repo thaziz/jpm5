@@ -967,7 +967,11 @@ class laporanOmsetController extends Controller
 
 //❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤ END OFLAPORAN OPERASIONAL PENJUALAN ❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤❤//
 	public function diagram_seluruhdo(){
-		$array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+	
+		// return $array_bulan;
+		
+		// return $dat;
+		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 		 $tahun = carbon::now();
 		 $tahun =  $tahun->year;
 		
@@ -1033,323 +1037,752 @@ class laporanOmsetController extends Controller
 		}
 		// return $dat;
 
+	for ($cek_data=0; $cek_data < count($array_bulan); $cek_data++) { 	
+		if ($dat[$cek_data] == null) {
+			// return 'a';
+			for ($i=0; $i < count($dat); $i++) { 
+				for ($a=0; $a < count($dat[$i]); $a++) { 
+					if (isset($dat2[0][$a])) {
+						$array_jan[$a] = $dat[0][$a]->total_net;
+					 	$jan = array_sum($array_jan);
+					}else{
+						$jan = 0;
+					}
 
-		for ($i=0; $i < count(isset($dat)); $i++) { 
-			for ($a=0; $a < count(isset($dat[$i])); $a++) { 
-				// return $dat[4][$a]->total_net;
-				if (isset($dat[0][$a])) {
-					$jan = $dat[0][$a]->total_net;
-				 	$jan = array_sum($jan);
-				}else{
-					$jan = 0;
+					if (isset($dat[1][$a])) {
+						$array_feb[$a] = $dat[1][$a]->total_net;
+					 	$feb = array_sum($array_feb);
+					}else{
+						$feb = 0;
+					}
+
+					if (isset($dat[2][$a])) {
+						$array_mar[$a] = $dat[2][$a]->total_net;
+					 	$mar = array_sum($array_mar);
+					}else{
+						$mar = 0;
+					}
+
+					if (isset($dat[3][$a])) {
+						$array_apr[$a] = $dat[3][$a]->total_net;
+					 	$apr = array_sum($array_apr);
+					}else{
+						$apr = 0;
+					}
+
+					if (isset($dat[4])) {
+						$array_may[$a] = $dat[4][$a]->total_net;
+					 	$may = array_sum($array_may);
+					}else{
+						$may = 0;
+					}
+
+					if (isset($dat[5][$a])) {
+					 	$array_jun[$a] = $dat[5][$a]->total_net;
+					 	$jun = array_sum($array_jun);
+					}else{
+						$jun = 0;
+					}
+
+					if (isset($dat[6][$a])) {
+					 	$array_jul[$a] = $dat[6][$a]->total_net;
+					 	$jul = array_sum($array_jul);
+					}else{
+						$jul = 0;
+					}
+
+					if (isset($dat[7][$a])) {
+					 	$array_aug[$a] = $dat[7][$a]->total_net;
+					 	$aug = array_sum($array_aug);
+					}else{
+						$aug = 0;
+					}
+
+					if (isset($dat[8][$a])) {
+					 	$array_sep[$a] = $dat[8][$a]->total_net;
+					 	$sep = array_sum($array_sep);
+					}else{
+						$sep = 0;
+					}
+
+					if (isset($dat[9][$a])) {
+					 	$array_okt[$a] = $dat[9][$a]->total_net;
+					 	$okt = array_sum($array_okt);
+					}else{
+						$okt = 0;
+					}
+
+					if (isset($dat[10][$a])) {
+					 	$array_nov[$a] = $dat[10][$a]->total_net;
+					 	$nov = array_sum($array_nov);
+					}else{
+						$nov = 0;
+					}
+
+					if (isset($dat[11][$a])) {
+					 	$array_dec[$a] = $dat[11][$a]->total_net;
+					 	$dec = array_sum($array_dec);
+					}else{
+						$dec = 0;
+					}
 				}
+			}
+		}else{
+			// return 'b';
+			for ($i=0; $i < count($dat); $i++) { 
+				for ($a=0; $a < count($dat[$i]); $a++) { 
 
-				if (isset($dat[1][$a])) {
-				 	$feb = count($dat[1]);
-				}else{
-					$feb = 0;
-				}
+					if (isset($dat2[0][$a])) {
+						$array_jan[$a] = $dat[0][$a]->total_net;
+					 	$jan = array_sum($array_jan);
+					}else{
+						$jan = 0;
+					}
 
-				if (isset($dat[2][$a])) {
-				 	$mar = count($dat[2]);
-				}else{
-					$mar = 0;
-				}
+					if (isset($dat[1][$a])) {
+						$array_feb[$a] = $dat[1][$a]->total_net;
+					 	$feb = array_sum($array_feb);
+					}else{
+						$feb = 0;
+					}
 
-				if (isset($dat[3][$a])) {
-				 	$apr = count($dat[3]);
-				}else{
-					$apr = 0;
-				}
+					if (isset($dat[2][$a])) {
+						$array_mar[$a] = $dat[2][$a]->total_net;
+					 	$mar = array_sum($array_mar);
+					}else{
+						$mar = 0;
+					}
 
-				if (isset($dat[4][$a])) {
-					$aa[$a] = $dat[4][$a]->total_net;
-					// return $aa;
-				 	$may = array_sum($aa);
+					if (isset($dat[3][$a])) {
+						$array_apr[$a] = $dat[3][$a]->total_net;
+					 	$apr = array_sum($array_apr);
+					}else{
+						$apr = 0;
+					}
 
-				}else{
-					$may = 0;
-				}
+					if (isset($dat[4])) {
+						$array_may[$a] = $dat[4][$a]->total_net;
+					 	$may = array_sum($array_may);
+					}else{
+						$may = 0;
+					}
 
-				if (isset($dat[5][$a])) {
-				 	$jun = count($dat[5]);
-				}else{
-					$jun = 0;
-				}
+					if (isset($dat[5][$a])) {
+					 	$array_jun[$a] = $dat[5][$a]->total_net;
+					 	$jun = array_sum($array_jun);
+					}else{
+						$jun = 0;
+					}
 
-				if (isset($dat[6][$a])) {
-				 	$jul = count($dat[6]);
-				}else{
-					$jul = 0;
-				}
+					if (isset($dat[6][$a])) {
+					 	$array_jul[$a] = $dat[6][$a]->total_net;
+					 	$jul = array_sum($array_jul);
+					}else{
+						$jul = 0;
+					}
 
-				if (isset($dat[7][$a])) {
-				 	$aug = count($dat[7]);
-				}else{
-					$aug = 0;
-				}
+					if (isset($dat[7][$a])) {
+					 	$array_aug[$a] = $dat[7][$a]->total_net;
+					 	$aug = array_sum($array_aug);
+					}else{
+						$aug = 0;
+					}
 
-				if (isset($dat[8][$a])) {
-				 	$sep = count($dat[8]);
-				}else{
-					$sep = 0;
-				}
+					if (isset($dat[8][$a])) {
+					 	$array_sep[$a] = $dat[8][$a]->total_net;
+					 	$sep = array_sum($array_sep);
+					}else{
+						$sep = 0;
+					}
 
-				if (isset($dat[9][$a])) {
-				 	$okt = count($dat[9]);
-				}else{
-					$okt = 0;
-				}
+					if (isset($dat[9][$a])) {
+					 	$array_okt[$a] = $dat[9][$a]->total_net;
+					 	$okt = array_sum($array_okt);
+					}else{
+						$okt = 0;
+					}
 
-				if (isset($dat[10][$a])) {
-				 	$nov = count($dat[10]);
-				}else{
-					$nov = 0;
-				}
+					if (isset($dat[10][$a])) {
+					 	$array_nov[$a] = $dat[10][$a]->total_net;
+					 	$nov = array_sum($array_nov);
+					}else{
+						$nov = 0;
+					}
 
-				if (isset($dat[11][$a])) {
-				 	$dec = count($dat[11]);
-				}else{
-					$dec = 0;
+					if (isset($dat[11][$a])) {
+					 	$array_dec[$a] = $dat[11][$a]->total_net;
+					 	$dec = array_sum($array_dec);
+					}else{
+						$dec = 0;
+					}
 				}
 			}
 		}
+<<<<<<< HEAD
 		// return $apr;
 			return $tes;
+=======
+	}
+>>>>>>> 018486ea52ebb0f00633390e83855848e1e3f02b
 		
-		// return $dat1;
-		for ($i=0; $i < count(isset($dat1)); $i++) { 
-			for ($a=0; $a < count(isset($dat1[$i])); $a++) { 
-				
-				if (isset($dat1[0][$a])) {
-				 	$jan1 = count($dat1[0]);
-				}else{
-					$jan1 = 0;
-				}
+		// return $apr;
+		// return$aa;
+	for ($k=0; $k < count($array_bulan); $k++) { 
+		if ($dat1[$k] == null) {
+			for ($i=0; $i < count($dat1); $i++) { 
+				for ($a=0; $a < count($dat1[$i]); $a++) { 
 
-				if (isset($dat1[1][$a])) {
-				 	$feb1 = count($dat1[1]);
-				}else{
-					$feb1 = 0;
-				}
+					if (isset($dat1[0][$a])) {
+						$array_jan1[$a] = $dat1[0][$a]->total_net;
+					 	$jan1 = array_sum($array_jan1);
+					}else{
+						$jan1 = 0;
+					}
 
-				if (isset($dat1[2][$a])) {
-				 	$mar1 = count($dat1[2]);
-				}else{
-					$mar1 = 0;
-				}
+					if (isset($dat1[1][$a])) {
+						$array_feb1[$a] = $dat1[1][$a]->total_net;
+					 	$feb1 = array_sum($array_feb1);
+					}else{
+						$feb1 = 0;
+					}
 
-				if (isset($dat1[3][$a])) {
-				 	$apr1 = count($dat1[3]);
-				}else{
-					$apr1 = 0;
-				}
+					if (isset($dat1[2][$a])) {
+						$array_mar[$a] = $dat1[2][$a]->total_net;
+					 	$mar1 = array_sum($array_mar1);
+					}else{
+						$mar1 = 0;
+					}
 
-				if (isset($dat1[4][$a])) {
-				 	$may1 = count($dat1[4]);
-				}else{
-					$may1 = 0;
-				}
+					if (isset($dat1[3][$a])) {
+						$array_apr1[$a] = $dat1[3][$a]->total_net;
+					 	$apr1 = array_sum($array_apr11);
+					}else{
+						$apr1 = 0;
+					}
 
-				if (isset($dat1[5][$a])) {
-				 	$jun1 = count($dat1[5]);
-				}else{
-					$jun1 = 0;
-				}
+					if (isset($dat1[4])) {
+						$array_may1[$a] = $dat1[4][$a]->total_net;
+					 	$may1 = array_sum($array_may1);
+					}else{
+						$may1 = 0;
+					}
 
-				if (isset($dat1[6][$a])) {
-				 	$jul1 = count($dat1[6]);
-				}else{
-					$jul1 = 0;
-				}
+					if (isset($dat1[5][$a])) {
+					 	$array_jun1[$a] = $dat1[5][$a]->total_net;
+					 	$jun1 = array_sum($array_jun1);
+					}else{
+						$jun1 = 0;
+					}
 
-				if (isset($dat1[7][$a])) {
-				 	$aug1 = count($dat1[7]);
-				}else{
-					$aug1 = 0;
-				}
+					if (isset($dat1[6][$a])) {
+					 	$array_jul1[$a] = $dat1[6][$a]->total_net;
+					 	$jul1 = array_sum($array_jul1);
+					}else{
+						$jul1 = 0;
+					}
 
-				if (isset($dat1[8][$a])) {
-				 	$sep1 = count($dat1[8]);
-				}else{
-					$sep1 = 0;
-				}
+					if (isset($dat1[7][$a])) {
+					 	$array_aug1[$a] = $dat1[7][$a]->total_net;
+					 	$aug1 = array_sum($array_aug1);
+					}else{
+						$aug1 = 0;
+					}
 
-				if (isset($dat1[9][$a])) {
-				 	$okt1 = count($dat1[9]);
-				}else{
-					$okt1 = 0;
-				}
+					if (isset($dat1[8][$a])) {
+					 	$array_sep1[$a] = $dat1[8][$a]->total_net;
+					 	$sep1 = array_sum($array_sep1);
+					}else{
+						$sep1 = 0;
+					}
 
-				if (isset($dat1[10][$a])) {
-				 	$nov1 = count($dat1[10]);
-				}else{
-					$nov1 = 0;
-				}
+					if (isset($dat1[9][$a])) {
+					 	$array_okt1[$a] = $dat1[9][$a]->total_net;
+					 	$okt1 = array_sum($array_okt1);
+					}else{
+						$okt1 = 0;
+					}
 
-				if (isset($dat1[11][$a])) {
-				 	$dec1 = count($dat1[11]);
-				}else{
-					$dec1 = 0;
+					if (isset($dat1[10][$a])) {
+					 	$array_nov1[$a] = $dat1[10][$a]->total_net;
+					 	$nov1 = array_sum($array_nov1);
+					}else{
+						$nov1 = 0;
+					}
+
+					if (isset($dat1[11][$a])) {
+					 	$array_dec1[$a] = $dat1[11][$a]->total_net;
+					 	$dec1 = array_sum($array_dec1);
+					}else{
+						$dec1 = 0;
+					}
+				}
+			}
+		}else{
+			// return 'e';
+			for ($i=0; $i < count($dat1); $i++) { 
+				for ($a=0; $a < count($dat1[$i]); $a++) { 
+
+					if (isset($dat1[0][$a])) {
+						$array_jan1[$a] = $dat1[0][$a]->total_net;
+					 	$jan1 = array_sum($array_jan1);
+					}else{
+						$jan1 = 0;
+					}
+
+					if (isset($dat1[1][$a])) {
+						$array_feb1[$a] = $dat1[1][$a]->total_net;
+					 	$feb1 = array_sum($array_feb1);
+					}else{
+						$feb1 = 0;
+					}
+
+					if (isset($dat1[2][$a])) {
+						$array_mar[$a] = $dat1[2][$a]->total_net;
+					 	$mar1 = array_sum($array_mar1);
+					}else{
+						$mar1 = 0;
+					}
+
+					if (isset($dat1[3][$a])) {
+						$array_apr1[$a] = $dat1[3][$a]->total_net;
+					 	$apr1 = array_sum($array_apr11);
+					}else{
+						$apr1 = 0;
+					}
+
+					if (isset($dat1[4])) {
+						$array_may1[$a] = $dat1[4][$a]->total_net;
+					 	$may1 = array_sum($array_may1);
+					}else{
+						$may1 = 0;
+					}
+
+					if (isset($dat1[5][$a])) {
+					 	$array_jun1[$a] = $dat1[5][$a]->total_net;
+					 	$jun1 = array_sum($array_jun1);
+					}else{
+						$jun1 = 0;
+					}
+
+					if (isset($dat1[6][$a])) {
+					 	$array_jul1[$a] = $dat1[6][$a]->total_net;
+					 	$jul1 = array_sum($array_jul1);
+					}else{
+						$jul1 = 0;
+					}
+
+					if (isset($dat1[7][$a])) {
+					 	$array_aug1[$a] = $dat1[7][$a]->total_net;
+					 	$aug1 = array_sum($array_aug1);
+					}else{
+						$aug1 = 0;
+					}
+
+					if (isset($dat1[8][$a])) {
+					 	$array_sep1[$a] = $dat1[8][$a]->total_net;
+					 	$sep1 = array_sum($array_sep1);
+					}else{
+						$sep1 = 0;
+					}
+
+					if (isset($dat1[9][$a])) {
+					 	$array_okt1[$a] = $dat1[9][$a]->total_net;
+					 	$okt1 = array_sum($array_okt1);
+					}else{
+						$okt1 = 0;
+					}
+
+					if (isset($dat1[10][$a])) {
+					 	$array_nov1[$a] = $dat1[10][$a]->total_net;
+					 	$nov1 = array_sum($array_nov1);
+					}else{
+						$nov1 = 0;
+					}
+
+					if (isset($dat1[11][$a])) {
+					 	$array_dec1[$a] = $dat1[11][$a]->total_net;
+					 	$dec1 = array_sum($array_dec1);
+					}else{
+						$dec1 = 0;
+					}
 				}
 			}
 		}
+	}
+
 		// return $dat2;
-		for ($i=0; $i < count(isset($dat2)); $i++) { 
-			for ($a=0; $a < count(isset($dat2[$i])); $a++) { 
-				
-				if (isset($dat2[0][$a])) {
-				 	$jan2 = count($dat2[0]);
-				}else{
-					$jan2 = 0;
-				}
+			
+	
+	for ($cek_data2=0; $cek_data2< count($dat2); $cek_data2++) { 
+		if ($dat2[$cek_data2] == null) {
+			// return 'a';
+				for ($i=0; $i < count($dat2); $i++) { 
+				for ($a=0; $a < count($dat2[$i]); $a++) { 
 
-				if (isset($dat2[1][$a])) {
-				 	$feb2 = count($dat2[1]);
-				}else{
-					$feb2 = 0;
-				}
+					if (isset($dat2[0][$a])) {
+						// return 'a';
+						$array_jan2[$a] = $dat2[0][$a]->total_net;
+					 	$jan2 = array_sum($array_jan2);
+					}else{
+						// return 'b';
+						$jan2 = 0;
+					}
+					// return $jan2;
+					if (isset($dat2[1][$a])) {
+						$array_feb2[$a] = $dat2[1][$a]->total_net;
+					 	$feb2 = array_sum($array_feb2);
+					}else{
+						$feb2 = 0;
+					}
 
-				if (isset($dat2[2][$a])) {
-				 	$mar2 = count($dat2[2]);
-				}else{
-					$mar2 = 0;
-				}
+					if (isset($dat2[2][$a])) {
+						$array_mar[$a] = $dat2[2][$a]->total_net;
+					 	$mar2 = array_sum($array_mar2);
+					}else{
+						$mar2 = 0;
+					}
 
-				if (isset($dat2[3][$a])) {
-				 	$apr2 = count($dat2[3]);
-				}else{
-					$apr2 = 0;
-				}
+					if (isset($dat2[3][$a])) {
+						$array_apr2[$a] = $dat2[3][$a]->total_net;
+					 	$apr2 = array_sum($array_apr2);
+					}else{
+						$apr2 = 0;
+					}
 
-				if (isset($dat2[4][$a])) {
-				 	$may2 = count($dat2[4]);
-				}else{
-					$may2 = 0;
-				}
+					if (isset($dat2[4])) {
+						$array_may2[$a] = $dat2[4][$a]->total_net;
+					 	$may2 = array_sum($array_may2);
+					}else{
+						$may2 = 0;
+					}
 
-				if (isset($dat2[5][$a])) {
-				 	$jun2 = count($dat2[5]);
-				}else{
-					$jun2 = 0;
-				}
+					if (isset($dat2[5][$a])) {
+					 	$array_jun2[$a] = $dat2[5][$a]->total_net;
+					 	$jun2 = array_sum($array_jun2);
+					}else{
+						$jun2 = 0;
+					}
 
-				if (isset($dat2[6][$a])) {
-				 	$jul2 = count($dat2[6]);
-				}else{
-					$jul2 = 0;
-				}
+					if (isset($dat2[6][$a])) {
+					 	$array_jul2[$a] = $dat2[6][$a]->total_net;
+					 	$jul2 = array_sum($array_jul2);
+					}else{
+						$jul2 = 0;
+					}
 
-				if (isset($dat2[7][$a])) {
-				 	$aug2 = count($dat2[7]);
-				}else{
-					$aug2 = 0;
-				}
+					if (isset($dat2[7][$a])) {
+					 	$array_aug2[$a] = $dat2[7][$a]->total_net;
+					 	$aug2 = array_sum($array_aug2);
+					}else{
+						$aug2 = 0;
+					}
 
-				if (isset($dat2[8][$a])) {
-				 	$sep2 = count($dat2[8]);
-				}else{
-					$sep2 = 0;
-				}
+					if (isset($dat2[8][$a])) {
+					 	$array_sep2[$a] = $dat2[8][$a]->total_net;
+					 	$sep2 = array_sum($array_sep2);
+					}else{
+						$sep2 = 0;
+					}
 
-				if (isset($dat2[9][$a])) {
-				 	$okt2 = count($dat2[9]);
-				}else{
-					$okt2 = 0;
-				}
+					if (isset($dat2[9][$a])) {
+					 	$array_okt2[$a] = $dat2[9][$a]->total_net;
+					 	$okt2 = array_sum($array_okt2);
+					}else{
+						$okt2 = 0;
+					}
 
-				if (isset($dat2[10][$a])) {
-				 	$nov2 = count($dat2[10]);
-				}else{
-					$nov2 = 0;
-				}
+					if (isset($dat2[10][$a])) {
+					 	$array_nov2[$a] = $dat2[10][$a]->total_net;
+					 	$nov2 = array_sum($array_nov2);
+					}else{
+						$nov2 = 0;
+					}
 
-				if (isset($dat2[11][$a])) {
-				 	$dec2 = count($dat2[11]);
-				}else{
-					$dec2 = 0;
+					if (isset($dat2[11][$a])) {
+					 	$array_dec2[$a] = $dat2[11][$a]->total_net;
+					 	$dec2 = array_sum($array_dec2);
+					}else{
+						$dec2 = 0;
+					}
+				}
+			}
+		}else{
+			// return 'b';
+			for ($i=0; $i < count($dat2); $i++) { 
+				for ($a=0; $a < count($dat2[$i]); $a++) { 
+
+					if (isset($dat2[0][$a])) {
+						// return 'a';
+						$array_jan2[$a] = $dat2[0][$a]->total_net;
+					 	$jan2 = array_sum($array_jan2);
+					}else{
+						// return 'b';
+						$jan2 = 0;
+					}
+					// return $jan2;
+					if (isset($dat2[1][$a])) {
+						$array_feb2[$a] = $dat2[1][$a]->total_net;
+					 	$feb2 = array_sum($array_feb2);
+					}else{
+						$feb2 = 0;
+					}
+
+					if (isset($dat2[2][$a])) {
+						$array_mar[$a] = $dat2[2][$a]->total_net;
+					 	$mar2 = array_sum($array_mar2);
+					}else{
+						$mar2 = 0;
+					}
+
+					if (isset($dat2[3][$a])) {
+						$array_apr2[$a] = $dat2[3][$a]->total_net;
+					 	$apr2 = array_sum($array_apr2);
+					}else{
+						$apr2 = 0;
+					}
+
+					if (isset($dat2[4])) {
+						$array_may2[$a] = $dat2[4][$a]->total_net;
+					 	$may2 = array_sum($array_may2);
+					}else{
+						$may2 = 0;
+					}
+
+					if (isset($dat2[5][$a])) {
+					 	$array_jun2[$a] = $dat2[5][$a]->total_net;
+					 	$jun2 = array_sum($array_jun2);
+					}else{
+						$jun2 = 0;
+					}
+
+					if (isset($dat2[6][$a])) {
+					 	$array_jul2[$a] = $dat2[6][$a]->total_net;
+					 	$jul2 = array_sum($array_jul2);
+					}else{
+						$jul2 = 0;
+					}
+
+					if (isset($dat2[7][$a])) {
+					 	$array_aug2[$a] = $dat2[7][$a]->total_net;
+					 	$aug2 = array_sum($array_aug2);
+					}else{
+						$aug2 = 0;
+					}
+
+					if (isset($dat2[8][$a])) {
+					 	$array_sep2[$a] = $dat2[8][$a]->total_net;
+					 	$sep2 = array_sum($array_sep2);
+					}else{
+						$sep2 = 0;
+					}
+
+					if (isset($dat2[9][$a])) {
+					 	$array_okt2[$a] = $dat2[9][$a]->total_net;
+					 	$okt2 = array_sum($array_okt2);
+					}else{
+						$okt2 = 0;
+					}
+
+					if (isset($dat2[10][$a])) {
+					 	$array_nov2[$a] = $dat2[10][$a]->total_net;
+					 	$nov2 = array_sum($array_nov2);
+					}else{
+						$nov2 = 0;
+					}
+
+					if (isset($dat2[11][$a])) {
+					 	$array_dec2[$a] = $dat2[11][$a]->total_net;
+					 	$dec2 = array_sum($array_dec2);
+					}else{
+						$dec2 = 0;
+					}
 				}
 			}
 		}
+	}
 
 
-		for ($i=0; $i < count(isset($dat3)); $i++) { 
-			for ($a=0; $a < count(isset($dat3[$i])); $a++) { 
-				
-				if (isset($dat3[0][$a])) {
-				 	$jan3 = count($dat3[0]);
-				}else{
-					$jan3 = 0;
+	for ($cek_data3=0; $cek_data3 < count($dat3); $cek_data3++) { 
+		if ($dat3[$cek_data3] == null) {
+			for ($i=0; $i < count($dat3); $i++) { 
+				for ($a=0; $a < count($dat3[$i]); $a++) { 
+
+					if (isset($dat3[0][$a])) {
+						$array_jan3[$a] = $dat3[0][$a]->total_net;
+					 	$jan3  = array_sum($array_jan3);
+					}else{
+						$jan3 = 0;
+					}
+
+					if (isset($dat3[1][$a])) {
+						$array_feb3[$a] = $dat3[1][$a]->total_net;
+					 	$feb3 = array_sum($array_feb3);
+					}else{
+						$feb3 = 0;
+					}
+
+					if (isset($dat3[2][$a])) {
+						$array_mar[$a] = $dat3[2][$a]->total_net;
+					 	$mar3 = array_sum($array_mar3);
+					}else{
+						$mar3 = 0;
+					}
+
+					if (isset($dat3[3][$a])) {
+						$array_apr3[$a] = $dat3[3][$a]->total_net;
+					 	$apr3 = array_sum($array_apr33);
+					}else{
+						$apr3 = 0;
+					}
+
+					if (isset($dat3[4])) {
+						$array_may3[$a] = $dat3[4][$a]->total_net;
+					 	$may3 = array_sum($array_may3);
+					}else{
+						$may3 = 0;
+					}
+
+					if (isset($dat3[5][$a])) {
+					 	$array_jun3[$a] = $dat3[5][$a]->total_net;
+					 	$jun3 = array_sum($array_jun3);
+					}else{
+						$jun3 = 0;
+					}
+
+					if (isset($dat3[6][$a])) {
+					 	$array_jul3[$a] = $dat3[6][$a]->total_net;
+					 	$jul3 = array_sum($array_jul3);
+					}else{
+						$jul3 = 0;
+					}
+
+					if (isset($dat3[7][$a])) {
+					 	$array_aug3[$a] = $dat3[7][$a]->total_net;
+					 	$aug3 = array_sum($array_aug3);
+					}else{
+						$aug3 = 0;
+					}
+
+					if (isset($dat3[8][$a])) {
+					 	$array_sep3[$a] = $dat3[8][$a]->total_net;
+					 	$sep3 = array_sum($array_sep3);
+					}else{
+						$sep3 = 0;
+					}
+
+					if (isset($dat3[9][$a])) {
+					 	$array_okt3[$a] = $dat3[9][$a]->total_net;
+					 	$okt3 = array_sum($array_okt3);
+					}else{
+						$okt3 = 0;
+					}
+
+					if (isset($dat3[10][$a])) {
+					 	$array_nov3[$a] = $dat3[10][$a]->total_net;
+					 	$nov3 = array_sum($array_nov3);
+					}else{
+						$nov3 = 0;
+					}
+
+					if (isset($dat3[11][$a])) {
+					 	$array_dec3[$a] = $dat3[11][$a]->total_net;
+					 	$dec3 = array_sum($array_dec3);
+					}else{
+						$dec3 = 0;
+					}
 				}
+			}
+		}else{
+			for ($i=0; $i < count($dat3); $i++) { 
+				for ($a=0; $a < count($dat3[$i]); $a++) { 
 
-				if (isset($dat3[1][$a])) {
-				 	$feb3 = count($dat3[1]);
-				}else{
-					$feb3 = 0;
-				}
+					if (isset($dat3[0][$a])) {
+						$array_jan3[$a] = $dat3[0][$a]->total_net;
+					 	$jan3  = array_sum($array_jan3);
+					}else{
+						$jan3 = 0;
+					}
 
-				if (isset($dat3[2][$a])) {
-				 	$mar3 = count($dat3[2]);
-				}else{
-					$mar3 = 0;
-				}
+					if (isset($dat3[1][$a])) {
+						$array_feb3[$a] = $dat3[1][$a]->total_net;
+					 	$feb3 = array_sum($array_feb3);
+					}else{
+						$feb3 = 0;
+					}
 
-				if (isset($dat3[3][$a])) {
-				 	$apr3 = count($dat3[3]);
-				}else{
-					$apr3 = 0;
-				}
+					if (isset($dat3[2][$a])) {
+						$array_mar[$a] = $dat3[2][$a]->total_net;
+					 	$mar3 = array_sum($array_mar3);
+					}else{
+						$mar3 = 0;
+					}
 
-				if (isset($dat3[4][$a])) {
-				 	$may3 = count($dat3[4]);
-				}else{
-					$may3 = 0;
-				}
+					if (isset($dat3[3][$a])) {
+						$array_apr3[$a] = $dat3[3][$a]->total_net;
+					 	$apr3 = array_sum($array_apr33);
+					}else{
+						$apr3 = 0;
+					}
 
-				if (isset($dat3[5][$a])) {
-				 	$jun3 = count($dat3[5]);
-				}else{
-					$jun3 = 0;
-				}
+					if (isset($dat3[4])) {
+						$array_may3[$a] = $dat3[4][$a]->total_net;
+					 	$may3 = array_sum($array_may3);
+					}else{
+						$may3 = 0;
+					}
 
-				if (isset($dat3[6][$a])) {
-				 	$jul3 = count($dat3[6]);
-				}else{
-					$jul3 = 0;
-				}
+					if (isset($dat3[5][$a])) {
+					 	$array_jun3[$a] = $dat3[5][$a]->total_net;
+					 	$jun3 = array_sum($array_jun3);
+					}else{
+						$jun3 = 0;
+					}
 
-				if (isset($dat3[7][$a])) {
-				 	$aug3 = count($dat3[7]);
-				}else{
-					$aug3 = 0;
-				}
+					if (isset($dat3[6][$a])) {
+					 	$array_jul3[$a] = $dat3[6][$a]->total_net;
+					 	$jul3 = array_sum($array_jul3);
+					}else{
+						$jul3 = 0;
+					}
 
-				if (isset($dat3[8][$a])) {
-				 	$sep3 = count($dat3[8]);
-				}else{
-					$sep3 = 0;
-				}
+					if (isset($dat3[7][$a])) {
+					 	$array_aug3[$a] = $dat3[7][$a]->total_net;
+					 	$aug3 = array_sum($array_aug3);
+					}else{
+						$aug3 = 0;
+					}
 
-				if (isset($dat3[9][$a])) {
-				 	$okt3 = count($dat3[9]);
-				}else{
-					$okt3 = 0;
-				}
+					if (isset($dat3[8][$a])) {
+					 	$array_sep3[$a] = $dat3[8][$a]->total_net;
+					 	$sep3 = array_sum($array_sep3);
+					}else{
+						$sep3 = 0;
+					}
 
-				if (isset($dat3[10][$a])) {
-				 	$nov3 = count($dat3[10]);
-				}else{
-					$nov3 = 0;
-				}
+					if (isset($dat3[9][$a])) {
+					 	$array_okt3[$a] = $dat3[9][$a]->total_net;
+					 	$okt3 = array_sum($array_okt3);
+					}else{
+						$okt3 = 0;
+					}
 
-				if (isset($dat3[11][$a])) {
-				 	$dec3 = count($dat3[11]);
-				}else{
-					$dec3 = 0;
+					if (isset($dat3[10][$a])) {
+					 	$array_nov3[$a] = $dat3[10][$a]->total_net;
+					 	$nov3 = array_sum($array_nov3);
+					}else{
+						$nov3 = 0;
+					}
+
+					if (isset($dat3[11][$a])) {
+					 	$array_dec3[$a] = $dat3[11][$a]->total_net;
+					 	$dec3 = array_sum($array_dec3);
+					}else{
+						$dec3 = 0;
+					}
 				}
 			}
 		}
-
+	}
 		$arraybulan_dokumen  = [$jan,$feb,$mar,$apr,$may,$jun,$jul,$aug,$sep,$okt,$nov,$dec];
 		$arraybulan_kilogram = [$jan1,$feb1,$mar1,$apr1,$may1,$jun1,$jul1,$aug1,$sep1,$okt1,$nov1,$dec1];
 		$arraybulan_koli     = [$jan2,$feb2,$mar2,$apr2,$may2,$jun2,$jul2,$aug2,$sep2,$okt2,$nov2,$dec2];

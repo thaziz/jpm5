@@ -511,12 +511,12 @@
                                             <td> - </td> 
                                             <td> {{ number_format($fpgd->um_jumlah, 2) }}  </td>                                            <!-- NETTO -->
 
-                                            <td class='fakturitem{{$index + 1}}' data-pelunasanfaktur="{{ number_format($fpgd->um_pelunasan, 2)}}" data-sisapelunasanfaktur="{{ number_format($fpgd->um_pelunasan, 2)}}"> <input type='hidden' class="sisapelunasan{{$index + 1}}" value="{{ number_format($fpgd->um_pelunasan, 2)}}"> <input type='text' class="input-sm form-control pelunasanitem pelunasan{{$index + 1}}" style='text-align:right' readonly data-id="{{$index + 1}}" name="pelunasan[]" value="{{number_format($fpgd->um_pelunasan, 2)}}"> <input type='hidden' class="netto{{$index + 1}}" value="{{ number_format($fpgd->um_jumlah, 2)}}" name='netto[]'></td>  <!-- PELUNASAN -->
+                                            <td class='fakturitem{{$index + 1}}' data-pelunasanfaktur="{{ number_format($fpgd->fpgdt_pelunasan, 2)}}" data-sisapelunasanfaktur="{{ number_format($fpgd->um_sisapelunasan, 2)}}"> <input type='hidden' class="sisapelunasan{{$index + 1}}" value="{{ number_format($fpgd->um_sisapelunasan, 2)}}"> <input type='text' class="input-sm form-control pelunasanitem pelunasan{{$index + 1}}" style='text-align:right' readonly data-id="{{$index + 1}}" name="pelunasan[]" value="{{number_format($fpgd->fpgdt_pelunasan, 2)}}"> <input type='hidden' class="netto{{$index + 1}}" value="{{ number_format($fpgd->um_jumlah, 2)}}" name='netto[]'></td>  <!-- PELUNASAN -->
 
                                             <td class='pembayarankanan{{$index + 1}}' data-pembayaranaslifaktur="{{ number_format($data['perhitungan'][$index], 2) }}">  <input type='text' class='input-sm pembayaranitem pembayaranitem{{$index + 1}} form-control' style='text-align:right' readonly data-id="{{$index + 1}}" name='pembayaran[]' value="{{ number_format($data['perhitungan'][$index], 2) }}">  </td> <!-- PEMBAYARAN -->
 
 
-                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->um_pelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
+                                            <td > <input type='text' class="input-sm form-control sisa_terbayar{{$index + 1}}" data-id="{{$index + 1}}"' value="{{ number_format($fpgd->um_sisapelunasan, 2) }}" readonly name='sisapelunasan[]' style="text-align: right">   </td>
                                             <!-- SISA PELUNASAN -->
 
                                             <td> <input type='text' class='input-sm form-control' value="{{$fpgd->fpgdt_keterangan}}" readonly="" name="fpgdt_keterangan[]"></td>
@@ -1962,7 +1962,8 @@
                 pengurangan = parseFloat(parseFloat(pembayaranasli) - parseFloat(nilaiaslipelunasan)).toFixed(2);
 
                 //pembayaran
-
+                  alert(pembayaranasli2);
+                  alert(pelunasanasli2);
                  tmbhnpelunasan = parseFloat(parseFloat(nilaiaslipelunasan2) + parseFloat(pelunasanasli2)).toFixed(2); 
                  penguranganpembayaran = parseFloat(parseFloat(pembayaranasli2)- parseFloat(pelunasanasli2)).toFixed(2);
 
@@ -1981,7 +1982,7 @@
 
 
                  $('.nofaktur').val(nofaktur);
-                 $('.tgl').val(tgl);
+               /*  $('.tgl').val(tgl);*/
                  $('.jatuhtempo').val(jatuhtempo);
                  $('.formtt').val(formtt);
 
@@ -2091,6 +2092,8 @@
 
         // alert(nilaiaslipelunasan);
         // alert(pelunasanasli);
+        alert(pembayaranasli2  + 'pembayaran');
+        alert(pelunasanasli2 + 'pelunasan');
          $('.sisatrbyr').val(addCommas(tmbhnpelunasan));
          $('.pembayaran').val(addCommas(penguranganpembayaran));         
          $('.sisafaktur').val(addCommas(tmbhnpelunasan));
@@ -2103,7 +2106,7 @@
 
 
          $('.nofaktur').val(nofaktur);
-         $('.tgl').val(tgl);
+       /*  $('.tgl').val(tgl);*/
          $('.jatuhtempo').val(jatuhtempo);
          $('.formtt').val(formtt);
 

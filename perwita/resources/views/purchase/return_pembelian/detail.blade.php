@@ -73,7 +73,7 @@
                                  <td> 
 
                               @if(session::get('cabang') == 000)
-                              <select class='form-control chosen-select-width cabang' name="cabang">
+                              <select class='form-control chosen-select-width cabang disabled' name="cabang">
                                   @foreach($data['cabang'] as $cabang)
                                     <option value="{{$cabang->kode}}" @if($rn->rn_cabang == $cabang->kode) selected @endif>
                                       {{$cabang->kode}} - {{$cabang->nama}}
@@ -97,7 +97,10 @@
                           No Return
                             </td>
                             <td>
-                               <input type="text" class="form-control notareturn input-sm" name="nota" value="{{$rn->rn_nota}}" readonly="">
+                               <input type="text" class="form-control notareturn input-sm disabled" name="nota" value="{{$rn->rn_nota}}" readonly="">
+
+                               <input type="hidden" class="form-control idrn input-sm disabled"  value="{{$rn->rn_id}}" readonly="" name="idrn">
+
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}" readonly="">
                             </td>
                           </tr>
@@ -111,14 +114,12 @@
                             </td>
                           </tr>
                        
-
-
                           <tr>
                             <td>
                               Supplier
                             </td>
                             <td>
-                              <select class="form-control chosen-select supplier" required="" name="supplier">
+                              <select class="form-control chosen-select supplier disabled" required="" name="supplier">
                               @foreach($data['supplier'] as $supplier)
                                 <option value="{{$supplier->idsup}}" @if($rn->rn_supplier == $supplier->idsup) selected @endif >
                                         {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}
@@ -129,7 +130,7 @@
                           </tr>
                           <tr>
                             <td> Keterangan </td>
-                            <td> <input type="text" class="form-control input-sm" name="keterangan" required value="{{$rn->rn_keterangan}}"></td>
+                            <td> <input type="text" class="form-control input-sm disabled" name="keterangan" required value="{{$rn->rn_keterangan}}"></td>
                           </tr>
                           
                           @endforeach
@@ -137,7 +138,8 @@
                        
                       </div>
 
-                      <div class="col-sm-6">                      
+                      <div class="col-sm-6">   
+
                           <table class="table table-stripped">
                              
                           </table>
@@ -150,6 +152,7 @@
 
                         
                     <!--   <button class="btn btn-sm btn-primary  createmodalpo" id="createmodal_po" data-toggle="modal" data-target="#myModal5" type="button"> <i class="fa fa-plus"> Tambah Data PO </i> </button> -->
+                      <button class="btn btn-sm editdata btn-warning" type="button"> <i class="fa fa-pencil"> </i> Edit Data </button>  &nbsp; <button class="btn btn-sm btn-success tmbhdatabarang" type="button" data-toggle="modal" data-target="#myModalbarang"> <i class="fa fa-plus"> </i> Tambah Data Barang </button>  
 
 
                       <div class="col-sm-12">
@@ -157,20 +160,20 @@
                           <br>
                               <table class="table">
 
-
+                                  @foreach($data['rn'] as $rn)
                                   <tr>
                                   <th> No PO </th>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm nopo" readonly="" name="nopo" value="{{$data['rndt'][0]->po_no}}"> <input type="hidden" class="form-control input-sm idpo" readonly="" name="idpo" value="{{$data['rndt'][0]->po_id}}"> </div> <div class="col-sm-4"> <button class="btn btn-xs btn-info" type="button" onclick="lihatbarang()" data-toggle="modal" data-target="#myModal7"> <i class="fa fa-search"> Lihat Data PO </i> </button> </div> </td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm nopo" readonly="" name="nopo" value="{{$rn->po_no}}"> <input type="hidden" class="form-control input-sm idpo" readonly="" name="idpo" value="{{$rn->po_id}}"> </div> <div class="col-sm-4"> <button class="btn btn-xs btn-info" type="button" onclick="lihatbarang()" data-toggle="modal" data-target="#myModal7"> <i class="fa fa-search"> Lihat Data PO </i> </button> </div> </td>
                                   </tr>  
                                   
                                    <tr>
                                   <td> Sub Total </td>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal" value="{{ number_format($rn->rn_subtotal, 2) }}"> </div></td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm subtotal" name="subtotal" value="{{ number_format($rn->rn_subtotal, 2) }}" readonly=""> <input type="hidden" class="subtotalpo" value="{{$rn->po_subtotal}}">    </div></td>
                               </tr>
 
                               <tr>
                                   <td> Jenis PPn </td>
-                                  <td> <div class="col-sm-7"> <select class="form-control jenisppn" name="jenisppn" value="{{$data['rndt'][0]->rn_jenisppn}}">
+                                  <td> <div class="col-sm-7"> <select class="form-control jenisppn disabled" name="jenisppn" value="{{$rn->rn_jenisppn}}">
                                           <option value="T">
                                               Tanpa
                                           </option>
@@ -186,12 +189,13 @@
                               </tr>
                               <tr>
                                   <td> PPn </td>
-                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn" value="{{$data['rndt'][0]->rn_inputppn}}"></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn" value="{{ number_format($rn->rn_hasilppn, 2) }}"> </div></td>
+                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn" value="{{$rn->rn_inputppn}}" readonly=""></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn" value="{{ number_format($rn->rn_hasilppn, 2) }}" readonly=""> <input type="hidden" class="hasilppnpo" value="{{$rn->po_hasilppn}}">  </div>  </td>
                               </tr>
                               <tr>
                                   <td> Total </td>
-                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total" value="{{ number_format($rn->rn_totalharga, 2) }}"></div> </td>
+                                  <td> <div class="col-sm-7"> <input type="text" class="form-control input-sm total" name="total" value="{{ number_format($rn->rn_totalharga, 2) }}" readonly=""> </div> <input type="hidden" class="totalpo" value="{{$rn->po_totalharga}}">  </td>
                               </tr>
+                              @endforeach
                               </table>
                               
                               <p style="color:red"> <i> *Hapus data yang tidak di perlukan </i></p>
@@ -200,7 +204,7 @@
                               <thead>
                                   <tr> 
                                       <th> No </th>
-                                      <th style="width:300px"> Nama Barang </th>
+                                      <th style="width:200px"> Nama Barang </th>
                                       <th> Qty PO </th>
                                       <th style="width:70px"> Qty Return </th>
                                       <th> Harga </th>
@@ -210,13 +214,13 @@
                               </thead>
                               <tbody>
                                 @foreach($data['rndt'] as $index=>$rndt)
-                                  <tr>
+                                  <tr class="databarang" data-barang="{{$rndt->rndt_item}}">
                                     <td> {{$index + 1 }} </td>
-                                    <td> {{$rndt->nama_masteritem}}</td>
-                                    <td> {{$rndt->rndt_qtypo}}</td>
-                                    <td> {{$rndt->rndt_qtyreturn}}</td>
-                                    <td> {{ number_format($rndt->rndt_harga, 2) }}</td>
-                                    <td> {{ number_format($rndt->rndt_totalharga, 2) }}</td>
+                                    <td> {{$rndt->nama_masteritem}} <input type="hidden" value="{{$rndt->rndt_item}}" class="itembarang" name='kodeitem[]'> </td>
+                                    <td> {{$rndt->rndt_qtypo}} <input type='hidden' class='qtykirim{{$index}}' value="{{$rndt->rndt_qtypo}}" name="qtypo[]"></td>
+                                    <td> <input type='text' class='form-control input-sm  edit qtyreturn qtyreturn{{$index}}' data-id='{{$index}}' name="qtyreturn[]"  required value="{{$rndt->rndt_qtyreturn}}" readonly="">  </td>
+                                    <td> {{ number_format($rndt->rndt_harga, 2) }} <input type='hidden' class='form-control input-sm jumlahharga{{$index}}' value="{{number_format($rndt->rndt_harga, 2) }}" readonly name="jumlahharga[]"></td>
+                                    <td>   <input type='text' class='form-control input-sm totalharga{{$index}}' value="{{number_format($rndt->rndt_totalharga, 2) }}" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga{{$index}}'> <input type='hidden'  value="{{$rndt->podt_lokasigudang}}" name='lokasigudang[]'></td>
                                    
                                   </tr>
                                 @endforeach
@@ -226,6 +230,48 @@
                           
 
                       </div>
+
+                    <!-- Modal barang -->
+                      <div class="modal inmodal fade" id="myModalbarang" tabindex="-1" role="dialog"  aria-hidden="true" style="min-width:100px">
+                               <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                     <div class="modal-header">
+                                           <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>                     
+                                        <h4 class="modal-title"> Data Barang PO </h4>     
+                                       </div>
+
+                                <div class="modal-body">
+                                   <table class="table table-datatable table-bordered table-stripped" id="table-barangpo">
+                                      <thead>
+                                      <tr>
+                                          <th> No </th>
+                                          <th> No PO </th>
+                                          <th> Barang </th>
+                                          <th> Qty Po </th>
+                                          <th> Aksi </th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                          <tr>
+                                              <td> </td>
+                                              <td> </td>
+                                              <td> </td>
+                                              <td> </td>
+                                              <td> </td>
+                                          </tr>
+                                      </tbody>
+                                   </table>
+                                </div>
+
+                          <div class="modal-footer">
+                              <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+                              <button type="button" class="btn btn-primary" id="buttongetbarang">Save changes</button>
+                          </div>
+                      </div>
+                    </div>
+                 </div> 
+
+                    <!-- End Modal Barang -->
 
 
                        <!--  Modal  -->
@@ -357,7 +403,7 @@
                 <div class="box-footer">
                   <div class="pull-right">
                   
-                    <a class="btn btn-sm btn-warning" href={{url('purchase/returnpembelian')}}> Kembali </a>
+                    <a class="btn btn-sm btn-warning kembali" href={{url('purchase/returnpembelian')}}> Kembali </a>
                    <button type="submit" id="submit" name="submit" value="Simpan" class="btn btn-sm btn-success simpanitem"> <i class=" fa fa-upload"> </i> Simpan </button>
          
                     </form>
@@ -385,6 +431,288 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
+    $('.tmbhdatabarang').hide();
+
+    $('.editdata').click(function(){
+        $('.tmbhdatabarang').show();
+        $('.edit').attr('readonly' , false);
+        $('.simpanitem').show();
+        $('.kembali').show();
+    })
+
+
+    $('.simpanitem').hide();
+    $('.kembali').hide();
+    $('#buttongetbarang').click(function(){
+
+      var checked = $(".check:checked").map(function(){
+        return this.id;
+      }).toArray();
+
+     // alert(checked);
+
+       var datapo = [];
+       var datapo = checked;
+       idpo = [];
+       kodeitem = [];
+       for($i = 0; $i < datapo.length; $i++){
+          datadata = datapo[$i].split(",");
+          idpo.push(datadata[0]);
+          kodeitem.push(datadata[1]);
+       }
+
+       $.ajax({
+         url : baseUrl + '/returnpembelian/hasilbarangpo',
+         data : {idpo, kodeitem},
+         dataType : 'json',
+         type : "get",
+         success : function(response){
+          $('#myModalbarang').modal('toggle');
+            var barangheader = $('#table-barang').DataTable();
+           
+            $n = 1;
+            table2 = response.po;
+            nmrbnk = 1;
+            $nomor = $('.databarang').length + 1;
+
+            for(i = 0; i < response.po.length; i++){  
+              var html = "<tr class='databarang data"+$nomor+"' id="+table2[i].po_id+" data-nopo='"+table2[i].po_noform+"'>" +
+                            "<td>"+$nomor+"</td>" +
+                            "<td style='width:200px'> <p style='width:200px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+$nomor+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
+                            "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+$nomor+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +
+                            "<td> <input type='text' class='form-control input-sm  qtyreturn qtyreturn"+$nomor+"' data-id='"+$nomor+"' name='qtyreturn[]' style='width:70px' required></td>" +
+                            "<td> <input type='text' class='form-control input-sm jumlahharga"+$nomor+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
+                            "<td> <input type='text' class='form-control input-sm totalharga"+$nomor+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga"+$nomor+"'> <input type='hidden'  value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" +
+                            "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+$nomor+"' type='button'><i class='fa fa-trash'></i></button> </td>" +
+                           "</tr>";
+                     
+              barangheader.rows.add($(html)).draw(); 
+               nmrbnk++; 
+            }
+
+             $('.qtyreturn').each(function(){
+                  $(this).change(function(){
+                    dataid = $(this).data('id');
+                    qty = $(this).val();
+                    qtykirim = $('.qtykirim' + dataid).val();
+                    if(parseInt(qty) > parseInt(qtykirim)){
+                      toastr.info('Tidak bisa melebihi dari jumlah qty PO :) ');
+                      $(this).val('');
+                      return false;
+                    }  
+
+                    //hitung jumlah total per barang
+                    hasilqty = parseInt(qtykirim) - parseInt(qty);
+                    harga = $('.jumlahharga'+dataid).val();
+                    harga2 = harga.replace(/,/g, ''); 
+                    totalhrga = (hasilqty * parseFloat(harga2)).toFixed(2);
+                    $('.totalharga' + dataid).val(addCommas(totalhrga));
+
+                    minusqty = (qty * parseFloat(harga2)).toFixed(2);
+                    $('.minusharga' + dataid).val(addCommas(minusqty));
+
+
+                    //hitung total di header
+                      subtotal = response.po[0].po_subtotal;            
+                      jenisppn = response.po[0].po_jenisppn;
+                      inputppn = response.po[0].po_ppn;
+                      hasilppn = response.po[0].po_hasilppn;
+                      totalharga =$('.total').val(addCommas(response.po[0].po_totalharga));
+                      hasilminus = 0;
+                      $('.minusharga').each(function(){
+                        valminus2 = $(this).val();
+                        alert(valminus2);
+                        if(valminus2 != ''){
+                          valminus = valminus2.replace(/,/g, ''); 
+                          alert(valminus);
+                          hasilminus = parseFloat(parseFloat(hasilminus) + parseFloat(valminus)).toFixed(2);
+                          // alert(subtotal);   
+                         // alert(valminus); 
+                         
+                          // alert(hargasubtotal);
+                        }
+
+                      })
+                  alert(hasilminus);
+                    hargasubtotal = parseFloat(parseFloat(subtotal) - parseFloat(hasilminus)).toFixed(2);
+                    //  alert(hargasubtotal);
+                      $('.subtotal').val(addCommas(hargasubtotal));
+                      subtotal3 = $('.subtotal').val();
+                      subtotal2 =   subtotal3.replace(/,/g, ''); 
+                      if(jenisppn != 'T'){
+                          if(jenisppn == 'E'){
+                
+                            hargappn = parseFloat(inputppn * parseFloat(subtotal2) / 100);
+                       
+                            $('.hasilppn').val(addCommas(hargappn));
+                            total = parseFloat(parseFloat(subtotal2) + parseFloat(hargappn));
+                           
+                            numhar = total.toFixed(2);
+                            $('.total').val(addCommas(numhar));
+                            $('.subtotal').val(addCommas(subtotal2));
+                          }
+                          else if(jenisppn == 'I'){                            
+                              hargappn = parseFloat(subtotal2 * 100) / (100 + parseFloat(inputppn) );                     
+                              hargappn2 = hargappn.toFixed(2);
+                              $('.subtotal').val(addCommas(hargappn2));
+                             // alert(subtotal2 *100);
+                             // alert(100 + parseFloat(inputppn));
+
+
+                              ppnasli = parseFloat((parseFloat(inputppn) / 100) * parseFloat(hargappn2)).toFixed(2);
+                              $('.hargappn').val(addCommas(ppnasli));
+                              hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
+                             // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                              $('.total').val(addCommas(hasiltotal));
+                          }
+                          else {
+                             $('.subtotal').val(addCommas(subtotal));
+                             $('.total').val(addCommas(subtotal));
+                          }
+                        }
+                  })
+                })
+
+                 tablebarang = $('#table-barang').DataTable();
+                $('.removes-btn').click(function(){
+                 tablebarang.row( $(this).parents('tr') )
+                  .remove()
+                  .draw();
+                })
+         }
+     })
+
+    })
+
+
+       $('.qtyreturn').each(function(){
+                  $(this).change(function(){
+                   /* alert('halo');*/
+                    dataid = $(this).data('id');
+                    qty = $(this).val();
+                    qtykirim = $('.qtykirim' + dataid).val();
+                    if(parseInt(qty) > parseInt(qtykirim)){
+                      toastr.info('Tidak bisa melebihi dari jumlah qty PO :) ');
+                      $(this).val('');
+                      return false;
+                    }  
+
+                    //hitung jumlah total per barang
+                    hasilqty = parseInt(qtykirim) - parseInt(qty);
+                    harga = $('.jumlahharga'+dataid).val();
+                    harga2 = harga.replace(/,/g, ''); 
+                    totalhrga = (hasilqty * parseFloat(harga2)).toFixed(2);
+                    $('.totalharga' + dataid).val(addCommas(totalhrga));
+
+                    minusqty = (qty * parseFloat(harga2)).toFixed(2);
+                    $('.minusharga' + dataid).val(addCommas(minusqty));
+
+
+                    //hitung total di header
+                      subtotal2 = $('.subtotalpo').val();            
+                      jenisppn = $('.jenisppn').val();
+                      inputppn = $('.inputppn').val();
+                      hasilppn2 = $('.hasilppnpo').val();
+                      totalharga2  =$('.totalpo').val();
+
+                      subtotal =  subtotal2.replace(/,/g, ''); 
+                      hasilppn =  hasilppn2.replace(/,/g, ''); 
+                      totalharga =  totalharga2.replace(/,/g, ''); 
+                      hasilminus = 0;
+                      $('.minusharga').each(function(){
+                        valminus2 = $(this).val();
+                        alert(valminus2);
+                        if(valminus2 != ''){
+                          valminus = valminus2.replace(/,/g, ''); 
+                          alert(valminus);
+                          hasilminus = parseFloat(parseFloat(hasilminus) + parseFloat(valminus)).toFixed(2);
+                          // alert(subtotal);   
+                         // alert(valminus); 
+                         
+                          // alert(hargasubtotal);
+                        }
+
+                      })
+
+                      alert(hasilminus);
+                      hargasubtotal = parseFloat(parseFloat(subtotal) - parseFloat(hasilminus)).toFixed(2);
+                    //  alert(hargasubtotal);
+                      $('.subtotal').val(addCommas(hargasubtotal));
+                      subtotal3 = $('.subtotal').val();
+                      subtotal2 =   subtotal3.replace(/,/g, ''); 
+                      if(jenisppn != 'T'){
+                          if(jenisppn == 'E'){
+                
+                            hargappn = parseFloat(inputppn * parseFloat(subtotal2) / 100);
+                       
+                            $('.hasilppn').val(addCommas(hargappn));
+                            total = parseFloat(parseFloat(subtotal2) + parseFloat(hargappn));
+                           
+                            numhar = total.toFixed(2);
+                            $('.total').val(addCommas(numhar));
+                            $('.subtotal').val(addCommas(subtotal2));
+                          }
+                          else if(jenisppn == 'I'){                            
+                              hargappn = parseFloat(subtotal2 * 100) / (100 + parseFloat(inputppn) );                     
+                              hargappn2 = hargappn.toFixed(2);
+                              $('.subtotal').val(addCommas(hargappn2));
+                             // alert(subtotal2 *100);
+                             // alert(100 + parseFloat(inputppn));
+
+
+                              ppnasli = parseFloat((parseFloat(inputppn) / 100) * parseFloat(hargappn2)).toFixed(2);
+                              $('.hargappn').val(addCommas(ppnasli));
+                              hasiltotal = parseFloat(parseFloat(hargappn2) + parseFloat(ppnasli)).toFixed(2);
+                             // total = parseFloat(parseFloat(subharga) + parseFloat(hargappn)).toFixed(2);
+                              $('.total').val(addCommas(hasiltotal));
+                          }
+                          else {
+                             $('.subtotal').val(addCommas(subtotal));
+                             $('.total').val(addCommas(subtotal));
+                          }
+                        }
+                  })
+                })
+
+    $('.tmbhdatabarang').click(function(){
+      idpo = $('.idpo').val();
+      databarang = [];
+      $('tr.databarang').each(function(){
+          val = $(this).data('barang');
+         // alert(val);
+          databarang.push(val);
+      })
+
+     
+       $.ajax({
+       url : baseUrl + '/returnpembelian/getbarangpo',
+       data : {idpo, databarang},
+       dataType : 'json',
+       type : "get",
+       success : function(response){
+         /* alert(response.podt.length);*/
+          $('#myModal5').modal('hide');
+          var barangheader = $('#table-barangpo').DataTable();
+          barangheader.clear().draw();
+          $n = 1;
+          
+  
+          for($i = 0; $i < response.countpodt; $i++){  
+              html = "<tr>" +
+                      "<td>"+$n+"</td>" +
+                      "<td>"+response.podt[$i].po_no+"</td>" +
+                      "<td>"+response.podt[$i].nama_masteritem+"</td>" +
+                      "<td>"+response.podt[$i].podt_qtykirim+"</td>"+
+                     
+                      "<td> <div class='checkbox'> <input type='checkbox' id="+response.podt[$i].po_id+","+response.podt[$i].podt_kodeitem+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                        "<label></label>" +
+                                        "</div> </td>";
+            barangheader.rows.add($(html)).draw(); 
+            $n++;  
+          }
+       }
+      })
+    })
 
     function lihatbarang () {
       $idpo = $('.idpo').val();
@@ -425,10 +753,10 @@
                  for(var i = 0; i < table2.length; i++){  
                        var html2 = "<tr class='databarang data"+nmrbnk+"' id="+table2[i].po_id+" data-nopo='"+table2[i].po_noform+"'>" +
                             "<td>"+nmrbnk+"</td>" +
-                            "<td style='width:200px'> <p style='width:200px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' name='kodeitem[]'></td>" + // no faktur
+                            "<td style='width:200px'> <p style='width:200px'>"+table2[i].nama_masteritem+"</p> <input type='hidden' class='kodeitem"+nmrbnk+"' value='"+table2[i].podt_kodeitem+"' ></td>" + // no faktur
                             "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+nmrbnk+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +                           
                             "<td> <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
-                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"'> <input type='hidden' class='minusharga' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" +
+                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" +
                             "<td>  </td>" +
                            "</tr>";
                           
@@ -447,7 +775,7 @@
           }
          
           event.preventDefault();
-          var post_url2 = baseUrl + '/returnpembelian/save';
+          var post_url2 = baseUrl + '/returnpembelian/update';
           var form_data2 = $(this).serialize();
             swal({
             title: "Apakah anda yakin?",

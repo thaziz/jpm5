@@ -86,12 +86,13 @@ Route::get('suratpermintaanpembelian/createspp' , 'PurchaseController@createspp'
 Route::get('suratpermintaanpembelian/detailspp/{id}' , 'PurchaseController@detailspp');
 Route::delete('suratpermintaanpembelian/deletespp/{id}' , 'PurchaseController@deletespp');
 Route::post('suratpermintaanpembelian/ajax_supplier' , 'PurchaseController@ajax_supplier');
-Route::get('suratpermintaanpembelian/ajax_hargasupplier/{id}', 'PurchaseController@ajax_hargasupplier');
+Route::get('suratpermintaanpembelian/ajax_hargasupplier', 'PurchaseController@ajax_hargasupplier');
 Route::post('suratpermintaanpembelian/ajax_jenisitem/', 'PurchaseController@ajax_jenisitem');
 Route::get('suratpermintaanpembelian/statusspp/{id}', 'PurchaseController@statusspp');
 Route::get('suratpermintaanpembelian/createPDF/{id}', 'PurchaseController@createPdfSpp');
 Route::get('suratpermintaanpembelian/getnospp', 'PurchaseController@getnospp');
 Route::get('suratpermintaanpembelian/cetakspp/{id}', 'PurchaseController@cetakspp');
+Route::get('suratpermintaanpembelian/editspp/{id}', 'PurchaseController@editspp');
 
 Route::get('konfirmasi_order/konfirmasi_order' , 'PurchaseController@confirm_order');
 Route::get('konfirmasi_order/konfirmasi_orderdetail/{id}' , 'PurchaseController@confirm_order_dt');
@@ -175,6 +176,7 @@ Route::get('stockopname/delete' , 'StockOpnameController@deletestockopname');
 
 
 Route::get('stockgudang/stockgudang' , 'PurchaseController@stockgudang');
+Route::get('stockgudang/carigudang' , 'PurchaseController@carigudang');
 
 
 Route::get('pengeluaranbarang/bppb', function(){
@@ -310,6 +312,7 @@ Route::get('biaya_penerus_loading/edit', 'loadingController@edit_loading')->name
 Route::post('biaya_penerus_loading/cariresi', 'loadingController@cariresi');
 Route::get('biaya_penerus_loading/cariresiedit', 'loadingController@cariresiedit');
 Route::get('biaya_penerus_loading/save_loading', 'loadingController@save_loading');
+Route::get('biaya_penerus_loading/update_loading', 'loadingController@update_loading');
 // 
 //BUKTI KAS KELUAR
 Route::get('buktikaskeluar/index', 'kasKeluarController@index');
@@ -369,8 +372,12 @@ Route::get('returnpembelian/createreturnpembelian', 'ReturnPembelianController@c
 Route::get('returnpembelian/detailreturnpembelian/{id}', 'ReturnPembelianController@detailreturnpembelian');
 Route::get('returnpembelian/getpo', 'ReturnPembelianController@getpo');
 Route::get('returnpembelian/hslfaktur', 'ReturnPembelianController@hslfaktur');
+Route::get('returnpembelian/hasilbarangpo', 'ReturnPembelianController@hasilbarangpo');
 Route::get('returnpembelian/getnota', 'ReturnPembelianController@getnota');
 Route::post('returnpembelian/save', 'ReturnPembelianController@save');
+Route::get('returnpembelian/getbarangpo', 'ReturnPembelianController@getbarangpo');
+Route::get('returnpembelian/delete/{id}', 'ReturnPembelianController@hapusdata');
+Route::post('returnpembelian/update', 'ReturnPembelianController@updatedata');
 
 Route::get('cndnpembelian/cndnpembelian', 'cndnController@cndnpembelian');
 Route::get('cndnpembelian/createcndnpembelian', 'cndnController@createcndnpembelian');
@@ -913,6 +920,7 @@ Route::get('carilaporan_penjualan/carilaporan_penjualan','LaporanMasterControlle
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
 Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
+Route::post('exceldeliveryorder_total/exceldeliveryorder_total','LaporanMasterController@exceldeliveryorder_total');
 //END OF DELIVERY ORDER TOTAL
 
 //LAPORAN DELIVERY ORDER PAKET 
@@ -1210,76 +1218,76 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // delivery order
 
 
-Route::get('sales/deliveryorder', 'sales\do_controller@index');
-Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_controller@cetak_form');
-Route::get('sales/deliveryorderform', 'sales\do_controller@form');
-Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
-Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
-Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
-Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
-Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
-Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
-Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
+// Route::get('sales/deliveryorder', 'sales\do_controller@index');
+// Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_controller@cetak_form');
+// Route::get('sales/deliveryorderform', 'sales\do_controller@form');
+// Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
+// Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
+// Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
+// Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
+// Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
+// Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
+// Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
 
-Route::post('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
-Route::get('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
-Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_controller@save_data_detail');
-Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_controller@hapus_data');
-Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_controller@hapus_data_detail');
-Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_controller@form_update_status');
-Route::post('sales/deliveryorderform/save_update_status', 'sales\do_controller@save_update_status');
-Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
+// Route::post('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
+// Route::get('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
+// Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_controller@save_data_detail');
+// Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_controller@hapus_data');
+// Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_controller@hapus_data_detail');
+// Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_controller@form_update_status');
+// Route::post('sales/deliveryorderform/save_update_status', 'sales\do_controller@save_update_status');
+// Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
 
-Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_controller@cari_kodenomor');
-
-
-Route::get('sales/cari_modaldeliveryorder', 'sales\do_controller@cari_modaldeliveryorder');
-Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
-
-Route::get('sales/cari_modaldeliveryorder_kilogram', 'sales\do_controller@cari_modaldeliveryorder_kilogram');
-Route::get('sales/tarif_penerus_kilogram_indentdo/save_data', 'sales\do_controller@tarif_penerus_kilogram_indentdo');
-
-Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_controller@cari_modaldeliveryorder_koli');
-Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_controller@tarif_penerus_koli_indentdo');
-
-Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_controller@cari_modaldeliveryorder_sepeda');
-Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_controller@tarif_penerus_sepeda_indentdo');
+// Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_controller@cari_kodenomor');
 
 
-// Route::get('sales/deliveryorder', 'sales\do_Controller@index');
-// Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_Controller@cetak_form');
-// Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
-// Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
-// Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
-// Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
-// Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
-// Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
-// Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
-// Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
+// Route::get('sales/cari_modaldeliveryorder', 'sales\do_controller@cari_modaldeliveryorder');
+// Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
 
-// Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
-// Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
-// Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
-// Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');
-// Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_Controller@hapus_data_detail');
-// Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller@form_update_status');
-// Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
-// Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
+// Route::get('sales/cari_modaldeliveryorder_kilogram', 'sales\do_controller@cari_modaldeliveryorder_kilogram');
+// Route::get('sales/tarif_penerus_kilogram_indentdo/save_data', 'sales\do_controller@tarif_penerus_kilogram_indentdo');
 
-// Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_Controller@cari_kodenomor');
+// Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_controller@cari_modaldeliveryorder_koli');
+// Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_controller@tarif_penerus_koli_indentdo');
+
+// Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_controller@cari_modaldeliveryorder_sepeda');
+// Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_controller@tarif_penerus_sepeda_indentdo');
 
 
-// Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');
-// Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_Controller@tarif_penerus_dokumen_indentdo');
+Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_Controller@cetak_form');
+Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
+Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
+Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
+Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
+Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
+Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
+Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
+Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
 
-// Route::get('sales/cari_modaldeliveryorder_kilogram', 'sales\do_Controller@cari_modaldeliveryorder_kilogram');
-// Route::get('sales/tarif_penerus_kilogram_indentdo/save_data', 'sales\do_Controller@tarif_penerus_kilogram_indentdo');
+Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
+Route::post('sales/deliveryorderform/save_data_detail', 'sales\do_Controller@save_data_detail');
+Route::get('sales/deliveryorderform/{nomor}/hapus_data', 'sales\do_Controller@hapus_data');
+Route::post('sales/deliveryorderform/hapus_data_detail', 'sales\do_Controller@hapus_data_detail');
+Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller@form_update_status');
+Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
+Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
-// Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_Controller@cari_modaldeliveryorder_koli');
-// Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_Controller@tarif_penerus_koli_indentdo');
+Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_Controller@cari_kodenomor');
 
-// Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_Controller@cari_modaldeliveryorder_sepeda');
-// Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller@tarif_penerus_sepeda_indentdo');
+
+Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');
+Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_Controller@tarif_penerus_dokumen_indentdo');
+
+Route::get('sales/cari_modaldeliveryorder_kilogram', 'sales\do_Controller@cari_modaldeliveryorder_kilogram');
+Route::get('sales/tarif_penerus_kilogram_indentdo/save_data', 'sales\do_Controller@tarif_penerus_kilogram_indentdo');
+
+Route::get('sales/cari_modaldeliveryorder_koli', 'sales\do_Controller@cari_modaldeliveryorder_koli');
+Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_Controller@tarif_penerus_koli_indentdo');
+
+Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_Controller@cari_modaldeliveryorder_sepeda');
+Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller@tarif_penerus_sepeda_indentdo');
 //end delivery order
 
 // delivery order kargo
