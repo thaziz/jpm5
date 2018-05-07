@@ -280,10 +280,10 @@
 		<div class="position-fixed">
 			<table class="inlineTable">
 				<td>
-					<img class="img" width="200" height="100" src="{{ asset('perwita/storage/app/upload/images.jpg') }}">
+					<img class="img" width="150" height="80" src="{{ asset('perwita/storage/app/upload/images.jpg') }}">
 				</td>
 			</table>
-			<table class="inlineTable size" style="margin-bottom: -20px;margin-top: 20px;">
+			<table class="inlineTable size" style="margin-bottom: 5px;margin-top: 20px">
 		    <tr>
 		      <th>{{perusahaan()->mp_nama}}</th>
 		    </tr>

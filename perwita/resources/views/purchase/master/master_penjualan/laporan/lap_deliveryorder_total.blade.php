@@ -320,18 +320,6 @@
           }
    
  
-    $(document).ready(function() {
-        $('.tbl-item').DataTable();
-     
-        $('input.global_filter').on( 'keyup click', function () {
-            filterGlobal();
-        } );
-     
-        $('input.column_filter').on( 'keyup click', function () {
-            filterColumn( $(this).parents('tr').attr('data-column') );
-        } );
-    } );
-
     function filterColumn () {
     $('#addColumn').DataTable().column(6).search(
         $('#kota_asal').val()).draw();    
@@ -349,6 +337,7 @@
           console.log(aa);
       $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
     }
+
     function filterColumn1 () {
         $('#addColumn').DataTable().column(7).search(
             $('#kota_tujuan').val()).draw();  
@@ -402,7 +391,7 @@
    }
    function filterColumn5 () {
       $('#addColumn').DataTable().column(12).search(
-          $('#cabang_search').val()).draw(); 
+          $('#cabang').val()).draw(); 
 
          var aa=[];
          console.log('anjay');
@@ -437,7 +426,34 @@
 
       $.ajax({
         data: {a:asw,c:'download'},
-        url: baseUrl + '/reportdeliveryorder/reportdeliveryorder',
+        url: baseUrl + '/reportdeliveryorder_total/reportdeliveryorder_total',
+        type: "post",
+       success : function(data){
+        var win = window.open();
+            win.document.write(data);
+        }
+      });
+    }
+
+    function cetak(){
+      var asw=[];
+       var asd = table.rows( { filter : 'applied'} ).data(); 
+       for(var i = 0 ; i < asd.length; i++){
+
+           asw[i] =  $(asd[i][2]).val();
+  
+       }
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+
+
+      $.ajax({
+        data: {a:asw,c:'download'},
+        url: baseUrl + '/exceldeliveryorder_total/exceldeliveryorder_total',
         type: "post",
        success : function(data){
         var win = window.open();

@@ -904,6 +904,82 @@ class LaporanMasterController extends Controller
 		return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_paket',compact('dat1'));
 		
 	}
+
+	public function reportdeliveryorder_total(Request $request){
+		// return 'a';
+		$data = $request->a;	
+   		// dd($data[0]);
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat); $i++) { 
+		
+		$dat1[$i] = DB::table('delivery_order as do')
+						->select('do.*','ka.id as kaid','cb.nama as cabang','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+						->join('kota as ka','do.id_kota_asal','=','ka.id')
+						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->join('cabang as cb','do.kode_cabang','=','cb.kode')
+						->where('nomor','=',$dat[$i])
+						->get();
+			}
+
+        foreach($dat1 as $key => $value){
+		    $get[$key] = $dat1[$key][0]->total_net;
+			$total_perhitungan = array_sum($get);
+		}
+
+        // dd($total_net);
+
+		// for
+		return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_total',compact('dat1','total_perhitungan'));
+		
+	}
+	public function exceldeliveryorder_total(Request $request){
+		$data = $request->a;	
+   		// dd($data[0]);
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat); $i++) { 
+		
+		$dat1[$i] = DB::table('delivery_order as do')
+						->select('do.*','ka.id as kaid','cb.nama as cabang','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+						->join('kota as ka','do.id_kota_asal','=','ka.id')
+						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->join('cabang as cb','do.kode_cabang','=','cb.kode')
+						->where('nomor','=',$dat[$i])
+						->get();
+			}
+
+        foreach($dat1 as $key => $value){
+		    $get[$key] = $dat1[$key][0]->total_net;
+			$total_perhitungan = array_sum($get);
+		}
+
+        $date =  date('B'.'s'.'H');
+
+				   			Excel::create('Invoice'.$date, function($excel) use ($dat1,$total_perhitungan){
+
+								    $excel->sheet('New sheet', function($sheet) use ($dat1,$total_perhitungan) {
+								        $sheet->loadView('purchase/master/master_penjualan/excel/excel_invoice')
+								        ->with('dat1',$dat1)
+								        ->with('total_perhitungan',$total_perhitungan);						
+								    });
+
+								})->download('csv');
+		// return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_total',compact('dat1','total_perhitungan')); exceldeliveryorder_total(){
+
+	}
 // END OF DELIVERY ORDER LAPORAN PAKET(DO)
    
    //START DELIVERY ORDER LAPORAN KARGO(DO)
