@@ -379,6 +379,8 @@
         $("input[name='sepeda_pancal']").val('');
         $("input[name='bebek_matik']").val('');
         $("input[name='laki_sport']").val('');
+        $("input[name='moge']").val('');
+        $("input[name='waktu']").val('');
 
         $("input[name='kodekota']").val('');
 
@@ -386,7 +388,11 @@
         $("input[name='id_matik_edit']").val('');
         $("input[name='id_sport_edit']").val('');
         $("input[name='id_sepeda_edit']").val('');
+        $("input[name='id_moge_edit']").val('');
+        $("input[name='id_waktu_edit']").val('');
 
+        $('#hilang').show();
+        $('#hilang2').show();
 
         $("input[name='ed_kode_old']").val('');
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');

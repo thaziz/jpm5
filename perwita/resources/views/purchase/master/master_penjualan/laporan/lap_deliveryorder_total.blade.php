@@ -54,7 +54,7 @@
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                       <tr>
+                       {{-- <tr>
                         <th> Nama Pengirim : </th> 
                           <td> 
                                 <input id="nama_pengirim" type="text" class="form-control ">
@@ -63,7 +63,7 @@
                             <td> 
                                 <input id="nama_penerima" type="text" class="form-control" >
                             </td>
-                      </tr>
+                      </tr> --}}
                       <tr>
                           <th style="width: 100px; padding-top: 16px">Cabang</th>
                           <td colspan="3">
@@ -281,10 +281,12 @@
 
     $('.cari_semua').change(function(){
        var aa=[];
+
        var bb = table.rows( { filter : 'applied'} ).data(); 
          for(var i = 0 ; i < bb.length; i++){
             aa[i] =  $(bb[i][11]).val(); 
          }
+
        console.log(aa);
        var aas = $('.select-picker1').find(':selected').val();
        console.log(aas);
@@ -364,25 +366,15 @@
     function filterColumn2 () {
         $('#addColumn').DataTable().column(9).search(
             $('.select-picker3').val()).draw(); 
-     }
-     // function filterColumn3 () {
-     //    $('#addColumn').DataTable().column(11).search(
-     //        $('.select-picker4').val()).draw(); 
-     // }
-     function filterColumn4 () {
-        $('#addColumn').DataTable().column(10).search(
-            $('#status').val()).draw(); 
-     }
-     function filterColumn5 () {
-        $('#addColumn').DataTable().column(12).search(
-            $('#cabang').val()).draw(); 
-     }
-     // $('#nama_pengirim').on( 'keyup', function () {
-     //     table.column(4).search( this.value ).draw();
-     //  });  
-     // $('#nama_penerima').on( 'keyup', function () {
-     //    table.column(5).search( this.value ).draw();
-     //  });  
+   }
+   function filterColumn4 () {
+      $('#addColumn').DataTable().column(10).search(
+          $('#status').val()).draw(); 
+   }
+   function filterColumn5 () {
+      $('#addColumn').DataTable().column(12).search(
+          $('#cabang').val()).draw(); 
+   } 
 
       function cetak(){
       var asw=[];

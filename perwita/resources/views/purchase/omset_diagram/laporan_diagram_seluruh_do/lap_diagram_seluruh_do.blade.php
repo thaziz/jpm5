@@ -36,7 +36,7 @@
                   <input type="text" class="date form-control" readonly="" id="date_akir" name="">
                 </div>
                 <div class="form-group col-md-4">
-                  <select class="chosen-select-width" name="cabang" >
+                  <select class="chosen-select-width" name="cabang" id="cabang">
                     <option value="" selected="">- Cabang -</option>
                       @foreach ($cabang as $e)
                           <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
@@ -193,6 +193,137 @@ Highcharts.chart('container', {
     }]
 
 });
+
+  function cari(){
+      var date_awal = $('#date_awal').val();
+      var date_akir = $('#date_akir').val();
+      var cabang = $('#cabang').val();
+      
+      if(date_awal == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+
+      if(date_akir == ''){
+          Command: toastr["warning"]("Tanggal Tidak Boleh kosong", "Peringatan!")
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          return false;
+      }
+      $.ajax({
+        data: {a:date_awal,b:date_akir,c:cabang},
+        url: baseUrl + '/cari_paket/cari_paket',
+        type: "get",
+       success : function(data){
+        // console.log(data.dokumen == null &&  data.kilogram == null  &&  data.koli == null &&  data.sepeda == null);
+         if (data.dokumen == null && data.kilogram == null && data.koli == null && data.sepeda == null) {
+          Command: toastr["warning"](data.response, "Peringatan !")
+
+          toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+          }
+          $('#container').html('');
+
+        }else{
+         var awal = $.datepicker.formatDate("dd MM yy", new Date(data.awal))
+         var akir = $.datepicker.formatDate("dd MM yy", new Date(data.akir))
+         $('#replace').html('Tampilkan Data ' + awal + ' S/D ' + akir);
+        Highcharts.chart('container', {
+        chart: {
+            type: 'column',
+        },
+        title: {
+            text: 'Laporan'
+        },
+        subtitle: {
+            text: 'PENJUALAN PAKET'
+        },
+        plotOptions: {
+            column: {
+                depth: 100
+            }
+        },
+        xAxis: {
+            categories: ['TAMPILAN'],
+            labels: {
+                skew3d: true,
+                style: {
+                    fontSize: '16px'
+                }
+            }
+        },
+        yAxis: {
+            title: {
+                text: null
+            }
+        },
+        series: [{
+            name: 'DOKUMEN',
+            data: [data.dokumen]
+        },{
+            name: 'KILOGRAM',
+            data: [data.kilogram]
+        },{
+            name: 'KOLI',
+            data: [data.koli]
+        },{
+            name: 'SEPEDA',
+            data: [data.sepeda]
+        },
+
+        ],
+      });
+        }
+        }
+      });
+    }
+
 
 </script>
 @endsection
