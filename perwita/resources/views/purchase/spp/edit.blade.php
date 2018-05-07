@@ -65,19 +65,23 @@
                           <div class="box-body">
                             
                               <div class="col-md-6">
-                                    <table class="table table-striped" id='table-utama'>
+                                    <table class="table table-striped" id='table-utama'>@foreach($data['spp'] as $spp)
                                           <tr>
                                             <td width="200px"> Kode SPP </td>
-                                            <td> <input type='text' class="input-sm form-control nospp" readonly="" name="nospp"></td>
+                                            <td> <input type='text' class="input-sm form-control nospp" readonly="" name="nospp" value="{{$spp->spp_nospp}}"></td>
                                             <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
+                                              <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                              <input type="hidden" name="idspp" value="{{$spp->spp_id}}" class="idspp">
                                           </tr>
                                           
                                           <tr>
                                               
                                              <tr>
                                               <td> Cabang </td>
-                                              <td>                                              
+                                              <td>   
 
+                                                <input type="text" class="form-control input-sm" name="cabang" value="{{$spp_nama}}">                                           
+                                                <!-- 
                                                @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','cabang'))
                                               <select class="form-control cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
@@ -91,7 +95,7 @@
                                                   @endforeach
                                                 </select> 
                                               @endif
-                                              
+                                               -->
                                               </td>
                                              </tr>
                                               
@@ -103,11 +107,8 @@
                                                 Tanggal di butuhkan 
                                               </td>
                                               <td>
-                                                  <div class="input-group date" required="">
-                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="input-sm form-control" name="tgl_dibutuhkan" required="">
-
-                                                       <!--  <input type="hidden" class="valcabang" name="comp"> -->
-                                                  </div>
+                                                   <div class="input-group date">
+                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="tgl_dibutuhkan" required="" value="{{ Carbon\Carbon::parse($spp->spp_tgldibutuhkan)->format('d-M-Y ') }}" disabled="">
                                               </td>  
                                           </tr>
                                          
@@ -117,7 +118,7 @@
                                             </td>
 
                                             <td> 
-                                            <input type="text" class="input-sm form-control" name="keperluan" required=""> <input type="hidden" class="valcabang" name="cabang">
+                                            <input type="text" class="input-sm form-control" name="keperluan" required="" value="{{$spp->spp_keperluan}}"> <input type="hidden" class="valcabang" name="cabang">
                                             </td>
                                           </tr>
                                         
@@ -128,35 +129,19 @@
                                           <td>
                                             <select class="chosen-select-width" name="bagian" required="">
                                               <option value> -- Pilih Bagian / Departmen -- </option>
-                                              @foreach($data['department'] as $department)
-                                                <option value="{{$department->kode_department}}"> {{$department->nama_department}} </option>
-                                              @endforeach
+                                             @foreach($data['department'] as $department) <option value="{{$department->kode_department}}" @if($department->kode_department == $spp->kode_department) selected="" @endif> {{$department->nama_department}} </option> @endforeach
                                             </select>
                                           </td>
                                         </tr>
 
-                                      
-
-                                        <tr>
-                                          <td> Group Item </td>
-                                          <td> <select class="form-control jenisitem" required="" name="jenisitem">
-                                           <option value=""> -- Pilih Group Item -- </option>
-                                           @foreach($data['jenisitem'] as $jnsitem)
-                                            <option value="{{$jnsitem->kode_jenisitem}},{{$jnsitem->stock}}"> {{$jnsitem->keterangan_jenisitem}} </option>
-                                           @endforeach 
-                                          </select> <input type="hidden" name="spp_penerimaan" class="penerimaan"> </td>
-                                        </tr>
-                                     
+                                        @if($spp->spp_lokasigudang != '')
+                    
                                       <tr>
                                         <td  id="tdstock"> Apakah Update Stock ? </td>
-                                       <!--  <td>  <div class="checkbox">
-                                            <input type="checkbox"  class="check" value="option1" aria-label="Single checkbox One">
-                                            <label></label>
-                                            </td> -->
-
+                                      
                                         <td id="tdstock">  <select class="form-control updatestock" name="updatestock"  id="updatestock"> <option value="Y"> Ya </option> <option value="T"> TIDAK </option> </select></td>
                                       </tr>
-
+                                      @endif
 
 
                                       <tr>
@@ -167,6 +152,7 @@
                                       <td> Keterangan </td>
                                       <td> <input type="text" class="input-sm form-control" name="keterangan">  </td>
                                     </tr>
+                                    @endforeach
                                   </table>
 
                                   

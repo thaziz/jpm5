@@ -650,9 +650,9 @@ class PurchaseController extends Controller
 	}
 
 	public function editspp($id){
-		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id");
+		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment, cabang where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
 		$idgudang = $data['spp'][0]->spp_lokasigudang;
-
+		
 		$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");
 
 		$data['gudang'] = DB::select("select mg_namagudang from spp, mastergudang where spp_lokasigudang = mg_id and spp_id = '$id'");
