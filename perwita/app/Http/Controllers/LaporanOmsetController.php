@@ -1004,6 +1004,7 @@ class laporanOmsetController extends Controller
 		 $tahun =  $tahun->year;
 		
 		// return $array_bulan;
+		 $dat = [];
 		for ($i=0; $i <count($array_bulan) ; $i++) { 
 			$dat[$i] =DB::table('delivery_order')
 				->where('nomor','like','%PAK%')
@@ -1032,12 +1033,10 @@ class laporanOmsetController extends Controller
 		}
 		// return $dat;
 
+
 		for ($i=0; $i < count(isset($dat)); $i++) { 
 			for ($a=0; $a < count(isset($dat[$i])); $a++) { 
-
 				// return $dat[4][$a]->total_net;
-				return count($dat[4]);
-
 				if (isset($dat[0][$a])) {
 					$jan = $dat[0][$a]->total_net;
 				 	$jan = array_sum($jan);
@@ -1067,6 +1066,7 @@ class laporanOmsetController extends Controller
 					$aa[$a] = $dat[4][$a]->total_net;
 					// return $aa;
 				 	$may = array_sum($aa);
+
 				}else{
 					$may = 0;
 				}
@@ -1115,7 +1115,7 @@ class laporanOmsetController extends Controller
 			}
 		}
 		// return $apr;
-		return$aa;
+			return $tes;
 		
 		// return $dat1;
 		for ($i=0; $i < count(isset($dat1)); $i++) { 
