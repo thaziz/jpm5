@@ -328,10 +328,16 @@ return false;
 
             var startDate = new Date(data[1]);
             // console.log(startDate);
+
             if (min == null || min == '' && max == null || max == '') { return true; }
+
+            if (startDate >= min && startDate <= max) { return true; }
+
             if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
-            if (startDate <= max && startDate >= min) { return true; }
+            
+            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) { return true;}
+            
+            // if (startDate == min && startDate == max) { return true; }
             return false;
         }
         );

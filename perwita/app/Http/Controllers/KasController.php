@@ -37,12 +37,22 @@ use Auth;
 class KasController extends Controller
 {
 	public function index(){
-		 $data = DB::table('biaya_penerus_kas')
+
+    	$cabang = Auth::user()->kode_cabang;
+		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+			$data = DB::table('biaya_penerus_kas')
 				->join('cabang','kode','=','bpk_comp')
+				->where('bpk_jenis_biaya','!=','LOADING')
 				->get();
-		for ($i=0; $i < count($data); $i++) { 
-			$data[$i]->bpk_tanggal = Carbon::parse($data[$i]->bpk_tanggal)->format('d/m/Y');
+		}else{
+			$data = DB::table('biaya_penerus_kas')
+				->join('cabang','kode','=','bpk_comp')
+				->where('bpk_comp',$cabang)
+				->where('bpk_jenis_biaya','!=','LOADING')
+				->get();
 		}
+		 
+		
 		return view('purchase/kas/index',compact('data'));
 	}
 
@@ -189,6 +199,12 @@ class KasController extends Controller
 						   ->orderBy('nomor','ASC')
 						   ->get();
 
+			$cari_loading = DB::table('delivery_order')
+						   ->whereIn('nomor',$request->resi_array)
+						   ->where('jenis_tarif',9)
+						   ->orderBy('nomor','ASC')
+						   ->get();
+
 			$cari_resi1 = DB::table('delivery_order')
 						   ->select('bpkd_no_resi')
 						   ->leftjoin('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
@@ -196,7 +212,9 @@ class KasController extends Controller
 						   ->groupBy('bpkd_no_resi')
 						   ->orderBy('bpkd_no_resi','ASC')
 						   ->get();
+
 		}
+
 		// return $cari_resi1;
 		for ($i=0; $i < count($cari_resi); $i++) { 
 			$resi[$i] = $cari_resi[$i]->nomor;
@@ -241,9 +259,20 @@ class KasController extends Controller
 			}
 
 		}
-
+		$resi = array_unique($resi);
 		$resi = array_values($resi);
 		
+
+		for ($i=0; $i < count($resi); $i++) { 
+			for ($a=0; $a < count($cari_loading); $a++) { 
+				if ($cari_loading[$a]->nomor == $resi[$i]) {
+					unset($resi[$i]);
+				}
+			}
+		}
+
+		$resi = array_values($resi);
+
 		for ($i=0 ; $i < count($resi); $i++) { 
 
 			$cari = DB::table('delivery_order')
@@ -288,8 +317,6 @@ class KasController extends Controller
 		}else{
 			return response()->json(['status' => 0]);
 		}
-		
-		
 	}
 	public function save_penerus(request $request){
 		return DB::transaction(function() use ($request) {  
@@ -390,6 +417,8 @@ class KasController extends Controller
 		$fix_tarif_penerus = array_sum($request->penerus);
 		$persen = $cari_persen->persen/100;
 		$total_tarif = $request->total_tarif*$persen;
+		$sisa  = $sisa * $persen;
+		// return $sisa;
 
 		if($fix <= $total_tarif){
 			$pending_status = 'APPROVED';
@@ -438,7 +467,7 @@ class KasController extends Controller
 		  	'bpk_nopol'		  	 => strtoupper($request->nopol),
 		  	'bpk_status'	  	 => 'Released',
 		  	'bpk_status_pending' => $pending_status,	
-		  	'bpk_kode_akun'		 => $request->kode_kas,
+		  	'bpk_kode_akun'		 => $request->nama_kas,
 		  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
 		  	'bpk_keterangan'	 => $request->note,
 		  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
@@ -450,6 +479,7 @@ class KasController extends Controller
 		  	'bpk_jarak'	 		 => $request->km,
 		  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
 			'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
+			'bpk_acc_biaya'      => $cari_persen->kode_akun,
 		  	'created_by'		 => Auth::user()->m_name,
 		  	'updated_by'		 => Auth::user()->m_name,
 		  ]);
@@ -538,12 +568,12 @@ class KasController extends Controller
 						   		'pc_tgl'		  => Carbon::now(),
 						   		'pc_ref'	 	  => 10,
 						   		'pc_akun' 		  => $cari_persen->kode_akun,
-						   		'pc_akun_kas' 	  => $request->kode_kas,
+						   		'pc_akun_kas' 	  => $request->nama_kas,
 						   		'pc_keterangan'	  => $request->note,
 						   		'pc_comp'  	  	  => $request->cabang,
 						   		'pc_edit'  	  	  => 'UNALLOWED',
 						   		'pc_reim'  	  	  => 'UNRELEASED',
-						   		'pc_debet'  	  => round($total_penerus_float,2),
+						   		'pc_debet'  	  => 0,
 						   		'pc_no_trans'  	  => $request->no_trans,
 						   		'pc_kredit'  	  => round($total_penerus_float,2),
 						   		'created_at'	  => Carbon::now(),
@@ -619,7 +649,7 @@ class KasController extends Controller
 $cabang=$request->cabang;
  $akunKas=master_akun::
                   select('id_akun','nama_akun')
-                  ->where('id_akun','like', ''.$request->kode_kas.'%')                                    
+                  ->where('id_akun','like', ''.$request->nama_kas.'%')                                    
                   ->where('kode_cabang',$cabang)
                   ->orderBy('id_akun')
                   ->first();                  
@@ -658,99 +688,153 @@ $cabang=$request->cabang;
 	    $year  = Carbon::now()->format('Y'); 
 		$month = Carbon::now()->format('m');  	
 		$now   = Carbon::now()->format('d-m-Y');
-		
-	   
-
-		$akun = DB::table('d_akun')
-				  ->where('id_parrent',1001)
-				  ->get();
-
-		$akun_biaya_cargo1 = DB::table('master_persentase')
-				  ->where('kode_akun','LIKE','%'.'5205'.'%')
-				  ->orderBy('kode','ASC')
-				  ->get();
-		$akun_biaya_cargo2 = DB::table('master_persentase')
-				  ->where('kode_akun','LIKE','%'.'5405'.'%')
-				  ->orderBy('kode','ASC')
-				  ->get();
-		$akun_biaya_paket = DB::table('master_persentase')
-				  ->where('kode_akun','LIKE','%'.'5305'.'%')
-				  ->orderBy('kode_akun','ASC')
-				  ->get();
+		$cabang = DB::table('cabang')
+					->get();
 		$angkutan = DB::table('tipe_angkutan')
+					->get();
+		$akun_persen     = DB::table('master_persentase')
+					  ->where('cabang','GLOBAL')
+					  ->get();
+
+		$akun_paket  = DB::table('master_persentase')
+					  ->where('jenis_biaya',1)
+					  ->get();
+
+		$akun_kargo  = DB::table('master_persentase')
+					  ->where('cabang','GLOBAL')
+					  ->where('jenis_biaya',5)
+					  ->where('cabang','GLOBAL')
+					  ->get();
+
+		$data = DB::table('biaya_penerus_kas')
+				  ->where('bpk_id',$request->id)
+				  ->first();
+
+		$data_dt = DB::table('biaya_penerus_kas_detail')
+				  ->where('bpkd_bpk_id',$request->id)
 				  ->get();
 
-		$akun_biaya_cargo = array_merge($akun_biaya_cargo1,$akun_biaya_cargo2);
-
-		$satu = count($akun_biaya_cargo1);
-		$dua  = count($akun_biaya_cargo2);
-		$count = $satu+$dua;
-		$data = DB::table('biaya_penerus_kas')
-				->where('bpk_id',$request->id)
-				->get();
-		$data_dt = DB::table('biaya_penerus_kas_detail')
-				->where('bpkd_bpk_id',$request->id)
-				->get();
-		$data[0]->bpk_tanggal = Carbon::parse($data[0]->bpk_tanggal)->format('d/m/Y');
-
-		$string_resi='';
+		$akun_kas = DB::table('d_akun')
+    			  ->where('id_akun','like','1003'.'%')
+    			  ->where('kode_cabang',$data->bpk_comp)
+    			  ->get();
+		$id = $request->id;
 		for ($i=0; $i < count($data_dt); $i++) { 
-			$string_resi[$i] = (string)$data_dt[$i]->bpkd_no_resi;
+			$resi[$i] = $data_dt[$i]->bpkd_no_resi;
 		}
-		$id_edit = $request->id;
-		return view('purchase/kas/editkas',compact('id_edit','data','akun','akun_biaya_cargo','akun_biaya_cargo','akun_biaya_paket','angkutan','string_resi'));
+		$resi = implode(" ", $resi);
+		return view('purchase/kas/editkas',compact('now','akun','akun_persen','cabang','angkutan','akun_kargo','akun_paket','data','data_dt','id','akun_kas','resi'));
+		
 	}
 	public function update_penerus(request $request){
-		// dd($request);
-		$tgl = str_replace('/', '-', $request->tN);
-		$tgl = Carbon::parse($tgl)->format('Y-m-d');
+		return DB::transaction(function() use ($request) {  
+		 // dd($request->all());
 
-		$cari_persen = DB::table('master_persentase')
-	    		  ->where('kode',$request->pembiayaan_paket)
+		// $delete = DB::table('biaya_penerus_kas')
+		// 			->where('bpk_id',$request->id)
+		// 			->delete();
+		$delete1 = DB::table('biaya_penerus_kas_detail')
+					->where('bpkd_bpk_id',$request->id)
+					->delete();
+
+		if ($request->jenis_pembiayaan == 'PAKET') {
+
+			$cari_persen = DB::table('master_persentase')
+	    		  ->where('jenis_bbm',$request->pembiayaan_paket)
 	    		  ->where('cabang',$request->cabang)
-	    		  ->get();
-	    if ($cari_persen == null) {
-	    	$cari_persen = DB::table('master_persentase')
-	    		  ->where('kode',$request->pembiayaan_paket)
-	    		  ->where('cabang','GLOBAL')
-	    		  ->get();
-	    }
+	    		  ->first();
+
+
+
+		    if ($cari_persen == null) {
+
+		    	$cari_persen = DB::table('master_persentase')
+		    		  ->where('jenis_bbm',$request->pembiayaan_paket)
+		    		  ->where('cabang','GLOBAL')
+		    		  ->first();
+
+		    }
+		    
+		}else{
+
+			$cari_persen = DB::table('master_persentase')
+	    		  ->where('jenis_bbm',$request->pembiayaan_cargo)
+	    		  ->where('cabang',$request->cabang)
+	    		  ->first();
+
+		    if ($cari_persen == null) {
+		    	$cari_persen = DB::table('master_persentase')
+		    		  ->where('jenis_bbm',$request->pembiayaan_cargo)
+		    		  ->where('cabang','GLOBAL')
+		    		  ->first();
+
+		    }
+
+		}
+
+	    $akun_biaya = $cari_persen->kode_akun;
+
+
 	    $request->biaya_dll = filter_var($request->biaya_dll, FILTER_SANITIZE_NUMBER_FLOAT);
 	    $request->total_bbm = filter_var($request->total_bbm, FILTER_SANITIZE_NUMBER_FLOAT);
 	    
+	    $terbayar   = [];
+	    $pembayaran = [];
+	    $bayar 		= [];
+	    $sisa 		= [];
+		if ($cari_persen->jenis_bbm == '3') {
 
-		if ($cari_persen[0]->jenis_biaya == '4') {
+
+
 			for ($i=0; $i < count($request->no_resi); $i++) { 
-				$bpk = DB::table('biaya_penerus_kas_detail')
-							->where('bpkd_no_resi',$request->no_resi[$i])
-							->get();
-				$bpk_dt[$i] = $bpk;
-			}
-			for ($i=0; $i < count($bpk_dt); $i++) { 
-				for ($a=0; $a < count($bpk_dt[$i]); $a++) { 
-					$jml[$a] = $bpk_dt[$i][$a]->bpkd_tarif_penerus;
+
+
+				$cari_do[$i] = DB::table('delivery_order')
+								 ->where('nomor',$request->no_resi[$i])
+								 ->get();
+
+				$cari_bpkd[$i] = DB::table('biaya_penerus_kas')
+								 ->join('biaya_penerus_kas_detail','bpkd_bpk_id','=','bpk_id')
+								 ->where('bpkd_no_resi',$request->no_resi[$i])
+								 ->get();
+
+				for ($a=0; $a < count($cari_bpkd[$i]); $a++) { 
+					$bayar[$a] = $cari_bpkd[$i][$a]->bpkd_tarif_penerus;
 				}
-				if (isset($jml)) {
-					$jml_dt[$i] = array_sum($jml);
-				}
-				
+
+				$terbayar[$i]   = array_sum($bayar);
+				$pembayaran[$i] = $cari_do[$i][0]->total_net;
+
+				$sisa[$i] 		= $pembayaran[$i] - $terbayar[$i];
 			}
-			if (isset($jml_dt)) {
-				$fix = array_sum($jml_dt);
-			}else{
-				$fix = 0;
-			}
-	
-			$tot_pen = array_sum($request->penerus);
-			$fix = $fix + $tot_pen;
+			$terbayar = array_sum($terbayar);
+			// dd($sisa);
+
+			$sisa = array_sum($sisa);
+			$fix  = array_sum($request->penerus)+$terbayar;
 
 		}else{
-			$fix = array_sum($request->penerus);
+
+			for ($i=0; $i < count($request->no_resi); $i++) { 
+
+				$cari_do[$i] = DB::table('delivery_order')
+								 ->where('nomor',$request->no_resi[$i])
+								 ->get();
+
+				$pembayaran[$i] = $cari_do[$i][0]->total_net;
+
+			}
+			
+			$sisa = array_sum($pembayaran);
+			$fix  = array_sum($request->penerus);
 		}
+
+		// return $fix;
 		$fix_tarif_penerus = array_sum($request->penerus);
-		
-		$persen = $cari_persen[0]->persen/100;
+		$persen = $cari_persen->persen/100;
 		$total_tarif = $request->total_tarif*$persen;
+		$sisa  = $sisa * $persen;
+		// return $sisa;
 
 		if($fix <= $total_tarif){
 			$pending_status = 'APPROVED';
@@ -758,12 +842,14 @@ $cabang=$request->cabang;
 			$pending_status = 'PENDING';
 		}
 
+	   	// dd($total_tarif);
+
 		if($request->jenis_pembiayaan=='PAKET'){
 			$pembiayaan = $request->pembiayaan_paket;
 		}else{
 			$pembiayaan = $request->pembiayaan_cargo;
 		}
-
+		
 		$id = DB::table('biaya_penerus_kas')
 				->max('bpk_id');
 		if($id != null){
@@ -771,45 +857,87 @@ $cabang=$request->cabang;
 		}else{
 			$id=1;
 		}
-		$total_penerus_float = array_sum($request->penerus);
-		// return $asd = round($request->total_bbm);
 
+
+	    $isset =  DB::table('biaya_penerus_kas')
+	    		  ->select('bpk_nota')
+	    		  ->get();
+
+	    $ada_data = 0;
+	    for ($i=0; $i < count($isset); $i++) { 
+	    	if($isset[$i]->bpk_nota == $request->no_trans){
+	    		$ada_data = 1;
+	    	}
+	    }
+	    $total_penerus_float = array_sum($request->penerus);
+
+		$nomor=$id;
 		biaya_penerus_kas::where('bpk_id',$request->id)->update([
-		  	'bpk_id'      	  	 => $request->id,
 		  	'bpk_nota'  	  	 => $request->no_trans,
 		  	'bpk_jenis_biaya' 	 => $request->jenis_pembiayaan,
 		  	'bpk_pembiayaan'  	 => $pembiayaan,
-		  	'bpk_total_tarif' 	 => $request->total_tarif,
-		  	'bpk_tanggal'     	 => $tgl,
+		  	'bpk_total_tarif' 	 => round($request->total_tarif,2),
+		  	'bpk_tanggal'     	 => Carbon::parse($request->tN)->format('Y-m-d'),
 		  	'bpk_nopol'		  	 => strtoupper($request->nopol),
 		  	'bpk_status'	  	 => 'Released',
 		  	'bpk_status_pending' => $pending_status,	
-		  	'bpk_kode_akun'		 => $request->kode_kas,
+		  	'bpk_kode_akun'		 => $request->nama_kas,
 		  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
 		  	'bpk_keterangan'	 => $request->note,
 		  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
-		  	'updated_at'		 => Carbon::now(),
+		  	'created_at'		 => Carbon::now(),
 		  	'bpk_comp'	 		 => $request->cabang,
 		  	'bpk_tarif_penerus'	 => round($total_penerus_float,2),
 		  	'bpk_edit'	 		 => 'UNALLOWED',
 		  	'bpk_biaya_lain'	 => round($request->biaya_dll,2),
 		  	'bpk_jarak'	 		 => $request->km,
 		  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
+			'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
+			'bpk_acc_biaya'      => $cari_persen->kode_akun,
+		  	'created_by'		 => Auth::user()->m_name,
+		  	'updated_by'		 => Auth::user()->m_name,
 		  ]);
-		$delete = DB::table('biaya_penerus_kas_detail')
-					->where('bpkd_bpk_id',$request->id)
-					->delete();
 
-		
-		 	for ($i=0; $i < count($request->no_resi); $i++) { 
 
-				$dt = DB::table('biaya_penerus_kas_detail')
+
+		for ($i=0; $i < count($request->no_resi); $i++) { 
+
+
+			$dt = DB::table('biaya_penerus_kas_detail')
 					->max('bpkd_id');
-				if($dt != null){
-					$dt+=1;
-				}else{
-					$dt=1;
-				}
+
+			if($dt != null){
+				$dt+=1;
+			}else{
+				$dt=1;
+			}
+			
+			if ($cari_persen->jenis_bbm == '3') {
+				
+					
+					biaya_penerus_kas_detail::create([
+				  		'bpkd_id'				=> $dt,
+						'bpkd_bpk_id'	  	 	=> $request->id,
+						'bpkd_bpk_dt'			=> $i+1,
+						'bpkd_no_resi'			=> $request->no_resi[$i],
+						'bpkd_kode_cabang_awal'	=> $request->comp[$i],
+						'bpkd_tanggal'  		=> $request->tanggal[$i],
+						'bpkd_pengirim'	 		=> $request->pengirim[$i],
+						'bpkd_penerima'			=> $request->penerima[$i],
+						'bpkd_asal'				=> $request->asal[$i],
+						'bpkd_tujuan'			=> $request->tujuan[$i],
+						'bpkd_status_resi'		=> $request->status[$i],
+						'bpkd_tarif'			=> $request->tarif[$i],
+						'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+						'created_at'			=> Carbon::now(),
+						'bpk_comp'				=> $request->cabang,
+						'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
+						'bpkd_pembiayaan'		=> $request->tarif[$i]
+
+				 	 ]);
+				
+
+			}else{
 
 				biaya_penerus_kas_detail::create([
 			  		'bpkd_id'				=> $dt,
@@ -825,16 +953,48 @@ $cabang=$request->cabang;
 					'bpkd_status_resi'		=> $request->status[$i],
 					'bpkd_tarif'			=> $request->tarif[$i],
 					'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
-					'updated_at'			=> Carbon::now(),
-					'bpk_comp'				=> $request->cabang
+					'created_at'			=> Carbon::now(),
+					'bpk_comp'				=> $request->cabang,
+					'bpkd_pembiayaan'		=> $request->tarif[$i]
 
-			  	]);
+			  ]);
 			}
+		}
 
 
+		$cari_id_pc = DB::table('patty_cash')
+						 ->max('pc_id');
+
+				if ($cari_id_pc == null) {
+					$cari_id_pc = 1;
+				}else{
+					$cari_id_pc += 1;
+				}
+
+
+		
+					$save_patty = DB::table('patty_cash')
+						   ->where('pc_no_trans',$request->no_trans)
+						   ->update([
+						   		'pc_tgl'		  => Carbon::now(),
+						   		'pc_ref'	 	  => 10,
+						   		'pc_akun' 		  => $cari_persen->kode_akun,
+						   		'pc_akun_kas' 	  => $request->nama_kas,
+						   		'pc_keterangan'	  => $request->note,
+						   		'pc_comp'  	  	  => $request->cabang,
+						   		'pc_edit'  	  	  => 'UNALLOWED',
+						   		'pc_reim'  	  	  => 'UNRELEASED',
+						   		'pc_debet'  	  => 0,
+						   		'pc_no_trans'  	  => $request->no_trans,
+						   		'pc_kredit'  	  => round($total_penerus_float,2),
+						   		'created_at'	  => Carbon::now(),
+					        	'updated_at' 	  => Carbon::now()
+					]);
+
+		// JURNAL
 		$cari_id = DB::table('biaya_penerus_kas')
-		  			 ->where('bpk_id','=',$request->id)
-		  			 ->get();
+		  			   ->where('bpk_id','=',$request->id)
+		  			   ->get();
 
 		$cari=DB::table('biaya_penerus_kas')			
 					 ->join('cabang','kode','=','bpk_comp')
@@ -875,8 +1035,9 @@ $cabang=$request->cabang;
 			for ($i=0; $i < count($harga_array); $i++) { 
 				 $jurnal[$i]['harga'] = round($harga_array[$i],2);
 				 $jurnal[$i]['asal'] = $unik_asal[$i];
+
 			}
-		}
+
 			// IKI MAS JURNAL.E HARGA MBEK ASALE
 			 // return $jurnal;
 			//
@@ -884,13 +1045,54 @@ $cabang=$request->cabang;
 			$total_harga=array_sum($harga_array);
 
 
+				$id_akun=[];
+		foreach  ($jurnal as $index => $value) {
+            $id_akun[$index]['kode_cabang'] = $value['asal'];
+            $id_akun[$index]['total']      = $value['harga'];
+           }
+		$dataJurnal=$this->groupJurnal($id_akun);
+		//dd($request->all());
+		/*dd($dataJurnal);*/
+		$indexakun=0;		
+		$totalKas = str_replace(['Rp', '\\', ',', ' '], '', $request->total);
+       // $totalKas = str_replace(',', '.', $request->total);
+        //dd($totalKas);
+$cabang=$request->cabang;
+ $akunKas=master_akun::
+                  select('id_akun','nama_akun')
+                  ->where('id_akun','like', ''.$request->nama_kas.'%')                                    
+                  ->orderBy('id_akun')
+                  ->first();                  
+             
+        if(count($akunKas)!=0){
+        $akun[$indexakun]['id_akun']=$akunKas->id_akun;
+        $akun[$indexakun]['value']= -round($totalKas,2);
+        $akun[$indexakun]['dk']='K';
+        $indexakun++;      
+        }
+        else{
+            $dataInfo=['status'=>'gagal','info'=>'Akun Kas Untuk Cabang Belum Tersedia'];
+            DB::rollback();
+            return json_encode($dataInfo);
+
+        }       
+
+	
+
+
+		}
+		  			
 
 		  if ($pending_status == "APPROVED") {
-		  	return response()->json(['status' => '1']);
-		  }else{
-		  	return response()->json(['status' => '2','minimal' => $total_tarif]);
-		 }
 
+		  	return response()->json(['status' => '1','id'=>$cari_id[0]->bpk_id]);
+		  }else{
+		  	
+		  	return response()->json(['status' => '2','minimal' => $sisa,'id'=>$cari_id[0]->bpk_id]);
+		  }
+
+
+		});
 	}
 
 	public function hapus($id){
@@ -1065,69 +1267,151 @@ $cabang=$request->cabang;
 	        return Response::json($results);
 
 
-		}
+	}
 
 	public function cariresiedit(request $request){
+		if ($request->data[2]['value'] == 'PAKET') {
+
 			$cari_persen = DB::table('master_persentase')
-	    		  ->where('kode',$request->pembiayaan_paket)
-	    		  ->where('cabang',$request->cabang)
-	    		  ->get();
-	    if ($cari_persen == null) {
-	    	$cari_persen = DB::table('master_persentase')
-	    		  ->where('kode',$request->pembiayaan_paket)
-	    		  ->where('cabang','GLOBAL')
-	    		  ->get();
-	    }
+	    		  ->where('jenis_bbm',$request->data[3]['value'])
+	    		  ->where('cabang',$request->head[4]['value'])
+	    		  ->first();
+
+		    if ($cari_persen == null) {
+		    	$cari_persen = DB::table('master_persentase')
+		    		  ->where('jenis_bbm',$request->data[3]['value'])
+		    		  ->where('cabang','GLOBAL')
+		    		  ->first();
+
+		    }
+		    
+		}else{
+
+			$cari_persen = DB::table('master_persentase')
+	    		  ->where('jenis_bbm',$request->data[4]['value'])
+	    		  ->where('cabang',$request->head[4]['value'])
+	    		  ->first();
+
+		    if ($cari_persen == null) {
+		    	$cari_persen = DB::table('master_persentase')
+		    		  ->where('jenis_bbm',$request->data[4]['value'])
+		    		  ->where('cabang','GLOBAL')
+		    		  ->first();
+
+		    }
+
+		}
+		
+		// return dd($cari_persen);
+
 	    
-		$biaya_bbm 	  = filter_var($request->total_bbm, FILTER_SANITIZE_NUMBER_INT);
-		$biaya_dll 	  = filter_var($request->biaya_dll, FILTER_SANITIZE_NUMBER_INT);
-		$resi      	  = explode(' ', $request->resi);
-		$resi	  	  = array_unique($resi);
-		$resi	  	  = array_values($resi);
+		$biaya_bbm 	  = filter_var($request->data[7]['value'], FILTER_SANITIZE_NUMBER_INT);
+		$biaya_dll 	  = filter_var($request->data[6]['value'], FILTER_SANITIZE_NUMBER_INT);
 		$data     	  = [];
 		$tujuan       = [];
 		$total_tarif  = 0;
 		$penerus      = [];
 		$total_penerus= 0;
-		$tipe_data    = $request->tipe_data;
+		$tipe_data    = $request->head[2]['value'];
+		$jenis_biaya  = $cari_persen->jenis_bbm;
+		$cabang 	  = $request->head[4]['value'];
+		$resi 		  = [];
+		$now 		  = Carbon::now()->format('Y-m-d');
 
-		for ($i=0 ; $i < count($resi); $i++) { 
+		for ($i=0; $i < count($request->resi_array); $i++) { 
+			$cari_resi = DB::table('delivery_order')
+						   ->whereIn('nomor',$request->resi_array)
+						   ->orderBy('nomor','ASC')
+						   ->get();
 
-		    $bpk = DB::table('biaya_penerus_kas_detail')
-				  ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
-				  ->join('master_persentase','bpk_pembiayaan','=','kode')
-				  ->where('bpkd_no_resi',$resi[$i])
-				  ->get();
+			$cari_resi1 = DB::table('delivery_order')
+						   ->select('bpkd_no_resi')
+						   ->leftjoin('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+						   ->whereIn('nomor',$request->resi_array)
+						   ->groupBy('bpkd_no_resi')
+						   ->orderBy('bpkd_no_resi','ASC')
+						   ->get();
 
+			$cari_loading = DB::table('delivery_order')
+						   ->whereIn('nomor',$request->resi_array)
+						   ->where('jenis_tarif',9)
+						   ->orderBy('nomor','ASC')
+						   ->get();
 
-		   	$bpk_dt[$i]   = $bpk;
-		}
-
-		// return $bpk_dt;
+			$cari_resi2 = DB::table('biaya_penerus_kas_detail')
+						   	->where('bpkd_bpk_id',$request->id)
+						   ->get();
 			
+		}
+		// return $cari_resi2;
+		for ($i=0; $i < count($cari_resi); $i++) { 
+			$resi[$i] = $cari_resi[$i]->nomor;
+			if (isset($cari_resi1[$i])) {
+				if ($cari_resi1[$i]->bpkd_no_resi != null) {
+					if ($jenis_biaya == '3') {
+						// shuttle
+						$tarif_shuttle = $cari_resi[$i]->total_net;
 
-		for ($i=0; $i < count($bpk_dt); $i++) { 
-			if($bpk_dt[$i]!=null){
-				if($bpk_dt[$i][0]->bpkd_bpk_id == $request->id){
-					
-				} elseif ($bpk_dt[$i][0]->jenis_biaya == '4') {
+						$cari_resi_shuttle = DB::table('biaya_penerus_kas_detail')
+											   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
+											   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
+											   ->where('bpk_jenis_bbm',$jenis_biaya)
+											   ->get();
+						$terbayar = [];
+						for ($a=0; $a < count($cari_resi_shuttle); $a++) { 
+							$terbayar[$a] = $cari_resi_shuttle[$a]->bpkd_tarif_penerus;
+						}
+						$terbayar = array_sum($terbayar);
+						if ($terbayar >= $tarif_shuttle) {
+							unset($resi[$i]);
+						}
 
-					
-				}else if($bpk_dt[$i][0]->jenis_biaya == '5'){
-					for ($a=0; $a < count($bpk_dt[$i]); $a++) { 
-						$comp[$a] = (float)$bpk_dt[$i][$a]->bpk_tarif_penerus;
-					}
+					}elseif ($jenis_biaya == '4' or $jenis_biaya == '7'){
+						// lintas  dan penyebrangan
+						$cari_resi_lintas = DB::table('biaya_penerus_kas_detail')
+											   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
+											   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
+											   ->where('biaya_penerus_kas_detail.bpk_comp',$cabang)
+											   ->get();
 
-					if (in_array($request->cabang,$comp)) {
+						if ($cari_resi_lintas != null) {
+							unset($resi[$i]);
+						}
+
+					}else{
 						unset($resi[$i]);
 					}
-				}else{
+				}elseif($cari_resi[$i]->jenis_tarif == 9){
+					unset($resi[$i]);
+				}
+			}
+
+		}
+		// $resi = array_filter($resi);
+		$resi = array_values($resi);
+		// return $resi;
+		for ($i=0; $i < count($cari_resi2); $i++) { 
+			for ($a=0; $a < count($cari_resi); $a++) { 
+				if ($cari_resi[$a]->nomor == $cari_resi2[$i]->bpkd_no_resi) {
+					array_push($resi, $cari_resi[$a]->nomor);
+				}
+			}
+		}
+
+		
+		 $resi = array_unique($resi);
+		 $resi = array_values($resi);
+
+		for ($i=0; $i < count($resi); $i++) { 
+			for ($a=0; $a < count($cari_loading); $a++) { 
+				if ($cari_loading[$a]->nomor == $resi[$i]) {
 					unset($resi[$i]);
 				}
 			}
 		}
+		
 		$resi = array_values($resi);
-		// return $resi;
+
 		for ($i=0 ; $i < count($resi); $i++) { 
 
 			$cari = DB::table('delivery_order')
@@ -1144,6 +1428,7 @@ $cabang=$request->cabang;
 		   	$data[$i]   = $cari;
 		   	$tujuan[$i] = $cari1;
 		}
+
 		//Menjumlah tarif resi
 		$data = array_filter($data);
 		$data = array_values($data);
@@ -1152,7 +1437,7 @@ $cabang=$request->cabang;
 
 		if (count($data) != 0) {
 			for ($i=0; $i < count($data); $i++) { 
-				$total_tarif+=$data[$i][0]->tarif_dasar;
+				$total_tarif+=$data[$i][0]->total_net;
 			}
 			$total_tarif = round($total_tarif,2);
 		 //Menjumlah bbm dan biaya lain-lain
@@ -1160,13 +1445,12 @@ $cabang=$request->cabang;
 
 		//menghitung tarif penerus
 			for ($i=0; $i < count($data); $i++) { 
-				$hasil=($kas_surabaya/$total_tarif)*$data[$i][0]->tarif_dasar;
+				$hasil=($kas_surabaya/$total_tarif)*$data[$i][0]->total_net;
 				$penerus[$i]=round($hasil,2);
 			}
 		
 			$total_penerus =array_sum($penerus);
 			$total_penerus =round($total_penerus,2);
-
 			return view('purchase/kas/tabelBiayakas',compact('data','tujuan','total_tarif','kas_surabaya','penerus','total_penerus','tipe_data'));
 	
 		}else{
@@ -1226,7 +1510,13 @@ $cabang=$request->cabang;
     	return view('purchase/kas/akun_kas',compact('data'));
     }
     public function nopol(request $request)
-    {
+    {	
+    	if (isset($request->id_nopol)) {
+    		$id = $request->id_nopol;
+    	}else{
+    		$id = 0;
+    	}
+    	
     	$data = DB::table('kendaraan')
     			   ->where('tipe_angkutan',$request->jenis)
     			   ->where('status','!=','SUB')
@@ -1237,7 +1527,7 @@ $cabang=$request->cabang;
     			   ->where('kode',$request->jenis)
     			   ->first();
 
-    	return view('purchase/kas/nopol',compact('data','tipe'));
+    	return view('purchase/kas/nopol',compact('data','tipe','id'));
 
     }
 }

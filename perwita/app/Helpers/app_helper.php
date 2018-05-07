@@ -60,14 +60,14 @@
 		if($year == null)
 			$year = date('Y');
 
-		if($withMonth)
-			$data = DB::table("d_periode_keuangan")->where("bulan", $month)->where("tahun", $year)->select("*")->get();
+		if($withMonth)	
+			$data = DB::table("d_periode_keuangan")->where("bulan", $month)->where("tahun", $year)->where("status", 'accessable')->select("*")->get();
 		else
-			$data = DB::table("d_periode_keuangan")->where("tahun", $year)->select("*")->get();
+			$data = DB::table("d_periode_keuangan")->where("tahun", $year)->where("status", 'accessable')->select("*")->get();
 		
 
 		return count($data);
-	} //JIKA COUNT == 0, maka belum tutup periode, jika ada maka tidak kosong
+	} //JIKA COUNT == 1, maka belum tutup periode, jika ada maka tidak kosong
 
 	
 ?>

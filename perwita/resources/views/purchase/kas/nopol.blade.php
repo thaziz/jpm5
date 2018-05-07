@@ -1,7 +1,7 @@
 <select style="display: inline-block; " class="form-control nopol chosen-select-width1" name="nopol">
    <option selected=""  value="0">- pilih-nopol -</option>
    @foreach($data as $val)
-   <option value="{{$val->id}}">{{$tipe->nama}} - {{$val->nopol}} - {{ $val->kode_cabang }} </option>
+   <option @if($id == $val->id) selected="" @endif value="{{$val->id}}">{{$tipe->nama}} - {{$val->nopol}} - {{ $val->kode_cabang }} </option>
    @endforeach
 </select>
 
@@ -16,4 +16,5 @@
              for (var selector in config1) {
                $(selector).chosen(config1[selector]);
              }
+console.log('ini {{$id}}');
 </script>

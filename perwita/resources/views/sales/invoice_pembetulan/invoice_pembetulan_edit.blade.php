@@ -466,7 +466,10 @@
 <script type="text/javascript">
     // global variabel
     var array_simpan = [];
-
+    var index_detail = 1;
+    @foreach($data_dt as $i=>$a)
+    index_detail+=1;
+    @endforeach
     // chosen select
     var config = {
                    '.chosen-select'           : {},
@@ -517,7 +520,6 @@
         $('.grup_item').val('0').trigger('chosen:updated');
         $('.grup_item_tr').prop('hidden',true);
     }
-   var index_detail = 1;
     // pilih_invoice
     function pilih_invoice(a) {
         var id  = $(a).find('.i_nomor_invoice').val();
@@ -565,10 +567,40 @@
                         index_detail++;
                         array_simpan.push(data.data_dt.dd_id);
                     }
-                }else{
+                }else if (data.data.i_pendapatan == 'PAKET'){
                     for(var i = 0 ; i < data.data_dt.length;i++){
 
+                        
+
                         table_detail.row.add([
+                            index_detail+'<p class="indexing"></p>',
+
+                            data.data_dt[i].nomor+'<input class="nomor_detail" type="hidden" value="'+data.data_dt[i][0].nomor+'" name="do_detail[]">',
+
+                            data.data_dt[i][0].tanggal,
+
+                            data.data_dt[i][0].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+data.data_dt[i][0].acc_penjualan+'" name="akun[]">',
+
+                            data.data_dt[i][0].jumlah+'<input type="hidden" value="'+data.data_dt[i][0].jumlah+'" name="dd_jumlah[]">',
+
+                            accounting.formatMoney(data.data_dt[i][0].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].tarif_dasar+'" name="dd_harga[]">',
+
+                            accounting.formatMoney(parseFloat(data.data_dt[i][0].total)+parseFloat(data.data_dt[i][0].biaya_tambahan), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(data.data_dt[i][0].total+data.data_dt[i][0].biaya_tambahan)+'" name="dd_total[]">',
+
+                            accounting.formatMoney(data.data_dt[i][0].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].diskon+'" name="dd_diskon[]">',
+
+                            accounting.formatMoney(data.data_dt[i][0].total_net, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+data.data_dt[i][0].total_net+'" name="harga_netto[]">',
+
+                            '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+
+                        ]).draw(false);
+                        index_detail++;
+                        array_simpan.push(data.data_dt[i][0].nomor);
+                        console.log(array_simpan);
+
+                    }
+                }else if(data.data.i_penjualan == 'KARGO'){
+                    table_detail.row.add([
                             index_detail,
                             data.data_dt[i][0].nomor+'<input class="nomor_detail" type="hidden" value="'+data.data_dt[i][0].nomor+'" name="do_detail[]">',
                             data.data_dt[i][0].tanggal,
@@ -585,7 +617,6 @@
                         array_simpan.push(data.data_dt[i][0].nomor);
                         console.log(array_simpan);
 
-                    }
                 }
 
                 hitung();
@@ -926,22 +957,31 @@
                     hitung();
                     
                     $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
-                    $('#cb_pendapatan').attr('disabled',true);
+                    // $('#cb_pendapatan').attr('disabled',true);
                     ///////////////////////////////////////////
-                }else if (response.jenis == 'PAKET' || response.jenis == 'KARGO') {
+                }else if (response.jenis == 'PAKET' ) {
                     for(var i = 0 ; i < response.data.length;i++){
                         ///////////////////////////////////////
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail,
+                            index_detail+'<p class="indexing"></p>',
+
                             response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
+
                             response.data[i].tanggal,
+
                             response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
+
                             accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
-                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+
+                            accounting.formatMoney(parseFloat(response.data[i].total)+parseFloat(response.data[i].biaya_tambahan), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(response.data[i].total+response.data[i].biaya_tambahan)+'" name="dd_total[]">',
+
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
+
                             accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);
@@ -950,7 +990,42 @@
                     hitung();
                     
                     $('.customer_td').addClass('disabled');
-                    $('#cb_pendapatan').attr('disabled',true);
+                    $('.grup_item_tr').addClass('disabled');
+                    // $('#cb_pendapatan').attr('disabled',true);
+                    /////////////////////////////////////
+                }else if (response.jenis == 'KARGO') {
+                    for(var i = 0 ; i < response.data.length;i++){
+                        ///////////////////////////////////////
+                        index_detail+=1;
+                        table_detail.row.add([
+                            index_detail+'<p class="indexing"></p>',
+
+                            response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
+
+                            response.data[i].tanggal,
+
+                            response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+
+                            response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
+
+                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
+
+                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+
+                            accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
+
+                            accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+
+                            '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+
+                        ]).draw(false);
+                    }
+
+                    hitung();
+                    
+                    $('.customer_td').addClass('disabled');
+                    $('.grup_item_tr').addClass('disabled');
+                    // $('#cb_pendapatan').attr('disabled',true);
                     /////////////////////////////////////
                 }
 

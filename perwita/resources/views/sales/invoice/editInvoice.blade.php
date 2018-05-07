@@ -449,6 +449,7 @@
 @section('extra_scripts')
 <script type="text/javascript">
     // global variabel
+    var index_detail = 1;
     var array_simpan = [];
     @if($data->i_pendapatan == 'KORAN')
         @foreach($data_dt as $i=>$val)
@@ -459,6 +460,10 @@
             array_simpan.push("{{$val->id_nomor_do}}");
         @endforeach
     @endif
+
+    @foreach($data_dt as $i=>$a)
+    index_detail+=1;
+    @endforeach
     console.log(array_simpan);
     // chosen select
     var config = {
@@ -793,6 +798,7 @@ function hitung_pajak_lain(){
         if (netto_diskon1 < 0) {
         netto_diskon1 = 0;
         }
+        console.log(temp_total);
         $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
@@ -803,8 +809,8 @@ function hitung_pajak_lain(){
    }
    
    // untuk mengirim yang di check ke controller dengan ajax
-   var index_detail = 0;
-   $('#btnsave').click(function(){
+   
+      $('#btnsave').click(function(){
 
         var nomor_dt = [];
         var nomor_do = [];
@@ -856,20 +862,63 @@ function hitung_pajak_lain(){
                     // $('.cus_disabled').attr('disabled',true).trigger("chosen:updated");
                     // $('#cb_pendapatan').attr('disabled',true);
                     ///////////////////////////////////////////
-                }else if (response.jenis == 'PAKET' || response.jenis == 'KARGO') {
+                }else if (response.jenis == 'PAKET' ) {
                     for(var i = 0 ; i < response.data.length;i++){
                         ///////////////////////////////////////
                         index_detail+=1;
                         table_detail.row.add([
                             index_detail+'<p class="indexing"></p>',
+
                             response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
+
                             response.data[i].tanggal,
+
                             response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
+
                             accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
-                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+
+                            accounting.formatMoney(parseFloat(response.data[i].total)+parseFloat(response.data[i].biaya_tambahan), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(response.data[i].total+response.data[i].biaya_tambahan)+'" name="dd_total[]">',
+
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
+
                             accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+
+                            '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+
+                        ]).draw(false);
+                    }
+
+                    hitung();
+                    
+                    $('.customer_td').addClass('disabled');
+                    $('.grup_item_tr').addClass('disabled');
+                    $('#cb_pendapatan').attr('disabled',true);
+                    /////////////////////////////////////
+                }else if (response.jenis == 'KARGO') {
+                    for(var i = 0 ; i < response.data.length;i++){
+                        ///////////////////////////////////////
+                        index_detail+=1;
+                        table_detail.row.add([
+                            index_detail+'<p class="indexing"></p>',
+
+                            response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
+
+                            response.data[i].tanggal,
+
+                            response.data[i].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+
+                            response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
+
+                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
+
+                            accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+
+                            accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
+
+                            accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
+
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);

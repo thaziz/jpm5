@@ -31,7 +31,7 @@
   }
   .disabled {
     pointer-events: none;
-    opacity: 0.8;
+    opacity: 0.4;
   }
   .search{
     margin-left: 5px;
@@ -56,10 +56,10 @@
                             <a>Purchase</a>
                         </li>
                         <li>
-                          <a> Transaksi Purchase</a>
+                          <a> Transaksi Kas</a>
                         </li>
                         <li class="active">
-                            <strong> Transaksi Kas </strong>
+                            <strong> Tambah Biaya Penerus Loading </strong>
                         </li>
 
                     </ol>
@@ -77,11 +77,11 @@
     <div class="ibox">
       <div class="ibox-title">
         <h5>Biaya Penerus Kas</h5>
-        <a href="../biaya_penerus/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+        <a href="../biaya_penerus_loading/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
       </div>
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">
-          <table class="table table_header">
+           <table class="table table_header">
             {{ csrf_field() }}
             <tr>
               <td>No Transaksi</td>
@@ -136,40 +136,13 @@
                 <td>Jenis Pembiayaan</td>
                 <td>
                   <select class="form-control jenis_pembiayaan" type="text" name="jenis_pembiayaan">
-                    <option value="0" selected>- Pilih Jenis Pembiayaan -</option>
-                    <option @if($data->bpk_jenis_biaya == 'PAKET') selected="" @endif value="PAKET">PAKET</option>
-                    <option @if($data->bpk_jenis_biaya == 'KARGO') selected="" @endif value="KARGO">CARGO</option>
+                    <option value="LOADING">LOADING/UNLOADING</option>
                   </select>
+                  <input type="hidden" name="pembiayaan" value="0">
                 </td>
               </tr>
               <tr>
-                <td >Pembiayaan</td>
-                <!-- AWAL PEMBIAYAAN -->
-                <td class="pembiayaan">
-                  <select class="form-control pembiayaan" type="text">
-                    <option value="0" selected>- Pilih Jenis Biaya -</option>
-                  </select>
-                </td>
-                <!-- PAKET DROPDOWN-->
-                <td hidden="" class="pembiayaan_paket">
-                   <select class="form-control " name="pembiayaan_paket" >
-                    @foreach($akun_paket as $val)
-                     <option @if($data->bpk_pembiayaan == $val->kode) selected="" @endif value="{{ $val->jenis_bbm }}">{{ $val->kode}} - {{ $val->nama }}</option>
-                    @endforeach
-                   </select>
-                </td>
-                <!-- CARGO DROPDOWN-->
-                <td hidden="" class="pembiayaan_cargo">
-                    <select class="form-control " name="pembiayaan_cargo" >
-                     @foreach($akun_kargo as $val)
-                     <option @if($data->bpk_pembiayaan == $val->kode) selected="" @endif value="{{ $val->jenis_bbm }}">{{ $val->kode }} - {{ $val->nama }}</option>
-                    @endforeach
-                    </select>
-                </td>
-
-              </tr>
-              <tr>
-                <td>Jenis Kendaraan</td>
+              <td>Jenis Kendaraan</td>
                 <td>
                   <select class="form-control jenis_kendaraan chosen-select-width1" type="text" name="jenis_kendaraan" onchange="jenis_kendaraan()">
                     <option value="0">- Pilih Jenis Kendaraan -</option>
@@ -177,31 +150,6 @@
                     <option @if($data->bpk_tipe_angkutan == $val->kode) selected="" @endif value="{{$val->kode}}">{{$val->nama}}</option>
                     @endforeach
                   </select>
-                </td>
-              </tr>
-              <tr>
-                <td>Biaya Parkir & Tol</td>
-                <td>
-                  <input  onkeyup="hitung()" class="form-control biaya_dll" type="text" name="biaya_dll" value="Rp {{ number_format($data->bpk_biaya_lain,0) }}" placeholder="Biaya Lain Lain" >
-                </td>
-              </tr>
-            
-              <tr>
-                <td>
-                  Biaya Bahan Bakar :
-                  <input readonly="" class="form-control total_bbm" type="text" name="total_bbm" value="Rp {{ number_format($data->bpk_harga_bbm,0) }}" placeholder="" >
-                </td>
-                <td style="color: red">
-                  Total Biaya Keseluruhan :
-                  <input readonly="" class="form-control total" type="text" name="total" value="Rp 0">
-                </td>
-              </tr>
-              <tr>
-                <td>Kilometer (KM)</td>
-                <td>
-                  <input class="form-control kilometer" type="text" name="km" value="{{ $data->bpk_jarak }}" placeholder="kilometer" onkeyup="hitung_bbm()">
-                  <input class="form-control km_liter" type="hidden">
-                  <input class="form-control bbm" type="hidden" name="km_val">
                 </td>
               </tr>
               <tr>
@@ -213,20 +161,20 @@
               <tr>
                 <td>Nama sopir</td>
                 <td>
-                  <input  class="form-control nama_sopir" type="text" name="nama_sopir" value="{{ $data->bpk_sopir }}" placeholder="nama sopir">
+                  <input  class="form-control nama_sopir" type="text" name="nama_sopir" value="" placeholder="nama sopir">
                 </td>
               </tr>
               <tr>
                 <td>Note</td>
                 <td>
-                  <textarea class="form-control note" name="note" value="{{ $data->bpk_keterangan }}" placeholder="fill this note" >{{ $data->bpk_keterangan }}</textarea>
+                  <textarea class="form-control note" name="note" value="" placeholder="fill this note" ></textarea>
                 </td>
               </tr>
               <tr>
                 <td>Nota Resi (dipisah dengan spasi)<span class="require" style="color: red"> *</span></td>
                 <td>
-                  <textarea style="height: 100px" class="form-control resi" id="resi"  value="" placeholder="Nota Resi" >{{$resi}}</textarea>
-                  <br><label>Untuk Pembiayaan Lintas, hanya di isi No Resi Lintas</label>
+                  <textarea style="height: 100px" class="form-control resi" id="resi"  value="" placeholder="Nota Resi" ></textarea>
+                  <br><label>Khusus Untuk DO loading/unloading, selain itu data tidak ditampilkan</label>
                 </td>
               </tr>
               <tr>
@@ -242,6 +190,10 @@
     <div hidden="" class="ibox valid_key" style="padding-top: 10px;">
       <div class="ibox-title"><h5>Tabel Data Resi</h5></div>
       <div class="ibox-content col-sm-12">
+        <div class="col-sm-6 form-inline pull-right">
+          <span>Total : <input readonly="" type="text" class="total_penerus form-control"></span>
+        </div>
+
         <div class="col-sm-12 resi_body">          
                     
         </div>
@@ -464,7 +416,83 @@ var datatable;
 
  }
  //////////////////////////////////////////////
+ var total = [];
+ function hitung(){
+  var bayar = $('.biaya_dll').val();
+  var hitung = bayar.replace(/[^0-9\.-]+/g,"");
+  total[0] = hitung;
+  var temp = 0;
+  
+   if(total[0]==""){
+      total[0]=0;
+    }
+  if(total[1] != undefined && total[1] != ""){
+   total[1] = total[1].replace("Rp ","");
+   total[1] = total[1].replace(/[^0-9\.-]+/g,"");
+  }
 
+   for(var i = 0 ; i<total.length;i++){
+        temp+=parseInt(total[i]);
+   }
+  temp = temp.toLocaleString()
+  $('.total').val('Rp '+temp);
+  $('.valid_key').attr('hidden',true);
+  $('.resi_body').html('');
+
+ }
+
+ function hitung_bbm(){
+
+  var km        = $('.kilometer').val();
+  var bbm_liter = parseInt($('.km_liter').val());
+  var harga_bbm = parseInt($('.bbm').val());
+  var jk        = $('.jenis_kendaraan').val();
+  var hasil = 0;
+  var temp = 0;
+
+  if(km != "" && jk != "0"){
+    parseInt(km);
+    hasil = km/bbm_liter;
+    hasil = hasil * harga_bbm;
+    hasil = Math.round(hasil);
+    hasil = hasil.toLocaleString();
+    hasil = 'Rp ' + hasil;
+
+
+    $('.total_bbm').val(hasil);
+
+
+    total[1] = hasil;
+    if(total[0]==undefined ){
+      total[0]=0;
+    }
+    total[1] = total[1].replace("Rp ","");
+    total[1] = total[1].replace(/[^0-9\.-]+/g,"");
+
+    for(var i = 0 ; i<total.length;i++){
+      temp+=parseInt(total[i]);
+    }
+    temp = temp.toLocaleString()
+    temp = 'Rp ' + temp;
+    $('.total').val(temp);
+
+
+  }else if(km == ""){
+    $('.total_bbm').val(0);
+    total[1] = 0;
+    if(total[0]==undefined){
+      total[0]=0;
+    }
+    for(var i = 0 ; i<total.length;i++){
+      temp+=parseInt(total[i]);
+    }
+    temp = temp.toLocaleString()
+    temp = 'Rp ' + temp;
+    $('.total').val(temp);
+  }
+  $('.valid_key').attr('hidden',true);
+  $('.resi_body').html('');
+ }
 
 function search(){
   var resi = $('#resi').val();
@@ -481,7 +509,7 @@ function search(){
         });
 
   $.ajax({
-      url:baseUrl + '/biaya_penerus/cariresiedit',
+      url:baseUrl + '/biaya_penerus_loading/cariresiedit',
       type:'get',
       data: {head,data,resi_array,id},
       success:function(data){
