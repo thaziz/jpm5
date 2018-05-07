@@ -404,7 +404,7 @@
 			<tr>
 				<td height="27" class="textleft borderrighttabel borderlefttabel borderbottomtabel bordertoptabel" width="78.2%">Terbilang : {{$terbilang}}</td>
 				<td class="textleft borderrighttabel borderbottomtabel bordertoptabel" width="11%">Total</td>
-				<td class="textright borderrighttabel borderbottomtabel bordertoptabel">{{ number_format($head->i_netto, 2, ",", ".") }}</td>
+				<td class="textright borderrighttabel borderbottomtabel bordertoptabel">{{ number_format($head->i_netto_detail+$head->i_diskon2, 2, ",", ".") }}</td>
 			</tr>
 		</table>
 		</table>
@@ -414,7 +414,7 @@
 				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.4%">&nbsp;</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Discount</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_diskon+$head->i_diskon2, 2, ",", ".") }}</td>
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_diskon2, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td class="borderrighttabel textleft" width="26%">Pt. Jawa Pratama Mandiri</td>
