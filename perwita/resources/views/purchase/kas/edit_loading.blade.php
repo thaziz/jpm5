@@ -161,19 +161,19 @@
               <tr>
                 <td>Nama sopir</td>
                 <td>
-                  <input  class="form-control nama_sopir" type="text" name="nama_sopir" value="" placeholder="nama sopir">
+                  <input  class="form-control nama_sopir" type="text" name="nama_sopir" value="{{$data->bpk_sopir}}" placeholder="nama sopir">
                 </td>
               </tr>
               <tr>
                 <td>Note</td>
                 <td>
-                  <textarea class="form-control note" name="note" value="" placeholder="fill this note" ></textarea>
+                  <textarea class="form-control note" name="note" value="" placeholder="fill this note" >{{$data->bpk_keterangan}}</textarea>
                 </td>
               </tr>
               <tr>
                 <td>Nota Resi (dipisah dengan spasi)<span class="require" style="color: red"> *</span></td>
                 <td>
-                  <textarea style="height: 100px" class="form-control resi" id="resi"  value="" placeholder="Nota Resi" ></textarea>
+                  <textarea style="height: 100px" class="form-control resi" id="resi"  value="" placeholder="Nota Resi" >{{$resi}}</textarea>
                   <br><label>Khusus Untuk DO loading/unloading, selain itu data tidak ditampilkan</label>
                 </td>
               </tr>
@@ -253,7 +253,7 @@ var datatable;
       $('.pembiayaan_cargo').attr('hidden',false);
       $('.pembiayaan').attr('hidden',true);
     }
-    jenis_kendaraan();
+    // jenis_kendaraan();
     var id_nopol = "{{ $data->bpk_nopol }}";
     $.ajax({
           url:baseUrl + '/biaya_penerus/nopol',
@@ -266,9 +266,9 @@ var datatable;
               location.reload();
           }
       })
-    hitung();
+    // hitung();
     search();
-  });
+});
    var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
 
 
@@ -522,6 +522,8 @@ function search(){
         }else{
           $('.valid_key').attr('hidden',false);
           $('.resi_body').html(data);
+          var tp = $('#total_penerus').val();
+          $('.total_penerus').val(accounting.formatMoney(tp, "", 2, ".",','));
         }
        
       }
@@ -550,8 +552,8 @@ function(){
         });
 
       $.ajax({
-      url:baseUrl + '/biaya_penerus/update_penerus',
-      type:'post',
+      url:baseUrl + '/biaya_penerus_loading/update_loading',
+      type:'get',
       data: datatable.$('input').serialize()+'&'+$('.table_header :input').serialize()+'&'+$('.table_data :input').serialize()+'&id='+id,
       success:function(data){
         if(data.status == '0'){

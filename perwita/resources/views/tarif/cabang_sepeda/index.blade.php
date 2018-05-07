@@ -473,6 +473,7 @@
     });
 
     $(document).on("click","#btnsave",function(){
+        $('#btnsave').addClass('disabled');
         var data = $('.kirim :input').serialize();
 
         var a = $('#cb_kota_asal').val();
@@ -683,6 +684,7 @@
             }
             return false;
         }
+
         console.log(data);
         $.ajax(
         {
@@ -692,6 +694,8 @@
             data : $('.kirim :input').serialize(),
             success: function(data, textStatus, jqXHR)
             {
+            $('#btnsave').removeClass('disabled');
+
                 if(data.crud == 'N'){
                     if(data.result == 1){
                         var table = $('#table_data').DataTable();
@@ -719,8 +723,11 @@
             error: function(jqXHR, textStatus, errorThrown)
             {
                swal("Kode Tidak boleh sama !", 'periksa sekali lagi', "warning");
-            }
+            },
+
+
         });
+
     });
 
     $(document).on( "click",".btndelete", function() {

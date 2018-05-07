@@ -280,10 +280,10 @@
 		<div class="position-fixed">
 			<table class="inlineTable">
 				<td>
-					<img class="img" width="200" height="100" src="{{ asset('perwita/storage/app/upload/images.jpg') }}">
+					<img class="img" width="150" height="80" src="{{ asset('perwita/storage/app/upload/images.jpg') }}">
 				</td>
 			</table>
-			<table class="inlineTable size" style="margin-bottom: -20px;margin-top: 20px;">
+			<table class="inlineTable size" style="margin-bottom: 5px;margin-top: 20px">
 		    <tr>
 		      <th>{{perusahaan()->mp_nama}}</th>
 		    </tr>
@@ -404,7 +404,7 @@
 			<tr>
 				<td height="27" class="textleft borderrighttabel borderlefttabel borderbottomtabel bordertoptabel" width="78.2%">Terbilang : {{$terbilang}}</td>
 				<td class="textleft borderrighttabel borderbottomtabel bordertoptabel" width="11%">Total</td>
-				<td class="textright borderrighttabel borderbottomtabel bordertoptabel">{{ number_format($head->i_netto, 2, ",", ".") }}</td>
+				<td class="textright borderrighttabel borderbottomtabel bordertoptabel">{{ number_format($head->i_netto_detail+$head->i_diskon2, 2, ",", ".") }}</td>
 			</tr>
 		</table>
 		</table>
@@ -414,14 +414,18 @@
 				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.4%">&nbsp;</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Discount</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_diskon+$head->i_diskon2, 2, ",", ".") }}</td>
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_diskon2, 2, ",", ".") }}</td>
 			</tr>
 			<tr>
 				<td class="borderrighttabel textleft" width="26%">Pt. Jawa Pratama Mandiri</td>
 				<td class="textleft borderrighttabel" width="26%">&nbsp;</td>
 				<td class="textright borderrighttabel" width="26.2%">&nbsp;</td>
 				<td height="27" class="borderrighttabel borderbottomtabel textleft" width="11%">Netto</td>
-				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_netto-$head->i_diskon-$head->i_diskon2, 2, ",", ".") }}</td>
+				@if($head->i_ppntpe == 'npkp')
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_netto_detail + $head->i_ppnrp, 2, ",", ".") }}</td>
+				@else
+				<td class="borderrighttabel borderbottomtabel textright">{{ number_format($head->i_netto_detail, 2, ",", ".") }}</td>
+				@endif
 			</tr>
 			<tr>
 				<td class="borderrighttabel textleft" width="26%">BCA KCP Bhayangkara Surabaya</td>

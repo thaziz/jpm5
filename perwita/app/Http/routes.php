@@ -312,6 +312,7 @@ Route::get('biaya_penerus_loading/edit', 'loadingController@edit_loading')->name
 Route::post('biaya_penerus_loading/cariresi', 'loadingController@cariresi');
 Route::get('biaya_penerus_loading/cariresiedit', 'loadingController@cariresiedit');
 Route::get('biaya_penerus_loading/save_loading', 'loadingController@save_loading');
+Route::get('biaya_penerus_loading/update_loading', 'loadingController@update_loading');
 // 
 //BUKTI KAS KELUAR
 Route::get('buktikaskeluar/index', 'kasKeluarController@index');
@@ -919,6 +920,7 @@ Route::get('carilaporan_penjualan/carilaporan_penjualan','LaporanMasterControlle
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
 Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
+Route::post('exceldeliveryorder_total/exceldeliveryorder_total','LaporanMasterController@exceldeliveryorder_total');
 //END OF DELIVERY ORDER TOTAL
 
 //LAPORAN DELIVERY ORDER PAKET 

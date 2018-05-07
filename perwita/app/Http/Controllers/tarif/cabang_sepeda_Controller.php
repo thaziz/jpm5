@@ -277,12 +277,13 @@ class cabang_sepeda_Controller extends Controller
 
                   }else{
                     // return $cari_old[$i][$a]->kode;
-                      // return $cari_old;
+                    // // return 'a';
+                    //   return $cari_old;
                     if ($cari_old[$i][$a]->crud != 'E') {
                       // return 'a';
                                 $simpan = DB::table('tarif_cabang_sepeda')
                                 ->where('kode',$cari_old[$i][$a]->kode)
-                                ->orderBy('kode','ASC')
+                                ->orderBy('kode_detail_sepeda','asc')
                                 ->update([
                                         'harga' => $array_harga[$a],
                                         'waktu' => $request->waktu,
@@ -337,7 +338,7 @@ class cabang_sepeda_Controller extends Controller
                      $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
                     $kode = $kodekota.'/'.'SPD'.''.$kodecabang.$kode_utama;   
 
-                }else if ($datadetailcount == 0){
+                }else if ($datadetailcount == 0){ 
                     $kode_detail_sepeda += 1;
                      $kode_utama = $kode_utama+1;
                      $kode_utama = str_pad($kode_utama, 5,'0',STR_PAD_LEFT);
