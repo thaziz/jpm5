@@ -76,7 +76,9 @@
                         <td> {{ Carbon\Carbon::parse($rn->rn_tgl)->format('d-M-Y ') }} </td>
                         <td> {{$rn->nama_supplier}} </td>
                         <td> {{$rn->po_no}} </td>
-                        <td> <a class="btn btn-sm btn-success" href={{url('returnpembelian/detailreturnpembelian/'. $rn->rn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> </td>
+                        <td> <a class="btn btn-sm btn-success" href={{url('returnpembelian/detailreturnpembelian/'. $rn->rn_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a>  <a class="btn btn-sm btn-danger" onclick="hapusdata({{$rn->rn_id}})">
+                              <i class="fa fa-trash"> </i> 
+                            </a> </td>
                         
                       </tr>
                       @endforeach
@@ -120,40 +122,47 @@
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
-    
-   /* $('#tmbh_data_barang').click(function(){
-      $("#addColumn").append('<tr> <td rowspan="3"> 1 </td> <td rowspan="3"> </td> <td rowspan="3"> </td>  <td rowspan="3"> </td> <td> halo </td> <td> 3000 </td>  <tr> <td> halo </td> <td>  5.000 </td> </tr> <tr><td> halo </td> <td> 3000 </td> </tr>');
-    })*/
-     $no = 0;
-    $('#tmbh_data_barang').click(function(){
-         $no++;
-     $("#addColumn").append('<tr id=field-'+$no+'> <td> <b>' + $no +' </b> </td> <td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]">  <option value=""> -- Pilih Data Barang -- </option> <option value="">  Barang 1 </option> <option value="">  Barang 2 </option> </td> <td> </td>  <td> </td> <td> </td> <td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]"> <option value=""> -- Pilih Data Supplier -- </option> <option value="">  Supplier 1 </option> <option value="">  Supplier 2 </option> </td> <td> 3000 </td> <td> <button class="btn btn-danger remove-btn" data-id='+$no+' type="button"><i class="fa fa-trash"></i></button> </td> </tr>');
-
-
-
-      $(document).on('click','.remove-btn',function(){
-              var id = $(this).data('id');
-              var parent = $('#field-'+id);
-
-              parent.remove();
-          })
-    })
-
-      $('#tmbh_supplier').click(function(){
-            $no++;
-        $("#addColumn").append('<tr id=supp-'+$no+'> <td> <b>  </b> </td> <td> </td> <td> </td>  <td> </td> <td> </td><td> <select  class="form-control select2" style="width: 100%;" name="idbarang[]"> <option value=""> -- Pilih Data Supplier -- </option> <option value="">  Supplier 1 </option> <option value="">  Supplier 2 </option>  </td> <td> 3000 </td> <td> <button class="btn btn-danger removes-btn" data-id='+$no+' type="button"><i class="fa fa-trash"></i></button>  </td> </tr>');
-
-
-        $(document).on('click','.removes-btn',function(){
-              var id = $(this).data('id');
-       //       alert(id);
-              var parent = $('#supp-'+id);
-
-             parent.remove();
-          })
-     })
   
-    
+    function hapusdata(id){
+       swal({
+        title: "Apakah anda yakin?",
+        text: "Hapus Data!",
+        type: "warning",
+        showCancelButton: true,
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false
+      },
+      function(){
+     $.ajax({
+      data : {id},
+      url : baseUrl + '/returnpembelian/delete/'+id,
+      type : "get",
+      success : function(response){
+           swal({
+            title: "Berhasil!",
+                    type: 'success',
+                    text: "Data Berhasil Dihapus",
+                    timer: 2000,
+                    showConfirmButton: true
+                    },function(){
+                       location.reload();
+            });
+           
+      },
+      error:function(data){ 
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+        });
+      }
+     })
+   })
+    }
 
 </script>
 @endsection
