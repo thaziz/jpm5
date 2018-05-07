@@ -1530,10 +1530,11 @@
               }
               $sup++;            
               countersup++;
-
+              gudang = $('.gudang').val();
               $.ajax({
-                url : baseUrl + '/suratpermintaanpembelian/ajax_hargasupplier/' + kodeitem2,
+                url : baseUrl + '/suratpermintaanpembelian/ajax_hargasupplier',
                 type : "GET",
+                data : {kodeitem2, gudang},
                 dataType : "json",
                 success : function(data) {
       $('.loadingjenis').css('display' , 'none');

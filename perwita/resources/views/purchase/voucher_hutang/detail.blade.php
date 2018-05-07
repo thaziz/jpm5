@@ -131,7 +131,7 @@
                         <td style="text-align: center;"> {{$index+1}} </td>
                         <td> {{$a->vd_acc}}  </td>
                         <td> {{$a->vd_keterangan}} </td>
-                        <td>Rp.{{number_format($a->vd_nominal,0,",",".")}},00</td>
+                        <td> Rp. {{ number_format($Expense->price, 2) }}</td>
                       </tr>
                     </tbody>
                     @endforeach
