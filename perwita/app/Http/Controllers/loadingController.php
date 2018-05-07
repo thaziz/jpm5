@@ -232,7 +232,6 @@ class loadingController extends Controller
 					'bpkd_tarif_penerus'	=> $request->penerus[$i],
 					'created_at'			=> Carbon::now(),
 					'bpk_comp'				=> $request->cabang,
-					'bpk_jenis_bbm'			=> 0,
 					'bpkd_pembiayaan'		=> 0
 
 				]);
@@ -266,6 +265,8 @@ class loadingController extends Controller
 			   		'pc_no_trans'  	  => $request->no_trans,
 			   		'pc_kredit'  	  => $request->total_penerus,
 			   		'created_at'	  => Carbon::now(),
+			   		'updated_by'	  => Auth::user()->m_username,
+			   		'created_by'	  => Auth::user()->m_username,
 		        	'updated_at' 	  => Carbon::now()
 			]);
 
@@ -410,6 +411,126 @@ class loadingController extends Controller
 		}else{
 			return response()->json(['status' => 0]);
 		}
+    }
+
+    public function update_loading(request $request)
+    {
+		return DB::transaction(function() use ($request) {  
+
+		 	$cari_data = DB::table('biaya_penerus_kas')
+					->where('bpk_nota',$request->no_trans)
+					->first();
+
+
+			$akun = DB::table('d_akun')
+					  ->where('id_akun','like','2199'.'%')
+					  ->where('kode_cabang',$request->cabang)
+					  ->first();
+
+			if ($akun == null) {
+				$akun = DB::table('d_akun')
+					  ->where('id_akun','like','2199'.'%')
+					  ->where('kode_cabang','000')
+					  ->first();
+			}
+
+				biaya_penerus_kas::where('bpk_nota',$request->no_trans)->update([
+				  	'bpk_nota'  	  	 => $request->no_trans,
+				  	'bpk_jenis_biaya' 	 => $request->jenis_pembiayaan,
+				  	'bpk_pembiayaan'  	 => $request->pembiayaan,
+				  	'bpk_total_tarif' 	 => round($request->total_tarif,2),
+				  	'bpk_tanggal'     	 => Carbon::parse($request->tN)->format('Y-m-d'),
+				  	'bpk_nopol'		  	 => strtoupper($request->nopol),
+				  	'bpk_status'	  	 => 'Released',
+				  	'bpk_status_pending' => 'APPROVED',	
+				  	'bpk_kode_akun'		 => $request->nama_kas,
+				  	'bpk_sopir'		 	 => strtoupper($request->nama_sopir),
+				  	'bpk_keterangan'	 => strtoupper($request->note),
+				  	'bpk_tipe_angkutan'  => $request->jenis_kendaraan,		
+				  	'updated_at'		 => Carbon::now(),
+				  	'bpk_comp'	 		 => $request->cabang,
+				  	'bpk_tarif_penerus'	 => $request->total_penerus,
+				  	'bpk_edit'	 		 => 'UNALLOWED',
+				  	'bpk_biaya_lain'	 => 0,
+				  	'bpk_jarak'	 		 => 0,
+				  	'bpk_harga_bbm'	     => 0,
+					'bpk_jenis_bbm'      => 0,
+					'bpk_acc_biaya'      => $akun->id_akun,
+				  	'updated_by'		 => Auth::user()->m_name,
+				]);
+
+		
+
+			biaya_penerus_kas_detail::where('bpkd_bpk_id',$request->id)->delete();
+
+			for ($i=0; $i < count($request->no_resi); $i++) { 
+
+				$id_bpkd = DB::table('biaya_penerus_kas_detail')
+					->max('bpkd_id');
+
+				if($id_bpkd != null){
+					$id_bpkd+=1;
+				}else{
+					$id_bpkd=1;
+				}
+			
+				
+					
+				biaya_penerus_kas_detail::create([
+			  		'bpkd_id'				=> $id_bpkd,
+					'bpkd_bpk_id'	  	 	=> $request->id,
+					'bpkd_bpk_dt'			=> $i+1,
+					'bpkd_no_resi'			=> $request->no_resi[$i],
+					'bpkd_kode_cabang_awal'	=> $request->comp[$i],
+					'bpkd_tanggal'  		=> $request->tanggal[$i],
+					'bpkd_pengirim'	 		=> $request->pengirim[$i],
+					'bpkd_penerima'			=> $request->penerima[$i],
+					'bpkd_asal'				=> $request->asal[$i],
+					'bpkd_tujuan'			=> $request->tujuan[$i],
+					'bpkd_status_resi'		=> $request->status[$i],
+					'bpkd_tarif'			=> $request->tarif[$i],
+					'bpkd_tarif_penerus'	=> $request->penerus[$i],
+					'created_at'			=> Carbon::now(),
+					'bpk_comp'				=> $request->cabang,
+					'bpkd_pembiayaan'		=> 0
+
+				]);
+				
+			}
+			
+
+			$cari_id_pc = DB::table('patty_cash')
+						 ->max('pc_id');
+
+			if ($cari_id_pc == null) {
+				$cari_id_pc = 1;
+			}else{
+				$cari_id_pc += 1;
+			}
+
+
+		
+			$save_patty = DB::table('patty_cash')
+				   ->where('pc_no_trans',$request->no_trans)
+				   ->update([
+			   		'pc_tgl'		  => Carbon::parse($request->tN)->format('Y-m-d'),
+			   		'pc_ref'	 	  => 10,
+			   		'pc_akun' 		  => $akun->id_akun,
+			   		'pc_akun_kas' 	  => $request->nama_kas,
+			   		'pc_keterangan'	  => $request->note,
+			   		'pc_comp'  	  	  => $request->cabang,
+			   		'pc_edit'  	  	  => 'UNALLOWED',
+			   		'pc_reim'  	  	  => 'UNRELEASED',
+			   		'pc_debet'  	  => 0,
+			   		'pc_no_trans'  	  => $request->no_trans,
+			   		'pc_kredit'  	  => $request->total_penerus,
+			   		'updated_by'	  => Auth::user()->m_username,
+		        	'updated_at' 	  => Carbon::now()
+			]);
+
+			return response()->json(['status'=>1,'id'=>$request->id]);
+
+		});
     }
 
 }

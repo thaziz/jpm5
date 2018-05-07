@@ -310,6 +310,7 @@ Route::get('biaya_penerus_loading/edit', 'loadingController@edit_loading')->name
 Route::post('biaya_penerus_loading/cariresi', 'loadingController@cariresi');
 Route::get('biaya_penerus_loading/cariresiedit', 'loadingController@cariresiedit');
 Route::get('biaya_penerus_loading/save_loading', 'loadingController@save_loading');
+Route::get('biaya_penerus_loading/update_loading', 'loadingController@update_loading');
 // 
 //BUKTI KAS KELUAR
 Route::get('buktikaskeluar/index', 'kasKeluarController@index');

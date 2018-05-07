@@ -464,7 +464,83 @@ var datatable;
 
  }
  //////////////////////////////////////////////
+ var total = [];
+ function hitung(){
+  var bayar = $('.biaya_dll').val();
+  var hitung = bayar.replace(/[^0-9\.-]+/g,"");
+  total[0] = hitung;
+  var temp = 0;
+  
+   if(total[0]==""){
+      total[0]=0;
+    }
+  if(total[1] != undefined && total[1] != ""){
+   total[1] = total[1].replace("Rp ","");
+   total[1] = total[1].replace(/[^0-9\.-]+/g,"");
+  }
 
+   for(var i = 0 ; i<total.length;i++){
+        temp+=parseInt(total[i]);
+   }
+  temp = temp.toLocaleString()
+  $('.total').val('Rp '+temp);
+  $('.valid_key').attr('hidden',true);
+  $('.resi_body').html('');
+
+ }
+
+ function hitung_bbm(){
+
+  var km        = $('.kilometer').val();
+  var bbm_liter = parseInt($('.km_liter').val());
+  var harga_bbm = parseInt($('.bbm').val());
+  var jk        = $('.jenis_kendaraan').val();
+  var hasil = 0;
+  var temp = 0;
+
+  if(km != "" && jk != "0"){
+    parseInt(km);
+    hasil = km/bbm_liter;
+    hasil = hasil * harga_bbm;
+    hasil = Math.round(hasil);
+    hasil = hasil.toLocaleString();
+    hasil = 'Rp ' + hasil;
+
+
+    $('.total_bbm').val(hasil);
+
+
+    total[1] = hasil;
+    if(total[0]==undefined ){
+      total[0]=0;
+    }
+    total[1] = total[1].replace("Rp ","");
+    total[1] = total[1].replace(/[^0-9\.-]+/g,"");
+
+    for(var i = 0 ; i<total.length;i++){
+      temp+=parseInt(total[i]);
+    }
+    temp = temp.toLocaleString()
+    temp = 'Rp ' + temp;
+    $('.total').val(temp);
+
+
+  }else if(km == ""){
+    $('.total_bbm').val(0);
+    total[1] = 0;
+    if(total[0]==undefined){
+      total[0]=0;
+    }
+    for(var i = 0 ; i<total.length;i++){
+      temp+=parseInt(total[i]);
+    }
+    temp = temp.toLocaleString()
+    temp = 'Rp ' + temp;
+    $('.total').val(temp);
+  }
+  $('.valid_key').attr('hidden',true);
+  $('.resi_body').html('');
+ }
 
 function search(){
   var resi = $('#resi').val();

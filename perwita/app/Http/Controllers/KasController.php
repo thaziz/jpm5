@@ -915,26 +915,26 @@ $cabang=$request->cabang;
 			if ($cari_persen->jenis_bbm == '3') {
 				
 					
-					biaya_penerus_kas_detail::create([
-				  		'bpkd_id'				=> $dt,
-						'bpkd_bpk_id'	  	 	=> $request->id,
-						'bpkd_bpk_dt'			=> $i+1,
-						'bpkd_no_resi'			=> $request->no_resi[$i],
-						'bpkd_kode_cabang_awal'	=> $request->comp[$i],
-						'bpkd_tanggal'  		=> $request->tanggal[$i],
-						'bpkd_pengirim'	 		=> $request->pengirim[$i],
-						'bpkd_penerima'			=> $request->penerima[$i],
-						'bpkd_asal'				=> $request->asal[$i],
-						'bpkd_tujuan'			=> $request->tujuan[$i],
-						'bpkd_status_resi'		=> $request->status[$i],
-						'bpkd_tarif'			=> $request->tarif[$i],
-						'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
-						'created_at'			=> Carbon::now(),
-						'bpk_comp'				=> $request->cabang,
-						'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
-						'bpkd_pembiayaan'		=> $request->tarif[$i]
+				biaya_penerus_kas_detail::create([
+			  		'bpkd_id'				=> $dt,
+					'bpkd_bpk_id'	  	 	=> $request->id,
+					'bpkd_bpk_dt'			=> $i+1,
+					'bpkd_no_resi'			=> $request->no_resi[$i],
+					'bpkd_kode_cabang_awal'	=> $request->comp[$i],
+					'bpkd_tanggal'  		=> $request->tanggal[$i],
+					'bpkd_pengirim'	 		=> $request->pengirim[$i],
+					'bpkd_penerima'			=> $request->penerima[$i],
+					'bpkd_asal'				=> $request->asal[$i],
+					'bpkd_tujuan'			=> $request->tujuan[$i],
+					'bpkd_status_resi'		=> $request->status[$i],
+					'bpkd_tarif'			=> $request->tarif[$i],
+					'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+					'created_at'			=> Carbon::now(),
+					'bpk_comp'				=> $request->cabang,
+					'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
+					'bpkd_pembiayaan'		=> $request->tarif[$i]
 
-				 	 ]);
+			 	 ]);
 				
 
 			}else{
