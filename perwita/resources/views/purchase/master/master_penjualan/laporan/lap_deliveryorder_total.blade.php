@@ -54,7 +54,7 @@
                                               date" name="max" id="max" onchange="tgl()" >
                               </div> </td>
                       </tr>
-                       <tr>
+                       {{-- <tr>
                         <th> Nama Pengirim : </th> 
                           <td> 
                                 <input id="nama_pengirim" type="text" class="form-control ">
@@ -63,7 +63,7 @@
                             <td> 
                                 <input id="nama_penerima" type="text" class="form-control" >
                             </td>
-                      </tr>
+                      </tr> --}}
                       <tr>
                           <th style="width: 100px; padding-top: 16px">Cabang</th>
                           <td colspan="3">
@@ -78,7 +78,7 @@
                         <tr >
                            <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td >
-                          <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker1 form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal" onchange="filterColumn()">
+                          <select style="width: 200px; margin-top: 20px;" class="cari_semua chosen-select-width select-picker1 form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal" onchange="filterColumn()">
                             <option value="" disabled="" selected=""> --Asal --</option>
                             @foreach ($kota1 as $asal)
                                 <option value="{{ $asal->asal }}">{{ $asal->asal }}</option>
@@ -99,7 +99,7 @@
                         <tr>
                            <th style="width: 100px; padding-top: 16px"> Tipe </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker3 form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
+                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
                             <option value="" disabled="" selected=""> --Tipe --</option>
                             <option value="DOKUMEN">DOKUMEN</option>
                             <option value="KILOGRAM">KILOGRAM</option>
@@ -111,7 +111,7 @@
                           </td>
                           <th style="width: 100px; padding-top: 16px"> Status </th>
                           <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status" onchange="filterColumn4()">
+                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status" onchange="filterColumn4()" >
                             <option value="" disabled="" selected=""> --Status --</option>
                             <option value="MANIFESTED">MANIFESTED</option>
                             <option value="TRANSIT">TRANSIT</option>
@@ -130,7 +130,6 @@
                           <option value="{{ url('rekap_customer/rekap_customer') }}">Rekap Customer</option>
                         </select>
                       </div>
-
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                     </div>
                 </form>
@@ -258,12 +257,7 @@
               }
           ]
     });
-
-
-   
-    
-
-   
+  
       var aa=[];
        var bb = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < bb.length; i++){
@@ -279,22 +273,7 @@
 
 
 
-    $('.cari_semua').change(function(){
-       var aa=[];
-       var bb = table.rows( { filter : 'applied'} ).data(); 
-         for(var i = 0 ; i < bb.length; i++){
-            aa[i] =  $(bb[i][11]).val(); 
-         }
-       console.log(aa);
-       var aas = $('.select-picker1').find(':selected').val();
-       console.log(aas);
-       var total = 0;
-        for (var i = 0; i < aa.length; i++) {
-            total += aa[i] << 0;
-        }
-    $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
 
-    });
 
      $('.date').datepicker({
         autoclose: true,
@@ -313,12 +292,12 @@
         $.fn.dataTable.ext.search.push(
         function (settings, data, dataIndex) {
             var min = $('#min').datepicker("getDate");
-            // console.log(min);
+            console.log(min);
             var max = $('#max').datepicker("getDate");
-            // console.log(max);
+            console.log(max);
 
             var startDate = new Date(data[3]);
-            // console.log(startDate);
+            console.log(startDate);
             if (min == null || min == '' && max == null || max == '') { return true; }
             if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
             if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
@@ -356,33 +335,89 @@
     function filterColumn () {
     $('#addColumn').DataTable().column(6).search(
         $('#kota_asal').val()).draw();    
+    var aa=[];
+         console.log('anjay');
+         var bb = table.rows( { filter : 'applied'} ).data(); 
+           for(var i = 0 ; i < bb.length; i++){
+              aa[i] =  $(bb[i][11]).val(); 
+           }
+
+         var total = 0;
+          for (var i = 0; i < aa.length; i++) {
+              total += aa[i] << 0;
+          }
+          console.log(aa);
+      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
     }
     function filterColumn1 () {
         $('#addColumn').DataTable().column(7).search(
-            $('#kota_tujuan').val()).draw();    
+            $('#kota_tujuan').val()).draw();  
+            var aa=[];
+         console.log('anjay');
+         var bb = table.rows( { filter : 'applied'} ).data(); 
+           for(var i = 0 ; i < bb.length; i++){
+              aa[i] =  $(bb[i][11]).val(); 
+           }
+
+         var total = 0;
+          for (var i = 0; i < aa.length; i++) {
+              total += aa[i] << 0;
+          }
+          console.log(aa);
+      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));  
     }
     function filterColumn2 () {
         $('#addColumn').DataTable().column(9).search(
             $('.select-picker3').val()).draw(); 
-     }
-     // function filterColumn3 () {
-     //    $('#addColumn').DataTable().column(11).search(
-     //        $('.select-picker4').val()).draw(); 
-     // }
-     function filterColumn4 () {
-        $('#addColumn').DataTable().column(10).search(
-            $('#status').val()).draw(); 
-     }
-     function filterColumn5 () {
-        $('#addColumn').DataTable().column(12).search(
-            $('#cabang').val()).draw(); 
-     }
-     // $('#nama_pengirim').on( 'keyup', function () {
-     //     table.column(4).search( this.value ).draw();
-     //  });  
-     // $('#nama_penerima').on( 'keyup', function () {
-     //    table.column(5).search( this.value ).draw();
-     //  });  
+        var aa=[];
+         console.log('anjay');
+         var bb = table.rows( { filter : 'applied'} ).data(); 
+           for(var i = 0 ; i < bb.length; i++){
+              aa[i] =  $(bb[i][11]).val(); 
+           }
+
+         var total = 0;
+          for (var i = 0; i < aa.length; i++) {
+              total += aa[i] << 0;
+          }
+          console.log(aa);
+      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
+   }
+   function filterColumn4 () {
+      $('#addColumn').DataTable().column(10).search(
+          $('#status').val()).draw(); 
+      var aa=[];
+         console.log('anjay');
+         var bb = table.rows( { filter : 'applied'} ).data(); 
+           for(var i = 0 ; i < bb.length; i++){
+              aa[i] =  $(bb[i][11]).val(); 
+           }
+
+         var total = 0;
+          for (var i = 0; i < aa.length; i++) {
+              total += aa[i] << 0;
+          }
+          console.log(aa);
+      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
+   }
+   function filterColumn5 () {
+      $('#addColumn').DataTable().column(12).search(
+          $('#cabang_search').val()).draw(); 
+
+         var aa=[];
+         console.log('anjay');
+         var bb = table.rows( { filter : 'applied'} ).data(); 
+           for(var i = 0 ; i < bb.length; i++){
+              aa[i] =  $(bb[i][11]).val(); 
+           }
+
+         var total = 0;
+          for (var i = 0; i < aa.length; i++) {
+              total += aa[i] << 0;
+          }
+          console.log(aa);
+      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
+   } 
 
       function cetak(){
       var asw=[];
