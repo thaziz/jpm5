@@ -134,24 +134,36 @@
                                           </td>
                                         </tr>
 
-                                        @if($spp->spp_lokasigudang != '')
+                                     
                     
                                       <tr>
                                         <td  id="tdstock"> Apakah Update Stock ? </td>
-                                      
-                                        <td id="tdstock">  <select class="form-control updatestock" name="updatestock"  id="updatestock"> <option value="Y"> Ya </option> <option value="T"> TIDAK </option> </select></td>
+                                        <td id="tdstock">
+                                           @if($spp->spp_lokasigudang != '')
+                                         <select class="form-control updatestock" name="updatestock"  id="updatestock" selected=""> <option value="Y"  readonly> Ya </option> <option value="T"> TIDAK </option> </select>
+
+                                          @else
+                                          <select class="form-control updatestock" name="updatestock"  id="updatestock" readonly> <option value="Y" > Ya </option> <option value="T" selected=""> TIDAK </option> </select>
+                                           @endif
+                                        </td>
                                       </tr>
-                                      @endif
+                                     
 
 
-                                      <tr>
-                                       <td colspan="2"> <div class="lokasigudang"> </div> </td>
-                                      </tr>
-                               <!--    <button class='btn btn-danger remv-btn' type='button'> hapus </button> -->
+                                        @if($spp->spp_lokasigudang != '')
+                                        <tr>
+                                          @foreach($data['gudang'] as $gudang)
+                                           <td> <b> Lokasi Gudang </b> </td>   <td> <input type="text" class="form-control gudang" value="{{$gudang->mg_namagudang}}" readonly=""> </td>
+                                           @endforeach
+                                        </tr>
+                                        @endif
+                             
+
                                     <tr>
                                       <td> Keterangan </td>
-                                      <td> <input type="text" class="input-sm form-control" name="keterangan">  </td>
+                                      <td> <input type="text" class="input-sm form-control" name="keterangan" value="{{$spp->spp_keperluan}}">  </td>
                                     </tr>
+
                                     @endforeach
                                   </table>
 
@@ -210,7 +222,7 @@
                                     <td> </td>
                                   </tr>
 
-
+                                  @foreach($data)
                                
 
                                  </table>
