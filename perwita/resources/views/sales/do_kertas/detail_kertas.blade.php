@@ -15,6 +15,12 @@
     .center{
         text-align: center;
     }
+    .tabel_tarif tbody tr{
+        cursor: pointer;
+    }
+    #modal {
+        overflow-y:scroll;
+    }
 </style>                
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -22,7 +28,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> DO KERTAS
+                    <h5> DO KORAN
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                      <a href="../deliveryorderkertas" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
@@ -46,32 +52,49 @@
                     </div>
                 </form>
                 <form id="form_header" class="form-horizontal">
-                    <table class="table table_header table-striped table-bordered table-hover disabled">
+                    <table class="table table_header table-striped table-bordered table-hover">
                         <tbody>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_nomor" id="ed_nomor" class="form-control" readonly="readonly" style="text-transform: uppercase" value="{{ $data->nomor}}" >
-
+                                    <input type="text" name="ed_nomor" id="ed_nomor" class="form-control" readonly="readonly" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
+                                    <input type="hidden" name="ed_nomor_old" class="form-control" style="text-transform: uppercase" value="{{ $data->nomor or null }}" >
                                     <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
-
+                                    <input type="hidden" class="form-control" name="ed_tampil" >
+                                    <input type="hidden" class="form-control" name="crud_h" class="form-control" @if ($data === null) value="N" @else value="E" @endif>
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
                                     <div class="input-group date" style="width: 100%">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{carbon\carbon::parse($data->tanggal)->format('d/m/Y')}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{carbon\carbon::now()->format('d/m/Y')}}">
                                     </div>
                                 </td>
                             </tr>                        
+                           @if(Auth::user()->punyaAkses('Delivery Order Koran','cabang'))
+                            <tr class="">
+                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                <td colspan="4" class="cabang_td disabled" >
+                                    <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
+                                    @foreach ($cabang as $row)
+                                        @if($data->kode_cabang == $row->kode)
+                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} -  {{ $row->nama }} </option>
+                                        @else
+                                        <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                        @endif
+                                    @endforeach
+                                    </select>
+                                </td>
+                            </tr>
+                            @else
                             <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
                                 <td colspan="4">
                                     <select onchange="ganti_nota()" class="form-control chosen-select-width cabang "  name="cb_cabang">
                                     @foreach ($cabang as $row)
                                         @if($data->kode_cabang == $row->kode)
-                                        <option selected="" value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                        <option selected="" value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @else
                                         <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                         @endif
@@ -79,14 +102,17 @@
                                     </select>
                                 </td>
                             </tr>
+                            @endif
                             <tr>
                                 <td>Customer</td>
-                                <td class="customer_td">
+                                <td class="customer_td" colspan="3">
                                     <select onchange="cari_customer()" class="form-control customer chosen-select-width" name="customer">
                                         <option value="0">Pilih - Customer</option>
                                     @foreach($customer as $val)
                                         @if($data->kode_customer == $val->kode)
                                         <option selected="" value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
+                                        @else
+                                        <option  value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                         @endif
                                     @endforeach
                                     </select>
@@ -94,22 +120,44 @@
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Alamat</td>
-                                <td colspan="3">
+                                <td>
                                     <input type="text" class="form-control ed_alamat" name="ed_alamat" readonly="readonly" tabindex="-1" style="text-transform: uppercase" value="">
+                                </td>
+                                <td colspan="2">
+                                    <div class="checkbox checkbox-info checkbox-circle disabled">
+                                        <input class="status_kontrak" type="checkbox" name="status_kontrak">
+                                        <label>
+                                           status Kontrak
+                                        </label>
+                                    </div> 
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Diskon</td>
                                 <td colspan="3">
-                                    <input type="text" class="form-control ed_diskon_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="{{number_format($data->diskon, 2, ",", ".")}}">
-                                    <input type="hidden" class="form-control ed_diskon_m" name="ed_diskon_m" readonly="readonly" tabindex="-1"  style="text-align:right" value="{{$data->diskon}}">
+                                    <input type="text" class="form-control ed_diskon_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0">
+                                    <input type="hidden" class="form-control ed_diskon_m" name="ed_diskon_m" readonly="readonly" tabindex="-1"  style="text-align:right" value="0">
                                 </td>
                             </tr>
                             <tr>
-                                <td style="width:110px; padding-top: 0.4cm">Total</td>
+                                <td style="width:110px; padding-top: 0.4cm">Total Tarif</td>
                                 <td colspan="3">
-                                    <input type="text" class="form-control ed_total_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="{{number_format($data->total_net, 2, ",", ".")}}" >
-                                    <input type="hidden" class="form-control ed_total_m" name="ed_total_m" readonly="readonly" tabindex="-1"  style="text-align:right" value="{{$data->total_net}}" >
+                                    <input type="text" class="form-control ed_total_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0" >
+                                    <input type="hidden" class="form-control ed_total_m" name="ed_total_m" readonly="readonly" tabindex="-1"  style="text-align:right" >
+                                     
+                                </td>
+                            </tr>
+                            <tr hidden="">
+                                <td style="width:110px; padding-top: 0.4cm">Biaya Tambahan</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control biaya_tambahan"  onkeyup="hitung_total() " tabindex="-1"  style="text-align:right" value="{{number_format($data->biaya_tambahan, 0, ",", ".")}}" name="biaya_tambahan">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width:110px; padding-top: 0.4cm">Total Netto</td>
+                                <td colspan="3">
+                                    <input type="text" class="form-control total_net_h" readonly="readonly" tabindex="-1"  style="text-align:right" value="0" >
+                                    <input type="hidden" class="form-control total_net_m" name="total_net_m" readonly="readonly" tabindex="-1"  style="text-align:right" >
                                      
                                 </td>
                             </tr>
@@ -117,9 +165,10 @@
                     </table>
                     <div class="row">
                         <div class="col-md-12">
-                            
-                            <button type="button" class="btn btn-warning disabled" onclick="ngeprint()" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i>Print</button>
-                           
+                            <button type="button" class="btn btn-info tambah_kertas" onclick="tambah_kertas()"><i class="glyphicon glyphicon-plus"></i>Tambah</button>
+                            <button type="button" class="btn btn-success" onclick="simpan()" id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                            <button type="button" class="btn btn-warning" onclick="ngeprint()" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-print"></i>Print</button>
+                            <button type="button" class="btn btn-danger reload" id="print" name="btnsimpan" ><i class="glyphicon glyphicon-refresh"></i>reload</button>
                         </div>
                     </div>
                 </form>
@@ -164,9 +213,9 @@
                                       
                                                 </td>
                                             </tr>
-                                            <tr>
+                                            <tr class="item_tr">
                                                 <td>Item</td>
-                                                <td colspan="5" class="item_td">
+                                                <td colspan="5">
                                                     <select onchange="cari_item()" name="item" class="form-control item chosen-select-width">
                                                         <option value="0">Pilih - Item</option>
                                                         @foreach($item as $val)
@@ -189,8 +238,7 @@
                                             
                                                 <td style="padding-top: 0.4cm">Tarif Dasar</td>
                                                 <td>
-                                                    <input readonly="" type="text" class="form-control ed_harga_text" name="ed_harga" style="text-align: right;">
-                                                    <input readonly="" type="hidden" class="form-control ed_harga" name="ed_harga" style="text-align: right;">
+                                                    <input readonly="" onkeyup="hitung()" type="text" class="form-control ed_harga" name="ed_harga" style="text-align: right;">
                                                 </td>
                                             
                                                 <td style="padding-top: 0.4cm">Total</td>
@@ -198,6 +246,9 @@
                                                     <input type="text" class="form-control ed_total_text" readonly="readonly" name="ed_total" tabindex="-1" style="text-align: right;">
                                                     <input type="hidden" class="form-control ed_total" readonly="readonly" name="ed_total" tabindex="-1" style="text-align: right;">
                                                     <input type="hidden" readonly="readonly" class="form-control acc_penjualan" name="acc_penjualan" value="" >
+                                                    <input type="hidden" readonly="readonly" class="form-control csf_penjualan" name="csf_penjualan" value="" >
+                                                    <input type="hidden" readonly="readonly" class="form-control acc_piutang" name="acc_piutang" value="" >
+                                                    <input type="hidden" readonly="readonly" class="form-control csf_piutang" name="csf_piutang" value="" >
                                                 </td>
                                             </tr>
                                             <tr>
@@ -210,13 +261,13 @@
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Netto</td>
                                                 <td colspan="5">
-                                                    <input type="text" class="form-control ed_netto_text" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
+                                                    <input type="text" class="form-control ed_netto_text" readonly="readonly" name= tabindex="-1" style="text-align: right;">
                                                     <input type="hidden" class="form-control ed_netto" readonly="readonly" name="ed_netto" tabindex="-1" style="text-align: right;">
                                                 </td>
                                             </tr>
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Kota Asal</td>
-                                                <td colspan="5">   
+                                                <td colspan="5" class="asal_td">   
                                                     <select class="chosen-select-width cb_kota_asal"  name="cb_kota_asal" style="width:100%">
                                                         <option value="0">Pilih - Kota</option>
                                                     @foreach ($kota as $row)
@@ -227,7 +278,7 @@
                                             </tr>
                                             <tr>
                                                 <td style="padding-top: 0.4cm">Kota Tujuan</td>
-                                                <td colspan="5">   
+                                                <td colspan="5"  class="tujuan_td">   
                                                     <select class="chosen-select-width cb_kota_tujuan"  name="cb_kota_tujuan" style="width:100%">
                                                         <option value="0">Pilih - Kota</option>
                                                     @foreach ($kota as $row)
@@ -251,6 +302,24 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                {{-- modal kontrak --}}
+                <div id="modal_kontrak" class="modal" >
+                  <div class="modal-dialog" style="min-width: 800px;max-width: 800px">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Pilih Kontrak</h4>
+                      </div>
+                      <div class="modal-body">
+                            <form class="form-horizontal  modal_kontrak">
+                                
+                            </form>
+                          </div>
+                          <div class="modal-footer">
+                          </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="box-footer">
@@ -279,7 +348,8 @@
 @section('extra_scripts')
 <script type="text/javascript">
 // datatable
-
+var array_kontrak    = [];
+var array_kontrak_id = [];
 
 
 var table_detail = $('#table_detail').DataTable( {
@@ -314,13 +384,16 @@ var table_detail = $('#table_detail').DataTable( {
                       },
                     ],
     } );
+
 $('.date').datepicker({
         format:'dd/mm/yyyy'
 });
 
 
 
-$('.ed_diskon_modal').maskMoney({precision:0,thousands:'.'});
+$('.biaya_tambahan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+$('.ed_diskon_modal').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+$('.ed_harga').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
 
 function ganti_nota(){
     var cabang = $('.cabang').val();
@@ -340,56 +413,117 @@ function ganti_nota(){
 function cari_customer() {
     var cabang   = $('.cabang').val();
     var customer = $('.customer').val();
+    $('.tambah_kertas').addClass('disabled');
     $.ajax({
         url:baseUrl + '/sales/cari_customer_kertas',
         data:{customer},
         dataType:'json',
         success:function(data){
-            $('.ed_alamat').val(data.alamat);
+            $('.ed_alamat').val(data.customer.alamat);
+            // var len = array_kontrak_id.length;
+            // console.log(len);
+            // if (len != 0) {
+            //     len     = array_kontrak_id.splice(0,len);
+            // }
+            if (data.status == 1) {
+                $('.status_kontrak').prop('checked',true);
+                $('.ed_harga').prop('readonly',true);
+            }else{
+                $('.status_kontrak').prop('checked',false);
+                $('.ed_harga').prop('readonly',false);
+            }
+            $('.tambah_kertas').removeClass('disabled');
+
         },
         error:function(){
             // location.reload();
         }
     })
 }
-$(document).ready(function(){
-    cari_customer();
-});
 var count = 1;
-@foreach($data_dt as $val)
-    @foreach($item as $i)
-        @if ($i->kode == $val->dd_kode_item)
-        var temp = "{{$i->nama}}" 
-        @endif
-    @endforeach
+function hitung_total() {
+    var ed_total_m = $('.ed_total_m').val();
+    var biaya_tambahan   = $('.biaya_tambahan').val();
+    biaya_tambahan  = biaya_tambahan.replace(/[^0-9\-]+/g,"");
+    biaya_tambahan  = parseInt(biaya_tambahan);
+    ed_total_m  = parseInt(ed_total_m);
 
-    @foreach($kota as $i)
-        @if ($i->id == $val->dd_kota_asal)
-        var temp1 = "{{$i->nama}}" 
-        @endif
+    $('.total_net_m').val(ed_total_m+biaya_tambahan);
+    $('.total_net_h').val(accounting.formatMoney(ed_total_m+biaya_tambahan,"",2,'.',','));
+}
+$(document).ready(function(){
+cari_customer();
 
-        @if ($i->id == $val->dd_kota_tujuan)
-        var temp2 = "{{$i->nama}}" 
-        @endif
-    @endforeach
+@foreach($data_dt as $a => $val)
+    @if ($data->kontrak == false)
+        var temp = "{{$val->nama}}"
+        var dd_diskon = "{{$val->dd_diskon}}";
+        var dd_id = "{{$data_dt[$a]->dd_id}}";
+        var dd_harga = "{{$val->dd_harga}}";
+        var dd_total = "{{$val->dd_total}}";
+        var dd_kode_satuan = "{{$val->dd_kode_satuan}}";
+        var dd_jumlah = "{{$val->dd_jumlah}}";
+        var dd_id_kota_asal = "{{$val->dd_id_kota_asal}}";
+        var dd_id_kota_tujuan = "{{$val->dd_id_kota_tujuan}}";
+        var dd_kode_item = "{{$val->dd_kode_item}}";
+        var dd_id_kontrak = "{{$val->dd_id_kontrak}}";
+        var dd_acc_penjualan = "{{$val->dd_acc_penjualan}}";
+        var dd_csf_penjualan = "{{$val->dd_csf_penjualan}}";
+        var dd_acc_piutang = "{{$val->dd_acc_piutang}}";
+        var dd_csf_piutang = "{{$val->dd_csf_piutang}}";
+        var dd_keterangan = "{{$val->dd_keterangan}}";
+
+        @foreach($kota as $i)
+
+            @if ($i->id == $val->dd_id_kota_asal)
+            var temp1 = "{{$i->nama}}" 
+            @endif
+
+            @if ($i->id == $val->dd_id_kota_tujuan)
+            var temp2 = "{{$i->nama}}" 
+            @endif
+
+        @endforeach
+
+    @else
+        var temp = "{{$data_dt[$a]->nama_item}}"
+        var dd_diskon = "{{$data_dt[$a]->dd_diskon}}";
+        var dd_harga = "{{$data_dt[$a]->dd_harga}}";
+        var dd_id = "{{$data_dt[$a]->dd_id}}";
+        var dd_total = "{{$data_dt[$a]->dd_total}}";
+        var dd_kode_satuan = "{{$data_dt[$a]->dd_kode_satuan}}";
+        var dd_jumlah = "{{$data_dt[$a]->dd_jumlah}}";
+        var dd_id_kota_asal = "{{$data_dt[$a]->dd_id_kota_asal}}";
+        var dd_id_kota_tujuan = "{{$data_dt[$a]->dd_id_kota_tujuan}}";
+        var dd_kode_item = "{{$data_dt[$a]->dd_kode_item}}";
+        var dd_id_kontrak = "{{$data_dt[$a]->dd_id_kontrak}}";
+        var dd_acc_penjualan = "{{$data_dt[$a]->dd_acc_penjualan}}";
+        var dd_csf_penjualan = "{{$data_dt[$a]->dd_csf_penjualan}}";
+        var dd_acc_piutang = "{{$data_dt[$a]->dd_acc_piutang}}";
+        var dd_csf_piutang = "{{$data_dt[$a]->dd_csf_piutang}}";
+        var dd_keterangan = "{{$data_dt[$a]->dd_keterangan}}";
+
+        @foreach($kota as $i)
+
+            @if ($i->id == $data_dt[$a]->dd_id_kota_asal)
+            var temp1 = "{{$i->nama}}" 
+            @endif
+
+            @if ($i->id == $data_dt[$a]->dd_id_kota_tujuan)
+            var temp2 = "{{$i->nama}}" 
+            @endif
+
+        @endforeach
+    @endif
 
 
-var dd_diskon = "{{$val->dd_diskon}}";
-var dd_harga = "{{$val->dd_harga}}";
-var dd_total = "{{$val->dd_total}}";
-var dd_kode_satuan = "{{$val->dd_kode_satuan}}";
-var dd_jumlah = "{{$val->dd_jumlah}}";
-var dd_id_kota_asal = "{{$val->dd_id_kota_asal}}";
-var dd_id_kota_tujuan = "{{$val->dd_id_kota_tujuan}}";
-var dd_kode_item = "{{$val->dd_kode_item}}";
-var dd_acc_penjualan = "{{$val->dd_acc_penjualan}}";
-var dd_keterangan = "{{$val->dd_keterangan}}";
 table_detail.row.add({
         'id':'<p class="id_text">'+count+'</p>'+
         '<input type="hidden" class="id_'+count+' id" value="'+count+'">'+
         '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+dd_diskon+'">'+
         '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+dd_harga+'">'+
         '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+dd_total+'">'+
+        '<input type="hidden" readonly name="d_kcd_dt[]" class="form-control d_kcd_dt" value="'+dd_id_kontrak+'">'+
         '<input type="hidden" readonly name="d_satuan[]" class="form-control d_satuan" value="'+dd_kode_satuan+'">'+
         '<input type="hidden" readonly name="d_jumlah[]" class="form-control d_jumlah" value="'+dd_jumlah+'">'+
         '<input type="hidden" readonly name="d_asal[]" class="form-control d_asal" value="'+dd_id_kota_asal+'">'+
@@ -397,7 +531,12 @@ table_detail.row.add({
 
         'Kode Item':'<p class="kode_item_text">'+dd_kode_item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+dd_kode_item+'">'+
-        '<input type="hidden" name="d_acc[]" class="d_acc" value="'+dd_acc_penjualan+'">',
+        '<input type="hidden" name="d_id[]" class="d_id" value="'+dd_id+'">'+
+        '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+dd_kode_item+'">'+
+        '<input type="hidden" name="d_acc_penjualan[]" class="d_acc_penjualan" value="'+dd_acc_penjualan+'">'+
+        '<input type="hidden" name="d_csf_penjualan[]" class="d_csf_penjualan" value="'+dd_csf_penjualan+'">'+
+        '<input type="hidden" name="d_acc_piutang[]" class="d_acc_piutang" value="'+dd_acc_piutang+'">'+
+        '<input type="hidden" name="d_csf_piutang[]" class="d_csf_piutang" value="'+dd_csf_piutang+'">',
 
         'Nama Item':'<p class="nama_item">'+temp+'</p>',
 
@@ -407,7 +546,8 @@ table_detail.row.add({
 
         'Keterangan':'<input type="text" readonly name="d_keterangan[]" class="form-control d_keterangan" value="'+dd_keterangan+'">',
 
-        'Aksi':'-',
+        'Aksi':'<a onclick="edit_detail(this)" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></a>'+
+        '<a onclick="hapus_detail(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>',
 
         'jumlah':'<input type="text" readonly  class="form-control d_jumlah_text" value="'+dd_jumlah+'">',
 
@@ -420,7 +560,27 @@ table_detail.row.add({
         'netto':'<input type="text" readonly  class="form-control d_netto_text" value="'+accounting.formatMoney(dd_total,"",2,'.',',')+'">',
         }).draw();
 count+=1;
+// if ($('.status_kontrak').is(':checked') == true) {
+        array_kontrak.push(dd_kode_item);
+        array_kontrak_id.push(dd_id_kontrak);
+    // }
+
+       $.ajax({
+        url:baseUrl + '/sales/ganti_item',
+        data:{status},
+        success:function(data){
+            $('.item_tr').html(data);
+            // $('#modal').modal('show');
+        },
+        error:function(){
+            toastr.warning('Terjadi Kesalahan Silahkan Coba Lagi');
+        }
+    }) 
+       hitung_all();
+       hitung_total()
 @endforeach
+});
+
 function tambah_kertas() {
     var customer = $('.customer').val();
     if (customer == '0') {
@@ -436,18 +596,41 @@ function tambah_kertas() {
     $('.ed_diskon').val('0');
     $('.ed_diskon_modal').val('0');
     $('.ed_keterangan').val('');
-    $('.ed_harga_text').val('0');
     $('.ed_harga').val('0');
     $('.ed_total_text').val('0');
     $('.ed_total').val('0');
     $('.ed_satuan').val('');
     $('.acc_penjualan').val('');
+    $('.csf_penjualan').val('');
+    $('.acc_piutang').val('');
+    $('.csf_piutang').val('');
+    $('.kcd_dt').val('');
+    $('.asal_td').removeClass('disabled');
+    $('.tujuan_td').removeClass('disabled');
+    $('.ed_netto_text').val(0);
+    $('.ed_netto').val(0);
+    if ($('.status_kontrak').is(':checked') == true) {
+       var status = 2;
+    }else{
+        var status = 1;
+    }
 
+     $.ajax({
+        url:baseUrl + '/sales/ganti_item',
+        data:{status},
+        success:function(data){
+            $('.item_tr').html(data);
+            $('#modal').modal('show');
+        },
+        error:function(){
+            toastr.warning('Terjadi Kesalahan Silahkan Coba Lagi');
+        }
+    }) 
 
-    $('#modal').modal('show');
 }
 function hitung() {
    var ed_harga  = $('.ed_harga').val();
+   ed_harga      = ed_harga.replace(/[^0-9\-]+/g,"");
    if (ed_harga == '') {
     ed_harga = 0;
    }
@@ -483,7 +666,6 @@ function hitung_all() {
     var n = parseInt($(this).val());
     temp1 += n;
    })
-   console.log(temp1);
    $('.ed_total_m').val(temp1);
    $('.ed_total_h').val(accounting.formatMoney(temp1,"",2,'.',','));
 }
@@ -497,7 +679,6 @@ function cari_item() {
             if (data == null) {
                 $('.ed_satuan').val(0);
                 $('.ed_harga').val(0);
-                $('.ed_harga_text').val(0);
                 $('.acc_penjualan').val(0)
                 $('.ed_jumlah').val(0);
                 $('.ed_total').val(0);
@@ -505,8 +686,12 @@ function cari_item() {
             }
             $('.ed_satuan').val(data.kode_satuan);
             $('.ed_harga').val(data.harga);
-            $('.ed_harga_text').val(accounting.formatMoney(data.harga,"",2,'.',','));
-            $('.acc_penjualan').val(data.acc_penjualan)
+            $('.acc_penjualan').val(data.acc_penjualan);
+            $('.csf_penjualan').val(data.csf_penjualan);
+
+            $('.acc_piutang').val(data.acc_piutang);
+            $('.csf_piutang').val(data.csf_piutang);
+
             $('.ed_jumlah').val(1);
             
             hitung();
@@ -537,18 +722,29 @@ function simpan_modal() {
 
     var item                = $('.item').val();
     var old_id              = $('.old_id').val();
+    var kcd_dt              = $('.kcd_dt').val();
     var ed_satuan           = $('.ed_satuan').val();
     var ed_jumlah           = $('.ed_jumlah').val();
     var ed_harga            = $('.ed_harga').val();
+    ed_harga                = ed_harga.replace(/[^0-9\-]+/g,"");
     var ed_diskon           = $('.ed_diskon').val();
     var ed_netto            = $('.ed_netto').val();
     var cb_kota_asal        = $('.cb_kota_asal').val();
     var cb_kota_tujuan      = $('.cb_kota_tujuan').val();
     var ed_keterangan       = $('.ed_keterangan').val();
     var acc_penjualan       = $('.acc_penjualan').val();
+    var csf_penjualan       = $('.csf_penjualan').val();
+    var csf_piutang         = $('.csf_piutang').val();
+    var acc_piutang         = $('.acc_piutang').val();
     var cb_kota_asal_text   = $('.cb_kota_asal option:selected').text();
     var cb_kota_tujuan_text = $('.cb_kota_tujuan option:selected').text();
-    var item_text           = $('.item option:selected').text();
+    if ($('.status_kontrak').is(':checked') == true) {
+        var item_text       = $('.nama_kontrak').val();
+    }else{
+        var item_text       = $('.item option:selected').text();
+    }
+
+
 if (old_id == '') {
     table_detail.row.add({
         'id':'<p class="id_text">'+count+'</p>'+
@@ -556,6 +752,7 @@ if (old_id == '') {
         '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+ed_diskon+'">'+
         '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+ed_harga+'">'+
         '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+ed_netto+'">'+
+        '<input type="hidden" readonly name="d_kcd_dt[]" class="form-control d_kcd_dt" value="'+kcd_dt+'">'+
         '<input type="hidden" readonly name="d_satuan[]" class="form-control d_satuan" value="'+ed_satuan+'">'+
         '<input type="hidden" readonly name="d_jumlah[]" class="form-control d_jumlah" value="'+ed_jumlah+'">'+
         '<input type="hidden" readonly name="d_asal[]" class="form-control d_asal" value="'+cb_kota_asal+'">'+
@@ -563,7 +760,12 @@ if (old_id == '') {
 
         'Kode Item':'<p class="kode_item_text">'+item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
-        '<input type="hidden" name="d_acc[]" class="d_acc" value="'+acc_penjualan+'">',
+        '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
+        '<input type="hidden" name="d_acc_penjualan[]" class="d_acc_penjualan" value="'+acc_penjualan+'">'+
+        '<input type="hidden" name="d_id[]" class="d_id" value="">'+
+        '<input type="hidden" name="d_csf_penjualan[]" class="d_csf_penjualan" value="'+csf_penjualan+'">'+
+        '<input type="hidden" name="d_acc_piutang[]" class="d_acc_piutang" value="'+acc_piutang+'">'+
+        '<input type="hidden" name="d_csf_piutang[]" class="d_csf_piutang" value="'+csf_piutang+'">',
 
         'Nama Item':'<p class="nama_item">'+item_text+'</p>',
 
@@ -574,7 +776,8 @@ if (old_id == '') {
 
         'Keterangan':'<input type="text" readonly name="d_keterangan[]" class="form-control d_keterangan" value="'+ed_keterangan+'">',
 
-        'Aksi':'-',
+        'Aksi':'<a onclick="edit_detail(this)" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></a>'+
+        '<a onclick="hapus_detail(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>',
 
         'jumlah':'<input type="text" readonly  class="form-control d_jumlah_text" value="'+ed_jumlah+'">',
 
@@ -600,6 +803,7 @@ if (old_id == '') {
         '<input type="hidden" readonly name="d_diskon[]" class="form-control d_diskon" value="'+ed_diskon+'">'+
         '<input type="hidden" readonly name="d_harga[]" class="form-control d_harga" value="'+ed_harga+'">'+
         '<input type="hidden" readonly name="d_netto[]" class="form-control d_netto" value="'+ed_netto+'">'+
+        '<input type="hidden" readonly name="d_kcd_dt[]" class="form-control d_kcd_dt" value="'+kcd_dt+'">'+
         '<input type="hidden" readonly name="d_satuan[]" class="form-control d_satuan" value="'+ed_satuan+'">'+
         '<input type="hidden" readonly name="d_jumlah[]" class="form-control d_jumlah" value="'+ed_jumlah+'">'+
         '<input type="hidden" readonly name="d_asal[]" class="form-control d_asal" value="'+cb_kota_asal+'">'+
@@ -607,7 +811,12 @@ if (old_id == '') {
 
         'Kode Item':'<p class="kode_item_text">'+item+'</p>'+
         '<input type="hidden" name="d_kode_item[]" class="d_kode_item" value="'+item+'">'+
-        '<input type="hidden" name="d_acc[]" class="d_acc" value="'+acc_penjualan+'">',
+        '<input type="hidden" name="d_kode_id[]" class="d_kode_id" value="'+item+'">'+
+        '<input type="hidden" name="d_acc_penjualan[]" class="d_acc" value="'+acc_penjualan+'">'+
+        '<input type="hidden" name="d_id[]" class="d_id" value="">'+
+        '<input type="hidden" name="d_csf_penjualan[]" class="d_acc" value="'+csf_penjualan+'">'+
+        '<input type="hidden" name="d_acc_piutang[]" class="d_acc" value="'+acc_piutang+'">'+
+        '<input type="hidden" name="d_csf_piutang[]" class="d_acc" value="'+csf_piutang+'">',
 
         'Nama Item':'<p class="nama_item">'+item_text+'</p>',
 
@@ -617,7 +826,8 @@ if (old_id == '') {
 
         'Keterangan':'<input type="text" readonly name="d_keterangan[]" class="form-control d_keterangan" value="'+ed_keterangan+'">',
 
-        'Aksi':'-',
+        'Aksi':'<a onclick="edit_detail(this)" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></a>'+
+        '<a onclick="hapus_detail(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>',
 
         'jumlah':'<input type="text" readonly  class="form-control d_jumlah_text" value="'+ed_jumlah+'">',
 
@@ -631,12 +841,18 @@ if (old_id == '') {
         }).draw();
 }
 
+    if ($('.status_kontrak').is(':checked') == true) {
+        array_kontrak.push(item);
+        array_kontrak_id.push(kcd_dt);
+    }
+
 
     $('#modal').modal('hide');
-
+    $('.customer_td').addClass('disabled');
+    $('.cabang_td').addClass('disabled');
     hitung_all();
+    hitung_total();
 }
-
 function format ( d ) {
     // console.log(d);
     // `d` is the original data object for the row
@@ -695,7 +911,10 @@ function hapus_detail(p) {
     })
     if (temp == 0) {
         $('#btnsimpan').addClass('disabled');
+        // $('.customer_td').removeClass('disabled');
+        // $('.cabang_td').removeClass('disabled');
     }
+    hitung_all();
 }
 
 function edit_detail(p) {
@@ -703,41 +922,111 @@ function edit_detail(p) {
     var id  = $(par).find('.id').val();
     var d_kode_item  = $(par).find('.d_kode_item').val();
     var d_satuan  = $(par).find('.d_satuan').val();
-    var d_satuan  = $(par).find('.d_satuan').val();
     var d_jumlah  = $(par).find('.d_jumlah').val();
     var d_harga  = $(par).find('.d_harga').val();
     var d_diskon  = $(par).find('.d_diskon').val();
     var d_asal  = $(par).find('.d_asal').val();
-    var d_acc  = $(par).find('.d_acc').val();
+    var d_acc_penjualan  = $(par).find('.d_acc_penjualan').val();
+    var d_csf_penjualan  = $(par).find('.d_csf_penjualan').val();
+    var d_acc_piutang  = $(par).find('.d_acc_piutang').val();
+    var d_csf_piutang  = $(par).find('.d_csf_piutang').val();
     var d_tujuan  = $(par).find('.d_tujuan').val();
     var d_keterangan  = $(par).find('.d_keterangan').val();
+    var kcd_dt  = $(par).find('.d_kcd_dt').val();
 
     $('.ed_id').val(id);
     $('.old_id').val(id);
+    $('.kcd_dt').val(kcd_dt);
     $('.item').val(d_kode_item).trigger('chosen:updated');
-    cari_item();
+    $('.cb_kota_asal').val(d_asal).trigger('chosen:updated');
+    $('.cb_kota_tujuan').val(d_tujuan).trigger('chosen:updated');
+    if (kcd_dt == 0) {
+        cari_item();
+    }
+
+    if ($('.status_kontrak').is(':checked') == true) {
+       var status = 2;
+    }else{
+        var status = 1;
+    }
+
+  
     $('.ed_jumlah').val(d_jumlah);
     $('.ed_diskon').val(d_diskon);
     $('.ed_diskon_modal').val(accounting.formatMoney(d_diskon,"",0,'.',','));
     $('.ed_keterangan').val(d_keterangan);
-    $('.acc_penjualan').val(d_acc);
+    $('.acc_penjualan').val(d_acc_penjualan);
+    $('.csf_penjualan').val(d_csf_penjualan);
+    $('.acc_piutang').val(d_acc_piutang);
+    $('.csf_piutang').val(d_csf_piutang);
     hitung();    
     $('#modal').modal('show');
 }
 
 function ngeprint(){
-   var id = $('#ed_nomor').val();
-    window.open('{{url('sales/cetak_nota_kertas')}}'+'/'+id);
+       var id = $('#ed_nomor').val();
+        window.open('{{url('sales/cetak_nota_kertas')}}'+'/'+id);
 }
 
 $('.reload').click(function(){
     location.reload();
 })
 
+function cari_kontrak() {
+    var customer = $('.customer').val();
+    $.ajax({
+        url:baseUrl + '/sales/cari_kontrak_kertas',
+        data:{customer,array_kontrak,array_kontrak_id},
+        success:function(data){
+            $('.modal_kontrak').html(data);
+            $('#modal_kontrak').modal('show');
+            $('.asal_td').removeClass('disabled');
+            $('.tujuan_td').removeClass('disabled');
+        },
+        error:function(){
+            // location.reload();
+        }
+    })
 
+}
+
+function pilih_kontrak(a) {
+    var kc_nomor        = $(a).find('.kc_nomor').val();
+    var kcd_kota_asal   = $(a).find('.kcd_kota_asal').val();
+    var kcd_kota_tujuan = $(a).find('.kcd_kota_tujuan').val()
+    var kcd_harga       = $(a).find('.kcd_harga').val();
+    var kcd_kode_satuan = $(a).find('.kcd_kode_satuan').val();
+    var kcd_dt          = $(a).find('.kcd_dt_m').val();
+    var acc_penjualan   = $(a).find('.acc_kontrak').val();
+    var csf_penjualan   = $(a).find('.csf_kontrak').val();
+    var acc_piutang     = $(a).find('.acc_kontrak_piutang').val();
+    var csf_piutang     = $(a).find('.csf_kontrak_piutang').val();
+    var kcd_keterangan  = $(a).find('.kcd_keterangan').val();
+
+    $('.item').val(kc_nomor);
+    $('.ed_satuan').val(kcd_kode_satuan);
+    $('.kcd_dt').val(kcd_dt);
+    $('.ed_harga').val(accounting.formatMoney(kcd_harga,"",0,'.',','));
+    $('.cb_kota_asal').val(kcd_kota_asal).trigger('chosen:updated');
+    $('.asal_td').addClass('disabled');
+    $('.tujuan_td').addClass('disabled');
+    $('.cb_kota_tujuan').val(kcd_kota_tujuan).trigger('chosen:updated');
+    $('.acc_penjualan').val(acc_penjualan);
+    $('.csf_penjualan').val(acc_penjualan);
+    $('.acc_piutang').val(acc_piutang);
+    $('.csf_piutang').val(csf_piutang);
+    $('.nama_kontrak').val(kcd_keterangan);
+    $('.ed_jumlah').val(1);
+    $('.ed_diskon_modal').val(0);
+    $('.ed_diskon').val(0);
+    hitung();
+    $('#modal_kontrak').modal('hide');
+
+}
 // SIMPAN DATA
     function simpan(){
         var id = "{{$id}}";
+        var check = $('.status_kontrak').is(':checked');
       swal({
         title: "Apakah anda yakin?",
         text: "Simpan Data DO!",
@@ -763,7 +1052,8 @@ $('.reload').click(function(){
           dataType:'json',
           data:$('.table_header :input').serialize()
                +'&'+table_detail.$('input').serialize()
-               +'&id='+id,
+               +'&id='+id
+               +'&check='+check,
           success:function(response){
              if (response.status =='gagal') {
                 
@@ -813,5 +1103,9 @@ $('.reload').click(function(){
       });  
      });
     }
+
+
+
+
 </script>
 @endsection

@@ -959,24 +959,67 @@ class LaporanMasterController extends Controller
 						->join('cabang as cb','do.kode_cabang','=','cb.kode')
 						->where('nomor','=',$dat[$i])
 						->get();
-			}
-
-        foreach($dat1 as $key => $value){
-		    $get[$key] = $dat1[$key][0]->total_net;
-			$total_perhitungan = array_sum($get);
+		// $gege = $dat1[$i];
 		}
+		$gege = $dat1;
 
-        $date =  date('B'.'s'.'H');
+        
+		// return 'a';
+		// return $total_perhitungan;
+        
 
-				   			Excel::create('Invoice'.$date, function($excel) use ($dat1,$total_perhitungan){
+		// Add the headers
+		
 
-								    $excel->sheet('New sheet', function($sheet) use ($dat1,$total_perhitungan) {
-								        $sheet->loadView('purchase/master/master_penjualan/excel/excel_invoice')
-								        ->with('dat1',$dat1)
-								        ->with('total_perhitungan',$total_perhitungan);						
-								    });
+		// Add the headers
+		
 
-								})->download('csv');
+		// Add the results
+		// Generating the sheet from the array
+		$myFile= Excel::create("filename", function($excel) use($data,$dat1) {
+		   $excel->setTitle('title');
+		   $excel->sheet('sheet 1', function($sheet) use($data,$dat1) {
+		   	$sheetArray = array();
+		   	$sheetArray[] = array('No DO','Tanggal','Pengirim','Penerima','Kota Asal','Kota Tujuan','Kec Tujuan','Tipe','Status','Cabang','Tarif Keseluruhan');
+		   	foreach ($dat1 as $index => $row) {
+		   		$sheetArray[] = array(
+		   							$dat1[$index][0]->nomor 
+		   							,$dat1[$index][0]->tanggal 
+									,$dat1[$index][0]->nama_pengirim 
+									,$dat1[$index][0]->nama_penerima 
+									,$dat1[$index][0]->asal 
+									,$dat1[$index][0]->tujuan 
+									,$dat1[$index][0]->kecamatan 
+									,$dat1[$index][0]->type_kiriman 
+									,$dat1[$index][0]->status 
+									,$dat1[$index][0]->cabang 
+									,number_format($dat1[$index][0]->total_net,0,',','.') 
+								);
+		   	}	
+		   	foreach($dat1 as $key => $value){
+				    $get[$key] = $dat1[$key][0]->total_net;
+					$total_perhitungan = array_sum($get);
+			}
+		   	$sheetArray1[] = array('Total','','','','','','','','','',$total_perhitungan);
+		    $sheet->fromArray($sheetArray);
+		    $sheet->fromArray($sheetArray1);
+		   });
+		});
+		$date = carbon::now();
+		$beda = $date->year.$date->hour.$date->second.$date->second;
+		$myFile = $myFile->string('xlsx'); //change xlsx for the format you want, default is xls
+		$response =  array(
+		   'name' => "LaporanDo".$beda, //no extention needed
+		   'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($myFile) //mime type of used format
+		);
+		return response()->json($response);
+		
+
+
+		
+
+		// return $export_ss;
+		// return response()->json(['ex',=>,$excel]);
 		// return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_total',compact('dat1','total_perhitungan')); exceldeliveryorder_total(){
 
 	}

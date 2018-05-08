@@ -1222,7 +1222,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_controller@cetak_form');
 // Route::get('sales/deliveryorderform', 'sales\do_controller@form');
 // Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_controller@form');
-// Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail');
+// Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_controller@table_data_detail')->name('tabledata_detail');
 // Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_controller@get_data_detail');
 // Route::get('sales/deliveryorderform/tabel_item', 'sales\do_controller@table_data_item');
 // Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
@@ -1258,7 +1258,7 @@ Route::get('sales/deliveryorder', 'sales\do_Controller@index');
 Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_Controller@cetak_form');
 Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
 Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
-Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail');
+Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail')->name('tabledata_detail');
 Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
 Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
 Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
