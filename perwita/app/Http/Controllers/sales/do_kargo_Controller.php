@@ -205,6 +205,7 @@ class do_kargo_Controller extends Controller
                   ->where('kendaraan.kode_subcon',$request->nama_subcon)
                   ->get();
         }
+        
         if ($data == null) {
             $status = 0;
         }else{  
