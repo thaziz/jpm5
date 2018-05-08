@@ -103,10 +103,11 @@ class uangmukaController extends Controller
 	     
       $bulan = Carbon::now()->format('m');
       $tahun = Carbon::now()->format('y');
+   		
+    
+		$um = DB::select("select * from d_uangmuka where um_comp = '000' and to_char(um_tgl, 'MM') = '$bulan' and to_char(um_tgl, 'YY') = '$tahun' order by um_id desc limit 1");
 
-		$um = DB::select("select * from d_uangmuka where um_comp = '$cabang' and to_char(um_tgl, 'MM') = '$bulan' and to_char(um_tgl, 'YY') = '$tahun' order by um_id desc limit 1");
-
-		//return $idbbk;
+	
 		if(count($um) > 0) {
 		
 			$explode = explode("/", $um[0]->um_nomorbukti);
@@ -192,6 +193,7 @@ class uangmukaController extends Controller
 	$simpan->um_jenissup=$request->jenissub;
 	$simpan->um_comp=$request->cabang;
 	$simpan->um_sisapelunasan=$request->jumlah;
+	$simpan->um_sisaterpakai = $request->jumlah;
 	$simpan->save();
 
 	return json_encode('sukses');

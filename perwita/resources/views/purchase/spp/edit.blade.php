@@ -80,7 +80,7 @@
                                               <td> Cabang </td>
                                               <td>   
 
-                                                <input type="text" class="form-control input-sm" name="cabang" value="{{$spp_nama}}">                                           
+                                                <input type="text" class="form-control input-sm" name="cabang" value="{{$spp->nama}}">                                           
                                                 <!-- 
                                                @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','cabang'))
                                               <select class="form-control cabang" name="cabang">
@@ -222,9 +222,32 @@
                                     <td> </td>
                                   </tr>
 
-                                  @foreach($data)
+                                  @foreach($data['sppdt_barang'] as $index=>$sppdbrg)
+                                  <tr>
+                                      <td>
+                                        {{$index +1}}
+                                      </td>
+                                      <td> 
+                                        {{$sppdbrg->nama_masteritem}}
+                                      </td>
 
+                                      <td>
+                                         {{$sppdbrg->sppd_qtyrequest}}
+                                      </td>
+                                      <td> {{$sppdbrg->sg_qty}} </td>
+                                      <td>
+                                        {{$sppdbrg->unitstock}}
+                                      </td>
+
+                                      <td colspan="2">
+                                        <button class="btn btn-sm btn-info" type="button"> Data Supplier </button>
+                                      </td>
+                                      
+                                      <td>
+                                      </td>
+                                  </tr>
                                   @endforeach
+                                 
                                
 
                                  </table>
@@ -378,8 +401,8 @@
                     
                        nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
                       console.log(nospp);
-                      $('.nospp').val(nospp);
-                       nospp = $('.nospp').val();
+                      /*$('.nospp').val(nospp);
+                       nospp = $('.nospp').val();*/
                 }
                 else {
                     location.reload();
@@ -432,8 +455,8 @@
                     
                        nospp = 'SPP' + month + year2 + '/' + comp + '/' +  data.data;
                       console.log(nospp);
-                      $('.nospp').val(nospp);
-                       nospp = $('.nospp').val();
+                      /*$('.nospp').val(nospp);
+                       nospp = $('.nospp').val();*/
                 }
                 else {
                     location.reload();
