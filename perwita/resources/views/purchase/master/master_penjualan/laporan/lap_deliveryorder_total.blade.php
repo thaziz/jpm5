@@ -132,6 +132,8 @@
                       </div>
                       <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
                     </div>
+                    <div class="row" style="margin-top: -51px;margin-left: 67px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
+                    </div>
                 </form>
                 <div class="box-body">
                 <table id="addColumn" class="table table-bordered table-striped">
@@ -202,7 +204,6 @@
             </div>
         </div>
     </div>
-</div>
 
 
 
@@ -234,28 +235,6 @@
               //paging: false,
               "pageLength": 10,
               "language": dataTableLanguage,
-         dom: 'Bfrtip',
-         buttons: [
-            {
-                  extend: 'excel',
-                 /* messageTop: 'Hasil pencarian dari Nama : ',*/
-                  text: ' Excel',
-                  className:'excel',
-                  title:'LAPORAN TARIF CABANG KOLI',
-                  filename:'CABANGKOLI-'+a+b+c,
-                  init: function(api, node, config) {
-                  $(node).removeClass('btn-default'),
-                  $(node).addClass('btn-warning'),
-                  $(node).css({'margin-top': '-63px','margin-left': '80px'})
-                  },
-                  exportOptions: {
-                  modifier: {
-                      page: 'all'
-                  }
-              }
-              
-              }
-          ]
     });
   
       var aa=[];
@@ -435,7 +414,7 @@
       });
     }
 
-    function cetak(){
+    function excel(){
       var asw=[];
        var asd = table.rows( { filter : 'applied'} ).data(); 
        for(var i = 0 ; i < asd.length; i++){
@@ -455,10 +434,18 @@
         data: {a:asw,c:'download'},
         url: baseUrl + '/exceldeliveryorder_total/exceldeliveryorder_total',
         type: "post",
-       success : function(data){
-        var win = window.open();
-            win.document.write(data);
-        }
+        success: function (response, textStatus, request) {
+        var a = document.createElement("a");
+        a.href = response.file; 
+        a.download = response.name;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      },
+      error: function (ajaxContext) {
+        toastr.error('Export error: '+ajaxContext.responseText);
+      },
+        
       });
     }
 
