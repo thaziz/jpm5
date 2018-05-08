@@ -46,7 +46,7 @@
                                         <td style="width: 150px;">Nomor</td>
                                         <td>
                                             <input style="text-transform: uppercase;" type="text" name="nomor_do" class="nomor_do new_do form-control input-sm">
-                                            <input style="text-transform: uppercase;" type="text" name="nomor_do" class="nomor_do old_do form-control input-sm">
+                                            <input style="text-transform: uppercase;" type="hidden" name="nomor_do" class="nomor_do old_do form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>
@@ -615,7 +615,7 @@ function cari_kontrak() {
 function ganti_nota(argument) {
     var new_do = $('.new_do').val();
     var old_do = $('.old_do').val();
-    
+
     if (new_do == old_do) {
        var cabang = $('.cabang_select').val();
          $.ajax({
