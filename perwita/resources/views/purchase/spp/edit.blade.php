@@ -223,6 +223,8 @@
                                   </tr>
 
                                   @foreach($data)
+
+                                  @endforeach
                                
 
                                  </table>

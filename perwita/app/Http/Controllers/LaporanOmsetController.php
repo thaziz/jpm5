@@ -1002,7 +1002,41 @@ class laporanOmsetController extends Controller
 				->whereYear('tanggal','=',$tahun)
 				->get();
 		}
-		// return $dat1;
+		// return $dat;
+		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
+		 $tahun = carbon::now();
+		 $tahun =  $tahun->year;
+		
+		// return $array_bulan;
+		 $dat = [];
+		for ($i=0; $i <count($array_bulan) ; $i++) { 
+			$dat[$i] =DB::table('delivery_order')
+				->where('nomor','like','%PAK%')
+				->where('type_kiriman','=','DOKUMEN')
+				->whereMonth('tanggal','=',$array_bulan[$i])
+				->whereYear('tanggal','=',$tahun)
+				->get();
+			$dat1[$i] =DB::table('delivery_order')
+				->where('nomor','like','%PAK%')
+				->where('type_kiriman','=','KILOGRAM')
+				->whereMonth('tanggal','=',$array_bulan[$i])
+				->whereYear('tanggal','=',$tahun)
+				->get();
+			$dat2[$i] =DB::table('delivery_order')
+				->where('nomor','like','%PAK%')
+				->where('type_kiriman','=','KOLI')
+				->whereMonth('tanggal','=',$array_bulan[$i])
+				->whereYear('tanggal','=',$tahun)
+				->get();
+			$dat3[$i] =DB::table('delivery_order')
+				->where('nomor','like','%PAK%')
+				->where('type_kiriman','=','SEPEDA')
+				->whereMonth('tanggal','=',$array_bulan[$i])
+				->whereYear('tanggal','=',$tahun)
+				->get();
+		}
+		// return $dat;
+
 	for ($cek_data=0; $cek_data < count($array_bulan); $cek_data++) { 	
 		if ($dat[$cek_data] == null) {
 			// return 'a';
@@ -1184,7 +1218,12 @@ class laporanOmsetController extends Controller
 				}
 			}
 		}
+<<<<<<< HEAD
+		// return $apr;
+			return $tes;
+=======
 	}
+>>>>>>> 018486ea52ebb0f00633390e83855848e1e3f02b
 		
 		// return $apr;
 		// return$aa;
