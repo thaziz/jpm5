@@ -375,6 +375,7 @@
     });
 
     $(document).on("click","#btn_add",function(){
+        $('#btnsave').removeClass('disabled');
         $("input[name='crud']").val('N');
         $("input[name='sepeda_pancal']").val('');
         $("input[name='bebek_matik']").val('');
@@ -405,6 +406,8 @@
     });
 
     $(document).on( "click",".btnedit", function() {
+        $('#btnsave').removeClass('disabled');
+      
         var id=$(this).attr("id");
         var tuju = $(this).data('tujuan');
         var value = {
