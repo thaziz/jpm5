@@ -5,6 +5,13 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .details-control {
+        background: url('{{ asset('assets/img/details_open.png') }}') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('{{ asset('assets/img/details_close.png') }}') no-repeat center center;
+    }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -160,15 +167,16 @@
                                 <th> Kota Asal </th>
                                 <th> Kota Tujuan </th>
                                 <th> Status </th>
-                                <th> Tipe </th>
-                                <th> Jenis </th>
-                                <th> Cabang </th>
-                                <th> Tarif </th>
-                                <th> Total Net </th>
-                                <th style="width:110px"> Aksi </th>
+                                <th> Detail </th>
+                                <th hidden=""> Jenis </th>
+                                <th hidden=""> Cabang </th>
+                                <th hidden=""> Tarif </th>
+                                <th hidden=""> Total Net </th>
+                                <th hidden="" style="width:110px"> Aksi </th>
                             </tr>
                         </thead>
                         <tbody>
+                       {{--  
                             @foreach ($do as $row)
                             <tr>
                                 <td>{{ $row->nomor }}</td>
@@ -195,8 +203,8 @@
                             </tr>
                             @endforeach
 
-                        </tbody>
-
+                        --}}
+                        </tbody> 
                     </table>
                 </div><!-- /.box-body -->
                 <div class="box-footer">
@@ -229,17 +237,49 @@
 @section('extra_scripts')
 <script type="text/javascript">
     
+      function format ( d ) {
+      return  '<table class="table">'+
+                '<tr>'+
+                    '<td>type_kiriman</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.type_kiriman+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>jenis_pengiriman</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.jenis_pengiriman+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>cab</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.cab+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>total</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.total+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>total_net</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.total_net+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>button</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.button+'</td>'+
+                '</tr>'+
+            '</table>'
+              ;
+      }
+ 
       var table =  $('#addColumn').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": false,
-            "responsive": true,
-            "autoWidth": false,
-            "pageLength": 10,
-            "retrieve" : true,
-            "order": [[ 1, "desc" ]],
+            processing: true,
+            responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route('tabledata_detail') }}',
+            },
             "columns": [
             { "data": "nomor" },
             { "data": "tanggal" },
@@ -249,15 +289,54 @@
             { "data": "asal" },
             { "data": "tujuan" },
             { "data": "status" },
-            { "data": "type_kiriman" },
-            { "data": "jenis_pengiriman" },
-            { "data": "cab" },
-            { "data": "total", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            { "data": "button" },
+            {
+                "class": "details-control",
+                "orderable": false,
+                "data": null,
+                "defaultContent": "",
+            },
+
+            // { "data": "type_kiriman" },
+            // { "data": "jenis_pengiriman" },
+            // { "data": "cab" },
+            // { "data": "total", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            // { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            // { "data": "button" },
             ]
       });
     
+     var detailRows = [];
+
+       $('#addColumn tbody').on( 'click', 'tr td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+ 
+            // Remove from the 'open' array
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+ 
+            // Add to the 'open' array
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    } );
+ 
+    // On each draw, loop over the `detailRows` array and show any child rows
+    table.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td.details-control').trigger( 'click' );
+        } );
+    } );
+
 
 
     $(document).on("click","#btn_add_order",function(){

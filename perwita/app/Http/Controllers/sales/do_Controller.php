@@ -14,30 +14,58 @@ Use App\d_jurnal_dt;
 use PDF;
 use Auth;
 use Carbon\carbon;
+use Yajra\Datatables\Datatables;    
 class do_Controller extends Controller
 {
     public function table_data_detail(Request $request)
     {
         $nomor = strtoupper($request->input('nomor'));
-        $sql = "    SELECT d.id, d.kode_item, i.nama,d.jumlah, d.satuan, d.keterangan, d.total, d.harga, d.nomor_so FROM delivery_orderd d,item i
-                    WHERE i.kode=d.kode_item AND d.nomor='$nomor' ";
+        $authe = Auth::user()->kode_cabang; 
+        if (Auth::user()->punyaAkses('Delivery Order','all')) {
+        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+                    FROM delivery_order d
+                    LEFT JOIN kota k ON k.id=d.id_kota_asal
+                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    join customer c on d.kode_customer = c.kode 
+                    join cabang cc on d.kode_cabang = cc.kode 
+                    WHERE d.jenis='PAKET'
+                    ";
+        }
+        else{
+        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+                    FROM delivery_order d
+                    LEFT JOIN kota k ON k.id=d.id_kota_asal
+                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    join customer c on d.kode_customer = c.kode 
+                    join cabang cc on d.kode_cabang = cc.kode 
+                    WHERE d.jenis='PAKET'
+                    and kode_cabang = '$authe'
+                     ";
+        }
 
         $list = DB::select($sql);
-        $data = array();
-        foreach ($list as $r) {
-            $data[] = (array)$r;
-        }
-        $i = 0;
-        foreach ($data as $key) {
-            // add new button
-            $data[$i]['button'] = ' <div class="btn-group">
-                                        <button type="button" id="' . $data[$i]['id'] . '" name="' . $data[$i]['nama'] . '" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit" ><i class="glyphicon glyphicon-pencil"></i></button>
-                                        <button type="button" id="' . $data[$i]['id'] . '" name="' . $data[$i]['nama'] . '" data-toggle="tooltip" title="Delete" class="btn btn-danger btn-xs btndelete" ><i class="glyphicon glyphicon-remove"></i></button>
-                                    </div> ';
-            $i++;
-        }
-        $datax = array('data' => $data);
-        echo json_encode($datax);
+        // return $data;
+        $data = collect($list);
+
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('button', function ($data) {
+                          return  '<div class="btn-group">'.
+                                   '<a href="deliveryorderform/'.$data->nomor.'/edit" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>'.
+                                    '<a href="deliveryorderform/'.$data->nomor.'/nota" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>'.
+                                    ' <a href="deliveryorderform/'.$data->nomor.'/hapus_data" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>'.
+                                  '</div>';
+
+                                  //  '<div class="btn-group">'.
+                                  //  '<button type="button" onclick="edit(this)" class="btn btn-info btn-lg" title="edit">'.
+                                  //  '<label class="fa fa-pencil-alt"></label></button>'.
+                                  //  '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-lg" title="hapus">'.
+                                  //  '<label class="fa fa-trash"></label></button>'.
+                                  // '</div>';
+                        })
+                        ->make(true);
+
+
     }
 
     public function table_data_item()
@@ -865,7 +893,7 @@ class do_Controller extends Controller
                     join customer c on d.kode_customer = c.kode 
                     join cabang cc on d.kode_cabang = cc.kode 
                     WHERE d.jenis='PAKET'
-                    ORDER BY d.tanggal DESC LIMIT 1000 ";
+                    ";
         }
         else{
         $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
@@ -876,7 +904,7 @@ class do_Controller extends Controller
                     join cabang cc on d.kode_cabang = cc.kode 
                     WHERE d.jenis='PAKET'
                     and kode_cabang = '$authe'
-                    ORDER BY d.tanggal DESC LIMIT 1000 ";
+                     ";
         }
         
 
