@@ -44,7 +44,10 @@
                                 <table class="table table-bordered tabel_header table-striped"> 
                                     <tr>
                                         <td style="width: 150px;">Nomor</td>
-                                        <td><input style="text-transform: uppercase;" type="text" name="nomor_do" class="nomor_do form-control input-sm"></td>
+                                        <td>
+                                            <input style="text-transform: uppercase;" type="text" name="nomor_do" class="nomor_do new_do form-control input-sm">
+                                            <input style="text-transform: uppercase;" type="text" name="nomor_do" class="nomor_do old_do form-control input-sm">
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td>Tanggal</td>
@@ -610,31 +613,35 @@ function cari_kontrak() {
 
 // ganti nota untuk admin
 function ganti_nota(argument) {
-   var cabang = $('.cabang_select').val();
-     $.ajax({
-        url:baseUrl + '/sales/nomor_do_kargo',
-        data:{cabang},
-        dataType:'json',
-        success:function(data){
-            $('.nomor_do').val(data.nota);
-            $('.satuan').val('');
-            $('.tarif_dasar_text').val('');
-            $('.tarif_dasar').val('');
-            $('.harga_master').val('');
-            $('.harga_master').val('');
-            $('#kode_tarif').val('');
-            $('.kcd_id').val('');
-            $('.kcd_dt').val('');
-            $('.master_diskon').val(data.diskon);
-            cari_nopol_kargo();
-            cari_kontrak();
-            reseting();
-        },
-        error:function(){
-            location.reload();
-        }
-    })
-
+    var new_do = $('.new_do').val();
+    var old_do = $('.old_do').val();
+    
+    if (new_do == old_do) {
+       var cabang = $('.cabang_select').val();
+         $.ajax({
+            url:baseUrl + '/sales/nomor_do_kargo',
+            data:{cabang},
+            dataType:'json',
+            success:function(data){
+                $('.nomor_do').val(data.nota);
+                $('.satuan').val('');
+                $('.tarif_dasar_text').val('');
+                $('.tarif_dasar').val('');
+                $('.harga_master').val('');
+                $('.harga_master').val('');
+                $('#kode_tarif').val('');
+                $('.kcd_id').val('');
+                $('.kcd_dt').val('');
+                $('.master_diskon').val(data.diskon);
+                cari_nopol_kargo();
+                cari_kontrak();
+                reseting();
+            },
+            error:function(){
+                location.reload();
+            }
+        })
+    }
     
 }
 //nama subcon
