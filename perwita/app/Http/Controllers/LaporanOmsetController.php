@@ -1218,12 +1218,7 @@ class laporanOmsetController extends Controller
 				}
 			}
 		}
-<<<<<<< HEAD
-		// return $apr;
-			return $tes;
-=======
 	}
->>>>>>> 018486ea52ebb0f00633390e83855848e1e3f02b
 		
 		// return $apr;
 		// return$aa;

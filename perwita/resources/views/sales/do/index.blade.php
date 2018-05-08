@@ -275,7 +275,7 @@
  
       var table =  $('#addColumn').DataTable({
             processing: true,
-            responsive:true,
+            // responsive:true,
             serverSide: true,
             ajax: {
                 url:'{{ route('tabledata_detail') }}',

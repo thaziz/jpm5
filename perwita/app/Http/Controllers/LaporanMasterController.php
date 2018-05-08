@@ -981,7 +981,11 @@ class LaporanMasterController extends Controller
 		   $excel->sheet('sheet 1', function($sheet) use($data,$dat1) {
 		   	$sheetArray = array();
 		   	$sheetArray[] = array('No DO','Tanggal','Pengirim','Penerima','Kota Asal','Kota Tujuan','Kec Tujuan','Tipe','Status','Cabang','Tarif Keseluruhan');
+
 		   	foreach ($dat1 as $index => $row) {
+		   		if (substr($dat1[$index][0]->nomor,0,-6)."<br>"; == 'KRN') {
+		   		
+		   		}
 		   		$sheetArray[] = array(
 		   							$dat1[$index][0]->nomor 
 		   							,$dat1[$index][0]->tanggal 
