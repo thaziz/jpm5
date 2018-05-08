@@ -189,9 +189,10 @@ class do_kargo_Controller extends Controller
     {   
         // return dd($request->all());
         if ($request->status_kendaraan == 'OWN') {
+            $jenis = ['OWN','DPT'];
             $data = DB::table('kendaraan')
                   ->join('tipe_angkutan','tipe_angkutan.kode','=','kendaraan.tipe_angkutan')
-                  ->where('kendaraan.status',$request->status_kendaraan)
+                  ->whereIn('kendaraan.status',$jenis)
                   ->where('kendaraan.tipe_angkutan',$request->tipe_angkutan)
                   // ->where('kode_cabang',$request->cabang_select)
                   ->get();
@@ -204,6 +205,7 @@ class do_kargo_Controller extends Controller
                   ->where('kendaraan.kode_subcon',$request->nama_subcon)
                   ->get();
         }
+        
         if ($data == null) {
             $status = 0;
         }else{  

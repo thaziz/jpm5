@@ -563,7 +563,6 @@ class do_kertas_Controller extends Controller
         $data = DB::table('delivery_order')
                   ->where('nomor',$id)
                   ->first();
-
         if ($data->kontrak == true) {
             $array_valid = DB::table('delivery_order')
                   ->join('delivery_orderd','dd_nomor','=','nomor')
@@ -594,7 +593,7 @@ class do_kertas_Controller extends Controller
                     }
                 }
             }
-
+            
         }else{
             $data_dt = DB::table('delivery_order')
                   ->join('delivery_orderd','dd_nomor','=','nomor')
@@ -602,8 +601,8 @@ class do_kertas_Controller extends Controller
                   ->where('nomor',$id)
                   ->get();
         }
-
         return view('sales.do_kertas.detail_kertas',compact('kota','data','cabang','jml_detail','rute','kendaraan','customer','item','id','data_dt'));
+
     }
 
     public function ganti_item(request $request)
