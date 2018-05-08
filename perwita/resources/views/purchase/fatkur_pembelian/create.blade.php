@@ -411,7 +411,7 @@
 
                           <tr>
                             <td colspan="2">
-                              <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button>
+                              <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_tt" data-toggle="modal" data-target="#myModal_TT"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button> &nbsp; <button class="btn btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button>
                             </td>
                           </tr>
                          
@@ -436,6 +436,7 @@
                           </tr>
 
                         </table>
+
                           <!-- FORM TANA TERIMA -->
                               <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
                                 <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
@@ -553,6 +554,129 @@
                                   </div>
                                 </div>
                              </div> 
+
+
+
+                               <!-- FORM BAYAR UANG MUKA -->
+                            <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
+                                      <h3 class="modal-title" style="text-align: center;">
+                                          Pembayaran dengan Uang Muka
+                                      </h3>     
+                                    </div>
+                                                  
+                                    <div class="modal-body">              
+                                    <table class="table table-stripped tabel_tt">
+                                      <tr>
+                                        <td width="150px">
+                                          No Tanda Terima 
+                                        </td>
+                                        <td>
+                                          <input type='text' name="nota_tt" class='input-sm form-control notandaterima' readonly="">
+                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td> Tanggal </td>
+                                        <td>
+                                           <div class="input-group date">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="" readonly="" name="tgl_tt">
+                                          </div>
+                                        </td>
+                                      </tr>
+                                     
+                                      <tr>
+                                        <td> Supplier </td>
+                                        <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan="2">
+                                           <div class="row">
+                                              <div class="col-sm-3"> 
+                                                <div class="checkbox checkbox-info checkbox-circle">
+                                                    <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
+                                                      <label for="Kwitansi">
+                                                          Kwitansi / Invoice / No
+                                                      </label>
+                                                </div> 
+                                              </div>
+                                              <div class="col-sm-3"> 
+                                                <div class="checkbox checkbox-info checkbox-circle">
+                                                    <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
+                                                      <label for="FakturPajak">
+                                                          Faktur Pajak
+                                                      </label>
+                                                </div> 
+                                              </div>
+
+                                              <div class="col-sm-3"> 
+                                                <div class="checkbox checkbox-info checkbox-circle">
+                                                    <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
+                                                      <label for="SuratPerananAsli">
+                                                          Surat Peranan Asli
+                                                      </label>
+                                                </div> 
+                                              </div>
+
+                                               <div class="col-sm-3"> 
+                                                <div class="checkbox checkbox-info checkbox-circle">
+                                                    <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
+                                                      <label for="SuratJalanAsli">
+                                                         Surat Jalan Asli
+                                                      </label>
+                                                </div> 
+                                              </div>
+                                            </div>
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td>
+                                         Lain Lain
+                                        </td>
+                                        <td>
+                                        
+                                          <input type="text" class="form-control lainlain_tt" name="lainlain">
+                                        </td>
+                                      </tr>
+
+                                      <tr>
+                                        <td> Tanggal Kembali </td>
+                                        <td>   <div class="input-group">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
+                                          </div> </td>
+                                      </tr>
+
+                                      <tr>
+                                        <td>
+                                         Total di Terima
+                                        </td>
+                                        <td> <div class="row"> <div class="col-sm-3"> <label class="col-sm-3 label-control"> Rp </label> </div> <div class="col-sm-9"> <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly=""></div> </div> </td>
+                                      </tr>
+                                     
+                                       </table>                           
+                                               
+                                         </div>
+
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+                                          <button type="button" class="btn btn-primary " id="buttonsimpan_tt">
+                                            Simpan
+                                          </button>
+                                         
+                                      </div>
+                                      
+                                  </div>
+                                </div>
+                             </div> 
+                          <!-- END UM -->
+
 
                                <!-- FAKTUR PAJAK -->
                               <!-- modal -->

@@ -153,7 +153,7 @@ class PurchaseController extends Controller
 			$data['spp'] = DB::select("select * from spp, masterdepartment, cabang, confirm_order where spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode and spp_cabang = '$cabang' order by spp_id desc");
 
 			$data['belumdiproses'] = DB::table("spp")->where('spp_status' , '=' , 'DITERBITKAN')->where('spp_cabang' , '=' , $cabang)->count();
-			$data['disetujui'] = DB::table("spp")->where('spp_status' , '=' , 'DISETUJUI')->where('spp_cabang' , '=' , $cabang)->count();
+			$data['disdetujui'] = DB::table("spp")->where('spp_status' , '=' , 'DISETUJUI')->where('spp_cabang' , '=' , $cabang)->count();
 			$data['masukgudang'] = DB::table("spp")->where('spp_status' , '=' , 'MASUK GUDANG')->where('spp_cabang' , '=' , $cabang)->count();
 			$data['selesai'] = DB::table("spp")->where('spp_status' , '=' , 'SELESAI')->where('spp_cabang' , '=' , $cabang)->count();
 		}
@@ -167,6 +167,7 @@ class PurchaseController extends Controller
 		$bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
 
+      
 		//return $mon;
 		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
 
@@ -597,7 +598,8 @@ class PurchaseController extends Controller
 
 	public function detailspp ($id) {
 
-		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id");
+		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment, cabang where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
+
 		$idgudang = $data['spp'][0]->spp_lokasigudang;
 
 		$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");
@@ -651,11 +653,15 @@ class PurchaseController extends Controller
 
 	public function editspp($id){
 		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment, cabang where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
+
 		$idgudang = $data['spp'][0]->spp_lokasigudang;
 
 		$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");
 
-		$data['gudang'] = DB::select("select mg_namagudang from spp, mastergudang where spp_lokasigudang = mg_id and spp_id = '$id'");
+		$data['sppd'] = DB::select("select * from  supplier,masteritem, spp_detail  LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and sppd_kodeitem = kode_item and sppd_supplier = idsup  order by sppd_seq asc");
+
+
+		$data['gudang'] = DB::select("select * from spp, mastergudang where spp_lokasigudang = mg_id and spp_id = '$id'");
 
 		$data['kendaraan'] = DB::select("select distinct sppd_kendaraan, merk, vhccde from spp_detail, tb_vhc where sppd_kendaraan = id_vhc and sppd_idspp = '$id'");
 		$data['countkendaraan'] = count($data['kendaraan']);
@@ -666,7 +672,7 @@ class PurchaseController extends Controller
 		
 		$data['spptb'] =  DB::select("select * from spp_totalbiaya,spp, supplier where spptb_idspp = '$id' and spptb_idspp = spp.spp_id and spptb_supplier = idsup");
 		
-		$data['sppd_brg'] = DB::select("select sppd_kodeitem from spp_detail where sppd_idspp='$id'");
+		$data['sppd_brg'] = DB::select("select sppd_kodeitem from spp_detail, masteritem where sppd_idspp='$id' and sppd_kodeitem = kode_item");
 
 		$data['codt'] = DB::select("select *  from confirm_order, spp, confirm_order_dt LEFT OUTER JOIN stock_gudang on codt_kodeitem = sg_item where confirm_order_dt.codt_idco=co_id and co_idspp = '$id' and co_idspp = spp_id");
 
@@ -6298,9 +6304,6 @@ public function kekata($x) {
 					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$idsup' and ik_comp = kode and ik_status = 'APPROVED'");
 				}
 					
-
-					
-				
 
 			/*if(count($request->arrnofaktur) == 0){
 				if($idjenisbayar == '2' ){
