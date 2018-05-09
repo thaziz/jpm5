@@ -112,12 +112,12 @@
                         <div class="form-group" >
                         <div class="sembunyikan col-sm-3 col-sm-offset-2">
                           <label>Supplier ID :</label>
-                          <input type="text" readonly="" value="--Pilih Supplier Terlebih dahulu --" class="form-control">
+                          <input type="text" readonly="" value="--Pilih Supplier Terlebih dahulu --" class="form-control" required="">
                         </div>
                         <div class="aa"></div>
                          <div class="col-sm-5 sembunyikan">
                          <label>Supplier Nama :</label>
-                           <input type="text" class="form-control suppilername" readonly="" style="text-transform: uppercase">
+                           <input type="text" class="form-control suppilername" readonly="" style="text-transform: uppercase" required="">
                         </div>
                         </div>
                          <div class="form-group">
@@ -169,6 +169,9 @@
 
    $(document).ready(function(){
    $('.date').datepicker({
+        autoclose: true,
+        format: 'dd-MM-yyyy',
+     
       }).datepicker("setDate", "0");;
 
    $('.jumlah').maskMoney({thousands:'.',precision:0,prefix:'Rp.'});
