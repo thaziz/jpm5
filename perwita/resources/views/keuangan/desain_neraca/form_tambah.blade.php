@@ -135,14 +135,16 @@
                     <div class="col-md-6">
                       <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
 
-                        <div class="col-md-12" style="padding:0px;">
+                        <div class="col-md-6" style="padding:0px;">
                           <div class="btn-group">
                               <button href="#aktiva" aria-controls="aktiva" role="tab" data-toggle="tab" class="btn btn-white aktif btn-sm switch" data-for="aktiva" style="font-size: 8pt;" type="button">Activa</button>
 
                               <button href="#pasiva" aria-controls="pasiva" role="tab" data-toggle="tab" class="btn btn-white btn-sm switch" data-for="pasiva" style="font-size: 8pt;" type="button">Pasiva</button>
                           </div>
+                        </div>
 
-                          <span class="pull-right text-disabled" style="font-weight: 600; font-style: italic; font-size: 7pt;">{{ date("d-m-Y") }}</span>
+                        <div class="col-md-6" style="padding: 0px;">
+                          <input type="text" class="form-control text-center upper" id="nama_desain" name="nama_desain" style="height: 30px; font-size: 8pt" placeholder="Masukkan Nama Desain">
                         </div>
                         
                         <div class="col-md-12" style="border-top: 1px solid #eee; margin: 10px 0px"></div>
@@ -213,7 +215,7 @@
                             <tr>
                               <td width="15%" class="text-center">Keterangan</td>
                               <td colspan="5" width="35%">
-                                <input type="text" style="width: 94%" class="form_validate form-control" id="keterangan" placeholder="Masukkan Keterangan Tentang Ini">
+                                <input type="text" style="width: 94%" class="form_validate form-control upper" id="keterangan" placeholder="Masukkan Keterangan Tentang Ini">
                               </td>
                             </tr>
 
@@ -237,7 +239,7 @@
                               <th width="25%" class="text-center">Id Detail Referensi</th>
                               <th width="40%" class="text-center">Nama Detail Referensi</th>
                               <th width="25%" class="text-center">Referensi Dari</th>
-                              <th width="10%" class="text-center">-</th>
+                              <th width="10%" class="text-center">*</th>
                             </tr>
                             
                             <tbody id="group_show">
@@ -248,6 +250,13 @@
                         </div>
 
                       </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12 m-t">
+                      <button class="btn btn-primary btn-sm pull-right" style="font-size: 8pt; margin-left: 5px;" id="simpan_desain">Simpan Desain</button>
+                      <a href="{{ route("desain_neraca.index") }}" class="btn btn-default btn-sm pull-right" style="font-size: 8pt;" id="simpan_desain">Kembali</a>
                     </div>
                   </div>
                 </div>
@@ -402,12 +411,11 @@
       });
 
       $('#aktiva_tree').on("select_node.jstree", function (e, data) { 
-        console.log(data);
+        // console.log(data);
 
         if(data.node.type != "demo"){
           $("#masukkan").attr("disabled", "disabled");
           $("#hapus_detail").removeAttr("disabled");
-          $("#tambah_detail").removeAttr("disabled");
           $('#update_detail').removeAttr("disabled");
           $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
 
@@ -434,15 +442,32 @@
 
           if(data_neraca[idx].jenis == 4){
             $("#keterangan").attr("readonly", "readonly");
-          }else if(data_neraca[idx].jenis == 2){
+          }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
             
+            $("#group_show").html("");
+
+            if(data_neraca[idx].jenis == 2)
+              $("#tambah_detail").removeAttr("disabled");
+            else
+              $("#tambah_detail").attr("disabled", "disabled");
+
             $.each($.grep(data_detail, function(n){ return n.id_parrent == data_neraca[idx].nomor_id }), function(i, n){
+              if(data_neraca[idx].jenis == 2){
                 html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
                           '<td class="text-center">'+n.id_group+'</td>'+
                           '<td class="text-center">'+n.nama+'</td>'+
                           '<td class="text-center">'+n.dari+'</td>'+
                           '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
                         '<tr>';
+              }
+              else{
+                html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                          '<td class="text-center">'+n.id_group+'</td>'+
+                          '<td class="text-center">'+n.nama+'</td>'+
+                          '<td class="text-center">'+n.dari+'</td>'+
+                          '<td class="text-center" style="color:#ed5564;">-</td>'+
+                        '<tr>';
+              }
 
                 $("#group_show").append(html);
             })
@@ -476,12 +501,11 @@
       });
 
       $('#pasiva_tree').on("select_node.jstree", function (e, data) { 
-        console.log(data);
+        // console.log(data);
 
         if(data.node.type != "demo"){
           $("#masukkan").attr("disabled", "disabled");
           $("#hapus_detail").removeAttr("disabled");
-          $("#tambah_detail").removeAttr("disabled");
           $('#update_detail').removeAttr("disabled");
           $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
 
@@ -508,15 +532,32 @@
 
           if(data_neraca[idx].jenis == 4){
             $("#keterangan").attr("readonly", "readonly");
-          }else if(data_neraca[idx].jenis == 2){
+          }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
+
+            $("#group_show").html("");
+
+            if(data_neraca[idx].jenis == 2)
+              $("#tambah_detail").removeAttr("disabled");
+            else
+              $("#tambah_detail").attr("disabled", "disabled");
             
             $.each($.grep(data_detail, function(n){ return n.id_parrent == data_neraca[idx].nomor_id }), function(i, n){
-                html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
-                          '<td class="text-center">'+n.id_group+'</td>'+
-                          '<td class="text-center">'+n.nama+'</td>'+
-                          '<td class="text-center">'+n.dari+'</td>'+
-                          '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
-                        '<tr>';
+                if(data_neraca[idx].jenis == 2){
+                  html = html+'<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                            '<td class="text-center">'+n.id_group+'</td>'+
+                            '<td class="text-center">'+n.nama+'</td>'+
+                            '<td class="text-center">'+n.dari+'</td>'+
+                            '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
+                          '<tr>';
+                }
+                else{
+                  html = html+'<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                            '<td class="text-center">'+n.id_group+'</td>'+
+                            '<td class="text-center">'+n.nama+'</td>'+
+                            '<td class="text-center">'+n.dari+'</td>'+
+                            '<td class="text-center" style="color:#ed5564;">-</td>'+
+                          '<tr>';
+                }
 
                 $("#group_show").append(html);
             })
@@ -549,7 +590,7 @@
         }
       });
 
-      $("#keterangan").on("keyup", function(){
+      $(".upper").on("keyup", function(){
         $(this).val($(this).val().toUpperCase())
       })
 
@@ -619,10 +660,12 @@
           $("#tambah_detail").removeAttr("disabled");
           $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
           $("#group_show").html("");
+          $("#keterangan").removeAttr("readonly"); $("#keterangan").val(""); 
         }else if(val == "1" || val == "4"){
           $("#tambah_detail").attr("disabled", "disabled");
           $("#group_show").html("");
           $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+          $("#keterangan").removeAttr("readonly"); $("#keterangan").val("");
 
           if(val == 4){
             $("#keterangan").val("."); $("#keterangan").attr("readonly", "readonly");
@@ -631,6 +674,7 @@
           $("#detail_total").css("display", "inline-block"); $("#detail_total").removeAttr("disabled");
           $("#tambah_detail").attr("disabled", "disabled");
           $("#group_show").html("");
+          $("#keterangan").removeAttr("readonly"); $("#keterangan").val("");
 
           grab_detail_total();
         }
@@ -733,8 +777,8 @@
         form_reset();
         grab_parrent();
 
-        console.log(data_neraca);
-        console.log(data_detail);
+        // console.log(data_neraca);
+        // console.log(data_detail);
       })
 
       $("#masukkan").click(function(evt){
@@ -794,8 +838,8 @@
             })
           }
 
-          console.log(data_neraca);
-          console.log(data_detail);
+          // console.log(data_neraca);
+          // console.log(data_detail);
           form_reset();
           grab_parrent();
         }
@@ -812,6 +856,8 @@
       $('#update_detail').click(function(evt){
         evt.stopImmediatePropagation();
         evt.preventDefault();
+
+        jenis = $("#jenis").val();
 
         if(jenis == 2){
           if($("#group_show").find(".search").length == 0){
@@ -838,8 +884,66 @@
 
         form_reset();
 
-        console.log(data_neraca);
-        console.log(data_detail);
+        // console.log(data_neraca);
+        // console.log(data_detail);
+      })
+
+      $("#simpan_desain").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        btn = $(this);
+        btn.attr("disabled", "disabled");
+        btn.text("Menyimpan...");
+
+        if($("#nama_desain").val() == ""){
+          $("#nama_desain").focus();
+          toastr.warning('Harap Mengisi Terlebih Dahulu Nama Desain Neraca Ini.');
+          btn.text("Simpan Desain");
+          btn.removeAttr("disabled");
+          return false;
+        }
+
+        if(data_neraca.length > 0 ){
+          $.ajax(baseUrl+"/master_keuangan/desain_neraca/save",{
+            type: "post",
+            timeout: 15000,
+            data: {data_neraca: data_neraca, data_detail: data_detail, nama_desain: $("#nama_desain").val(), _token: "{{ csrf_token() }}" },
+            dataType: 'json',
+            success: function(response){
+              console.log(response);
+              if(response.status == "sukses"){
+                toastr.success('Data Desain Neraca Disimpan');
+                btn.removeAttr("disabled");
+                btn.text("Simpan Desain");
+                data_neraca = []; data_detail = [];
+
+                form_reset();
+              }else if(response.status == "exist"){
+                toastr.error('Kode Master Group Akun Sudah Ada Dengan Nama "'+response.content+'". Silahkan Membuat Kode Akun Lagi.');
+                btn.removeAttr("disabled");
+                btn.text("Simpan Desain");
+              }
+
+              btn.removeAttr("disabled");
+              btn.text("Simpan Desain");
+            },
+            error: function(request, status, err) {
+                if(status == "timeout") {
+                  toastr.error('Request Timeout. Data Gagal Disimpan');
+                }else{
+                  toastr.error('Internal Server Error. Data Gagal Disimpan');
+                }
+
+                btn.text("Simpan Desain");
+                btn.removeAttr("disabled");
+            }
+          })
+        }else{
+          toastr.error('Desain Neraca Yang Anda Buat Masih Kosong.');
+          btn.removeAttr("disabled");
+          btn.text("Simpan Desain");
+        }
       })
 
       function createNode(parent_node, new_node_id, new_node_text, position, keterangan, open = false, type = "default") {

@@ -383,6 +383,16 @@
                 " href="{{ url('master_sales/kendaraan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kendaraan</a>
                 </li>
                 @endif
+                @if(Auth::user()->PunyaAkses('Master Akun Fitur','aktif'))
+                <li >
+                    <a class="sidebar master-perusahaan 
+
+                {{Request::is('master_sales/master_akun') ? 'active' : '' ||
+                 Request::is('master_sales/master_akun/*') ? 'active' : ''}} 
+
+                " href="{{ url('master_sales/master_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Akun Fitur</a>
+                </li>
+                @endif
             </ul>
         </li>
                         
@@ -2835,7 +2845,7 @@
 
                                 <li >
                                     <a class="sidebar master-perusahaan  {{Request::is('master_keuangan/neraca') ? 'active' : '' || 
-                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Neraca </a>
+                            Request::is('master-keuangan/laporan-neraca*') ? 'active' : ''}}" href="{{ route("neraca.index_single", "bulan?m=".date("m")."&y=".date("Y")."") }}"> <i class="fa fa-folder-open-o" aria-hidden="true"></i> Laporan Neraca </a>
                                 </li>
 
                                 <li >

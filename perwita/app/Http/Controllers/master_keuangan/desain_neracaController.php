@@ -13,19 +13,19 @@ use DB;
 class desain_neracaController extends Controller
 {
     public function index(){
-    	$data = DB::table("d_akun")
-    			->whereIn("id_akun", function($query){
-    				$query->select('d_akun.id_akun')
-    						->from("d_akun")
-    						->join("d_akun_saldo", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
-    						->where("d_akun_saldo.is_active", "=", "1")->get();
-    			})->select("id_akun", "nama_akun", "id_parrent")->orderBy("d_akun.id_akun", "asc")->get();
+    	// $data = DB::table("d_akun")
+    	// 		->whereIn("id_akun", function($query){
+    	// 			$query->select('d_akun.id_akun')
+    	// 					->from("d_akun")
+    	// 					->join("d_akun_saldo", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+    	// 					->where("d_akun_saldo.is_active", "=", "1")->get();
+    	// 		})->select("id_akun", "nama_akun", "id_parrent")->orderBy("d_akun.id_akun", "asc")->get();
 
-        $desain = DB::table("desain_neraca")->select("*")->orderBy("tanggal_buat", "desc")->get();
+        $desain = DB::table("desain_neraca")->select("*")->orderBy("id_desain", "desc")->get();
 
         // return json_encode($data);
 
-    	return view("keuangan.desain_neraca.index")->withData(json_encode($data))->withDesain($desain);
+    	return view("keuangan.desain_neraca.index")->withDesain($desain);
     }
 
     public function add(){
@@ -51,11 +51,12 @@ class desain_neracaController extends Controller
         
         $desain_neraca = new desain_neraca;
         $desain_neraca->id_desain = $id;
+        $desain_neraca->nama_desain = $request->nama_desain;
         $desain_neraca->is_active = 0;
 
         if($desain_neraca->save()){
 
-            foreach($request->neraca as $dataNeraca){
+            foreach($request->data_neraca as $dataNeraca){
                 DB::table("desain_neraca_dt")->insert([
                     "id_desain"     => $id,
                     "nomor_id"      => $dataNeraca["nomor_id"],
@@ -67,12 +68,14 @@ class desain_neracaController extends Controller
                 ]);
             }
 
-            if(isset($request->detail)){
-                foreach($request->detail as $data_detail){
+            if(isset($request->data_detail)){
+                foreach($request->data_detail as $data_detail){
                     DB::table("desain_detail_dt")->insert([
-                        "id_desain"     => $id,
-                        "nomor_id"      => $data_detail["nomor_id"],
-                        "id_akun"       => $data_detail["id_akun"]
+                        "id_desain"          => $id,
+                        "id_parrent"         => $data_detail["id_parrent"],
+                        "nomor_id"           => $data_detail["nomor_id"],
+                        "id_referensi"       => $data_detail["id_group"],
+                        "dari"               => $data_detail["dari"]
                     ]);
                 }
             }
@@ -163,7 +166,8 @@ class desain_neracaController extends Controller
     }
 
     public function view($id){
-        $data = []; $no = 0;
+        $data_neraca = []; $no = 0; $data_detail = []; $no_detail = 0;
+
         $dataDetail = DB::table("desain_neraca_dt")
             ->join("desain_neraca", "desain_neraca.id_desain", "=", "desain_neraca_dt.id_desain")
             ->where("desain_neraca.id_desain", $id)
@@ -174,40 +178,40 @@ class desain_neracaController extends Controller
             $dataTotal = 0;
 
             if($dataDetail->jenis == 2){
-                $dataAkun = DB::table("desain_detail_dt")->where("id_desain", $dataDetail->id_desain)->where("nomor_id", $dataDetail->nomor_id)->select("id_akun")->get();
+                $data_detail_dt = DB::table("desain_detail_dt")
+                              ->join("d_group_akun", "desain_detail_dt.id_referensi", "=", "d_group_akun.id")
+                              ->where("desain_detail_dt.id_parrent", $dataDetail->nomor_id)
+                              ->select("desain_detail_dt.*", "d_group_akun.*")
+                              ->get();
 
-                foreach ($dataAkun as $akun) {
-                    $sub = strlen($akun->id_akun);
-                    $total = DB::table("d_akun_saldo")
-                                ->where(DB::raw("substring(id_akun, 1, ".$sub.")"), $akun->id_akun)
-                                ->select(DB::raw("sum(saldo_akun) as total"))->first();
+                foreach ($data_detail_dt as $detail_dt) {
+                    $data_detail[$no_detail] = [
+                        "id_referensi"      => $detail_dt->id_referensi,
+                        "nama_referensi"    => $detail_dt->nama_group,
+                        "id_parrent"        => $detail_dt->id_parrent,
+                        "nomor_id"          => $detail_dt->nomor_id,
+                        "total"             => "XXXX"
+                    ];
 
-                    $transaksi = DB::table("d_jurnal_dt")
-                                ->where(DB::raw("substring(jrdt_acc, 1, ".$sub.")"), $akun->id_akun)
-                                ->select(DB::raw("sum(jrdt_value) as total"))->first();
-
-                    $dataTotal += ($total->total + $transaksi->total);
-
-                    //return $dataTotal;
+                    $no_detail++;
                 }
-
-                // return $dataTotal;
-
             }
 
-            $data[$no] = [
-                "nama_perkiraan"    => $dataDetail->keterangan,
+            $data_neraca[$no] = [
+                "keterangan"        => $dataDetail->keterangan,
                 "type"              => $dataDetail->type,
                 "jenis"             => $dataDetail->jenis,
                 "parrent"           => $dataDetail->id_parrent,
-                "total"             => $dataTotal
+                "level"             => $dataDetail->level,
+                "nomor_id"          => $dataDetail->nomor_id,
+                "total"             => "XXXX"
             ];
 
             $no++;
         }
 
-        //return json_encode($data);
+        // return json_encode($data_detail);
 
-        return view("keuangan.desain_neraca.view")->withData($data);
+        return view("keuangan.desain_neraca.view")->withData_neraca($data_neraca)->withData_detail($data_detail);
     }
 }

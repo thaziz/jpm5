@@ -123,24 +123,34 @@
                             <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; font-size: 8pt;">
                               <thead>
                                 <tr>
-                                  <th width="15%" class="text-center">Kode Group</th>
-                                  <th width="30%" class="text-center">Nama Group</th>
-                                  <th class="text-center">Jenis Group</th>
-                                  <th class="text-center">Tanggal Buat</th>
-                                  {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
-                                  <th width="20%" width="20%" class="text-center">Aksi</th>
+                                  <th width="5%" class="text-center">No</th>
+                                  <th width="40%" class="text-center">Nama Desain</th>
+                                  <th width="20%" class="text-center">Tanggal Dibuat</th>
+                                  <th class="text-center">Status</th>
+                                  <th class="text-center">Aksi</th>
 
                                 </tr>
                               </thead>
                               <tbody  class="searchable">
 
-                                <tr>
-                                  <td>a</td>
-                                  <td>a</td>
-                                  <td>a</td>
-                                  <td>a</td>
-                                  <td>a</td>
-                                </tr>
+                                <?php $a = 1; ?>
+
+                                @foreach($desain as $data_desain)
+                                <?php $status = ($data_desain->is_active == 1) ? "Sedang Digunakan" : "Tidak Aktif" ?>
+                                  <tr>
+                                    <td class="text-center">{{ $a }}</td>
+                                    <td class="text-center">{{ $data_desain->nama_desain }}</td>
+                                    <td class="text-center">{{ date("d-m-Y", strtotime($data_desain->tanggal_buat)) }}</td>
+                                    <td class="text-center">{{ $status }}</td>
+                                    <td class="text-center">
+                                      <span data-toggle="tooltip" data-placement="top" title="Tampilkan Desain">
+                                          <button class="btn btn-xs btn-primary tampilkan" data-id="{{ $data_desain->id_desain }}"><i class="fa fa-external-link-square fa-fw"></i></button>
+                                      </span>
+                                    </td>
+                                  </tr> 
+
+                                  <?php $a++; ?>
+                                @endforeach
                                 
                               </tbody>
                             </table>
@@ -155,34 +165,16 @@
 </div>
 
  <!-- modal -->
-<div id="modal_tambah" class="modal">
-  <div class="modal-dialog">
+<div id="modal_tampilkan" class="modal">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Tambah Data Master Group Akun</h4>
+        <h4 class="modal-title">Tampilan Desain Neraca</h4>
         <input type="hidden" class="parrent"/>
       </div>
-      <div class="modal-body">
-        <center class="text-muted">Menyiapkan Form</center>
-      </div>
+      <div class="modal-body" id="wrap">
 
-    </div>
-  </div>
-</div>
-  <!-- modal -->
-
-<!-- modal -->
-<div id="modal_edit" class="modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Edit Data Master Group Akun</h4>
-        <input type="hidden" readonly class="parrent"/>
-      </div>
-      <div class="modal-body">
-        <center class="text-muted">Menyiapkan Form</center>
       </div>
 
     </div>
@@ -217,6 +209,29 @@
       //"pageLength": 10,
       "language": dataTableLanguage,
     });
+
+    $(".tampilkan").click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      $("#modal_tampilkan").modal("show");
+      $("#modal_tampilkan .modal-body").html('<center><small class="text-muted">Sedang Mengambil Data Tampilan Neraca...</small></center>');
+
+      $.ajax(baseUrl+"/master_keuangan/desain_neraca/view/"+$(this).data("id"), {
+         timeout: 10000,
+         dataType: "html",
+         success: function (data) {
+             $("#modal_tampilkan .modal-body").html(data);
+         },
+         error: function(request, status, err) {
+            if (status == "timeout") {
+              $("#modal_tampilkan .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+            } else {
+              $("#modal_tampilkan .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+            }
+        }
+      });
+    })
 
     $('#set').click(function () {
         $val = $('#filter').val().toUpperCase();

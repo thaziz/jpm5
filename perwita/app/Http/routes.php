@@ -79,6 +79,8 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 
 //***PEMBELIAN
 //***PEMBELIAN
+
+
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
 Route::post('suratpermintaanpembelian/savesupplier' , 'PurchaseController@savespp');
 Route::post('suratpermintaanpembelian/updatesupplier/{id}' , 'PurchaseController@updatespp');
@@ -997,7 +999,10 @@ Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@re
 
 //**** PENJUALAN***
 // Master Sales
-
+// MASTER AKUN FITUR
+Route::get('master_sales/master_akun', 'master_sales\master_akun_controller@index');
+Route::get('master_sales/datatable_akun', 'master_sales\master_akun_controller@datatable_akun')->name('datatable_akun');
+Route::get('master_sales/datatable_item', 'master_sales\master_akun_controller@datatable_item')->name('datatable_item');
 
 //grup agen
 Route::get('master_sales/agen', 'master_sales\agen_Controller@index');
@@ -1729,9 +1734,14 @@ Route::get('master_keuangan/err_cek', function(){
 
 //neraca
 
-Route::get('master_keuangan/neraca/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca',
-  'as'   => 'neraca.index'
+Route::get('master_keuangan/neraca/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca_single',
+  'as'   => 'neraca.index_single'
+]);
+
+Route::get('master_keuangan/neraca/perbandingan/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca_perbandingan',
+  'as'   => 'neraca.index_perbandingan'
 ]);
 
 Route::get('master_keuangan/neraca/print/{throtle}', [
