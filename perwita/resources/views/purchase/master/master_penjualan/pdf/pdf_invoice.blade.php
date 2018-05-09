@@ -100,7 +100,7 @@
     $('.total_netto_detil').each(function(){
         var parents_netto = parseInt($(this).val());
         netto += parents_netto;
-    });
+    }); 
     $('#netto_grandtotal').text(accounting.formatMoney(netto,"",0,'.',','));
 
     var netto_detil = 0;

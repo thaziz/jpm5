@@ -17,7 +17,13 @@
     margin: 0 auto;
 }
   .dataTables_filter, .dataTables_info { display: none; }
-
+  .details-control {
+        background: url('{{ asset('assets/img/details_open.png') }}') no-repeat center center;
+        cursor: pointer;
+    }
+    tr.shown td.details-control {
+        background: url('{{ asset('assets/img/details_close.png') }}') no-repeat center center;
+    }
 </style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -139,29 +145,22 @@
                 <table id="addColumn" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th hidden=""></th>
-                            <th hidden=""></th>
                             <th> No DO</th>
                             <th> Tanggal </th>
                             <th> Pengirim </th>
                             <th> Penerima </th>
                             <th> Kota Asal </th>
                             <th> Kota Tujuan </th>
-                            <th> Kec Tujuan </th>
-                            {{-- <th> Pendapatan </th> --}}
                             <th> Tipe </th>
-                            {{-- <th> Jenis </th> --}}
-                            <th> Status </th>
-                          {{--   <th> Tarif Dasar </th>
-                            <th> Tarif Penerus </th>
-                            <th> Biaya Tambabahan </th>
-                            <th> diskon </th> --}}
+                            <th> Detail </th>
+                           {{--  <th> Pendapatan </th>
+                            <th> Customer </th>
                             <th> Tarif Keseluruhan </th>
-                            <th hidden=""></th>
+                            <th hidden=""></th> --}}
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($data as $row)
+                       {{--  @foreach ($data as $row)
                         <tr>
                             <td hidden="">{{ $row->kaid }}</td>
                             <td hidden="">{{ $row->ktid }}</td>
@@ -172,21 +171,18 @@
                             <td>{{ $row->asal }}</td>
                             <td>{{ $row->tujuan }}</td>
                             <td>{{ $row->kecamatan }}</td>
-                            {{-- <td>{{ $row->pendapatan }}</td> --}}
                             <td>{{ $row->type_kiriman }}</td>
-                            {{-- <td>{{ $row->jenis_pengiriman }}</td> --}}
+                            {{-- <td>{{ $row->jenis_pengiriman }}</td>
                             <td>{{ $row->status }}</td>
-                            {{-- <td align="right">{{ number_format($row->tarif_dasar,0,',','.')  }}</td>
-                            <td align="right">{{ number_format($row->tarif_penerus,0,',','.') }}</td>
-                            <td align="right">{{ number_format($row->biaya_tambahan,0,',','.') }}</td>
-                            <td align="right">{{ number_format($row->diskon,0,',','.')}}</td> --}}
+                            <td>{{ $row->pendapatan }}</td>
+                            <td>{{ $row->customer }}</td>
                             <td align="right"><input type="hidden" name="" class="total_net" value="{{ $row->total_net }}">{{ number_format($row->total_net,0,',','.') }}</td>
                             <td hidden="">{{ $row->kode_cabang }}</td>
                         </tr>
-                        @endforeach
+                        @endforeach --}}
                     </tbody>
                     <tr>
-                      <td colspan="9">Total net</td>
+                      <td colspan="7">Total net</td>
                       <td id="total_grandtotal"></td>
                     </tr>
                   </table>
@@ -216,26 +212,99 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-   
+      function format ( d ) {
+      return  '<table class="table">'+
+                '<tr>'+
+                    '<td>status</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.status+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>pendapatan</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.pendapatan+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>customer</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.cus+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>total net</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.total_net+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>cabang</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.cab+'</td>'+
+                '</tr>'+
+            '</table>'
+              ;
+      }
+ 
+      var table =  $('#addColumn').DataTable({
+            processing: true,
+            // responsive:true,
+            serverSide: true,
+            ajax: {
+                url:'{{ route('deliveryorder_total_data') }}',
+            },
+            "columns": [
+            { "data": "nomor" },
+            { "data": "tanggal" },
+            { "data": "nama_pengirim" },
+            { "data": "nama_penerima" },
+            { "data": "asal" },
+            { "data": "tujuan" },
+            { "data": "type_kiriman" },
+            {
+                "class": "details-control",
+                "orderable": false,
+                "data": null,
+                "defaultContent": "",
+            },
 
+            // { "data": "type_kiriman" },
+            // { "data": "jenis_pengiriman" },
+            // { "data": "cab" },
+            // { "data": "total", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            // { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
+            // { "data": "button" },
+            ]
+      });
+    
+     var detailRows = [];
 
-
-
-    var d = new Date();
-    var a = d.getDate();
-    var b = d.getSeconds();
-    var c = d.getMilliseconds();
-
-
-    var table;
-   
-   table = $('#addColumn').DataTable( {
-      responsive: true,
-              searching: true,
-              //paging: false,
-              "pageLength": 10,
-              "language": dataTableLanguage,
-    });
+       $('#addColumn tbody').on( 'click', 'tr td.details-control', function () {
+        var tr = $(this).closest('tr');
+        var row = table.row( tr );
+        var idx = $.inArray( tr.attr('id'), detailRows );
+ 
+        if ( row.child.isShown() ) {
+            tr.removeClass( 'details' );
+            row.child.hide();
+ 
+            // Remove from the 'open' array
+            detailRows.splice( idx, 1 );
+        }
+        else {
+            tr.addClass( 'details' );
+            row.child( format( row.data() ) ).show();
+ 
+            // Add to the 'open' array
+            if ( idx === -1 ) {
+                detailRows.push( tr.attr('id') );
+            }
+        }
+    } );
+ 
+    // On each draw, loop over the `detailRows` array and show any child rows
+    table.on( 'draw', function () {
+        $.each( detailRows, function ( i, id ) {
+            $('#'+id+' td.details-control').trigger( 'click' );
+        } );
+    } );
   
       var aa=[];
        var bb = table.rows( { filter : 'applied'} ).data(); 
@@ -306,7 +375,7 @@
          console.log('anjay');
          var bb = table.rows( { filter : 'applied'} ).data(); 
            for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][11]).val(); 
+              aa[i] =  $(bb[i][13]).val(); 
            }
 
          var total = 0;
@@ -324,7 +393,7 @@
          console.log('anjay');
          var bb = table.rows( { filter : 'applied'} ).data(); 
            for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][11]).val(); 
+              aa[i] =  $(bb[i][13]).val(); 
            }
 
          var total = 0;
@@ -341,7 +410,7 @@
          console.log('anjay');
          var bb = table.rows( { filter : 'applied'} ).data(); 
            for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][11]).val(); 
+              aa[i] =  $(bb[i][13]).val(); 
            }
 
          var total = 0;
@@ -358,7 +427,7 @@
          console.log('anjay');
          var bb = table.rows( { filter : 'applied'} ).data(); 
            for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][11]).val(); 
+              aa[i] =  $(bb[i][13]).val(); 
            }
 
          var total = 0;
@@ -369,14 +438,14 @@
       $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
    }
    function filterColumn5 () {
-      $('#addColumn').DataTable().column(12).search(
+      $('#addColumn').DataTable().column(14).search(
           $('#cabang').val()).draw(); 
 
          var aa=[];
          console.log('anjay');
          var bb = table.rows( { filter : 'applied'} ).data(); 
            for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][11]).val(); 
+              aa[i] =  $(bb[i][13]).val(); 
            }
 
          var total = 0;
