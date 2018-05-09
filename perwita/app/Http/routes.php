@@ -79,6 +79,8 @@ Route::post('setting/hak_akses/edit_hak_akses', 'setting\hak_akses_Controller@ed
 
 //***PEMBELIAN
 //***PEMBELIAN
+
+
 Route::get('suratpermintaanpembelian' , 'PurchaseController@spp_index');
 Route::post('suratpermintaanpembelian/savesupplier' , 'PurchaseController@savespp');
 Route::post('suratpermintaanpembelian/updatesupplier/{id}' , 'PurchaseController@updatespp');
@@ -995,7 +997,8 @@ Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@re
 
 //**** PENJUALAN***
 // Master Sales
-
+// MASTER AKUN FITUR
+Route::get('master_sales/master_akun', 'master_sales\master_akun_controller@index');
 
 //grup agen
 Route::get('master_sales/agen', 'master_sales\agen_Controller@index');
