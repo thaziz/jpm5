@@ -6,7 +6,7 @@
 <style type="text/css">
       .id {display:none; }
       .center {text-align:center; }
-      .lebar {width:200px }
+      .lebar {width:150px }
       .right{text-align: right;}
     </style>
 
@@ -19,7 +19,7 @@
                     <h5> KONTRAK
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     <a href="../master_sales/kontrak" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+                     <a href="../kontrak" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
                 </div>
                 <div class="ibox-content">
                         <div class="row">
@@ -29,19 +29,20 @@
                 <div class="box-header">
                 </div><!-- /.box-header -->
                 <form id="form_header" class="form-horizontal">
-                    <table class="table table-striped table-bordered table-hover">
+                    <table class="table table-striped table-bordered table-hover disabled">
+                        {{csrf_field()}}
                         <tbody>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="kontrak_nomor" id="ed_nomor" readonly="readonly" class="form-control ed_nomor" style="text-transform: uppercase" >
+                                    <input type="text" name="kontrak_nomor" value="{{$data->kc_nomor}}" id="ed_nomor" readonly="readonly" class="form-control" style="text-transform: uppercase" >
                                     <input type="hidden" readonly="readonly" class="form-control success" >
                                 </td>
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
-                                    <input type="text" class="form-control tgl" name="ed_tanggal" value="{{$now}}" >
+                                    <input type="text" class="form-control tgl" name="ed_tanggal" value="{{Carbon\Carbon::parse($data->kc_tanggal)->format('d/m/Y')}}" >
                                 </td>
                             </tr>
                             <tr>
@@ -51,75 +52,59 @@
                                         <span class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </span>
-                                        <input type="text" class="tgl1 form-control" name="ed_mulai" value="{{$now}}">
+                                        <input type="text" class="tgl1 form-control" name="ed_mulai" value="{{Carbon\Carbon::parse($data->kc_mulai)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                                 <td style="padding-top: 0.4cm">Berakhir</td>
                                 <td>
                                     <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="tgl2 form-control" name="ed_akhir" value="{{$now1}}">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="tgl2 form-control" name="ed_akhir" value="{{Carbon\Carbon::parse($data->kc_akhir)->format('d/m/Y')}}">
                                     </div>
                                 </td>
                             </tr>
                             
-                            @if(Auth()->user()->punyaAkses('Kontrak Customer','cabang'))
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="3" class="cabang_td">
-                                    <select onchange="ganti_cus()" class="form-control cabang chosen-select-width"  name="cabang" >
-                                      <option selected="" disabled="">- Pilih Cabang -</option>
-                                      @foreach($cabang as $val)
-                                      @if(Auth::user()->kode_cabang == $val->kode)
-                                      <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                      @else
-                                      <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
-                                      @endif
-                                      @endforeach
-                                    </select>
-                                </td>
-                            </tr>
-                            @else
-                             <tr class="disabled">
-                                <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="3" class="cabang_td">
+                                <td colspan="3">
                                     <select class="form-control cabang chosen-select-width"  name="cabang" >
                                       <option selected="" disabled="">- Pilih Cabang -</option>
                                       @foreach($cabang as $val)
-                                      @if(Auth::user()->kode_cabang == $val->kode)
-                                      <option selected="" value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      @if($data->kc_kode_cabang== $val->kode)
+                                      <option selected="" value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                       @else
-                                      <option  value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
+                                      <option  value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                       @endif
                                       @endforeach
                                     </select>
                                 </td>
                             </tr>
-                            @endif
                             <tr>
                                 <td style="padding-top: 0.4cm">Customer</td>
-                                <td colspan="3" class="customer_td">
-                                    
+                                <td colspan="3">
+                                    <input type="text" class="form-control" readonly="" value="{{$data->kc_kode_customer}}- {{$data->nama}} - {{$data->nama_kota}}">
+                                    <input type="hidden" readonly="" name="customer" class="customer" id="customer" value="{{$data->kc_kode_customer}}">
                                 </td>
                             </tr>
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Keterangan</td>
                                 <td colspan="3">
-                                    <input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="ed_keterangan" class="form-control ed_keterangan" style="text-transform: uppercase" value="{{$data->kc_keterangan}}" >
                                 </td>
                             </tr>
                             <tr>
                                 <td>Aktif</td>
                                 <td colspan="3">
+                                    @if($data->kc_aktif == 'AKTIF')
                                     <input type="checkbox" name="ck_aktif" checked="">
+                                    @else
+                                    <input type="checkbox" name="ck_aktif">
+                                    @endif
                                 </td>
                             </tr>
                         </tbody>
                     </table>
                     <div class="row">
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-info " id="btnadd" name="btnadd" >
-                                <i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                        </div>
+                        
 
 
                     </div>
@@ -133,13 +118,17 @@
                             <th>Tujuan</th>
                             <th>Jenis Tarif</th>
                             <th>Satuan</th>
-                            <th>Tipe Angkutan</th>`
+                            <th>Tipe Angkutan</th>
                             <th>Harga</th>
                             <th>Keterangan</th>
+                            @if(Auth::user()->punyaAkses('Verifikasi','aktif'))
+                            <th>Active</th>
+                            @endif
                             <th style="text-align: center;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
+                        
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
@@ -308,7 +297,7 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-   $('.tgl').datepicker({
+  $('.tgl').datepicker({
     format:'dd/mm/yyyy'
   });
   $('.tgl1').datepicker({
@@ -321,8 +310,8 @@
 
  $(document).ready( function () {
             
-    $('.harga_modal').maskMoney({precision:0,thousands:'.'});
-    var asd = $('.harga').maskMoney({thousands:'.', precision:0});
+    $('.harga_modal').maskMoney({precision:0});
+    var asd = $('.harga').maskMoney({thousands:',', precision:0});
     var cabang = $('.cabang').val();
 
     var config2 = {
@@ -336,20 +325,6 @@
                $(selector).chosen(config2[selector]);
              }
 
-    $.ajax({
-        url:baseUrl+'/master_sales/kontrak_set_nota',
-        data:{cabang},
-        dataType:'json',
-        success:function(response){
-            $('#ed_nomor').val(response.nota);
-            
-          
-        },
-        error:function(){
-            location.reload();
-        }
-
-    })
 
     $.ajax({
         url:baseUrl +'/master_sales/set_kode_akun_acc',
@@ -373,17 +348,8 @@
         }
     });
 
-    $.ajax({
-        url:baseUrl +'/master_sales/drop_cus',
-        data:{cabang},
-        success:function(data){
-            $('.customer_td').html(data);
-        },
-        error:function(){
-            location.reload();
-        }
-    });
-    $('#table_data').DataTable({
+     var nota = $('#ed_nomor').val();
+     $('#table_data').DataTable({
                   processing: true,
                   serverSide: true,
                   ajax: {
@@ -391,20 +357,21 @@
                       data:{nota: function() { return $('#ed_nomor').val() }}
                   },
                   columnDefs: [
-                  {
-                     targets: 7 ,
-                     className: 'center'
-                  },
+                
                   {
                      targets: 0 ,
                      className: 'center kcd_dt'
                   },
                   {
                      targets: 6 ,
-                     className: 'center'
+                     className: 'right'
                   },
                   {
                      targets: 8 ,
+                     className: 'center'
+                  },
+                  {
+                     targets: 9 ,
                      className: 'center'
                   },
                   {
@@ -426,47 +393,12 @@
                     {data: 'angkutan', name: 'angkutan'},
                     {data: 'harga', name: 'harga'},
                     {data: 'kcd_keterangan', name: 'kcd_keterangan'},
-                    {data: 'aksi', name: 'aksi'}
+                    {data: 'none', name: 'none'},
+                    {data: 'none', name: 'none'}
                 ]
 
             });
-
-
 });
-
-  
-  
-
-
- function ganti_cus() {
-    var cabang = $('.cabang').val();
-     $.ajax({
-        url:baseUrl +'/master_sales/drop_cus',
-        data:{cabang},
-        success:function(data){
-            $('.customer_td').html(data);
-            toastr.info('Data Telah Dirubah Harap Periksa Kembali');
-        },
-        error:function(){
-            location.reload();
-        }
-    });
-
-      $.ajax({
-        url:baseUrl+'/master_sales/kontrak_set_nota',
-        data:{cabang},
-        dataType:'json',
-        success:function(response){
-            $('#ed_nomor').val(response.nota);
-            var table = $('#table_data').DataTable();
-            table.ajax.reload(null,false);
-        },
-        error:function(){
-            location.reload();
-        }
-
-    })
- }
 
 $('#btnadd').click(function(){
 
@@ -689,8 +621,8 @@ function(){
 });
 
 
-// var par = $(p).parents('tr');
-// datatable.row(par).remove().draw(false);
+var par = $(p).parents('tr');
+datatable.row(par).remove().draw(false);
 }
 
 function edit(p){
@@ -749,70 +681,66 @@ $.ajax({
     }); 
 }
 
+function check(p) {
 
-// $('#btnsimpan').click(function(){
-//     var cabang = $('.cabang').val();
-//     var customer= $('.customer').val();
-//     if (cabang == '0') {
-//         return toastr.warning('Cabang Harus Diisi');
-//     }
-//     if (customer == '0') {
-//         return toastr.warning('Customer Harus Diisi');
-//     }
-//    swal({
-//     title: "Apakah anda yakin?",
-//     text: "Simpan Data Kontrak!",
-//     type: "warning",
-//     showCancelButton: true,
-//     confirmButtonColor: "#DD6B55",
-//     confirmButtonText: "Ya, Simpan!",
-//     cancelButtonText: "Batal",
-//     closeOnConfirm: false
-//   },
-//   function(){
-//      $.ajaxSetup({
-//         headers: {
-//             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-//             }
-//         });
+    var par    = $(p).parents('tr');
+    var nota   = $('#ed_nomor').val();
+    var kcd_dt = $(par).find('.kcd_dt').text();
+    var check  = $(par).find('.check').is(':checked');
+    var id     = '{{ $id }}';
 
-//       $.ajax({
-//       url:baseUrl + '/master_sales/save_kontrak',
-//       type:'post',
-//       data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'&cabang='+cabang+'&customer='+customer,
-//       success:function(response){
-//         swal({
-//         title: "Berhasil!",
-//                 type: 'success',
-//                 text: "Data berhasil disimpan",
-//                 timer: 900,
-//                showConfirmButton: true
-//                 },function(){
-//                     $('.success').val('success');
-//                    location.reload();    
-//         });
-//       },
-//       error:function(data){
-//         swal({
-//         title: "Terjadi Kesalahan",
-//                 type: 'error',
-//                 timer: 900,
-//                showConfirmButton: true
+    $.ajax({
+      url:baseUrl + '/master_sales/check_kontrak',
+      data:{nota,kcd_dt,check,id},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Diupdate",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
 
-//     });
-//    }
-//   });  
-//  });
-// });
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+}
 
-
-    window.onbeforeunload = function(event)
-{       
-    var valid = $('.success').val();
-    if (valid == '') {
-       return confirm();
-    }
-
-};
+$.fn.serializeArray = function () {
+    var rselectTextarea= /^(?:select|textarea)/i;
+    var rinput = /^(?:color|date|datetime|datetime-local|email|hidden|month|number|password|range|search|tel|text|time|url|week)$/i;
+    var rCRLF = /\r?\n/g;
+    
+    return this.map(function () {
+        return this.elements ? jQuery.makeArray(this.elements) : this;
+    }).filter(function () {
+        return this.name && !this.disabled && (this.checked || rselectTextarea.test(this.nodeName) || rinput.test(this.type) || this.type == "checkbox");
+    }).map(function (i, elem) {
+        var val = jQuery(this).val();
+        if (this.type == 'checkbox' && this.checked === false) {
+            val = 'off';
+        }
+        return val == null ? null : jQuery.isArray(val) ? jQuery.map(val, function (val, i) {
+            return {
+                name: elem.name,
+                value: val.replace(rCRLF, "\r\n")
+            };
+        }) : {
+            name: elem.name,
+            value: val.replace(rCRLF, "\r\n")
+        };
+    }).get();
+}
 </script>
 @endsection

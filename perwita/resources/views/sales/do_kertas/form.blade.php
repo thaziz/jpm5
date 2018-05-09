@@ -145,7 +145,7 @@
                                      
                                 </td>
                             </tr>
-                            <tr>
+                            <tr hidden="">
                                 <td style="width:110px; padding-top: 0.4cm">Biaya Tambahan</td>
                                 <td colspan="3">
                                     <input type="text" class="form-control biaya_tambahan" onkeyup="hitung_total() " tabindex="-1"  style="text-align:right" value="0" name="biaya_tambahan">

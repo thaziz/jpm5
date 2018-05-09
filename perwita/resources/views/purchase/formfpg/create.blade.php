@@ -138,7 +138,7 @@
                           <table class='table table-bordered table-striped tbl-jenisbayar' style="width:100%">
                             <tr>
                               <th> Kode  </th>
-                              <td> <select class='form-control  chosen-select-width  jenisbayar2'>  </select> <input type="hidden" class="hsljenisbayar" name="kodebayar">  </td>
+                              <td> <select class='form-control  chosen-select-width  jenisbayar2'>  </select> <input type="text" class="hsljenisbayar" name="kodebayar">  </td>
                             </tr>
 
                             <tr>
@@ -1402,8 +1402,8 @@
 */                        //  $('.formtt').val(data.faktur[0][0].tt_noform);
                          // $('.jthtmpo_bank').val(data.faktur[0][0].fp_jatuhtempo);
                           
-                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].um_pelunasan));
-                          $('.sisafaktur').val(addCommas(data.faktur[0][0].um_pelunasan));
+                          $('.sisatrbyr').val(addCommas(data.faktur[0][0].um_sisapelunasan));
+                          $('.sisafaktur').val(addCommas(data.faktur[0][0].um_sisapelunasan));
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].um_jumlah));
                       
@@ -1428,7 +1428,7 @@
 
                                   "<td style='text-align:center'> - </td>" + //jatuhtempo
 
-                                  "<td>"+addCommas(data.faktur[i][0].um_jumlah)+" <input type='hidden' class='sisapelunasan"+nmr+"' value="+data.faktur[i][0].um_pelunasan+"> </td> <input type='hidden' class='netto"+nmr+"' value="+data.faktur[i][0].um_jumlah+" name='netto[]'> </td>"+ //netto
+                                  "<td>"+addCommas(data.faktur[i][0].um_jumlah)+" <input type='hidden' class='sisapelunasan"+nmr+"' value="+data.faktur[i][0].um_sisapelunasan+"> </td> <input type='hidden' class='netto"+nmr+"' value="+data.faktur[i][0].um_jumlah+" name='netto[]'> </td>"+ //netto
 
                                    "<td> <input type='text' class='input-sm pelunasanitem pelunasan"+nmr+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pelunasan[]'>   </td>" +   //pelunasan         
 
@@ -2047,7 +2047,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Agen  </option>");  
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].nama+","+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                       } 
@@ -2056,7 +2056,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Outlet  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].nama+","+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
@@ -2065,7 +2065,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Vendor  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].nama+","+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
@@ -2074,7 +2074,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Cabang  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].nama+","+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
@@ -2093,7 +2093,7 @@
                         $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Data  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].kode+">"+response[j].kode+'-'+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value="+response[j].kode+","+response[j].kode+">"+response[j].kode+'-'+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
@@ -2297,32 +2297,31 @@
                              }                        
                     } // END IF JENS
                     else if(idjenisbayar == '4'){
-                      $('.invfaktur').hide();
-                      $('.supfaktur').hide();
-
+                      $('.supfaktur').show();
+                      $('.invfaktur').show();
+                       var tablefaktur = $('#tbl-faktur').DataTable();
+                       tablefaktur.clear().draw();
+                      
                        for(var i = 0; i < fp.length; i++){ 
+                        
                            var html2 = "<tr class='data"+n+"' id='data"+fp[i].um_nomorbukti+"'>"+
                                           " <td>"+n+"</td>" +
                                           "<td>"+fp[i].nama+"</td>" +
-                                          "<td>"+fp[i].um_nomorbukti+"</td>" +
-                                        
+                                          "<td>"+fp[i].um_nomorbukti+"</td>" +                                      
+                                          "<td> - </td>" +
+                                          "<td>"+fp[i].um_supplier+"</td>" +
                                           "<td> - </td>" +
                                           "<td> - </td>" +
-                                          "<td>"+addCommas(fp[i].um_pelunasan)+"</td> ";
-                                        html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].um_id+","+fp[i].um_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                          "<td>"+addCommas(fp[i].um_sisapelunasan)+"</td> " +
+                                          "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].um_id+","+fp[i].um_nomorbukti+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
                                       "<label></label>" +
-                                      "</div></td>";
-                                          
-                           html2 +=  "</tr>"; 
-                         
-                           tablefaktur.rows.add($(html2)).draw(); 
+                                      "</div></td>" +
+                                      "</tr>"; 
+                          tablefaktur.rows.add($(html2)).draw(); 
                           n++;
                           console.log(n +'n');                                                           
                        } 
-                      
                     
-                      $('.invfaktur').hide();
-                      $('.supfaktur').hide(); 
                     }
                                          
                     else if(idjenisbayar == '1'){

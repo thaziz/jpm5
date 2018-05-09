@@ -177,7 +177,7 @@
                               </tr>
                               <tr>
                                   <td> PPn </td>
-                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn" readonly=""></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn"> </div></td>
+                                  <td> <div class="col-sm-5"> <input type="text" class="form-control input-sm inputppn" name="inputppn" readonly=""></div> <div class="col-sm-5"> <input type="text" class="form-control input-sm hasilppn" name="hasilppn" readonly=""> </div></td>
                               </tr>
                               <tr>
                                   <td> Total </td>
@@ -336,7 +336,7 @@
                 <div class="box-footer">
                   <div class="pull-right">
                   
-                    <a class="btn btn-sm btn-warning" href={{url('purchase/returnpembelian')}}> Kembali </a>
+                    <a class="btn btn-sm btn-warning" href={{url('purchase/returnpembelian')}}> Kembali </a> 
                    <button type="submit" id="submit" name="submit" value="Simpan" class="btn btn-sm btn-success simpanitem"> <i class=" fa fa-upload"> </i> Simpan </button>
          
                     </form>
@@ -603,6 +603,7 @@
                 var tablebarang = $('#table-barang').DataTable();
                 tablebarang.clear().draw();
                 var nmrbnk = 1;
+                
                 table2 = response.po;       
                  for(var i = 0; i < table2.length; i++){  
                        var html2 = "<tr class='databarang data"+nmrbnk+"' id="+table2[i].po_id+" data-nopo='"+table2[i].po_noform+"'>" +
@@ -611,7 +612,7 @@
                             "<td>"+table2[i].podt_qtykirim+"<input type='hidden' class='qtykirim"+nmrbnk+"' value='"+table2[i].podt_qtykirim+"' name='qtypo[]'> </td>" +
                             "<td> <input type='text' class='form-control input-sm  qtyreturn qtyreturn"+nmrbnk+"' data-id='"+nmrbnk+"' name='qtyreturn[]' style='width:70px' required></td>" +
                             "<td> <input type='text' class='form-control input-sm jumlahharga"+nmrbnk+"' value="+addCommas(table2[i].podt_jumlahharga)+" readonly name='jumlahharga[]'> </td>" +
-                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"'> <input type='hidden' class='minusharga' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" +
+                            "<td> <input type='text' class='form-control input-sm totalharga"+nmrbnk+"' value="+addCommas(table2[i].podt_totalharga)+" readonly name='totalharga[]'> <input type='hidden' class='minusharga minusharga"+nmrbnk+"'> <input type='hidden' value='"+table2[i].podt_lokasigudang+"' name='lokasigudang[]'> </td>" +
                             "<td> <button class='btn btn-sm btn-danger removes-btn' data-id='"+nmrbnk+"' type='button'><i class='fa fa-trash'></i></button> </td>" +
                            "</tr>";
                           
@@ -647,12 +648,14 @@
                       inputppn = response.po[0].po_ppn;
                       hasilppn = response.po[0].po_hasilppn;
                       totalharga =$('.total').val(addCommas(response.po[0].po_totalharga));
+                      hasilminus = 0;
                       $('.minusharga').each(function(){
                         valminus2 = $(this).val();
-
+                        //alert(valminus2);
                         if(valminus2 != ''){
                           valminus = valminus2.replace(/,/g, ''); 
-                          hargasubtotal = parseFloat(parseFloat(subtotal) - parseFloat(valminus)).toFixed(2);
+                         // alert(valminus);
+                          hasilminus = parseFloat(parseFloat(hasilminus) + parseFloat(valminus)).toFixed(2);
                           // alert(subtotal);   
                          // alert(valminus); 
                          
@@ -660,8 +663,11 @@
                         }
 
                       })
+                     // alert(hasilminus);
+                      hargasubtotal = parseFloat(parseFloat(subtotal) - parseFloat(hasilminus)).toFixed(2);
                     //  alert(hargasubtotal);
                       $('.subtotal').val(addCommas(hargasubtotal));
+                      $('.total').val(addCommas(hargasubtotal));
                       subtotal3 = $('.subtotal').val();
                       subtotal2 =   subtotal3.replace(/,/g, ''); 
                       if(jenisppn != 'T'){
@@ -695,6 +701,7 @@
                              $('.total').val(addCommas(subtotal));
                           }
                         }
+                       
                   })
                 })
 
@@ -761,6 +768,9 @@
                        tablepo.rows.add($(html2)).draw(); 
                       nmrbnk++;                                                                                  
                  }   
+          },
+          error : function(){
+            location.reload();
           }
 
         })

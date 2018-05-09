@@ -5,6 +5,9 @@
 @section('content')
 <style type="text/css">
       .id {display:none; }
+      .center {text-align:center; }
+      .lebar {width:200px }
+      .right{text-align: right;}
     </style>
 
 
@@ -37,7 +40,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
-                                    <div class="input-group date">
+                                    <div class="input-group date" style="width: 100%">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl" name="ed_tanggal" value="{{$now}}">
                                     </div>
                                 </td>
@@ -58,11 +61,11 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Subcon</td>
-                                <td colspan="3">
+                                <td colspan="3" class="customer_td">
                                     <select class="chosen-select-width form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
-                                        <option selected="" disabled="">- Pilih Subcon -</option>
+                                        <option selected="" value="0">- Pilih Subcon -</option>
                                         @foreach($data as $val)
-                                        <option value="{{$val->kode}}">{{$val->nama}}</option>
+                                        <option value="{{$val->kode}}">{{$val->kode}} - {{$val->nama}}</option>
                                         @endforeach
 
                                     </select>
@@ -72,7 +75,7 @@
                             @if(Auth::user()->punyaAkses('Kontrak Subcon','cabang'))
                             <tr>
                                 <td  style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="3">
+                                <td colspan="3" class="cabang_td">
                                     <select onchange="ganti_nota()" class="form-control cabang " name="cabang" >
                                       @foreach($cabang as $val)
                                                 @if(Auth::user()->kode_cabang == $val->kode)
@@ -87,7 +90,7 @@
                             @else
                             <tr class="disabled">
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="3">
+                                <td colspan="3" class="cabang_td">
                                     <select class="form-control cabang" disabled="" name="cabang" >
                                       @foreach($cabang as $val)
                                                 @if(Auth::user()->kode_cabang == $val->kode)
@@ -117,7 +120,6 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
                         </div>
 
 
@@ -127,6 +129,7 @@
                   <table id="table_data" class="table table-bordered table-striped">
                     <thead>
                         <tr>
+                            <th>No</th>
                             <th>Asal</th>
                             <th>Tujuan</th>
                             <th>Angkutan</th>
@@ -165,7 +168,7 @@
       </div>
       <div class="modal-body">
         <form class="form-horizontal  kirim">
-                    <table id="table_data" class="table table-striped table-bordered table-hover">
+                    <table class="table table_modal table-striped table-bordered table-hover">
                         <tbody>
                             <tr>
                                 <td style="padding-top: 0.4cm">Kota Asal</td>
@@ -176,10 +179,7 @@
                                         <option value="{{$val->id}}">{{$val->nama}}</option>
                                         @endforeach
                                     </select>
-                                    <input type="hidden" class="form-control" name="crud" class="form-control">
-                                    <input type="hidden" class="form-control id_edit" class="form-control">
-                                    <input type="hidden" class="form-control" name="ed_nomor_kontrak" class="form-control">
-                                    <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
+                                    <input type="hidden" class="form-control id_detail" name="id_detail" class="form-control">
                                 </td>
                             </tr>
                             <tr>
@@ -208,6 +208,7 @@
                                 <td style="width:110px; padding-top: 0.4cm">Jenis Tarif</td>
                                 <td>
                                     <select class="form-control tarif" name="tarif" >
+                                          <option value="0">Pilih - Tarif</option>
                                        @foreach($jenis_tarif as $val)
                                           <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
                                        @endforeach
@@ -272,6 +273,7 @@
 
   $('.cabang').chosen(config2); 
 
+
 var cabang = $('.cabang').val();
 $.ajax({
         url:baseUrl + '/master_subcon/nota_kontrak_subcon',
@@ -282,7 +284,53 @@ $.ajax({
         }
     })
 
+ $('#table_data').DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: {
+              url:'{{ route('datatable_kontrak_subcon') }}',
+              data:{nota: function() { return $('.ed_nomor').val() }}
+          },
+          columnDefs: [
+          {
+             targets: 7 ,
+             className: 'center'
+          },
+          {
+             targets: 0 ,
+             className: 'center ksd_dt'
+          },
+          {
+             targets: 5 ,
+             className: 'right'
+          },
+          {
+             targets: 1 ,
+             className: 'lebar'
+          },
+          {
+             targets: 2 ,
+             className: 'lebar'
+          },
+       
+        ],
+        columns: [
+            {data: 'ksd_ks_dt', name: 'ksd_ks_dt'},
+            {data: 'asal', name: 'asal'},
+            {data: 'tujuan', name: 'tujuan'},
+            {data: 'angkutan', name: 'angkutan'},
+            {data: 'tarif', name: 'tarif'},
+            {data: 'harga', name: 'harga'},
+            {data: 'ksd_keterangan', name: 'ksd_keterangan'},
+            {data: 'aksi', name: 'aksi'}
+        ]
+
+    });
+
 });
+
+
+
 function ganti_nota() {
   var cabang = $('.cabang').val();
 $.ajax({
@@ -295,90 +343,202 @@ $.ajax({
     })
 }
 $('#btnadd').click(function(){
-
+  var id_subcon = $('.id_subcon').val();
+  var cabang    = $('.cabang').val();
+  if (id_subcon == '0') {
+    return toastr.warning('Harap Mengisi Nama Subcon.');
+  }
+  if (cabang == '0') {
+    return toastr.warning('Harap Mengisi Cabang.');
+  }
   $('.updt').attr('hidden',true);
   $('.tambah').attr('hidden',false);
 
   $('.asal').val('0').trigger('chosen:updated');
   $('.tujuan').val('0').trigger('chosen:updated');
   $('.angkutan').val('0').trigger('chosen:updated');
-  $('.tarif').val('');
-  $('.harga').val('');
+  $('.tarif').val('0');
+  $('.harga').val('0');
   $('.keterangan').val('');
-  $('.id_edit').val('');
+  $('.id_detail').val('');
 
   $('.modal_sub').modal('show');
 });
 
-var datatable = $('#table_data').DataTable({
-                      'paging':false,
-                      'searching':false
-                });
 var count = 0;
 function tambah(){
   
   var asal        = $('.asal option:selected').text();
   var tujuan      = $('.tujuan option:selected').text();
   var angkutan    = $('.angkutan option:selected').text();
+
   var asal_dt     = $('.asal').val();
   var tujuan_dt   = $('.tujuan').val();
   var angkutan_dt = $('.angkutan').val();
-  var tarif       = $('.tarif option:selected').text();
+  var tarif       = $('.tarif ').val();
   var Harga       = $('.harga').val();
   var keterangan  = $('.keterangan').val();
-  // console.log(asal);
+  var cabang = $('.cabang').val();
+
+  if (asal_dt == 0) {
+    return toastr.warning('Harap Mengisi Asal Kota.');
+  }
+
+  if (tujuan_dt == 0) {
+    return toastr.warning('Harap Mengisi Tujuan Kota.');
+  }
+
+  if (angkutan_dt == 0) {
+    return toastr.warning('Harap Mengisi Angkutan.');
+  }
+
+  if (tarif == 0) {
+    return toastr.warning('Harap Mengisi Tarif.');
+  }
+
+  if (Harga == 0 || Harga == '') {
+    return toastr.warning('Harga Tidak Boleh 0.');
+  }
+
+  if (keterangan == 0) {
+    return toastr.warning('Harap Mengisi Keterangan.');
+  }
 
 
 
+  $.ajaxSetup({
+  headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      }
+  });
 
-  datatable.row.add([
-        '<div class="asal_text">'+asal+'</div>'+'<input type="hidden" class="asal_tb hitung_'+count+'" name="asal_tb[]" value="'+asal_dt+'" >'+'<input type="hidden" class="id_table" value="'+count+'" >',
-        '<div class="tujuan_text">'+tujuan+'</div>'+'<input type="hidden" class="tujuan_tb" name="tujuan_tb[]" value="'+tujuan_dt+'" >',
-        '<div class="angkutan_text">'+angkutan+'</div>'+'<input type="hidden" class="angkutan_tb" name="angkutan_tb[]" value="'+angkutan_dt+'" >',
-        '<div class="tarif_text">'+tarif+'</div>'+'<input type="hidden" class="tarif_tb" name="tarif_tb[]" value="'+tarif+'" >',
-        '<div class="harga_text">'+Harga+'</div>'+'<input type="hidden" class="harga_tb" name="harga_tb[]" value="'+Harga+'" >',
-        '<div class="keterangan_text">'+keterangan+'</div>'+'<input type="hidden" class="keterangan_tb" name="keterangan_tb[]" value="'+keterangan+'" >',
-        '<button align="center" type="button" class="btn btn-xs edit btn-warning" onclick="edit(this)"><i class="fa fa-pencil"></i></button>'+'&nbsp;<button align="center" type="button" class="btn btn-xs hapus btn-danger" onclick="hapus(this)"><i class="fa fa-trash"></i></button>',
-        
-    ]).draw(false);
-  // console.log('asd');
-  count++;
-  var edit = $('.edit').closest('td');
+      $.ajax({
+      url:baseUrl + '/master_subcon/save_subcon',
+      type:'get',
+      data:$('#form_header').serialize()+'&'+$('.table_modal :input').serialize()+'&cabang='+cabang,
+      dataType:'json',
+      success:function(response){
+        swal({
+        title: "Berhasil!",
+                type: 'success',
+                text: "Data berhasil disimpan",
+                timer: 900,
+                showConfirmButton: true
+                },function(){
+                  var table = $('#table_data').DataTable();
+                  table.ajax.reload(null,false);
+                  $('.cabang_td').addClass('disabled');
+                  $('.customer_td').addClass('disabled');
 
-  $(edit).css('text-align','center');
+                });
+      },
+      error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 900,
+               showConfirmButton: true
 
-  var harga = $('.harga_tb').closest('td');
-
-  $(harga).css('text-align','right');
-
-  $('.modal_sub').modal('hide');
+    });
+   }
+  }); 
 }
   
 function hapus(p){
-  var par = p.parentNode.parentNode;
-  datatable.row(par).remove().draw(false);
+var auth = '{{ Auth::user()->punyaAkses('Kontrak Subcon','hapus') }}';
+
+if (auth == 0) {
+return toastr.warning('User tidak memiliki akses untuk menghapus');
+}
+
+var par    = $(p).parents('tr');
+var nota   = $('#ed_nomor').val();
+var ksd_dt = $(par).find('.ksd_dt').text();
+
+swal({
+    title: "Apakah anda yakin?",
+    text: "Hapus Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+},
+
+function(){
+     $.ajax({
+      url:baseUrl + '/master_subcon/hapus_d_kontrak',
+      data:{nota,ksd_dt},
+      type:'get',
+      success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                    var table = $('#table_data').DataTable();
+                    table.ajax.reload(null,false);
+                  });
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
+    });
+   }
+  });
+});
+
 }
 
 function edit(p){
-var par  = p.parentNode.parentNode;
-var asal = $(par).find('.asal_tb').val();
-var tujuan = $(par).find('.tujuan_tb').val();
-var angkutan = $(par).find('.angkutan_tb').val();
-var tarif = $(par).find('.tarif_tb').val();
-var harga = $(par).find('.harga_tb').val();
-var keterangan = $(par).find('.keterangan_tb').val();
-var id = $(par).find('.id_table').val();
 
-  $('.asal').val(asal).trigger('chosen:updated');
-  $('.tujuan').val(tujuan).trigger('chosen:updated');
-  $('.angkutan').val(angkutan).trigger('chosen:updated');
-  $('.tarif').val(tarif);
-  $('.harga').val(harga);
-  $('.keterangan').val(keterangan);
-  $('.id_edit').val(id);
-  $('.updt').attr('hidden',false);
-  $('.tambah').attr('hidden',true);
-  $('.modal_sub').modal('show');
+var auth = '{{ Auth::user()->punyaAkses('Kontrak Subcon','ubah') }}';
+if (auth == 0) {
+return toastr.warning('User tidak memiliki akses untuk menghapus');
+}
+
+var par = $(p).parents('tr');
+var nota   = $('#ed_nomor').val();
+var ksd_dt = $(par).find('.ksd_dt').text();
+
+$.ajax({
+    url:baseUrl + '/master_subcon/set_modal',
+    type:'get',
+    data:{nota,ksd_dt},
+    dataType:'json',
+    success:function(data){
+
+        $('.asal').val(data.data.ksd_asal).trigger('chosen:updated');
+        $('.tujuan').val(data.data.ksd_tujuan).trigger('chosen:updated');
+        $('.angkutan').val(data.data.ksd_angkutan).trigger('chosen:updated');
+        $('.tarif').val(data.data.ksd_jenis_tarif);
+        $('.harga').val(accounting.formatMoney(data.data.ksd_harga,"",0,'.',','));
+        $('.keterangan').val(data.data.ksd_keterangan);
+        $('.id_detail').val(ksd_dt);
+        // $('.updt').attr('hidden',false);
+        // $('.tambah').attr('hidden',true);
+        $('#modal_sub').modal('show');
+    },
+    error:function(data){
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 900,
+                showConfirmButton: true
+
+        });
+    }
+    }); 
+
+  
 }
 
 function updt(){
@@ -420,7 +580,7 @@ if (count == 0) {
   toastr.info('Tidak Ada Data Periksa Kembali');
   return 1;
 }
-var cabang = $('.cabang').val();
+   var cabang = $('.cabang').val();
 
    swal({
     title: "Apakah anda yakin?",
@@ -442,7 +602,7 @@ var cabang = $('.cabang').val();
       $.ajax({
       url:baseUrl + '/master_subcon/save_subcon',
       type:'get',
-      data:$('#form_header').serialize()+'&'+datatable.$('input').serialize()+'cab='+cabang,
+      data:$('#form_header').serialize()+'&'+$('#table_data input').serialize()+'cabang='+cabang,
       success:function(response){
         swal({
         title: "Berhasil!",

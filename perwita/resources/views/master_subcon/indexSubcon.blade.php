@@ -72,7 +72,7 @@
                     <tbody>
                       @foreach($data as $i => $val)
                       <tr>
-                        <td>{{$val->ks_nota}}</td>
+                        <td><a href="{{ url('master_sales/detail_kontrak')}}/{{$val->ks_id}}">{{ $val->ks_nota }}</a></td>
                         <td>{{$val->ks_tgl_mulai}}</td>
                         <td>{{$val->ks_tgl_akhir}}</td>
                         <td>{{$subcon[$i]->nama}}</td>
@@ -103,7 +103,7 @@
               </div><!-- /.box -->
             </div><!-- /.col -->
             </div>
-          </div><!-- /.row -->
+          </div><!-- /.val -->
                 </div>
             </div>
         </div>

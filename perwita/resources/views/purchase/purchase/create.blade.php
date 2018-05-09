@@ -264,10 +264,23 @@
                                 "<td>"+response.spp[i].nama_supplier+"</td>"+
                                 "<td>"+response.spp[i].spp_cabang+"</td>"+
                                 "<td>"+response.spp[i].spp_tipe+"</td>" +
-                                "<td>"+response.spp[i].spp_keperluan+"</td>" +
-                                "<td> <div class='checkbox'> <input type='checkbox' id='"+response.spp[i].co_idspp+","+response.spp[i].idsup+","+response.spp[i].spp_lokasigudang+","+response.spp[i].spp_cabang+","+response.spp[i].spp_penerimaan+","+response.spp[i].cotb_id+","+response.spp[i].co_id+"' class='check' value='option1' aria-label='Single checkbox One'> <label> </label>"+
-                                "</div>"+
+                                "<td>"+response.spp[i].spp_keperluan+"</td>";
+                                if(response.spp[i].cotb_totalbiaya > 500000.00) {
+                                  if(val == '000'){
+                                     html2 +=   "<td> <div class='checkbox'> <input type='checkbox' id='"+response.spp[i].co_idspp+","+response.spp[i].idsup+","+response.spp[i].spp_lokasigudang+","+response.spp[i].spp_cabang+","+response.spp[i].spp_penerimaan+","+response.spp[i].cotb_id+","+response.spp[i].co_id+"' class='check' value='option1' aria-label='Single checkbox One'> <label> </label> </div>"+
                                 "</td>";
+                                  }
+                                  else {
+                                    html2 += "<td> <p> Di proses oleh Pusat </p> </td>"
+                                  }
+                                }
+                                else {
+                                   html2 +=   "<td> <div class='checkbox'> <input type='checkbox' id='"+response.spp[i].co_idspp+","+response.spp[i].idsup+","+response.spp[i].spp_lokasigudang+","+response.spp[i].spp_cabang+","+response.spp[i].spp_penerimaan+","+response.spp[i].cotb_id+","+response.spp[i].co_id+"' class='check' value='option1' aria-label='Single checkbox One'> <label> </label> </div>"+
+                                   "</td>";
+                                }
+
+                   
+                                
                                     
                                   
                               html2 += "</tr>";

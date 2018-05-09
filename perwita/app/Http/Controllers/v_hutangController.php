@@ -111,12 +111,15 @@ class v_hutangController extends Controller
           $anj+=1;
        }
        for ($i=0; $i <count($request->accountid); $i++) {
+
+
+        $nominal = str_replace(',', '', $request->nominal[$i]);
         $idbaru = vd_hutang::max('vd_id');       
         $store2 = new vd_hutang;
         $store2->vd_no=$anj;
         $store2->vd_acc=$request->accountid[$i];
         $store2->vd_keterangan=$request->keterangan[$i];
-        $store2->vd_nominal=$request->nominal[$i];
+        $store2->vd_nominal=$nominal;
         $store2->vd_id=$idbaru+1;
         $store2->save();
     }

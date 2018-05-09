@@ -37,7 +37,7 @@
                             <tr>
                                 <td style="padding-top: 0.4cm">Tanggal</td>
                                 <td colspan="3">
-                                    <div class="input-group date">
+                                    <div class="input-group date" style="width: 100%">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl" name="ed_tanggal" value="{{$tgl3}}">
                                     </div>
                                 </td>
@@ -58,7 +58,7 @@
                             </tr>
                             <tr>
                                 <td style="padding-top: 0.4cm">Subcon</td>
-                                <td colspan="3">
+                                <td colspan="3" class="disabled">
                                     <select class="chosen-select-width form-control id_subcon"  name="id_subcon" id="id_subcon" style="width:100%" >
                                         <option disabled="">- Pilih Subcon -</option>
 
@@ -76,7 +76,7 @@
                             </tr>
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                <td colspan="3">
+                                <td colspan="3" class="disabled">
                                     <select class="form-control cabang chosen-select-width" name="cabang" >
                                       <option  disabled="">- Pilih Cabang -</option>
                                         @foreach($cabang as $val)
@@ -110,7 +110,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-info " id="btnadd" name="btnadd" ><i class="glyphicon glyphicon-plus"></i>Tambah</button>
-                            <button type="button" class="btn btn-success " id="btnsimpan" name="btnsimpan" ><i class="glyphicon glyphicon-save"></i>Simpan</button>
+                     
                         </div>
 
 
@@ -130,41 +130,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                      @foreach($subcon_dt as $i => $val)
-                      <tr>
-                        <td>
-                          <div class="asal_text">{{$val->asal}}</div>
-                          <input type="hidden" class="asal_tb hitung_{{$i}}" name="asal_tb[]" value="{{$val->id_asal}}">
-                          <input type="hidden" class="id_table" value="{{$i}}">
-                          <input type="hidden" class="id_ksd" value="{{$val->ksd_id}}">
-                        </td>
-                        <td>
-                          <div class="tujuan_text">{{$val->tujuan}}</div>
-                          <input type="hidden" class="tujuan_tb" name="tujuan_tb[]" value="{{$val->id_tujuan}}">
-                        </td>
-                        <td>
-                          <div class="angkutan_text">{{$val->angkutan}}</div>
-                          <input type="hidden" class="angkutan_tb" name="angkutan_tb[]" value="{{$val->kode_angkutan}}" >
-                        </td>
-                        <td>
-                          <div class="tarif_text">{{$val->ksd_jenis_tarif}}</div>
-                          <input type="hidden" class="tarif_tb" name="tarif_tb[]" value="{{$val->ksd_jenis_tarif}}" >
-                        </td>
-                        <td>
-                          <div class="harga_text">{{number_format($val->ksd_harga,0,",",".")}}</div>
-                          <input type="hidden" class="harga_tb" name="harga_tb[]" value="{{number_format($val->ksd_harga,0,",",".")}}" >
-                        </td>
-                        <td>
-                            <div class="keterangan_text">{{$val->ksd_keterangan}}</div>
-                            <input type="hidden" class="keterangan_tb" name="keterangan_tb[]" value="{{$val->ksd_keterangan}}" >
-                        </td>
-                        <td>
-                            <button align="center" type="button" class="btn btn-xs edit btn-warning" onclick="edit(this)">
-                            <i class="fa fa-pencil"></i></button>&nbsp;
-                            <button align="center" type="button" class="btn btn-xs hapus btn-danger" onclick="hapus(this)"><i class="fa fa-trash"></i></button>
-                        </td>
-                      </tr>
-                      @endforeach
+                      
                     </tbody>
                   </table>
                 </div><!-- /.box-body -->
@@ -189,10 +155,8 @@
                                                         <option value="{{$val->id}}">{{$val->nama}}</option>
                                                         @endforeach
                                                     </select>
-                                                    <input type="hidden" class="form-control" name="crud" class="form-control">
-                                                    <input type="hidden" class="form-control id_edit" class="form-control">
-                                                    <input type="hidden" class="form-control" name="ed_nomor_kontrak" class="form-control">
-                                                    <input type="hidden" class="form-control" name="_token" value="{{ csrf_token() }}" readonly="" >
+                                                    
+                                                <input type="hidden" class="form-control id_detail" name="id_detail" class="form-control">
                                                 </td>
                                             </tr>
                                             <tr>

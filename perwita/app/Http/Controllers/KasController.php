@@ -37,12 +37,22 @@ use Auth;
 class KasController extends Controller
 {
 	public function index(){
-		 $data = DB::table('biaya_penerus_kas')
+
+    	$cabang = Auth::user()->kode_cabang;
+		if (Auth::user()->punyaAkses('Biaya Penerus Kas','all')) {
+			$data = DB::table('biaya_penerus_kas')
 				->join('cabang','kode','=','bpk_comp')
+				->where('bpk_jenis_biaya','!=','LOADING')
 				->get();
-		for ($i=0; $i < count($data); $i++) { 
-			$data[$i]->bpk_tanggal = Carbon::parse($data[$i]->bpk_tanggal)->format('d/m/Y');
+		}else{
+			$data = DB::table('biaya_penerus_kas')
+				->join('cabang','kode','=','bpk_comp')
+				->where('bpk_comp',$cabang)
+				->where('bpk_jenis_biaya','!=','LOADING')
+				->get();
 		}
+		 
+		
 		return view('purchase/kas/index',compact('data'));
 	}
 
@@ -189,6 +199,12 @@ class KasController extends Controller
 						   ->orderBy('nomor','ASC')
 						   ->get();
 
+			$cari_loading = DB::table('delivery_order')
+						   ->whereIn('nomor',$request->resi_array)
+						   ->where('jenis_tarif',9)
+						   ->orderBy('nomor','ASC')
+						   ->get();
+
 			$cari_resi1 = DB::table('delivery_order')
 						   ->select('bpkd_no_resi')
 						   ->leftjoin('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
@@ -246,6 +262,17 @@ class KasController extends Controller
 		$resi = array_unique($resi);
 		$resi = array_values($resi);
 		
+
+		for ($i=0; $i < count($resi); $i++) { 
+			for ($a=0; $a < count($cari_loading); $a++) { 
+				if ($cari_loading[$a]->nomor == $resi[$i]) {
+					unset($resi[$i]);
+				}
+			}
+		}
+
+		$resi = array_values($resi);
+
 		for ($i=0 ; $i < count($resi); $i++) { 
 
 			$cari = DB::table('delivery_order')
@@ -452,6 +479,7 @@ class KasController extends Controller
 		  	'bpk_jarak'	 		 => $request->km,
 		  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
 			'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
+			'bpk_acc_biaya'      => $cari_persen->kode_akun,
 		  	'created_by'		 => Auth::user()->m_name,
 		  	'updated_by'		 => Auth::user()->m_name,
 		  ]);
@@ -545,7 +573,7 @@ class KasController extends Controller
 						   		'pc_comp'  	  	  => $request->cabang,
 						   		'pc_edit'  	  	  => 'UNALLOWED',
 						   		'pc_reim'  	  	  => 'UNRELEASED',
-						   		'pc_debet'  	  => round($total_penerus_float,2),
+						   		'pc_debet'  	  => 0,
 						   		'pc_no_trans'  	  => $request->no_trans,
 						   		'pc_kredit'  	  => round($total_penerus_float,2),
 						   		'created_at'	  => Carbon::now(),
@@ -865,6 +893,7 @@ $cabang=$request->cabang;
 		  	'bpk_jarak'	 		 => $request->km,
 		  	'bpk_harga_bbm'	     => round($request->total_bbm,2),
 			'bpk_jenis_bbm'      => $cari_persen->jenis_bbm,
+			'bpk_acc_biaya'      => $cari_persen->kode_akun,
 		  	'created_by'		 => Auth::user()->m_name,
 		  	'updated_by'		 => Auth::user()->m_name,
 		  ]);
@@ -886,26 +915,26 @@ $cabang=$request->cabang;
 			if ($cari_persen->jenis_bbm == '3') {
 				
 					
-					biaya_penerus_kas_detail::create([
-				  		'bpkd_id'				=> $dt,
-						'bpkd_bpk_id'	  	 	=> $request->id,
-						'bpkd_bpk_dt'			=> $i+1,
-						'bpkd_no_resi'			=> $request->no_resi[$i],
-						'bpkd_kode_cabang_awal'	=> $request->comp[$i],
-						'bpkd_tanggal'  		=> $request->tanggal[$i],
-						'bpkd_pengirim'	 		=> $request->pengirim[$i],
-						'bpkd_penerima'			=> $request->penerima[$i],
-						'bpkd_asal'				=> $request->asal[$i],
-						'bpkd_tujuan'			=> $request->tujuan[$i],
-						'bpkd_status_resi'		=> $request->status[$i],
-						'bpkd_tarif'			=> $request->tarif[$i],
-						'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
-						'created_at'			=> Carbon::now(),
-						'bpk_comp'				=> $request->cabang,
-						'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
-						'bpkd_pembiayaan'		=> $request->tarif[$i]
+				biaya_penerus_kas_detail::create([
+			  		'bpkd_id'				=> $dt,
+					'bpkd_bpk_id'	  	 	=> $request->id,
+					'bpkd_bpk_dt'			=> $i+1,
+					'bpkd_no_resi'			=> $request->no_resi[$i],
+					'bpkd_kode_cabang_awal'	=> $request->comp[$i],
+					'bpkd_tanggal'  		=> $request->tanggal[$i],
+					'bpkd_pengirim'	 		=> $request->pengirim[$i],
+					'bpkd_penerima'			=> $request->penerima[$i],
+					'bpkd_asal'				=> $request->asal[$i],
+					'bpkd_tujuan'			=> $request->tujuan[$i],
+					'bpkd_status_resi'		=> $request->status[$i],
+					'bpkd_tarif'			=> $request->tarif[$i],
+					'bpkd_tarif_penerus'	=> round($request->penerus[$i],2),
+					'created_at'			=> Carbon::now(),
+					'bpk_comp'				=> $request->cabang,
+					'bpk_jenis_bbm'			=> $cari_persen->jenis_bbm,
+					'bpkd_pembiayaan'		=> $request->tarif[$i]
 
-				 	 ]);
+			 	 ]);
 				
 
 			}else{
@@ -955,7 +984,7 @@ $cabang=$request->cabang;
 						   		'pc_comp'  	  	  => $request->cabang,
 						   		'pc_edit'  	  	  => 'UNALLOWED',
 						   		'pc_reim'  	  	  => 'UNRELEASED',
-						   		'pc_debet'  	  => round($total_penerus_float,2),
+						   		'pc_debet'  	  => 0,
 						   		'pc_no_trans'  	  => $request->no_trans,
 						   		'pc_kredit'  	  => round($total_penerus_float,2),
 						   		'created_at'	  => Carbon::now(),
@@ -1303,6 +1332,12 @@ $cabang=$request->cabang;
 						   ->orderBy('bpkd_no_resi','ASC')
 						   ->get();
 
+			$cari_loading = DB::table('delivery_order')
+						   ->whereIn('nomor',$request->resi_array)
+						   ->where('jenis_tarif',9)
+						   ->orderBy('nomor','ASC')
+						   ->get();
+
 			$cari_resi2 = DB::table('biaya_penerus_kas_detail')
 						   	->where('bpkd_bpk_id',$request->id)
 						   ->get();
@@ -1367,6 +1402,15 @@ $cabang=$request->cabang;
 		 $resi = array_unique($resi);
 		 $resi = array_values($resi);
 
+		for ($i=0; $i < count($resi); $i++) { 
+			for ($a=0; $a < count($cari_loading); $a++) { 
+				if ($cari_loading[$a]->nomor == $resi[$i]) {
+					unset($resi[$i]);
+				}
+			}
+		}
+		
+		$resi = array_values($resi);
 
 		for ($i=0 ; $i < count($resi); $i++) { 
 
@@ -1472,6 +1516,7 @@ $cabang=$request->cabang;
     	}else{
     		$id = 0;
     	}
+    	
     	$data = DB::table('kendaraan')
     			   ->where('tipe_angkutan',$request->jenis)
     			   ->where('status','!=','SUB')

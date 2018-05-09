@@ -285,7 +285,8 @@
               $('.accpersediaan').empty();
                       $('.acchpp').empty();
               if(updatestock == 'Y') {
-                      arrItem = response.akun;
+                      arrItem = response.akun;  
+                      $('.acchpp').empty();
                       $('.accpersediaan').empty();
                       $('.accpersediaan').append(" <option value=''>  -- Pilih id akun -- </option> ");
                         $.each(arrItem, function(i , obj) {
@@ -298,6 +299,7 @@
               }
               else {
                   arrItem = response.akun;
+                      $('.accpersediaan').empty();
                       $('.acchpp').empty();
                       $('.acchpp').append(" <option value=''>  -- Pilih id akun -- </option> ");
                         $.each(arrItem, function(i , obj) {

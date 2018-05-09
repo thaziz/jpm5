@@ -163,12 +163,9 @@ class PurchaseController extends Controller
 	
 	public function getnospp(Request $request){
 		
-
 		$cabang = $request->comp;
-		  $bulan = Carbon::now()->format('m');
+		$bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
-
-
 
 		//return $mon;
 		$idspp = DB::select("select * from spp where spp_cabang = '$cabang'  and to_char(spp_tgldibutuhkan, 'MM') = '$bulan' and to_char(spp_tgldibutuhkan, 'YY') = '$tahun' order by spp_id desc limit 1");
@@ -188,7 +185,9 @@ class PurchaseController extends Controller
 			$idspp = '001';
 		}
 
-		return json_encode($idspp) ;
+
+		$datainfo =['status' => 'sukses' , 'data' => $idspp];
+		return json_encode($datainfo) ;
 	}
 	
 	public function createspp () {
@@ -200,7 +199,7 @@ class PurchaseController extends Controller
 
 	/*	$data['barang'] = DB::select("select distinct is_kodeitem, unitstock, is_harga, sg_qty, nama_masteritem from  supplier, masteritem, itemsupplier LEFT OUTER JOIN stock_gudang on sg_item = is_kodeitem where is_kodeitem = kode_item and is_supplier = no_supplier");
 */
-		$data['barangfull'] = DB::select("select * from supplier, masteritem, itemsupplier where is_kodeitem = kode_item and is_supplier = no_supplier and status = 'SETUJU'");
+		$data['barangfull'] = DB::select("select * from supplier, masteritem, itemsupplier where is_kodeitem = kode_item and is_supplier = no_supplier and status = 'SETUJU' and active = 'AKTIF'");
 
 		$data['cabang'] = master_cabang::all();	
 
@@ -214,18 +213,19 @@ class PurchaseController extends Controller
 
 		$data['gudang'] = masterGudangPurchase::all();
 		$data['kendaraan'] = DB::select("select * from kendaraan left outer join tipe_angkutan on kendaraan.tipe_angkutan = tipe_angkutan.kode");
-		
 
 		return view('purchase.spp.create', compact('data'));
 	}
 
-	public function ajax_hargasupplier($id){
+	public function ajax_hargasupplier(Request $request){
 		//$array = $id;
 		
+		$id = $request->kodeitem;
+		$gudang = $request->gudang;
 	
-		$data['supplier'] = DB::select("select * from masteritem, itemsupplier, supplier  where is_supplier = no_supplier and kode_item = '$id' and kode_item = is_kodeitem and status = 'SETUJU'");
-		$data['stock'] = DB::select("select * from  masteritem LEFT OUTER JOIN stock_gudang on kode_item = sg_item where kode_item = '$id'");
-		$data['mastersupplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from masteritem, itemsupplier, supplier  where is_supplier = no_supplier and kode_item = '$id' and kode_item = is_kodeitem and status = 'SETUJU' and active = 'AKTIF'");
+		$data['stock'] = DB::select("select * from  masteritem LEFT OUTER JOIN stock_gudang on kode_item = sg_item and  sg_gudang = '$gudang' where kode_item = '$id' ");
+		$data['mastersupplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
 		return json_encode($data);
 	}
@@ -247,7 +247,7 @@ class PurchaseController extends Controller
 	}
 
 	public function savespp(Request $request) {
-		//dd($request);
+		/*dd($request);*/
 		return DB::transaction(function() use ($request) {  
 			
 			$nospp = $request->nospp;
@@ -301,6 +301,7 @@ class PurchaseController extends Controller
        		 $year = Carbon::now()->format('Y');
 
 			$spp = new spp_purchase();
+
 			$spp->spp_nospp = strtoupper($request->nospp);
 			$spp->spp_id = strtoupper($idspp);
 			$spp->spp_tgldibutuhkan = strtoupper($request->tgl_dibutuhkan);
@@ -360,7 +361,7 @@ class PurchaseController extends Controller
 			$co->co_mng_pem_approved = $status;
 		//	$co->co_time_mng_pem_approved = $time;
 			$co->co_staffpemb_approved = $status;
-			$co->co_comp = $request->cabang;
+			$co->co_cabang = $request->cabang;
 			$co->create_by = $request->username;
 			$co->update_by  = $request->username;
 		//	$co->co_time_staffpemb_approved = $status;
@@ -597,8 +598,9 @@ class PurchaseController extends Controller
 	public function detailspp ($id) {
 
 		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id");
-		
-		$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");
+		$idgudang = $data['spp'][0]->spp_lokasigudang;
+
+		$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");
 
 		$data['gudang'] = DB::select("select mg_namagudang from spp, mastergudang where spp_lokasigudang = mg_id and spp_id = '$id'");
 
@@ -607,7 +609,7 @@ class PurchaseController extends Controller
 
 		$data['masterkendaraan'] = DB::select("select * from tb_vhc");
 
-		$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_kendaraan , sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item  where sppd_idspp = '$id' and kode_item = sppd_kodeitem");
+		$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_kendaraan , sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem");
 		
 		$data['spptb'] =  DB::select("select * from spp_totalbiaya,spp, supplier where spptb_idspp = '$id' and spptb_idspp = spp.spp_id and spptb_supplier = idsup");
 		
@@ -624,12 +626,12 @@ class PurchaseController extends Controller
 
 		$data['count_brg'] = count($data['sppdt_barang']);
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 		$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem ORDER BY kode_item DESC");
 
 		$data['cabang'] = master_cabang::all();			        
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
 		$data['department'] = master_department::all();
 
@@ -647,6 +649,58 @@ class PurchaseController extends Controller
 		return view('purchase.spp.detail', compact('data'));
 	}
 
+	public function editspp($id){
+		$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment, cabang where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id and spp_cabang = kode");
+		$idgudang = $data['spp'][0]->spp_lokasigudang;
+		
+		$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and idsup = sppd_supplier order by sppd_seq asc");
+
+		$data['gudang'] = DB::select("select mg_namagudang from spp, mastergudang where spp_lokasigudang = mg_id and spp_id = '$id'");
+
+		$data['kendaraan'] = DB::select("select distinct sppd_kendaraan, merk, vhccde from spp_detail, tb_vhc where sppd_kendaraan = id_vhc and sppd_idspp = '$id'");
+		$data['countkendaraan'] = count($data['kendaraan']);
+
+		$data['masterkendaraan'] = DB::select("select * from tb_vhc");
+
+		$data['sppdt_barang'] = DB::select("select distinct sppd_kodeitem, nama_masteritem, sppd_qtyrequest, sppd_kendaraan , sg_qty, unitstock from  masteritem , spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$idgudang' where sppd_idspp = '$id' and kode_item = sppd_kodeitem");
+		
+		$data['spptb'] =  DB::select("select * from spp_totalbiaya,spp, supplier where spptb_idspp = '$id' and spptb_idspp = spp.spp_id and spptb_supplier = idsup");
+		
+		$data['sppd_brg'] = DB::select("select sppd_kodeitem from spp_detail where sppd_idspp='$id'");
+
+		$data['codt'] = DB::select("select *  from confirm_order, spp, confirm_order_dt LEFT OUTER JOIN stock_gudang on codt_kodeitem = sg_item where confirm_order_dt.codt_idco=co_id and co_idspp = '$id' and co_idspp = spp_id");
+
+		$data['codt_supplier'] = DB::select("select distinct codt_supplier, nama_supplier from supplier, confirm_order_dt, spp, confirm_order where codt_supplier = idsup and co_idspp = spp_id and spp_id = '$id' and codt_idco = co_id");
+		
+		$data['hitungbayar'] = DB::select("select distinct sppd_supplier, sppd_bayar, nama_supplier from spp_detail, supplier where sppd_idspp = '$id' and sppd_supplier = idsup");
+
+		$data['count'] = count($data['spptb']);
+		$data['countcodt'] = count($data['codt']);
+
+		$data['count_brg'] = count($data['sppdt_barang']);
+	
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
+		$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem ORDER BY kode_item DESC");
+
+		$data['cabang'] = master_cabang::all();			        
+	
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
+
+		$data['department'] = master_department::all();
+
+		$barang = array();
+		for($i=0; $i<count($data['sppd_brg']);$i++){
+				array_push($barang , $data['sppd_brg'][$i]->sppd_kodeitem);
+		}
+
+
+		$data['countbrg'] = array_count_values($barang);
+		
+
+		/*dd($data);*/
+	
+		return view('purchase.spp.edit', compact('data'));
+	}
 
 	public function statusspp($id) {
 			$data['spp'] = DB::select("select * from confirm_order, spp, masterdepartment where co_idspp = '$id' and spp_bagian = kode_department and co_idspp = spp_id");
@@ -672,7 +726,7 @@ class PurchaseController extends Controller
 
 		$data['count_brg'] = count($data['sppdt_barang']);
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 		$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem   ORDER BY kode_item DESC");
 
 		$data['count_po'] = DB::select("select count(*) as total from pembelian_orderdt where podt_idspp = '$id' ");
@@ -747,7 +801,7 @@ class PurchaseController extends Controller
 
 		$data['cabang'] = master_cabang::all();			        
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 
 		$data['department'] = master_department::all();
 
@@ -819,7 +873,7 @@ class PurchaseController extends Controller
 
 		$data['count_brg'] = count($data['sppdt_barang']);
 	
-		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU'");
+		$data['supplier'] = DB::select("select * from supplier where status = 'SETUJU' and active = 'AKTIF'");
 		$data['item'] = DB::select("select * from masteritem, jenis_item where masteritem.jenisitem = jenis_item.kode_jenisitem   ORDER BY kode_item DESC");
 
 		$barang = array();
@@ -1611,7 +1665,21 @@ public function purchase_order() {
 
 	public function cekgudang(Request $request) {
 		$idgudang = $request->idgudang;
-		$data['terima'] = DB::select("select * from barang_terima, supplier where bt_gudang = '$idgudang' and bt_supplier = idsup");
+		$data['terima'] = DB::select("select * from barang_terima where bt_gudang = '$idgudang'");
+		
+		for($i = 0; $i < count($data['terima']); $i++){
+			$tipe = $data['terima'][$i]->bt_flag;
+			$idbt = $data['terima'][$i]->bt_id;
+			if($tipe == 'PBG'){
+				$terimages = DB::select("select *, nama as namasupplier from barang_terima, cabang where bt_gudang = '$idgudang' and bt_agen = kode and bt_id = '$idbt' and bt_flag = '$tipe'");		
+			}
+			else {
+				$terimages = DB::select("select *, nama_supplier as namasupplier from barang_terima, supplier where bt_gudang = '$idgudang' and bt_supplier = idsup and bt_id = '$idbt' and bt_flag = '$tipe'");		
+			}
+			$data['flag'][] = $tipe;
+			$data['terimasaja'][] = $terimages;
+		}
+
 		return json_encode($data);
 	}
 
@@ -1716,6 +1784,7 @@ public function purchase_order() {
 			$penerimaanbarang->pb_gudang = $request->gudang;
 			$penerimaanbarang->pb_terimadari = $request->diterimadari;
 			$penerimaanbarang->create_by = $request->username;
+			$penerimaanbarang->update_by = $request->username;
 			$penerimaanbarang->pb_acchutangdagang = $request->acchutangsupplierpo;
 			
 			$penerimaanbarang->save();
@@ -1958,7 +2027,7 @@ public function purchase_order() {
 		} // END SAVE PO
 
 		//SAVE PENERIMAAN FP
-		else {
+		else if($flag == 'FP'){
 		/*dd($request);*/
 			$mytime = Carbon::now(); 		
 			//MEMBUAT NOFORMTT	
@@ -2028,6 +2097,7 @@ public function purchase_order() {
 				$penerimaanbarang->pb_gudang = $request->gudang;
 				$penerimaanbarang->pb_terimadari = $request->diterimadari;
 				$penerimaanbarang->create_by = $request->username;
+				$penerimaanbarang->update_by = $request->username;
 				$penerimaanbarang->pb_acchutangdagang = $request->acchutangsupplier;
 				$penerimaanbarang->save();
 				
@@ -2117,6 +2187,7 @@ public function purchase_order() {
 						$penerimaanbarangdt->pbdt_acchpp = $request->acchpp[$i];
 						$penerimaanbarangdt->pbdt_accpersediaan = $request->accpersediaan[$i];
 						$penerimaanbarangdt->create_by = $request->username;
+						$penerimaanbarangdt->update_by = $request->username;
 						$penerimaanbarangdt->save();
 					}
 					else if($request->qtyterima[$i] == '') {
@@ -2166,6 +2237,7 @@ public function purchase_order() {
 							$penerimaanbarangdt->pbdt_acchpp = $request->acchpp[$i];
 							$penerimaanbarangdt->pbdt_accpersediaan = $request->accpersediaan[$i];
 							$penerimaanbarangdt->create_by = $request->username;
+							$penerimaanbarangdt->update_by = $request->username;
 							$penerimaanbarangdt->save();
 						}
 					}
@@ -2240,6 +2312,280 @@ public function purchase_order() {
 		
 		
 		}
+		else { // save pbg
+			$mytime = Carbon::now(); 		
+			//MEMBUAT NOFORMTT	
+			$time = Carbon::now();
+		//	$newtime = date('Y-M-d H:i:s', $time);  
+			
+			$year =Carbon::createFromFormat('Y-m-d H:i:s', $time)->year; 
+			$month =Carbon::createFromFormat('Y-m-d H:i:s', $time)->month; 
+
+			if($month < 10) {
+				$month = '0' . $month;
+			}
+
+			$year = substr($year, 2);
+
+			$idpb =   penerimaan_barang::where('pb_comp' ,  $cabang)->max('pb_lpb');
+			
+			if(isset($idpb)) {
+				$explode = explode("/", $idpb);
+				$idpb = $explode[2];
+				$string = explode("-", $idpb);
+				$idpb = $string[1];
+				$string = (int)$idpb + 1;
+				$idpb = str_pad($string, 3, '0', STR_PAD_LEFT);
+			}
+
+			else {
+				$idpb = '001';
+			}
+
+
+			if($request->updatestock == 'IYA') {
+				$lpb = 'LPB' . $month . $year . '/' .  $cabang . '/S-' .  $idpb;
+			}
+			else {
+				$lpb = 'LPB' . $month . $year . '/' .  $cabang  . '/NS-' .  $idpb;	
+			}
+
+			//case Penerimaan Barang
+
+			//idpb
+				$lastidpb =   penerimaan_barang::max('pb_id');
+				if(isset($lastidpb)) {
+				//	dd('ana');
+			
+					$idpb = $lastidpb;
+					$idpb = (int)$idpb + 1;
+				}
+				else {
+					$idpb = 1;
+				}
+
+				//save penerimaan_barang
+				$idpo = $request->idpbg;
+				//$query = DB::select("select * from penerimaan_barang where pb_po ='$idpo'"); 	
+					
+				$penerimaanbarang = new penerimaan_barang();
+				$penerimaanbarang->pb_id = $idpb;
+				$penerimaanbarang->pb_comp =  $cabang;
+				$penerimaanbarang->pb_date = $request->tgl_dibutuhkan;
+				$penerimaanbarang->pb_status = '';
+				$penerimaanbarang->pb_pbd = $request->idpbg;
+				$penerimaanbarang->pb_updatestock =$request->updatestock;
+				$penerimaanbarang->pb_lpb = $lpb;
+				$penerimaanbarang->pb_suratjalan = $request->suratjalan;
+				$penerimaanbarang->pb_supplier = $request->idsup;
+				$penerimaanbarang->pb_gudang = $request->gudang;
+				$penerimaanbarang->pb_terimadari = $request->diterimadari;
+				$penerimaanbarang->create_by = $request->username;
+				$penerimaanbarang->update_by = $request->username;
+				$penerimaanbarang->save();
+				
+
+				
+				for($i = 0 ; $i < count($request->qtyterima); $i++ ){
+					$penerimaanbarangdt = new penerimaan_barangdt();
+			
+					if($request->qtyterima[$i] != '') {
+						$idpbg = $request->idpbg;
+
+						$idpbpk =   penerimaan_barang::where('pb_pbd' , $idpbg)->max('pb_id');
+						$lastidpbdt = penerimaan_barangdt::max('pbdt_id'); 
+
+						if(isset($lastidpbdt)) {
+							$idpbdt = $lastidpbdt;
+							$idpbdt = (int)$idpbdt + 1;
+						}
+						else {
+							$idpbdt = 1;
+						}
+
+					$iditem2 = $request->kodeitem[$i];
+						
+
+					
+
+					//melihatqtydisetiapitem
+					$select = DB::select("select * from penerimaan_barangdt where pbdt_item = '$iditem2' and pbdt_idpbd = '$idpbg'"); 
+					
+					
+				/*	$idpbg = '6';*/
+					//$iditem2 = 'A-000001';
+					$selectdikirim = DB::select("select * from pengeluaran_barang_dt where pbd_pb_id = '$idpbg' and pbd_nama_barang = '$iditem2'");
+
+					/*return $iditem2;*/
+
+					$quantitikirim = (int)$selectdikirim[0]->pbd_disetujui;
+					$qty = $request->qtyterima[$i];
+					$qtyditerima = (int)$qty;
+
+					//membuat status
+					if($qtyditerima == $quantitikirim) {
+						$status = "LENGKAP";
+					}
+					else {
+						$jumlahqty = 0;
+						for($k = 0; $k < count($select); $k++){
+							$qtyitem = $select[$k]->pbdt_qty;
+							$jumlahqty = $jumlahqty + (int)$qtyitem;
+						}
+
+						//dd($qty);
+						$jumstatus = $jumlahqty + (int)$qty;
+						$qtydikirim = $request->qtydikirim[$i];
+						
+					
+
+						if($jumstatus == $qtydikirim){
+							$status = "LENGKAP";
+						}
+						else {
+							$status = "TIDAK LENGKAP";
+						}
+					}
+
+
+						//total harga
+						$totalharga = (int)$request->qtyterima[$i] * (int)$request->jumlahharga[$i];
+
+						$penerimaanbarangdt->pbdt_id = $idpbdt;
+						$penerimaanbarangdt->pbdt_idpb = $idpbpk;
+						$penerimaanbarangdt->pbdt_date = $mytime;
+						$penerimaanbarangdt->pbdt_item = $request->kodeitem[$i];
+						$penerimaanbarangdt->pbdt_qty = $request->qtyterima[$i];	
+						$penerimaanbarangdt->pbdt_hpp =$request->jumlahharga[$i];
+						$penerimaanbarangdt->pbdt_idpbd = $request->idpbg;
+						$penerimaanbarangdt->pbdt_updatestock =$request->updatestock;
+						$penerimaanbarangdt->pbdt_status = $status;
+						$penerimaanbarangdt->pbdt_suratjalan = $request->suratjalan;
+						$penerimaanbarangdt->pbdt_totalharga = $totalharga;;
+						$penerimaanbarangdt->create_by = $request->username;
+						$penerimaanbarangdt->update_by = $request->username;
+						$penerimaanbarangdt->save();
+					}
+					else if($request->qtyterima[$i] == '') {
+					
+						if($request->qtysampling[$i] != ''){
+							$idpbg = $request->idpbg;
+							$idpbpk =   penerimaan_barang::where('pb_pbg' , $idpbg)->max('pb_id');
+							$lastidpbdt = penerimaan_barangdt::max('pbdt_id'); 
+
+							if(isset($lastidpbdt)) {
+								$idpbdt = $lastidpbdt;
+								$idpbdt = (int)$idpbdt + 1;
+							}
+							else {
+								$idpbdt = 1;
+							}
+
+							$iditem2 = $request->kodeitem[$i];
+							
+							$idpbg = $request->idpbg;
+							
+						$selectdikirim = DB::select("select * from pengeluaran_barang_dt where pbd_pb_id = '$idpbg' and pbd_nama_barang = '$iditem2'");
+							$quantitikirim = (int)$selectdikirim[0]->pbd_disetujui;
+							
+							
+							if($quantitikirim  < $request->qtysampling[$i]){
+								$status2 = "SAMPLING";
+							}
+							else {
+								//$status = "TIDAK LENGKAP";
+							}
+
+							//total harga
+							$totalharga = (int)$request->qtysampling[$i] * (int)$request->jumlahharga[$i];
+
+							$penerimaanbarangdt->pbdt_id = $idpbdt;
+							$penerimaanbarangdt->pbdt_idpb = $idpbpk;
+							$penerimaanbarangdt->pbdt_date = $mytime;
+							$penerimaanbarangdt->pbdt_item = $request->kodeitem[$i];
+							$penerimaanbarangdt->pbdt_qty = $request->qtysampling[$i];	
+							$penerimaanbarangdt->pbdt_hpp =$request->jumlahharga[$i];
+							$penerimaanbarangdt->pbdt_idpbd = $request->idpbg;
+							$penerimaanbarangdt->pbdt_updatestock =$request->updatestock;
+							$penerimaanbarangdt->pbdt_status = $status2;
+							$penerimaanbarangdt->pbdt_suratjalan = $request->suratjalan;
+							$penerimaanbarangdt->pbdt_totalharga = $totalharga;
+							/*$penerimaanbarangdt->pbdt_acchpp = $request->acchpp[$i];
+							$penerimaanbarangdt->pbdt_accpersediaan = $request->accpersediaan[$i];*/
+							$penerimaanbarangdt->create_by = $request->username;
+							$penerimaanbarangdt->update_by = $request->username;
+							$penerimaanbarangdt->save();
+						}
+					}
+				}
+
+
+			//	dd($totalharga);
+				$idpbg = $request->idpbg;
+
+				
+				//update status pb header
+				$statusheaderpb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_pbd = '$idpbg'");
+				//$statusheaderpb[0]->pbdt_status;
+				
+				/*dd($statusheaderpb[4]->pbdt_status);*/
+				$statusheaderpo = DB::select("select * from pengeluaran_barang , pengeluaran_barang_dt where pbd_pb_id = pb_id and pb_id = '$idpbg'");
+				$hitungpo = count($statusheaderpo);
+				$hitungpb = count($statusheaderpb);
+				
+				//ambil status di detail
+				$statusbrg = array();
+				for($indx = 0 ; $indx < $hitungpb; $indx++){
+
+					$status = $statusheaderpb[$indx]->pbdt_status;
+					array_push($statusbrg , $status);
+				}
+
+				//memeriksa status lengkap di detail
+				$tempsts = 0;
+				$tempspling = 0;
+				for($sts = 0; $sts < count($statusbrg); $sts++){
+					if($statusbrg[$sts] == "LENGKAP"){
+						$tempsts = $tempsts + 1;
+					}
+					else if($statusbrg[$sts] == "SAMPLING") {
+						$tempspling = $tempspling + 1;
+					}
+				}
+
+				if($tempspling == $hitungpo){
+					$statuspb = "LENGKAP";
+				}
+				else if($tempsts > $hitungpo){
+					$statuspb = "LENGKAP";
+				}
+				else {
+					$selisih = $hitungpo - $tempsts;
+					if($selisih == $tempspling) {
+						$statuspb = "LENGKAP";
+					}
+					else {
+						$statuspb = "TIDAK LENGKAP";
+					}
+				}
+
+
+				$query3 = penerimaan_barang::where('pb_id' , '=' , $idpbpk);
+				$query3->update([
+					'pb_status' => $statuspb,
+					/*'pb_totaljumlah' => $jmlhrg, */
+				]);	
+				
+				$query4 = barang_terima::where([['bt_idtransaksi' , '=' , $request->idpbg], ['bt_flag' , '=' , 'PBG']]);
+				$query4->update([
+					'bt_statuspenerimaan' => $statuspb,
+				]);
+
+				/*$query4 = pengeluaranbarang::where('pb_id' , '=' , $request->idpbg);
+				$query4->update([
+					'fp_terimabarang' => 'SUDAH',
+				]);*/
+		} // end save pbg
 		
 
 
@@ -2327,6 +2673,42 @@ public function purchase_order() {
 				$stock_mutation->sm_id_gudang = $request->gudang;
 				$stock_mutation->sm_sisa = $request->qtyterima[$i];
 				$stock_mutation->sm_flag = 'PO';
+				$stock_mutation->created_by = $request->username;
+				$stock_mutation->updated_by = $request->username;
+				$stock_mutation->save();
+			}
+			else if($flag == 'FP') {
+				$stock_mutation = new stock_mutation();
+				$lastidsm = stock_mutation::max('sm_id'); 
+				
+
+				if(isset($lastidsm)) {
+					$idsm = $lastidsm;
+					$idsm = (int)$lastidsm + 1;
+				}
+				else {
+					$idsm = 1;
+				}
+				$datagudang2 = DB::select("select * from stock_gudang where sg_item = '$iditem'");
+				$idgudang2 = $datagudang2[0]->sg_id;
+		//		dd($idgudang2);
+				$stock_mutation->sm_stock = $idgudang2;
+				$stock_mutation->sm_id = $idsm;
+				$stock_mutation->sm_comp =  $cabang;
+				$stock_mutation->sm_date = 	$mytime;
+				$stock_mutation->sm_item = $iditem;
+				$stock_mutation->sm_mutcat = '1';
+				$stock_mutation->sm_qty = $request->qtyterima[$i];
+				$stock_mutation->sm_use = '0';
+				$stock_mutation->sm_hpp = $request->jumlahharga[$i];
+				$stock_mutation->sm_lpb =  $lpb ;
+				$stock_mutation->sm_suratjalan = $request->suratjalan ;
+				$stock_mutation->sm_po = $idpb ;
+				$stock_mutation->sm_id_gudang = $request->gudang;
+				$stock_mutation->sm_sisa = $request->qtyterima[$i];
+				$stock_mutation->sm_flag = 'FP';
+				$stock_mutation->created_by = $request->username;
+				$stock_mutation->updated_by = $request->username;
 				$stock_mutation->save();
 			}
 			else {
@@ -2358,7 +2740,9 @@ public function purchase_order() {
 				$stock_mutation->sm_po = $idpb ;
 				$stock_mutation->sm_id_gudang = $request->gudang;
 				$stock_mutation->sm_sisa = $request->qtyterima[$i];
-				$stock_mutation->sm_flag = 'FP';
+				$stock_mutation->sm_flag = 'PBG';
+				$stock_mutation->created_by = $request->username;
+				$stock_mutation->updated_by = $request->username;
 				$stock_mutation->save();
 			}
 		
@@ -2454,6 +2838,7 @@ $indexakun=0;
 	}
 
 	public function updatepenerimaanbarang(Request  $request) {
+		return DB::transaction(function() use ($request) { 
 		$qty = $request->qty;
 		$idpb = $request->idpb;
 		$idpbdt = $request->idpbdt;
@@ -2461,12 +2846,59 @@ $indexakun=0;
 		$kodeitem = $request->kodeitem;
 		$suratjalan = $request->suratjalan;
 		$iddetail = $request->iddetail;
+		$flag = $request->flag;
 
 		$updatepenerimaanheader = penerimaan_barang::find($idpb);
 		$updatepenerimaanheader->pb_suratjalan = $suratjalan;
 		$updatepenerimaanheader->save();
 
 		for($i = 0 ; $i < count($request->arrqty); $i++){
+			$datapb = DB::select("select * from penerimaan_barang where pb_id = '$idpb'");
+			$datagudang = $datapb[0]->pb_gudang;
+			$datacomp = $datapb[0]->pb_comp;
+
+			$iditem = $request->arrkodeitem[$i];
+
+
+			/*return $datagudang . $datacomp;*/
+			$datapbdt = DB::select("select * from penerimaan_barangdt where pbdt_item = '$iditem' and pbdt_idpb = '$idpb'");
+			$qtypb = $datapbdt[0]->pbdt_qty;
+
+			$querysg = DB::select("select * from stock_gudang where sg_gudang  = '$datagudang' and sg_cabang = '$datacomp' and sg_item = '$iditem'");
+
+			/*return $querysg;*/
+			$hasilqty = (int)$querysg[0]->sg_qty - (int)$qtypb;
+			$hasilakhirqty = (int)$hasilqty + (int)$request->arrqty[$i];
+
+		/*	return $hasilqty . $hasilakhirqty . $qtypb . (int)$querysg[0]->sg_qty . (int)$request->arrqty;*/
+
+			$query6 = stock_gudang::where([['sg_gudang' , '=' , $datagudang],['sg_cabang' , '=' , $datacomp] , ['sg_item' , '=' , $iditem]]);
+			$query6->update([
+				'sg_qty' => $hasilakhirqty,
+				]);
+
+			
+			if($flag == 'FP') {
+				$query5 = stock_mutation::where([['sm_po' , '=' , $idpb],['sm_item' , '=' , $request->arrkodeitem[$i]],['sm_flag' , '=' ,'FP']]);
+				$query5->update([
+					'sm_qty' => $request->arrqty[$i],
+				]);
+			}
+			else if($flag == 'PO'){
+				$query5 = stock_mutation::where([['sm_po' , '=' , $idpb],['sm_item' , '=' , $request->arrkodeitem[$i]],['sm_flag' , '=' , 'PO']]);
+				$query5->update([
+					'sm_qty' => $request->arrqty[$i],
+				]);
+			}
+			else {
+				$query5 = stock_mutation::where([['sm_po' , '=' , $idpb],['sm_item' , '=' , $request->arrkodeitem[$i]],['sm_flag' , '=' , 'PBG']]);
+				$query5->update([
+					'sm_qty' => $request->arrqty[$i],
+
+				]);
+			}
+
+
 			$updatedetail = penerimaan_barangdt::where([['pbdt_idpb', '=', $idpb], ['pbdt_id' , '=' , $request->arridpbdt[$i]], ['pbdt_item' , '=' , $request->arrkodeitem[$i]]]);
 
 			$harga = str_replace(',', '', $request->arrharga[$i]);
@@ -2476,9 +2908,9 @@ $indexakun=0;
 				 	'pbdt_status' => $request->arrstatus[$i],
 				 	'pbdt_totalharga' => $harga,				 	
 			 	]);	
+
 		}
 
-		$flag = $request->flag;
 		//update di header
 		//update status pb header
 		if($flag == 'FP'){
@@ -2533,6 +2965,13 @@ $indexakun=0;
 				'pb_status' => $statuspb,
 				/*'pb_totaljumlah' => $jmlhrg, */
 			]);	
+
+			$query5 = barang_terima::where('bt_idtransaksi' , '=' , $iddetail);
+			$query5->update([
+				'bt_statuspenerimaan' => $statuspb,
+			]);
+
+			
 		}
 		else if($flag == 'PO'){
 			$statusheaderpb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_po = '$iddetail'");
@@ -2586,18 +3025,91 @@ $indexakun=0;
 				'pb_status' => $statuspb,
 				/*'pb_totaljumlah' => $jmlhrg, */
 			]);	
-		}
-		
 
-		return json_encode('sukses');
+			$query5 = barang_terima::where('bt_idtransaksi' , '=' , $iddetail);
+			$query5->update([
+				'bt_statuspenerimaan' => $statuspb,
+			]);
+
+		}
+		else {
+			$statusheaderpb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_po = '$iddetail'");
+
+			//$statusheaderpb[0]->pbdt_status;
+			
+			/*dd($statusheaderpb[4]->pbdt_status);*/
+			$statusheaderpo = DB::select("select * from pembelian_order , pembelian_orderdt where podt_idpo = po_id and po_id = '$iddetail'");
+			$hitungpo = count($statusheaderpo);
+			$hitungpb = count($statusheaderpb);
+			
+			//ambil status di detail
+			$statusbrg = array();
+			for($indx = 0 ; $indx < $hitungpb; $indx++){
+
+				$status = $statusheaderpb[$indx]->pbdt_status;
+				array_push($statusbrg , $status);
+			}
+
+			//memeriksa status lengkap di detail
+			$tempsts = 0;
+			$tempspling = 0;
+			for($sts = 0; $sts < count($statusbrg); $sts++){
+				if($statusbrg[$sts] == "LENGKAP"){
+					$tempsts = $tempsts + 1;
+				}
+				else if($statusbrg[$sts] == "SAMPLING") {
+					$tempspling = $tempspling + 1;
+				}
+			}
+
+			if($tempspling == $hitungpo){
+				$statuspb = "LENGKAP";
+			}
+			else if($tempsts > $hitungpo){
+				$statuspb = "LENGKAP";
+			}
+			else {
+				$selisih = $hitungpo - $tempsts;
+				if($selisih == $tempspling) {
+					$statuspb = "LENGKAP";
+				}
+				else {
+					$statuspb = "TIDAK LENGKAP";
+				}
+			}
+
+
+			$query3 = penerimaan_barang::where('pb_id' , '=' , $idpb);
+			$query3->update([
+				'pb_status' => $statuspb,
+				/*'pb_totaljumlah' => $jmlhrg, */
+			]);	
+
+			$query5 = barang_terima::where('bt_idtransaksi' , '=' , $iddetail);
+			$query5->update([
+				'bt_statuspenerimaan' => $statuspb,
+			]);
+		}
+			return json_encode('sukses');
+
+		});
+
 	}
 
 	public function detailterimabarang($id) {
 
-		$data['cabang'] = DB::select("select * from cabang");
 		
+
+		//PO
+		$data['header'] = DB::select("select * from barang_terima where bt_id = '$id'");
+		$flag = $data['header'][0]->bt_flag;
+
+		$data['status'] = [];
+		if($flag == 'PO'){
 		$data['header'] = DB::select("select * from barang_terima , supplier where bt_id = '$id' and bt_supplier = idsup");
 
+		$data['cabang'] = DB::select("select * from cabang");
+		
 		$idgudang = $data['header'][0]->bt_gudang;
 
 		$carigudang = DB::select("select * from mastergudang where mg_id = '$idgudang'");
@@ -2608,11 +3120,7 @@ $indexakun=0;
 
 		$flag = $data['header'][0]->bt_flag;
 
-		//PO
 
-
-		$data['status'] = [];
-		if($flag == 'PO'){
 		$data['po'] = DB::select("select distinct spp_id, acc_hutang, po_ppn,po_diskon, spp_cabang, podt_idspp , po_id, spp_nospp, po_no, spp_lokasigudang, nama_supplier , idsup  from pembelian_order, pembelian_orderdt, spp, supplier where po_id = '$idtransaksi' and podt_idpo = po_id and podt_idspp = spp_id and po_supplier = idsup");
 
 			for($j = 0; $j < count($data['po']); $j++){
@@ -2666,8 +3174,7 @@ $indexakun=0;
 		} //END IF
 		else if($flag == 'FP'){
 			$data['flag'] = 'FP';
-
-
+		
 			$data['cabang'] = DB::select("select * from cabang");
 		
 			$data['header'] = DB::select("select * from barang_terima , supplier where bt_id = '$id' and bt_supplier = idsup");
@@ -2730,12 +3237,81 @@ $indexakun=0;
 		//	dd($data);	
 		}
 		}
+		else {
+			$data['flag'] = 'PBG';
+
+
+			$data['cabang'] = DB::select("select * from cabang");
+		
+			$data['header'] = DB::select("select * from barang_terima , cabang where bt_id = '$id' and bt_agen = kode");
+
+			$idgudang = $data['header'][0]->bt_gudang;
+
+			$carigudang = DB::select("select * from mastergudang where mg_id = '$idgudang'");
+
+			$data['comp'] = $carigudang[0]->mg_cabang;
+
+			$idtransaksi = $data['header'][0]->bt_idtransaksi;
+
+			$flag = $data['header'][0]->bt_flag;
+
+			$data['pbg'] = DB::select("select * from pengeluaran_barang, cabang where pb_comp = kode and pb_id = '$idtransaksi' ");
+
+			$data['pbgdt'] = DB::select("select * from pengeluaran_barang, pengeluaran_barang_dt, masteritem where pbd_nama_barang = kode_item and pbd_pb_id = pb_id and pb_id = '$idtransaksi'");
+			
+
+			for($z = 0; $z < count($data['pbgdt']); $z++){
+				$kodeitem = $data['pbgdt'][$z]->pbd_nama_barang;
+				$data['sisa'][] = DB::select("select  pbd_id, pbd_nama_barang, pbd_disetujui, pbd_pb_id, sum(pbdt_qty), nama_masteritem, string_agg(pbdt_status,',') as p from masteritem, pengeluaran_barang_dt LEFT OUTER JOIN penerimaan_barangdt on pbd_nama_barang = pbdt_item and pbd_pb_id = pbdt_idpbd where pbd_pb_id = '$idtransaksi' and pbd_nama_barang = '$kodeitem' and pbd_nama_barang = kode_item group by nama_masteritem, pbd_nama_barang , pbd_disetujui, pbd_pb_id, pbd_id");
+ 			}
+
+ 		
+
+ 			for($z=0; $z < count($data['sisa']); $z++){				
+				$temp = 0;
+				$status = $data['sisa'][$z][0]->p;
+			
+
+			if($status == 'LENGKAP') {
+				$status_fix = 'LENGKAP';
+			}
+			else if($status == 'TIDAK LENGKAP') {
+				$status_fix = 'TIDAK LENGKAP';
+			}
+			else if($status == null){
+				$status_fix = 'BELUM DI TERIMA';
+			}
+			else {
+				$status_double = explode("," , $status);
+				$temp = 0;
+
+			for($xz=0; $xz < count($status_double); $xz++){								
+					//array_push($data['status'] , $status);
+				if($status_double[$xz] == 'LENGKAP') {
+					$temp = 1;
+				}
+				
+			}
+
+				if($temp > 0 ) {
+					$status_fix = 'LENGKAP';
+				}
+				else {
+					$status_fix = 'TIDAK LENGKAP';
+				}			
+			}
+			array_push($data['status'] , $status_fix);		
+
+		//	dd($data);	
+		}
+		}
+
 		$jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
                         FROM d_akun a join d_jurnal_dt jd
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$id')")); 
 		
-		
+		/*dd($data);*/
 		return view('purchase/penerimaan_barang/detail_copy', compact('data','jurnal_dt'));
 			
 	}
@@ -2760,12 +3336,16 @@ $indexakun=0;
 		$idspp = $request->idspp;
 		$flag = $request->flag;
 		$idfp = $request->idfp;
+		$idpbg = $request->idpbg;
 		
 		if($flag == 'PO'){
 			$data['pbdt'] = DB::select("select * from penerimaan_barangdt where pbdt_item = '$iditem' and pbdt_po = '$idpo' and pbdt_idspp = '$idspp'");
 		}
-		else {
+		else if($flag == 'FP') {
 			$data['pbdt'] = DB::select("select * from penerimaan_barangdt where pbdt_item = '$iditem' and pbdt_idfp = '$idfp'");	
+		}
+		else {
+			$data['pbdt'] = DB::select("select * from penerimaan_barangdt where pbdt_item = '$iditem' and pbdt_idpbd = '$idpbg'");	
 		}
 
 
@@ -2806,8 +3386,24 @@ $indexakun=0;
 				$data['barang'][] = DB::select("select * from penerimaan_barangdt , faktur_pembelian, faktur_pembeliandt, masteritem where fpdt_idfp = pbdt_idfp and pbdt_idfp = '$idfp'  and fpdt_kodeitem = pbdt_item and fpdt_kodeitem = kode_item and pbdt_item = kode_item  and pbdt_idfp ='$idfp' and fpdt_idfp = fp_idfaktur and fp_idfaktur = '$idfp' and pbdt_idpb ='$idpb'  ");
 			}
 		}
+		else {
+
+			$idpbg = $id;
+
+			//dd($idpbg);
+			$data['judul'] = DB::select("select *, pengeluaran_barang.pb_id as idpengeluaran, penerimaan_barang.pb_id as idpenerimaan  from penerimaan_barang, pengeluaran_barang where pb_pbd = '$idpbg' and pb_pbd = pengeluaran_barang.pb_id and penerimaan_barang.pb_id = '$idpb'");
 			
-	//	dd($data);
+			//dd($idpb);
+			for($c=0; $c < count($data['judul']); $c++){
+				$idlpb = $data['judul'][$c]->pb_lpb;
+				$idpb = $data['judul'][$c]->idpenerimaan;
+			//	dd($idpb);
+
+				$data['barang'][] = DB::select("select * from penerimaan_barangdt , pengeluaran_barang, pengeluaran_barang_dt, masteritem where pbd_pb_id = pbdt_idpbd and pbdt_idpbd = '$idpbg'  and pbd_nama_barang = pbdt_item and pbd_nama_barang = kode_item and pbdt_item = kode_item  and pbdt_idpbd ='$idpbg' and pbd_pb_id = pbdt_idpbd and pb_id = '$idpbg' and pbdt_idpb ='$idpb'  ");
+			}
+		}
+			
+		/*dd($data);*/
 		return view('purchase/penerimaan_barang/createPDF', compact('data'));
 	}
 
@@ -2816,7 +3412,36 @@ $indexakun=0;
 		$flag = $request->flag;
 		$idtransaksi = $request->idtransaksi;
 
-		DB::delete("DELETE from  penerimaan_barang where pb_id = '$id'");
+		if($flag == 'PO'){
+			$datapb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_po = '$idtransaksi' and pb_id = '$id' ");
+		}
+		else if($flag == 'FP'){
+			$datapb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_fp = '$idtransaksi' and pb_id = '$id' ");	
+		}
+		else {
+			$datapb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_pbd = '$idtransaksi' and pb_id = '$id' ");	
+		}
+
+		
+		for($x = 0; $x < count($datapb); $x++){
+			$iditem = $datapb[$x]->pbdt_item;
+			$qty = $datapb[$x]->pbdt_qty;
+			$datacomp = $datapb[$x]->pb_comp;
+			$datagudang = $datapb[$x]->pb_gudang;
+
+			$stockgudang = DB::select("select * from stock_gudang where sg_item = '$iditem' and sg_cabang = '$datacomp' and sg_gudang = '$datagudang'");
+			$sgqty = $stockgudang[0]->sg_qty;
+			$hasilqty = (int)$sgqty - (int)$qty;
+
+			/*return $iditem . $datacomp; $datagudang . $sgqty . $hasilqty;*/
+			$query4 = stock_gudang::where([['sg_item' , '=' , $iditem],['sg_cabang' , '=' , $datacomp],['sg_gudang' , '=' , $datagudang]]);
+			$query4->update([
+				'sg_qty' => $hasilqty,
+				
+			]);	
+
+		}
+		
 		if($flag == 'PO'){
 
 			//update status pb header
@@ -2874,7 +3499,7 @@ $indexakun=0;
 
 			
 			if($hitungpb == 0){
-				$query4 = barang_terima::where([['bt_idtransaksi' , '=' , $idtransaksi],['bt_flag' , '=' , 'PO']]);
+			$query4 = barang_terima::where([['bt_idtransaksi' , '=' , $id],['bt_flag' , '=' , 'PO']]);
 			$query4->update([
 				'bt_statuspenerimaan' => 'BELUM DI TERIMA',
 				
@@ -2888,8 +3513,10 @@ $indexakun=0;
 			]);
 
 			}
+
+			DB::delete("DELETE from  stock_mutation where sm_po = '$id' and sm_flag = 'PO' and sm_mutcat = '1'");
 		
-		}
+		} // end flag PO
 		else if($flag == 'FP'){
 			
 			//update status pb header
@@ -2956,17 +3583,88 @@ $indexakun=0;
 			}
 			else {
 
-			$query4 = barang_terima::where([['bt_idtransaksi' , '=' , $idtransaksi], ['bt_flag' , '=' , 'FPG']]);
+			$query4 = barang_terima::where([['bt_idtransaksi' , '=' , $idtransaksi], ['bt_flag' , '=' , 'FP']]);
 			$query4->update([
 				'bt_statuspenerimaan' => 'TIDAK LENGKAP',
 			]);
 
 			}
-	}
-		else {
 
+			DB::delete("DELETE from  stock_mutation where sm_po = '$id' and sm_flag = 'FP' and sm_mutcat = '1'");
+		}
+		else {
+			//update status pb header
+			//update status pb header
+			$statusheaderpb = DB::select("select * from penerimaan_barang , penerimaan_barangdt where pb_id = pbdt_idpb and pb_po = '$idtransaksi'");
+			//$statusheaderpb[0]->pbdt_status;
+			
+			/*dd($statusheaderpb[4]->pbdt_status);*/
+			$statusheaderpo = DB::select("select * from pengeluaran_barang , pengeluaran_barang_dt where pbd_pb_id = pb_id and pb_id = '$id'");
+			$hitungpo = count($statusheaderpo);
+			$hitungpb = count($statusheaderpb);
+			
+			//ambil status di detail
+			$statusbrg = array();
+			for($indx = 0 ; $indx < $hitungpb; $indx++){
+
+				$status = $statusheaderpb[$indx]->pbdt_status;
+				array_push($statusbrg , $status);
+			}
+
+			//memeriksa status lengkap di detail
+			$tempsts = 0;
+			$tempspling = 0;
+			for($sts = 0; $sts < count($statusbrg); $sts++){
+				if($statusbrg[$sts] == "LENGKAP"){
+					$tempsts = $tempsts + 1;
+				}
+				else if($statusbrg[$sts] == "SAMPLING") {
+					$tempspling = $tempspling + 1;
+				}
+			}
+
+			if($tempspling == $hitungpo){
+				$statuspb = "LENGKAP";
+			}
+			else if($tempsts > $hitungpo){
+				$statuspb = "LENGKAP";
+			}
+			else {
+				$selisih = $hitungpo - $tempsts;
+				if($selisih == $tempspling) {
+					$statuspb = "LENGKAP";
+				}
+				else {
+					$statuspb = "TIDAK LENGKAP";
+				}
+			}
+
+			$query3 = penerimaan_barang::where('pb_id' , '=' , $id);
+			$query3->update([
+				'pb_status' => 'TIDAK LENGKAP',
+				/*'pb_totaljumlah' => $jmlhrg, */
+			]);	
+			
+			if($hitungpb == 0){
+				$query4 = barang_terima::where([['bt_idtransaksi' , '=' , $idtransaksi],['bt_flag' , '=' , 'PBG']]);
+				$query4->update([
+					'bt_statuspenerimaan' => 'BELUM DI TERIMA',
+					
+				]);	
+			}
+			else {
+				$query4 = barang_terima::where([['bt_idtransaksi' , '=' , $idtransaksi], ['bt_flag' , '=' , 'PBG']]);
+				$query4->update([
+					'bt_statuspenerimaan' => 'TIDAK LENGKAP',
+				]);
+			}
+
+			DB::delete("DELETE from  stock_mutation where sm_po = '$id' and sm_flag = 'PBG' and sm_mutcat = '1'");	
 		} 
 
+		
+		DB::delete("DELETE from  penerimaan_barang where pb_id = '$id'");
+		
 		return json_encode('sukses');
 	}
 
@@ -2998,7 +3696,18 @@ $indexakun=0;
 				$data['barang'][] = DB::select("select * from penerimaan_barangdt , faktur_pembelian, faktur_pembeliandt, masteritem where fpdt_idfp = pbdt_idfp and pbdt_idfp = '$idfp'  and fpdt_kodeitem = pbdt_item and fpdt_kodeitem = kode_item and pbdt_item = kode_item  and pbdt_idfp ='$idfp' and fpdt_idfp = fp_idfaktur and fp_idfaktur = '$idfp' and pbdt_idpb ='$idpb'  ");
 			}
 		}
-			
+		else {
+			$iditem = $request->kodeitem;
+			$idpbg = $request->idpbg;
+
+			$data['judul'] = DB::select("select * from penerimaan_barang where pb_pbd = '$idpbg'");
+			for($c=0; $c < count($data['judul']); $c++){
+				$idlpb = $data['judul'][$c]->pb_lpb;
+				$idpb = $data['judul'][$c]->pb_id;
+
+				$data['barang'][] = DB::select("select * from penerimaan_barangdt , pengeluaran_barang, pengeluaran_barang_dt, masteritem where pbd_pb_id = pbdt_idpbd and pbdt_idpbd = '$idpbg'  and pbd_nama_barang = pbdt_item and pbd_nama_barang = kode_item and pbdt_item = kode_item  and pbdt_idpbd ='$idpbg' and pbdt_idpbd = pb_id and pb_id = '$idpbg' and pbdt_idpb ='$idpb'  ");
+			}
+		}
 		
 		return json_encode($data);
 		
@@ -3192,9 +3901,12 @@ $indexakun=0;
 		
 	}
 
-	public function carigudang(){
+	public function carigudang(Request $request){
 		$idgudang = $request->idgudang;
+
 		$data['gudang'] = DB::select("select * from stock_gudang, masteritem where sg_item = kode_item and sg_gudang = '$idgudang'");
+
+		$data['count'] = count($data['gudang']);
 		return json_encode($data); 
 	}
 
@@ -3553,7 +4265,9 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				$fatkurpembeliand->fp_pending_status = 'APPROVED';
 				$fatkurpembeliand->fp_status = 'Released';
 				$fatkurpembeliand->fp_tipe = 'PO';
-				$fatkurpembelian->fp_acchutang = $request->acchutangdagang;
+				$fatkurpembeliand->fp_acchutang = $request->acchutangdagang;
+				$fatkurpembeliand->created_by = $request->username;
+				$fatkurpembeliand->updated_by = $request->username;
 				//$fatkurpembelian->fp_accpph = $request->accPph;
 				$fatkurpembeliand->save();
 
@@ -3723,7 +4437,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 
 
 		$datafaktur = DB::select("select * from faktur_pembelian where fp_nofaktur = '$nofaktur'");
-	//	return count($request->item_po);
+	
 
 		for($i = 0 ; $i < count($request->item_po); $i++){
 				$hargabarang = str_replace(',', '', $request->hpp[$i]);									
@@ -3749,7 +4463,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				
 				$fatkurpembeliandt2 = new fakturpembeliandt();
 				$fatkurpembeliandt2->fpdt_id = $idfakturdt;
-				$fatkurpembeliandt2->fpdt_idfp = '1';
+				$fatkurpembeliandt2->fpdt_idfp = $idfaktur;
 				$fatkurpembeliandt2->fpdt_kodeitem = $request->item_po[$i];
 				$fatkurpembeliandt2->fpdt_qty = $request->qty[$i];
 				/*$fatkurpembeliandt->fpdt_gudang = $request->pb_gudang[$i];*/
@@ -4416,9 +5130,20 @@ if($request->jenisppn=='I'){
 
 	public function getbiayalain (Request $request){
 		$cabang = $request->cabang;
-		
+		$flag = $request->a;
 
-		$faktur = DB::select("select * from faktur_pembelian where fp_comp = '$cabang' order by fp_idfaktur desc limit 1");
+		$bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
+		if($flag == ''){
+				$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/I-%' order by fp_idfaktur desc limit 1");
+
+		}
+		else {
+
+		$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/$flag-%' order by fp_idfaktur desc limit 1");
+
+		}
 
 		//return $idbbk;
 		if(count($faktur) > 0) {
@@ -4438,7 +5163,8 @@ if($request->jenisppn=='I'){
 			$data['idfaktur'] = '001';
 		}
 
-		return json_encode($data);
+		$datainfo = ['status' => 'sukses' , 'data' => $data['idfaktur']];
+		return json_encode($datainfo);
 	
 	}
 
@@ -4570,8 +5296,6 @@ public function kekata($x) {
 		$data = explode(",", $variable);
 		$idsup = $data[0];
 		$cabang = $request->cabang;
-
-
 
 			if($cabang == '000'){
 				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J'  and pb_terfaktur IS null and po_statusreturn = 'AKTIF' union select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J'  and po_idfaktur IS null and po_statusreturn = 'AKTIF' order  by id desc");
@@ -4874,7 +5598,25 @@ public function kekata($x) {
 	public function nocheckpelunasanhutangbank(Request $request){
 		$idbank = $request->kodebank;
 
-		$data['fpgbank'] = DB::select("select * from fpg_cekbank,fpg where fpgb_kodebank = '$idbank' and fpgb_idfpg = idfpg and fpg_posting = 'NOT'");
+		$datas['fpgbank'] = DB::select("select * from fpg_cekbank,fpg where fpgb_kodebank = '$idbank' and fpgb_idfpg = idfpg and fpg_posting = 'NOT' order by idfpg ASC");
+		$datas['fpgbank1'] = DB::select("select * from fpg_cekbank,fpg where fpgb_kodebank = '$idbank' and fpgb_idfpg = idfpg and fpg_posting = 'NOT' order by idfpg ASC");
+
+		if(count($request->arrtransaksi) != 0){
+						for($i = 0 ; $i < count($datas['fpgbank']); $i++){
+							for($j = 0; $j < count($request->arrtransaksi); $j++){
+								if($request->arrtransaksi[$j] == $datas['fpgbank'][$i]->fpgb_nocheckbg){
+									unset($datas['fpgbank1'][$i]);
+								}
+							}
+						}
+						$datas['fpgbank1'] = array_values($datas['fpgbank1']);
+           				$data['fpgbank'] = $datas['fpgbank1'];
+					}
+					else {
+						$data['fpgbank'] = $datas['fpgbank1'];
+					}
+
+
 		return json_encode($data);
 	}
 
@@ -4933,9 +5675,16 @@ public function kekata($x) {
 		$comp = $request->cabang;
 
 		//return $comp;
-		$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'");
-			
-	//	return $data['bbk'];
+		/*$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'");*/
+	
+		$bulan = Carbon::now()->format('m');
+        $tahun = Carbon::now()->format('y');
+
+
+
+		//return $mon;
+		$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'  and to_char(bbk_tgl, 'MM') = '$bulan' and to_char(bbk_tgl, 'YY') = '$tahun' order by bbk_id desc limit 1");
+
 
 		//return $idbbk;
 		if(count($idbbk) > 0) {
@@ -4946,13 +5695,13 @@ public function kekata($x) {
 			$string = (int)$idbbk + 1;
 			$idbbk = str_pad($string, 3, '0', STR_PAD_LEFT);
 		}
-
 		else {
-	
 			$idbbk = '001';
 		}
 
-		return json_encode($idbbk) ;
+		$datainfo =['status' => 'sukses' , 'data' => $idbbk];
+
+		return json_encode($datainfo) ;
 	}
 	
 	public function simpanbbk (Request $request){
@@ -4987,6 +5736,8 @@ public function kekata($x) {
 		$bbk->bbk_cabang = $request->cabang;
 		$bbk->bbk_flag = $request->flag;
 		$bbk->bbk_tgl = $request->tglbbk;
+		$bbk->create_by = $request->username;
+		$bbk->update_by = $request->username;
 		$bbk->save();
 
 
@@ -5093,7 +5844,8 @@ public function kekata($x) {
 							'bbk_cekbg' => $cekbg,
 							'bbk_biaya' => $biaya,
 							'bbk_total' => $total,
-							'bbk_tgl' => $request->tglbbk
+							'bbk_tgl' => $request->tglbbk,
+							'update_by' => $request->username
 						]);
 		$data['bbk'] = DB::select("select * from bukti_bank_keluar where bbk_id = '$idbbk'");
 
@@ -5466,28 +6218,137 @@ public function kekata($x) {
 		
 			$cabang = $request->cabang;
 			$idsup = $request->idsup;
+			$nosupplier = $request->nosupplier;
 			$idjenisbayar = $request->idjenisbayar;
 
-			if($idjenisbayar == '2' ){
-				$data['fakturpembelian'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_tipe != 'NS' and fp_tipe != 'S' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang'");
 				
-			}
-			else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){
-				$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
-			}
-			else if($idjenisbayar == '9'){
-				$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
-			}
-			else if($idjenisbayar == '3'){
-				$data['fakturpembelian'] = DB::select("select * from v_hutang, cabang, supplier where v_supplier = '$idsup' and vc_comp = kode and v_supplier = idsup and v_pelunasan != '0.00' and vc_comp = '$cabang' ");
+				if($idjenisbayar == '2' ){
+					$datas['fp'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_terimabarang = 'SUDAH' order by fp_idfaktur asc");
+
+					$datas['fp1'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS'  union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_terimabarang = 'SUDAH' order by fp_idfaktur ASC");
+
+					if(count($request->arrnofaktur) != 0){
+						for($i = 0 ; $i < count($datas['fp']); $i++){
+							for($j = 0; $j < count($request->arrnofaktur); $j++){
+								if($request->arrnofaktur[$j] == $datas['fp'][$i]->fp_nofaktur){
+									unset($datas['fp1'][$i]);
+								}
+							}
+						}
+						$datas['fp1'] = array_values($datas['fp1']);
+           				$data['fakturpembelian'] = $datas['fp1'];
+					}
+					else {
+						$data['fakturpembelian'] = $datas['fp1'];
+					}
 				
+				}
+				else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){
+					$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+				}
+				else if($idjenisbayar == '9'){
+					$datas['fp']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+					
+					$datas['fp1']  = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+
+				}
+				else if($idjenisbayar == '3'){
+					$datas['fp']  = DB::select("select * from v_hutang, cabang, supplier where v_supid = '$nosupplier' and vc_comp = kode and v_supid = no_supplier and v_pelunasan != '0.00' and vc_comp = '$cabang' ");
+
+					$datas['fp1']  = DB::select("select * from v_hutang, cabang, supplier where v_supid = '$nosupplier' and vc_comp = kode and v_supid = no_supplier and v_pelunasan != '0.00' and vc_comp = '$cabang' ");
+					if(count($request->arrnofaktur) != 0){
+						for($i = 0 ; $i < count($datas['fp']); $i++){
+							for($j = 0; $j < count($request->arrnofaktur); $j++){
+								if($request->arrnofaktur[$j] == $datas['fp'][$i]->v_nomorbukti){
+									unset($datas['fp1'][$i]);
+								}
+							}
+						}
+						$datas['fp1'] = array_values($datas['fp1']);
+           				$data['fakturpembelian'] = $datas['fp1'];
+					}
+					else {
+						$data['fakturpembelian'] = $datas['fp1'];
+					}
+					
+				}
+				else if($idjenisbayar == '4'){ //uang muka pembelian
+					$datas['fp']  = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang'");
+
+					$datas['fp1']  = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang'");
+
+					if(count($request->arrnofaktur) != 0){
+						for($i = 0 ; $i < count($datas['fp']); $i++){
+							for($j = 0; $j < count($request->arrnofaktur); $j++){
+								if($request->arrnofaktur[$j] == $datas['fp'][$i]->um_nomorbukti){
+									unset($datas['fp1'][$i]);
+								}
+							}
+						}
+						$datas['fp1'] = array_values($datas['fp1']);
+           				$data['fakturpembelian'] = $datas['fp1'];
+					}
+					else {
+						$data['fakturpembelian'] = $datas['fp1'];
+					}
+
+				}
+				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
+					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$idsup' and ik_comp = kode and ik_status = 'APPROVED'");
+				}
+					
+
+					
+				
+
+			/*if(count($request->arrnofaktur) == 0){
+				if($idjenisbayar == '2' ){
+				$data['fakturpembelian'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS' union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_terimabarang = 'SUDAH'");
+				
+				}
+				else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){
+					$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+				}
+				else if($idjenisbayar == '9'){
+					$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang'" );
+				}
+				else if($idjenisbayar == '3'){
+					$data['fakturpembelian'] = DB::select("select * from v_hutang, cabang, supplier where v_supplier = '$idsup' and vc_comp = kode and v_supplier = idsup and v_pelunasan != '0.00' and vc_comp = '$cabang' ");
+					
+				}
+				else if($idjenisbayar == '4'){ //uang muka pembelian
+					$data['fakturpembelian'] = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang'");
+				}
+				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
+					$data['fakturpembelian'] = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$idsup' and ik_comp = kode and ik_status = 'APPROVED'");
+				}
 			}
-			else if($idjenisbayar == '4'){ //uang muka pembelian
-				$data['fakturpembelian'] = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang'");
+			else {
+				for($i = 0 ; $i < count($request->arrnofaktur); $i++){
+					$nofaktur = $request->arrnofaktur[$i];
+					if($idjenisbayar == '2' ){
+					$data['fakturpembelian'] = DB::select("select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_tipe != 'S' and fp_tipe != 'NS'   and fp_nofaktur != '$nofaktur'  union select * from faktur_pembelian, supplier, form_tt , cabang where fp_idsup ='$idsup' and fp_jenisbayar = '$idjenisbayar' and fp_idsup = idsup and fp_idtt = tt_idform and fp_comp = kode and fp_sisapelunasan != '0.00' and fp_comp = '$cabang' and fp_terimabarang = 'SUDAH' and fp_nofaktur != '$nofaktur' ");
+					
+					}
+					else if($idjenisbayar == '6' || $idjenisbayar == '7'  ){
+						$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, agen.nama as namaoutlet , fp_sisapelunasan from  agen , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = agen.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang' and fp_nofaktur != '$nofaktur'" );
+					}
+					else if($idjenisbayar == '9'){
+						$data['fakturpembelian'] = DB::select("select fp_jatuhtempo, fp_idfaktur, fp_nofaktur, cabang.nama as namacabang, fp_noinvoice, subcon.nama as namavendor , fp_sisapelunasan from  subcon , cabang, faktur_pembelian LEFT OUTER JOIN form_tt on fp_nofaktur = tt_nofp where  fp_jenisbayar = '$idjenisbayar'  and fp_comp = cabang.kode and fp_sisapelunasan != '0.00' and fp_supplier = '$idsup' and fp_supplier = subcon.kode and fp_pending_status = 'APPROVED' and fp_comp = '$cabang' and fp_nofaktur != '$nofaktur'" );
+					}
+					else if($idjenisbayar == '3'){
+						$data['fakturpembelian'] = DB::select("select * from v_hutang, cabang, supplier where v_supplier = '$idsup' and vc_comp = kode and v_supplier = idsup and v_pelunasan != '0.00' and vc_comp = '$cabang' and v_nomorbukti != '$nofaktur' ");
+						
+					}
+					else if($idjenisbayar == '4'){ //uang muka pembelian
+						$data['fakturpembelian'] = DB::select("select * from d_uangmuka, cabang where  um_supplier = '$idsup' and um_comp = kode and um_comp = '$cabang' and um_nomorbukti = '$nofaktur");
+					}
+					else if($idjenisbayar == '1'){ //GIRO KAS KECIL
+						$data['fakturpembelian'] = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$idsup' and ik_comp = kode and ik_status = 'APPROVED' and ik_nota = '$nofaktur'");
+					}
+				}
 			}
-			else if($idjenisbayar == '1'){ //GIRO KAS KECIL
-				$data['fakturpembelian'] = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$idsup' and ik_comp = kode and ik_status = 'APPROVED'");
-			}			
+						*/
 		return json_encode($data);
 	}
 
@@ -5569,6 +6430,7 @@ public function kekata($x) {
 								'fp_dpp'	=> $dpp,
 								'fp_netto' => $netto,
 								'fp_sisapelunasan' => $netto,
+								'updated_by' => $request->username,
 							]);
 
 		//UPDATE TT
@@ -6178,10 +7040,14 @@ public function kekata($x) {
 		else if($jenisbayar == '1'){
 			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, agen.kode as kodesupplier , cabang.nama as namacabang, agen.nama as namasupplier  from fpg,cabang, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = agen.kode and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");
 		}
+		else if($jenisbayar == '3'){
+			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, supplier.no_supplier as kodesupplier , cabang.nama as namacabang, supplier.nama_supplier as namasupplier from fpg, masterbank, jenisbayar, supplier, cabang where  idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode and fpg_agen = no_supplier ");
+			/*$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, agen.kode as kodesupplier , cabang.nama as namacabang, agen.nama as namasupplier  from fpg,cabang, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = agen.kode and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");*/
+		}
 		else if($jenisbayar == '5'){
 			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, cabang.nama as namacabang  from fpg,cabang, masterbank, jenisbayar where idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");
 		}
-
+		/*dd($data['fpg']);	*/
 		$jenisbayar = $data['fpg'][0]->fpg_jenisbayar;
 		//dd($data['fpg']);
 		if($jenisbayar == '2' || $jenisbayar == '6' || $jenisbayar == '7' || $jenisbayar == '9' ) {
@@ -6305,7 +7171,7 @@ public function kekata($x) {
 			$data['bank'] = DB::select("select * from masterbank");
 			$data['supplier'] = DB::select("select * from supplier");
 		}
-	//	dd($data);
+		
 		return view('purchase/formfpg/detail', compact('data'));
 	}
 
@@ -6344,14 +7210,20 @@ public function kekata($x) {
 				$formfpg->fpg_nofpg = $request->nofpg;
 				$formfpg->fpg_keterangan = $request->keterangan;
 
+
 				if($request->jenisbayar == 5) {
 					$formfpg->fpg_orang = $request->keterangantransfer;
 				}
 				else if($request->jenisbayar == 2) {
-					$formfpg->fpg_supplier = $request->kodebayar;
+					$explode = explode(",", $request->kodebayar);
+
+					$kodesupplier = $explode[0];
+					$formfpg->fpg_supplier = $kodesupplier;
 				}
-				else if($request->jenisbayar == 6 || $request->jenisbayar== 7 || $request->jenisbayar == 9 || $request->jenisbayar == 4 || $request->jenisbayar == 1){
-					$formfpg->fpg_agen = $request->kodebayar;
+				else if($request->jenisbayar == 6 || $request->jenisbayar== 7 || $request->jenisbayar == 9 || $request->jenisbayar == 4 || $request->jenisbayar == 1 || $request->jenisbayar == 3 ){
+					$explode = explode(",", $request->kodebayar);
+					$supplier = $explode[1];
+					$formfpg->fpg_agen = $supplier;
 				}
 				
 				$formfpg->fpg_cabang = $cabang;
@@ -6364,9 +7236,6 @@ public function kekata($x) {
 				$formfpg->create_by = $request->username;
 				$formfpg->update_by = $request->username;
 				$formfpg->save();
-
-
-			
 
 				if($request->jenisbayar != 5){
 
@@ -6568,21 +7437,16 @@ public function kekata($x) {
 				$formfpg_dt->fpgdt_pelunasan = $pelunasan;
 				$formfpg_dt->fpgdt_sisafaktur = $sisafaktur;
 				$formfpg_dt->fpgdt_keterangan = $request->fpgdt_keterangan[$j];
-				$formfpg_dt->fpgdt_nofaktur = $request->fpgdt_keterangan[$j];
+				$formfpg_dt->fpgdt_nofaktur = $request->nofaktur[$j];
 				$formfpg_dt->save();
 
 
 
 				$updatefaktur = fakturpembelian::where('fp_nofaktur', '=', $request->nofaktur[$j]);
-
-
-				
 					$updatefaktur->update([
 					 	'fp_sisapelunasan' => $sisafaktur,	 	
 				 	]);			 				 
 				}
-
-
 			}
 
 		//SIMPAN CHECK

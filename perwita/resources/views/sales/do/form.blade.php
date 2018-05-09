@@ -3316,8 +3316,8 @@
                 if (cek_tipe == 'KILOGRAM') {
                     if(crud_atas == 'E'){
                         if($("input[name='ed_berat']").val() != '' || $("input[name='ed_koli']").val() != '' ){
-                            $("input[name='ed_berat']").val({{ $do->berat }});
-                            $("input[name='ed_koli']").val({{ $do->koli }});
+                            $("input[name='ed_berat']").val({{ $do->berat or null}} );
+                            $("input[name='ed_koli']").val({{ $do->koli or null}});
                             
                         }else{
                             $("input[name='ed_berat']").val(0);

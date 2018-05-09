@@ -375,10 +375,13 @@
     });
 
     $(document).on("click","#btn_add",function(){
+        $('#btnsave').removeClass('disabled');
         $("input[name='crud']").val('N');
         $("input[name='sepeda_pancal']").val('');
         $("input[name='bebek_matik']").val('');
         $("input[name='laki_sport']").val('');
+        $("input[name='moge']").val('');
+        $("input[name='waktu']").val('');
 
         $("input[name='kodekota']").val('');
 
@@ -386,7 +389,11 @@
         $("input[name='id_matik_edit']").val('');
         $("input[name='id_sport_edit']").val('');
         $("input[name='id_sepeda_edit']").val('');
+        $("input[name='id_moge_edit']").val('');
+        $("input[name='id_waktu_edit']").val('');
 
+        $('#hilang').show();
+        $('#hilang2').show();
 
         $("input[name='ed_kode_old']").val('');
         $("select[name='cb_kota_asal']").val('').trigger('chosen:updated');
@@ -399,6 +406,8 @@
     });
 
     $(document).on( "click",".btnedit", function() {
+        $('#btnsave').removeClass('disabled');
+      
         var id=$(this).attr("id");
         var tuju = $(this).data('tujuan');
         var value = {
@@ -467,6 +476,7 @@
     });
 
     $(document).on("click","#btnsave",function(){
+        $('#btnsave').addClass('disabled');
         var data = $('.kirim :input').serialize();
 
         var a = $('#cb_kota_asal').val();
@@ -677,6 +687,7 @@
             }
             return false;
         }
+
         console.log(data);
         $.ajax(
         {
@@ -686,6 +697,8 @@
             data : $('.kirim :input').serialize(),
             success: function(data, textStatus, jqXHR)
             {
+            $('#btnsave').removeClass('disabled');
+
                 if(data.crud == 'N'){
                     if(data.result == 1){
                         var table = $('#table_data').DataTable();
@@ -713,8 +726,11 @@
             error: function(jqXHR, textStatus, errorThrown)
             {
                swal("Kode Tidak boleh sama !", 'periksa sekali lagi', "warning");
-            }
+            },
+
+
         });
+
     });
 
     $(document).on( "click",".btndelete", function() {

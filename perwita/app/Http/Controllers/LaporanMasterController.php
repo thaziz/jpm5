@@ -608,10 +608,9 @@ class LaporanMasterController extends Controller
 				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
 				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->get();
-
+			// return 'a';
 		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
 		 $tahun = carbon::now();
-		 
 		 $sre = substr($tahun,0, 10);
 		 $year =  $tahun->year;
 		 $date =  $tahun->day;
@@ -765,363 +764,6 @@ class LaporanMasterController extends Controller
 				->where('pendapatan','=','PAKET')
 				->get();
 
-		//DATA DOKUMEN PER BULAN
-
-		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
-		 $tahun = carbon::now();
-		 $tahun =  $tahun->year;
-		
-		// return $array_bulan;
-		for ($i=0; $i <count($array_bulan) ; $i++) { 
-			$dat[$i] =DB::table('delivery_order')
-				->where('nomor','like','%PAK%')
-				->where('type_kiriman','=','DOKUMEN')
-				->whereMonth('tanggal','=',$array_bulan[$i])
-				->whereYear('tanggal','=',$tahun)
-				->get();
-			$dat1[$i] =DB::table('delivery_order')
-				->where('nomor','like','%PAK%')
-				->where('type_kiriman','=','KILOGRAM')
-				->whereMonth('tanggal','=',$array_bulan[$i])
-				->whereYear('tanggal','=',$tahun)
-				->get();
-			$dat2[$i] =DB::table('delivery_order')
-				->where('nomor','like','%PAK%')
-				->where('type_kiriman','=','KOLI')
-				->whereMonth('tanggal','=',$array_bulan[$i])
-				->whereYear('tanggal','=',$tahun)
-				->get();
-			$dat3[$i] =DB::table('delivery_order')
-				->where('nomor','like','%PAK%')
-				->where('type_kiriman','=','SEPEDA')
-				->whereMonth('tanggal','=',$array_bulan[$i])
-				->whereYear('tanggal','=',$tahun)
-				->get();
-		}
-		// return $dat;
-
-		for ($i=0; $i < count(isset($dat)); $i++) { 
-			for ($a=0; $a < count(isset($dat[$i])); $a++) { 
-				
-				if (isset($dat[0][$a])) {
-				 	$jan = count($dat[0]);
-				}else{
-					$jan = 0;
-				}
-
-				if (isset($dat[1][$a])) {
-				 	$feb = count($dat[1]);
-				}else{
-					$feb = 0;
-				}
-
-				if (isset($dat[2][$a])) {
-				 	$mar = count($dat[2]);
-				}else{
-					$mar = 0;
-				}
-
-				if (isset($dat[3][$a])) {
-				 	$apr = count($dat[3]);
-				}else{
-					$apr = 0;
-				}
-
-				if (isset($dat[4][$a])) {
-				 	$may = count($dat[4]);
-				}else{
-					$may = 0;
-				}
-
-				if (isset($dat[5][$a])) {
-				 	$jun = count($dat[5]);
-				}else{
-					$jun = 0;
-				}
-
-				if (isset($dat[6][$a])) {
-				 	$jul = count($dat[6]);
-				}else{
-					$jul = 0;
-				}
-
-				if (isset($dat[7][$a])) {
-				 	$aug = count($dat[7]);
-				}else{
-					$aug = 0;
-				}
-
-				if (isset($dat[8][$a])) {
-				 	$sep = count($dat[8]);
-				}else{
-					$sep = 0;
-				}
-
-				if (isset($dat[9][$a])) {
-				 	$okt = count($dat[9]);
-				}else{
-					$okt = 0;
-				}
-
-				if (isset($dat[10][$a])) {
-				 	$nov = count($dat[10]);
-				}else{
-					$nov = 0;
-				}
-
-				if (isset($dat[11][$a])) {
-				 	$dec = count($dat[11]);
-				}else{
-					$dec = 0;
-				}
-			}
-		}
-		// return $apr;
-		
-		// return $dat1;
-		for ($i=0; $i < count(isset($dat1)); $i++) { 
-			for ($a=0; $a < count(isset($dat1[$i])); $a++) { 
-				
-				if (isset($dat1[0][$a])) {
-				 	$jan1 = count($dat1[0]);
-				}else{
-					$jan1 = 0;
-				}
-
-				if (isset($dat1[1][$a])) {
-				 	$feb1 = count($dat1[1]);
-				}else{
-					$feb1 = 0;
-				}
-
-				if (isset($dat1[2][$a])) {
-				 	$mar1 = count($dat1[2]);
-				}else{
-					$mar1 = 0;
-				}
-
-				if (isset($dat1[3][$a])) {
-				 	$apr1 = count($dat1[3]);
-				}else{
-					$apr1 = 0;
-				}
-
-				if (isset($dat1[4][$a])) {
-				 	$may1 = count($dat1[4]);
-				}else{
-					$may1 = 0;
-				}
-
-				if (isset($dat1[5][$a])) {
-				 	$jun1 = count($dat1[5]);
-				}else{
-					$jun1 = 0;
-				}
-
-				if (isset($dat1[6][$a])) {
-				 	$jul1 = count($dat1[6]);
-				}else{
-					$jul1 = 0;
-				}
-
-				if (isset($dat1[7][$a])) {
-				 	$aug1 = count($dat1[7]);
-				}else{
-					$aug1 = 0;
-				}
-
-				if (isset($dat1[8][$a])) {
-				 	$sep1 = count($dat1[8]);
-				}else{
-					$sep1 = 0;
-				}
-
-				if (isset($dat1[9][$a])) {
-				 	$okt1 = count($dat1[9]);
-				}else{
-					$okt1 = 0;
-				}
-
-				if (isset($dat1[10][$a])) {
-				 	$nov1 = count($dat1[10]);
-				}else{
-					$nov1 = 0;
-				}
-
-				if (isset($dat1[11][$a])) {
-				 	$dec1 = count($dat1[11]);
-				}else{
-					$dec1 = 0;
-				}
-			}
-		}
-		// return $dat2;
-		for ($i=0; $i < count(isset($dat2)); $i++) { 
-			for ($a=0; $a < count(isset($dat2[$i])); $a++) { 
-				
-				if (isset($dat2[0][$a])) {
-				 	$jan2 = count($dat2[0]);
-				}else{
-					$jan2 = 0;
-				}
-
-				if (isset($dat2[1][$a])) {
-				 	$feb2 = count($dat2[1]);
-				}else{
-					$feb2 = 0;
-				}
-
-				if (isset($dat2[2][$a])) {
-				 	$mar2 = count($dat2[2]);
-				}else{
-					$mar2 = 0;
-				}
-
-				if (isset($dat2[3][$a])) {
-				 	$apr2 = count($dat2[3]);
-				}else{
-					$apr2 = 0;
-				}
-
-				if (isset($dat2[4][$a])) {
-				 	$may2 = count($dat2[4]);
-				}else{
-					$may2 = 0;
-				}
-
-				if (isset($dat2[5][$a])) {
-				 	$jun2 = count($dat2[5]);
-				}else{
-					$jun2 = 0;
-				}
-
-				if (isset($dat2[6][$a])) {
-				 	$jul2 = count($dat2[6]);
-				}else{
-					$jul2 = 0;
-				}
-
-				if (isset($dat2[7][$a])) {
-				 	$aug2 = count($dat2[7]);
-				}else{
-					$aug2 = 0;
-				}
-
-				if (isset($dat2[8][$a])) {
-				 	$sep2 = count($dat2[8]);
-				}else{
-					$sep2 = 0;
-				}
-
-				if (isset($dat2[9][$a])) {
-				 	$okt2 = count($dat2[9]);
-				}else{
-					$okt2 = 0;
-				}
-
-				if (isset($dat2[10][$a])) {
-				 	$nov2 = count($dat2[10]);
-				}else{
-					$nov2 = 0;
-				}
-
-				if (isset($dat2[11][$a])) {
-				 	$dec2 = count($dat2[11]);
-				}else{
-					$dec2 = 0;
-				}
-			}
-		}
-
-
-		for ($i=0; $i < count(isset($dat3)); $i++) { 
-			for ($a=0; $a < count(isset($dat3[$i])); $a++) { 
-				
-				if (isset($dat3[0][$a])) {
-				 	$jan3 = count($dat3[0]);
-				}else{
-					$jan3 = 0;
-				}
-
-				if (isset($dat3[1][$a])) {
-				 	$feb3 = count($dat3[1]);
-				}else{
-					$feb3 = 0;
-				}
-
-				if (isset($dat3[2][$a])) {
-				 	$mar3 = count($dat3[2]);
-				}else{
-					$mar3 = 0;
-				}
-
-				if (isset($dat3[3][$a])) {
-				 	$apr3 = count($dat3[3]);
-				}else{
-					$apr3 = 0;
-				}
-
-				if (isset($dat3[4][$a])) {
-				 	$may3 = count($dat3[4]);
-				}else{
-					$may3 = 0;
-				}
-
-				if (isset($dat3[5][$a])) {
-				 	$jun3 = count($dat3[5]);
-				}else{
-					$jun3 = 0;
-				}
-
-				if (isset($dat3[6][$a])) {
-				 	$jul3 = count($dat3[6]);
-				}else{
-					$jul3 = 0;
-				}
-
-				if (isset($dat3[7][$a])) {
-				 	$aug3 = count($dat3[7]);
-				}else{
-					$aug3 = 0;
-				}
-
-				if (isset($dat3[8][$a])) {
-				 	$sep3 = count($dat3[8]);
-				}else{
-					$sep3 = 0;
-				}
-
-				if (isset($dat3[9][$a])) {
-				 	$okt3 = count($dat3[9]);
-				}else{
-					$okt3 = 0;
-				}
-
-				if (isset($dat3[10][$a])) {
-				 	$nov3 = count($dat3[10]);
-				}else{
-					$nov3 = 0;
-				}
-
-				if (isset($dat3[11][$a])) {
-				 	$dec3 = count($dat3[11]);
-				}else{
-					$dec3 = 0;
-				}
-			}
-		}
-
-		$arraybulan_dokumen  = [$jan,$feb,$mar,$apr,$may,$jun,$jul,$aug,$sep,$okt,$nov,$dec];
-		$arraybulan_kilogram = [$jan1,$feb1,$mar1,$apr1,$may1,$jun1,$jul1,$aug1,$sep1,$okt1,$nov1,$dec1];
-		$arraybulan_koli     = [$jan2,$feb2,$mar2,$apr2,$may2,$jun2,$jul2,$aug2,$sep2,$okt2,$nov2,$dec2];
-		$arraybulan_sepeda   = [$jan3,$feb3,$mar3,$apr3,$may3,$jun3,$jul3,$aug3,$sep3,$okt3,$nov3,$dec3];
-		// return $arraybulan_dokumen;
-		//END OF
-
-		//DATA KILOGRAM PER BULAN
-
-		
-
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
@@ -1129,107 +771,108 @@ class LaporanMasterController extends Controller
 		return view('purchase/master/master_penjualan/laporan/lap_deliveryorder_paket',compact('cabang','data','kota','kota1','ket','count_get_data','arraybulan_dokumen','arraybulan_kilogram','arraybulan_koli','arraybulan_sepeda'));
 	}
 	public function cari_paket(Request $request){
-		dd($request->all());
+		// dd($request->all());
 		$awal = $request->a;
 		$akir = $request->b;
 		$cabang = $request->c;
-		if ($cabang != '') {
+		if ($cabang == '') {
 			$data =DB::table('delivery_order as do')
-					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-					->join('kota as ka','do.id_kota_asal','=','ka.id')
-					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-					->where('nomor','like','%PAK%')
+					->where('pendapatan','=','PAKET')
 					->where('type_kiriman','=','DOKUMEN')
 					->where('tanggal','>=',$awal)
 					->where('tanggal','<=',$akir)
 					->get();
 
 			$data1 =DB::table('delivery_order as do')
-					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-					->join('kota as ka','do.id_kota_asal','=','ka.id')
-					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-					->where('nomor','like','%PAK%')
+					->where('pendapatan','=','PAKET')
 					->where('type_kiriman','=','KILOGRAM')
 					->where('tanggal','>=',$awal)
 					->where('tanggal','<=',$akir)
 					->get();
 
 			$data2 =DB::table('delivery_order as do')
-					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-					->join('kota as ka','do.id_kota_asal','=','ka.id')
-					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-					->where('nomor','like','%PAK%')
+					->where('pendapatan','=','PAKET')
 					->where('type_kiriman','=','KOLI')
 					->where('tanggal','>=',$awal)
 					->where('tanggal','<=',$akir)
 					->get();
 
 			$data3 =DB::table('delivery_order as do')
-					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-					->join('kota as ka','do.id_kota_asal','=','ka.id')
-					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-					->where('nomor','like','%PAK%')
+					->where('pendapatan','=','PAKET')
 					->where('type_kiriman','=','SEPEDA')
 					->where('tanggal','>=',$awal)
 					->where('tanggal','<=',$akir)
 					->get();
 		}else{
 			$data =DB::table('delivery_order as do')
-					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-					->join('kota as ka','do.id_kota_asal','=','ka.id')
-					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-					->where('nomor','like','%PAK%')
+					->where('pendapatan','=','PAKET')
 					->where('type_kiriman','=','DOKUMEN')
 					->where('tanggal','>=',$awal)
 					->where('tanggal','<=',$akir)
-					->where('kode_cabang','<=',$cabang)
+					->where('kode_cabang','=',$cabang)
 					->get();
 
 			$data1 =DB::table('delivery_order as do')
-					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-					->join('kota as ka','do.id_kota_asal','=','ka.id')
-					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-					->where('nomor','like','%PAK%')
+					->where('pendapatan','=','PAKET')
 					->where('type_kiriman','=','KILOGRAM')
 					->where('tanggal','>=',$awal)
 					->where('tanggal','<=',$akir)
-					->where('kode_cabang','<=',$cabang)
+					->where('kode_cabang','=',$cabang)
 					->get();
 
 			$data2 =DB::table('delivery_order as do')
-					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-					->join('kota as ka','do.id_kota_asal','=','ka.id')
-					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-					->where('nomor','like','%PAK%')
+					->where('pendapatan','=','PAKET')
 					->where('type_kiriman','=','KOLI')
 					->where('tanggal','>=',$awal)
 					->where('tanggal','<=',$akir)
-					->where('kode_cabang','<=',$cabang)
+					->where('kode_cabang','=',$cabang)
 					->get();
 
 			$data3 =DB::table('delivery_order as do')
-					->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-					->join('kota as ka','do.id_kota_asal','=','ka.id')
-					->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-					->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-					->where('nomor','like','%PAK%')
+					->where('pendapatan','=','PAKET')
 					->where('type_kiriman','=','SEPEDA')
 					->where('tanggal','>=',$awal)
 					->where('tanggal','<=',$akir)
-					->where('kode_cabang','<=',$cabang)
+					->where('kode_cabang','=',$cabang)
 					->get();
 		}
-		
-
+		// return $data;
+		if ($data != null) {
+			for ($i=0; $i <count($data) ; $i++) { 
+				$dat[$i] = $data[$i]->total_net; 		
+			}
+			$data = array_sum($dat);
+		}else{
+			$data = 0;
+		}	
+		if ($data1 != null) {
+			for ($i=0; $i <count($data1) ; $i++) { 
+				$dat1[$i] = $data1[$i]->total_net; 		
+			}
+			$data1 = array_sum($dat1);
+		}else{
+			$data1 = 0;
+		}
+		if ($data2 != null) {
+			for ($i=0; $i <count($data2) ; $i++) { 
+				$dat2[$i] = $data2[$i]->total_net; 		
+			}
+			$data2 = array_sum($dat2);
+		}else{
+			$data2 = 0;
+		}
+		if ($data3 != null) {
+			for ($i=0; $i <count($data3) ; $i++) { 
+				$dat3[$i] = $data3[$i]->total_net; 		
+			}
+			$data3 = array_sum($dat3);
+		}else{
+			$data3 = 0;
+		}	
+		// return $data;
+			
 		if ($data != null || $data1 != null || $data2 != null || $data3 != null) {
-        	return response()->json(['dokumen'=>count($data),'kilogram'=>count($data1),'koli'=>count($data2),'sepeda'=>count($data3),'awal'=> $awal,'akir' => $akir]);			
+        	return response()->json(['dokumen'=>$data,'kilogram'=>$data1,'koli'=>$data2,'sepeda'=>$data3,'awal'=> $awal,'akir' => $akir]);			
 		}else{
 			return response()->json(['response'=>'Data Tidak Ditemukan','awal'=> $awal,'akir' => $akir]);
 		}		
@@ -1260,6 +903,129 @@ class LaporanMasterController extends Controller
         // dd($dat1);
 		return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_paket',compact('dat1'));
 		
+	}
+
+	public function reportdeliveryorder_total(Request $request){
+		// return 'a';
+		$data = $request->a;	
+   		// dd($data[0]);
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat); $i++) { 
+		
+		$dat1[$i] = DB::table('delivery_order as do')
+						->select('do.*','ka.id as kaid','cb.nama as cabang','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+						->join('kota as ka','do.id_kota_asal','=','ka.id')
+						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->join('cabang as cb','do.kode_cabang','=','cb.kode')
+						->where('nomor','=',$dat[$i])
+						->get();
+			}
+
+        foreach($dat1 as $key => $value){
+		    $get[$key] = $dat1[$key][0]->total_net;
+			$total_perhitungan = array_sum($get);
+		}
+
+        // dd($total_net);
+
+		// for
+		return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_total',compact('dat1','total_perhitungan'));
+		
+	}
+	public function exceldeliveryorder_total(Request $request){
+		$data = $request->a;	
+   		// dd($data[0]);
+   		$dat = '';
+		for ($save=0; $save <count($data) ; $save++) { 
+			$dat = $dat.','.$data[$save];
+
+		}
+		$dat =explode(',', $dat); 
+		json_encode($dat);
+        for ($i=1; $i <count($dat); $i++) { 
+		
+		$dat1[$i] = DB::table('delivery_order as do')
+						->select('do.*','ka.id as kaid','cb.nama as cabang','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+						->join('kota as ka','do.id_kota_asal','=','ka.id')
+						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
+						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->join('cabang as cb','do.kode_cabang','=','cb.kode')
+						->where('nomor','=',$dat[$i])
+						->get();
+		// $gege = $dat1[$i];
+		}
+		$gege = $dat1;
+
+        
+		// return 'a';
+		// return $total_perhitungan;
+        
+
+		// Add the headers
+		
+
+		// Add the headers
+		
+
+		// Add the results
+		// Generating the sheet from the array
+		$myFile= Excel::create("filename", function($excel) use($data,$dat1) {
+		   $excel->setTitle('title');
+		   $excel->sheet('sheet 1', function($sheet) use($data,$dat1) {
+		   	$sheetArray = array();
+		   	$sheetArray[] = array('No DO','Tanggal','Pengirim','Penerima','Kota Asal','Kota Tujuan','Kec Tujuan','Tipe','Status','Cabang','Tarif Keseluruhan');
+
+		   	foreach ($dat1 as $index => $row) {
+		   		if (substr($dat1[$index][0]->nomor,0,-6)."<br>"; == 'KRN') {
+		   		
+		   		}
+		   		$sheetArray[] = array(
+		   							$dat1[$index][0]->nomor 
+		   							,$dat1[$index][0]->tanggal 
+									,$dat1[$index][0]->nama_pengirim 
+									,$dat1[$index][0]->nama_penerima 
+									,$dat1[$index][0]->asal 
+									,$dat1[$index][0]->tujuan 
+									,$dat1[$index][0]->kecamatan 
+									,$dat1[$index][0]->type_kiriman 
+									,$dat1[$index][0]->status 
+									,$dat1[$index][0]->cabang 
+									,number_format($dat1[$index][0]->total_net,0,',','.') 
+								);
+		   	}	
+		   	foreach($dat1 as $key => $value){
+				    $get[$key] = $dat1[$key][0]->total_net;
+					$total_perhitungan = array_sum($get);
+			}
+		   	$sheetArray1[] = array('Total','','','','','','','','','',$total_perhitungan);
+		    $sheet->fromArray($sheetArray);
+		    $sheet->fromArray($sheetArray1);
+		   });
+		});
+		$date = carbon::now();
+		$beda = $date->year.$date->hour.$date->second.$date->second;
+		$myFile = $myFile->string('xlsx'); //change xlsx for the format you want, default is xls
+		$response =  array(
+		   'name' => "LaporanDo".$beda, //no extention needed
+		   'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($myFile) //mime type of used format
+		);
+		return response()->json($response);
+		
+
+
+		
+
+		// return $export_ss;
+		// return response()->json(['ex',=>,$excel]);
+		// return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_total',compact('dat1','total_perhitungan')); exceldeliveryorder_total(){
+
 	}
 // END OF DELIVERY ORDER LAPORAN PAKET(DO)
    
@@ -1527,25 +1293,19 @@ class LaporanMasterController extends Controller
 		$customer = $request->customer;
 		if ($customer != '') {
 			$data = DB::table('invoice')
-				// ->select('i_tanggal','i_kode_customer','')
 				->where('i_tanggal','>=',$awal)
 				->where('i_tanggal','<=',$akir)
 				->where('i_kode_customer','=',$customer)
-				// ->groupBy('i_kode_customer')
 				->get();
 			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->where('i_kode_customer','=',$customer)->groupBy('i_kode_customer','customer.nama')->get();
 		}else{
 			$data = DB::table('invoice')
 				->where('i_tanggal','>=',$awal)
 				->where('i_tanggal','<=',$akir)
-				// ->groupBy('i_kode_customer')
 				->get();
 			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->groupBy('i_kode_customer','customer.nama')->get();
 		}
-		// return $data;
-   		
 
-		
 		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
 		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$cus = DB::table('customer')->get();
@@ -1554,6 +1314,102 @@ class LaporanMasterController extends Controller
 		
 		}
 
+		public function reportinvoice(Request $request){
+		
+		// dd($request->all());
+		$awal = $request->awal;
+		$akir = $request->akir;
+		$customer = $request->customer;
+		if ($customer != '') {
+			$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->where('i_kode_customer','=',$customer)
+				->get();
+			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->where('i_kode_customer','=',$customer)->groupBy('i_kode_customer','customer.nama')->get();
+		}else{
+			$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->get();
+			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->groupBy('i_kode_customer','customer.nama')->get();
+		}
+				
+		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$cus = DB::table('customer')->get();
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+
+		return view('purchase/master/master_penjualan/pdf/pdf_invoice',compact('data','cust','ket','kota','cus','kota1'));
+		
+		}
+		public function excelinvoice(Request $request){
+		$awal = $request->awal;
+		$akir = $request->akir;
+		$customer = $request->customer;
+		if ($customer != '') {
+			$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->where('i_kode_customer','=',$customer)
+				->get();
+			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->where('i_kode_customer','=',$customer)->groupBy('i_kode_customer','customer.nama')->get();
+		}else{
+			$data = DB::table('invoice')
+				->where('i_tanggal','>=',$awal)
+				->where('i_tanggal','<=',$akir)
+				->get();
+			$cust = DB::table('invoice')->select('i_kode_customer','customer.nama as cus')->join('customer','customer.kode','=','invoice.i_kode_customer')->groupBy('i_kode_customer','customer.nama')->get();
+		}
+
+		for ($i=0; $i <count($data) ; $i++) { 
+			$data0[$i] = $data[$i]->i_total;
+			$data1[$i] = $data[$i]->i_diskon1;
+			$data2[$i] = $data[$i]->i_diskon2;
+			$data3[$i] = $data[$i]->i_ppnrp;
+			$data4[$i] = $data[$i]->i_pajak_lain;
+			$data5[$i] = $data[$i]->i_netto;
+			$data6[$i] = $data[$i]->i_netto_detail;
+			$data7[$i] = $data[$i]->i_total_tagihan;
+		}
+		$total_0 = array_sum($data0);
+		$total_1 = array_sum($data1);
+		$total_2 = array_sum($data2);
+		$total_3 = array_sum($data3);
+		$total_4 = array_sum($data4);
+		$total_5 = array_sum($data5);
+		$total_6 = array_sum($data6);
+		$total_7 = array_sum($data7);
+		// return $data2;
+		$ket = DB::table('tarif_cabang_sepeda')->select('keterangan')->groupBy('keterangan')->get();
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		$cus = DB::table('customer')->get();
+		$kota1 = DB::select("SELECT id, nama as asal from kota");
+
+		$date =  date('B'.'s'.'H');
+
+				   			Excel::create('Invoice'.$date, function($excel) use ($data,$cust,$ket,$kota,$cus,$kota1,$total_0,$total_1,$total_2,$total_3,$total_4,$total_5,$total_6,$total_7){
+
+								    $excel->sheet('New sheet', function($sheet) use ($data,$cust,$ket,$kota,$cus,$kota1,$total_0,$total_1,$total_2,$total_3,$total_4,$total_5,$total_6,$total_7) {
+								        $sheet->loadView('purchase/master/master_penjualan/excel/excel_invoice')
+								        ->with('data',$data)
+								        ->with('cust',$cust)
+								        ->with('ket',$ket)
+								        ->with('kota',$kota)
+								        ->with('cus',$cus)
+								        ->with('kota1',$kota1)
+								        ->with('total_0',$total_0)
+								        ->with('total_1',$total_1)
+								        ->with('total_2',$total_2)
+								        ->with('total_3',$total_3)
+								        ->with('total_4',$total_4)
+								        ->with('total_5',$total_5)
+								        ->with('total_6',$total_6)
+								        ->with('total_7',$total_7);
+								    });
+
+								})->download('csv');
+		}
 
 		public function cari_lap_invoice(Request $request){
 
@@ -1634,26 +1490,7 @@ class LaporanMasterController extends Controller
 
 	}
 
-		public function reportinvoice(Request $request){
-		// return 'a';
-			dd($request->all());
-		$data = $request->a;	
-   		// dd($data[0]);
-   		$dat = '';
-		for ($save=0; $save <count($data) ; $save++) { 
-			$dat = $dat.','.$data[$save];
-
-		}
-		$dat =explode(',', $dat); 
-		json_encode($dat);
-        for ($i=1; $i <count($dat); $i++) { 
 		
-		$dat1[$i] = DB::table('invoice')->where('i_nomor','=',$dat[$i])->get();
-			}
-        // dd($dat1);
-		return view('purchase/master/master_penjualan/pdf/pdf_invoice',compact('dat1'));
-		
-		}
 
 
 
@@ -2453,6 +2290,61 @@ class LaporanMasterController extends Controller
 				   				and tanggal<='$akir'
 				                group by d.kode_customer,c.kode
 				                order by d.kode_customer");	
+				   			
+				   			$cust = DB::select("SELECT kode_customer from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'DOKUMEN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			/*return*/ $doc = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'DOKUMEN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+					   			// return $doc;
+
+				   			$kilo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KILOGRAM'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$koli = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KOLI'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$sepeda = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'SEPEDA'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$kargo = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KARGO'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+				   			$koran = DB::select("SELECT kode_customer,sum(d.total) as total,sum(d.diskon) as diskon ,count(d.nomor) as do,sum(d.total_net) as total_net from delivery_order d 
+				   				where tanggal>='$awal'
+				   				and tanggal<='$akir'
+				   				and type_kiriman = 'KORAN'
+				   				group by d.kode_customer
+				   				order by d.kode_customer");	
+
+
+
+				   			// return [$data_awal,$doc,$kilo,$koli,$sepeda,$kargo,$koran];
+
 				   			if ($data_awal == null) {
 				   				return response()->json(['data'=>'0']); 
 				   			}else{
@@ -3072,16 +2964,7 @@ class LaporanMasterController extends Controller
 				   		return view('purchase/master/master_penjualan/laporan/do_total/pdf/pdf_detail_lap_rekapcustomer',compact('data_awal','total_net','total','diskon','do','doc','koli','kilo','kargo','koran','sepeda')); 
 						
    		}
-   		// return 'a';
-   		// return $total_net;
-		 
-
    }
-
-
-
-
-
    }
 
    
