@@ -90,6 +90,9 @@ class MasterPurchaseController extends Controller
 			else if($idgrupitem == 'A'){
 				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
 			}
+			else if($idgrupitem == 'C'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
+			}
 			else {
 				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '51%' or id_akun LIKE '52%' or id_akun LIKE '53%' or id_akun LIKE '61%'");
 			}
@@ -108,6 +111,9 @@ class MasterPurchaseController extends Controller
 			else if($idgrupitem == 'L'){
 				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1599%' and kode_cabang = '$cabang'");
 
+			}
+			else if($idgrupitem == 'C'){
+				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
 			}
 			else {
 				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '15%'");
