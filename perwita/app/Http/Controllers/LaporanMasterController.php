@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use PDF;
 use DB;
 use Auth;
+use Yajra\Datatables\Datatables;    
 use Excel;
 class LaporanMasterController extends Controller
 {
@@ -603,7 +604,7 @@ class LaporanMasterController extends Controller
 	public function deliveryorder_total(){
 
 		$data =DB::table('delivery_order as do')
-				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
+				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','do.kode_customer as customer','kc.nama as kecamatan')
 				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
 				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
 				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
@@ -673,6 +674,40 @@ class LaporanMasterController extends Controller
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
 		$cabang = DB::table('cabang')->get();
 		return view('purchase/master/master_penjualan/laporan/lap_deliveryorder_total',compact('data','kota','cabang','kota1','paket','koran','kargo'));
+	}
+	public function deliveryorder_total_data(Request $request){
+		$nomor = strtoupper($request->input('nomor'));
+        $authe = Auth::user()->kode_cabang; 
+        if (Auth::user()->punyaAkses('Delivery Order','all')) {
+        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,d.pendapatan,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+                    FROM delivery_order d
+                    LEFT JOIN kota k ON k.id=d.id_kota_asal
+                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    LEFT JOIN customer c on d.kode_customer = c.kode 
+                    LEFT JOIN cabang cc on d.kode_cabang = cc.kode 
+                    -- LEFT JOIN kecamatan kc on d.kecamatan = cc.kode 
+                    WHERE d.jenis='PAKET'
+                    ";
+        }
+        else{
+        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+                    FROM delivery_order d
+                    LEFT JOIN kota k ON k.id=d.id_kota_asal
+                    LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+                    LEFT JOIN customer c on d.kode_customer = c.kode 
+                    LEFT JOIN cabang cc on d.kode_cabang = cc.kode 
+                    -- LEFT JOIN kecamatan kc on d.kecamatan = cc.kode 
+                    WHERE d.jenis='PAKET'
+                    and kode_cabang = '$authe'
+                     ";
+        }
+
+        $list = DB::select($sql);
+        // return $data;
+        $data = collect($list);
+
+        // return $data;
+        return Datatables::of($data)->make(true);
 	}
 	public function carideliveryorder_total(Request $request){
 		$awal = $request->a;
@@ -894,9 +929,9 @@ class LaporanMasterController extends Controller
 		
 		$dat1[$i] = DB::table('delivery_order as do')
 						->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-						->join('kota as ka','do.id_kota_asal','=','ka.id')
-						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+						->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+						->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 						->where('nomor','=',$dat[$i])
 						->get();
 			}
@@ -920,10 +955,10 @@ class LaporanMasterController extends Controller
 		
 		$dat1[$i] = DB::table('delivery_order as do')
 						->select('do.*','ka.id as kaid','cb.nama as cabang','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-						->join('kota as ka','do.id_kota_asal','=','ka.id')
-						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-						->join('cabang as cb','do.kode_cabang','=','cb.kode')
+						->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+						->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+						->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->leftjoin('cabang as cb','do.kode_cabang','=','cb.kode')
 						->where('nomor','=',$dat[$i])
 						->get();
 			}
@@ -932,6 +967,7 @@ class LaporanMasterController extends Controller
 		    $get[$key] = $dat1[$key][0]->total_net;
 			$total_perhitungan = array_sum($get);
 		}
+
 
         // dd($total_net);
 
@@ -953,28 +989,24 @@ class LaporanMasterController extends Controller
 		
 		$dat1[$i] = DB::table('delivery_order as do')
 						->select('do.*','ka.id as kaid','cb.nama as cabang','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-						->join('kota as ka','do.id_kota_asal','=','ka.id')
-						->join('kota as kt','do.id_kota_tujuan','=','kt.id')
-						->join('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-						->join('cabang as cb','do.kode_cabang','=','cb.kode')
+						->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+						->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+						->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+						->leftjoin('cabang as cb','do.kode_cabang','=','cb.kode')
 						->where('nomor','=',$dat[$i])
 						->get();
 		// $gege = $dat1[$i];
 		}
-		$gege = $dat1;
+		// return $dat1;
+			// foreach ($dat1 as $index => $row) {
+			// 	if ($dat1[$index] == null) {
+			// 		$sub[$index] = null;
+			// 	}else{
+		 //   			$sub[$index] = $dat1[$index][0]->nomor;
+			// 	}
+		 //   	}
+		 //   	return $sub;
 
-        
-		// return 'a';
-		// return $total_perhitungan;
-        
-
-		// Add the headers
-		
-
-		// Add the headers
-		
-
-		// Add the results
 		// Generating the sheet from the array
 		$myFile= Excel::create("filename", function($excel) use($data,$dat1) {
 		   $excel->setTitle('title');
@@ -983,10 +1015,22 @@ class LaporanMasterController extends Controller
 		   	$sheetArray[] = array('No DO','Tanggal','Pengirim','Penerima','Kota Asal','Kota Tujuan','Kec Tujuan','Tipe','Status','Cabang','Tarif Keseluruhan');
 
 		   	foreach ($dat1 as $index => $row) {
-		   		if (substr($dat1[$index][0]->nomor,0,-6)."<br>"; == 'KRN') {
-		   		
-		   		}
-		   		$sheetArray[] = array(
+				if ($dat1[$index] == null) {
+		   			$sheetArray[] = array(
+		   							null
+		   							,null
+									,null 
+									,null 
+									,null 
+									,null 
+									,null 
+									,null 
+									,null 
+									,null 
+									,null
+					);
+				}else{
+					$sheetArray[] = array(
 		   							$dat1[$index][0]->nomor 
 		   							,$dat1[$index][0]->tanggal 
 									,$dat1[$index][0]->nama_pengirim 
@@ -998,15 +1042,27 @@ class LaporanMasterController extends Controller
 									,$dat1[$index][0]->status 
 									,$dat1[$index][0]->cabang 
 									,number_format($dat1[$index][0]->total_net,0,',','.') 
-								);
-		   	}	
+					);
+				}
+		   	}
+		   	
 		   	foreach($dat1 as $key => $value){
-				    $get[$key] = $dat1[$key][0]->total_net;
-					$total_perhitungan = array_sum($get);
-			}
-		   	$sheetArray1[] = array('Total','','','','','','','','','',$total_perhitungan);
+			   	if ($dat1[$key] == null) {
+		   			// $sheetArray1[] = array('Total','','','','','','','','','',$total_perhitungan);
+			   	}else{
+			   		$get[$key] = $dat1[$key][0]->total_net;
+					
+			   	}
+			    
+		   	}
+		   	
+		   	$total_perhitungan = array_sum($get);
+			
+			$sheetArray1[] = array('Total','','','','','','','','','',number_format($total_perhitungan,0,',','.'));
+		    
 		    $sheet->fromArray($sheetArray);
-		    $sheet->fromArray($sheetArray1);
+			$sheet->fromArray($sheetArray1);
+		    
 		   });
 		});
 		$date = carbon::now();
@@ -2965,6 +3021,14 @@ class LaporanMasterController extends Controller
 						
    		}
    }
+			   	public function reportpdf_kartupiutang(Request $request){
+			   		return view('purchase/master/master_penjualan/laporan/do_total/pdf/pdf_detail_lap_rekapcustomer',compact('data_awal','total_net','total','diskon','do','doc','koli','kilo','kargo','koran','sepeda'));
+			   }
+			   public function reportexcel_kartupiutang(Request $request){
+			   	
+			   		return 'b';
+			   }
+
    }
 
    

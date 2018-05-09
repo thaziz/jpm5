@@ -43,6 +43,9 @@
   .center{
       text-align: center;
   }
+  .modal {
+  overflow-y:auto;
+}
 </style>
 <link href="{{asset('assets/css/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css')}}" rel="stylesheet">
 
@@ -175,7 +178,7 @@
                                     <td>   <select class="form-control idsup chosen-select-width1" name="supplier" required="" novalidate> 
                                             <option value=""> -- Pilih Supplier -- </option>
                                         @foreach($data['supplier'] as $supplier)
-                                            <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}},{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                                            <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}},{{$supplier->acc_hutang}},{{$supplier->no_supplier}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
                                         @endforeach
                                         </select>
                                        
@@ -555,7 +558,7 @@
                                 </div>
                              </div> 
 
-
+                           
 
                                <!-- FORM BAYAR UANG MUKA -->
                             <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -567,18 +570,20 @@
                                         <span class="sr-only">Close</span>
                                       </button>                     
                                       <h3 class="modal-title" style="text-align: center;">
-                                          Pembayaran dengan Uang Muka
+                                          Uang Muka Pembelian
                                       </h3>     
                                     </div>
                                                   
-                                    <div class="modal-body">              
+                                    <div class="modal-body">
+                                    <div class="col-sm-8">              
                                     <table class="table table-stripped tabel_tt">
                                       <tr>
                                         <td width="150px">
-                                          No Tanda Terima 
+                                          No Transaksi Kas / Bank 
                                         </td>
                                         <td>
-                                          <input type='text' name="nota_tt" class='input-sm form-control notandaterima' readonly="">
+                                          <input type='text' class='input-sm form-control no_umheader' id="transaksium" readonly="" data-toggle="modal" data-target="#caritransaksium">
+                                          <input type="text" class="nota_um editum">
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         </td>
                                       </tr>
@@ -586,82 +591,72 @@
                                         <td> Tanggal </td>
                                         <td>
                                            <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="" readonly="" name="tgl_tt">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_umheader editum" value="" readonly="">
                                           </div>
                                         </td>
                                       </tr>
                                      
                                       <tr>
-                                        <td> Supplier </td>
-                                        <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
+                                        <td> Jumlah </td>
+                                        <td> <input type='text' class="form-control jumlah_header editum" value="" readonly=""></td>
                                         </td>
                                       </tr>
-                                      <tr>
-                                        <td colspan="2">
-                                           <div class="row">
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
-                                                      <label for="Kwitansi">
-                                                          Kwitansi / Invoice / No
-                                                      </label>
-                                                </div> 
-                                              </div>
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
-                                                      <label for="FakturPajak">
-                                                          Faktur Pajak
-                                                      </label>
-                                                </div> 
-                                              </div>
-
-                                              <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
-                                                      <label for="SuratPerananAsli">
-                                                          Surat Peranan Asli
-                                                      </label>
-                                                </div> 
-                                              </div>
-
-                                               <div class="col-sm-3"> 
-                                                <div class="checkbox checkbox-info checkbox-circle">
-                                                    <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
-                                                      <label for="SuratJalanAsli">
-                                                         Surat Jalan Asli
-                                                      </label>
-                                                </div> 
-                                              </div>
-                                            </div>
-                                        </td>
-                                      </tr>
+                                      
                                       <tr>
                                         <td>
-                                         Lain Lain
+                                         Keterangan
                                         </td>
                                         <td>
                                         
-                                          <input type="text" class="form-control lainlain_tt" name="lainlain">
+                                          <input type="text" class="form-control keterangan_header editum" readonly="">
                                         </td>
                                       </tr>
 
                                       <tr>
-                                        <td> Tanggal Kembali </td>
-                                        <td>   <div class="input-group">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
-                                          </div> </td>
+                                        <td> Dibayar </td>
+                                        <td> <input type="text" class="form-control dibayar_header editum">   </td>
                                       </tr>
 
-                                      <tr>
-                                        <td>
-                                         Total di Terima
-                                        </td>
-                                        <td> <div class="row"> <div class="col-sm-3"> <label class="col-sm-3 label-control"> Rp </label> </div> <div class="col-sm-9"> <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly=""></div> </div> </td>
-                                      </tr>
-                                     
-                                       </table>                           
-                                               
+                                       </table> 
+
+                                       
+
+                                       </div>
+
+                                       <div class="col-sm-4">
+                                          <table class="table">
+                                              <tr>
+                                                  <th> Total Jumlah Uang Muka </th>
+                                                
+                                              </tr>
+                                              <tr>
+                                                    <td> <input type="text" class="form-control totaljumlah" readonly=""> </td>
+                                              </tr>
+                                          </table>
+
+                                          <br>
+                                          <br>
+                                          <br>
+                                          <br>
+                                          <br>
+
+                                            <div class="pull-left">
+                                                <button class="btn btn-sm btn-info" id="tambahdataum" type="button"> <i class="fa fa-plus"> </i>  Tambah Data </button>
+                                            </div>
+                                       </div>                          
+                                             
+                                      <br>
+                                      <br>
+
+                                      <table class="table table-bordered" id="tablehasilum">
+                                          <thead>
+                                          <tr class="tableum">
+                                            <th style="width:120px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Hapus </th>
+                                          </tr>
+                                          </thead>
+                                         
+
+                                      </table>         
                                          </div>
 
                                       <div class="modal-footer">
@@ -676,6 +671,47 @@
                                 </div>
                              </div> 
                           <!-- END UM -->
+
+
+
+                               <!-- FORM BAYAR UANG MUKA -->
+                            <div class="modal fade" id="caritransaksium" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog" style="min-width: 1000px !important; min-height: 800px">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
+                                      <h3 class="modal-title" style="text-align: center;">
+                                         Transaksi Kas / Hutang Uang Muka
+                                      </h3>     
+                                    </div>
+                                                  
+                                    <div class="modal-body">
+                                                  
+                                    <table class="table table-stripped tabel_tt" id="tabletransaksi">
+                                      <thead>
+                                      <tr>
+                                        <th> No Kas / Hutang </th> <th style="width:100px"> Tgl </th> <th> Supplier</th><th> Keterangan </th> <th> Jumlah Uang Muka </th> <th> Sisa Terpakai di Faktur </th> <th> Aksi </th>
+                                      </tr>
+                                      </thead>
+                                      
+                                    </table>     
+                                     </div>
+
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-white" data-dismiss="modal" >Batal</button>
+                                          <button type="button" class="btn btn-primary" id="buttongetum">
+                                            Simpan
+                                          </button>
+                                         
+                                      </div>
+                                      
+                                  </div>
+                                </div>
+                             </div> 
+
 
 
                                <!-- FAKTUR PAJAK -->
@@ -864,7 +900,7 @@
                                             <td>   <select class="form-control idsup_po chosen-select-width" name="supplier_po" novalidate required=""> 
                                                     <option value=""> -- Pilih Supplier -- </option>
                                                 @foreach($data['supplier'] as $supplier)
-                                                    <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}},{{$supplier->acc_hutang}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
+                                                    <option value="{{$supplier->idsup}},{{$supplier->syarat_kredit}},{{$supplier->nama_supplier}},{{$supplier->acc_hutang}},{{$supplier->no_supplier}}" data-accHutang="{{$supplier->acc_hutang}}"> {{$supplier->no_supplier}} - {{$supplier->nama_supplier}}</option>
                                                 @endforeach
                                                 </select>                                        
                                             </td>
@@ -1152,6 +1188,9 @@
         }
     });
 
+
+
+
   $('.editfakturpajak').click(function(){
         $('.inputppn').attr('readonly' , false);
         $('.pajakpph').attr('disabled' , false);
@@ -1160,6 +1199,154 @@
         $('.jenisppn').attr('disabled', true);
         $('#myModal2').modal("toggle" );
          $('.inputfakturpajakmasukan').val('edit');
+  })
+
+
+  //transaksi_um
+  $('.dibayar_header').change(function(){
+     jumlahheader2 = $('.jumlah_header').val();
+
+     val = $(this).val();
+      
+     val = accounting.formatMoney(val, "", 2, ",",'.');
+     
+     hasiljumlah = jumlahheader2.replace(/,/g,'');
+     val2 = val.replace(/,/g,'');
+
+     if(parseFloat(val2) > parseFloat(hasiljumlah)){
+      toastr.info('Tidak bisa melebihi dari jumlah Uang Muka :)');
+      $(this).val();
+     }
+     else {
+           $(this).val(val);
+     }
+
+
+  })
+
+  $('#tambahdataum').click(function(){
+       
+        /* var tableum = $('#tablehasilum').DataTable(); 
+         */
+        nofaktur = $('.nofaktur').val();
+        nokas = $('.no_umheader').val();
+        tgl = $('.tgl_umheader').val();
+        jumlah = $('.jumlah_header').val();
+        keterangan = $('.keterangan_header').val();
+        dibayar = $('.dibayar_header').val();
+        notaum = $('.nota_um').val();
+
+        if(dibayar == ''){
+          toastr.info("harap diisi jumlah dibayar nya :)");
+          return false;
+        }
+
+        totaljumlah = $('.totaljumlah').val();
+        if(totaljumlah == ''){
+          totaljumlah = dibayar;
+        }
+        else {
+          totaljumlah2 =  totaljumlah.replace(/,/g,'');
+          dibayar2 = dibayar.replace(/,/g,'');
+          totaljumlah = parseFloat(parseFloat(totaljumlah2) + parseFloat(dibayar2)).toFixed(2);
+        }
+
+        $('.totaljumlah').val(addCommas(totaljumlah));
+
+        notr = $('.dataum').length;
+        if(notr.length == 0){
+          notr = 1;
+        }
+        else {
+          notr += 1;
+        }
+
+        html2 = "<tr class='dataum dataum"+notr+"' data-nota="+nokas+"> <td>"+nofaktur+"</td>"+
+                  "<td>"+nokas+"</td>" +
+                  "<td>"+tgl+"</td>" +
+                  "<td>"+notaum+"</td>" +
+                  "<td>"+dibayar+"</td>"+
+                  "<td> <button class='btn btn-danger' type='button' onclick='hapusum(this)'><i class='fa fa-trash'></i></button></td>"+ 
+                "</tr>";
+         $('#tablehasilum').append(html2);       
+        /*tableum.row.add($(html2)).draw();*/
+
+         $('.editum').val('');
+  })
+
+  function hapusum(id){
+     var val          = $(id).parents('tr');
+     val.remove();
+  }
+
+  $('#buttongetum').click(function(){
+
+    id = $('.check').val();
+    $.ajax({
+      url : baseUrl + '/fakturpembelian/hasilum',
+      data : {id},
+      dataType : "json",
+      type : "get",
+      success : function(response){
+        $('#caritransaksium').modal('toggle');
+        $('.no_umheader').val(response.um[0].nota);
+        $('.tgl_umheader').val(response.um[0].tgl);
+        $('.jumlah_header').val(addCommas(response.um[0].sisaterpakai));
+        $('.keterangan_header').val(response.um[0].keterangan);
+        $('.nota_um').val(response.um[0].nota_um);
+          var tableum = $('#tabletransaksi').DataTable();
+      }
+    })    
+
+
+  })
+
+  $('#transaksium').click(function(){
+       var tableum = $('#tabletransaksi').DataTable();
+      tableum.clear().draw();
+    idsup = $('.idsup').val();
+    if(idsup == ''){
+      toastr.info('harap pilih data supplier :)');
+      return false;
+    }
+
+
+    arrnoum = [];
+    $('.dataum').each(function(){
+      val = $(this).data('nota');
+      arrnoum.push(val);
+    })
+
+    $.ajax({
+      url : baseUrl + '/fakturpembelian/getum',
+      data :{idsup,arrnoum},
+      type : "get",
+      dataType : "json",
+      success : function(response){
+
+          um = response.um;
+           var tableum = $('#tabletransaksi').DataTable();
+            tableum.clear().draw();
+            var n = 1;
+            for(var i = 0; i < response.um.length; i++){   
+            console.log(response.um.length);          
+                var html2 = "<tr>"+
+                            "<td>"+um[i].nota+"</td>" +
+                            "<td> "+um[i].tgl+"</td>" +
+                            "<td> "+um[i].supplier+"</td>" +
+                            "<td> "+um[i].keterangan+"</td>" +
+                            "<td> "+addCommas(um[i].totalbayar)+"</td>" +
+                            "<td> "+addCommas(um[i].sisaterpakai)+"</td>" +
+                            "<td> <div class='checkbox'> <input type='checkbox' class='check' value="+um[i].idtransaksi+" aria-label='Single checkbox One'> <label></label> </div> </td>" + 
+                            "</tr>";
+
+               tableum.rows.add($(html2)).draw();
+               n++;
+            }
+
+
+      }
+    })
   })
 
    cabang = $('.cabang').val();
