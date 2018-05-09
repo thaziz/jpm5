@@ -383,6 +383,16 @@
                 " href="{{ url('master_sales/kendaraan')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i> Kendaraan</a>
                 </li>
                 @endif
+                @if(Auth::user()->PunyaAkses('Master Akun Fitur','aktif'))
+                <li >
+                    <a class="sidebar master-perusahaan 
+
+                {{Request::is('master_sales/master_akun') ? 'active' : '' ||
+                 Request::is('master_sales/master_akun/*') ? 'active' : ''}} 
+
+                " href="{{ url('master_sales/master_akun')}}"><i class="fa fa-folder-open-o" aria-hidden="true"></i>Master Akun Fitur</a>
+                </li>
+                @endif
             </ul>
         </li>
                         

@@ -78,12 +78,12 @@
                                 <td>{{ $row->nama_pengirim }}</td>
                                 <td>{{ $row->nama_penerima }}</td>
                                 @foreach($kota as $val)
-                                    @if($val->id == $row->id_kota_tujuan)
+                                    @if($val->id == $row->id_kota_asal)
                                     <td>{{ $val->nama }}</td>
                                     @endif
                                 @endforeach
                                 @foreach($kota as $val)
-                                    @if($val->id == $row->id_kota_asal)
+                                    @if($val->id == $row->id_kota_tujuan)
                                     <td>{{ $val->nama }}</td>
                                     @endif
                                 @endforeach
