@@ -919,6 +919,7 @@ Route::get('carilaporan_penjualan/carilaporan_penjualan','LaporanMasterControlle
 
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
+Route::get('sales/laporandeliveryorder_total_data','LaporanMasterController@deliveryorder_total_data')->name('deliveryorder_total_data');
 Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
 Route::post('exceldeliveryorder_total/exceldeliveryorder_total','LaporanMasterController@exceldeliveryorder_total');
 //END OF DELIVERY ORDER TOTAL
@@ -976,7 +977,8 @@ Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@
 //LAPORAN KARTU PIUTANG
 Route::get('laporan_sales/kartu_piutang','LaporanMasterController@kartupiutang');
 Route::get('cari_kartupiutang/cari_kartupiutang','LaporanMasterController@cari_kartupiutang');
-Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@reportkartupiutang')->name('reportkartupiutang');
+Route::post('reportpdf_kartupiutang/reportpdf_kartupiutang', 'LaporanMasterController@reportpdf_kartupiutang')->name('reportpdf_kartupiutang');
+Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterController@reportexcel_kartupiutang')->name('reportexcel_kartupiutang');
 //END OF 
 
 //---
@@ -1228,6 +1230,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/get_item', 'sales\do_controller@get_item');
 // Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
 // Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
+// Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_controller@cari_kontrak');
 
 // Route::post('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
 // Route::get('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
@@ -1240,6 +1243,8 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 
 // Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_controller@cari_kodenomor');
 
+// Route::get('sales/cari_modalkontrakcustomer', 'sales\do_controller@cari_modalkontrakcustomer');
+// Route::get('sales/cari_replacekontrakcustomer', 'sales\do_controller@cari_replacekontrakcustomer');
 
 // Route::get('sales/cari_modaldeliveryorder', 'sales\do_controller@cari_modaldeliveryorder');
 // Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_controller@tarif_penerus_dokumen_indentdo');
@@ -1264,6 +1269,7 @@ Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data
 Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
 Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
 Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
+Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_Controller@cari_kontrak');
 
 Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
@@ -1274,7 +1280,8 @@ Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller
 Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
 Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
-Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_Controller@cari_kodenomor');
+Route::get('sales/cari_modalkontrakcustomer', 'sales\do_Controller@cari_modalkontrakcustomer');
+Route::get('sales/cari_replacekontrakcustomer', 'sales\do_Controller@cari_replacekontrakcustomer');
 
 
 Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');

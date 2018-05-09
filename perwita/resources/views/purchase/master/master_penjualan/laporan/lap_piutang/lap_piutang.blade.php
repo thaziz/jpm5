@@ -77,7 +77,7 @@
                       <tr>
                         <td>Customer</td>
                         <td>
-                          <select class="chosen-select-width" name="customer" >
+                          <select class="chosen-select-width" name="customer" id="customer">
                             <option value="">- Customer -</option>
                             @foreach ($customer as $e)
                               <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
@@ -287,6 +287,12 @@ Highcharts.chart('container', {
 });
 
  function cari(){
+
+  var awal = $('#min').val();
+  var akir = $('#max').val();
+  var custome = $('#customer').val();
+
+
     $.ajax({
       data:$('#search').serialize(),
       type:'get',
@@ -294,6 +300,40 @@ Highcharts.chart('container', {
       success : function(data){
         $('#disini').html(data);
         $('#container').hide();
+      }
+    })
+ }
+
+ function pdf(){
+
+  var awal = $('#min').val();
+  var akir = $('#max').val();
+  var customer = $('#customer').val();
+
+
+
+    $.ajax({
+      data:{a:awal,b:akir,c:customer},
+      type:'get',
+      url:baseUrl + '/reportpdf_kartupiutang/reportpdf_kartupiutang',
+      success : function(data){
+        
+      }
+    })
+ }
+
+ function excel(){
+
+  var awal = $('#min').val();
+  var akir = $('#max').val();
+  var customer = $('#customer').val();
+
+    $.ajax({
+      data:{a:awal,b:akir,c:customer},
+      type:'get',
+      url:baseUrl + '/reportexcel_kartupiutang/reportpdf_kartupiutang',
+      success : function(data){
+        
       }
     })
  }

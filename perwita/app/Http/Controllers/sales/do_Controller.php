@@ -946,7 +946,10 @@ class do_Controller extends Controller
         $jurnal_dt = null;
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
-        $customer = DB::select(" SELECT kode,nama,alamat,telpon FROM customer ORDER BY nama ASC ");
+        $customer = DB::table('customer as c')
+                             ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif')
+                             ->leftjoin('kontrak_customer as kc','kc.kc_kode_customer','=','c.kode')
+                             ->get();
         $kendaraan = DB::select(" SELECT nopol FROM kendaraan ");
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
@@ -1669,7 +1672,8 @@ class do_Controller extends Controller
         }
     }
 
-    public function cari_modaldeliveryorder_dokumen(Request $request){
+
+    public function cari_modaldeliveryorder(Request $request){
         $kota = DB::select(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC ");
         $provinsi = DB::select(" SELECT id,nama FROM provinsi ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
@@ -1955,4 +1959,55 @@ class do_Controller extends Controller
         return (float)$nilai;
 
     }
+
+    public function cari_kontrak(Request $request){
+    // dd($request->all());
+        $customer = $request->a;
+        $cabang = $request->b;
+
+        $data =DB::table('kontrak_customer as kc')
+                             ->select('kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
+                             ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
+                             ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
+                             ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
+                             ->leftjoin('jenis_tarif as jt','jt.jt_id','=','kcd.kcd_jenis_tarif')
+                             ->where('kc.kc_kode_customer','=',$customer)
+                             ->where('kc.kc_kode_cabang','=',$cabang)
+                             ->get();
+
+        return response()->json(['data'=>$data]);
+    }
+    public function cari_modalkontrakcustomer(Request $request){
+        $customer = $request->a;
+        $cabang = $request->b;
+
+        $data =DB::table('kontrak_customer as kc')
+                             ->select('kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
+                             ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
+                             ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
+                             ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
+                             ->leftjoin('jenis_tarif as jt','jt.jt_id','=','kcd.kcd_jenis_tarif')
+                             ->where('kc.kc_kode_customer','=',$customer)
+                             ->where('kc.kc_kode_cabang','=',$cabang)
+                             ->get();
+
+        return view('sales/do/ajax_modal_kontrak_customer',compact('data'));
+    }
+    public function cari_replacekontrakcustomer(Request $request){
+        $dt = $request->a;
+        $id = $request->b;
+
+        $data =DB::table('kontrak_customer as kc')
+                             ->select('kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
+                             ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
+                             ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
+                             ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
+                             ->leftjoin('jenis_tarif as jt','jt.jt_id','=','kcd.kcd_jenis_tarif')
+                             ->where('kc.kc_kode_customer','=',$customer)
+                             ->where('kc.kc_kode_cabang','=',$cabang)
+                             ->get();
+
+        return view('sales/do/ajax_modal_kontrak_customer',compact('data'));
+    }
+
 }

@@ -32,30 +32,6 @@
                 <div class="box-header">
                 </div><!-- /.box-header -->
                   <div class="box-body">
-                       <!--  <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="bulan_id" class="col-sm-1 control-label">Bulan</label>
-                            <div class="col-sm-2">
-                             <select id="bulan_id" name="bulan_id" class="form-control">
-                                                      <option value="">Pilih Bulan</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div>
-                           <div class="form-group">
-
-                            <div class="form-group">
-                            <label for="tahun" class="col-sm-1 control-label">Tahun</label>
-                            <div class="col-sm-2">
-                             <select id="tahun" name="tahun" class="form-control">
-                                                      <option value="">Pilih Tahun</option>
-
-                              </select>
-                            </div>
-                          </div>
-                          </div> -->
                         <div class="x_content">
                             <form id="form_header" class="form-horizontal kirim">                                
                                 <div class="row">
@@ -77,6 +53,32 @@
                                                         <div class="input-group date">
                                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control" name="ed_tanggal" value="{{ $do->tanggal or  date('Y-m-d') }}">
                                                         </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="padding-top: 0.4cm">Customer</td>
+                                                    <td colspan="5">
+                                                        <select class="chosen-select-width customerpengirim"  name="cb_customer" onchange="" id="cb_customer" style="width:100%" >
+                                                            <option> </option>
+                                                        @foreach ($customer as $row)
+                                                            <option value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                                                        @endforeach
+                                                        </select>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm">Cabang</td>
+                                                    <td colspan="5">
+                                                        <select class="form-control"  name="cb_cabang" onclick="setMaxDisc()" style="width:100%" id="cb_cabang">
+                                                            <option selected="true" value="" ></option>
+                                                        @foreach ($cabang as $row)
+                                                            @if($row->diskon != null)
+                                                            <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}"> {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                            @else
+                                                            <option value="{{ $row->kode }}"> {{ $row->nama }}</option>
+                                                            @endif
+                                                        @endforeach
+                                                        </select>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -181,21 +183,7 @@
                                                         </select>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td style="width:110px; padding-top: 0.4cm">Cabang</td>
-                                                    <td colspan="5">
-                                                        <select class="form-control"  name="cb_cabang" onclick="setMaxDisc()" style="width:100%" id="cb_cabang">
-                                                            <option selected="true" value="" ></option>
-                                                        @foreach ($cabang as $row)
-                                                            @if($row->diskon != null)
-                                                            <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}"> {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
-                                                            @else
-                                                            <option value="{{ $row->kode }}"> {{ $row->nama }}</option>
-                                                            @endif
-                                                        @endforeach
-                                                        </select>
-                                                    </td>
-                                                </tr>
+                                                
                                                 <tr id="jenis_kendaraan">
                                                     <td style="width:120px; padding-top: 0.4cm">Jenis Kendaraan</td>
                                                     <td colspan="5">
@@ -312,13 +300,21 @@
                                                 
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">DO Outlet</td>
-                                                    <td colspan="4">
+                                                    <td colspan="2">
                                                         <select class="chosen-select-width"  name="cb_outlet" style="width:100%" id="cb_outlet">
                                                             <option value="">NON OUTLET</option>
                                                         @foreach ($outlet as $row)
                                                             <option value="{{ $row->kode }}"> {{ $row->nama }} </option>
                                                         @endforeach
                                                         </select>
+                                                    </td>
+                                                    <td style="width: 80px" class="disabled" >
+                                                       <div class="checkbox checkbox-info checkbox-circle">
+                                                            <input onchange="centang()" class="kontrak_tarif" type="checkbox" name="kontrak_tarif">
+                                                            <label>
+                                                                Kontrak
+                                                            </label>
+                                                        </div>
                                                     </td>
                                                     <td style="width: 80px">
                                                         <span class="input-group-btn"> <button type="button" id="btn_cari_harga" class="btn btn-primary">Search
@@ -414,17 +410,7 @@
                                                         <h3>DATA PENGIRIM</h3>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td style="padding-top: 0.4cm">Customer</td>
-                                                    <td colspan="">
-                                                        <select class="chosen-select-width customerpengirim"  name="cb_customer" id="cb_customer" style="width:100%" >
-                                                            <option> </option>
-                                                        @foreach ($customer as $row)
-                                                            <option value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  > {{ $row->nama }} </option>
-                                                        @endforeach
-                                                        </select>
-                                                    </td>
-                                                </tr>
+                                                
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Marketing</td>
                                                     <td colspan="">
@@ -1049,9 +1035,15 @@
         var nama = $(this).find(':selected').text();
         var alamat = $(this).find(':selected').data('alamat');
         var telpon = $(this).find(':selected').data('telpon');
+        var status = $(this).find(':selected').data('status');
         $("input[name='ed_nama_pengirim']").val(nama);
         $("input[name='ed_telpon_pengirim']").val(telpon);
         $("input[name='ed_alamat_pengirim']").val(alamat);
+        if(status == 'AKTIF'){
+            $(".kontrak_tarif").prop('checked',true);            
+        }else{
+            $(".kontrak_tarif").prop('checked',false);            
+        }
         /*
         var value = {
             kode_customer : $("select[name='cb_customer']").val(),
@@ -1172,6 +1164,7 @@
     });
     
     $(document).on("click","#btn_cari_harga",function(){
+        
         var kota_asal = $("select[name='cb_kota_asal']").val();
         var kecamatan_tujuan = $("select[name='cb_kecamatan_tujuan']").val();
         var kota_tujuan = $("select[name='cb_kota_tujuan']").val();
@@ -1196,359 +1189,408 @@
 
 
             
-        $("input[name='ed_harga']").val(0);
-              if (kota_asal == '') {
-            Command: toastr["warning"]("Kota Asal harus diisi", "Peringatan !")
+        // $("input[name='ed_harga']").val(0);
+        //       if (kota_asal == '') {
+        //     Command: toastr["warning"]("Kota Asal harus diisi", "Peringatan !")
 
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
-        }else if (kota_tujuan == '') {
-          Command: toastr["warning"]("Kota Tujuan harus diisi", "Peringatan !")
+        //     toastr.options = {
+        //       "closeButton": false,
+        //       "debug": true,
+        //       "newestOnTop": false,
+        //       "progressBar": true,
+        //       "positionClass": "toast-top-right",
+        //       "preventDuplicates": false,
+        //       "onclick": null,
+        //       "showDuration": "300",
+        //       "hideDuration": "1000",
+        //       "timeOut": "5000",
+        //       "extendedTimeOut": "1000",
+        //       "showEasing": "swing",
+        //       "hideEasing": "linear",
+        //       "showMethod": "fadeIn",
+        //       "hideMethod": "fadeOut"
+        //     }
+        //     return false;
+        // }else if (kota_tujuan == '') {
+        //   Command: toastr["warning"]("Kota Tujuan harus diisi", "Peringatan !")
 
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
-            }else if (kecamatan_tujuan == '' || kecamatan_tujuan == null) {
-              Command: toastr["warning"]("Kecamatan Tujuan harus diisi", "Peringatan !")
+        //     toastr.options = {
+        //       "closeButton": false,
+        //       "debug": true,
+        //       "newestOnTop": false,
+        //       "progressBar": true,
+        //       "positionClass": "toast-top-right",
+        //       "preventDuplicates": false,
+        //       "onclick": null,
+        //       "showDuration": "300",
+        //       "hideDuration": "1000",
+        //       "timeOut": "5000",
+        //       "extendedTimeOut": "1000",
+        //       "showEasing": "swing",
+        //       "hideEasing": "linear",
+        //       "showMethod": "fadeIn",
+        //       "hideMethod": "fadeOut"
+        //     }
+        //     return false;
+        //     }else if (kecamatan_tujuan == '' || kecamatan_tujuan == null) {
+        //       Command: toastr["warning"]("Kecamatan Tujuan harus diisi", "Peringatan !")
 
-                toastr.options = {
-                  "closeButton": false,
-                  "debug": true,
-                  "newestOnTop": false,
-                  "progressBar": true,
-                  "positionClass": "toast-top-right",
-                  "preventDuplicates": false,
-                  "onclick": null,
-                  "showDuration": "300",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut"
-                }
-                return false;
-            }else if (pendapatan == '') {
-           Command: toastr["warning"]("Pendapatan harus diisi", "Peringatan !")
+        //         toastr.options = {
+        //           "closeButton": false,
+        //           "debug": true,
+        //           "newestOnTop": false,
+        //           "progressBar": true,
+        //           "positionClass": "toast-top-right",
+        //           "preventDuplicates": false,
+        //           "onclick": null,
+        //           "showDuration": "300",
+        //           "hideDuration": "1000",
+        //           "timeOut": "5000",
+        //           "extendedTimeOut": "1000",
+        //           "showEasing": "swing",
+        //           "hideEasing": "linear",
+        //           "showMethod": "fadeIn",
+        //           "hideMethod": "fadeOut"
+        //         }
+        //         return false;
+        //     }else if (pendapatan == '') {
+        //    Command: toastr["warning"]("Pendapatan harus diisi", "Peringatan !")
 
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
-        }else if (type_kiriman == '') {
-             Command: toastr["warning"]("Tipe Kiriman harus diisi", "Peringatan !")
+        //     toastr.options = {
+        //       "closeButton": false,
+        //       "debug": true,
+        //       "newestOnTop": false,
+        //       "progressBar": true,
+        //       "positionClass": "toast-top-right",
+        //       "preventDuplicates": false,
+        //       "onclick": null,
+        //       "showDuration": "300",
+        //       "hideDuration": "1000",
+        //       "timeOut": "5000",
+        //       "extendedTimeOut": "1000",
+        //       "showEasing": "swing",
+        //       "hideEasing": "linear",
+        //       "showMethod": "fadeIn",
+        //       "hideMethod": "fadeOut"
+        //     }
+        //     return false;
+        // }else if (type_kiriman == '') {
+        //      Command: toastr["warning"]("Tipe Kiriman harus diisi", "Peringatan !")
 
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
-        }else if (jenis_kiriman == '') {
-           Command: toastr["warning"]("Jenis Kiriman harus diisi", "Peringatan !")
+        //     toastr.options = {
+        //       "closeButton": false,
+        //       "debug": true,
+        //       "newestOnTop": false,
+        //       "progressBar": true,
+        //       "positionClass": "toast-top-right",
+        //       "preventDuplicates": false,
+        //       "onclick": null,
+        //       "showDuration": "300",
+        //       "hideDuration": "1000",
+        //       "timeOut": "5000",
+        //       "extendedTimeOut": "1000",
+        //       "showEasing": "swing",
+        //       "hideEasing": "linear",
+        //       "showMethod": "fadeIn",
+        //       "hideMethod": "fadeOut"
+        //     }
+        //     return false;
+        // }else if (jenis_kiriman == '') {
+        //    Command: toastr["warning"]("Jenis Kiriman harus diisi", "Peringatan !")
 
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
-        }else if (cabang == '') {
-           Command: toastr["warning"]("Cabang harus diisi", "Peringatan !")
+        //     toastr.options = {
+        //       "closeButton": false,
+        //       "debug": true,
+        //       "newestOnTop": false,
+        //       "progressBar": true,
+        //       "positionClass": "toast-top-right",
+        //       "preventDuplicates": false,
+        //       "onclick": null,
+        //       "showDuration": "300",
+        //       "hideDuration": "1000",
+        //       "timeOut": "5000",
+        //       "extendedTimeOut": "1000",
+        //       "showEasing": "swing",
+        //       "hideEasing": "linear",
+        //       "showMethod": "fadeIn",
+        //       "hideMethod": "fadeOut"
+        //     }
+        //     return false;
+        // }else if (cabang == '') {
+        //    Command: toastr["warning"]("Cabang harus diisi", "Peringatan !")
 
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
+        //     toastr.options = {
+        //       "closeButton": false,
+        //       "debug": true,
+        //       "newestOnTop": false,
+        //       "progressBar": true,
+        //       "positionClass": "toast-top-right",
+        //       "preventDuplicates": false,
+        //       "onclick": null,
+        //       "showDuration": "300",
+        //       "hideDuration": "1000",
+        //       "timeOut": "5000",
+        //       "extendedTimeOut": "1000",
+        //       "showEasing": "swing",
+        //       "hideEasing": "linear",
+        //       "showMethod": "fadeIn",
+        //       "hideMethod": "fadeOut"
+        //     }
+        //     return false;
+        // }
+        if ($('.kontrak_tarif').is(":checked"))
+        {
+                var cabang_kontrak = $('select[name="cb_cabang"]').val();
+                var customer_kotrak = $('#cb_customer').find(':selected').val()
+
+                 $.ajax({
+                            url : baseUrl + "/sales/deliveryorderform/cari_kontrak",
+                            type: "GET",
+                            data : {a:customer_kotrak,b:cabang_kontrak},
+                            // dataType:'json',
+                            success: function(data)
+                            {   
+                                console.log(data);
+                                var cabang_kontrak = $('select[name="cb_cabang"]').val();
+                                var customer_kotrak = $('#cb_customer').find(':selected').val()
+                                $.ajax({
+                                        url:baseUrl+'/sales/cari_modalkontrakcustomer',
+                                        data : {a:customer_kotrak,b:cabang_kontrak},
+                                        type:'get',
+                                            success:function(data){
+                                                $('#taruh_sini').html(data);
+                                                $("#modal").modal("show");
+                                                $('#ajax_modal_kontrak').DataTable();
+
+
+                                                
+                                            }
+                                        }); 
+
+                            }
+                        });
+        }else{
+                var value = {
+                    pendapatan: $("select[name='pendapatan']").val(),
+                    asal: $("select[name='cb_kota_asal']").val(),
+                    tujuan: $("select[name='cb_kota_tujuan']").val(),
+                    tipe: $("select[name='type_kiriman']").val(),
+                    tujuan: $("select[name='cb_kota_tujuan']").val(),
+                    jenis: $("select[name='jenis_kiriman']").val(),
+                    angkutan: $("select[name='cb_angkutan']").val(),
+                    cabang: $("select[name='cb_cabang']").val(),
+                    berat : berat,
+                    kecamatan : $("select[name='cb_kecamatan_tujuan']").val(),
+                    sepeda: jenis_sepeda,
+                    berat_sepeda: berat_sepeda
+                };
+
+                $.ajax(
+                {
+                    url : baseUrl + "/sales/deliveryorderform/cari_harga",
+                    type: "GET",
+                    data : value,
+                    dataType:'json',
+                    success: function(data, textStatus, jqXHR)
+                    {
+                        console.log(data);
+                        if (data.status == 'kosong' || data.create_indent == 0 ) {
+                            
+                            
+                                 Command: toastr["warning"]("Tidak ada data terkait", "Peringatan !")
+
+                                toastr.options = {
+                                  "closeButton": false,
+                                  "debug": true,
+                                  "newestOnTop": false,
+                                  "progressBar": true,
+                                  "positionClass": "toast-top-right",
+                                  "preventDuplicates": false,
+                                  "onclick": null,
+                                  "showDuration": "300",
+                                  "hideDuration": "1000",
+                                  "timeOut": "5000",
+                                  "extendedTimeOut": "1000",
+                                  "showEasing": "swing",
+                                  "hideEasing": "linear",
+                                  "showMethod": "fadeIn",
+                                  "hideMethod": "fadeOut"
+                                }
+
+                                $("input[name='ed_tarif_dasar']").val(0);
+                                $("input[name='ed_tarif_penerus']").val(0);
+                                $("input[name='acc_penjualan']").val(0);
+                                hitung();
+                            
+                           
+                        } else if (data.create_indent == 1) {
+                            var harga = convertToRupiah(parseInt(data.harga));
+                            
+                            var koli_dikali =$("input[name='ed_koli']").val() ;
+                            // alert(koli_dikali);
+                            var biaya = convertToRupiah(parseInt(data.biaya_penerus));
+                            if (koli_dikali == 0 ) {
+                                // alert('a');
+                                var hit = data.harga  * 1;
+                            }else{
+                                // alert('b');
+                                var hit = parseInt($("input[name='ed_koli']").val())  * data.harga;
+                            }
+                            var acc_penjualan = data.acc_penjualan;
+                            $("input[name='ed_tarif_dasar']").val(accounting.formatMoney(hit,"",0,'.',','));
+                            // $("input[name='ed_tarif_dasar']").val(hit);
+                            $("input[name='ed_tarif_penerus']").val(biaya);
+                            $("input[name='ed_tarif_penerus']").attr('width','100%');
+                            $("#button_a").hide();
+                            $("input[name='acc_penjualan']").val(acc_penjualan);
+                            if (biaya == 0 || biaya == '0' || biaya == null || biaya == '') {
+                                Command: toastr["warning"]("Zona/Penerus tidak ditemukan, periksa tujuan anda", "Peringatan !")
+                                toastr.options = {
+                                  "closeButton": false,
+                                  "debug": true,
+                                  "newestOnTop": false,
+                                  "progressBar": true,
+                                  "positionClass": "toast-top-right",
+                                  "preventDuplicates": false,
+                                  "onclick": null,
+                                  "showDuration": "300",
+                                  "hideDuration": "1000",
+                                  "timeOut": "5000",
+                                  "extendedTimeOut": "1000",
+                                  "showEasing": "swing",
+                                  "hideEasing": "linear",
+                                  "showMethod": "fadeIn",
+                                  "hideMethod": "fadeOut"
+                                }
+                                $("#button_a").show();
+
+                                if (data.tipe == 'DOKUMEN') {
+                                    $("input[name='ed_tarif_penerus']").css('width','220px');
+                                    $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
+                                }else if (data.tipe == 'KILOGRAM') {
+                                    $("input[name='ed_tarif_penerus']").css('width','220px');
+                                    $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
+                                }else if (data.tipe == 'KOLI') {
+                                    $("input[name='ed_tarif_penerus']").css('width','220px');
+                                    $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="koli_tipe()" ><i class="fa fa-plus"></i></button>')
+                                }else if (data.tipe == 'SEPEDA') {
+                                    $("input[name='ed_tarif_penerus']").css('width','220px');
+                                    $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;"  onclick="sepeda_tipe()"><i class="fa fa-plus"></i></button>')
+                                }   
+                            }
+                            if (data.jumlah_data == 0){
+                                alert('Tarif penerus tidak ditemukan');
+                                $("input[name='ed_tarif_penerus']").css('width','220px');
+                                $("#button_a").show();
+
+                                if (data.tipe == 'DOKUMEN') {
+                                    $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
+                                }else if (data.tipe == 'KILOGRAM') {
+                                    $("input[name='ed_tarif_penerus']").css('width','220px');
+                                    $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
+                                }else if (data.tipe == 'KOLI') {
+                                    $("input[name='ed_tarif_penerus']").css('width','220px');
+                                    $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="koli_tipe()"><i class="fa fa-plus"></i></button>')
+                                }else if (data.tipe == 'SEPEDA') {
+                                    $("input[name='ed_tarif_penerus']").css('width','220px');
+                                    $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="sepeda_tipe()"><i class="fa fa-plus"></i></button>')
+                                } 
+                            }
+                            var dasar = $('input[name="ed_tarif_dasar"]').val();
+                            dasar = dasar.replace(/[A-Za-z$. ,-]/g, "");
+                            var penerus = $("input[name='ed_tarif_penerus']").val();
+                            penerus = penerus.replace(/[A-Za-z$. ,-]/g, "");
+                            var hasil = parseInt(dasar)+parseInt(penerus);
+                            maxvalue = hasil*maxdiskon/100;
+                            // alert(hit);
+                            hitung();
+                        } else if (data.create_indent == 2) {
+                            var harga = convertToRupiah(parseInt(data.harga));
+                            var biaya = convertToRupiah(parseInt(data.biaya_penerus));
+                            var acc_penjualan = data.acc_penjualan;
+                            $("input[name='ed_tarif_dasar']").val(harga);
+                            $("input[name='ed_tarif_penerus']").val(biaya);
+                            $("input[name='ed_tarif_penerus']").css('width','220px');
+                            $("#button_a").show();
+
+
+                            if (data.tipe == 'DOKUMEN') {
+                                $("input[name='ed_tarif_penerus']").css('width','220px');
+                                $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
+                            }else if (data.tipe == 'KILOGRAM') {
+                                $("input[name='ed_tarif_penerus']").css('width','220px');
+                                $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
+                            }else if (data.tipe == 'KOLI') {
+                                $("input[name='ed_tarif_penerus']").css('width','220px');
+                                $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="koli_tipe()"><i class="fa fa-plus"></i></button>')
+                            }else if (data.tipe == 'SEPEDA') {
+                                $("input[name='ed_tarif_penerus']").css('width','220px');
+                                $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="sepeda_tipe()"i class="fa fa-plus"></i></button>')
+                            }   
+
+
+                            
+                            $("input[name='acc_penjualan']").val(acc_penjualan);
+                            if (biaya == 0 || biaya == '0' || biaya == null || biaya == '') {
+                                Command: toastr["warning"]("Zona/Penerus tidak ditemukan, periksa tujuan anda", "Peringatan !")
+                                toastr.options = {
+                                  "closeButton": false,
+                                  "debug": true,
+                                  "newestOnTop": false,
+                                  "progressBar": true,
+                                  "positionClass": "toast-top-right",
+                                  "preventDuplicates": false,
+                                  "onclick": null,
+                                  "showDuration": "300",
+                                  "hideDuration": "1000",
+                                  "timeOut": "5000",
+                                  "extendedTimeOut": "1000",
+                                  "showEasing": "swing",
+                                  "hideEasing": "linear",
+                                  "showMethod": "fadeIn",
+                                  "hideMethod": "fadeOut"
+                                }
+                            }
+                            if (data.jumlah_data == 0){
+                                alert('Tarif penerus tidak ditemukan');
+                            }
+                            var dasar = $('input[name="ed_tarif_dasar"]').val();
+                            dasar = dasar.replace(/[A-Za-z$. ,-]/g, "");
+                            var penerus = $("input[name='ed_tarif_penerus']").val();
+                            penerus = penerus.replace(/[A-Za-z$. ,-]/g, "");
+                            var hasil = parseInt(dasar)+parseInt(penerus);
+                            maxvalue = hasil*maxdiskon/100;
+                            hitung();
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown)
+                    {
+                       swal("Error!", textStatus, "error");
+                    }
+                });
         }
         
-        var value = {
-            pendapatan: $("select[name='pendapatan']").val(),
-            asal: $("select[name='cb_kota_asal']").val(),
-            tujuan: $("select[name='cb_kota_tujuan']").val(),
-            tipe: $("select[name='type_kiriman']").val(),
-            tujuan: $("select[name='cb_kota_tujuan']").val(),
-            jenis: $("select[name='jenis_kiriman']").val(),
-            angkutan: $("select[name='cb_angkutan']").val(),
-            cabang: $("select[name='cb_cabang']").val(),
-            berat : berat,
-            kecamatan : $("select[name='cb_kecamatan_tujuan']").val(),
-            sepeda: jenis_sepeda,
-            berat_sepeda: berat_sepeda
-        };
-        $.ajax(
-        {
-            url : baseUrl + "/sales/deliveryorderform/cari_harga",
-            type: "GET",
-            data : value,
-            dataType:'json',
-            success: function(data, textStatus, jqXHR)
-            {
-                console.log(data);
-                if (data.status == 'kosong' || data.create_indent == 0 ) {
-                    
-                    
-                         Command: toastr["warning"]("Tidak ada data terkait", "Peringatan !")
-
-                        toastr.options = {
-                          "closeButton": false,
-                          "debug": true,
-                          "newestOnTop": false,
-                          "progressBar": true,
-                          "positionClass": "toast-top-right",
-                          "preventDuplicates": false,
-                          "onclick": null,
-                          "showDuration": "300",
-                          "hideDuration": "1000",
-                          "timeOut": "5000",
-                          "extendedTimeOut": "1000",
-                          "showEasing": "swing",
-                          "hideEasing": "linear",
-                          "showMethod": "fadeIn",
-                          "hideMethod": "fadeOut"
-                        }
-
-                        $("input[name='ed_tarif_dasar']").val(0);
-                        $("input[name='ed_tarif_penerus']").val(0);
-                        $("input[name='acc_penjualan']").val(0);
-                        hitung();
-                    
-                   
-                } else if (data.create_indent == 1) {
-                    var harga = convertToRupiah(parseInt(data.harga));
-                    
-                    var koli_dikali =$("input[name='ed_koli']").val() ;
-                    // alert(koli_dikali);
-                    var biaya = convertToRupiah(parseInt(data.biaya_penerus));
-                    if (koli_dikali == 0 ) {
-                        // alert('a');
-                        var hit = data.harga  * 1;
-                    }else{
-                        // alert('b');
-                        var hit = parseInt($("input[name='ed_koli']").val())  * data.harga;
-                    }
-                    var acc_penjualan = data.acc_penjualan;
-                    $("input[name='ed_tarif_dasar']").val(accounting.formatMoney(hit,"",0,'.',','));
-                    // $("input[name='ed_tarif_dasar']").val(hit);
-                    $("input[name='ed_tarif_penerus']").val(biaya);
-                    $("input[name='ed_tarif_penerus']").attr('width','100%');
-                    $("#button_a").hide();
-                    $("input[name='acc_penjualan']").val(acc_penjualan);
-                    if (biaya == 0 || biaya == '0' || biaya == null || biaya == '') {
-                        Command: toastr["warning"]("Zona/Penerus tidak ditemukan, periksa tujuan anda", "Peringatan !")
-                        toastr.options = {
-                          "closeButton": false,
-                          "debug": true,
-                          "newestOnTop": false,
-                          "progressBar": true,
-                          "positionClass": "toast-top-right",
-                          "preventDuplicates": false,
-                          "onclick": null,
-                          "showDuration": "300",
-                          "hideDuration": "1000",
-                          "timeOut": "5000",
-                          "extendedTimeOut": "1000",
-                          "showEasing": "swing",
-                          "hideEasing": "linear",
-                          "showMethod": "fadeIn",
-                          "hideMethod": "fadeOut"
-                        }
-                        $("#button_a").show();
-
-                        if (data.tipe == 'DOKUMEN') {
-                            $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
-                        }else if (data.tipe == 'KILOGRAM') {
-                            $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
-                        }else if (data.tipe == 'KOLI') {
-                            $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="koli_tipe()" ><i class="fa fa-plus"></i></button>')
-                        }else if (data.tipe == 'SEPEDA') {
-                            $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;"  onclick="sepeda_tipe()"><i class="fa fa-plus"></i></button>')
-                        }   
-                    }
-                    if (data.jumlah_data == 0){
-                        alert('Tarif penerus tidak ditemukan');
-                        $("input[name='ed_tarif_penerus']").css('width','220px');
-                        $("#button_a").show();
-
-                        if (data.tipe == 'DOKUMEN') {
-                            $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
-                        }else if (data.tipe == 'KILOGRAM') {
-                            $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
-                        }else if (data.tipe == 'KOLI') {
-                            $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="koli_tipe()"><i class="fa fa-plus"></i></button>')
-                        }else if (data.tipe == 'SEPEDA') {
-                            $("input[name='ed_tarif_penerus']").css('width','220px');
-                            $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="sepeda_tipe()"><i class="fa fa-plus"></i></button>')
-                        } 
-                    }
-                    var dasar = $('input[name="ed_tarif_dasar"]').val();
-                    dasar = dasar.replace(/[A-Za-z$. ,-]/g, "");
-                    var penerus = $("input[name='ed_tarif_penerus']").val();
-                    penerus = penerus.replace(/[A-Za-z$. ,-]/g, "");
-                    var hasil = parseInt(dasar)+parseInt(penerus);
-                    maxvalue = hasil*maxdiskon/100;
-                    // alert(hit);
-                    hitung();
-                } else if (data.create_indent == 2) {
-                    var harga = convertToRupiah(parseInt(data.harga));
-                    var biaya = convertToRupiah(parseInt(data.biaya_penerus));
-                    var acc_penjualan = data.acc_penjualan;
-                    $("input[name='ed_tarif_dasar']").val(harga);
-                    $("input[name='ed_tarif_penerus']").val(biaya);
-                    $("input[name='ed_tarif_penerus']").css('width','220px');
-                    $("#button_a").show();
-
-
-                    if (data.tipe == 'DOKUMEN') {
-                        $("input[name='ed_tarif_penerus']").css('width','220px');
-                        $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
-                    }else if (data.tipe == 'KILOGRAM') {
-                        $("input[name='ed_tarif_penerus']").css('width','220px');
-                        $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
-                    }else if (data.tipe == 'KOLI') {
-                        $("input[name='ed_tarif_penerus']").css('width','220px');
-                        $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="koli_tipe()"><i class="fa fa-plus"></i></button>')
-                    }else if (data.tipe == 'SEPEDA') {
-                        $("input[name='ed_tarif_penerus']").css('width','220px');
-                        $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="sepeda_tipe()"i class="fa fa-plus"></i></button>')
-                    }   
-
-
-                    
-                    $("input[name='acc_penjualan']").val(acc_penjualan);
-                    if (biaya == 0 || biaya == '0' || biaya == null || biaya == '') {
-                        Command: toastr["warning"]("Zona/Penerus tidak ditemukan, periksa tujuan anda", "Peringatan !")
-                        toastr.options = {
-                          "closeButton": false,
-                          "debug": true,
-                          "newestOnTop": false,
-                          "progressBar": true,
-                          "positionClass": "toast-top-right",
-                          "preventDuplicates": false,
-                          "onclick": null,
-                          "showDuration": "300",
-                          "hideDuration": "1000",
-                          "timeOut": "5000",
-                          "extendedTimeOut": "1000",
-                          "showEasing": "swing",
-                          "hideEasing": "linear",
-                          "showMethod": "fadeIn",
-                          "hideMethod": "fadeOut"
-                        }
-                    }
-                    if (data.jumlah_data == 0){
-                        alert('Tarif penerus tidak ditemukan');
-                    }
-                    var dasar = $('input[name="ed_tarif_dasar"]').val();
-                    dasar = dasar.replace(/[A-Za-z$. ,-]/g, "");
-                    var penerus = $("input[name='ed_tarif_penerus']").val();
-                    penerus = penerus.replace(/[A-Za-z$. ,-]/g, "");
-                    var hasil = parseInt(dasar)+parseInt(penerus);
-                    maxvalue = hasil*maxdiskon/100;
-                    hitung();
-                }
-            },
-            error: function(jqXHR, textStatus, errorThrown)
-            {
-               // swal("Error!", textStatus, "error");
-            }
-        });
         
     });
     
+
+    function Pilih_kontrak(a){
+        var kcd_id = $(a).find('.kcd_id').val();
+        var kcd_dt = $(a).find('.kcd_dt').val();
+         $.ajax({
+            data: {a:kcd_dt,b:kcd_id},
+            url:baseUrl+'/sales/cari_replacekontrakcustomer',
+            type:'get',
+            success:function(data){
+                $("#modal").modal("hide");
+                    
+            }
+        });
+    } 
+
     function dokumen_tipe(){
         $.ajax({
-            url:baseUrl+'/sales/cari_modaldeliveryorder_dokumen',
+            url:baseUrl+'/sales/cari_modaldeliveryorder',
             type:'get',
             success:function(data){
                 $('#taruh_sini').html(data);
