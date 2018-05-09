@@ -999,6 +999,8 @@ Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@re
 // Master Sales
 // MASTER AKUN FITUR
 Route::get('master_sales/master_akun', 'master_sales\master_akun_controller@index');
+Route::get('master_sales/datatable_akun', 'master_sales\master_akun_controller@datatable_akun')->name('datatable_akun');
+Route::get('master_sales/datatable_item', 'master_sales\master_akun_controller@datatable_item')->name('datatable_item');
 
 //grup agen
 Route::get('master_sales/agen', 'master_sales\agen_Controller@index');
