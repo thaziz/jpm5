@@ -1730,9 +1730,14 @@ Route::get('master_keuangan/err_cek', function(){
 
 //neraca
 
-Route::get('master_keuangan/neraca/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca',
-  'as'   => 'neraca.index'
+Route::get('master_keuangan/neraca/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca_single',
+  'as'   => 'neraca.index_single'
+]);
+
+Route::get('master_keuangan/neraca/perbandingan/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca_perbandingan',
+  'as'   => 'neraca.index_perbandingan'
 ]);
 
 Route::get('master_keuangan/neraca/print/{throtle}', [
