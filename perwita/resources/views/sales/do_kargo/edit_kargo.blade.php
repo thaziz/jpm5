@@ -42,8 +42,8 @@
                                     <tr>
                                         <td style="width: 150px;">Nomor</td>
                                         <td>
-                                            <input type="text" style="text-transform: uppercase;" name="nomor_do" value="{{$data->nomor}}" class="nomor_do form-control input-sm">
-                                            <input type="hidden" name="nomor_do_old" value="{{$data->nomor}}" class="nomor_do_old form-control input-sm">
+                                            <input readonly="" type="text" style="text-transform: uppercase;" name="nomor_do" value="{{$data->nomor}}" class="nomor_do form-control input-sm">
+                                            <input type="hidden" value="{{$data->nomor}}" class="nomor_do_old form-control input-sm">
                                         </td>
                                     </tr>
                                     <tr>
