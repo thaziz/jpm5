@@ -80,8 +80,8 @@
             <select class="form-control" style="width:90%; height: 30px" id="tampil">
                 <option value="bulan">Neraca Bulan</option>
                 <option value="tahun">Neraca Tahun</option>
-                <option value="perbandingan_bulan">Perbandingan Bulan</option>
-                <option value="perbandingan_tahun">Perbandingan Tahun</option>
+                <option value="p_bulan">Perbandingan Bulan</option>
+                <option value="p_tahun">Perbandingan Tahun</option>
               </select>
           </td>
 
@@ -399,22 +399,22 @@
       }else{
         $("#tahun").val("");
       }
-    }else if(cek.val() == "perbandingan_bulan"){
+    }else if(cek.val() == "p_bulan"){
       $("#tahun_1").css("display", "none"); $("#tahun_2").css("display", "none");
       $("#bulan").css("display", "none"); $("#tahun").css("display", "none");
       $("#bulan_1").css("display", "inline-block"); $("#bulan_2").css("display", "inline-block");
 
-      if(throttle == "perbandingan_bulan"){
+      if(throttle == "p_bulan"){
         $("#bulan_1").val(req1); $("#bulan_2").val(req2);
       }else{
         $("#bulan_1").val(""); $("#bulan_2").val("");
       }
-    }else if(cek.val() == "perbandingan_tahun"){
+    }else if(cek.val() == "p_tahun"){
       $("#bulan_1").css("display", "none"); $("#bulan_2").css("display", "none");
       $("#bulan").css("display", "none"); $("#tahun").css("display", "none");
       $("#tahun_1").css("display", "inline-block"); $("#tahun_2").css("display", "inline-block");
 
-      if(throttle == "perbandingan_tahun"){
+      if(throttle == "p_tahun"){
         $("#tahun_1").val(req1); $("#tahun_2").val(req2);
       }else{
         $("#tahun_1").val(""); $("#tahun_2").val("");
@@ -442,6 +442,20 @@
           return false;
         }else{
           window.location = baseUrl+"/master_keuangan/neraca/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
+        }
+      }else if(tampil == "p_bulan"){
+        if($("#bulan_1").val() == "" || $("#bulan_2").val() == ""){
+          toastr.warning('Bulan Tidak Boleh Ada Yang Kosong');
+          return false;
+        }else{
+          window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+$("#tampil").val()+"?m="+$("#bulan_1").val()+"&y="+$("#bulan_2").val();
+        }
+      }else if(tampil == "p_tahun"){
+        if($("#tahun_1").val() == "" || $("#tahun_2").val() == ""){
+          toastr.warning('Tahun Tidak Boleh Ada Yang Kosong');
+          return false;
+        }else{
+          window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+$("#tampil").val()+"?m="+$("#tahun_1").val()+"&y="+$("#tahun_2").val();
         }
       }
    })

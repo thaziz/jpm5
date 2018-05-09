@@ -80,8 +80,8 @@
             <select class="form-control" style="width:90%; height: 30px" id="tampil">
                 <option value="bulan">Neraca Bulan</option>
                 <option value="tahun">Neraca Tahun</option>
-                <option value="perbandingan_bulan">Perbandingan Bulan</option>
-                <option value="perbandingan_tahun">Perbandingan Tahun</option>
+                <option value="p_bulan">Perbandingan Bulan</option>
+                <option value="p_tahun">Perbandingan Tahun</option>
               </select>
           </td>
 
@@ -139,14 +139,14 @@
                     {{-- Aktiva START --}}
 
                     <div class="col-md-6">
-                      <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Neraca Aktiva</div>
+                      <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Neraca Aktiva {{ $request->m }}</div>
 
                       <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
                         <table class="table_neraca tree" width="100%" style="font-size: 8pt;" border="0">
 
-                          <?php $total_aktiva = 0; $total_pasiva = 0; ?>
+                          <?php $total_aktiva_1 = 0; ?>
 
-                          @foreach($data_neraca as $data_neraca_aktiva)
+                          @foreach($data_neraca_1 as $data_neraca_aktiva)
                             @if($data_neraca_aktiva["type"] == "aktiva")
                               <?php 
                                 $level = "lv".$data_neraca_aktiva["level"];
@@ -164,7 +164,7 @@
                                   {{-- <td class="money">{{ $data_neraca_aktiva["total"] }}</td> --}}
                                 </tr>
 
-                                  @foreach($data_detail as $data_detail_aktiva)
+                                  @foreach($data_detail_1 as $data_detail_aktiva)
                                     @if($data_detail_aktiva["id_parrent"] == $data_neraca_aktiva["nomor_id"])
                                       <?php 
                                         $tree_parrent = ($data_detail_aktiva['id_parrent'] == "") ? "" : "treegrid-parent-".str_replace(".", "_", $data_detail_aktiva["id_parrent"]);;
@@ -175,7 +175,7 @@
                                         <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
                                         <td class="money">{{ number_format($data_detail_aktiva["total"], 2) }}</td>
 
-                                        <?php $total_aktiva += $data_detail_aktiva["total"]; ?>
+                                        <?php $total_aktiva_1 += $data_detail_aktiva["total"]; ?>
                                       </tr>
                                     @endif
                                   @endforeach
@@ -201,16 +201,18 @@
                     {{-- Aktiva END --}}
 
 
-                    {{-- Pasiva START --}}
+                    {{-- Aktiva START --}}
 
                     <div class="col-md-6">
-                      <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Neraca Pasiva</div>
+                      <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Neraca Aktiva {{ $request->y }}</div>
 
                       <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
                         <table class="table_neraca tree" width="100%" style="font-size: 8pt;" border="0">
 
-                          @foreach($data_neraca as $data_neraca_aktiva)
-                            @if($data_neraca_aktiva["type"] == "pasiva")
+                          <?php $total_aktiva_2 = 0; ?>
+
+                          @foreach($data_neraca_2 as $data_neraca_aktiva)
+                            @if($data_neraca_aktiva["type"] == "aktiva")
                               <?php 
                                 $level = "lv".$data_neraca_aktiva["level"];
                                 $tree_parrent = ($data_neraca_aktiva['parrent'] == "") ? "" : "treegrid-parent-".str_replace(".", "_", $data_neraca_aktiva["parrent"]);;
@@ -227,7 +229,7 @@
                                   {{-- <td class="money">{{ $data_neraca_aktiva["total"] }}</td> --}}
                                 </tr>
 
-                                  @foreach($data_detail as $data_detail_aktiva)
+                                  @foreach($data_detail_2 as $data_detail_aktiva)
                                     @if($data_detail_aktiva["id_parrent"] == $data_neraca_aktiva["nomor_id"])
                                       <?php 
                                         $tree_parrent = ($data_detail_aktiva['id_parrent'] == "") ? "" : "treegrid-parent-".str_replace(".", "_", $data_detail_aktiva["id_parrent"]);;
@@ -238,7 +240,7 @@
                                         <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
                                         <td class="money">{{ number_format($data_detail_aktiva["total"], 2) }}</td>
 
-                                        <?php $total_pasiva += $data_detail_aktiva["total"]; ?>
+                                        <?php $total_aktiva_2 += $data_detail_aktiva["total"]; ?>
                                       </tr>
                                     @endif
                                   @endforeach
@@ -261,18 +263,18 @@
                       </div>
                     </div>
 
-                    {{-- Pasiva END --}}
+                    {{-- Aktiva END --}}
 
                   </div>
 
                   <div class="row">
                     <div class="col-md-6 m-t">
-                      <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
+                      <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 0px #eee; padding: 0px;">
                         <table class="table_neraca" width="100%" style="font-size: 8pt;" border="0">
 
                           <tr>
-                            <td class="text-center">Total Neraca Aktiva</td>
-                            <td class="money">{{ number_format($total_aktiva, 2) }}</td>
+                            <td class="text-center">Total Neraca Aktiva {{ $request->m }}</td>
+                            <td class="money">{{ number_format($total_aktiva_1, 2) }}</td>
                           </tr>
 
                         </table>
@@ -280,18 +282,180 @@
                     </div>
 
                     <div class="col-md-6 m-t">
-                      <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
+                      <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 0px #eee; padding: 0px;">
                         <table class="table_neraca" width="100%" style="font-size: 8pt;" border="0">
 
                           <tr>
-                            <td class="text-center">Total Neraca Pasiva</td>
-                            <td class="money">{{ number_format($total_pasiva, 2) }}</td>
+                            <td class="text-center">Total Neraca Aktiva {{ $request->y }}</td>
+                            <td class="money">{{ number_format($total_aktiva_2, 2) }}</td>
                           </tr>
 
                         </table>
                       </div>
                     </div>
                   </div>
+
+                  <div class="row">
+  
+                    {{-- Aktiva START --}}
+
+                    <div class="col-md-6 m-t-lg">
+                      <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Neraca Pasiva {{ $request->m }}</div>
+
+                      <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
+                        <table class="table_neraca tree" width="100%" style="font-size: 8pt;" border="0">
+
+                          <?php $total_pasiva_1 = 0; ?>
+
+                          @foreach($data_neraca_1 as $data_neraca_aktiva)
+                            @if($data_neraca_aktiva["type"] == "pasiva")
+                              <?php 
+                                $level = "lv".$data_neraca_aktiva["level"];
+                                $tree_parrent = ($data_neraca_aktiva['parrent'] == "") ? "" : "treegrid-parent-".str_replace(".", "_", $data_neraca_aktiva["parrent"]);;
+                                $treegrid = "treegrid-".str_replace(".", "_", $data_neraca_aktiva["nomor_id"]);
+                              ?>
+                              
+                              @if($data_neraca_aktiva["jenis"] == 1)
+                                <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                                  <td colspan="2" class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                                </tr>
+                              @elseif($data_neraca_aktiva["jenis"] == 2)
+                                <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                                  <td class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                                  {{-- <td class="money">{{ $data_neraca_aktiva["total"] }}</td> --}}
+                                </tr>
+
+                                  @foreach($data_detail_1 as $data_detail_aktiva)
+                                    @if($data_detail_aktiva["id_parrent"] == $data_neraca_aktiva["nomor_id"])
+                                      <?php 
+                                        $tree_parrent = ($data_detail_aktiva['id_parrent'] == "") ? "" : "treegrid-parent-".str_replace(".", "_", $data_detail_aktiva["id_parrent"]);;
+                                        $treegrid = "treegrid-".str_replace(".", "_", $data_detail_aktiva["nomor_id"]);
+                                      ?>
+
+                                      <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_detail_aktiva["nomor_id"] }}">
+                                        <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
+                                        <td class="money">{{ number_format($data_detail_aktiva["total"], 2) }}</td>
+
+                                        <?php $total_pasiva_1 += $data_detail_aktiva["total"]; ?>
+                                      </tr>
+                                    @endif
+                                  @endforeach
+
+                              @elseif($data_neraca_aktiva["jenis"] == 3)
+                                <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                                  <td class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                                  <td class="money total">{{ number_format($data_neraca_aktiva["total"], 2) }}</td>
+                                </tr>
+                              @elseif($data_neraca_aktiva["jenis"] == 4)
+                                <tr class="{{ $treegrid }} {{ $tree_parrent }}">
+                                  <td class="{{ $level }}">&nbsp;</td>
+                                  <td></td>
+                                </tr>
+                              @endif
+                            @endif
+                          @endforeach
+
+                        </table>
+                      </div>
+                    </div>
+
+                    {{-- Aktiva END --}}
+
+
+                    {{-- Aktiva START --}}
+
+                    <div class="col-md-6 m-t-lg">
+                      <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Neraca Pasiva {{ $request->y }}</div>
+
+                      <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
+                        <table class="table_neraca tree" width="100%" style="font-size: 8pt;" border="0">
+
+                          <?php $total_pasiva_2 = 0; ?>
+
+                          @foreach($data_neraca_2 as $data_neraca_aktiva)
+                            @if($data_neraca_aktiva["type"] == "pasiva")
+                              <?php 
+                                $level = "lv".$data_neraca_aktiva["level"];
+                                $tree_parrent = ($data_neraca_aktiva['parrent'] == "") ? "" : "treegrid-parent-".str_replace(".", "_", $data_neraca_aktiva["parrent"]);;
+                                $treegrid = "treegrid-".str_replace(".", "_", $data_neraca_aktiva["nomor_id"]);
+                              ?>
+                              
+                              @if($data_neraca_aktiva["jenis"] == 1)
+                                <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                                  <td colspan="2" class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                                </tr>
+                              @elseif($data_neraca_aktiva["jenis"] == 2)
+                                <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                                  <td class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                                  {{-- <td class="money">{{ $data_neraca_aktiva["total"] }}</td> --}}
+                                </tr>
+
+                                  @foreach($data_detail_2 as $data_detail_aktiva)
+                                    @if($data_detail_aktiva["id_parrent"] == $data_neraca_aktiva["nomor_id"])
+                                      <?php 
+                                        $tree_parrent = ($data_detail_aktiva['id_parrent'] == "") ? "" : "treegrid-parent-".str_replace(".", "_", $data_detail_aktiva["id_parrent"]);;
+                                        $treegrid = "treegrid-".str_replace(".", "_", $data_detail_aktiva["nomor_id"]);
+                                      ?>
+
+                                      <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_detail_aktiva["nomor_id"] }}">
+                                        <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
+                                        <td class="money">{{ number_format($data_detail_aktiva["total"], 2) }}</td>
+
+                                        <?php $total_pasiva_2 += $data_detail_aktiva["total"]; ?>
+                                      </tr>
+                                    @endif
+                                  @endforeach
+
+                              @elseif($data_neraca_aktiva["jenis"] == 3)
+                                <tr class="{{ $treegrid }} {{ $tree_parrent }}" id="{{ $data_neraca_aktiva["nomor_id"] }}">
+                                  <td class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                                  <td class="money total">{{ number_format($data_neraca_aktiva["total"], 2) }}</td>
+                                </tr>
+                              @elseif($data_neraca_aktiva["jenis"] == 4)
+                                <tr class="{{ $treegrid }} {{ $tree_parrent }}">
+                                  <td class="{{ $level }}">&nbsp;</td>
+                                  <td></td>
+                                </tr>
+                              @endif
+                            @endif
+                          @endforeach
+
+                        </table>
+                      </div>
+                    </div>
+
+                    {{-- Aktiva END --}}
+
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6 m-t">
+                      <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 0px #eee; padding: 0px;">
+                        <table class="table_neraca" width="100%" style="font-size: 8pt;" border="0">
+
+                          <tr>
+                            <td class="text-center">Total Neraca Pasiva {{ $request->m }}</td>
+                            <td class="money">{{ number_format($total_pasiva_1, 2) }}</td>
+                          </tr>
+
+                        </table>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 m-t">
+                      <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 0px #eee; padding: 0px;">
+                        <table class="table_neraca" width="100%" style="font-size: 8pt;" border="0">
+
+                          <tr>
+                            <td class="text-center">Total Neraca Pasiva {{ $request->y }}</td>
+                            <td class="money">{{ number_format($total_pasiva_2, 2) }}</td>
+                          </tr>
+
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
                 </div>
             </div>
         </div>
@@ -355,18 +519,17 @@
     });
 
    switch(throttle){
-    case "bulan" :
+    case "p_bulan" :
       $("#tampil").val(throttle);
-      $("#title_in").text("Menampilkan Neraca Periode Bulan "+req1+"/"+req2);
-      $("#bulan").css("display", "inline-block"); $("#tahun").css("display", "inline-block");
-      $("#bulan").val(req1); $("#tahun").val(req2);
+      $("#title_in").text("Menampilkan Neraca Perbandingan Periode Bulan "+req1+" Dan "+req2);
+      $("#bulan_1").css("display", "inline-block"); $("#bulan_2").css("display", "inline-block");
+      $("#bulan_1").val(req1); $("#bulan_2").val(req2);
       break;
-    case "tahun" :
+    case "p_tahun" :
       $("#tampil").val(throttle);
-      $("#title_in").text("Menampilkan Neraca Periode Tahun "+req2);
-      $("#bulan").css("display", "inline-block"); $("#tahun").css("display", "inline-block");
-      $("#bulan").attr("disabled", "disabled"); $("#bulan").val("-");
-      $("#tahun").val(req2);
+      $("#title_in").text("Menampilkan Neraca Perbandingan Periode Tahun "+req1+" Dan "+req2);
+      $("#tahun_1").css("display", "inline-block"); $("#tahun_2").css("display", "inline-block");
+      $("#tahun_1").val(req1); $("#tahun_2").val(req2);
       break;
    }
 
@@ -399,22 +562,22 @@
       }else{
         $("#tahun").val("");
       }
-    }else if(cek.val() == "perbandingan_bulan"){
+    }else if(cek.val() == "p_bulan"){
       $("#tahun_1").css("display", "none"); $("#tahun_2").css("display", "none");
       $("#bulan").css("display", "none"); $("#tahun").css("display", "none");
       $("#bulan_1").css("display", "inline-block"); $("#bulan_2").css("display", "inline-block");
 
-      if(throttle == "perbandingan_bulan"){
+      if(throttle == "p_bulan"){
         $("#bulan_1").val(req1); $("#bulan_2").val(req2);
       }else{
         $("#bulan_1").val(""); $("#bulan_2").val("");
       }
-    }else if(cek.val() == "perbandingan_tahun"){
+    }else if(cek.val() == "p_tahun"){
       $("#bulan_1").css("display", "none"); $("#bulan_2").css("display", "none");
       $("#bulan").css("display", "none"); $("#tahun").css("display", "none");
       $("#tahun_1").css("display", "inline-block"); $("#tahun_2").css("display", "inline-block");
 
-      if(throttle == "perbandingan_tahun"){
+      if(throttle == "p_tahun"){
         $("#tahun_1").val(req1); $("#tahun_2").val(req2);
       }else{
         $("#tahun_1").val(""); $("#tahun_2").val("");
@@ -443,12 +606,19 @@
         }else{
           window.location = baseUrl+"/master_keuangan/neraca/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
         }
-      }else if(tampil == "perbandingan_bulan"){
+      }else if(tampil == "p_bulan"){
         if($("#bulan_1").val() == "" || $("#bulan_2").val() == ""){
           toastr.warning('Bulan Tidak Boleh Ada Yang Kosong');
           return false;
         }else{
-          window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
+          window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+$("#tampil").val()+"?m="+$("#bulan_1").val()+"&y="+$("#bulan_2").val();
+        }
+      }else if(tampil == "p_tahun"){
+        if($("#tahun_1").val() == "" || $("#tahun_2").val() == ""){
+          toastr.warning('Tahun Tidak Boleh Ada Yang Kosong');
+          return false;
+        }else{
+          window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+$("#tampil").val()+"?m="+$("#tahun_1").val()+"&y="+$("#tahun_2").val();
         }
       }
    })

@@ -50,6 +50,16 @@ class laporan_neraca extends Controller
                              ->where(DB::raw("date_part('month', jr_date)"), $request->m)
                              ->where("d_jurnal.jr_year", $request->y)
                              ->select(DB::raw("sum(jrdt_value) as total"))->first();
+
+                $saldo_awal = DB::table("d_akun_saldo")
+                              ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                              ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                              ->where("d_akun_saldo.bulan", $request->m)
+                              ->where("d_akun_saldo.tahun", $request->y)
+                              ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+
+                $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
+
               }else if($throttle == "tahun"){
                 $transaksi = DB::table("d_jurnal_dt")
                              ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
@@ -57,6 +67,15 @@ class laporan_neraca extends Controller
                              ->where("d_akun.group_neraca", $detail_dt->id_referensi)
                              ->where("d_jurnal.jr_year", $request->y)
                              ->select(DB::raw("sum(jrdt_value) as total"))->first();
+
+                $saldo_awal = DB::table("d_akun_saldo")
+                              ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                              ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                              ->where("d_akun_saldo.tahun", $request->y)
+                              ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+
+                $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
+
               }
 
                 $data_detail[$no_detail] = [
@@ -64,10 +83,10 @@ class laporan_neraca extends Controller
                     "nama_referensi"    => $detail_dt->nama_group,
                     "id_parrent"        => $detail_dt->id_parrent,
                     "nomor_id"          => $detail_dt->nomor_id,
-                    "total"             => (is_null($transaksi->total)) ? 0 : $transaksi->total
+                    "total"             => $total_akhir
                 ];
 
-                $no_detail++; $dataTotal += $transaksi->total;
+                $no_detail++; $dataTotal += $total_akhir;
             }
           }else if($dataDetail->jenis == 3){
             $data_detail_dt = DB::table("desain_detail_dt")
@@ -101,6 +120,218 @@ class laporan_neraca extends Controller
              ->withRequest($request)
              ->withData_neraca($data_neraca)
              ->withData_detail($data_detail);
+  }
+
+  public function index_neraca_perbandingan(Request $request, $throttle){
+
+    $m1 = ""; $y1 = ""; $m2 = ""; $y2 = "";
+
+    $id = DB::table("desain_neraca")->where("is_active", 1)->select("id_desain")->first()->id_desain;
+
+    if($throttle == "p_bulan"){
+      $m1 = explode("/", $request->m)[0]; $y1 = explode("/", $request->m)[1];
+      $m2 = explode("/", $request->y)[0]; $y2 = explode("/", $request->y)[1];
+    }
+
+
+    // Mengambil Data 1
+
+      $data_neraca_1 = []; $no = 0; $data_detail_1 = []; $no_detail = 0;
+
+      $dataDetail = DB::table("desain_neraca_dt")
+          ->join("desain_neraca", "desain_neraca.id_desain", "=", "desain_neraca_dt.id_desain")
+          ->where("desain_neraca.id_desain", $id)
+          ->get();
+
+      foreach ($dataDetail as $dataDetail) {
+
+          $dataTotal = 0;
+
+          if($dataDetail->jenis == 2){
+            $data_detail_dt = DB::table("desain_detail_dt")
+                          ->join("d_group_akun", "desain_detail_dt.id_referensi", "=", "d_group_akun.id")
+                          ->where("desain_detail_dt.id_parrent", $dataDetail->nomor_id)
+                          ->select("desain_detail_dt.*", "d_group_akun.*")
+                          ->get();
+
+            foreach ($data_detail_dt as $detail_dt) {
+              if($throttle == "p_bulan"){
+                $transaksi = DB::table("d_jurnal_dt")
+                             ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
+                             ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                             ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                             ->where(DB::raw("date_part('month', jr_date)"), $m1)
+                             ->where("d_jurnal.jr_year", $y1)
+                             ->select(DB::raw("sum(jrdt_value) as total"))->first();
+
+                $saldo_awal = DB::table("d_akun_saldo")
+                              ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                              ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                              ->where("d_akun_saldo.bulan", $m1)
+                              ->where("d_akun_saldo.tahun", $y1)
+                              ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+
+                $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
+
+              }else if($throttle == "p_tahun"){
+                $transaksi = DB::table("d_jurnal_dt")
+                             ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
+                             ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                             ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                             ->where("d_jurnal.jr_year", $request->m)
+                             ->select(DB::raw("sum(jrdt_value) as total"))->first();
+
+                $saldo_awal = DB::table("d_akun_saldo")
+                              ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                              ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                              ->where("d_akun_saldo.tahun", $request->m)
+                              ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+
+                $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
+
+
+              }
+
+                $data_detail_1[$no_detail] = [
+                    "id_referensi"      => $detail_dt->id_referensi,
+                    "nama_referensi"    => $detail_dt->nama_group,
+                    "id_parrent"        => $detail_dt->id_parrent,
+                    "nomor_id"          => $detail_dt->nomor_id,
+                    "total"             => $total_akhir
+                ];
+
+                $no_detail++; $dataTotal += $total_akhir;
+            }
+          }else if($dataDetail->jenis == 3){
+            $data_detail_dt = DB::table("desain_detail_dt")
+                          ->where("desain_detail_dt.id_parrent", $dataDetail->nomor_id)
+                          ->select("desain_detail_dt.*")
+                          ->get();
+
+            foreach ($data_detail_dt as $detail_dt) {
+
+                $dataTotal += $data_neraca_1[$detail_dt->id_referensi]["total"];
+            }
+          }
+
+          $data_neraca_1[$dataDetail->nomor_id] = [
+              "keterangan"        => $dataDetail->keterangan,
+              "type"              => $dataDetail->type,
+              "jenis"             => $dataDetail->jenis,
+              "parrent"           => $dataDetail->id_parrent,
+              "level"             => $dataDetail->level,
+              "nomor_id"          => $dataDetail->nomor_id,
+              "total"             => $dataTotal
+          ];
+
+          $no++;
+      }
+
+    // Data 1 Selesai
+
+
+    // Mengambil Data 2
+
+      $data_neraca_2 = []; $no = 0; $data_detail_2 = []; $no_detail = 0;
+
+      $dataDetail = DB::table("desain_neraca_dt")
+          ->join("desain_neraca", "desain_neraca.id_desain", "=", "desain_neraca_dt.id_desain")
+          ->where("desain_neraca.id_desain", $id)
+          ->get();
+
+      foreach ($dataDetail as $dataDetail) {
+
+          $dataTotal = 0;
+
+          if($dataDetail->jenis == 2){
+            $data_detail_dt = DB::table("desain_detail_dt")
+                          ->join("d_group_akun", "desain_detail_dt.id_referensi", "=", "d_group_akun.id")
+                          ->where("desain_detail_dt.id_parrent", $dataDetail->nomor_id)
+                          ->select("desain_detail_dt.*", "d_group_akun.*")
+                          ->get();
+
+            foreach ($data_detail_dt as $detail_dt) {
+              if($throttle == "p_bulan"){
+                $transaksi = DB::table("d_jurnal_dt")
+                             ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
+                             ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                             ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                             ->where(DB::raw("date_part('month', jr_date)"), $m2)
+                             ->where("d_jurnal.jr_year", $y2)
+                             ->select(DB::raw("sum(jrdt_value) as total"))->first();
+
+                $saldo_awal = DB::table("d_akun_saldo")
+                              ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                              ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                              ->where("d_akun_saldo.bulan", $m2)
+                              ->where("d_akun_saldo.tahun", $y2)
+                              ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+
+                $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
+
+              }else if($throttle == "p_tahun"){
+                $transaksi = DB::table("d_jurnal_dt")
+                             ->join("d_akun", "d_jurnal_dt.jrdt_acc", "=", "d_akun.id_akun")
+                             ->join("d_jurnal", "d_jurnal_dt.jrdt_jurnal", "=", "d_jurnal.jr_id")
+                             ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                             ->where("d_jurnal.jr_year", $request->y)
+                             ->select(DB::raw("sum(jrdt_value) as total"))->first();
+
+                $saldo_awal = DB::table("d_akun_saldo")
+                              ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                              ->where("d_akun.group_neraca", $detail_dt->id_referensi)
+                              ->where("d_akun_saldo.tahun", $request->y)
+                              ->select(DB::raw("sum(saldo_akun) as saldo"))->first();
+
+                $total_akhir = (is_null($transaksi->total)) ? (0 + $saldo_awal->saldo) : ($transaksi->total + $saldo_awal->saldo);
+
+              }
+
+                $data_detail_2[$no_detail] = [
+                    "id_referensi"      => $detail_dt->id_referensi,
+                    "nama_referensi"    => $detail_dt->nama_group,
+                    "id_parrent"        => $detail_dt->id_parrent,
+                    "nomor_id"          => $detail_dt->nomor_id,
+                    "total"             => $total_akhir
+                ];
+
+                $no_detail++; $dataTotal += $total_akhir;
+            }
+          }else if($dataDetail->jenis == 3){
+            $data_detail_dt = DB::table("desain_detail_dt")
+                          ->where("desain_detail_dt.id_parrent", $dataDetail->nomor_id)
+                          ->select("desain_detail_dt.*")
+                          ->get();
+
+            foreach ($data_detail_dt as $detail_dt) {
+
+                $dataTotal += $data_neraca_2[$detail_dt->id_referensi]["total"];
+            }
+          }
+
+          $data_neraca_2[$dataDetail->nomor_id] = [
+              "keterangan"        => $dataDetail->keterangan,
+              "type"              => $dataDetail->type,
+              "jenis"             => $dataDetail->jenis,
+              "parrent"           => $dataDetail->id_parrent,
+              "level"             => $dataDetail->level,
+              "nomor_id"          => $dataDetail->nomor_id,
+              "total"             => $dataTotal
+          ];
+
+          $no++;
+      }
+
+    // Data 2 Selesai
+
+    return view("laporan_neraca.index.index_perbandingan")
+             ->withThrottle($throttle)
+             ->withRequest($request)
+             ->withData_neraca_1($data_neraca_1)
+             ->withData_detail_1($data_detail_1)
+             ->withData_neraca_2($data_neraca_2)
+             ->withData_detail_2($data_detail_2);
+
   }
 
   // laporan neraca index end
