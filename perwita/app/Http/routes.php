@@ -1737,14 +1737,19 @@ Route::get('master_keuangan/neraca/perbandingan/{throtle}', [
   'as'   => 'neraca.index_perbandingan'
 ]);
 
-Route::get('master_keuangan/neraca/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca',
-  'as'   => 'neraca.pdf'
+Route::get('master_keuangan/neraca/pdf/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca_single',
+  'as'   => 'neraca.pdf_single'
 ]);
 
-Route::get('master_keuangan/neraca/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca@print_excel_neraca',
-  'as'   => 'neraca.excel'
+Route::get('master_keuangan/neraca/pdf/perbandingan/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca_perbandingan',
+  'as'   => 'neraca.pdf_perbandingan'
+]);
+
+Route::get('master_keuangan/neraca/excel/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_excel_neraca_single',
+  'as'   => 'neraca.excel_single'
 ]);
 
 //endneraca
