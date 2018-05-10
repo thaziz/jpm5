@@ -321,14 +321,24 @@ Route::get('biaya_penerus_loading/update_loading', 'loadingController@update_loa
 //BUKTI KAS KELUAR
 Route::get('buktikaskeluar/index', 'kasKeluarController@index');
 Route::get('buktikaskeluar/create', 'kasKeluarController@create');
-Route::get('buktikaskeluar/akun_kas_dropdown', 'kasKeluarController@akun_kas_dropdown');
-Route::get('buktikaskeluar/nota_bukti_kas', 'kasKeluarController@nota_bukti_kas');
-Route::get('buktikaskeluar/akun_biaya_dropdown', 'kasKeluarController@akun_biaya_dropdown');
-Route::get('buktikaskeluar/histori_faktur', 'kasKeluarController@histori_faktur');
-Route::get('buktikaskeluar/return_faktur', 'kasKeluarController@return_faktur');
-Route::get('buktikaskeluar/debet_faktur', 'kasKeluarController@debet_faktur');
-Route::get('buktikaskeluar/kredit_faktur', 'kasKeluarController@kredit_faktur');
-
+Route::post('buktikaskeluar/simpan_patty', 'kasKeluarController@simpan_patty');
+Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
+Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
+Route::get('buktikaskeluar/hapus/{id}', 'kasKeluarController@hapus');
+Route::get('buktikaskeluar/patty_cash', 'kasKeluarController@patty_cash');
+Route::get('buktikaskeluar/cari_patty', 'kasKeluarController@cari_patty');
+Route::get('buktikaskeluar/print', 'kasKeluarController@print');
+Route::get('buktikaskeluar/detailkas/{id}', 'kasKeluarController@detailkas');
+Route::get('buktikaskeluar/cari_faktur', 'kasKeluarController@cari_faktur');
+Route::get('buktikaskeluar/jenis_bayar', 'kasKeluarController@jenis_bayar');
+Route::get('buktikaskeluar/cari_detail', 'kasKeluarController@cari_detail');
+Route::get('buktikaskeluar/cari_nama', 'kasKeluarController@cari_nama');
+Route::get('buktikaskeluar/cari_detail_edit', 'kasKeluarController@cari_detail_edit');
+Route::get('buktikaskeluar/supp_drop', 'kasKeluarController@supp_drop');
+Route::get('buktikaskeluar/nama_supp', 'kasKeluarController@nama_supp');
+Route::post('buktikaskeluar/simpan_faktur', 'kasKeluarController@simpan_faktur');
+Route::get('buktikaskeluar/hapus_data_faktur', 'kasKeluarController@hapus_data_faktur');
+Route::post('buktikaskeluar/update_faktur', 'kasKeluarController@update_faktur');
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
