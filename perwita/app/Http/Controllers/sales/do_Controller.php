@@ -516,7 +516,7 @@ class do_Controller extends Controller
                 'instruksi' => strtoupper($request->ed_instruksi),
                 'deskripsi' => strtoupper($request->ed_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
-                'total' => filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT),
+                'total' => filter_var($request->ed_dpp, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
@@ -528,6 +528,7 @@ class do_Controller extends Controller
                 'csf_piutang_do'        => $akun_piutang,
                 'created_by'        => $namanama ,
                 'updated_by'        => $namanama,
+                'total_vendo'        => filter_var($request->ed_vendor, FILTER_SANITIZE_NUMBER_INT),
 
                 'total_net' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
             );
@@ -1982,13 +1983,14 @@ class do_Controller extends Controller
         $cabang = $request->b;
 
         $data =DB::table('kontrak_customer as kc')
-                             ->select('kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
+                             ->select('kcd.kcd_jenis','kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
                              ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
                              ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
                              ->leftjoin('jenis_tarif as jt','jt.jt_id','=','kcd.kcd_jenis_tarif')
                              ->where('kc.kc_kode_customer','=',$customer)
                              ->where('kc.kc_kode_cabang','=',$cabang)
+                             ->where('kcd.kcd_jenis','=','PAKET')
                              ->get();
 
         return view('sales/do/ajax_modal_kontrak_customer',compact('data'));
@@ -1998,16 +2000,58 @@ class do_Controller extends Controller
         $id = $request->b;
 
         $data =DB::table('kontrak_customer as kc')
-                             ->select('kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
+                             ->select('kcd.*','kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif','jt.jt_id as kode_tarif')
                              ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
                              ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
                              ->leftjoin('jenis_tarif as jt','jt.jt_id','=','kcd.kcd_jenis_tarif')
-                             ->where('kc.kc_kode_customer','=',$customer)
-                             ->where('kc.kc_kode_cabang','=',$cabang)
-                             ->get();
+                             ->where('kcd.kcd_id','=',$id)
+                             ->where('kcd.kcd_dt','=',$dt)
+                             ->first();
 
-        return view('sales/do/ajax_modal_kontrak_customer',compact('data'));
+        return response()->json(['data'=>$data]);
     }
+    public function cari_customer_kontrak(Request $request){
+        $status = $request->a;
+        $cabang = $request->b;
+        $customer = $request->c;
+
+        $data =DB::table('kontrak_customer')
+                             ->where('kc_kode_customer','=',$customer)
+                             ->where('kc_kode_cabang','=',$cabang)
+                             ->where('kc_aktif','=',$status)
+                             ->get();
+        if ($data == null) {
+            $data = 0;
+            return response()->json(['data'=>$data]);
+        }else{
+            return response()->json(['data'=>$data]);
+        }
+    }
+
+    // public function asd($value='')
+    // {  
+    //     $asal = 1;
+    //     $tujuan = null;
+
+    //     if ($asal != null) {
+    //         $asal = "and asal = $asal";
+
+    //     }else{
+    //         $asal = "";
+    //     }
+
+    //     if ($tujuan != null) {
+    //         $tujuan = "and tujuan = $tujuan";
+
+    //     }else{
+    //         $tujuan = "";
+    //     }
+
+
+
+    //      $asd = "select * from do where nomor != null $asal $tujuan";
+    //     return $asd;
+    // }
 
 }
