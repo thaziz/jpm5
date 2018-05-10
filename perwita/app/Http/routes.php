@@ -1005,7 +1005,12 @@ Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterC
 Route::get('master_sales/master_akun', 'master_sales\master_akun_controller@index');
 Route::get('master_sales/datatable_akun', 'master_sales\master_akun_controller@datatable_akun')->name('datatable_akun');
 Route::get('master_sales/datatable_item', 'master_sales\master_akun_controller@datatable_item')->name('datatable_item');
-
+Route::post('master_sales/save_akun_patty', 'master_sales\master_akun_controller@save_akun_patty');
+Route::post('master_sales/save_akun_item', 'master_sales\master_akun_controller@save_akun_item');
+Route::get('master_sales/ganti_akun_patty', 'master_sales\master_akun_controller@ganti_akun_patty');
+Route::get('master_sales/ganti_akun_item', 'master_sales\master_akun_controller@ganti_akun_item');
+Route::get('master_sales/hapus_akun_patty', 'master_sales\master_akun_controller@hapus_akun_patty');
+Route::get('master_sales/hapus_akun_item', 'master_sales\master_akun_controller@hapus_akun_item');
 //grup agen
 Route::get('master_sales/agen', 'master_sales\agen_Controller@index');
 Route::get('master_sales/agen/tabel', 'master_sales\agen_Controller@table_data');
