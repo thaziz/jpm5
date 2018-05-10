@@ -955,14 +955,20 @@ class do_Controller extends Controller
                              ->where('kcd.kcd_jenis','=','PAKET')
                              ->orderBy('c.kode','ASC')
                              ->get();
-        
-        for ($i=0; $i < count($customer); $i++) {
+        if ($customer == null) {
             $cus = DB::table('customer as c')
-                             ->select('c.kode','c.nama','c.alamat','c.telpon')
-                             ->where('c.kode','!=',$customer[$i]->kode)
-                             ->get();
+                                 ->select('c.kode','c.nama','c.alamat','c.telpon')
+                                 ->get();
+        }else{
+            for ($i=0; $i < count($customer); $i++) {
+                $cus = DB::table('customer as c')
+                                 ->select('c.kode','c.nama','c.alamat','c.telpon')
+                                 ->where('c.kode','!=',$customer[$i]->kode)
+                                 ->get();
+            }
         }
-         return $customer;
+        
+         
 
         $kendaraan = DB::select(" SELECT nopol FROM kendaraan ");
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
