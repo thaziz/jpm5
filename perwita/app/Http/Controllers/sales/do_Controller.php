@@ -948,9 +948,22 @@ class do_Controller extends Controller
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
         $customer = DB::table('customer as c')
-                             ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif')
+                             ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif','kcd.kcd_jenis')
                              ->leftjoin('kontrak_customer as kc','kc.kc_kode_customer','=','c.kode')
+                             ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
+                             ->groupBy('kc.kc_aktif','c.kode','kcd.kcd_jenis')
+                             ->where('kcd.kcd_jenis','=','PAKET')
+                             ->orderBy('c.kode','ASC')
                              ->get();
+        
+        for ($i=0; $i < count($customer); $i++) {
+            $cus = DB::table('customer as c')
+                             ->select('c.kode','c.nama','c.alamat','c.telpon')
+                             ->where('c.kode','!=',$customer[$i]->kode)
+                             ->get();
+        }
+         // return $cus;
+
         $kendaraan = DB::select(" SELECT nopol FROM kendaraan ");
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
@@ -998,7 +1011,7 @@ class do_Controller extends Controller
         
         // return $cek_data;
        
-        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data'));
+        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus'));
     }
 
     public function form_update_status($nomor = null)
@@ -2015,11 +2028,14 @@ class do_Controller extends Controller
         $status = $request->a;
         $cabang = $request->b;
         $customer = $request->c;
+        $jenis = 'PAKET' ;
 
-        $data =DB::table('kontrak_customer')
-                             ->where('kc_kode_customer','=',$customer)
-                             ->where('kc_kode_cabang','=',$cabang)
-                             ->where('kc_aktif','=',$status)
+        $data =DB::table('kontrak_customer as kc')
+                             ->join('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
+                             ->where('kc.kc_kode_customer','=',$customer)
+                             ->where('kc.kc_kode_cabang','=',$cabang)
+                             ->where('kc.kc_aktif','=',$status)
+                             ->where('kcd.kcd_jenis','=',$jenis)
                              ->get();
         if ($data == null) {
             $data = 0;

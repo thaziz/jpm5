@@ -65,9 +65,9 @@
                                                             <option selected="true" value="" ></option>
                                                         @foreach ($cabang as $row)
                                                             @if($row->diskon != null)
-                                                            <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}"> {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
+                                                            <option value="{{ $row->kode }}" data-diskon="{{ $row->diskon }}">{{ $row->kode }} - {{ $row->nama }} -- (Diskon {{ $row->diskon }}%)</option>
                                                             @else
-                                                            <option value="{{ $row->kode }}"> {{ $row->nama }}</option>
+                                                            <option value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }}</option>
                                                             @endif
                                                         @endforeach
                                                         </select>
@@ -79,12 +79,12 @@
                                                         <select class="chosen-select-width customerpengirim"  name="cb_customer" onchange="" id="cb_customer" style="width:100%" >
                                                             <option> </option>
                                                         @foreach ($customer as $row)
-                                                            @if ( $row->kc_aktif  == 'AKTIF')
+                                                            @if ( $row->kc_aktif  == 'AKTIF' && $row->kcd_jenis)
                                                                 <option style="background-color: #79fea5;" value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
-                                                            @else
-                                                                <option value="{{ $row->kode }}" data-alamat="{{$row->alamat}}" data-telpon="{{$row->telpon}}"  data-status="{{ $row->kc_aktif }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                                             @endif
-                                                            
+                                                        @endforeach
+                                                        @foreach ($cus as $row1)
+                                                                <option value="{{ $row1->kode }}" data-alamat="{{$row1->alamat}}" data-telpon="{{$row1->telpon}}"  >{{ $row1->kode }} - {{ $row1->nama }} </option>
                                                         @endforeach
                                                         </select>
                                                     </td>
