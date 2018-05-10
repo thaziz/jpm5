@@ -255,9 +255,14 @@
                     '<td>'+d.cab+'</td>'+
                 '</tr>'+
                 '<tr>'+
-                    '<td>total</td>'+
+                    '<td>DPP</td>'+
                     '<td>:</td>'+
                     '<td>'+d.total+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>Vendor</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.total_vendo+'</td>'+
                 '</tr>'+
                 '<tr>'+
                     '<td>total_net</td>'+

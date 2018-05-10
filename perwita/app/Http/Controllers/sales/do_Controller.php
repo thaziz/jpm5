@@ -22,7 +22,7 @@ class do_Controller extends Controller
         $nomor = strtoupper($request->input('nomor'));
         $authe = Auth::user()->kode_cabang; 
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -32,7 +32,7 @@ class do_Controller extends Controller
                     ";
         }
         else{
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -887,7 +887,7 @@ class do_Controller extends Controller
     {
         $authe = Auth::user()->kode_cabang; 
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -897,7 +897,7 @@ class do_Controller extends Controller
                     ";
         }
         else{
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan

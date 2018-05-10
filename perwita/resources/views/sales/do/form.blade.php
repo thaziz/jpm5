@@ -93,10 +93,10 @@
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Kota Asal</td>
                                                     <td colspan="5">
-                                                        <select class="chosen-select-width"  name="cb_kota_asal" style="width:100%" >
+                                                        <select class="chosen-select-width replace_deskripsi"  name="cb_kota_asal" style="width:100%" >
                                                             <option value=""></option>
                                                         @foreach ($kota as $row)
-                                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                                            <option value="{{ $row->id }}" data-nama="{{ $row->nama }}"> {{ $row->nama }} </option>
                                                         @endforeach
                                                         </select>
                                                     </td>
@@ -104,10 +104,10 @@
                                                 <tr>
                                                     <td style="padding-top: 0.4cm">Kota Tujuan</td>
                                                     <td colspan="5">
-                                                        <select class="chosen-select-width" id="kota" onchange="getKecamatan()" name="cb_kota_tujuan" style="width:100%" >
+                                                        <select class="chosen-select-width replace_deskripsi" id="kota" onchange="getKecamatan()" name="cb_kota_tujuan" style="width:100%" >
                                                             <option value=""></option>
                                                         @foreach ($kota as $row)
-                                                            <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                                            <option value="{{ $row->id }}" data-nama="{{ $row->nama }}"> {{ $row->nama }} </option>
                                                         @endforeach
                                                         </select>
                                                     </td>
@@ -115,20 +115,20 @@
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" class="kecamatantujuanlabel">Kecamatan Tujuan</td>
                                                     <td colspan="5">
-                                                        <select class="form-control" id="kecamatan" name="cb_kecamatan_tujuan" style="width:100%" >
+                                                        <select class="form-control replace_deskripsi" id="kecamatan" name="cb_kecamatan_tujuan" style="width:100%" >
                                                         @if($kec != null)
                                                             <option value=""></option>
                                                             @foreach ($kec as $row)
                                                                 @if($do->id_kecamatan_tujuan == $row->id)
-                                                                    <option value="{{ $row->id }}" selected> {{ $row->nama }} </option>
+                                                                    <option value="{{ $row->id }}" selected data-nama="{{ $row->nama }}"> {{ $row->nama }} </option>
                                                                 @else
-                                                                    <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                                                    <option value="{{ $row->id }}" data-nama="{{ $row->nama }}"> {{ $row->nama }} </option>
                                                                 @endif
                                                             @endforeach
                                                         @else
                                                             <option value=""></option>
                                                             @foreach ($kecamatan as $row)
-                                                                <option value="{{ $row->id }}"> {{ $row->nama }} </option>
+                                                                <option value="{{ $row->id }}" data-nama="{{ $row->nama }}"> {{ $row->nama }} </option>
                                                             @endforeach
                                                         @endif
                                                         </select>
@@ -515,7 +515,7 @@
                                                 <tr>
                                                     <td style="width:110px; padding-top: 0.4cm">Nama</td>
                                                     <td>
-                                                        <input type="text" class="form-control namapenerima" name="ed_nama_penerima" style="text-transform: uppercase" value="{{ $do->nama_penerima or null }}">
+                                                        <input type="text" class="form-control namapenerima replace_deskripsi" name="ed_nama_penerima" style="text-transform: uppercase" value="{{ $do->nama_penerima or null }}">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -1768,7 +1768,7 @@
                 $('select[name="cb_kota_asal"]').val(data.data.kcd_kota_asal).trigger('chosen:updated');
                 $('select[name="cb_kota_tujuan"]').val(data.data.kcd_kota_tujuan).trigger('chosen:updated');
                 $('select[name="type_kiriman"]').val(data.data.kcd_type_tarif);
-                $('select[name="ed_kota"]').val(data.data.asal);
+                $('input[name="ed_kota"]').val(data.data.asal);
                 $('input[name="ed_tarif_dasar"]').val(accounting.formatMoney(data.data.kcd_harga,"",0,'.',','));
                 if(data.data.tarif != 'REGULER' || data.data.tarif != 'EXPRESS'){
                     Command: toastr["warning"]("Tipe tarif tidak sesuai dengan ketentuan", "Peringatan !")
@@ -1790,7 +1790,7 @@
                       "hideMethod": "fadeOut"
                     }
                 }else{
-                    $('select[name="cb_kota_asal"]').val(data.data.tarif);
+                    $('select[name="jenis_kiriman"]').val(data.data.tarif);
                 }
                 
                 // var dasar = parseInt(data.data.kcd_harga);
@@ -3548,7 +3548,7 @@
                 var kecamatan = '<option value="" selected="" disabled="">-- Pilih Kecamatan --</option>';
 
                 $.each(data, function(i,n){
-                    kecamatan = kecamatan + '<option value="'+n.id+'">'+n.nama+'</option>';
+                    kecamatan = kecamatan + '<option value="'+n.id+'" data-nama="'+n.nama+'">'+n.nama+'</option>';
                 });
 
                 $('#kecamatan').addClass('form-control chosen-select-width');
@@ -3764,6 +3764,16 @@
             for (var selector in config) {
                 $(selector).chosen(config[selector]);
             }
+    $('.replace_deskripsi').change(function(){
+        var asal = $("select[name='cb_kota_asal']").find(':selected').data('nama');
+        var tujuan = $("select[name='cb_kota_tujuan']").find(':selected').data('nama');
+        var kecamatan = $("select[name='cb_kecamatan_tujuan']").find(':selected').data('nama');
+        var nama_penerima = $("input[name='ed_nama_penerima']").val();
+        console.log(asal);
+        console.log(tujuan);
+        console.log(kecamatan);
+        var deskripsi_rep =  $("input[name='ed_deskripsi']").val(asal +' - '+ tujuan +' - '+ kecamatan +' - '+ nama_penerima);
+    })
     
 </script>
 @endsection
