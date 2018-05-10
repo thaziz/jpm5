@@ -962,7 +962,7 @@ class do_Controller extends Controller
                              ->where('c.kode','!=',$customer[$i]->kode)
                              ->get();
         }
-         // return $cus;
+         return $cus;
 
         $kendaraan = DB::select(" SELECT nopol FROM kendaraan ");
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
