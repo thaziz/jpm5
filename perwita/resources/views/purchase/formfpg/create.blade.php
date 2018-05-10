@@ -532,7 +532,7 @@
 
                                     <tr>
                                       <th> <h4> No Cheque / BG </h4> </th>
-                                      <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank">
+                                      <td> <input type="text" class="input-sm form-control nocheck" type="button" data-toggle="modal" data-target="#myModal2" id="getbank" readonly="">
                                       <input type="hidden" class="valjenisbayarbank" name="jenisbayarbank">
                                      </td>
                                       
