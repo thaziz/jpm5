@@ -1059,6 +1059,7 @@
         // console.log(diskon_value_utama);
       
         var total_h = total-diskon_value_utama;
+        var dpp_h = dpp-diskon_value_utama;
 
         $("input[name='ed_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
         
@@ -1068,10 +1069,10 @@
 
         if ($('.vendor_tarif').is(':checked') == false) {
             
-            $("input[name='ed_dpp']").val(accounting.formatMoney(dpp,"",0,'.',','));
+            $("input[name='ed_dpp']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
         }else{
             $("input[name='ed_vendor']").prop('readonly',false);
-            $("input[name='ed_vendor']").val(accounting.formatMoney(dpp,"",0,'.',','));
+            $("input[name='ed_vendor']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
             
         }    
 
@@ -3689,7 +3690,25 @@
         var this_selected_value = $('#cb_cabang').find(':selected').data('diskon');
         // alert(this_selected_value);
         var tot = parseFloat(this_selected_value)*parseFloat(total_total)/100; 
+        var diskon_value_utama = $("input[name='ed_diskon_v']").val();
+        var total_h = total-diskon_value_utama;
+        var dpp_h = total-diskon_value_utama;
+
+        $("input[name='ed_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
         
+        $("input[name='ed_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
+        
+        $("input[name='ed_total_total']").val(accounting.formatMoney(total,"",0,'.',','));
+
+        if ($('.vendor_tarif').is(':checked') == false) {
+            
+            $("input[name='ed_dpp']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+        }else{
+            $("input[name='ed_vendor']").prop('readonly',false);
+            $("input[name='ed_vendor']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+            
+        } 
+
         if (diskon_value > tot) {
             
             Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
@@ -3738,6 +3757,7 @@
 
         $("input[name='ed_jml_ppn']").val(Math.round(ppn));
         $("input[name='ed_total_h']").val(Math.round(total-diskon_value));
+        // $("input[name='ed_total_h']").val(Math.round(total-diskon_value));
         
         $("input[name='ed_total_total']").val(Math.round(total_total));
         // hitung();   
