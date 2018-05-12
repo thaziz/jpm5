@@ -95,8 +95,12 @@ class kasKeluarController extends Controller
 		$jenis_bayar = DB::table('jenisbayar')
 						 ->where('idjenisbayar','!=',1)
 						 ->where('idjenisbayar','!=',5)
+						 ->where('idjenisbayar','!=',10)
+						 ->orderBy('idjenisbayar','ASC')
 						 ->get();
 		$now  = carbon::now()->format('d/m/Y');
+
+		
 						 
 		return view('purchase.buktikaskeluar.createKasKeluar',compact('cabang','jenis_bayar','now'));
 	}
@@ -141,6 +145,52 @@ class kasKeluarController extends Controller
 		return view('purchase.buktikaskeluar.akun_biaya_dropdown',compact('akun'));
 	}
 
+	public function supplier_dropdown(request $req)
+	{
+		if ($req->jenis_bayar == 2) {
+			$all = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+		} elseif($req->jenis_bayar == 3){
+			$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
+
+			$vendor   = DB::select("SELECT kode, nama from vendor order by kode "); 
+
+			$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+
+			$all = array_merge($agen,$vendor,$subcon,$supplier);
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+		} elseif($req->jenis_bayar == 4){
+			$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
+
+			$vendor   = DB::select("SELECT kode, nama from vendor order by kode "); 
+
+			$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+
+			$all = array_merge($agen,$vendor,$subcon,$supplier);
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+		} elseif($req->jenis_bayar == 6){
+			$agen 	  = DB::select("SELECT kode, nama from agen where kategori != 'OUTLET' order by kode");
+
+			$vendor   = DB::select("SELECT kode, nama from vendor order by kode "); 
+
+			$all = array_merge($agen,$vendor);
+
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+		} elseif($req->jenis_bayar == 7){
+			$all 	  = DB::select("SELECT kode, nama from agen where kategori = 'OUTLET' order by kode");
+
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+		} elseif($req->jenis_bayar == 9){
+			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
+
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+		}
+	}
+
 	public function histori_faktur(request $req)
 	{
 		
@@ -163,6 +213,91 @@ class kasKeluarController extends Controller
 	{
 		
 		return view('purchase.buktikaskeluar.kredit_faktur');
+	}
+
+	public function save_patty(request $req)
+	{
+		return DB::transaction(function() use ($req) {  
+
+			dd($req->all());
+			$cari_nota = DB::table('bukti_kas_keluar')
+						   ->where('bkk_nota',$req->nota)
+						   ->first();
+
+
+
+			if ($cari_nota == null) {
+				$nota = $req->nota;
+			}else{
+				$bulan = Carbon::now()->format('m');
+			    $tahun = Carbon::now()->format('y');
+
+			    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),12) as id from bukti_kas_keluar
+			                                    WHERE bkk_comp = '$req->cabang'
+			                                    AND to_char(bkk_tgl,'MM') = '$bulan'
+			                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
+
+			    $index = (integer)$cari_nota[0]->id + 1;
+			    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+
+				
+				$nota = 'BKK' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
+			}
+
+			$id = DB::table('bukti_kas_keluar')
+					->max('bkk_id');
+
+			if ($id == null) {
+				$id = 1;
+			}else{
+				$id += 1;
+			}
+
+			DB::table('bukti_kas_keluar')
+				  ->insert([
+				  	'bkk_id'  			=> $id,
+					'bkk_nota' 			=> $nota,
+					'bkk_tgl' 			=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+					'bkk_jenisbayar' 	=> $req->jenis_bayar,
+					'bkk_keterangan' 	=> strtoupper($req->keterangan_head),
+					'bkk_comp' 			=> $req->cabang,
+					'bkk_total' 		=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT),
+					'created_at' 		=> carbon::now(),
+					'updated_at' 		=> carbon::now(),
+					'bkk_akun_kas' 		=> $req->kas,
+					'bkk_supplier' 		=> $req->supplier_patty,
+					'bkk_akun_hutang' 	=> 0,
+					'bkk_status' 		=> 'RELEASED',
+					'updated_by' 		=> Auth::user()->m_name,
+	  				'created_by' 		=> Auth::user()->m_name,
+			  	]);
+
+			for ($i=0; $i < count($req->pt_seq); $i++) {
+				$id_dt = DB::table('biaya_penerus_kas_detail')
+						   ->max('bkkd_id');
+				if ($id_dt == null) {
+					$id_dt = 1;
+				}else{
+					$id_dt += 1;
+				}
+
+				// 'bkkd_id'  			=> $id_dt,
+				// 'bkkd_bkk_id'  		=> $id,
+				// 'bkkd_bkk_dt'  		=> $i+1,
+				// 'bkkd_keterangan' 	=> ,
+				// 'bkkd_akun'  		=> ,
+				// 'bkkd_total' 		=> ,
+				// 'bkkd_debit' 		=> ,
+				// 'updated_at'		=> ,
+				// 'created_at' 		=> ,
+				// 'bkkd_ref' 			=> ,
+				// 'bkkd_supplier' 	=> ,
+			}
+
+
+			
+
+		});
 	}
 
 }

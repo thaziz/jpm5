@@ -60,7 +60,7 @@
                     <div class="box-body" >
                       <div class="col-sm-12" style="border-bottom: 0.5px solid #8888">
                         <div class="col-sm-6">
-                          <table class="table table-bordered">
+                          <table class="table table-bordered table_header">
                             <tr>
                               <td width="120">No Transaksi</td>
                               <td colspan="2"><input class="form-control nota" type="text" readonly="" name="nota"></td>
@@ -102,16 +102,16 @@
                                 </select>
                               </td>
                             </tr>
-                            <tr class="supplier_patty_td">
+                            <tr class="supplier_patty_tr">
                               <td width="120">Pemohon</td>
                               <td colspan="2">
-                                <input type="text" class="form-control huruf_besar supplier_patty"  name="supplier">
+                                <input type="text" class="form-control huruf_besar supplier_patty"  name="supplier_patty">
                               </td>
                             </tr>
-                            <tr hidden="" class="supplier_faktur">
+                            <tr hidden="" class="supplier_faktur_tr">
                               <td width="120">Supplier</td>
-                              <td colspan="2">
-                                <select class="form-control supplier_faktur" name="supplier">
+                              <td colspan="2" class="supplier_faktur_td">
+                                <select class="form-control supplier_faktur" name="supplier_faktur">
                                   <option value="0">Pilih - Supplier</option>
                                 </select>
                               </td>
@@ -119,13 +119,13 @@
                             <tr>
                               <td width="120">Keterangan</td>
                               <td colspan="2">
-                                <input class="form-control huruf_besar keterangan_head" type="text" name="keterangan_head">
+                                <input maxlength="300" class="form-control huruf_besar keterangan_head" type="text" name="keterangan_head">
                               </td>
                             </tr>
                           </table>
                         </div>
                         <div class="col-sm-6">
-                          <table class="table table-bordered">
+                          <table class="table table-bordered table_jurnal">
                             <tr>
                               <td align="center" colspan="2">POSTING JURNAL</td>
                             </tr>
@@ -143,13 +143,15 @@
                             </tr>
                             <tr>
                               <td width="120">UANG MUKA</td>
-                              <td><input style="text-align: right" value="0" class="form-control total" readonly="" type="text" name="uang_muka"></td>
+                              <td><input style="text-align: right" value="0" class="form-control uang_muka" readonly="" type="text" name="uang_muka"></td>
                             </tr>
                           </table>
-                          <table class="table table-bordered">
+                          <table class="table table-bordered table_total">
                             <tr>
                               <td width="120">TOTAL</td>
-                              <td><input style="text-align: right" value="0" class="form-control total" readonly="" type="text" name="total"></td>
+                              <td>
+                                <input type="text" style="text-align: right" value="0" class="form-control total" readonly=""  name="total">
+                              </td>
                             </tr>
                           </table>
                         </div>
@@ -186,7 +188,7 @@
                             <tr>
                               <td width="120">Keterangan</td>
                               <td>
-                                <input class="form-control keterangan_patty huruf_besar" type="text" class="keterangan_patty">
+                                <input maxlength="300" class="form-control keterangan_patty huruf_besar" type="text" class="keterangan_patty">
                               </td>
                             </tr>
                             <tr>
@@ -204,7 +206,7 @@
 
                                 <button style="margin-left: 5px;" type="button" class="btn btn-warning pull-right print_petty disabled" onclick="printing()"><i class="fa fa-print">&nbsp;print</i></button>
 
-                                <button style="margin-left: 5px;" type="button" class="btn btn-primary pull-right disabled" id="save_patty" onclick="save_pat()"><i class="fa fa-save">&nbsp;Simpan Data</i></button>
+                                <button style="margin-left: 5px;" type="button" class="btn btn-primary pull-right disabled" id="save_patty" onclick="save_patty()"><i class="fa fa-save">&nbsp;Simpan Data</i></button>
                                 
                                 <button style="margin-left: 5px;" type="button" class="btn btn-danger pull-right append_petty"><i class="fa fa-plus">&nbsp;Append</i></button>
                               </td>
@@ -685,27 +687,40 @@
   })
 
   $('.jenis_bayar').change(function(){
-    console.log($(this).val());
     if ($(this).val() == 8) {
-      $('.supplier_patty').prop('hidden',false);
-      $('.supplier_faktur').prop('hidden',true);
+      $('.supplier_patty_tr').prop('hidden',false);
+      $('.supplier_faktur_tr').prop('hidden',true);
       $('.patty_cash_div').prop('hidden',false);
       $('.faktur_div').prop('hidden',true);
       $('.uang_muka_div').prop('hidden',true);
     }else if ($(this).val() == 4) {
-      $('.supplier_patty').prop('hidden',true);
-      $('.supplier_faktur').prop('hidden',false);
+      $('.supplier_patty_tr').prop('hidden',true);
+      $('.supplier_faktur_tr').prop('hidden',false);
       $('.patty_cash_div').prop('hidden',true);
       $('.faktur_div').prop('hidden',true);
       $('.uang_muka_div').prop('hidden',false);
     }else {
-      $('.supplier_patty').prop('hidden',true);
-      $('.supplier_faktur').prop('hidden',false);
+      $('.supplier_patty_tr').prop('hidden',true);
+      $('.supplier_faktur_tr').prop('hidden',false);
       $('.patty_cash_div').prop('hidden',true);
       $('.faktur_div').prop('hidden',false);
       $('.uang_muka_div').prop('hidden',true);
     }
+
+    var jenis_bayar = $(this).val();
+    $.ajax({
+        url:baseUrl + '/buktikaskeluar/supplier_dropdown',
+        type:'get',
+        data:{jenis_bayar},
+        success:function(data){
+          $('.supplier_faktur ').val('0').trigger('chosen:updated');
+          $('.supplier_faktur_td').html(data);
+        },
+        error:function(data){
+        }
+    }); 
   })
+
 
 
   $('.filter_faktur').change(function(){
@@ -725,6 +740,14 @@
   })
 
   // PATTY CASH SCRIPT
+  function hitung_pt() {
+    var total = 0;
+    $('.pt_nominal').each(function(){
+      total += parseInt($(this).val());
+    });
+
+    $('.total').val(accounting.formatMoney(total,"", 0, ".",','));
+  }
   $('.append_petty').click(function(){
     var patty_nomor         = $('.patty_nomor').val();
     var akun_biaya          = $('.akun_biaya').val();
@@ -759,19 +782,19 @@
     if (flag_patty == '') {
       table_patty.row.add([
         '<p class="pt_seq_text">'+patty_nomor+'</p>'+
-        '<input type="hidden" class="pt_seq_'+patty_nomor+' pt_seq" value="'+patty_nomor+'">',
+        '<input type="hidden" name="pt_seq[]" class="pt_seq_'+patty_nomor+' pt_seq" value="'+patty_nomor+'">',
 
         '<p class="pt_akun_biaya_text">'+akun_biaya_text+'</p>'+
-        '<input type="hidden" class="pt_akun_biaya" value="'+akun_biaya+'">',
+        '<input type="hidden" name="pt_akun_biaya[]" class="pt_akun_biaya" value="'+akun_biaya+'">',
 
         '<p class="pt_nominal_text">'+accounting.formatMoney(nominal_patty,"", 0, ".",',')+'</p>'+
-        '<input type="hidden" class="pt_nominal" value="'+nominal_patty+'">',
+        '<input type="hidden" name="pt_nominal[]" class="pt_nominal" value="'+nominal_patty+'">',
 
         '<p class="pt_keterangan_text">'+keterangan_patty+'</p>'+
-        '<input type="hidden" class="pt_keterangan" value="'+keterangan_patty+'">',
+        '<input type="hidden" name="pt_keterangan[]" class="pt_keterangan" value="'+keterangan_patty+'">',
 
         '<p class="pt_debet_text">'+dk_patty+'</p>'+
-        '<input type="hidden" class="pt_debet" value="'+dk_patty+'">',
+        '<input type="hidden" name="pt_debet[]" class="pt_debet" value="'+dk_patty+'">',
 
         '<div class="btn-group">'+
         '<button onclick="pt_edit(this)" type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil" title="Edit"></i></button>'+
@@ -783,7 +806,7 @@
     }else{
       var par = $('.pt_seq_'+flag_patty).parents('tr');
       var pt_seq_text        = $(par).find('.pt_seq_text').text(patty_nomor);
-      var pt_akun_biaya_text = $(par).find('.pt_akun_biaya_text').text(akun_biaya);
+      var pt_akun_biaya_text = $(par).find('.pt_akun_biaya_text').text(akun_biaya_text);
       var pt_nominal_text    = $(par).find('.pt_nominal_text').text(accounting.formatMoney(nominal_patty,"", 0, ".",','));
       var pt_keterangan_text = $(par).find('.pt_keterangan_text').text(keterangan_patty);
       var pt_debet_text      = $(par).find('.pt_debet_text').text(dk_patty);
@@ -795,6 +818,7 @@
       var pt_debet      = $(par).find('.pt_debet').val(dk_patty);
       toastr.success('Data Berhasil Di Update');
     }
+
     $('.jenis_bayar_td').addClass('disabled');
     $('.supplier_patty_td').addClass('disabled');
     $('.form_patty :input').val('')
@@ -804,6 +828,7 @@
     $('.form_patty .patty_nomor').val(seq);
     $('#save_patty').removeClass('disabled');
 
+    hitung_pt();
   });
 
   function pt_edit(a) {
@@ -828,7 +853,54 @@
     var par = $(a).parents('tr');
     table_patty.row(par).remove().draw(false);
     toastr.info('Data Berhasil Di Hapus');
+    hitung_pt();
   }
+
+  function save_patty() {
+
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Simpan Bukti Kas Keluar!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Simpan!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+    },function(){
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/save_patty',
+        type:'get',
+        data:$('.table_header :input').serialize()+'&'+
+             $('.table_jurnal :input').serialize()+'&'+
+             $('.table_total :input').serialize()+'&'+
+             table_patty.$('input').serialize(),
+        dataType:'json',
+        success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                     
+          });
+        },
+        error:function(data){
+        }
+      }); 
+    });
+  }
+
 
 </script>
 @endsection
