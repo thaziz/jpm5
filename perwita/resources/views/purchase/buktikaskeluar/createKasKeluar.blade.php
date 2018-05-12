@@ -7,6 +7,12 @@
   .center{
     text-align: center;
   }
+  .right{
+    text-align: right;
+  }
+  .huruf_besar{
+    text-transform: uppercase;
+  }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -87,7 +93,7 @@
                             </tr>
                             <tr>
                               <td width="120">Jenis Bayar</td>
-                              <td colspan="2">
+                              <td class="jenis_bayar_td" colspan="2">
                                 <select class="form-control chosen-select-width jenis_bayar" name="jenis_bayar">
                                   <option value="0">Pilih - Jenis</option>
                                   @foreach($jenis_bayar as $val)
@@ -96,10 +102,10 @@
                                 </select>
                               </td>
                             </tr>
-                            <tr class="supplier_patty">
+                            <tr class="supplier_patty_td">
                               <td width="120">Pemohon</td>
                               <td colspan="2">
-                                <input class="form-control supplier_patty" type="text" name="supplier">
+                                <input type="text" class="form-control huruf_besar supplier_patty"  name="supplier">
                               </td>
                             </tr>
                             <tr hidden="" class="supplier_faktur">
@@ -113,7 +119,7 @@
                             <tr>
                               <td width="120">Keterangan</td>
                               <td colspan="2">
-                                <input class="form-control keterangan_head" type="text" name="keterangan_head">
+                                <input class="form-control huruf_besar keterangan_head" type="text" name="keterangan_head">
                               </td>
                             </tr>
                           </table>
@@ -148,11 +154,11 @@
                           </table>
                         </div>
                       </div>
-                      {{-- patty cash TR --}}
-                      <div class="col-sm-12 patty_cash_div"  >
+                      {{-- petty cash TR --}}
+                      <div class="col-sm-12 patty_cash_div penanda_patty"  >
                         <div class="col-sm-6">
                           <table class="table table-bordered" >
-                            <caption style="text-align: center"><h3>PATTY CASH</h3></caption>
+                            <caption style="text-align: center"><h3>PETTY CASH</h3></caption>
                             <tr>
                               <td width="120">Nomor</td>
                               <td><input readonly="" class="form-control patty_nomor" value="1" type="text" class="patty_nomor"></td>
@@ -177,7 +183,7 @@
                             <tr>
                               <td width="120">Keterangan</td>
                               <td>
-                                <input class="form-control keterangan_patty" type="text" class="keterangan_patty">
+                                <input class="form-control keterangan_patty huruf_besar" type="text" class="keterangan_patty">
                               </td>
                             </tr>
                             <tr>
@@ -193,11 +199,11 @@
                               <td >
                                 <button style="margin-left: 5px;" type="button" class="btn btn-info pull-right reload" onclick="reload()"><i class="fa fa-refresh">&nbsp;Reload</i></button>
 
-                                <button style="margin-left: 5px;" type="button" class="btn btn-warning pull-right print_patty disabled" onclick="printing()"><i class="fa fa-print">&nbsp;print</i></button>
+                                <button style="margin-left: 5px;" type="button" class="btn btn-warning pull-right print_petty disabled" onclick="printing()"><i class="fa fa-print">&nbsp;print</i></button>
 
                                 <button style="margin-left: 5px;" type="button" class="btn btn-primary pull-right disabled" id="save_patty" onclick="save_pat()"><i class="fa fa-save">&nbsp;Simpan Data</i></button>
                                 
-                                <button style="margin-left: 5px;" type="button" class="btn btn-danger pull-right cari-pod"><i class="fa fa-plus">&nbsp;Append</i></button>
+                                <button style="margin-left: 5px;" type="button" class="btn btn-danger pull-right append_petty"><i class="fa fa-plus">&nbsp;Append</i></button>
                               </td>
                             </tr>
                           </table>
@@ -207,8 +213,8 @@
                             <thead>
                               <tr>
                                 <th>No</th>
-                                <th>Jumlah Bayar</th>
                                 <th>Akun Biaya</th>
+                                <th>Jumlah Bayar</th>
                                 <th>Keterangan</th>
                                 <th>D/K</th>
                                 <th>Aksi</th>
@@ -221,7 +227,7 @@
                         </div>
                       </div><!-- /.end patty cash tr -->
                       {{-- form faktur --}}
-                      <div hidden="" class="col-sm-12 faktur_div" style="border-bottom: 0.5px solid #8888; margin-top: 10px;">
+                      <div hidden="" class="col-sm-12 faktur_div penanda_faktur" style="border-bottom: 0.5px solid #8888; margin-top: 10px;">
                         <div class="col-sm-8 detail_biaya">
                         <div class="col-sm-8 ">
                           <caption><h2>Detail Biaya</h2></caption>
@@ -426,7 +432,7 @@
                       </div>
                       </div>{{-- <-end form faktur --}}
                       {{-- form uang muka --}}
-                      <div hidden="" class="col-sm-12 uang_muka_div"  >
+                      <div hidden="" class="col-sm-12 uang_muka_div penanda_um"  >
                         <div class="col-sm-6">
                           <table class="table table-bordered" >
                             <caption style="text-align: center"><h3>UANG MUKA</h3></caption>
@@ -551,6 +557,10 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+  {{-- Note: PENANDA_PATTY UNTUK MENCARI DIV PATTY
+             PENANDA_Faktur UNTUK MENCARI DIV FAKTUR
+             PENANDA_UM UNTUK MENCARI DIV UANG MUKA 
+  --}}
   $('.tanggal').datepicker({
     format:'dd/mm/yyyy'
   });
@@ -562,7 +572,31 @@
   $('.jatuh_tempo').daterangepicker({
     format:'dd/mm/yyyy'
   });
-
+  // GLOBAL VARIABLE
+    var seq = 0;
+    var table_patty   = $('.table_patty').DataTable({
+                          columnDefs: [
+                              {
+                                 targets: 0,
+                                 className: 'center'
+                              },
+                              {
+                                 targets: 2,
+                                 className: 'right'
+                              },
+                              {
+                                 targets: 5,
+                                 className: 'center'
+                              }
+                           ]
+                        });
+    var histori_tabel = $('.histori_tabel').DataTable();
+    var return_tabel  = $('.return_tabel').DataTable();
+    var debet_tabel   = $('.debet_tabel').DataTable();
+    var kredit_tabel  = $('.kredit_tabel').DataTable();
+    var tabel_faktur  = $('.tabel_faktur').DataTable();
+    var table_um      = $('.table_um').DataTable();
+  // 
 
   $(document).ready(function(){
     $('.nominal_patty').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
@@ -604,15 +638,44 @@
             location.reload();
         }
     }); 
-
-    var table_patty = $('.table_patty').DataTable();
-    var histori_tabel = $('.histori_tabel').DataTable();
-    var return_tabel = $('.return_tabel').DataTable();
-    var debet_tabel = $('.debet_tabel').DataTable();
-    var kredit_tabel = $('.kredit_tabel').DataTable();
-    var tabel_faktur = $('.tabel_faktur').DataTable();
-    var table_um = $('.table_um').DataTable();
   });
+
+  $('.cabang').change(function(){
+    var cabang = $('.cabang').val();
+    $.ajax({
+        url:baseUrl + '/buktikaskeluar/nota_bukti_kas',
+        type:'get',
+        data:{cabang},
+        dataType:'json',
+        success:function(data){
+           $('.nota').val(data.nota);
+        },
+        error:function(data){
+        }
+    }); 
+
+    $.ajax({
+        url:baseUrl + '/buktikaskeluar/akun_kas_dropdown',
+        type:'get',
+        data:{cabang},
+        success:function(data){
+           $('.kas_td').html(data);
+        },
+        error:function(data){
+        }
+    }); 
+
+    $.ajax({
+        url:baseUrl + '/buktikaskeluar/akun_biaya_dropdown',
+        type:'get',
+        data:{cabang},
+        success:function(data){
+           $('.akun_biaya_td').html(data);
+        },
+        error:function(data){
+        }
+    }); 
+  })
 
   $('.jenis_bayar').change(function(){
     console.log($(this).val());
@@ -624,7 +687,7 @@
       $('.uang_muka_div').prop('hidden',true);
     }else if ($(this).val() == 4) {
       $('.supplier_patty').prop('hidden',true);
-      $('.supplier_faktur').prop('hidden',true);
+      $('.supplier_faktur').prop('hidden',false);
       $('.patty_cash_div').prop('hidden',true);
       $('.faktur_div').prop('hidden',true);
       $('.uang_muka_div').prop('hidden',false);
@@ -652,14 +715,66 @@
       $('.periode_tr').prop('hidden',true);
       $('.jatuh_tempo_tr').prop('hidden',false);
     }
-
-    
-
-   
-
   })
 
-  
+  // PATTY CASH SCRIPT
+  $('.append_petty').click(function(){
+    var patty_nomor         = $('.patty_nomor').val();
+    var akun_biaya          = $('.akun_biaya').val();
+    var dk_patty            = $('.dk_patty').val();
+    var keterangan_patty    = $('.keterangan_patty').val();
+    var nominal_patty       = $('.nominal_patty').val();
+    var supplier_patty      = $('.supplier_patty').val();
+    // VALIDASI
+    console.log(supplier_patty);
+    if (supplier_patty == '') {
+      toastr.warning('Nama Pemohon Harus Diisi');
+      return false;
+    }
+
+    if (akun_biaya == '0') {
+      toastr.warning('Harap Memilih Akun Biaya');
+      return false;
+    }
+
+    if (keterangan_patty == '') {
+      toastr.warning('Keterangan Harus Diisi');
+      return false;
+    }
+
+    if (nominal_patty == '0') {
+      toastr.warning('Nominal Tidak Boleh 0');
+      return false;
+    }
+
+    table_patty.row.add([
+      '<p class="pt_seq_text">'+patty_nomor+'</p>'+
+      '<input type="hidden" class="pt_seq_'+patty_nomor+' pt_seq">',
+
+      '<p class="pt_akun_biaya_text">'+akun_biaya+'</p>'+
+      '<input type="hidden" class="pt_akun_biaya" value="'+akun_biaya+'">',
+
+      '<p class="pt_nominal_text">'+accounting.formatMoney(nominal_patty,"", 2, ".",',')+'</p>'+
+      '<input type="hidden" class="pt_nominal" value="'+nominal_patty+'">',
+
+      '<p class="pt_debet_text">'+dk_patty+'</p>'+
+      '<input type="hidden" class="pt_debet" value="'+dk_patty+'">',
+
+      '<p class="pt_keterangan">'+keterangan_patty+'</p>'+
+      '<input type="hidden" class="pt_keterangan" value="'+keterangan_patty+'">',
+
+      '<div class="btn-group">'+
+      '<button type="button" class="btn btn-warning"><i class="fa fa-pencil">Edit</i></button>'+
+      '<button type="button" class="btn btn-danger"><i class="fa fa-trash ">Hapus</i></button>'+
+      '</div>',
+    ]).draw();
+
+    seq = patty_nomor+1;
+    $('.jenis_bayar_td').addClass('disabled');
+    $('.supplier_patty_td').addClass('disabled');
+
+    toastr.success('Data Berhasil Di Append');
+  });
 
 </script>
 @endsection

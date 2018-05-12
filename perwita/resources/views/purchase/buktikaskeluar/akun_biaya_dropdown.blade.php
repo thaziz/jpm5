@@ -1,4 +1,4 @@
-<select class="form-control kas chosen-select-width1" name="kas">
+<select class="form-control akun_biaya chosen-select-width1" name="akun_biaya">
 	<option value="0">Pilih - Akun</option>}
 	@foreach($akun as $val)
 		<option value="{{ $val->maf_kode_akun }}">{{ $val->maf_kode_akun }} - {{ $val->maf_nama }}</option>
