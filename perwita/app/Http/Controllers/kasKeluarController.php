@@ -15,6 +15,10 @@ use Session;
 use Mail;
 use Illuminate\Support\Facades\Input;
 use Dompdf\Dompdf;
+use Auth;
+use Yajra\Datatables\Datatables;
+use App\d_jurnal;
+use App\d_jurnal_dt;
 // use Datatables;
 
 
@@ -110,7 +114,7 @@ class kasKeluarController extends Controller
 		$bulan = Carbon::now()->format('m');
 	    $tahun = Carbon::now()->format('y');
 
-	    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),12) as id from bukti_kas_keluar
+	    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 	                                    WHERE bkk_comp = '$req->cabang'
 	                                    AND to_char(bkk_tgl,'MM') = '$bulan'
 	                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
@@ -215,11 +219,17 @@ class kasKeluarController extends Controller
 		return view('purchase.buktikaskeluar.kredit_faktur');
 	}
 
+	public function um_faktur(request $req)
+	{
+		
+		return view('purchase.buktikaskeluar.kredit_faktur');
+	}
+
 	public function save_patty(request $req)
 	{
 		return DB::transaction(function() use ($req) {  
 
-			dd($req->all());
+			// dd($req->all());
 			$cari_nota = DB::table('bukti_kas_keluar')
 						   ->where('bkk_nota',$req->nota)
 						   ->first();
@@ -232,7 +242,7 @@ class kasKeluarController extends Controller
 				$bulan = Carbon::now()->format('m');
 			    $tahun = Carbon::now()->format('y');
 
-			    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),12) as id from bukti_kas_keluar
+			    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),13) as id from bukti_kas_keluar
 			                                    WHERE bkk_comp = '$req->cabang'
 			                                    AND to_char(bkk_tgl,'MM') = '$bulan'
 			                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
@@ -253,7 +263,7 @@ class kasKeluarController extends Controller
 				$id += 1;
 			}
 
-			DB::table('bukti_kas_keluar')
+			$header = DB::table('bukti_kas_keluar')
 				  ->insert([
 				  	'bkk_id'  			=> $id,
 					'bkk_nota' 			=> $nota,
@@ -266,14 +276,15 @@ class kasKeluarController extends Controller
 					'updated_at' 		=> carbon::now(),
 					'bkk_akun_kas' 		=> $req->kas,
 					'bkk_supplier' 		=> $req->supplier_patty,
-					'bkk_akun_hutang' 	=> 0,
+					'bkk_akun_hutang' 	=> $req->hutang,
 					'bkk_status' 		=> 'RELEASED',
 					'updated_by' 		=> Auth::user()->m_name,
 	  				'created_by' 		=> Auth::user()->m_name,
 			  	]);
 
 			for ($i=0; $i < count($req->pt_seq); $i++) {
-				$id_dt = DB::table('biaya_penerus_kas_detail')
+
+				$id_dt = DB::table('bukti_kas_keluar_detail')
 						   ->max('bkkd_id');
 				if ($id_dt == null) {
 					$id_dt = 1;
@@ -281,21 +292,72 @@ class kasKeluarController extends Controller
 					$id_dt += 1;
 				}
 
-				// 'bkkd_id'  			=> $id_dt,
-				// 'bkkd_bkk_id'  		=> $id,
-				// 'bkkd_bkk_dt'  		=> $i+1,
-				// 'bkkd_keterangan' 	=> ,
-				// 'bkkd_akun'  		=> ,
-				// 'bkkd_total' 		=> ,
-				// 'bkkd_debit' 		=> ,
-				// 'updated_at'		=> ,
-				// 'created_at' 		=> ,
-				// 'bkkd_ref' 			=> ,
-				// 'bkkd_supplier' 	=> ,
+				$detail = DB::table('bukti_kas_keluar_detail')
+				  ->insert([
+				  	'bkkd_id'  			=> $id_dt,
+					'bkkd_bkk_id'  		=> $id,
+					'bkkd_bkk_dt'  		=> $i+1,
+					'bkkd_keterangan' 	=> strtoupper($req->pt_keterangan[$i]),
+					'bkkd_akun'  		=> $req->pt_akun_biaya[$i],
+					'bkkd_total' 		=> $req->pt_nominal[$i],
+					'bkkd_debit' 		=> $req->pt_debet[$i],
+					'updated_at'		=> carbon::now(),
+					'created_at' 		=> carbon::now(),
+					'bkkd_ref' 			=> 'NONE',
+					'bkkd_supplier' 	=> 'NONE',
+					]);
+				
 			}
 
 
-			
+			$id_pt = DB::table('patty_cash')
+						   ->max('pc_id');
+				if ($id_pt == null) {
+					$id_pt = 1;
+				}else{
+					$id_pt += 1;
+				}
+
+			$patty_cash = DB::table('patty_cash')
+							->insert([
+								'pc_id'  		=> $id_pt,
+								'pc_ref'  		=> $req->jenis_bayar,
+								'pc_akun'  		=> $req->hutang,
+								'pc_keterangan' => strtoupper($req->keterangan_head),
+								'pc_debet' 		=> 0,
+								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT),
+								'updated_at' 	=> carbon::now(),
+								'created_at' 	=> carbon::now(),
+								'pc_akun_kas' 	=> $req->kas,
+								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+								'pc_user'  		=> Auth::user()->m_name,
+								'pc_comp' 		=> $req->cabang,
+								'pc_no_trans' 	=> $nota,
+								'pc_edit'  		=> 'UNALLOWED',
+								'pc_reim'  		=> 'UNRELEASED',
+							]);	
+			// //JURNAL
+			// $id_jurnal=d_jurnal::max('jr_id')+1;
+			// $jenis_bayar = DB::table('jenisbayar')
+			// 				 ->where('idjenisbayar',$req->jenis_bayar)
+			// 				 ->first();
+
+			// $jurnal = d_jurnal::create(['jr_id '	=> $id_jurnal,
+			// 							'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
+			// 							'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+			// 							'jr_detail' => $jenisbayar->jenisbayar,
+			// 							'jr_ref'  	=> $nota,
+			// 							'jr_note'  	=> 'BUKTI KAS KELUAR',
+			// 							'jr_insert' => carbon::now(),
+			// 							'jr_update' => carbon::now(),
+			// 							'jr_no'  	=> ,
+			// 							]);
+
+			// for ($i=0; $i < ; $i++) { 
+			// 	# code...
+			// }
+
+			return response()->json(['status'=>1]);
 
 		});
 	}

@@ -328,6 +328,7 @@ Route::get('buktikaskeluar/histori_faktur', 'kasKeluarController@histori_faktur'
 Route::get('buktikaskeluar/return_faktur', 'kasKeluarController@return_faktur');
 Route::get('buktikaskeluar/debet_faktur', 'kasKeluarController@debet_faktur');
 Route::get('buktikaskeluar/kredit_faktur', 'kasKeluarController@kredit_faktur');
+Route::get('buktikaskeluar/um_faktur', 'kasKeluarController@um_faktur');
 Route::get('buktikaskeluar/save_patty', 'kasKeluarController@save_patty');
 Route::get('buktikaskeluar/supplier_dropdown', 'kasKeluarController@supplier_dropdown');
 

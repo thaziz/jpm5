@@ -287,15 +287,18 @@
                                                    <!-- Nav tabs -->
                           <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
-                              <a href="#histori_faktur" aria-controls="home" role="tab" data-toggle="tab">Pembayaran</a>
+                              <a href="#histori_faktur" role="tab" data-toggle="tab">Pembayaran</a>
                             </li>
                             <li role="presentation">
-                              <a href="#return_faktur" aria-controls="profile" role="tab" data-toggle="tab">Return</a>
+                              <a href="#return_faktur" role="tab" data-toggle="tab">Return</a>
                             </li>
                             <li role="presentation">
-                              <a href="#kredit_faktur" aria-controls="messages" role="tab" data-toggle="tab">Kredit Nota</a></li>
+                              <a href="#kredit_faktur" role="tab" data-toggle="tab">Kredit Nota</a></li>
                             <li role="presentation">
-                              <a href="#debet_faktur" aria-controls="settings" role="tab" data-toggle="tab">Debet Nota</a>
+                              <a href="#debet_faktur" role="tab" data-toggle="tab">Debet Nota</a>
+                            </li>
+                            <li role="presentation">
+                              <a href="#um_faktur" role="tab" data-toggle="tab">Uang Muka</a>
                             </li>
                           </ul>
                           <!-- Tab panes -->
@@ -347,6 +350,21 @@
                             </div>
                             <div role="tabpanel" class="tab-pane fade" id="debet_faktur">
                               <table class="table debet_tabel">
+                                <thead>
+                                  <tr>
+                                    <th>No</th>
+                                    <th>No Transaksi</th>
+                                    <th>Tanggal</th>
+                                    <th>Jumlah Bayar</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                 
+                                </tbody>
+                              </table>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="um_faktur">
+                              <table class="table um_tabel">
                                 <thead>
                                   <tr>
                                     <th>No</th>
@@ -603,8 +621,10 @@
     var return_tabel  = $('.return_tabel').DataTable();
     var debet_tabel   = $('.debet_tabel').DataTable();
     var kredit_tabel  = $('.kredit_tabel').DataTable();
+    var um_tabel      = $('.um_tabel').DataTable();
     var tabel_faktur  = $('.tabel_faktur').DataTable();
     var table_um      = $('.table_um').DataTable();
+
   // 
 
   $(document).ready(function(){
