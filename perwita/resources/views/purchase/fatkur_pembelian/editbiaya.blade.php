@@ -587,7 +587,7 @@ $(document).ready(function(){
       type:'get',
       success:function(response){
         if(response.status == 1){
-            var total = parseInt(response.data.tarif_dasar);
+            var total = parseInt(response.data.total_net);
           $('.total_pod').val(total);
           $('.nom_resi').val(accounting.formatMoney(total,'Rp. ', 2, ".",','));
           

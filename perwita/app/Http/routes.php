@@ -208,9 +208,9 @@ Route::get('fakturpembelian/hapusfakturpembelian/{id}' , 'PurchaseController@hap
 
 //BIAYA PENERUS AGEN
 Route::get('fakturpembelian/getdatapenerus', 'BiayaPenerusController@getdatapenerus');
-Route::get('fakturpembelian/caripod', 'BiayaPenerusController@caripod');
-Route::get('fakturpembelian/carimaster/{vendor}', 'BiayaPenerusController@carimaster');
-Route::get('fakturpembelian/auto/{i}', 'BiayaPenerusController@auto');
+Route::get('fakturpembelian/cari_do', 'BiayaPenerusController@cari_do');
+Route::get('fakturpembelian/carimaster', 'BiayaPenerusController@carimaster');
+Route::get('fakturpembelian/autocomplete_biaya_penerus', 'BiayaPenerusController@autocomplete_biaya_penerus');
 Route::get('fakturpembelian/rubahVen', 'BiayaPenerusController@rubahVen');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::get('fakturpembelian/cari_do_subcon', 'BiayaPenerusController@cari_do_subcon');
@@ -809,6 +809,27 @@ Route::post('reportcabangkilogram/reportcabangkilogram', 'LaporanMasterControlle
 Route::post('reportcabangsepeda/reportcabangsepeda', 'LaporanMasterController@reportcabangsepeda')->name('reportcabangsepeda');
 //END OF LAPORAN TARIF PDF
 
+//========tarif penerus
+
+//TARIF PENERUS
+Route::get('laporan_master_penjualan/tarif_penerus_dokumen', 'LaporanMasterController@tarif_penerus_dokumen');
+Route::get('laporan_master_penjualan/tarif_penerus_koli', 'LaporanMasterController@tarif_penerus_koli');
+Route::get('laporan_master_penjualan/tarif_penerus_default', 'LaporanMasterController@tarif_penerus_default');
+Route::get('laporan_master_penjualan/tarif_penerus_kilogram', 'LaporanMasterController@tarif_penerus_kilogram');
+Route::get('laporan_master_penjualan/tarif_penerus_sepeda', 'LaporanMasterController@tarif_penerus_sepeda');
+//END OF PENERUS  
+
+//LAPORAN PENERUS PDF
+Route::post('reportpenerusdokumen/reportpenerusdokumen', 'LaporanMasterController@reportpenerusdokumen')->name('reportpenerusdokumen');
+Route::post('reportpeneruskoli/reportpeneruskoli', 'LaporanMasterController@reportpeneruskoli')->name('reportpeneruskoli');
+Route::post('reportpenerusdefault/reportpenerusdefault', 'LaporanMasterController@reportpenerusdefault')->name('reportpenerusdefault');
+Route::post('reportpeneruskilogram/reportpeneruskilogram', 'laporanmasterController@reportpeneruskilogram')->name('reportpeneruskilogram');
+Route::post('reportpenerussepeda/reportpenerussepeda', 'LaporanMasterController@reportpenerussepeda')->name('reportpenerussepeda');
+//END OF LAPORAN PENERUS PDF
+
+
+//=======end of
+
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
 Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
@@ -982,6 +1003,14 @@ Route::get('master_sales/subcon/tabel', 'master_sales\subcon_Controller@table_da
 Route::get('master_sales/subcon/get_data', 'master_sales\subcon_Controller@get_data');
 Route::get('master_sales/subcon/save_data', 'master_sales\subcon_Controller@save_data');
 Route::post('master_sales/subcon/hapus_data', 'master_sales\subcon_Controller@hapus_data');
+// end subcon
+
+//Master Tarif Subcon
+Route::get('master_purchase/tarif_subcon', 'subcon_Controller@index');
+Route::get('master_purchase/subcon/tabel', 'subcon_Controller@table_data');
+Route::get('master_purchase/subcon/get_data', 'subcon_Controller@get_data');
+Route::get('master_purchase/subcon/save_data', 'subcon_Controller@save_data');
+Route::post('master_purchase/subcon/hapus_data', 'subcon_Controller@hapus_data');
 // end subcon
 
 //tipe angkutan

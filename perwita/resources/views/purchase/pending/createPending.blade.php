@@ -310,7 +310,7 @@
     var note = $('.note').val();
     $( ".note" ).autocomplete({
       source:baseUrl + '/fakturpembelian/cariNote', 
-      minLength: 3,
+      minLength: 1,
     });
 
    }
