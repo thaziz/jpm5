@@ -157,11 +157,14 @@
                       {{-- petty cash TR --}}
                       <div class="col-sm-12 patty_cash_div penanda_patty"  >
                         <div class="col-sm-6">
-                          <table class="table table-bordered" >
+                          <table class="table table-bordered form_patty" >
                             <caption style="text-align: center"><h3>PETTY CASH</h3></caption>
                             <tr>
                               <td width="120">Nomor</td>
-                              <td><input readonly="" class="form-control patty_nomor" value="1" type="text" class="patty_nomor"></td>
+                              <td>
+                                <input type="text"  readonly="" class="form-control patty_nomor" value="1" class="patty_nomor">
+                                <input type="hidden" class="form-control flag_patty" class="flag_patty">
+                              </td>
                             </tr>
                             <tr>
                               <td width="120">Akun Biaya</td>
@@ -209,10 +212,10 @@
                           </table>
                         </div>
                         <div class="col-sm-12">
-                          <table class="table table_patty">
+                          <table class="table table_patty table-bordered">
                             <thead>
                               <tr>
-                                <th>No</th>
+                                <th width="20">No</th>
                                 <th>Akun Biaya</th>
                                 <th>Jumlah Bayar</th>
                                 <th>Keterangan</th>
@@ -231,7 +234,7 @@
                         <div class="col-sm-8 detail_biaya">
                         <div class="col-sm-8 ">
                           <caption><h2>Detail Biaya</h2></caption>
-                          <table class="table " >
+                          <table class="table  " >
                             <tr >
                               <td style="border: none" width="120">Filter</td>
                               <td style="border: none" colspan="2">
@@ -434,7 +437,7 @@
                       {{-- form uang muka --}}
                       <div hidden="" class="col-sm-12 uang_muka_div penanda_um"  >
                         <div class="col-sm-6">
-                          <table class="table table-bordered" >
+                          <table class="table table-bordered form_um" >
                             <caption style="text-align: center"><h3>UANG MUKA</h3></caption>
                             <tr>
                               <td width="120">Nomor</td>
@@ -585,6 +588,10 @@
                                  className: 'right'
                               },
                               {
+                                 targets: 4,
+                                 className: 'center'
+                              },
+                              {
                                  targets: 5,
                                  className: 'center'
                               }
@@ -721,12 +728,15 @@
   $('.append_petty').click(function(){
     var patty_nomor         = $('.patty_nomor').val();
     var akun_biaya          = $('.akun_biaya').val();
+    var akun_biaya_text     = $('.akun_biaya :selected').text();
     var dk_patty            = $('.dk_patty').val();
     var keterangan_patty    = $('.keterangan_patty').val();
     var nominal_patty       = $('.nominal_patty').val();
+    nominal_patty           = nominal_patty.replace(/[^0-9\-]+/g,"");
     var supplier_patty      = $('.supplier_patty').val();
+    var flag_patty          = $('.flag_patty').val();
+
     // VALIDASI
-    console.log(supplier_patty);
     if (supplier_patty == '') {
       toastr.warning('Nama Pemohon Harus Diisi');
       return false;
@@ -746,35 +756,79 @@
       toastr.warning('Nominal Tidak Boleh 0');
       return false;
     }
+    if (flag_patty == '') {
+      table_patty.row.add([
+        '<p class="pt_seq_text">'+patty_nomor+'</p>'+
+        '<input type="hidden" class="pt_seq_'+patty_nomor+' pt_seq" value="'+patty_nomor+'">',
 
-    table_patty.row.add([
-      '<p class="pt_seq_text">'+patty_nomor+'</p>'+
-      '<input type="hidden" class="pt_seq_'+patty_nomor+' pt_seq">',
+        '<p class="pt_akun_biaya_text">'+akun_biaya_text+'</p>'+
+        '<input type="hidden" class="pt_akun_biaya" value="'+akun_biaya+'">',
 
-      '<p class="pt_akun_biaya_text">'+akun_biaya+'</p>'+
-      '<input type="hidden" class="pt_akun_biaya" value="'+akun_biaya+'">',
+        '<p class="pt_nominal_text">'+accounting.formatMoney(nominal_patty,"", 0, ".",',')+'</p>'+
+        '<input type="hidden" class="pt_nominal" value="'+nominal_patty+'">',
 
-      '<p class="pt_nominal_text">'+accounting.formatMoney(nominal_patty,"", 2, ".",',')+'</p>'+
-      '<input type="hidden" class="pt_nominal" value="'+nominal_patty+'">',
+        '<p class="pt_keterangan_text">'+keterangan_patty+'</p>'+
+        '<input type="hidden" class="pt_keterangan" value="'+keterangan_patty+'">',
 
-      '<p class="pt_debet_text">'+dk_patty+'</p>'+
-      '<input type="hidden" class="pt_debet" value="'+dk_patty+'">',
+        '<p class="pt_debet_text">'+dk_patty+'</p>'+
+        '<input type="hidden" class="pt_debet" value="'+dk_patty+'">',
 
-      '<p class="pt_keterangan">'+keterangan_patty+'</p>'+
-      '<input type="hidden" class="pt_keterangan" value="'+keterangan_patty+'">',
+        '<div class="btn-group">'+
+        '<button onclick="pt_edit(this)" type="button" class="btn btn-sm btn-warning"><i class="fa fa-pencil" title="Edit"></i></button>'+
+        '<button onclick="pt_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>'+
+        '</div>',
+      ]).draw();
+      seq = parseInt(patty_nomor)+1;
+      toastr.success('Data Berhasil Di Append');
+    }else{
+      var par = $('.pt_seq_'+flag_patty).parents('tr');
+      var pt_seq_text        = $(par).find('.pt_seq_text').text(patty_nomor);
+      var pt_akun_biaya_text = $(par).find('.pt_akun_biaya_text').text(akun_biaya);
+      var pt_nominal_text    = $(par).find('.pt_nominal_text').text(accounting.formatMoney(nominal_patty,"", 0, ".",','));
+      var pt_keterangan_text = $(par).find('.pt_keterangan_text').text(keterangan_patty);
+      var pt_debet_text      = $(par).find('.pt_debet_text').text(dk_patty);
 
-      '<div class="btn-group">'+
-      '<button type="button" class="btn btn-warning"><i class="fa fa-pencil">Edit</i></button>'+
-      '<button type="button" class="btn btn-danger"><i class="fa fa-trash ">Hapus</i></button>'+
-      '</div>',
-    ]).draw();
-
-    seq = patty_nomor+1;
+      var pt_seq        = $(par).find('.pt_seq').val(patty_nomor);
+      var pt_akun_biaya = $(par).find('.pt_akun_biaya').val(akun_biaya);
+      var pt_nominal    = $(par).find('.pt_nominal').val(nominal_patty);
+      var pt_keterangan = $(par).find('.pt_keterangan').val(keterangan_patty);
+      var pt_debet      = $(par).find('.pt_debet').val(dk_patty);
+      toastr.success('Data Berhasil Di Update');
+    }
     $('.jenis_bayar_td').addClass('disabled');
     $('.supplier_patty_td').addClass('disabled');
+    $('.form_patty :input').val('')
+    $('.form_patty .akun_biaya').val('0').trigger('chosen:updated');
+    $('.form_patty .nominal_patty').val('0');
+    $('.form_patty .dk_patty').val('DEBET');
+    $('.form_patty .patty_nomor').val(seq);
+    $('#save_patty').removeClass('disabled');
 
-    toastr.success('Data Berhasil Di Append');
   });
+
+  function pt_edit(a) {
+    var par                 = $(a).parents('tr');
+    var pt_seq              = $(par).find('.pt_seq').val();
+    var pt_akun_biaya       = $(par).find('.pt_akun_biaya').val();
+    var pt_nominal          = $(par).find('.pt_nominal').val();
+    var pt_keterangan       = $(par).find('.pt_keterangan').val();
+    var pt_debet            = $(par).find('.pt_debet').val();
+    console.log(pt_keterangan);
+    $('.patty_nomor').val(pt_seq);
+    $('.flag_patty').val(pt_seq);
+    $('.dk_patty').val(pt_debet);
+    $('.keterangan_patty').val(pt_keterangan);
+    $('.nominal_patty').val(accounting.formatMoney(pt_nominal,"", 0, ".",','));
+    $('.akun_biaya').val(pt_akun_biaya).trigger('chosen:updated');
+    toastr.info('Data Berhasil Di Inisialisasi');
+
+  }
+
+  function pt_hapus(a) {
+    var par = $(a).parents('tr');
+    table_patty.row(par).remove().draw(false);
+    toastr.info('Data Berhasil Di Hapus');
+  }
 
 </script>
 @endsection
