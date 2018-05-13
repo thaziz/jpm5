@@ -386,17 +386,13 @@ class kasKeluarController extends Controller
 
 	public function cari_faktur(request $req)
 	{	
-		
+		// dd($req->all());
 
 		$jenis_bayar = $req->jenis_bayar;
 		if ($req->jenis_bayar == 2) {
 			if ($req->filter_faktur == 'tanggal') {
 
 				$tgl = explode('-',$req->periode);
-				// $tgl[0] = str_replace('/', '-', $tgl[0]);
-				// $tgl[1] = str_replace('/', '-', $tgl[1]);
-				// $tgl[0] = str_replace(' ', '', $tgl[0]);
-				// $tgl[1] = str_replace(' ', '', $tgl[1]);
 				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
 				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
 
@@ -411,15 +407,12 @@ class kasKeluarController extends Controller
 						  ->where('fp_comp',$req->cabang)
 						  ->where('fp_tgl','>=',$tgl[0])
 						  ->where('fp_tgl','<=',$tgl[1])
+						  ->whereNotIn('fp_nofaktur',$req->valid)
 						  ->get();
 
 				return view('purchase.buktikaskeluar.tabel_modal_faktur',compact('data','jenis_bayar'));
 			}elseif ($req->filter_faktur == 'jatuh_tempo') {
 				$tgl = explode('-',$req->periode);
-				$tgl[0] = str_replace('/', '-', $tgl[0]);
-				$tgl[1] = str_replace('/', '-', $tgl[1]);
-				$tgl[0] = str_replace(' ', '', $tgl[0]);
-				$tgl[1] = str_replace(' ', '', $tgl[1]);
 				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
 				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
 
@@ -434,6 +427,7 @@ class kasKeluarController extends Controller
 						  ->where('fp_comp',$req->cabang)
 						  ->where('fp_jatuhtempo','>=',$tgl[0])
 						  ->where('fp_jatuhtempo','<=',$tgl[1])
+						  ->whereNotIn('fp_nofaktur',$req->valid)
 						  ->get();
 
 				return view('purchase.buktikaskeluar.tabel_modal_faktur',compact('data','jenis_bayar'));
@@ -449,6 +443,7 @@ class kasKeluarController extends Controller
 						  ->where('fp_idsup',$supplier->idsup)
 						  ->where('fp_nofaktur',$req->faktur_nomor)
 						  ->where('fp_comp',$req->cabang)
+						  ->whereNotIn('fp_nofaktur',$req->valid)
 						  ->first();
 
 				return response()->json(['data'=>$data]);
@@ -470,32 +465,73 @@ class kasKeluarController extends Controller
 
 	public function histori_faktur(request $req)
 	{
-		
-		return view('purchase.buktikaskeluar.histori_faktur');
-	}
+		if (isset($nota)) {
+			$nota = $req->nota;
+		}else{
+			$nota = 0;
+		}
 
-	public function return_faktur(request $req)
-	{
-		
-		return view('purchase.buktikaskeluar.return_faktur');
+		$fpg = DB::select("SELECT fpg_nofpg as nota, fpg_tgl as tanggal, fpgdt_jumlahtotal as total 
+							from fpg inner join fpg_dt on fpgdt_idfpg = idfpg where fpgdt_nofaktur = '$req->fp_faktur'");	
+
+		$bkk = DB::select("SELECT bkk_nota as nota, bkk_tgl as tanggal, bkkd_total as total 
+							from bukti_kas_keluar 
+							inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id 
+							where bkkd_ref = '$req->fp_faktur' and bkk_nota != '$nota'");	
+		$data = array_merge($fpg,$bkk);
+
+		return view('purchase.buktikaskeluar.histori_faktur',compact('data'));
 	}
 
 	public function debet_faktur(request $req)
 	{
-		
-		return view('purchase.buktikaskeluar.debet_faktur');
+		$fp = DB::table('faktur_pembelian')
+				->where('fp_nofaktur',$req->fp_faktur)
+				->first();
+
+		$data = DB::table('cndnpembelian')
+				  ->join('cndnpembelian_dt','cndn_id','=','cndt_idcn')
+				  ->where('cndt_idfp',$fp->fp_idfaktur)
+				  ->where('cndn_jeniscndn','D')
+				  ->get();
+
+		return view('purchase.buktikaskeluar.debet_faktur',compact('data'));
 	}
 
 	public function kredit_faktur(request $req)
 	{
-		
-		return view('purchase.buktikaskeluar.kredit_faktur');
+		$fp = DB::table('faktur_pembelian')
+				->where('fp_nofaktur',$req->fp_faktur)
+				->first();
+
+		$data = DB::table('cndnpembelian')
+				  ->join('cndnpembelian_dt','cndn_id','=','cndt_idcn')
+				  ->where('cndt_idfp',$fp->fp_idfaktur)
+				  ->where('cndn_jeniscndn','K')
+				  ->get();
+
+		return view('purchase.buktikaskeluar.kredit_faktur',compact('data'));
 	}
 
 	public function um_faktur(request $req)
 	{
-		
-		return view('purchase.buktikaskeluar.kredit_faktur');
+		$fp = DB::table('faktur_pembelian')
+				->where('fp_nofaktur',$req->fp_faktur)
+				->first();
+					
+		$data = DB::table('uangmukapembelian_fp')
+				  ->join('uangmukapembeliandt_fp','umfpdt_idum','=','umfp_idfp')
+				  ->where('umfpdt_idfp',$fp->fp_idfaktur)
+				  ->get();
+
+		return view('purchase.buktikaskeluar.kredit_faktur',compact('data'));
+	}
+	public function detail_faktur(request $req)
+	{
+		$data = DB::table('faktur_pembelian')
+				->where('fp_nofaktur',$req->fp_faktur)
+				->first();
+		return response()->json(['data'=>$data]);
 	}
 
 }

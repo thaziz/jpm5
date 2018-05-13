@@ -236,7 +236,7 @@
                       </div><!-- /.end patty cash tr -->
                       {{-- form faktur --}}
                       <div hidden="" class="col-sm-12 faktur_div penanda_faktur" style="border-bottom: 0.5px solid #8888; margin-top: 10px;">
-                        <div class="col-sm-8 detail_biaya">
+                        <div class="col-sm-8 form_histori">
                         <div class="col-sm-8 ">
                           <caption><h2>Detail Biaya</h2></caption>
                           <table class="table  " >
@@ -277,12 +277,12 @@
                                 <button type="button" class="btn btn-primary" onclick="cari_faktur()"><i class="fa fa-search"> Cari Faktur</i></button>
                               </td>
                             </tr>
-                            <tr>
+                           {{--  <tr>
                               <td style="border: none" width="120">No Tanda Terima</td>
                               <td style="border: none" colspan="2">
                                 <input readonly="" class="form-control tanda_terima" type="text" class="tanda_terima">
                               </td>
-                            </tr>
+                            </tr> --}}
                           </table>
                         </div>
 
@@ -303,7 +303,7 @@
                           </ul>
                           <!-- Tab panes -->
                           <div class="tab-content" style="margin-top: 10px">
-                            <div role="tabpanel" class="tab-pane fade in active" id="histori_faktur">
+                            <div role="tabpanel" class="tab-pane fade in active " id="histori_faktur">
                               <table class="table histori_tabel" >
                                 <thead>
                                   <tr>
@@ -367,60 +367,64 @@
                         </div>
                         </div>
                         <div class="col-sm-4 keterangan_biaya" >
-                          <table class="table table-bordered">
+                          <table class="table table-bordered detail_biaya">
                             <tr>
                               <td width="120">Total Biaya Faktur</td>
                               <td>
-                                <input type="text" readonly="" class="biaya_detail form-control" name="biaya_faktur">
+                                <input type="text" readonly="" class="biaya_detail form-control right" name="biaya_faktur">
+                                <input type="hidden" readonly="" class="flag_detail form-control right" name="flag_detail">
                               </td>
                             </tr>
                             <tr>
                               <td width="120">Terbayar</td>
                               <td>
-                                <input type="text" readonly="" class="terbayar_detail form-control" name="terbayar_detail">
+                                <input type="text" readonly="" class="terbayar_detail form-control right" name="terbayar_detail">
                               </td>
                             </tr>
                             <tr>
                               <td width="120">Pelunasan Uang Muka</td>
                               <td>
-                                <input type="text" readonly="" class="pelunasan_um form-control" name="pelunasan_um">
+                                <input type="text" readonly="" class="pelunasan_um form-control right" name="pelunasan_um">
                               </td>
                             </tr>
                             <tr>
                               <td width="120">Debet Nota</td>
                               <td>
-                                <input type="text" readonly="" class="debet_detail form-control" name="debet_detail">
+                                <input type="text" readonly="" class="debet_detail form-control right" name="debet_detail">
                               </td>
                             </tr>
                             <tr>
                               <td width="120">Kredit Nota</td>
                               <td>
-                                <input type="text" readonly="" class="kredit_detail form-control" name="kredit_detail">
+                                <input type="text" readonly="" class="kredit_detail form-control right" name="kredit_detail">
                               </td>
                             </tr>
                             <tr>
                               <td width="120">Sisa Pembayaran</td>
                               <td>
-                                <input type="text" readonly="" class="sisa_detail form-control" name="sisa_detail">
+                                <input type="text" readonly="" class="sisa_detail form-control right" name="sisa_detail">
                               </td>
                             </tr>
                             <tr>
                               <td width="120">Pelunasan</td>
                               <td>
-                                <input type="text" class="pelunasan_detail form-control" name="pelunasan_detail">
+                                <input type="text" class="pelunasan_detail form-control right" name="pelunasan_detail">
                               </td>
                             </tr>
                             <tr>
                               <td width="120">Sisa Pembayaran Akhir</td>
                               <td>
-                                <input type="text" readonly="" class="total_detail form-control" name="total_detail">
+                                <input type="text" readonly="" class="total_detail form-control right" name="total_detail">
                               </td>
                             </tr>
                           </table>
+                          <table class="table">
+                            <tr><td align="right"><button class="btn btn-primary update_detail">Update</button></td></tr>
+                          </table>
                         </div>
-                        <div class="col-sm-12" style="margin-top: 10px;">
+                        <div class="col-sm-12" style="margin-top: 10px;overflow: auto" >
                         <caption><h2>Detail Faktur</h2></caption>
-                        <table class="table tabel_faktur table-bordered">
+                        <table class="table tabel_faktur table-bordered " >
                           <thead>
                             <tr>
                               <th>Faktur</th>
@@ -429,6 +433,7 @@
                               <th>Total Faktur</th>
                               <th>Terbayar</th>
                               <th>Pelunasan</th>
+                              <th>Sisa Akhir</th>
                               <th>Keterangan</th>
                               <th>Aksi</th>
                             </tr>
@@ -626,7 +631,11 @@
                                className: 'center'
                             },
                             {
-                               targets: 7,
+                               targets: 6,
+                               className: 'center'
+                            },
+                            {
+                               targets: 8,
                                className: 'center'
                             }
                            ]
@@ -931,6 +940,8 @@
     });
   }
   // supplier hutang dagang
+  var valid = [0];
+
   function cari_faktur() {
     var jenis_bayar       = $('.jenis_bayar').val();
     var cabang            = $('.cabang').val();
@@ -956,7 +967,7 @@
       $.ajax({
         url:baseUrl + '/buktikaskeluar/cari_faktur',
         type:'get',
-        data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor},
+        data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor,valid},
         dataType:'json',
         success:function(data){
 
@@ -968,7 +979,7 @@
       $.ajax({
         url:baseUrl + '/buktikaskeluar/cari_faktur',
         type:'get',
-        data:{jenis_bayar,cabang,supplier_faktur,periode,filter_faktur},
+        data:{jenis_bayar,cabang,supplier_faktur,periode,filter_faktur,valid},
         success:function(data){
           $('.tabel_modal_faktur').html(data);
           $('.modal_faktur').modal('show');
@@ -981,7 +992,6 @@
     
 
   }
-
   $('.append_modal').click(function(){
     var check_array = [];
     check.$('.check').each(function(){
@@ -1002,8 +1012,9 @@
           var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(data.data[i].fp_sisapelunasan);
 
           tabel_faktur.row.add([
-            '<a onclick="detail_faktur('+data.data[i].fp_nofaktur+')" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
-            '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">',
+            '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
+            '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">'+
+            '<input type="hidden" value="'+data.data[i].fp_idfaktur+'" class="fp_id fp_'+data.data[i].fp_idfaktur+'">',
 
             '<p class="fp_tanggal_text">'+data.data[i].fp_tgl+'</p>',
 
@@ -1019,12 +1030,78 @@
 
             '<input readonly value="0" type="text" class="fp_pelunasan form-control" name="fp_pelunasan[]">',
 
+            '<input readonly value="0" type="text" class="fp_sisa_akhir form-control" name="fp_sisa_akhir[]">',
+
             '<p class="fp_keterangan_text">'+data.data[i].fp_keterangan+'</p>',
 
             '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
-
           ]).draw();
+          valid.push(data.data[i].fp_nofaktur);
         }
+
+        var terbayar = parseFloat(data.data[0].fp_sisapelunasan) 
+                       + parseFloat(data.data[0].fp_debitnota) 
+                       - parseFloat(data.data[0].fp_creditnota) 
+                       + parseFloat(data.data[0].fp_uangmuka);
+        $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_netto,"", 2, ".",','));
+        $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+        $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data[0].fp_uangmuka,"", 2, ".",','));
+        $('.debet_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_debitnota,"", 2, ".",','));
+        $('.kredit_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_creditnota,"", 2, ".",','));
+        $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_sisapelunasan,"", 2, ".",','));
+        $('.flag_detail').eq(0).val(data.data[0].fp_idfaktur);
+        var total = parseFloat(data.data[0].fp_sisapelunasan) - 0; 
+        $('.pelunasan_detail').eq(0).val(0);
+        $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+        var fp_faktur     = data.data[0].fp_nofaktur;
+
+        $.ajax({
+          url:baseUrl + '/buktikaskeluar/histori_faktur',
+          type:'get',
+          data:{fp_faktur},
+          success:function(data){
+            $('#histori_faktur').html(data);
+          },
+          error:function(data){
+          }
+        }); 
+
+
+        $.ajax({
+          url:baseUrl + '/buktikaskeluar/debet_faktur',
+          type:'get',
+          data:{fp_faktur},
+          success:function(data){
+            $('#debet_faktur').html(data);
+          },
+          error:function(data){
+          }
+        });
+
+        $.ajax({
+          url:baseUrl + '/buktikaskeluar/kredit_faktur',
+          type:'get',
+          data:{fp_faktur},
+          success:function(data){
+            $('#kredit_faktur').html(data);
+          },
+          error:function(data){
+          }
+        });
+
+        $.ajax({
+          url:baseUrl + '/buktikaskeluar/um_faktur',
+          type:'get',
+          data:{fp_faktur},
+          success:function(data){
+            $('#um_faktur').html(data);
+          },
+          error:function(data){
+          }
+        });
+
+
+        toastr.info('Data Berhasil Diinisialisasi');
       },
       error:function(data){
       }
@@ -1032,13 +1109,18 @@
   })
 
   function detail_faktur(a) {
-    var faktur = a;
+
+    var par           = $(a).parents('tr');
+    var fp_faktur     = $(par).find('.fp_faktur').val();
+    var fp_id         = $(par).find('.fp_id').val();
+    var fp_pelunasan  = $(par).find('.fp_pelunasan').val();
+    fp_pelunasan      = fp_pelunasan.replace(/[^0-9\-]+/g,"");
     $.ajax({
       url:baseUrl + '/buktikaskeluar/histori_faktur',
       type:'get',
-      data:{faktur},
+      data:{fp_faktur},
       success:function(data){
-        $('.histori_tabel').html(data);
+        $('#histori_faktur').html(data);
       },
       error:function(data){
       }
@@ -1048,9 +1130,9 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/debet_faktur',
       type:'get',
-      data:{faktur},
+      data:{fp_faktur},
       success:function(data){
-        $('.debet_tabel').html(data);
+        $('#debet_faktur').html(data);
       },
       error:function(data){
       }
@@ -1059,9 +1141,20 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/kredit_faktur',
       type:'get',
-      data:{faktur},
+      data:{fp_faktur},
       success:function(data){
-        $('.kredit_tabel').html(data);
+        $('#kredit_faktur').html(data);
+      },
+      error:function(data){
+      }
+    });
+
+    $.ajax({
+      url:baseUrl + '/buktikaskeluar/um_faktur',
+      type:'get',
+      data:{fp_faktur},
+      success:function(data){
+        $('#um_faktur').html(data);
       },
       error:function(data){
       }
@@ -1072,16 +1165,65 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/detail_faktur',
       type:'get',
-      data:{faktur},
+      data:{fp_faktur},
       dataType:'json',
       success:function(data){
-        $('.histori_tabel').html(data);
+        var terbayar = parseFloat(data.data.fp_sisapelunasan) 
+                       + parseFloat(data.data.fp_debitnota) 
+                       - parseFloat(data.data.fp_creditnota) 
+                       + parseFloat(data.data.fp_uangmuka);
+        $('.biaya_detail').val(accounting.formatMoney(data.data.fp_netto,"", 2, ".",','));
+        $('.terbayar_detail').val(accounting.formatMoney(terbayar,"", 2, ".",','));
+        $('.pelunasan_um').val(accounting.formatMoney(data.data.fp_uangmuka,"", 2, ".",','));
+        $('.debet_detail').val(accounting.formatMoney(data.data.fp_debitnota,"", 2, ".",','));
+        $('.kredit_detail').val(accounting.formatMoney(data.data.fp_creditnota,"", 2, ".",','));
+        $('.sisa_detail').val(accounting.formatMoney(data.data.fp_sisapelunasan,"", 2, ".",','));
+        $('.flag_detail').val(fp_id);
+        var total = parseFloat(data.data.fp_sisapelunasan) - parseFloat(fp_pelunasan); 
+        $('.pelunasan_detail').val(accounting.formatMoney(parseFloat(fp_pelunasan),"", 0, ".",','));
+        $('.total_detail').val(accounting.formatMoney(total,"", 2, ".",','));
+        toastr.info('Data Berhasil Diinisialisasi');
       },
       error:function(data){
       }
     }); 
   }
 
+  $('.pelunasan_detail').keyup(function(){
+    var pelunasan_detail  = $('.pelunasan_detail').val();
+    pelunasan_detail      = pelunasan_detail.replace(/[^0-9\-]+/g,"");
+
+    var sisa_detail  = $('.sisa_detail').val();
+    sisa_detail      = sisa_detail.replace(/[^0-9\-]+/g,"")/100;
+    if (pelunasan_detail > sisa_detail) {
+      pelunasan_detail = sisa_detail;
+      $('.pelunasan_detail').val(accounting.formatMoney(pelunasan_detail,"", 0, ".",','));
+    }
+
+    var total = parseFloat(sisa_detail) - parseFloat(pelunasan_detail);
+    $('.total_detail').val(accounting.formatMoney(total,"", 2, ".",','));
+
+  });
+
+  $('.update_detail').click(function(){
+    var flag_detail      = $('.flag_detail').val();
+    var par              = $('.fp_'+flag_detail).parents('tr');
+    var pelunasan_detail = $('.pelunasan_detail').val();
+    var total_detail     = $('.total_detail').val();
+
+    $(par).find('.fp_pelunasan').val(pelunasan_detail);
+    $(par).find('.fp_sisa_akhir').val(total_detail);
+    $('.detail_biaya :input').val('');
+  })
+a
+  function fp_hapus(a) {
+    var par       = $(a).parents('tr');
+    var fp_faktur = $(par).find('.fp_faktur').val();
+    var index     = valid.indexOf(fp_faktur);
+    valid.splice(index,1)
+    tabel_faktur.row(par).remove().draw(false);
+        toastr.info('Data Berhasil Dihapus');
+  }
 
 </script>
 @endsection
