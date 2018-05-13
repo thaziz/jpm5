@@ -458,15 +458,14 @@
 
     $("#body_detail").on("click", ".row-detail", function(evt){
       evt.stopImmediatePropagation();
-      $getId = detail.findIndex(x => x.id_referensi == $(this).data("nf"));
 
       // console.log($data_detail[$getId]);
 
-      $("#nomor_faktur_view").val(detail[$getId].id_referensi);
-      $("#tanggal_faktur_view").val(detail[$getId].tanggal);
-      $("#jatuh_tempo_view").val(detail[$getId].jatuh_tempo);
-      $("#keterangan_view").val(detail[$getId].keterangan);
-      $("#jumlah_view").val(detail[$getId].jumlah);
+      $("#nomor_faktur_view").val($(this).data("nf"));
+      $("#tanggal_faktur_view").val($(this).data("tanggal"));
+      $("#jatuh_tempo_view").val($(this).data("jt"));
+      $("#keterangan_view").val($(this).data("keterangan"));
+      $("#jumlah_view").val($(this).data("jumlah"));
     });
 
     function initiate_saldo($idx, $id){
@@ -489,15 +488,25 @@
       if(detail.length != 0){
         $.each(detail, function(i, n){
           if(n.id_saldo_piutang == $id){
-            $html = $html + '<tr class="row-detail" data-nf = "'+n.id_referensi+'">'+
+
+            $a = n.id_referensi.substring(0, 3);
+
+            if($a == "KWT"){
+              $total -= parseInt(n.jumlah);
+              $b = '('+addCommas(n.jumlah)+',00)';
+            }
+            else{
+              $total += parseInt(n.jumlah);
+              $b = addCommas(n.jumlah)+',00';
+            }
+
+            $html = $html + '<tr class="row-detail" data-nf = "'+n.id_referensi+'" data-tanggal = "'+n.tanggal+'" data-jt = "'+n.jatuh_tempo+'" data-keterangan = "'+n.keterangan+'" data-jumlah = "'+addCommas(n.jumlah)+'">'+
                   '<td>'+n.id_referensi+'</td>'+
                   '<td>'+n.tanggal+'</td>'+
                   '<td>'+n.jatuh_tempo+'</td>'+
                   '<td>'+n.keterangan+'</td>'+
-                  '<td class="text-right">'+addCommas(n.jumlah)+',00</td>'+
+                  '<td class="text-right">'+$b+'</td>'+
                 '</tr>';
-
-            $total += parseInt(n.jumlah);
           }
         })
 
