@@ -49,7 +49,10 @@
         <h5> 
          <!-- {{Session::get('comp_year')}} -->
         </h5>
-        <h3>Bukti Kas Keluar</h3>
+        <h3>
+          Bukti Kas Keluar
+        <a href="../buktikaskeluar/index" class="pull-right" style="color: grey; float: right;"><i class="fa fa-arrow-left"> Kembali</i></a>
+        </h3>
       </div>
         <div class="ibox-content">
           <div class="row">
@@ -438,11 +441,11 @@
                         <table class="table tabel_faktur">
                           <thead>
                             <tr>
-                              <th>No</th>
                               <th>Faktur</th>
                               <th>Tanggal</th>
                               <th>Akun</th>
                               <th>Total Faktur</th>
+                              <th>Terbayar</th>
                               <th>Pelunasan</th>
                               <th>Keterangan</th>
                               <th>Aksi</th>
@@ -538,38 +541,42 @@
       </div>
     </div>
 
-    <div class="modal_faktur fade" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
+
+
+    <div class="modal modal_faktur fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Pilih Faktur</h4>
+            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body tabel_modal_faktur">
             <table>
               <thead>
-                <tr onclick="pilih_faktur(this)">
-                  <th>No</th>
+                <tr>
                   <th>No Faktur</th>
                   <th>Tanggal</th>
                   <th>Jatuh Tempo</th>
                   <th>Harga Faktur</th>
                   <th>No Tanda Terima</th>
+                  <th>Aksi</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>data</td>
-                </tr>
+          
               </tbody>
             </table>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary append_modal">Append</button>
           </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        </div>
+      </div>
+    </div>
+    
 
 <div class="row" style="padding-bottom: 50px;"></div>
 
@@ -589,11 +596,11 @@
   });
 
   $('.periode').daterangepicker({
-    format:'dd/mm/yyyy'
+    format:'dd-mm-yyyy'
   });
 
   $('.jatuh_tempo').daterangepicker({
-    format:'dd/mm/yyyy'
+    format:'dd-mm-yyyy'
   });
   // GLOBAL VARIABLE
     var seq = 0;
@@ -624,12 +631,12 @@
     var um_tabel      = $('.um_tabel').DataTable();
     var tabel_faktur  = $('.tabel_faktur').DataTable();
     var table_um      = $('.table_um').DataTable();
-
+    
   // 
 
   $(document).ready(function(){
+    $('.fp_pelunasan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
     $('.nominal_patty').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
-
     var cabang = $('.cabang').val();
     $.ajax({
         url:baseUrl + '/buktikaskeluar/nota_bukti_kas',
@@ -746,14 +753,17 @@
   $('.filter_faktur').change(function(){
     if ($(this).val() == 'faktur') {
       $('.faktur_tr').prop('hidden',false);
+      $('.faktur_nomor').prop('readonly',false);
       $('.periode_tr').prop('hidden',true);
       $('.jatuh_tempo_tr').prop('hidden',true);
     }else if ($(this).val() == 'tanggal') {
       $('.faktur_tr').prop('hidden',true);
+      $('.faktur_nomor').prop('readonly',true);
       $('.periode_tr').prop('hidden',false);
       $('.jatuh_tempo_tr').prop('hidden',true);
     }else  if ($(this).val() == 'jatuh_tempo') {
       $('.faktur_tr').prop('hidden',true);
+      $('.faktur_nomor').prop('readonly',true);
       $('.periode_tr').prop('hidden',true);
       $('.jatuh_tempo_tr').prop('hidden',false);
     }
@@ -920,7 +930,90 @@
       }); 
     });
   }
+  // supplier hutang dagang
+  function cari_faktur() {
+    var jenis_bayar       = $('.jenis_bayar').val();
+    var cabang            = $('.cabang').val();
+    var supplier_faktur   = $('.supplier_faktur ').val();
+    var filter_faktur     = $('.filter_faktur').val();
+    var faktur_nomor      = $('.faktur_nomor').val();
+    var periode           = $('.periode').val();
 
+    if (filter_faktur == 'faktur') {
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/cari_faktur',
+        type:'get',
+        data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor},
+        dataType:'json',
+        success:function(data){
+
+        },
+        error:function(data){
+        }
+      }); 
+    }else{
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/cari_faktur',
+        type:'get',
+        data:{jenis_bayar,cabang,supplier_faktur,periode,filter_faktur},
+        success:function(data){
+          $('.tabel_modal_faktur').html(data);
+          $('.modal_faktur').modal('show');
+        },
+        error:function(data){
+        }
+      }); 
+    }
+    
+
+  }
+
+  $('.append_modal').click(function(){
+    var check_array = [];
+    check.$('.check').each(function(){
+      if ($(this).is(':checked') == true) {
+        var par    = $(this).parents('tr');
+        var faktur = $(par).find('.no_faktur').text();
+        check_array.push(faktur);
+      }
+    })
+
+    $.ajax({
+      url:baseUrl + '/buktikaskeluar/append_faktur',
+      type:'get',
+      data:{check_array},
+      dataType:'json',
+      success:function(data){
+        for (var i = 0; i < data.data.length; i++) {
+          var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(data.data[i].fp_sisapelunasan);
+
+          tabel_faktur.row.add([
+            '<p class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</p>'+
+            '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">',
+
+            '<p class="fp_tanggal_text">'+data.data[i].fp_tgl+'</p>',
+
+            '<p class="fp_akun_text">'+data.data[i].fp_acchutang+'</p>',
+
+            '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].fp_netto,"", 0, ".",',')+'</p>'+
+            '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].fp_netto+'">',
+
+            '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+            '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+
+            '<input type="text" class="fp_pelunasan form-control" name="fp_pelunasan[]">',
+
+            '<p class="fp_keterangan_text">'+data.data[i].fp_keterangan+'</p>',
+
+            '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+
+          ]).draw();
+        }
+      },
+      error:function(data){
+      }
+    }); 
+  })
 
 </script>
 @endsection

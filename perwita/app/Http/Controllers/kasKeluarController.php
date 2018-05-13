@@ -195,36 +195,6 @@ class kasKeluarController extends Controller
 		}
 	}
 
-	public function histori_faktur(request $req)
-	{
-		
-		return view('purchase.buktikaskeluar.histori_faktur');
-	}
-
-	public function return_faktur(request $req)
-	{
-		
-		return view('purchase.buktikaskeluar.return_faktur');
-	}
-
-	public function debet_faktur(request $req)
-	{
-		
-		return view('purchase.buktikaskeluar.debet_faktur');
-	}
-
-	public function kredit_faktur(request $req)
-	{
-		
-		return view('purchase.buktikaskeluar.kredit_faktur');
-	}
-
-	public function um_faktur(request $req)
-	{
-		
-		return view('purchase.buktikaskeluar.kredit_faktur');
-	}
-
 	public function save_patty(request $req)
 	{
 		return DB::transaction(function() use ($req) {  
@@ -337,29 +307,195 @@ class kasKeluarController extends Controller
 								'pc_reim'  		=> 'UNRELEASED',
 							]);	
 			// //JURNAL
-			// $id_jurnal=d_jurnal::max('jr_id')+1;
-			// $jenis_bayar = DB::table('jenisbayar')
-			// 				 ->where('idjenisbayar',$req->jenis_bayar)
-			// 				 ->first();
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			// dd($id_jurnal);
+			$jenis_bayar = DB::table('jenisbayar')
+							 ->where('idjenisbayar',$req->jenis_bayar)
+							 ->first();
 
-			// $jurnal = d_jurnal::create(['jr_id '	=> $id_jurnal,
-			// 							'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
-			// 							'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-			// 							'jr_detail' => $jenisbayar->jenisbayar,
-			// 							'jr_ref'  	=> $nota,
-			// 							'jr_note'  	=> 'BUKTI KAS KELUAR',
-			// 							'jr_insert' => carbon::now(),
-			// 							'jr_update' => carbon::now(),
-			// 							'jr_no'  	=> ,
-			// 							]);
+			$jurnal = d_jurnal::create(['jr_id'		=> $id_jurnal,
+										'jr_year'   => carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y'),
+										'jr_date' 	=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
+										'jr_detail' => $jenis_bayar->jenisbayar,
+										'jr_ref'  	=> $nota,
+										'jr_note'  	=> 'BUKTI KAS KELUAR',
+										'jr_insert' => carbon::now(),
+										'jr_update' => carbon::now(),
+										]);
 
-			// for ($i=0; $i < ; $i++) { 
-			// 	# code...
-			// }
 
-			return response()->json(['status'=>1]);
+			$akun 	  = [];
+			$akun_val = [];
+			array_push($akun, $req->kas);
+			array_push($akun_val, $req->total);
+
+			for ($i=0; $i < count($req->pt_akun_biaya); $i++) { 
+
+				array_push($akun, $req->pt_akun_biaya[$i]);
+				array_push($akun_val, $req->pt_nominal[$i]);
+			}
+
+			$data_akun = [];
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun',$akun[$i])
+								  ->first();
+
+				if (substr($akun[$i],0, 1)==1) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}
+				}else if (substr($akun[$i],0, 1)>1) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $akun[$i];
+						$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}
+				}
+			}
+			// dd($data_akun);
+			$jurnal_dt = d_jurnal_dt::insert($data_akun);
+			$lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get();
+			// dd($lihat);
+
+			return response()->json(['status'=>1,]);
 
 		});
+	}
+
+	public function cari_faktur(request $req)
+	{	
+		
+
+		$jenis_bayar = $req->jenis_bayar;
+		if ($req->jenis_bayar == 2) {
+			if ($req->filter_faktur == 'tanggal') {
+
+				$tgl = explode('-',$req->periode);
+				// $tgl[0] = str_replace('/', '-', $tgl[0]);
+				// $tgl[1] = str_replace('/', '-', $tgl[1]);
+				// $tgl[0] = str_replace(' ', '', $tgl[0]);
+				// $tgl[1] = str_replace(' ', '', $tgl[1]);
+				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
+				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
+
+				$supplier = DB::table('supplier')
+						  ->where('active','AKTIF')
+						  ->where('no_supplier',$req->supplier_faktur)
+						  ->first();
+
+				$data = DB::table('faktur_pembelian')
+						  ->join('form_tt','fp_idtt','=','tt_idform')
+						  ->where('fp_idsup',$supplier->idsup)
+						  ->where('fp_comp',$req->cabang)
+						  ->where('fp_tgl','>=',$tgl[0])
+						  ->where('fp_tgl','<=',$tgl[1])
+						  ->get();
+
+				return view('purchase.buktikaskeluar.tabel_modal_faktur',compact('data','jenis_bayar'));
+			}elseif ($req->filter_faktur == 'jatuh_tempo') {
+				$tgl = explode('-',$req->periode);
+				$tgl[0] = str_replace('/', '-', $tgl[0]);
+				$tgl[1] = str_replace('/', '-', $tgl[1]);
+				$tgl[0] = str_replace(' ', '', $tgl[0]);
+				$tgl[1] = str_replace(' ', '', $tgl[1]);
+				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
+				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
+
+				$supplier = DB::table('supplier')
+						  ->where('active','AKTIF')
+						  ->where('no_supplier',$req->supplier_faktur)
+						  ->first();
+
+				$data = DB::table('faktur_pembelian')
+						  ->join('form_tt','fp_idtt','=','tt_idform')
+						  ->where('fp_idsup',$supplier->idsup)
+						  ->where('fp_comp',$req->cabang)
+						  ->where('fp_jatuhtempo','>=',$tgl[0])
+						  ->where('fp_jatuhtempo','<=',$tgl[1])
+						  ->get();
+
+				return view('purchase.buktikaskeluar.tabel_modal_faktur',compact('data','jenis_bayar'));
+			}elseif ($req->filter_faktur == 'faktur') {
+
+				$supplier = DB::table('supplier')
+						  ->where('active','AKTIF')
+						  ->where('no_supplier',$req->supplier_faktur)
+						  ->first();
+
+				$data = DB::table('faktur_pembelian')
+						  ->join('form_tt','fp_idtt','=','tt_idform')
+						  ->where('fp_idsup',$supplier->idsup)
+						  ->where('fp_nofaktur',$req->faktur_nomor)
+						  ->where('fp_comp',$req->cabang)
+						  ->first();
+
+				return response()->json(['data'=>$data]);
+			}
+			
+		}
+
+	}
+
+	public function append_faktur(request $req)
+	{
+		$data = DB::table('faktur_pembelian')
+				  ->join('form_tt','fp_idtt','=','tt_idform')
+				  ->whereIn('fp_nofaktur',$req->check_array)
+				  ->get();
+
+		return response()->json(['data'=>$data]);
+	}
+
+	public function histori_faktur(request $req)
+	{
+		
+		return view('purchase.buktikaskeluar.histori_faktur');
+	}
+
+	public function return_faktur(request $req)
+	{
+		
+		return view('purchase.buktikaskeluar.return_faktur');
+	}
+
+	public function debet_faktur(request $req)
+	{
+		
+		return view('purchase.buktikaskeluar.debet_faktur');
+	}
+
+	public function kredit_faktur(request $req)
+	{
+		
+		return view('purchase.buktikaskeluar.kredit_faktur');
+	}
+
+	public function um_faktur(request $req)
+	{
+		
+		return view('purchase.buktikaskeluar.kredit_faktur');
 	}
 
 }
