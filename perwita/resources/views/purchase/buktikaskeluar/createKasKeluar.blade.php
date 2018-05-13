@@ -293,9 +293,6 @@
                               <a href="#histori_faktur" role="tab" data-toggle="tab">Pembayaran</a>
                             </li>
                             <li role="presentation">
-                              <a href="#return_faktur" role="tab" data-toggle="tab">Return</a>
-                            </li>
-                            <li role="presentation">
                               <a href="#kredit_faktur" role="tab" data-toggle="tab">Kredit Nota</a></li>
                             <li role="presentation">
                               <a href="#debet_faktur" role="tab" data-toggle="tab">Debet Nota</a>
@@ -308,21 +305,6 @@
                           <div class="tab-content" style="margin-top: 10px">
                             <div role="tabpanel" class="tab-pane fade in active" id="histori_faktur">
                               <table class="table histori_tabel" >
-                                <thead>
-                                  <tr>
-                                    <th>No</th>
-                                    <th>No Transaksi</th>
-                                    <th>Tanggal</th>
-                                    <th>Jumlah Bayar</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                 
-                                </tbody>
-                              </table>
-                            </div>
-                            <div role="tabpanel" class="tab-pane fade" id="return_faktur">
-                              <table class="table return_tabel">
                                 <thead>
                                   <tr>
                                     <th>No</th>
@@ -399,9 +381,9 @@
                               </td>
                             </tr>
                             <tr>
-                              <td width="120">Return Pembelian</td>
+                              <td width="120">Pelunasan Uang Muka</td>
                               <td>
-                                <input type="text" readonly="" class="return_detail form-control" name="pembayaran_faktur">
+                                <input type="text" readonly="" class="pelunasan_um form-control" name="pelunasan_um">
                               </td>
                             </tr>
                             <tr>
@@ -425,7 +407,7 @@
                             <tr>
                               <td width="120">Pelunasan</td>
                               <td>
-                                <input type="text" readonly="" class="pelunasan_detail form-control" name="pelunasan_detail">
+                                <input type="text" class="pelunasan_detail form-control" name="pelunasan_detail">
                               </td>
                             </tr>
                             <tr>
@@ -438,7 +420,7 @@
                         </div>
                         <div class="col-sm-12" style="margin-top: 10px;">
                         <caption><h2>Detail Faktur</h2></caption>
-                        <table class="table tabel_faktur">
+                        <table class="table tabel_faktur table-bordered">
                           <thead>
                             <tr>
                               <th>Faktur</th>
@@ -571,7 +553,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary append_modal">Append</button>
+            <button type="button" class="btn btn-primary  append_modal" data-dismiss="modal">Append</button>
           </div>
         </div>
       </div>
@@ -629,14 +611,32 @@
     var debet_tabel   = $('.debet_tabel').DataTable();
     var kredit_tabel  = $('.kredit_tabel').DataTable();
     var um_tabel      = $('.um_tabel').DataTable();
-    var tabel_faktur  = $('.tabel_faktur').DataTable();
+    var tabel_faktur  = $('.tabel_faktur').DataTable({
+                          columnDefs: [
+                            {
+                               targets: 3,
+                               className: 'right'
+                            },
+                            {
+                               targets: 4,
+                               className: 'right'
+                            },
+                            {
+                               targets: 5,
+                               className: 'center'
+                            },
+                            {
+                               targets: 7,
+                               className: 'center'
+                            }
+                           ]
+                        });
     var table_um      = $('.table_um').DataTable();
-    
+    $('.nominal_patty').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
+    $('.pelunasan_detail').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
   // 
 
   $(document).ready(function(){
-    $('.fp_pelunasan').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
-    $('.nominal_patty').maskMoney({precision:0,thousands:'.',allowZero:true,defaultZero: true});
     var cabang = $('.cabang').val();
     $.ajax({
         url:baseUrl + '/buktikaskeluar/nota_bukti_kas',
@@ -939,6 +939,19 @@
     var faktur_nomor      = $('.faktur_nomor').val();
     var periode           = $('.periode').val();
 
+    if (cabang == '0') {
+      toastr.warning('Cabang Harus Dipilih');
+      return false;
+    }
+
+    if (supplier_faktur == '0') {
+      toastr.warning('Supplier Harus Dipilih');
+      return false;
+    }
+
+
+
+
     if (filter_faktur == 'faktur') {
       $.ajax({
         url:baseUrl + '/buktikaskeluar/cari_faktur',
@@ -961,6 +974,7 @@
           $('.modal_faktur').modal('show');
         },
         error:function(data){
+
         }
       }); 
     }
@@ -988,12 +1002,14 @@
           var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(data.data[i].fp_sisapelunasan);
 
           tabel_faktur.row.add([
-            '<p class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</p>'+
+            '<a onclick="detail_faktur('+data.data[i].fp_nofaktur+')" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
             '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">',
 
             '<p class="fp_tanggal_text">'+data.data[i].fp_tgl+'</p>',
 
-            '<p class="fp_akun_text">'+data.data[i].fp_acchutang+'</p>',
+            '<p class="fp_akun_text">'+data.data[i].fp_acchutang+'</p>'+
+            '<input type="hidden" class="fp_kredit" name="fp_kredit[]" value="'+data.data[i].fp_creditnota+'">'+
+            '<input type="hidden" class="fp_debet" name="fp_debet[]" value="'+data.data[i].fp_debitnota+'">',
 
             '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].fp_netto,"", 0, ".",',')+'</p>'+
             '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].fp_netto+'">',
@@ -1001,7 +1017,7 @@
             '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
             '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
 
-            '<input type="text" class="fp_pelunasan form-control" name="fp_pelunasan[]">',
+            '<input readonly value="0" type="text" class="fp_pelunasan form-control" name="fp_pelunasan[]">',
 
             '<p class="fp_keterangan_text">'+data.data[i].fp_keterangan+'</p>',
 
@@ -1014,6 +1030,58 @@
       }
     }); 
   })
+
+  function detail_faktur(a) {
+    var faktur = a;
+    $.ajax({
+      url:baseUrl + '/buktikaskeluar/histori_faktur',
+      type:'get',
+      data:{faktur},
+      success:function(data){
+        $('.histori_tabel').html(data);
+      },
+      error:function(data){
+      }
+    }); 
+
+
+    $.ajax({
+      url:baseUrl + '/buktikaskeluar/debet_faktur',
+      type:'get',
+      data:{faktur},
+      success:function(data){
+        $('.debet_tabel').html(data);
+      },
+      error:function(data){
+      }
+    });
+
+    $.ajax({
+      url:baseUrl + '/buktikaskeluar/kredit_faktur',
+      type:'get',
+      data:{faktur},
+      success:function(data){
+        $('.kredit_tabel').html(data);
+      },
+      error:function(data){
+      }
+    });
+
+
+
+    $.ajax({
+      url:baseUrl + '/buktikaskeluar/detail_faktur',
+      type:'get',
+      data:{faktur},
+      dataType:'json',
+      success:function(data){
+        $('.histori_tabel').html(data);
+      },
+      error:function(data){
+      }
+    }); 
+  }
+
 
 </script>
 @endsection

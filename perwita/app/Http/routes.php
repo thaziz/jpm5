@@ -333,6 +333,7 @@ Route::get('buktikaskeluar/save_patty', 'kasKeluarController@save_patty');
 Route::get('buktikaskeluar/supplier_dropdown', 'kasKeluarController@supplier_dropdown');
 Route::get('buktikaskeluar/cari_faktur', 'kasKeluarController@cari_faktur');
 Route::get('buktikaskeluar/append_faktur', 'kasKeluarController@append_faktur');
+Route::get('buktikaskeluar/detail_faktur', 'kasKeluarController@detail_faktur');
 
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
