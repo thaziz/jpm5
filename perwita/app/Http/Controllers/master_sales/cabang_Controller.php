@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use Auth;
+use App\master_akun;
+use App\master_akun_saldo;
 
 class cabang_Controller extends Controller
 {
@@ -72,6 +74,48 @@ class cabang_Controller extends Controller
         
         if ($crud == 'N') {
             $simpan = DB::table('cabang')->insert($data);
+
+            $main_id = DB::table("d_akun")->select(DB::raw("distinct(main_id)"))->get();
+
+            foreach ($main_id as $key => $data_main_id) {
+
+                $acc = DB::table("d_akun")->where("main_id", $data_main_id->main_id)->first();
+
+                $prov = DB::table("kota")
+                        ->where("kota.id", $request->cb_kota)
+                        ->select("kota.id_provinsi")->first();
+
+                $cek = DB::table('d_akun')->where('id_akun', $data_main_id->main_id.''.$prov->id_provinsi.''.$kode)->first();
+
+                if(count($cek) == 0){
+
+                    $akun = new master_akun;
+                    $akun->id_akun = $data_main_id->main_id.''.$prov->id_provinsi.''.$kode;
+                    $akun->nama_akun = $acc->main_name." ".strtoupper($request->ed_nama);
+                    $akun->id_parrent = '\n';
+                    $akun->id_provinsi = $prov->id_provinsi;
+                    $akun->akun_dka = $acc->akun_dka;
+                    $akun->is_active = $acc->is_active;
+                    $akun->kode_cabang = $kode;
+                    $akun->type_akun = $acc->type_akun;
+                    $akun->main_id = $acc->main_id;
+                    $akun->main_name = $acc->main_name;
+                    $akun->group_neraca = $acc->group_neraca;
+
+                    if($akun->save()){
+                        $saldo = new master_akun_saldo;
+                        $saldo->id_akun = $data_main_id->main_id.''.$prov->id_provinsi.''.$kode;
+                        $saldo->tahun = date("Y");
+                        $saldo->is_active = 1;
+                        $saldo->bulan = date("m");
+                        $saldo->saldo_akun = 0;
+
+                        $saldo->save();
+                    }
+                }
+
+            }
+
         }elseif ($crud == 'E') {
             $simpan = DB::table('cabang')->where('kode', $request->ed_kode_old)->update($data);
         }

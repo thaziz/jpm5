@@ -34,14 +34,18 @@
 
       <tr>
         <td width="15%" class="text-center">Nama Akun</td>
-        <td colspan="2">
+        <td width="18%">
           <input type="text" class="form_validate form-control" name="nama_akun" placeholder="Masukkan Nama Akun" id="nama_akun">
+        </td>
+        <td width="18%">
+          <input data-toggle="tooltip" data-placement="top" title="Otomatis Terisi Saat Memilih Cabang" type="text" class="form_validate form-control text-center" name="add_nama" placeholder="Otomatis" id="add_nama" readonly>
         </td>
 
         <td width="15%" class="text-center">Cabang</td>
         <td colspan="2">
           <select name="kode_cabang" class="select_validate form-control chosen-select" id="kode_cabang">
             <option value="---"> -- Pilih Cabang</option>
+            <option value="*"> SEMUA CABANG</option>
 
             @foreach($cabang as $cab)
               <option value="{{ $cab->kode_cabang }}">{{ $cab->nama_cabang }}</option>
@@ -73,6 +77,20 @@
       </tr>
 
       <tr>
+        <td width="15%" class="text-center">Group Neraca</td>
+        <td colspan="2">
+          <select name="group_neraca" class="select_validate form-control chosen-select" id="group_neraca">
+            <option value="---"> -- Pilih Group Neraca</option>
+
+            @foreach($group_neraca as $data_group_neraca)
+              <option value="{{ $data_group_neraca->id }}">{{ $data_group_neraca->nama_group }}</option>
+            @endforeach
+
+          </select>
+        </td>
+      </tr>
+
+      <tr>
         <td width="15%" class="text-center">Status Aktif</td>
         <td colspan="2">
           <select name="status_aktif" class="select_validate form-control" id="status_aktif">
@@ -87,34 +105,40 @@
   </div>
 
   <div class="col-md-12 m-t-lg" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
-    <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Isian Saldo Akun</small></span>
-    
-    <input type="checkbox" id="saldo" name="saldo" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Memiliki Saldo. (<b>Apabila Saldo Akun 0, Maka Tidak Perlu Memilih Opsi Ini</b>)</small>
-    <table id="form-table" width="100%" border="1" style="margin-top: 10px;">
-      <thead>
-        <tr>
-          <th class="text-center" width="26%" style="padding: 5px 0px; border:1px solid #eee">Keterangan</th>
-          <th class="text-center" width="37%" style="padding: 5px 0px; border:1px solid #eee">Debet</th>
-          <th class="text-center" style="padding: 5px 0px; border:1px solid #eee">Kredit</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
-          <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
-            <center>
-              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_debet" value="0" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
-            </center>
-          </td>
+      <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Form Isian Saldo Akun</small></span>
+      
+    <div id="saldo_not_all" style="display: inline;">
+      <input type="checkbox" id="saldo" name="saldo" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Memiliki Saldo. (<b>Apabila Saldo Akun 0, Maka Tidak Perlu Memilih Opsi Ini</b>)</small>
+      <table id="form-table" width="100%" border="1" style="margin-top: 10px;">
+        <thead>
+          <tr>
+            <th class="text-center" width="26%" style="padding: 5px 0px; border:1px solid #eee">Keterangan</th>
+            <th class="text-center" width="37%" style="padding: 5px 0px; border:1px solid #eee">Debet</th>
+            <th class="text-center" style="padding: 5px 0px; border:1px solid #eee">Kredit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-center" style="padding: 3px 0px; border:1px solid #eee">Saldo Awal</td>
+            <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
+              <center>
+                <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_debet" value="0" style="width: 85%;" id="DEBET" onkeyup="if(this.value != 'Rp 0,00'){$('#KREDIT').val(0)}">
+              </center>
+            </td>
 
-          <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
-            <center>
-              <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_kredit" value="0" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
-            </center>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <td style="padding: 3px 0px; border:1px solid #eee" class="text-center">
+              <center>
+                <input data-toggle="tooltip" data-placement="top" title="Masukkan Saldo Awal Disini" class="currency saldo_awal form-control text-right" type="text" disabled required name="saldo_kredit" value="0" style="width: 85%;" id="KREDIT" onkeyup="if(this.value != 'Rp 0,00'){$('#DEBET').val(0)}">
+              </center>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="saldo_all" class="text-center" style="padding: 10px 5px; display: none;">
+      <small class="text-muted">Apabila Anda Memilih Semua Cabang, Maka Anda Diharuskan Mengisi Saldo Awal Di Halaman Saldo Akun.</small>
+    </div>
   </div>
 
   </form>
@@ -149,11 +173,19 @@
       evt.stopImmediatePropagation();
       evt.preventDefault();
 
-      if($(this).val() !== "---"){
+      if($(this).val() == "*"){
+        $("#add_kode").val("---");$("#add_nama").val("---");
+        $("#saldo_not_all").css("display", "none");
+        $("#saldo_all").css("display", "inline-block");
+      }else if($(this).val() !== "---"){
         idx = cabang.findIndex(c => c.kode_cabang === $(this).val());
         $("#add_kode").val(cabang[idx].id_provinsi+""+cabang[idx].kode_cabang);
-      }else{
-        $("#add_kode").val("");
+        $("#add_nama").val(cabang[idx].nama_cabang);
+        $("#saldo_all").css("display", "none");
+        $("#saldo_not_all").css("display", "inline");
+      }
+      else{
+        $("#add_kode").val("");$("#add_nama").val("");
       }
 
     })
@@ -272,6 +304,7 @@
       })
 
       $('#kode_cabang').trigger("chosen:updated");
+      $('#group_neraca').trigger("chosen:updated");
       $('#saldo').prop('checked', false);
       $(".saldo_awal").attr("disabled", "disabled");
       $(".saldo_awal").val(0);

@@ -120,17 +120,17 @@
                       <h5 id="title_in"></h5>
 
                     <div class="ibox-tools">
-                        <a href="{{ route("neraca.pdf", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
+                        <a href="{{ route("neraca.pdf_perbandingan", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
                           <button class="btn btn-sm btn-primary" style="font-size: 8pt;">
                             <i class="fa fa-file-pdf-o"></i> &nbsp;Cetak PDF
                           </button>
                         </a>
 
-                        <a href="{{ route("neraca.excel", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
+                        {{-- <a href="{{ route("neraca.excel", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
                           <button class="btn btn-sm btn-primary" style="font-size: 8pt;">
                             <i class="fa fa-file-excel-o"></i> &nbsp;Cetak Excel
                           </button>
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
                 <div class="ibox-content">

@@ -33,9 +33,6 @@
 
                         </form>
                       </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" onclick="save_penerus()">Save changes</button>
-                      </div>
                     </div>
                   </div>
                 </div>

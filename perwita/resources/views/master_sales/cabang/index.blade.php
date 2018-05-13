@@ -164,6 +164,12 @@
                                         <input type="text" class="form-control" id="ed_fax" name="ed_fax" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <td class="text-center" colspan="2" style="">
+                                      <small class="text-muted">Akan Secara Otomatis Membuat Semua Akun COA Yang Ada</small>
+                                    </td>
+                                </tr>
                                 
                             </tbody>
                           </table>

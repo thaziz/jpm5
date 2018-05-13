@@ -22,7 +22,7 @@ class do_Controller extends Controller
         $nomor = strtoupper($request->input('nomor'));
         $authe = Auth::user()->kode_cabang; 
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -32,7 +32,7 @@ class do_Controller extends Controller
                     ";
         }
         else{
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -516,7 +516,7 @@ class do_Controller extends Controller
                 'instruksi' => strtoupper($request->ed_instruksi),
                 'deskripsi' => strtoupper($request->ed_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
-                'total' => filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT),
+                'total' => filter_var($request->ed_dpp, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
@@ -528,6 +528,7 @@ class do_Controller extends Controller
                 'csf_piutang_do'        => $akun_piutang,
                 'created_by'        => $namanama ,
                 'updated_by'        => $namanama,
+                'total_vendo'        => filter_var($request->ed_vendor, FILTER_SANITIZE_NUMBER_INT),
 
                 'total_net' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
             );
@@ -886,7 +887,7 @@ class do_Controller extends Controller
     {
         $authe = Auth::user()->kode_cabang; 
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -896,7 +897,7 @@ class do_Controller extends Controller
                     ";
         }
         else{
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -947,9 +948,28 @@ class do_Controller extends Controller
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
         $customer = DB::table('customer as c')
-                             ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif')
+                             ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif','kcd.kcd_jenis')
                              ->leftjoin('kontrak_customer as kc','kc.kc_kode_customer','=','c.kode')
+                             ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
+                             ->groupBy('kc.kc_aktif','c.kode','kcd.kcd_jenis')
+                             ->where('kcd.kcd_jenis','=','PAKET')
+                             ->orderBy('c.kode','ASC')
                              ->get();
+        if ($customer == null) {
+            $cus = DB::table('customer as c')
+                                 ->select('c.kode','c.nama','c.alamat','c.telpon')
+                                 ->get();
+        }else{
+            for ($i=0; $i < count($customer); $i++) {
+                $cus = DB::table('customer as c')
+                                 ->select('c.kode','c.nama','c.alamat','c.telpon')
+                                 ->where('c.kode','!=',$customer[$i]->kode)
+                                 ->get();
+            }
+        }
+        
+         
+
         $kendaraan = DB::select(" SELECT nopol FROM kendaraan ");
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
         $angkutan = DB::select(" SELECT kode,nama FROM tipe_angkutan ORDER BY nama ASC ");
@@ -997,7 +1017,7 @@ class do_Controller extends Controller
         
         // return $cek_data;
        
-        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data'));
+        return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus'));
     }
 
     public function form_update_status($nomor = null)
@@ -1982,13 +2002,14 @@ class do_Controller extends Controller
         $cabang = $request->b;
 
         $data =DB::table('kontrak_customer as kc')
-                             ->select('kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
+                             ->select('kcd.kcd_jenis','kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
                              ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
                              ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
                              ->leftjoin('jenis_tarif as jt','jt.jt_id','=','kcd.kcd_jenis_tarif')
                              ->where('kc.kc_kode_customer','=',$customer)
                              ->where('kc.kc_kode_cabang','=',$cabang)
+                             ->where('kcd.kcd_jenis','=','PAKET')
                              ->get();
 
         return view('sales/do/ajax_modal_kontrak_customer',compact('data'));
@@ -1998,16 +2019,61 @@ class do_Controller extends Controller
         $id = $request->b;
 
         $data =DB::table('kontrak_customer as kc')
-                             ->select('kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
+                             ->select('kcd.*','kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif','jt.jt_id as kode_tarif')
                              ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
                              ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
                              ->leftjoin('jenis_tarif as jt','jt.jt_id','=','kcd.kcd_jenis_tarif')
+                             ->where('kcd.kcd_id','=',$id)
+                             ->where('kcd.kcd_dt','=',$dt)
+                             ->first();
+
+        return response()->json(['data'=>$data]);
+    }
+    public function cari_customer_kontrak(Request $request){
+        $status = $request->a;
+        $cabang = $request->b;
+        $customer = $request->c;
+        $jenis = 'PAKET' ;
+
+        $data =DB::table('kontrak_customer as kc')
+                             ->join('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->where('kc.kc_kode_customer','=',$customer)
                              ->where('kc.kc_kode_cabang','=',$cabang)
+                             ->where('kc.kc_aktif','=',$status)
+                             ->where('kcd.kcd_jenis','=',$jenis)
                              ->get();
-
-        return view('sales/do/ajax_modal_kontrak_customer',compact('data'));
+        if ($data == null) {
+            $data = 0;
+            return response()->json(['data'=>$data]);
+        }else{
+            return response()->json(['data'=>$data]);
+        }
     }
+
+    // public function asd($value='')
+    // {  
+    //     $asal = 1;
+    //     $tujuan = null;
+
+    //     if ($asal != null) {
+    //         $asal = "and asal = $asal";
+
+    //     }else{
+    //         $asal = "";
+    //     }
+
+    //     if ($tujuan != null) {
+    //         $tujuan = "and tujuan = $tujuan";
+
+    //     }else{
+    //         $tujuan = "";
+    //     }
+
+
+
+    //      $asd = "select * from do where nomor != null $asal $tujuan";
+    //     return $asd;
+    // }
 
 }

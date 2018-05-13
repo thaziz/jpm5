@@ -322,24 +322,19 @@ Route::get('biaya_penerus_loading/update_loading', 'loadingController@update_loa
 //BUKTI KAS KELUAR
 Route::get('buktikaskeluar/index', 'kasKeluarController@index');
 Route::get('buktikaskeluar/create', 'kasKeluarController@create');
-Route::post('buktikaskeluar/simpan_patty', 'kasKeluarController@simpan_patty');
-Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
-Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
-Route::get('buktikaskeluar/hapus/{id}', 'kasKeluarController@hapus');
-Route::get('buktikaskeluar/patty_cash', 'kasKeluarController@patty_cash');
-Route::get('buktikaskeluar/cari_patty', 'kasKeluarController@cari_patty');
-Route::get('buktikaskeluar/print', 'kasKeluarController@print');
-Route::get('buktikaskeluar/detailkas/{id}', 'kasKeluarController@detailkas');
+Route::get('buktikaskeluar/nota_bukti_kas', 'kasKeluarController@nota_bukti_kas');
+Route::get('buktikaskeluar/akun_kas_dropdown', 'kasKeluarController@akun_kas_dropdown');
+Route::get('buktikaskeluar/akun_biaya_dropdown', 'kasKeluarController@akun_biaya_dropdown');
+Route::get('buktikaskeluar/histori_faktur', 'kasKeluarController@histori_faktur');
+Route::get('buktikaskeluar/return_faktur', 'kasKeluarController@return_faktur');
+Route::get('buktikaskeluar/debet_faktur', 'kasKeluarController@debet_faktur');
+Route::get('buktikaskeluar/kredit_faktur', 'kasKeluarController@kredit_faktur');
+Route::get('buktikaskeluar/um_faktur', 'kasKeluarController@um_faktur');
+Route::get('buktikaskeluar/save_patty', 'kasKeluarController@save_patty');
+Route::get('buktikaskeluar/supplier_dropdown', 'kasKeluarController@supplier_dropdown');
 Route::get('buktikaskeluar/cari_faktur', 'kasKeluarController@cari_faktur');
-Route::get('buktikaskeluar/jenis_bayar', 'kasKeluarController@jenis_bayar');
-Route::get('buktikaskeluar/cari_detail', 'kasKeluarController@cari_detail');
-Route::get('buktikaskeluar/cari_nama', 'kasKeluarController@cari_nama');
-Route::get('buktikaskeluar/cari_detail_edit', 'kasKeluarController@cari_detail_edit');
-Route::get('buktikaskeluar/supp_drop', 'kasKeluarController@supp_drop');
-Route::get('buktikaskeluar/nama_supp', 'kasKeluarController@nama_supp');
-Route::post('buktikaskeluar/simpan_faktur', 'kasKeluarController@simpan_faktur');
-Route::get('buktikaskeluar/hapus_data_faktur', 'kasKeluarController@hapus_data_faktur');
-Route::post('buktikaskeluar/update_faktur', 'kasKeluarController@update_faktur');
+Route::get('buktikaskeluar/append_faktur', 'kasKeluarController@append_faktur');
+
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
@@ -1006,7 +1001,12 @@ Route::post('reportexcel_kartupiutang/reportexcel_kartupiutang', 'LaporanMasterC
 Route::get('master_sales/master_akun', 'master_sales\master_akun_controller@index');
 Route::get('master_sales/datatable_akun', 'master_sales\master_akun_controller@datatable_akun')->name('datatable_akun');
 Route::get('master_sales/datatable_item', 'master_sales\master_akun_controller@datatable_item')->name('datatable_item');
-
+Route::post('master_sales/save_akun_patty', 'master_sales\master_akun_controller@save_akun_patty');
+Route::post('master_sales/save_akun_item', 'master_sales\master_akun_controller@save_akun_item');
+Route::get('master_sales/ganti_akun_patty', 'master_sales\master_akun_controller@ganti_akun_patty');
+Route::get('master_sales/ganti_akun_item', 'master_sales\master_akun_controller@ganti_akun_item');
+Route::get('master_sales/hapus_akun_patty', 'master_sales\master_akun_controller@hapus_akun_patty');
+Route::get('master_sales/hapus_akun_item', 'master_sales\master_akun_controller@hapus_akun_item');
 //grup agen
 Route::get('master_sales/agen', 'master_sales\agen_Controller@index');
 Route::get('master_sales/agen/tabel', 'master_sales\agen_Controller@table_data');
@@ -1250,6 +1250,8 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_controller@cetak_nota');
 
 // Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_controller@cari_kodenomor');
+// Route::get('sales/cari_replacekontrakcustomer', 'sales\do_controller@cari_replacekontrakcustomer');
+// Route::get('sales/deliveryorderform/cari_customer_kontrak', 'sales\do_controller@cari_customer_kontrak');
 
 // Route::get('sales/cari_modalkontrakcustomer', 'sales\do_controller@cari_modalkontrakcustomer');
 // Route::get('sales/cari_replacekontrakcustomer', 'sales\do_controller@cari_replacekontrakcustomer');
@@ -1268,6 +1270,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 
 
 Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+Route::get('sales/asd', 'sales\do_controller@asd');
 Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_Controller@cetak_form');
 Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
 Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
@@ -1288,9 +1291,12 @@ Route::get('sales/deliveryorderform/{nomor}/update_status', 'sales\do_Controller
 Route::post('sales/deliveryorderform/save_update_status', 'sales\do_Controller@save_update_status');
 Route::get('sales/deliveryorderform/{nomor}/nota', 'sales\do_Controller@cetak_nota');
 
+Route::get('cari_kodenomor/cari_kodenomor', 'sales\do_Controller@cari_kodenomor');
+Route::get('sales/cari_replacekontrakcustomer', 'sales\do_Controller@cari_replacekontrakcustomer');
+Route::get('sales/deliveryorderform/cari_customer_kontrak', 'sales\do_Controller@cari_customer_kontrak');
+
 Route::get('sales/cari_modalkontrakcustomer', 'sales\do_Controller@cari_modalkontrakcustomer');
 Route::get('sales/cari_replacekontrakcustomer', 'sales\do_Controller@cari_replacekontrakcustomer');
-
 
 Route::get('sales/cari_modaldeliveryorder', 'sales\do_Controller@cari_modaldeliveryorder');
 Route::get('sales/tarif_penerus_dokumen_indentdo/save_data', 'sales\do_Controller@tarif_penerus_dokumen_indentdo');
@@ -1752,14 +1758,19 @@ Route::get('master_keuangan/neraca/perbandingan/{throtle}', [
   'as'   => 'neraca.index_perbandingan'
 ]);
 
-Route::get('master_keuangan/neraca/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca',
-  'as'   => 'neraca.pdf'
+Route::get('master_keuangan/neraca/pdf/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca_single',
+  'as'   => 'neraca.pdf_single'
 ]);
 
-Route::get('master_keuangan/neraca/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca@print_excel_neraca',
-  'as'   => 'neraca.excel'
+Route::get('master_keuangan/neraca/pdf/perbandingan/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca_perbandingan',
+  'as'   => 'neraca.pdf_perbandingan'
+]);
+
+Route::get('master_keuangan/neraca/excel/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca@print_excel_neraca_single',
+  'as'   => 'neraca.excel_single'
 ]);
 
 //endneraca
