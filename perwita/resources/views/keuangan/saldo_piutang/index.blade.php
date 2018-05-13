@@ -102,17 +102,26 @@
           <tr>
             <th width="15%" class="text-center">Menampilkan Cabang : </th>
             <td width="17%">
-              <select class="chosen-select" id="cabang" name="cabang" style="background:;">
-                @foreach ($cab as $cabangs)
-                  <?php
-                    $selected = "";
-                    if($cabangs->kode == $cabang)
-                      $selected = "selected";
-                  ?>
 
-                  <option value="{{ $cabangs->kode }}" {{ $selected }}>{{ $cabangs->nama }}</option>
-                @endforeach
-              </select>
+              @if(Session::get('cabang') == 000)
+                <select class="chosen-select" id="cabang" name="cabang" style="background:;">
+                  @foreach ($cab as $cabangs)
+                    <?php
+                      $selected = "";
+                      if($cabangs->kode == $cabang)
+                        $selected = "selected";
+                    ?>
+
+                    <option value="{{ $cabangs->kode }}" {{ $selected }}>{{ $cabangs->nama }}</option>
+                  @endforeach
+                </select>
+              @else
+                
+                <input type="hidden" class="form-control" id="cabang" name="cabang" style="background:; font-size: 10pt; padding-left: 10px;" value="{{ Session::get('cabang') }}" readonly>
+
+                <input type="text" class="form-control" id="aa" name="aa" style="background:; font-size: 10pt; padding-left: 10px; width: 90%;" value="{{ Session::get('namaCabang') }}" readonly>
+
+              @endif
             </td>
 
             <td>
@@ -166,7 +175,7 @@
                       </tr>
                     </thead>
                     
-                    <tbody>
+                    <tbody id="okee">
                       
                       <?php $no = 1; ?>
 
@@ -446,8 +455,8 @@
       });
     })
 
-    $(".tampilkan").click(function(evt){
-      // alert("okee");
+    $("#okee").on("click", ".tampilkan", function(evt){
+      alert("okee");
       evt.stopImmediatePropagation()
       $id = $(this).data("id");
 
@@ -500,10 +509,12 @@
               $b = addCommas(n.jumlah)+',00';
             }
 
-            $html = $html + '<tr class="row-detail" data-nf = "'+n.id_referensi+'" data-tanggal = "'+n.tanggal+'" data-jt = "'+n.jatuh_tempo+'" data-keterangan = "'+n.keterangan+'" data-jumlah = "'+addCommas(n.jumlah)+'">'+
-                  '<td>'+n.id_referensi+'</td>'+
-                  '<td>'+n.tanggal+'</td>'+
-                  '<td>'+n.jatuh_tempo+'</td>'+
+            $faktur = (n.id_referensi == "null") ? "" ? n.id_referensi;
+
+            $html = $html + '<tr class="row-detail" data-nf = "'+$faktur+'" data-tanggal = "'+n.tanggal+'" data-jt = "'+n.jatuh_tempo+'" data-keterangan = "'+n.keterangan+'" data-jumlah = "'+addCommas(n.jumlah)+'">'+
+                  '<td>'+$faktur+'</td>'+
+                  '<td class="text-center">'+n.tanggal+'</td>'+
+                  '<td class="text-center">'+n.jatuh_tempo+'</td>'+
                   '<td>'+n.keterangan+'</td>'+
                   '<td class="text-right">'+$b+'</td>'+
                 '</tr>';
