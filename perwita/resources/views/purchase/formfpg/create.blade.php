@@ -317,20 +317,14 @@
                                                 <div id="pelunasanum" class="tab-pane">
                                                   <div class="panel-body">
                                                     <div class="col-sm-12">
-                                                            <table class="table table-bordered" style="margin-bottom: 40%">
+                                                            <table class="table table-bordered" style="margin-bottom: 40%" id="tableum">
                                                               <tr>
                                                                 <th> No </th>
                                                                 <th style="width:40%"> No Bukti </th>
                                                                 <th style="width:40%"> Tanggal </th>
                                                                 <th style="width:100%"> Jumlah Bayar </th>
                                                               </tr>
-                                                              <tr style="height: 30%">
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-                                                                <td> </td>
-
-                                                              </tr>
+                                                             
                                                             </table>
                                                        </div>
                                                   </div>
@@ -352,7 +346,7 @@
                                             Pelunasan Uang Muka
                                           </td>
                                           <td> 
-                                            <input type="text" class="input-sm form-control" readonly="" style="text-align: right" name="uangmuka">
+                                            <input type="text" class="input-sm form-control uangmukakanan" readonly="" style="text-align: right" name="uangmuka">
                                           </td>
                                         </tr>
                                         <tr>
@@ -1234,7 +1228,21 @@
                              }
                           }                         
                         }
-                  
+                          $no = 1;
+                          uangmuka = data.uangmuka
+                        for($i = 0; $i < data.uangmuka.length; $i++){
+
+                              row = "<tr id='datadebit'>" +
+                                      "<td>"+$no+"</td>" +
+                                      "<td>"+uangmuka[$i].umfpdt_notaum+"</td>" +
+                                      "<td>"+uangmuka[$i].fp_nofaktur+"</td>" +
+                                      "<td>"+uangmuka[$i].umfpdt_tgl+"</td>" +
+                                      "<td>"+addCommas(uangmuka[$i].umfp_totalbiaya)+
+                                      "</td>" +
+                                      "</tr>";
+                              $('#tableum').append(row);
+                              $no++;
+                        }
                       }
                       
                        /* $jumlahdebit = 0;
@@ -1268,8 +1276,7 @@
                           $('.sisafaktur').val(addCommas(data.faktur[0][0].fp_sisapelunasan));
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].fp_netto));
-                      
-
+                          $('.uangmukakanan').val(addCommas(data.faktur[0][0].fp_uangmuka));
 
                      //LOOPING DATA NO FAKTUR 
 

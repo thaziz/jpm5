@@ -5,6 +5,93 @@
 @section('content')
 
 
+<style>
+  .row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+    .table input{
+      padding-left: 5px;
+    }
+
+    .table th{
+      padding:5px;
+      border: 1px solid #ccc;
+      font-weight: 600;
+      font-size : 12px;
+    }
+
+    .table td{
+       font-size : 12px;
+    }
+
+    .table input{
+     
+      font-size :12px;
+    }
+
+    .table select{
+    
+      font-size :12px;
+    }
+
+   /* #table_form td,
+    #table_form th{
+      padding:10px 0px;
+    }
+
+    #tree th{
+      padding:5px;
+      border: 1px solid #ccc;
+      font-weight: 600;
+    }
+
+    #tree td.secondTree{
+      padding-left: 40px;
+    }
+
+    #tree td{
+      border: 0px;
+      padding: 5px;
+    }
+
+    #tree td.{
+      color:blue;
+    }
+
+    #tree td.highlight{
+      border-top:2px solid #aaa;
+      border-bottom: 2px solid #aaa;
+      color:#222;
+    }
+
+    #tree td.break{
+      padding: 10px 0px;
+      background: #eee;
+    }
+
+    #bingkai td.header{
+      font-weight: bold;
+    }
+
+    #bingkai td.child{
+      padding-left: 20px;
+    }
+
+    #bingkai td.total{
+      /*border-top: 2px solid #999;*/
+    /*  font-weight: 600;
+    }
+
+    #bingkai td.no-border{
+      border: 0px;
+    }*/
+
+  </style>
+
     <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Konfirmasi Order </h2>
@@ -307,6 +394,10 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
+
+   $('body').removeClass('fixed-sidebar');
+            $("body").toggleClass("mini-navbar");
+
     function addCommas(nStr) {
             nStr += '';
             x = nStr.split('.');
