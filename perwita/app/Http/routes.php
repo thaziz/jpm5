@@ -225,8 +225,8 @@ Route::get('fakturpembelian/simpan_tt1', 'BiayaPenerusController@simpan_tt1');
 Route::get('fakturpembelian/simpan_tt_subcon', 'BiayaPenerusController@simpan_tt_subcon');
 Route::get('fakturpembelian/cetak_tt', 'BiayaPenerusController@cetak_tt');
 Route::get('fakturpembelian/hapusbiayapenerus/{id}', 'BiayaPenerusController@hapus_biaya');
-Route::get('fakturpembelian/detailbiayapenerus', 'BiayaPenerusController@detailbiayapenerus')->name('detailbiayapenerus');
-Route::get('fakturpembelian/buktibiayapenerus', 'BiayaPenerusController@buktibiayapenerus')->name('buktibiayapenerus');
+Route::get('fakturpembelian/detailbiayapenerus/{id}', 'BiayaPenerusController@detailbiayapenerus')->name('detailbiayapenerus');
+Route::get('fakturpembelian/buktibiayapenerus/{id}', 'BiayaPenerusController@buktibiayapenerus')->name('buktibiayapenerus');
 Route::get('fakturpembelian/notapenerusagen', 'BiayaPenerusController@notapenerusagen');
 Route::get('fakturpembelian/notaoutlet', 'BiayaPenerusController@notaoutlet');
 Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
@@ -892,7 +892,10 @@ Route::get('sales/laporan_posting_bayar','LaporanMasterController@posting_bayar'
 Route::post('reportposting_bayar/reportposting_bayar', 'LaporanMasterController@reportposting_bayar')->name('reportposting_bayar');
 //END OF LAPORAN BAYAR PENJUALAN
 
-
+//LAPORAN KARTU HUTANG
+Route::get('laporan_sales/kartu_piutang','LaporanMasterController@kartupiutang');
+Route::post('reportkartupiutang/reportkartupiutang', 'LaporanMasterController@reportkartupiutang')->name('reportkartupiutang');
+//END OF 
 
 //========================================== LAPORAN PENJUALAN BERAKIR ====================================================//
 
@@ -1457,8 +1460,8 @@ Route::get('sales/laporaninvoicepenjualanperitem', function(){
 });
 
 //kartu piutang
-Route::get('laporan_sales/kartu_piutang', 'laporan_sales\kartu_piutang_Controller@index');
-Route::get('laporan_sales/kartu_piutang/tampil_data', 'laporan_sales\kartu_piutang_Controller@tampil_kartu_piutang');
+// Route::get('laporan_sales/kartu_piutang', 'laporan_sales\kartu_piutang_Controller@index');
+// Route::get('laporan_sales/kartu_piutang/tampil_data', 'laporan_sales\kartu_piutang_Controller@tampil_kartu_piutang');
 // end kartu piutang
 
 //analisa piutang

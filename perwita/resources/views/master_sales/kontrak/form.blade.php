@@ -212,7 +212,7 @@
                             <tr>
                                 <td>Tipe Angkutan</td>
                                 <td>
-                                    <select name="tipe_angkutan" class="form-control tipe_angkutan chosen-select-width">
+                                    <select name="tipe_angkutan" class="form-control tipe_angkutan_modal chosen-select-width">
                                         <option value="0">Pilih - Tipe Angkutan</option>
                                         @foreach($tipe_angkutan as $val)
                                             <option value="{{$val->kode}}">{{$val->nama}}</option>
@@ -476,7 +476,7 @@ var jenis_tarif_modal_text   = $('.jenis_tarif_modal option:selected').text();
 var acc_akun_modal_text      = $('.acc_akun_modal option:selected ').text();
 var csf_akun_modal_text      = $('.csf_akun_modal option:selected').text();
 var satuan_modal_text        = $('.satuan_modal option:selected').text();
-var tipe_angkutan_text       = $('.tipe_angkutan option:selected').text();
+var tipe_angkutan_text       = $('.tipe_angkutan_modal option:selected').text();
 
 var harga_modal              = $('.harga_modal').val();
 var keterangan_modal         = $('.keterangan_modal ').val();
@@ -489,7 +489,7 @@ var jenis_tarif_modal        = $('.jenis_tarif_modal').val();
 var acc_akun_modal           = $('.acc_akun_modal ').val();
 var csf_akun_modal           = $('.csf_akun_modal').val();
 var satuan_modal             = $('.satuan_modal').val();
-var tipe_angkutan            = $('.tipe_angkutan').val();
+var tipe_angkutan            = $('.tipe_angkutan_modal').val();
 console.log(harga_modal);
 
 

@@ -852,6 +852,7 @@
         var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
         var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
         var diskon  = $("input[name='ed_diskon_h']").val();
+        var diskon_value  = $("input[name='ed_diskon_v']").val();
         var diskon_val  = $("input[name='ed_diskon_h']").val();
         var biaya_komisi  = $("input[name='ed_biaya_komisi']").val();
         var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
@@ -872,7 +873,19 @@
             biaya_komisi = 0;
         }
         var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
-        total = total - (total * diskon / 100);
+        if (diskon != 0) {
+            $("input[name='ed_diskon_v']").attr('readonly',true);
+            total = total - (total * diskon / 100);
+        }else if (diskon == 0) {
+            $("input[name='ed_diskon_v']").attr('readonly',false);
+        }
+        if (diskon_value != 0) {
+            $("input[name='ed_diskon_h']").attr('readonly',true);
+            total = total - (diskon_value);
+            
+        }else if (diskon_value == 0) {
+                $("input[name='ed_diskon_h']").attr('readonly',false);
+        }
         var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
         if (jenis_ppn == 1) {
             ppn =Math.round(parseFloat(total) * parseFloat(0.1));
@@ -1099,28 +1112,28 @@
               "hideMethod": "fadeOut"
             }
             return false;
-        }else if (kecamatan_tujuan == '' || kecamatan_tujuan == null) {
-          Command: toastr["warning"]("Kecamatan Tujuan harus diisi", "Peringatan !")
+            }else if (kecamatan_tujuan == '' || kecamatan_tujuan == null) {
+              Command: toastr["warning"]("Kecamatan Tujuan harus diisi", "Peringatan !")
 
-            toastr.options = {
-              "closeButton": false,
-              "debug": true,
-              "newestOnTop": false,
-              "progressBar": true,
-              "positionClass": "toast-top-right",
-              "preventDuplicates": false,
-              "onclick": null,
-              "showDuration": "300",
-              "hideDuration": "1000",
-              "timeOut": "5000",
-              "extendedTimeOut": "1000",
-              "showEasing": "swing",
-              "hideEasing": "linear",
-              "showMethod": "fadeIn",
-              "hideMethod": "fadeOut"
-            }
-            return false;
-        }else if (pendapatan == '') {
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": true,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": false,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+                return false;
+            }else if (pendapatan == '') {
            Command: toastr["warning"]("Pendapatan harus diisi", "Peringatan !")
 
             toastr.options = {
@@ -2338,9 +2351,31 @@
     function dikonval(){
         var data_value = $('#ed_diskon_v').val();
         if (data_value > maxvalue) {
-            alert('anjay');
+            
+            Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+
+            toastr.options = {
+              "closeButton": false,
+              "debug": true,
+              "newestOnTop": false,
+              "progressBar": true,
+              "positionClass": "toast-top-right",
+              "preventDuplicates": true,
+              "onclick": null,
+              "showDuration": "300",
+              "hideDuration": "1000",
+              "timeOut": "5000",
+              "extendedTimeOut": "1000",
+              "showEasing": "swing",
+              "hideEasing": "linear",
+              "showMethod": "fadeIn",
+              "hideMethod": "fadeOut"
+            }
+            
+        
             $('#ed_diskon_v').val(parseInt(maxvalue));
-        }   
+        }
+        hitung();   
     }
 
 </script>
