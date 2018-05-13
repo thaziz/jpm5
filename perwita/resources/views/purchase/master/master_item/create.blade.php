@@ -283,7 +283,8 @@
             type : "get",
             success : function(response){
               $('.accpersediaan').empty();
-                      $('.acchpp').empty();
+              $('.acchpp').empty();
+              
               if(updatestock == 'Y') {
                       arrItem = response.akun;  
                       $('.acchpp').empty();
