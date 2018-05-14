@@ -150,10 +150,15 @@ class kasKeluarController extends Controller
 	}
 
 	public function supplier_dropdown(request $req)
-	{
+	{	
+		if (isset($req->sup)) {
+			$sup = $req->sup;
+		}else{
+			$sup = 0;
+		}
 		if ($req->jenis_bayar == 2) {
 			$all = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
-			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 3){
 			$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
 
@@ -164,7 +169,7 @@ class kasKeluarController extends Controller
 			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
 
 			$all = array_merge($agen,$vendor,$subcon,$supplier);
-			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 4){
 			$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
 
@@ -175,7 +180,7 @@ class kasKeluarController extends Controller
 			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
 
 			$all = array_merge($agen,$vendor,$subcon,$supplier);
-			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 6){
 			$agen 	  = DB::select("SELECT kode, nama from agen where kategori != 'OUTLET' order by kode");
 
@@ -183,15 +188,15 @@ class kasKeluarController extends Controller
 
 			$all = array_merge($agen,$vendor);
 
-			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 7){
 			$all 	  = DB::select("SELECT kode, nama from agen where kategori = 'OUTLET' order by kode");
 
-			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 9){
 			$all   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
-			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all'));
+			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		}
 	}
 
@@ -928,6 +933,37 @@ class kasKeluarController extends Controller
 			return response()->json(['status'=>1]);
 
 		});
+	}
+
+	public function edit($id)
+	{
+		$cabang = DB::table('cabang')
+					->get();
+
+		$jenis_bayar = DB::table('jenisbayar')
+						 ->where('idjenisbayar','!=',1)
+						 ->where('idjenisbayar','!=',5)
+						 ->where('idjenisbayar','!=',10)
+						 ->orderBy('idjenisbayar','ASC')
+						 ->get();
+
+		$now  = carbon::now()->format('d/m/Y');
+
+		$data = DB::table('bukti_kas_keluar')
+				  ->where('bkk_id',$id)
+				  ->first();
+
+		$data_dt = DB::table('bukti_kas_keluar_detail')
+					 ->join('faktur_pembelian','fp_nofaktur','=','bkkd_ref')
+					 ->where('bkkd_bkk_id',$id)
+					 ->get();
+
+		if (Auth::user()->punyaAkses('Bukti Kas Keluar','ubah')) {
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('cabang','jenis_bayar','now','id','data','data_dt'));
+		}else{
+			return Redirect()->back();
+		}
+						 
 	}
 
 }

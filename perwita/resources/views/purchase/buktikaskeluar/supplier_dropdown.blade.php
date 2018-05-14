@@ -1,7 +1,7 @@
 <select class="form-control supplier_faktur chosen-select-width1" name="supplier_faktur">
   <option value="0">Pilih - Supplier</option>
   @foreach($all as $i)
-  <option value="{{ $i->kode }}">{{ $i->kode }} - {{ $i->nama }}</option>
+  <option @if($sup == $i->kode) selected="" @endif value="{{ $i->kode }}">{{ $i->kode }} - {{ $i->nama }}</option>
   @endforeach
 </select>
 

@@ -338,6 +338,8 @@ Route::get('buktikaskeluar/append_faktur', 'kasKeluarController@append_faktur');
 Route::get('buktikaskeluar/detail_faktur', 'kasKeluarController@detail_faktur');
 Route::get('buktikaskeluar/save_form', 'kasKeluarController@save_form');
 
+Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
+
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
