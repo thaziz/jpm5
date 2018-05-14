@@ -16,4 +16,19 @@
     for (var selector in config1) {
         $(selector).chosen(config1[selector]);
     }
+
+    $('.supplier_faktur').change(function(){
+      var supplier = $(this).val();
+      $.ajax({
+          url:baseUrl + '/buktikaskeluar/cari_hutang',
+          type:'get',
+          data:{supplier},
+          dataType:'json',
+          success:function(data){
+            $('.hutang').val(data.data.acc_hutang);
+          },
+          error:function(data){
+          }
+      }); 
+    })
 </script>

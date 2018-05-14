@@ -13,6 +13,9 @@
   .huruf_besar{
     text-transform: uppercase;
   }
+  .mrgin{
+    margin-right: 10px;
+  }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -253,7 +256,7 @@
                             <tr class="faktur_tr">
                               <td style="border: none" width="120">Faktur</td>
                               <td style="border: none">
-                                <input  readonly="" class="form-control faktur_nomor" type="text" class="faktur_nomor">
+                                <input  class="form-control faktur_nomor" type="text" class="faktur_nomor">
                               </td>
                               <td style="border: none" align="right">
                                 <button type="button" class="btn btn-primary" onclick="cari_faktur()"><i class="fa fa-search" > Cari Faktur</i></button>
@@ -423,6 +426,9 @@
                           </table>
                         </div>
                         <div class="col-sm-12" style="margin-top: 10px;overflow: auto" >
+                          <button class="btn pull-right btn-danger reload_form mrgin"><i class="fa fa-reload"> Reload</i></button>
+                          <button class="btn pull-right btn-warning print_form mrgin"><i class="fa fa-print"> Print</i></button>
+                          <button class="btn pull-right btn-primary simpan_form mrgin"><i class="fa fa-save"> Simpan</i></button>
                         <caption><h2>Detail Faktur</h2></caption>
                         <table class="table tabel_faktur table-bordered " >
                           <thead>
@@ -578,6 +584,7 @@
              PENANDA_Faktur UNTUK MENCARI DIV FAKTUR
              PENANDA_UM UNTUK MENCARI DIV UANG MUKA 
   --}}
+  var valid = [0];
   $('.tanggal').datepicker({
     format:'dd/mm/yyyy'
   });
@@ -741,8 +748,11 @@
       $('.patty_cash_div').prop('hidden',true);
       $('.faktur_div').prop('hidden',false);
       $('.uang_muka_div').prop('hidden',true);
-    }
 
+    }
+    var l = valid.length;
+    valid.splice(0,l);
+    valid.push(0);
     var jenis_bayar = $(this).val();
     $.ajax({
         url:baseUrl + '/buktikaskeluar/supplier_dropdown',
@@ -939,10 +949,13 @@
       }); 
     });
   }
-  // supplier hutang dagang
-  var valid = [0];
 
-  function cari_faktur() {
+  // supplier hutang dagang
+
+
+
+  function faktur() {
+
     var jenis_bayar       = $('.jenis_bayar').val();
     var cabang            = $('.cabang').val();
     var supplier_faktur   = $('.supplier_faktur ').val();
@@ -964,13 +977,111 @@
 
 
     if (filter_faktur == 'faktur') {
+      if ($('.faktur_nomor').val() == '') {
+        toastr.warning('Nomor Faktur Harus Diisi');
+        return false;
+      }
       $.ajax({
         url:baseUrl + '/buktikaskeluar/cari_faktur',
         type:'get',
         data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor,valid},
         dataType:'json',
         success:function(data){
+          for (var i = 0; i < data.data.length; i++) {
+            var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(data.data[i].fp_sisapelunasan);
 
+            tabel_faktur.row.add([
+              '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
+              '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">'+
+              '<input type="hidden" value="'+data.data[i].fp_idfaktur+'" class="fp_id fp_'+data.data[i].fp_idfaktur+'">',
+
+              '<p class="fp_tanggal_text">'+data.data[i].fp_tgl+'</p>',
+
+              '<p class="fp_akun_text">'+data.data[i].fp_acchutang+'</p>'+
+              '<input type="hidden" class="fp_kredit" name="fp_kredit[]" value="'+data.data[i].fp_creditnota+'">'+
+              '<input type="hidden" class="fp_debet" name="fp_debet[]" value="'+data.data[i].fp_debitnota+'">',
+
+              '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].fp_netto,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].fp_netto+'">',
+
+              '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+
+              '<input readonly value="0" type="text" class="fp_pelunasan right form-control" name="fp_pelunasan[]">',
+
+              '<input readonly  type="text" class="fp_sisa_akhir right value="'+accounting.formatMoney(data.data[i].fp_sisapelunasan,"", 0, ".",',')+'" form-control" name="fp_sisa_akhir[]">',
+
+              '<p class="fp_keterangan_text">'+data.data[i].fp_keterangan+'</p>'+
+              '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+data.data[i].fp_keterangan+'">',
+
+              '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+            ]).draw();
+            valid.push(data.data[i].fp_nofaktur);
+          }
+
+          var terbayar = parseFloat(data.data[0].fp_sisapelunasan) 
+                         + parseFloat(data.data[0].fp_debitnota) 
+                         - parseFloat(data.data[0].fp_creditnota) 
+                         + parseFloat(data.data[0].fp_uangmuka);
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_netto,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data[0].fp_uangmuka,"", 2, ".",','));
+          $('.debet_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_debitnota,"", 2, ".",','));
+          $('.kredit_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_creditnota,"", 2, ".",','));
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_sisapelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data[0].fp_idfaktur);
+          var total = parseFloat(data.data[0].fp_sisapelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+          var fp_faktur     = data.data[0].fp_nofaktur;
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/histori_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#histori_faktur').html(data);
+            },
+            error:function(data){
+            }
+          }); 
+
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/debet_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#debet_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/kredit_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#kredit_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/um_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#um_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          toastr.info('Data Berhasil Diinisialisasi');
+          $('.faktur_nomor').val('');
         },
         error:function(data){
         }
@@ -994,6 +1105,7 @@
   }
   $('.append_modal').click(function(){
     var check_array = [];
+    var jenis_bayar = $('.jenis_bayar').val();
     check.$('.check').each(function(){
       if ($(this).is(':checked') == true) {
         var par    = $(this).parents('tr');
@@ -1005,60 +1117,110 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/append_faktur',
       type:'get',
-      data:{check_array},
+      data:{check_array,jenis_bayar},
       dataType:'json',
       success:function(data){
         for (var i = 0; i < data.data.length; i++) {
-          var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(data.data[i].fp_sisapelunasan);
+          if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
+            var terbayar = parseFloat(data.data[i].fp_sisapelunasan) + parseFloat(data.data[i].fp_debitnota) - parseFloat(data.data[i].fp_creditnota) + parseFloat(data.data[i].fp_uangmuka);
 
-          tabel_faktur.row.add([
-            '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
-            '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">'+
-            '<input type="hidden" value="'+data.data[i].fp_idfaktur+'" class="fp_id fp_'+data.data[i].fp_idfaktur+'">',
+            console.log(terbayar);
 
-            '<p class="fp_tanggal_text">'+data.data[i].fp_tgl+'</p>',
+            var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(terbayar);
+            console.log(fp_terbayar);
+            tabel_faktur.row.add([
+              '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
+              '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">'+
+              '<input type="hidden" value="'+data.data[i].fp_idfaktur+'" class="fp_id fp_'+data.data[i].fp_idfaktur+'">',
 
-            '<p class="fp_akun_text">'+data.data[i].fp_acchutang+'</p>'+
-            '<input type="hidden" class="fp_kredit" name="fp_kredit[]" value="'+data.data[i].fp_creditnota+'">'+
-            '<input type="hidden" class="fp_debet" name="fp_debet[]" value="'+data.data[i].fp_debitnota+'">',
+              '<p class="fp_tanggal_text">'+data.data[i].fp_tgl+'</p>',
 
-            '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].fp_netto,"", 0, ".",',')+'</p>'+
-            '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].fp_netto+'">',
+              '<p class="fp_akun_text">'+data.data[i].fp_acchutang+'</p>'+
+              '<input type="hidden" class="fp_kredit" name="fp_kredit[]" value="'+data.data[i].fp_creditnota+'">'+
+              '<input type="hidden" class="fp_debet" name="fp_debet[]" value="'+data.data[i].fp_debitnota+'">',
 
-            '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
-            '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+              '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].fp_netto,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].fp_netto+'">',
 
-            '<input readonly value="0" type="text" class="fp_pelunasan form-control" name="fp_pelunasan[]">',
+              '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
 
-            '<input readonly value="0" type="text" class="fp_sisa_akhir form-control" name="fp_sisa_akhir[]">',
+              '<input readonly value="0" type="text" class="fp_pelunasan right form-control" name="fp_pelunasan[]">',
 
-            '<p class="fp_keterangan_text">'+data.data[i].fp_keterangan+'</p>',
+              '<input readonly  type="text" class="fp_sisa_akhir right form-control" value="'+accounting.formatMoney(data.data[i].fp_sisapelunasan,"", 0, ".",',')+'" name="fp_sisa_akhir[]">',
 
-            '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
-          ]).draw();
-          valid.push(data.data[i].fp_nofaktur);
+              '<p class="fp_keterangan_text">'+data.data[i].fp_keterangan+'</p>',
+
+              '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+            ]).draw();
+            valid.push(data.data[i].fp_nofaktur);
+          }else if(jenis_bayar == 3){
+            var fp_terbayar = parseFloat(data.data[i].v_hasil) - parseFloat(data.data[i].v_pelunasan);
+
+            tabel_faktur.row.add([
+              '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].v_nomorbukti+'</a>'+
+              '<input type="hidden" value="'+data.data[i].v_nomorbukti+'" class="fp_faktur" name="fp_faktur[]">'+
+              '<input type="hidden" value="'+data.data[i].v_id+'" class="fp_id fp_'+data.data[i].v_id+'">',
+
+              '<p class="fp_tanggal_text">'+data.data[i].v_tgl+'</p>',
+
+              '<p class="fp_akun_text">2101</p>',
+
+              '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].v_hasil,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].v_hasil+'">',
+
+              '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+
+              '<input readonly value="0" type="text" class="fp_pelunasan form-control" name="fp_pelunasan[]">',
+
+              '<input readonly  type="text" class="fp_sisa_akhir form-control" value="'+accounting.formatMoney(data.data[i].v_pelunasan,"", 0, ".",',')+'" name="fp_sisa_akhir[]">',
+
+              '<p class="fp_keterangan_text">'+data.data[i].v_keterangan+'</p>'+
+              '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+data.data[i].v_keterangan+'">',
+
+              '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+            ]).draw();
+            valid.push(data.data[i].v_nomorbukti);
+          }
         }
+        if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
 
-        var terbayar = parseFloat(data.data[0].fp_sisapelunasan) 
-                       + parseFloat(data.data[0].fp_debitnota) 
-                       - parseFloat(data.data[0].fp_creditnota) 
-                       + parseFloat(data.data[0].fp_uangmuka);
-        $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_netto,"", 2, ".",','));
-        $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
-        $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data[0].fp_uangmuka,"", 2, ".",','));
-        $('.debet_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_debitnota,"", 2, ".",','));
-        $('.kredit_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_creditnota,"", 2, ".",','));
-        $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_sisapelunasan,"", 2, ".",','));
-        $('.flag_detail').eq(0).val(data.data[0].fp_idfaktur);
-        var total = parseFloat(data.data[0].fp_sisapelunasan) - 0; 
-        $('.pelunasan_detail').eq(0).val(0);
-        $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
-        var fp_faktur     = data.data[0].fp_nofaktur;
+          var terbayar = parseFloat(data.data[0].fp_sisapelunasan) + parseFloat(data.data[0].fp_debitnota) - parseFloat(data.data[0].fp_creditnota) + parseFloat(data.data[0].fp_uangmuka);
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_netto,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data[0].fp_uangmuka,"", 2, ".",','));
+          $('.debet_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_debitnota,"", 2, ".",','));
+          $('.kredit_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_creditnota,"", 2, ".",','));
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_sisapelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data[0].fp_idfaktur);
+          var total = parseFloat(data.data[0].fp_sisapelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+          var fp_faktur     = data.data[0].fp_nofaktur;
+        }else if(jenis_bayar == 3){
+          var terbayar = parseFloat(data.data[0].v_pelunasan) 
+                       + parseFloat(0) 
+                       - parseFloat(0) 
+                       + parseFloat(0);
+
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].v_hasil,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].v_pelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data[0].v_id);
+          var total = parseFloat(data.data[0].v_pelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+          var fp_faktur     = data.data[0].v_nomorbukti;
+        }
 
         $.ajax({
           url:baseUrl + '/buktikaskeluar/histori_faktur',
           type:'get',
-          data:{fp_faktur},
+          data:{fp_faktur,jenis_bayar},
           success:function(data){
             $('#histori_faktur').html(data);
           },
@@ -1070,7 +1232,7 @@
         $.ajax({
           url:baseUrl + '/buktikaskeluar/debet_faktur',
           type:'get',
-          data:{fp_faktur},
+          data:{fp_faktur,jenis_bayar},
           success:function(data){
             $('#debet_faktur').html(data);
           },
@@ -1081,7 +1243,7 @@
         $.ajax({
           url:baseUrl + '/buktikaskeluar/kredit_faktur',
           type:'get',
-          data:{fp_faktur},
+          data:{fp_faktur,jenis_bayar},
           success:function(data){
             $('#kredit_faktur').html(data);
           },
@@ -1092,7 +1254,7 @@
         $.ajax({
           url:baseUrl + '/buktikaskeluar/um_faktur',
           type:'get',
-          data:{fp_faktur},
+          data:{fp_faktur,jenis_bayar},
           success:function(data){
             $('#um_faktur').html(data);
           },
@@ -1102,6 +1264,8 @@
 
 
         toastr.info('Data Berhasil Diinisialisasi');
+        $('.jenis_bayar_td').addClass('disabled');
+        $('.supplier_faktur_td').addClass('disabled');
       },
       error:function(data){
       }
@@ -1115,10 +1279,11 @@
     var fp_id         = $(par).find('.fp_id').val();
     var fp_pelunasan  = $(par).find('.fp_pelunasan').val();
     fp_pelunasan      = fp_pelunasan.replace(/[^0-9\-]+/g,"");
+    var jenis_bayar = $('.jenis_bayar').val();
     $.ajax({
       url:baseUrl + '/buktikaskeluar/histori_faktur',
       type:'get',
-      data:{fp_faktur},
+      data:{fp_faktur,jenis_bayar},
       success:function(data){
         $('#histori_faktur').html(data);
       },
@@ -1130,7 +1295,7 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/debet_faktur',
       type:'get',
-      data:{fp_faktur},
+      data:{fp_faktur,jenis_bayar},
       success:function(data){
         $('#debet_faktur').html(data);
       },
@@ -1141,7 +1306,7 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/kredit_faktur',
       type:'get',
-      data:{fp_faktur},
+      data:{fp_faktur,jenis_bayar},
       success:function(data){
         $('#kredit_faktur').html(data);
       },
@@ -1152,7 +1317,7 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/um_faktur',
       type:'get',
-      data:{fp_faktur},
+      data:{fp_faktur,jenis_bayar},
       success:function(data){
         $('#um_faktur').html(data);
       },
@@ -1165,23 +1330,42 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/detail_faktur',
       type:'get',
-      data:{fp_faktur},
+      data:{fp_faktur,jenis_bayar},
       dataType:'json',
       success:function(data){
-        var terbayar = parseFloat(data.data.fp_sisapelunasan) 
-                       + parseFloat(data.data.fp_debitnota) 
-                       - parseFloat(data.data.fp_creditnota) 
-                       + parseFloat(data.data.fp_uangmuka);
-        $('.biaya_detail').val(accounting.formatMoney(data.data.fp_netto,"", 2, ".",','));
-        $('.terbayar_detail').val(accounting.formatMoney(terbayar,"", 2, ".",','));
-        $('.pelunasan_um').val(accounting.formatMoney(data.data.fp_uangmuka,"", 2, ".",','));
-        $('.debet_detail').val(accounting.formatMoney(data.data.fp_debitnota,"", 2, ".",','));
-        $('.kredit_detail').val(accounting.formatMoney(data.data.fp_creditnota,"", 2, ".",','));
-        $('.sisa_detail').val(accounting.formatMoney(data.data.fp_sisapelunasan,"", 2, ".",','));
-        $('.flag_detail').val(fp_id);
-        var total = parseFloat(data.data.fp_sisapelunasan) - parseFloat(fp_pelunasan); 
-        $('.pelunasan_detail').val(accounting.formatMoney(parseFloat(fp_pelunasan),"", 0, ".",','));
-        $('.total_detail').val(accounting.formatMoney(total,"", 2, ".",','));
+        if (jenis_bayar == 2) {
+
+          var terbayar = parseFloat(data.data.fp_sisapelunasan) 
+                         + parseFloat(data.data.fp_debitnota) 
+                         - parseFloat(data.data.fp_creditnota) 
+                         + parseFloat(data.data.fp_uangmuka);
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data.fp_netto,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data.fp_uangmuka,"", 2, ".",','));
+          $('.debet_detail').eq(0).val(accounting.formatMoney(data.data.fp_debitnota,"", 2, ".",','));
+          $('.kredit_detail').eq(0).val(accounting.formatMoney(data.data.fp_creditnota,"", 2, ".",','));
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data.fp_sisapelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data.fp_idfaktur);
+          var total = parseFloat(data.data.fp_sisapelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+        }else if(jenis_bayar == 3){
+          var terbayar = parseFloat(data.data.v_pelunasan) 
+                       + parseFloat(0) 
+                       - parseFloat(0) 
+                       + parseFloat(0);
+
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data.v_hasil,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data.v_pelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data.v_id);
+          var total = parseFloat(data.data.v_pelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+        }
         toastr.info('Data Berhasil Diinisialisasi');
       },
       error:function(data){
@@ -1214,16 +1398,254 @@
     $(par).find('.fp_pelunasan').val(pelunasan_detail);
     $(par).find('.fp_sisa_akhir').val(total_detail);
     $('.detail_biaya :input').val('');
+    var total_detail = 0;
+    $('.fp_pelunasan').each(function(){
+      var fp_pelunasan = $(this).val();
+      fp_pelunasan     = fp_pelunasan.replace(/[^0-9\-]+/g,"");
+      total_detail    += parseFloat(fp_pelunasan);
+    })
+    $('.total').val(accounting.formatMoney(total_detail,"", 0, ".",','))
   })
-a
   function fp_hapus(a) {
     var par       = $(a).parents('tr');
     var fp_faktur = $(par).find('.fp_faktur').val();
     var index     = valid.indexOf(fp_faktur);
     valid.splice(index,1)
     tabel_faktur.row(par).remove().draw(false);
-        toastr.info('Data Berhasil Dihapus');
+    var total_detail = 0;
+    var temp = 0;
+    $('.fp_pelunasan').each(function(){
+      var fp_pelunasan = $(this).val();
+      fp_pelunasan     = fp_pelunasan.replace(/[^0-9\-]+/g,"");
+      total_detail    += parseFloat(fp_pelunasan);
+      temp+=1;
+    });
+    if (temp == 0) {
+      $('.jenis_bayar_td').removeClass('disabled');
+      $('.supplier_faktur_td').removeClass('disabled');
+    }
+    $('.total').val(accounting.formatMoney(total_detail,"", 0, ".",','))
+
+    toastr.info('Data Berhasil Dihapus');
   }
 
+  $('.simpan_form').click(function(){
+    var temp = 0
+    var validator = [];
+    $('.fp_faktur').each(function(){
+      temp += 1;
+    })
+    if (temp == 0) {
+      toastr.warning('Tidak Ada Yang Akan Disimpan');
+      return false;
+    }
+    $('.fp_pelunasan').each(function(){
+      if ($(this).val() == 0) {
+        validator.push(0);
+      } 
+    });
+    var index = validator.indexOf(0);
+    if (index != -1) {
+      toastr.warning('Ada Data Pembayaran Bernilai 0');
+      return false;
+    }
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Simpan Bukti Kas Keluar!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Simpan!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+    },function(){
+
+      $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/save_form',
+        type:'get',
+        data:$('.table_header :input').serialize()+'&'+
+             $('.table_jurnal :input').serialize()+'&'+
+             $('.table_total :input').serialize()+'&'+
+             tabel_faktur.$('input').serialize(),
+        dataType:'json',
+        success:function(data){
+          swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                     
+          });
+        },
+        error:function(data){
+        }
+      }); 
+    });
+  })
+
+  // voucher / hutang dagang
+  function voucher() {
+    var jenis_bayar       = $('.jenis_bayar').val();
+    var cabang            = $('.cabang').val();
+    var supplier_faktur   = $('.supplier_faktur ').val();
+    var filter_faktur     = $('.filter_faktur').val();
+    var faktur_nomor      = $('.faktur_nomor').val();
+    var periode           = $('.periode').val();
+
+    if (cabang == '0') {
+      toastr.warning('Cabang Harus Dipilih');
+      return false;
+    }
+
+    if (supplier_faktur == '0') {
+      toastr.warning('Supplier Harus Dipilih');
+      return false;
+    }
+
+    if (filter_faktur == 'faktur') {
+
+
+      if ($('.faktur_nomor').val() == '') {
+        toastr.warning('Nomor Faktur Harus Diisi');
+        return false;
+      }
+
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/cari_faktur',
+        type:'get',
+        data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor,valid},
+        dataType:'json',
+        success:function(data){
+          for (var i = 0; i < data.data.length; i++) {
+            var fp_terbayar = parseFloat(data.data[i].v_hasil) - parseFloat(data.data[i].v_pelunasan);
+
+            tabel_faktur.row.add([
+              '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].v_nomorbukti+'</a>'+
+              '<input type="hidden" value="'+data.data[i].v_nomorbukti+'" class="fp_faktur" name="fp_faktur[]">'+
+              '<input type="hidden" value="'+data.data[i].v_id+'" class="fp_id fp_'+data.data[i].v_id+'">',
+
+              '<p class="fp_tanggal_text">'+data.data[i].v_tgl+'</p>',
+
+              '<p class="fp_akun_text">2101</p>',
+
+              '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].v_hasil,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].v_hasil+'">',
+
+              '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+
+              '<input readonly value="0" type="text" class="fp_pelunasan right form-control" name="fp_pelunasan[]">',
+
+              '<input readonly value="'+accounting.formatMoney(data.data[i].v_pelunasan,"", 0, ".",',')+'" type="text" class="fp_sisa_akhir right form-control" name="fp_sisa_akhir[]">',
+
+              '<p class="fp_keterangan_text">'+data.data[i].v_keterangan+'</p>'+
+              '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+data.data[i].v_keterangan+'">',
+
+              '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+            ]).draw();
+            valid.push(data.data[i].v_nomorbukti);
+          }
+
+          var terbayar = parseFloat(data.data[0].v_pelunasan) 
+                         + parseFloat(0) 
+                         - parseFloat(0) 
+                         + parseFloat(0);
+
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].v_hasil,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].v_pelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data[0].v_id);
+          var total = parseFloat(data.data[0].v_pelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+          var fp_faktur     = data.data[0].v_nomorbukti;
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/histori_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#histori_faktur').html(data);
+            },
+            error:function(data){
+            }
+          }); 
+
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/debet_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#debet_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/kredit_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#kredit_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/um_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#um_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          toastr.info('Data Berhasil Diinisialisasi');
+          $('.faktur_nomor').val('');
+        },
+        error:function(data){
+        }
+      }); 
+    }else{
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/cari_faktur',
+        type:'get',
+        data:{jenis_bayar,cabang,supplier_faktur,periode,filter_faktur,valid},
+        success:function(data){
+          $('.tabel_modal_faktur').html(data);
+          $('.modal_faktur').modal('show');
+        },
+        error:function(data){
+
+        }
+      }); 
+    }
+  }
+  // PILIHAN JENIS BAYAR
+  function cari_faktur() {
+    var jenis_bayar = $('.jenis_bayar').val();
+    if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
+      faktur();
+    }else if (jenis_bayar == '3') {
+      voucher();
+    }
+  }
 </script>
 @endsection
