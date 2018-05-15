@@ -411,7 +411,7 @@ class kasKeluarController extends Controller
 
 	public function cari_faktur(request $req)
 	{	
-		// dd($req->all());
+		dd($req->all());
 
 		$jenis_bayar = $req->jenis_bayar;
 		if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
@@ -625,7 +625,7 @@ class kasKeluarController extends Controller
 
 	public function histori_faktur(request $req)
 	{
-		if (isset($nota)) {
+		if (isset($req->nota)) {
 			$nota = $req->nota;
 		}else{
 			$nota = 0;
@@ -702,11 +702,34 @@ class kasKeluarController extends Controller
 			$data = DB::table('faktur_pembelian')
 					->where('fp_nofaktur',$req->fp_faktur)
 					->first();
+			if (isset($req->nota)) {
+
+				$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->where('bkkd_ref',$req->fp_faktur)
+						  ->first();
+				if ($bkkd != null) {
+					$data->fp_sisapelunasan = $data->fp_sisapelunasan + $bkkd->bkkd_total;
+				}
+			}
 			return response()->json(['data'=>$data]);
 		}elseif ($req->jenis_bayar == 3) {
 			$data = DB::table('v_hutang')
 					->where('v_nomorbukti',$req->fp_faktur)
 					->first();
+
+			if (isset($req->nota)) {
+
+				$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->where('bkkd_ref',$req->fp_faktur)
+						  ->first();
+				if ($bkkd != null) {
+					$data->v_pelunasan = $data->v_pelunasan + $bkkd->bkkd_total;
+				}
+			}
 			return response()->json(['data'=>$data]);
 		}else{
 

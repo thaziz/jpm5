@@ -125,7 +125,7 @@
                             </tr>
                             <tr>
                               <td width="120">HUTANG</td>
-                              <td><input style="text-align: right" value="0" class="form-control hutang" readonly="" type="text" name="hutang"></td>
+                              <td><input style="text-align: right" value="{{$data->bkk_akun_hutang}}" class="form-control hutang" readonly="" type="text" name="hutang"></td>
                             </tr>
                             <tr>
                               <td width="120">KAS</td>
@@ -135,16 +135,12 @@
                                 </select>
                               </td>
                             </tr>
-                            <tr>
-                              <td width="120">UANG MUKA</td>
-                              <td><input style="text-align: right" value="0" class="form-control uang_muka" readonly="" type="text" name="uang_muka"></td>
-                            </tr>
                           </table>
                           <table class="table table-bordered table_total">
                             <tr>
                               <td width="120">TOTAL</td>
                               <td>
-                                <input type="text" style="text-align: right" value="0" class="form-control total" readonly=""  name="total">
+                                <input type="text" style="text-align: right" value="{{ number_format($data->bkk_total, 2, ",", ".") }}" class="form-control total" readonly=""  name="total">
                               </td>
                             </tr>
                           </table>
@@ -689,9 +685,7 @@
       $('.faktur_div').prop('hidden',false);
       $('.uang_muka_div').prop('hidden',true);
     }
-    var l = valid.length;
-    valid.splice(0,l);
-    valid.push(0);
+    
     $.ajax({
         url:baseUrl + '/buktikaskeluar/supplier_dropdown',
         type:'get',
@@ -742,6 +736,10 @@
         error:function(data){
         }
     }); 
+
+    var l = valid.length;
+    valid.splice(0,l);
+    valid.push(0);
   })
 
   $('.jenis_bayar').change(function(){
@@ -781,7 +779,11 @@
     }); 
   })
 
-
+  $('.supplier_faktur').change(function(){
+    var l = valid.length;
+    valid.splice(0,l);
+    valid.push(0);
+  })
 
   $('.filter_faktur').change(function(){
     if ($(this).val() == 'faktur') {
@@ -1287,7 +1289,7 @@
   })
 
   function detail_faktur(a) {
-
+    var nota            = '{{$data->bkk_nota}}';
     var par           = $(a).parents('tr');
     var fp_faktur     = $(par).find('.fp_faktur').val();
     var fp_id         = $(par).find('.fp_id').val();
@@ -1297,7 +1299,7 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/histori_faktur',
       type:'get',
-      data:{fp_faktur,jenis_bayar},
+      data:{fp_faktur,jenis_bayar,nota},
       success:function(data){
         $('#histori_faktur').html(data);
       },
@@ -1309,7 +1311,7 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/debet_faktur',
       type:'get',
-      data:{fp_faktur,jenis_bayar},
+      data:{fp_faktur,jenis_bayar,nota},
       success:function(data){
         $('#debet_faktur').html(data);
       },
@@ -1320,7 +1322,7 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/kredit_faktur',
       type:'get',
-      data:{fp_faktur,jenis_bayar},
+      data:{fp_faktur,jenis_bayar,nota},
       success:function(data){
         $('#kredit_faktur').html(data);
       },
@@ -1331,7 +1333,7 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/um_faktur',
       type:'get',
-      data:{fp_faktur,jenis_bayar},
+      data:{fp_faktur,jenis_bayar,nota},
       success:function(data){
         $('#um_faktur').html(data);
       },
@@ -1344,10 +1346,10 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/detail_faktur',
       type:'get',
-      data:{fp_faktur,jenis_bayar},
+      data:{fp_faktur,jenis_bayar,nota},
       dataType:'json',
       success:function(data){
-        if (jenis_bayar == 2) {
+        if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
 
           var terbayar = parseFloat(data.data.fp_sisapelunasan) 
                          + parseFloat(data.data.fp_debitnota) 
@@ -1360,8 +1362,8 @@
           $('.kredit_detail').eq(0).val(accounting.formatMoney(data.data.fp_creditnota,"", 2, ".",','));
           $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data.fp_sisapelunasan,"", 2, ".",','));
           $('.flag_detail').eq(0).val(data.data.fp_idfaktur);
-          var total = parseFloat(data.data.fp_sisapelunasan) - 0; 
-          $('.pelunasan_detail').eq(0).val(0);
+          var total = parseFloat(data.data.fp_sisapelunasan) - parseFloat(fp_pelunasan); 
+          $('.pelunasan_detail').eq(0).val(accounting.formatMoney(fp_pelunasan,"", 0, ".",','));
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
         }else if(jenis_bayar == 3){
           var terbayar = parseFloat(data.data.v_pelunasan) 
@@ -1376,8 +1378,8 @@
           $('.kredit_detail').eq(0).val(0);
           $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data.v_pelunasan,"", 2, ".",','));
           $('.flag_detail').eq(0).val(data.data.v_id);
-          var total = parseFloat(data.data.v_pelunasan) - 0; 
-          $('.pelunasan_detail').eq(0).val(0);
+          var total = parseFloat(data.data.fp_sisapelunasan) - parseFloat(fp_pelunasan);
+          $('.pelunasan_detail').eq(0).val(accounting.formatMoney(fp_pelunasan,"", 0, ".",','));
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
         }
         toastr.info('Data Berhasil Diinisialisasi');
@@ -1663,40 +1665,47 @@
   }
 
   @foreach ($data_dt as $i => $val)
-    @if ($val->bkk_jenisbayar == 2  or $val->bkk_jenisbayar  == 6 or $val->bkk_jenisbayar  == 7 or $val->bkk_jenisbayar  == 9)
+    @if ($data->bkk_jenisbayar == 2  or $data->bkk_jenisbayar  == 6 or $data->bkk_jenisbayar  == 7 or $data->bkk_jenisbayar  == 9)
 
-    
-    
-      var terbayar = parseFloat(data.data[i].fp_sisapelunasan) + parseFloat(data.data[i].fp_debitnota) - parseFloat(data.data[i].fp_creditnota) + parseFloat(data.data[i].fp_uangmuka);
+      var terbayar         = '{{$val->fp_sisapelunasan + $val->fp_debitnota - $val->fp_creditnota + $val->fp_uangmuka + $val->bkkd_total}}';
+      var fp_terbayar      = parseFloat('{{$val->fp_netto}}') - parseFloat(terbayar);
+      var fp_nofaktur      = '{{$val->fp_nofaktur}}';
+      var fp_idfaktur      = '{{$val->fp_idfaktur}}';
+      var fp_tgl           = '{{$val->fp_tgl}}';
+      var fp_acchutang     = '{{$val->fp_acchutang}}';
+      var fp_creditnota    = '{{$val->fp_creditnota}}';
+      var fp_debitnota     = '{{$val->fp_debitnota}}';
+      var fp_netto         = '{{$val->fp_netto}}';
+      var fp_sisapelunasan = '{{$val->fp_sisapelunasan}}';
+      var fp_keterangan    = '{{$val->fp_keterangan}}';
+      var fp_pelunasan     = '{{$val->bkkd_total}}';
 
-      var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(terbayar);
-      console.log(fp_terbayar);
       tabel_faktur.row.add([
-        '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
-        '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">'+
-        '<input type="hidden" value="'+data.data[i].fp_idfaktur+'" class="fp_id fp_'+data.data[i].fp_idfaktur+'">',
+        '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+fp_nofaktur+'</a>'+
+        '<input type="hidden" value="'+fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">'+
+        '<input type="hidden" value="'+fp_idfaktur+'" class="fp_id fp_'+fp_idfaktur+'">',
 
-        '<p class="fp_tanggal_text">'+data.data[i].fp_tgl+'</p>',
+        '<p class="fp_tanggal_text">'+fp_tgl+'</p>',
 
-        '<p class="fp_akun_text">'+data.data[i].fp_acchutang+'</p>'+
-        '<input type="hidden" class="fp_kredit" name="fp_kredit[]" value="'+data.data[i].fp_creditnota+'">'+
-        '<input type="hidden" class="fp_debet" name="fp_debet[]" value="'+data.data[i].fp_debitnota+'">',
+        '<p class="fp_akun_text">'+fp_acchutang+'</p>'+
+        '<input type="hidden" class="fp_kredit" name="fp_kredit[]" value="'+fp_creditnota+'">'+
+        '<input type="hidden" class="fp_debet" name="fp_debet[]" value="'+fp_netto+'">',
 
-        '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].fp_netto,"", 0, ".",',')+'</p>'+
-        '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].fp_netto+'">',
+        '<p class="fp_total_text">'+accounting.formatMoney(fp_netto,"", 0, ".",',')+'</p>'+
+        '<input type="hidden" class="fp_total" name="fp_total[]" value="'+fp_netto+'">',
 
         '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
         '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
 
-        '<input readonly value="0" type="text" class="fp_pelunasan right form-control" name="fp_pelunasan[]">',
+        '<input readonly value="'+accounting.formatMoney(fp_pelunasan,"", 0, ".",',')+'" type="text" class="fp_pelunasan right form-control" name="fp_pelunasan[]">',
 
-        '<input readonly  type="text" class="fp_sisa_akhir right form-control" value="'+accounting.formatMoney(data.data[i].fp_sisapelunasan,"", 0, ".",',')+'" name="fp_sisa_akhir[]">',
+        '<input readonly  type="text" class="fp_sisa_akhir right form-control" value="'+accounting.formatMoney(fp_sisapelunasan,"", 0, ".",',')+'" name="fp_sisa_akhir[]">',
 
-        '<p class="fp_keterangan_text">'+data.data[i].fp_keterangan+'</p>',
+        '<p class="fp_keterangan_text">'+fp_keterangan+'</p>',
 
         '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
       ]).draw();
-      valid.push(data.data[i].fp_nofaktur);
+      valid.push(fp_nofaktur);
     @endif
   @endforeach
 </script>
