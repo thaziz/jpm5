@@ -85,7 +85,7 @@
                                     </select>
                                 </td>
                             </tr>
-                            <tr>
+                            <tr class="disabled">
                               <td width="120">Jenis Bayar</td>
                               <td class="jenis_bayar_td disabled" colspan="2">
                                 <select class="form-control chosen-select-width jenis_bayar" name="jenis_bayar">
@@ -978,6 +978,7 @@
     var filter_faktur     = $('.filter_faktur').val();
     var faktur_nomor      = $('.faktur_nomor').val();
     var periode           = $('.periode').val();
+    var nota              = '{{$data->bkk_nota}}';
 
     if (cabang == '0') {
       toastr.warning('Cabang Harus Dipilih');
@@ -1000,7 +1001,7 @@
       $.ajax({
         url:baseUrl + '/buktikaskeluar/cari_faktur',
         type:'get',
-        data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor,valid},
+        data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor,valid,nota},
         dataType:'json',
         success:function(data){
           for (var i = 0; i < data.data.length; i++) {
@@ -1106,7 +1107,7 @@
       $.ajax({
         url:baseUrl + '/buktikaskeluar/cari_faktur',
         type:'get',
-        data:{jenis_bayar,cabang,supplier_faktur,periode,filter_faktur,valid},
+        data:{jenis_bayar,cabang,supplier_faktur,periode,filter_faktur,valid,nota},
         success:function(data){
           $('.tabel_modal_faktur').html(data);
           $('.modal_faktur').modal('show');
@@ -1122,6 +1123,7 @@
   $('.append_modal').click(function(){
     var check_array = [];
     var jenis_bayar = $('.jenis_bayar').val();
+    var nota        = '{{$data->bkk_nota}}';
     check.$('.check').each(function(){
       if ($(this).is(':checked') == true) {
         var par    = $(this).parents('tr');
@@ -1133,7 +1135,7 @@
     $.ajax({
       url:baseUrl + '/buktikaskeluar/append_faktur',
       type:'get',
-      data:{check_array,jenis_bayar},
+      data:{check_array,jenis_bayar,nota},
       dataType:'json',
       success:function(data){
         for (var i = 0; i < data.data.length; i++) {
@@ -1236,7 +1238,7 @@
         $.ajax({
           url:baseUrl + '/buktikaskeluar/histori_faktur',
           type:'get',
-          data:{fp_faktur,jenis_bayar},
+          data:{fp_faktur,jenis_bayar,nota},
           success:function(data){
             $('#histori_faktur').html(data);
           },
