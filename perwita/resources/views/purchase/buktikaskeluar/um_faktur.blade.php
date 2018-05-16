@@ -1,4 +1,4 @@
-<table class="table histori_tabel">
+<table class="table um_tabel">
 <thead>
   <tr>
     <th>No</th>
@@ -11,13 +11,14 @@
  @foreach($data as $i=>$val)
  	<tr>
  		<td>{{ $i+1 }}</td>
- 		<td>{{ $val->nota }}</td>
- 		<td>{{ $val->tanggal }}</td>
- 		<td>{{ number_format($val->total, 0, ",", ".") }}</td>
+ 		<td>{{ $val->umfpdt_notaum }}</td>
+ 		<td>{{ $val->umfpdt_tgl }}</td>
+ 		<td>{{ number_format($val->umfpdt_jumlahum, 0, ",", ".") }}</td>
  	</tr>
  @endforeach
 </tbody>
 </table>
+
 <script>
-    var histori_tabel = $('.histori_tabel').DataTable();
+    var histori_tabel = $('.um_tabel').DataTable();
 </script>

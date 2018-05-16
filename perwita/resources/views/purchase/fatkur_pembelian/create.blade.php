@@ -132,6 +132,7 @@
                                <input type="hidden" class="form-control idfaktur" name="idfaktur" required="" readonly="">
                             
                                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
                             </td>
                           </tr>
 
@@ -349,7 +350,7 @@
                    <hr>
                    <h4> Daftar Detail Faktur </h4>
                    <br>
-                   <form method="get" action="{{url('fakturpembelian/update_fp')}}"  enctype="multipart/form-data" class="form-horizontal" id="form_jumlah">
+                   <form method="get" action="{{url('fakturpembelian/update_fp')}}" enctype="multipart/form-data" class="form-horizontal" id="form_jumlah">
                    <div class='box-body'>
 
                      <div class="col-xs-6 pull-right">
@@ -363,6 +364,7 @@
                           <tr>
                             <td> <input type='hidden' class='nofakturitem nofaktur' name='nofakturitem'> <input type='hidden' class='keteranganheader' name='keteranganheader'> <input type='hidden' class='noinvoiceitem' name='noinvoice'> <input type='hidden' class='jatuhtempoitem' name='jatuhtempoitem'> <input type='hidden' class='tglitem' name='tglitem'> <input type='hidden' class='idsupitem' name='idsupitem'> <input type='hidden' class='inputfakturpajakmasukan'>  <input type='hidden' class='inputtandaterima'> <input type='hidden' class='cabang2' name='cabang'>  <input type='hidden' class='inputtandaterima'>  <input type="hidden" class="acchutangdagang" name="acchutangdagang">   </td>
                              <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                             <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
                           </tr>
 
                           <tr>
@@ -460,7 +462,7 @@
                                           No Tanda Terima 
                                         </td>
                                         <td>
-                                          <input type='text' name="nota_tt" class='input-sm form-control notandaterima' readonly="">
+                                          <input type="text" name="nota_tt" class="input-sm form-control notandaterima" readonly="">
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                         </td>
                                       </tr>
@@ -560,159 +562,8 @@
 
                            
 
-                               <!-- FORM BAYAR UANG MUKA -->
-                            <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog" style="min-width: 800px !important; min-height: 800px">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span>
-                                        <span class="sr-only">Close</span>
-                                      </button>                     
-                                      <h3 class="modal-title" style="text-align: center;">
-                                          Uang Muka Pembelian
-                                      </h3>     
-                                    </div>
-                                                  
-                                    <div class="modal-body">
-                                    <div class="col-sm-8">              
-                                    <table class="table table-stripped tabel_tt">
-                                      <tr>
-                                        <td width="150px">
-                                          No Transaksi Kas / Bank 
-                                        </td>
-                                        <td>
-                                          <input type='text' class='input-sm form-control no_umheader' id="transaksium" readonly="" data-toggle="modal" data-target="#caritransaksium">
-                                          <input type="text" class="nota_um editum">
-                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td> Tanggal </td>
-                                        <td>
-                                           <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_umheader editum" value="" readonly="">
-                                          </div>
-                                        </td>
-                                      </tr>
-                                     
-                                      <tr>
-                                        <td> Jumlah </td>
-                                        <td> <input type='text' class="form-control jumlah_header editum" value="" readonly=""></td>
-                                        </td>
-                                      </tr>
-                                      
-                                      <tr>
-                                        <td>
-                                         Keterangan
-                                        </td>
-                                        <td>
-                                        
-                                          <input type="text" class="form-control keterangan_header editum" readonly="">
-                                        </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td> Dibayar </td>
-                                        <td> <input type="text" class="form-control dibayar_header editum">   </td>
-                                      </tr>
-
-                                       </table> 
-
-                                       
-
-                                       </div>
-
-                                       <div class="col-sm-4">
-                                          <table class="table">
-                                              <tr>
-                                                  <th> Total Jumlah Uang Muka </th>
-                                                
-                                              </tr>
-                                              <tr>
-                                                    <td> <input type="text" class="form-control totaljumlah" readonly=""> </td>
-                                              </tr>
-                                          </table>
-
-                                          <br>
-                                          <br>
-                                          <br>
-                                          <br>
-                                          <br>
-
-                                            <div class="pull-left">
-                                                <button class="btn btn-sm btn-info" id="tambahdataum" type="button"> <i class="fa fa-plus"> </i>  Tambah Data </button>
-                                            </div>
-                                       </div>                          
-                                             
-                                      <br>
-                                      <br>
-
-                                      <table class="table table-bordered" id="tablehasilum">
-                                          <thead>
-                                          <tr class="tableum">
-                                            <th style="width:120px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Hapus </th>
-                                          </tr>
-                                          </thead>
-                                         
-
-                                      </table>         
-                                         </div>
-
-                                      <div class="modal-footer">
-                                          <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="button" class="btn btn-primary " id="buttonsimpan_tt">
-                                            Simpan
-                                          </button>
-                                         
-                                      </div>
-                                      
-                                  </div>
-                                </div>
-                             </div> 
+                           
                           <!-- END UM -->
-
-
-
-                               <!-- FORM BAYAR UANG MUKA -->
-                            <div class="modal fade" id="caritransaksium" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog" style="min-width: 1000px !important; min-height: 800px">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span>
-                                        <span class="sr-only">Close</span>
-                                      </button>                     
-                                      <h3 class="modal-title" style="text-align: center;">
-                                         Transaksi Kas / Hutang Uang Muka
-                                      </h3>     
-                                    </div>
-                                                  
-                                    <div class="modal-body">
-                                                  
-                                    <table class="table table-stripped tabel_tt" id="tabletransaksi">
-                                      <thead>
-                                      <tr>
-                                        <th> No Kas / Hutang </th> <th style="width:100px"> Tgl </th> <th> Supplier</th><th> Keterangan </th> <th> Jumlah Uang Muka </th> <th> Sisa Terpakai di Faktur </th> <th> Aksi </th>
-                                      </tr>
-                                      </thead>
-                                      
-                                    </table>     
-                                     </div>
-
-                                      <div class="modal-footer">
-                                          <button type="button" class="btn btn-white" data-dismiss="modal" >Batal</button>
-                                          <button type="button" class="btn btn-primary" id="buttongetum">
-                                            Simpan
-                                          </button>
-                                         
-                                      </div>
-                                      
-                                  </div>
-                                </div>
-                             </div> 
-
-
 
                                <!-- FAKTUR PAJAK -->
                               <!-- modal -->
@@ -887,7 +738,163 @@
                  
                   </div>
                   </div>
-                  
+				  
+					    <!-- FORM BAYAR UANG MUKA -->
+                            <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
+							  <form method="post" action="{{url('fakturpembelian/bayaruangmuka')}}" enctype="multipart/form-data" class="form-horizontal" id="form_hasilum">  
+                                <div class="modal-dialog" style="min-width: 1200px !important; min-height: 800px">
+                                 
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
+                                      <h3 class="modal-title" style="text-align: center;">
+                                          Uang Muka Pembelian
+                                      </h3>     
+                                    </div>
+                                            
+                                    <div class="modal-body">
+                                    <div class="col-sm-8">              
+                                    <table class="table table-stripped tabel_tt">
+                                      <tr>
+                                        <td width="150px">
+                                          No Transaksi Kas / Bank 
+                                        </td>
+                                        <td>
+                                          <input type='text' class='input-sm form-control no_umheader' id="transaksium" readonly="" data-toggle="modal" data-target="#caritransaksium">
+                                          <input type="hidden" class="nota_um editum">
+                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                          <input type="hidden" class="notr">
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td> Tanggal </td>
+                                        <td>
+                                           <div class="input-group date">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_umheader editum" value="" readonly="">
+                                          </div>
+                                        </td>
+                                      </tr>
+                                     
+                                      <tr>
+                                        <td> Jumlah </td>
+                                        <td> <input type='text' class="form-control jumlah_header editum" value="" readonly=""></td>
+                                        </td>
+                                      </tr>
+                                      
+                                      <tr>
+                                        <td>
+                                         Keterangan
+                                        </td>
+                                        <td>
+                                        
+                                          <input type="text" class="form-control keterangan_header editum" readonly="">
+                                        </td>
+                                      </tr>
+
+                                      <tr>
+                                        <td> Dibayar </td>
+                                        <td> <input type="text" class="form-control dibayar_header editum">   </td>
+                                      </tr>
+
+                                       </table> 
+
+                                       </div>
+
+                                       <div class="col-sm-4">
+                                          <table class="table">
+                                              <tr>
+                                                  <th> Total Jumlah Uang Muka </th>                      
+                                              </tr>
+                                              <tr>
+                                                    <td> <input type="text" class="form-control totaljumlah" readonly="" name="totaljumlah"> <input type="text" class="inputbayaruangmuka" name="inputbayaruangmuka"> </td>
+                                              </tr>
+                                          </table>
+
+                                          <br>
+                                          <br>
+                                          <br>
+                                          <br>
+                                          <br>
+
+                                            <div class="pull-left">
+                                                <button class="btn btn-sm btn-info" id="tambahdataum" type="button"> <i class="fa fa-plus"> </i>  Tambah Data </button>
+                                            </div>
+                                       </div>                          
+                                      <div id="here"> </div>       
+                                      <br>
+                                      <br>
+                                     
+                                      <table class="table table-bordered" id="tablehasilum">
+                                          <thead>
+                                          <tr class="tableum">
+                                            <th style="width:120px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Dibayar </th> <th> Keterangan </th> <th> Hapus </th> 
+                                          </tr>
+
+
+                                          </thead>
+                                          <tbody>
+                                        
+                                         </tbody>
+
+                                      </table> 
+                                    
+									 
+									
+                                    </div>
+                                      
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+                                          <button type="button" class="btn btn-primary" id="buttonsimpan_um">
+                                            Simpan
+										</button>
+                                      </div>
+                                       </form>
+                                  </div>
+                                </div>
+                             </div> 
+						
+						
+						
+						  <!-- FORM BAYAR UANG MUKA -->
+                            <div class="modal fade" id="caritransaksium" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog" style="min-width: 1000px !important; min-height: 800px">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
+                                      <h3 class="modal-title" style="text-align: center;">
+                                         Transaksi Kas / Hutang Uang Muka
+                                      </h3>     
+                                    </div>
+                                                  
+                                    <div class="modal-body">
+                                                  
+                                    <table class="table table-stripped tabel_tt" id="tabletransaksi">
+                                      <thead>
+                                      <tr>
+                                        <th> No Kas / Hutang </th> <th style="width:100px"> Tgl </th> <th> Supplier</th><th> Keterangan </th> <th> Jumlah Uang Muka </th> <th> Sisa Terpakai di Faktur </th> <th> Aksi </th>
+                                      </tr>
+                                      </thead>
+                                      
+                                    </table>     
+                                     </div>
+
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-white" data-dismiss="modal" >Batal</button>
+                                          <button type="button" class="btn btn-primary" id="buttongetum">
+                                            Simpan
+                                          </button>
+                                         
+                                      </div>
+                                      
+                                  </div>
+                                </div>
+                             </div> 
                             <!-- KONTEN FAKTUR PAKE PO -->
                            <div id="tab-2" class="tab-pane">
                              <form method="get" action="{{url('fakturpembelian/savefakturpo')}}"  enctype="multipart/form-data" class="form-horizontal savefakturpo" id="savefakturpo">
@@ -983,7 +990,7 @@
                                               <input type='hidden' class='cabang2' name='cabang'> 
                                               <input type='hidden' class='inputfakturpajakmasukan'> 
                                                <input type='hidden' class='inputtandaterima'> 
-
+                                                <input type='text' name='notandaterima2' class='notandaterima2'>
                                             <tr>
                                               <td> Jumlah </td>
                                               <td> <div class="row"> <div class="col-md-3"> Rp </div> <div class="col-md-9"> <input type='text' class='form-control jumlahharga_po' name='jumlahtotal_po' style='text-align: right' readonly=""> </div> </div> </td>
@@ -1030,7 +1037,7 @@
                                             </tr>
 
                                               <tr>
-                                            <td colspan="2">   <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_ttpo" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button> </td>
+                                            <td colspan="2">   <button class="btn btn-info" style="margin-right: 10px;" type="button" id="createmodal_ttpo" data-toggle="modal" data-target="#myModal_TT" type="button"> <i class="fa fa-book"> </i> &nbsp; Form Tanda Terima </button> &nbsp; <button class="btn btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button></td>
                                           </tr>
 
                                           </table>
@@ -1071,7 +1078,7 @@
 
                                           <!-- TT -->
                                            <input type='hidden' name='lainlain_tt2' class='lainlain_tt2'>
-                                           <input type='hidden' name='notandaterima2' class='notandaterima2'>
+                                           <!-- <input type='text' name='notandaterima2' class='notandaterima2'> -->
 
                                         
 
@@ -1226,8 +1233,8 @@
 
   $('#tambahdataum').click(function(){
        
-        /* var tableum = $('#tablehasilum').DataTable(); 
-         */
+      
+
         nofaktur = $('.nofaktur').val();
         nokas = $('.no_umheader').val();
         tgl = $('.tgl_umheader').val();
@@ -1235,24 +1242,23 @@
         keterangan = $('.keterangan_header').val();
         dibayar = $('.dibayar_header').val();
         notaum = $('.nota_um').val();
+        notransaksi = $('.notr').val();
 
         if(dibayar == ''){
           toastr.info("harap diisi jumlah dibayar nya :)");
           return false;
         }
 
-        totaljumlah = $('.totaljumlah').val();
-        if(totaljumlah == ''){
-          totaljumlah = dibayar;
-        }
-        else {
-          totaljumlah2 =  totaljumlah.replace(/,/g,'');
-          dibayar2 = dibayar.replace(/,/g,'');
-          totaljumlah = parseFloat(parseFloat(totaljumlah2) + parseFloat(dibayar2)).toFixed(2);
-        }
+      
+          arrnotakas = [];
+      $('.dataum').each(function(){
+        valum = $(this).data('nota');
+        arrnotakas.push(valum);
+      })
 
-        $('.totaljumlah').val(addCommas(totaljumlah));
+      index = arrnotakas.indexOf(nokas);
 
+      if(index == -1) {
         notr = $('.dataum').length;
         if(notr.length == 0){
           notr = 1;
@@ -1261,21 +1267,131 @@
           notr += 1;
         }
 
-        html2 = "<tr class='dataum dataum"+notr+"' data-nota="+nokas+"> <td>"+nofaktur+"</td>"+
-                  "<td>"+nokas+"</td>" +
-                  "<td>"+tgl+"</td>" +
-                  "<td>"+notaum+"</td>" +
-                  "<td>"+dibayar+"</td>"+
-                  "<td> <button class='btn btn-danger' type='button' onclick='hapusum(this)'><i class='fa fa-trash'></i></button></td>"+ 
+        html2 = '<tr class="dataum dataum'+notr+'" data-nota='+nokas+'> <td> <p class="nofaktur nofaktur2'+notr+'"  onclick="klikkas(this)">'+nofaktur+'</p> <input type="text" class="nofaktur" value="'+nofaktur+'" name="nofaktur[]"> </td>'+
+                  '<td> <p class="nokas_text">'+nokas+'</p> <input type="text" class="nokas" value="'+nokas+'" name="nokas[]"> </td>' +
+                  '<td><p class="tgl_text">'+tgl+'</p> <input type="hidden" class="tglum" value="'+tgl+'" name="tglum[]"></td>' +
+                  '<td><p class="notaum_text">'+notaum+'</p> <input type="hidden" class="notaum" value="'+notaum+'" name="notaum[]"> </td>' +
+                  '<td> <p class="jumlahum_text">'+jumlah+'</p> <input type="hidden" class="jumlahum" value="'+jumlah+'" name="jumlahum[]"> </td>' +
+                  '<td> <p class="dibayar_text">'+dibayar+'</p> <input type="hidden" class="dibayar" value="'+dibayar+'" name="dibayarum[]"> </td>'+
+                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> </td>' +
+                  '<td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button></td>'+ 
                 "</tr>";
-         $('#tablehasilum').append(html2);       
-        /*tableum.row.add($(html2)).draw();*/
 
+                $('#tablehasilum').append(html2);
+               
+        /*tableum.row.add($(html2)).draw();*/
+        }
+        else {
+           // alert(dibayar);
+           /* console.log($("#"+nokas));*/
+            var a          = $('.nofaktur2'+notransaksi);
+            var val = $(a).parents('tr');
+            $(val).find('.nofaktur').val(nofaktur);
+            $(val).find('.nokas').val(nokas);
+            $(val).find('.tglum').val(tgl);
+            $(val).find('.notaum').val(notaum);
+            $(val).find('.dibayar').val(dibayar);
+            $(val).find('.jumlahum').val(jumlah);
+            $(val).find('.keteranganum').val(keterangan);
+
+            $(val).find('.nofaktur').text(nofaktur);
+            $(val).find('.nokas_text').text(nokas);
+            $(val).find('.tgl_text').text(tgl);
+            $(val).find('.notaum_text').text(notaum);
+            $(val).find('.dibayar_text').text(dibayar);
+            $(val).find('.jumlahum_text').text(jumlah);
+            $(val).find('.keterangan_text').text(keterangan);
+
+
+
+        }
          $('.editum').val('');
-  })
+          totaljumlah = 0;
+                $('.dibayar').each(function(){
+                  val = $(this).val();
+                   dibayar2 = val.replace(/,/g,'');
+                  // alert(dibayar2);
+                  // alert(totaljumlah);
+                   totaljumlah = parseFloat(parseFloat(totaljumlah) + parseFloat(dibayar2)).toFixed(2);
+                });
+
+                var a = $('ul#tabmenu').find('li.active').data('val');
+
+                if(a == 'I'){
+                  nettohutang2 = $('.nettohutang').val();
+                 
+                   nettohutangs = nettohutang2.replace(/,/g,'');
+                   // alert(nettohutangs);
+                   // alert(totaljumlah + 'totaljumlah');
+                  if(parseFloat(totaljumlah) > parseFloat(nettohutangs)){
+                    toastr.info("Mohon Maaf Kelebihan data jumlah uang muka, netto hutang di Faktur" + addCommas(nettohutangs));
+                     $('.totaljumlah').val(addCommas(totaljumlah));
+                    return false;
+                    $('.buttonsimpan_um').attr("disabled", true);
+                  }
+                  else {
+                    $('.totaljumlah').val(addCommas(totaljumlah));  
+                    $('.inputbayaruangmuka').val('sukses');  
+                     $('.buttonsimpan_um').attr("disabled", false);                
+                  }
+                }
+                else {
+                   nettohutang2 = $('.nettohutang_po').val();
+                 
+                   nettohutangs = nettohutang2.replace(/,/g,'');
+                   // alert(nettohutangs);
+                   // alert(totaljumlah + 'totaljumlah');
+                  if(parseFloat(totaljumlah) > parseFloat(nettohutangs)){
+                    toastr.info("Mohon Maaf Kelebihan data jumlah uang muka, netto hutang di Faktur" + addCommas(nettohutangs));
+                     $('.totaljumlah').val(addCommas(totaljumlah));
+                    return false;
+                    $('.buttonsimpan_um').attr("disabled", true);
+                  }
+                  else {
+                    $('.totaljumlah').val(addCommas(totaljumlah));  
+                    $('.inputbayaruangmuka').val('sukses');  
+                     $('.buttonsimpan_um').attr("disabled", false);                
+                  }
+                }
+          
+  })  
+
+  function klikkas(p){
+
+    var val          = $(p).parents('tr');
+    nofaktur = $(val).find('.nofaktur').val();
+    nokas = $(val).find('.nokas').val();
+    tglum = $(val).find('.tglum').val();
+    notaum = $(val).find('.notaum').val();
+    dibayar = $(val).find('.dibayar').val();
+    jumlahum = $(val).find('.jumlahum').val();
+    keteranganum = $(val).find('.keteranganum').val();
+    notr = $(val).find('.notr').val();
+    
+    alert(a);
+
+    /*$('.nofaktur').val(nofaktur);*/
+    $('.no_umheader').val(nokas);
+    $('.tgl_umheader').val(tglum);
+    $('.jumlah_header').val(jumlahum);
+     $('.keterangan_header').val(keteranganum);
+    $('.dibayar_header').val(dibayar);
+    $('.nota_um').val(notaum);
+    $('.notr').val(notr);
+
+
+  }
+
 
   function hapusum(id){
      var val          = $(id).parents('tr');
+     dibayar = $(val).find('.dibayar').val();
+     totaljumlah = $('.totaljumlah').val();
+     totaljumlah2 = totaljumlah.replace(/,/g,'');
+     dibayar2 = dibayar.replace(/,/g,'');
+
+     hasil = parseFloat(parseFloat(totaljumlah2) - parseFloat(dibayar2)).toFixed(2);
+     $('.totaljumlah').val(addCommas(hasil));
      val.remove();
   }
 
@@ -1294,6 +1410,7 @@
         $('.jumlah_header').val(addCommas(response.um[0].sisaterpakai));
         $('.keterangan_header').val(response.um[0].keterangan);
         $('.nota_um').val(response.um[0].nota_um);
+        $('.idtransaksi').va
           var tableum = $('#tabletransaksi').DataTable();
       }
     })    
@@ -1304,7 +1421,13 @@
   $('#transaksium').click(function(){
        var tableum = $('#tabletransaksi').DataTable();
       tableum.clear().draw();
-    idsup = $('.idsup').val();
+      var a = $('ul#tabmenu').find('li.active').data('val');
+      if ( a == 'I'){
+        idsup = $('.idsup').val();
+      }
+      else {
+        idsup = $('.idsup_po').val();
+      }
     if(idsup == ''){
       toastr.info('harap pilih data supplier :)');
       return false;
@@ -1365,6 +1488,8 @@
                 $('.gudang').trigger("chosen:updated");
                  $('.gudang').trigger("liszt:updated");
               })
+      },error : function(){
+        location.reload();
       }
     })
 
@@ -1435,6 +1560,9 @@
 
                 
           },
+          error : function(){
+            location.reload();
+          }
         })
 
 
@@ -1451,6 +1579,7 @@
      netto_faktur = $('.netto_faktur').val();
      nofaktur_pajak = $('.nofaktur_pajak').val();
      tglfaktur_pajak = $('.tglfaktur_pajak').val();
+     notandaterima = $('.notandaterima').val();
       if(nofaktur_pajak == ''){
       toastr.info("no faktur pajak masukan kosong");
      }
@@ -1464,6 +1593,7 @@
        $('.nettofaktur').val(netto_faktur);
        $('.nofakturpajak').val(nofaktur_pajak);
        $('.tglfakturpajak').val(tglfaktur_pajak);
+       $('.notandaterima2').val(notandaterima);
        $('#myModal2').modal("toggle" );
         alertSuccess();
     
@@ -1489,6 +1619,53 @@
       }
     })*/
   })
+
+    $('#buttonsimpan_um').click(function(){
+      $('#bayaruangmuka').modal('toggle'); 
+    
+    });
+
+ /*   $('#form_hasilum').submit(function(event){
+      
+        event.preventDefault();
+        var form_data2 = $('#form_hasilum').serialize();
+        
+        var a = $('ul#tabmenu').find('li.active').data('val');
+
+        nettohutang2 = $('.nettohutang').val();
+        nettohutangs = nettohutang2.replace(/,/g,'');
+        totaljumlahs = $('.totaljumlah').val();
+        totaljumlahg = totaljumlahs.replace(/,/g,'');    
+        if(a == 'I'){
+          if(parseFloat(totaljumlahg) > parseFloat(nettohutangs)){
+            toastr.info("Mohon Maaf Kelebihan data jumlah, netto hutang di Faktur" + addCommas(nettohutangs));
+            return false;
+          }
+          else {
+            $('.totaljumlah').val(addCommas(totaljumlah));                  
+          }
+        }
+        else {
+
+        }
+
+
+        $.ajax({
+          type : "POST",          
+          data : form_data2,
+          url : baseUrl + '/fakturpembelian/bayaruangmuka',
+          dataType : 'json',
+          success : function (response){
+              $('#bayaruangmuka').modal("toggle");   
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      })*/
+
+
+
     
     $('#buttonsimpan_tt').click(function(){
       lainlain =   $('.lainlain_tt').val();
@@ -2532,9 +2709,26 @@
 
         pajakmasukan = $('.inputfakturpajakmasukan').val();
         tandaterima = $('.inputtandaterima').val();
+      
         inputppn = $('.inputppn').val();
         hasilppn = $('.hasilppn').val();
 
+
+        var a = $('ul#tabmenu').find('li.active').data('val');
+
+        if( a == 'I'){
+          nettohutang2 = $('.nettohutang').val();
+          nettohutangs = nettohutang2.replace(/,/g,'');
+        }
+        totaljumlahs = $('.totaljumlah').val();
+        totaljumlahg = totaljumlahs.replace(/,/g,''); 
+      /*  alert(nettohutangs + 'nettohutangs');
+        alert(totaljumlahg);   */
+        if(parseFloat(totaljumlahg) > parseFloat(nettohutangs)){
+          toastr.info("Mohon Maaf Kelebihan data jumlah uang muka, netto hutang di Faktur" + addCommas(nettohutangs));
+          return false;
+        }
+         
         if(inputppn != '' && hasilppn != '' ) {
           if(pajakmasukan == 'edit'|| pajakmasukan == ''){
           
@@ -2545,12 +2739,23 @@
        if(tandaterima == ''){
           toastr.info("Mohon maaf Anda belum menginputkan data form tanda terima :)");
           return false;
-        }
+        }      
         else{
          
         event.preventDefault();
           var post_url2 = $(this).attr("action");
           var form_data2 = $(this).serialize();
+          var form_data3 = $('#form_hasilum').serialize();
+          arrnokas = [];
+          $('.nokas').each(function(){
+            val = $(this).val();
+            arrnokas.push(val);
+          });
+
+
+          
+
+
             swal({
             title: "Apakah anda yakin?",
             text: "Simpan Data Faktur Pembelian!",
@@ -2565,7 +2770,7 @@
           var accPph=$(".pajakpph").find(':selected').data('acc');            
         $.ajax({
           type : "GET",          
-          data : form_data2+'&accPph='+accPph,
+          data : form_data2+'&accPph='+accPph+form_data3,
           url : post_url2,
           dataType : 'json',
           success : function (response){
@@ -2617,6 +2822,22 @@
           inputppn = $('.inputppn_po').val();
           hasilppn = $('.hasilppn_po').val();
 
+
+           var a = $('ul#tabmenu').find('li.active').data('val');
+
+          if( a == 'I'){
+            nettohutang2 = $('.nettohutang').val();
+            nettohutangs = nettohutang2.replace(/,/g,'');
+          }
+          totaljumlahs = $('.totaljumlah').val();
+          totaljumlahg = totaljumlahs.replace(/,/g,''); 
+        /*  alert(nettohutangs + 'nettohutangs');
+          alert(totaljumlahg);   */
+          if(parseFloat(totaljumlahg) > parseFloat(nettohutangs)){
+            toastr.info("Mohon Maaf Kelebihan data jumlah uang muka, netto hutang di Faktur" + addCommas(nettohutangs));
+            return false;
+          }
+
           if(inputppn != '' && hasilppn != '' && hasilppn != 0 ) {
             if(pajakmasukan == 'edit'|| pajakmasukan == ''){
             
@@ -2628,10 +2849,13 @@
             toastr.info("Mohon maaf Anda belum menginputkan data form tanda terima :)");
             return false;
           }
+
+
           else{
           event.preventDefault();
           var post_url3 = $(this).attr("action");
           var form_data3 = $(this).serialize();
+          var form_dataum = $('#form_hasilum').serialize();
           var jsonString = JSON.stringify(form_data3);
            swal({
             title: "Apakah anda yakin?",
@@ -2647,7 +2871,7 @@
            // var accHutang=$(".idsup_po").find(':selected').data('accHutang');
           $.ajax({
             type : "POST",
-            data : form_data3,
+            data : form_data3+form_dataum,
             url : post_url3,
           
             success : function(response){
@@ -3176,7 +3400,6 @@
                             hargappn = parseFloat((parseFloat(inputppn) / 100) *  parseFloat(subharga)).toFixed(2);
                      
                             $('.hasilppn').val(addCommas(hargappn));
-
                             total = parseFloat(parseFloat(subharga) + parseFloat(hargappn) - parseFloat(replacepph)).toFixed(2);
                             $('.nettohutang').val(addCommas(total));                     
                         }

@@ -795,6 +795,7 @@
          var netto            = $(par).find('.fpnetto').val();
          var sisahutang2      = $(par).find('.sisahutang').val();
          var dpp              = $(par).find('.dpp').val();
+         
          $(par).find('.nilaippn').val();
          $(par).find('.jenisppn').val(jenisppn);
          $(par).find('.inputppn').val(inputppn);
