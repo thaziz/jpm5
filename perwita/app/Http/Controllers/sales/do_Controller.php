@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\sales;
-
+ini_set('max_execution_time', 3600);
 use App\biaya_penerus;
 use App\do_dt;
 use App\Http\Controllers\Controller;
@@ -22,7 +22,7 @@ class do_Controller extends Controller
         $nomor = strtoupper($request->input('nomor'));
         $authe = Auth::user()->kode_cabang; 
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
-        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -32,7 +32,7 @@ class do_Controller extends Controller
                     ";
         }
         else{
-        $sql = "SELECT d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
@@ -476,6 +476,21 @@ class do_Controller extends Controller
             }else{
                 $namanama  = Auth::user()->m_username;
             }
+            if ($request->kontrak_tr == '') {
+                $bol_kon = false;
+            }else{
+                $bol_kon = $request->kontrak_tr;
+            }
+            if ($request->kontrak_cus == '') {
+                $cus_kon = 0;
+            }else{
+                $cus_kon = $request->kontrak_cus;
+            }
+            if ($request->kontrak_cus_dt == '') {
+                $cus_kon_dt = 0;
+            }else{
+                $cus_kon_dt = $request->kontrak_cus_dt;
+            }
             $data = array(
                 'nomor' => strtoupper($request->ed_nomor),
                 'tanggal' => $request->ed_tanggal,
@@ -516,7 +531,7 @@ class do_Controller extends Controller
                 'instruksi' => strtoupper($request->ed_instruksi),
                 'deskripsi' => strtoupper($request->ed_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
-                'total' => filter_var($request->ed_dpp, FILTER_SANITIZE_NUMBER_INT),
+                'total' => filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
@@ -529,6 +544,10 @@ class do_Controller extends Controller
                 'created_by'        => $namanama ,
                 'updated_by'        => $namanama,
                 'total_vendo'        => filter_var($request->ed_vendor, FILTER_SANITIZE_NUMBER_INT),
+                'total_dpp'        => filter_var($request->ed_dpp, FILTER_SANITIZE_NUMBER_INT),
+                'kontrak'        =>  $bol_kon,
+                'kontrak_cus'        => $cus_kon,
+                'kontrak_cus_dt'        => $cus_kon_dt,
 
                 'total_net' => filter_var($request->ed_total_h, FILTER_SANITIZE_NUMBER_INT),
             );
@@ -947,6 +966,7 @@ class do_Controller extends Controller
         $jurnal_dt = null;
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
+         
         $customer = DB::table('customer as c')
                              ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif','kcd.kcd_jenis')
                              ->leftjoin('kontrak_customer as kc','kc.kc_kode_customer','=','c.kode')
@@ -1692,7 +1712,266 @@ class do_Controller extends Controller
         }
     }
 
+    public function cari_tipe(Request $request)
+    {
+     
+        // dd($request->all());
+        $asal = $request->input('asal');
+        $tujuan = $request->input('tujuan');
+        $pendapatan = $request->input('pendapatan');
+        $tipe = $request->input('tipe');
+        $jenis = $request->input('jenis');
+        $angkutan = $request->input('angkutan');
+        $cabang = $request->input('cabang');
+        $biaya_penerus = null;
+        $kecamatan = $request->input('kecamatan');
 
+
+        if ($tipe == 'KILOGRAM'){
+            // dd($request);
+            $berat = $request->berat;
+            $tarif = null;
+            $biaya_penerus = null;
+            if ($berat < 10){
+               $tarif = DB::table('kontrak_customer_d')
+                    ->select('kcd_acc_penjualan','kontrak_customer_d.*','kc_kode_cabang','kc_kode_customer', DB::raw('(kcd_harga * '.$berat.') as harga'))
+                    ->join('kontrak_customer','kontrak_customer_d.kcd_kode','=','kontrak_customer.kc_nomor')
+                    ->where('kcd_type_tarif', '=', $tipe)
+                    ->where('kcd_kota_asal', '=', $asal)
+                    ->where('kcd_kota_tujuan', '=', $tujuan)
+                    ->where('kc_kode_cabang', '=', $cabang)
+                    ->get();
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_10express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_10reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            } elseif ($berat == 10){
+                $tarif = DB::table('kontrak_customer_d')
+                    ->select('kcd_acc_penjualan','kontrak_customer_d.*','kc_kode_cabang','kc_kode_customer', DB::raw('(kcd_harga * '.$berat.') as harga'))
+                    ->join('kontrak_customer','kontrak_customer_d.kcd_kode','=','kontrak_customer.kc_nomor')
+                    ->where('kcd_type_tarif', '=', $tipe)
+                    ->where('kcd_kota_asal', '=', $asal)
+                    ->where('kcd_kota_tujuan', '=', $tujuan)
+                    ->where('kc_kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_10express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_10reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            } elseif ($berat > 10 && $berat < 20){
+
+               $tarifAwal = DB::table('kontrak_customer_d')
+                    ->select('kcd_acc_penjualan','kontrak_customer_d.*','kc_kode_cabang','kc_kode_customer','kcd_harga as harga')
+                    ->join('kontrak_customer','kontrak_customer_d.kcd_kode','=','kontrak_customer.kc_nomor')
+                    ->where('kcd_type_tarif', '=', $tipe)
+                    ->where('kcd_kota_asal', '=', $asal)
+                    ->where('kcd_kota_tujuan', '=', $tujuan)
+                    ->where('kc_kode_cabang', '=', $cabang)
+                    ->get();
+
+               // return  $tarifAwal = DB::table('tarif_cabang_kilogram')
+               //      ->select('harga')
+               //      ->where('jenis', '=', $jenis)
+               //      ->where('id_kota_asal', '=', $asal)
+               //      ->where('id_kota_tujuan', '=', $tujuan)
+               //      ->where('keterangan', '=', 'Tarif <= 10 Kg')
+               //      ->where('kode_cabang', '=', $cabang)
+               //      ->get();
+
+                if (count($tarifAwal) > 0){
+                    $tarifAwal = $tarifAwal[0]->harga;
+                } else {
+                    return response()->json([
+                        'status' => 'kosong'
+                    ]);
+                }
+
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan', DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 10))) as harga'))
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 10 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            } elseif ($berat == 20){
+                $tarifAwal = DB::table('kontrak_customer_d')
+                    ->select('kcd_acc_penjualan','kontrak_customer_d.*','kc_kode_cabang','kc_kode_customer','kcd_harga as harga')
+                    ->join('kontrak_customer','kontrak_customer_d.kcd_kode','=','kontrak_customer.kc_nomor')
+                    ->where('kcd_type_tarif', '=', $tipe)
+                    ->where('kcd_kota_asal', '=', $asal)
+                    ->where('kcd_kota_tujuan', '=', $tujuan)
+                    ->where('kc_kode_cabang', '=', $cabang)
+                    ->get();
+
+                if (count($tarifAwal) > 0){
+                    $tarifAwal = $tarifAwal[0]->harga;
+                } else {
+                    return response()->json([
+                        'status' => 'kosong'
+                    ]);
+                }
+                // return $berat;
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan',DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 10))) as harga'))
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            } elseif ($berat > 20){
+                $tarifAwal = DB::table('kontrak_customer_d')
+                    ->select('kcd_acc_penjualan','kontrak_customer_d.*','kc_kode_cabang','kc_kode_customer','kcd_harga as harga')
+                    ->join('kontrak_customer','kontrak_customer_d.kcd_kode','=','kontrak_customer.kc_nomor')
+                    ->where('kcd_type_tarif', '=', $tipe)
+                    ->where('kcd_kota_asal', '=', $asal)
+                    ->where('kcd_kota_tujuan', '=', $tujuan)
+                    ->where('kc_kode_cabang', '=', $cabang)
+                    ->get();
+
+                if (count($tarifAwal) > 0){
+                    $tarifAwal = $tarifAwal[0]->harga;
+                } else {
+                    return response()->json([
+                        'status' => 'kosong'
+                    ]);
+                }
+                // return $berat;
+                $tarif = DB::table('tarif_cabang_kilogram')
+                    ->select('acc_penjualan',DB::raw('('.$tarifAwal.' + (harga * ('.$berat.' - 10))) as harga'))
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Kg selanjutnya <= 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_kilogram')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_kilo')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_kilo', '=', $tujuan)
+                        ->where('id_kecamatan_kilo', '=', $kecamatan)
+                        ->get();
+                }
+
+            }
+
+            if ($tarif != null) {
+                if (count($biaya_penerus) < 1){
+                    $biaya_penerus = DB::table('tarif_penerus_default')
+                        ->select('harga as tarif_penerus')
+                        ->where('jenis', '=', $jenis)
+                        ->where('tipe_kiriman', '=', 'KILOGRAM')
+                        ->get();
+
+                    if (count($biaya_penerus) < 1){
+                        $biaya_penerus = 0;
+                    } else {
+                        $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
+                    }
+                } else {
+                    $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
+                }
+                
+                // return $tarif;
+                if ($berat < 10 || $berat == 10 ) {
+                    return response()->json([
+                    'biaya_penerus' => $biaya_penerus,
+                    // 'harga' => $biaya_penerus,
+                    'harga' => $tarif[0]->harga,
+                    'acc_penjualan' => $tarif[0]->kcd_acc_penjualan,
+                    'create_indent' => 1,
+                    'tipe' => $tipe,
+                ]);
+                }else{
+                    return response()->json([
+                    'biaya_penerus' => $biaya_penerus,
+                    // 'harga' => $biaya_penerus,
+                    'harga' => $tarif[0]->harga,
+                    'acc_penjualan' => $tarif[0]->acc_penjualan,
+                    'create_indent' => 1,
+                    'tipe' => $tipe,
+                ]);
+                }
+                
+            }
+            else{
+                return response()->json([
+                    'status' => 'kosong'
+                ]);
+            }
+        }
+
+
+    }
     public function cari_modaldeliveryorder(Request $request){
         $kota = DB::select(" SELECT id,nama,kode_kota FROM kota ORDER BY nama ASC ");
         $provinsi = DB::select(" SELECT id,nama FROM provinsi ORDER BY nama ASC ");
@@ -1994,6 +2273,7 @@ class do_Controller extends Controller
                              ->where('kc.kc_kode_customer','=',$customer)
                              ->where('kc.kc_kode_cabang','=',$cabang)
                              ->get();
+        
 
         return response()->json(['data'=>$data]);
     }
@@ -2050,7 +2330,22 @@ class do_Controller extends Controller
             return response()->json(['data'=>$data]);
         }
     }
+    // public function kurang()
+    // {
+    //     $db = DB::table('delivery_order')
+    //             ->where('diskon','!=',0)
+    //             ->get();
 
+    //     for ($i=0; $i < count($db); $i++) { 
+    //         if ($db[$i]->total == $db[$i]->total_net) {
+    //            $updt = DB::table('delivery_order')
+    //                      ->where('nomor',$db[$i]->nomor)
+    //                      ->update([
+    //                         'total'=> $db[$i]->total + $db[$i]->diskon,
+    //                      ]);
+    //         }
+    //     }
+    // }
     // public function asd($value='')
     // {  
     //     $asal = 1;

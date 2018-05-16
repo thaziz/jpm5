@@ -137,7 +137,7 @@
                                 {{ Form::close() }} </div>
                                 &nbsp;
                         @endif
-                          <a class="btn btn-sm btn-warning" href="{{url('suratpermintaanpembelian/editspp/'.$spp->spp_id.'')}}"> <i class="fa fa-pencil" aria-hidden="true"></i>  </a> 
+                         <!--  <a class="btn btn-sm btn-warning" href="{{url('suratpermintaanpembelian/editspp/'.$spp->spp_id.'')}}"> <i class="fa fa-pencil" aria-hidden="true"></i>  </a>  -->
                           &nbsp;
 
                       @endif

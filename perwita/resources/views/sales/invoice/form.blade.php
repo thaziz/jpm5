@@ -51,7 +51,8 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota_invoice" id="nota_invoice" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="hidden" id="old_invoice" class="form-control" style="text-transform: uppercase" value="" >
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
                                 </td>
                             </tr>
@@ -415,6 +416,7 @@
             dataType : 'json',
             success:function(response){
                 $('#nota_invoice').val(response.nota);
+                $('#old_invoice').val(response.nota);
             }
         });
 
@@ -440,7 +442,9 @@
             data:{cabang},
             dataType : 'json',
             success:function(response){
-                $('#nota_invoice').val(response.nota);
+                if ($('#nota_invoice').val() == $('#old_invoice').val() ) {
+                    $('#nota_invoice').val(response.nota);
+                }
             }
         });
 

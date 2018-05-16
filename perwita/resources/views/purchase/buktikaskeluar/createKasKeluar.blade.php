@@ -471,14 +471,6 @@
                               </td>
                             </tr>
                             <tr>
-                              <td width="120">Supplier</td>
-                              <td colspan="2">
-                                <select class="form-control supplier_um">
-                                  <option value="">Pilih - Supplier</option>
-                                </select>
-                              </td>
-                            </tr>
-                            <tr>
                               <td width="120">Keterangan</td>
                               <td colspan="2">
                                 <input class="form-control keterangan_patty" type="text" class="keterangan_patty">
@@ -736,12 +728,6 @@
       $('.patty_cash_div').prop('hidden',false);
       $('.faktur_div').prop('hidden',true);
       $('.uang_muka_div').prop('hidden',true);
-    }else if ($(this).val() == 4) {
-      $('.supplier_patty_tr').prop('hidden',true);
-      $('.supplier_faktur_tr').prop('hidden',false);
-      $('.patty_cash_div').prop('hidden',true);
-      $('.faktur_div').prop('hidden',true);
-      $('.uang_muka_div').prop('hidden',false);
     }else {
       $('.supplier_patty_tr').prop('hidden',true);
       $('.supplier_faktur_tr').prop('hidden',false);
@@ -1469,7 +1455,7 @@
 
       $.ajax({
         url:baseUrl + '/buktikaskeluar/save_form',
-        type:'get',
+        type:'post',
         data:$('.table_header :input').serialize()+'&'+
              $('.table_jurnal :input').serialize()+'&'+
              $('.table_total :input').serialize()+'&'+
@@ -1638,6 +1624,154 @@
       }); 
     }
   }
+
+  function uang_muka() {
+
+    var jenis_bayar       = $('.jenis_bayar').val();
+    var cabang            = $('.cabang').val();
+    var supplier_faktur   = $('.supplier_faktur ').val();
+    var filter_faktur     = $('.filter_faktur').val();
+    var faktur_nomor      = $('.faktur_nomor').val();
+    var periode           = $('.periode').val();
+
+    if (cabang == '0') {
+      toastr.warning('Cabang Harus Dipilih');
+      return false;
+    }
+
+    if (supplier_faktur == '0') {
+      toastr.warning('Supplier Harus Dipilih');
+      return false;
+    }
+
+    if (filter_faktur == 'faktur') {
+
+
+      if ($('.faktur_nomor').val() == '') {
+        toastr.warning('Nomor Faktur Harus Diisi');
+        return false;
+      }
+
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/cari_faktur',
+        type:'get',
+        data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor,valid},
+        dataType:'json',
+        success:function(data){
+          for (var i = 0; i < data.data.length; i++) {
+            var fp_terbayar = parseFloat(data.data[i].um_jumlah) - parseFloat(data.data[i].um_sisapelunasan);
+
+            tabel_faktur.row.add([
+              '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].um_nomorbukti+'</a>'+
+              '<input type="hidden" value="'+data.data[i].um_nomorbukti+'" class="fp_faktur" name="fp_faktur[]">'+
+              '<input type="hidden" value="'+data.data[i].um_id+'" class="fp_id fp_'+data.data[i].um_id+'">',
+
+              '<p class="fp_tanggal_text">'+data.data[i].um_tgl+'</p>',
+
+              '<p class="fp_akun_text">'+data.data[i].um_tgl+'</p>',
+
+              '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].v_hasil,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].v_hasil+'">',
+
+              '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+
+              '<input readonly value="0" type="text" class="fp_pelunasan right form-control" name="fp_pelunasan[]">',
+
+              '<input readonly value="'+accounting.formatMoney(data.data[i].v_pelunasan,"", 0, ".",',')+'" type="text" class="fp_sisa_akhir right form-control" name="fp_sisa_akhir[]">',
+
+              '<p class="fp_keterangan_text">'+data.data[i].v_keterangan+'</p>'+
+              '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+data.data[i].v_keterangan+'">',
+
+              '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+            ]).draw();
+            valid.push(data.data[i].v_nomorbukti);
+          }
+
+          var terbayar = parseFloat(data.data[0].v_pelunasan) 
+                         + parseFloat(0) 
+                         - parseFloat(0) 
+                         + parseFloat(0);
+
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].v_hasil,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].v_pelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data[0].v_id);
+          var total = parseFloat(data.data[0].v_pelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+          var fp_faktur     = data.data[0].v_nomorbukti;
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/histori_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#histori_faktur').html(data);
+            },
+            error:function(data){
+            }
+          }); 
+
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/debet_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#debet_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/kredit_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#kredit_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/um_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#um_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          toastr.info('Data Berhasil Diinisialisasi');
+          $('.faktur_nomor').val('');
+        },
+        error:function(data){
+        }
+      }); 
+    }else{
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/cari_faktur',
+        type:'get',
+        data:{jenis_bayar,cabang,supplier_faktur,periode,filter_faktur,valid},
+        success:function(data){
+          $('.tabel_modal_faktur').html(data);
+          $('.modal_faktur').modal('show');
+        },
+        error:function(data){
+
+        }
+      }); 
+    }
+  }
+
   // PILIHAN JENIS BAYAR
   function cari_faktur() {
     var jenis_bayar = $('.jenis_bayar').val();
@@ -1645,7 +1779,13 @@
       faktur();
     }else if (jenis_bayar == '3') {
       voucher();
+    }else if (jenis_bayar == '4') {
+      uang_muka();
     }
   }
+
+
+
+
 </script>
 @endsection

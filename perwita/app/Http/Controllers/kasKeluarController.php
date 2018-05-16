@@ -411,7 +411,7 @@ class kasKeluarController extends Controller
 
 	public function cari_faktur(request $req)
 	{	
-		dd($req->all());
+		// dd($req->all());
 
 		$jenis_bayar = $req->jenis_bayar;
 		if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
@@ -435,6 +435,7 @@ class kasKeluarController extends Controller
 							  ->where('fp_sisapelunasan','!=',0)
 							  ->whereNotIn('fp_nofaktur',$req->valid)
 							  ->get();
+
 				}elseif ($req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
 					$data = DB::table('faktur_pembelian')
 							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
@@ -611,10 +612,67 @@ class kasKeluarController extends Controller
 				  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 				  ->whereIn('fp_nofaktur',$req->check_array)
 				  ->get();
+
 		}elseif ($req->jenis_bayar == 3){
 			$data = DB::table('v_hutang')
 				  ->whereIn('v_nomorbukti',$req->check_array)
 				  ->get();
+		}else{
+			
+		}
+		
+
+		return response()->json(['data'=>$data]);
+	}
+
+	public function append_faktur_edit(request $req)
+	{	
+		if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
+			$data = DB::table('faktur_pembelian')
+				  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+				  ->whereIn('fp_nofaktur',$req->check_array)
+				  ->get();
+
+			if (isset($req->nota)) {
+
+				$bkkd = DB::table('bukti_kas_keluar_detail')
+					  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+					  ->where('bkk_nota',$req->nota)
+					  ->whereIn('bkkd_ref',$req->check_array)
+					  ->get();
+
+				for ($i=0; $i < count($data); $i++) { 
+					for ($a=0; $a < count($bkkd); $a++) { 
+						if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+							$data[$i]->fp_sisapelunasan+=$bkkd[$a]->bkkd_total;
+						}
+					}
+				}
+			}
+
+
+
+		}elseif ($req->jenis_bayar == 3){
+			$data = DB::table('v_hutang')
+				  ->whereIn('v_nomorbukti',$req->check_array)
+				  ->get();
+
+			if (isset($req->nota)) {
+
+				$bkkd = DB::table('bukti_kas_keluar_detail')
+					  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+					  ->where('bkk_nota',$req->nota)
+					  ->whereIn('bkkd_ref',$req->check_array)
+					  ->get();
+
+				for ($i=0; $i < count($data); $i++) { 
+					for ($a=0; $a < count($bkkd); $a++) { 
+						if ($data[$i]->v_nomorbukti == $bkkd[$a]->bkkd_ref) {
+							$data[$i]->v_pelunasan+=$bkkd[$a]->bkkd_total;
+						}
+					}
+				}
+			}
 		}else{
 			
 		}
@@ -975,11 +1033,27 @@ class kasKeluarController extends Controller
 		$data = DB::table('bukti_kas_keluar')
 				  ->where('bkk_id',$id)
 				  ->first();
-
-		$data_dt = DB::table('bukti_kas_keluar_detail')
+		if ($data->bkk_jenisbayar == 2 || $data->bkk_jenisbayar == 6 || $data->bkk_jenisbayar == 7  || $data->bkk_jenisbayar == 9 ) {
+			$data_dt = DB::table('bukti_kas_keluar_detail')
 					 ->join('faktur_pembelian','fp_nofaktur','=','bkkd_ref')
 					 ->where('bkkd_bkk_id',$id)
 					 ->get();
+		}elseif($data->bkk_jenisbayar == 3){
+			$data_dt = DB::table('bukti_kas_keluar_detail')
+					 ->join('v_hutang','v_nomorbukti','=','bkkd_ref')
+					 ->where('bkkd_bkk_id',$id)
+					 ->get();
+		}elseif($data->bkk_jenisbayar == 4){
+			$data_dt = DB::table('bukti_kas_keluar_detail')
+					 ->join('d_uangmuka','um_nomorbukti','=','bkkd_ref')
+					 ->where('bkkd_bkk_id',$id)
+					 ->get();
+		}else{
+			$data_dt = DB::table('bukti_kas_keluar_detail')
+					 ->where('bkkd_bkk_id',$id)
+					 ->get();
+		}
+		
 
 		if (Auth::user()->punyaAkses('Bukti Kas Keluar','ubah')) {
 			return view('purchase.buktikaskeluar.EditKasKeluar',compact('cabang','jenis_bayar','now','id','data','data_dt'));
@@ -987,6 +1061,659 @@ class kasKeluarController extends Controller
 			return Redirect()->back();
 		}
 						 
+	}
+
+	public function cari_faktur_edit(request $req)
+	{	
+		// dd($req->all());
+
+		$jenis_bayar = $req->jenis_bayar;
+		if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
+
+			if ($req->filter_faktur == 'tanggal') {
+				$tgl = explode('-',$req->periode);
+				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
+				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
+				if ($req->jenis_bayar == 2) {
+					$supplier = DB::table('supplier')
+						  ->where('active','AKTIF')
+						  ->where('no_supplier',$req->supplier_faktur)
+						  ->first();
+
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->select('fp_nofaktur')
+							  ->where('fp_idsup',$supplier->idsup)
+							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_tgl','>=',$tgl[0])
+							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_sisapelunasan','!=',0)
+							  ->whereNotIn('fp_nofaktur',$req->valid)
+							  ->get();
+					$temp1 = [];
+
+					for ($i=0; $i < count($data); $i++) { 
+						$temp1[$i]=$data[$i]->fp_nofaktur;
+					}
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+
+						$bkkd_fp = DB::table('faktur_pembelian')
+								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  	  ->select('fp_nofaktur')
+								  ->where('fp_idsup',$supplier->idsup)
+								  ->where('fp_comp',$req->cabang)
+								  ->where('fp_tgl','>=',$tgl[0])
+								  ->where('fp_tgl','<=',$tgl[1])
+								  ->whereNotIn('fp_nofaktur',$req->valid)
+								  ->get();
+
+						$temp2 = [];
+						for ($i=0; $i < count($bkkd_fp); $i++) { 
+							for ($a=0; $a < count($bkkd); $a++) { 
+								if ($bkkd_fp[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$temp2[$i] = $bkkd[$a]->bkkd_ref;
+								}
+							}
+						}
+						$data = array_merge($temp1,$temp2);
+					}
+
+					$unik = array_unique($data);
+
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->whereIn('fp_nofaktur',$unik)
+							  ->get();
+							  
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+						for ($i=0; $i < count($data); $i++) { 
+						 	for ($a=0; $a < count($bkkd); $a++) { 
+						 		if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$data[$i]->fp_sisapelunasan += $bkkd[$a]->bkkd_total;
+						 		}
+						 	}
+						} 
+					}
+
+				}elseif ($req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->select('fp_nofaktur')
+							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_tgl','>=',$tgl[0])
+							  ->where('fp_tgl','<=',$tgl[1])
+							  ->where('fp_sisapelunasan','!=',0)
+							  ->whereNotIn('fp_nofaktur',$req->valid)
+							  ->get();
+
+					$temp1 = [];
+
+					for ($i=0; $i < count($data); $i++) { 
+						$temp1[$i]=$data[$i]->fp_nofaktur;
+					}
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+
+						$bkkd_fp = DB::table('faktur_pembelian')
+								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  	  ->select('fp_nofaktur')
+							  	  ->where('fp_supplier',$req->supplier_faktur)
+								  ->where('fp_comp',$req->cabang)
+								  ->where('fp_tgl','>=',$tgl[0])
+								  ->where('fp_tgl','<=',$tgl[1])
+								  ->whereNotIn('fp_nofaktur',$req->valid)
+								  ->get();
+
+						$temp2 = [];
+						for ($i=0; $i < count($bkkd_fp); $i++) { 
+							for ($a=0; $a < count($bkkd); $a++) { 
+								if ($bkkd_fp[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$temp2[$i] = $bkkd[$a]->bkkd_ref;
+								}
+							}
+						}
+						$data = array_merge($temp1,$temp2);
+					}
+
+					$unik = array_unique($data);
+
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->whereIn('fp_nofaktur',$unik)
+							  ->get();
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+						for ($i=0; $i < count($data); $i++) { 
+						 	for ($a=0; $a < count($bkkd); $a++) { 
+						 		if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$data[$i]->fp_sisapelunasan += $bkkd[$a]->bkkd_total;
+						 		}
+						 	}
+						} 
+					}
+				}
+				return view('purchase.buktikaskeluar.tabel_modal_faktur',compact('data','jenis_bayar'));
+			}elseif ($req->filter_faktur == 'jatuh_tempo') {
+				$tgl = explode('-',$req->periode);
+				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
+				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
+
+				if ($req->jenis_bayar == 2) {
+
+					$supplier = DB::table('supplier')
+						  ->where('active','AKTIF')
+						  ->where('no_supplier',$req->supplier_faktur)
+						  ->first();
+
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->select('fp_nofaktur')
+							  ->where('fp_idsup',$supplier->idsup)
+							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_jatuhtempo','>=',$tgl[0])
+							  ->where('fp_jatuhtempo','<=',$tgl[1])
+							  ->where('fp_sisapelunasan','!=',0)
+							  ->whereNotIn('fp_nofaktur',$req->valid)
+							  ->get();
+
+					$temp1 = [];
+
+					for ($i=0; $i < count($data); $i++) { 
+						$temp1[$i]=$data[$i]->fp_nofaktur;
+					}
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+
+						$bkkd_fp = DB::table('faktur_pembelian')
+								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  	  ->select('fp_nofaktur')
+							  	  ->where('fp_idsup',$supplier->idsup)
+								  ->where('fp_comp',$req->cabang)
+								  ->where('fp_jatuhtempo','>=',$tgl[0])
+								  ->where('fp_jatuhtempo','<=',$tgl[1])
+								  ->whereNotIn('fp_nofaktur',$req->valid)
+								  ->get();
+
+						$temp2 = [];
+						for ($i=0; $i < count($bkkd_fp); $i++) { 
+							for ($a=0; $a < count($bkkd); $a++) { 
+								if ($bkkd_fp[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$temp2[$i] = $bkkd[$a]->bkkd_ref;
+								}
+							}
+						}
+						$data = array_merge($temp1,$temp2);
+					}
+
+					$unik = array_unique($data);
+
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->whereIn('fp_nofaktur',$unik)
+							  ->get();
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+						for ($i=0; $i < count($data); $i++) { 
+						 	for ($a=0; $a < count($bkkd); $a++) { 
+						 		if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$data[$i]->fp_sisapelunasan += $bkkd[$a]->bkkd_total;
+						 		}
+						 	}
+						} 
+					}
+				}elseif ($req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->select('fp_nofaktur')
+							  ->where('fp_supplier',$req->supplier_faktur)
+							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_jatuhtempo','>=',$tgl[0])
+							  ->where('fp_jatuhtempo','<=',$tgl[1])
+							  ->where('fp_sisapelunasan','!=',0)
+							  ->whereNotIn('fp_nofaktur',$req->valid)
+							  ->get();
+
+					$temp1 = [];
+
+					for ($i=0; $i < count($data); $i++) { 
+						$temp1[$i]=$data[$i]->fp_nofaktur;
+					}
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+
+						$bkkd_fp = DB::table('faktur_pembelian')
+								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  	  ->select('fp_nofaktur')
+							  	  ->where('fp_supplier',$req->supplier_faktur)
+								  ->where('fp_comp',$req->cabang)
+								  ->where('fp_jatuhtempo','>=',$tgl[0])
+								  ->where('fp_jatuhtempo','<=',$tgl[1])
+								  ->whereNotIn('fp_nofaktur',$req->valid)
+								  ->get();
+
+						$temp2 = [];
+						for ($i=0; $i < count($bkkd_fp); $i++) { 
+							for ($a=0; $a < count($bkkd); $a++) { 
+								if ($bkkd_fp[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$temp2[$i] = $bkkd[$a]->bkkd_ref;
+								}
+							}
+						}
+						$data = array_merge($temp1,$temp2);
+					}
+
+					$unik = array_unique($data);
+
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->whereIn('fp_nofaktur',$unik)
+							  ->get();
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+						for ($i=0; $i < count($data); $i++) { 
+						 	for ($a=0; $a < count($bkkd); $a++) { 
+						 		if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$data[$i]->fp_sisapelunasan += $bkkd[$a]->bkkd_total;
+						 		}
+						 	}
+						} 
+					}
+				}
+				return view('purchase.buktikaskeluar.tabel_modal_faktur',compact('data','jenis_bayar'));
+			}elseif ($req->filter_faktur == 'faktur') {
+
+				if ($req->jenis_bayar == 2) {
+					$supplier = DB::table('supplier')
+							  ->where('active','AKTIF')
+							  ->where('no_supplier',$req->supplier_faktur)
+							  ->first();
+
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->select('fp_nofaktur')
+							  ->where('fp_idsup',$supplier->idsup)
+							  ->where('fp_nofaktur',$req->faktur_nomor)
+							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_sisapelunasan','!=',0)
+							  ->whereNotIn('fp_nofaktur',$req->valid)
+							  ->get();
+
+					$temp1 = [];
+
+					for ($i=0; $i < count($data); $i++) { 
+						$temp1[$i]=$data[$i]->fp_nofaktur;
+					}
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+
+						$bkkd_fp = DB::table('faktur_pembelian')
+								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  	  ->select('fp_nofaktur')
+							  	  ->where('fp_idsup',$supplier->idsup)
+							      ->where('fp_nofaktur',$req->faktur_nomor)
+								  ->where('fp_comp',$req->cabang)
+								  ->whereNotIn('fp_nofaktur',$req->valid)
+								  ->get();
+
+						$temp2 = [];
+						for ($i=0; $i < count($bkkd_fp); $i++) { 
+							for ($a=0; $a < count($bkkd); $a++) { 
+								if ($bkkd_fp[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$temp2[$i] = $bkkd[$a]->bkkd_ref;
+								}
+							}
+						}
+						$data = array_merge($temp1,$temp2);
+					}
+
+					$unik = array_unique($data);
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->whereIn('fp_nofaktur',$unik)
+							  ->get();
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+						for ($i=0; $i < count($data); $i++) { 
+						 	for ($a=0; $a < count($bkkd); $a++) { 
+						 		if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$data[$i]->fp_sisapelunasan += $bkkd[$a]->bkkd_total;
+						 		}
+						 	}
+						} 
+					}
+				}elseif ($req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->select('fp_nofaktur')
+							  ->where('fp_supplier',$req->supplier_faktur)
+							  ->where('fp_nofaktur',$req->faktur_nomor)
+							  ->where('fp_comp',$req->cabang)
+							  ->where('fp_sisapelunasan','!=',0)
+							  ->whereNotIn('fp_nofaktur',$req->valid)
+							  ->get();
+					$temp1 = [];
+
+					for ($i=0; $i < count($data); $i++) { 
+						$temp1[$i]=$data[$i]->fp_nofaktur;
+					}
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+
+						$bkkd_fp = DB::table('faktur_pembelian')
+								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  	  ->select('fp_nofaktur')
+							  	  ->where('fp_supplier',$req->supplier_faktur)
+							      ->where('fp_nofaktur',$req->faktur_nomor)
+								  ->where('fp_comp',$req->cabang)
+								  ->whereNotIn('fp_nofaktur',$req->valid)
+								  ->get();
+
+						$temp2 = [];
+						for ($i=0; $i < count($bkkd_fp); $i++) { 
+							for ($a=0; $a < count($bkkd); $a++) { 
+								if ($bkkd_fp[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$temp2[$i] = $bkkd[$a]->bkkd_ref;
+								}
+							}
+						}
+						$data = array_merge($temp1,$temp2);
+					}
+
+					$unik = array_unique($data);
+
+					$data = DB::table('faktur_pembelian')
+							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
+							  ->whereIn('fp_nofaktur',$unik)
+							  ->get();
+
+					if (isset($req->nota)) {
+
+						$bkkd = DB::table('bukti_kas_keluar_detail')
+						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+						  ->where('bkk_nota',$req->nota)
+						  ->get();
+
+						for ($i=0; $i < count($data); $i++) { 
+						 	for ($a=0; $a < count($bkkd); $a++) { 
+						 		if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
+									$data[$i]->fp_sisapelunasan += $bkkd[$a]->bkkd_total;
+						 		}
+						 	}
+						} 
+					}
+				}
+
+				return response()->json(['data'=>$data]);
+			}
+			
+		}elseif ($req->jenis_bayar == 3) {
+			if ($req->filter_faktur == 'tanggal') {
+				$tgl = explode('-',$req->periode);
+				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
+				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
+
+
+				 $data = DB::table('v_hutang')
+						  ->where('v_supid',$req->supplier_faktur)
+						  ->where('vc_comp',$req->cabang)
+						  ->where('v_tgl','>=',$tgl[0])
+						  ->where('v_tgl','<=',$tgl[1])
+						  ->where('v_pelunasan','!=',0)
+						  ->whereNotIn('v_nomorbukti',$req->valid)
+						  ->get();
+
+				$temp1 = [];
+
+				for ($i=0; $i < count($data); $i++) { 
+					$temp1[$i]=$data[$i]->v_nomorbukti;
+				}
+
+				if (isset($req->nota)) {
+
+					$bkkd = DB::table('bukti_kas_keluar_detail')
+					  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+					  ->where('bkk_nota',$req->nota)
+					  ->get();
+
+
+					$bkkd_fp = DB::table('v_hutang')
+						  ->where('v_supid',$req->supplier_faktur)
+						  ->where('vc_comp',$req->cabang)
+						  ->where('v_tgl','>=',$tgl[0])
+						  ->where('v_tgl','<=',$tgl[1])
+						  ->whereNotIn('v_nomorbukti',$req->valid)
+						  ->get();
+
+					$temp2 = [];
+					for ($i=0; $i < count($bkkd_fp); $i++) { 
+						for ($a=0; $a < count($bkkd); $a++) { 
+							if ($bkkd_fp[$i]->v_nomorbukti == $bkkd[$a]->bkkd_ref) {
+								$temp2[$i] = $bkkd[$a]->bkkd_ref;
+							}
+						}
+					}
+					$data = array_merge($temp1,$temp2);
+				}
+
+				$unik = array_unique($data);
+				$data = DB::table('v_hutang')
+						  ->whereIn('v_nomorbukti',$unik)
+						  ->get();
+				if (isset($req->nota)) {
+
+					$bkkd = DB::table('bukti_kas_keluar_detail')
+					  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+					  ->where('bkk_nota',$req->nota)
+					  ->get();
+
+					for ($i=0; $i < count($data); $i++) { 
+					 	for ($a=0; $a < count($bkkd); $a++) { 
+					 		if ($data[$i]->v_nomorbukti == $bkkd[$a]->bkkd_ref) {
+								$data[$i]->v_pelunasan += $bkkd[$a]->bkkd_total;
+					 		}
+					 	}
+					} 
+				}
+				return view('purchase.buktikaskeluar.tabel_modal_voucher',compact('data','jenis_bayar'));
+			}elseif ($req->filter_faktur == 'jatuh_tempo') {
+				$tgl = explode('-',$req->periode);
+				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
+				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
+
+				$data = DB::table('v_hutang')
+						  ->where('v_supid',$req->supplier_faktur)
+						  ->where('vc_comp',$req->cabang)
+						  ->where('v_tempo','>=',$tgl[0])
+						  ->where('v_tempo','<=',$tgl[1])
+						  ->where('v_pelunasan','!=',0)
+						  ->whereNotIn('v_nomorbukti',$req->valid)
+						  ->get();
+
+				$temp1 = [];
+
+				for ($i=0; $i < count($data); $i++) { 
+					$temp1[$i]=$data[$i]->fp_nofaktur;
+				}
+
+				if (isset($req->nota)) {
+
+					$bkkd = DB::table('bukti_kas_keluar_detail')
+					  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+					  ->where('bkk_nota',$req->nota)
+					  ->get();
+
+
+					$bkkd_fp = DB::table('v_hutang')
+						  ->where('v_supid',$req->supplier_faktur)
+						  ->where('vc_comp',$req->cabang)
+						  ->where('v_tempo','>=',$tgl[0])
+						  ->where('v_tempo','<=',$tgl[1])
+						  ->whereNotIn('v_nomorbukti',$req->valid)
+						  ->get();
+
+					$temp2 = [];
+					for ($i=0; $i < count($bkkd_fp); $i++) { 
+						for ($a=0; $a < count($bkkd); $a++) { 
+							if ($bkkd_fp[$i]->v_nomorbukti == $bkkd[$a]->bkkd_ref) {
+								$temp2[$i] = $bkkd[$a]->bkkd_ref;
+							}
+						}
+					}
+					$data = array_merge($temp1,$temp2);
+				}
+
+				$unik = array_unique($data);
+
+				$data = DB::table('v_hutang')
+						  ->whereIn('v_nomorbukti',$unik)
+						  ->get();
+				if (isset($req->nota)) {
+
+					$bkkd = DB::table('bukti_kas_keluar_detail')
+					  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+					  ->where('bkk_nota',$req->nota)
+					  ->get();
+
+					for ($i=0; $i < count($data); $i++) { 
+					 	for ($a=0; $a < count($bkkd); $a++) { 
+					 		if ($data[$i]->v_nomorbukti == $bkkd[$a]->bkkd_ref) {
+								$data[$i]->v_pelunasan += $bkkd[$a]->bkkd_total;
+					 		}
+					 	}
+					} 
+				}
+				return view('purchase.buktikaskeluar.tabel_modal_voucher',compact('data','jenis_bayar'));
+			}elseif ($req->filter_faktur == 'faktur') {
+
+				$data = DB::table('v_hutang')
+						  ->where('v_supid',$req->supplier_faktur)
+						  ->where('vc_comp',$req->cabang)
+						  ->where('v_nomorbukti',$req->faktur_nomor)
+						  ->where('v_pelunasan','!=',0)
+						  ->whereNotIn('v_nomorbukti',$req->valid)
+						  ->get();
+				$temp1 = [];
+
+				for ($i=0; $i < count($data); $i++) { 
+					$temp1[$i]=$data[$i]->v_nomorbukti;
+				}
+
+				if (isset($req->nota)) {
+
+					$bkkd = DB::table('bukti_kas_keluar_detail')
+					  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+					  ->where('bkk_nota',$req->nota)
+					  ->get();
+
+
+					$bkkd_fp = DB::table('v_hutang')
+						  ->where('v_supid',$req->supplier_faktur)
+						  ->where('vc_comp',$req->cabang)
+						  ->where('v_nomorbukti',$req->faktur_nomor)
+						  ->whereNotIn('v_nomorbukti',$req->valid)
+						  ->get();
+
+					$temp2 = [];
+					for ($i=0; $i < count($bkkd_fp); $i++) { 
+						for ($a=0; $a < count($bkkd); $a++) { 
+							if ($bkkd_fp[$i]->v_nomorbukti == $bkkd[$a]->bkkd_ref) {
+								$temp2[$i] = $bkkd[$a]->bkkd_ref;
+							}
+						}
+					}
+					$data = array_merge($temp1,$temp2);
+				}
+
+				$unik = array_unique($data);
+
+				$data = DB::table('v_hutang')
+						  ->whereIn('v_nomorbukti',$unik)
+						  ->get();
+				if (isset($req->nota)) {
+
+					$bkkd = DB::table('bukti_kas_keluar_detail')
+					  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
+					  ->where('bkk_nota',$req->nota)
+					  ->get();
+
+					for ($i=0; $i < count($data); $i++) { 
+					 	for ($a=0; $a < count($bkkd); $a++) { 
+					 		if ($data[$i]->v_nomorbukti == $bkkd[$a]->bkkd_ref) {
+								$data[$i]->v_pelunasan += $bkkd[$a]->bkkd_total;
+					 		}
+					 	}
+					} 
+				}
+
+				return response()->json(['data'=>$data]);
+			}
+		}
+
 	}
 
 }

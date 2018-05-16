@@ -326,7 +326,10 @@
                                                         </div>
                                                     </td>
                                                     <td style="width: 80px">
-                                                        <span class="input-group-btn"> <button type="button" id="btn_cari_harga" class="btn btn-primary">Search
+                                                        <span class="input-group-btn"> <button type="button" id="btn_cari_harga" class="btn btn-primary"> <i class="fa fa-search"></i> Search
+                                                    </td>
+                                                    <td style="width: 80px" id="hidden_button" hidden="">
+                                                        <span class="input-group-btn"> <button type="button" id="btn_cari_tipe" class="btn btn-warning"> <i class="fa fa-search"></i> Tipe
                                                     </td>
                                                         
                                                 </tr>
@@ -399,7 +402,7 @@
                                                     <td colspan="2" id="div_kom">
                                                         <input type="text" class="form-control dv" name="ed_dpp" id="ed_dpp" style="text-align:right" tabindex="-1"
                                                         @if ($do === null) value="0" 
-                                                        @else value="{{ number_format($do->total_net, 0, ",", ".") }}" 
+                                                        @else value="{{ number_format($do->total_dpp, 0, ",", ".") }}" 
                                                         @endif
                                                     >
                                                     </td>
@@ -409,16 +412,16 @@
                                                     <td style="padding-top: 0.4cm" id="div_kom">Vendor</td>
                                                     <td style="width: 80px">
                                                        <div class="checkbox checkbox-info checkbox-circle">
-                                                            <input class="vendor_tarif" type="checkbox" name="vendor_tarif">
-                                                            <label>
-                                                                Vendor
-                                                            </label>
+                                                                <input class="vendor_tarif" type="checkbox"  name="vendor_tarif">
+                                                                <label>
+                                                                    Vendor
+                                                                </label>
                                                         </div>
                                                     </td>
                                                     <td colspan="2" id="div_kom">
                                                         <input type="text" class="form-control dv" name="ed_vendor" id="ed_vendor" style="text-align:right" tabindex="-1"
                                                         @if ($do === null) value="0" 
-                                                        @else value="{{ number_format($do->total_net, 0, ",", ".") }}" 
+                                                        @else value="{{ number_format($do->total_vendo, 0, ",", ".") }}" 
                                                         @endif
                                                     >
                                                     </td>
@@ -432,6 +435,9 @@
                                                         @endif
                                                     >
                                                     </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="hidden" name="ed_total_total"></td>
                                                 </tr>
                                                 <input type="hidden" name="ed_total_total">
                                             </tbody>
@@ -570,6 +576,11 @@
                                                             <option value="KREDIT">KREDIT</option>
                                                         </select>
                                                     </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="hidden" name="kontrak_tr" value="{{ $do->kontrak or null }}"></td>
+                                                    <td><input type="hidden" name="kontrak_cus" value="{{ $do->kontrak_cus or null }}"></td>
+                                                    <td><input type="hidden" name="kontrak_cus_dt" value="{{ $do->kontrak_cus_dt or null }}"></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -887,7 +898,10 @@
         $("select[name='cb_cabang']").val('{{ $do->kode_cabang or ''  }}').change();
         $("select[name='cb_jenis_ppn']").val('{{ $do->jenis_ppn or '3'  }}').change();
         $("select[name='cb_marketing']").val('{{ $do->kode_marketing or ''  }}').trigger('chosen:updated');
+        
         $("input[name='ck_ppn']").attr('checked', {{ $do->ppn or null}});
+        $(".kontrak_tarif").attr('checked', {{ $do->kontrak or null}});
+
         var data = $("select[name='cb_kota_tujuan'] option:selected").text();
         $("input[name='ed_kota']").val(data);
         var datakec = $("select[name='cb_kecamatan_tujuan'] option:selected").text();
@@ -967,123 +981,366 @@
     })
     
     function hitung(){
+        if (crud_atas == 'N') {
             $("input[name='ed_vendor']").prop('readonly',true);
-        var tarif_dasar = $("input[name='ed_tarif_dasar']").val();
-        var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
-        var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
-
-        var diskon  = $("input[name='ed_diskon_h']").val();
-        var diskon_value  = $("input[name='ed_diskon_v']").val();
-        var diskon_val  = $("input[name='ed_diskon_h']").val();
-        var biaya_komisi  = $("input[name='ed_biaya_komisi']").val();
-        var dpp_val  = $("input[name='ed_dpp']").val();
-        var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
-        var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
-        var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
-        var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
-        var dpp_val = dpp_val.replace(/[A-Za-z$. ,-]/g, "");
-        // var diskon = diskon.replace(/[A-Za-z$. ,-]/g, "");
-        var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
-        var this_selected_value = $('#cb_cabang').find(':selected').data('diskon');
-        // alert(this_selected_value);
-            if(diskon_val > this_selected_value){
-                 Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
-
-                toastr.options = {
-                  "closeButton": false,
-                  "debug": true,
-                  "newestOnTop": false,
-                  "progressBar": true,
-                  "positionClass": "toast-top-right",
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "300",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut"
-                }
-                $("input[name='ed_diskon_h']").val(0);
+            var tarif_dasar = $("input[name='ed_tarif_dasar']").val();
+            var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
+            var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
+            var berat_val = $("input[name='ed_berat']").val();
+            var koli_val = $("input[name='ed_koli']").val();
+            if (berat_val == 0) { 
+                berat_val == 1;
+            }else{
+                berat_val = $("input[name='ed_berat']").val();
             }
-        // 
-        if (diskon > 0 && biaya_tambahan > 0) {
-            alert("Diskon dan biaya tambahan di isi salah satu");
-            parseFloat($("input[name='ed_diskon_h']").val(0));
-            $("input[name='ed_biaya_tambahan']").val(0);
-            diskon = 0;
-            biaya_tambahan = 0;
-            $("input[name='ed_biaya_tambahan']").focus();
-        }
-        if ($("select[name='cb_outlet']").val() == '' ) {
-            biaya_komisi = 0;
-        }
-        var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
-        var dpp  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
-        var vendor  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
-        var total_total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus);
-        //--
-        if (diskon != 0) {
 
-            var diskon_value_utama = diskon / 100 * total;
+            if (koli_val == 0) {
+                koli_val == 1;
+            }else{
+                koli_val = $("input[name='ed_koli']").val();
+            }
+            var diskon  = $("input[name='ed_diskon_h']").val();
+            var diskon_value  = $("input[name='ed_diskon_v']").val();
+            var diskon_val  = $("input[name='ed_diskon_h']").val();
+            var biaya_komisi  = $("input[name='ed_biaya_komisi']").val();
+            var dpp_val  = $("input[name='ed_dpp']").val();
 
-            $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
+            var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+            var berat_val = berat_val.replace(/[A-Za-z$. ,-]/g, "");
+            var koli_val = koli_val.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
+            var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
 
-        }else if (diskon == 0) {
-            var diskon_value_utama = diskon / 100 * total;
+            var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
+            var dpp_val = dpp_val.replace(/[A-Za-z$. ,-]/g, "");
+            // var diskon = diskon.replace(/[A-Za-z$. ,-]/g, "");
+            var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
+            var this_selected_value = $('#cb_cabang').find(':selected').data('diskon');
+            // alert(this_selected_value);
+                if(diskon_val > this_selected_value){
+                     Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
 
-            $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
-        }
-       
-        // alert(diskon_value_utama);
-        //--
-        var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
-        if (jenis_ppn == 1) {
-            ppn =parseFloat(total) * parseFloat(0.1);
-            total = total + ppn;
-        }else if (jenis_ppn == 2) {
-            ppn =parseFloat(total) * parseFloat(0.01);
-            total = total + ppn;
-        }else if (jenis_ppn == 4) {
-            ppn =0;
-        }else if (jenis_ppn == 3) {
-            ppn =parseFloat(total) / parseFloat(100.1);
-            //total = total - ppn;
-        }else if (jenis_ppn == 5) {
-            ppn =parseFloat(total) / parseFloat(10.1);
-            total = total - ppn;
-        }
-      
-        // console.log(diskon_value_utama);
-      
-        var total_h = total-diskon_value_utama;
-        var dpp_h = dpp-diskon_value_utama;
+                    toastr.options = {
+                      "closeButton": false,
+                      "debug": true,
+                      "newestOnTop": false,
+                      "progressBar": true,
+                      "positionClass": "toast-top-right",
+                      "preventDuplicates": true,
+                      "onclick": null,
+                      "showDuration": "300",
+                      "hideDuration": "1000",
+                      "timeOut": "5000",
+                      "extendedTimeOut": "1000",
+                      "showEasing": "swing",
+                      "hideEasing": "linear",
+                      "showMethod": "fadeIn",
+                      "hideMethod": "fadeOut"
+                    }
+                    $("input[name='ed_diskon_h']").val(0);
+                }
+            // 
+            if (diskon > 0 && biaya_tambahan > 0) {
+                alert("Diskon dan biaya tambahan di isi salah satu");
+                parseFloat($("input[name='ed_diskon_h']").val(0));
+                $("input[name='ed_biaya_tambahan']").val(0);
+                diskon = 0;
+                biaya_tambahan = 0;
+                $("input[name='ed_biaya_tambahan']").focus();
+            }
+            if ($("select[name='cb_outlet']").val() == '' ) {
+                biaya_komisi = 0;
+            }
+            var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+            var dpp  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+            var vendor  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+            var total_total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus);
+            //--
+            if (diskon != 0) {
 
-        $("input[name='ed_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
-        
-        $("input[name='ed_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
-        
-        $("input[name='ed_total_total']").val(total);
+                var diskon_value_utama = diskon / 100 * total;
 
-        if ($('.vendor_tarif').is(':checked') == false) {
+                $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
+
+            }else if (diskon == 0) {
+                var diskon_value_utama = diskon / 100 * total;
+
+                $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
+            }
+           
+            // alert(diskon_value_utama);
+            //--
+            var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
+            if (jenis_ppn == 1) {
+                ppn =parseFloat(total) * parseFloat(0.1);
+                total = total + ppn;
+            }else if (jenis_ppn == 2) {
+                ppn =parseFloat(total) * parseFloat(0.01);
+                total = total + ppn;
+            }else if (jenis_ppn == 4) {
+                ppn =0;
+            }else if (jenis_ppn == 3) {
+                ppn =parseFloat(total) / parseFloat(100.1);
+                //total = total - ppn;
+            }else if (jenis_ppn == 5) {
+                ppn =parseFloat(total) / parseFloat(10.1);
+                total = total - ppn;
+            }
+          
+            // console.log(diskon_value_utama);
+          
+            var total_h = total-diskon_value_utama;
+            var dpp_h = dpp-diskon_value_utama;
+
+            $("input[name='ed_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
             
-            $("input[name='ed_dpp']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
-        }else{
-            $("input[name='ed_vendor']").prop('readonly',false);
-            $("input[name='ed_vendor']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+            $("input[name='ed_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
             
-        }    
+            $("input[name='ed_total_total']").val(total);
 
-       
-        
+            if ($('.vendor_tarif').is(':checked') == false) {
+                
+                $("input[name='ed_dpp']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+            }else{
+                $("input[name='ed_vendor']").prop('readonly',false);
+                $("input[name='ed_vendor']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+                
+            }
+        }else if(crud_atas == 'E'){
+            $(document).ready(function() {
+                if ($('input[name="kontrak_tarif"]').is(':checked') ==true) {
+                    $('#hidden_button').show(); 
+                    var berat_val = $("input[name='ed_berat']").val();
+                    var koli_val = $("input[name='ed_koli']").val();
+                    if (berat_val == 0) { 
+                        berat_val == 1;
+                    }else{
+                        berat_val = $("input[name='ed_berat']").val();
+                    }
+
+                    if (koli_val == 0) {
+                        koli_val == 1;
+                    }else{
+                        koli_val = $("input[name='ed_koli']").val();
+                    }
+                
+
+                    var tarif_dasar = $("input[name='ed_tarif_dasar']").val(accounting.formatMoney('{{ $do->tarif_dasar or null }}',"",0,'.',','));
+                    var biaya_penerus = $("input[name='ed_tarif_penerus']").val(accounting.formatMoney('{{ $do->tarif_penerus or null }}',"",0,'.',','));
+                    var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val(accounting.formatMoney('{{ $do->biaya_tambahan or null }}',"",0,'.',','));
+                    var biaya_komisi = $("input[name='ed_biaya_tambahan']").val(accounting.formatMoney('{{ $do->biaya_komisi or null }}',"",0,'.',','));
+
+                    var tarif_dasar =$("input[name='ed_tarif_dasar']").val();
+                    var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
+                    var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
+                    var biaya_komisi = $("input[name='ed_biaya_tambahan']").val();
+
+                    var diskon = $("input[name='ed_diskon_h']").val();
+                    var diskon_value = $("input[name='ed_diskon_v']").val();
+                    var dpp_val = $("input[name='ed_biaya_komisi']").val();
+                    var dpp_vendo = $("input[name='ed_biaya_komisi']").val();
+                    var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+                    
+                    var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
+                    var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+                    var berat_val = berat_val.replace(/[A-Za-z$. ,-]/g, "");
+                    var koli_val = koli_val.replace(/[A-Za-z$. ,-]/g, "");
+                    var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
+                    var dpp_val = dpp_val.replace(/[A-Za-z$. ,-]/g, "");
+
+                    var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+                    var dpp  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+                    var vendor  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+                    var total_total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus);
+                    //--
+                    
+                    
+                    
+                    if (diskon != 0) {
+
+                        var diskon_value_utama = diskon / 100 * total;
+
+                        $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
+
+                    }else if (diskon == 0) {
+                        var diskon_value_utama = diskon / 100 * total;
+
+                        $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
+                    }
+                   
+                    // alert(diskon_value_utama);
+                    //--
+                    var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
+                    if (jenis_ppn == 1) {
+                        ppn =parseFloat(total) * parseFloat(0.1);
+                        total = total + ppn;
+                    }else if (jenis_ppn == 2) {
+                        ppn =parseFloat(total) * parseFloat(0.01);
+                        total = total + ppn;
+                    }else if (jenis_ppn == 4) {
+                        ppn =0;
+                    }else if (jenis_ppn == 3) {
+                        ppn =parseFloat(total) / parseFloat(100.1);
+                        //total = total - ppn;
+                    }else if (jenis_ppn == 5) {
+                        ppn =parseFloat(total) / parseFloat(10.1);
+                        total = total - ppn;
+                    }
+                  
+                    // console.log(diskon_value_utama);
+                  
+                    var total_h = total-diskon_value_utama;
+                    var dpp_h = dpp-diskon_value_utama;
+                    // console.log(total_h);
+                    $("input[name='ed_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
+                    
+                    $("input[name='ed_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
+                    
+
+                    if ($('.vendor_tarif').is(':checked') == false) {
+                        
+                        $("input[name='ed_dpp']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+                    }else{
+                        $("input[name='ed_vendor']").prop('readonly',false);
+                        $("input[name='ed_vendor']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+                        
+                    }
+
+                }else{
+                    $("input[name='ed_vendor']").prop('readonly',true);
+                    var tarif_dasar = $("input[name='ed_tarif_dasar']").val();
+                    var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
+                    var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
+                    var berat_val = $("input[name='ed_berat']").val();
+                    var koli_val = $("input[name='ed_koli']").val();
+                    if (berat_val == 0) { 
+                        berat_val == 1;
+                    }else{
+                        berat_val = $("input[name='ed_berat']").val();
+                    }
+
+                    if (koli_val == 0) {
+                        koli_val == 1;
+                    }else{
+                        koli_val = $("input[name='ed_koli']").val();
+                    }
+                    var diskon  = $("input[name='ed_diskon_h']").val();
+                    var diskon_value  = $("input[name='ed_diskon_v']").val();
+                    var diskon_val  = $("input[name='ed_diskon_h']").val();
+                    var biaya_komisi  = $("input[name='ed_biaya_komisi']").val();
+                    var dpp_val  = $("input[name='ed_dpp']").val();
+
+                    var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
+                    var berat_val = berat_val.replace(/[A-Za-z$. ,-]/g, "");
+                    var koli_val = koli_val.replace(/[A-Za-z$. ,-]/g, "");
+                    var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
+                    var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
+
+                    var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
+                    var dpp_val = dpp_val.replace(/[A-Za-z$. ,-]/g, "");
+                    // var diskon = diskon.replace(/[A-Za-z$. ,-]/g, "");
+                    var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
+                    var this_selected_value = $('#cb_cabang').find(':selected').data('diskon');
+                    // alert(this_selected_value);
+                        if(diskon_val > this_selected_value){
+                             Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+
+                            toastr.options = {
+                              "closeButton": false,
+                              "debug": true,
+                              "newestOnTop": false,
+                              "progressBar": true,
+                              "positionClass": "toast-top-right",
+                              "preventDuplicates": true,
+                              "onclick": null,
+                              "showDuration": "300",
+                              "hideDuration": "1000",
+                              "timeOut": "5000",
+                              "extendedTimeOut": "1000",
+                              "showEasing": "swing",
+                              "hideEasing": "linear",
+                              "showMethod": "fadeIn",
+                              "hideMethod": "fadeOut"
+                            }
+                            $("input[name='ed_diskon_h']").val(0);
+                        }
+                    // 
+                    if (diskon > 0 && biaya_tambahan > 0) {
+                        alert("Diskon dan biaya tambahan di isi salah satu");
+                        parseFloat($("input[name='ed_diskon_h']").val(0));
+                        $("input[name='ed_biaya_tambahan']").val(0);
+                        diskon = 0;
+                        biaya_tambahan = 0;
+                        $("input[name='ed_biaya_tambahan']").focus();
+                    }
+                    if ($("select[name='cb_outlet']").val() == '' ) {
+                        biaya_komisi = 0;
+                    }
+                    var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+                    var dpp  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+                    var vendor  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
+                    var total_total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus);
+                    //--
+                    if (diskon != 0) {
+
+                        var diskon_value_utama = diskon / 100 * total;
+
+                        $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
+
+                    }else if (diskon == 0) {
+                        var diskon_value_utama = diskon / 100 * total;
+
+                        $("input[name='ed_diskon_v']").val(Math.round(diskon_value_utama));
+                    }
+                   
+                    // alert(diskon_value_utama);
+                    //--
+                    var ppn  = 0;//parseFloat(total)/parseFloat(10)    ;
+                    if (jenis_ppn == 1) {
+                        ppn =parseFloat(total) * parseFloat(0.1);
+                        total = total + ppn;
+                    }else if (jenis_ppn == 2) {
+                        ppn =parseFloat(total) * parseFloat(0.01);
+                        total = total + ppn;
+                    }else if (jenis_ppn == 4) {
+                        ppn =0;
+                    }else if (jenis_ppn == 3) {
+                        ppn =parseFloat(total) / parseFloat(100.1);
+                        //total = total - ppn;
+                    }else if (jenis_ppn == 5) {
+                        ppn =parseFloat(total) / parseFloat(10.1);
+                        total = total - ppn;
+                    }
+                  
+                    // console.log(diskon_value_utama);
+                  
+                    var total_h = total-diskon_value_utama;
+                    var dpp_h = dpp-diskon_value_utama;
+
+                    $("input[name='ed_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
+                    
+                    $("input[name='ed_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
+                    
+                    $("input[name='ed_total_total']").val(total);
+
+                    if ($('.vendor_tarif').is(':checked') == false) {
+                        
+                        $("input[name='ed_dpp']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+                    }else{
+                        $("input[name='ed_vendor']").prop('readonly',false);
+                        $("input[name='ed_vendor']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
+                        
+                    }
+                }
+            })
+            
+        }
+              
+     
     }
-
-
-     $('.dv').keyup(function(){
+    
+    $('.dv').keyup(function(){
         var dpp_hit = $("input[name='ed_dpp']").val();
-
         var vendor_hit = $("input[name='ed_vendor']").val();
         var total_hit = $("input[name='ed_total_h']").val();
 
@@ -1091,9 +1348,9 @@
         var vendor_hit = vendor_hit.replace(/[A-Za-z$. ,-]/g, "");
         var total_hit = total_hit.replace(/[A-Za-z$. ,-]/g, "");
 
+
         var cek = parseInt(dpp_hit)+parseInt(vendor_hit);
-        console.log(dpp_hit);
-        console.log(cek);
+        $('input[name="ed_total_total"]').val(cek);
         // console.log(total_hit);
         if (cek > total_hit) {
              Command: toastr["warning"]("Dpp Melebihi Batas Ketentuan", "Peringatan!")
@@ -1117,8 +1374,11 @@
                 }
             $("input[name='ed_dpp']").val(0);
             $("input[name='ed_vendor']").val(0);
+
         }   
      })
+
+     
          
     
     
@@ -1271,84 +1531,173 @@
     $(document).on("click","#ck_ppn",function(){
         hitung();
     });
-    $('#type_kiriman').change(function(){
-        $("input[name='ed_tarif_dasar']").val(0);
-        $("input[name='ed_tarif_penerus']").val(0);
-        $("input[name='acc_penjualan']").val(0);
-        hitung();
-        type_kiriman=$(this).val();
-        if ( type_kiriman =='DOKUMEN') {
-            $("#surat_jalan").hide();
-            $("#dimensi").hide();
-            $("#nopol").hide();
-            $("#koli").hide();
-            $("#berat").hide();
-            $("#jenis_kendaraan").hide();
-            $("#jml_unit").hide();
-            $('#tr_jenis_kiriman').show();
-            $(".jenis_unit").hide();
-        }else if ( type_kiriman =='KARGO PAKET') {
-            $("#surat_jalan").show();
-            $("#dimensi").hide();
-            $("#nopol").show();
-            $("#koli").hide();
-            $("#berat").hide();
-            $("#jenis_kendaraan").show();
-            $("#jml_unit").hide();
-            $('#tr_jenis_kiriman').show();
-            $(".jenis_unit").hide();
-        }else if ( type_kiriman =='KILOGRAM') {
-            $("#surat_jalan").hide();
-            $("#dimensi").show();
-            $("#nopol").hide();
-            $("#koli").show();
-            $("#berat").show();
-            $("#jenis_kendaraan").hide();
-            $("#jml_unit").hide();
-            $('#tr_jenis_kiriman').show();
-            $(".jenis_unit").hide();
-        }else if ( type_kiriman =='KOLI') {
-            $("#surat_jalan").hide();
-            $("#dimensi").hide();
-            $("#nopol").hide();
-            $("#koli").show();
-            $("#berat").show();
-            $("#jenis_kendaraan").hide();
-            $("#jml_unit").hide();
-            $('#tr_jenis_kiriman').show();
-            $(".jenis_unit").hide();
-        }else if ( type_kiriman =='SEPEDA') {
-            $("#surat_jalan").hide();
-            $("#dimensi").hide();
-            $("#nopol").hide();
-            $("#koli").hide();
-            $("#berat").hide();
-            $("#jenis_kendaraan").hide();
-            $("#jml_unit").show();
-            $(".jenis_unit").show();
-            $("#tr_jenis_kiriman").hide();
-        }else if ( type_kiriman =='KERTAS') {
-            $("#surat_jalan").show();
-            $("#dimensi").hide();
-            $("#nopol").show();
-            $("#koli").hide();
-            $("#berat").show();
-            $("#jenis_kendaraan").hide();
-            $("#jml_unit").hide();
-            $('#tr_jenis_kiriman').show();
-            $(".jenis_unit").hide();
-        }else if ( type_kiriman =='KARGO KERTAS') {
-            $("#surat_jalan").show();
-            $("#dimensi").hide();
-            $("#nopol").show();
-            $("#koli").hide();
-            $("#berat").hide();
-            $("#jenis_kendaraan").show();
-            $('#tr_jenis_kiriman').show();
-            $("#jml_unit").hide();
-            $(".jenis_unit").hide();
-        }
-    });
+    
+        $('#type_kiriman').change(function(){
+            $("input[name='ed_tarif_dasar']").val(0);
+            $("input[name='ed_tarif_penerus']").val(0);
+            $("input[name='acc_penjualan']").val(0);
+            hitung();
+            type_kiriman=$(this).val();
+            if ( type_kiriman =='DOKUMEN') {
+                $("#surat_jalan").hide();
+                $("#dimensi").hide();
+                $("#nopol").hide();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='KARGO PAKET') {
+                $("#surat_jalan").show();
+                $("#dimensi").hide();
+                $("#nopol").show();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").show();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='KILOGRAM') {
+                $("#surat_jalan").hide();
+                $("#dimensi").show();
+                $("#nopol").hide();
+                $("#koli").show();
+                $("#berat").show();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='KOLI') {
+                $("#surat_jalan").hide();
+                $("#dimensi").hide();
+                $("#nopol").hide();
+                $("#koli").show();
+                $("#berat").show();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='SEPEDA') {
+                $("#surat_jalan").hide();
+                $("#dimensi").hide();
+                $("#nopol").hide();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").show();
+                $(".jenis_unit").show();
+                $("#tr_jenis_kiriman").hide();
+            }else if ( type_kiriman =='KERTAS') {
+                $("#surat_jalan").show();
+                $("#dimensi").hide();
+                $("#nopol").show();
+                $("#koli").hide();
+                $("#berat").show();
+                $("#jenis_kendaraan").hide();
+                $("#jml_unit").hide();
+                $('#tr_jenis_kiriman').show();
+                $(".jenis_unit").hide();
+            }else if ( type_kiriman =='KARGO KERTAS') {
+                $("#surat_jalan").show();
+                $("#dimensi").hide();
+                $("#nopol").show();
+                $("#koli").hide();
+                $("#berat").hide();
+                $("#jenis_kendaraan").show();
+                $('#tr_jenis_kiriman').show();
+                $("#jml_unit").hide();
+                $(".jenis_unit").hide();
+            }
+        });
+
+
+    $(document).on("click","#btn_cari_tipe",function(){
+            var berat = $("input[name='ed_berat']").val();
+            var berat = berat.replace(/[A-Za-z$. ,-]/g, "");
+            var jenis_sepeda;
+            var berat_sepeda;
+            var input = document.getElementsByClassName( 'jns_unit' ),
+            jenis_sepeda  = [].map.call(input, function( input ) {
+                return input.value;
+            });
+            var berat_sepeda;
+            var input = document.getElementsByClassName( 'beratunit' ),
+            berat_sepeda  = [].map.call(input, function( input ) {
+                return input.value;
+            });
+
+
+            var value = {
+                    pendapatan: $("select[name='pendapatan']").val(),
+                    asal: $("select[name='cb_kota_asal']").val(),
+                    tujuan: $("select[name='cb_kota_tujuan']").val(),
+                    tipe: $("select[name='type_kiriman']").val(),
+                    tujuan: $("select[name='cb_kota_tujuan']").val(),
+                    jenis: $("select[name='jenis_kiriman']").val(),
+                    angkutan: $("select[name='cb_angkutan']").val(),
+                    cabang: $("select[name='cb_cabang']").val(),
+                    berat : berat,
+                    kecamatan : $("select[name='cb_kecamatan_tujuan']").val(),
+                    sepeda: jenis_sepeda,
+                    berat_sepeda: berat_sepeda
+                };
+            var kecamatan = $('#kecamatan').find(':selected').val();
+            if (kecamatan == '') {
+                Command: toastr["warning"]("Pilih Kecamatan Terlebih Dahulu", "Peringatan!")
+
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": false,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": true,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+
+                return false;
+
+            }
+
+                $.ajax(
+                {
+                    url : baseUrl + "/sales/deliveryorderform/cari_tipe",
+                    type: "GET",
+                    data : value,
+                    dataType:'json',
+                    success: function(data, textStatus, jqXHR)
+                    {
+                        console.log(data);
+                        $('input[name="ed_tarif_dasar"]').val(accounting.formatMoney(data.harga,"",0,'.',','));
+                        $('input[name="ed_tarif_penerus"]').val(accounting.formatMoney(data.biaya_penerus,"",0,'.',','));
+                        var koli_dikali =$("input[name='ed_koli']").val() ;
+                        if (koli_dikali == 0 ) {
+                            // alert('a');
+                            var hit = data.harga  * 1;
+                        }else{
+                            // alert('b');
+                            var hit = parseInt($("input[name='ed_koli']").val())  *  data.harga;
+                        }
+
+                        $('input[name="ed_tarif_dasar"]').val(accounting.formatMoney(hit,"",0,'.',','));
+                        hitung();
+                    }
+                })
+
+
+    })
+
+
+
     
     $(document).on("click","#btn_cari_harga",function(){
         
@@ -1372,14 +1721,15 @@
         berat_sepeda  = [].map.call(input, function( input ) {
             return input.value;
         });
-             $("input[name='ed_harga']").val(0);
+        $("input[name='ed_harga']").val(0);
         
         if ($('.kontrak_tarif').is(":checked"))
         {
-                var cabang_kontrak = $('select[name="cb_cabang"]').val();
-                var customer_kotrak = $('#cb_customer').find(':selected').val()
-
-                 $.ajax({
+        
+           if (crud_atas == 'N') {
+              var cabang_kontrak = $('select[name="cb_cabang"]').val();
+                var customer_kotrak = $('#cb_customer').find(':selected').val();
+                $.ajax({
                             url : baseUrl + "/sales/deliveryorderform/cari_kontrak",
                             type: "GET",
                             data : {a:customer_kotrak,b:cabang_kontrak},
@@ -1396,12 +1746,30 @@
                                             success:function(data){
                                                 $('#taruh_sini').html(data);
                                                 $("#modal").modal("show");
-                                                $('#ajax_modal_kontrak').DataTable();                                                
+                                                $('#ajax_modal_kontrak').DataTable();
+                                                if (koli_dikali == 0 ) {
+                                
+                                                    var hit = data.harga  * 1;
+                                                }else{
+                                                    // alert('b');
+                                                    var hit = parseInt($("input[name='ed_koli']").val())  * data.harga;
+                                                }
+
+                                            },
+                                            complete:function(){
                                             }
                                         }); 
 
                             }
-                        });
+                        }); 
+           }else{
+            // alert('a');
+           }
+        // $('#btn_cari_tipe').show();
+
+               
+
+
         }else{
               if (kota_asal == '') {
             Command: toastr["warning"]("Kota Asal harus diisi", "Peringatan !")
@@ -1608,7 +1976,6 @@
                             var harga = convertToRupiah(parseInt(data.harga));
                             
                             var koli_dikali =$("input[name='ed_koli']").val() ;
-                            // alert(koli_dikali);
                             var biaya = convertToRupiah(parseInt(data.biaya_penerus));
                             if (koli_dikali == 0 ) {
                                 // alert('a');
@@ -1765,13 +2132,22 @@
             type:'get',
             success:function(data){
                 console.log(data)
+
                 $("#modal").modal("hide");
                 $('select[name="cb_kota_asal"]').val(data.data.kcd_kota_asal).trigger('chosen:updated');
                 $('select[name="cb_kota_tujuan"]').val(data.data.kcd_kota_tujuan).trigger('chosen:updated');
                 $('select[name="type_kiriman"]').val(data.data.kcd_type_tarif);
                 $('input[name="ed_kota"]').val(data.data.asal);
+                $('input[name="kontrak_tr"]').val('t');
+                $('input[name="kontrak_cus"]').val(data.data.kcd_id);
+                $('input[name="kontrak_cus_dt"]').val(data.data.kcd_dt);
+
+
+
                 $('input[name="ed_tarif_dasar"]').val(accounting.formatMoney(data.data.kcd_harga,"",0,'.',','));
-                if(data.data.tarif != 'REGULER' || data.data.tarif != 'EXPRESS'){
+                if(data.data.tarif == 'REGULER' || data.data.tarif == 'EXPRESS'){
+                    $('select[name="jenis_kiriman"]').val(data.data.tarif);
+                }else{
                     Command: toastr["warning"]("Tipe tarif tidak sesuai dengan ketentuan", "Peringatan !")
                     toastr.options = {
                       "closeButton": false,
@@ -1790,13 +2166,53 @@
                       "showMethod": "fadeIn",
                       "hideMethod": "fadeOut"
                     }
-                }else{
-                    $('select[name="jenis_kiriman"]').val(data.data.tarif);
                 }
-                
-                // var dasar = parseInt(data.data.kcd_harga);
-                // $('#ed_total_h').val(accounting.formatMoney(dasar,"",0,'.',',')); 
+                    type_kiriman=data.data.kcd_type_tarif;
+
+                    if ( type_kiriman =='DOKUMEN') {
+                        $("#surat_jalan").hide();
+                        $("#dimensi").hide();
+                        $("#nopol").hide();
+                        $("#koli").hide();
+                        $("#berat").hide();
+                        $("#jenis_kendaraan").hide();
+                        $("#jml_unit").hide();
+                        $('#tr_jenis_kiriman').show();
+                        $(".jenis_unit").hide();
+                    }else if ( type_kiriman =='KILOGRAM') {
+                        $("#surat_jalan").hide();
+                        $("#dimensi").show();
+                        $("#nopol").hide();
+                        $("#koli").show();
+                        $("#berat").show();
+                        $("#jenis_kendaraan").hide();
+                        $("#jml_unit").hide();
+                        $('#tr_jenis_kiriman').show();
+                        $(".jenis_unit").hide();
+                    }else if ( type_kiriman =='KOLI') {
+                        $("#surat_jalan").hide();
+                        $("#dimensi").hide();
+                        $("#nopol").hide();
+                        $("#koli").show();
+                        $("#berat").show();
+                        $("#jenis_kendaraan").hide();
+                        $("#jml_unit").hide();
+                        $('#tr_jenis_kiriman').show();
+                        $(".jenis_unit").hide();
+                    }else if ( type_kiriman =='SEPEDA') {
+                        $("#surat_jalan").hide();
+                        $("#dimensi").hide();
+                        $("#nopol").hide();
+                        $("#koli").hide();
+                        $("#berat").hide();
+                        $("#jenis_kendaraan").hide();
+                        $("#jml_unit").show();
+                        $(".jenis_unit").show();
+                        $("#tr_jenis_kiriman").hide();
+                    }
+                    $('#hidden_button').show();
                 hitung();  
+                getKecamatan();
 
             }
         });
@@ -2623,6 +3039,7 @@
         var alamatpengirim = $(".alamatpengirim").val();
         var kodepospengirim = $(".kodepospengirim").val();
         var teleponpengirim = $(".teleponpengirim").val();
+        var ed_total_total = $(".ed_total_total").val();
 
         if (kota_asal == '') {
             Command: toastr["warning"]("Kota Asal harus diisi", "Peringatan !")
@@ -2997,6 +3414,7 @@
         var alamatpengirim = $(".alamatpengirim").val();
         var kodepospengirim = $(".kodepospengirim").val();
         var teleponpengirim = $(".teleponpengirim").val();
+        var ed_total_total = $(".ed_total_total").val();
 
         if (kota_asal == '') {
             Command: toastr["warning"]("Kota Asal harus diisi", "Peringatan !")
@@ -3794,6 +4212,14 @@
         console.log(kecamatan);
         var deskripsi_rep =  $("input[name='ed_deskripsi']").val(asal +' - '+ tujuan +' - '+ kecamatan +' - '+ nama_penerima);
     })
+    // $( document ).ready(function() {
+    //   if ($('input[name="kontrak_tarif"]').is(':checked') ==true) {
+    //             alert('o');
+    //         }else{
+    //             alert('i');
+    //     }
+    // });
+        
     
 </script>
 @endsection

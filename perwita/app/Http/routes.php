@@ -334,9 +334,11 @@ Route::get('buktikaskeluar/save_patty', 'kasKeluarController@save_patty');
 Route::get('buktikaskeluar/supplier_dropdown', 'kasKeluarController@supplier_dropdown');
 Route::get('buktikaskeluar/cari_hutang', 'kasKeluarController@cari_hutang');
 Route::get('buktikaskeluar/cari_faktur', 'kasKeluarController@cari_faktur');
+Route::get('buktikaskeluar/cari_faktur_edit', 'kasKeluarController@cari_faktur_edit');
 Route::get('buktikaskeluar/append_faktur', 'kasKeluarController@append_faktur');
+Route::get('buktikaskeluar/append_faktur_edit', 'kasKeluarController@append_faktur_edit');
 Route::get('buktikaskeluar/detail_faktur', 'kasKeluarController@detail_faktur');
-Route::get('buktikaskeluar/save_form', 'kasKeluarController@save_form');
+Route::post('buktikaskeluar/save_form', 'kasKeluarController@save_form');
 
 Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 
@@ -1244,6 +1246,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
 // Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
 // Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_controller@cari_kontrak');
+// Route::get('sales/deliveryorderform/cari_tipe', 'sales\do_controller@cari_tipe');
 
 // Route::post('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
 // Route::get('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
@@ -1274,18 +1277,19 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_controller@tarif_penerus_sepeda_indentdo');
 
 
-Route::get('sales/deliveryorder', 'sales\do_Controller@index');
-Route::get('sales/asd', 'sales\do_controller@asd');
-Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_Controller@cetak_form');
-Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
-Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
-Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail')->name('tabledata_detail');
-Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
-Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
-Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
-Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
-Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
-Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_Controller@cari_kontrak');
+// Route::get('sales/deliveryorder', 'sales\do_Controller@index');
+// Route::get('sales/asd', 'sales\do_controller@asd');
+// Route::get('cetak_deliveryorderform/cetak_deliveryorderform', 'sales\do_Controller@cetak_form');
+// Route::get('sales/deliveryorderform', 'sales\do_Controller@form');
+// Route::get('sales/deliveryorderform/{nomor}/edit', 'sales\do_Controller@form');
+// Route::get('sales/deliveryorderform/tabel_data_detail', 'sales\do_Controller@table_data_detail')->name('tabledata_detail');
+// Route::get('sales/deliveryorderform/get_data_detail', 'sales\do_Controller@get_data_detail');
+// Route::get('sales/deliveryorderform/tabel_item', 'sales\do_Controller@table_data_item');
+// Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
+// Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
+// Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
+// Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_Controller@cari_kontrak');
+// Route::get('sales/deliveryorderform/cari_tipe', 'sales\do_Controller@cari_tipe'); 
 
 Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');

@@ -257,7 +257,7 @@
                 '<tr>'+
                     '<td>DPP</td>'+
                     '<td>:</td>'+
-                    '<td>'+d.total+'</td>'+
+                    '<td>'+d.total_dpp+'</td>'+
                 '</tr>'+
                 '<tr>'+
                     '<td>Vendor</td>'+
@@ -482,7 +482,6 @@ return false;
      $('#nama_penerima').on( 'keyup', function () {
         table.column(4).search( this.value ).draw();
       });  
-
 
 </script>
 @endsection
