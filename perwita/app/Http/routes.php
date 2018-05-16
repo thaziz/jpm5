@@ -1243,6 +1243,7 @@ Route::get('sales/deliveryordercabangtracking/getdata/{nomor}','trackingdoContro
 // Route::get('sales/deliveryorderform/cari_harga', 'sales\do_controller@cari_harga');
 // Route::get('sales/deliveryorderform/cari_customer', 'sales\do_controller@cari_customer');
 // Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_controller@cari_kontrak');
+// Route::get('sales/deliveryorderform/cari_tipe', 'sales\do_controller@cari_tipe');
 
 // Route::post('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
 // Route::get('sales/deliveryorderform/save_data', 'sales\do_controller@save_data');
@@ -1285,6 +1286,7 @@ Route::get('sales/deliveryorderform/get_item', 'sales\do_Controller@get_item');
 Route::get('sales/deliveryorderform/cari_harga', 'sales\do_Controller@cari_harga');
 Route::get('sales/deliveryorderform/cari_customer', 'sales\do_Controller@cari_customer');
 Route::get('sales/deliveryorderform/cari_kontrak', 'sales\do_Controller@cari_kontrak');
+Route::get('sales/deliveryorderform/cari_tipe', 'sales\do_Controller@cari_tipe'); 
 
 Route::post('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
 Route::get('sales/deliveryorderform/save_data', 'sales\do_Controller@save_data');
