@@ -341,6 +341,9 @@ Route::get('buktikaskeluar/detail_faktur', 'kasKeluarController@detail_faktur');
 Route::post('buktikaskeluar/save_form', 'kasKeluarController@save_form');
 
 Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
+Route::get('buktikaskeluar/update_form', 'kasKeluarController@update_form');
+Route::get('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
+Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');

@@ -176,6 +176,8 @@
    // setTimeout(function(){ alert("Hello"); }, 3000);
 
 
-
+   $('.reload').click(function(){
+    location.reload();
+   })
 
     </script>
