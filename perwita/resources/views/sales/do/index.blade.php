@@ -257,7 +257,7 @@
                 '<tr>'+
                     '<td>DPP</td>'+
                     '<td>:</td>'+
-                    '<td>'+d.total+'</td>'+
+                    '<td>'+d.total_dpp+'</td>'+
                 '</tr>'+
                 '<tr>'+
                     '<td>Vendor</td>'+
