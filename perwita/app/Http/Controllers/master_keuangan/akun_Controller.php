@@ -108,7 +108,7 @@ class akun_Controller extends Controller
                 if(count($cek) == 0){
 
                     $akun = new master_akun;
-                    $akun->id_akun = $request->kode_akun.''.$prov->id.''.$data_cabang->kode;
+                    $akun->id_akun = $request->kode_akun.''.$data_cabang->kode;
                     $akun->nama_akun = $request->nama_akun." ".$data_cabang->nama;
                     $akun->id_parrent = '\n';
                     $akun->id_provinsi = $prov->id;
@@ -119,10 +119,11 @@ class akun_Controller extends Controller
                     $akun->main_id = $request->kode_akun;
                     $akun->main_name = $request->nama_akun;
                     $akun->group_neraca = $request->group_neraca;
+                    $akun->shareable = (isset($request->share)) ? "1" : "0";
 
                     if($akun->save()){
                         $saldo = new master_akun_saldo;
-                        $saldo->id_akun = $request->kode_akun.''.$prov->id.''.$data_cabang->kode;
+                        $saldo->id_akun = $request->kode_akun.''.$data_cabang->kode;
                         $saldo->tahun = date("Y");
                         $saldo->is_active = 1;
                         $saldo->bulan = date("m");
@@ -167,6 +168,7 @@ class akun_Controller extends Controller
             $akun->main_id = $request->kode_akun;
             $akun->main_name = $request->nama_akun;
             $akun->group_neraca = $request->group_neraca;
+            $akun->shareable = (isset($request->share)) ? "1" : "0";
 
             if($akun->save()){
                 if(isset($request->saldo)){

@@ -1883,6 +1883,11 @@ Route::get('master_keuangan/saldo_akun', [
   'as'   => 'saldo_akun.index'
 ]);
 
+Route::get('master_keuangan/saldo_akun/edit/{id}', [
+  'uses' => 'master_keuangan\saldo_akun_controller@edit',
+  'as'   => 'saldo_akun.edit'
+]);
+
 Route::get('master_keuangan/saldo_akun/add/{parrent}', [
   'uses' => 'master_keuangan\saldo_akun_controller@add',
   'as'   => 'saldo_akun.add'
@@ -1891,6 +1896,11 @@ Route::get('master_keuangan/saldo_akun/add/{parrent}', [
 Route::post('master_keuangan/saldo_akun/save_data', [
   'uses' => 'master_keuangan\saldo_akun_controller@save_data',
   'as'   => 'saldo_akun.save'
+]);
+
+Route::post('master_keuangan/saldo_akun/update', [
+  'uses' => 'master_keuangan\saldo_akun_controller@update',
+  'as'   => 'saldo_akun.update'
 ]);
 
 //end saldo akun

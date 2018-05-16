@@ -70,6 +70,7 @@
               <option value="0">Kode Akun</option>
               <option value="1">Nama Akun</option>
               <option value="2">Posisi Debet/Kredit</option>
+              <option value="4">Shared Akun</option>
             </select>
         </td>
 
@@ -124,9 +125,9 @@
                                   <th width="30%" class="text-center">Nama Akun</th>
                                   <th class="text-center">Cabang</th>
                                   <th class="text-center">Posisi Debet/Kredit</th>
+                                  <th class="text-center">Shared Akun</th>
                                   {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
                                   <th width="20%" width="20%" class="text-center">Aksi</th>
-
                                 </tr>
                               </thead>
                               <tbody  class="searchable">
@@ -138,6 +139,7 @@
                                       <td class="nama_akun">{{ $dataAkun->nama_akun }}</td>
                                       <td class="nama_cabang text-center">{{ $dataAkun->nama_cabang }}</td>
                                       <td class="text-center dka">{{ ($dataAkun->akun_dka == "D") ? "DEBET" : "KREDIT" }}</td>
+                                       <td class="text-center dka">{{ ($dataAkun->shareable == "1") ? "Ya" : "Tidak" }}</td>
                                       {{-- <td></td> --}}
                                       <td class="text-center">
 
