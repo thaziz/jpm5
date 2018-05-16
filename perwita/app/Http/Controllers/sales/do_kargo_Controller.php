@@ -37,6 +37,7 @@ class do_kargo_Controller extends Controller
     public function form($nomor=null){
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $customer = DB::table('customer')
+                      ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
                       ->get();
         $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k
                                     LEFT JOIN subcon s ON s.kode=k.kode_subcon ");
