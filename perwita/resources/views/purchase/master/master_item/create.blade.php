@@ -94,6 +94,8 @@
                       <tr>
                         <td> Group Item </td>
                         <td> <select class="form-control b jenis_item" name="jenis_item"> 
+                        <option value=""> Pilih Group Item </option>
+
                         @foreach($data['jenisitem'] as $jenisitem)
 
                           <option value="{{$jenisitem->kode_jenisitem}},{{$jenisitem->stock}}" selected=""> {{$jenisitem->keterangan_jenisitem}} </option>
