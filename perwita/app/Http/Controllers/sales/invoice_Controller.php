@@ -1644,7 +1644,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
         }
     }
 
-     });
+  });
         
 }
 

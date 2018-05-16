@@ -332,8 +332,13 @@ Route::get('buktikaskeluar/kredit_faktur', 'kasKeluarController@kredit_faktur');
 Route::get('buktikaskeluar/um_faktur', 'kasKeluarController@um_faktur');
 Route::get('buktikaskeluar/save_patty', 'kasKeluarController@save_patty');
 Route::get('buktikaskeluar/supplier_dropdown', 'kasKeluarController@supplier_dropdown');
+Route::get('buktikaskeluar/cari_hutang', 'kasKeluarController@cari_hutang');
 Route::get('buktikaskeluar/cari_faktur', 'kasKeluarController@cari_faktur');
 Route::get('buktikaskeluar/append_faktur', 'kasKeluarController@append_faktur');
+Route::get('buktikaskeluar/detail_faktur', 'kasKeluarController@detail_faktur');
+Route::get('buktikaskeluar/save_form', 'kasKeluarController@save_form');
+
+Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');

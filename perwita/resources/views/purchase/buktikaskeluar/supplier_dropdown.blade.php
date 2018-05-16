@@ -1,7 +1,7 @@
 <select class="form-control supplier_faktur chosen-select-width1" name="supplier_faktur">
   <option value="0">Pilih - Supplier</option>
   @foreach($all as $i)
-  <option value="{{ $i->kode }}">{{ $i->kode }} - {{ $i->nama }}</option>
+  <option @if($sup == $i->kode) selected="" @endif value="{{ $i->kode }}">{{ $i->kode }} - {{ $i->nama }}</option>
   @endforeach
 </select>
 
@@ -16,4 +16,19 @@
     for (var selector in config1) {
         $(selector).chosen(config1[selector]);
     }
+
+    $('.supplier_faktur').change(function(){
+      var supplier = $(this).val();
+      $.ajax({
+          url:baseUrl + '/buktikaskeluar/cari_hutang',
+          type:'get',
+          data:{supplier},
+          dataType:'json',
+          success:function(data){
+            $('.hutang').val(data.data.acc_hutang);
+          },
+          error:function(data){
+          }
+      }); 
+    })
 </script>

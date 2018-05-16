@@ -1,4 +1,4 @@
-@if($jenis_bayar == 2 or $jenis_bayar == 6 or $jenis_bayar == 7 or $jenis_bayar == 9)
+@if($jenis_bayar == 3)
 <table class="table tabel_modal table-hover">
   <thead>
     <tr>
@@ -16,12 +16,12 @@
   	@foreach($data as $i=>$val)
   	<tr onclick="pilih_faktur(this)" style="cursor: pointer;">
   		<td align="center">{{ $i+1 }}</td>
-  		<td class="no_faktur">{{ $val->fp_nofaktur }}</td>
-  		<td>{{ carbon\carbon::parse($val->fp_tgl)->format('d/m/Y') }}</td>
-  		<td>{{ carbon\carbon::parse($val->fp_jatuhtempo)->format('d/m/Y') }}</td>
-  		<td align="right">{{ number_format($val->fp_netto, 0, ",", ".") }}</td>
-  		<td align="right">{{ number_format($val->fp_sisapelunasan, 0, ",", ".") }}</td>
-  		<td>{{ $val->tt_noform }}</td>
+  		<td class="no_faktur">{{ $val->v_nomorbukti }}</td>
+  		<td>{{ carbon\carbon::parse($val->v_tgl)->format('d/m/Y') }}</td>
+  		<td>{{ carbon\carbon::parse($val->v_tempo)->format('d/m/Y') }}</td>
+  		<td align="right">{{ number_format($val->v_hasil, 0, ",", ".") }}</td>
+  		<td align="right">{{ number_format($val->v_pelunasan, 0, ",", ".") }}</td>
+  		<td> - </td>
   		<td align="center">
         <input type="checkbox" name="check[]" class="check">
       </td>
