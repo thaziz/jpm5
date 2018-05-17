@@ -17,9 +17,9 @@ class saldo_akun_controller extends Controller
     public function index(){
         
         if(cek_periode() == 0)
-            return view("keuangan.err.err_periode");
+            // return view("keuangan.err.err_periode");
 
-    	$data = master_akun_saldo::where("tahun", "=", date("Y"))->where("bulan", "=", date("m"))->whereNotNull("saldo_akun")->get();
+    	$data = master_akun_saldo::where("tahun", "=", date("Y"))->where("bulan", "=", date("m"))->whereNotNull("saldo_akun")->orderBy("id_akun", "asc")->get();
 
     	//return date("Y");
 
@@ -76,5 +76,48 @@ class saldo_akun_controller extends Controller
         ]);
 
         return json_encode($response);
+    }
+
+    public function edit($id){
+        $data = DB::table("d_akun_saldo")
+                ->join("d_akun", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+                ->where("d_akun_saldo.id_akun", $id)
+                ->where("d_akun_saldo.bulan", date("m"))
+                ->where("d_akun_saldo.tahun", date("Y"))
+                ->select("d_akun_saldo.*", "d_akun.*")
+                ->first();
+
+        // return json_encode($data);
+
+        return view("keuangan.akun_saldo.edit")
+               ->withData($data);
+    }
+
+    public function update(Request $request){
+        $response = [
+            'status'    => 'sukses',
+            'content'   => ""
+        ];
+
+        $data = DB::table("d_akun_saldo")
+                ->where("d_akun_saldo.id_akun", $request->id_akun)
+                ->where("d_akun_saldo.bulan", date("m"))
+                ->where("d_akun_saldo.tahun", date("Y"));
+        $akn = DB::table("d_akun")->where("id_akun", $request->id_akun)->first();
+
+        $saldo_debet = str_replace(".", "", explode(",", $request->saldo_debet)[0]);
+        $saldo_kredit = str_replace(".", "", explode(",", $request->saldo_kredit)[0]);
+
+        if($saldo_debet == 0){
+            $saldo = ($akn->akun_dka == "D") ? ($saldo_kredit * -1) : $saldo_kredit;
+        }else if($saldo_kredit == 0){
+            $saldo = ($akn->akun_dka == "D") ? $saldo_debet : ($saldo_debet * -1);
+        }
+
+        $data->update([
+            "saldo_akun"    => $saldo
+        ]);
+
+        return $response;
     }
 }

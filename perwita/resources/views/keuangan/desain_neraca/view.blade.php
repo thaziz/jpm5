@@ -167,3 +167,9 @@
     </div>
   </div>
 </div>
+
+<div class="row">
+  <div class="col-md-12 m-t-lg">
+    <a href="{{ route("neraca.index_single", "bulan?m=".date("m")."&y=".date("Y")."") }}" target="_blank" class="btn btn-primary btn-sm pull-right" style="font-size: 8pt;" id="simpan_desain">Buka Laporan Neraca</a>
+  </div>
+</div>

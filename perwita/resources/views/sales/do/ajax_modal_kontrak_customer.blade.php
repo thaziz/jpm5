@@ -15,6 +15,7 @@
                                   <th>Tujuan Tarif</th>
                                   <th>Jenis Tarif</th>
                                   <th>Biaya Kontrak</th>
+                                  <th>Jenis</th>
                                 </tr> 
                             </thead>
                                 @foreach ($data as $e)
@@ -24,6 +25,7 @@
                                     <td>{{ $e->tujuan }}</td>
                                     <td>{{ $e->kcd_harga }}</td>
                                     <td>{{ $e->tarif }}</td>
+                                    <td>{{ $e->jenis }}</td>
                                   </tr>
                                 @endforeach
                             <tbody>

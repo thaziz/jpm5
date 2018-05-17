@@ -12,7 +12,7 @@ class master_akun_saldo extends Model
     CONST CREATED_AT = "tanggal_dibuat";
     CONST UPDATED_AT = "terakhir_diupdate";
 
-    protected $fillable = ["id_akun", "tahun", "saldo_akun", "is_active"]; 
+    protected $fillable = ["id_akun", "tahun", "saldo_akun", "is_active", "bulan"]; 
 
     public function akun(){
     	return $this->belongsTo("App\master_akun", "id_akun", "id_akun");

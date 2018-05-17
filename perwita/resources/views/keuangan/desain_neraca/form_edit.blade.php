@@ -1,866 +1,1196 @@
-<style type="text/css">
-  .myClass{
-    background: white;
-    font-size: 8pt;
-    padding: 3px 0px;
-    text-align: center;
-    position: -webkit-sticky;
-    top: 0;
-  }
-  .myCell{
-    text-align: center;
-    padding-top:3px;
-    padding-bottom: 3px;
-  }
-  #tabelNeraca{
-    width:100%;
-    font-size: 8pt;
-    position: sticky;
-    position: -webkit-sticky;
-    background: white;
-      top: 0;
-  }
+@extends('main')
 
-  #table_form, #table-filter{
-      border:0px solid black;
-      width: 100%;
+@section('title', 'dashboard')
+
+
+@section("extra_styles")
+  
+  <link href="{{ asset('assets/vendors/jsTree/style.min.css') }}" rel="stylesheet">
+
+  <style type="text/css">
+  
+    #form-table{
+      font-size: 8pt;
     }
 
-    #table_form input,{
-      padding-left: 50px;
+    #form-table td{
+      padding: 5px 0px;
     }
 
-    #table_form td{
-      padding: 10px 0px 0px 0px;
-      vertical-align: top;
-    }
-  #table_form .right_side{
-      padding-left: 10px;
+    #form-table .form-control{
+      height: 30px;
+      width: 90%;
+      font-size: 8pt;
     }
 
-  #tabelNeraca th{
-    padding: 3px;
-    border: 1px solid #eee;
-  }
+    .table-group{
+      font-size: 8pt;
+    }
 
-  .jstree-open > .jstree-anchor > .fa-folder:before {
+    .table-group tbody tr{
+      cursor: pointer;
+    }
+
+    .table-group tbody tr:hover{
+      background: #1ab394;
+      color: white;
+    }
+
+    .table-group tbody tr.aktif{
+      background: #1ab394;
+      color: white;
+    }
+
+    .table-group tbody tr.chosen{
+      background: #eee;
+      color: #909090;
+      cursor: no-drop
+    }
+
+    .switch.aktif{
+      background: #1ab394;
+      color: white;
+    }
+
+    .jstree-open > .jstree-anchor > .fa-folder:before {
         content: "\f07c";
     }
 
     .jstree-default .jstree-icon.none {
         width: 0;
     }
-</style>
 
-<div class="row" style="width: 100%">
-  <div class="col-md-7" style="background: #f9f9f9;height: 500px; padding: 0px; overflow-y: scroll;">
-    <div class="tab-content">
-      <div role="tabpanel" class="tab-pane fade in active" id="home">
-        <div id="aktiva_tree" style="font-size: 8pt;">
+    .modal-open{
+      overflow: inherit;
+    }
+
+  </style>
+
+@endsection
+
+
+@section('content')
+
+ <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>Desain Neraca</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a>Home</a>
+                        </li>
+                        <li>
+                            <a>Operasional</a>
+                        </li>
+                        <li>
+                            <a>Keuangan</a>
+                        </li>
+                        <li>
+                            <a>Desain Neraca</a>
+                        </li>
+                        <li class="active">
+                            <strong> Edit Desain Neraca  </strong>
+                        </li>
+
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
             
-        </div>  
-      </div>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-lg-12" >
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5> Edit Desain Neraca
+                     <!-- {{Session::get('comp_year')}} -->
+                     </h5>
+                    <div class="ibox-tools">
+                        
+                    </div>
+                </div>
+                <div class="ibox-content">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 1px; padding: 10px; height: 500px; box-shadow: 0px 0px 10px #eee;">
+                          <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
+                              <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Aktiva</span>
+                              <div id="aktiva_tree" style="font-size: 8pt;">
+                                  
+                              </div>
+                            </div>
 
-      <div role="tabpanel" class="tab-pane fade" id="profile">
-        <div id="pasiva_tree" style="font-size: 8pt;">
-            
-        </div> 
-      </div>
+                            <div role="tabpanel" class="tab-pane fade" id="pasiva">
+                              <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Neraca Pasiva</span>
+                              <div id="pasiva_tree" style="font-size: 8pt;">
+                                
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+
+                        <div class="col-md-6" style="padding:0px;">
+                          <div class="btn-group">
+                              <button href="#aktiva" aria-controls="aktiva" role="tab" data-toggle="tab" class="btn btn-white aktif btn-sm switch" data-for="aktiva" style="font-size: 8pt;" type="button">Activa</button>
+
+                              <button href="#pasiva" aria-controls="pasiva" role="tab" data-toggle="tab" class="btn btn-white btn-sm switch" data-for="pasiva" style="font-size: 8pt;" type="button">Pasiva</button>
+                          </div>
+                        </div>
+
+                        <div class="col-md-6" style="padding: 0px;">
+                          <input type="text" class="form-control text-center upper" id="nama_desain" name="nama_desain" style="height: 30px; font-size: 8pt" placeholder="Masukkan Nama Desain" value="{{ $data_desain->nama_desain }}">
+                        </div>
+                        
+                        <div class="col-md-12" style="border-top: 1px solid #eee; margin: 10px 0px"></div>
+
+                        <div class="col-md-12" style="padding: 0px;">
+
+                          <table border="0" id="form-table" class="col-md-12">
+
+                            <tr>
+                              <td width="15%" class="text-center">Level</td>
+                              <td colspan="2" width="35%">
+                                <input type="number" id="level" class="form-control form_validate" max="2" min="0" value="1">
+                              </td>
+
+                              <td width="15%">
+                                <i class="fa fa-times" style="color: #ed5564; cursor: pointer; display: none;" id="cancel"></i>
+                              </td>
+                              <td colspan="2">
+                                
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td width="15%" class="text-center">Parrent ID</td>
+                              <td colspan="2" width="35%">
+                                <select id="parrent" class="select_validate form-control" disabled>
+                                  <option value="---"> - Pilih Parrent</option>
+                                </select>
+                              </td>
+
+                              <td colspan="3">
+                                <input type="text" id="parrent_name" class="form_validate form-control text-center" readonly value="---">
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td width="15%" class="text-center">Nomor ID</td>
+                              <td colspan="2" width="35%">
+                                <div class="input-group">
+                                  <span class="input-group-addon" style="font-size: 8pt;" id="state_id">A</span>
+                                  <input type="text" class="form_validate form-control" name="nomor_id" value="1" id="nomor_id" data-toggle="tooltip" data-placement="top" title="Hanya Memperbolehkan Input Angka" readonly>
+                                </div>
+                              </td>
+
+                              <td colspan="3">
+                                
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td width="15%" class="text-center">Jenis</td>
+                              <td colspan="2" width="35%">
+                                <select id="jenis" class="select_validate form-control">
+                                  <option value="1">Header/Title</option>
+                                  <option value="2">Detail</option>
+                                  <option value="3">Total</option>
+                                  <option value="4">Line Break</option>
+                                </select>
+                              </td>
+
+                              <td colspan="3">
+                                <select disabled id="detail_total" class="form-control" style="display:none;">
+                                  <option value="---"> -- Dari Penjumlahan</option>
+                                </select>
+                              </td>
+                            </tr>
+
+                            <tr>
+                              <td width="15%" class="text-center">Keterangan</td>
+                              <td colspan="5" width="35%">
+                                <input type="text" style="width: 94%" class="form_validate form-control upper" id="keterangan" placeholder="Masukkan Keterangan Tentang Ini">
+                              </td>
+                            </tr>
+
+                          </table>
+                        </div>
+
+                        <div class="col-md-12" style="border-top: 1px solid #eee; margin: 10px 0px"></div>
+
+                        <div class="col-md-12 text-right" style="padding: 0px;">
+                            <button class="btn btn-success btn-sm" id="masukkan" style="font-size:8pt;" type="button">Masukkan Ke Desain</button>
+                            <button disabled class="btn btn-warning btn-sm" id="update_detail" style="font-size:8pt;" type="button">Update</button>
+                            <button disabled class="btn btn-primary btn-sm" id="tambah_detail" style="font-size:8pt;" type="button">Tambahkan Group Neraca</button>
+                            <button disabled class="btn btn-danger btn-sm" id="hapus_detail" style="font-size:8pt;" type="button">Hapus</button>
+                        </div>
+
+                        <div class="col-md-12" style="border-top: 1px solid #eee; margin: 5px 0px"></div>
+
+                        <div class="col-md-12 m-t" style="padding: 0px; height: 146px; overflow-x: scroll">
+                          <table border="0" class="table table-bordered" style="font-size: 8pt;">
+                            <tr>
+                              <th width="25%" class="text-center">Id Detail Referensi</th>
+                              <th width="40%" class="text-center">Nama Detail Referensi</th>
+                              <th width="25%" class="text-center">Referensi Dari</th>
+                              <th width="10%" class="text-center">*</th>
+                            </tr>
+                            
+                            <tbody id="group_show">
+
+                            </tbody>
+                          </table>
+                            
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12 m-t">
+                      <button class="btn btn-primary btn-sm pull-right" style="font-size: 8pt; margin-left: 5px;" id="simpan_desain">Simpan Perubahan Desain</button>
+                      <a href="{{ route("desain_neraca.index") }}" class="btn btn-default btn-sm pull-right" style="font-size: 8pt;" id="simpan_desain">Kembali</a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>
     </div>
-    
-  </div>
-
-  <div class="col-md-5" style="padding: 0px;">
-    <div class="col-md-12" style="color:#555;border:1px solid #ccc;padding: 0px;">
-      <div class="col-md-6 text-center type" data-type="aktiva" href="#home" aria-controls="home" role="tab" data-toggle="tab" data-type="aktiva" style="padding: 5px;border-right: 1px solid #ccc; cursor: pointer;background: #1ab394; color:white">
-        Aktiva <input type="text" style="display: none;" id="id_desain" value="{{$id}}" readonly>
-      </div>
-
-      <div class="col-md-6 text-center type" data-type="pasiva" href="#profile" aria-controls="profile" role="tab" data-toggle="tab" data-type="pasiva" style="padding: 5px; cursor: pointer;">
-        Pasiva
-       </div>
-    </div>
-    <div class="col-md-12" style="margin-top: 5px;">
-      <form id="myForm">
-        <table id="table_form" border="0">
-              <tbody>
-                <tr>
-                  <td width="24%">Level<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                  <td width="35%">
-
-                    <input type="number" value="1" min="1" max="2" id="level" name="level" style="width:80%;padding-left: 5px;"> &nbsp;<i class="fa fa-close" style="font-weight:600; color:#ed5565; visibility: hidden; cursor: pointer;" id="cancel-edit"></i>
-                      
-                  </td>
-                  <td colspan="2"></td>
-                  
-                </tr>
-
-                <tr>
-                  <td width="17%">Parrent ID<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                  <td width="35%">
-
-                    <select name="parrent_id" id="parrent_id" disabled>
-                      <option value="null">Pilih Parrent</option>
-                    </select>
-                      
-                  </td>
-                  <td colspan="2" class="text-center"><input class="text-center" type="text" min="1" max="3" id="parrent_id_view" name="parrent_id_view" style="width:90%" disabled value="---"></td>
-                  
-                </tr>
-
-                <tr>
-                  <td width="17%">Nomor ID<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                  <td width="35%">
-            
-            <input type="text" class="text-center" value="DT31" id="level_view" name="level_view" style="width:35%" disabled>
-                    <input type="text" min="1" max="3" id="no_id" value="01" name="no_id" style="width:50%;padding-left: 5px;">
-                      
-                  </td>
-                  <td colspan="2"></td>
-                  
-                </tr>
-
-                <tr>
-                  <td width="17%">Jenis<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                  <td width="35%">
-
-                    <select id="jenis" name="jenis">
-                      <option value="1">Header/Title</option>
-                      <option value="2">Detail</option>
-                      <option value="3">Total</option>
-                      <option value="4">Line Break</option>
-                    </select>
-                      
-                  </td>
-                  
-                  <td colspan="2" class="text-center">
-                    <select name="jenis" style="width: 90%; visibility: hidden;" id="total_for">
-
-                    </select>
-                  </td>
-                  
-                </tr>
-
-                <tr>
-                  <td width="17%">Keterangan<input type="hidden" readonly name="_token" value="{{ csrf_token() }}"></td>
-                  <td width="35%" colspan="4">
-
-                    <input type="text" id="keterangan" name="keterangan" style="width:100%;padding-left: 5px;">
-                      
-                  </td>
-                  
-                </tr>
-              </tbody>
-          </table>
-        </form>
-    </div>
-
-    <div class="col-md-12 m-t" style="border-top: 1px solid #eee;border-bottom: 1px solid #eee;padding: 8px 5px;">
-      <button class="btn btn-success btn-xs col-md-3" id="masukkan"><i class="fa fa-arrow-left"></i> &nbsp;<span>Masukkan</span></button>
-
-      <button class="btn btn-success btn-xs col-md-4" id="btn_detail" style="margin-left: 5px;" disabled><i class="fa fa-list-ul"></i> &nbsp;Tambah Detail</button>
-
-      <button class="btn btn-danger btn-xs col-md-4" disabled id="btn_hapus_detail" style="margin-left: 5px;"><i class="fa fa-list-ul"></i> &nbsp;Hapus Detail</button>
-
-    </div>
-
-    <div class="col-md-12 m-t">
-      <div class="col-md-12" style="background: #f9f9f9; height: 200px;padding: 0px;overflow-y: scroll;">
-        <table border="0" style="width: 100%; font-size: 8pt;" class="table">
-          <thead>
-            <tr>
-              <th class="text-center inSearch" style="background: white;border: 1px solid #ccc;" width="30%">Kode</th>
-              <th class="text-center" style="background: white;border: 1px solid #ccc;">Keterangan</th>
-            </tr>
-          </thead>
-
-          <tbody id="detail-in-show">
-            
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-md-12" style="padding: 10px;border-top: 1px solid #eee;">
-    <button class="btn btn-primary btn-xs col-md-2 col-md-offset-10" id="simpan">Simpan Desain</button>
-  </div>
 </div>
 
-<script>
-  $(document).ready(function(){
-    var data;
-    data = []; $edit = false;
+<!-- modal -->
+<div id="modal_detail" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Form Tambah Group Akun</h4>
+        <input type="hidden" class="parrent"/>
+      </div>
 
-    $dataDetail = {!! $datadetail !!}; $apply_nama = ""; $apply_id = "";
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-5" style="padding: 0px;">
+            <div id="d" style="height: 430px; overflow-x: scroll">
+              <table border="1" width="100%" class="table table-bordered table-group">
+                <tbody id="detail_body">
+                  
+                </tbody>
+              </table>
+            </div>
+          </div>
 
-    $detail = {!! $detail !!}; $akun = {!! $akun !!}
+          <div class="col-md-7">
+            <div id="d" style="height: 430px; overflow-x: scroll">
+              <table border="1" width="100%" class="table table-bordered" style="font-size: 8pt; font-weight: 600;">
+                <tbody id="detail_group">
+                  <tr>
+                    <td class="text-center">Detail Akun Akan Tampil Disini</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <div class="col-md-12" style="border-top: 1px solid #eee; margin: 5px 0px"></div>
 
-    // console.log($detail);
+          <div class="col-md-12 m-t">
+            <button class="btn btn-primary btn-sm" style="font-size: 8pt;" id="confirm_detail">Masukkan Grup Ke Detail</button>
+          </div>
+        </div>
+      </div>
 
-    //console.log($dataDetail);
+    </div>
+  </div>
+</div>
+<!-- modal -->
 
-    $dataNeraca = []; $neracaDetail = []; var $dataNeracaCount = 0; var $neracaDetailCount = 0; $type = "aktiva"; var id_detail = 1;
+<!-- modal -->
+<div id="modal_list_akun" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Anggota Akun Group <span id="nama_group"></span></h4>
+        <input type="hidden" class="parrent"/>
+      </div>
+      <div class="modal-body">
+        <div style="height: 450px; overflow-x: scroll">
+          <table class="table table-bordered" style="font-size: 8pt;">
+            <thead>
+              <tr>
+                <th style="position: sticky; top: 0px;">ID Akun</th>
+                <th style="position: sticky; top: 0px;" width="40%">Nama Akun</th>
+                <th style="position: sticky; top: 0px;">Debet/Kredit</th>
+              </tr>
+            </thead>
 
-    $aktiva_lvl1 = 1; $aktiva_lvl2 = 1;
-    $pasiva_lvl1 = 1; $pasiva_lvl2 = 1;
+            <tbody id="anggota_wrap">
+              
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-    $.fn.childDelete = function($id){
-      id = []; $c=0;
-      $.each($neracaDetail, function(i, n){
-        if(n.nomor_id == $id){
-          id[$c] = n.id_detail; $c++;
-        }
-      })
+    </div>
+  </div>
+</div>
+  <!-- modal -->
 
-      //console.log(id);
+@endsection
 
-      for(i = 0; i < id.length; i++){
-        //alert(id[i]+" - "+$neracaDetail.findIndex(c => c.id_detail == id[i]));
-        $neracaDetail.splice($neracaDetail.findIndex(c => c.id_detail == id[i]), 1);
-      }
-    }
-    
-    $('#aktiva_tree').on("select_node.jstree", function (e, data) { 
-      //console.log(data);
-      //console.log($dataNeraca);
-      //alert("okee");
 
-      $idOnSelect = "";
+@section('extra_scripts')
 
-      if(data.node.id.indexOf("/") == -1){
-        $.each($dataNeraca, function(i, n){
-          if(n.nomor_id == data.node.id){
-            $("#detail-in-show").html("");
-            $("#level").val(n.level); $("#level_view").val(n.nomor_id.substring(0,4)); $("#level").attr("disabled", "disabled");
-            $("#no_id").val(n.nomor_id.substring(4)); $("#no_id").attr("disabled", "disabled");
-            $("#parrent_id_view").val(n.id_parrent);
-            $("#jenis").val(n.jenis); $("#jenis").attr("disabled", "disabled");
-            $("#keterangan").val(n.keterangan.toUpperCase());
-            $("#cancel-edit").css("visibility", "visible");
+  <script src="{{ asset('assets/vendors/jsTree/jsTree.min.js') }}"></script>
+  <script src="{{ asset('assets/vendors/jsTree/jstreetable.js') }}"></script>
 
-            $idOnSelect = n.nomor_id.substring(0,4)+""+n.nomor_id.substring(4);
+  <script type="text/javascript">
+     
+    $(document).ready(function(){
 
-            return false;
+      data = []; data_neraca = {!! $data_neraca !!}; data_detail = {!! $data_detail !!};
+      data_akun = {!! $data_akun !!}; data_group = {!! $data_group !!};
+
+      console.log(data_neraca);
+      console.log(data_detail);
+
+      // console.log(data_group);
+      // console.log(data_akun);
+
+      state = "aktiva"; chosen_group = "";
+
+      grab_detail();
+
+      $('#pasiva_tree').jstree({
+        plugins: ["types"],
+        "types" : {
+          "default" : {
+            "icon" : "fa fa-folder"
+          },
+          "demo" : {
+            "icon" : "fa fa-book"
+          },
+          "total" : {
+            "icon" : "fa fa-calculator"
+          },
+          "space" : {
+            "icon" : "fa fa-arrow-right"
           }
-        })
+        },
+        core: {
+          data: data,
+          "check_callback": true
+        },
+      });
 
-        $.each($.grep($neracaDetail, function(n){ return n.nomor_id == $idOnSelect}), function(i, n){
-          $html = "<tr><td class='inSearch' data-for='child' data-nama='"+n.nama+"'>"+n.id_akun+"</td> <td>"+n.nama+"</td></tr>";
-          $("#detail-in-show").prepend($html);
-        })
+      $('#pasiva_tree').on('ready.jstree', function (e, data) {
 
-        $("#btn_hapus_detail").removeAttr("disabled");
-        $("#masukkan span").text("Ubah");
-        $("#keterangan").focus();
-        $edit = true;
-      }else{
-        $("#cancel-edit").click();
-      }
-    });
+          state = "pasiva";
 
-    $('#pasiva_tree').on("select_node.jstree", function (e, data) { 
-      //console.log(data);
-      //console.log($dataNeraca);
-
-      //alert("okee");
-      $idOnSelect = "";
-
-      if(data.node.id.indexOf("/") == -1){
-        $.each($dataNeraca, function(i, n){
-          if(n.nomor_id == data.node.id){
-            $("#level").val(n.level); $("#level_view").val(n.nomor_id.substring(0,4)); $("#level").attr("disabled", "disabled");
-            $("#no_id").val(n.nomor_id.substring(4)); $("#no_id").attr("disabled", "disabled");
-            $("#parrent_id_view").val(n.id_parrent);
-            $("#jenis").val(n.jenis); $("#jenis").attr("disabled", "disabled");
-            $("#keterangan").val(n.keterangan.toUpperCase());
-            $("#cancel-edit").css("visibility", "visible");
-
-            $idOnSelect = n.nomor_id.substring(0,4)+""+n.nomor_id.substring(4);
-
-            return false;
-          }
-        })
-
-        $.each($.grep($neracaDetail, function(n){ return n.nomor_id == $idOnSelect}), function(i, n){
-          $html = "<tr><td class='inSearch' data-for='child' data-nama='"+n.nama+"'>"+n.id_akun+"</td> <td>"+n.nama+"</td></tr>";
-          $("#detail-in-show").prepend($html);
-        })
-
-        $("#btn_hapus_detail").removeAttr("disabled");
-        $("#masukkan span").text("Ubah");
-        $("#keterangan").focus();
-        $edit = true;
-      }else{
-        $("#cancel-edit").click();
-      }
-    });
-
-    $("#btn_hapus_detail").click(function(){
-      $id = []; $idDet = []; $b = 0; $a=0; $node = $("#level_view").val()+""+$("#no_id").val();
-
-      console.log($neracaDetail);
-
-      $.each($dataNeraca, function(i,n){
-        if(n.nomor_id == $node || n.id_parrent == $node){
-          //alert(n.nomor_id+" = "+$node)
-          $id[$a] = n.nomor_id; $a++;
-          if(n.jenis == 2 || n.jenis == 3){
+          $.each($.grep(data_neraca, function(a){ return a.type === "pasiva" }), function(i, n) {
             
-              $.each($neracaDetail, function(i, n){
-                if(n.id_akun == $node){
-                  $idDet[$b] = n.id_detail; $b++;
+            level = n.level;
+            parrent = (n.id_parrent == "") ? null : n.id_parrent;
+            id = n.nomor_id;
+            jenis = n.jenis;
+            keterangan = n.keterangan.toUpperCase();
+
+            open = (jenis != "1") ? false : true;
+            type = "default";
+
+            if(jenis == "3")
+              type = "total";
+            else if(jenis == "4")
+              type = "space";
+
+            createNode(parrent, id, id, "last", keterangan, open, type);
+
+            if(jenis == 2 || jenis == 3){
+
+              $.each($.grep(data_detail, function(e){ return e.id_parrent === id }), function(i, n){
+
+                text = ""; ids = n.nomor_id; dari = n.dari;
+
+                if(n.dari == "Group Neraca"){
+                  dbbm = data_group.findIndex(a => a.id === n.id_group);
+                  text = data_group[dbbm].nama_group;
+                }else{
+                  dbbm = data_neraca.findIndex(a => a.nomor_id === n.id_group);
+                  text = data_neraca[dbbm].keterangan;
                 }
+                
+                createNode(id, ids, text, "last", text, open, "demo");
+
               })
+            }
 
-            $(this).childDelete(n.nomor_id);
+            // console.log(data_neraca);
+            // console.log(data_detail);
+            form_reset();
+            grab_parrent();
+          })
+
+      });
+
+      $('#aktiva_tree').jstree({
+        plugins: ["types"],
+        "types" : {
+          "default" : {
+            "icon" : "fa fa-folder"
+          },
+          "demo" : {
+            "icon" : "fa fa-book"
+          },
+          "total" : {
+            "icon" : "fa fa-calculator"
+          },
+          "space" : {
+            "icon" : "fa fa-arrow-right"
           }
+        },
+        core: {
+          data: data,
+          "check_callback": true
+        },
+      });
+
+      $('#aktiva_tree').on('ready.jstree', function (e, data) {
+
+          state = "aktiva";
+
+          $.each($.grep(data_neraca, function(a){ return a.type === "aktiva" }), function(i, n) {
+
+            level = n.level;
+            parrent = (n.id_parrent == "") ? null : n.id_parrent;
+            id = n.nomor_id;
+            jenis = n.jenis;
+            keterangan = n.keterangan.toUpperCase();
+
+            open = (jenis != "1") ? false : true;
+            type = "default";
+
+            if(jenis == "3")
+              type = "total";
+            else if(jenis == "4")
+              type = "space";
+
+            createNode(parrent, id, id, "last", keterangan, open, type);
+
+            if(jenis == 2 || jenis == 3){
+
+              $.each($.grep(data_detail, function(e){ return e.id_parrent === id }), function(i, n){
+
+                text = ""; ids = n.nomor_id; dari = n.dari;
+
+                if(n.dari == "Group Neraca"){
+                  dbbm = data_group.findIndex(a => a.id === n.id_group);
+                  text = data_group[dbbm].nama_group;
+                }else{
+                  dbbm = data_neraca.findIndex(a => a.nomor_id === n.id_group);
+                  text = data_neraca[dbbm].keterangan;
+                }
+                
+                createNode(id, ids, text, "last", text, open, "demo");
+
+              })
+            }
+
+            // console.log(data_neraca);
+            // console.log(data_detail);
+            form_reset();
+            grab_parrent();
+          })
+
+      });
+
+      $('#aktiva_tree').on("select_node.jstree", function (e, data) { 
+        // console.log(data);
+
+        if(data.node.type != "demo"){
+          $("#masukkan").attr("disabled", "disabled");
+          $("#hapus_detail").removeAttr("disabled");
+          $('#update_detail').removeAttr("disabled");
+          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+
+          idx = data_neraca.findIndex(n => n.nomor_id == data.node.id);
+          parrent = (data.node.parent == "#") ? data_neraca[idx].nomor_id.substring(0, data_neraca[idx].level) : data_neraca[idx].id_parrent+".";
+
+          // alert(parrent);
+
+          $("#cancel").css("display", "inline-block");
+          $("#level").val(data_neraca[idx].level); $("#level").attr("disabled", "disabled");
+          $("#state_id").text(parrent);
+          $("#nomor_id").val(data_neraca[idx].nomor_id.substring(parrent.length));
+          // $("#parrent").val((data_neraca[idx].id_parrent == null) ? "---" : data_neraca[idx].id_parrent);
+
+          if(data_neraca[idx].id_parrent == null || data_neraca[idx].id_parrent == ""){
+            $("#parrent_name").val("---");
+          }else{
+            $("#parrent_name").val(data_neraca[data_neraca.findIndex(n => n.nomor_id == data_neraca[idx].id_parrent)].keterangan);
+          }
+
+          $("#parrent").attr("disabled", "disabled");
+          $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
+          $("#keterangan").val(data_neraca[idx].keterangan);
+
+          if(data_neraca[idx].jenis == 4){
+            $("#keterangan").attr("readonly", "readonly");
+          }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
+            
+            $("#group_show").html("");
+
+            if(data_neraca[idx].jenis == 2)
+              $("#tambah_detail").removeAttr("disabled");
+            else
+              $("#tambah_detail").attr("disabled", "disabled");
+
+            $.each($.grep(data_detail, function(n){ return n.id_parrent == data_neraca[idx].nomor_id }), function(i, n){
+              if(data_neraca[idx].jenis == 2){
+                html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                          '<td class="text-center">'+n.id_group+'</td>'+
+                          '<td class="text-center">'+n.nama+'</td>'+
+                          '<td class="text-center">'+n.dari+'</td>'+
+                          '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
+                        '</tr>';
+              }
+              else{
+                html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                          '<td class="text-center">'+n.id_group+'</td>'+
+                          '<td class="text-center">'+n.nama+'</td>'+
+                          '<td class="text-center">'+n.dari+'</td>'+
+                          '<td class="text-center" style="color:#ed5564;">-</td>'+
+                        '</tr>';
+              }
+
+                $("#group_show").append(html);
+            })
+
+          }
+
+        }else{
+          idx = data_detail.findIndex(n => n.nomor_id == data.node.id);
+          $("#modal_list_akun").modal("show");
+          $("#nama_group").text(data.node.data.id+" ("+data_detail[idx].id_group+")");
+
+          html = "";
+
+          $.each($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }), function(i, n){
+            dk = (n.akun_dka == "D") ? "DEBET" : "KREDIT";
+            html = html + '<tr>'+
+                            '<td>'+n.id_akun+'</td>'+
+                            '<td class="text-center">'+n.nama_akun+'</td>'+
+                            '<td class="text-center">'+dk+'</td>'+
+                          '</tr>';
+          })
+
+          if($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }).length == 0){
+            html = html + '<tr><td colspan="3" class="text-center" style="color:#ccc;"> Tidak Ada Anggota Akun Di Group Ini.</td></tr>'
+          }
+
+          $("#anggota_wrap").html(html);
+
+          form_reset();
+        }
+      });
+
+      $('#pasiva_tree').on("select_node.jstree", function (e, data) { 
+        // console.log(data);
+
+        if(data.node.type != "demo"){
+          $("#masukkan").attr("disabled", "disabled");
+          $("#hapus_detail").removeAttr("disabled");
+          $('#update_detail').removeAttr("disabled");
+          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+
+          idx = data_neraca.findIndex(n => n.nomor_id == data.node.id);
+          parrent = (data.node.parent == "#") ? data_neraca[idx].nomor_id.substring(0, data_neraca[idx].level) : data_neraca[idx].id_parrent+".";
+
+          // alert(parrent);
+
+          $("#cancel").css("display", "inline-block");
+          $("#level").val(data_neraca[idx].level); $("#level").attr("disabled", "disabled");
+          $("#state_id").text(parrent);
+          $("#nomor_id").val(data_neraca[idx].nomor_id.substring(parrent.length));
+          // $("#parrent").val((data_neraca[idx].id_parrent == null) ? "---" : data_neraca[idx].id_parrent);
+
+          if(data_neraca[idx].id_parrent == null || data_neraca[idx].id_parrent == ""){
+            $("#parrent_name").val("---");
+          }else{
+            $("#parrent_name").val(data_neraca[data_neraca.findIndex(n => n.nomor_id == data_neraca[idx].id_parrent)].keterangan);
+          }
+
+          $("#parrent").attr("disabled", "disabled");
+          $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
+          $("#keterangan").val(data_neraca[idx].keterangan);
+
+          if(data_neraca[idx].jenis == 4){
+            $("#keterangan").attr("readonly", "readonly");
+          }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
+
+            $("#group_show").html("");
+
+            if(data_neraca[idx].jenis == 2)
+              $("#tambah_detail").removeAttr("disabled");
+            else
+              $("#tambah_detail").attr("disabled", "disabled");
+            
+            $.each($.grep(data_detail, function(n){ return n.id_parrent == data_neraca[idx].nomor_id }), function(i, n){
+                if(data_neraca[idx].jenis == 2){
+                  html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                            '<td class="text-center">'+n.id_group+'</td>'+
+                            '<td class="text-center">'+n.nama+'</td>'+
+                            '<td class="text-center">'+n.dari+'</td>'+
+                            '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
+                          '</tr>';
+                }
+                else{
+                  html = '<tr id="'+n.id_group+'" data-nama = "'+n.nama+'" data-dari = "'+n.dari+'" class="search">'+
+                            '<td class="text-center">'+n.id_group+'</td>'+
+                            '<td class="text-center">'+n.nama+'</td>'+
+                            '<td class="text-center">'+n.dari+'</td>'+
+                            '<td class="text-center" style="color:#ed5564;">-</td>'+
+                          '</tr>';
+                }
+
+                $("#group_show").append(html);
+            })
+
+          }
+
+        }else{
+          idx = data_detail.findIndex(n => n.nomor_id == data.node.id);
+          $("#modal_list_akun").modal("show");
+          $("#nama_group").text(data.node.data.id+" ("+data_detail[idx].id_group+")");
+
+          html = "";
+
+          $.each($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }), function(i, n){
+            dk = (n.akun_dka == "D") ? "DEBET" : "KREDIT";
+            html = html + '<tr>'+
+                            '<td>'+n.id_akun+'</td>'+
+                            '<td class="text-center">'+n.nama_akun+'</td>'+
+                            '<td class="text-center">'+dk+'</td>'+
+                          '</tr>';
+          })
+
+          if($.grep(data_akun, function(n) { return n.group_neraca === data_detail[idx].id_group }).length == 0){
+            html = html + '<tr><td colspan="3" class="text-center" style="color:#ccc;"> Tidak Ada Anggota Akun Di Group Ini.</td></tr>'
+          }
+
+          $("#anggota_wrap").html(html);
+
+          form_reset();
+        }
+      });
+
+      $(".upper").on("keyup", function(){
+        $(this).val($(this).val().toUpperCase())
+      })
+
+      $("#level").on("focusin", function(){
+
+            before = $(this).val();
+
+      }).change(function(evt){
+            evt.stopImmediatePropagation();
+            evt.preventDefault();
+
+            input = $(this);
+
+            if(input.val() > 2){
+              alert("Level Tidak Boleh Lebih Dari 2");
+              input.val(before);
+            }else if(input.val() > 1 && data_neraca.length == 0){
+              alert("Anda Harus Membuat Detail Level 1 Terlebih Dahulu Sebelum Membuat Level 2.");
+              input.val(before);
+            }else if(input.val() > 1){
+              $("#parrent").removeAttr("disabled");
+            }else if(input.val() == 1){
+              $("#parrent").val("---"); $("#parrent").attr("disabled", "disabled");
+              $("#parrent_name").val("---");
+              $("#state_id").text((state == "aktiva") ? "A" : "P");
+
+              grab_id();
+            }
+      })
+
+      $("#parrent").change(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        val = $(this).val();
+        idx = data_neraca.findIndex(n => n.nomor_id === val);
+
+        if(val === "---"){
+          $("#parrent_name").val("---");
+        }
+        else{
+          $("#parrent_name").val(data_neraca[idx].keterangan);
+          $('#state_id').text(data_neraca[idx].nomor_id+".");
+
+          grab_id();
         }
       })
 
-      // console.log($idDet);
-      // console.log($neracaDetail);
+      $(".switch").click(function(evt){
+        evt.preventDefault();
 
-      for(i = 0; i < $id.length; i++){
-        $dataNeraca.splice($dataNeraca.findIndex(x => x.nomor_id == $id[i]), 1);
-      }
-      for(i = 0; i < $idDet.length; i++){
-        $neracaDetail.splice($neracaDetail.findIndex(x => x.id_detail == $idDet[i]), 1);
-      }
+        btn = $(this);
+        $(".switch").removeClass("aktif");
+        btn.addClass("aktif");
 
-      
-      //alert($node);
+        state = btn.data("for");
 
-      $('#'+$type+'_tree').jstree().delete_node($("#"+$node));
+        form_reset(); grab_parrent();
+      })
 
-      // console.log($dataNeraca);
-      // console.log($neracaDetail);
+      $("#jenis").change(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+        val = $(this).val();
 
-      $("#cancel-edit").click();
+        if(val == "2"){
+          $("#tambah_detail").removeAttr("disabled");
+          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+          $("#group_show").html("");
+          $("#keterangan").removeAttr("readonly"); $("#keterangan").val(""); 
+        }else if(val == "1" || val == "4"){
+          $("#tambah_detail").attr("disabled", "disabled");
+          $("#group_show").html("");
+          $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+          $("#keterangan").removeAttr("readonly"); $("#keterangan").val("");
 
-    })
+          if(val == 4){
+            $("#keterangan").val("."); $("#keterangan").attr("readonly", "readonly");
+          }
+        }else if(val == "3"){
+          $("#detail_total").css("display", "inline-block"); $("#detail_total").removeAttr("disabled");
+          $("#tambah_detail").attr("disabled", "disabled");
+          $("#group_show").html("");
+          $("#keterangan").removeAttr("readonly"); $("#keterangan").val("");
 
-    $('#aktiva_tree').jstree({
-      plugins: ["table", "types"],
-      "types" : {
-        "default" : {
-          "icon" : "fa fa-folder"
-        },
-        "demo" : {
-          "icon" : "fa fa-book"
-        },
-        "total" : {
-          "icon" : "fa fa-calculator"
-        },
-        "space" : {
-          "icon" : "fa fa-arrow-right"
+          grab_detail_total();
         }
-      },
-      core: {
-        data: data,
-        "check_callback": true
-      },
 
-      table: {
-        columns: [
-          {width: 517, header: "Keterangan", headerClass: "myClass", wideCellClass:"myCell"}
-        ],
-        resizable: false,
-        draggable: false,
-        contextmenu: false,
-        width: "100%",
-        height: "100%"
-      },
-    });
+      })
 
-    $('#pasiva_tree').jstree({
-      plugins: ["table", "types"],
-      "types" : {
-        "default" : {
-          "icon" : "fa fa-folder"
-        },
-        "demo" : {
-          "icon" : "fa fa-book"
-        },
-        "total" : {
-          "icon" : "fa fa-calculator"
-        },
-        "space" : {
-          "icon" : "fa fa-arrow-right"
+      $("#detail_total").change(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+        select = $(this);
+
+        if(select.val() != "---"){
+          group = data_neraca.findIndex(n => n.nomor_id == select.val());
+          html = '<tr id="'+data_neraca[group].nomor_id+'" data-nama = "'+data_neraca[group].keterangan+'" data-dari = "Detail Neraca" class="search">'+
+                  '<td class="text-center">'+data_neraca[group].nomor_id+'</td>'+
+                  '<td class="text-center">'+data_neraca[group].keterangan+'</td>'+
+                  '<td class="text-center">Detail Neraca</td>'+
+                  '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
+                '<tr>';
+
+          $("#group_show").append(html);
+          $("#detail_total option:selected").attr("disabled", "disabled");
         }
-      },
-      core: {
-        data: data,
-        "check_callback": true
-      },
 
-      table: {
-        columns: [
-          {width: 517, header: "Keterangan", headerClass: "myClass", wideCellClass:"myCell"}
-        ],
-        resizable: false,
-        draggable: false,
-        contextmenu: false,
-        width: "100%",
-        height: "100%"
-      },
-    });
+      })
 
-    // console.log($akun);
-    // console.log($detail);
+      $("#detail_body").on("click", ".row", function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
 
-   $('#aktiva_tree').on('ready.jstree', function (e, data) {
-	    $.each($detail, function(i, n){
-		    if(n.type == "aktiva"){
-			  $dataNeracaCount = $dataNeraca.length;
-		      $neracaDetailCount = $neracaDetail.length;
-		      //console.log($dataNeraca);
-		      //$("#parrent_id").val()
-		      $id = n.nomor_id;
-		      $keterangan = n.keterangan.toUpperCase();
-		      $parrent = (n.id_parrent == "" || n.id_parrent == null) ? null : n.id_parrent;
-		      $level = n.level;
-		      $jenis = n.jenis;
+        row = $(this);
 
-		      // alert($parrent);
+        $("#detail_body tr").removeClass("aktif");
+        row.addClass("aktif");
 
-		      open = ($jenis != "1") ? false : true;
-		      type = "default";
+        grab_detail_grup(row.data("id"));
 
-		      if($jenis == "3")
-		        type = "total";
-		      else if($jenis == "4")
-		        type = "space";
+        if(!row.hasClass("chosen"))
+          chosen_group = row.data("id");
 
-		      createNode($parrent, $id, $id, "last", $keterangan, true, type);
-		      //console.log($parrent+", "+$id+", "+$id+", last, "+$keterangan+", "+open+", "+type);
+        // console.log(row.data("id"));
+      })
 
-		      $dataNeraca[$dataNeracaCount] = {
-		        "nomor_id": $id,
-		        "keterangan": $keterangan.toUpperCase(),
-		        "id_parrent": $parrent,
-		        "level" : $level,
-		        "jenis" : $jenis,
-		        "type" : $type
-		      };
+      $('#confirm_detail').click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
 
-		      if($jenis == "2"){
-		        $.each($akun, function(i, n){
-		          // alert(n.nomor_id+"=="+$id);
-		           if(n.nomor_id == $id){
-			          $neracaDetail[$neracaDetailCount] = {
-			             "id_akun" : n.id_akun,
-			             "nomor_id" : n.nomor_id,
-			             "id_detail" : id_detail,
-			             "nama"      : n.nama_akun
-			          }
-			      
-			          //console.log($neracaDetail);
-			          $neracaDetailCount++; id_detail++;
+        if(chosen_group == ""){
+          return false;
+        }
 
-			          //alert($id);
-			          createNode($id, $id+"/"+n.id_akun, n.id_akun, "last", n.nama_akun, true, "demo");
-			       }
-		        })
-		      }
+        group = data_group.findIndex(n => n.id == chosen_group);
 
-          if($jenis == "3"){
-            $.each($akun, function(i, n){
-              // alert(n.nomor_id+"=="+$id);
-              $idName = $detail.findIndex(c => c.nomor_id == n.id_akun);
+        html = '<tr id="'+data_group[group].id+'" data-nama = "'+data_group[group].nama_group+'" data-dari = "Group Neraca" class="search">'+
+                  '<td class="text-center">'+data_group[group].id+'</td>'+
+                  '<td class="text-center">'+data_group[group].nama_group+'</td>'+
+                  '<td class="text-center">Group Neraca</td>'+
+                  '<td class="text-center delete_detail" style="color:#ed5564; cursor:pointer;"><i class="fa fa-times"></i></td>'+
+                '<tr>';
 
-               if(n.nomor_id == $id){
-                $neracaDetail[$neracaDetailCount] = {
-                   "id_akun" : n.id_akun,
-                   "nomor_id" : n.nomor_id,
-                   "id_detail" : id_detail,
-                   "nama"     : $detail[$idName]["keterangan"]
-                }
-            
-                //console.log($neracaDetail);
-                $neracaDetailCount++; id_detail++;
+        $("#group_show").append(html);
+        $("#detail_body").find("#"+data_group[group].id).addClass("chosen");
+        chosen_group = "";
+      })
 
-                //alert($id);
-                // createNode($id, $id+"/"+n.id_akun, n.id_akun, "last", $detail[$idName]["keterangan"], false, "demo");
-             }
+      $("#cancel").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        $(this).css("display", "none");
+        $("#hapus_detail").attr("disabled", "disabled");
+        form_reset();
+      })
+
+      $("#group_show").on("click", ".delete_detail", function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        row = $(this);
+        row.closest("tr").remove();
+      })
+
+      $("#hapus_detail").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        id = $("#state_id").text()+""+$("#nomor_id").val();
+
+        $.each($.grep(data_neraca, function(a){ return a.nomor_id === id || a.id_parrent === id }), function(i, n){
+          idx = data_neraca.findIndex(a => a.nomor_id === n.nomor_id);
+
+          if(n.jenis == 2 || n.jenis == 3){
+            delete_detail(n.nomor_id);
+          }
+
+          data_neraca.splice(idx, 1);
+        })
+
+        $('#'+state+'_tree').jstree().delete_node(id);
+        form_reset();
+        grab_parrent();
+
+        // console.log(data_neraca);
+        // console.log(data_detail);
+      })
+
+      $("#masukkan").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        if(validate_form()){
+          level = $("#level").val();
+          parrent = ($("#level").val() == 1) ? null : $("#parrent").val();
+          id = $("#state_id").text()+""+$("#nomor_id").val();
+          jenis = $("#jenis").val();
+          keterangan = $("#keterangan").val().toUpperCase();
+
+          open = (jenis != "1") ? false : true;
+          type = "default";
+
+          if(jenis == "3")
+            type = "total";
+          else if(jenis == "4")
+            type = "space";
+
+          if(jenis == 2){
+            if($("#group_show").find(".search").length == 0){
+              alert("Harap Pilih Detail Group Neraca Terlebih Dahulu.");
+              return false;
+            }
+          }else if(jenis == 3){
+            if($("#group_show").find(".search").length == 0){
+              alert("Harap Pilih Detail Penjumlahan Terlebih Dahulu.");
+              return false;
+            }
+          }
+
+          createNode(parrent, id, id, "last", keterangan, open, type);
+
+          data_neraca[data_neraca.length] = {
+            "nomor_id": id,
+            "keterangan": keterangan.toUpperCase(),
+            "id_parrent": parrent,
+            "level" : level,
+            "jenis" : jenis,
+            "type" : state
+          };
+
+          if(jenis == 2 || jenis == 3){
+            $("#group_show .search").each(function(){
+              text = $(this).data("nama"); ids = $(this).attr("id"); dari = $(this).data("dari");
+              createNode(id, id+"."+ids, text, "last", text, open, "demo");
+
+              data_detail[data_detail.length] = {
+                "id_group"   : ids,
+                "nomor_id"   : id+"."+ids,
+                "id_parrent" : id,
+                "nama"       : text,
+                "dari"       : dari
+              }
             })
           }
 
-		      if($type == "aktiva"){
-		        if($level == 1){$aktiva_lvl1 = parseInt($id.substr(-2))+1;}else{$aktiva_lvl2 = parseInt($id.substr(-2))+1;};
-		      }
-		      else{
-		        if($level == 1){$pasiva_lvl1 = parseInt($id.substr(-2))+1;}else{$pasiva_lvl2 = parseInt($id.substr(-2))+1;};
-		      }
-
-		      //alert($lvl1);
-		      //$dataNeracaCount++;
-		      form_reset();
-		      //console.log($dataNeraca);
-		      //console.log($neracaDetail);
-		    }
-	    })
-	});
-
-  $('#pasiva_tree').on('ready.jstree', function (e, data) {
-	    $.each($detail, function(i, n){
-		    if(n.type == "pasiva"){
-		      $type = "pasiva";
-			  $dataNeracaCount = $dataNeraca.length;
-		      $neracaDetailCount = $neracaDetail.length;
-		      //console.log($dataNeraca);
-		      //$("#parrent_id").val()
-		      $id = n.nomor_id;
-		      $keterangan = n.keterangan.toUpperCase();
-		      $parrent = (n.id_parrent == "" || n.id_parrent == null) ? null : n.id_parrent;
-		      $level = n.level;
-		      $jenis = n.jenis;
-
-		      // alert($parrent);
-
-		      open = ($jenis != "1") ? false : true;
-		      type = "default";
-
-		      if($jenis == "3")
-		        type = "total";
-		      else if($jenis == "4")
-		        type = "space";
-
-		      createNode($parrent, $id, $id, "last", $keterangan, open, type);
-		      //console.log($parrent+", "+$id+", "+$id+", last, "+$keterangan+", "+open+", "+type);
-
-		      $dataNeraca[$dataNeracaCount] = {
-		        "nomor_id": $id,
-		        "keterangan": $keterangan.toUpperCase(),
-		        "id_parrent": $parrent,
-		        "level" : $level,
-		        "jenis" : $jenis,
-		        "type" : $type
-		      };
-
-		      if($jenis == "2"){
-		        $.each($akun, function(i, n){
-		          // alert(n.nomor_id+"=="+$id);
-		           if(n.nomor_id == $id){
-			          $neracaDetail[$neracaDetailCount] = {
-			             "id_akun" : n.id_akun,
-			             "nomor_id" : n.nomor_id,
-			             "id_detail" : id_detail,
-			             "nama"      : n.nama_akun
-			          }
-			      
-			          //console.log($neracaDetail);
-			          $neracaDetailCount++; id_detail++;
-
-			          //alert($id);
-			          createNode($id, "D"+n.id_akun, n.id_akun, "last", n.nama_akun, true, "demo");
-			       }
-		        })
-		      }
-
-		      if($type == "aktiva"){
-            if($level == 1){$aktiva_lvl1 = parseInt($id.substr(-2))+1;}else{$aktiva_lvl2 = parseInt($id.substr(-2))+1;};
-          }
-          else{
-            if($level == 1){$pasiva_lvl1 = parseInt($id.substr(-2))+1;}else{$pasiva_lvl2 = parseInt($id.substr(-2))+1;};
-          }
-
-		      //alert($lvl1);
-		      //$dataNeracaCount++;
-		      form_reset();
-		      //console.log($dataNeraca);
-		      //console.log($neracaDetail);
-		    }
-	    })
-
-	    $type = "aktiva";
-      $("#level_view").val("DT31"); $("#no_id").val("0"+$aktiva_lvl1);
-      // alert($aktiva_lvl1);
-	});
-
-    $("#masukkan").click(function(event){
-
-      if($edit){
-        $node = "#"+$("#level_view").val()+""+$("#no_id").val();
-
-        //console.log($dataNeraca);
-       $node_id = $dataNeraca.findIndex(x => x.nomor_id == $node.substring(1));
-
-       $dataNeraca[$node_id]["keterangan"] = $("#keterangan").val().toUpperCase();
-
-        $('#'+$type+'_tree').jstree('rename_node', $node , $("#keterangan").val().toUpperCase()+" ("+$("#level_view").val()+""+$("#no_id").val()+")");
-        $("#cancel-edit").click();
-
-        return false;
-      }
-
-      event.stopImmediatePropagation();
-      $dataNeracaCount = $dataNeraca.length;
-      $neracaDetailCount = $neracaDetail.length;
-      //console.log($dataNeraca);
-      //$("#parrent_id").val()
-      $id = $("#level_view").val()+""+$("#no_id").val();
-      $keterangan = $("#keterangan").val().toUpperCase();
-      $parrent = ($("#parrent_id").val() == "null") ? null : $("#parrent_id").val();
-      $level = $("#level").val();
-      $jenis = $("#jenis").val();
-
-      if($("#no_id").val() == "" || $("#no_id").val() == null){
-        alert("Masukkan ID Terlebih Dahulu")
-        return false;
-      }else if($.grep($dataNeraca, function(n, i){ return n.nomor_id == $id && n.type == $type }) != 0){
-        alert("Nomor ID Ini Sudah Digunakan.");
-        return false;
-      }
-
-      if($("#level").val() != "1" && $("#parrent_id").val() == "null"){
-        alert("Detail Level "+$("#level").val()+" Harus Memiliki Parrent.");
-        return false;
-      }
-
-      open = ($jenis != "1") ? false : true;
-      type = "default";
-
-      if($jenis == "3")
-        type = "total";
-      else if($jenis == "4")
-        type = "space";
-
-      createNode($parrent, $id, $id, "last", $keterangan, open, type);
-      $dataNeraca[$dataNeracaCount] = {
-        "nomor_id": $id,
-        "keterangan": $keterangan.toUpperCase(),
-        "id_parrent": $parrent,
-        "level" : $level,
-        "jenis" : $jenis,
-        "type" : $type
-      };
-
-      if($jenis == "2" || $jenis == "3"){
-        $("#detail-in-show .inSearch").each(function(){
-          //alert($(this).data("for"));
-          if($(this).data("for") != "parrent"){
-            $neracaDetail[$neracaDetailCount] = {
-              "id_akun" : $(this).text(),
-              "nomor_id" : $id,
-              "id_detail" : id_detail,
-              "nama"      : $(this).data("nama")
-            }
-            //console.log($neracaDetail);
-            $neracaDetailCount++; id_detail++;
-          }
-
-          //alert($id);
-          if($jenis == 2)
-            createNode($id, $id+"/"+$(this).text(), $(this).text(), "last", $(this).data('nama'), false, "demo");
-        })
-      }
-
-      if($type == "aktiva"){
-        if($level == 1){$aktiva_lvl1++;}else{$aktiva_lvl2++};
-      }
-      else{
-        if($level == 1){$pasiva_lvl1++;}else{$pasiva_lvl2++};
-      }
-
-      //alert($lvl1);
-      //$dataNeracaCount++;
-      form_reset();
-      // console.log($dataNeraca);
-      // console.log($neracaDetail);
-
-    })
-
-    $("#jenis").on("change", function(){
-
-      $("#total_for").css("visibility", "hidden");
-
-      if($(this).val() == 2){
-        $("#btn_detail").removeAttr("disabled");
-      }else if($(this).val() == 3){
-        $("#total_for").html("");
-        $html = '<option value="0">Dari Penjumlahan</option>';
-
-        $.each($.grep($dataNeraca, function(n){ return n.jenis == 2 && n.type == $type || n.jenis == 3 && n.type == $type}), function(i, n){
-
-          $html = $html+'<option value="'+n.nomor_id+'" id="sel_'+n.nomor_id+'">'+n.keterangan+'</option>';
-
-        })
-
-        $("#total_for").html($html);
-        //alert($html);
-        $("#total_for").css("visibility", "visible");
-      }
-      else{
-        $("#btn_detail").attr("disabled", "disabled");
-        $("#detail-in-show").html("");
-      }
-
-      if($(this).val() == 4)
-        $("#keterangan").attr("disabled", "disabled");
-    })
-
-    $("#level").on("change", function(){
-      $first = ($type == "aktiva") ? "3" : "4";
-      if($(this).val() == 2 && $.grep($dataNeraca, function(n, i){ return n.level == 1; }) == 0){
-        alert("Anda Harus Menambahkan Data Level 1 Terlebih Dahulu, Sebelum Membuat Data Level 2.");
-        $(this).val(1);$("#level_view").val("DT"+$first+"1");
-        return false;
-      }else if($(this).val() == 3 && $.grep($dataNeraca, function(n, i){ return n.level == 2; }) == 0){
-        alert("Anda Harus Menambahkan Data Level 2 Terlebih Dahulu, Sebelum Membuat Data Level 3.");
-        $(this).val(1);$("#level_view").val("DT"+$first+"1");
-      }
-
-      $lvl1 = ($type == "aktiva") ? $aktiva_lvl1 : $pasiva_lvl1;
-      $lvl2 = ($type == "aktiva") ? $aktiva_lvl2 : $pasiva_lvl2;
-
-      if($(this).val() != 1){
-        $("#parrent_id").removeAttr("disabled");
-        $("#no_id").val("0"+$lvl2);
-      }
-      else{
-        $("#parrent_id").attr("disabled", "disabled");
-        $("#no_id").val("0"+$lvl1);
-      }
-
-
-      $html = '<option value="null">Pilih Parrent</option>';
-      $cek = ($(this).val() - 1);
-      $.each($.grep($dataNeraca, function(a, b){ return a.level == $cek}), function(i, n){
-        if(n.jenis == 1 && n.type == $type)
-            $html = $html+"<option value='"+n.nomor_id+"'>"+n.nomor_id+"</option>";
+          // console.log(data_neraca);
+          // console.log(data_detail);
+          form_reset();
+          grab_parrent();
+        }
       })
 
-      $("#parrent_id").html($html);
-      $("#level_view").val("DT"+$first+""+$(this).val());
-    })
+      $("#tambah_detail").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
 
-    $("#parrent_id").change(function(){
-
-      if($(this).val() != "null"){
-        $data = $(this).val();
-        $get = $.grep($dataNeraca, function(n, i){ return n.nomor_id == $data; });
-        $("#parrent_id_view").val($get[0].keterangan);
-      }
-      else{
-        $("#parrent_id_view").val("---");
-      }
-    })
-
-    // $('#aktiva_tree').on('ready.jstree', function (e, data) {
-    //   $dataNeraca[$dataNeracaCount] = {
-    //     "nomor_id": "101",
-    //     "keterangan": "Aktiva Lancar",
-    //     "id_parrent": null,
-    //     "level" : "1",
-    //     "jenis": "1"
-    //   }
-
-    //   $dataNeracaCount++;
-    //     createNode(null, "101", "101", "last", "Aktiva Lancar");
-    // });
-
-    $("#btn_detail").click(function(event){
-      event.stopImmediatePropagation();
-
-      $("#modal_detail").modal("show");
-    })
-
-    $("#parrent-wrap").on("click", ".clickAble", function(event){
-      event.stopImmediatePropagation();
-      $("#detail-wrapper").html("");
-      var str = $(this).data("parrent").toString(); var nama = $(this).data("nama");
-
-      $apply_id = str; apply_nama = nama;
-
-      $html = "";
-
-      $.each($.grep($dataDetail, function(n){return n.id_akun.substring(0, str.length) == str;}), function(i, n){
-        $nama = (n.nama_akun.length > 26) ? n.nama_akun.substring(0, 25)+" ..." : n.nama_akun;
-        $html = $html+"<tr><td class='inSearch' data-for='child' data-nama='"+n.nama_akun+"' style='padding-left:15px;'>"+n.id_akun+"</td> <td style='padding-left:15px;'>"+$nama+"</td></tr>";
+        $("#modal_detail").modal("show");
+        grab_detail();
       })
 
-      //console.log(dataParrent);
-      $("#detail-wrapper").html($html);
-    })
+      $('#update_detail').click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
 
-    $("#simpan").click(function(event){
-      event.stopImmediatePropagation();
-      if($dataNeraca.length == 0){
-        alert("Tidak Ada Data Dalam Desain Neraca");
-      }else{
-        $comp = confirm("Apa Anda Sudah Yakin ?");
+        jenis = $("#jenis").val();
 
-        if($comp){
-          $.ajax(baseUrl+"/master_keuangan/desain_neraca/update/"+$("#id_desain").val(),{
+        if(jenis == 2){
+          if($("#group_show").find(".search").length == 0){
+            alert("Harap Pilih Detail Group Neraca Terlebih Dahulu.");
+            return false;
+          }
+        }else if(jenis == 3){
+          if($("#group_show").find(".search").length == 0){
+            alert("Harap Pilih Detail Penjumlahan Terlebih Dahulu.");
+            return false;
+          }
+        }
+
+        id = $("#state_id").text()+""+$("#nomor_id").val();
+        idx = data_neraca.findIndex(n => n.nomor_id === id);
+        node_ket = $("#keterangan").val().toUpperCase()+' ('+$("#state_id").text()+''+$("#nomor_id").val()+')';
+        data_neraca[idx].keterangan = $("#keterangan").val();
+
+        $('#'+state+'_tree').jstree('rename_node', id , node_ket);
+
+        if(data_neraca[idx].jenis == 2){
+          balancing_detail(data_neraca[idx].nomor_id);
+        }
+
+        form_reset();
+
+        // console.log(data_neraca);
+        // console.log(data_detail);
+      })
+
+      $("#simpan_desain").click(function(evt){
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+
+        btn = $(this);
+        btn.attr("disabled", "disabled");
+        btn.text("Menyimpan...");
+
+        if($("#nama_desain").val() == ""){
+          $("#nama_desain").focus();
+          toastr.warning('Harap Mengisi Terlebih Dahulu Nama Desain Neraca Ini.');
+          btn.text("Simpan Desain");
+          btn.removeAttr("disabled");
+          return false;
+        }
+
+        if(data_neraca.length > 0 ){
+          $.ajax(baseUrl+"/master_keuangan/desain_neraca/save",{
             type: "post",
-            dataType: "json",
-            data: { neraca: $dataNeraca, detail: $neracaDetail, _token: "{{ csrf_token() }}" },
+            timeout: 15000,
+            data: {data_neraca: data_neraca, data_detail: data_detail, nama_desain: $("#nama_desain").val(), _token: "{{ csrf_token() }}" },
+            dataType: 'json',
             success: function(response){
               console.log(response);
               if(response.status == "sukses"){
-                alert("Desain Berhasil Diubah");
+                toastr.success('Data Desain Neraca Disimpan');
+                btn.removeAttr("disabled");
+                btn.text("Simpan Desain");
+                data_neraca = []; data_detail = [];
+
+                form_reset();
+              }else if(response.status == "exist"){
+                toastr.error('Kode Master Group Akun Sudah Ada Dengan Nama "'+response.content+'". Silahkan Membuat Kode Akun Lagi.');
+                btn.removeAttr("disabled");
+                btn.text("Simpan Desain");
               }
+
+              btn.removeAttr("disabled");
+              btn.text("Simpan Desain");
+            },
+            error: function(request, status, err) {
+                if(status == "timeout") {
+                  toastr.error('Request Timeout. Data Gagal Disimpan');
+                }else{
+                  toastr.error('Internal Server Error. Data Gagal Disimpan');
+                }
+
+                btn.text("Simpan Desain");
+                btn.removeAttr("disabled");
             }
           })
+        }else{
+          toastr.error('Desain Neraca Yang Anda Buat Masih Kosong.');
+          btn.removeAttr("disabled");
+          btn.text("Simpan Desain");
         }
+      })
+
+      function createNode(parent_node, new_node_id, new_node_text, position, keterangan, open = false, type = "default") {
+        // alert(state);
+        $('#'+state+'_tree').jstree('create_node', parent_node, { "text":keterangan+" ("+new_node_id+")", "type": type, "id":new_node_id , "data":{"id": new_node_text, "id_parrent":parent_node}, state: {"opened": open}}, position, false, false); 
       }
-    })
 
-    $("#cancel-edit").click(function(event){
-      event.stopImmediatePropagation();
-      $(this).css("visibility", "hidden");
-      $("#btn_hapus_detail").attr("disabled", "disabled");
-      $edit = false;
-      $("#masukkan span").text("Masukkan");
+      function validate_form(){
+        a = true;
+        $(".form_validate").each(function(i, e){
+          if($(this).val() == ""){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
 
-      form_reset();
-    })
+        $(".select_validate").each(function(i, e){
+          if($(this).val() == "---" && !$(this).is(":disabled")){
+            a = false;
+            $(this).focus();
+            toastr.warning('Harap Lengkapi Data Diatas');
+            return false;
+          }
+        })
 
-    $(".type").click(function(event){
-      $type = $(this).data("type");
-      $(".type").css({"background" : "none", "color" : "#333"});
-      $(this).css({"background" : "#1ab394", "color" : "white"});
-      
-      $("#cancel-edit").click();
-    })
-
-    $("#total_for").change(function(){
-      //alert($("#sel_"+$(this).val()).text()+" -- "+$(this).val());
-      
-      if($(this).val() != 0){
-        $html = "<tr><td class='inSearch' data-for='child' data-nama='"+$("#sel_"+$(this).val()).text()+"'>"+$(this).val()+"</td> <td>"+$("#sel_"+$(this).val()).text()+"</td></tr>";
-
-        $("#detail-in-show").prepend($html);
-        $("#sel_"+$(this).val()).attr("disabled", "disabled");
+        return a;
       }
-      
+
+      function form_reset(){
+        $("#level").val(1); $('#level').removeAttr("disabled");
+        $("#parrent").val("---"); $("#parrent").attr("disabled", "disabled");
+        $("#parrent_name").val("---");
+        $("#jenis").val(1); $('#jenis').removeAttr("disabled");
+        $("#keterangan").val(""); $("#keterangan").removeAttr("readonly");
+        $("#state_id").text((state == "aktiva") ? "A" : "P");
+        $("#tambah_detail").attr("disabled", "disabled"); $("#hapus_detail").attr("disabled", "disabled"); $('#update_detail').attr("disabled", "disabled"); $("#masukkan").removeAttr("disabled");
+        $("#group_show").html("");
+        $("#cancel").css("display", "none");
+        $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled"); 
+
+        grab_id();
+      }
+
+      function grab_id(){
+        cek = $("#state_id").text(); idle = $("#state_id").text().length; level = $("#level").val();
+        data = $.grep(data_neraca, function(n){ return n.nomor_id.substring(0, idle) == cek && n.level == level });
+        count = data.length;
+
+        idxx = (count == 0) ? 0 : data[count-1].nomor_id.substring(idle);
+
+        $("#nomor_id").val((parseInt(idxx)+1));
+      }
+
+      function grab_detail(){
+        html = "";
+        $.each(data_group, function(i, n){
+          if($("#group_show").find("#"+n.id).length == 0 && data_detail.findIndex(a => a.id_group === n.id) < 0){
+            html = html+'<tr data-id="'+n.id+'" class="row" id="'+n.id+'">'+
+                  '<td>'+n.nama_group+'</td>'+
+                '</tr>';
+          }else{
+            html = html+'<tr data-id="'+n.id+'" class="row chosen" id="'+n.id+'" title="Sudah Dipilih">'+
+                  '<td>'+n.nama_group+'</td>'+
+                '</tr>';
+          }
+          
+        })
+
+        $("#detail_body").html(html);
+      }
+
+      function grab_detail_grup(id){
+        html = "";
+        $.each($.grep(data_akun, function(n) { return n.group_neraca == id }), function(i, n){
+          html = html+'<tr>'+
+                  '<td>'+n.nama_akun+'</td>'+
+                '</tr>';
+        })
+
+        if($.grep(data_akun, function(n) { return n.group_neraca == id }).length == 0){
+          html = html+'<tr>'+
+                  '<td class="text-center">Tidak Ada Akun Di Group Ini</td>'+
+                '</tr>';
+        }
+
+        $("#detail_group").html(html);
+      }
+
+      function grab_detail_total(){
+        pieces = (state == "aktiva") ? "A" : "P";
+        html = '<option value="---" id="first">-- Dari Penjumlahan</option>';
+
+        $.each($.grep(data_neraca, function(n){ return n.jenis == 2 && n.nomor_id.substring(0,1) == pieces }), function(i, a){
+          html = html + '<option value="'+a.nomor_id+'" id="'+a.nomor_id+'">'+a.keterangan+'</option>';
+        })
+
+        // alert(html);
+        $('#detail_total').html(html);
+
+      }
+
+      function grab_parrent(){
+        html = '<option value="---">- Pilih Parrent</option>';
+
+        $.each($.grep(data_neraca, function(n){ return n.id_parrent == null && n.type == state && n.jenis == 1 }), function(i, n){
+          html = html+'<option value="'+n.nomor_id+'">'+n.nomor_id+'</option>';
+        })
+
+        $('#parrent').html(html);
+      }
+
+      function delete_detail(parrent){
+        $.each($.grep(data_detail, function(a){ return a.id_parrent == parrent }), function(i, n){
+          idxx = data_detail.findIndex(s => s.nomor_id === n.nomor_id);
+
+          data_detail.splice(idxx, 1);
+        })
+
+        return true
+      }
+
+      function balancing_detail(parrent){
+        $.each($.grep(data_detail, function(a){ return a.id_parrent === parrent }), function(i, n){
+          idxx = data_detail.findIndex(a => a.nomor_id === n.nomor_id);
+
+          $('#'+state+'_tree').jstree().delete_node(data_detail[idxx].nomor_id);
+          data_detail.splice(idxx, 1);
+        })
+
+        $("#group_show .search").each(function(){
+          text = $(this).data("nama"); ids = $(this).attr("id"); dari = $(this).data("dari");
+          createNode(parrent, parrent+"."+ids, text, "last", text, open, "demo");
+
+          data_detail[data_detail.length] = {
+            "id_group"   : ids,
+            "nomor_id"   : parrent+"."+ids,
+            "id_parrent" : parrent,
+            "nama"       : text,
+            "dari"       : dari
+          }
+        })
+      }
+
     })
 
-  })
-
-  function createNode(parent_node, new_node_id, new_node_text, position, keterangan, state = false, type = "default") {
-    //alert("okee");
-
-    $('#'+$type+'_tree').jstree('create_node', parent_node, { "text":keterangan+" ("+new_node_id+")", "type": type, "id":new_node_id , "data":{"id": new_node_text, "id_parrent":parent_node}, state: {"opened": state}}, position, false, false); 
-  }
-
-  function form_reset(){
-    $lvl1 = ($type == "aktiva") ? $aktiva_lvl1 : $pasiva_lvl1;
-    $first = ($type == "aktiva") ? "3" : "4";
-
-    $("#total_for").css("visibility", "hidden");
-    $("#level").val(1); $("#level").removeAttr("disabled");
-    $("#parrent_id").val("null"); $("#parrent_id").attr("disabled", "disabled");
-    $("#parrent_id_view").val("---");
-    $("#level_view").val("DT"+$first+"1");
-    $("#no_id").val("0"+$lvl1);
-    $("#jenis").val(1); $("#jenis").removeAttr("disabled");
-    $("#keterangan").val(""); $("#keterangan").removeAttr("disabled");
-    $("#detail-in-show").html("");
-    $("#btn_detail").attr("disabled", "disabled");
-
-    return false;
-  }
-
-</script>
+  </script>
+@endsection
