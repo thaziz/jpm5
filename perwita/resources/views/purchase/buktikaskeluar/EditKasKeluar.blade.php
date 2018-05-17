@@ -967,7 +967,7 @@
 
       $.ajax({
         url:baseUrl + '/buktikaskeluar/update_patty',
-        type:'get',
+        type:'post',
         data:$('.table_header :input').serialize()+'&'+
              $('.table_jurnal :input').serialize()+'&'+
              $('.table_total :input').serialize()+'&'+
@@ -1166,7 +1166,6 @@
           if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
             var terbayar = parseFloat(data.data[i].fp_sisapelunasan) + parseFloat(data.data[i].fp_debitnota) - parseFloat(data.data[i].fp_creditnota) + parseFloat(data.data[i].fp_uangmuka);
 
-            console.log(terbayar);
 
             var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(terbayar);
             tabel_faktur.row.add([
@@ -1567,7 +1566,7 @@
 
       $.ajax({
         url:baseUrl + '/buktikaskeluar/update_form',
-        type:'get',
+        type:'post',
         data:$('.table_header :input').serialize()+'&'+
              $('.table_jurnal :input').serialize()+'&'+
              $('.table_total :input').serialize()+'&'+
