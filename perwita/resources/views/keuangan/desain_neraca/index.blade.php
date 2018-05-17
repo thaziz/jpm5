@@ -216,9 +216,11 @@
     $('[data-toggle="tooltip"]').tooltip()
 
     @if(Session::has('sukses'))
-        alert("{{ Session::get('sukses') }}")
+        toastr.success('{{ Session::get('sukses') }}');
     @elseif(Session::has('terpakai'))
         alert("{{ Session::get('terpakai') }}")
+    @elseif(Session::has('err'))
+        toastr.error('{{ Session::get('err') }}');
     @endif
 
     tableDetail = $('.tbl-penerimabarang').DataTable({
@@ -263,6 +265,21 @@
 
     })
 
+    $(".hapus").click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      $(".hapus").attr("disabled", "disabled");
+
+      prmpt = confirm("Apa Anda Yakin Ingin Menghapus Desain Ini ? ");
+
+      if(prmpt)
+        window.location = baseUrl+"/master_keuangan/desain_neraca/delete/"+$(this).data("id");
+      else
+        return false;
+
+    })
+
 
     $(".aktifkan").click(function(evt){
       evt.stopImmediatePropagation();
@@ -277,6 +294,9 @@
             if(data.status == "sukses"){
               alert("Neraca Berhasil Digunakan.");
               window.location = baseUrl+"/master_keuangan/desain_neraca";
+            }else if(data.status == "miss"){
+              alert("Ups. Kami Tidak Bisa Menemukan Data Desain Yang Dimaksud..");
+              $(".aktifkan").removeAttr("disabled");
             }
          },
          error: function(request, status, err) {

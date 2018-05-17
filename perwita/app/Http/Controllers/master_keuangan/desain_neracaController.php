@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\desain_neraca;
 use App\desain_neraca_detail;
 use DB;
+use Session;
 
 class desain_neracaController extends Controller
 {
@@ -86,6 +87,14 @@ class desain_neracaController extends Controller
     }
 
     public function edit($id){
+
+        $cek = DB::table("desain_neraca")->where("id_desain", $id)->first();
+
+        if(count($cek) == 0){
+            Session::flash("err", "Ups. Kami Tidak Bisa Menemukan Data Desain Yang Dimaksud..");
+            return redirect(route("desain_neraca.index"));
+        }
+
         $data_akun = DB::table("d_akun")->select("*")->get();
         $data_group = DB::table("d_group_akun")->where("jenis_group", "Neraca/Balance Sheet")->select("*")->orderBy("nama_group", "asc")->get();
         $data_desain = DB::table("desain_neraca")->where("id_desain", $id)->first();
@@ -146,6 +155,16 @@ class desain_neracaController extends Controller
             "content"   => "berhasil"
         ];
 
+        $cek = DB::table("desain_neraca")->where("id_desain", $id)->first();
+
+        if(count($cek) == 0){
+            $response = [
+                "status"    => "miss",
+            ];
+
+           return json_encode($response);
+        }
+
         $update = DB::table("desain_neraca")->update(["is_active" => 0]);
         $update2 = DB::table("desain_neraca")->where("id_desain", $id)->update(["is_active" => 1]);
 
@@ -158,15 +177,28 @@ class desain_neracaController extends Controller
             "content"   => "berhasil"
         ];
 
+        if(count( DB::table("desain_neraca")->where("id_desain", $id)->first()) == 0){
+            Session::flash("sukses", "Data Desain Neraca Dengan ID ".$id." Berhasil Dihapus.");
+            return redirect(route("desain_neraca.index"));
+        }
+
         $deleteNeraca = DB::table("desain_neraca")->where("id_desain", $id)->delete();
         $deleteDetail = DB::table("desain_neraca_dt")->where("id_desain", $id)->delete();
         $deleteAKun = DB::table("desain_detail_dt")->where("id_desain", $id)->delete();
 
-        return json_encode($response);
+        Session::flash("sukses", "Data Desain Neraca Dengan ID ".$id." Berhasil Dihapus.");
+
+        return redirect(route("desain_neraca.index"));
     }
 
     public function view($id){
         $data_neraca = []; $no = 0; $data_detail = []; $no_detail = 0;
+
+        $cek = DB::table("desain_neraca")->where("id_desain", $id)->first();
+
+        if(count($cek) == 0){
+            return '<center><small class="text-muted">Ups. Kami Tidak Bisa Menemukan Data Desain Ini. Cobalah Untuk Muat Ulang Halaman..</small></center>';
+        }
 
         $dataDetail = DB::table("desain_neraca_dt")
             ->join("desain_neraca", "desain_neraca.id_desain", "=", "desain_neraca_dt.id_desain")
@@ -179,14 +211,14 @@ class desain_neracaController extends Controller
 
             if($dataDetail->jenis == 2){
                 $data_detail_dt = DB::table("desain_detail_dt")
-                              ->join("d_group_akun", "desain_detail_dt.id_referensi", "=", "d_group_akun.id")
+                              ->join("d_group_akun", "desain_detail_dt.id_group", "=", "d_group_akun.id")
                               ->where("desain_detail_dt.id_parrent", $dataDetail->nomor_id)
                               ->select("desain_detail_dt.*", "d_group_akun.*")
                               ->get();
 
                 foreach ($data_detail_dt as $detail_dt) {
                     $data_detail[$no_detail] = [
-                        "id_referensi"      => $detail_dt->id_referensi,
+                        "id_referensi"      => $detail_dt->id_group,
                         "nama_referensi"    => $detail_dt->nama_group,
                         "id_parrent"        => $detail_dt->id_parrent,
                         "nomor_id"          => $detail_dt->nomor_id,
@@ -212,6 +244,6 @@ class desain_neracaController extends Controller
 
         // return json_encode($data_detail);
 
-        return view("keuangan.desain_neraca.view")->withData_neraca($data_neraca)->withData_detail($data_detail);
+        return view("keuangan.desain_neraca.view")->withData_neraca($data_neraca)->withData_detail($data_detail)->withCek($cek);
     }
 }
