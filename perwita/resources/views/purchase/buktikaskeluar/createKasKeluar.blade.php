@@ -69,7 +69,10 @@
                           <table class="table table-bordered table_header">
                             <tr>
                               <td width="120">No Transaksi</td>
-                              <td colspan="2"><input class="form-control nota" type="text" readonly="" name="nota"></td>
+                              <td colspan="2">
+                                <input class="form-control nota" type="text" readonly="" name="nota">
+                                <input class="form-control id_header" type="hidden" readonly="" name="id_header">
+                              </td>
                             </tr>
                             <tr>
                               <td width="120">Tanggal</td>
@@ -933,7 +936,7 @@
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     
+                     $('.id_header').val(data.id);
           });
         },
         error:function(data){
@@ -1535,7 +1538,7 @@
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     
+                     $('.id_header').val(data.id);
           });
         },
         error:function(data){
@@ -1845,6 +1848,20 @@
     }
   }
 
+  function print() {
+    var id = $('.id_header').val();
+    $.ajax({
+        url:baseUrl + '/buktikaskeluar/print',
+        type:'get',
+        data:{id},
+        success:function(data){
+
+          window.open().document.write(data);
+        },
+        error:function(data){
+        }
+    });
+  }
 
 
 

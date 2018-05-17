@@ -317,7 +317,7 @@
           });
         $.ajax({
             url:baseUrl + '/master_sales/save_akun_item',
-            type:'get',
+            type:'getElementsByTagName('')',
             data:{patty,cabang},
             success:function(data){
                var item = $('.tabel_item').DataTable();

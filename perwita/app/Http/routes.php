@@ -339,6 +339,7 @@ Route::get('buktikaskeluar/append_faktur', 'kasKeluarController@append_faktur');
 Route::get('buktikaskeluar/append_faktur_edit', 'kasKeluarController@append_faktur_edit');
 Route::get('buktikaskeluar/detail_faktur', 'kasKeluarController@detail_faktur');
 Route::post('buktikaskeluar/save_form', 'kasKeluarController@save_form');
+Route::get('buktikaskeluar/print', 'kasKeluarController@printing');
 
 Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 Route::get('buktikaskeluar/update_form', 'kasKeluarController@update_form');
