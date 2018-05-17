@@ -13,10 +13,18 @@ class neraca_controller extends Controller
 {
     public function index(){
       $data = []; $no = 0;
+
       $dataDetail = DB::table("desain_neraca_dt")
         ->join("desain_neraca", "desain_neraca.id_desain", "=", "desain_neraca_dt.id_desain")
         ->where("desain_neraca.is_active", 1)
         ->get();
+
+      $cek = count(DB::table("desain_neraca")->where("is_active", 1)->first());
+
+      if($cek == 0){
+        $cek = 0;
+        view("keuangan.neraca.index")->withData($data)->withCek($cek);
+      }
 
       foreach ($dataDetail as $dataDetail) {
 
@@ -57,6 +65,6 @@ class neraca_controller extends Controller
 
       //return json_encode($data);
 
-      return view("keuangan.neraca.index")->withData($data);
+      return view("keuangan.neraca.index")->withData($data)->withCek($cek);
     }
 }
