@@ -710,81 +710,147 @@ class LaporanMasterController extends Controller
         return Datatables::of($data)->make(true);
 	}
 	public function carideliveryorder_total(Request $request){
-		$awal = $request->a;
-		$akir = $request->b;
-		$cabang = $request->c;
-
-		if ($cabang == '' or null) {
-		$data =DB::table('delivery_order as do')
-				->where('pendapatan','=','PAKET')
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
-
-		$data1 =DB::table('delivery_order as do')
-				->where('pendapatan','=','KORAN')
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
-
-		$data2 =DB::table('delivery_order as do')
-				->where('pendapatan','=','KARGO')
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
+		// dd($request);
+		//asal
+		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND id_kota_asal = '.$asal_fil.'';
 		}else{
-			$data =DB::table('delivery_order as do')
-				->where('pendapatan','=','PAKET')
-				->where('kode_cabang','=',$cabang)
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
-
-			$data1 =DB::table('delivery_order as do')
-				->where('pendapatan','=','KORAN')
-				->where('kode_cabang','=',$cabang)
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
-
-			$data2 =DB::table('delivery_order as do')
-				->where('pendapatan','=','KARGO')
-				->where('kode_cabang','=',$cabang)
-				->where('tanggal','>=',$awal)
-				->where('tanggal','<=',$akir)
-				->get();
+			$asal = '';
 		}
-		// return $data2;
-		if ($data == null) {
-			$data = 0;
+		//tujuan
+		if ($request->tujuan != '') {
+			$tujuan = " AND id_kota_tujuan = '".(int)$request->tujuan."' ";
 		}else{
-			for ($i=0; $i <count($data) ; $i++) { 
-			$hit[$i] =  $data[$i]->total_net;
+			$tujuan = '';
 		}
-			$data = array_sum($hit);
-		}
-		//batas
-		if ($data1 == null) {
-			$data1 = 0;
+		//cabang
+		if ($request->cabang != '') {
+			$cabang = " AND kode_cabang = '".$request->cabang."' ";
 		}else{
-			for ($i=0; $i <count($data1) ; $i++) { 
-			$hit1[$i] =  $data1[$i]->total_net;
+			$cabang ='';
 		}
-			$data1 = array_sum($hit1);
-		}
-		//batas
-		if ($data2 == null) {
-			$data2 = 0;
+		//tipe
+		if ($request->tipe != '') {
+			$tipe = " AND type_kiriman = '".$request->tipe."' ";
 		}else{
-			for ($i=0; $i <count($data2) ; $i++) { 
-			$hit2[$i] =  $data2[$i]->total_net;
+			$tipe ='';
 		}
-			$data2 = array_sum($hit2);
+		//staus
+		
+		if ($request->status != '' || $request->status != null) {
+			$status = " AND status = '".$request->status."' ";
+		}else{
+			$status = '';
 		}
-		// return $data1[0]->total_net;
+		
+		
+		
+		$min = $request->min;
+		$max = $request->max;
 
-        return response()->json(['paket'=>$data,'koran'=>$data1,'kargo'=>$data2]);
+		$data  = DB::select("SELECT * FROM delivery_order WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$tipe." ".$status." ");
+		
+        $data = collect($data);
+
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('button', function ($data) {
+                          return  '<div class="btn-group">'.
+                                   '<a href="deliveryorderform/'.$data->nomor.'/edit" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>'.
+                                    '<a href="deliveryorderform/'.$data->nomor.'/nota" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></a>'.
+                                    ' <a href="deliveryorderform/'.$data->nomor.'/hapus_data" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>'.
+                                  '</div>';
+
+                                  //  '<div class="btn-group">'.
+                                  //  '<button type="button" onclick="edit(this)" class="btn btn-info btn-lg" title="edit">'.
+                                  //  '<label class="fa fa-pencil-alt"></label></button>'.
+                                  //  '<button type="button" onclick="hapus(this)" class="btn btn-danger btn-lg" title="hapus">'.
+                                  //  '<label class="fa fa-trash"></label></button>'.
+                                  // '</div>';
+                        })
+                        ->make(true);
 	}
+	public function ajaxcarideliveryorder_total()
+    {
+        return view('purchase/master/master_penjualan/laporan/ajax_pencarian');
+    }
+	// public function carideliveryorder_total(Request $request){
+	// 	$awal = $request->a;
+	// 	$akir = $request->b;
+	// 	$cabang = $request->c;
+
+	// 	if ($cabang == '' or null) {
+	// 	$data =DB::table('delivery_order as do')
+	// 			->where('pendapatan','=','PAKET')
+	// 			->where('tanggal','>=',$awal)
+	// 			->where('tanggal','<=',$akir)
+	// 			->get();
+
+	// 	$data1 =DB::table('delivery_order as do')
+	// 			->where('pendapatan','=','KORAN')
+	// 			->where('tanggal','>=',$awal)
+	// 			->where('tanggal','<=',$akir)
+	// 			->get();
+
+	// 	$data2 =DB::table('delivery_order as do')
+	// 			->where('pendapatan','=','KARGO')
+	// 			->where('tanggal','>=',$awal)
+	// 			->where('tanggal','<=',$akir)
+	// 			->get();
+	// 	}else{
+	// 		$data =DB::table('delivery_order as do')
+	// 			->where('pendapatan','=','PAKET')
+	// 			->where('kode_cabang','=',$cabang)
+	// 			->where('tanggal','>=',$awal)
+	// 			->where('tanggal','<=',$akir)
+	// 			->get();
+
+	// 		$data1 =DB::table('delivery_order as do')
+	// 			->where('pendapatan','=','KORAN')
+	// 			->where('kode_cabang','=',$cabang)
+	// 			->where('tanggal','>=',$awal)
+	// 			->where('tanggal','<=',$akir)
+	// 			->get();
+
+	// 		$data2 =DB::table('delivery_order as do')
+	// 			->where('pendapatan','=','KARGO')
+	// 			->where('kode_cabang','=',$cabang)
+	// 			->where('tanggal','>=',$awal)
+	// 			->where('tanggal','<=',$akir)
+	// 			->get();
+	// 	}
+	// 	// return $data2;
+	// 	if ($data == null) {
+	// 		$data = 0;
+	// 	}else{
+	// 		for ($i=0; $i <count($data) ; $i++) { 
+	// 		$hit[$i] =  $data[$i]->total_net;
+	// 	}
+	// 		$data = array_sum($hit);
+	// 	}
+	// 	//batas
+	// 	if ($data1 == null) {
+	// 		$data1 = 0;
+	// 	}else{
+	// 		for ($i=0; $i <count($data1) ; $i++) { 
+	// 		$hit1[$i] =  $data1[$i]->total_net;
+	// 	}
+	// 		$data1 = array_sum($hit1);
+	// 	}
+	// 	//batas
+	// 	if ($data2 == null) {
+	// 		$data2 = 0;
+	// 	}else{
+	// 		for ($i=0; $i <count($data2) ; $i++) { 
+	// 		$hit2[$i] =  $data2[$i]->total_net;
+	// 	}
+	// 		$data2 = array_sum($hit2);
+	// 	}
+	// 	// return $data1[0]->total_net;
+
+ //        return response()->json(['paket'=>$data,'koran'=>$data1,'kargo'=>$data2]);
+	// }
 
 	//END OF
 //START DELIVERY ORDER LAPORAN PAKET(DO)

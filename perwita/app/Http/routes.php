@@ -932,6 +932,8 @@ Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryo
 Route::get('sales/laporandeliveryorder_total_data','LaporanMasterController@deliveryorder_total_data')->name('deliveryorder_total_data');
 Route::post('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
 Route::post('exceldeliveryorder_total/exceldeliveryorder_total','LaporanMasterController@exceldeliveryorder_total');
+Route::get('ajaxcarideliveryorder_total/ajaxcarideliveryorder_total','LaporanMasterController@ajaxcarideliveryorder_total');
+Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterController@carideliveryorder_total')->name('carideliveryorder_total');
 //END OF DELIVERY ORDER TOTAL
 
 //LAPORAN DELIVERY ORDER PAKET 

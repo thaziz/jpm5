@@ -162,6 +162,11 @@ class do_Controller extends Controller
     public function save_data(Request $request)
     {
         // dd($request->all());
+
+        $a = filter_var($request->ed_tarif_dasar, FILTER_SANITIZE_NUMBER_INT);
+        $b = filter_var($request->ed_tarif_penerus, FILTER_SANITIZE_NUMBER_INT);
+        
+        $totaltotal = $a+$b;
 /*        return DB::transaction(function () use ($request) {
             $simpan = '';
             $crud = $request->crud_h;
@@ -531,7 +536,7 @@ class do_Controller extends Controller
                 'instruksi' => strtoupper($request->ed_instruksi),
                 'deskripsi' => strtoupper($request->ed_deskripsi),
                 'jenis_pembayaran' => strtoupper($request->cb_jenis_pembayaran),
-                'total' => filter_var($request->ed_total_total, FILTER_SANITIZE_NUMBER_INT),
+                'total' => filter_var($totaltotal, FILTER_SANITIZE_NUMBER_INT),
                 'diskon' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'diskon_value' => filter_var($request->ed_diskon_v, FILTER_SANITIZE_NUMBER_INT),
                 'jenis' => 'PAKET',
