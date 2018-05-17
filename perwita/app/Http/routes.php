@@ -1324,7 +1324,7 @@ Route::get('sales/tarif_penerus_koli_indentdo/save_data', 'sales\do_Controller@t
 
 Route::get('sales/cari_modaldeliveryorder_sepeda', 'sales\do_Controller@cari_modaldeliveryorder_sepeda');
 Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller@tarif_penerus_sepeda_indentdo');
-Route::get('sales/deliveryorderform/tambah', 'sales\do_Controller@tambah'); 
+// Route::get('sales/deliveryorderform/tambah', 'sales\do_Controller@tambah'); 
 //end delivery order
 
 // delivery order kargo
