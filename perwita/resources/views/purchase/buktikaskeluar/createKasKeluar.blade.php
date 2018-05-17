@@ -1848,7 +1848,7 @@
     }
   }
 
-  function print() {
+  function printing() {
     var id = $('.id_header').val();
     $.ajax({
         url:baseUrl + '/buktikaskeluar/print',
