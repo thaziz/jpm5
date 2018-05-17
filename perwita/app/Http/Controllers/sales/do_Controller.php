@@ -966,7 +966,8 @@ class do_Controller extends Controller
         $jurnal_dt = null;
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $kecamatan = DB::select(" SELECT id,nama FROM kecamatan ORDER BY nama ASC ");
-         
+
+
         $customer = DB::table('customer as c')
                              ->select('c.kode','c.nama','c.alamat','c.telpon','kc.kc_aktif','kcd.kcd_jenis')
                              ->leftjoin('kontrak_customer as kc','kc.kc_kode_customer','=','c.kode')
@@ -975,20 +976,24 @@ class do_Controller extends Controller
                              ->where('kcd.kcd_jenis','=','PAKET')
                              ->orderBy('c.kode','ASC')
                              ->get();
+
         if ($customer == null) {
             $cus = DB::table('customer as c')
                                  ->select('c.kode','c.nama','c.alamat','c.telpon')
                                  ->get();
         }else{
-            for ($i=0; $i < count($customer); $i++) {
-                $cus = DB::table('customer as c')
-                                 ->select('c.kode','c.nama','c.alamat','c.telpon')
-                                 ->where('c.kode','!=',$customer[$i]->kode)
-                                 ->get();
+            $temp= [];
+            for ($i=0; $i < count($customer); $i++) { 
+                $temp[$i]=$customer[$i]->kode;
             }
+
+            $cus = DB::table('customer as c')
+                             ->select('c.kode','c.nama','c.alamat','c.telpon')
+                             ->whereNotIn('c.kode',$temp)
+                             ->get();
         }
         
-         
+         // return $cus;/
 
         $kendaraan = DB::select(" SELECT nopol FROM kendaraan ");
         $marketing = DB::select(" SELECT kode,nama FROM marketing ORDER BY nama ASC ");
@@ -1794,15 +1799,6 @@ class do_Controller extends Controller
                     ->where('kc_kode_cabang', '=', $cabang)
                     ->get();
 
-               // return  $tarifAwal = DB::table('tarif_cabang_kilogram')
-               //      ->select('harga')
-               //      ->where('jenis', '=', $jenis)
-               //      ->where('id_kota_asal', '=', $asal)
-               //      ->where('id_kota_tujuan', '=', $tujuan)
-               //      ->where('keterangan', '=', 'Tarif <= 10 Kg')
-               //      ->where('kode_cabang', '=', $cabang)
-               //      ->get();
-
                 if (count($tarifAwal) > 0){
                     $tarifAwal = $tarifAwal[0]->harga;
                 } else {
@@ -1962,6 +1958,162 @@ class do_Controller extends Controller
                 ]);
                 }
                 
+            }
+            else{
+                return response()->json([
+                    'status' => 'kosong'
+                ]);
+            }
+        }
+        //=================  KOLI  ==================//
+        elseif ($tipe == 'KOLI'){
+            //dd($request);
+            $berat = $request->berat;
+            $koli = $request->koli;
+            $tarif = null;
+            $biaya_penerus = null;
+            if ($berat < 10){
+
+                $tarif = DB::table('kontrak_customer_d')
+                    ->select('kcd_acc_penjualan','kontrak_customer_d.*','kc_kode_cabang','kc_kode_customer', DB::raw('(kcd_harga * '.$berat.') as harga'))
+                    ->join('kontrak_customer','kontrak_customer_d.kcd_kode','=','kontrak_customer.kc_nomor')
+                    ->where('kcd_type_tarif', '=', $tipe)
+                    ->where('kcd_kota_asal', '=', $asal)
+                    ->where('kcd_kota_tujuan', '=', $tujuan)
+                    ->where('kc_kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_10express_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_10reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                }
+            } elseif ($berat < 20){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli < 20 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_20express_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_20reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                }
+            } elseif ($berat < 30){
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli < 30 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_30express_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_30reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                }
+            } elseif ($berat >= 30){
+                // return 'a';
+                $tarif = DB::table('tarif_cabang_koli')
+                    ->select('acc_penjualan', 'harga')
+                    ->where('jenis', '=', $jenis)
+                    ->where('id_kota_asal', '=', $asal)
+                    ->where('id_kota_tujuan', '=', $tujuan)
+                    ->where('keterangan', '=', 'Tarif Koli > 30 Kg')
+                    ->where('kode_cabang', '=', $cabang)
+                    ->get();
+
+                if ($jenis == 'EXPRESS'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_>30express_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                } elseif ($jenis == 'REGULER'){
+                    $biaya_penerus = DB::table('tarif_penerus_koli')
+                        ->join('zona', 'id_zona', '=', 'tarif_>30reguler_koli')
+                        ->select('harga_zona as tarif_penerus')
+                        ->where('id_kota_koli', '=', $tujuan)
+                        ->where('id_kecamatan_koli', '=', $kecamatan)
+                        ->get();
+                }
+            }
+            if ($tarif != null) {
+                if (count($biaya_penerus) < 1){
+                    $biaya_penerus = DB::table('tarif_penerus_default')
+                        ->select('harga as tarif_penerus')
+                        ->where('jenis', '=', $jenis)
+                        ->where('tipe_kiriman', '=', 'KOLI')
+                        ->get();
+
+                            // return count($biaya_penerus);
+
+                    if (count($biaya_penerus) < 1){
+                        $biaya_penerus = 0;
+                    } else {
+                        $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
+                    }
+                } else {
+                        // return count($biaya_penerus);
+                    $biaya_penerus = $biaya_penerus[0]->tarif_penerus;
+                }
+                
+                if ($berat < 10 ) {
+                    return response()->json([
+                    'biaya_penerus' => $biaya_penerus,
+                    'harga' => $tarif[0]->harga,
+                    'acc_penjualan' => $tarif[0]->kcd_acc_penjualan,
+                    'create_indent' => 1,
+                    'tipe' => $tipe,
+                    'jenis' => $jenis,
+                ]);
+                }else{
+                    return response()->json([
+                    'biaya_penerus' => $biaya_penerus,
+                    'harga' => $tarif[0]->harga,
+                    'acc_penjualan' => $tarif[0]->acc_penjualan,
+                    'create_indent' => 1,
+                    'tipe' => $tipe,
+                    'jenis' => $jenis,
+                ]);
+                }
             }
             else{
                 return response()->json([
@@ -2282,7 +2434,7 @@ class do_Controller extends Controller
         $cabang = $request->b;
 
         $data =DB::table('kontrak_customer as kc')
-                             ->select('kcd.kcd_jenis','kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif')
+                             ->select('kcd.kcd_jenis','kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','kcd.kcd_type_tarif as jenis','jt.jt_nama_tarif as tarif')
                              ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
                              ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
@@ -2299,7 +2451,7 @@ class do_Controller extends Controller
         $id = $request->b;
 
         $data =DB::table('kontrak_customer as kc')
-                             ->select('kcd.*','kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif','jt.jt_id as kode_tarif')
+                             ->select('kcd.*','kcd.kcd_dt','kcd.kcd_id','kcd.kcd_kode','kc.kc_kode_customer','kc.kc_kode_cabang','kcd.kcd_harga','ka.nama as asal','kt.nama as tujuan','jt.jt_nama_tarif as tarif','kcd.kcd_jenis_tarif as jenis','jt.jt_id as kode_tarif')
                              ->leftjoin('kontrak_customer_d as kcd','kcd.kcd_kode','=','kc.kc_nomor')
                              ->leftjoin('kota as ka','ka.id','=','kcd.kcd_kota_asal')
                              ->leftjoin('kota as kt','kt.id','=','kcd.kcd_kota_tujuan')
