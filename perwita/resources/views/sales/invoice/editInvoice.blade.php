@@ -291,7 +291,7 @@
                     <table class="table table-hover table_pajak">
                         <tbody>
                             <tr>
-                                <td style="width:64%; padding-top: 0.4cm; text-align:right">Total</td>
+                                <td style="width:64%; padding-top: 0.4cm; text-align:right">Total(+ biaya tambahan)</td>
                                 <td colspan="4">
                                     <input type="text" name="ed_total" class="form-control ed_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
@@ -769,23 +769,27 @@ function hitung_pajak_lain(){
     $(".diskon2").focus(function() {
      $(this).select();
     });
-  function hitung(){
+    function hitung(){
         var temp_total   = 0 ;
+        var temp_bp      = 0 ;
         var temp_diskon  = 0 ;
         var temp_diskon  = 0 ;
         var temp_diskon2 = $('.diskon2').val();
+
         if (temp_diskon2 == '') {
             temp_diskon2 = 0;
         }
-        // temp_diskon2     = temp_diskon2.replace(/[^0-9\-]+/g,"");
-        temp_diskon2     = parseFloat(temp_diskon2);
-        
+        temp_diskon2     = parseFloat(temp_diskon2)
 
-        console.log(temp_diskon2);
+
 
         var netto = 0 ;
         table_detail.$('.dd_total').each(function(){
             temp_total += parseFloat($(this).val());
+        });
+
+        table_detail.$('.dd_biaya_tambahan').each(function(){
+            temp_bp += parseFloat($(this).val());
         });
 
         table_detail.$('.dd_diskon').each(function(){
@@ -794,19 +798,20 @@ function hitung_pajak_lain(){
 
     
         netto = temp_total-(temp_diskon2+temp_diskon);
-        netto_diskon1 = temp_total - temp_diskon;
+        netto_diskon1 = temp_total + temp_bp - temp_diskon;
         if (netto_diskon1 < 0) {
-        netto_diskon1 = 0;
+            netto_diskon1 =0;
         }
-        console.log(temp_total);
-        $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
+        $('.ed_total').val(accounting.formatMoney(temp_total+temp_bp,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
+        // $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
 
         hitung_pajak_ppn();
         hitung_pajak_lain();
    }
+
    
    // untuk mengirim yang di check ke controller dengan ajax
    
