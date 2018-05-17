@@ -714,32 +714,32 @@ class LaporanMasterController extends Controller
 		//asal
 		if ($request->asal != '') {
 			$asal_fil = (int)$request->asal;
-			$asal = ' AND id_kota_asal = '.$asal_fil.'';
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
 		}else{
 			$asal = '';
 		}
 		//tujuan
 		if ($request->tujuan != '') {
-			$tujuan = " AND id_kota_tujuan = '".(int)$request->tujuan."' ";
+			$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
 		}else{
 			$tujuan = '';
 		}
 		//cabang
 		if ($request->cabang != '') {
-			$cabang = " AND kode_cabang = '".$request->cabang."' ";
+			$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
 		}else{
 			$cabang ='';
 		}
 		//tipe
 		if ($request->tipe != '') {
-			$tipe = " AND type_kiriman = '".$request->tipe."' ";
+			$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
 		}else{
 			$tipe ='';
 		}
 		//staus
 		
 		if ($request->status != '' || $request->status != null) {
-			$status = " AND status = '".$request->status."' ";
+			$status = " AND d.status = '".$request->status."' ";
 		}else{
 			$status = '';
 		}
@@ -749,8 +749,14 @@ class LaporanMasterController extends Controller
 		$min = $request->min;
 		$max = $request->max;
 
-		$data  = DB::select("SELECT * FROM delivery_order WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$tipe." ".$status." ");
-		
+		$data  = DB::select("SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
+			FROM delivery_order as d 
+			LEFT JOIN kota k ON k.id=d.id_kota_asal
+            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+            join customer c on d.kode_customer = c.kode 
+            join cabang cc on d.kode_cabang = cc.kode 
+
+			WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$tipe." ".$status." ");
         $data = collect($data);
 
         // return $data;
@@ -771,9 +777,17 @@ class LaporanMasterController extends Controller
                         })
                         ->make(true);
 	}
-	public function ajaxcarideliveryorder_total()
-    {
-        return view('purchase/master/master_penjualan/laporan/ajax_pencarian');
+	public function ajaxcarideliveryorder_total(Request $request)
+    {	
+
+		$min = $request->min;
+		$max = $request->max;
+		$asal =$request->asal;
+		$tujuan=$request->tujuan;
+		$cabang=$request->cabang;
+		$tipe=$request->tipe;
+		$status=$request->status;
+        return view('purchase/master/master_penjualan/laporan/ajax_pencarian',compact('min','max','asal','tujuan','cabang','tipe','status'));
     }
 	// public function carideliveryorder_total(Request $request){
 	// 	$awal = $request->a;
@@ -1007,33 +1021,60 @@ class LaporanMasterController extends Controller
 	}
 
 	public function reportdeliveryorder_total(Request $request){
-		// return 'a';
-		$data = $request->a;	
-   		// dd($data[0]);
-   		$dat = '';
-		for ($save=0; $save <count($data) ; $save++) { 
-			$dat = $dat.','.$data[$save];
-
+		// dd($request->all());
+		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+		}else{
+			$asal = '';
 		}
-		$dat =explode(',', $dat); 
-		json_encode($dat);
-        for ($i=1; $i <count($dat); $i++) { 
+		//tujuan
+		if ($request->tujuan != '') {
+			$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+		}else{
+			$tujuan = '';
+		}
+		//cabang
+		if ($request->cabang != '') {
+			$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang ='';
+		}
+		//tipe
+		if ($request->tipe != '') {
+			$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+		}else{
+			$tipe ='';
+		}
+		//staus
 		
-		$dat1[$i] = DB::table('delivery_order as do')
-						->select('do.*','ka.id as kaid','cb.nama as cabang','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-						->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-						->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-						->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-						->leftjoin('cabang as cb','do.kode_cabang','=','cb.kode')
-						->where('nomor','=',$dat[$i])
-						->get();
-			}
+		if ($request->status != '' || $request->status != null) {
+			$status = " AND d.status = '".$request->status."' ";
+		}else{
+			$status = '';
+		}
+		
+		
+		
+		$min = $request->min;
+		$max = $request->max;
+
+		$dat1  = DB::select("SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total ,cc.nama as cabang
+			FROM delivery_order as d 
+			LEFT JOIN kota k ON k.id=d.id_kota_asal
+            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+            join customer c on d.kode_customer = c.kode 
+            join cabang cc on d.kode_cabang = cc.kode 
+
+			WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$tipe." ".$status." ");
 
         foreach($dat1 as $key => $value){
-		    $get[$key] = $dat1[$key][0]->total_net;
-			$total_perhitungan = array_sum($get);
-		}
-
+			   	if ($dat1[$key] == null) {
+			   	}else{
+			   		$total_perhitungan[$key] = $dat1[$key]->total_net;
+			   	}
+		   	}
+        $total_perhitungan = array_sum($total_perhitungan);
 
         // dd($total_net);
 
@@ -1140,13 +1181,6 @@ class LaporanMasterController extends Controller
 		);
 		return response()->json($response);
 		
-
-
-		
-
-		// return $export_ss;
-		// return response()->json(['ex',=>,$excel]);
-		// return view('purchase/master/master_penjualan/pdf/pdf_deliveryorder_total',compact('dat1','total_perhitungan')); exceldeliveryorder_total(){
 
 	}
 // END OF DELIVERY ORDER LAPORAN PAKET(DO)

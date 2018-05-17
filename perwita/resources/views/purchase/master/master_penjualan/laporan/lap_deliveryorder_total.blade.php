@@ -288,25 +288,12 @@
 
 
       function cetak(){
-      var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < asd.length; i++){
-
-           asw[i] =  $(asd[i][2]).val();
-  
-       }
-
-      $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
-
+      
 
       $.ajax({
-        data: {a:asw,c:'download'},
+        data: $('#cari_data').serialize(),
         url: baseUrl + '/reportdeliveryorder_total/reportdeliveryorder_total',
-        type: "post",
+        type: "get",
        success : function(data){
         var win = window.open();
             win.document.write(data);
@@ -315,25 +302,12 @@
     }
 
     function excel(){
-      var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < asd.length; i++){
-
-           asw[i] =  $(asd[i][2]).val();
-  
-       }
-
-      $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
-
+     
 
       $.ajax({
-        data: {a:asw,c:'download'},
+        data:  $('#cari_data').serialize(),
         url: baseUrl + '/exceldeliveryorder_total/exceldeliveryorder_total',
-        type: "post",
+        type: "get",
         success: function (response, textStatus, request) {
         var a = document.createElement("a");
         a.href = response.file; 
@@ -406,13 +380,11 @@
             }
      $.ajax({
             data: $('#cari_data').serialize(),
-            url: baseUrl + '/carideliveryorder_total/carideliveryorder_total',
+            url: baseUrl + '/ajaxcarideliveryorder_total/ajaxcarideliveryorder_total',
             type: "get",
             success: function (response, textStatus, request) {
-              var lol = [];
-                $.each(response, function(i) {
-                  lol[i] = response[i].nomor;
-                })
+              $('#replace').html(response);
+              
             },
             error: function (ajaxContext) {
               toastr.error('Export error: '+ajaxContext.responseText);
