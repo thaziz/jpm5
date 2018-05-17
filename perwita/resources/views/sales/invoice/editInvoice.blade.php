@@ -189,8 +189,8 @@
                             <th>Tgl DO</th>
                             <th>Keterangan</th>
                             <th width="20">Jumlah</th>
-                            <th>Harga Satuan</th>
                             <th>Harga Bruto</th>
+                            <th>Biaya Tambahan</th>
                             <th>Diskon</th>
                             <th>Harga Netto</th>
                             <th align="center">Aksi</th>
@@ -219,13 +219,14 @@
                                 {{$val->id_jumlah}}
                                 <input type="hidden"  value="{{$val->id_jumlah}}" name="dd_jumlah[]">
                             </td>
-                            <td>
-                                {{number_format($val->id_harga_satuan, 2, ",", ".")}}
-                                <input type="hidden" class="dd_harga" value="{{$val->id_harga_satuan}}" name="dd_harga[]">
-                            </td>
+                            
                             <td>
                                 {{number_format($val->id_harga_bruto, 2, ",", ".")}}
                                 <input type="hidden" class="dd_total" value="{{$val->id_harga_bruto}}" name="dd_total[]">
+                            </td>
+                            <td>
+                                {{number_format(0, 2, ",", ".")}}
+                                <input type="hidden" class="dd_biaya_tambahan" value="{{0}}" name="dd_biaya_tambahan[]">
                             </td>
                             <td>
                                 {{number_format($val->id_diskon, 2, ",", ".")}}
@@ -260,12 +261,12 @@
                                 <input type="hidden"  value="{{$val->id_jumlah}}" name="dd_jumlah[]">
                             </td>
                             <td>
-                                {{number_format($val->id_harga_satuan, 2, ",", ".")}}
-                                <input type="hidden" class="dd_harga" value="{{$val->id_harga_satuan}}" name="dd_harga[]">
-                            </td>
-                            <td>
                                 {{number_format($val->id_harga_bruto, 2, ",", ".")}}
                                 <input type="hidden" class="dd_total" value="{{$val->id_harga_bruto}}" name="dd_total[]">
+                            </td>
+                            <td>
+                                {{number_format($val->biaya_tambahan, 2, ",", ".")}}
+                                <input type="hidden" class="dd_biaya_tambahan" value="{{0}}" name="dd_biaya_tambahan[]">
                             </td>
                             <td>
                                 {{number_format($val->id_diskon, 2, ",", ".")}}
@@ -849,15 +850,25 @@ function hitung_pajak_lain(){
                     for(var i = 0 ; i < response.data.length;i++){
                         index_detail+=1;
                         table_detail.row.add([
+                             index_detail+=1;
+                        table_detail.row.add([
                             index_detail+'<p class="indexing"></p>',
                             response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].dd_nomor+'" name="do_detail[]">',
+
                             response.data[i].tanggal+'<input type="hidden" class="dd_id" value="'+response.data[i].dd_id+'" name="do_id[]">',
+
                             response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].dd_acc_penjualan+'" name="akun[]">',
+
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
+
                             accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
+
+                            accounting.formatMoney(0, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="0" name="dd_biaya_tambahan[]">',
+
                             accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
+
                             accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].dd_total+'" name="harga_netto[]">',
+
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);
@@ -872,7 +883,7 @@ function hitung_pajak_lain(){
                         ///////////////////////////////////////
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail+'<p class="indexing"></p>',
+                             index_detail+'<p class="indexing"></p>',
 
                             response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
 
@@ -882,9 +893,11 @@ function hitung_pajak_lain(){
 
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
 
-                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
 
-                            accounting.formatMoney(parseFloat(response.data[i].total)+parseFloat(response.data[i].biaya_tambahan), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(response.data[i].total+response.data[i].biaya_tambahan)+'" name="dd_total[]">',
+                            accounting.formatMoney(parseFloat(response.data[i].total), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(response.data[i].total)+'" name="dd_total[]">',
+
+                            accounting.formatMoney(response.data[i].biaya_tambahan, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+parseFloat(response.data[i].biaya_tambahan)+'" name="dd_biaya_tambahan[]">',
+
 
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
 
@@ -916,9 +929,10 @@ function hitung_pajak_lain(){
 
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
 
-                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
 
                             accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+
+                            accounting.formatMoney(response.data[i].biaya_tambahan, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+parseFloat(response.data[i].biaya_tambahan)+'" name="dd_biaya_tambahan[]">',
 
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
 
