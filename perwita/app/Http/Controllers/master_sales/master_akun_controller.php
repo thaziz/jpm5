@@ -29,7 +29,7 @@ class master_akun_controller extends Controller
       $cabang = DB::table('cabang')
                   ->get();
 
-      $akun = DB::table('d_akun')->where('id_akun','like','5%')->orWhere('id_akun','like','7%')->get();
+      $akun = DB::table('d_akun')->where('id_akun','like','5'.'%')->orWhere('id_akun','like','7%')->get();
       // $akun  = array_merge($akun1,$akun2);
     	return view('master_sales.master_akun.index',compact('akun','akun_item','akun_patty','cabang'));
     }
