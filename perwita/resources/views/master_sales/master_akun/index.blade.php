@@ -60,6 +60,7 @@
                                     @if(Auth::user()->punyaAkses('Master Akun Fitur','cabang'))
                                     <td>
                                         <select class="form-control chosen-select-width cabang" name="cabang">
+                                            <option value="GLOBAL">GLOBAL</option>
                                             @foreach ($cabang as $row)
                                             <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
                                             @endforeach
@@ -294,7 +295,7 @@
           });
         $.ajax({
             url:baseUrl + '/master_sales/save_akun_patty',
-            type:'post',
+            type:'get',
             data:{patty,cabang},
             success:function(data){
                var patty = $('.tabel_patty').DataTable();
@@ -316,7 +317,7 @@
           });
         $.ajax({
             url:baseUrl + '/master_sales/save_akun_item',
-            type:'post',
+            type:'getElementsByTagName('')',
             data:{patty,cabang},
             success:function(data){
                var item = $('.tabel_item').DataTable();

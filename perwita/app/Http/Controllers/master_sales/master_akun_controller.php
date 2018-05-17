@@ -29,7 +29,7 @@ class master_akun_controller extends Controller
       $cabang = DB::table('cabang')
                   ->get();
 
-      $akun = DB::table('d_akun')->where('id_akun','like','5%')->orWhere('id_akun','like','7%')->get();
+      $akun = DB::table('d_akun')->where('id_akun','like','5'.'%')->orWhere('id_akun','like','7%')->get();
       // $akun  = array_merge($akun1,$akun2);
     	return view('master_sales.master_akun.index',compact('akun','akun_item','akun_patty','cabang'));
     }
@@ -84,7 +84,42 @@ class master_akun_controller extends Controller
     {
       return DB::transaction(function() use ($req) {  
 
+        if ($req->cabang == 'GLOBAL') {
+          
+          $akun = substr($req->patty,0,4);
 
+          $data = DB::table('d_akun')
+                  ->where('id_akun','like', $akun . '%')
+                  ->get();
+
+          for ($i=0; $i < count($data); $i++) { 
+            $cari = DB::table('master_akun_fitur')
+                      ->where('maf_kode_akun',$data[$i]->id_akun)
+                      ->get();
+                      
+            if ($cari == null) {
+
+              $id = DB::table('master_akun_fitur')
+                  ->max('maf_id');
+
+              if ($id == null) {
+                $id = 1;
+              }else{
+                $id+=1;
+              }
+
+              $save_maf = DB::table('master_akun_fitur')
+                            ->insert([
+                              'maf_id'        => $id,
+                              'maf_kode_akun' => $data[$i]->id_akun,
+                              'maf_nama'      => $data[$i]->nama_akun,
+                              'maf_group'     => 1,
+                              'maf_cabang'    => $data[$i]->kode_cabang,
+                           ]);
+            }
+          }
+
+        }else{
           $cari = DB::table('master_akun_fitur')
                   ->where('maf_kode_akun',$req->patty)
                   ->first();
@@ -104,6 +139,7 @@ class master_akun_controller extends Controller
           }else{
             $id+=1;
           }
+
           $save_maf = DB::table('master_akun_fitur')
                         ->insert([
                           'maf_id'        => $id,
@@ -111,15 +147,46 @@ class master_akun_controller extends Controller
                           'maf_nama'      => $akun->nama_akun,
                           'maf_group'     => 1,
                           'maf_cabang'    => $req->cabang,
-                        ]);
+                       ]);
+        } 
       });
     }
 
     public function save_akun_item(request $req)
     {
       return DB::transaction(function() use ($req) {  
+        if ($req->cabang == 'GLOBAL') {
+          $akun = substr($req->patty,0,4);
 
+          $data = DB::table('d_akun')
+                  ->where('id_akun','like', $akun . '%')
+                  ->get();
+          for ($i=0; $i < count($data); $i++) { 
+            $cari = DB::table('master_akun_fitur')
+                      ->where('maf_kode_akun',$data[$i]->id_akun)
+                      ->get();
+            if ($cari != null) {
 
+              $id = DB::table('master_akun_fitur')
+                  ->max('maf_id');
+
+              if ($id == null) {
+                $id = 1;
+              }else{
+                $id+=1;
+              }
+              $save_maf = DB::table('master_akun_fitur')
+                            ->insert([
+                              'maf_id'        => $id,
+                              'maf_kode_akun' => $data[$i]->id_akun,
+                              'maf_nama'      => $data[$i]->nama_akun,
+                              'maf_group'     => 2,
+                              'maf_cabang'    => $data[$i]->kode_cabang,
+                           ]);
+            }
+          }
+
+        }else{
           $cari = DB::table('master_akun_fitur')
                   ->where('maf_kode_akun',$req->patty)
                   ->first();
@@ -139,6 +206,7 @@ class master_akun_controller extends Controller
           }else{
             $id+=1;
           }
+
           $save_maf = DB::table('master_akun_fitur')
                         ->insert([
                           'maf_id'        => $id,
@@ -146,20 +214,32 @@ class master_akun_controller extends Controller
                           'maf_nama'      => $akun->nama_akun,
                           'maf_group'     => 2,
                           'maf_cabang'    => $req->cabang,
-                        ]);
+                       ]);
+        } 
       });
     }
 
     public function ganti_akun_patty(request $req)
-    {
-      $akun_patty = DB::table('master_akun_fitur')
+    { 
+      if ($req->cabang =='GLOBAL') {
+        $akun_patty = DB::table('master_akun_fitur')
                     ->where('maf_group','1')
                     ->where('maf_cabang',$req->cabang)
                     ->get();
      
-      $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->get();
-      $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->get();
-      $akun  = array_merge($akun1,$akun2);
+        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->get();
+        $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->get();
+        $akun  = array_merge($akun1,$akun2);
+      }else{
+        $akun_patty = DB::table('master_akun_fitur')
+                    ->where('maf_group','1')
+                    ->where('maf_cabang',$req->cabang)
+                    ->get();
+     
+        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->get();
+        $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->get();
+        $akun  = array_merge($akun1,$akun2);
+      }
 
       return view('master_sales.master_akun.dropdown_patty',compact('akun','akun_patty'));
       
@@ -167,13 +247,26 @@ class master_akun_controller extends Controller
 
     public function ganti_akun_item(request $req)
     {
-      $akun_item = DB::table('master_akun_fitur')
-                    ->where('maf_group','2')
+
+      if ($req->cabang =='GLOBAL') {
+        $akun_patty = DB::table('master_akun_fitur')
+                    ->where('maf_group','1')
                     ->where('maf_cabang',$req->cabang)
                     ->get();
-      $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->get();
-      $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->get();
-      $akun  = array_merge($akun1,$akun2);
+     
+        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->get();
+        $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->get();
+        $akun  = array_merge($akun1,$akun2);
+      }else{
+        $akun_patty = DB::table('master_akun_fitur')
+                    ->where('maf_group','1')
+                    ->where('maf_cabang',$req->cabang)
+                    ->get();
+     
+        $akun1 = DB::table('d_akun')->where('id_akun','like','5%')->where('kode_cabang',$req->cabang)->get();
+        $akun2 = DB::table('d_akun')->where('id_akun','like','7%')->where('kode_cabang',$req->cabang)->get();
+        $akun  = array_merge($akun1,$akun2);
+      }
 
       return view('master_sales.master_akun.dropdown_item',compact('akun','akun_item'));
     }

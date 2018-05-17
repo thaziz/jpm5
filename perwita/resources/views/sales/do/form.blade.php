@@ -25,7 +25,29 @@
                 </div>
                 <div class="ibox-content" >
                 <div>
-                    <span><b style="color: red"><l style="font-style: italic">NOTE : </l>*Data Customer Berwarna <g style="color: green">Hijau</g> Menandakan Bahwa Customer Tsb Memiliki Kontrak</b></span>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+                    Petunjuk Input
+                    </button>
+                    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered" style="width: 800px;" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Point-Point Yang Harus Diperhatikan</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <span><b style="color: red">1 .*Data Customer Berwarna <g style="color: green">Hijau</g> Menandakan Bahwa Customer Tersebut Memiliki Kontrak</b></span><br>
+                            <span><b style="color: red">2 .*Pencarian Tarif Penerus Pada Customer Yang Memiliki  <g style="color: green">Kontrak</g> ,Cari Dengan tombol </b> <span class="input-group-btn"> <button type="button"  class="btn btn-warning"> <i class="fa fa-search"></i> Tipe </span>
+                          </div>
+                          <div class="modal-footer">                            
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                                
+                    
                 </div>
                 <br>
                         <div class="row">
@@ -1687,7 +1709,44 @@
                             // alert('b');
                             var hit = parseInt($("input[name='ed_koli']").val())  *  data.harga;
                         }
+                        if (data.biaya_penerus == 0){
+                             Command: toastr["warning"]("Zona/Penerus tidak ditemukan", "Peringatan !")
+                                toastr.options = {
+                                  "closeButton": false,
+                                  "debug": true,
+                                  "newestOnTop": false,
+                                  "progressBar": true,
+                                  "positionClass": "toast-top-right",
+                                  "preventDuplicates": false,
+                                  "onclick": null,
+                                  "showDuration": "300",
+                                  "hideDuration": "1000",
+                                  "timeOut": "5000",
+                                  "extendedTimeOut": "1000",
+                                  "showEasing": "swing",
+                                  "hideEasing": "linear",
+                                  "showMethod": "fadeIn",
+                                  "hideMethod": "fadeOut"
+                                }
+                            $("input[name='ed_tarif_penerus']").css('width','220px');
+                            $("#button_a").show();
 
+                            if (type_kiriman == 'DOKUMEN') {
+                                $("#button_a").html('<button class="btn btn-warning" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="dokumen_tipe()"><i class="fa fa-plus"></i></button>')
+                            }else if (type_kiriman == 'KILOGRAM') {
+                                $("input[name='ed_tarif_penerus']").css('width','220px');
+                                $("#button_a").html('<button class="btn btn-info"type="button"  style="margin-top: -50px;margin-left: 230px;" onclick="kilogram_tipe()"><i class="fa fa-plus"></i></button>')
+                            }else if (type_kiriman == 'KOLI') {
+                                $("input[name='ed_tarif_penerus']").css('width','220px');
+                                $("#button_a").html('<button class="btn btn-primary" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="koli_tipe()"><i class="fa fa-plus"></i></button>')
+                            }else if (type_kiriman == 'SEPEDA') {
+                                $("input[name='ed_tarif_penerus']").css('width','220px');
+                                $("#button_a").html('<button class="btn btn-danger" type="button" style="margin-top: -50px;margin-left: 230px;" onclick="sepeda_tipe()"><i class="fa fa-plus"></i></button>')
+                            } 
+                        }else{
+                            $("input[name='ed_tarif_penerus']").css('width','100%');
+                            $("#button_a").hide();  
+                        }
                         $('input[name="ed_tarif_dasar"]').val(accounting.formatMoney(hit,"",0,'.',','));
                         hitung();
                     }
@@ -2131,7 +2190,11 @@
             url:baseUrl+'/sales/cari_replacekontrakcustomer',
             type:'get',
             success:function(data){
-                console.log(data)
+                console.log(data.data.biaya_penerus);
+                 
+                type_kiriman=data.data.kcd_type_tarif;
+
+                
 
                 $("#modal").modal("hide");
                 $('select[name="cb_kota_asal"]').val(data.data.kcd_kota_asal).trigger('chosen:updated');
@@ -2145,6 +2208,7 @@
 
 
                 $('input[name="ed_tarif_dasar"]').val(accounting.formatMoney(data.data.kcd_harga,"",0,'.',','));
+
                 if(data.data.tarif == 'REGULER' || data.data.tarif == 'EXPRESS'){
                     $('select[name="jenis_kiriman"]').val(data.data.tarif);
                 }else{
@@ -2167,7 +2231,7 @@
                       "hideMethod": "fadeOut"
                     }
                 }
-                    type_kiriman=data.data.kcd_type_tarif;
+                    
 
                     if ( type_kiriman =='DOKUMEN') {
                         $("#surat_jalan").hide();
@@ -4021,7 +4085,7 @@
                               "newestOnTop": false,
                               "progressBar": true,
                               "positionClass": "toast-top-right",
-                              "preventDuplicates": false,
+                              "preventDuplicates": true,
                               "onclick": null,
                               "showDuration": "300",
                               "hideDuration": "1000",
