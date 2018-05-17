@@ -922,7 +922,7 @@
 
       $.ajax({
         url:baseUrl + '/buktikaskeluar/save_patty',
-        type:'get',
+        type:'post',
         data:$('.table_header :input').serialize()+'&'+
              $('.table_jurnal :input').serialize()+'&'+
              $('.table_total :input').serialize()+'&'+

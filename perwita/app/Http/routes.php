@@ -330,7 +330,7 @@ Route::get('buktikaskeluar/return_faktur', 'kasKeluarController@return_faktur');
 Route::get('buktikaskeluar/debet_faktur', 'kasKeluarController@debet_faktur');
 Route::get('buktikaskeluar/kredit_faktur', 'kasKeluarController@kredit_faktur');
 Route::get('buktikaskeluar/um_faktur', 'kasKeluarController@um_faktur');
-Route::get('buktikaskeluar/save_patty', 'kasKeluarController@save_patty');
+Route::post('buktikaskeluar/save_patty', 'kasKeluarController@save_patty');
 Route::get('buktikaskeluar/supplier_dropdown', 'kasKeluarController@supplier_dropdown');
 Route::get('buktikaskeluar/cari_hutang', 'kasKeluarController@cari_hutang');
 Route::get('buktikaskeluar/cari_faktur', 'kasKeluarController@cari_faktur');
@@ -342,8 +342,8 @@ Route::post('buktikaskeluar/save_form', 'kasKeluarController@save_form');
 Route::get('buktikaskeluar/print', 'kasKeluarController@printing');
 
 Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
-Route::get('buktikaskeluar/update_form', 'kasKeluarController@update_form');
-Route::get('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
+Route::post('buktikaskeluar/update_form', 'kasKeluarController@update_form');
+Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 
 // IKHTISAR KAS
