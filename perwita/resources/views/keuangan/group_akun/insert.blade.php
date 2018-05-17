@@ -29,6 +29,10 @@
             <input type="text" display: inline-block;" class="form_validate form-control text-center" name="kode_group" placeholder="Kode Group" id="kode_group" data-toggle="tooltip" data-placement="top" title="Hanya Memperbolehkan Input Angka">
           </div>
         </td>
+
+        <td colspan="3" class="text-center">
+          <small class="text-muted">Kode Grup Terakhir Di Database = {{ $ids }}</small>
+        </td>
       </tr>
 
       <tr>

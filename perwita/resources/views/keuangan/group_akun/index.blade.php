@@ -129,19 +129,19 @@
 
                                 </tr>
                               </thead>
-                              <tbody  class="searchable">
+                              <tbody class="searchable">
 
                                 @foreach($data as $group)
                                   <tr>
                                     <td class="id">{{ $group->id }}</td>
                                     <td class="nama_group">{{ $group->nama_group }}</td>
                                     <td class="jenis_group text-center">{{ $group->jenis_group }}</td>
-                                    <td class="tanggal_buat text-center">{{ date("d-m-Y", strtotime($group->tanggal_buat)) }}</td>
+                                    <td class="tanggal_buat text-center">{{ date("d", strtotime($group->tanggal_buat)) }} {{ date_ind(date("m", strtotime($group->tanggal_buat))) }} {{ date("Y", strtotime($group->tanggal_buat)) }}</td>
 
                                     <td class="text-center">
 
                                         <span data-toggle="tooltip" data-placement="top" title="Edit Group {{ $group->nama_group }}">
-                                            <button data-parrent="{{ $group->id }}" data-toggle="modal" data-target="#modal_edit" class="btn btn-xs btn-warning edit"><i class="fa fa-pencil-square fa-fw"></i></button>
+                                            <button data-parrent="{{ $group->id }}" class="btn btn-xs btn-warning edit"><i class="fa fa-pencil-square fa-fw"></i></button>
                                         </span>
 
                                         <a onclick="return confirm('Apakah Anda Yakin Ingin Menghapus Group \'{{ $group->nama_group }}\' Ini ??')" href="{{ route("group_akun.hapus", $group->id) }}">
@@ -257,20 +257,12 @@
       });
     })
 
-    $(".edit").on("click", function(){
-      $("#modal_edit .modal-header .parrent").val($(this).data("parrent"));
-    })
+    $(".searchable").on("click", ".edit", function(){
 
-    $("#modal_edit").on("hidden.bs.modal", function(e){
+      $("#modal_edit").modal("show");
       $("#modal_edit .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
-      if($change)
-        window.location = baseUrl+"/master_keuangan/akun";
-    })
 
-    $("#modal_edit").on("shown.bs.modal", function(e){
-      //alert($("#modal_edit_akun .modal-header .parrent").val())
-
-      $.ajax(baseUrl+"/master_keuangan/group_akun/edit/"+$("#modal_edit .modal-header .parrent").val(), {
+      $.ajax(baseUrl+"/master_keuangan/group_akun/edit/"+$(this).data("parrent"), {
          timeout: 15000,
          dataType: "html",
          success: function (data) {

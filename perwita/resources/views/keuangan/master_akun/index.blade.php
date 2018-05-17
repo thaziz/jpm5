@@ -267,20 +267,11 @@
       });
     })
 
-    $(".editAkun").on("click", function(){
-      $("#modal_edit_akun .modal-header .parrent").val($(this).data("parrent"));
-    })
-
-    $("#modal_edit_akun").on("hidden.bs.modal", function(e){
+    $(".searchable").on("click", ".editAkun", function(){
+      $("#modal_edit").modal("show");
       $("#modal_edit_akun .modal-body").html('<center class="text-muted">Menyiapkan Form</center>');
-      if($change)
-        window.location = baseUrl+"/master_keuangan/akun";
-    })
 
-    $("#modal_edit_akun").on("shown.bs.modal", function(e){
-      //alert($("#modal_edit_akun .modal-header .parrent").val())
-
-      $.ajax(baseUrl+"/master_keuangan/edit/"+$("#modal_edit_akun .modal-header .parrent").val(), {
+      $.ajax(baseUrl+"/master_keuangan/edit/"+$(this).data("parrent"), {
          timeout: 15000,
          dataType: "html",
          success: function (data) {
