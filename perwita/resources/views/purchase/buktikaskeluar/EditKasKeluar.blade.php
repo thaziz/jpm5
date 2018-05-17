@@ -71,7 +71,7 @@
                             <tr>
                               <td width="120">No Transaksi</td>
                               <td colspan="2">
-                                <input class="form-control nota" type="text" readonly="" name="nota">
+                                <input class="form-control nota" value="{{$data->bkk_total}}" type="text" readonly="" name="nota">
                                 <input class="form-control id_header" type="hidden" value="{{$id}}" name="id_header">
                               </td>
                             </tr>
