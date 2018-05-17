@@ -483,6 +483,5 @@ return false;
         table.column(4).search( this.value ).draw();
       });  
 
-
 </script>
 @endsection

@@ -19,6 +19,7 @@
 <div class="row">
   <form id="akun_form">
     <input type="hidden" readonly value="{{ csrf_token() }}" name="_token">
+    
   <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
     <table border="0" id="form-table" class="col-md-12">
       <tr>
@@ -101,6 +102,12 @@
         </td>
       </tr>
 
+      <tr>
+        <td colspan="5" style="font-size: 10pt; padding-left: 10px;">
+          <input type="checkbox" id="share" name="share" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Bisa Di Share. (<b>Akun Yang Bisa Di Share Adalah Akun Yang Bisa Dimiliki Juga Oleh Kantor Cabang</b>).</small>
+        </td>
+      </tr>
+
     </table>
   </div>
 
@@ -169,6 +176,12 @@
       }
     })
 
+    $("#share").change(function(evt){
+      if(!$(this).is(":checked") && $("#kode_cabang").val() == "*"){
+        $("#share").prop('checked', true);
+      }
+    })
+
     $("#kode_cabang").change(function(evt){
       evt.stopImmediatePropagation();
       evt.preventDefault();
@@ -177,15 +190,18 @@
         $("#add_kode").val("---");$("#add_nama").val("---");
         $("#saldo_not_all").css("display", "none");
         $("#saldo_all").css("display", "inline-block");
+        $("#share").prop('checked', true);
       }else if($(this).val() !== "---"){
         idx = cabang.findIndex(c => c.kode_cabang === $(this).val());
-        $("#add_kode").val(cabang[idx].id_provinsi+""+cabang[idx].kode_cabang);
+        $("#add_kode").val(cabang[idx].kode_cabang);
         $("#add_nama").val(cabang[idx].nama_cabang);
         $("#saldo_all").css("display", "none");
         $("#saldo_not_all").css("display", "inline");
+        $("#share").prop('checked', false);
       }
       else{
         $("#add_kode").val("");$("#add_nama").val("");
+        $("#share").prop('checked', false);
       }
 
     })
@@ -227,16 +243,16 @@
             }
           },
           error: function(request, status, err) {
-              if (status == "timeout") {
-                toastr.error('Request Timeout. Data Gagal Disimpan');
-                btn.removeAttr("disabled");
-                btn.text("Simpan");
-              } else {
-                toastr.error('Internal Server Error. Data Gagal Disimpan');
-                btn.removeAttr("disabled");
-                btn.text("Simpan");
-              }
+            if (status == "timeout") {
+              toastr.error('Request Timeout. Data Gagal Disimpan');
               btn.removeAttr("disabled");
+              btn.text("Simpan");
+            } else {
+              toastr.error('Internal Server Error. Data Gagal Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+            }
+            btn.removeAttr("disabled");
           }
         })
       }else{

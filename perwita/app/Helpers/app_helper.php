@@ -11,6 +11,65 @@
 		return "okee";
 	}
 
+	function date_ind($date){
+		$ret = "";
+		switch ($date) {
+			case '01':
+				$ret = "Januari";
+				break;
+
+			case '02':
+				$ret = "Februari";
+				break;
+
+			case '03':
+				$ret = "Maret";
+				break;
+
+			case '04':
+				$ret = "April";
+				break;
+
+			case '05':
+				$ret = "Mei";
+				break;
+
+			case '06':
+				$ret = "Juni";
+				break;
+
+			case '07':
+				$ret = "Juli";
+				break;
+
+			case '08':
+				$ret = "Agustus";
+				break;
+
+			case '09':
+				$ret = "September";
+				break;
+
+			case '10':
+				$ret = "Oktober";
+				break;
+
+			case '11':
+				$ret = "November";
+				break;
+
+			case '12':
+				$ret = "Desember";
+				break;
+			
+			default:
+				$ret = "Tidak Diketahui";
+				break;
+		}
+
+		return $ret;
+	}
+
 	function get_sub($data, $parrent, $data_akun){
 		$html = "";
 		foreach ($data as $dataDetail) {

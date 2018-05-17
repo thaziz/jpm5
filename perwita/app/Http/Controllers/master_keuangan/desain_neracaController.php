@@ -30,11 +30,11 @@ class desain_neracaController extends Controller
 
     public function add(){
         $data_akun = DB::table("d_akun")->select("*")->get();
-
         $data_group = DB::table("d_group_akun")->where("jenis_group", "Neraca/Balance Sheet")->select("*")->orderBy("nama_group", "asc")->get();
 
         // return json_encode($data_akun);
         // return json_encode($data_group);
+
     	return view("keuangan.desain_neraca.form_tambah")
                ->withData_akun(json_encode($data_akun))
                ->withData_group(json_encode($data_group));
@@ -74,8 +74,9 @@ class desain_neracaController extends Controller
                         "id_desain"          => $id,
                         "id_parrent"         => $data_detail["id_parrent"],
                         "nomor_id"           => $data_detail["nomor_id"],
-                        "id_referensi"       => $data_detail["id_group"],
-                        "dari"               => $data_detail["dari"]
+                        "id_group"           => $data_detail["id_group"],
+                        "dari"               => $data_detail["dari"],
+                        "nama"               => $data_detail["nama"]
                     ]);
                 }
             }
@@ -85,22 +86,21 @@ class desain_neracaController extends Controller
     }
 
     public function edit($id){
-        $detail = DB::table("desain_neraca_dt")->where("id_desain", $id)->get();
+        $data_akun = DB::table("d_akun")->select("*")->get();
+        $data_group = DB::table("d_group_akun")->where("jenis_group", "Neraca/Balance Sheet")->select("*")->orderBy("nama_group", "asc")->get();
+        $data_desain = DB::table("desain_neraca")->where("id_desain", $id)->first();
+        $data_neraca = DB::table("desain_neraca_dt")->where("id_desain", $id)->get();
+        $data_detail = DB::table("desain_detail_dt")->where("id_desain", "$id")->get();
 
-        $akun = DB::table("desain_detail_dt")
-                ->leftJoin("d_akun", "d_akun.id_akun", "=", "desain_detail_dt.id_akun")
-                ->where("desain_detail_dt.id_desain", $id)
-                ->select("desain_detail_dt.*", "d_akun.nama_akun")->get();
+        // return json_encode($data_akun);
+        // return json_encode($data_group);
 
-        $datadetail = DB::table("d_akun")
-                      ->whereIn("id_akun", function($query){
-                        $query->select("id_akun")
-                                ->from("d_akun_saldo")
-                                ->where("is_active", 1)->get();
-                      })->get();
-
-        //return $akun;
-        return view("keuangan.desain_neraca.form_edit")->withDetail(json_encode($detail))->withAkun(json_encode($akun))->withDatadetail(json_encode($datadetail))->withId($id);
+        return view("keuangan.desain_neraca.form_edit")
+               ->withData_akun(json_encode($data_akun))
+               ->withData_group(json_encode($data_group))
+               ->withData_neraca(json_encode($data_neraca))
+               ->withData_detail(json_encode($data_detail))
+               ->withData_desain($data_desain);
     }
 
     public function update($id, Request $request){

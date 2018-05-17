@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\sales;
-
+ini_set('max_execution_time', 3600);
 use App\biaya_penerus;
 use App\do_dt;
 use App\Http\Controllers\Controller;
@@ -2482,7 +2482,22 @@ class do_Controller extends Controller
             return response()->json(['data'=>$data]);
         }
     }
+    // public function kurang()
+    // {
+    //     $db = DB::table('delivery_order')
+    //             ->where('diskon','!=',0)
+    //             ->get();
 
+    //     for ($i=0; $i < count($db); $i++) { 
+    //         if ($db[$i]->total == $db[$i]->total_net) {
+    //            $updt = DB::table('delivery_order')
+    //                      ->where('nomor',$db[$i]->nomor)
+    //                      ->update([
+    //                         'total'=> $db[$i]->total + $db[$i]->diskon,
+    //                      ]);
+    //         }
+    //     }
+    // }
     // public function asd($value='')
     // {  
     //     $asal = 1;
