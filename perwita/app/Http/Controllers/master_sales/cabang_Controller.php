@@ -101,6 +101,7 @@ class cabang_Controller extends Controller
                     $akun->main_id = $acc->main_id;
                     $akun->main_name = $acc->main_name;
                     $akun->group_neraca = $acc->group_neraca;
+                    $akun->group_laba_rugi = $acc->group_laba_rugi;
 
                     if($akun->save()){
                         $saldo = new master_akun_saldo;

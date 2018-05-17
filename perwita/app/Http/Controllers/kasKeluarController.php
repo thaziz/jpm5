@@ -384,7 +384,7 @@ class kasKeluarController extends Controller
 			$lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get();
 			// dd($lihat);
 
-			return response()->json(['status'=>1]);
+			return response()->json(['status'=>1,'id'=>$id]);
 
 		});
 	}
@@ -401,6 +401,7 @@ class kasKeluarController extends Controller
 			if ($cari_nota == null) {
 				return response()->json(['status'=>3]);
 			}
+
 			$nota = $req->nota;
 			$id = $cari_nota->bkk_id;
 
@@ -1273,7 +1274,7 @@ class kasKeluarController extends Controller
 			$lihat = d_jurnal_dt::where('jrdt_jurnal',$id_jurnal)->get();
 			// dd($lihat);
 
-			return response()->json(['status'=>1]);
+			return response()->json(['status'=>1,'id'=>$id]);
 
 		});
 	}
@@ -2508,9 +2509,9 @@ class kasKeluarController extends Controller
 		}
 
 		for ($i=0; $i < count($data); $i++) { 
-			if ($data[$i]->akun_dka == 'D') {
+			if ($data[$i]->jrdt_statusdk == 'D') {
 				$d[$i] = $data[$i]->jrdt_value;
-			}elseif ($data[$i]->akun_dka == 'K') {
+			}elseif ($data[$i]->jrdt_statusdk == 'K') {
 				$k[$i] = $data[$i]->jrdt_value;
 			}
 		}
@@ -2521,6 +2522,34 @@ class kasKeluarController extends Controller
 		$k = array_sum($k);
 
 		return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
+	}
+
+	public function printing(request $req){
+		
+
+		$cari_bkk_id = DB::table('bukti_kas_keluar')
+					  ->join('cabang','kode','=','bkk_comp')
+					  ->join('d_akun','id_akun','=','bkk_akun_kas')
+					  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
+					  ->where('bkk_id',$req->id)
+					  ->first();
+
+		$tgl = Carbon::parse($cari_bkk_id->bkk_tgl)->format('d/m/y');
+
+	    $cari_bkk_dt = DB::table('bukti_kas_keluar')
+					  ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
+					  ->join('cabang','kode','=','bkk_comp')
+					  ->join('d_akun','id_akun','=','bkk_akun_kas')
+					  ->join('jenisbayar','idjenisbayar','=','bkk_jenisbayar')
+					  ->where('bkk_id',$req->id)
+					  ->get();
+
+		$terbilang = $this->terbilang($cari_bkk_id->bkk_total,$style=3);
+			  
+		
+
+		return view('purchase/buktikaskeluar/print',compact('cari_bkk_id','cari_bkk_dt','tgl','terbilang'));
+
 	}
 
 }

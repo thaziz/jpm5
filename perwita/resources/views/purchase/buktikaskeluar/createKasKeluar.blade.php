@@ -69,7 +69,10 @@
                           <table class="table table-bordered table_header">
                             <tr>
                               <td width="120">No Transaksi</td>
-                              <td colspan="2"><input class="form-control nota" type="text" readonly="" name="nota"></td>
+                              <td colspan="2">
+                                <input class="form-control nota" type="text" readonly="" name="nota">
+                                <input class="form-control id_header" type="hidden" readonly="" name="id_header">
+                              </td>
                             </tr>
                             <tr>
                               <td width="120">Tanggal</td>
@@ -427,7 +430,7 @@
                         </div>
                         <div class="col-sm-12" style="margin-top: 10px;overflow: auto" >
                           <button class="btn pull-right btn-danger reload_form mrgin"><i class="fa fa-reload"> Reload</i></button>
-                          <button class="btn pull-right btn-warning print_form mrgin"><i class="fa fa-print"> Print</i></button>
+                          <button onclick="printing()" class="btn pull-right btn-warning print_form mrgin"><i class="fa fa-print"> Print</i></button>
                           <button class="btn pull-right btn-primary simpan_form mrgin"><i class="fa fa-save"> Simpan</i></button>
                         <caption><h2>Detail Faktur</h2></caption>
                         <table class="table tabel_faktur table-bordered " >
@@ -919,7 +922,7 @@
 
       $.ajax({
         url:baseUrl + '/buktikaskeluar/save_patty',
-        type:'get',
+        type:'post',
         data:$('.table_header :input').serialize()+'&'+
              $('.table_jurnal :input').serialize()+'&'+
              $('.table_total :input').serialize()+'&'+
@@ -933,7 +936,8 @@
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     
+                     $('.id_header').val(data.id);
+                     $('.print_petty').removeClass('disabled');
           });
         },
         error:function(data){
@@ -1114,12 +1118,7 @@
       success:function(data){
         for (var i = 0; i < data.data.length; i++) {
           if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
-            var terbayar = parseFloat(data.data[i].fp_sisapelunasan) + parseFloat(data.data[i].fp_debitnota) - parseFloat(data.data[i].fp_creditnota) + parseFloat(data.data[i].fp_uangmuka);
-
-            console.log(terbayar);
-
-            var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(terbayar);
-            console.log(fp_terbayar);
+            var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(data.data[i].fp_sisapelunasan);
             tabel_faktur.row.add([
               '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
               '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">'+
@@ -1535,7 +1534,7 @@
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     
+                     $('.id_header').val(data.id);
           });
         },
         error:function(data){
@@ -1845,6 +1844,20 @@
     }
   }
 
+  function printing() {
+    var id = $('.id_header').val();
+    $.ajax({
+        url:baseUrl + '/buktikaskeluar/print',
+        type:'get',
+        data:{id},
+        success:function(data){
+
+          window.open().document.write(data);
+        },
+        error:function(data){
+        }
+    });
+  }
 
 
 
