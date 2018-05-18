@@ -560,8 +560,6 @@ $(document).ready(function(){
 
     if ($('.jenis_tarif_do').val() == 9) {
         $('.kontrak_tr').attr('hidden',true);
-        $('.tarif_dasar').val(1);
-        $('.harga_master').val(1);
         $('#kode_tarif').val(0);
         $('.kcd_id').val(0);
         $('.kcd_dt').val(0);
