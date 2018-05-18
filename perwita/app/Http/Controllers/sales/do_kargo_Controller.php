@@ -458,7 +458,7 @@ class do_kargo_Controller extends Controller
         return DB::transaction(function() use ($request) {  
 
 
-
+        // dd($request->all());
         $cari_do = DB::table('delivery_order')
                       ->where('nomor',$request->nomor_do)
                       ->first();
