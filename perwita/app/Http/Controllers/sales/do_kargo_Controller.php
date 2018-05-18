@@ -413,9 +413,7 @@ class do_kargo_Controller extends Controller
         if ($request->jumlah == '') {
             return response()->json(['status' => 3,'text'=>'Jumlah']);
         }
-        if ($request->acc_penjualan == '') {
-            return response()->json(['status' => 3,'text'=>'Akun']);
-        }
+        
         if ($request->tarif_dasar == '') {
             return response()->json(['status' => 3,'text'=>'Tarif Dasar']);
         }
@@ -502,6 +500,29 @@ class do_kargo_Controller extends Controller
         }else{
           $akun_piutang = $select_akun->id_akun;
         }
+
+        if ($request->status_kendaraan == 'OWN') {
+          $select_akun = DB::table('d_akun')
+                         ->where('id_akun','like','4201'.'%')
+                         ->where('kode_cabang',$request->cabang)
+                         ->first();
+          if ($select_akun == null) {
+                return response()->json(['status'=>4]);
+          }else{
+            $akun_pendapatan = $select_akun->id_akun;
+          }
+        }else if ($request->status_kendaraan == 'SUB'){
+          $select_akun = DB::table('d_akun')
+                         ->where('id_akun','like','4202'.'%')
+                         ->where('kode_cabang',$request->cabang)
+                         ->first();
+          if ($select_akun == null) {
+                return response()->json(['status'=>4]);
+          }else{
+            $akun_pendapatan = $select_akun->id_akun;
+          }
+        }
+        
             $save_do = DB::table('delivery_order')
                          ->insert([
                                 'nomor'                 => strtoupper($request->nomor_do),
@@ -561,6 +582,8 @@ class do_kargo_Controller extends Controller
                                 'acc_penjualan'         => $request->acc_penjualan,
                                 'acc_piutang_do'        => $akun_piutang,
                                 'csf_piutang_do'        => $akun_piutang,
+                                'acc_pendapatan_do'     => $akun_pendapatan,
+                                'csf_pendapatan_do'     => $akun_pendapatan,
                                 'status_do'             => 'Released'
                          ]);
 
@@ -600,6 +623,29 @@ class do_kargo_Controller extends Controller
               return response()->json(['status'=>4]);
             }else{
               $akun_piutang = $select_akun->id_akun;
+            }
+
+
+            if ($request->status_kendaraan == 'OWN') {
+              $select_akun = DB::table('d_akun')
+                             ->where('id_akun','like','4201'.'%')
+                             ->where('kode_cabang',$request->cabang)
+                             ->first();
+              if ($select_akun == null) {
+                    return response()->json(['status'=>4]);
+              }else{
+                $akun_pendapatan = $select_akun->id_akun;
+              }
+            }else if ($request->status_kendaraan == 'SUB'){
+              $select_akun = DB::table('d_akun')
+                             ->where('id_akun','like','4202'.'%')
+                             ->where('kode_cabang',$request->cabang)
+                             ->first();
+              if ($select_akun == null) {
+                    return response()->json(['status'=>4]);
+              }else{
+                $akun_pendapatan = $select_akun->id_akun;
+              }
             }
 
             $save_do = DB::table('delivery_order')
@@ -658,6 +704,8 @@ class do_kargo_Controller extends Controller
                                 'acc_penjualan'         => $request->acc_penjualan,
                                 'acc_piutang_do'        => $akun_piutang,
                                 'csf_piutang_do'        => $akun_piutang,
+                                'acc_pendapatan_do'     => $akun_pendapatan,
+                                'csf_pendapatan_do'     => $akun_pendapatan,
                                 'status_do'             => 'Released'
                          ]);
             return response()->json(['nota'=>$nota,'status'=>2]);
