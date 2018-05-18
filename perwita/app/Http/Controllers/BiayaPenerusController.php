@@ -61,7 +61,6 @@ class BiayaPenerusController extends Controller
 						->get();
 			}else{
 				$akun   = DB::table('d_akun')
-						->where('kode_cabang',Auth::user()->kode_cabang)
 						->get();
 			}
 
