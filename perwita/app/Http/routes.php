@@ -344,6 +344,7 @@ Route::get('buktikaskeluar/print', 'kasKeluarController@printing');
 Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 Route::post('buktikaskeluar/update_form', 'kasKeluarController@update_form');
 Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
+Route::get('buktikaskeluar/hapus', 'kasKeluarController@hapus');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 
 // IKHTISAR KAS
