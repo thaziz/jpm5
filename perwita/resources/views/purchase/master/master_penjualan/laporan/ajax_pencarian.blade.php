@@ -67,6 +67,8 @@
               var cabang = '{{$cabang}}';
               var tipe = '{{$tipe}}';
               var status = '{{$status}}';
+              var jenis = '{{$jenis}}';
+              var pendapatan = '{{$pendapatan}}';
 
               var table =  $('#addColumn').DataTable({
                     processing: true,
@@ -74,7 +76,7 @@
                     serverSide: true,
                     ajax: {
                         url:'{{ route('carideliveryorder_total') }}',
-                        data:{min,max,asal,tujuan,cabang,tipe,status}
+                        data:{min,max,asal,tujuan,cabang,tipe,status,jenis,pendapatan}
                     },
                     "columns": [
                     { "data": "nomor" },

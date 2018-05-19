@@ -679,25 +679,23 @@ class LaporanMasterController extends Controller
 		$nomor = strtoupper($request->input('nomor'));
         $authe = Auth::user()->kode_cabang; 
         if (Auth::user()->punyaAkses('Delivery Order','all')) {
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,d.pendapatan,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.pendapatan,d.total_dpp,d.total_vendo,d.status as status,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,d.pendapatan,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
                     LEFT JOIN customer c on d.kode_customer = c.kode 
                     LEFT JOIN cabang cc on d.kode_cabang = cc.kode 
                     -- LEFT JOIN kecamatan kc on d.kecamatan = cc.kode 
-                    WHERE d.jenis='PAKET'
                     ";
         }
         else{
-        $sql = "SELECT cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
+        $sql = "SELECT d.pendapatan,d.total_dpp,d.total_vendo,d.status as status,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total
                     FROM delivery_order d
                     LEFT JOIN kota k ON k.id=d.id_kota_asal
                     LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
                     LEFT JOIN customer c on d.kode_customer = c.kode 
                     LEFT JOIN cabang cc on d.kode_cabang = cc.kode 
                     -- LEFT JOIN kecamatan kc on d.kecamatan = cc.kode 
-                    WHERE d.jenis='PAKET'
                     and kode_cabang = '$authe'
                      ";
         }
@@ -710,7 +708,7 @@ class LaporanMasterController extends Controller
         return Datatables::of($data)->make(true);
 	}
 	public function carideliveryorder_total(Request $request){
-		// dd($request);
+		// dd($request->all());
 		//asal
 		if ($request->asal != '') {
 			$asal_fil = (int)$request->asal;
@@ -736,7 +734,6 @@ class LaporanMasterController extends Controller
 		}else{
 			$tipe ='';
 		}
-		//staus
 		
 		if ($request->status != '' || $request->status != null) {
 			$status = " AND d.status = '".$request->status."' ";
@@ -744,19 +741,30 @@ class LaporanMasterController extends Controller
 			$status = '';
 		}
 		
+		if ($request->pendapatan != '' || $request->pendapatan != null) {
+			$pendapatan = " AND d.pendapatan = '".$request->pendapatan."' ";
+		}else{
+			$pendapatan = '';
+		}
+
+		if ($request->jenis != '' || $request->jenis != null) {
+			$jenis = " AND d.jenis_pengiriman = '".$request->jenis."' ";
+		}else{
+			$jenis = '';
+		}
 		
 		
 		$min = $request->min;
 		$max = $request->max;
 
-		$data  = DB::select("SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
+		$data  = DB::select("SELECT d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total 
 			FROM delivery_order as d 
 			LEFT JOIN kota k ON k.id=d.id_kota_asal
             LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
             join customer c on d.kode_customer = c.kode 
             join cabang cc on d.kode_cabang = cc.kode 
 
-			WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$tipe." ".$status." ");
+			WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ");
         $data = collect($data);
 
         // return $data;
@@ -787,86 +795,11 @@ class LaporanMasterController extends Controller
 		$cabang=$request->cabang;
 		$tipe=$request->tipe;
 		$status=$request->status;
-        return view('purchase/master/master_penjualan/laporan/ajax_pencarian',compact('min','max','asal','tujuan','cabang','tipe','status'));
+		$jenis=$request->jenis;
+		$pendapatan=$request->pendapatan;
+        return view('purchase/master/master_penjualan/laporan/ajax_pencarian',compact('min','max','asal','tujuan','cabang','tipe','status','pendapatan','jenis'));
     }
-	// public function carideliveryorder_total(Request $request){
-	// 	$awal = $request->a;
-	// 	$akir = $request->b;
-	// 	$cabang = $request->c;
-
-	// 	if ($cabang == '' or null) {
-	// 	$data =DB::table('delivery_order as do')
-	// 			->where('pendapatan','=','PAKET')
-	// 			->where('tanggal','>=',$awal)
-	// 			->where('tanggal','<=',$akir)
-	// 			->get();
-
-	// 	$data1 =DB::table('delivery_order as do')
-	// 			->where('pendapatan','=','KORAN')
-	// 			->where('tanggal','>=',$awal)
-	// 			->where('tanggal','<=',$akir)
-	// 			->get();
-
-	// 	$data2 =DB::table('delivery_order as do')
-	// 			->where('pendapatan','=','KARGO')
-	// 			->where('tanggal','>=',$awal)
-	// 			->where('tanggal','<=',$akir)
-	// 			->get();
-	// 	}else{
-	// 		$data =DB::table('delivery_order as do')
-	// 			->where('pendapatan','=','PAKET')
-	// 			->where('kode_cabang','=',$cabang)
-	// 			->where('tanggal','>=',$awal)
-	// 			->where('tanggal','<=',$akir)
-	// 			->get();
-
-	// 		$data1 =DB::table('delivery_order as do')
-	// 			->where('pendapatan','=','KORAN')
-	// 			->where('kode_cabang','=',$cabang)
-	// 			->where('tanggal','>=',$awal)
-	// 			->where('tanggal','<=',$akir)
-	// 			->get();
-
-	// 		$data2 =DB::table('delivery_order as do')
-	// 			->where('pendapatan','=','KARGO')
-	// 			->where('kode_cabang','=',$cabang)
-	// 			->where('tanggal','>=',$awal)
-	// 			->where('tanggal','<=',$akir)
-	// 			->get();
-	// 	}
-	// 	// return $data2;
-	// 	if ($data == null) {
-	// 		$data = 0;
-	// 	}else{
-	// 		for ($i=0; $i <count($data) ; $i++) { 
-	// 		$hit[$i] =  $data[$i]->total_net;
-	// 	}
-	// 		$data = array_sum($hit);
-	// 	}
-	// 	//batas
-	// 	if ($data1 == null) {
-	// 		$data1 = 0;
-	// 	}else{
-	// 		for ($i=0; $i <count($data1) ; $i++) { 
-	// 		$hit1[$i] =  $data1[$i]->total_net;
-	// 	}
-	// 		$data1 = array_sum($hit1);
-	// 	}
-	// 	//batas
-	// 	if ($data2 == null) {
-	// 		$data2 = 0;
-	// 	}else{
-	// 		for ($i=0; $i <count($data2) ; $i++) { 
-	// 		$hit2[$i] =  $data2[$i]->total_net;
-	// 	}
-	// 		$data2 = array_sum($hit2);
-	// 	}
-	// 	// return $data1[0]->total_net;
-
- //        return response()->json(['paket'=>$data,'koran'=>$data1,'kargo'=>$data2]);
-	// }
-
-	//END OF
+	
 //START DELIVERY ORDER LAPORAN PAKET(DO)
 
 	public function deliveryorder(){
@@ -1054,8 +987,6 @@ class LaporanMasterController extends Controller
 			$status = '';
 		}
 		
-		
-		
 		$min = $request->min;
 		$max = $request->max;
 
@@ -1083,92 +1014,77 @@ class LaporanMasterController extends Controller
 		
 	}
 	public function exceldeliveryorder_total(Request $request){
-		$data = $request->a;	
-   		// dd($data[0]);
-   		$dat = '';
-		for ($save=0; $save <count($data) ; $save++) { 
-			$dat = $dat.','.$data[$save];
-
+	if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+		}else{
+			$asal = '';
 		}
-		$dat =explode(',', $dat); 
-		json_encode($dat);
-        for ($i=1; $i <count($dat); $i++) { 
+		//tujuan
+		if ($request->tujuan != '') {
+			$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+		}else{
+			$tujuan = '';
+		}
+		//cabang
+		if ($request->cabang != '') {
+			$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+		}else{
+			$cabang ='';
+		}
+		//tipe
+		if ($request->tipe != '') {
+			$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+		}else{
+			$tipe ='';
+		}
+		//staus
 		
-		$dat1[$i] = DB::table('delivery_order as do')
-						->select('do.*','ka.id as kaid','cb.nama as cabang','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-						->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-						->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-						->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-						->leftjoin('cabang as cb','do.kode_cabang','=','cb.kode')
-						->where('nomor','=',$dat[$i])
-						->get();
-		// $gege = $dat1[$i];
+		if ($request->status != '' || $request->status != null) {
+			$status = " AND d.status = '".$request->status."' ";
+		}else{
+			$status = '';
 		}
-		// return $dat1;
-			// foreach ($dat1 as $index => $row) {
-			// 	if ($dat1[$index] == null) {
-			// 		$sub[$index] = null;
-			// 	}else{
-		 //   			$sub[$index] = $dat1[$index][0]->nomor;
-			// 	}
-		 //   	}
-		 //   	return $sub;
+		
+		$min = $request->min;
+		$max = $request->max;
 
-		// Generating the sheet from the array
-		$myFile= Excel::create("filename", function($excel) use($data,$dat1) {
+		$data  = DB::select("SELECT d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total ,cc.nama as cabang
+			FROM delivery_order as d 
+			LEFT JOIN kota k ON k.id=d.id_kota_asal
+            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+            join customer c on d.kode_customer = c.kode 
+            join cabang cc on d.kode_cabang = cc.kode 
+
+			WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$tipe." ".$status." ");
+
+        
+
+		$myFile= Excel::create("filename", function($excel) use($data) {
 		   $excel->setTitle('title');
-		   $excel->sheet('sheet 1', function($sheet) use($data,$dat1) {
+		   $excel->sheet('sheet 1', function($sheet) use($data) {
 		   	$sheetArray = array();
-		   	$sheetArray[] = array('No DO','Tanggal','Pengirim','Penerima','Kota Asal','Kota Tujuan','Kec Tujuan','Tipe','Status','Cabang','Tarif Keseluruhan');
+		   	$sheetArray[] = array('No DO','Tanggal','Pengirim','Penerima','Kota Asal','Kota Tujuan','Tipe','Status','Cabang','Tarif Keseluruhan');
 
-		   	foreach ($dat1 as $index => $row) {
-				if ($dat1[$index] == null) {
-		   			$sheetArray[] = array(
-		   							null
-		   							,null
-									,null 
-									,null 
-									,null 
-									,null 
-									,null 
-									,null 
-									,null 
-									,null 
-									,null
-					);
-				}else{
+		   	foreach ($data as $index => $row) {
+				
 					$sheetArray[] = array(
-		   							$dat1[$index][0]->nomor 
-		   							,$dat1[$index][0]->tanggal 
-									,$dat1[$index][0]->nama_pengirim 
-									,$dat1[$index][0]->nama_penerima 
-									,$dat1[$index][0]->asal 
-									,$dat1[$index][0]->tujuan 
-									,$dat1[$index][0]->kecamatan 
-									,$dat1[$index][0]->type_kiriman 
-									,$dat1[$index][0]->status 
-									,$dat1[$index][0]->cabang 
-									,number_format($dat1[$index][0]->total_net,0,',','.') 
+		   							$row->nomor 
+		   							,$row->tanggal 
+									,$row->nama_pengirim 
+									,$row->nama_penerima 
+									,$row->asal 
+									,$row->tujuan 
+									,$row->type_kiriman 
+									,$row->status 
+									,$row->cabang 
+									,number_format($row->total_net,0,',','.') 
 					);
-				}
+				
 		   	}
-		   	
-		   	foreach($dat1 as $key => $value){
-			   	if ($dat1[$key] == null) {
-		   			// $sheetArray1[] = array('Total','','','','','','','','','',$total_perhitungan);
-			   	}else{
-			   		$get[$key] = $dat1[$key][0]->total_net;
-					
-			   	}
-			    
-		   	}
-		   	
-		   	$total_perhitungan = array_sum($get);
-			
-			$sheetArray1[] = array('Total','','','','','','','','','',number_format($total_perhitungan,0,',','.'));
+		  
 		    
 		    $sheet->fromArray($sheetArray);
-			$sheet->fromArray($sheetArray1);
 		    
 		   });
 		});

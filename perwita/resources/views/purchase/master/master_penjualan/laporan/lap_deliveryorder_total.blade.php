@@ -52,7 +52,7 @@
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                           <input name="min" id="min" type="text" class="cari_semua date form-control date_to date_range_filter
-                                              date" 
+                                              date" >
 
                               </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -63,13 +63,24 @@
                     
                       <tr>
                           <th style="width: 100px; padding-top: 16px">Cabang</th>
-                          <td colspan="3">
+                          <td colspan="1">
                             <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
                               <option></option>
                               @foreach ($cabang as $element)
                                 <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
                               @endforeach
                             </select>
+                          </td>
+
+                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Tipe --</option>
+                            <option value="DOKUMEN">DOKUMEN</option>
+                            <option value="KILOGRAM">KILOGRAM</option>
+                            <option value="KOLI">KOLI</option>
+                            <option value="SEPEDA">SEPEDA</option>
+                           </select>
                           </td>
                         </tr>
                         <tr >
@@ -94,16 +105,13 @@
                           </td>
                         </tr>
                         <tr>
-                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
+                          <th style="width: 100px; padding-top: 16px"> Jenis </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Tipe --</option>
-                            <option value="DOKUMEN">DOKUMEN</option>
-                            <option value="KILOGRAM">KILOGRAM</option>
-                            <option value="KOLI">KOLI</option>
-                            <option value="SEPEDA">SEPEDA</option>
-                            <option value="KORAN">KORAN</option>
-                            <option value="KARGO">KARGO</option>
+                           <select style="width: 200px; margin-top: 20px;" name="jenis" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="REGULER">REGULER</option>
+                            <option value="EXPRESS">EXPRESS</option>
+                            <option value="OUTLET">OUTLET</option>
                            </select>
                           </td>
                           <th style="width: 100px; padding-top: 16px"> Status </th>
@@ -118,7 +126,17 @@
                            </select>
                           </td>
                         </tr>
-                        
+                        <tr>
+                          <th style="width: 100px; padding-top: 16px"> Pendapatan </th>
+                          <td colspan="3"> 
+                           <select style="width: 200px; margin-top: 20px;" name="pendapatan" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Tipe --</option>
+                            <option value="PAKET">PAKET</option>
+                            <option value="KORAN">KORAN</option>
+                            <option value="KARGO">KARGO</option>
+                           </select>
+                          </td>
+                        </tr>                        
                       <br>
                       </table>
                       <div class="row pull-right" style="margin-top: 0px;margin-right: 3px;"> &nbsp; &nbsp; 
@@ -138,11 +156,12 @@
                         <tr>
                             <th> No DO</th>
                             <th> Tanggal </th>
+                            <th> Customer </th>
                             <th> Pengirim </th>
                             <th> Penerima </th>
                             <th> Kota Asal </th>
                             <th> Kota Tujuan </th>
-                            <th> Tipe </th>
+                            <th> Status </th>
                             <th> Detail </th>
                            {{--  <th> Pendapatan </th>
                             <th> Customer </th>
@@ -206,19 +225,34 @@
       function format ( d ) {
       return  '<table class="table">'+
                 '<tr>'+
-                    '<td>status</td>'+
+                    '<td>Tipe</td>'+
                     '<td>:</td>'+
-                    '<td>'+d.status+'</td>'+
+                    '<td>'+d.type_kiriman+'</td>'+
                 '</tr>'+
                 '<tr>'+
-                    '<td>pendapatan</td>'+
+                    '<td>Jenis</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.jenis_pengiriman+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>Pendapatan</td>'+
                     '<td>:</td>'+
                     '<td>'+d.pendapatan+'</td>'+
                 '</tr>'+
                 '<tr>'+
                     '<td>customer</td>'+
                     '<td>:</td>'+
-                    '<td>'+d.cus+'</td>'+
+                    '<td>'+d.cab+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>DPP</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.total_dpp+'</td>'+
+                '</tr>'+
+                '<tr>'+
+                    '<td>Vendor</td>'+
+                    '<td>:</td>'+
+                    '<td>'+d.total_vendo+'</td>'+
                 '</tr>'+
                 '<tr>'+
                     '<td>total net</td>'+
@@ -244,11 +278,12 @@
             "columns": [
             { "data": "nomor" },
             { "data": "tanggal" },
+            { "data": "cus" },
             { "data": "nama_pengirim" },
             { "data": "nama_penerima" },
             { "data": "asal" },
             { "data": "tujuan" },
-            { "data": "type_kiriman" },
+            { "data": "status" },
             {
                 "class": "details-control",
                 "orderable": false,
