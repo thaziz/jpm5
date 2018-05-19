@@ -101,6 +101,8 @@
           }
 
         var baseUrl = '{{ url('/') }}';
+
+        
         //alert(baseUrl);
 
         $(document).ready(function() {
@@ -176,6 +178,8 @@
    // setTimeout(function(){ alert("Hello"); }, 3000);
 
 
-
+   $('.reload').click(function(){
+    location.reload();
+   })
 
     </script>

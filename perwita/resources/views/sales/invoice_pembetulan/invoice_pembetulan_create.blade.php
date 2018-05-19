@@ -187,8 +187,8 @@
                             <th>Tgl DO</th>
                             <th>Keterangan</th>
                             <th width="20">Jumlah</th>
-                            <th>Harga Satuan</th>
                             <th>Harga Bruto</th>
+                            <th>Biaya Tambahan</th>
                             <th>Diskon</th>
                             <th>Harga Netto</th>
                             <th align="center">Aksi</th>
@@ -460,8 +460,10 @@
                             data.data_dt[i][0].tanggal+'<input type="hidden" class="dd_id" value="'+data.data_dt[i][0].dd_id+'" name="do_id[]">',
                             data.data_dt[i][0].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+data.data_dt[i][0].acc_penjualan+'" name="akun[]">',
                             data.data_dt[i][0].dd_jumlah+'<input type="hidden" value="'+data.data_dt[i][0].dd_jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(data.data_dt[i][0].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].dd_harga+'" name="dd_harga[]">',
                             accounting.formatMoney(data.data_dt[i][0].dd_harga * data.data_dt[i][0].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+data.data_dt[i][0].dd_harga * data.data_dt[i][0].dd_jumlah+'" name="dd_total[]">',
+
+                            accounting.formatMoney(0, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+0+'" name="dd_biaya_tambahan[]">',
+
                             accounting.formatMoney(data.data_dt[i][0].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].dd_diskon+'" name="dd_diskon[]">',
                             accounting.formatMoney(data.data_dt[i][0].dd_total-data.data_dt[i][0].dd_diskon, "", 2, ".",',')+
                             '<input type="hidden" class="harga_netto" value="'+(data.data_dt[i][0].dd_total-data.data_dt[i][0].dd_diskon)+'" name="harga_netto[]">',
@@ -487,9 +489,10 @@
 
                             data.data_dt[i][0].jumlah+'<input type="hidden" value="'+data.data_dt[i][0].jumlah+'" name="dd_jumlah[]">',
 
-                            accounting.formatMoney(data.data_dt[i][0].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].tarif_dasar+'" name="dd_harga[]">',
 
-                            accounting.formatMoney(parseFloat(data.data_dt[i][0].total)+parseFloat(data.data_dt[i][0].biaya_tambahan), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(data.data_dt[i][0].total+data.data_dt[i][0].biaya_tambahan)+'" name="dd_total[]">',
+                            accounting.formatMoney(parseFloat(data.data_dt[i][0].total), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(data.data_dt[i][0].total)+'" name="dd_total[]">',
+
+                            accounting.formatMoney(data.data_dt[i][0].biaya_tambahan, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+data.data_dt[i][0].biaya_tambahan+'" name="dd_biaya_tambahan[]">',
 
                             accounting.formatMoney(data.data_dt[i][0].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].diskon+'" name="dd_diskon[]">',
 
@@ -507,13 +510,22 @@
                     table_detail.row.add([
                             index_detail,
                             data.data_dt[i][0].nomor+'<input class="nomor_detail" type="hidden" value="'+data.data_dt[i][0].nomor+'" name="do_detail[]">',
+
                             data.data_dt[i][0].tanggal,
+
                             data.data_dt[i][0].deskripsi+'<input type="hidden" class="acc_penjualan" value="'+data.data_dt[i][0].acc_penjualan+'" name="akun[]">',
+
                             data.data_dt[i][0].jumlah+'<input type="hidden" value="'+data.data_dt[i][0].jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(data.data_dt[i][0].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+data.data_dt[i][0].tarif_dasar+'" name="dd_harga[]">',
+
                             accounting.formatMoney(data.data_dt[i][0].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+data.data_dt[i][0].total+'" name="dd_total[]">',
+
+                            accounting.formatMoney(data.data_dt[i][0].biaya_tambahan, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+data.data_dt[i][0].biaya_tambahan+'" name="dd_biaya_tambahan[]">',
+                            
+
                             accounting.formatMoney(data.data_dt[i][0].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+data.data_dt[i][0].diskon+'" name="dd_diskon[]">',
+
                             accounting.formatMoney(data.data_dt[i][0].total_net, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+data.data_dt[i][0].total_net+'" name="harga_netto[]">',
+
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);
@@ -774,9 +786,11 @@
     });
    function hitung(){
         var temp_total   = 0 ;
+        var temp_bp      = 0 ;
         var temp_diskon  = 0 ;
         var temp_diskon  = 0 ;
         var temp_diskon2 = $('.diskon2').val();
+
         if (temp_diskon2 == '') {
             temp_diskon2 = 0;
         }
@@ -789,27 +803,29 @@
             temp_total += parseFloat($(this).val());
         });
 
+        table_detail.$('.dd_biaya_tambahan').each(function(){
+            temp_bp += parseFloat($(this).val());
+        });
+
         table_detail.$('.dd_diskon').each(function(){
             temp_diskon += parseFloat($(this).val());
         });
 
     
         netto = temp_total-(temp_diskon2+temp_diskon);
-        netto_diskon1 = temp_total - temp_diskon;
+        netto_diskon1 = temp_total + temp_bp - temp_diskon;
         if (netto_diskon1 < 0) {
             netto_diskon1 =0;
         }
-        $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
+        $('.ed_total').val(accounting.formatMoney(temp_total+temp_bp,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         // $('.diskon2').val(accounting.formatMoney(temp_diskon2,"",2,'.',','));
 
-
         hitung_pajak_ppn();
         hitung_pajak_lain();
    }
-
    
    // untuk mengirim yang di check ke controller dengan ajax
    $('#btnsave').click(function(){
@@ -846,15 +862,23 @@
                     for(var i = 0 ; i < response.data.length;i++){
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail,
+                            index_detail+'<p class="indexing"></p>',
                             response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].dd_nomor+'" name="do_detail[]">',
+
                             response.data[i].tanggal+'<input type="hidden" class="dd_id" value="'+response.data[i].dd_id+'" name="do_id[]">',
-                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].acc_penjualan+'" name="akun[]">',
+
+                            response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].dd_acc_penjualan+'" name="akun[]">',
+
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
+
                             accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
+
+                            accounting.formatMoney(0, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="0" name="dd_biaya_tambahan[]">',
+
                             accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
-                            accounting.formatMoney(response.data[i].dd_total-response.data[i].dd_diskon, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+(response.data[i].dd_total-response.data[i].dd_diskon)+'" name="harga_netto[]">',
+
+                            accounting.formatMoney(response.data[i].dd_total, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].dd_total+'" name="harga_netto[]">',
+
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
 
                         ]).draw(false);
@@ -869,7 +893,7 @@
                         ///////////////////////////////////////
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail+'<p class="indexing"></p>',
+                             index_detail+'<p class="indexing"></p>',
 
                             response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
 
@@ -879,15 +903,18 @@
 
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
 
-                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
 
-                            accounting.formatMoney(parseFloat(response.data[i].total)+parseFloat(response.data[i].biaya_tambahan), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(response.data[i].total+response.data[i].biaya_tambahan)+'" name="dd_total[]">',
+                            accounting.formatMoney(parseFloat(response.data[i].total), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(response.data[i].total)+'" name="dd_total[]">',
+
+                            accounting.formatMoney(response.data[i].biaya_tambahan, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+parseFloat(response.data[i].biaya_tambahan)+'" name="dd_biaya_tambahan[]">',
+
 
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
 
                             accounting.formatMoney(response.data[i].harga_netto, "", 2, ".",',')+'<input type="hidden" class="harga_netto" value="'+response.data[i].harga_netto+'" name="harga_netto[]">',
 
                             '<button type="button" onclick="hapus_detail(this)" class="btn btn-danger hapus btn-sm" title="hapus"><i class="fa fa-trash"><i></button>',
+
 
                         ]).draw(false);
                     }
@@ -903,7 +930,7 @@
                         ///////////////////////////////////////
                         index_detail+=1;
                         table_detail.row.add([
-                            index_detail+'<p class="indexing"></p>',
+                           index_detail+'<p class="indexing"></p>',
 
                             response.data[i].nomor+'<input class="nomor_detail" type="hidden" value="'+response.data[i].nomor+'" name="do_detail[]">',
 
@@ -913,9 +940,10 @@
 
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
 
-                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
 
                             accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+
+                            accounting.formatMoney(response.data[i].biaya_tambahan, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+parseFloat(response.data[i].biaya_tambahan)+'" name="dd_biaya_tambahan[]">',
 
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
 

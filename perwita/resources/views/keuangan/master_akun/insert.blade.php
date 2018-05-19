@@ -19,6 +19,7 @@
 <div class="row">
   <form id="akun_form">
     <input type="hidden" readonly value="{{ csrf_token() }}" name="_token">
+    
   <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
     <table border="0" id="form-table" class="col-md-12">
       <tr>
@@ -83,7 +84,23 @@
             <option value="---"> -- Pilih Group Neraca</option>
 
             @foreach($group_neraca as $data_group_neraca)
-              <option value="{{ $data_group_neraca->id }}">{{ $data_group_neraca->nama_group }}</option>
+              @if($data_group_neraca->jenis_group == "Neraca/Balance Sheet")
+                <option value="{{ $data_group_neraca->id }}">{{ $data_group_neraca->nama_group }}</option>
+              @endif
+            @endforeach
+
+          </select>
+        </td>
+
+        <td width="15%" class="text-center">Group Laba Rugi</td>
+        <td colspan="2">
+          <select name="group_laba_rugi" class="select_validate form-control chosen-select" id="group_laba_rugi">
+            <option value="---"> -- Pilih Group Laba Rugi</option>
+
+            @foreach($group_neraca as $data_group_neraca)
+              @if($data_group_neraca->jenis_group == "Laba Rugi")
+                <option value="{{ $data_group_neraca->id }}">{{ $data_group_neraca->nama_group }}</option>
+              @endif
             @endforeach
 
           </select>
@@ -98,6 +115,12 @@
             <option value="1"> Aktif</option>
             <option value="2"> Tidak</option>
           </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="5" style="font-size: 10pt; padding-left: 10px;">
+          <input type="checkbox" id="share" name="share" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Bisa Di Share. (<b>Akun Yang Bisa Di Share Adalah Akun Yang Bisa Dimiliki Juga Oleh Kantor Cabang</b>).</small>
         </td>
       </tr>
 
@@ -169,6 +192,12 @@
       }
     })
 
+    $("#share").change(function(evt){
+      if(!$(this).is(":checked") && $("#kode_cabang").val() == "*"){
+        $("#share").prop('checked', true);
+      }
+    })
+
     $("#kode_cabang").change(function(evt){
       evt.stopImmediatePropagation();
       evt.preventDefault();
@@ -177,15 +206,18 @@
         $("#add_kode").val("---");$("#add_nama").val("---");
         $("#saldo_not_all").css("display", "none");
         $("#saldo_all").css("display", "inline-block");
+        $("#share").prop('checked', true);
       }else if($(this).val() !== "---"){
         idx = cabang.findIndex(c => c.kode_cabang === $(this).val());
-        $("#add_kode").val(cabang[idx].id_provinsi+""+cabang[idx].kode_cabang);
+        $("#add_kode").val(cabang[idx].kode_cabang);
         $("#add_nama").val(cabang[idx].nama_cabang);
         $("#saldo_all").css("display", "none");
         $("#saldo_not_all").css("display", "inline");
+        $("#share").prop('checked', false);
       }
       else{
         $("#add_kode").val("");$("#add_nama").val("");
+        $("#share").prop('checked', false);
       }
 
     })
@@ -227,16 +259,16 @@
             }
           },
           error: function(request, status, err) {
-              if (status == "timeout") {
-                toastr.error('Request Timeout. Data Gagal Disimpan');
-                btn.removeAttr("disabled");
-                btn.text("Simpan");
-              } else {
-                toastr.error('Internal Server Error. Data Gagal Disimpan');
-                btn.removeAttr("disabled");
-                btn.text("Simpan");
-              }
+            if (status == "timeout") {
+              toastr.error('Request Timeout. Data Gagal Disimpan');
               btn.removeAttr("disabled");
+              btn.text("Simpan");
+            } else {
+              toastr.error('Internal Server Error. Data Gagal Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+            }
+            btn.removeAttr("disabled");
           }
         })
       }else{

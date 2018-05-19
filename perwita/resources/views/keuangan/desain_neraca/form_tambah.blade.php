@@ -889,6 +889,7 @@
       })
 
       $("#simpan_desain").click(function(evt){
+
         evt.stopImmediatePropagation();
         evt.preventDefault();
 
@@ -916,6 +917,7 @@
                 toastr.success('Data Desain Neraca Disimpan');
                 btn.removeAttr("disabled");
                 btn.text("Simpan Desain");
+                empty_node();
                 data_neraca = []; data_detail = [];
 
                 form_reset();
@@ -984,7 +986,8 @@
         $("#tambah_detail").attr("disabled", "disabled"); $("#hapus_detail").attr("disabled", "disabled"); $('#update_detail').attr("disabled", "disabled"); $("#masukkan").removeAttr("disabled");
         $("#group_show").html("");
         $("#cancel").css("display", "none");
-        $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled"); 
+        $("#detail_total").css("display", "none"); $("#detail_total").attr("disabled", "disabled");
+        $("#nama_desain").val("");
 
         grab_id();
       }
@@ -1086,6 +1089,31 @@
             "nama"       : text,
             "dari"       : dari
           }
+        })
+      }
+
+      function empty_node(){
+
+        $.each($.grep(data_neraca, function(n){ return n.type === "aktiva" }), function(i, a){
+          
+          if(a.jenis === 2 || a.jenis === 3){
+            $.each($.grep(data_detail, function(q){ return q.id_parrent === a.nomor_id }), function(w, e){
+              $('#aktiva_tree').jstree().delete_node(e.nomor_id);
+            })
+          }
+
+          $('#aktiva_tree').jstree().delete_node(a.nomor_id);
+        })
+
+        $.each($.grep(data_neraca, function(n){ return n.type === "pasiva" }), function(i, a){
+          
+          if(a.jenis === 2 || a.jenis === 3){
+            $.each($.grep(data_detail, function(q){ return q.id_parrent === a.nomor_id }), function(w, e){
+              $('#pasiva_tree').jstree().delete_node(e.nomor_id);
+            })
+          }
+
+          $('#pasiva_tree').jstree().delete_node(a.nomor_id);
         })
       }
 

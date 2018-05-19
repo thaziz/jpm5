@@ -21,7 +21,8 @@ class group_akun_controller extends Controller
     }
 
     public function add(){
-    	return view("keuangan.group_akun.insert");
+        $ids = DB::table("d_group_akun")->orderBy("id", "desc")->first()->id;
+    	return view("keuangan.group_akun.insert")->withIds($ids);
     }
 
     public function save(Request $request){

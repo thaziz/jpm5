@@ -69,7 +69,10 @@
                           <table class="table table-bordered table_header">
                             <tr>
                               <td width="120">No Transaksi</td>
-                              <td colspan="2"><input class="form-control nota" type="text" readonly="" name="nota"></td>
+                              <td colspan="2">
+                                <input class="form-control nota" type="text" readonly="" name="nota">
+                                <input class="form-control id_header" type="hidden" readonly="" name="id_header">
+                              </td>
                             </tr>
                             <tr>
                               <td width="120">Tanggal</td>
@@ -147,10 +150,10 @@
                                 </select>
                               </td>
                             </tr>
-                            <tr>
+                      {{--       <tr>
                               <td width="120">UANG MUKA</td>
                               <td><input style="text-align: right" value="0" class="form-control uang_muka" readonly="" type="text" name="uang_muka"></td>
-                            </tr>
+                            </tr> --}}
                           </table>
                           <table class="table table-bordered table_total">
                             <tr>
@@ -208,7 +211,7 @@
                           <table class="table">
                             <tr>
                               <td >
-                                <button style="margin-left: 5px;" type="button" class="btn btn-info pull-right reload" onclick="reload()"><i class="fa fa-refresh">&nbsp;Reload</i></button>
+                                <button style="margin-left: 5px;" type="button" class="btn btn-info pull-right reload"><i class="fa fa-refresh">&nbsp;Reload</i></button>
 
                                 <button style="margin-left: 5px;" type="button" class="btn btn-warning pull-right print_petty disabled" onclick="printing()"><i class="fa fa-print">&nbsp;print</i></button>
 
@@ -247,7 +250,7 @@
                               <td style="border: none" width="120">Filter</td>
                               <td style="border: none" colspan="2">
                                 <select class="form-control filter_faktur" name="filter_faktur" >
-                                  <option value="faktur">Faktur</option>
+                                  <option value="faktur">Nomor Bukti</option>
                                   <option value="tanggal">Tanggal</option>
                                   <option value="jatuh_tempo">Jatuh Tempo</option>
                                 </select>
@@ -427,7 +430,7 @@
                         </div>
                         <div class="col-sm-12" style="margin-top: 10px;overflow: auto" >
                           <button class="btn pull-right btn-danger reload_form mrgin"><i class="fa fa-reload"> Reload</i></button>
-                          <button class="btn pull-right btn-warning print_form mrgin"><i class="fa fa-print"> Print</i></button>
+                          <button onclick="printing()" class="btn pull-right btn-warning print_form mrgin"><i class="fa fa-print"> Print</i></button>
                           <button class="btn pull-right btn-primary simpan_form mrgin"><i class="fa fa-save"> Simpan</i></button>
                         <caption><h2>Detail Faktur</h2></caption>
                         <table class="table tabel_faktur table-bordered " >
@@ -468,14 +471,6 @@
                               </td>
                               <td align="center" style="border: none">
                                 <button type="button" class="btn btn-primary" onclick="cari_um()"><i class="fa fa-search" > Cari UM</i></button>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td width="120">Supplier</td>
-                              <td colspan="2">
-                                <select class="form-control supplier_um">
-                                  <option value="">Pilih - Supplier</option>
-                                </select>
                               </td>
                             </tr>
                             <tr>
@@ -736,19 +731,19 @@
       $('.patty_cash_div').prop('hidden',false);
       $('.faktur_div').prop('hidden',true);
       $('.uang_muka_div').prop('hidden',true);
-    }else if ($(this).val() == 4) {
-      $('.supplier_patty_tr').prop('hidden',true);
-      $('.supplier_faktur_tr').prop('hidden',false);
-      $('.patty_cash_div').prop('hidden',true);
-      $('.faktur_div').prop('hidden',true);
-      $('.uang_muka_div').prop('hidden',false);
     }else {
       $('.supplier_patty_tr').prop('hidden',true);
       $('.supplier_faktur_tr').prop('hidden',false);
       $('.patty_cash_div').prop('hidden',true);
       $('.faktur_div').prop('hidden',false);
       $('.uang_muka_div').prop('hidden',true);
-
+    }
+    if ($(this).val() == 4) {
+      $('.hutang').val('1405');
+    }else if($(this).val() == 8){
+      $('.hutang').val('0');
+    }else{
+      $('.hutang').val('2101');
     }
     var l = valid.length;
     valid.splice(0,l);
@@ -795,7 +790,7 @@
       total += parseInt($(this).val());
     });
 
-    $('.total').val(accounting.formatMoney(total,"", 0, ".",','));
+    $('.total').val(accounting.formatMoney(total,"", 2, ".",','));
   }
   $('.append_petty').click(function(){
     var patty_nomor         = $('.patty_nomor').val();
@@ -927,7 +922,7 @@
 
       $.ajax({
         url:baseUrl + '/buktikaskeluar/save_patty',
-        type:'get',
+        type:'post',
         data:$('.table_header :input').serialize()+'&'+
              $('.table_jurnal :input').serialize()+'&'+
              $('.table_total :input').serialize()+'&'+
@@ -941,7 +936,8 @@
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     
+                     $('.id_header').val(data.id);
+                     $('.print_petty').removeClass('disabled');
           });
         },
         error:function(data){
@@ -1122,12 +1118,7 @@
       success:function(data){
         for (var i = 0; i < data.data.length; i++) {
           if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
-            var terbayar = parseFloat(data.data[i].fp_sisapelunasan) + parseFloat(data.data[i].fp_debitnota) - parseFloat(data.data[i].fp_creditnota) + parseFloat(data.data[i].fp_uangmuka);
-
-            console.log(terbayar);
-
-            var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(terbayar);
-            console.log(fp_terbayar);
+            var fp_terbayar = parseFloat(data.data[i].fp_netto) - parseFloat(data.data[i].fp_sisapelunasan);
             tabel_faktur.row.add([
               '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].fp_nofaktur+'</a>'+
               '<input type="hidden" value="'+data.data[i].fp_nofaktur+'" class="fp_faktur" name="fp_faktur[]">'+
@@ -1182,8 +1173,39 @@
               '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
             ]).draw();
             valid.push(data.data[i].v_nomorbukti);
+          }else if(jenis_bayar == 4){
+
+            var fp_terbayar = parseFloat(data.data[i].um_jumlah) - parseFloat(data.data[i].um_sisapelunasan);
+
+            tabel_faktur.row.add([
+              '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].um_nomorbukti+'</a>'+
+              '<input type="hidden" value="'+data.data[i].um_nomorbukti +'" class="fp_faktur" name="fp_faktur[]">'+
+              '<input type="hidden" value="'+data.data[i].um_id+'" class="fp_id fp_'+data.data[i].um_id+'">',
+
+              '<p class="fp_tanggal_text">'+data.data[i].um_tgl+'</p>',
+
+              '<p class="fp_akun_text">2101</p>',
+
+              '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].um_jumlah,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].um_jumlah+'">',
+
+              '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+
+              '<input readonly value="0" type="text" class="fp_pelunasan form-control" name="fp_pelunasan[]">',
+
+              '<input readonly  type="text" class="fp_sisa_akhir form-control" value="'+accounting.formatMoney(data.data[i].um_sisapelunasan,"", 0, ".",',')+'" name="fp_sisa_akhir[]">',
+
+              '<p class="fp_keterangan_text">'+data.data[i].um_keterangan+'</p>'+
+              '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+data.data[i].um_keterangan+'">',
+
+              '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+            ]).draw();
+            valid.push(data.data[i].um_nomorbukti);
           }
         }
+
+
         if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
 
           var terbayar = parseFloat(data.data[0].fp_sisapelunasan) + parseFloat(data.data[0].fp_debitnota) - parseFloat(data.data[0].fp_creditnota) + parseFloat(data.data[0].fp_uangmuka);
@@ -1215,6 +1237,20 @@
           $('.pelunasan_detail').eq(0).val(0);
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
           var fp_faktur     = data.data[0].v_nomorbukti;
+        }else if (jenis_bayar == 4) {
+          var terbayar = parseFloat(data.data[0].um_jumlah) - parseFloat(data.data[0].um_sisapelunasan);
+
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].um_jumlah,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].um_sisapelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data[0].um_id);
+          var total = parseFloat(data.data[0].um_sisapelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+          var fp_faktur     = data.data[0].um_nomorbukti;
         }
 
         $.ajax({
@@ -1260,6 +1296,7 @@
           },
           error:function(data){
           }
+
         });
 
 
@@ -1271,6 +1308,7 @@
       }
     }); 
   })
+  
 
   function detail_faktur(a) {
 
@@ -1333,9 +1371,10 @@
       data:{fp_faktur,jenis_bayar},
       dataType:'json',
       success:function(data){
-        if (jenis_bayar == 2) {
+        if (jenis_bayar == 2 || jenis_bayar == 6 || jenis_bayar == 7 || jenis_bayar == 9) {
 
-          var terbayar = parseFloat(data.data.fp_sisapelunasan) 
+          var terbayar = parseFloat(data.data.fp_netto) 
+                         - parseFloat(data.data.fp_sisapelunasan) 
                          + parseFloat(data.data.fp_debitnota) 
                          - parseFloat(data.data.fp_creditnota) 
                          + parseFloat(data.data.fp_uangmuka);
@@ -1346,14 +1385,12 @@
           $('.kredit_detail').eq(0).val(accounting.formatMoney(data.data.fp_creditnota,"", 2, ".",','));
           $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data.fp_sisapelunasan,"", 2, ".",','));
           $('.flag_detail').eq(0).val(data.data.fp_idfaktur);
-          var total = parseFloat(data.data.fp_sisapelunasan) - 0; 
-          $('.pelunasan_detail').eq(0).val(0);
+          var total = parseFloat(data.data.fp_sisapelunasan) - parseFloat(fp_pelunasan); 
+          $('.pelunasan_detail').eq(0).val(accounting.formatMoney(fp_pelunasan,"", 0, ".",','));
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
         }else if(jenis_bayar == 3){
-          var terbayar = parseFloat(data.data.v_pelunasan) 
-                       + parseFloat(0) 
-                       - parseFloat(0) 
-                       + parseFloat(0);
+          var terbayar = parseFloat(data.data.v_hasil) 
+                       - parseFloat(data.data.v_pelunasan);
 
           $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data.v_hasil,"", 2, ".",','));
           $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
@@ -1362,8 +1399,22 @@
           $('.kredit_detail').eq(0).val(0);
           $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data.v_pelunasan,"", 2, ".",','));
           $('.flag_detail').eq(0).val(data.data.v_id);
-          var total = parseFloat(data.data.v_pelunasan) - 0; 
-          $('.pelunasan_detail').eq(0).val(0);
+          var total = parseFloat(data.data.v_pelunasan) - parseFloat(fp_pelunasan); 
+          $('.pelunasan_detail').eq(0).val(accounting.formatMoney(fp_pelunasan,"", 0, ".",','));
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+        }else if(jenis_bayar == 4){
+          var terbayar =  parseFloat(data.data.um_jumlah) -  parseFloat(data.data.um_sisapelunasan);
+                       
+
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data.um_jumlah,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data.um_sisapelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data.um_id);
+          var total = parseFloat(data.data.um_sisapelunasan) - parseFloat(fp_pelunasan); 
+          $('.pelunasan_detail').eq(0).val(accounting.formatMoney(fp_pelunasan,"", 0, ".",','));
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
         }
         toastr.info('Data Berhasil Diinisialisasi');
@@ -1404,7 +1455,7 @@
       fp_pelunasan     = fp_pelunasan.replace(/[^0-9\-]+/g,"");
       total_detail    += parseFloat(fp_pelunasan);
     })
-    $('.total').val(accounting.formatMoney(total_detail,"", 0, ".",','))
+    $('.total').val(accounting.formatMoney(total_detail,"", 2, ".",','))
   })
   function fp_hapus(a) {
     var par       = $(a).parents('tr');
@@ -1424,7 +1475,7 @@
       $('.jenis_bayar_td').removeClass('disabled');
       $('.supplier_faktur_td').removeClass('disabled');
     }
-    $('.total').val(accounting.formatMoney(total_detail,"", 0, ".",','))
+    $('.total').val(accounting.formatMoney(total_detail,"", 2, ".",','))
 
     toastr.info('Data Berhasil Dihapus');
   }
@@ -1469,7 +1520,7 @@
 
       $.ajax({
         url:baseUrl + '/buktikaskeluar/save_form',
-        type:'get',
+        type:'post',
         data:$('.table_header :input').serialize()+'&'+
              $('.table_jurnal :input').serialize()+'&'+
              $('.table_total :input').serialize()+'&'+
@@ -1483,7 +1534,7 @@
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
-                     
+                     $('.id_header').val(data.id);
           });
         },
         error:function(data){
@@ -1555,10 +1606,8 @@
             valid.push(data.data[i].v_nomorbukti);
           }
 
-          var terbayar = parseFloat(data.data[0].v_pelunasan) 
-                         + parseFloat(0) 
-                         - parseFloat(0) 
-                         + parseFloat(0);
+          var terbayar = parseFloat(data.data[0].v_hasil) 
+                         - parseFloat(data.data[0].v_pelunasan);
 
           $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].v_hasil,"", 2, ".",','));
           $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
@@ -1638,6 +1687,151 @@
       }); 
     }
   }
+
+  function uang_muka() {
+
+    var jenis_bayar       = $('.jenis_bayar').val();
+    var cabang            = $('.cabang').val();
+    var supplier_faktur   = $('.supplier_faktur ').val();
+    var filter_faktur     = $('.filter_faktur').val();
+    var faktur_nomor      = $('.faktur_nomor').val();
+    var periode           = $('.periode').val();
+
+    if (cabang == '0') {
+      toastr.warning('Cabang Harus Dipilih');
+      return false;
+    }
+
+    if (supplier_faktur == '0') {
+      toastr.warning('Supplier Harus Dipilih');
+      return false;
+    }
+
+    if (filter_faktur == 'faktur') {
+
+
+      if ($('.faktur_nomor').val() == '') {
+        toastr.warning('Nomor Faktur Harus Diisi');
+        return false;
+      }
+
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/cari_faktur',
+        type:'get',
+        data:{jenis_bayar,cabang,supplier_faktur,filter_faktur,faktur_nomor,valid},
+        dataType:'json',
+        success:function(data){
+          for (var i = 0; i < data.data.length; i++) {
+            var fp_terbayar = parseFloat(data.data[i].um_jumlah) - parseFloat(data.data[i].um_sisapelunasan);
+
+            tabel_faktur.row.add([
+              '<a onclick="detail_faktur(this)" class="fp_faktur_text">'+data.data[i].um_nomorbukti+'</a>'+
+              '<input type="hidden" value="'+data.data[i].um_nomorbukti+'" class="fp_faktur" name="fp_faktur[]">'+
+              '<input type="hidden" value="'+data.data[i].um_id+'" class="fp_id fp_'+data.data[i].um_id+'">',
+
+              '<p class="fp_tanggal_text">'+data.data[i].um_tgl+'</p>',
+
+              '<p class="fp_akun_text">'+data.data[i].um_tgl+'</p>',
+
+              '<p class="fp_total_text">'+accounting.formatMoney(data.data[i].um_jumlah,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_total" name="fp_total[]" value="'+data.data[i].um_jumlah+'">',
+
+              '<p class="fp_terbayar_text">'+accounting.formatMoney(fp_terbayar,"", 0, ".",',')+'</p>'+
+              '<input type="hidden" class="fp_terbayar" name="fp_terbayar[]" value="'+fp_terbayar+'">',
+
+              '<input readonly value="0" type="text" class="fp_pelunasan right form-control" name="fp_pelunasan[]">',
+
+              '<input readonly value="'+accounting.formatMoney(data.data[i].um_sisapelunasan,"", 0, ".",',')+'" type="text" class="fp_sisa_akhir right form-control" name="fp_sisa_akhir[]">',
+
+              '<p class="fp_keterangan_text">'+data.data[i].um_keterangan+'</p>'+
+              '<input type="hidden" class="fp_keterangan" name="fp_keterangan[]" value="'+data.data[i].um_keterangan+'">',
+
+              '<button onclick="fp_hapus(this)" type="button" class="btn btn-sm btn-danger"><i class="fa fa-trash " title="Hapus"></i></button>',
+            ]).draw();
+            valid.push(data.data[i].um_nomorbukti);
+          }
+
+          var terbayar = parseFloat(data.data[0].um_jumlah) - parseFloat(data.data[0].um_sisapelunasan);
+
+          $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].um_jumlah,"", 2, ".",','));
+          $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
+          $('.pelunasan_um').eq(0).val(0);
+          $('.debet_detail').eq(0).val(0);
+          $('.kredit_detail').eq(0).val(0);
+          $('.sisa_detail').eq(0).val(accounting.formatMoney(data.data[0].um_sisapelunasan,"", 2, ".",','));
+          $('.flag_detail').eq(0).val(data.data[0].um_id);
+          var total = parseFloat(data.data[0].um_sisapelunasan) - 0; 
+          $('.pelunasan_detail').eq(0).val(0);
+          $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
+          var fp_faktur     = data.data[0].um_nomorbukti;
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/histori_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#histori_faktur').html(data);
+            },
+            error:function(data){
+            }
+          }); 
+
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/debet_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#debet_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/kredit_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#kredit_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          $.ajax({
+            url:baseUrl + '/buktikaskeluar/um_faktur',
+            type:'get',
+            data:{fp_faktur,jenis_bayar},
+            success:function(data){
+              $('#um_faktur').html(data);
+            },
+            error:function(data){
+            }
+          });
+
+          toastr.info('Data Berhasil Diinisialisasi');
+          $('.faktur_nomor').val('');
+        },
+        error:function(data){
+        }
+      }); 
+    }else{
+      $.ajax({
+        url:baseUrl + '/buktikaskeluar/cari_faktur',
+        type:'get',
+        data:{jenis_bayar,cabang,supplier_faktur,periode,filter_faktur,valid},
+        success:function(data){
+          $('.tabel_modal_faktur').html(data);
+          $('.modal_faktur').modal('show');
+        },
+        error:function(data){
+
+        }
+      }); 
+    }
+  }
+
   // PILIHAN JENIS BAYAR
   function cari_faktur() {
     var jenis_bayar = $('.jenis_bayar').val();
@@ -1645,7 +1839,27 @@
       faktur();
     }else if (jenis_bayar == '3') {
       voucher();
+    }else if (jenis_bayar == '4') {
+      uang_muka();
     }
   }
+
+  function printing() {
+    var id = $('.id_header').val();
+    $.ajax({
+        url:baseUrl + '/buktikaskeluar/print',
+        type:'get',
+        data:{id},
+        success:function(data){
+
+          window.open().document.write(data);
+        },
+        error:function(data){
+        }
+    });
+  }
+
+
+
 </script>
 @endsection

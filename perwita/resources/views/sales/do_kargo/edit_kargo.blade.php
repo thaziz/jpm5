@@ -148,8 +148,8 @@
                                         <td>
                                             <select name="jenis_tarif_do" onchange="cari_nopol_kargo()" class="form-control jenis_tarif_do chosen-select-width">
                                             @foreach($jenis_tarif as $val)
-                                                @if($data->jenis_tarif == $val->jt_nama_tarif)
-                                                <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
+                                                @if($data->jenis_tarif == $val->jt_id)
+                                                <option selected="" value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
                                                 @else
                                                 <option value="{{$val->jt_id}}">{{$val->jt_nama_tarif}}</option>
                                                 @endif
@@ -557,6 +557,21 @@ $(document).ready(function(){
 
     tujuan     =  tujuan.split('-');
     $('.kota_penerima').val(tujuan[1]);
+
+    if ($('.jenis_tarif_do').val() == 9) {
+        $('.kontrak_tr').attr('hidden',true);
+        $('#kode_tarif').val(0);
+        $('.kcd_id').val(0);
+        $('.kcd_dt').val(0);
+        $('.satuan').val('RP');
+        $('.discount ').attr('readonly',true);
+
+    }else{      
+        $('.kontrak_tr').attr('hidden',false);
+        $('.jenis_tarif_temp').val($(this).val());
+        $('.tarif_dasar').val(0);
+        $('.discount ').attr('readonly',false);
+    }
 
 })
 //hide unhide subcon

@@ -70,9 +70,9 @@
         <td width="15%" class="text-center">Filter Berdasarkan : </td>
         <td width="18%">
           <select class="form-control" style="width:90%; height: 30px" id="berdasarkan">
-              <option value="0">Kode Group</option>
-              <option value="1">Nama Group</option>
-              <option value="2">Jenis Group</option>
+              <option value="1">Nama Desain</option>
+              <option value="2">Tanggal Dibuat</option>
+              <option value="3">Status</option>
             </select>
         </td>
 
@@ -136,15 +136,35 @@
                                 <?php $a = 1; ?>
 
                                 @foreach($desain as $data_desain)
-                                <?php $status = ($data_desain->is_active == 1) ? "Sedang Digunakan" : "Tidak Aktif" ?>
+                                <?php $status = ($data_desain->is_active == 1) ? '<span class="text-navy">Sedang Digunakan</span>' : "Tidak Aktif" ?>
                                   <tr>
                                     <td class="text-center">{{ $a }}</td>
                                     <td class="text-center">{{ $data_desain->nama_desain }}</td>
-                                    <td class="text-center">{{ date("d-m-Y", strtotime($data_desain->tanggal_buat)) }}</td>
-                                    <td class="text-center">{{ $status }}</td>
+                                    <td class="text-center">{{ date("d", strtotime($data_desain->tanggal_buat)) }} {{ date_ind(date("m")) }} {{ date("Y", strtotime($data_desain->tanggal_buat)) }}</td>
+                                    <td class="text-center">{!! $status !!}</td>
                                     <td class="text-center">
+                                      
+                                      <?php
+                                        $dis = "";
+                                        if($data_desain->is_active == 1){
+                                          $dis = "disabled";
+                                        }
+                                      ?>
+
+                                      <span data-toggle="tooltip" data-placement="top" title="Gunakan Desain Ini">
+                                          <button class="btn btn-xs btn-success aktifkan" data-id="{{ $data_desain->id_desain }}" {{ $dis }}><i class="fa fa-check-square fa-fw"></i></button>
+                                      </span>
+
                                       <span data-toggle="tooltip" data-placement="top" title="Tampilkan Desain">
                                           <button class="btn btn-xs btn-primary tampilkan" data-id="{{ $data_desain->id_desain }}"><i class="fa fa-external-link-square fa-fw"></i></button>
+                                      </span>
+
+                                      <span data-toggle="tooltip" data-placement="top" title="Perbarui Desain">
+                                          <button class="btn btn-xs btn-warning edit" data-id="{{ $data_desain->id_desain }}"><i class="fa fa-edit fa-fw"></i></button>
+                                      </span>
+
+                                      <span data-toggle="tooltip" data-placement="top" title="Hapus Desain">
+                                          <button class="btn btn-xs btn-danger hapus" data-id="{{ $data_desain->id_desain }}" {{ $dis }}><i class="fa fa-eraser fa-fw"></i></button>
                                       </span>
                                     </td>
                                   </tr> 
@@ -196,9 +216,11 @@
     $('[data-toggle="tooltip"]').tooltip()
 
     @if(Session::has('sukses'))
-        alert("{{ Session::get('sukses') }}")
+        toastr.success('{{ Session::get('sukses') }}');
     @elseif(Session::has('terpakai'))
         alert("{{ Session::get('terpakai') }}")
+    @elseif(Session::has('err'))
+        toastr.error('{{ Session::get('err') }}');
     @endif
 
     tableDetail = $('.tbl-penerimabarang').DataTable({
@@ -218,7 +240,7 @@
       $("#modal_tampilkan .modal-body").html('<center><small class="text-muted">Sedang Mengambil Data Tampilan Neraca...</small></center>');
 
       $.ajax(baseUrl+"/master_keuangan/desain_neraca/view/"+$(this).data("id"), {
-         timeout: 10000,
+         timeout: 15000,
          dataType: "html",
          success: function (data) {
              $("#modal_tampilkan .modal-body").html(data);
@@ -231,6 +253,65 @@
             }
         }
       });
+    })
+
+    $(".edit").click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      $(".edit").attr("disabled", "disabled");
+
+      window.location = baseUrl+"/master_keuangan/desain_neraca/edit/"+$(this).data("id");
+
+    })
+
+    $(".hapus").click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      $(".hapus").attr("disabled", "disabled");
+
+      prmpt = confirm("Apa Anda Yakin Ingin Menghapus Desain Ini ? ");
+
+      if(prmpt)
+        window.location = baseUrl+"/master_keuangan/desain_neraca/delete/"+$(this).data("id");
+      else
+        return false;
+
+    })
+
+
+    $(".aktifkan").click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      $(".aktifkan").attr("disabled", "disabled");
+
+      $.ajax(baseUrl+"/master_keuangan/desain_neraca/aktifkan/"+$(this).data("id"), {
+         timeout: 15000,
+         dataType: "json",
+         success: function (data) {
+            if(data.status == "sukses"){
+              alert("Neraca Berhasil Digunakan.");
+              window.location = baseUrl+"/master_keuangan/desain_neraca";
+            }else if(data.status == "miss"){
+              alert("Ups. Kami Tidak Bisa Menemukan Data Desain Yang Dimaksud..");
+              $(".aktifkan").removeAttr("disabled");
+            }
+         },
+         error: function(request, status, err) {
+            if (status == "timeout") {
+              toastr.error('Request Timeout. Data Gagal Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+            } else {
+              toastr.error('Internal Server Error. Data Gagal Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
+            }
+        }
+      });
+
     })
 
     $('#set').click(function () {

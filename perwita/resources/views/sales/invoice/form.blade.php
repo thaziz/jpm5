@@ -51,7 +51,8 @@
                             <tr>
                                 <td style="width:120px; padding-top: 0.4cm">Nomor</td>
                                 <td colspan="3">
-                                    <input type="text" name="nota_invoice" id="nota_invoice" readonly="readonly" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="text" name="nota_invoice" id="nota_invoice" class="form-control" style="text-transform: uppercase" value="" >
+                                    <input type="hidden" id="old_invoice" class="form-control" style="text-transform: uppercase" value="" >
                                     <input type="hidden" name="_token" id="token" value="{{csrf_token()}}" readonly="readonly">
                                 </td>
                             </tr>
@@ -195,8 +196,8 @@
                             <th>Tgl DO</th>
                             <th>Keterangan</th>
                             <th width="20">Jumlah</th>
-                            <th>Harga Satuan</th>
                             <th>Harga Bruto</th>
+                            <th>Biaya Tambahan</th>
                             <th>Diskon</th>
                             <th>Harga Netto</th>
                             <th align="center">Aksi</th>
@@ -211,7 +212,7 @@
                     <table class="table table-hover table_pajak">
                         <tbody>
                             <tr>
-                                <td style="width:64%; padding-top: 0.4cm; text-align:right">Total</td>
+                                <td style="width:64%; padding-top: 0.4cm; text-align:right">Total(+ biaya tambahan)</td>
                                 <td colspan="4">
                                     <input type="text" name="ed_total" class="form-control ed_total" readonly="readonly" tabindex="-1" style="text-transform: uppercase;text-align:right">
                                 </td>
@@ -415,6 +416,7 @@
             dataType : 'json',
             success:function(response){
                 $('#nota_invoice').val(response.nota);
+                $('#old_invoice').val(response.nota);
             }
         });
 
@@ -440,7 +442,9 @@
             data:{cabang},
             dataType : 'json',
             success:function(response){
-                $('#nota_invoice').val(response.nota);
+                if ($('#nota_invoice').val() == $('#old_invoice').val() ) {
+                    $('#nota_invoice').val(response.nota);
+                }
             }
         });
 
@@ -671,9 +675,11 @@ function hitung_total_tagihan(){
     });
    function hitung(){
         var temp_total   = 0 ;
+        var temp_bp      = 0 ;
         var temp_diskon  = 0 ;
         var temp_diskon  = 0 ;
         var temp_diskon2 = $('.diskon2').val();
+
         if (temp_diskon2 == '') {
             temp_diskon2 = 0;
         }
@@ -686,17 +692,21 @@ function hitung_total_tagihan(){
             temp_total += parseFloat($(this).val());
         });
 
+        table_detail.$('.dd_biaya_tambahan').each(function(){
+            temp_bp += parseFloat($(this).val());
+        });
+
         table_detail.$('.dd_diskon').each(function(){
             temp_diskon += parseFloat($(this).val());
         });
 
     
         netto = temp_total-(temp_diskon2+temp_diskon);
-        netto_diskon1 = temp_total - temp_diskon;
+        netto_diskon1 = temp_total + temp_bp - temp_diskon;
         if (netto_diskon1 < 0) {
             netto_diskon1 =0;
         }
-        $('.ed_total').val(accounting.formatMoney(temp_total,"",2,'.',','));
+        $('.ed_total').val(accounting.formatMoney(temp_total+temp_bp,"",2,'.',','));
         $('.diskon1').val(accounting.formatMoney(temp_diskon,"",2,'.',','));
         $('.netto_total').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
         $('.netto_detail').val(accounting.formatMoney(netto_diskon1,"",2,'.',','));
@@ -751,9 +761,10 @@ function hitung_total_tagihan(){
                             response.data[i].dd_keterangan+'<input type="hidden" class="acc_penjualan" value="'+response.data[i].dd_acc_penjualan+'" name="akun[]">',
 
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
-                            accounting.formatMoney(response.data[i].dd_harga, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].dd_harga+'" name="dd_harga[]">',
 
                             accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
+
+                            accounting.formatMoney(0, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="0" name="dd_biaya_tambahan[]">',
 
                             accounting.formatMoney(response.data[i].dd_diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].dd_diskon+'" name="dd_diskon[]">',
 
@@ -783,9 +794,11 @@ function hitung_total_tagihan(){
 
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
 
-                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
 
-                            accounting.formatMoney(parseFloat(response.data[i].total)+parseFloat(response.data[i].biaya_tambahan), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(response.data[i].total+response.data[i].biaya_tambahan)+'" name="dd_total[]">',
+                            accounting.formatMoney(parseFloat(response.data[i].total), "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+parseFloat(response.data[i].total)+'" name="dd_total[]">',
+
+                            accounting.formatMoney(response.data[i].biaya_tambahan, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+parseFloat(response.data[i].biaya_tambahan)+'" name="dd_biaya_tambahan[]">',
+
 
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
 
@@ -817,9 +830,10 @@ function hitung_total_tagihan(){
 
                             response.data[i].jumlah+'<input type="hidden" value="'+response.data[i].jumlah+'" name="dd_jumlah[]">',
 
-                            accounting.formatMoney(response.data[i].tarif_dasar, "", 2, ".",',')+'<input class="dd_harga" type="hidden" value="'+response.data[i].tarif_dasar+'" name="dd_harga[]">',
 
                             accounting.formatMoney(response.data[i].total, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].total+'" name="dd_total[]">',
+
+                            accounting.formatMoney(response.data[i].biaya_tambahan, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="'+parseFloat(response.data[i].biaya_tambahan)+'" name="dd_biaya_tambahan[]">',
 
                             accounting.formatMoney(response.data[i].diskon, "", 2, ".",',')+'<input class="dd_diskon" type="hidden" value="'+response.data[i].diskon+'" name="dd_diskon[]">',
 

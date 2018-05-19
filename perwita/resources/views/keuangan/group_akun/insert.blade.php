@@ -24,10 +24,14 @@
       <tr>
         <td width="15%" class="text-center">Kode Group</td>
         <td colspan="2" width="35%">
-          <div class="input-group" style="width: 80%">
+          <div class="input-group" style="width: 97%">
             <span class="input-group-addon" style="font-size: 8pt;">GA -</span>
             <input type="text" display: inline-block;" class="form_validate form-control text-center" name="kode_group" placeholder="Kode Group" id="kode_group" data-toggle="tooltip" data-placement="top" title="Hanya Memperbolehkan Input Angka">
           </div>
+        </td>
+
+        <td colspan="3" class="text-center">
+          <small class="text-muted">Kode Group Terakhir Di Database &nbsp;<i class="fa fa-arrow-right"></i>&nbsp; {{ $ids }}</small>
         </td>
       </tr>
 

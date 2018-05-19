@@ -75,7 +75,7 @@ class cabang_Controller extends Controller
         if ($crud == 'N') {
             $simpan = DB::table('cabang')->insert($data);
 
-            $main_id = DB::table("d_akun")->select(DB::raw("distinct(main_id)"))->get();
+            $main_id = DB::table("d_akun")->where("shareable", '1')->select(DB::raw("distinct(main_id)"))->get();
 
             foreach ($main_id as $key => $data_main_id) {
 
@@ -90,7 +90,7 @@ class cabang_Controller extends Controller
                 if(count($cek) == 0){
 
                     $akun = new master_akun;
-                    $akun->id_akun = $data_main_id->main_id.''.$prov->id_provinsi.''.$kode;
+                    $akun->id_akun = $data_main_id->main_id.''.$kode;
                     $akun->nama_akun = $acc->main_name." ".strtoupper($request->ed_nama);
                     $akun->id_parrent = '\n';
                     $akun->id_provinsi = $prov->id_provinsi;
@@ -101,10 +101,11 @@ class cabang_Controller extends Controller
                     $akun->main_id = $acc->main_id;
                     $akun->main_name = $acc->main_name;
                     $akun->group_neraca = $acc->group_neraca;
+                    $akun->group_laba_rugi = $acc->group_laba_rugi;
 
                     if($akun->save()){
                         $saldo = new master_akun_saldo;
-                        $saldo->id_akun = $data_main_id->main_id.''.$prov->id_provinsi.''.$kode;
+                        $saldo->id_akun = $data_main_id->main_id.''.$kode;
                         $saldo->tahun = date("Y");
                         $saldo->is_active = 1;
                         $saldo->bulan = date("m");
