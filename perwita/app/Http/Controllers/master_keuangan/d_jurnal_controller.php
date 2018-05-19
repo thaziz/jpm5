@@ -57,24 +57,30 @@ class d_jurnal_controller extends Controller
         }
 
         $transaksi = DB::table("d_trans")->where("tr_code", $request->jr_detail)->first();
-        $id = DB::table("d_jurnal")->max("jr_id"); 
+        $id = DB::table("d_jurnal")->max("jr_id");
+        $ref = "TRANS".date("my")."/".date("d")."/00".($id+1);
 
         $jurnal = new d_jurnal;
         $jurnal->jr_id = ($id+1);
         $jurnal->jr_year = $request->jr_year;
         $jurnal->jr_date = date('Y-m-d', strtotime($request->jr_date));
         $jurnal->jr_detail = $transaksi->tr_name;
-        $jurnal->jr_ref = null;
+        $jurnal->jr_ref = $ref;
         $jurnal->jr_note = $request->jr_note;
 
         if($jurnal->save()){
             $detailid = 1;
             for ($i=0; $i < count($request->nama_akun_debet); $i++) { 
+
+                $acc = DB::table("d_akun")->where("id_akun", $request->nama_akun_debet[$i])->select("akun_dka")->first();
+
+                $value = ($acc->akun_dka != "D") ? (explode(",", str_replace(".", "", substr($request->debet[$i], 3)))[0] * -1) : explode(",", str_replace(".", "", substr($request->debet[$i], 3)))[0];
+
                 $debet = new d_jurnal_dt;
                 $debet->jrdt_jurnal = ($id+1);
                 $debet->jrdt_detailid = $detailid;
                 $debet->jrdt_acc = $request->nama_akun_debet[$i];
-                $debet->jrdt_value = explode(",", str_replace(".", "", substr($request->debet[$i], 3)))[0];
+                $debet->jrdt_value = $value;
                 $debet->jrdt_type = "-";
                 $debet->jrdt_detail = "-";
                 $debet->jrdt_statusdk = "D";
@@ -84,11 +90,15 @@ class d_jurnal_controller extends Controller
             }
 
             for ($i=0; $i < count($request->nama_akun_kredit); $i++) { 
+                $acc = DB::table("d_akun")->where("id_akun", $request->nama_akun_kredit[$i])->select("akun_dka")->first();
+
+                $value = ($acc->akun_dka != "K") ? (explode(",", str_replace(".", "", substr($request->kredit[$i], 3)))[0] * -1) : explode(",", str_replace(".", "", substr($request->kredit[$i], 3)))[0];
+
                 $debet = new d_jurnal_dt;
                 $debet->jrdt_jurnal = ($id+1);
                 $debet->jrdt_detailid = $detailid;
                 $debet->jrdt_acc = $request->nama_akun_kredit[$i];
-                $debet->jrdt_value = explode(",", str_replace(".", "", substr($request->kredit[$i], 3)))[0];
+                $debet->jrdt_value = $value;
                 $debet->jrdt_type = "-";
                 $debet->jrdt_detail = "-";
                 $debet->jrdt_statusdk = "K";

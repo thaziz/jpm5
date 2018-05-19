@@ -94,7 +94,7 @@
 
         <td width="15%" class="text-center">Group Laba Rugi</td>
         <td colspan="2">
-          <select name="group_laba_rugi" class="select_validate form-control chosen-select" id="group_laba_rugi">
+          <select name="group_laba_rugi" class="select_validate_null form-control chosen-select" id="group_laba_rugi">
             <option value="---"> -- Pilih Group Laba Rugi</option>
 
             @foreach($group_neraca as $data_group_neraca)
@@ -209,7 +209,7 @@
         $("#share").prop('checked', true);
       }else if($(this).val() !== "---"){
         idx = cabang.findIndex(c => c.kode_cabang === $(this).val());
-        $("#add_kode").val(cabang[idx].kode_cabang);
+        $("#add_kode").val(cabang[idx].id_provinsi+''+cabang[idx].kode_cabang);
         $("#add_nama").val(cabang[idx].nama_cabang);
         $("#saldo_all").css("display", "none");
         $("#saldo_not_all").css("display", "inline");
