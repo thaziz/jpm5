@@ -253,9 +253,11 @@
                            @if($data['faktur'][0]->fp_status == 'Approved')
 
                            @else
-                             <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+                           <!--    @if(cek_periode(carbon\carbon::parse($data['faktur'][0]->fp_tgl)->format('m'),carbon\carbon::parse($data['faktur'][0]->fp_tgl)->format('Y') ) != 0) -->
+                            
+                            <!--  @endif -->
                            @endif
-                          
+                           <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
                         </td>
                       </tr>
                       </table>
@@ -321,7 +323,7 @@
                         @endif
                         
 
-                       <td>  <input type='text' class="form-control biayaitem biayaitem{{$index + 1}}" value="{{$fakturdt->fpdt_biaya}}"  name='biaya[]' readonly=""> </td> <!-- "+ //biaya -->
+                       <td>  <input type='text' class="form-control biayaitem biayaitem{{$index + 1}}" value="{{ number_format($fakturdt->fpdt_biaya, 2) }}"  name='biaya[]' readonly=""> </td> <!-- "+ //biaya -->
 
                       <td> <input type="text" class="form-control acc_biayaitem acc_biayaitem{{$index + 1}} " value="{{$fakturdt->fpdt_accbiaya}} " name='acc_biaya[]' readonly=""> </td> <!-- "+ //acc_biaya -->
 

@@ -3,6 +3,11 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style>
+  #myModal {
+  z-index:0;
+}
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
@@ -53,18 +58,19 @@
                 <div class="box-header">
                 </div><!-- /.box-header -->               
                   <div class="box-body">
-                     @if(count($jurnal_dt)!=0)
+                    <!--  @if(count($jurnal_dt)!=0)
                       <div class="pull-right">
                          <a onclick="lihatjurnal()" class="btn-xs btn-primary" aria-hidden="true"> 
                           <i class="fa  fa-eye"> </i>
                            &nbsp;  Lihat Jurnal  
                          </a> 
-                    </div>
-                    
-                @endif
+                    </div>                    
+                      @endif -->
 
                     <div class="col-xs-12">
                     <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
+                  
+
                     <!-- KONTEN PAKE FP -->
                     @if($data['flag'] == 'FP') <!-- FP -->
                     <input type="hidden" class="flag" value="FP" name="flag">
@@ -81,7 +87,7 @@
                         <input type="hidden" name="fp_diskon" value="{{$data['fp'][0]->fp_discount}}">
                         <input type="hidden" name="fp_hsldiskon" value="{{$data['fp'][0]->fp_hsldiscount}}">
                         <input type="hidden" name="gudang" value="{{$data['header'][0]->bt_gudang}}">
-			<input type="hidden" name="ref" value="{{$data['header'][0]->bt_id}}">
+			                   <input type="hidden" name="ref" value="{{$data['header'][0]->bt_id}}">
                         <input type="hidden" name="comp" value="{{$data['comp']}}">
                         <input type="hidden" name="comp_po" value="{{$data['header'][0]->bt_cabangpo}}">
                         <input type="hidden" name="_token" value="{{csrf_token()}}">
@@ -164,8 +170,8 @@
                               <input type="hidden" value="{{$data['fpdt'][$x]->fpdt_qty}}" class=qtykirim<?php echo $n?> data-id=<?php echo $n ?> name="qtydikirim[]">
                               <input type="hidden" value="{{$data['fpdt'][$x]->fpdt_kodeitem}}" name="kodeitem[]" class="item kodeitem{{$x}}"> <!--kodeitem-->
                              
-                         <input type="hidden" name="accpersediaan" value="{{$data['fpdt'][$x]->acc_persediaan}}">
-                         <input type="hidden" name="acchpp" value="{{$data['fpdt'][$x]->acc_hpp}}">
+                         <input type="hidden" name="accpersediaan[]" value="{{$data['fpdt'][$x]->acc_persediaan}}">
+                         <input type="hidden" name="acchpp[]" value="{{$data['fpdt'][$x]->acc_hpp}}">
 
 
                               <td> <input type="number" class="form-control qtyreceive qtyterima{{$x}}" name="qtyterima[]" id=qtyterima<?php echo $n?> data-kodeitem="{{$data['fpdt'][$x]->fpdt_kodeitem}}" data-id=<?php echo $n?>> </td>
@@ -237,12 +243,13 @@
                       
                   <!-- KONTEN PAKE PO -->
                     <table border="0" class="table">
+
                   <input type="hidden" class="flag" value="PO" name="flag">
                       <tr>
                         <th style="width:200px"> Supplier </th>
                         <td style="width:400px"> <h3> {{$data['po'][0]->nama_supplier}} </h3> </td>
                            <input type="hidden" name="idpo" value="{{$data['po'][0]->po_id}}" class="idpo">
-                        <input type="hidden" name="acchutangsupplierpo" value="{{$data['po'][0]->acc_hutang}}">
+                        <input type="hidden" name="acchutangsupplierpo" value="{{$data['po'][0]->po_acchutangdagang}}">
                         <input type="hidden" name="ppn_po" value="{{$data['po'][0]->po_ppn}}">
                         <input type="hidden" name="diskon_po" value="{{$data['po'][0]->po_diskon}}">
                         <input type="hidden" name="gudang" value="{{$data['header'][0]->bt_gudang}}">
@@ -331,7 +338,7 @@
                             <input type="hidden" value="{{$data['podtbarang'][$i][$j]->podt_jumlahharga}}" name="jumlahharga[]" class="jumlahharga{{$j}}">
                             <input type="hidden" class="item kodeitem{{$j}}" value="{{$data['podtbarang'][$i][$j]->podt_kodeitem}}" name="kodeitem[]">
 
-                            <input type="hidden" class="item kodeitem{{$j}}" value="{{$data['podtbarang'][$i][$j]->acc_persediaan}}" name="accpersediaan[]">
+                            <input type="hidden" class="akunitem" value="{{$data['podtbarang'][$i][$j]->podt_akunitem}}" name="akunitem[]">
                              <input type="hidden" class="item kodeitem{{$j}}" value="{{$data['podtbarang'][$i][$j]->acc_hpp}}" name="acchpp[]">
                             
                             <input type="hidden" class="item podtid" value="{{$data['podtbarang'][$i][$j]->podt_id}}" name="podtid[]">
@@ -392,8 +399,9 @@
 							<div class="box-body">
 
 								<div class="judul"> </div>                     
-							   <div class="tampildata"> </div> </td>
+						    <div class="tampildata"> </div> </td>
 
+                
 
 							</div>
 						  </div>
@@ -494,8 +502,8 @@
                               <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_disetujui}}" class=qtykirim<?php echo $n?> data-id=<?php echo $n ?> name="qtydikirim[]">
                               <input type="hidden" value="{{$data['pbgdt'][$x]->pbd_nama_barang}}" name="kodeitem[]" class="item kodeitem{{$x}}"> <!--kodeitem-->
                              
-                         <input type="hidden" name="accpersediaan" value="{{$data['pbgdt'][$x]->acc_persediaan}}">
-                         <input type="hidden" name="acchpp" value="{{$data['pbgdt'][$x]->acc_hpp}}">
+                         <input type="hidden" name="accpersediaan[]" value="{{$data['pbgdt'][$x]->acc_persediaan}}">
+                         <input type="hidden" name="acchpp[]" value="{{$data['pbgdt'][$x]->acc_hpp}}">
 
 
                               <td> <input type="number" class="form-control qtyreceive qtyterima{{$x}}" name="qtyterima[]" id=qtyterima<?php echo $n?> data-kodeitem="{{$data['pbgdt'][$x]->pbd_nama_barang}}" data-id=<?php echo $n?>> </td>
@@ -550,7 +558,7 @@
 
                 <div class="judul"> </div>                     
                  <div class="tampildata"> </div> </td>
-
+               
 
               </div>
               </div>
@@ -566,10 +574,9 @@
 
 <div class="row" style="padding-bottom: 50px;"></div>
 
-
-
-
-@if(count($jurnal_dt)!=0)
+<div class="loading text-center" style="display: none;">
+        <img src="{{ asset('assets/image/loading1.gif') }}" width="100px">
+    </div>
  <div id="jurnal" class="modal" >
                   <div class="modal-dialog">
                     <div class="modal-content no-padding">
@@ -588,55 +595,63 @@
                                             <th>Kredit</th>                                            
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @php
-                                             $totalDebit=0;
-                                             $totalKredit=0;
-                                        @endphp
-                                        @foreach($jurnal_dt as $data)
-                                            <tr>
-                                                <td>{{$data->nama_akun}}</td>
-                                                <td> @if($data->dk=='D') 
-                                                        @php
-                                                        $totalDebit+=$data->jrdt_value;
-                                                        @endphp
-                                                        {{number_format($data->jrdt_value,2,',','.')}} 
-                                                    @endif
-                                                </td>
-                                                <td>@if($data->dk=='K') 
-                                                    @php
-                                                        $totalKredit+=$data->jrdt_value;
-                                                    @endphp
-                                                    {{number_format($data->jrdt_value,2,',','.')}}
-                                                     @endif
-                                                </td>
-                                            <tr> 
-                                        @endforeach                                           
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                                <th>Total</th>                                                
-                                                <th>{{number_format($totalDebit,2,',','.')}}</th>
-                                                <th>{{number_format($totalKredit,2,',','.')}}</th>
-                                        <tr>
-                                    </tfoot>
+                                    
                                 </table>                            
                           </div>                          
                     </div>
                   </div>
                 </div>
-@endif
-
-
-
-
+  
 @endsection
 
 
 
 @section('extra_scripts')
 <script type="text/javascript">
+    function lihatjurnal($id){
+       $('.loading').css('display', 'block');
+             
+        $.ajax({
+          type : "get",
+          url : baseUrl + '/penerimaanbarang/lihatjurnal/' + $id,
+          dataType : "json",
+          success : function(response){
+              $('#jurnal').modal('show'); 
+             $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                        console.log(response);
+                      
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'> <td>"+response.jurnal[key].id_akun+" - "+response.jurnal[key].nama_akun+"</td>";
 
+                          if(response.jurnal[key].dk == 'D'){
+                            $totalDebit = parseFloat($totalDebit) + parseFloat(response.jurnal[key].jrdt_value);
+                            rowtampil2 += "<td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td> <td> </td>";
+                          }
+                          else {
+                            $totalKredit = parseFloat($totalKredit) + parseFloat(response.jurnal[key].jrdt_value);
+                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(response.jurnal[key].jrdt_value, "", 2, ",",'.')+"</td>";
+                          }
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>"
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
+          }
+        })
+
+    }
    
     $('#formId').submit(function(){
         if(!this.checkValidity() ) 
@@ -755,8 +770,6 @@
     }).datepicker("setDate", "0");;
       
 
-      
-
      $('.sampling').click(function(){
       kodeitem = $(this).data('kodeitem');
       idspp = $(this).data('idspp');
@@ -825,32 +838,38 @@
             $('.judul').html(judulpenerimaan);*/
 
             for(var j = 0 ; j < response.judul.length; j++) {
-            console.log(j);
-              $no = 1;
+            
+            $no = 1;
             var rowtampil = "<br> <br> <table class='table'>" +
-                              "<tr> <td style='width:200px'> No LPB </td> <td> : </td> <td>" + response.judul[j].pb_lpb + "</td> </tr>" + //no lpb
+                              "<tr> <td style='width:270px'> No LPB </td> <td> : </td> <td>" + response.judul[j].pb_lpb + "</td> </tr>" + //no lpb
                             "<tr> <td> No Surat Jalan </td> <td> : </td> <td>"+ response.judul[j].pb_suratjalan +"</td> </tr>" + // surat jalan
                             "<tr> <td> Tgl di Terima </td> <td style='width:20px'> :</td> <td>"+ response.judul[j].pb_date + "</td>  </tr> " + // tgl
                             "<tr> <td> Status Penerimaan Barang </td> <td> </td> <td> "+response.judul[j].pb_status+" </div> </td> </tr>" + //status
                             "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" + //terimadari
-                            "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_po+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_po+"> <i class='fa fa-trash'> </i>  Hapus </a> </td> </tr>" +
+                            "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_po+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_po+"> <i class='fa fa-trash'> </i>  Hapus </a> &nbsp;";
+                              if(response.jurnal.length > 0){
+                        rowtampil += "<a class='btn btn-xs btn-primary' onclick='lihatjurnal("+response.judul[j].pb_id+")'> <i class='fa fa-book'> </i> Lihat Jurnal </a>";
+
+                              }
+                            rowtampil += "</td> </tr>" +
                   "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
                             "</table>";
-                rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No SPP </th> </tr>"; // judul
+               
 
+                 rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No SPP </th> </tr>"; // judul
 
                  for(var x =0; x < response.barang[j].length; x++) {
-                  console.log(x);
+                  
                         rowtampil += "<tr> <td style='width:20px'>"+ $no +"</td>" + 
                                 "<td> "+ response.barang[j][x].nama_masteritem +"</td>" +// no
                               "<td>" + response.barang[j][x].unitstock + "</td>" + //satuan
-                              "<td style='text-right'>Rp " + addCommas(response.barang[j][x].podt_jumlahharga) +" <input type='hidden' class='harga"+$noajax+"' value='"+response.barang[j][x].podt_jumlahharga+"'></td>";
+                              "<td style='text-right'>Rp " + addCommas(response.barang[j][x].podt_jumlahharga) +" <input type='hidden' class='harga"+$noajax+"' value='"+addCommas(response.barang[j][x].podt_jumlahharga)+"' name='jumlahharga[]'>  </td>";
                            
                                  
                                rowtampil +=    "<td style='text-right'> <input class='input-sm form-control biaya2"+$notable+" biaya"+$noajax+"' value='"+response.barang[j][x].pbdt_totalharga+"' readonly> </td>" +
                                  
                                 "<td>"+ response.barang[j][x].podt_qtykirim +"</td>" + // qty po
-                                "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima2[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-spp="+response.barang[j][x].spp_id+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled> </td>"+ // qtypb
+                                "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-spp="+response.barang[j][x].spp_id+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled> </td>"+ // qtypb
 
                                  "<input type='hidden' class='status2"+$notable+" status4"+$noajax+"' value='"+response.barang[j][x].pbdt_status+"'> " +
                                 "<input type='hidden' value='"+response.barang[j][x].podt_qtykirim+"' class='qtykirim2"+$noajax+"' data-id="+$noajax+" name='qtydikirim2[]'>" +
@@ -866,12 +885,20 @@
                        $noajax++;
                       var sisa = parseInt(response.barang[j][x].podt_qtykirim) - parseInt(response.barang[j][x].pbdt_qty);
                   }
-                     
-                     rowtampil += "<br> <br>";
-                   var lengthjudul = 0;
-                   $('.tampildata').append(rowtampil);  
-$notable++;				   
+                      
+                    rowtampil += "</table>";
+
+                    rowtampil += "<br> <br>";
+                    var lengthjudul = 0;
+                    $('.tampildata').append(rowtampil);  
+                    $notable++;		
+
                   }
+
+                  for(k = 0 ; k < response.judul.length; k++){
+                    
+                  }
+
 
 
                   $('.hapusdata').click(function(){
@@ -963,6 +990,12 @@ $notable++;
                     arrstatus.push(val);
                   })
 
+                  arrakunitem = [];
+                  $('.akunitem').each(function(){
+                    val = $(this).val();
+                    arrakunitem.push(val);
+                  })
+
                   arrkodeitem = [];
                   $('.kodeitem2' + id).each(function(){
                     val = $(this).val();
@@ -988,7 +1021,7 @@ $notable++;
                   $.ajax({
                       type : "post",
                       url : baseUrl + '/penerimaanbarang/updatepenerimaanbarang',
-                      data : {arrqty, arrstatus, arrkodeitem, idpb, suratjalan, arridpbdt, arrharga,iddetail,flag},
+                      data : {arrqty, arrstatus, arrkodeitem, idpb, suratjalan, arridpbdt, arrharga,iddetail,flag, arrakunitem},
                       dataType : 'json',
                       success : function(response){
                          alertSuccess(); 
@@ -1083,7 +1116,10 @@ $notable++;
           else {
             console.log('else');
           }
-        }
+        },
+		error : function(){
+			location.reload();
+		}
       })
 		} /*<!--end flag po -->*/
 		
@@ -1115,7 +1151,7 @@ $notable++;
 									"<tr> <td> Tgl di Terima </td> <td style='width:20px'> :</td> <td>"+ response.judul[j].pb_date + "</td>  </tr> " +
 									"<tr> <td> Status Penerimaan Barang </td> <td> </td> <td> "+response.judul[j].pb_status+" </div> </td> </tr>" +
                   "<tr> <td> Diterima oleh </td> <td> : </td> <td>"+response.judul[j].pb_terimadari+"</td> </tr>" +
-                  "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_fp+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_fp+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> </tr>" +
+                  "<tr> <td> <a class='btn btn-info btn-xs' href={{url('penerimaanbarang/penerimaanbarang/cetak')}}"+'/'+response.judul[j].pb_fp+","+flag+","+response.judul[j].pb_id+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a> &nbsp; <a class='btn btn-xs btn-danger hapusdata' data-id="+response.judul[j].pb_id+" data-idtransaksi="+response.judul[j].pb_fp+"> <i class='fa fa-trash'> </i>  Hapus </a>  </td> <td> <a class='btn btn-xs btn-info'> Lihat Jurnal </a> </td> </tr>" +
                   "<tr> <td> <div class='row'> <div class='col-sm-5'> <button class='btn btn-xs btn-default editdata' type='button' data-id="+$notable+" data-ajax="+$noajax+" style='color:red'> <i class='fa fa-pencil'> </i> Edit Data</button> </div> &nbsp; <div class='col-sm-5'> <div class='simpan2"+$notable+"'> </div> </div> </div> </td> </tr>" +
 									"</table>";
 						rowtampil += "<table class='table table-striped table-bordered' style='width:75%'> <tr> <th> No </th> <th> Nama Barang </th> <th> Satuan </th> <th> Harga Satuan </th> <th> Jumlah Harga </th> <th> Jumlah Dikirim </th> <th> Jumlah yang diterima </th> <th> No FP </th> </tr>"; // judul
@@ -1128,7 +1164,7 @@ $notable++;
 									  "<td style='text-right'>" + addCommas(response.barang[j][x].fpdt_harga)  + "</td> <input type='hidden' class='harga"+$noajax+"' value='"+response.barang[j][x].fpdt_harga+"'>";		 
 									   rowtampil +=    "<td style='text-right'> <input type='text' class='input-sm form-control biaya2"+$notable+" biaya"+$noajax+"' value='"+addCommas(response.barang[j][x].pbdt_totalharga)+"' readonly></td>" +										 
 										"<td>"+ response.barang[j][x].fpdt_qty +"</td>" +
-										"<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima2[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled></td>" +
+										"<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled></td>" +
                     "<input type='hidden' class='status2"+$notable+" status4"+$noajax+"' value='"+response.barang[j][x].pbdt_status+"'> " +
                     "<input type='hidden' value='"+response.barang[j][x].fpdt_qty+"' class='qtykirim2"+$noajax+"' data-id="+$noajax+" name='qtydikirim2[]'>" +
                     "<input type='hidden' value='"+response.barang[j][x].pbdt_qty+"' class='qtyterima3"+$noajax+"' data-id="+$noajax+"> "+
@@ -1265,7 +1301,7 @@ $notable++;
                       dataType : 'json',
                       success : function(response){
                          alertSuccess(); 
-                          location.reload();
+                          /*location.reload();*/
                          $('.qtyreceive2').attr('disabled', 'true');
                          $('.suratjalan' + id).attr('readonly' , true);
                       }
@@ -1355,7 +1391,11 @@ $notable++;
 				  else {
 					console.log('else');
 				  }
-			  }
+			  },
+			  error : function(){
+					location.reload();
+			}
+			  
 			})
 		}
      /*<!-- end flag fp -->*/
@@ -1400,7 +1440,7 @@ $notable++;
                     "<td style='text-right'>" + addCommas(response.barang[j][x].fpdt_harga)  + "</td> <input type='hidden' class='harga"+$noajax+"' value='"+response.barang[j][x].fpdt_harga+"'>";    
                      rowtampil +=    "<td style='text-right'> <input type='text' class='input-sm form-control biaya2"+$notable+" biaya"+$noajax+"' value='"+addCommas(response.barang[j][x].pbdt_totalharga)+"' readonly></td>" +                    
                     "<td>"+ response.barang[j][x].pbd_disetujui +"</td>" +
-                    "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima2[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled></td>" +
+                    "<td> <input type='number' class='input-sm form-control qtyreceive2  qtyreceive3"+$notable+" qtyterima2"+$noajax+"' name='qtyterima[]' id=qtyterima2"+$noajax+" data-kodeitem="+response.barang[j][x].kode_item+" data-id="+$noajax+" data-idpbdt="+response.barang[j][x].pbdt_id+" value="+response.barang[j][x].pbdt_qty+" disabled></td>" +
                     "<input type='hidden' class='status2"+$notable+" status4"+$noajax+"' value='"+response.barang[j][x].pbdt_status+"'> " +
                     "<input type='hidden' value='"+response.barang[j][x].pbd_disetujui+"' class='qtykirim2"+$noajax+"' data-id="+$noajax+" name='qtydikirim2[]'>" +
                     "<input type='hidden' value='"+response.barang[j][x].pbdt_qty+"' class='qtyterima3"+$noajax+"' data-id="+$noajax+"> "+
@@ -1632,7 +1672,10 @@ $notable++;
           else {
           console.log('else');
           }
-        }
+        },
+		error : function(){
+			location.reload();
+		}
       })
     } /*end pengeluaran barang*/
      
@@ -1751,12 +1794,6 @@ $notable++;
           }
       })
     })
-
-     function lihatjurnal(){
-        $('#jurnal').modal('show');
-    }
-
-
 
 </script>
 @endsection
