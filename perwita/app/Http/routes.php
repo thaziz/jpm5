@@ -135,6 +135,7 @@ Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
 Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
 Route::get('penerimaanbarang/hapusdatapenerimaan', 'PurchaseController@hapusdatapenerimaan');
+Route::get('penerimaanbarang/lihatjurnal/{id}', 'PurchaseController@lihatjurnalpenerimaan');
 
 
 

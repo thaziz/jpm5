@@ -97,7 +97,8 @@
 
                         <tr>
                          
-                          <td>  
+                          <td> 
+
                           @if(Auth::user()->punyaAkses('Konfirmasi Order','cabang'))
                           <select class="form-control  cabang" name="cabang">
                               @foreach($data['cabang'] as $cabang)
@@ -112,7 +113,11 @@
                             </select> 
                           @endif
                           </td>
-                         </tr>    <input type="hidden" class="valcabang" name="cabang">
+                         </tr>
+                          
+                          <input type="hidden" class="valcabang" name="cabang">
+                          <input type="hidden" value="{{Auth::user()->m_name}}" name="username">
+                        
                         </div>
 
                     <div class="col-sm-4">
