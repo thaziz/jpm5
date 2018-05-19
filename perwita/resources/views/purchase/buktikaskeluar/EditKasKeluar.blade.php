@@ -198,7 +198,7 @@
                               <td >
                                 <button style="margin-left: 5px;" type="button" class="btn btn-info pull-right reload" onclick="reload()"><i class="fa fa-refresh">&nbsp;Reload</i></button>
 
-                                <button style="margin-left: 5px;" type="button" class="btn btn-warning pull-right print_petty disabled" onclick="printing()"><i class="fa fa-print">&nbsp;print</i></button>
+                                <button style="margin-left: 5px;" type="button" class="btn btn-warning pull-right print_petty " onclick="printing()"><i class="fa fa-print">&nbsp;print</i></button>
 
                                 <button style="margin-left: 5px;" type="button" class="btn btn-primary pull-right " id="save_patty" onclick="save_patty()"><i class="fa fa-save">&nbsp;Simpan Data</i></button>
                                 
@@ -1417,7 +1417,8 @@
       success:function(data){
         if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
 
-          var terbayar = parseFloat(data.data.fp_sisapelunasan) 
+          var terbayar =   parseFloat(data.data.fp_netto) 
+                         - parseFloat(data.data.fp_sisapelunasan) 
                          + parseFloat(data.data.fp_debitnota) 
                          - parseFloat(data.data.fp_creditnota) 
                          + parseFloat(data.data.fp_uangmuka);
@@ -1432,7 +1433,7 @@
           $('.pelunasan_detail').eq(0).val(accounting.formatMoney(fp_pelunasan,"", 0, ".",','));
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
         }else if(jenis_bayar == 3){
-          var terbayar = parseFloat(data.data.v_pelunasan) 
+          var terbayar = parseFloat(data.data.v_hasil) - parseFloat(data.data.v_pelunasan) 
                        + parseFloat(0) 
                        - parseFloat(0) 
                        + parseFloat(0);

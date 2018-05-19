@@ -406,20 +406,6 @@
                                                     </td>
                                                 </tr>
                                                 <tr>
-                                                    <td style="width:110px; padding-top: 0.4cm; ">Jenis PPN</td>
-                                                    <td>
-                                                        <select class="form-control" name="cb_jenis_ppn" id="cb_jenis_ppn" onchange="setJmlPPN()">
-                                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
-                                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
-                                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
-                                                        </select>
-                                                         <input type="hidden" name="acc_penjualan" class="form-control"  value="{{ $do->acc_penjualan or null }}">
-                                                    </td>
-                                                    <td style="width:35%">
-                                                        <input type="text" class="form-control jml_ppn" name="ed_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->biaya_komisi, 0, ",", ".") }}" @endif>
-                                                    </td>
-                                                </tr>
-                                                <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Dpp</td>
                                                     <td colspan="2" id="div_kom">
                                                         <input type="text" class="form-control dv" name="ed_dpp" id="ed_dpp" style="text-align:right" tabindex="-1"
@@ -448,6 +434,21 @@
                                                     >
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <td style="width:110px; padding-top: 0.4cm; ">Jenis PPN</td>
+                                                    <td>
+                                                        <select class="form-control" name="cb_jenis_ppn" id="cb_jenis_ppn" onchange="setJmlPPN()">
+                                                            <option value="3" ppnrte="1" ppntpe="npkp" >INCLUDE 1 %</option>
+                                                            <option value="2" ppnrte="1" ppntpe="pkp" >EXCLUDE 1 %</option>
+                                                            <option value="4" ppnrte="0" ppntpe="npkp" >NON PPN</option>
+                                                        </select>
+                                                         <input type="hidden" name="acc_penjualan" class="form-control"  value="{{ $do->acc_penjualan or null }}">
+                                                    </td>
+                                                    <td style="width:35%">
+                                                        <input type="text" class="form-control jml_ppn" name="ed_jml_ppn" readonly="readonly" tabindex="-1" style="text-align:right" @if ($do === null) value="0" @else value="{{ number_format($do->biaya_komisi, 0, ",", ".") }}" @endif>
+                                                    </td>
+                                                </tr>
+                                                
                                                 <tr>
                                                     <td style="padding-top: 0.4cm" id="div_kom">Total</td>
                                                     <td colspan="2" id="div_kom">

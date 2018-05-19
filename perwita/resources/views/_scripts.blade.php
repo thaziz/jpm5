@@ -101,6 +101,8 @@
           }
 
         var baseUrl = '{{ url('/') }}';
+
+        
         //alert(baseUrl);
 
         $(document).ready(function() {

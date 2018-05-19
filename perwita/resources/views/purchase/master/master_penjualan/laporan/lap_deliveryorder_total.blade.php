@@ -45,35 +45,26 @@
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
-                  <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
+                  <form class="form-horizontal" id="cari_data">
                   <div class="box-body">
                     <table class="table datatable" border="0">
                          <tr>
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                           <input name="min" id="min" type="text" class="cari_semua date form-control date_to date_range_filter
-                                              date" onchange="tgl()">
+                                              date" 
 
                               </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                           <input type="text" class="cari_semua date form-control date_to date_range_filter
-                                              date" name="max" id="max" onchange="tgl()" >
+                                              date" name="max" id="max"  >
                               </div> </td>
                       </tr>
-                       {{-- <tr>
-                        <th> Nama Pengirim : </th> 
-                          <td> 
-                                <input id="nama_pengirim" type="text" class="form-control ">
-                          </td>  
-                          <th> Nama Penerima : </th> 
-                            <td> 
-                                <input id="nama_penerima" type="text" class="form-control" >
-                            </td>
-                      </tr> --}}
+                    
                       <tr>
                           <th style="width: 100px; padding-top: 16px">Cabang</th>
                           <td colspan="3">
-                            <select class="cari_semua chosen-select-width" id="cabang" onchange="filterColumn5()">
+                            <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
                               <option></option>
                               @foreach ($cabang as $element)
                                 <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
@@ -84,20 +75,20 @@
                         <tr >
                            <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td >
-                          <select style="width: 200px; margin-top: 20px;" class="cari_semua chosen-select-width select-picker1 form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal" onchange="filterColumn()">
-                            <option value="" disabled="" selected=""> --Asal --</option>
+                          <select style="width: 200px; margin-top: 20px;" name="asal" class="cari_semua chosen-select-width select-picker1 form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal">
+                            <option value=""  selected=""> --Asal --</option>
                             @foreach ($kota1 as $asal)
-                                <option value="{{ $asal->asal }}">{{ $asal->asal }}</option>
+                                <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
                             @endforeach
                           </select>
                           </td>
                         
                           <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="kota_tujuan"  onchange="filterColumn1()">
-                            <option value="" disabled="" selected=""> --Tujuan --</option>
+                           <select style="width: 200px; margin-top: 20px;" name="tujuan" class="cari_semua select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="kota_tujuan" >
+                            <option value=""  selected=""> --Tujuan --</option>
                             @foreach ($kota as $tujuan)
-                                <option value="{{ $tujuan->tujuan }}">{{ $tujuan->tujuan }}</option>
+                                <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
                             @endforeach
                            </select>
                           </td>
@@ -105,8 +96,8 @@
                         <tr>
                            <th style="width: 100px; padding-top: 16px"> Tipe </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" onchange="filterColumn2()">
-                            <option value="" disabled="" selected=""> --Tipe --</option>
+                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Tipe --</option>
                             <option value="DOKUMEN">DOKUMEN</option>
                             <option value="KILOGRAM">KILOGRAM</option>
                             <option value="KOLI">KOLI</option>
@@ -117,8 +108,8 @@
                           </td>
                           <th style="width: 100px; padding-top: 16px"> Status </th>
                           <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" class="cari_semua select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status" onchange="filterColumn4()" >
-                            <option value="" disabled="" selected=""> --Status --</option>
+                           <select style="width: 200px; margin-top: 20px;" name="status" class="cari_semua select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status"  >
+                            <option value=""  selected=""> --Status --</option>
                             <option value="MANIFESTED">MANIFESTED</option>
                             <option value="TRANSIT">TRANSIT</option>
                             <option value="RECEIVED">RECEIVED</option>
@@ -136,13 +127,13 @@
                           <option value="{{ url('rekap_customer/rekap_customer') }}">Rekap Customer</option>
                         </select>
                       </div>
-                      <div class="row" style="margin-top: 20px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
-                    </div>
-                    <div class="row" style="margin-top: -51px;margin-left: 67px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
-                    </div>
+                      <div class="row" style="margin-top: 20px;margin-bottom: -72px;"> &nbsp; &nbsp; <a class="btn btn-primary" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </a> </div>
+                      <div class="row" style="margin-top: 21px;margin-left: 56px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                      <div class="row" style="margin-top: -51px;margin-left: 137px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                 </form>
                 <div class="box-body">
-                <table id="addColumn" class="table table-bordered table-striped">
+                <div id="replace">
+                <table id="addColumn"  class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th> No DO</th>
@@ -186,6 +177,7 @@
                       <td id="total_grandtotal"></td>
                     </tr>
                   </table>
+                  </div>
                   {{-- {{ $data->links() }}  --}}
 
                 </div><!-- /.box-body -->
@@ -198,7 +190,6 @@
           </div><!-- /.row -->
                 </div>
             </div>
-        </div>
     </div>
 
 
@@ -264,13 +255,6 @@
                 "data": null,
                 "defaultContent": "",
             },
-
-            // { "data": "type_kiriman" },
-            // { "data": "jenis_pengiriman" },
-            // { "data": "cab" },
-            // { "data": "total", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            // { "data": "total_net", render: $.fn.dataTable.render.number( '.'),"sClass": "cssright" },
-            // { "data": "button" },
             ]
       });
     
@@ -300,182 +284,16 @@
     } );
  
     // On each draw, loop over the `detailRows` array and show any child rows
-    table.on( 'draw', function () {
-        $.each( detailRows, function ( i, id ) {
-            $('#'+id+' td.details-control').trigger( 'click' );
-        } );
-    } );
-  
-      var aa=[];
-       var bb = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < bb.length; i++){
-
-           aa[i] =  $(bb[i][11]).val();
-  
-       }
-       var total = 0;
-        for (var i = 0; i < aa.length; i++) {
-            total += aa[i] << 0;
-        }
-    $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
-
-
-
-
-
-     $('.date').datepicker({
-        autoclose: true,
-        format: 'yyyy-mm-dd'
-    });
-            $("#min").datepicker({format:"dd/mm/yyyy"});
-            $("#max").datepicker({format:"dd/mm/yyyy"});
-
-       function tgl(){
-         var tgl1   = $("#min").val();
-         var tgl2   = $("#max").val();
-          if(tgl1 != "" && tgl2 != ""){
-          }
-
-            $(document).ready(function(){
-        $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#min').datepicker("getDate");
-            console.log(min);
-            var max = $('#max').datepicker("getDate");
-            console.log(max);
-
-            var startDate = new Date(data[3]);
-            console.log(startDate);
-            if (min == null || min == '' && max == null || max == '') { return true; }
-            if (min == null || min == '' || min == 'Invalid Date' && startDate <= max) { return true;}
-            if (max == null || max == '' || max == 'Invalid Date' && startDate >= min) {return true;}
-            if (startDate <= max && startDate >= min) { return true; }
-            return false;
-        }
-        );
-            $("#min").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-            $("#max").datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-           
-
-            // Event listener to the two range filtering inputs to redraw on input
-            $('#min, #max').change(function () {
-                /*if($('#max').val() == '' || $('#max').val() == null ){
-                    $('#max').val(0);
-                }*/
-                table.draw();
-            });
-        });
-          }
    
- 
-    function filterColumn () {
-    $('#addColumn').DataTable().column(6).search(
-        $('#kota_asal').val()).draw();    
-    var aa=[];
-         console.log('anjay');
-         var bb = table.rows( { filter : 'applied'} ).data(); 
-           for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][13]).val(); 
-           }
 
-         var total = 0;
-          for (var i = 0; i < aa.length; i++) {
-              total += aa[i] << 0;
-          }
-          console.log(aa);
-      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
-    }
-
-    function filterColumn1 () {
-        $('#addColumn').DataTable().column(7).search(
-            $('#kota_tujuan').val()).draw();  
-            var aa=[];
-         console.log('anjay');
-         var bb = table.rows( { filter : 'applied'} ).data(); 
-           for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][13]).val(); 
-           }
-
-         var total = 0;
-          for (var i = 0; i < aa.length; i++) {
-              total += aa[i] << 0;
-          }
-          console.log(aa);
-      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));  
-    }
-    function filterColumn2 () {
-        $('#addColumn').DataTable().column(9).search(
-            $('.select-picker3').val()).draw(); 
-        var aa=[];
-         console.log('anjay');
-         var bb = table.rows( { filter : 'applied'} ).data(); 
-           for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][13]).val(); 
-           }
-
-         var total = 0;
-          for (var i = 0; i < aa.length; i++) {
-              total += aa[i] << 0;
-          }
-          console.log(aa);
-      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
-   }
-   function filterColumn4 () {
-      $('#addColumn').DataTable().column(10).search(
-          $('#status').val()).draw(); 
-      var aa=[];
-         console.log('anjay');
-         var bb = table.rows( { filter : 'applied'} ).data(); 
-           for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][13]).val(); 
-           }
-
-         var total = 0;
-          for (var i = 0; i < aa.length; i++) {
-              total += aa[i] << 0;
-          }
-          console.log(aa);
-      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
-   }
-   function filterColumn5 () {
-      $('#addColumn').DataTable().column(14).search(
-          $('#cabang').val()).draw(); 
-
-         var aa=[];
-         console.log('anjay');
-         var bb = table.rows( { filter : 'applied'} ).data(); 
-           for(var i = 0 ; i < bb.length; i++){
-              aa[i] =  $(bb[i][13]).val(); 
-           }
-
-         var total = 0;
-          for (var i = 0; i < aa.length; i++) {
-              total += aa[i] << 0;
-          }
-          console.log(aa);
-      $('#total_grandtotal').text(accounting.formatMoney(total,"",0,'.',','));
-   } 
 
       function cetak(){
-      var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < asd.length; i++){
-
-           asw[i] =  $(asd[i][2]).val();
-  
-       }
-
-      $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
-
+      
 
       $.ajax({
-        data: {a:asw,c:'download'},
+        data: $('#cari_data').serialize(),
         url: baseUrl + '/reportdeliveryorder_total/reportdeliveryorder_total',
-        type: "post",
+        type: "get",
        success : function(data){
         var win = window.open();
             win.document.write(data);
@@ -484,25 +302,12 @@
     }
 
     function excel(){
-      var asw=[];
-       var asd = table.rows( { filter : 'applied'} ).data(); 
-       for(var i = 0 ; i < asd.length; i++){
-
-           asw[i] =  $(asd[i][2]).val();
-  
-       }
-
-      $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-      });
-
+     
 
       $.ajax({
-        data: {a:asw,c:'download'},
+        data:  $('#cari_data').serialize(),
         url: baseUrl + '/exceldeliveryorder_total/exceldeliveryorder_total',
-        type: "post",
+        type: "get",
         success: function (response, textStatus, request) {
         var a = document.createElement("a");
         a.href = response.file; 
@@ -516,6 +321,76 @@
       },
         
       });
+    }
+    $('.date').datepicker({
+        autoclose: true,
+        format: 'yyyy-mm-dd'
+    });
+
+    function cari(){
+      var min = $('#min').val();
+      var max = $('#max').val();
+      if (min == '') {
+                Command: toastr["warning"]("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
+
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": false,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": true,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+
+                return false;
+
+            }
+        if (max == '') {
+                Command: toastr["warning"]("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
+
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": false,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": true,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+
+                return false;
+
+            }
+     $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total/ajaxcarideliveryorder_total',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+              
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
     }
 
 

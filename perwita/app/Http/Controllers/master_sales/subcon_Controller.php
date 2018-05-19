@@ -160,7 +160,7 @@ class subcon_Controller extends Controller
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $akun = DB::table('d_akun')
-                  ->where('id_akun','like','2'.'%')
+                  
                   ->get();
         return view('master_sales.subcon.index',compact('kota','akun'));
     }

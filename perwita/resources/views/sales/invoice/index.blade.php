@@ -168,14 +168,17 @@
     });
 
     function edit(id){
+        var id = id.replace(/\//g, "-");
         window.location.href = baseUrl + '/sales/edit_invoice/'+id;
     }
     function lihat(id){
+        var id = id.replace(/\//g, "-");
         window.open(baseUrl + '/sales/lihat_invoice/'+id);
     }
 
 
     function ngeprint(id){
+        var id = id.replace(/\//g, "-");
         window.open(baseUrl+'/sales/cetak_nota/'+id);
         location.reload();
     }

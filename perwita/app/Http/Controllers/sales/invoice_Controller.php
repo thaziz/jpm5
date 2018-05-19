@@ -100,6 +100,7 @@ class invoice_Controller extends Controller
 
 
     public function cetak_nota($id) {
+        $id = str_replace('-', '/', $id);
         $head = DB::table('invoice')
                   ->join('customer','kode','=','i_kode_customer')
                   ->where('i_nomor',$id)
@@ -1652,6 +1653,7 @@ if($request->pajak_lain!='T' && $request->pajak_lain!='0' && $request->pajak_lai
 public function edit_invoice($id)
 { 
     // return $id;
+    $id = str_replace('-', '/', $id);
     if (auth::user()->punyaAkses('Invoice','ubah')) {
       $data = DB::table('invoice')
               ->where('i_nomor',$id)
@@ -1882,6 +1884,7 @@ public function update_invoice(request $request)
 
     public function lihat_invoice($id)
     {
+        $id = str_replace('-', '/', $id);
         $data = DB::table('invoice')
               ->where('i_nomor',$id)
               ->first();

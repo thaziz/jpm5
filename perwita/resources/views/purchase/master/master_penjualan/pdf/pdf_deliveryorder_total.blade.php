@@ -25,7 +25,6 @@
                             <th> Penerima  </th>
                             <th> Kota Asal  </th>
                             <th> Kota Tujuan  </th>
-                            <th> Kec Tujuan  </th>
                             <th> Tipe  </th>
                             <th> Status</th>
                             <th> Cabang  </th>
@@ -37,22 +36,21 @@
                         @foreach ($dat1 as $index=>$val)
                         <tr>
                           <td>{{ $index }}</td>
-                          <td>{{ $dat1[$index][0]->nomor }}</td>
-                          <td>{{ $dat1[$index][0]->tanggal }}</td>
-                          <td>{{ $dat1[$index][0]->nama_pengirim }}</td>
-                          <td>{{ $dat1[$index][0]->nama_penerima }}</td>
-                          <td>{{ $dat1[$index][0]->asal }}</td>
-                          <td>{{ $dat1[$index][0]->tujuan }}</td>
-                          <td>{{ $dat1[$index][0]->kecamatan }}</td>
-                          <td>{{ $dat1[$index][0]->type_kiriman }}</td>
-                          <td>{{ $dat1[$index][0]->status }}</td>
-                          <td>{{ $dat1[$index][0]->cabang }}</td>
-                          <td align="right">{{ number_format( $dat1[$index][0]->total_net,0,',','.') }}</td>
+                          <td>{{ $val->nomor }}</td>
+                          <td>{{ $val->tanggal }}</td>
+                          <td>{{ $val->nama_pengirim }}</td>
+                          <td>{{ $val->nama_penerima }}</td>
+                          <td>{{ $val->asal }}</td>
+                          <td>{{ $val->tujuan }}</td>
+                          <td>{{ $val->type_kiriman }}</td>
+                          <td>{{ $val->status }}</td>
+                          <td>{{ $val->cabang }}</td>
+                          <td align="right">{{ number_format( $val->total_net,0,',','.') }}</td>
                         </tr>
                         @endforeach
                     </tbody>
                     <tr>
-                      <td colspan="11">Total net</td>
+                      <td colspan="10">Total net</td>
                       <td id="total_grandtotal" align="right">{{ number_format($total_perhitungan,0,',','.') }}</td>
                     </tr>
                   </table>
