@@ -79,7 +79,7 @@
 
                       <tr>
                         <td align="center"> {{$index + 1}}</td>
-                        <td> {{$faktur->fp_nofaktur}} </td>
+                        <td>  {{$faktur->fp_nofaktur}} </td>
                         <td>  {{$faktur->fp_tgl}} </td>
                         <td> {{$faktur->jenisbayar}} </td>
                         @if($faktur->fp_noinvoice != "")
@@ -133,9 +133,10 @@
                         <td align="center">
 
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','ubah'))
-                              @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
+                             <!--  @if(cek_periode(carbon\carbon::parse($faktur->fp_tgl)->format('m'),carbon\carbon::parse($faktur->fp_tgl)->format('Y') ) != 0)
                                 <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
-                              @endif
+                              @endif -->
+                               <a title="Edit" class="btn btn-sm btn-success" href={{url('fakturpembelian/detailfatkurpembelian/'.$faktur->fp_idfaktur.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i> </a> 
                             @endif
                           @if($faktur->fp_jenisbayar == 6 || $faktur->fp_jenisbayar == 7 || $faktur->fp_jenisbayar == 9)
                             @if(Auth::user()->PunyaAkses('Faktur Pembelian','hapus'))

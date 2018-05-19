@@ -849,8 +849,7 @@ function hitung_pajak_lain(){
                     // //////////////////////////////////
                     for(var i = 0 ; i < response.data.length;i++){
                         index_detail+=1;
-                        table_detail.row.add([
-                             index_detail+=1;
+                        
                         table_detail.row.add([
                             index_detail+'<p class="indexing"></p>',
                             response.data[i].dd_nomor+'<input type="hidden" value="'+response.data[i].dd_nomor+'" name="do_detail[]">',

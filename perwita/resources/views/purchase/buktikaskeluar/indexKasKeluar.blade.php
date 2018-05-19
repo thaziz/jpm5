@@ -93,7 +93,7 @@
                           <td align="right">{{'Rp ' . number_format($val->bkk_total,2,',','.')}}</td>
                           <td align="right">
                             <input type="hidden" class="id_print" value="{{$val->bkk_id}}">
-                            <a title="Print" class="" onclick="printing(this)" >
+                            <a title="Print" class="" onclick="printing('{{ $val->bkk_id }}')" >
                               <i class="fa fa-print" aria-hidden="true">&nbsp; Print</i>
                             </a> 
                           </td>
@@ -173,7 +173,8 @@
 function(){
 
      $.ajax({
-      url:baseUrl + '/buktikaskeluar/hapus/'+id,
+      url:baseUrl + '/buktikaskeluar/hapus',
+      data:{id},
       type:'get',
       success:function(data){
 
@@ -200,12 +201,18 @@ function(){
   });
 }
 
-function printing(p){
-  var par = p.parentNode.parentNode;
-  var id  = $(par).find('.id_print').val();
-  
-  window.open("{{url('buktikaskeluar/detailkas')}}"+'/'+id)
-}
+function printing(id) {
+    $.ajax({
+        url:baseUrl + '/buktikaskeluar/print',
+        type:'get',
+        data:{id},
+        success:function(data){
+          window.open().document.write(data);
+        },
+        error:function(data){
+        }
+    });
+  }
 
 </script>
 @endsection

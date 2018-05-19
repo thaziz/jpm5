@@ -762,7 +762,6 @@ function hitung_total_tagihan(){
 
                             response.data[i].dd_jumlah+'<input type="hidden" value="'+response.data[i].dd_jumlah+'" name="dd_jumlah[]">',
 
-
                             accounting.formatMoney(response.data[i].dd_harga * response.data[i].dd_jumlah, "", 2, ".",',')+'<input class="dd_total" type="hidden" value="'+response.data[i].dd_harga * response.data[i].dd_jumlah+'" name="dd_total[]">',
 
                             accounting.formatMoney(0, "", 2, ".",',')+'<input class="dd_biaya_tambahan" type="hidden" value="0" name="dd_biaya_tambahan[]">',

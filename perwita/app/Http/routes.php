@@ -135,6 +135,7 @@ Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
 Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
 Route::get('penerimaanbarang/hapusdatapenerimaan', 'PurchaseController@hapusdatapenerimaan');
+Route::get('penerimaanbarang/lihatjurnal/{id}', 'PurchaseController@lihatjurnalpenerimaan');
 
 
 
@@ -344,6 +345,7 @@ Route::get('buktikaskeluar/print', 'kasKeluarController@printing');
 Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 Route::post('buktikaskeluar/update_form', 'kasKeluarController@update_form');
 Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
+Route::get('buktikaskeluar/hapus', 'kasKeluarController@hapus');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 
 // IKHTISAR KAS
