@@ -27,7 +27,7 @@
                             <a>Purchase</a>
                         </li>
                         <li>
-                          <a> Pending</a>
+                          <a> Pending Subcon</a>
                         </li>
                         <li class="active">
                             <strong>Index</strong>
@@ -45,7 +45,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Pembayaran Kas
+                    <h5> Pending Subcon
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                 </div>
@@ -66,7 +66,7 @@
                         <th> Tanggal </th>
                         <th> Keterangan </th>
                         <th> No Invoice </th>  
-                        <th> Agen/Vendor </th>
+                        <th> Subcon </th>
                         <th> Aksi </th>
                     </thead>
                     <tbody>  
@@ -77,7 +77,7 @@
                         <td>{{$val->fp_keterangan}}</td>
                         <td>{{$val->fp_noinvoice}}</td>
                         <td>{{$val->nama}}</td>
-                        <td align="center"><a href="{{route('proses', ['id' => $val->fp_idfaktur])}}"><button type="button" class="btn btn-primary"><i class="fa fa-cog"> Proses</i></button></a></td>
+                        <td align="center"><a href="{{route('proses_subcon', ['id' => $val->fp_idfaktur])}}"><button type="button" class="btn btn-primary"><i class="fa fa-cog"> Proses</i></button></a></td>
                       </tr>
                       @endforeach
                     </tbody>

@@ -370,6 +370,9 @@ Route::get('pending/create', 'pendingController@create')->name('proses');
 Route::get('pending/save', 'pendingController@save')->name('save_pending');
 Route::post('pending/save', 'pendingController@save')->name('save_pending');
 Route::get('pending_subcon/index', 'pendingController@index_subcon');
+Route::get('pending_subcon/create', 'pendingController@create_subcon')->name('proses_subcon');
+Route::get('pending_subcon/save', 'pendingController@save_subcon');
+Route::post('pending_subcon/save', 'pendingController@save_subcon');
 
 // VOucher hutang
 Route::get('voucherhutang/voucherhutang', 'v_hutangController@voucherhutang');
