@@ -198,7 +198,7 @@
                               <td >
                                 <button style="margin-left: 5px;" type="button" class="btn btn-info pull-right reload" onclick="reload()"><i class="fa fa-refresh">&nbsp;Reload</i></button>
 
-                                <button style="margin-left: 5px;" type="button" class="btn btn-warning pull-right print_petty disabled" onclick="printing()"><i class="fa fa-print">&nbsp;print</i></button>
+                                <button style="margin-left: 5px;" type="button" class="btn btn-warning pull-right print_petty " onclick="printing()"><i class="fa fa-print">&nbsp;print</i></button>
 
                                 <button style="margin-left: 5px;" type="button" class="btn btn-primary pull-right " id="save_patty" onclick="save_patty()"><i class="fa fa-save">&nbsp;Simpan Data</i></button>
                                 
