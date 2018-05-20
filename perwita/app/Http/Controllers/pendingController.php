@@ -34,12 +34,8 @@ class pendingController extends Controller
 					  ->where('fp_pending_status','PENDING')	  
 					  ->get();
 
-			$subcon = DB::table('faktur_pembelian')
-					  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
-					  ->join('subcon','pb_kode_subcon','=','kode')
-					  ->where('fp_pending_status','PENDING')	  
-					  ->get();
-			$data = array_merge($agen,$vendor,$subcon);
+
+			$data = array_merge($agen,$vendor);
 		}else{
 			$agen = DB::table('faktur_pembelian')
 				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
@@ -55,13 +51,8 @@ class pendingController extends Controller
 					  ->where('fp_comp',$cabang)	  
 					  ->get();
 
-			$subcon = DB::table('faktur_pembelian')
-					  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
-					  ->join('subcon','pb_kode_subcon','=','kode')
-					  ->where('fp_pending_status','PENDING')	  
-					  ->where('fp_comp',$cabang)	  
-					  ->get();
-			$data = array_merge($agen,$vendor,$subcon);
+			
+			$data = array_merge($agen,$vendor);
 		}
 	 	
 
@@ -267,38 +258,26 @@ class pendingController extends Controller
 	public function index_subcon(){
 		
 
-		$data = DB::table('faktur_pembelian')
-				  ->join('pembayaran_subcon','fp_nofaktur','=','pb_faktur')
-				  ->where('fp_pending_status','PENDING')
+		$cabang = Auth::user()->kode_cabang;
+		if (Auth::user()->punyaAkses('Pending Subcon','all')) {
+			$agen = DB::table('faktur_pembelian')
+				  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
+				  ->join('agen','pb_kode_subcon','=','kode')
+				  ->where('fp_pending_status','PENDING')	  
 				  ->get();
 
-		$data_dt = DB::table('faktur_pembelian')
-				  ->join('pembayaran_subcon','fp_nofaktur','=','pb_faktur')
-				  ->join('pembayaran_subcon_dt','pbd_pb_id','=','pb_id')
-				  ->where('fp_pending_status','PENDING')
+		}else{
+			$data = DB::table('faktur_pembelian')
+				  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
+				  ->join('agen','pb_kode_subcon','=','kode')
+				  ->where('fp_pending_status','PENDING')	  
+				  ->where('fp_comp',$cabang)	  
 				  ->get();
-		$persen=[];
-		for ($i=0; $i < count($data); $i++) { 
-			$persen[$i] = DB::table('master_persentase')
-				  ->where('kode',$data[$i]->pb_id_persen)
-				  ->get();
-		}
 
-		for ($i=0; $i < count($data); $i++) { 
-			for ($a=0; $a < count($data_dt); $a++) { 
-				if ($data_dt[$a]->pbd_pb_id == $data[$i]->pb_id) {
-					$hasil[$a] = $data_dt[$a]->pbd_tarif_resi;
-				}
-
-				$hasil = array_sum($hasil);
-				$total = $data[$i]->fp_netto/$hasil;
-				$total = $total*100;
-			}
-			$fix_persen[$i] = $total;
 		}
 		// return $fix_persen;
 		// return 'asd';
-		return view('purchase.pending.indexPendingSubcon',compact('data','persen','fix_persen'));
+		return view('purchase.pending.indexPendingSubcon',compact('data'));
 
 	}
 

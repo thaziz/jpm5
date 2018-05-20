@@ -369,6 +369,7 @@ Route::get('pending_kas/save_kas/{id}', 'pendingController@save_kas');
 Route::get('pending/create', 'pendingController@create')->name('proses');
 Route::get('pending/save', 'pendingController@save')->name('save_pending');
 Route::post('pending/save', 'pendingController@save')->name('save_pending');
+Route::get('pending_subcon/index', 'pendingController@index_subcon');
 
 // VOucher hutang
 Route::get('voucherhutang/voucherhutang', 'v_hutangController@voucherhutang');
