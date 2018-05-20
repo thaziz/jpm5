@@ -289,7 +289,7 @@ class pendingController extends Controller
 
 		$pb_id = $header->pb_id;
 		
-		$list = DB::select("SELECT pembayaran_subcon.*,delivery_order.*, asal.nama as asal,tujuan.nama as tujuan  
+		$list = DB::select("SELECT pembayaran_subcon_dt.*,delivery_order.*, asal.nama as asal,tujuan.nama as tujuan  
 								   FROM pembayaran_subcon_dt
 								   inner join delivery_order on nomor = pbd_resi
 								   inner join 
