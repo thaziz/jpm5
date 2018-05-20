@@ -122,7 +122,7 @@
             </tr>
             <tr>
               <td>Tanggal</td>
-              <td><input readonly="" class="form-control tanggal" value="{{$now}}" type="text" name="tN"></td>
+              <td><input readonly="" class="form-control" value="{{$now}}" type="text" name="tN"></td>
             </tr>
           </table>
         </div>
@@ -147,7 +147,7 @@
                   <select class="form-control jenis_pembiayaan" type="text" name="jenis_pembiayaan">
                     <option value="0" selected>- Pilih Jenis Pembiayaan -</option>
                     <option value="PAKET">PAKET</option>
-                    <option value="KARGO">KARGO</option>
+                    <option value="CARGO">CARGO</option>
                   </select>
                 </td>
               </tr>
@@ -274,9 +274,6 @@
 <script src="{{ asset('assets/vendors/chosen/chosen.jquery.js') }}"></script>
 <script type="text/javascript">
 var datatable;
-$('.tanggal').datepicker({
-  format:'dd-mm-yyyy'
-});
   $(document).ready(function(){
     // $('.hid').attr('hidden',true);
     $('.search').attr('disabled',true);
@@ -401,7 +398,7 @@ $('.tanggal').datepicker({
       $('.pembiayaan_paket').attr('hidden',false);
       $('.pembiayaan_cargo').attr('hidden',true);
       $('.pembiayaan').attr('hidden',true);
-    }else if(ini == 'KARGO'){
+    }else if(ini == 'CARGO'){
       $('.pembiayaan_paket').attr('hidden',true);
       $('.pembiayaan_cargo').attr('hidden',false);
       $('.pembiayaan').attr('hidden',true);

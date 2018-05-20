@@ -3,12 +3,11 @@
                         <tr>
                             <th> No DO</th>
                             <th> Tanggal </th>
-                            <th> Customer </th>
                             <th> Pengirim </th>
                             <th> Penerima </th>
                             <th> Kota Asal </th>
                             <th> Kota Tujuan </th>
-                            <th> Status </th>
+                            <th> Tipe </th>
                             <th> Detail </th>
                           
                         </tr>
@@ -17,7 +16,7 @@
                        
                     </tbody>
                     <tr>
-                      <td colspan="8">Total net</td>
+                      <td colspan="7">Total net</td>
                       <td id="total_grandtotal"></td>
                     </tr>
                   </table>
@@ -34,45 +33,30 @@
            function format ( d ) {
               return  '<table class="table">'+
                         '<tr>'+
-                        '<td>Tipe</td>'+
-                        '<td>:</td>'+
-                        '<td>'+d.type_kiriman+'</td>'+
-                    '</tr>'+
-                    '<tr>'+
-                        '<td>Jenis</td>'+
-                        '<td>:</td>'+
-                        '<td>'+d.jenis_pengiriman+'</td>'+
-                    '</tr>'+
-                    '<tr>'+
-                        '<td>Pendapatan</td>'+
-                        '<td>:</td>'+
-                        '<td>'+d.pendapatan+'</td>'+
-                    '</tr>'+
-                    '<tr>'+
-                        '<td>customer</td>'+
-                        '<td>:</td>'+
-                        '<td>'+d.cab+'</td>'+
-                    '</tr>'+
-                    '<tr>'+
-                        '<td>DPP</td>'+
-                        '<td>:</td>'+
-                        '<td>'+d.total_dpp+'</td>'+
-                    '</tr>'+
-                    '<tr>'+
-                        '<td>Vendor</td>'+
-                        '<td>:</td>'+
-                        '<td>'+d.total_vendo+'</td>'+
-                    '</tr>'+
-                    '<tr>'+
-                        '<td>total net</td>'+
-                        '<td>:</td>'+
-                        '<td>'+d.total_net+'</td>'+
-                    '</tr>'+
-                    '<tr>'+
-                        '<td>cabang</td>'+
-                        '<td>:</td>'+
-                        '<td>'+d.cab+'</td>'+
-                    '</tr>'+
+                            '<td>status</td>'+
+                            '<td>:</td>'+
+                            '<td>'+d.status+'</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td>pendapatan</td>'+
+                            '<td>:</td>'+
+                            '<td>'+d.pendapatan+'</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td>customer</td>'+
+                            '<td>:</td>'+
+                            '<td>'+d.cus+'</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td>total net</td>'+
+                            '<td>:</td>'+
+                            '<td>'+d.total_net+'</td>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<td>cabang</td>'+
+                            '<td>:</td>'+
+                            '<td>'+d.cab+'</td>'+
+                        '</tr>'+
                     '</table>'
                       ;
               }
@@ -83,9 +67,6 @@
               var cabang = '{{$cabang}}';
               var tipe = '{{$tipe}}';
               var status = '{{$status}}';
-              var jenis = '{{$jenis}}';
-              var pendapatan = '{{$pendapatan}}';
-              var customer = '{{$customer}}';
 
               var table =  $('#addColumn').DataTable({
                     processing: true,
@@ -93,17 +74,16 @@
                     serverSide: true,
                     ajax: {
                         url:'{{ route('carideliveryorder_total') }}',
-                        data:{min,max,asal,tujuan,cabang,tipe,status,jenis,pendapatan,customer}
+                        data:{min,max,asal,tujuan,cabang,tipe,status}
                     },
                     "columns": [
                     { "data": "nomor" },
                     { "data": "tanggal" },
-                    { "data": "cus" },
                     { "data": "nama_pengirim" },
                     { "data": "nama_penerima" },
                     { "data": "asal" },
                     { "data": "tujuan" },
-                    { "data": "status" },
+                    { "data": "type_kiriman" },
                     {
                         "class": "details-control",
                         "orderable": false,
@@ -138,8 +118,6 @@
                 }
             } ); 
     })
-
-
       
  
 </script>

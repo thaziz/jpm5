@@ -20,14 +20,12 @@
                         <tr> 
                             <th> No.</th>
                             <th> No DO</th>
-                            <th> Customer</th>
                             <th> Tanggal </th>
                             <th> Pengirim  </th>
                             <th> Penerima  </th>
                             <th> Kota Asal  </th>
                             <th> Kota Tujuan  </th>
                             <th> Tipe  </th>
-                            <th> Pendapatan  </th>
                             <th> Status</th>
                             <th> Cabang  </th>
                             <th> Tarif Keseluruhan  </th>
@@ -40,15 +38,13 @@
                           <td>{{ $index }}</td>
                           <td>{{ $val->nomor }}</td>
                           <td>{{ $val->tanggal }}</td>
-                          <td>{{ $val->cus }}</td>
                           <td>{{ $val->nama_pengirim }}</td>
                           <td>{{ $val->nama_penerima }}</td>
                           <td>{{ $val->asal }}</td>
                           <td>{{ $val->tujuan }}</td>
                           <td>{{ $val->type_kiriman }}</td>
-                          <td>{{ $val->pendapatan }}</td>
                           <td>{{ $val->status }}</td>
-                          <td>{{ $val->cab }}</td>
+                          <td>{{ $val->cabang }}</td>
                           <td align="right">{{ number_format( $val->total_net,0,',','.') }}</td>
                         </tr>
                         @endforeach

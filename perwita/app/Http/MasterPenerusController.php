@@ -89,7 +89,6 @@ class MasterPenerusController extends Controller
 				  ->insert([
 				  		'kode'		=>	strtoupper($request->kode_persen),
 				  		'nama'		=>  $request->pembiayaan,
-				  		'jenis_pendapatan'		=>  $request->jp,
 				  		'persen'	=>  $request->persentase,
 				  		'cabang'	=>  $request->cabang,
 				  		'kode_akun' =>  $request->nama_akun,
