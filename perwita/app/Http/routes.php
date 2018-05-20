@@ -1864,6 +1864,11 @@ Route::get('master_keuangan/buku_besar/single/{throtle}', [
   'as'   => 'buku_besar.index_single'
 ]);
 
+Route::get('master_keuangan/buku_besar/pdf/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_buku_besar@print_pdf_buku_besar_single',
+  'as'   => 'buku_besar.pdf_single'
+]);
+
 // Route::get('master_keuangan/neraca/perbandingan/{throtle}', [
 //   'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca_perbandingan',
 //   'as'   => 'neraca.index_perbandingan'
