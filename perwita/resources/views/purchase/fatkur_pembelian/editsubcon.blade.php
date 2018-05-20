@@ -820,9 +820,9 @@ function pilih_kontrak(asd){
         $('.sc_kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
         $('.table_filter_subcon').removeClass('disabled');
 
-        $('.sc_no_asal_subcon').val(response.kontrak[0].no_asal);
-        $('.sc_no_tujuan_subcon').val(response.kontrak[0].no_tujuan);
-        $('.sc_no_kendaraan_subcon').val(response.kontrak[0].ksd_id_angkutan);
+        $('.sc_no_asal_subcon').val(response.subcon_dt[0].no_asal);
+        $('.sc_no_tujuan_subcon').val(response.subcon_dt[0].no_tujuan);
+        $('.sc_no_kendaraan_subcon').val(response.subcon_dt[0].ksd_id_angkutan);
         hitung_jumlah();
 
 
