@@ -179,7 +179,16 @@
                             <b> Cabang </b>
                             </td>
                             <td>
-                              <input type="text" class="form-control" readonly="" value="{{$spp->spp_cabang}}">
+                              <input type="text" class="form-control" readonly="" value="{{$spp->nama}}">
+                            </td>
+                          </tr>
+
+                           <tr>
+                            <td>
+                            <b> Tipe </b>
+                            </td>
+                            <td>
+                              <input type="text" class="form-control" readonly="" value="{{$namatipe}}">
                             </td>
                           </tr>
 
@@ -232,11 +241,17 @@
                         <td> {{$codt->codt_qtyrequest}} </td>
                         <td> {{$codt->codt_qtyapproved}} </td>
                         <td> {{$codt->unitstock}}</td>
-                        <td>  @if($codt->sg_qty == '')
+                        <td> 
+                        @if($tipespp != 'J')
+                          @if($codt->sg_qty == '')
                            Kosong
                             @else
                             {{$codt->sg_qty}}
                              @endif
+                        @else
+                          -
+                          @endif
+
                          </td>
                          @foreach($data['codt_supplier'] as $codtsupp)
                           <td class="supplier{{$index}}" data-id="{{$index}}" id="supplier"> </td>
@@ -323,11 +338,15 @@
                         <td>  <input type="text" class="input-sm form-control qty qtyapproval{{$idbarang}}"  name="qtyapproval[]" data-id="{{$idbarang}}" required="">  </td>
                        
                         <td> 
-                        @if ($sppd->sg_qty == '')
+                         @if($tipespp != 'J')
+                          @if($codt->sg_qty == '')
                            Kosong
+                            @else
+                            {{$codt->sg_qty}}
+                             @endif
                         @else
-                        {{$sppd->sg_qty}}
-                         @endif
+                          -
+                          @endif
                          </td>
 
 
@@ -778,7 +797,7 @@
               }
              },
 			 error : function(){
-				location.reload();
+				//location.reload();
 			 }
 
         })

@@ -867,6 +867,25 @@ function cariSUB(){
   var id_subcon = $('.id_subcon').val();
   var index = array_do.indexOf(m_do_subcon);
 
+  var m_do_asal = $('.m_do_asal').val();
+  var m_do_tujuan = $('.m_do_tujuan').val();
+  var m_tipe_kendaraan = $('.m_tipe_kendaraan').val();
+
+  if (m_do_asal != sc_tujuan_subcon) {
+      toastr.warning('Asal Do Tidak Sama Dengan Asal Kontrak');
+      return false;
+  }
+
+  if (m_do_tujuan != m_do_tujuan) {
+      toastr.warning('Tujuan Do Tidak Sama Dengan Tujuan Kontrak');
+      return false;
+  }
+
+  if (m_tipe_kendaraan != m_tipe_kendaraan) {
+      toastr.warning('Tipe Kendaraan Do Tidak Sama Dengan Tipe Kendaraan Kontrak');
+      return false;
+  }
+  
   if (index == -1) {
       subcon.row.add([
                   m_seq+'<input type="hidden" class="seq_sub sub_seq_'+m_do_subcon+'"  value="'+m_seq+'" >'+

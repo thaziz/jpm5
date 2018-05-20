@@ -223,7 +223,7 @@
               var lol = anjay.length+1;
               datatabel.row.add([
                    '<b class="tengah">' + lol +' </b>',
-                  '<input type="text" name="accountid[]" class="form-control f accc" readonly>'+ '&nbsp;&nbsp;' +'<select class="form-control chosen-select-width3 suppilerid hasil" name="supplierid"><option value="" selected="" disabled="">--Pilih Akun--</option>@foreach($akunselect as $a)<option value="{{$a->id_akun}}">{{$a->nama_akun}}</option>@endforeach</select>',
+                  '<input type="text" name="accountid[]" class="form-control f accc" readonly>'+ '&nbsp;&nbsp;' +'<select class="form-control chosen-select-width3 suppilerid hasil" name="supplierid"><option value="" selected="" disabled="">--Pilih Akun--</option>@foreach($akunselect as $a)<option value="{{$a->id_akun}}">{{$a->id_akun}} - {{$a->nama_akun}}</option>@endforeach</select>',
                   '<input type="text" name="keterangan[]" class="form-control g">',
                   '<input type="text" name="nominal[]" onkeyup="hitung(this)" class="nominal nilaiuang form-control h textright" id="nominal">',
                   '<a class="remove textcenter pull-right" onclick="hapus(this)"><i class="btn btn-danger fa fa-minus"></i></a>'

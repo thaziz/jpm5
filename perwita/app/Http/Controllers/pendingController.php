@@ -20,18 +20,41 @@ use Auth;
 class pendingController extends Controller
 {
 	public function index(){
-	 	$agen = DB::table('faktur_pembelian')
+		$cabang = Auth::user()->kode_cabang;
+		if (Auth::user()->punyaAkses('Pending','all')) {
+			$agen = DB::table('faktur_pembelian')
 				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
 				  ->join('agen','bp_kode_vendor','=','kode')
 				  ->where('fp_pending_status','PENDING')	  
 				  ->get();
 
-		$vendor = DB::table('faktur_pembelian')
+			$vendor = DB::table('faktur_pembelian')
+					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+					  ->join('vendor','bp_kode_vendor','=','kode')
+					  ->where('fp_pending_status','PENDING')	  
+					  ->get();
+
+
+			$data = array_merge($agen,$vendor);
+		}else{
+			$agen = DB::table('faktur_pembelian')
 				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
-				  ->join('vendor','bp_kode_vendor','=','kode')
+				  ->join('agen','bp_kode_vendor','=','kode')
 				  ->where('fp_pending_status','PENDING')	  
+				  ->where('fp_comp',$cabang)	  
 				  ->get();
-		$data = array_merge($agen,$vendor);
+
+			$vendor = DB::table('faktur_pembelian')
+					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+					  ->join('vendor','bp_kode_vendor','=','kode')
+					  ->where('fp_pending_status','PENDING')	  
+					  ->where('fp_comp',$cabang)	  
+					  ->get();
+
+			
+			$data = array_merge($agen,$vendor);
+		}
+	 	
 
 		// return Auth::user()->m_level;
 
@@ -235,48 +258,189 @@ class pendingController extends Controller
 	public function index_subcon(){
 		
 
-		$data = DB::table('faktur_pembelian')
-				  ->join('pembayaran_subcon','fp_nofaktur','=','pb_faktur')
-				  ->where('fp_pending_status','PENDING')
+		$cabang = Auth::user()->kode_cabang;
+		if (Auth::user()->punyaAkses('Pending Subcon','all')) {
+			$data = DB::table('faktur_pembelian')
+				  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
+				  ->join('subcon','pb_kode_subcon','=','kode')
+				  ->where('fp_pending_status','PENDING')	  
 				  ->get();
 
-		$data_dt = DB::table('faktur_pembelian')
-				  ->join('pembayaran_subcon','fp_nofaktur','=','pb_faktur')
-				  ->join('pembayaran_subcon_dt','pbd_pb_id','=','pb_id')
-				  ->where('fp_pending_status','PENDING')
+		}else{
+			$data = DB::table('faktur_pembelian')
+				  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
+				  ->join('subcon','pb_kode_subcon','=','kode')
+				  ->where('fp_pending_status','PENDING')	  
+				  ->where('fp_comp',$cabang)	  
 				  ->get();
-		$persen=[];
-		for ($i=0; $i < count($data); $i++) { 
-			$persen[$i] = DB::table('master_persentase')
-				  ->where('kode',$data[$i]->pb_id_persen)
-				  ->get();
-		}
 
-		for ($i=0; $i < count($data); $i++) { 
-			for ($a=0; $a < count($data_dt); $a++) { 
-				if ($data_dt[$a]->pbd_pb_id == $data[$i]->pb_id) {
-					$hasil[$a] = $data_dt[$a]->pbd_tarif_resi;
-				}
-
-				$hasil = array_sum($hasil);
-				$total = $data[$i]->fp_netto/$hasil;
-				$total = $total*100;
-			}
-			$fix_persen[$i] = $total;
 		}
 		// return $fix_persen;
 		// return 'asd';
-		return view('purchase.pending.indexPendingSubcon',compact('data','persen','fix_persen'));
+		return view('purchase.pending.indexPendingSubcon',compact('data'));
 
 	}
 
-	public function save_subcon($id){
-		$update = DB::table('faktur_pembelian')
-					->where('fp_idfaktur',$id)
-					->update([
-						'fp_pending_status' => 'APPROVED'
-					]);
+	public function create_subcon(request $request){
+		$header = DB::table('faktur_pembelian')
+				  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
+				  ->where('fp_idfaktur',$request->id)
+				  ->first();	
+
+		$pb_id = $header->pb_id;
+		
+		$list = DB::select("SELECT pembayaran_subcon_dt.*,delivery_order.*, asal.nama as asal,tujuan.nama as tujuan  
+								   FROM pembayaran_subcon_dt
+								   inner join delivery_order on nomor = pbd_resi
+								   inner join 
+								   (SELECT id,nama FROM kota) as asal on id_kota_asal = asal.id
+								    inner join 
+								   (SELECT id,nama FROM kota) as tujuan on id_kota_tujuan = tujuan.id
+								   where pbd_pb_id = '$pb_id'
+								   and pbd_status = 'PENDING'");
+
+			$percent = DB::table('subcon')
+					->where('kode',$header->fp_supplier)
+					->first();
+			
+
+		// return $percent;
+		$persen = [];
+		for ($i=0; $i < count($list); $i++) { 
+			$bagi 	= round($list[$i]->pbd_tarif_harga)/round($list[$i]->pbd_tarif_resi);
+			$persen[$i] = round($bagi,4)*100;
+
+			$list[$i]->pbd_tarif_resi = round($list[$i]->pbd_tarif_resi);
+			$list[$i]->pbd_tarif_harga	  = round($list[$i]->pbd_tarif_harga);
+		}
+
+	
+
+		return view('purchase.pending.createPendingSubcon',compact('header','list','persen','percent'));
 	}
 
+	public function save_subcon(Request $request){
+		// dd($request->status);
+		if($request->status == 1){
+
+		   for ($i=0; $i < count($request->id_bpd); $i++) { 
+		   	$update = DB::table('pembayaran_subcon_dt')
+						->where('pbd_pb_id',$request->id_bpd[$i])
+						->where('pbd_pb_dt',$request->dt_bpd[$i])
+						->update([
+							'pbd_status' => 'APPROVED'
+						]);
+					
+		   }
+			//UPDATE BP
+		    $cari_bpd = DB::table('pembayaran_subcon_dt')
+		   				 ->where('pbd_pb_id',$request->id_bpd[0])
+		   				 ->get();
+
+		   	
+		   	 for ($i=0; $i < count($cari_bpd); $i++) { 
+		   	 	$status[$i] = $cari_bpd[$i]->pbd_status;
+		   	 }
+
+		   	 if (isset($status)) {
+		   	 	if (in_array('PENDING', $status)) {
+	   	 			$pending_status = 'PENDING';
+		   	 	}else{
+		   	 		$pending_status = 'APPROVED';
+		   	 	}
+
+		   	 $update_bp = DB::table('faktur_pembelian')
+			   	 			 ->join('pembayaran_subcon','fp_nofaktur','=','pb_faktur')
+			   				 ->where('pb_id',$request->id_bpd[0])
+			   				 ->update([
+			   				 	'fp_pending_status' => $pending_status
+			   				 ]);
+			   				 
+		   	 }
+
+		   
+		   	
+
+			 for ($i=0; $i < count($request->bpd_id); $i++) { 
+
+			 	$cari_max_pending = DB::table('pending_keterangan')
+		   	 					   ->max('pk_id');
+
+			 	if ($cari_max_pending != null) {
+		   	 		$cari_max_pending += 1;
+				 }else{
+				   	$cari_max_pending = 1;
+				 }
+			 	$save = DB::table('pending_keterangan')
+			   			  ->insert([
+			   			  	'pk_id'				=> $cari_max_pending,
+			   			  	'pk_id_bpd'			=> $request->bpd_id[$i],
+			   			  	'pk_keterangan'		=> $request->keterangan,
+			   			  	'created_at'		=> Carbon::now(),
+			   			  	'updated_at'		=> Carbon::now()
+			   			  ]);
+			 }
+
+			 return 'Success';
+		
+		}else{
+			// return 'asd';
+		   	$update = DB::table('pembayaran_subcon_dt')
+						->where('pbd_pb_id',$request->id_bpd_modal)
+						->where('pbd_pb_dt',$request->dt_bpd_modal)
+						->update([
+							'pbd_status' => 'APPROVED'
+						]);
+			//UPDATE BP
+		    $cari_bpd = DB::table('pembayaran_subcon_dt')
+		   				 ->where('pbd_pb_id',$request->id_bpd_modal[0])
+		   				 ->get();
+
+		   	
+		   	 for ($i=0; $i < count($cari_bpd); $i++) { 
+		   	 	$status[$i] = $cari_bpd[$i]->pbd_status;
+		   	 }
+
+		   	 if (isset($status)) {
+		   	 	if (in_array('PENDING', $status)) {
+	   	 			$pending_status = 'PENDING';
+		   	 	}else{
+		   	 		$pending_status = 'APPROVED';
+		   	 	}
+
+		   	 	$update_bp = DB::table('faktur_pembelian')
+			   	 			 ->join('pembayaran_subcon','fp_nofaktur','=','pb_faktur')
+			   				 ->where('pb_id',$request->id_bpd_modal[0])
+			   				 ->update([
+			   				 	'fp_pending_status' => $pending_status
+			   				 ]);
+			   				 
+		   	 }
+		   
+		   	 
+				
+			$cari_max_pending = DB::table('pending_keterangan')
+		   	 					   ->max('pk_id');
+
+		   	if ($cari_max_pending != null) {
+		   	 	$cari_max_pending += 1;
+		   	}else{
+		   	 	$cari_max_pending = 1;
+		   	}
+			
+		   	$save = DB::table('pending_keterangan')
+		   			  ->insert([
+		   			  	'pk_id'				=> $cari_max_pending,
+		   			  	'pk_id_bpd'			=> $request->bpd_id_modal,
+		   			  	'pk_keterangan'		=> $request->pk_keterangan,
+		   			  	'created_at'		=> Carbon::now(),
+		   			  	'updated_at'		=> Carbon::now()
+		   			  ]);
+		   	return 'Success';
+			 
+		}
+		
+
+	}
 
 }

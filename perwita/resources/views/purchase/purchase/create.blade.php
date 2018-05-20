@@ -80,7 +80,7 @@
                     </div>
                 </div>
 
-                <form method="post" action="{{url('purchaseorder/savepurchase')}}"  enctype="multipart/form-data" class="form-horizontal">
+                <form method="post" action="{{url('purchaseorder/savepurchase')}}"  enctype="multipart/form-data" class="form-horizontal" id="formsave">
                 <div class="ibox-content">
                         <div class="row">
             <div class="col-xs-12">
@@ -145,8 +145,14 @@
                     
                    
                        <div class="pull-right">
-                               <div class="simpan"> </div>
-                          </div>
+                          <table border="0">
+                          <tr>
+                            <td> <div class="simpanitem"> </div> </td>
+                            <td> &nbsp; </td>
+                            <td> <div class="print"> </div> </td>
+                          </tr>
+                          </table>
+                       </div>
 
                 </div><!-- /.box-body -->
 
@@ -240,6 +246,55 @@
             }
             return x1 + x2;
     }
+
+     $('#formsave').submit(function(event){
+         
+          event.preventDefault();
+          var post_url2 = $(this).attr("action");
+          var form_data2 = $(this).serialize();
+            swal({
+            title: "Apakah anda yakin?",
+            text: "Simpan Data Purchase Order!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Simpan!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: true
+          },
+          function(){
+               
+        $.ajax({
+          type : "POST",          
+          data : form_data2,
+          url : post_url2,
+          dataType : 'json',
+          success : function (response){
+            if(response.status == "gagal"){
+                   
+            swal({
+                title: "error",
+                text: response.info,
+                type: "error",
+                
+            })
+            }
+            else {
+             alertSuccess(); 
+             $('.save').attr('disabled' , true);
+
+                               html = "<a class='btn btn-info btn-sm' href={{url('purchaseorder/print')}}"+'/'+response.info+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+                  $('.print').html(html);
+            }
+
+          },
+          error : function(){
+           swal("Error", "Server Sedang Mengalami Masalah", "error");
+          }
+        })
+      });
+      
+      })
 
     $.ajaxSetup({
       headers: {
@@ -418,7 +473,7 @@
           cabang = $('.cabang').val();
           var simpan ='<br> <button class="btn btn-sm btn-success save" type="submit" > <i class="fa fa-upload"> </i> Simpan </button> </form>';
 
-         $('.simpan').html(simpan);
+         $('.simpanitem').html(simpan);
 
           $('.table-spp').empty();    
        
@@ -496,7 +551,7 @@
                         '<th style="width:80px"> Jumlah dikirim </th>' +
                         '<th style="width:130px"> Harga Per Item </th>' +
                         '<th style="width:130px"> Total Harga</th>' +
-                        '<th style="width:200px"> Dikirim Ke </th>' +      
+                        '<th style="width:200px" id="tdgudang"> Dikirim Ke </th>' +      
                     '</tr>' +
                    
                     '</thead>' +
@@ -518,10 +573,13 @@
 
                         '<td > <input type="text" class="form-control harga harga'+nosup+'" value='+ addCommas(response.codt[i][j].codt_harga)+' data-id='+nosup+' name="harga[]"></td>' + //harga
 
-                        '<td> <input type="text" class="form-control totalharga2 totalharga2'+nosup+'" readonly="" name="totalharga[]" data-id='+nosup+'>  </td>' +
+                        '<td> <input type="text" class="form-control totalharga2 totalharga2'+nosup+'" readonly="" name="totalharga[]" data-id='+nosup+'>  </td>';
 
-                        '<td > <select class="form-control gudang" name="lokasikirim[]">  @foreach($data['gudang'] as $gdg) <option value="{{$gdg->mg_id}}"> {{$gdg->mg_namagudang}}</option> @endforeach </select></td>' + //cabang
-                     '<tr>';
+                        if(response.spp[0][0].spp_tipe != 'J'){
+                          rowTable += '<td id="tdgudang"> <select class="form-control gudang" name="lokasikirim[]" class="tdgudang">  @foreach($data['gudang'] as $gdg) <option value="{{$gdg->mg_id}}"> {{$gdg->mg_namagudang}}</option> @endforeach </select></td>' + //cabang
+                         '<tr>';
+
+                        }
                        nosup++;
                     
            }          
@@ -537,6 +595,13 @@
                               console.log('gudang');                        
                           }
                       }
+
+          if(response.spp[0][0].spp_tipe == 'J'){
+            $('#tdgudang').hide();
+          }
+          else {
+            $('#tdgudang').show();
+          }
 
 
                       
