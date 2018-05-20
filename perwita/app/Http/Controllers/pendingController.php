@@ -20,24 +20,50 @@ use Auth;
 class pendingController extends Controller
 {
 	public function index(){
-	 	$agen = DB::table('faktur_pembelian')
+		$cabang = Auth::user()->kode_cabang;
+		if (Auth::user()->punyaAkses('Pending','all')) {
+			$agen = DB::table('faktur_pembelian')
 				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
 				  ->join('agen','bp_kode_vendor','=','kode')
 				  ->where('fp_pending_status','PENDING')	  
 				  ->get();
 
-		$vendor = DB::table('faktur_pembelian')
+			$vendor = DB::table('faktur_pembelian')
+					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+					  ->join('vendor','bp_kode_vendor','=','kode')
+					  ->where('fp_pending_status','PENDING')	  
+					  ->get();
+
+			$subcon = DB::table('faktur_pembelian')
+					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+					  ->join('subcon','bp_kode_vendor','=','kode')
+					  ->where('fp_pending_status','PENDING')	  
+					  ->get();
+			$data = array_merge($agen,$vendor,$subcon);
+		}else{
+			$agen = DB::table('faktur_pembelian')
 				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
-				  ->join('vendor','bp_kode_vendor','=','kode')
+				  ->join('agen','bp_kode_vendor','=','kode')
 				  ->where('fp_pending_status','PENDING')	  
+				  ->where('fp_comp',$cabang)	  
 				  ->get();
 
-		$vendor = DB::table('faktur_pembelian')
-				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
-				  ->join('subcon','bp_kode_vendor','=','kode')
-				  ->where('fp_pending_status','PENDING')	  
-				  ->get();
-		$data = array_merge($agen,$vendor,$vendor);
+			$vendor = DB::table('faktur_pembelian')
+					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+					  ->join('vendor','bp_kode_vendor','=','kode')
+					  ->where('fp_pending_status','PENDING')	  
+					  ->where('fp_comp',$cabang)	  
+					  ->get();
+
+			$subcon = DB::table('faktur_pembelian')
+					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+					  ->join('subcon','bp_kode_vendor','=','kode')
+					  ->where('fp_pending_status','PENDING')	  
+					  ->where('fp_comp',$cabang)	  
+					  ->get();
+			$data = array_merge($agen,$vendor,$subcon);
+		}
+	 	
 
 		// return Auth::user()->m_level;
 
