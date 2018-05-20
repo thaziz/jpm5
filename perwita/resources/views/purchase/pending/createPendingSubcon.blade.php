@@ -139,7 +139,7 @@
             @foreach($list as $i => $val)
             <tr>
               <td>
-                {{$val->bpd_pod}}
+                {{$val->pbd_resi}}
                 <input type="hidden" class="resi" name="resi" value="{{$val->pbd_resi}}">
                 <input type="hidden" class="id_bpd " name="id_bpd" value="{{$val->pbd_pb_id}}">
                 <input type="hidden" class="bpd_id_table " value="{{$val->pbd_id}}">
