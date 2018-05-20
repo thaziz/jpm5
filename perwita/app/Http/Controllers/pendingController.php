@@ -260,7 +260,7 @@ class pendingController extends Controller
 
 		$cabang = Auth::user()->kode_cabang;
 		if (Auth::user()->punyaAkses('Pending Subcon','all')) {
-			$agen = DB::table('faktur_pembelian')
+			$data = DB::table('faktur_pembelian')
 				  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
 				  ->join('agen','pb_kode_subcon','=','kode')
 				  ->where('fp_pending_status','PENDING')	  
