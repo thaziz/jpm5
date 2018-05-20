@@ -561,7 +561,7 @@ function search(){
 
   $.ajax({
       url:baseUrl + '/biaya_penerus/cariresiedit',
-      type:'get',
+      type:'post',
       data: {head,data,resi_array,id},
       success:function(data){
         $('.resi_body').html('');

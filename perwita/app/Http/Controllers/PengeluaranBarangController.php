@@ -47,37 +47,23 @@ class PengeluaranBarangController extends Controller
         return view('purchase/pengeluaran_barang/create', compact('pb','now','cabang','item','gudang','kodecabang','namacabang'));
 	}
 
-	public function ganti_nota(request $request)
+	public function ganti_nota(request $req)
 	{
-		$id = DB::table('pengeluaran_barang')
-	    		->where('pb_comp',$request->cabang)
-	    		->where('pb_tgl','>=',carbon::now()->format('Y-m-d'))
-	    		->max('pb_nota');
+		$bulan = Carbon::now()->format('m');
+	    $tahun = Carbon::now()->format('y');
 
-	    $year  = Carbon::now()->format('Y'); 
-		$month = Carbon::now()->format('m');  	
+	    $cari_nota = DB::select("SELECT  substring(max(bkk_nota),14) as id from bukti_kas_keluar
+	                                    WHERE bkk_comp = '$req->cabang'
+	                                    AND to_char(bkk_tgl,'MM') = '$bulan'
+	                                    AND to_char(bkk_tgl,'YY') = '$tahun'");
+
+	    $index = (integer)$cari_nota[0]->id + 1;
+	    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
+
 		
-	   	if(isset($id)) {
+		$nota = 'SPPB' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
 
-			$explode = explode("/", $id);
-		    $id = $explode[2];
-			$id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
-			$string = (int)$id + 1;
-			$id = str_pad($string, 3, '0', STR_PAD_LEFT);
-
-		}
-
-		else {
-			$id = '001';
-		}
-
-
-		$first = Carbon::now();
-	    $second = Carbon::now()->format('d/m/Y');
-	    $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
-
-		$pb 	= 'SPPB-' . $month . $year . '/'. $request->cabang . '/' .  $id;
-		return response()->json(['nota'=> $pb]);
+		return response()->json(['nota'=>$nota]);
 	}
 
 	public function detail() {
@@ -282,8 +268,7 @@ class PengeluaranBarangController extends Controller
 							  ->join('mastergudang','sg_gudang','=','mg_id')
 							  ->select('mg_namagudang','mg_id','sg_id')
 							  ->where('sg_item',$temp1[$i])
-							  // ->where('sg_cabang',$data->pb_comp)
-							  // ->orderBy('mg_id')
+							  ->where('sg_cabang',$data->pb_comp)
 							  ->orderBy('mg_id','ASC')
 							  ->get();
 
@@ -317,7 +302,6 @@ class PengeluaranBarangController extends Controller
 				}
 			}
 		}
-		
 		return view('purchase/konfirmasi_pengeluaranbarang/detail',compact('data','temp','temp1','data_dt','tgl','jumlah','id','gudang'));
 	}
 	public function approve(request $request){
