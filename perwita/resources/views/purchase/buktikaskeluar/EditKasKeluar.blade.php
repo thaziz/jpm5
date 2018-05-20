@@ -1417,8 +1417,7 @@
       success:function(data){
         if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
 
-          var terbayar =   parseFloat(data.data.fp_netto) 
-                         - parseFloat(data.data.fp_sisapelunasan) 
+          var terbayar = parseFloat(data.data.fp_sisapelunasan) 
                          + parseFloat(data.data.fp_debitnota) 
                          - parseFloat(data.data.fp_creditnota) 
                          + parseFloat(data.data.fp_uangmuka);
