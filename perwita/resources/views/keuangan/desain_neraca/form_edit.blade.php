@@ -1000,13 +1000,13 @@
         if($("#nama_desain").val() == ""){
           $("#nama_desain").focus();
           toastr.warning('Harap Mengisi Terlebih Dahulu Nama Desain Neraca Ini.');
-          btn.text("Simpan Perubahan Desain");
+          btn.text("Simpan Desain");
           btn.removeAttr("disabled");
           return false;
         }
 
         if(data_neraca.length > 0 ){
-          $.ajax(baseUrl+"/master_keuangan/desain_neraca/update/{{ $id }}",{
+          $.ajax(baseUrl+"/master_keuangan/desain_neraca/save",{
             type: "post",
             timeout: 15000,
             data: {data_neraca: data_neraca, data_detail: data_detail, nama_desain: $("#nama_desain").val(), _token: "{{ csrf_token() }}" },
@@ -1014,16 +1014,16 @@
             success: function(response){
               console.log(response);
               if(response.status == "sukses"){
-                toastr.success('Data Desain Neraca Berhasil Diubah');
+                toastr.success('Data Desain Neraca Disimpan');
                 btn.removeAttr("disabled");
-                btn.text("Simpan Perubahan Desain");
+                btn.text("Simpan Desain");
                 data_neraca = []; data_detail = [];
 
                 form_reset();
               }else if(response.status == "exist"){
                 toastr.error('Kode Master Group Akun Sudah Ada Dengan Nama "'+response.content+'". Silahkan Membuat Kode Akun Lagi.');
                 btn.removeAttr("disabled");
-                btn.text("Simpan Perubahan Desain");
+                btn.text("Simpan Desain");
               }
 
               btn.removeAttr("disabled");
@@ -1036,14 +1036,14 @@
                   toastr.error('Internal Server Error. Data Gagal Disimpan');
                 }
 
-                btn.text("Simpan Perubahan Desain");
+                btn.text("Simpan Desain");
                 btn.removeAttr("disabled");
             }
           })
         }else{
           toastr.error('Desain Neraca Yang Anda Buat Masih Kosong.');
           btn.removeAttr("disabled");
-          btn.text("Simpan Perubahan Desain");
+          btn.text("Simpan Desain");
         }
       })
 

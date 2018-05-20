@@ -328,7 +328,7 @@
    // });
 
 
-   throttle = "{{ $throttle }}"; req1 = "{{ date_ind($request->m) }}"; req2 = "{{ $request->y }}";
+   throttle = "{{ $throttle }}"; req1 = "{{ $request->m }}"; req2 = "{{ $request->y }}";
 
    $('.date_year').datepicker( {
         format: "mm/yyyy",
@@ -357,7 +357,7 @@
    switch(throttle){
     case "bulan" :
       $("#tampil").val(throttle);
-      $("#title_in").text("Menampilkan Neraca Periode Bulan "+req1+" "+req2);
+      $("#title_in").text("Menampilkan Neraca Periode Bulan "+req1+"/"+req2);
       $("#bulan").css("display", "inline-block"); $("#tahun").css("display", "inline-block");
       $("#bulan").val(req1); $("#tahun").val(req2);
       break;

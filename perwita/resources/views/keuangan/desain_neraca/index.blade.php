@@ -70,9 +70,9 @@
         <td width="15%" class="text-center">Filter Berdasarkan : </td>
         <td width="18%">
           <select class="form-control" style="width:90%; height: 30px" id="berdasarkan">
-              <option value="1">Nama Desain</option>
-              <option value="2">Tanggal Dibuat</option>
-              <option value="3">Status</option>
+              <option value="0">Kode Group</option>
+              <option value="1">Nama Group</option>
+              <option value="2">Jenis Group</option>
             </select>
         </td>
 

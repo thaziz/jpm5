@@ -133,7 +133,7 @@
 
                           </td>
                           <td> 
-                           @if(Auth::user()->punyaAkses('Keuangan Purchase','aktif'))
+                           @if(Auth::user()->punyaAkses('Keuangan Purchase','tambah'))
                             <button class="btn btn-sm btn-primary" onclick="proseskeuangan({{$po->po_id}})" type="button" id="createmodal" data-toggle="modal" data-target="#myModal2"> PROSES  </button> &nbsp;  
                           @endif
                           

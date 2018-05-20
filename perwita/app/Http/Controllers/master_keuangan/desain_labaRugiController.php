@@ -13,19 +13,19 @@ use DB;
 class desain_labaRugiController extends Controller
 {
     public function index(){
-    	// $data = DB::table("d_akun")
-        //      ->whereIn("id_akun", function($query){
-        //          $query->select('d_akun.id_akun')
-        //                  ->from("d_akun")
-        //                  ->join("d_akun_saldo", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
-        //                  ->where("d_akun_saldo.is_active", "=", "1")->get();
-        //      })->select("id_akun", "nama_akun", "id_parrent")->orderBy("d_akun.id_akun", "asc")->get();
+    	$data = DB::table("d_akun")
+    			->whereIn("id_akun", function($query){
+    				$query->select('d_akun.id_akun')
+    						->from("d_akun")
+    						->join("d_akun_saldo", "d_akun.id_akun", "=", "d_akun_saldo.id_akun")
+    						->where("d_akun_saldo.is_active", "=", "1")->get();
+    			})->select("id_akun", "nama_akun", "id_parrent")->orderBy("d_akun.id_akun", "asc")->get();
 
-        $desain = DB::table("desain_laba_rugi")->select("*")->orderBy("id_desain", "desc")->get();
+        $desain = DB::table("desain_laba_rugi")->select("*")->orderBy("tanggal_buat", "desc")->get();
 
-        // return json_encode($data);
+        //return json_encode($desain);
 
-    	return view("keuangan.desain_laba_rugi.index")->withDesain($desain);
+    	return view("keuangan.desain_laba_rugi.index")->withData(json_encode($data))->withDesain($desain);
     }
 
     public function add(){

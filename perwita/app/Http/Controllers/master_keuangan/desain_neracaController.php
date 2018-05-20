@@ -105,7 +105,6 @@ class desain_neracaController extends Controller
         // return json_encode($data_group);
 
         return view("keuangan.desain_neraca.form_edit")
-               ->withId($id)
                ->withData_akun(json_encode($data_akun))
                ->withData_group(json_encode($data_group))
                ->withData_neraca(json_encode($data_neraca))
@@ -124,9 +123,7 @@ class desain_neracaController extends Controller
         $deleteDetail = DB::table("desain_neraca_dt")->where("id_desain", $id)->delete();
         $deleteAkun = DB::table("desain_detail_dt")->where("id_desain", $id)->delete();
 
-        DB::table("desain_neraca")->where("id_desain", $id)->update([ "nama_desain" => $request->nama_desain ]);
-
-        foreach($request->data_neraca as $dataNeraca){
+        foreach($request->neraca as $dataNeraca){
             DB::table("desain_neraca_dt")->insert([
                 "id_desain"     => $id,
                 "nomor_id"      => $dataNeraca["nomor_id"],
@@ -138,15 +135,12 @@ class desain_neracaController extends Controller
             ]);
         }
 
-        if(isset($request->data_detail)){
-            foreach($request->data_detail as $data_detail){
+        if(isset($request->detail)){
+            foreach($request->detail as $data_detail){
                 DB::table("desain_detail_dt")->insert([
-                    "id_desain"          => $id,
-                    "id_parrent"         => $data_detail["id_parrent"],
-                    "nomor_id"           => $data_detail["nomor_id"],
-                    "id_group"           => $data_detail["id_group"],
-                    "dari"               => $data_detail["dari"],
-                    "nama"               => $data_detail["nama"]
+                    "id_desain"     => $id,
+                    "nomor_id"      => $data_detail["nomor_id"],
+                    "id_akun"       => $data_detail["id_akun"]
                 ]);
             }
         }

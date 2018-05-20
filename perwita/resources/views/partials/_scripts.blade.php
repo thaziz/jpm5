@@ -106,7 +106,6 @@
            "sInfo": "Menampilkan _START_ - _END_ Dari _TOTAL_ Data",
            "sSearch": 'Pencarian..',
            "sLengthMenu": "Menampilkan &nbsp; _MENU_ &nbsp; Data",
-           "sZeroRecords": "Tidak Menemukan Data Yang Sesuai Dengan Pencarian",
            "infoEmpty": "",
            "paginate": {
                 "previous": "Sebelumnya",
