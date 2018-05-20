@@ -1044,7 +1044,7 @@ class do_Controller extends Controller
             $jml_detail = 0;
         }
 
-        
+        // dd($do);
         // return $cek_data;
        
         return view('sales.do.form', compact('kota', 'customer', 'kendaraan', 'marketing', 'angkutan', 'outlet', 'do', 'jml_detail', 'cabang', 'jurnal_dt', 'kecamatan', 'kec', 'do_dt','cek_data','cus'));
