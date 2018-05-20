@@ -74,7 +74,7 @@
                           {{$val->fp_nofaktur}}
                           <input type="hidden" class="id" value="{{$val->fp_idfaktur}}" name="">
                         </td>
-                        <td><?php echo date('d/F/Y',strtotime($val->fp_tgl)) ?></td>
+                        <td><?php echo date('d/F/Y',strtotime($val->fp_tgl)); ?></td>
                         <td align="right">{{$persen[$i][0]->persen}} %</td>
                         <td align="right">{{$fix_persen[$i]}} %</td>
                         <td align="center"><a onclick="saving(this)" class="fa fa-check">Approve</a></td>

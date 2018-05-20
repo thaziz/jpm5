@@ -31,7 +31,13 @@ class pendingController extends Controller
 				  ->join('vendor','bp_kode_vendor','=','kode')
 				  ->where('fp_pending_status','PENDING')	  
 				  ->get();
-		$data = array_merge($agen,$vendor);
+
+		$vendor = DB::table('faktur_pembelian')
+				  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
+				  ->join('subcon','bp_kode_vendor','=','kode')
+				  ->where('fp_pending_status','PENDING')	  
+				  ->get();
+		$data = array_merge($agen,$vendor,$vendor);
 
 		// return Auth::user()->m_level;
 
