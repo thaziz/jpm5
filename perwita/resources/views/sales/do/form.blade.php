@@ -1151,17 +1151,12 @@
                     var tarif_dasar = $("input[name='ed_tarif_dasar']").val(accounting.formatMoney('{{ $do->tarif_dasar or null }}',"",0,'.',','));
                     var biaya_penerus = $("input[name='ed_tarif_penerus']").val(accounting.formatMoney('{{ $do->tarif_penerus or null }}',"",0,'.',','));
                     var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val(accounting.formatMoney('{{ $do->biaya_tambahan or null }}',"",0,'.',','));
-                    var biaya_komisi = $("input[name='ed_biaya_tambahan']").val(accounting.formatMoney('{{ $do->biaya_komisi or null }}',"",0,'.',','));
-
-                    var tarif_dasar =$("input[name='ed_tarif_dasar']").val();
-                    var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
-                    var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
-                    var biaya_komisi = $("input[name='ed_biaya_tambahan']").val();
+                    var biaya_komisi = $("input[name='ed_biaya_komisi']").val(accounting.formatMoney('{{ $do->biaya_komisi or null }}',"",0,'.',','));
 
                     var diskon = $("input[name='ed_diskon_h']").val();
                     var diskon_value = $("input[name='ed_diskon_v']").val();
-                    var dpp_val = $("input[name='ed_biaya_komisi']").val();
-                    var dpp_vendo = $("input[name='ed_biaya_komisi']").val();
+                    var dpp_val = $("input[name='ed_dpp']").val();
+                    var dpp_vendo = $("input[name='ed_vendor']").val();
                     var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
                     
                     var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
@@ -1221,7 +1216,6 @@
                     
 
                     if ($('.vendor_tarif').is(':checked') == false) {
-                        
                         $("input[name='ed_dpp']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
                     }else{
                         $("input[name='ed_vendor']").prop('readonly',false);
@@ -1248,25 +1242,16 @@
                     var tarif_dasar = $("input[name='ed_tarif_dasar']").val(accounting.formatMoney('{{ $do->tarif_dasar or null }}',"",0,'.',','));
                     var biaya_penerus = $("input[name='ed_tarif_penerus']").val(accounting.formatMoney('{{ $do->tarif_penerus or null }}',"",0,'.',','));
                     var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val(accounting.formatMoney('{{ $do->biaya_tambahan or null }}',"",0,'.',','));
-                    var biaya_komisi = $("input[name='ed_biaya_tambahan']").val(accounting.formatMoney('{{ $do->biaya_komisi or null }}',"",0,'.',','));
-
-                    var tarif_dasar =$("input[name='ed_tarif_dasar']").val();
-                    var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
-                    var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
-                    var biaya_komisi = $("input[name='ed_biaya_tambahan']").val();
+                    var biaya_komisi = $("input[name='ed_biaya_komisi']").val(accounting.formatMoney('{{ $do->biaya_komisi or null }}',"",0,'.',','));
 
                     var diskon = $("input[name='ed_diskon_h']").val();
                     var diskon_value = $("input[name='ed_diskon_v']").val();
-                    var dpp_val = $("input[name='ed_biaya_komisi']").val();
-                    var dpp_vendo = $("input[name='ed_biaya_komisi']").val();
                     var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
-                    
                     var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
                     var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
                     var berat_val = berat_val.replace(/[A-Za-z$. ,-]/g, "");
                     var koli_val = koli_val.replace(/[A-Za-z$. ,-]/g, "");
                     var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
-                    var dpp_val = dpp_val.replace(/[A-Za-z$. ,-]/g, "");
 
                     var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
                     var dpp  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);

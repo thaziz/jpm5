@@ -24,6 +24,10 @@
     tr.shown td.details-control {
         background: url('{{ asset('assets/img/details_close.png') }}') no-repeat center center;
     }
+    .redline {
+      background-color: red;
+      color: white; 
+    }
 </style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -128,7 +132,7 @@
                         </tr>
                         <tr>
                           <th style="width: 100px; padding-top: 16px"> Pendapatan </th>
-                          <td colspan="3"> 
+                          <td > 
                            <select style="width: 200px; margin-top: 20px;" name="pendapatan" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
                             <option value=""  selected=""> --Tipe --</option>
                             <option value="PAKET">PAKET</option>
@@ -136,9 +140,40 @@
                             <option value="KARGO">KARGO</option>
                            </select>
                           </td>
-                        </tr>                        
+
+                          <th style="width: 100px; padding-top: 16px"> Customer </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" name="customer" class="cari_semua customer chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Customer --</option>
+                            @foreach ($customer as $e)
+                                <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
+                            @endforeach
+                           </select>
+                          </td>
+                        </tr>
+                          <th style="width: 100px; padding-top: 16px"> Laporan </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" name="laporan" class="cari_semua laporan chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Laporan--</option>
+                            <option value="DEFAULT">MASTER</option>
+                            <option value="MASTER DETAIL">MASTER DETAIL</option>
+                            <option value="rekap">REKAP CUSTOMER</option>
+                            <option value="rekap_detail">REKAP CUSTOMER DETIL</option>
+                            <option value="REKAP BULANAN" class="redline">REKAP BULANAN</option>
+                            <option value="DETAIL PER MOBIL" class="redline">DETAIL PER MOBIL</option>
+                            <option value="DETAIL PER SOPIR" class="redline">DETAIL PER SOPIR</option>
+                            <option value="DETAIL PER SALES" class="redline">DETAIL PER SALES</option>
+                            <option value="REKAP PER MOBIL" class="redline">REKAP PER MOBIL</option>
+                            <option value="REKAP PER SOPIR" class="redline">REKAP PER SOPIR</option>
+                            <option value="REKAP PER SALES" class="redline">REKAP PER SALES</option>
+                           </select>
+                          </td>
+                        </tr>       
+
+
                       <br>
                       </table>
+                      
                       <div class="row pull-right" style="margin-top: 0px;margin-right: 3px;"> &nbsp; &nbsp; 
                         <select class="chosen-select-width form-control" onchange="location = this.value;">
                           <option selected="" disabled="">- Jenis Laporan -</option>
@@ -163,36 +198,13 @@
                             <th> Kota Tujuan </th>
                             <th> Status </th>
                             <th> Detail </th>
-                           {{--  <th> Pendapatan </th>
-                            <th> Customer </th>
-                            <th> Tarif Keseluruhan </th>
-                            <th hidden=""></th> --}}
+                       
                         </tr>
                     </thead>
                     <tbody>
-                       {{--  @foreach ($data as $row)
-                        <tr>
-                            <td hidden="">{{ $row->kaid }}</td>
-                            <td hidden="">{{ $row->ktid }}</td>
-                            <td><input type="hidden" name="" value="{{ $row->nomor }}">{{ $row->nomor }}</td>
-                            <td>{{ $row->tanggal }}</td>
-                            <td>{{ $row->nama_pengirim }}</td>
-                            <td>{{ $row->nama_penerima }}</td>
-                            <td>{{ $row->asal }}</td>
-                            <td>{{ $row->tujuan }}</td>
-                            <td>{{ $row->kecamatan }}</td>
-                            <td>{{ $row->type_kiriman }}</td>
-                            {{-- <td>{{ $row->jenis_pengiriman }}</td>
-                            <td>{{ $row->status }}</td>
-                            <td>{{ $row->pendapatan }}</td>
-                            <td>{{ $row->customer }}</td>
-                            <td align="right"><input type="hidden" name="" class="total_net" value="{{ $row->total_net }}">{{ number_format($row->total_net,0,',','.') }}</td>
-                            <td hidden="">{{ $row->kode_cabang }}</td>
-                        </tr>
-                        @endforeach --}}
                     </tbody>
                     <tr>
-                      <td colspan="7">Total net</td>
+                      <td colspan="8">Total net</td>
                       <td id="total_grandtotal"></td>
                     </tr>
                   </table>
@@ -255,7 +267,7 @@
                     '<td>'+d.total_vendo+'</td>'+
                 '</tr>'+
                 '<tr>'+
-                    '<td>total net</td>'+
+                    '<td class="tot">total net</td>'+
                     '<td>:</td>'+
                     '<td>'+d.total_net+'</td>'+
                 '</tr>'+
@@ -321,10 +333,12 @@
     // On each draw, loop over the `detailRows` array and show any child rows
    
 
+    // $('#tot').each(function(){
 
-      function cetak(){
-      
+    // })
 
+
+    function cetak(){
       $.ajax({
         data: $('#cari_data').serialize(),
         url: baseUrl + '/reportdeliveryorder_total/reportdeliveryorder_total',
@@ -337,8 +351,6 @@
     }
 
     function excel(){
-     
-
       $.ajax({
         data:  $('#cari_data').serialize(),
         url: baseUrl + '/exceldeliveryorder_total/exceldeliveryorder_total',
@@ -361,10 +373,11 @@
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
-
     function cari(){
       var min = $('#min').val();
       var max = $('#max').val();
+      var laporan = $('.laporan').val();
+      console.log(laporan);
       if (min == '') {
                 Command: toastr["warning"]("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
 
@@ -413,7 +426,31 @@
                 return false;
 
             }
-     $.ajax({
+            if (laporan == '') {
+                Command: toastr["warning"]("Pilih Laporan Terlebih Dahulu", "Peringatan!")
+
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": false,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": true,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+
+                return false;
+            }
+      if (laporan == 'DEFAULT') {
+        $.ajax({
             data: $('#cari_data').serialize(),
             url: baseUrl + '/ajaxcarideliveryorder_total/ajaxcarideliveryorder_total',
             type: "get",
@@ -426,6 +463,87 @@
             },
             
         });
+      }
+
+
+      //CARI MASTER DETAIL
+      else if(laporan == 'MASTER DETAIL'){
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total_masterdetail/ajaxcarideliveryorder_total_masterdetail',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+              
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
+      }
+
+
+      //CARI REKAP CUSTOMER
+      else if(laporan == 'rekap' || 'rekap_detail'){
+        $.ajax({
+          data: $('#cari_data').serialize(),
+          url: baseUrl + '/cari_rekapcustomer/cari_rekapcustomer',
+          type: "get",
+          success : function(data){
+            if (data.data == '0') {
+               Command: toastr["warning"]("Data Terkait Tidak Ditemukan", "Peringatan!")
+
+                toastr.options = {
+                  "closeButton": false,
+                  "debug": false,
+                  "newestOnTop": false,
+                  "progressBar": true,
+                  "positionClass": "toast-top-right",
+                  "preventDuplicates": true,
+                  "onclick": null,
+                  "showDuration": "300",
+                  "hideDuration": "1000",
+                  "timeOut": "5000",
+                  "extendedTimeOut": "1000",
+                  "showEasing": "swing",
+                  "hideEasing": "linear",
+                  "showMethod": "fadeIn",
+                  "hideMethod": "fadeOut"
+                }
+              $('#replace').html('');
+
+            }else{
+              $('#replace').html(data);
+            }
+          }
+        });
+      }
+      //CARI REKAP BULANAN
+      else if(laporan == 'REKAP BULANAN'){
+        alert('a');
+      }
+      //CARI DETAIL PER MOBIL
+      else if(laporan == 'DETAIL PER MOBIL'){
+        alert('a');
+      }
+      //CARI DETAIL PER SOPIR
+      else if(laporan == 'DETAIL PER SOPIR'){
+        alert('a');
+      }
+      //CARI DETAIL PER SALES
+      else if(laporan == 'DETAIL PER SALES'){
+        alert('a');
+      }
+      //CARI REKAP PER MOBIL
+      else if(laporan == 'REKAP PER MOBIL'){
+        alert('a');
+      }
+      //CARI REKAP PER SOPIR
+      else if(laporan == 'REKAP PER SOPIR'){
+        alert('a');
+      }
+
     }
 
 
