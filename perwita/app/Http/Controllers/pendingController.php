@@ -316,7 +316,7 @@ class pendingController extends Controller
 
 	
 
-		return view('purchase.pending.createPending',compact('header','list','persen','percent'));
+		return view('purchase.pending.createPendingSubcon',compact('header','list','persen','percent'));
 	}
 
 	public function save_subcon(Request $request){
