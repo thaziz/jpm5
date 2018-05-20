@@ -300,7 +300,7 @@ class kasKeluarController extends Controller
 								'pc_akun'  		=> $req->hutang,
 								'pc_keterangan' => strtoupper($req->keterangan_head),
 								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT),
+								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
 								'updated_at' 	=> carbon::now(),
 								'created_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
@@ -462,7 +462,7 @@ class kasKeluarController extends Controller
 								'pc_akun'  		=> $req->hutang,
 								'pc_keterangan' => strtoupper($req->keterangan_head),
 								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT),
+								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
 								'updated_at' 	=> carbon::now(),
 								'created_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
@@ -1209,7 +1209,7 @@ class kasKeluarController extends Controller
 								'pc_akun'  		=> $req->hutang,
 								'pc_keterangan' => strtoupper($req->keterangan_head),
 								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT),
+								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
 								'updated_at' 	=> carbon::now(),
 								'created_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
@@ -2414,7 +2414,7 @@ class kasKeluarController extends Controller
 								'pc_akun'  		=> $req->hutang,
 								'pc_keterangan' => strtoupper($req->keterangan_head),
 								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT),
+								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
 								'updated_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
 								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
@@ -2635,6 +2635,62 @@ class kasKeluarController extends Controller
 
 		return view('purchase/buktikaskeluar/print',compact('cari_bkk_id','cari_bkk_dt','tgl','terbilang'));
 
+	}
+	public function hapus(request $req)
+	{
+		return DB::transaction(function() use ($req) {  
+			$cari_nota = DB::table('bukti_kas_keluar')
+						   ->join('bukti_kas_keluar_detail','bkkd_bkk_id','=','bkk_id')
+						   ->where('bkk_id',$req->id)
+						   ->get();
+
+			for ($i=0; $i < count($cari_nota); $i++) { 
+
+				if ($cari_nota[$i]->bkk_jenisbayar == 2 or $cari_nota[$i]->bkk_jenisbayar == 6 or $cari_nota[$i]->bkk_jenisbayar == 7 or $cari_nota[$i]->bkk_jenisbayar == 9) {
+					$cari_faktur = DB::table('faktur_pembelian')
+									 ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
+									 ->first();
+					$update_faktur =DB::table('faktur_pembelian')
+									  ->where('fp_nofaktur',$cari_nota[$i]->bkkd_ref)
+									  ->update([
+									  	'fp_sisapelunasan' => $cari_faktur->fp_sisapelunasan + $cari_nota[$i]->bkkd_total
+									  ]);
+				}elseif ($cari_nota[0]->bkk_jenisbayar == 3) {
+					$cari_faktur = DB::table('v_hutang')
+									 ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
+									 ->first();
+					$update_faktur =DB::table('v_hutang')
+									  ->where('v_nomorbukti',$cari_nota[$i]->bkkd_ref)
+									  ->update([
+									  	'v_pelunasan' => $cari_faktur->v_pelunasan + $cari_nota[$i]->bkkd_total
+									  ]);
+				}else if($cari_nota[0]->bkk_jenisbayar == 4){
+					$cari_faktur = DB::table('d_uangmuka')
+									 ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
+									 ->first();
+
+					$update_faktur = DB::table('d_uangmuka')
+									  ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
+									  ->update([
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total
+									  ]);
+				}
+			}
+
+			$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$cari_nota[0]->bkk_nota)
+							   ->delete();
+
+			$delete_patty = DB::table('patty_cash')
+							   ->where('pc_no_trans',$cari_nota[0]->bkk_nota)
+							   ->delete();
+
+			$delete_bkk   = DB::table('bukti_kas_keluar')
+							   ->where('bkk_nota',$cari_nota[0]->bkk_nota)
+							   ->delete();
+
+			
+		});
 	}
 
 }
