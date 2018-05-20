@@ -83,7 +83,7 @@
             <tr>
               <td>Nomor Ikhtisar</td>
               <td>
-                <input  class="form-control nomor_ik" type="text" value="{{$ik}}" name="ik" readonly=""  >
+                <input  class="form-control nomor_ik" type="text" value="" name="ik" readonly=""  >
               </td>
             </tr>
             <tr>
@@ -99,12 +99,24 @@
               </td>
             </tr>
             <tr>
-              <td>Cabang</td>
-              <td>
-                <input readonly=""  class="form-control cabang" type="text" value="{{$cabang->nama}}"  >  
-                <input  class="form-control cabang" type="hidden" value="{{$cabang->kode}}"  >         
-
-              </td>
+                <td style="padding-top: 0.4cm">Cabang</td>
+                @if(Auth::user()->punyaAkses('Ikhtisar Kas','cabang'))
+                <td>
+                    <select class="form-control chosen-select-width cabang" name="cabang">
+                        @foreach ($cabang as $row)
+                        <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                        @endforeach
+                    </select>
+                </td>
+                @else
+                <td class="disabled" hidden="">
+                    <select class="form-control chosen-select-width cabang" name="cabang">
+                        @foreach ($cabang as $row)
+                        <option @if(Auth::user()->kode_cabang == $row->kode) selected="" @endif value="{{ $row->kode }}">{{ $row->kode }} - {{ $row->nama }} </option>
+                        @endforeach
+                    </select>
+                </td>
+                @endif
             </tr>
             <tr>
               <td>Keterangan</td>
@@ -152,20 +164,29 @@ $('.reportrange').daterangepicker({
           format: 'DD/MM/YYYY'
       }         
 });
-
-function starto(){
+$(document).ready(function(){
   $.ajax({
     url:baseUrl +'/ikhtisar_kas/cari_patty',
+    data:$('.table_header :input').serialize(),
     success:function(response){
       $('.tabel_patty').html(response);
       $('.patty_cash').attr('hidden',false);
-
     }
   });
-}
-starto();
+
+  $.ajax({
+    url:baseUrl +'/ikhtisar_kas/nota',
+    data:$('.table_header :input').serialize(),
+    success:function(response){
+      $('.nomor_ik').val(response.nota);
+    }
+  });
+})
+
+
 
 function cari_patty(){
+
   $.ajax({
     url:baseUrl +'/ikhtisar_kas/cari_patty',
     data:$('.table_header :input').serialize(),
@@ -180,6 +201,17 @@ function cari_patty(){
     }
   });
 }
+
+$('.cabang').change(function(){
+  $.ajax({
+    url:baseUrl +'/ikhtisar_kas/nota',
+    data:$('.table_header :input').serialize(),
+    success:function(response){
+      $('.nomor_ik').val(response.nota);
+      cari_patty();
+    }
+  });
+})
 
 function simpan(){
     $.ajax({
