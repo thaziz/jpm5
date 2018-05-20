@@ -40,7 +40,6 @@ class laporan_neraca extends Controller
           ->get();
 
 
-
       foreach ($dataDetail as $dataDetail) {
 
           $dataTotal = 0;

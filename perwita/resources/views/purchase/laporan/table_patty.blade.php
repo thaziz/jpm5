@@ -20,13 +20,11 @@
               <td><?php echo date('d/m/Y',strtotime($val->pc_tgl));?></td>
               <td>{{$val->jenisbayar}}</td>
               <td>{{$val->pc_akun}}</td>
-              @foreach($akun as $d)
-              @if($d->id_akun == $val->pc_akun)
-              <td>{{$d->nama_akun}}</td>
-              @endif
-              @endforeach
+              
+              <td>{{$val->nama_akun}}</td>
+
               <td>{{$val->pc_keterangan}}</td>
-              <td align="right">{{$val->pc_debet}}</td>
+              <td align="right">0</td>
               <td align="right">{{$val->pc_kredit}}</td>
               <td>{{$val->pc_user}}</td>
             </tr>

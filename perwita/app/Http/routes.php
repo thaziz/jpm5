@@ -135,7 +135,6 @@ Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
 Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
 Route::get('penerimaanbarang/hapusdatapenerimaan', 'PurchaseController@hapusdatapenerimaan');
-Route::get('penerimaanbarang/lihatjurnal/{id}', 'PurchaseController@lihatjurnalpenerimaan');
 
 
 
@@ -320,6 +319,9 @@ Route::get('biaya_penerus_loading/cariresiedit', 'loadingController@cariresiedit
 Route::get('biaya_penerus_loading/save_loading', 'loadingController@save_loading');
 Route::get('biaya_penerus_loading/update_loading', 'loadingController@update_loading');
 // 
+Route::get('buktikaskeluar/patty_cash', 'kasKeluarController@patty_cash');
+Route::get('buktikaskeluar/cari_patty', 'kasKeluarController@cari_patty');
+Route::get('buktikaskeluar/print', 'kasKeluarController@print');
 //BUKTI KAS KELUAR
 Route::get('buktikaskeluar/index', 'kasKeluarController@index');
 Route::get('buktikaskeluar/create', 'kasKeluarController@create');
@@ -345,7 +347,6 @@ Route::get('buktikaskeluar/print', 'kasKeluarController@printing');
 Route::get('buktikaskeluar/edit/{id}', 'kasKeluarController@edit');
 Route::post('buktikaskeluar/update_form', 'kasKeluarController@update_form');
 Route::post('buktikaskeluar/update_patty', 'kasKeluarController@update_patty');
-Route::get('buktikaskeluar/hapus', 'kasKeluarController@hapus');
 Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 
 // IKHTISAR KAS
@@ -937,6 +938,11 @@ Route::get('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterC
 Route::get('exceldeliveryorder_total/exceldeliveryorder_total','LaporanMasterController@exceldeliveryorder_total');
 Route::get('ajaxcarideliveryorder_total/ajaxcarideliveryorder_total','LaporanMasterController@ajaxcarideliveryorder_total');
 Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterController@carideliveryorder_total')->name('carideliveryorder_total');
+
+  //masterdetail
+  Route::get('ajaxcarideliveryorder_total_masterdetail/ajaxcarideliveryorder_total_masterdetail','LaporanMasterController@ajaxcarideliveryorder_total_masterdetail');
+  //end off
+
 //END OF DELIVERY ORDER TOTAL
 
 //LAPORAN DELIVERY ORDER PAKET 
@@ -1763,6 +1769,30 @@ Route::get('master_keuangan/err_cek', function(){
   return view('keuangan.err.err_laporan');
 });
 
+
+// periode_keuangan
+  
+  Route::post('master_keuangan/periode_keuangan/tambah', [
+    'uses' => 'master_keuangan\periode_keuangan_controller@make',
+    'as'   => 'periode_keuangan.tambah'
+  ]);
+
+  Route::post('master_keuangan/periode_keuangan/setting', [
+    'uses' => 'master_keuangan\periode_keuangan_controller@setting',
+    'as'   => 'periode_keuangan.setting'
+  ]);
+
+// end
+
+
+// neraca saldo
+Route::get('master_keuangan/neraca-saldo/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
+  'as'   => 'neraca_saldo.index'
+]);
+// end neraca saldo
+
+
 //neraca
 
 Route::get('master_keuangan/neraca/single/{throtle}', [
@@ -1791,29 +1821,6 @@ Route::get('master_keuangan/neraca/excel/single/{throtle}', [
 ]);
 
 //endneraca
-
-
-// periode_keuangan
-  
-  Route::post('master_keuangan/periode_keuangan/tambah', [
-    'uses' => 'master_keuangan\periode_keuangan_controller@make',
-    'as'   => 'periode_keuangan.tambah'
-  ]);
-
-  Route::post('master_keuangan/periode_keuangan/setting', [
-    'uses' => 'master_keuangan\periode_keuangan_controller@setting',
-    'as'   => 'periode_keuangan.setting'
-  ]);
-
-// end
-
-
-// neraca saldo
-Route::get('master_keuangan/neraca-saldo/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
-  'as'   => 'neraca_saldo.index'
-]);
-// end neraca saldo
 
 
 //neraca_detail
@@ -1854,6 +1861,41 @@ Route::get('master_keuangan/laba_rugi/print/{throtle}', [
 ]);
 
 //end laba rugi
+
+
+// buku besar
+
+Route::get('master_keuangan/buku_besar/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_buku_besar@index_buku_besar_single',
+  'as'   => 'buku_besar.index_single'
+]);
+
+Route::get('master_keuangan/buku_besar/pdf/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_buku_besar@print_pdf_buku_besar_single',
+  'as'   => 'buku_besar.pdf_single'
+]);
+
+// Route::get('master_keuangan/neraca/perbandingan/{throtle}', [
+//   'uses' => 'master_keuangan\laporan\laporan_neraca@index_neraca_perbandingan',
+//   'as'   => 'neraca.index_perbandingan'
+// ]);
+
+// Route::get('master_keuangan/neraca/pdf/single/{throtle}', [
+//   'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca_single',
+//   'as'   => 'neraca.pdf_single'
+// ]);
+
+// Route::get('master_keuangan/neraca/pdf/perbandingan/{throtle}', [
+//   'uses' => 'master_keuangan\laporan\laporan_neraca@print_pdf_neraca_perbandingan',
+//   'as'   => 'neraca.pdf_perbandingan'
+// ]);
+
+// Route::get('master_keuangan/neraca/excel/single/{throtle}', [
+//   'uses' => 'master_keuangan\laporan\laporan_neraca@print_excel_neraca_single',
+//   'as'   => 'neraca.excel_single'
+// ]);
+
+// buku besar
 
 
 //kelompok akun

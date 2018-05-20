@@ -1,5 +1,5 @@
 
-@if ($view == 'rekap')
+@if ($laporan == 'rekap')
 <table class="table table-bordered datatable table-striped" id="table">
   <thead>
     <tr>
@@ -56,14 +56,14 @@
       <td style="text-align: right;">{{ number_format($e->diskon,0,',','.') }}</td>
       <td style="text-align: right;">{{ number_format($e->total_net,0,',','.') }}</td>
     </tr>
-    <tr style="background-color: #c3ffa6;">
+    <tr>
       <th colspan="2" style="text-align: center;">type</th>
       <th style="text-align: center;">qty</th>
       <th>&nbsp;</th>
       <th>&nbsp;</th>
       <th>&nbsp;</th>
     </tr>
-    <tr style="text-align: right;background-color: #e6ffda;">
+    <tr style="text-align: right;">
       @foreach ($doc as $a => $element)
         @if ($e->kode_customer == $doc[$a]->kode_customer)
               <td style="text-align: left;" colspan="2">dokumen</td>
@@ -75,7 +75,7 @@
       @endforeach
     </tr>
     
-    <tr style="text-align: right;background-color: #e6ffda;" >
+    <tr style="text-align: right;" >
       @foreach ($kilo as $b => $element)
         @if ($e->kode_customer == $kilo[$b]->kode_customer)
               <td  style="text-align: left;" colspan="2">Kilogram</td>
@@ -86,7 +86,7 @@
         @endif
       @endforeach
     </tr>
-    <tr style="text-align: right;background-color: #e6ffda;">
+    <tr style="text-align: right;">
       @foreach ($koli as $c => $element)
         @if ($e->kode_customer == $koli[$c]->kode_customer)
               <td style="text-align: left;" colspan="2">Koli</td>
@@ -97,7 +97,7 @@
         @endif
       @endforeach
     </tr>
-    <tr style="text-align: right;background-color: #e6ffda;">
+    <tr style="text-align: right;">
       @foreach ($sepeda as $d => $element)
         @if ($e->kode_customer == $sepeda[$d]->kode_customer)
               <td style="text-align: left;" colspan="2">Sepeda</td>
@@ -108,7 +108,7 @@
         @endif
       @endforeach
     </tr> 
-    <tr style="text-align: right;background-color: #e6ffda;">
+    <tr style="text-align: right;">
       @foreach ($koran as $f => $element)
         @if ($e->kode_customer == $koran[$f]->kode_customer)
               <td style="text-align: left;" colspan="2">Koran</td>
@@ -119,7 +119,7 @@
         @endif
       @endforeach
     </tr>
-    <tr style="text-align: right;background-color: #e6ffda;" > 
+    <tr style="text-align: right;" > 
       @foreach ($kargo as $g => $element)
         @if ($e->kode_customer == $kargo[$g]->kode_customer)
               <td  style="text-align: left;" colspan="2">Kargo</td>
@@ -130,7 +130,7 @@
         @endif
       @endforeach
     </tr>
-    <tr style="background-color: #ffe0e0;">
+    <tr>
       <th colspan="3" style="text-align: right;">Total</th>
       <th style="text-align: right;">{{ number_format($e->total,0,',','.') }}</th>
       <th style="text-align: right;">{{ number_format($e->diskon,0,',','.') }}</th>
@@ -139,10 +139,10 @@
    @endforeach
    <tr>
       <th colspan="2">Grand total</th>
-      <th> {{ number_format($do ,0,',','.')}}</th>
-      <th> {{ number_format($total,0,',','.') }} </th>  
-      <th> {{ number_format($diskon,0,',','.') }} </th>  
-      <th> {{ number_format($total_net,0,',','.') }}</th>  
+      <th style="text-align: right;"> {{ number_format($do ,0,',','.')}}</th>
+      <th style="text-align: right;"> {{ number_format($total,0,',','.') }} </th>  
+      <th style="text-align: right;"> {{ number_format($diskon,0,',','.') }} </th>  
+      <th style="text-align: right;"> {{ number_format($total_net,0,',','.') }}</th>  
     </tr>
   </tbody>
 </table>
