@@ -387,7 +387,7 @@ class pendingController extends Controller
 			// return 'asd';
 		   	$update = DB::table('pembayaran_subcon_dt')
 						->where('pbd_pb_id',$request->id_bpd_modal)
-						->where('bpd_bpdetail',$request->dt_bpd_modal)
+						->where('pbd_pb_dt',$request->dt_bpd_modal)
 						->update([
 							'pbd_status' => 'APPROVED'
 						]);
