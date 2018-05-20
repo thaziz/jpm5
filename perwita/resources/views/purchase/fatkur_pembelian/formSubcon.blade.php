@@ -225,7 +225,7 @@
 			<td width="200">
 
 				<input type="text" class="form-control sc_kendaraan_subcon" readonly=""  >
-        		<input type="hidden" class="form-control sc_kode_angkutan" style="width: 250px;">
+        		<input type="hidden" class="form-control sc_no_kendaraan_subcon" style="width: 250px;">
 				<input type="hidden" class="form-control sc_kode_angkutan" style="width: 250px;">
 			</td>
 		  </tr>
@@ -607,6 +607,15 @@ function cariSUB(){
 	var nota_subcon = $('.nota_subcon').val();
 	var m_do_subcon = $('.m_do_subcon').val();
 
+	var no_do_asal = $('.no_do_asal').val();
+	var no_do_tujuan = $('.no_do_tujuan').val();
+	var no_tipe_kendaraan = $('.no_tipe_kendaraan').val();
+
+
+	var sc_no_asal_subcon = $('.sc_no_asal_subcon').val();
+	var sc_no_tujuan_subcon = $('.sc_no_tujuan_subcon').val();
+	var sc_no_kendaraan_subcon = $('.sc_no_kendaraan_subcon').val();
+
 	if (m_do_subcon == '') {
 		toastr.warning('POD Harus Diisi !')
 		return 1;
@@ -615,6 +624,21 @@ function cariSUB(){
 	if (nota_subcon == '') {
 		toastr.warning('Harap Memasukkan Kontrak Subcon !')
 		return 1;
+	}
+
+	if (no_do_asal != sc_no_asal_subcon) {
+	   	toastr.warning('Asal Do Tidak Sama Dengan Asal Kontrak');
+	   	return false;
+	}
+
+	if (no_do_tujuan != sc_no_tujuan_subcon) {
+	   	toastr.warning('Tujuan Do Tidak Sama Dengan Tujuan Kontrak');
+	   	return false;
+	}
+
+	if (no_tipe_kendaraan != sc_no_kendaraan_subcon) {
+	   	toastr.warning('Tipe Kendaraan Do Tidak Sama Dengan Tipe Kendaraan Kontrak');
+	   	return false;
 	}
 
 	var sc_total_dt = $('.sc_total_dt').val();
@@ -634,20 +658,7 @@ function cariSUB(){
 	var m_do_tujuan = $('.m_do_tujuan').val();
 	var m_tipe_kendaraan = $('.m_tipe_kendaraan').val();
 
-	if (m_do_asal != sc_tujuan_subcon) {
-	   	toastr.warning('Asal Do Tidak Sama Dengan Asal Kontrak');
-	   	return false;
-	}
-
-	if (m_do_tujuan != m_do_tujuan) {
-	   	toastr.warning('Tujuan Do Tidak Sama Dengan Tujuan Kontrak');
-	   	return false;
-	}
-
-	if (m_tipe_kendaraan != m_tipe_kendaraan) {
-	   	toastr.warning('Tipe Kendaraan Do Tidak Sama Dengan Tipe Kendaraan Kontrak');
-	   	return false;
-	}
+	
 
 
 	if (index == -1) {

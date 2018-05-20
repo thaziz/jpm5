@@ -858,6 +858,15 @@ function cariSUB(){
   var nota_subcon = $('.nota_subcon').val();
   var m_do_subcon = $('.m_do_subcon').val();
 
+  var no_do_asal = $('.no_do_asal').val();
+  var no_do_tujuan = $('.no_do_tujuan').val();
+  var no_tipe_kendaraan = $('.no_tipe_kendaraan').val();
+
+
+  var sc_no_asal_subcon = $('.sc_no_asal_subcon').val();
+  var sc_no_tujuan_subcon = $('.sc_no_tujuan_subcon').val();
+  var sc_no_kendaraan_subcon = $('.sc_no_kendaraan_subcon').val();
+
   if (m_do_subcon == '') {
     toastr.warning('POD Harus Diisi !')
     return 1;
@@ -867,6 +876,22 @@ function cariSUB(){
     toastr.warning('Harap Memasukkan Kontrak Subcon !')
     return 1;
   }
+
+  if (no_do_asal != sc_no_asal_subcon) {
+      toastr.warning('Asal Do Tidak Sama Dengan Asal Kontrak');
+      return false;
+  }
+
+  if (no_do_tujuan != sc_no_tujuan_subcon) {
+      toastr.warning('Tujuan Do Tidak Sama Dengan Tujuan Kontrak');
+      return false;
+  }
+
+  if (no_tipe_kendaraan != sc_no_kendaraan_subcon) {
+      toastr.warning('Tipe Kendaraan Do Tidak Sama Dengan Tipe Kendaraan Kontrak');
+      return false;
+  }
+
 
   var sc_total_dt = $('.sc_total_dt').val();
   var sc_total = $('.sc_total').val();
