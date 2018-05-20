@@ -510,6 +510,7 @@ function pilih_do_subcon(par) {
 	var d_tujuan_text = $(par).find('.d_tujuan_text').text();
 	var d_jenis_tarif_text = $(par).find('.d_jenis_tarif_text').text();
 	var d_tipe_angkutan_text = $(par).find('.d_tipe_angkutan_text').text();
+	var d_tipe_angkutan = $(par).find('.d_tipe_angkutan').val();
 
 	$('.m_do_subcon').val(d_nomor_do);
 	$('.m_do_tanggal').val(d_tanggal);
@@ -519,6 +520,10 @@ function pilih_do_subcon(par) {
 	$('.m_do_tujuan').val(d_tujuan_text);
 	$('.m_jenis_angkutan_do').val(d_jenis_tarif_text);
 	$('.m_tipe_kendaraan').val(d_tipe_angkutan_text);
+
+	$('.no_do_asal').val(d_asal);
+	$('.no_do_tujuan').val(d_tujuan);
+	$('.no_tipe_kendaraan').val(d_tipe_angkutan);
 	
 	$('#modal_do').modal('hide');
 
@@ -555,6 +560,13 @@ function pilih_kontrak(asd){
 	    	$('.sc_tujuan_subcon').val(response.subcon_dt[0].ksd_tujuan);
 	    	$('.sc_kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
 	    	$('.table_filter_subcon').removeClass('disabled');
+
+
+
+
+			$('.sc_no_asal_subcon').val(response.kontrak[0].no_asal);
+	    	$('.sc_no_tujuan_subcon').val(response.kontrak[0].no_tujuan);
+	    	$('.sc_no_kendaraan_subcon').val(response.kontrak[0].ksd_id_angkutan);
 	    	hitung_jumlah();
 
 
@@ -756,6 +768,14 @@ function edit_subcon(a) {
 			$('.m_jenis_angkutan_do').val(response.do.nama_tarif);
 			$('.m_tipe_kendaraan').val(response.do.nama_angkutan);
 			$('.m_do_jumlah').val(response.do.jumlah);
+
+			$('.no_do_asal').val(response.do.id_kota_asal);
+			$('.no_do_tujuan').val(response.do.id_kota_tujuan);
+			$('.no_tipe_kendaraan').val(response.do.kode_tipe_angkutan);
+
+			$('.sc_no_asal_subcon').val(response.kontrak[0].no_asal);
+	    	$('.sc_no_tujuan_subcon').val(response.kontrak[0].no_tujuan);
+	    	$('.sc_no_kendaraan_subcon').val(response.kontrak[0].ksd_id_angkutan);
 			toastr.info('Inisialisasi Berhasil');
 	    }
 	})

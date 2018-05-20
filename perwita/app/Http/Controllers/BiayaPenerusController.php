@@ -1719,6 +1719,8 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
 			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
+			$fix[$i]['no_asal'] = $asal[$i]->ksd_asal;
+			$fix[$i]['no_tujuan'] = $tujuan[$i]->ksd_tujuan;
 			$fix[$i]['ksd_angkutan'] = $kontrak[$i]->nama;
 			$fix[$i]['ksd_id_angkutan'] = $kontrak[$i]->kode;
 		}
@@ -1808,6 +1810,8 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
 			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
+			$fix[$i]['no_asal'] = $asal[$i]->ksd_asal;
+			$fix[$i]['no_tujuan'] = $tujuan[$i]->ksd_tujuan;
 			$fix[$i]['ksd_angkutan'] = $kontrak[$i]->nama;
 			$fix[$i]['ksd_id_angkutan'] = $kontrak[$i]->kode;
 		}
