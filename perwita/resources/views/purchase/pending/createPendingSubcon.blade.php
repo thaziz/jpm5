@@ -85,7 +85,7 @@
     <div class="ibox">
       <div class="ibox-title">
         <h5>Form Approve Pending Order</h5>
-        <a href="../pending/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+        <a href="../pending_subcon/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
       </div>
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">
