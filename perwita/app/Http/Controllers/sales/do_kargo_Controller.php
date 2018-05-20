@@ -384,7 +384,9 @@ class do_kargo_Controller extends Controller
         }
 
         if ($request->status_kendaraan == 'SUB') {
-            if ($request->nama_subcon == 0) {
+
+            if ($request->nama_subcon == '0') {
+
                 return response()->json(['status' => 3,'text'=>'Nama Subcon' ]);
             }
         }
