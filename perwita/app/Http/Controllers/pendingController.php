@@ -262,14 +262,14 @@ class pendingController extends Controller
 		if (Auth::user()->punyaAkses('Pending Subcon','all')) {
 			$data = DB::table('faktur_pembelian')
 				  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
-				  ->join('agen','pb_kode_subcon','=','kode')
+				  ->join('subcon','pb_kode_subcon','=','kode')
 				  ->where('fp_pending_status','PENDING')	  
 				  ->get();
 
 		}else{
 			$data = DB::table('faktur_pembelian')
 				  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
-				  ->join('agen','pb_kode_subcon','=','kode')
+				  ->join('subcon','pb_kode_subcon','=','kode')
 				  ->where('fp_pending_status','PENDING')	  
 				  ->where('fp_comp',$cabang)	  
 				  ->get();
