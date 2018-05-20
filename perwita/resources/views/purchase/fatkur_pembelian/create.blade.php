@@ -235,11 +235,11 @@
 
                           
                            <tr>
-                            <td width='200px' >
+                            <td width='200px' id="tdupdatestock">
                              Pilih Barang Update Stock ?
                             </td>
                             <td id="tdupdatestock">
-                              <select class='form-control updatestock'  name="updatestock" required="" id="updatestock"> <option value='Y' selected=""> Ya </option> <option value='T'> Tidak </option> </select>   
+                              <select class='form-control updatestock'  name="updatestock"  id="updatestock"> <option value='Y' selected=""> Ya </option> <option value='T'> Tidak </option> </select>   
                             </td>
                           </tr>
                          </div>
@@ -260,11 +260,11 @@
                             </td>
                           </tr>
                           <tr>
-                            <td>
+                            <td id="tdgudang">
                               Gudang
                             </td>
-                            <td>
-                            <select class="form-control gudang chosen-select-width " name="gudang" required="" novalidate>
+                            <td id="tdgudang">
+                            <select class="form-control gudang chosen-select-width " name="gudang"  novalidate>
                                 <option value=""> -- Pilih Gudang -- </option>
                         
                             </select></td>
@@ -2749,10 +2749,6 @@
             arrnokas.push(val);
           });
 
-
-          
-
-
             swal({
             title: "Apakah anda yakin?",
             text: "Simpan Data Faktur Pembelian!",
@@ -2826,15 +2822,7 @@
             nettohutang2 = $('.nettohutang').val();
             nettohutangs = nettohutang2.replace(/,/g,'');
           }
-          totaljumlahs = $('.totaljumlah').val();
-          totaljumlahg = totaljumlahs.replace(/,/g,''); 
-        /*  alert(nettohutangs + 'nettohutangs');
-          alert(totaljumlahg);   */
-          if(parseFloat(totaljumlahg) > parseFloat(nettohutangs)){
-            toastr.info("Mohon Maaf Kelebihan data jumlah uang muka, netto hutang di Faktur" + addCommas(nettohutangs));
-            return false;
-          }
-
+        
           if(inputppn != '' && hasilppn != '' && hasilppn != 0 ) {
             if(pajakmasukan == 'edit'|| pajakmasukan == ''){
             
@@ -2846,8 +2834,6 @@
             toastr.info("Mohon maaf Anda belum menginputkan data form tanda terima :)");
             return false;
           }
-
-
           else{
           event.preventDefault();
           var post_url3 = $(this).attr("action");
@@ -2885,9 +2871,6 @@
               $('#tmbhdatapenerus').addClass('disabled' );
               $('#tmbhdataoutlet').addClass('disabled');
               $('#tmbhdatasubcon').addClass('disabled');
-              
-         
-
 
               html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
               $('.printpo').html(html);
@@ -2912,11 +2895,11 @@
           $('.gudang').prop('disabled', true).trigger("liszt:updated");
 
           $('.gudang').prop('disabled', true).trigger("chosen:updated");
-        $('.idsup').attr('disabled', true);  
+           $('.idsup').attr('disabled', true);  
           $('.keterangan2').attr('disabled' , true);
 
           $('.noinvoice').attr('disabled' , true);
-     
+          $('.groupitem').addClass('disabled');
 
 
         event.preventDefault();
@@ -2952,6 +2935,7 @@
           var grupitem = $('.groupitem').val();
           var string4 = grupitem.split(",");
           groupitem = string4[0];
+          kodestock = string4[1];
          // alert(penerimaan);
 
        
@@ -2962,7 +2946,7 @@
                   "<td> <select class='form-control disabled barangitem brg-"+nourut+"' data-id="+nourut+">  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}}'>{{$brg->nama_masteritem}} </option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
 
                   "<td> <input type='text' class='input-sm form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
-                  "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem'> </td>"+ //qty
+                  "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem[]'> <input type='hidden' class='form-control kodestock' value="+kodestock+" name='kodestock[]'> </td>"+ //qty
                   
                   "<td> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
 
@@ -2999,6 +2983,7 @@
                   $('.dpp2').val(addCommas(numeric));
                   $('.nettohutang').val(addCommas(numeric));
 
+               
                   //cek jika double item
                   nobrg = nourut - 1;
                   idbarang = $('.brg-'+nobrg).val();
@@ -4720,6 +4705,7 @@
             $('.penerimaan').val(stock);
            //$('tr#tdupdatestock').css('display', 'none');
            $('td#tdupdatestock').css('display', 'none');
+           $('td#tdgudang').css('display', 'none');
            $.ajax({    
             type :"post",
             data : {idsup, groupitem, stock},
@@ -4782,7 +4768,7 @@
         $('.penerimaan').val(stock);
            //$('tr#tdupdatestock').css('display', 'block');
            $('td#tdupdatestock').css('display', 'block');
-       
+            $('td#tdgudang').css('display', 'block');
 
           $.ajax({    
             type :"post",

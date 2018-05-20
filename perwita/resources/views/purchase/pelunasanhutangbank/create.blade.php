@@ -318,7 +318,7 @@
 
                                                               @foreach($data['akun'] as $akun)
                                                               <option value="{{$akun->id_akun}},{{$akun->akun_dka}}">
-                                                                {{$akun->nama_akun}}
+                                                               {{$akun->id_akun}} - {{$akun->nama_akun}}
                                                               </option>
                                                               @endforeach
                                                              </select>
