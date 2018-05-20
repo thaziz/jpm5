@@ -94,7 +94,7 @@
                               <td class="jenis_bayar_td disabled" colspan="2">
                                 <select class="form-control chosen-select-width jenis_bayar" name="jenis_bayar">
                                   <option value="0">Pilih - Jenis</option>
-                                  @foreach($jenis_bayar as $val)
+                                  @foreach($jenisbayar as $val)
                                     <option @if($data->bkk_jenisbayar == $val->idjenisbayar) selected="" @endif value="{{ $val->idjenisbayar }}">{{ $val->jenisbayar }}</option>
                                   @endforeach
                                 </select>
