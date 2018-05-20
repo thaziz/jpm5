@@ -108,20 +108,14 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                      <h5 id="title_in"></h5>
+                    <h5 id="title_in"></h5>
 
                     <div class="ibox-tools">
-                        <a href="{{ route("neraca.pdf_single", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
+                        <a href="{{ route("buku_besar.pdf_single", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
                           <button class="btn btn-sm btn-primary" style="font-size: 8pt;">
                             <i class="fa fa-file-pdf-o"></i> &nbsp;Cetak PDF
                           </button>
                         </a>
-
-                        {{-- <a href="{{ route("neraca.excel_single", $throttle."?m=".$request["m"]."&y=".$request["y"]) }}" target="_blank">
-                          <button class="btn btn-sm btn-primary" style="font-size: 8pt;">
-                            <i class="fa fa-file-excel-o"></i> &nbsp;Cetak Excel
-                          </button>
-                        </a> --}}
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -132,18 +126,24 @@
                     <div class="col-md-12">
 
                       <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
-                      
+                        
+                        @if(count($data) == 0)
+                          <center style="padding: 10px;">
+                            <small class="text-muted" style="font-style: italic;">Tidak Bisa Menemukan Data Buku Besar Di Periode Ini</small>
+                          </center>
+                        @endif
+
                       <?php $urt = 0; ?>
 
                       @foreach($data as $data_akun)
                           <?php $mt = ($urt == 0) ? "m-t" : "m-t-lg"; $saldo = $saldo_awal[$data_akun->akun]; ?>
 
-                          <div class="col-md-4 col-md-offset-8 text-left {{ $mt }}" style="font-size: 8pt; padding: 10px;">
+                          <div class="col-md-4 col-md-offset-8 text-left {{ $mt }} acc" data-id="{{ $data_akun->akun }}" style="font-size: 8pt; padding: 10px; cursor: pointer;">
                             <b>Nama Perkiraan : {{ $data_akun->akun }} {{ $data_akun->main_name }}</b>
                           </div>
                           
-                          <div class="col-md-12">
-                            <table class="table_neraca tree" border="0" width="100%" style="font-size: 8pt; border-bottom: 2px solid #efefef; margin-bottom: 5px;">
+                          <div class="col-md-12" id="wrap-{{ $data_akun->akun }}">
+                            <table id="table-{{ $data_akun->akun }}" class="table_neraca tree" border="0" width="100%" style="font-size: 8pt; border-bottom: 2px solid #efefef; margin-bottom: 5px;">
                               <thead>
                                 <tr>
                                   <th width="10%">Tanggal</th>
@@ -347,14 +347,14 @@
           toastr.warning('Bulan Dan Tahun Tidak Boleh Kosong');
           return false;
         }else{
-          window.location = baseUrl+"/master_keuangan/neraca/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
+          window.location = baseUrl+"/master_keuangan/buku_besar/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
         }
       }else if(tampil == "tahun"){
         if($("#bulan").val() == "" || $("#tahun").val() == ""){
           toastr.warning('Tahun Tidak Boleh Kosong');
           return false;
         }else{
-          window.location = baseUrl+"/master_keuangan/neraca/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
+          window.location = baseUrl+"/master_keuangan/buku_besar/single/"+$("#tampil").val()+"?m="+$("#bulan").val()+"&y="+$("#tahun").val();
         }
       }else if(tampil == "p_bulan"){
         if($("#bulan_1").val() == "" || $("#bulan_2").val() == ""){
@@ -370,6 +370,17 @@
         }else{
           window.location = baseUrl+"/master_keuangan/neraca/perbandingan/"+$("#tampil").val()+"?m="+$("#tahun_1").val()+"&y="+$("#tahun_2").val();
         }
+      }
+   })
+
+   $(".acc").click(function(evt){
+      if($("#table-"+$(this).data("id")).css("display") == "table"){
+        $("#table-"+$(this).data("id")).fadeOut("slow")
+        $("#wrap-"+$(this).data("id")).css("background", "#fefefe");
+      }
+      else if($("#table-"+$(this).data("id")).css("display") == "none"){
+        $("#table-"+$(this).data("id")).fadeIn("slow");
+        $("#wrap-"+$(this).data("id")).css("background", "none");
       }
    })
 

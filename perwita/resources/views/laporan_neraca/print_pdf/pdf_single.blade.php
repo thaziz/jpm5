@@ -42,7 +42,7 @@
 	<thead>
 		<tr>
 			@if($throttle == "bulan")
-				<td style="text-align: left;">Periode : Bulan {{ $request->m }}/{{ $request->y }}</td>
+				<td style="text-align: left;">Periode : Bulan {{ date_ind($request->m) }} {{ $request->y }}</td>
 			@elseif($throttle == "tahun")
 				<td style="text-align: left;">Periode : Tahun {{ $request->y }}</td>
 			@endif
