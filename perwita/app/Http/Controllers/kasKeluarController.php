@@ -419,7 +419,7 @@ class kasKeluarController extends Controller
 	    	$second = Carbon::now()->format('d/m/Y');
 	    	$start = $first->subDays(30)->startOfDay()->format('d/m/Y');
 
-			return view('purchase.buktikaskeluar.editkaskeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start'));
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start'));
 		}else if ($cari_bkk->bkk_jenisbayar == 2 || 
 				  $cari_bkk->bkk_jenisbayar == 6 || 
 				  $cari_bkk->bkk_jenisbayar == 7 || 
