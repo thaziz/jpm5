@@ -146,15 +146,19 @@ class KasController extends Controller
 	public function cari_resi(Request $request){
 
 		// dd($request->all());
+		$now = carbon::now()->format('Y-m-d');
 		if ($request->data[2]['value'] == 'PAKET') {
 
 			$cari_persen = DB::table('master_persentase')
+				  ->join('jenis_bbm','jenis_bbm','=','jb_id')
 	    		  ->where('jenis_bbm',$request->data[3]['value'])
 	    		  ->where('cabang',$request->head[4]['value'])
 	    		  ->first();
 
 		    if ($cari_persen == null) {
+
 		    	$cari_persen = DB::table('master_persentase')
+				  	  ->join('jenis_bbm','jenis_bbm','=','jb_id')
 		    		  ->where('jenis_bbm',$request->data[3]['value'])
 		    		  ->where('cabang','GLOBAL')
 		    		  ->first();
@@ -173,7 +177,7 @@ class KasController extends Controller
 		    		  ->where('jenis_bbm',$request->data[4]['value'])
 		    		  ->where('cabang','GLOBAL')
 		    		  ->first();
-
+		    	// dd($cari_persen);
 		    }
 
 		}
@@ -194,7 +198,8 @@ class KasController extends Controller
 		$resi 		  = [];
 		$now 		  = Carbon::now()->format('Y-m-d');
 
-		for ($i=0; $i < count($request->resi_array); $i++) { 
+		for ($i=0; $i < count($request->resi_array); $i++) {
+
 			$cari_resi = DB::table('delivery_order')
 						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
 						   ->whereIn('nomor',$request->resi_array)
@@ -230,7 +235,7 @@ class KasController extends Controller
 
 						$cari_resi_shuttle = DB::table('biaya_penerus_kas_detail')
 											   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
-						   					   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+											   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
 											   ->where('bpk_jenis_bbm',$jenis_biaya)
 											   ->get();
 						$terbayar = [];
@@ -246,7 +251,7 @@ class KasController extends Controller
 						// lintas  dan penyebrangan
 						$cari_resi_lintas = DB::table('biaya_penerus_kas_detail')
 											   ->join('biaya_penerus_kas','bpk_id','=','bpkd_bpk_id')
-						   					   ->where('pendapatan',$cari_persen->jenis_pendapatan)
+											   ->where('bpkd_no_resi',$cari_resi[$i]->nomor)
 											   ->where('biaya_penerus_kas_detail.bpk_comp',$cabang)
 											   ->get();
 
@@ -274,8 +279,20 @@ class KasController extends Controller
 				}
 			}
 		}
-
 		$resi = array_values($resi);
+		if ($jenis_biaya == '3') {
+			for ($i=0; $i < count($resi); $i++) { 
+				for ($a=0; $a < count($cari_resi); $a++) { 
+					if ($cari_resi[$a]->nomor == $resi[$i]) {
+						if (  $now <= $cari_resi[$a]->awal_shutle or $now >= $cari_resi[$a]->akhir_shutle ) {
+							unset($resi[$i]);
+						}
+					}
+				}
+			}
+		}
+		$resi = array_values($resi);
+
 
 		for ($i=0 ; $i < count($resi); $i++) { 
 
@@ -1351,6 +1368,18 @@ class KasController extends Controller
 			}
 		}
 		
+		$resi = array_values($resi);
+		if ($jenis_biaya == '3') {
+			for ($i=0; $i < count($resi); $i++) { 
+				for ($a=0; $a < count($cari_resi); $a++) { 
+					if ($cari_resi[$a]->nomor == $resi[$i]) {
+						if (  $now <= $cari_resi[$a]->awal_shutle or $now >= $cari_resi[$a]->akhir_shutle ) {
+							unset($resi[$i]);
+						}
+					}
+				}
+			}
+		}
 		$resi = array_values($resi);
 
 		for ($i=0 ; $i < count($resi); $i++) { 

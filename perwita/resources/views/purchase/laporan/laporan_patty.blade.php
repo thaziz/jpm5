@@ -82,8 +82,8 @@
       </div>
       <div class="ibox-content col-sm-12">
 
-        <div class="col-sm-6">
-          <table class="table table_header table-bordered table-striped">
+        <div class="col-sm-12">
+          <table class="table table_header table-striped">
             {{ csrf_field() }}
             <tr>
               <td>Tanggal</td>
@@ -111,24 +111,6 @@
                     <option value="{{$val->id_akun}}">{{$val->id_akun}} - {{$val->nama_akun}}</option>
                     @endforeach
                   </select>                           
-              </td>
-            </tr>
-            <tr>
-              <td>Pilih Laporan :</td>
-              <td>
-                   <select class="form-control" onchange="location = this.value;">
-                  <option selected="" disabled="">Pilih terlebih dahulu</option>
-                  <option value="{{ url('/reportmasteritem/reportmasteritem') }}">Laporan Data Master Item</option>
-                  <option value="{{ url('/reportmasterdepartment/reportmasterdepartment') }}">Laporan Data Department</option>
-                  <option value="{{ url('/reportmastergudang/reportmastergudang') }}">Laporan Data Master Gudang</option>
-                  <option value="{{ url('/reportmastersupplier/reportmastersupplier') }}">Laporan Data Supplier</option>
-                  <option value="{{ url('/reportspp/reportspp') }}">Laporan Data Surat Permintaan Pembelian</option>
-                  <option value="{{ url('/reportpo/reportpo') }}">Laporan Data Order</option>
-                  <option value="{{ url('/reportfakturpembelian/reportfakturpembelian') }}">Laporan Data Faktur Pembelian</option>
-                  <option value="{{ url('/buktikaskeluar/patty_cash') }}">Laporan Data Patty Cash</option>
-                    <option value="{{ url('/reportbayarkas/reportbayarkas') }}">Laporan Data Pelunasan Hutang/Bayar Kas</option>
-                  <option value="{{ url('/reportbayarbank/reportbayarbank') }}">Laporan Data Pelunasan Hutang/Bayar Bank</option>
-                 </select>
               </td>
             </tr>
             <tr>
@@ -175,13 +157,18 @@ function starto(){
   });
 }
 starto();
-$('.reportrange').datetimepicker({
-          autoclose: true,
-          "opens": "left",
+$('.reportrange').daterangepicker({
+          "autoApply": true,
+          "opens": "right",
           locale: {
           format: 'DD/MM/YYYY'
       }         
 });
+// $('.reportrange').daterangepicker({
+//     "autoApply": true,
+// }, function(start, end, label) {
+//   console.log('New date range selected: ' + start.format('DD/MM/YYYY') + ' to ' + end.format('DD/MM/YYYY') + ' (predefined range: ' + label + ')');
+// });
 
 function cari_patty(){
   $.ajax({
