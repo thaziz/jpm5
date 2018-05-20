@@ -34,9 +34,9 @@ class pendingController extends Controller
 					  ->where('fp_pending_status','PENDING')	  
 					  ->get();
 
-			return$subcon = DB::table('faktur_pembelian')
-					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
-					  ->join('subcon','bp_kode_vendor','=','kode')
+			$subcon = DB::table('faktur_pembelian')
+					  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
+					  ->join('subcon','pb_kode_subcon','=','kode')
 					  ->where('fp_pending_status','PENDING')	  
 					  ->get();
 			$data = array_merge($agen,$vendor,$subcon);
@@ -56,8 +56,8 @@ class pendingController extends Controller
 					  ->get();
 
 			$subcon = DB::table('faktur_pembelian')
-					  ->join('biaya_penerus','bp_faktur','=','fp_nofaktur')
-					  ->join('subcon','bp_kode_vendor','=','kode')
+					  ->join('pembayaran_subcon','pb_faktur','=','fp_nofaktur')
+					  ->join('subcon','pb_kode_subcon','=','kode')
 					  ->where('fp_pending_status','PENDING')	  
 					  ->where('fp_comp',$cabang)	  
 					  ->get();
