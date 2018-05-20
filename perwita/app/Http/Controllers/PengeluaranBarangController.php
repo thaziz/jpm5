@@ -283,7 +283,6 @@ class PengeluaranBarangController extends Controller
 
 		// return $temp;
 
-
 		for ($i=0; $i < count($gudang1); $i++) { 
 			if ($gudang1[$i] == null) {
 				$gudang[$i][0]['mg_namagudang'] = 'null';

@@ -4392,8 +4392,8 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 	}
 
 	public function savefakturpo(Request $request){
-		
-		/*dd($request->all());*/
+		return DB::transaction(function() use ($request) {   
+			/*dd($request->all());*/
 		$variable = $request->supplier_po;
 		$data = explode(",", $variable);
 		$idsup = $data[0];
@@ -4565,7 +4565,6 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 							 	'po_updatefp' => 'Y'
 						 	]);
 						} 
-						
 					}	
 
 					if($request->disc_item_po != ''){
@@ -4837,8 +4836,16 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 
 			}
 
+			if($request->jenis == 'J' || $request->jenis == 'NS'){
+				for($key = 0; $key < count($request->akunitem); $key++){
+
+				}	
+			}
+
 		return json_encode($idfaktur);
-	
+
+		});
+		
 	}
 
 
@@ -6155,7 +6162,6 @@ public function kekata($x) {
 
 		//return $mon;
 		$idbbk = DB::select("select * from bukti_bank_keluar where bbk_cabang = '$comp'  and to_char(bbk_tgl, 'MM') = '$bulan' and to_char(bbk_tgl, 'YY') = '$tahun' order by bbk_id desc limit 1");
-
 
 		//return $idbbk;
 		if(count($idbbk) > 0) {
