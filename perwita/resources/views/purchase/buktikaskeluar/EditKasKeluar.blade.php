@@ -17,7 +17,7 @@
     margin-right: 10px;
   }
 </style>
- 
+
 <div class="row wrapper border-bottom white-bg page-heading">
   <div class="col-lg-10">
       <h2> Pembayaran Kas </h2>
@@ -94,7 +94,7 @@
                               <td class="jenis_bayar_td disabled" colspan="2">
                                 <select class="form-control chosen-select-width jenis_bayar" name="jenis_bayar">
                                   <option value="0">Pilih - Jenis</option>
-                                  @foreach($jenisbayar as $val)
+                                  @foreach($jenis_bayar as $val)
                                     <option @if($data->bkk_jenisbayar == $val->idjenisbayar) selected="" @endif value="{{ $val->idjenisbayar }}">{{ $val->jenisbayar }}</option>
                                   @endforeach
                                 </select>
