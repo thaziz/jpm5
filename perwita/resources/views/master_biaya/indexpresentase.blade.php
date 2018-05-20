@@ -38,6 +38,7 @@
                             <th>Kode Cabang</th>
                             <th>Nama pihak</th>
                             <th>Jenis Biaya</th>
+                            <th>Jenis Pendapatan</th>
                             <th>Keterangan</th>
                             <th width="100">Persentase</th>
                             <th>Aksi</th>
@@ -67,6 +68,10 @@
                             <td>
                               {{$val->mjb_nama}}
                               <input type="hidden" value="{{$val->mjb_id}}" class="jenis_biaya_detail">
+                            </td>
+                            <td>
+                              {{$val->jenis_pendapatan}}
+                              <input type="hidden" value="{{$val->jenis_pendapatan}}" class="jenis_pendapatan">
                             </td>
                             <td class="">
                                 {{$val->keterangan}}
@@ -135,6 +140,16 @@
               <tr>
                 <td>Persentase</td>
                 <td colspan="2"><input type="text" name="persentase" class="form-control persentase" placeholder="persen"></td>
+              </tr>
+              <tr>
+                <td>Jenis Pendapatan</td>
+                <td colspan="2">
+                    <select onchange="dropdown()" class="form-control jp chosen-select-width" name="jp">
+                        <option selected="" value="PAKET">PAKET</option>
+                        <option value="KORAN">KORAN</option>
+                        <option value="KARGO">KARGO</option>
+                    </select>
+                </td>
               </tr>
               <tr>
                 <td>Cabang</td>
@@ -401,6 +416,7 @@ function edit_modal(p){
   var kode_master  = $(par).find('.kode_master').val();
   var last_name_tabel  = $(par).find('.last_name_tabel').val();
   var jenis_biaya  = $(par).find('.jenis_biaya_detail').val();
+  var jenis_pendapatan  = $(par).find('.jenis_pendapatan').val();
 
  // console.log(kode_akun);
   $('.first_name').val(pembiayaan).trigger('chosen:updated');
@@ -411,6 +427,7 @@ function edit_modal(p){
   $('.nama_akun_dropdown').val(akun_tabel).trigger('chosen:updated');
   $('.keter').val(keterangan);
   $('.kode_id').val(kode_master);
+  $('.jp').val(jenis_pendapatan);
   $('.jenis_biaya').val(jenis_biaya).trigger('chosen:updated');
   dropdown(akun_tabel);
   $('#myModal').modal('show');

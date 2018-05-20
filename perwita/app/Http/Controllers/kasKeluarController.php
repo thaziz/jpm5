@@ -137,6 +137,7 @@ class kasKeluarController extends Controller
 		return view('purchase.buktikaskeluar.akun_kas_dropdown',compact('akun'));
 	}
 
+	
 
 	public function akun_biaya_dropdown(request $req)
 	{
@@ -147,8 +148,6 @@ class kasKeluarController extends Controller
 
 		return view('purchase.buktikaskeluar.akun_biaya_dropdown',compact('akun'));
 	}
-
-	
 
 	public function supplier_dropdown(request $req)
 	{	
@@ -285,6 +284,7 @@ class kasKeluarController extends Controller
 				
 			}
 
+
 			$id_pt = DB::table('patty_cash')
 						   ->max('pc_id');
 				if ($id_pt == null) {
@@ -327,6 +327,7 @@ class kasKeluarController extends Controller
 										'jr_insert' => carbon::now(),
 										'jr_update' => carbon::now(),
 										]);
+
 
 			$akun 	  = [];
 			$akun_val = [];
@@ -396,10 +397,6 @@ class kasKeluarController extends Controller
 						   ->where('bkk_nota',$req->nota)
 						   ->first();
 
-			$akun 	  = [];
-			$akun_val = [];
-			array_push($akun, $req->kas);
-			array_push($akun_val, filter_var($req->total,FILTER_SANITIZE_NUMBER_INT)/100);
 
 			if ($cari_nota == null) {
 				return response()->json(['status'=>3]);
@@ -566,6 +563,9 @@ class kasKeluarController extends Controller
 
 		$subcon   = DB::select("SELECT kode, nama, acc_code as acc_hutang from subcon order by kode "); 
 
+	    $akun_kas = DB::table('d_akun')
+				  ->where('nama_akun','like','%KAS KECIL%')
+				  ->get();
 		$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama, acc_hutang from supplier order by no_supplier");
 
 		$all = array_merge($agen,$vendor,$subcon,$supplier);
@@ -731,6 +731,8 @@ class kasKeluarController extends Controller
 				$tgl = explode('-',$req->periode);
 				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
 				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
+
+
 				$data = DB::table('d_uangmuka')
 						  ->where('um_supplier',$req->supplier_faktur)
 						  ->where('um_comp',$req->cabang)
@@ -835,7 +837,6 @@ class kasKeluarController extends Controller
 					  ->join('agen','agen.kode','=','bukti_kas_keluar.bkk_supplier')
 					  ->where('bkk_id',$id)
 					  ->first();
-
 				for ($i=0; $i < count($data); $i++) { 
 					for ($a=0; $a < count($bkkd); $a++) { 
 						if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
@@ -929,7 +930,6 @@ class kasKeluarController extends Controller
 
 				$data->nama_agen = $nama;
 				$data->kode_agen = $kode;
-
 				for ($i=0; $i < count($data); $i++) { 
 					for ($a=0; $a < count($bkkd); $a++) { 
 						if ($data[$i]->um_nomorbukti == $bkkd[$a]->bkkd_ref) {
@@ -967,7 +967,6 @@ class kasKeluarController extends Controller
 
 	public function debet_faktur(request $req)
 	{	
-
 		$data = [];
 		if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
 			$fp = DB::table('faktur_pembelian')
@@ -982,70 +981,8 @@ class kasKeluarController extends Controller
 		}
 		
 
-
 		return view('purchase.buktikaskeluar.debet_faktur',compact('data'));
 	}
-	public function detail_faktur(request $req)
-	{
-		if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
-			$data = DB::table('faktur_pembelian')
-					->where('fp_nofaktur',$req->fp_faktur)
-					->first();
-			if (isset($req->nota)) {
-
-				$bkkd = DB::table('bukti_kas_keluar_detail')
-						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
-						  ->where('bkk_nota',$req->nota)
-						  ->where('bkkd_ref',$req->fp_faktur)
-						  ->first();
-				if ($bkkd != null) {
-					$data->fp_sisapelunasan = $data->fp_sisapelunasan + $bkkd->bkkd_total;
-				}
-			}
-			return response()->json(['data'=>$data]);
-		}elseif ($req->jenis_bayar == 3) {
-			$data = DB::table('v_hutang')
-					->where('v_nomorbukti',$req->fp_faktur)
-					->first();
-
-			if (isset($req->nota)) {
-
-				$bkkd = DB::table('bukti_kas_keluar_detail')
-						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
-						  ->where('bkk_nota',$req->nota)
-						  ->where('bkkd_ref',$req->fp_faktur)
-						  ->first();
-				if ($bkkd != null) {
-					$data->v_pelunasan = $data->v_pelunasan + $bkkd->bkkd_total;
-				}
-			}
-			return response()->json(['data'=>$data]);
-		}elseif ($req->jenis_bayar == 4){
-			$data = DB::table('d_uangmuka')
-					->where('um_nomorbukti',$req->fp_faktur)
-					->first();
-
-			if (isset($req->nota)) {
-
-				$bkkd = DB::table('bukti_kas_keluar_detail')
-						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
-						  ->where('bkk_nota',$req->nota)
-						  ->where('bkkd_ref',$req->fp_faktur)
-						  ->first();
-				if ($bkkd != null) {
-					$data->um_sisapelunasan = $data->um_sisapelunasan + $bkkd->bkkd_total;
-				}
-			}
-		}
-		return response()->json(['data'=>$data]);
-	}
-	public function save_form(request $req)
-	{
-		return DB::transaction(function() use ($req) {  
-			// dd($req->all());
-			$cari_nota = DB::table('bukti_kas_keluar')
-						   ->where('bkk_nota',$req->nota)
-						   ->first();
 
 	public function kredit_faktur(request $req)
 	{
@@ -1143,38 +1080,7 @@ class kasKeluarController extends Controller
 						   ->where('bkk_nota',$req->nota)
 						   ->first();
 
-			$id_pt = DB::table('patty_cash')
-						   ->max('pc_id');
-				if ($id_pt == null) {
-					$id_pt = 1;
-				}else{
-					$id_pt += 1;
-				}
 
-			$patty_cash = DB::table('patty_cash')
-							->insert([
-								'pc_id'  		=> $id_pt,
-								'pc_ref'  		=> $req->jenis_bayar,
-								'pc_akun'  		=> $req->hutang,
-								'pc_keterangan' => strtoupper($req->keterangan_head),
-								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
-								'updated_at' 	=> carbon::now(),
-								'created_at' 	=> carbon::now(),
-								'pc_akun_kas' 	=> $req->kas,
-								'pc_tgl' 		=> carbon::parse(str_replace('/', '-', $req->tanggal))->format('Y-m-d'),
-								'pc_user'  		=> Auth::user()->m_name,
-								'pc_comp' 		=> $req->cabang,
-								'pc_no_trans' 	=> $nota,
-								'pc_edit'  		=> 'UNALLOWED',
-								'pc_reim'  		=> 'UNRELEASED',
-							]);	
-			// //JURNAL
-			$id_jurnal=d_jurnal::max('jr_id')+1;
-			// dd($id_jurnal);
-			$jenis_bayar = DB::table('jenisbayar')
-							 ->where('idjenisbayar',$req->jenis_bayar)
-							 ->first();
 
 			if ($cari_nota == null) {
 				$nota = $req->nota;
@@ -1189,52 +1095,11 @@ class kasKeluarController extends Controller
 
 			    $index = (integer)$cari_nota[0]->id + 1;
 			    $index = str_pad($index, 3, '0', STR_PAD_LEFT);
-				$jumlah = array_sum($jumlah);
 
-				array_push($akun_val, $jumlah);
-
-				$data_akun = [];
-				for ($i=0; $i < count($akun); $i++) { 
-
-					$cari_coa = DB::table('d_akun')
-									  ->where('id_akun','like',$akun[$i].'%')
-									  ->where('kode_cabang',$req->cabang)
-									  ->first();
-					if (substr($akun[$i],0, 4) == 1001) {
-						
-						if ($cari_coa->akun_dka == 'D') {
-							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-							$data_akun[$i]['jrdt_detailid']	= $i+1;
-							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
-						}else{
-							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-							$data_akun[$i]['jrdt_detailid']	= $i+1;
-							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= -filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
-						}
-					}else if (substr($akun[$i],0, 2) == 14) {
-
-						if ($cari_coa->akun_dka == 'D') {
-							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-							$data_akun[$i]['jrdt_detailid']	= $i+1;
-							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-							$data_akun[$i]['jrdt_statusdk'] = 'D';
-						}else{
-							$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
-							$data_akun[$i]['jrdt_detailid']	= $i+1;
-							$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
-							$data_akun[$i]['jrdt_value'] 	= filter_var($akun_val[$i],FILTER_SANITIZE_NUMBER_INT);
-							$data_akun[$i]['jrdt_statusdk'] = 'K';
-						}
-					}
-				}
 				
 				$nota = 'BKK' . $bulan . $tahun . '/' . $req->cabang . '/' .$index;
 			}
+
 			$id = DB::table('bukti_kas_keluar')
 					->max('bkk_id');
 
@@ -1735,27 +1600,6 @@ class kasKeluarController extends Controller
 						$bkkd_fp = DB::table('faktur_pembelian')
 								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
 							  	  ->select('fp_nofaktur')
-							  	  ->where('fp_supplier',$req->supplier_faktur)
-								  ->where('fp_comp',$req->cabang)
-								  ->where('fp_jatuhtempo','>=',$tgl[0])
-								  ->where('fp_jatuhtempo','<=',$tgl[1])
-								  ->whereNotIn('fp_nofaktur',$req->valid)
-								  ->get();
-
-						$temp2 = [];
-						for ($i=0; $i < count($bkkd_fp); $i++) { 
-							for ($a=0; $a < count($bkkd); $a++) { 
-								if ($bkkd_fp[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
-									$temp2[$i] = $bkkd[$a]->bkkd_ref;
-								}
-							}
-						}
-						$data = array_merge($temp1,$temp2);
-					}
-
-						$bkkd_fp = DB::table('faktur_pembelian')
-								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
-							  	  ->select('fp_nofaktur')
 							  	  ->where('fp_idsup',$supplier->idsup)
 								  ->where('fp_comp',$req->cabang)
 								  ->where('fp_jatuhtempo','>=',$tgl[0])
@@ -1816,11 +1660,11 @@ class kasKeluarController extends Controller
 
 					if (isset($req->nota)) {
 
-
 						$bkkd = DB::table('bukti_kas_keluar_detail')
 						  ->join('bukti_kas_keluar','bkkd_bkk_id','=','bkk_id')
 						  ->where('bkk_nota',$req->nota)
 						  ->get();
+
 
 						$bkkd_fp = DB::table('faktur_pembelian')
 								  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
@@ -1844,7 +1688,6 @@ class kasKeluarController extends Controller
 					}
 
 					$unik = array_unique($data);
-
 
 					$data = DB::table('faktur_pembelian')
 							  ->leftjoin('form_tt','fp_idtt','=','tt_idform')
@@ -1998,7 +1841,6 @@ class kasKeluarController extends Controller
 						  ->where('bkk_nota',$req->nota)
 						  ->get();
 
-
 						for ($i=0; $i < count($data); $i++) { 
 						 	for ($a=0; $a < count($bkkd); $a++) { 
 						 		if ($data[$i]->fp_nofaktur == $bkkd[$a]->bkkd_ref) {
@@ -2093,30 +1935,13 @@ class kasKeluarController extends Controller
 						  ->where('v_tempo','<=',$tgl[1])
 						  ->where('v_pelunasan','!=',0)
 						  ->whereNotIn('v_nomorbukti',$req->valid)
-
 						  ->get();
-				if (isset($req->nota)) {
 
 				$temp1 = [];
 
 				for ($i=0; $i < count($data); $i++) { 
 					$temp1[$i]=$data[$i]->fp_nofaktur;
-
 				}
-				return view('purchase.buktikaskeluar.tabel_modal_voucher',compact('data','jenis_bayar'));
-			}elseif ($req->filter_faktur == 'jatuh_tempo') {
-				$tgl = explode('-',$req->periode);
-				$tgl[0] = carbon::parse($tgl[0])->format('Y-m-d');
-				$tgl[1] = carbon::parse($tgl[1])->format('Y-m-d');
-
-				$data = DB::table('v_hutang')
-						  ->where('v_supid',$req->supplier_faktur)
-						  ->where('vc_comp',$req->cabang)
-						  ->where('v_tempo','>=',$tgl[0])
-						  ->where('v_tempo','<=',$tgl[1])
-						  ->where('v_pelunasan','!=',0)
-						  ->whereNotIn('v_nomorbukti',$req->valid)
-						  ->get();
 
 				if (isset($req->nota)) {
 
@@ -2133,7 +1958,6 @@ class kasKeluarController extends Controller
 						  ->where('v_tempo','<=',$tgl[1])
 						  ->whereNotIn('v_nomorbukti',$req->valid)
 						  ->get();
-
 
 					$temp2 = [];
 					for ($i=0; $i < count($bkkd_fp); $i++) { 
@@ -2414,7 +2238,6 @@ class kasKeluarController extends Controller
 				$data = DB::table('d_uangmuka')
 						  ->whereIn('um_nomorbukti',$unik)
 						  ->get();
-
 				if (isset($req->nota)) {
 
 					$bkkd = DB::table('bukti_kas_keluar_detail')
@@ -2571,10 +2394,10 @@ class kasKeluarController extends Controller
 				}
 				
 
-
-				return response()->json(['data'=>$data]);
 			}
 
+
+			
 
 			$patty_cash = DB::table('patty_cash')
 							->where('pc_no_trans',$nota)
