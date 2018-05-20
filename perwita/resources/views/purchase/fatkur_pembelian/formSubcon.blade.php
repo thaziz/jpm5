@@ -108,6 +108,7 @@
 	 	<td width="10">:</td>
 		<td width="200">
 			<input type="text" readonly="" class="form-control m_do_asal" >
+      		<input type="text" readonly="" class="form-control no_do_asal" >
 		</td>
 	 </tr>
 	 <tr>
@@ -115,6 +116,7 @@
 	 	<td width="10">:</td>
 		<td width="200">
 			<input type="text" readonly="" class="form-control m_do_tujuan" >
+      		<input type="text" readonly="" class="form-control no_do_tujuan" >
 		</td>
 	 </tr>
 
@@ -123,6 +125,7 @@
 	 	<td width="10">:</td>
 		<td width="200">
 			<input type="text" readonly="" class="form-control m_tipe_kendaraan" >
+      		<input type="text" readonly="" class="form-control no_tipe_kendaraan" >
 		</td>
 	 </tr>
 	
@@ -204,6 +207,7 @@
 			<td width="200">
 
 				<input type="text" readonly="" class="form-control sc_asal_subcon" >
+        		<input type="text" readonly="" class="form-control sc_no_asal_subcon" >
 			</td>
 		  </tr>
 		  <tr>
@@ -212,6 +216,7 @@
 			<td width="200">
 
 				<input type="text" readonly=""  class="form-control sc_tujuan_subcon">
+        		<input type="text" readonly=""  class="form-control sc_no_tujuan_subcon">
 			</td>
 		  </tr>
 		  <tr>
@@ -220,6 +225,7 @@
 			<td width="200">
 
 				<input type="text" class="form-control sc_kendaraan_subcon" readonly=""  >
+        		<input type="hidden" class="form-control sc_kode_angkutan" style="width: 250px;">
 				<input type="hidden" class="form-control sc_kode_angkutan" style="width: 250px;">
 			</td>
 		  </tr>
