@@ -536,7 +536,7 @@ class kasKeluarController extends Controller
 		    $akun = DB::table('d_akun')
 		   			  ->where('id_parrent',5)
 		   			  ->get();
-			return view('purchase.buktikaskeluar.editkaskeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','start','second'));
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','start','second'));
 
 		}else if ($cari_bkk->bkk_jenisbayar == 4) {
 			// return 'asd';
@@ -622,7 +622,7 @@ class kasKeluarController extends Controller
 
 				$supplier = array_merge($sup_hutang,$agen,$subcon,$vendor);
 
-			return view('purchase.buktikaskeluar.editkaskeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start','supplier'));
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start','supplier'));
 		}
 
 	}
