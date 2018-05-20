@@ -164,6 +164,11 @@ $('.reportrange').daterangepicker({
           format: 'DD/MM/YYYY'
       }         
 });
+// $('.reportrange').daterangepicker({
+//     "autoApply": true,
+// }, function(start, end, label) {
+//   console.log('New date range selected: ' + start.format('DD/MM/YYYY') + ' to ' + end.format('DD/MM/YYYY') + ' (predefined range: ' + label + ')');
+// });
 
 function cari_patty(){
   $.ajax({
