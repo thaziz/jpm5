@@ -3831,7 +3831,7 @@
             split = supplieracc.split(",");
             acchutang= split[3];
           
-            $('.acchutangdagang_po').val(acchutang);
+//            $('.acchutangdagang_po').val(acchutang);
 
           $.ajax({    
           type :"get",
@@ -4138,6 +4138,7 @@
                 //jika PO 
                 if(flag[0] == 'PO'){
   //                alert(flag);
+                    $('.acchutangdagang_po').val(response.po[i][0].po_acchutangdagang);
                     $('th.diskonpo').remove();
                   for(var i = 0; i < response.po.length; i++) {
     //                alert('hai');
