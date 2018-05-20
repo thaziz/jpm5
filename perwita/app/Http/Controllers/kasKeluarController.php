@@ -390,7 +390,8 @@ class kasKeluarController extends Controller
 		$cari_bkk = DB::table('bukti_kas_keluar')
 					  ->where('bkk_id',$id)
 					  ->first();
-
+		$cabang = DB::table('cabang')
+					->get();
 		if($cari_bkk->bkk_jenisbayar == 8){
 
 			$data = DB::table('bukti_kas_keluar')
@@ -419,7 +420,7 @@ class kasKeluarController extends Controller
 	    	$second = Carbon::now()->format('d/m/Y');
 	    	$start = $first->subDays(30)->startOfDay()->format('d/m/Y');
 
-			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start'));
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start','cabang'));
 		}else if ($cari_bkk->bkk_jenisbayar == 2 || 
 				  $cari_bkk->bkk_jenisbayar == 6 || 
 				  $cari_bkk->bkk_jenisbayar == 7 || 
@@ -536,7 +537,7 @@ class kasKeluarController extends Controller
 		    $akun = DB::table('d_akun')
 		   			  ->where('id_parrent',5)
 		   			  ->get();
-			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','start','second'));
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','start','second','cabang'));
 
 		}else if ($cari_bkk->bkk_jenisbayar == 4) {
 			// return 'asd';
@@ -622,7 +623,7 @@ class kasKeluarController extends Controller
 
 				$supplier = array_merge($sup_hutang,$agen,$subcon,$vendor);
 
-			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start','supplier'));
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start','supplier','cabang'));
 		}
 
 	}
