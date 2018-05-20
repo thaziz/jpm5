@@ -110,7 +110,6 @@ class MasterPenerusController extends Controller
 				  		'nama'		=>  strtoupper($bbm->jb_nama),
 				  		'persen'	=>  $request->persentase,
 				  		'cabang'	=>  $request->cabang,
-				  		'jenis_pendapatan'		=>  $request->jp,
 				  		'kode_akun' =>  $request->nama_akun,
 				  		'keterangan'=>  strtoupper($request->keterangan),
 				  		'last_name'=>  strtoupper($request->last_name),
@@ -158,7 +157,6 @@ class MasterPenerusController extends Controller
 				  		'cabang'	=>  $request->cabang,
 				  		'kode_akun' =>  $request->nama_akun,
 				  		'keterangan'=>  strtoupper($request->keterangan),
-				  		'jenis_pendapatan'		=>  $request->jp,
 				  		'jenis_bbm'=>  strtoupper($request->first_name),
 				  		'last_name'=>  strtoupper($request->last_name),
 				  		'jenis_biaya'=>  $request->jenis_biaya

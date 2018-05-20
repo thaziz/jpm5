@@ -24,10 +24,6 @@
     tr.shown td.details-control {
         background: url('{{ asset('assets/img/details_close.png') }}') no-repeat center center;
     }
-    .redline {
-      background-color: red;
-      color: white; 
-    }
 </style>
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -56,7 +52,7 @@
                         <td> Dimulai : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                           <input name="min" id="min" type="text" class="cari_semua date form-control date_to date_range_filter
-                                              date" >
+                                              date" 
 
                               </div> </td>  <td> Diakhiri : </td> <td> <div class="input-group">
                                           <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -67,24 +63,13 @@
                     
                       <tr>
                           <th style="width: 100px; padding-top: 16px">Cabang</th>
-                          <td colspan="1">
+                          <td colspan="3">
                             <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
                               <option></option>
                               @foreach ($cabang as $element)
                                 <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
                               @endforeach
                             </select>
-                          </td>
-
-                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Tipe --</option>
-                            <option value="DOKUMEN">DOKUMEN</option>
-                            <option value="KILOGRAM">KILOGRAM</option>
-                            <option value="KOLI">KOLI</option>
-                            <option value="SEPEDA">SEPEDA</option>
-                           </select>
                           </td>
                         </tr>
                         <tr >
@@ -109,13 +94,16 @@
                           </td>
                         </tr>
                         <tr>
-                          <th style="width: 100px; padding-top: 16px"> Jenis </th>
+                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="jenis" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="REGULER">REGULER</option>
-                            <option value="EXPRESS">EXPRESS</option>
-                            <option value="OUTLET">OUTLET</option>
+                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Tipe --</option>
+                            <option value="DOKUMEN">DOKUMEN</option>
+                            <option value="KILOGRAM">KILOGRAM</option>
+                            <option value="KOLI">KOLI</option>
+                            <option value="SEPEDA">SEPEDA</option>
+                            <option value="KORAN">KORAN</option>
+                            <option value="KARGO">KARGO</option>
                            </select>
                           </td>
                           <th style="width: 100px; padding-top: 16px"> Status </th>
@@ -130,50 +118,9 @@
                            </select>
                           </td>
                         </tr>
-                        <tr>
-                          <th style="width: 100px; padding-top: 16px"> Pendapatan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="pendapatan" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Tipe --</option>
-                            <option value="PAKET">PAKET</option>
-                            <option value="KORAN">KORAN</option>
-                            <option value="KARGO">KARGO</option>
-                           </select>
-                          </td>
-
-                          <th style="width: 100px; padding-top: 16px"> Customer </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="customer" class="cari_semua customer chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Customer --</option>
-                            @foreach ($customer as $e)
-                                <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td>
-                        </tr>
-                          <th style="width: 100px; padding-top: 16px"> Laporan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="laporan" class="cari_semua laporan chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Laporan--</option>
-                            <option value="DEFAULT">MASTER</option>
-                            <option value="MASTER DETAIL">MASTER DETAIL</option>
-                            <option value="rekap">REKAP CUSTOMER</option>
-                            <option value="rekap_detail">REKAP CUSTOMER DETIL</option>
-                            <option value="REKAP BULANAN" class="redline">REKAP BULANAN</option>
-                            <option value="DETAIL PER MOBIL" class="redline">DETAIL PER MOBIL</option>
-                            <option value="DETAIL PER SOPIR" class="redline">DETAIL PER SOPIR</option>
-                            <option value="DETAIL PER SALES" class="redline">DETAIL PER SALES</option>
-                            <option value="REKAP PER MOBIL" class="redline">REKAP PER MOBIL</option>
-                            <option value="REKAP PER SOPIR" class="redline">REKAP PER SOPIR</option>
-                            <option value="REKAP PER SALES" class="redline">REKAP PER SALES</option>
-                           </select>
-                          </td>
-                        </tr>       
-
-
+                        
                       <br>
                       </table>
-                      
                       <div class="row pull-right" style="margin-top: 0px;margin-right: 3px;"> &nbsp; &nbsp; 
                         <select class="chosen-select-width form-control" onchange="location = this.value;">
                           <option selected="" disabled="">- Jenis Laporan -</option>
@@ -191,20 +138,42 @@
                         <tr>
                             <th> No DO</th>
                             <th> Tanggal </th>
-                            <th> Customer </th>
                             <th> Pengirim </th>
                             <th> Penerima </th>
                             <th> Kota Asal </th>
                             <th> Kota Tujuan </th>
-                            <th> Status </th>
+                            <th> Tipe </th>
                             <th> Detail </th>
-                       
+                           {{--  <th> Pendapatan </th>
+                            <th> Customer </th>
+                            <th> Tarif Keseluruhan </th>
+                            <th hidden=""></th> --}}
                         </tr>
                     </thead>
                     <tbody>
+                       {{--  @foreach ($data as $row)
+                        <tr>
+                            <td hidden="">{{ $row->kaid }}</td>
+                            <td hidden="">{{ $row->ktid }}</td>
+                            <td><input type="hidden" name="" value="{{ $row->nomor }}">{{ $row->nomor }}</td>
+                            <td>{{ $row->tanggal }}</td>
+                            <td>{{ $row->nama_pengirim }}</td>
+                            <td>{{ $row->nama_penerima }}</td>
+                            <td>{{ $row->asal }}</td>
+                            <td>{{ $row->tujuan }}</td>
+                            <td>{{ $row->kecamatan }}</td>
+                            <td>{{ $row->type_kiriman }}</td>
+                            {{-- <td>{{ $row->jenis_pengiriman }}</td>
+                            <td>{{ $row->status }}</td>
+                            <td>{{ $row->pendapatan }}</td>
+                            <td>{{ $row->customer }}</td>
+                            <td align="right"><input type="hidden" name="" class="total_net" value="{{ $row->total_net }}">{{ number_format($row->total_net,0,',','.') }}</td>
+                            <td hidden="">{{ $row->kode_cabang }}</td>
+                        </tr>
+                        @endforeach --}}
                     </tbody>
                     <tr>
-                      <td colspan="8">Total net</td>
+                      <td colspan="7">Total net</td>
                       <td id="total_grandtotal"></td>
                     </tr>
                   </table>
@@ -237,37 +206,22 @@
       function format ( d ) {
       return  '<table class="table">'+
                 '<tr>'+
-                    '<td>Tipe</td>'+
+                    '<td>status</td>'+
                     '<td>:</td>'+
-                    '<td>'+d.type_kiriman+'</td>'+
+                    '<td>'+d.status+'</td>'+
                 '</tr>'+
                 '<tr>'+
-                    '<td>Jenis</td>'+
-                    '<td>:</td>'+
-                    '<td>'+d.jenis_pengiriman+'</td>'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>Pendapatan</td>'+
+                    '<td>pendapatan</td>'+
                     '<td>:</td>'+
                     '<td>'+d.pendapatan+'</td>'+
                 '</tr>'+
                 '<tr>'+
                     '<td>customer</td>'+
                     '<td>:</td>'+
-                    '<td>'+d.cab+'</td>'+
+                    '<td>'+d.cus+'</td>'+
                 '</tr>'+
                 '<tr>'+
-                    '<td>DPP</td>'+
-                    '<td>:</td>'+
-                    '<td>'+d.total_dpp+'</td>'+
-                '</tr>'+
-                '<tr>'+
-                    '<td>Vendor</td>'+
-                    '<td>:</td>'+
-                    '<td>'+d.total_vendo+'</td>'+
-                '</tr>'+
-                '<tr>'+
-                    '<td class="tot">total net</td>'+
+                    '<td>total net</td>'+
                     '<td>:</td>'+
                     '<td>'+d.total_net+'</td>'+
                 '</tr>'+
@@ -290,12 +244,11 @@
             "columns": [
             { "data": "nomor" },
             { "data": "tanggal" },
-            { "data": "cus" },
             { "data": "nama_pengirim" },
             { "data": "nama_penerima" },
             { "data": "asal" },
             { "data": "tujuan" },
-            { "data": "status" },
+            { "data": "type_kiriman" },
             {
                 "class": "details-control",
                 "orderable": false,
@@ -333,12 +286,10 @@
     // On each draw, loop over the `detailRows` array and show any child rows
    
 
-    // $('#tot').each(function(){
 
-    // })
+      function cetak(){
+      
 
-
-    function cetak(){
       $.ajax({
         data: $('#cari_data').serialize(),
         url: baseUrl + '/reportdeliveryorder_total/reportdeliveryorder_total',
@@ -351,6 +302,8 @@
     }
 
     function excel(){
+     
+
       $.ajax({
         data:  $('#cari_data').serialize(),
         url: baseUrl + '/exceldeliveryorder_total/exceldeliveryorder_total',
@@ -373,11 +326,10 @@
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
+
     function cari(){
       var min = $('#min').val();
       var max = $('#max').val();
-      var laporan = $('.laporan').val();
-      console.log(laporan);
       if (min == '') {
                 Command: toastr["warning"]("Pilih Tanggal Terlebih Dahulu", "Peringatan!")
 
@@ -426,31 +378,7 @@
                 return false;
 
             }
-            if (laporan == '') {
-                Command: toastr["warning"]("Pilih Laporan Terlebih Dahulu", "Peringatan!")
-
-                toastr.options = {
-                  "closeButton": false,
-                  "debug": false,
-                  "newestOnTop": false,
-                  "progressBar": true,
-                  "positionClass": "toast-top-right",
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "300",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut"
-                }
-
-                return false;
-            }
-      if (laporan == 'DEFAULT') {
-        $.ajax({
+     $.ajax({
             data: $('#cari_data').serialize(),
             url: baseUrl + '/ajaxcarideliveryorder_total/ajaxcarideliveryorder_total',
             type: "get",
@@ -463,87 +391,6 @@
             },
             
         });
-      }
-
-
-      //CARI MASTER DETAIL
-      else if(laporan == 'MASTER DETAIL'){
-        $.ajax({
-            data: $('#cari_data').serialize(),
-            url: baseUrl + '/ajaxcarideliveryorder_total_masterdetail/ajaxcarideliveryorder_total_masterdetail',
-            type: "get",
-            success: function (response, textStatus, request) {
-              $('#replace').html(response);
-              
-            },
-            error: function (ajaxContext) {
-              toastr.error('Export error: '+ajaxContext.responseText);
-            },
-            
-        });
-      }
-
-
-      //CARI REKAP CUSTOMER
-      else if(laporan == 'rekap' || 'rekap_detail'){
-        $.ajax({
-          data: $('#cari_data').serialize(),
-          url: baseUrl + '/cari_rekapcustomer/cari_rekapcustomer',
-          type: "get",
-          success : function(data){
-            if (data.data == '0') {
-               Command: toastr["warning"]("Data Terkait Tidak Ditemukan", "Peringatan!")
-
-                toastr.options = {
-                  "closeButton": false,
-                  "debug": false,
-                  "newestOnTop": false,
-                  "progressBar": true,
-                  "positionClass": "toast-top-right",
-                  "preventDuplicates": true,
-                  "onclick": null,
-                  "showDuration": "300",
-                  "hideDuration": "1000",
-                  "timeOut": "5000",
-                  "extendedTimeOut": "1000",
-                  "showEasing": "swing",
-                  "hideEasing": "linear",
-                  "showMethod": "fadeIn",
-                  "hideMethod": "fadeOut"
-                }
-              $('#replace').html('');
-
-            }else{
-              $('#replace').html(data);
-            }
-          }
-        });
-      }
-      //CARI REKAP BULANAN
-      else if(laporan == 'REKAP BULANAN'){
-        alert('a');
-      }
-      //CARI DETAIL PER MOBIL
-      else if(laporan == 'DETAIL PER MOBIL'){
-        alert('a');
-      }
-      //CARI DETAIL PER SOPIR
-      else if(laporan == 'DETAIL PER SOPIR'){
-        alert('a');
-      }
-      //CARI DETAIL PER SALES
-      else if(laporan == 'DETAIL PER SALES'){
-        alert('a');
-      }
-      //CARI REKAP PER MOBIL
-      else if(laporan == 'REKAP PER MOBIL'){
-        alert('a');
-      }
-      //CARI REKAP PER SOPIR
-      else if(laporan == 'REKAP PER SOPIR'){
-        alert('a');
-      }
-
     }
 
 
