@@ -287,7 +287,7 @@ class kasKeluarController extends Controller
 	    				->get();
 
 	    $akun_kas = DB::table('d_akun')
-				  ->where('id_parrent',1001)
+				  ->where('id_akun',1001)
 				  ->get();
 
 		return view('purchase/laporan/laporan_patty',compact('second','start','jenisbayar','akun_kas'));
