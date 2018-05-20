@@ -275,7 +275,7 @@
                             Account Biaya
                           </td>
                           <td>
-                            <input type='number' class='form-control acc_biaya' name="acc_biaya" required="">
+                            <input type='number' class='form-control acc_biaya' name="acc_biaya" required="" readonly="">
                           </td>
                           </tr>
                           <tr>
@@ -283,7 +283,7 @@
                             Account Persediaan
                           </td>
                           <td>
-                            <input type='number' class='form-control acc_persediaan' name="acc_persediaan" required="">
+                            <input type='number' class='form-control acc_persediaan' name="acc_persediaan" required="" readonly="">
                           </td>
                           </tr>
                         </table> </div>
@@ -404,10 +404,7 @@
                               <td> <div class="row"> <div class="col-md-4"> <input type="text" class="form-control inputpph" readonly=""> </div> <div class="col-md-8"> <input type="text" class="form-control hasilpph" style='text-align: right' readonly="" name='hasilpph'> </div> </div> </td>
                           </tr>
 
-                         <!--  <tr>
-                            <td> Biaya - biaya Lain </td>
-                            <td> <input type='text' class='form-control biayalain2' readonly=""> </td>
-                          </tr> -->
+                         
 
                           <tr>
                             <td> Netto Hutang </td>
@@ -912,7 +909,7 @@
                                                 </select>                                        
                                             </td>
                                             </td>
-                                            <input type="text" class="acchutangdagang_po" name="acchutangdagang"> acchutang
+                                            <input type="hidden" class="acchutangdagang_po" name="acchutangdagang"> acchutang
 
                                           </tr>
 
@@ -2962,7 +2959,7 @@
 
 
           var  row = "<tr id='data-item-"+nourut+"'> <td>"+nourut+"</td>"+
-                  "<td> <select class='form-control barangitem brg-"+nourut+"' data-id="+nourut+" disabled>  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}},{{$brg->harga}},{{$brg->nama_masteritem}},{{$brg->acc_persediaan}},{{$brg->acc_hpp}}'>{{$brg->nama_masteritem}}</option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
+                  "<td> <select class='form-control disabled barangitem brg-"+nourut+"' data-id="+nourut+">  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}}'>{{$brg->nama_masteritem}} </option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
 
                   "<td> <input type='text' class='input-sm form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
                   "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem'> </td>"+ //qty
@@ -3005,8 +3002,9 @@
                   //cek jika double item
                   nobrg = nourut - 1;
                   idbarang = $('.brg-'+nobrg).val();
-
-                  if(item == idbarang){
+                  alert(idbarang);
+                  alert(item);
+                  if(kodeitem == idbarang){
                     toastr.info('Mohon maaf barang tersebut sudah ditambah :)');
                   }
                   else {
@@ -3014,7 +3012,7 @@
                   }
 
                  // alert(item);
-                 $('.brg-'+nourut).val(item);
+                 $('.brg-'+nourut).val(kodeitem);
                   $('.gudangitem'+nourut).val(gudang);
                  //pembersihan value
                  //pembersihan data
@@ -4212,7 +4210,7 @@
                 }
 
 
-//                $('<th class="gudang_po"> Gudang </th>').insertAfter($('.hrgpo'));
+//                $('<th class="gudang_po"> Gudang </th>').insertAfter($('.hr'gpo'));
 
                 if(jenis[0] != 'J') { // CEK PO BUKAN JENIS JASA
                     var jumlahtotalharga = 0;

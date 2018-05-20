@@ -90,7 +90,7 @@ class cabang_Controller extends Controller
                 if(count($cek) == 0){
 
                     $akun = new master_akun;
-                    $akun->id_akun = $data_main_id->main_id.''.$kode;
+                    $akun->id_akun = $data_main_id->main_id.''.$prov->id_provinsi.''.$kode;
                     $akun->nama_akun = $acc->main_name." ".strtoupper($request->ed_nama);
                     $akun->id_parrent = '\n';
                     $akun->id_provinsi = $prov->id_provinsi;
@@ -105,7 +105,7 @@ class cabang_Controller extends Controller
 
                     if($akun->save()){
                         $saldo = new master_akun_saldo;
-                        $saldo->id_akun = $data_main_id->main_id.''.$kode;
+                        $saldo->id_akun = $data_main_id->main_id.''.$prov->id_provinsi.''.$kode;
                         $saldo->tahun = date("Y");
                         $saldo->is_active = 1;
                         $saldo->bulan = date("m");

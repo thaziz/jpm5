@@ -86,7 +86,7 @@ class MasterPurchaseController extends Controller
 					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5111%' and kode_cabang = '$cabang'");
 				}
 				else if($idgrupitem == 'S'){
-					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' or id_akun LIKE '5206%' or id_akun LIKE '5306%' and kode_cabang = '$cabang'");
+					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5106%' and  kode_cabang = '$cabang'  or id_akun LIKE '5206%' and  kode_cabang = '000' or id_akun LIKE '5306%' and  kode_cabang = '$cabang' ");
 				}
 				else if($idgrupitem == 'A'){
 					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '6103%' and kode_cabang = '$cabang'");
@@ -95,7 +95,7 @@ class MasterPurchaseController extends Controller
 					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
 				}
 				else {
-					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '51%' or id_akun LIKE '52%' or id_akun LIKE '53%' or id_akun LIKE '61%'");
+					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' ");
 				}
 			}
 			else if($updatestock == 'Y'){
@@ -117,7 +117,7 @@ class MasterPurchaseController extends Controller
 					$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '1604%' and kode_cabang = '$cabang'");
 				}
 				else {
-					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '15%'");
+					$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
 				}
 			}
 		}		
@@ -129,7 +129,7 @@ class MasterPurchaseController extends Controller
 				$data['akun'] = DB::select("select * from d_akun where id_akun LIKE '5%' or id_akun LIKE '6%' or id_akun LIKE '7%' or id_akun LIKE '8%' and kode_cabang = '$cabang'");
 			}
 			else {
-				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang' and id_akun LIKE '15%'");
+				$data['akun'] = DB::select("select * from d_akun where kode_cabang = '$cabang'");
 			}
 			
 		}

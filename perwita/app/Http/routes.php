@@ -1769,6 +1769,30 @@ Route::get('master_keuangan/err_cek', function(){
   return view('keuangan.err.err_laporan');
 });
 
+
+// periode_keuangan
+  
+  Route::post('master_keuangan/periode_keuangan/tambah', [
+    'uses' => 'master_keuangan\periode_keuangan_controller@make',
+    'as'   => 'periode_keuangan.tambah'
+  ]);
+
+  Route::post('master_keuangan/periode_keuangan/setting', [
+    'uses' => 'master_keuangan\periode_keuangan_controller@setting',
+    'as'   => 'periode_keuangan.setting'
+  ]);
+
+// end
+
+
+// neraca saldo
+Route::get('master_keuangan/neraca-saldo/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
+  'as'   => 'neraca_saldo.index'
+]);
+// end neraca saldo
+
+
 //neraca
 
 Route::get('master_keuangan/neraca/single/{throtle}', [
@@ -1797,29 +1821,6 @@ Route::get('master_keuangan/neraca/excel/single/{throtle}', [
 ]);
 
 //endneraca
-
-
-// periode_keuangan
-  
-  Route::post('master_keuangan/periode_keuangan/tambah', [
-    'uses' => 'master_keuangan\periode_keuangan_controller@make',
-    'as'   => 'periode_keuangan.tambah'
-  ]);
-
-  Route::post('master_keuangan/periode_keuangan/setting', [
-    'uses' => 'master_keuangan\periode_keuangan_controller@setting',
-    'as'   => 'periode_keuangan.setting'
-  ]);
-
-// end
-
-
-// neraca saldo
-Route::get('master_keuangan/neraca-saldo/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_neraca_saldo@index_neraca_saldo',
-  'as'   => 'neraca_saldo.index'
-]);
-// end neraca saldo
 
 
 //neraca_detail
@@ -1862,7 +1863,6 @@ Route::get('master_keuangan/laba_rugi/print/{throtle}', [
 //end laba rugi
 
 
-<<<<<<< HEAD
 // buku besar
 
 Route::get('master_keuangan/buku_besar/single/{throtle}', [
@@ -1898,8 +1898,6 @@ Route::get('master_keuangan/buku_besar/pdf/single/{throtle}', [
 // buku besar
 
 
-=======
->>>>>>> parent of a0d38da8... Merge branch 'master' of https://github.com/adiyani17a/jpm5
 //kelompok akun
 Route::get('master_keuangan/kelompok_akun', 'master_keuangan\kelompok_akun_Controller@index');
 Route::get('master_keuangan/kelompok_akun/tabel', 'master_keuangan\kelompok_akun_Controller@table_data');

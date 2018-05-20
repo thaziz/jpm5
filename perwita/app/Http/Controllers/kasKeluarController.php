@@ -782,6 +782,12 @@ class kasKeluarController extends Controller
 				  ->whereIn('fp_nofaktur',$req->check_array)
 				  ->get();
 
+		$cari_bkk = DB::table('bukti_kas_keluar')
+					  ->where('bkk_id',$id)
+					  ->first();
+		$cabang = DB::table('cabang')
+					->get();
+		if($cari_bkk->bkk_jenisbayar == 8){
 		}elseif ($req->jenis_bayar == 3){
 			$data = DB::table('v_hutang')
 				  ->whereIn('v_nomorbukti',$req->check_array)
@@ -824,6 +830,7 @@ class kasKeluarController extends Controller
 	    	$second = Carbon::now()->format('d/m/Y');
 	    	$start = $first->subDays(30)->startOfDay()->format('d/m/Y');
 
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start','cabang'));
 		}else if ($cari_bkk->bkk_jenisbayar == 2 || 
 				  $cari_bkk->bkk_jenisbayar == 6 || 
 				  $cari_bkk->bkk_jenisbayar == 7 || 
@@ -887,6 +894,7 @@ class kasKeluarController extends Controller
 		    $akun = DB::table('d_akun')
 		   			  ->where('id_parrent',5)
 		   			  ->get();
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','start','second','cabang'));
 
 		}else if ($cari_bkk->bkk_jenisbayar == 4) {
 			// return 'asd';
@@ -943,7 +951,6 @@ class kasKeluarController extends Controller
 
 		return response()->json(['data'=>$data]);
 	}
-}
 
 	public function histori_faktur(request $req)
 	{
@@ -1002,6 +1009,7 @@ class kasKeluarController extends Controller
 		return view('purchase.buktikaskeluar.kredit_faktur',compact('data'));
 	}
 
+			return view('purchase.buktikaskeluar.EditKasKeluar',compact('data','data_dt','akun_kas','akun','jenisbayar','id','second','start','supplier','cabang'));
 	public function um_faktur(request $req)
 	{
 		$data = [];
