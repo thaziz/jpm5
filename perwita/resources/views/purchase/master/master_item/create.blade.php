@@ -159,7 +159,7 @@
                       
                       <tr>
                         <td class="updatedtock"> Update Stock </td>
-                        <td class="updatedtock"> <select class="form-control k updatestock" name="update_stock" required=""> 
+                        <td class="updatedtock"> <select class="form-control k updatestock" name="update_stock"> 
                           <option value='T'  selected="" > T </option>
                           <option value='Y' > Y </option>
                         </select>
