@@ -140,7 +140,17 @@
                                         <input type="text" class="form-control" name="ed_nomor_kontrak" style="text-transform: uppercase" >
                                     </td>
                                 </tr>
-                                
+                                <tr>
+                                    <td style="padding-top: 0.4cm">Cabang</td>
+                                    <td colspan="3">
+                                      <select name="cabang"  class="form-control acc_code chosen-select-width">
+                                          <option value="0">Pilih - Akun</option>
+                                        @foreach($cabang as $a)
+                                          <option value="{{$a->kode}}">{{$a->kode}} - {{$a->nama}}</option>
+                                        @endforeach
+                                      </select>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td style="padding-top: 0.4cm">Penanggung Jawab</td>
                                     <td colspan="3">
@@ -340,6 +350,7 @@
                 $("input[name='persen']").val(data.persen);
                 $(".acc_code").val(data.acc_code).trigger('chosen:updated');
                 $(".csf_code").val(data.csf_code).trigger('chosen:updated');
+                $("select[name='cabang']").val(data.cabang).trigger('chosen:updated');
                 $("input[name='persen']").prop('readonly',false);
                 $("input[name='ed_telpon']").val(data.telpon);
                 $("input[name='ed_fax']").val(data.fax);

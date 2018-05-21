@@ -1277,6 +1277,8 @@
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].fp_netto));
                           $('.uangmukakanan').val(addCommas(data.faktur[0][0].fp_uangmuka));
+                          $('.hutangdagang').val(data.faktur[0][0].fp_acchutang); 
+
 
                      //LOOPING DATA NO FAKTUR 
 
@@ -2187,7 +2189,6 @@
                           console.log(n +'n');
                                 
                               }
-                             $('.hutangdagang').val(fp[0].acc_hutang); 
                         }
                     else if(idjenisbayar == '6' || idjenisbayar == '7'|| idjenisbayar == '9') {
                       $('.supfaktur').show();
@@ -2653,7 +2654,7 @@
     //NOMINAL BANK
     arrnominal = [];
     $('.nominal').change(function(){
-      alert('guy');
+    //  alert('guy');
           totalbayar = $('.totbayar').val();
           jenisbayar = $('.jenisbayar').val();
           if(jenisbayar == 5){
