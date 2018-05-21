@@ -342,7 +342,7 @@
                                                         @php
                                                         $totalDebit+=$jurnal_dt[$i]->jrdt_value;
                                                         @endphp
-                                                        {{number_format($jurnal_dt[$i]->jrdt_value,2,',','.')}} 
+                                                         {{number_format($jurnal_dt[$i]->jrdt_value,2,',','.')}}
                                                     @endif
                                                 </td>
                                                 <td>@if($jurnal_dt[$i]->dk=='K') 

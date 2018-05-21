@@ -2056,7 +2056,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Agen  </option>");  
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].nama+","+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value='"+response[j].nama+","+response[j].kode+"'>"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                       } 
@@ -2074,7 +2074,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Vendor  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].nama+","+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value='"+response[j].nama+","+response[j].kode+"'>"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
@@ -2083,7 +2083,7 @@
                        $('.jenisbayar2').empty();  
                         $('.jenisbayar2').append("<option value='' selected> Pilih Cabang  </option>"); 
                        for(var j=0; j<response.length; j++){                                    
-                         $('.jenisbayar2').append("<option value="+response[j].nama+","+response[j].kode+">"+response[j].kode+" - "+response[j].nama+"</option>");
+                         $('.jenisbayar2').append("<option value='"+response[j].nama+","+response[j].kode+"'>"+response[j].kode+" - "+response[j].nama+"</option>");
                           $('.jenisbayar2').trigger("chosen:updated");
                           $('.jenisbayar2').trigger("liszt:updated");
                         } 
@@ -2273,8 +2273,6 @@
                            } 
                         }
 
-                         
-
                         $('.hutangdagang').val(fp[0].acc_hutang);     
                     }
                     else if(idjenisbayar == '3'){
@@ -2329,22 +2327,16 @@
                           n++;
                           console.log(n +'n');                                                           
                        } 
-                    
                     }
                                          
                     else if(idjenisbayar == '1'){
-                      if($('tr.field').length != 0 ){
-                           $('tr.field').each(function(){
-                            nobukti = $(this).data('nota');
-                           // alert(nobukti);
-                            hslnota.push(nobukti);
-                          })
+                      $('.supfaktur').show();
+                      $('.invfaktur').show();
+                      var tablefaktur = $('#tbl-faktur').DataTable();
+                      tablefaktur.clear().draw();
 
-                      console.log(hslnota + 'hslnota');
-                        for(var k = 0; k < hslnota.length; k++){
-
-                          for(var i = 0; i < fp.length; i++){    
-                            if(hslnota[k] != fp[i].ik_nota) {
+                         for(var i = 0; i < fp.length; i++){    
+                           
                                var html2 = "<tr class='data"+n+"' id='data"+fp[i].ik_nota+"'> <td>"+n+"</td>" +
                                              "<td>"+fp[i].nama+"</td>" +
                                             "<td>"+fp[i].ik_nota+"</td>" +
@@ -2365,36 +2357,7 @@
                             n++; 
 
                             console.log(n +'n');
-                            }                               
-                          
                            } 
-                        } 
-                      }
-                      else {
-                        for(var i = 0; i < fp.length; i++){    
-                           
-                               var html2 = "<tr class='data"+n+"' id='data"+fp[i].ik_nota+"'> <td>"+n+"</td>" +
-                                             "<td>"+fp[i].nama+"</td>" +
-                                            "<td>"+fp[i].ik_nota+"</td>" +
-                                            "<td> - </td>" +                                       
-                                          
-                                            "<td>"+fp[i].nama +"</td>"+
-                                            "<td> - </td>" +
-                                            "<td> - </td>" +
-                                            "<td>"+fp[i].ik_pelunasan+"</td> ";
-
-                                         
-                                          html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].ik_id+","+fp[i].ik_nota+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                        "<label></label>" +
-                                        "</div></td>";
-                                            
-                             html2 +=  "</tr>"; 
-                             tablefaktur.rows.add($(html2)).draw(); 
-                            n++; 
-
-                            console.log(n +'n');
-                           } 
-                      }
                                            
                       } // END ELSE IF JENISBAYAR GIRO
                     },
