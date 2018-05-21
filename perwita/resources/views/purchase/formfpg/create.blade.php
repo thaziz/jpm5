@@ -2191,89 +2191,44 @@
                               }
                         }
                     else if(idjenisbayar == '6' || idjenisbayar == '7'|| idjenisbayar == '9') {
+                         var tablefaktur = $('#tbl-faktur').DataTable();
+                       tablefaktur.clear().draw();
                       $('.supfaktur').show();
-                      $('.invfaktur').show();
+                      $('.invfaktur').show(); 
+                      alert(fp.length);                      
+                       for(var i = 0; i < fp.length; i++){ 
+                           var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
+                                       "<td>"+fp[i].namacabang+"</td>" +
+                                      "<td>"+fp[i].fp_nofaktur+"</td>" +
+                                      "<td> - </td>";                                   
+                                      if(idjenisbayar == '9') {
+                              html2 +=  "<td>"+fp[i].namavendor +"</td>";                                            
+                                      }
+                                      else {
+                              html2 += "<td>"+fp[i].namaoutlet+"</td>";
+                                      }
 
-                       if($('tr.field').length != 0 ){
-                          $('tr.field').each(function(){
-                            nobukti = $(this).data('nota');
-                           // alert(nobukti);
-                            hslnota.push(nobukti);
-                          })
-                           for(var k = 0; k < hslnota.length; k++){
-                             for(var i = 0; i < fp.length; i++){ 
-                                if(hslnota[k] != fp[i].fp_nofaktur) {
-                                   var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
-                                               "<td>"+fp[i].namacabang+"</td>" +
-                                              "<td>"+fp[i].fp_nofaktur+"</td>" +
-                                              "<td> - </td>";                                   
-                                              if(idjenisbayar == '9') {
-                                      html2 +=  "<td>"+fp[i].namavendor +"</td>";                                            
-                                              }
-                                              else {
-                                      html2 += "<td>"+fp[i].namaoutlet+"</td>";
-                                              }
+                                      html2 += "<td> - </td>";
+                                      if(idjenisbayar == 6){
+                                        html2 += "<td>"+fp[i].fp_jatuhtempo+"</td>";
+                                      }
+                                      else {
+                                        html2 += "<td> - </td>";
+                                      }
 
-                                              html2 += "<td> - </td>";
-                                              if(idjenisbayar == 6){
-                                                html2 += "<td>"+fp[i].fp_jatuhtempo+"</td>";
-                                              }
-                                              else {
-                                                html2 += "<td> - </td>";
-                                              }
+                                   html2 += "<td>"+addCommas(fp[i].fp_sisapelunasan)+"</td> ";
 
-                                           html2 += "<td>"+addCommas(fp[i].fp_sisapelunasan)+"</td> ";
-
-                                           
-                                            html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].fp_idfaktur+","+fp[i].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                          "<label></label>" +
-                                          "</div></td>";
-                                              
-                                     html2 +=  "</tr>"; 
-                                     tablefaktur.rows.add($(html2)).draw(); 
-                                    n++; 
-                                    console.log(n +'n');
-                                }
+                                   
+                                    html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].fp_idfaktur+","+fp[i].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
+                                  "<label></label>" +
+                                  "</div></td>";
+                                      
+                             html2 +=  "</tr>"; 
+                             tablefaktur.rows.add($(html2)).draw(); 
+                            n++; 
+                            console.log(n +'n');
                               }
-                            }
-
-                        }
-                        else {
-                            for(var i = 0; i < fp.length; i++){                                  
-                              var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
-                                               "<td>"+fp[i].namacabang+"</td>" +
-                                              "<td>"+fp[i].fp_nofaktur+"</td>" +
-                                              "<td> - </td>";                                   
-                                              if(idjenisbayar == '9') {
-                                      html2 +=  "<td>"+fp[i].namavendor +"</td>";                                            
-                                              }
-                                              else {
-                                      html2 += "<td>"+fp[i].namaoutlet+"</td>";
-                                              }
-
-                                              html2 += "<td> - </td>";
-                                              if(idjenisbayar == 6){
-                                                html2 += "<td>"+fp[i].fp_jatuhtempo+"</td>";
-                                              }
-                                              else {
-                                                html2 += "<td> - </td>";
-                                              }
-
-                                           html2 += "<td>"+addCommas(fp[i].fp_sisapelunasan)+"</td> ";
-
-                                           
-                                            html2 += "<td><div class='checkbox'> <input type='checkbox' id="+fp[i].fp_idfaktur+","+fp[i].fp_nofaktur+","+n+" class='check' value='option1' aria-label='Single checkbox One'>" +
-                                          "<label></label>" +
-                                          "</div></td>";
-                                              
-                               html2 +=  "</tr>"; 
-                               tablefaktur.rows.add($(html2)).draw(); 
-                              n++; 
-                              console.log(n +'n');
-                           } 
-                        }
-
-                        $('.hutangdagang').val(fp[0].acc_hutang);     
+                        $('.hutangdagang').val(fp[0].fp_acchutang);     
                     }
                     else if(idjenisbayar == '3'){
                       $('.supfaktur').show();
