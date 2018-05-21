@@ -471,7 +471,7 @@
           dataType:'json',
           success : function(response){
           cabang = $('.cabang').val();
-          var simpan ='<br> <button class="btn btn-sm btn-success save" type="submit" > <i class="fa fa-upload"> </i> Simpan </button> </form>';
+          var simpan ='<button class="btn btn-sm btn-success save" type="submit" > <i class="fa fa-upload"> </i> Simpan </button> </form>';
 
          $('.simpanitem').html(simpan);
 

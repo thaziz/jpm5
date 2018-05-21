@@ -47,8 +47,12 @@
             <div class="col-xs-12">
 
  @if(count($jurnal_dt)!=0)
-                    <div class="pull-right">
+                    <div class="pull-right">  
+                     @if($data['faktur'][0]->fp_tipe != 'PO')
                          <a onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','FP ITEM')" class="btn-xs btn-primary" aria-hidden="true"> 
+                    @else
+                        <a onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','FP PO')" class="btn-xs btn-primary" aria-hidden="true">
+                    @endif
                           <i class="fa  fa-eye"> </i>
                            &nbsp;  Lihat Jurnal  
                          </a> 

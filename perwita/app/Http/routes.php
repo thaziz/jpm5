@@ -428,6 +428,8 @@ Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
 Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
+Route::post('pelunasanhutangbank/hapusbank', 'PurchaseController@hapusbbk');
+
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');
@@ -2061,6 +2063,12 @@ Route::get('master_keuangan/akun/hapus_data/{id}', [
 Route::get('master_keuangan/akun/cek_parrent/{id}', [
   'uses'=> 'master_keuangan\akun_controller@cek_parrent',
   'as'  => 'akun.cek_parrent'
+
+]);
+
+Route::get('master_keuangan/akun/share_akun', [
+  'uses'=> 'master_keuangan\akun_controller@share_akun',
+  'as'  => 'akun.share'
 
 ]);
 

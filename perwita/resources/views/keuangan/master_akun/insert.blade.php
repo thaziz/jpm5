@@ -118,11 +118,11 @@
         </td>
       </tr>
 
-      <tr>
+     {{--  <tr>
         <td colspan="5" style="font-size: 10pt; padding-left: 10px;">
           <input type="checkbox" id="share" name="share" style="margin-top: 10px;"> &nbsp;<small>Akun Ini Bisa Di Share. (<b>Akun Yang Bisa Di Share Adalah Akun Yang Bisa Dimiliki Juga Oleh Kantor Cabang</b>).</small>
         </td>
-      </tr>
+      </tr> --}}
 
     </table>
   </div>
