@@ -97,6 +97,7 @@ class subcon_Controller extends Controller
              $data = array(
                 'id_subcon' =>$idsubconkode,
                 'kode' => $kodekode,
+                'cabang' => $request->cabang,
                 'nama' => strtoupper($request->ed_nama),                
                 'nomor_kontrak' => strtoupper($request->ed_nomor_kontrak),
                 'tgl_kontrak' => date('Y-m-d',strtotime($request->ed_tgl_kontrak)),
@@ -116,6 +117,7 @@ class subcon_Controller extends Controller
             $data = array(
                 'id_subcon' => $request->id_subcon,
                 'kode' => $request->ed_kode,
+                'cabang' => $request->cabang,
                 'nama' => strtoupper($request->ed_nama),                
                 'nomor_kontrak' => strtoupper($request->ed_nomor_kontrak),
                 'tgl_kontrak' => date('Y-m-d',strtotime($request->ed_tgl_kontrak)),
@@ -160,9 +162,10 @@ class subcon_Controller extends Controller
     public function index(){
         $kota = DB::select(DB::raw(" SELECT id,nama FROM kota ORDER BY nama ASC "));
         $akun = DB::table('d_akun')
-                  
                   ->get();
-        return view('master_sales.subcon.index',compact('kota','akun'));
+        $cabang = DB::table('cabang')
+                  ->get();
+        return view('master_sales.subcon.index',compact('kota','akun','cabang'));
     }
 
 }

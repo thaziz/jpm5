@@ -235,11 +235,11 @@
 
                           
                            <tr>
-                            <td width='200px' >
+                            <td width='200px' id="tdupdatestock">
                              Pilih Barang Update Stock ?
                             </td>
                             <td id="tdupdatestock">
-                              <select class='form-control updatestock'  name="updatestock" required="" id="updatestock"> <option value='Y' selected=""> Ya </option> <option value='T'> Tidak </option> </select>   
+                              <select class='form-control updatestock'  name="updatestock"  id="updatestock"> <option value='Y' selected=""> Ya </option> <option value='T'> Tidak </option> </select>   
                             </td>
                           </tr>
                          </div>
@@ -260,11 +260,11 @@
                             </td>
                           </tr>
                           <tr>
-                            <td>
+                            <td id="tdgudang">
                               Gudang
                             </td>
-                            <td>
-                            <select class="form-control gudang chosen-select-width " name="gudang" required="" novalidate>
+                            <td id="tdgudang">
+                            <select class="form-control gudang chosen-select-width " name="gudang"  novalidate>
                                 <option value=""> -- Pilih Gudang -- </option>
                         
                             </select></td>
@@ -909,7 +909,7 @@
                                                 </select>                                        
                                             </td>
                                             </td>
-                                            <input type="hidden" class="acchutangdagang_po" name="acchutangdagang"> acchutang
+                                            <input type="text" class="acchutangdagang_po" name="acchutangdagang"> <input type="text" class="cabangtransaksi" name="cabangtransaksi">
 
                                           </tr>
 
@@ -987,7 +987,7 @@
                                               <input type='hidden' class='cabang2' name='cabang'> 
                                               <input type='hidden' class='inputfakturpajakmasukan'> 
                                                <input type='hidden' class='inputtandaterima'> 
-                                                <input type='text' name='notandaterima2' class='notandaterima2'>
+                                                <input type='hidden' name='notandaterima2' class='notandaterima2'>
                                             <tr>
                                               <td> Jumlah </td>
                                               <td> <div class="row"> <div class="col-md-3"> Rp </div> <div class="col-md-9"> <input type='text' class='form-control jumlahharga_po' name='jumlahtotal_po' style='text-align: right' readonly=""> </div> </div> </td>
@@ -1365,7 +1365,7 @@
     keteranganum = $(val).find('.keteranganum').val();
     notr = $(val).find('.notr').val();
     
-    alert(a);
+    //alert(a);
 
     /*$('.nofaktur').val(nofaktur);*/
     $('.no_umheader').val(nokas);
@@ -2367,13 +2367,8 @@
       var dpp = $('.dpp_po2').val();
       hsldpp =  dpp.replace(/,/g, '');
 
-      hasiltarif = parseFloat((tarif / 100) * hsldpp);
-      hasiltarif2 =  hasiltarif.toFixed(2);
-      $('.hasilpph_po').val(addCommas(hasiltarif2));
-
-      hasilnetto = hsldpp - hasiltarif2;
-      hasilnetto2 =  Math.round(hasilnetto).toFixed(2);
-
+     
+     
       //////
         pph = $('.hasilpph_po').val();      
         ppn = $('.hasilppn_po').val();
@@ -2382,10 +2377,21 @@
         jenisppn = $('.jenisppn_po').val();
         numeric2 = dpp.replace(/,/g,'');
 
+      if(val == ''){
 
-      if($('.hasilppn_po').val() != '') { //ppn  tidak kosong
+      }
+      else {
+        hasiltarif = parseFloat((tarif / 100) * hsldpp);
+        hasiltarif2 =  hasiltarif.toFixed(2);
+        $('.hasilpph_po').val(addCommas(hasiltarif2));
+
+         hasilnetto = hsldpp - hasiltarif2;
+      hasilnetto2 =  Math.round(hasilnetto).toFixed(2);
+
+
+              if($('.hasilppn_po').val() != '') { //ppn  tidak kosong
           if($('.jenisppn_po').val() == 'E'){
-          
+        
              ppn = $('.hasilppn_po').val();
              hasilppn = ppn.replace(/,/g,'');
              pph = addCommas(hasiltarif2);
@@ -2423,6 +2429,8 @@
           hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
           netto2 = hslnetto.toFixed(2);
           $('.nettohutang_po').val(addCommas(netto2));
+      }
+
       }
 
     })
@@ -2749,10 +2757,6 @@
             arrnokas.push(val);
           });
 
-
-          
-
-
             swal({
             title: "Apakah anda yakin?",
             text: "Simpan Data Faktur Pembelian!",
@@ -2826,15 +2830,7 @@
             nettohutang2 = $('.nettohutang').val();
             nettohutangs = nettohutang2.replace(/,/g,'');
           }
-          totaljumlahs = $('.totaljumlah').val();
-          totaljumlahg = totaljumlahs.replace(/,/g,''); 
-        /*  alert(nettohutangs + 'nettohutangs');
-          alert(totaljumlahg);   */
-          if(parseFloat(totaljumlahg) > parseFloat(nettohutangs)){
-            toastr.info("Mohon Maaf Kelebihan data jumlah uang muka, netto hutang di Faktur" + addCommas(nettohutangs));
-            return false;
-          }
-
+        
           if(inputppn != '' && hasilppn != '' && hasilppn != 0 ) {
             if(pajakmasukan == 'edit'|| pajakmasukan == ''){
             
@@ -2846,8 +2842,6 @@
             toastr.info("Mohon maaf Anda belum menginputkan data form tanda terima :)");
             return false;
           }
-
-
           else{
           event.preventDefault();
           var post_url3 = $(this).attr("action");
@@ -2872,26 +2866,32 @@
             url : post_url3,
           
             success : function(response){
-               
-                  alertSuccess(); 
-                // window.location.href = baseUrl + "/fakturpembelian/fakturpembelian"; 
-                   alertSuccess(); 
-                $('#tabmenu').attr('disabled' , true);
-             //   $('.tabs-container').addClass('disabled');
-            //  window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
-              $('.simpanpo').attr('disabled' , true);
-              $('#tmbhdatapo').addClass('disabled');
-              $('#tmbhdataitem').addClass('disabled');
-              $('#tmbhdatapenerus').addClass('disabled' );
-              $('#tmbhdataoutlet').addClass('disabled');
-              $('#tmbhdatasubcon').addClass('disabled');
-              
-         
+                if(response.status == "gagal"){                   
+                    swal({
+                        title: "error",
+                        text: response.info,
+                        type: "error",
+                        
+                    });
+                   
+                }
+                else {
+                      alertSuccess(); 
+                  // window.location.href = baseUrl + "/fakturpembelian/fakturpembelian"; 
+                     alertSuccess(); 
+                  $('#tabmenu').attr('disabled' , true);
+               //   $('.tabs-container').addClass('disabled');
+              //  window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
+                $('.simpanpo').attr('disabled' , true);
+                $('#tmbhdatapo').addClass('disabled');
+                $('#tmbhdataitem').addClass('disabled');
+                $('#tmbhdatapenerus').addClass('disabled' );
+                $('#tmbhdataoutlet').addClass('disabled');
+                $('#tmbhdatasubcon').addClass('disabled');
 
-
-              html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
-              $('.printpo').html(html);
-              
+                html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+                $('.printpo').html(html);              
+                }
             },
             error:function(data){
                 swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -2912,11 +2912,11 @@
           $('.gudang').prop('disabled', true).trigger("liszt:updated");
 
           $('.gudang').prop('disabled', true).trigger("chosen:updated");
-        $('.idsup').attr('disabled', true);  
+           $('.idsup').attr('disabled', true);  
           $('.keterangan2').attr('disabled' , true);
 
           $('.noinvoice').attr('disabled' , true);
-     
+          $('.groupitem').addClass('disabled');
 
 
         event.preventDefault();
@@ -2952,6 +2952,7 @@
           var grupitem = $('.groupitem').val();
           var string4 = grupitem.split(",");
           groupitem = string4[0];
+          kodestock = string4[1];
          // alert(penerimaan);
 
        
@@ -2962,7 +2963,7 @@
                   "<td> <select class='form-control disabled barangitem brg-"+nourut+"' data-id="+nourut+">  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}}'>{{$brg->nama_masteritem}} </option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
 
                   "<td> <input type='text' class='input-sm form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
-                  "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem'> </td>"+ //qty
+                  "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem[]'> <input type='hidden' class='form-control kodestock' value="+kodestock+" name='kodestock[]'> </td>"+ //qty
                   
                   "<td> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
 
@@ -2999,6 +3000,7 @@
                   $('.dpp2').val(addCommas(numeric));
                   $('.nettohutang').val(addCommas(numeric));
 
+               
                   //cek jika double item
                   nobrg = nourut - 1;
                   idbarang = $('.brg-'+nobrg).val();
@@ -3846,7 +3848,7 @@
             split = supplieracc.split(",");
             acchutang= split[3];
           
-            $('.acchutangdagang_po').val(acchutang);
+//            $('.acchutangdagang_po').val(acchutang);
 
           $.ajax({    
           type :"get",
@@ -4153,8 +4155,11 @@
                 //jika PO 
                 if(flag[0] == 'PO'){
   //                alert(flag);
+                    $('.cabangtransaksi').val(response.po[0][0].po_cabangtransaksi);
+                    $('.acchutangdagang_po').val(response.po[0][0].po_acchutangdagang);
                     $('th.diskonpo').remove();
                   for(var i = 0; i < response.po.length; i++) {
+
     //                alert('hai');
                       var rowTampil =  "<tr id='datapo'> <td>"+ no +"</td>"+
                       "<td> <a class='po' data-id="+i+" data-po="+response.po[i][0].po_id+"> "+response.po[i][0].po_no+"</td> " +
@@ -4234,7 +4239,7 @@
                   $('th.updatestockpo').remove();
                       for(var k = 0 ; k < response.po_barang.length; k++){
                         for(var z = 0; z < response.po_barang[k].length; z++){
-                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].podt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].podt_qtykirim+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].podt_totalharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+response.po_barang[k][z].po_id+" name='idpo[]'>    <th> <input type='hidden' value="+flag[0]+" name='flag'>  <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'>  <input type='hidden' value="+jenis[0]+" name='jenis'>  </th> </tr> ";
+                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].podt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].podt_qtykirim+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].podt_totalharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+response.po_barang[k][z].po_id+" name='idpo[]'>    <th> <input type='hidden' value="+flag[0]+" name='flag'>  <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'>  <input type='hidden' value="+jenis[0]+" name='jenis'>  <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'>  </th> </tr> ";
 
                               $('#input_data').append(rowinput);
                          
@@ -4720,6 +4725,7 @@
             $('.penerimaan').val(stock);
            //$('tr#tdupdatestock').css('display', 'none');
            $('td#tdupdatestock').css('display', 'none');
+           $('td#tdgudang').css('display', 'none');
            $.ajax({    
             type :"post",
             data : {idsup, groupitem, stock},
@@ -4782,7 +4788,7 @@
         $('.penerimaan').val(stock);
            //$('tr#tdupdatestock').css('display', 'block');
            $('td#tdupdatestock').css('display', 'block');
-       
+            $('td#tdgudang').css('display', 'block');
 
           $.ajax({    
             type :"post",

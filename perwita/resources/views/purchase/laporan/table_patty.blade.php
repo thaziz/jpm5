@@ -4,6 +4,7 @@
       <table id="addColumn" class="table table-bordered table-hover tabel_patty_cash">
           <thead align="center">
             <tr>
+            <th>Nomor</th>
             <th>Tanggal</th>
             <th>Ref</th>
             <th>Akun Biaya</th>
@@ -17,17 +18,17 @@
           <tbody class="">
             @foreach($cari as $val)
             <tr>
+              <td>{{$val->pc_no_trans}}</td>
               <td><?php echo date('d/m/Y',strtotime($val->pc_tgl));?></td>
+              
               <td>{{$val->jenisbayar}}</td>
               <td>{{$val->pc_akun}}</td>
-              @foreach($akun as $d)
-              @if($d->id_akun == $val->pc_akun)
-              <td>{{$d->nama_akun}}</td>
-              @endif
-              @endforeach
+              
+              <td>{{$val->nama_akun}}</td>
+
               <td>{{$val->pc_keterangan}}</td>
-              <td align="right">{{$val->pc_debet}}</td>
-              <td align="right">{{$val->pc_kredit}}</td>
+              <td align="right">0</td>
+              <td align="right">{{ number_format($val->pc_kredit,0,'','.')}}</td>
               <td>{{$val->pc_user}}</td>
             </tr>
             @endforeach

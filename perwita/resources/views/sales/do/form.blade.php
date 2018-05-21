@@ -1146,12 +1146,13 @@
                     }else{
                         koli_val = $("input[name='ed_koli']").val();
                     }
-                
+                    var cek_kondisi_penerus = $("input[name='ed_tarif_penerus']").val();
 
                     var tarif_dasar = $("input[name='ed_tarif_dasar']").val(accounting.formatMoney('{{ $do->tarif_dasar or null }}',"",0,'.',','));
                     var biaya_penerus = $("input[name='ed_tarif_penerus']").val(accounting.formatMoney('{{ $do->tarif_penerus or null }}',"",0,'.',','));
                     var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val(accounting.formatMoney('{{ $do->biaya_tambahan or null }}',"",0,'.',','));
                     var biaya_komisi = $("input[name='ed_biaya_komisi']").val(accounting.formatMoney('{{ $do->biaya_komisi or null }}',"",0,'.',','));
+
 
                     var diskon = $("input[name='ed_diskon_h']").val();
                     var diskon_value = $("input[name='ed_diskon_v']").val();
@@ -1224,6 +1225,9 @@
                     }
 
                 }else{
+                    var tarif_dasar = $("input[name='ed_tarif_dasar']").val();
+                    var biaya_penerus = $("input[name='ed_tarif_penerus']").val();
+                    var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val();
                     var berat_val = $("input[name='ed_berat']").val();
                     var koli_val = $("input[name='ed_koli']").val();
                     if (berat_val == 0) { 
@@ -1237,30 +1241,63 @@
                     }else{
                         koli_val = $("input[name='ed_koli']").val();
                     }
-                
+                    var diskon  = $("input[name='ed_diskon_h']").val();
+                    var diskon_value  = $("input[name='ed_diskon_v']").val();
+                    var diskon_val  = $("input[name='ed_diskon_h']").val();
+                    var biaya_komisi  = $("input[name='ed_biaya_komisi']").val();
+                    var dpp_val  = $("input[name='ed_dpp']").val();
 
-                    var tarif_dasar = $("input[name='ed_tarif_dasar']").val(accounting.formatMoney('{{ $do->tarif_dasar or null }}',"",0,'.',','));
-                    var biaya_penerus = $("input[name='ed_tarif_penerus']").val(accounting.formatMoney('{{ $do->tarif_penerus or null }}',"",0,'.',','));
-                    var biaya_tambahan = $("input[name='ed_biaya_tambahan']").val(accounting.formatMoney('{{ $do->biaya_tambahan or null }}',"",0,'.',','));
-                    var biaya_komisi = $("input[name='ed_biaya_komisi']").val(accounting.formatMoney('{{ $do->biaya_komisi or null }}',"",0,'.',','));
-
-                    var diskon = $("input[name='ed_diskon_h']").val();
-                    var diskon_value = $("input[name='ed_diskon_v']").val();
                     var tarif_dasar = tarif_dasar.replace(/[A-Za-z$. ,-]/g, "");
-                    var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
-                    var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
                     var berat_val = berat_val.replace(/[A-Za-z$. ,-]/g, "");
                     var koli_val = koli_val.replace(/[A-Za-z$. ,-]/g, "");
-                    var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
+                    var biaya_penerus = biaya_penerus.replace(/[A-Za-z$. ,-]/g, "");
+                    var biaya_tambahan = biaya_tambahan.replace(/[A-Za-z$. ,-]/g, "");
 
+                    var biaya_komisi = biaya_komisi.replace(/[A-Za-z$. ,-]/g, "");
+                    var dpp_val = dpp_val.replace(/[A-Za-z$. ,-]/g, "");
+                    // var diskon = diskon.replace(/[A-Za-z$. ,-]/g, "");
+                    var jenis_ppn = $("select[name='cb_jenis_ppn']").val();
+                    var this_selected_value = $('#cb_cabang').find(':selected').data('diskon');
+                    // alert(this_selected_value);
+                        if(diskon_val > this_selected_value){
+                             Command: toastr["warning"]("Tidak boleh memasukkan diskon melebihi ketentuan", "Peringatan !")
+
+                            toastr.options = {
+                              "closeButton": false,
+                              "debug": true,
+                              "newestOnTop": false,
+                              "progressBar": true,
+                              "positionClass": "toast-top-right",
+                              "preventDuplicates": true,
+                              "onclick": null,
+                              "showDuration": "300",
+                              "hideDuration": "1000",
+                              "timeOut": "5000",
+                              "extendedTimeOut": "1000",
+                              "showEasing": "swing",
+                              "hideEasing": "linear",
+                              "showMethod": "fadeIn",
+                              "hideMethod": "fadeOut"
+                            }
+                            $("input[name='ed_diskon_h']").val(0);
+                        }
+                    // 
+                    if (diskon > 0 && biaya_tambahan > 0) {
+                        alert("Diskon dan biaya tambahan di isi salah satu");
+                        parseFloat($("input[name='ed_diskon_h']").val(0));
+                        $("input[name='ed_biaya_tambahan']").val(0);
+                        diskon = 0;
+                        biaya_tambahan = 0;
+                        $("input[name='ed_biaya_tambahan']").focus();
+                    }
+                    if ($("select[name='cb_outlet']").val() == '' ) {
+                        biaya_komisi = 0;
+                    }
                     var total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
                     var dpp  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
                     var vendor  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus) + parseFloat(biaya_tambahan) + parseFloat(biaya_komisi);
                     var total_total  = parseFloat(tarif_dasar) + parseFloat(biaya_penerus);
                     //--
-                    
-                    
-                    
                     if (diskon != 0) {
 
                         var diskon_value_utama = diskon / 100 * total;
@@ -1296,11 +1333,12 @@
                   
                     var total_h = total-diskon_value_utama;
                     var dpp_h = dpp-diskon_value_utama;
-                    // console.log(total_h);
+
                     $("input[name='ed_jml_ppn']").val(accounting.formatMoney(ppn,"",0,'.',','));
                     
                     $("input[name='ed_total_h']").val(accounting.formatMoney(total_h,"",0,'.',','));
                     
+                    $("input[name='ed_total_total']").val(total);
 
                     if ($('.vendor_tarif').is(':checked') == false) {
                         
@@ -1309,7 +1347,7 @@
                         $("input[name='ed_vendor']").prop('readonly',false);
                         $("input[name='ed_vendor']").val(accounting.formatMoney(dpp_h,"",0,'.',','));
                         
-                    }                    
+                    }
                 }
             })
             
@@ -2000,11 +2038,23 @@
                                 // alert('b');
                                 var hit = parseInt($("input[name='ed_koli']").val())  * data.harga;
                             }
-                            alert(hit);
+                            // alert(hit);
                             var acc_penjualan = data.acc_penjualan;
                             $("input[name='ed_tarif_dasar']").val(accounting.formatMoney(hit,"",0,'.',','));
                             // $("input[name='ed_tarif_dasar']").val(hit);
-                            $("input[name='ed_tarif_penerus']").val(biaya);
+                            var cek_data = $("#ed_tarif_penerus").val();
+                            // var cek_data = cek_data.replace(/[A-Za-z$. ,-]/g, "");
+                            if (crud_atas == 'E') {
+                                $("input[name='ed_tarif_penerus']").val('{{ $do->tarif_penerus or null}}');
+                                $(document).on("click","#btn_cari_harga",function(){
+                                    $("input[name='ed_tarif_penerus']").val(biaya);
+
+                                    })  
+                            }else{
+                                $("input[name='ed_tarif_penerus']").val(biaya);
+
+                            }
+                           
                             $("input[name='ed_tarif_penerus']").attr('width','100%');
                             $("#button_a").hide();
                             $("input[name='acc_penjualan']").val(acc_penjualan);
@@ -2067,7 +2117,6 @@
                             penerus = penerus.replace(/[A-Za-z$. ,-]/g, "");
                             var hasil = parseInt(dasar)+parseInt(penerus);
                             maxvalue = hasil*maxdiskon/100;
-                            // alert(hit);
                             hitung();
                         } else if (data.create_indent == 2) {
                             var harga = convertToRupiah(parseInt(data.harga));

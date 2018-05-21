@@ -81,7 +81,7 @@
                                                @if(Auth::user()->punyaAkses('Surat Permintaan Pembelian','cabang'))
                                               <select class="form-control cabang" name="cabang">
                                                   @foreach($data['cabang'] as $cabang)
-                                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
+                                                <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->kode}} - {{$cabang->nama}} </option>
                                                 @endforeach
                                               </select>
                                               @else
@@ -144,7 +144,7 @@
                                            @foreach($data['jenisitem'] as $jnsitem)
                                             <option value="{{$jnsitem->kode_jenisitem}},{{$jnsitem->stock}}"> {{$jnsitem->keterangan_jenisitem}} </option>
                                            @endforeach 
-                                          </select> <input type="hidden" name="spp_penerimaan" class="penerimaan"> </td>
+                                          </select> <input type="text" name="spp_penerimaan" class="penerimaan"> </td>
                                         </tr>
                                      
                                       <tr>
@@ -468,7 +468,7 @@
       variable = jnsitem.split(",");
       jenisitem = variable[0];
       penerimaan = variable[1];
-
+      $('.penerimaan').val(penerimaan);
       if(jenisitem == ''){
         toastr.info('Harap pilih Group Item terlebih dahulu :)');
           $('#updatestock option').prop('selected', function(){
@@ -520,10 +520,12 @@
                               "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
                            "</select> </td>";
               $('.lokasigudang').html(rowgudang);
+             // $('.penerimaan').val('S');
           }
           else {
              valupdatestock = val;
              $('.lokasigudang').empty();
+
           }
       }
 
@@ -946,7 +948,8 @@
       variable = jnsitem.split(",");
       jenisitem = variable[0];
       penerimaan = variable[1];
-
+      $('.penerimaan').val(penerimaan);
+    
       if(jenisitem == ''){
         toastr.info('Harap pilih Group Item terlebih dahulu :)');
           $('#updatestock option').prop('selected', function(){
@@ -991,20 +994,32 @@
       }
     
       else {
-         if(val == 'Y') {
-           valupdatestock = val;
+        if(penerimaan == 'Y'){
+           if(val == 'Y') {
+               $('#tdstock').show();
+            $('.updatestock').show();
+              valupdatestock = val;
                 $('.kendaraan').remove();
                var rowgudang = "<tr> <td> &nbsp; </td> </tr> <td width='200px'> <h4> Lokasi Gudang </h4> </td> <td> <select class='form-control gudang' name='gudang'>" +
                               "@foreach($data['gudang'] as $gdg) <option value={{$gdg->mg_id}}> {{$gdg->mg_namagudang}} </option> @endforeach>" + 
                            "</select> </td>";
               $('.lokasigudang').html(rowgudang);
+              //$('.penerimaan').val('S');
           }
           else {
              valupdatestock = val;
              $('.lokasigudang').empty();
+             //$('.penerimaan').val('NS');
           }
+        }
+        else {
+            $('.lokasigudang').empty();
+            $('#tdstock').hide();
+            $('.updatestock').hide();
+            valupdatestock = 'J';
+            //$('.penerimaan').val('J');
+        }
       }
-
      
           updatestock = $('.updatestock').val();
           $.ajax({    
@@ -1374,11 +1389,15 @@
              $('.loadingjenis').css('display' , 'block');
 
              gudang = $('.gudang').val();
-             // toastr.info(kodeitem);
-              $.ajax({
+             jnsitem = $('.jenisitem').val();
+             variable = jnsitem.split(",");
+             jenisitem = variable[0];
+              penerimaan = variable[1];
+
+             $.ajax({
                 url : baseUrl + '/suratpermintaanpembelian/ajax_hargasupplier',
                 type : "GET",
-                data : {kodeitem, gudang},
+                data : {kodeitem, gudang, penerimaan},
                 dataType : "json",
                 success : function(data) {
               $('.loadingjenis').css('display' , 'none');
@@ -1531,10 +1550,15 @@
               $sup++;            
               countersup++;
               gudang = $('.gudang').val();
+             jnsitem = $('.jenisitem').val();
+             variable = jnsitem.split(",");
+             jenisitem = variable[0];
+              penerimaan = variable[1];
+
               $.ajax({
                 url : baseUrl + '/suratpermintaanpembelian/ajax_hargasupplier',
                 type : "GET",
-                data : {kodeitem2, gudang},
+                data : {kodeitem2, gudang, penerimaan},
                 dataType : "json",
                 success : function(data) {
       $('.loadingjenis').css('display' , 'none');

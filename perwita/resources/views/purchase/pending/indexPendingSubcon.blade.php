@@ -27,7 +27,7 @@
                             <a>Purchase</a>
                         </li>
                         <li>
-                          <a> Pending</a>
+                          <a> Pending Subcon</a>
                         </li>
                         <li class="active">
                             <strong>Index</strong>
@@ -45,7 +45,7 @@
         <div class="col-lg-12" >
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5> Pembayaran Kas
+                    <h5> Pending Subcon
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                 </div>
@@ -57,27 +57,27 @@
                
                   <form class="form-horizontal" id="tanggal_seragam" action="post" method="POST">
                   <div class="box-body">
-                    
+                  <!--   <input type="text" name="" class="date1">
+                    <input type="text" name="" class="date2"> -->
                 <div class="box-body">
                   <table id="addColumn" class="table table-bordered table-striped tbl1">
                     <thead align="center">
                         <th> No. Transaksi </th>
                         <th> Tanggal </th>
-                        <th> Persentase Master</th>
-                        <th> Persentase Biaya</th>
+                        <th> Keterangan </th>
+                        <th> No Invoice </th>  
+                        <th> Subcon </th>
                         <th> Aksi </th>
                     </thead>
                     <tbody>  
-                      @foreach($data as $i=>$val)
+                      @foreach($data as $val)
                       <tr>
-                        <td>
-                          {{$val->fp_nofaktur}}
-                          <input type="hidden" class="id" value="{{$val->fp_idfaktur}}" name="">
-                        </td>
-                        <td><?php echo date('d/F/Y',strtotime($val->fp_tgl)) ?></td>
-                        <td align="right">{{$persen[$i][0]->persen}} %</td>
-                        <td align="right">{{$fix_persen[$i]}} %</td>
-                        <td align="center"><a onclick="saving(this)" class="fa fa-check">Approve</a></td>
+                        <td>{{$val->fp_nofaktur}}</td>
+                        <td><?php echo date('d/F/Y',strtotime($val->fp_tgl)); ?></td>
+                        <td>{{$val->fp_keterangan}}</td>
+                        <td>{{$val->fp_noinvoice}}</td>
+                        <td>{{$val->nama}}</td>
+                        <td align="center"><a href="{{route('proses_subcon', ['id' => $val->fp_idfaktur])}}"><button type="button" class="btn btn-primary"><i class="fa fa-cog"> Proses</i></button></a></td>
                       </tr>
                       @endforeach
                     </tbody>
@@ -94,6 +94,7 @@
               </div><!-- /.box -->
             </div><!-- /.col -->
             </div>
+
           </div><!-- /.row -->
                 </div>
             </div>
@@ -171,52 +172,6 @@ function(){
 }
 
 
-function saving(p){
-    
-    var par     = p.parentNode.parentNode;
-    var id = $(par).find('.id').val();
-    // console.log(par);
-    swal({
-    title: "Apakah anda yakin?",
-    text: "Update Data!",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Ya, Update!",
-    cancelButtonText: "Batal",
-    closeOnConfirm: false
-  },
-  function(){
-
-       $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-      $.ajax({
-      url:baseUrl + '/pending_subcon/save_subcon/'+id,
-      success:function(response){
-        swal({
-        title: "Berhasil!",
-                type: 'success',
-                text: "Data berhasil disimpan",
-                timer: 900,
-               showConfirmButton: true
-                });
-        tableDetail.row(par).remove().draw(false)
-      },
-      error:function(data){
-        swal({
-        title: "Terjadi Kesalahan",
-                type: 'error',
-                timer: 900,
-               showConfirmButton: true
-
-    });
-   }
-  });  
- });
-}
 
 </script>
 @endsection

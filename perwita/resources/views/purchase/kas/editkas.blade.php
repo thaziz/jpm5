@@ -304,7 +304,76 @@ $('.tanggal').datepicker({
       $('.pembiayaan_cargo').attr('hidden',false);
       $('.pembiayaan').attr('hidden',true);
     }
-    jenis_kendaraan();
+    
+
+    var id = $('.jenis_kendaraan').val();
+    var jenis = $('.jenis_kendaraan').val();
+    var nama_kas = $('.nama_kas').val();
+    var jenis_pembiayaan = $('.jenis_pembiayaan').val();
+    var pembiayaan = $('.pembiayaan').val();
+    var km        = $('.kilometer').val();
+    var bbm_liter = parseInt($('.km_liter').val());
+    var harga_bbm = parseInt($('.bbm').val());
+    var jk        = $('.jenis_kendaraan').val();
+    var hasil = 0;
+    var temp = 0;
+
+    if (jenis != 0 && nama_kas != 0 && jenis_pembiayaan != 0){
+        $('.search').attr('disabled',false);
+      }
+
+    $.ajax({
+      url:baseUrl + '/biaya_penerus/getbbm/'+id,
+      type:'get',
+      success:function(data){
+        var bbm_liter = data.angkutan[0].bbm_per_liter;
+        var harga_bbm = data.angkutan[0].mb_harga;
+        $('.km_liter').val(bbm_liter);
+        $('.bbm').val(harga_bbm);
+        
+        if(km != "" && jk != "0"){
+          parseInt(km);
+          hasil = km/bbm_liter;
+          hasil = hasil * harga_bbm;
+          hasil = Math.round(hasil);
+          hasil = hasil.toLocaleString();
+          hasil = 'Rp ' + hasil;
+          $('.total_bbm').val(hasil);
+
+
+          total[1] = hasil;
+          if(total[0]==undefined ){
+            total[0]=0;
+          }
+          total[1] = total[1].replace("Rp ","");
+          total[1] = total[1].replace(/[^0-9\.-]+/g,"");
+
+          for(var i = 0 ; i<total.length;i++){
+            temp+=parseInt(total[i]);
+          }
+          temp = temp.toLocaleString()
+          temp = 'Rp ' + temp;
+          $('.total').val(temp);
+
+
+        }else if(km == ""){
+          $('.total_bbm').val(0);
+          total[1] = 0;
+          if(total[0]==undefined){
+            total[0]=0;
+          }
+          for(var i = 0 ; i<total.length;i++){
+            temp+=parseInt(total[i]);
+          }
+          temp = temp.toLocaleString()
+          temp = 'Rp ' + temp;
+      
+          $('.total').val(temp);
+        }
+      }
+
+    })
+    
     var id_nopol = "{{ $data->bpk_nopol }}";
     $.ajax({
           url:baseUrl + '/biaya_penerus/nopol',
@@ -561,7 +630,7 @@ function search(){
 
   $.ajax({
       url:baseUrl + '/biaya_penerus/cariresiedit',
-      type:'get',
+      type:'post',
       data: {head,data,resi_array,id},
       success:function(data){
         $('.resi_body').html('');
