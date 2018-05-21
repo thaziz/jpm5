@@ -911,7 +911,8 @@
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: false,
+    showLoaderOnConfirm: true
     },function(){
 
       $.ajaxSetup({
@@ -1509,7 +1510,8 @@
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: false,
+    showLoaderOnConfirm: true
     },function(){
 
       $.ajaxSetup({
