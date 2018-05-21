@@ -125,7 +125,7 @@
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
-                              <input type="hidden" class="valkodebank" name="kodebank">
+                              <input type="text" class="valkodebank" name="kodebank">
                              </td>
                           </tr>
 
@@ -261,7 +261,7 @@
 
                                                         <tr>
                                                         <th> Bank </th>
-                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div>  </div>
+                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='text' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'>  </div>
                                                       
                                                         </tr>
                                                         <tr>
@@ -693,7 +693,7 @@
      $nomr = 1;
     $('.tmbhdatacek').click(function(){
 
-
+        $('.kodebank').addClass('disabled');
         nofpg = $('.nofpg').val();
         nobbk = $('.nobbk').val();
         flag = $('.flag').val();
@@ -701,7 +701,7 @@
 
 
           kodecabang = $('.kodebank').val();
-         // alert(kodecabang);
+         alert(kodecabang);
           $('.valkodebank').val(kodecabang);
 
       if(flag == 'BIAYA'){
@@ -728,9 +728,13 @@
       jatuhtempo = $('.jatuhtempo').val();
       idbank = $('.idbank').val();
       jenissup = $('.jenissup').val();
+      kodebank = $('.akunkodebank').val();
+      hutangdagang = $('.hutangdagang').val();
+      akunum = $('.akunuangmuka').val();
+
 
       row = "<tr class='transaksi bayar"+$nomr+"' id='datacek"+notransaksi+"' data-transaksi="+notransaksi+">" +
-          "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
+          "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly> <input type='hidden' class='input-sm form-control' value='"+kodebank+"' name='akunkodebank' readonly> <input type='hidden' class='input-sm form-control' value='"+hutangdagang+"' name='hutangdagang[]' readonly> <input type='hidden' class='input-sm form-control' value='"+akunum+"' name='akunum[]' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
           "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> </td>" +
@@ -826,6 +830,10 @@
                     $('.namabank').val(response.fpg[0].mb_nama)
                     $('.tgl').val(response.fpg[0].fpg_tgl );
                     $('.idbank').val(response.fpg[0].mb_id);
+                    $('.akunkodebank').val(response.fpg[0].fpg_kodebank);
+                    $('.hutangdagang').val(response.fpg[0].fpg_acchutang);
+                    $('.akunuangmuka').val(response.fpg[0].fpg_accum);
+
 
                 if(response.fpg[0].fpg_jenisbayar == '2' || response.fpg[0].fpg_jenisbayar == '3' ) {                  
                     $('.kodesup').val(response.fpg[0].no_supplier);

@@ -84,9 +84,14 @@
                         <a class="btn btn-sm btn-success text-right" href={{url('pelunasanhutangbank/detailpelunasanbank/'.$bbk->bbk_id.'')}}><i class="fa fa-arrow-right" aria-hidden="true"></i></a> &nbsp; 
                                 @endif
 
-                                 @if(Auth::user()->punyaAkses('Pelunasan Hutang','ubah')) 
+                                 @if(Auth::user()->punyaAkses('Pelunasan Hutang','print')) 
                         <a class="btn btn-sm btn-info" href="{{url('pelunasanhutangbank/cetak/'. $bbk->bbk_id.'')}}" type="button"> <i class="fa fa-print" aria-hidden="true"></i> </a>
                                 @endif
+
+                        @if(Auth::user()->punyaAkses('Pelunasan Hutang','hapus')) 
+                        <a class="btn btn-sm btn-danger" href="{{url('pelunasanhutangbank/hapus/'. $bbk->bbk_id.'')}}" type="button"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
+                                @endif
+
                         </td>
                     </tr>
                     @endforeach

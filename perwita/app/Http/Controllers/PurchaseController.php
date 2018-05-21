@@ -1574,6 +1574,7 @@ public function purchase_order() {
 				$po->po_penerimaan = $request->spp_penerimaan;
 				$po->po_jenisppn = $request->jenisppn;
 				$po->po_statusreturn = 'AKTIF';
+				$po->po_cabangtransaksi = $datacomp;
 				$po->create_by = $request->username;
 				$po->update_by = $request->username;
 
@@ -4350,7 +4351,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef')")); 
 
-
+		/*dd($data);*/
 		return view('purchase/fatkur_pembelian/detail', compact('data','jurnal_dt'));
 	}	
 
@@ -4717,13 +4718,18 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 				/*$fatkurpembeliandt->fpdt_gudang = $request->pb_gudang[$i];*/
 				$fatkurpembeliandt2->fpdt_harga =  $hargajadi;
 				$total = (float) $hargajadi * $request->qty[$i];
-
+				$fatkurpembeliandt2->fpdt_idpo = $request->idpoheader[$i];
 				//return $total;
 
+				$fatkurpembeliandt2->fpdt_accbiaya = $request->akunitem[$i];
 				$fatkurpembeliandt2->fpdt_totalharga =  $total;
 				
 
 				$fatkurpembeliandt2->save();
+
+				$datajurnal[$i]['id_akun'] = $request->akunitem[$i];
+				$datajurnal[$i]['subtotal'] = $total;
+				$datajurnal[$i]['dk'] = 'D';
 		}
 
 		//save bayaruangmuka
@@ -4836,12 +4842,63 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 
 			}
 
-			if($request->jenis == 'J' || $request->jenis == 'NS'){
-				for($key = 0; $key < count($request->akunitem); $key++){
 
-				}	
+
+
+
+			//savejurnal
+			//akun PPN
+			$datacomp2 = $request->cabangtransaksi;
+			if($request->hasilppn_po != ''){
+				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$datacomp2'");
+				if(count($datakun2) == 0){
+					 $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
+				    DB::rollback();
+			            return json_encode($dataInfo);
+				}
+				else {
+					$akunppn = $datakun2[0]->id_akun;
+
+					$dataakun = array (
+						'id_akun' => $akunppn,
+						'subtotal' => $hasilppn,
+						'dk' => 'D',
+					);
+					array_push($datajurnal, $dataakun );
+				}
+
 			}
 
+			if($request->hasilpph_po != ''){
+				$datapph = DB::select("select * from pajak where id = '$jenispph'");
+				$kodepajak2 = $datapph[0]->acc1;
+				$kodepajak = substr($kodepajak2, 0,4);
+
+				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$datacomp2'");
+				if(count($datakun2) == 0){
+					$dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Belum Tersedia'];
+				    DB::rollback();
+			            return json_encode($dataInfo);
+				}
+				else {
+					$akunpph = $datakun2[0]->id_akun;
+
+					$dataakun = array (
+						'id_akun' => $akunpph,
+						'subtotal' => $hasilpph,
+						'dk' => 'K',
+					);
+					array_push($datajurnal, $dataakun );
+				}
+
+			}
+
+			//akun pph
+
+
+			//save jurnal
+			if($request->jenis == 'J' || $request->jenis == 'NS'){
+		}
 		return json_encode($idfaktur);
 
 		});
@@ -5385,6 +5442,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 			}
 
 			$comp = $request->cabang;
+
 			//akun PPN
 			if($request->hasilppn != ''){
 				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$comp'");
@@ -5827,11 +5885,11 @@ public function kekata($x) {
 		$cabang = $request->cabang;
 
 			if($cabang == '000'){
-				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J'  and pb_terfaktur IS null and po_statusreturn = 'AKTIF' union select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J'  and po_idfaktur IS null and po_statusreturn = 'AKTIF' and po_setujufinance = 'DISETUJUI' order  by id desc");
+				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J'  and pb_terfaktur IS null and po_statusreturn = 'AKTIF' union select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J'  and po_idfaktur IS null and po_statusreturn = 'AKTIF' and po_setujufinance = 'DISETUJUI' order  by id desc");
 	
 			}		
 			else {
-				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J' and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' and pb_terfaktur IS null union select  LEFT(po_no,2) as flag , po_cabang as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J' and po_cabang = '$cabang' and po_idfaktur IS null and po_statusreturn = 'AKTIF'  order  by id desc");
+				$data['po'] = DB::select("select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, pb_po, po_tipe as penerimaan, po_totalharga as totalharga , po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id where po_supplier = '$idsup' and po_tipe != 'J' and po_cabang = '$cabang' and po_statusreturn = 'AKTIF' and pb_terfaktur IS null union select  LEFT(po_no,2) as flag , po_cabangtransaksi as cabang, po_id as id , po_no as nobukti, po_id, po_tipe as penerimaan, po_totalharga as totalharga, po_ppn as hasilppn, po_jenisppn as jenisppn from pembelian_order LEFT OUTER JOIN penerimaan_barang on pb_po = po_id and po_supplier = '$idsup' where po_tipe = 'J' and po_cabang = '$cabang' and po_idfaktur IS null and po_statusreturn = 'AKTIF'  order  by id desc");
 			}
 			
 			
@@ -5958,14 +6016,14 @@ public function kekata($x) {
 			if($flag[$j] == 'PO'){				
 				if($jenis[$j] != 'J'){
 
-					$data['po'][] = DB::select("select po_id ,po_no, po_subtotal, po_tipe, po_ppn, po_jenisppn, po_totalharga from pembelian_order, penerimaan_barang where po_id = pb_po and po_no = '$no_po' and po_statusreturn = 'AKTIF'  Group by po_id, po_no");
+					$data['po'][] = DB::select("select po_id ,po_no, po_subtotal, po_tipe, po_ppn, po_jenisppn, po_totalharga, po_cabangtransaksi, po_acchutangdagang from pembelian_order, penerimaan_barang where po_id = pb_po and po_no = '$no_po' and po_statusreturn = 'AKTIF'  Group by po_id, po_no");
 					$data['po_barang'][] = DB::select("select distinct po_id, po_no, nama_masteritem, acc_persediaan , pb_gudang, pbdt_item, pbdt_idspp, sum(pbdt_totalharga) as sumharga, sum(podt_qtykirim) as qty_po, pb_po , pbdt_updatestock, podt_jumlahharga, podt_akunitem, sum(pbdt_qty) as sumqty, pb_comp, acc_hpp  from penerimaan_barang , pembelian_order, penerimaan_barangdt, pembelian_orderdt, masteritem where po_id = podt_idpo and pbdt_idpb = pb_id and pbdt_item = kode_item  and podt_kodeitem = pbdt_item and podt_idpo = pb_po and  pbdt_po = pb_po and pbdt_idspp = podt_idspp and po_no = '$no_po'  and po_statusreturn = 'AKTIF'  group by pb_gudang, nama_masteritem, pbdt_item, pbdt_idspp, pb_po, pbdt_updatestock ,pbdt_hpp, pb_comp, acc_persediaan, podt_jumlahharga, acc_hpp, po_no, po_id, podt_akunitem");
 
 					$data['barang_penerimaan'] = DB::select("select distinct nama_masteritem, acc_persediaan , pb_gudang, pbdt_item, pbdt_idspp, sum(pbdt_totalharga) as sumharga, podt_qtykirim , pb_po , pbdt_updatestock, podt_jumlahharga, sum(pbdt_qty) as sumqty, pb_comp, acc_hpp  from penerimaan_barang , penerimaan_barangdt, masteritem, pembelian_orderdt where pbdt_idpb = pb_id and pbdt_item = kode_item  and podt_kodeitem = pbdt_item and podt_idpo = pb_po and  pbdt_po = pb_po and pbdt_idspp = podt_idspp  group by pb_gudang, nama_masteritem, pbdt_item, pbdt_idspp, pb_po, pbdt_updatestock ,pbdt_hpp, pb_comp, podt_qtykirim,acc_persediaan, podt_jumlahharga, acc_hpp");
 				}
 				else {
 
-					$data['po'][] = DB::select("select po_id ,po_no, po_subtotal, po_tipe, po_ppn, po_jenisppn, po_totalharga  from pembelian_order where  po_no = '$no_po' and po_statusreturn = 'AKTIF'  Group by po_id, po_no");
+					$data['po'][] = DB::select("select po_id ,po_no, po_subtotal, po_tipe, po_ppn, po_jenisppn, po_totalharga, po_cabangtransaksi, po_acchutangdagang  from pembelian_order where  po_no = '$no_po' and po_statusreturn = 'AKTIF'  Group by po_id, po_no");
 
 					$data['po_barang'][] = DB::select("select po_no, po_id, nama_masteritem, podt_totalharga, podt_kodeitem, podt_qtykirim, podt_jumlahharga, podt_akunitem from pembelian_order,  masteritem, pembelian_orderdt where podt_kodeitem = kode_item and podt_idpo = po_id and po_no = '$no_po' and po_statusreturn = 'AKTIF' ");
 
@@ -6182,10 +6240,16 @@ public function kekata($x) {
 	}
 	
 	public function simpanbbk (Request $request){
+		return DB::transaction(function() use ($request) { 
 		$tempdone = 0;
 		$bbk = new bukti_bank_keluar();
 		$cabang = $request->cabang;
 		$lastid =  bukti_bank_keluar::max('bbk_id');;
+		
+
+		$datajurnal = [];
+		$totalhutang = 0;
+
 		if(isset($lastid)) {
 			$idbbk = $lastid;
 			$idbbk = (int)$idbbk + 1;
@@ -6213,6 +6277,7 @@ public function kekata($x) {
 		$bbk->bbk_cabang = $request->cabang;
 		$bbk->bbk_flag = $request->flag;
 		$bbk->bbk_tgl = $request->tglbbk;
+		$bbk->bbk_akunbank = $request->akunkodebank;
 		$bbk->create_by = $request->username;
 		$bbk->update_by = $request->username;
 		$bbk->save();
@@ -6251,6 +6316,7 @@ public function kekata($x) {
 				$bbkdt->bbkd_tglfpg = $request->tgl[$i];
 				$bbkdt->bbkd_jenissup = $request->jenissup[$i];
 				$bbkdt->bbkd_idfpg = $request->idfpg[$i];
+				$bbkdt->bbkd_akunhutang = $request->hutangdagang[$i];
 				$bbkdt->save();
 
 
@@ -6275,7 +6341,12 @@ public function kekata($x) {
 					->update([
 						'fpg_posting' => 'DONE',
 					]);
-				}	
+				}
+
+
+				$datajurnal[$i]['id_akun'] = $request->hutangdagang[$i];;
+				$datajurnal[$i]['subtotal'] = $nominal;
+				$datajurnal[$i]['dk'] = 'D';
 			}
 		}
 		else {
@@ -6301,9 +6372,61 @@ public function kekata($x) {
 				$bbkb->save();
 			}
 		}
+			//save jurnal
+			$lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+			if(isset($lastidjurnal)) {
+				$idjurnal = $lastidjurnal;
+				$idjurnal = (int)$idjurnal + 1;
+			}
+			else {
+				$idjurnal = 1;
+			}
 		
-		
-		return json_encode($idbbk);
+			$year = date('Y');	
+			$date = date('Y-m-d');
+			$jurnal = new d_jurnal();
+			$jurnal->jr_id = $idjurnal;
+	        $jurnal->jr_year = date('Y');
+	        $jurnal->jr_date = date('Y-m-d');
+	        $jurnal->jr_detail = 'POSTING BANK';
+	        $jurnal->jr_ref = $$request->nobbk;
+	        $jurnal->jr_note = 'POSTING BANK';
+	        $jurnal->save();
+       		
+	        	$dataakun = array (
+				'id_akun' => $request->akunkodebank,
+				'subtotal' => '-' . $total,
+				'dk' => 'K',
+				);	
+	        
+
+			array_push($datajurnal, $dataakun );
+    		$key  = 1;
+    		for($j = 0; $j < count($datajurnal); $j++){
+    			
+    			$lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+				if(isset($lastidjurnaldt)) {
+					$idjurnaldt = $lastidjurnaldt;
+					$idjurnaldt = (int)$idjurnaldt + 1;
+				}
+				else {
+					$idjurnaldt = 1;
+				}
+
+    			$jurnaldt = new d_jurnal_dt();
+    			$jurnaldt->jrdt_jurnal = $idjurnal;
+    			$jurnaldt->jrdt_detailid = $key;
+    			$jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
+    			$jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
+    			$jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+    			$jurnaldt->save();
+    			$key++;
+
+			}
+
+
+			return json_encode($idbbk);
+		});		
 	}
 
 	
@@ -6541,6 +6664,9 @@ public function kekata($x) {
 			$pelunasan = $data['fpg'][$i]->fpgdt_pelunasan;
 
 			$data['fp'] = DB::select("select * from faktur_pembelian where fp_idfaktur = '$idfp'");
+			$jenisbayar = $data['fp'][0]->fp_jenisbayar;
+
+			if($jenisbayar == '2' || $jenisbayar == '6' || $jenisbayar == '7' || $jenisbayar == '9'){
 			$fppelunasan = $data['fp'][0]->fp_sisapelunasan;
 			$hasilpengurangan = (float)$fppelunasan + (float)$pelunasan;
 
@@ -6549,15 +6675,20 @@ public function kekata($x) {
 					 	'fp_sisapelunasan' => $hasilpengurangan, 	
 				 	]);	
 
-			$updatecndn = cndn_dt::where('cndt_idfp' ,  '=' , $idfp);
-						$updatecndn->update([
-							'cndt_statusfpg' => 'NOT',
-							]);
 
+			$datacndn = DB::select("select * from cndnpembelian where cndt_idfp = '$idfp");
+				if(count($datacndn) != 0){
+					$updatecndn = cndn_dt::where('cndt_idfp' ,  '=' , $idfp);
+					$updatecndn->update([
+						'cndt_statusfpg' => 'NOT',
+						]);
+				}
+			}
 		}
 
 
 		$data['fpgbank'] = DB::select("select * from fpg, fpg_cekbank where fpgb_idfpg = idfpg and idfpg = '$id'");
+
 		for($i = 0; $i < count($data['fpgbank']);$i++){
 			$idbank = $data['fpgbank'][$i]->fpg_idbank;
 			$noseri = $data['fpgbank'][$i]->fpgb_nocheckbg;
@@ -7119,8 +7250,10 @@ public function kekata($x) {
 								$fatkurpembeliandt->save();
 
 							}
+						} // END FOR COUNT ITEM
+					} // END FOR FP ALL
 
-							if($request->updatestock[$x] == 'IYA'){
+
 								DB::delete("DELETE from  d_jurnal where jr_ref = '$idpb' and jr_detail = 'PENERIMAAN BARANG'");
 								$datajurnal = [];
 								$totalhutang = 0;
@@ -7185,10 +7318,6 @@ public function kekata($x) {
 					    			$jurnaldt->save();
 					    			$key++;
 					    		}  
-							}
-
-						} // END FOR COUNT ITEM
-					} // END FOR FP ALL
 				
 			}
 			
@@ -7720,6 +7849,8 @@ public function kekata($x) {
 
 
 	public function saveformfpg(Request $request){
+
+
 		return DB::transaction(function() use ($request) {  
 			$time = Carbon::now();
 			//	$idbank = $request->idbank;
@@ -7727,6 +7858,7 @@ public function kekata($x) {
 
 				$explode = explode(",", $request->selectOutlet);
 				$idbank = $explode[0];
+				$kodebank = $explode[4];
 				//	dd($nosppid);
 
 				$cabang = $request->cabang;
@@ -7774,7 +7906,8 @@ public function kekata($x) {
 				//KODE BANK
 				
 				$formfpg->fpg_idbank = $idbank; 
-				$formfpg->acc_supplier = $request->hutangdagang;
+				$formfpg->fpg_acchutang = $request->hutangdagang;
+				$formfpg->fpg_kodebank = $kodebank;
 				$formfpg->fpg_posting = 'NOT';
 				$formfpg->create_by = $request->username;
 				$formfpg->update_by = $request->username;

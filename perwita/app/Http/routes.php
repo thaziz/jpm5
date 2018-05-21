@@ -423,6 +423,8 @@ Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
 Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
+Route::post('pelunasanhutangbank/hapusbank', 'PurchaseController@hapusbbk');
+
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
 Route::get('bankkaslain/createbankkaslain', 'PurchaseController@createbankkaslain');

@@ -909,7 +909,7 @@
                                                 </select>                                        
                                             </td>
                                             </td>
-                                            <input type="hidden" class="acchutangdagang_po" name="acchutangdagang"> acchutang
+                                            <input type="text" class="acchutangdagang_po" name="acchutangdagang"> <input type="text" class="cabangtransaksi" name="cabangtransaksi">
 
                                           </tr>
 
@@ -2367,13 +2367,8 @@
       var dpp = $('.dpp_po2').val();
       hsldpp =  dpp.replace(/,/g, '');
 
-      hasiltarif = parseFloat((tarif / 100) * hsldpp);
-      hasiltarif2 =  hasiltarif.toFixed(2);
-      $('.hasilpph_po').val(addCommas(hasiltarif2));
-
-      hasilnetto = hsldpp - hasiltarif2;
-      hasilnetto2 =  Math.round(hasilnetto).toFixed(2);
-
+     
+     
       //////
         pph = $('.hasilpph_po').val();      
         ppn = $('.hasilppn_po').val();
@@ -2382,10 +2377,21 @@
         jenisppn = $('.jenisppn_po').val();
         numeric2 = dpp.replace(/,/g,'');
 
+      if(val == ''){
 
-      if($('.hasilppn_po').val() != '') { //ppn  tidak kosong
+      }
+      else {
+        hasiltarif = parseFloat((tarif / 100) * hsldpp);
+        hasiltarif2 =  hasiltarif.toFixed(2);
+        $('.hasilpph_po').val(addCommas(hasiltarif2));
+
+         hasilnetto = hsldpp - hasiltarif2;
+      hasilnetto2 =  Math.round(hasilnetto).toFixed(2);
+
+
+              if($('.hasilppn_po').val() != '') { //ppn  tidak kosong
           if($('.jenisppn_po').val() == 'E'){
-          
+        
              ppn = $('.hasilppn_po').val();
              hasilppn = ppn.replace(/,/g,'');
              pph = addCommas(hasiltarif2);
@@ -2423,6 +2429,8 @@
           hslnetto = parseFloat(parseFloat(hsldpp) - parseFloat(hasiltarif2));
           netto2 = hslnetto.toFixed(2);
           $('.nettohutang_po').val(addCommas(netto2));
+      }
+
       }
 
     })
@@ -2858,23 +2866,32 @@
             url : post_url3,
           
             success : function(response){
-               
-                  alertSuccess(); 
-                // window.location.href = baseUrl + "/fakturpembelian/fakturpembelian"; 
-                   alertSuccess(); 
-                $('#tabmenu').attr('disabled' , true);
-             //   $('.tabs-container').addClass('disabled');
-            //  window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
-              $('.simpanpo').attr('disabled' , true);
-              $('#tmbhdatapo').addClass('disabled');
-              $('#tmbhdataitem').addClass('disabled');
-              $('#tmbhdatapenerus').addClass('disabled' );
-              $('#tmbhdataoutlet').addClass('disabled');
-              $('#tmbhdatasubcon').addClass('disabled');
+                if(response.status == "gagal"){                   
+                    swal({
+                        title: "error",
+                        text: response.info,
+                        type: "error",
+                        
+                    });
+                   
+                }
+                else {
+                      alertSuccess(); 
+                  // window.location.href = baseUrl + "/fakturpembelian/fakturpembelian"; 
+                     alertSuccess(); 
+                  $('#tabmenu').attr('disabled' , true);
+               //   $('.tabs-container').addClass('disabled');
+              //  window.location.href = baseUrl + "/fakturpembelian/fakturpembelian";
+                $('.simpanpo').attr('disabled' , true);
+                $('#tmbhdatapo').addClass('disabled');
+                $('#tmbhdataitem').addClass('disabled');
+                $('#tmbhdatapenerus').addClass('disabled' );
+                $('#tmbhdataoutlet').addClass('disabled');
+                $('#tmbhdatasubcon').addClass('disabled');
 
-              html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
-              $('.printpo').html(html);
-              
+                html = "<a class='btn btn-info btn-sm' href={{url('fakturpembelian/cetakfaktur/')}}"+'/'+response+"><i class='fa fa-print' aria-hidden='true'  ></i>  Cetak </a>";
+                $('.printpo').html(html);              
+                }
             },
             error:function(data){
                 swal("Error", "Server Sedang Mengalami Masalah", "error");
@@ -4138,9 +4155,11 @@
                 //jika PO 
                 if(flag[0] == 'PO'){
   //                alert(flag);
-                    $('.acchutangdagang_po').val(response.po[i][0].po_acchutangdagang);
+                    $('.cabangtransaksi').val(response.po[0][0].po_cabangtransaksi);
+                    $('.acchutangdagang_po').val(response.po[0][0].po_acchutangdagang);
                     $('th.diskonpo').remove();
                   for(var i = 0; i < response.po.length; i++) {
+
     //                alert('hai');
                       var rowTampil =  "<tr id='datapo'> <td>"+ no +"</td>"+
                       "<td> <a class='po' data-id="+i+" data-po="+response.po[i][0].po_id+"> "+response.po[i][0].po_no+"</td> " +
