@@ -846,7 +846,7 @@ class PurchaseController extends Controller
 
 		}
 		else {
-				$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id and co_comp = '$cabang' order by co_id desc");	
+				$data['co']=DB::select("select * from confirm_order, spp where co_idspp = spp_id and co_cabang = '$cabang' order by co_id desc");	
 		}
 
 
