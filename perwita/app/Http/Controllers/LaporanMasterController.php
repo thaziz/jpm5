@@ -1103,29 +1103,19 @@ class LaporanMasterController extends Controller
 				$a[$i] = DB::select("SELECT sum(d.total_net) as total_net,d.kode_customer
 				FROM delivery_order as d 
 				WHERE EXTRACT(MONTH FROM d.tanggal) = '".$i."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." 
-				group by d.kode_customer ");
+				group by d.kode_customer 
+				order by d.kode_customer ASC");
 			}
 			// return $a;
-
-			// if ($a[5] == null) {
-			// 	$a[5] = 0;
-			// 	return 'a';
-			// }else{
-			// 	// return 'b';
-
-			// 	for ($i=1; $i <count($a[5]) ; $i++) { 
-			// 		for ($h=0; $h <count($a[5][$i]) ; $h++) { 
-			// 			$aaa[5][$h] = $a[5][$h]->total_net;
-						
-			// 		}
-			// 		return $aaa;
-			// 		$aa = array_sum($aaa);
-			// 	}
-			// }
+			$cust = DB::table('customer')->select('kode','nama')->groupBy('kode')->orderBy('kode','ASC')->get();
 			
-			// return $aa;
+			for ($i=0; $i <count($a) ; $i++) { 
+				$gg[$i] = $a[4][$i]->total_net;
+				$hh[$i] = $a[4][$i]->kode_customer;
+				
+			}
 			
-    			return view('purchase/master/master_penjualan/laporan/do_total/rekap_bulanan/ajax_lap_rekapbulanan',compact('a'));
+    			return view('purchase/master/master_penjualan/laporan/do_total/rekap_bulanan/ajax_lap_rekapbulanan',compact('a','cust','gg'));
     		}
 
     	//end off
