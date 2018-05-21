@@ -75,7 +75,7 @@ class cabang_Controller extends Controller
         if ($crud == 'N') {
             $simpan = DB::table('cabang')->insert($data);
 
-            $main_id = DB::table("d_akun")->where("shareable", '1')->select(DB::raw("distinct(main_id)"))->get();
+            $main_id = DB::table("d_akun")->select(DB::raw("distinct(main_id)"))->get();
 
             foreach ($main_id as $key => $data_main_id) {
 
