@@ -6106,15 +6106,15 @@ public function kekata($x) {
 					$jenissup = $bbkd[$j]->bbkd_jenissup;
 					if($jenissup == 'supplier'){
 						$data['jenissup'][] = 'supplier';
-						$data['bbkd'][] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail, cabang, masterbank, supplier where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbkd_idbbk = bbk_id and bbkd_supplier = supplier.no_supplier and active = 'AKTIF' and bbkd_jenissup = 'supplier' and bbk_id = '$id' ");
+						$data['bbkd'] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail, cabang, masterbank, supplier where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbkd_idbbk = bbk_id and bbkd_supplier = supplier.no_supplier and active = 'AKTIF' and bbkd_jenissup = 'supplier' and bbk_id = '$id' ");
 					}
 					else if($jenissup == 'agen'){
 						$data['jenissup'][] = 'agen';
-						$data['bbkd'][] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail, cabang, masterbank, agen where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbkd_idbbk = bbk_id and bbkd_supplier = agen.kode  and bbkd_jenissup == 'agen' and bbk_id = '$id'");
+						$data['bbkd'] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail, cabang, masterbank, agen where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbkd_idbbk = bbk_id and bbkd_supplier = agen.kode  and bbkd_jenissup == 'agen' and bbk_id = '$id'");
 					}
 					else if($jenissup == 'subcon'){
 						$data['jenissup'][] = 'subcon';
-						$data['bbkd'][] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail, cabang, masterbank, subcon where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbkd_idbbk = bbk_id and bbkd_supplier = subcon.kode and bbkd_jenissup == 'subcon' and bbk_id = '$id' ");
+						$data['bbkd'] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_detail, cabang, masterbank, subcon where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbkd_idbbk = bbk_id and bbkd_supplier = subcon.kode and bbkd_jenissup == 'subcon' and bbk_id = '$id' ");
 					}
 					else if($jenissup == 'cabang'){
 						$data['jenissup'][] = 'cabang';
@@ -6126,9 +6126,16 @@ public function kekata($x) {
 				$data['bbkd'] = DB::select("select * from bukti_bank_keluar, bukti_bank_keluar_biaya, cabang, masterbank, d_akun where bbk_cabang = cabang.kode and bbk_kodebank = mb_id and bbkb_idbbk = bbk_id and bbkb_akun = id_akun and bbk_id = '$id' ");
 			}
 
-		//dd($data);
+			$jurnalRef = $data['bbk'][0]->bbk_nota;
+			$jurnal_dt=collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
+                        FROM d_akun a join d_jurnal_dt jd
+                        on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
+                        (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef')")); 
 
-		return view('purchase/pelunasanhutangbank/detail' , compact('data'));
+		/*dd($data['bbkd']);*/
+
+
+		return view('purchase/pelunasanhutangbank/detail' , compact('data', 'jurnal_dt'));
 	}
 
 	public function nocheckpelunasanhutangbank(Request $request){
@@ -6250,6 +6257,10 @@ public function kekata($x) {
 		$datajurnal = [];
 		$totalhutang = 0;
 
+		$kodebanks = $request->kodebank;
+		$databank = DB::select("select * from masterbank where mb_id = '$kodebanks'");
+		$akunhutangdagang = $databank[0]->mb_kode;
+
 		if(isset($lastid)) {
 			$idbbk = $lastid;
 			$idbbk = (int)$idbbk + 1;
@@ -6277,16 +6288,14 @@ public function kekata($x) {
 		$bbk->bbk_cabang = $request->cabang;
 		$bbk->bbk_flag = $request->flag;
 		$bbk->bbk_tgl = $request->tglbbk;
-		$bbk->bbk_akunbank = $request->akunkodebank;
+		$bbk->bbk_akunbank = $akunhutangdagang;
 		$bbk->create_by = $request->username;
 		$bbk->update_by = $request->username;
 		$bbk->save();
 
-
-		
-
 		//return count($request->nofpg);
 		if($request->flag == 'CEKBG'){
+			$akunkodebank = $request->akunkodebank;
 			for($i = 0; $i < count($request->nofpg); $i++){
 				$bbkdt = new bukti_bank_keluar_dt();
 			
@@ -6345,11 +6354,13 @@ public function kekata($x) {
 
 
 				$datajurnal[$i]['id_akun'] = $request->hutangdagang[$i];;
-				$datajurnal[$i]['subtotal'] = $nominal;
+				$datajurnal[$i]['subtotal'] = '-' . $nominal;
 				$datajurnal[$i]['dk'] = 'D';
 			}
 		}
 		else {
+
+		
 			for($j=0;$j<count($request->akun);$j++){
 				$bbkb = new bukti_bank_keluar_biaya();
 
@@ -6370,6 +6381,10 @@ public function kekata($x) {
 				$bbkb->bbkb_nominal = $jumlah;
 				$bbkb->bbkb_keterangan = $request->keterangan[$j];
 				$bbkb->save();
+
+				$datajurnal[$j]['id_akun'] = $request->akun[$j];;
+				$datajurnal[$j]['subtotal'] = '-' . $jumlah;
+				$datajurnal[$j]['dk'] = 'D';
 			}
 		}
 			//save jurnal
@@ -6389,12 +6404,12 @@ public function kekata($x) {
 	        $jurnal->jr_year = date('Y');
 	        $jurnal->jr_date = date('Y-m-d');
 	        $jurnal->jr_detail = 'POSTING BANK';
-	        $jurnal->jr_ref = $$request->nobbk;
+	        $jurnal->jr_ref = $request->nobbk;
 	        $jurnal->jr_note = 'POSTING BANK';
 	        $jurnal->save();
        		
 	        	$dataakun = array (
-				'id_akun' => $request->akunkodebank,
+				'id_akun' => $akunhutangdagang,
 				'subtotal' => '-' . $total,
 				'dk' => 'K',
 				);	

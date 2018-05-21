@@ -35,7 +35,7 @@
             </div>
 
             <br>
-    <form method="get" action="{{url('pelunasanhutangbank/simpan')}}"  enctype="multipart/form-data" class="form-horizontal" id="formbbk">
+    <form method="post" action="{{url('pelunasanhutangbank/simpan')}}"  enctype="multipart/form-data" class="form-horizontal" id="formbbk">
 
     <div class="row">
         <div class="col-lg-12" >
@@ -546,7 +546,7 @@
           },
            function(){
          $.ajax({
-          type : "get",
+          type : "POST",
           data : form_data2,
           url : post_url2,
           dataType : 'json',
@@ -683,6 +683,9 @@
                  else {
                   location.reload();
                  }
+            },
+            error : function(){
+              location.reload();
             }
         })
 
@@ -896,6 +899,7 @@
           flag = $('.flag').val();
 
           kodecabang = $('.kodebank').val();
+          $('.kodebank').addClass('disabled');
          // alert(kodecabang);
           $('.valkodebank').val(kodecabang);
 
