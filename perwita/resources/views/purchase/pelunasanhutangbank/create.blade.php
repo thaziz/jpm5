@@ -701,7 +701,7 @@
 
 
           kodecabang = $('.kodebank').val();
-         alert(kodecabang);
+        // alert(kodecabang);
           $('.valkodebank').val(kodecabang);
 
       if(flag == 'BIAYA'){

@@ -2654,7 +2654,7 @@
     //NOMINAL BANK
     arrnominal = [];
     $('.nominal').change(function(){
-      alert('guy');
+    //  alert('guy');
           totalbayar = $('.totbayar').val();
           jenisbayar = $('.jenisbayar').val();
           if(jenisbayar == 5){

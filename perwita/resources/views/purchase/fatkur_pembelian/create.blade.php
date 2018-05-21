@@ -987,7 +987,7 @@
                                               <input type='hidden' class='cabang2' name='cabang'> 
                                               <input type='hidden' class='inputfakturpajakmasukan'> 
                                                <input type='hidden' class='inputtandaterima'> 
-                                                <input type='text' name='notandaterima2' class='notandaterima2'>
+                                                <input type='hidden' name='notandaterima2' class='notandaterima2'>
                                             <tr>
                                               <td> Jumlah </td>
                                               <td> <div class="row"> <div class="col-md-3"> Rp </div> <div class="col-md-9"> <input type='text' class='form-control jumlahharga_po' name='jumlahtotal_po' style='text-align: right' readonly=""> </div> </div> </td>
@@ -1365,7 +1365,7 @@
     keteranganum = $(val).find('.keteranganum').val();
     notr = $(val).find('.notr').val();
     
-    alert(a);
+    //alert(a);
 
     /*$('.nofaktur').val(nofaktur);*/
     $('.no_umheader').val(nokas);

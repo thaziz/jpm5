@@ -1339,8 +1339,6 @@ class KasController extends Controller
 					}else{
 						unset($resi[$i]);
 					}
-				}elseif($cari_resi[$i]->jenis_tarif == 9){
-					unset($resi[$i]);
 				}
 			}
 
@@ -1453,7 +1451,7 @@ class KasController extends Controller
     public function akun_kas(request $request)
     {
     	$data = DB::table('d_akun')
-    			  ->where('id_akun','like','1003'.'%')
+    			  ->where('id_akun','like','1001'.'%')
     			  ->where('kode_cabang',$request->cabang)
     			  ->get();
 
