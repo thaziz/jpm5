@@ -125,7 +125,7 @@
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
-                              <input type="text" class="valkodebank" name="kodebank">
+                              <input type="hidden" class="valkodebank" name="kodebank">
                              </td>
                           </tr>
 
@@ -261,7 +261,7 @@
 
                                                         <tr>
                                                         <th> Bank </th>
-                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='text' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'>  </div>
+                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='hidden' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'>  </div>
                                                       
                                                         </tr>
                                                         <tr>
@@ -701,7 +701,7 @@
 
 
           kodecabang = $('.kodebank').val();
-         alert(kodecabang);
+        // alert(kodecabang);
           $('.valkodebank').val(kodecabang);
 
       if(flag == 'BIAYA'){
