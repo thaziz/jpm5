@@ -1339,8 +1339,6 @@ class KasController extends Controller
 					}else{
 						unset($resi[$i]);
 					}
-				}elseif($cari_resi[$i]->jenis_tarif == 9){
-					unset($resi[$i]);
 				}
 			}
 
