@@ -353,6 +353,7 @@ Route::get('buktikaskeluar/jurnal', 'kasKeluarController@jurnal');
 // IKHTISAR KAS
 Route::get('ikhtisar_kas/index', 'ikhtisarController@index');
 Route::get('ikhtisar_kas/create', 'ikhtisarController@create');
+Route::get('ikhtisar_kas/nota', 'ikhtisarController@nota');
 Route::get('ikhtisar_kas/cari_patty', 'ikhtisarController@cari_patty');
 Route::get('ikhtisar_kas/simpan', 'ikhtisarController@simpan');
 Route::get('ikhtisar_kas/edit/{id}', 'ikhtisarController@edit');
@@ -369,6 +370,10 @@ Route::get('pending_kas/save_kas/{id}', 'pendingController@save_kas');
 Route::get('pending/create', 'pendingController@create')->name('proses');
 Route::get('pending/save', 'pendingController@save')->name('save_pending');
 Route::post('pending/save', 'pendingController@save')->name('save_pending');
+Route::get('pending_subcon/index', 'pendingController@index_subcon');
+Route::get('pending_subcon/create', 'pendingController@create_subcon')->name('proses_subcon');
+Route::get('pending_subcon/save', 'pendingController@save_subcon');
+Route::post('pending_subcon/save', 'pendingController@save_subcon');
 
 // VOucher hutang
 Route::get('voucherhutang/voucherhutang', 'v_hutangController@voucherhutang');
@@ -944,6 +949,9 @@ Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterContr
 
   //masterdetail
   Route::get('ajaxcarideliveryorder_total_masterdetail/ajaxcarideliveryorder_total_masterdetail','LaporanMasterController@ajaxcarideliveryorder_total_masterdetail');
+  //end off
+  //rekap bulanan
+  Route::get('ajaxcarideliveryorder_total_rekapbulanan/ajaxcarideliveryorder_total_rekapbulanan','LaporanMasterController@ajaxcarideliveryorder_total_rekapbulanan');
   //end off
 
 //END OF DELIVERY ORDER TOTAL

@@ -116,7 +116,7 @@
                             <tr>
                                 <td style="width:110px; padding-top: 0.4cm">Subcon</td>
                                 <td colspan="3">
-                                    <select class="form-control chosen-select-width" name="cb_subcon" >
+                                    <select class="form-control subcon chosen-select-width" name="cb_subcon" >
                                         <option value="0">NON SUBCON</option>
                                     @foreach ($subcon as $row)
                                         <option value="{{$row->kode}}">{{$row->nama}}</option>
@@ -351,7 +351,7 @@
         $("select[name='cb_cabang']").val('{{ $data->kode_cabang or Auth::user()->kode_cabang  }}');
         $("select[name='cb_status']").val('{{ $data->status or '0'  }}');
         $("select[name='cb_divisi']").val('{{ $data->divisi or '0'  }}');
-        $("select[name='cb_subcon']").val('{{ $data->kode_subcon or '0'  }}');
+        $(".subcon").val('{{ $data->kode_subcon or '0'  }}').trigger('chosen:updated');
         $("select[name='cb_tipe_angkutan']").val('{{ $data->tipe_angkutan or '0'  }}');
         
         

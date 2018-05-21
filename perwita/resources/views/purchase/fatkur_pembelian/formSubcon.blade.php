@@ -108,6 +108,7 @@
 	 	<td width="10">:</td>
 		<td width="200">
 			<input type="text" readonly="" class="form-control m_do_asal" >
+      		<input type="hidden" readonly="" class="form-control no_do_asal" >
 		</td>
 	 </tr>
 	 <tr>
@@ -115,6 +116,7 @@
 	 	<td width="10">:</td>
 		<td width="200">
 			<input type="text" readonly="" class="form-control m_do_tujuan" >
+      		<input type="hidden" readonly="" class="form-control no_do_tujuan" >
 		</td>
 	 </tr>
 
@@ -123,6 +125,7 @@
 	 	<td width="10">:</td>
 		<td width="200">
 			<input type="text" readonly="" class="form-control m_tipe_kendaraan" >
+      		<input type="hidden" readonly="" class="form-control no_tipe_kendaraan" >
 		</td>
 	 </tr>
 	
@@ -204,6 +207,7 @@
 			<td width="200">
 
 				<input type="text" readonly="" class="form-control sc_asal_subcon" >
+        		<input type="hidden" readonly="" class="form-control sc_no_asal_subcon" >
 			</td>
 		  </tr>
 		  <tr>
@@ -212,6 +216,7 @@
 			<td width="200">
 
 				<input type="text" readonly=""  class="form-control sc_tujuan_subcon">
+        		<input type="hidden" readonly=""  class="form-control sc_no_tujuan_subcon">
 			</td>
 		  </tr>
 		  <tr>
@@ -220,6 +225,7 @@
 			<td width="200">
 
 				<input type="text" class="form-control sc_kendaraan_subcon" readonly=""  >
+        		<input type="hidden" class="form-control sc_no_kendaraan_subcon" style="width: 250px;">
 				<input type="hidden" class="form-control sc_kode_angkutan" style="width: 250px;">
 			</td>
 		  </tr>
@@ -510,6 +516,7 @@ function pilih_do_subcon(par) {
 	var d_tujuan_text = $(par).find('.d_tujuan_text').text();
 	var d_jenis_tarif_text = $(par).find('.d_jenis_tarif_text').text();
 	var d_tipe_angkutan_text = $(par).find('.d_tipe_angkutan_text').text();
+	var d_tipe_angkutan = $(par).find('.d_tipe_angkutan').val();
 
 	$('.m_do_subcon').val(d_nomor_do);
 	$('.m_do_tanggal').val(d_tanggal);
@@ -519,6 +526,10 @@ function pilih_do_subcon(par) {
 	$('.m_do_tujuan').val(d_tujuan_text);
 	$('.m_jenis_angkutan_do').val(d_jenis_tarif_text);
 	$('.m_tipe_kendaraan').val(d_tipe_angkutan_text);
+
+	$('.no_do_asal').val(d_asal);
+	$('.no_do_tujuan').val(d_tujuan);
+	$('.no_tipe_kendaraan').val(d_tipe_angkutan);
 	
 	$('#modal_do').modal('hide');
 
@@ -555,6 +566,13 @@ function pilih_kontrak(asd){
 	    	$('.sc_tujuan_subcon').val(response.subcon_dt[0].ksd_tujuan);
 	    	$('.sc_kendaraan_subcon').val(response.subcon_dt[0].ksd_angkutan);
 	    	$('.table_filter_subcon').removeClass('disabled');
+
+
+
+
+			$('.sc_no_asal_subcon').val(response.subcon_dt[0].no_asal);
+	    	$('.sc_no_tujuan_subcon').val(response.subcon_dt[0].no_tujuan);
+	    	$('.sc_no_kendaraan_subcon').val(response.subcon_dt[0].ksd_id_angkutan);
 	    	hitung_jumlah();
 
 
@@ -589,6 +607,15 @@ function cariSUB(){
 	var nota_subcon = $('.nota_subcon').val();
 	var m_do_subcon = $('.m_do_subcon').val();
 
+	var no_do_asal = $('.no_do_asal').val();
+	var no_do_tujuan = $('.no_do_tujuan').val();
+	var no_tipe_kendaraan = $('.no_tipe_kendaraan').val();
+
+
+	var sc_no_asal_subcon = $('.sc_no_asal_subcon').val();
+	var sc_no_tujuan_subcon = $('.sc_no_tujuan_subcon').val();
+	var sc_no_kendaraan_subcon = $('.sc_no_kendaraan_subcon').val();
+
 	if (m_do_subcon == '') {
 		toastr.warning('POD Harus Diisi !')
 		return 1;
@@ -597,6 +624,21 @@ function cariSUB(){
 	if (nota_subcon == '') {
 		toastr.warning('Harap Memasukkan Kontrak Subcon !')
 		return 1;
+	}
+
+	if (no_do_asal != sc_no_asal_subcon) {
+	   	toastr.warning('Asal Do Tidak Sama Dengan Asal Kontrak');
+	   	return false;
+	}
+
+	if (no_do_tujuan != sc_no_tujuan_subcon) {
+	   	toastr.warning('Tujuan Do Tidak Sama Dengan Tujuan Kontrak');
+	   	return false;
+	}
+
+	if (no_tipe_kendaraan != sc_no_kendaraan_subcon) {
+	   	toastr.warning('Tipe Kendaraan Do Tidak Sama Dengan Tipe Kendaraan Kontrak');
+	   	return false;
 	}
 
 	var sc_total_dt = $('.sc_total_dt').val();
@@ -611,6 +653,13 @@ function cariSUB(){
 	var sc_akun = $('.sc_akun').val();
 	var id_subcon = $('.id_subcon').val();
 	var index = array_do.indexOf(m_do_subcon);
+	
+	var m_do_asal = $('.m_do_asal').val();
+	var m_do_tujuan = $('.m_do_tujuan').val();
+	var m_tipe_kendaraan = $('.m_tipe_kendaraan').val();
+
+	
+
 
 	if (index == -1) {
 	    subcon.row.add([
@@ -736,6 +785,14 @@ function edit_subcon(a) {
 			$('.m_jenis_angkutan_do').val(response.do.nama_tarif);
 			$('.m_tipe_kendaraan').val(response.do.nama_angkutan);
 			$('.m_do_jumlah').val(response.do.jumlah);
+
+			$('.no_do_asal').val(response.do.id_kota_asal);
+			$('.no_do_tujuan').val(response.do.id_kota_tujuan);
+			$('.no_tipe_kendaraan').val(response.do.kode_tipe_angkutan);
+
+			$('.sc_no_asal_subcon').val(response.kontrak[0].no_asal);
+	    	$('.sc_no_tujuan_subcon').val(response.kontrak[0].no_tujuan);
+	    	$('.sc_no_kendaraan_subcon').val(response.kontrak[0].ksd_id_angkutan);
 			toastr.info('Inisialisasi Berhasil');
 	    }
 	})

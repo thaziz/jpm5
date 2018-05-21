@@ -1694,7 +1694,7 @@ class BiayaPenerusController extends Controller
 		$asal = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_asal')
-					 ->select('nama as asal')
+					 ->select('nama as asal','ksd_asal')
 					 ->where('ksd_id',$request->id)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
@@ -1702,7 +1702,7 @@ class BiayaPenerusController extends Controller
 		$tujuan = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_tujuan')
-					 ->select('nama as tujuan')
+					 ->select('nama as tujuan','ksd_tujuan')
 					 ->where('ksd_id',$request->id)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
@@ -1719,6 +1719,8 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
 			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
+			$fix[$i]['no_asal'] = $asal[$i]->ksd_asal;
+			$fix[$i]['no_tujuan'] = $tujuan[$i]->ksd_tujuan;
 			$fix[$i]['ksd_angkutan'] = $kontrak[$i]->nama;
 			$fix[$i]['ksd_id_angkutan'] = $kontrak[$i]->kode;
 		}
@@ -1740,7 +1742,7 @@ class BiayaPenerusController extends Controller
 		$asal = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_asal')
-					 ->select('nama as asal')
+					 ->select('nama as asal','ksd_asal')
 					 ->where('ksd_id',$request->d_ksd_id)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
@@ -1748,7 +1750,7 @@ class BiayaPenerusController extends Controller
 		$tujuan = DB::table('kontrak_subcon_dt')
 					 ->join('kontrak_subcon','ks_id','=','ksd_ks_id')
 					 ->join('kota','id','=','ksd_tujuan')
-					 ->select('nama as tujuan')
+					 ->select('nama as tujuan','ksd_tujuan')
 					 ->where('ksd_id',$request->d_ksd_id)
 					 ->orderBy('ksd_ks_dt','ASC')
 					 ->get();
@@ -1808,6 +1810,8 @@ class BiayaPenerusController extends Controller
 			$fix[$i]['ksd_jenis_tarif'] = $kontrak[$i]->ksd_jenis_tarif;
 			$fix[$i]['ksd_asal'] = $asal[$i]->asal;
 			$fix[$i]['ksd_tujuan'] = $tujuan[$i]->tujuan;
+			$fix[$i]['no_asal'] = $asal[$i]->ksd_asal;
+			$fix[$i]['no_tujuan'] = $tujuan[$i]->ksd_tujuan;
 			$fix[$i]['ksd_angkutan'] = $kontrak[$i]->nama;
 			$fix[$i]['ksd_id_angkutan'] = $kontrak[$i]->kode;
 		}

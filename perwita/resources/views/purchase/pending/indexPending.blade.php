@@ -73,7 +73,7 @@
                       @foreach($data as $val)
                       <tr>
                         <td>{{$val->fp_nofaktur}}</td>
-                        <td><?php echo date('d/F/Y',strtotime($val->fp_tgl)) ?></td>
+                        <td><?php echo date('d/F/Y',strtotime($val->fp_tgl)); ?></td>
                         <td>{{$val->fp_keterangan}}</td>
                         <td>{{$val->fp_noinvoice}}</td>
                         <td>{{$val->nama}}</td>
