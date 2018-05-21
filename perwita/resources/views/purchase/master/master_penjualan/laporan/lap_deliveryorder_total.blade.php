@@ -485,7 +485,7 @@
 
 
       //CARI REKAP CUSTOMER
-      else if(laporan == 'rekap' || 'rekap_detail'){
+      else if(laporan == 'rekap' || laporan == 'rekap_detail'){
         $.ajax({
           data: $('#cari_data').serialize(),
           url: baseUrl + '/cari_rekapcustomer/cari_rekapcustomer',
@@ -521,7 +521,19 @@
       }
       //CARI REKAP BULANAN
       else if(laporan == 'REKAP BULANAN'){
-        alert('a');
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total_rekapbulanan/ajaxcarideliveryorder_total_rekapbulanan',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+              
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
       }
       //CARI DETAIL PER MOBIL
       else if(laporan == 'DETAIL PER MOBIL'){

@@ -1042,6 +1042,92 @@ class LaporanMasterController extends Controller
     				return view('purchase/master/master_penjualan/laporan/do_total/rekap_master_detail/ajax_lap_masterdetail',compact('total','data','customer_foreach','min','max','asal','tujuan','cabang','tipe','status','pendapatan','jenis'));
     		}
 
+
+    
+    		public function ajaxcarideliveryorder_total_rekapbulanan(Request $request)
+    		{
+    		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+			}else{
+				$asal = '';
+			}
+			//tujuan
+			if ($request->tujuan != '') {
+				$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+			}else{
+				$tujuan = '';
+			}
+			//cabang
+			if ($request->cabang != '') {
+				$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+			}else{
+				$cabang ='';
+			}
+			//tipe
+			if ($request->tipe != '') {
+				$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+			}else{
+				$tipe ='';
+			}
+			
+			if ($request->status != '' || $request->status != null) {
+				$status = " AND d.status = '".$request->status."' ";
+			}else{
+				$status = '';
+			}
+			
+			if ($request->pendapatan != '' || $request->pendapatan != null) {
+				$pendapatan = " AND d.pendapatan = '".$request->pendapatan."' ";
+			}else{
+				$pendapatan = '';
+			}
+
+			if ($request->jenis != '' || $request->jenis != null) {
+				$jenis = " AND d.jenis_pengiriman = '".$request->jenis."' ";
+			}else{
+				$jenis = '';
+			}
+			
+			if ($request->customer != '' || $request->customer != null) {
+			$customer = " AND d.kode_customer = '".$request->customer."' ";
+			}else{
+				$customer = '';
+			}
+				
+			$min = $request->min;
+			$max = $request->max;
+			
+			for ($i=1; $i < 12; $i++) { 
+
+				$a[$i] = DB::select("SELECT sum(d.total_net) as total_net,d.kode_customer
+				FROM delivery_order as d 
+				WHERE EXTRACT(MONTH FROM d.tanggal) = '".$i."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." 
+				group by d.kode_customer ");
+			}
+			// return $a;
+
+			// if ($a[5] == null) {
+			// 	$a[5] = 0;
+			// 	return 'a';
+			// }else{
+			// 	// return 'b';
+
+			// 	for ($i=1; $i <count($a[5]) ; $i++) { 
+			// 		for ($h=0; $h <count($a[5][$i]) ; $h++) { 
+			// 			$aaa[5][$h] = $a[5][$h]->total_net;
+						
+			// 		}
+			// 		return $aaa;
+			// 		$aa = array_sum($aaa);
+			// 	}
+			// }
+			
+			// return $aa;
+			
+    			return view('purchase/master/master_penjualan/laporan/do_total/rekap_bulanan/ajax_lap_rekapbulanan',compact('a'));
+    		}
+
     	//end off
 
 //START DELIVERY ORDER LAPORAN PAKET(DO)

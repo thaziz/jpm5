@@ -2603,4 +2603,86 @@ class kasKeluarController extends Controller
 		});
 	}
 
+		public function patty_cash(){
+
+		$second = Carbon::now()->format('d/m/Y');
+	        // $start = $first->subMonths(1)->startOfMonth();
+		$first = Carbon::now();
+	    $start = $first->subDays(30)->startOfDay()->format('d/m/Y');
+
+	    $jenisbayar = DB::table('jenisbayar')
+	    				->orderBy('idjenisbayar','asc')
+	    				->get();
+
+	    $akun_kas = DB::table('d_akun')
+				  ->where('nama_akun','like','%KAS KECIL%')
+				  ->get();
+
+		return view('purchase/laporan/laporan_patty',compact('second','start','jenisbayar','akun_kas'));
+	}
+
+	public function cari_patty(request $request){
+		// dd($request);
+
+		// "rangepicker" => "16/12/2017 - 15/01/2018"
+	 //      "jenisbayar" => "8"
+	 //      "akun_kas" => "100111001"
+    	
+		if (isset($request->akun_kas)) {
+			// return 'asd';
+				$tgl = explode('-',$request->rangepicker);
+					$tgl[0] = str_replace('/', '-', $tgl[0]);
+					$tgl[1] = str_replace('/', '-', $tgl[1]);
+					$tgl[0] = str_replace(' ', '', $tgl[0]);
+					$tgl[1] = str_replace(' ', '', $tgl[1]);
+					$start  = Carbon::parse($tgl[0])->format('Y-m-d');
+					$end    = Carbon::parse($tgl[1])->format('Y-m-d');
+
+				$tgl;
+				$count = 0;
+				if ($request->rangepicker != '') {
+					$count += 1;
+				}
+				if ($request->jenisbayar != '') {
+					$count += 1;
+				}
+				if ($request->akun_kas != '') {
+					$count += 1;
+				}
+
+
+				if ($count == 3) {
+					
+
+				$cari = DB::table('patty_cash')
+							->join('jenisbayar','idjenisbayar','=','pc_ref')
+							->join('d_akun','id_akun','=','pc_akun_kas')
+							->where('pc_ref','=',$request->jenisbayar)
+							->where('pc_akun_kas','=',$request->akun_kas)
+							->where('pc_tgl','>=',$start)
+							->where('pc_tgl','<=',$end)
+							->take(1000)
+							->get();
+				$akun = DB::table('d_akun')
+						  ->get();
+
+				return view('purchase/laporan/table_patty',compact('cari','akun'));
+				}else{
+					Response()->json(['status'=>2]);
+				}
+		}else{
+			// return 'asd';
+				$cari = DB::table('patty_cash')
+							->join('jenisbayar','idjenisbayar','=','pc_ref')
+							->join('d_akun','id_akun','=','pc_akun_kas')
+							->take(1000)
+							->get();
+				$akun = DB::table('d_akun')
+						  ->get();
+
+				return view('purchase/laporan/table_patty',compact('cari','akun'));
+		}
+
+
+	}
 }
