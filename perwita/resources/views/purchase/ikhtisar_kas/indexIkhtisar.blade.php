@@ -49,7 +49,9 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                       <div class="text-right">
+                        @if(Auth::user()->punyaAkses('Ikhtisar Kas','tambah'))
                        <a class="btn btn-success" aria-hidden="true" href="{{ url('ikhtisar_kas/create')}}"> <i class="fa fa-plus"> Tambah Data  </i> </a> 
+                       @endif
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -92,12 +94,16 @@
                         <td>{{$val->ik_status}}</td>
                         <td align="center"><input type="checkbox" name="check" class="check form-control"></td>
                         <td align="center"> 
+                            @if(Auth::user()->punyaAkses('Ikhtisar Kas','ubah'))
                               <a title="Edit" class="btn btn-success" href={{url('ikhtisar_kas/edit/'.$val->ik_id.'')}}>
                               <i class="fa fa-arrow-right" aria-hidden="true"></i>
                               </a> 
+                            @endif
+                            @if(Auth::user()->punyaAkses('Ikhtisar Kas','hapus'))
                               <a title="Hapus" class="btn btn-success" onclick="hapus({{$val->ik_id}})">
                               <i class="fa fa-trash" aria-hidden="true"></i>
                               </a> 
+                            @endif
                           </td> 
                       </tr>
                       @endforeach

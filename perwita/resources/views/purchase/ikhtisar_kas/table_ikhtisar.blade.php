@@ -22,11 +22,7 @@
               <td><?php echo date('d/m/Y',strtotime($val->pc_tgl));?></td>
               <td>{{$val->pc_no_trans}}</td>
               <td>{{$val->pc_akun}}</td>
-              @foreach($akun as $d)
-              @if($d->id_akun == $val->pc_akun)
-              <td>{{$val->pc_debet}}</td>
-              @endif
-              @endforeach
+              <td align="right">{{'' . number_format($val->pc_kredit,2,',','.')}}</td>
               <td>{{$val->pc_keterangan}}</td>
               <td>{{$val->pc_user}}</td>
             </tr>
