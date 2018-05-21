@@ -138,7 +138,7 @@
                           <table class='table table-bordered table-striped tbl-jenisbayar' style="width:100%">
                             <tr>
                               <th> Kode  </th>
-                              <td> <select class='form-control  chosen-select-width  jenisbayar2'>  </select> <input type="text" class="hsljenisbayar" name="kodebayar">  </td>
+                              <td> <select class='form-control  chosen-select-width  jenisbayar2'>  </select> <input type="hidden" class="hsljenisbayar" name="kodebayar">  </td>
                             </tr>
 
                             <tr>

@@ -35,7 +35,7 @@
             </div>
 
             <br>
-    <form method="post" action="{{url('pelunasanhutangbank/simpan')}}"  enctype="multipart/form-data" class="form-horizontal" id="formbbk">
+    <form method="get" action="{{url('pelunasanhutangbank/simpan')}}"  enctype="multipart/form-data" class="form-horizontal" id="formbbk">
 
     <div class="row">
         <div class="col-lg-12" >
@@ -125,7 +125,7 @@
                                   <option value="{{$bank->mb_id}}"> {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
-                              <input type="text" class="valkodebank" name="kodebank">
+                              <input type="hidden" class="valkodebank" name="kodebank">
                              </td>
                           </tr>
 
@@ -261,7 +261,7 @@
 
                                                         <tr>
                                                         <th> Bank </th>
-                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='text' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'>  </div>
+                                                        <td> <div class='row'> <div class="col-sm-3"> <input type='text' class='col-sm-3 input-sm form-control bank bg' name="fpg_bank" readonly=""> </div> <div class="col-sm-9"> <input type='text' class='col-sm-6 input-sm form-control namabank bg' readonly=""> <input type='hidden' class="idbank">  </div> <input type='hidden' class='akunkodebank'> <input type='hidden' class='hutangdagang'> <input type='hidden' class='akunuangmuka'>  </div>
                                                       
                                                         </tr>
                                                         <tr>
@@ -546,7 +546,7 @@
           },
            function(){
          $.ajax({
-          type : "post",
+          type : "get",
           data : form_data2,
           url : post_url2,
           dataType : 'json',
