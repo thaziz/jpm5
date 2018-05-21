@@ -937,7 +937,8 @@ class do_Controller extends Controller
         $kota = DB::table('kota')->get();
         $kota1= DB::table('kota')->get();
         $cabang= DB::table('cabang')->get();
-        return view('sales.do.index', compact('do','kota','kota1','cabang'));
+        $customer= DB::table('customer')->get();
+        return view('sales.do.index', compact('customer','do','kota','kota1','cabang'));
     }
     public function cari_kodenomor(Request $request){
         

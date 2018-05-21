@@ -26,7 +26,7 @@ class akun_Controller extends Controller
                 ->where("d_akun_saldo.bulan", date('m'))
                 ->where("d_akun_saldo.tahun", date('Y'))
                 ->select("d_akun.*", "cabang.nama as nama_cabang", "d_akun_saldo.saldo_akun as saldo")
-                ->orderBy("id_akun")->get();
+                ->orderBy("id_akun", "asc")->get();
         // return json_encode($data);
         return view("keuangan.master_akun.index")->withData($data);
     }
@@ -120,7 +120,7 @@ class akun_Controller extends Controller
                     $akun->main_name = $request->nama_akun;
                     $akun->group_neraca = $request->group_neraca;
                     $akun->group_laba_rugi = $request->group_laba_rugi;
-                    $akun->shareable = (isset($request->share)) ? "1" : "0";
+                    $akun->shareable = "1";
 
                     if($akun->save()){
                         $saldo = new master_akun_saldo;
@@ -158,7 +158,7 @@ class akun_Controller extends Controller
                     ->select("provinsi.id")->first();
 
             $akun = new master_akun;
-            $akun->id_akun = $request->kode_akun.''.$prov->id.''.$request->add_kode;
+            $akun->id_akun = $request->kode_akun."".$request->add_kode;
             $akun->nama_akun = $request->nama_akun.' '.$request->add_nama;
             $akun->id_parrent = '\n';
             $akun->id_provinsi = $prov->id;
@@ -170,12 +170,12 @@ class akun_Controller extends Controller
             $akun->main_name = $request->nama_akun;
             $akun->group_neraca = $request->group_neraca;
             $akun->group_laba_rugi = $request->group_laba_rugi;
-            $akun->shareable = (isset($request->share)) ? "1" : "0";
+            $akun->shareable = "1";
 
             if($akun->save()){
                 if(isset($request->saldo)){
                     $saldo = new master_akun_saldo;
-                    $saldo->id_akun = $request->kode_akun.''.$prov->id.''.$request->add_kode;
+                    $saldo->id_akun = "aaa";
                     $saldo->tahun = date("Y");
                     $saldo->is_active = 1;
                     $saldo->bulan = date("m");
@@ -192,7 +192,7 @@ class akun_Controller extends Controller
                     $saldo->save();
                 }else{
                     $saldo = new master_akun_saldo;
-                    $saldo->id_akun = $request->kode_akun.''.$prov->id.''.$request->add_kode;
+                    $saldo->id_akun = $request->kode_akun."".$request->add_kode;
                     $saldo->tahun = date("Y");
                     $saldo->is_active = 1;
                     $saldo->bulan = date("m");
@@ -265,5 +265,62 @@ class akun_Controller extends Controller
         ];
 
         return json_encode($response);
+    }
+
+    public function share_akun(){
+
+        $dt_ids = [];
+
+        $akun_pusat = DB::table("d_akun")->where("kode_cabang", "000")->select("main_id", "main_name", "akun_dka", "is_active", "type_akun", "group_neraca", "group_laba_rugi", "shareable")->get();
+
+        // return $akun_pusat;
+
+        $cabang = DB::table("cabang")
+                  ->join("kota", "kota.id", "=", "cabang.id_kota")
+                  ->select("cabang.kode", "cabang.nama", "kota.id_provinsi")
+                  ->orderBy("cabang.kode", "asc")->get();
+
+        foreach($akun_pusat as $data_akun){
+
+            foreach($cabang as $data_cabang){
+
+                $ids = $data_akun->main_id."".$data_cabang->id_provinsi."".$data_cabang->kode;
+
+                $cek = DB::table("d_akun")->where("id_akun", $ids)->first();
+
+                if(count($cek) == 0){
+                    $akun = new master_akun;
+                    $akun->id_akun = $ids;
+                    $akun->nama_akun = $data_akun->main_name." ".$data_cabang->nama;
+                    $akun->id_parrent = '\n';
+                    $akun->id_provinsi = $data_cabang->id_provinsi;
+                    $akun->akun_dka = $data_akun->akun_dka;
+                    $akun->is_active = $data_akun->is_active;
+                    $akun->kode_cabang = $data_cabang->kode;
+                    $akun->type_akun = $data_akun->type_akun;
+                    $akun->main_id = $data_akun->main_id;
+                    $akun->main_name = $data_akun->main_name;
+                    $akun->group_neraca = $data_akun->group_neraca;
+                    $akun->group_laba_rugi = $data_akun->group_laba_rugi;
+                    $akun->shareable = $data_akun->shareable;
+
+                    if($akun->save()){
+                        $saldo = new master_akun_saldo;
+                        $saldo->id_akun = $ids;
+                        $saldo->tahun = date("Y");
+                        $saldo->is_active = 1;
+                        $saldo->bulan = date("m");
+                        $saldo->saldo_akun = 0;
+
+                        $saldo->save();
+                    }
+                }
+
+
+            }
+
+        }
+
+        return "Akun Pusat Berhasil Di Share Ke Semua Cabang";
     }
 }
