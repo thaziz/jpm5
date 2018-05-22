@@ -322,7 +322,7 @@
                                 "<td>"+response.spp[i].spp_nospp+"</td>" +
                                 "<td>"+response.spp[i].spp_tgldibutuhkan+"</td>" +
                                 "<td>"+response.spp[i].nama_supplier+"</td>"+
-                                "<td>"+response.spp[i].spp_cabang+"</td>"+
+                                "<td>"+response.spp[i].nama+"</td>"+
                                 "<td>"+response.spp[i].spp_tipe+"</td>" +
                                 "<td>"+response.spp[i].spp_keperluan+"</td>";
                                 if(response.spp[i].cotb_totalbiaya > 500000.00) {
