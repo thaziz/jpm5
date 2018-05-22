@@ -175,6 +175,19 @@ class uangmukaController extends Controller
 	$request->jumlah= str_replace("Rp.",'',$request->jumlah);
 	$request->jumlah= str_replace(".",'',$request->jumlah);
 
+
+	$comp = $request->cabang;
+	$datakun2 = DB::select("select * from d_akun where id_akun LIKE '1405%' and kode_cabang = '$comp'");
+	
+	if(count($datakun2) == 0){
+		$dataInfo=['status'=>'gagal','info'=>'Akun UM Pembelian Untuk Cabang '.$comp.' Tersedia'];
+		DB::rollback();
+		return json_encode($dataInfo);		
+	}
+	else {
+		$dataakunitem = $datakun2[0]->id_akun;
+	}
+
 	$anjay = DB::Table('d_uangmuka')->select('um_id')->max('um_id');
 	if ($anjay <= 0 || $anjay <= '') {
 			$anjay	= 1;
@@ -193,6 +206,7 @@ class uangmukaController extends Controller
 	$simpan->um_jenissup=$request->jenissub;
 	$simpan->um_comp=$request->cabang;
 	$simpan->um_sisapelunasan=$request->jumlah;
+	$simpan->um_akunhutang = $dataakunitem;
 	$simpan->save();
 
 	return json_encode('sukses');

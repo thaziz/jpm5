@@ -911,7 +911,8 @@
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true,
+    showLoaderOnConfirm: true
     },function(){
 
       $.ajaxSetup({
@@ -1208,7 +1209,7 @@
 
         if (jenis_bayar == '2' || jenis_bayar == '6' || jenis_bayar == '7' || jenis_bayar == '9') {
 
-          var terbayar = parseFloat(data.data[0].fp_sisapelunasan) + parseFloat(data.data[0].fp_debitnota) - parseFloat(data.data[0].fp_creditnota) + parseFloat(data.data[0].fp_uangmuka);
+          var terbayar = parseFloat(data.data[0].fp_netto) - parseFloat(data.data[0].fp_sisapelunasan) + parseFloat(data.data[0].fp_debitnota) - parseFloat(data.data[0].fp_creditnota) + parseFloat(data.data[0].fp_uangmuka);
           $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].fp_netto,"", 2, ".",','));
           $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
           $('.pelunasan_um').eq(0).val(accounting.formatMoney(data.data[0].fp_uangmuka,"", 2, ".",','));
@@ -1221,7 +1222,7 @@
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
           var fp_faktur     = data.data[0].fp_nofaktur;
         }else if(jenis_bayar == 3){
-          var terbayar = parseFloat(data.data[0].v_pelunasan) 
+          var terbayar =parseFloat(data.data[0].v_hasil) - parseFloat(data.data[0].v_pelunasan) 
                        + parseFloat(0) 
                        - parseFloat(0) 
                        + parseFloat(0);
@@ -1238,7 +1239,7 @@
           $('.total_detail').eq(0).val(accounting.formatMoney(total,"", 2, ".",','));
           var fp_faktur     = data.data[0].v_nomorbukti;
         }else if (jenis_bayar == 4) {
-          var terbayar = parseFloat(data.data[0].um_jumlah) - parseFloat(data.data[0].um_sisapelunasan);
+          var terbayar =  parseFloat(data.data[0].um_jumlah) - parseFloat(data.data[0].um_sisapelunasan);
 
           $('.biaya_detail').eq(0).val(accounting.formatMoney(data.data[0].um_jumlah,"", 2, ".",','));
           $('.terbayar_detail').eq(0).val(accounting.formatMoney(terbayar,"", 2, ".",','));
@@ -1509,7 +1510,8 @@
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true,
+    showLoaderOnConfirm: true
     },function(){
 
       $.ajaxSetup({

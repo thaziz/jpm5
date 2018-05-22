@@ -229,7 +229,16 @@ function simpan(){
                     },function(){
                        location.href='../ikhtisar_kas/index';
             });
-        }else{
+        }
+        else if{
+              swal({
+                title: "error",
+                text: 'Akun Kas Belum tersedia',
+                type: "error",
+
+          });
+        }
+        else{
           swal({
           title: "Terjadi Kesalahan",
                 type: 'error',

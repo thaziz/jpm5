@@ -325,10 +325,21 @@
           url : baseUrl + "/uangmuka/store",
           type:'get',
           data: a,
-          
+          dataType : "json",
           success : function (response){
-              alertSuccess(); 
-                window.location.href = baseUrl + "/uangmuka"; 
+            //  console.log(response.status);
+               if(response.status == "gagal"){
+                   
+                    swal({
+                        title: "error",
+                        text: response.info,
+                        type: "error",                        
+                    });
+                }
+                else {
+               alertSuccess(); 
+               window.location.href = baseUrl + "/uangmuka";
+                 }
           },
           error : function(){
            swal("Error", "Server Sedang Mengalami Masalah", "error");

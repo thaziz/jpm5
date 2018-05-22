@@ -2069,13 +2069,11 @@ Route::get('master_keuangan/akun/hapus_data/{id}', [
 Route::get('master_keuangan/akun/cek_parrent/{id}', [
   'uses'=> 'master_keuangan\akun_controller@cek_parrent',
   'as'  => 'akun.cek_parrent'
-
 ]);
 
 Route::get('master_keuangan/akun/share_akun', [
   'uses'=> 'master_keuangan\akun_controller@share_akun',
   'as'  => 'akun.share'
-
 ]);
 
 Route::get('master_keuangan/akun/tabel', 'master_keuangan\akun_controller@table_data');
