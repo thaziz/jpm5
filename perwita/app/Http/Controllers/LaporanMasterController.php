@@ -1098,8 +1098,8 @@ class LaporanMasterController extends Controller
 			$min = $request->min;
 			$max = $request->max;
 			
+			
 			for ($i=1; $i < 13 ; $i++) { 
-
 				$a[$i] = DB::select("SELECT sum(d.total_net) as total_net,d.kode_customer
 				FROM delivery_order as d 
 				WHERE EXTRACT(MONTH FROM d.tanggal) = '".$i."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." 
@@ -1108,7 +1108,7 @@ class LaporanMasterController extends Controller
 			}
 
 
-
+			// return $a;
 			// return count($cek);
 			if ($request->customer != null) {
 				$cust = DB::table('customer')->select('kode','nama')->where('kode','=',$request->customer)->groupBy('kode')->orderBy('kode','ASC')->get();

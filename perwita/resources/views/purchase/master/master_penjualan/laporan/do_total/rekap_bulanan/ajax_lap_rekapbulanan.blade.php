@@ -21,13 +21,12 @@
     </tr>
   </thead>
   <tbody>
-    
-         
-    
     @foreach ($cust as $itcus => $cus)
         <tr>
            <td>{{ $itcus+1 }}</td>
            <td>{{ $cus->kode }} - {{ $cus->nama }}</td>
+
+
 
         {{-- jan --}}
         @if (count($a[1]) > 0)
@@ -68,10 +67,11 @@
         @if (count($a[4]) > 0)
             @for ($i = 0; $i <count($a[4]) ; $i++)
                 @if ($a[4][$i]->kode_customer == $cus->kode)
-                    <td class="apr">{{ $a[4][$i]->total_net }}</td>
+                    <td class="apr">rtu</td>
                 @endif
             @endfor
         @else
+
                   <td class="apr">4</td>
         @endif
 

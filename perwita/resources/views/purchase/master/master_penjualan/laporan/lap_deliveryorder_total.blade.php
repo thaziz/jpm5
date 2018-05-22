@@ -402,7 +402,8 @@
         }else{
             $("select[name='pendapatan']").val();
         }
-        else if(this_val == 'DETAIL PER MOBIL') {}{
+
+        if(this_val == 'DETAIL PER MOBIL'){
             $("select[name='pendapatan']").val('KARGO');
         }else{
             $("select[name='pendapatan']").val();
