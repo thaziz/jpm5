@@ -235,7 +235,7 @@
 
                           
                            <tr>
-                            <td width='200px' id="tdupdatestock">
+                            <td width='230px' id="tdupdatestock">
                              Pilih Barang Update Stock ?
                             </td>
                             <td id="tdupdatestock">
@@ -2919,16 +2919,8 @@
       var nourut = 1;
       $jumlahharga = 0;
       $('#myform').submit(function(event){
-          $('.idsup').prop('disabled', true).trigger("liszt:updated");
-          $('.idsup').prop('disabled', true).trigger("chosen:updated");
-          $('.gudang').prop('disabled', true).trigger("liszt:updated");
+         
 
-          $('.gudang').prop('disabled', true).trigger("chosen:updated");
-           $('.idsup').attr('disabled', true);  
-          $('.keterangan2').attr('disabled' , true);
-
-          $('.noinvoice').attr('disabled' , true);
-          $('.groupitem').addClass('disabled');
 
 
         event.preventDefault();
@@ -2950,7 +2942,22 @@
           var idsup = $('.idsup').val();
           
 
-        
+          if(gudang == ''){
+            toastr.info('Maaf anda belum mengisi gudang :)');
+            return false;
+          }
+          else {
+             $('.idsup').prop('disabled', true).trigger("liszt:updated");
+            $('.idsup').prop('disabled', true).trigger("chosen:updated");
+            $('.gudang').prop('disabled', true).trigger("liszt:updated");
+
+            $('.gudang').prop('disabled', true).trigger("chosen:updated");
+             $('.idsup').attr('disabled', true);  
+            $('.keterangan2').attr('disabled' , true);
+
+            $('.noinvoice').attr('disabled' , true);
+            $('.groupitem').addClass('disabled');
+          }
           var amount = $('.amount').val();
           var diskon = $('.diskon').val();
           var biaya = $('.biaya').val();
@@ -3039,8 +3046,9 @@
                 $('.acc_biaya').val('');
                 $('.acc_persediaan').val('');
                 $('.keterangan').val('');
-                $('.diskon').val('');
-                $('.hasildiskonitem').val('');
+                $('.item').val('none');
+                $('.item').trigger("liszt:updated");
+                $('.item').trigger("chosen:updated");
 
 
                  //change di table item
@@ -4874,7 +4882,7 @@
                       $('.harga').attr('readonly' , true);
                       $('#item').empty();
 
-                      $('#item').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                      $('#item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
 
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
@@ -4886,7 +4894,7 @@
                     else{
                        //   alert('kosong');
                         $('#item').empty();
-                          var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                          var rowKosong = "<option value='none'> -- Data Kosong --</option>";
                         $('#item').append(rowKosong);   
                         $("#item").trigger("chosen:updated");
                         $("#item").trigger("liszt:updated");          
@@ -4898,7 +4906,7 @@
                     if(arrItem.length > 0) {
                    //   alert('yes');
                       $('.item').empty();
-                      $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                      $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
                           $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.kode_item+"-"+obj.nama_masteritem+"</option>");
@@ -4909,7 +4917,7 @@
                     else{
                        //   alert('kosong');
                         $('.item').empty();
-                          var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                          var rowKosong = "<option value='none'> -- Data Kosong --</option>";
                         $('.item').append(rowKosong);  
                           $("#item").trigger("chosen:updated");
                            $("#item").trigger("liszt:updated");           
@@ -4967,7 +4975,7 @@
                     if(arrItem.length > 0) {
                       $('.harga').attr('readonly' , true);
                       $('.item').empty();
-                      $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                      $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
                           $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
@@ -4978,7 +4986,7 @@
                     else{
                        //   alert('kosong');
                         $('.item').empty();
-                          var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                          var rowKosong = "<option value='none'> -- Data Kosong --</option>";
                         $('.item').append(rowKosong);  
                         $(".item").trigger("chosen:updated");
                         $(".item").trigger("liszt:updated");           
@@ -4989,7 +4997,7 @@
 
                     if(arrItem.length > 0) {
                       $('.item').empty();
-                      $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                      $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
                           $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
@@ -5000,7 +5008,7 @@
                     else{
                        //   alert('kosong');
                         $('.item').empty();
-                          var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                          var rowKosong = "<option value='none'> -- Data Kosong --</option>";
                         $('.item').append(rowKosong); 
                         $(".item").trigger("chosen:updated");
                         $(".item").trigger("liszt:updated");            
@@ -5031,7 +5039,7 @@
                     if(arrItem.length > 0) {
                       $('.harga').attr('readonly' , true);
                       $('.item').empty();
-                      $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                      $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
                           $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
@@ -5042,7 +5050,7 @@
                     else{
                        //   alert('kosong');
                         $('.item').empty();
-                          var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                          var rowKosong = "<option value='none'> -- Data Kosong --</option>";
                         $('.item').append(rowKosong);  
                         $(".item").trigger("chosen:updated");
                         $(".item").trigger("liszt:updated");           
@@ -5053,7 +5061,7 @@
 
                     if(arrItem.length > 0) {
                       $('.item').empty();
-                      $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                      $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
                           $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
@@ -5064,7 +5072,7 @@
                     else{
                        //   alert('kosong');
                         $('.item').empty();
-                          var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                          var rowKosong = "<option value='none'> -- Data Kosong --</option>";
                         $('.item').append(rowKosong); 
                         $(".item").trigger("chosen:updated");
                         $(".item").trigger("liszt:updated");            
@@ -5110,7 +5118,7 @@
                     if(arrItem.length > 0) {
                       $('.harga').attr('readonly' , true);
                       $('.item').empty();
-                      $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                      $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
                           $('.item').append("<option value='"+obj.is_kodeitem+","+obj.is_harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
@@ -5121,7 +5129,7 @@
                     else{
                        //   alert('kosong');
                         $('.item').empty();
-                          var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                          var rowKosong = "<option value='none'> -- Data Kosong --</option>";
                         $('.item').append(rowKosong);  
                         $(".item").trigger("chosen:updated");
                         $(".item").trigger("liszt:updated");           
@@ -5132,7 +5140,7 @@
 
                     if(arrItem.length > 0) {
                       $('.item').empty();
-                      $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
+                      $('.item').append(" <option value='none'>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
                           $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
@@ -5143,7 +5151,7 @@
                     else{
                        //   alert('kosong');
                         $('.item').empty();
-                          var rowKosong = "<option value=''> -- Data Kosong --</option>";
+                          var rowKosong = "<option value='none'> -- Data Kosong --</option>";
                         $('.item').append(rowKosong); 
                         $(".item").trigger("chosen:updated");
                              $(".item").trigger("liszt:updated");            
