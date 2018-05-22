@@ -1098,7 +1098,7 @@ class LaporanMasterController extends Controller
 			$min = $request->min;
 			$max = $request->max;
 			
-			for ($i=1; $i < 12; $i++) { 
+			for ($i=1; $i < 13 ; $i++) { 
 
 				$a[$i] = DB::select("SELECT sum(d.total_net) as total_net,d.kode_customer
 				FROM delivery_order as d 
@@ -1106,17 +1106,100 @@ class LaporanMasterController extends Controller
 				group by d.kode_customer 
 				order by d.kode_customer ASC");
 			}
-			// return $a;
-			$cust = DB::table('customer')->select('kode','nama')->groupBy('kode')->orderBy('kode','ASC')->get();
-			
-			for ($i=0; $i <count($a) ; $i++) { 
-				$gg[$i] = $a[4][$i]->total_net;
-				$hh[$i] = $a[4][$i]->kode_customer;
+
+
+
+			// return count($cek);
+			if ($request->customer != null) {
+				$cust = DB::table('customer')->select('kode','nama')->where('kode','=',$request->customer)->groupBy('kode')->orderBy('kode','ASC')->get();
 				
+			}else{
+				$cust = DB::table('customer')->select('kode','nama')->groupBy('kode')->orderBy('kode','ASC')->get();
 			}
+			
+			// return $cust;
+			
+			
+			
 			
     			return view('purchase/master/master_penjualan/laporan/do_total/rekap_bulanan/ajax_lap_rekapbulanan',compact('a','cust','gg'));
     		}
+
+    	//ajax cari detail mopbil
+    		public function ajaxcarideliveryorder_total_detailnopol(Request $request)
+    		{
+    		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+			}else{
+				$asal = '';
+			}
+			//tujuan
+			if ($request->tujuan != '') {
+				$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+			}else{
+				$tujuan = '';
+			}
+			//cabang
+			if ($request->cabang != '') {
+				$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+			}else{
+				$cabang ='';
+			}
+			//tipe
+			if ($request->tipe != '') {
+				$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+			}else{
+				$tipe ='';
+			}
+			
+			if ($request->status != '' || $request->status != null) {
+				$status = " AND d.status = '".$request->status."' ";
+			}else{
+				$status = '';
+			}
+			
+			if ($request->pendapatan != '' || $request->pendapatan != null) {
+				$pendapatan = " AND d.pendapatan = '".$request->pendapatan."' ";
+			}else{
+				$pendapatan = '';
+			}
+
+			if ($request->jenis != '' || $request->jenis != null) {
+				$jenis = " AND d.jenis_pengiriman = '".$request->jenis."' ";
+			}else{
+				$jenis = '';
+			}
+			
+			if ($request->customer != '' || $request->customer != null) {
+			$customer = " AND d.kode_customer = '".$request->customer."' ";
+			}else{
+				$customer = '';
+			}
+				
+			$min = $request->min;
+			$max = $request->max;
+			
+			
+			
+			$data  = DB::select("SELECT d.jumlah,d.kode_satuan,d.nopol,d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total,d.deskripsi	 
+				FROM delivery_order as d 
+				LEFT JOIN kota k ON k.id=d.id_kota_asal
+	            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	            join customer c on d.kode_customer = c.kode 
+	            join cabang cc on d.kode_cabang = cc.kode 
+	            -- left join delivery_orderd dd on dd.dd_nomor = d.nomor 
+				WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
+			// return $data[0]->nopol;
+			for ($i=0; $i <count($data) ; $i++) { 
+				 
+				$nopol[$i] = DB::select("SELECT nopol from delivery_order where nopol = '".$data[$i]->nopol."' ");
+
+			}
+			// return $nopol;
+    			return view('purchase/master/master_penjualan/laporan/do_total/detail_nopol/ajax_lap_nopol',compact('data','nopol'));
+    		}
+    	//endd 
 
     	//end off
 
