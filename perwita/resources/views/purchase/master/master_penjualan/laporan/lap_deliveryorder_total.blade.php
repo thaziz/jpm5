@@ -75,8 +75,9 @@
                             <option value="MASTER DETAIL">MASTER DETAIL</option>
                             <option value="rekap">REKAP CUSTOMER</option>
                             <option value="rekap_detail">REKAP CUSTOMER DETIL</option>
-                            <option value="REKAP BULANAN" class="redline">REKAP BULANAN</option>
-                            <option value="DETAIL PER MOBIL" class="redline">DETAIL PER MOBIL</option>
+                            <option value="REKAP BULANAN">REKAP BULANAN</option>
+                            <option value="DETAIL PER NOPOL">DETAIL PER NOPOL</option>
+                            <option value="DETAIL PER MOBIL">DETAIL PER MOBIL</option>
                             <option value="DETAIL PER SOPIR" class="redline">DETAIL PER SOPIR</option>
                             <option value="DETAIL PER SALES" class="redline">DETAIL PER SALES</option>
                             <option value="REKAP PER MOBIL" class="redline">REKAP PER MOBIL</option>
@@ -101,7 +102,7 @@
 
                           <th style="width: 100px; padding-top: 16px"> Pendapatan </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="pendapatan" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                           <select  name="pendapatan" class="cari_semua select-picker3  form-control" data-show-subtext="true" data-live-search="true" >
                             <option value=""  selected=""> --Tipe --</option>
                             <option value="PAKET">PAKET</option>
                             <option value="KORAN">KORAN</option>
@@ -394,7 +395,14 @@
             $('#min').attr('disabled',false);
             $('#max').val();
             $('#min').val();
+        }
 
+        if (this_val == 'DETAIL PER NOPOL') {
+            $("select[name='pendapatan']").val('KARGO');
+        }else if (this_val == 'DETAIL PER MOBIL') {}{
+            $("select[name='pendapatan']").val('KARGO');
+        }else{
+             $("select[name='pendapatan']").val();
         }
     })
     function cari(){
@@ -474,6 +482,9 @@
                 return false;
             }
       if (laporan == 'DEFAULT') {
+
+
+
         $.ajax({
             data: $('#cari_data').serialize(),
             url: baseUrl + '/ajaxcarideliveryorder_total/ajaxcarideliveryorder_total',
@@ -487,6 +498,10 @@
             },
             
         });
+
+
+
+
       }
 
 
@@ -551,6 +566,61 @@
             type: "get",
             success: function (response, textStatus, request) {
               $('#replace').html(response);
+              // alert('a');
+              $('.jan').each(function(){
+              // alert('b');
+
+              var par0 = $(this).parents('tr');
+              var par1 = $('.feb').parents('tr');
+              var par2 = $('.mar').parents('tr');
+              var par3 = $('.apr').parents('tr');
+              var par4 = $('.mei').parents('tr');
+              var par5 = $('.jun').parents('tr');
+              var par6 = $('.jul').parents('tr');
+              var par7 = $('.aug').parents('tr');
+              var par8 = $('.sep').parents('tr');
+              var par9 = $('.okt').parents('tr');
+              var par10 = $('.nov').parents('tr');
+              var par11 = $('.des').parents('tr');
+
+              var hit0 = $(this).text() ;
+              var hit1 = $('.feb').text() ;
+              var hit2 = $('.mar').text() ;
+              var hit3 = $('.apr').text() ;
+              var hit4 = $('.mei').text() ;
+              var hit5 = $('.jun').text() ;
+              var hit6 = $('.jun').text() ;
+              var hit7 = $('.aug').text() ;
+              var hit8 = $('.sep').text() ;
+              var hit9 = $('.okt').text() ;
+              var hit10 = $('.nov').text() ;
+              var hit10 = $('.des').text() ;
+              console.log(hit1);
+              console.log(hit2);
+              console.log(hit3);
+              console.log(hit4);
+
+              var test = parseInt(hit4);
+              console.log(test)
+              var njay = parseInt(hit0)+parseInt(hit1)+parseInt(hit2)+parseInt(hit3)+parseInt(hit4)+parseInt(hit5)+parseInt(hit6)+parseInt(hit7)+parseInt(hit8)+parseInt(hit9)+parseInt(hit10)+parseInt(hit10);
+              console.log(njay);
+              $('#total_total').text(njay);
+            })
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
+      }
+       //CARI DETAIL PER NOPOL
+      else if(laporan == 'DETAIL PER NOPOL'){
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total_detailnopol/ajaxcarideliveryorder_total_detailnopol',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
               
             },
             error: function (ajaxContext) {
@@ -561,7 +631,18 @@
       }
       //CARI DETAIL PER MOBIL
       else if(laporan == 'DETAIL PER MOBIL'){
-        alert('a');
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total_detailmobil/ajaxcarideliveryorder_total_detailmobil',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
       }
       //CARI DETAIL PER SOPIR
       else if(laporan == 'DETAIL PER SOPIR'){

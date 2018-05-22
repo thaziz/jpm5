@@ -159,6 +159,16 @@ class ikhtisarController extends Controller
 		for ($i=0; $i < count($request->checker); $i++) { 
 			$check_in[$i] = $request->checker[$i];
 		}
+		$datacomp = $request->cabang;
+
+		$datakun = DB::select("select * from d_akun where id_akun LIKE '1001%' and  kode_cabang = '$datacomp'");
+		if(count($datakaun) == 0){
+				return Response()->json(['status' => 3, 'message' => 'Data Akun KAS untuk cabang '. $datacomp.'']);
+		}
+		else {
+				$acchutang = $datakun[0]->id_akun;
+		}
+
 
 		// return $check_in;
 			$tgl = explode('-',$request->rangepicker);

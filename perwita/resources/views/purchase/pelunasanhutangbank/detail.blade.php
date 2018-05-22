@@ -342,14 +342,14 @@
                                                         @php
                                                         $totalDebit+=$jurnal_dt[$i]->jrdt_value;
                                                         @endphp
-                                                         {{number_format($jurnal_dt[$i]->jrdt_value,2,',','.')}}
+                                                         {{(number_format(abs($jurnal_dt[$i]->jrdt_value),2,',','.'))}}
                                                     @endif
                                                 </td>
                                                 <td>@if($jurnal_dt[$i]->dk=='K') 
                                                     @php
                                                         $totalKredit+=$jurnal_dt[$i]->jrdt_value;
                                                     @endphp
-                                                    {{number_format($jurnal_dt[$i]->jrdt_value,2,',','.')}}
+                                                    {{number_format(abs($jurnal_dt[$i]->jrdt_value),2,',','.')}}
                                                      @endif
                                                 </td>
                                             <tr> 
@@ -359,8 +359,8 @@
                                     <tfoot>
                                         <tr>
                                                 <th>Total</th>                                                
-                                                <th>{{number_format($totalDebit,2,',','.')}}</th>
-                                                <th>{{number_format($totalKredit,2,',','.')}}</th>
+                                                <th>{{number_format(abs($totalDebit),2,',','.')}}</th>
+                                                <th>{{number_format(abs($totalKredit),2,',','.')}}</th>
                                         <tr>
                                     </tfoot>
                                 </table>                            
@@ -1058,6 +1058,7 @@
         $('.tmbhdatacek').show();
         $('.simpansukses').show();
         $('.tambahdatabiaya').show();
+        $('.nominal2').attr('readonly' , false);
       })
 
 

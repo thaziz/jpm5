@@ -73,8 +73,18 @@ class v_hutangController extends Controller
   
     public function simpan(Request $request){
 
-
-   
+      $comp = $request->cabang;
+      $datakun2 = DB::select("select * from d_akun where id_akun LIKE '2101%' and kode_cabang = '$comp'");
+      
+      if(count($datakun2) == 0){
+        $dataInfo=['status'=>'gagal','info'=>'Akun Voucher Hutang Untuk Cabang '.$comp.' Tersedia'];
+        DB::rollback();
+        return json_encode($dataInfo);    
+      }
+      else {
+        $dataakunitem = $datakun2[0]->id_akun;
+      }
+        
 
         $anj = DB::table('v_hutang')->max('v_id');
 
@@ -97,19 +107,13 @@ class v_hutangController extends Controller
         $store1->v_keterangan =$request->ket;
         $store1->v_hasil =$request->total;
         $store1->v_pelunasan =$request->total;
-
+        $store1->v_akunhutang = $dataakunitem;
         $store1->vc_comp = $request->cabang;
      //   return json_encode($request->suppilername);
        $store1->save();
 
      //   return json_encode($request->nobukti);
-         $anj = DB::table('v_hutangd')->max('vd_no');
-       if ($anj == '' ) {
-         $anj=1;
-       }
-       else{
-          $anj+=1;
-       }
+   
        for ($i=0; $i <count($request->accountid); $i++) {
 
 
@@ -253,6 +257,7 @@ class v_hutangController extends Controller
       foreach ($data as $key => $value) {
         $g = $value->v_hasil;
       }
+      dd($data);
       return view('purchase/voucher_hutang/detail',compact('data','a','b','c','d','e','f','g','h','i'));
     }
     public function cetakvoucherhutang($v_id){

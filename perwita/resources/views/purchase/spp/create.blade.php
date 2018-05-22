@@ -144,7 +144,7 @@
                                            @foreach($data['jenisitem'] as $jnsitem)
                                             <option value="{{$jnsitem->kode_jenisitem}},{{$jnsitem->stock}}"> {{$jnsitem->keterangan_jenisitem}} </option>
                                            @endforeach 
-                                          </select> <input type="text" name="spp_penerimaan" class="penerimaan"> </td>
+                                          </select> <input type="hidden" name="spp_penerimaan" class="penerimaan"> </td>
                                         </tr>
                                      
                                       <tr>
