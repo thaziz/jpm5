@@ -953,6 +953,12 @@ Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterContr
   //rekap bulanan
   Route::get('ajaxcarideliveryorder_total_rekapbulanan/ajaxcarideliveryorder_total_rekapbulanan','LaporanMasterController@ajaxcarideliveryorder_total_rekapbulanan');
   //end off
+  //rekap tri wulan
+  Route::get('ajaxcarideliveryorder_total_rekaptriwulan/ajaxcarideliveryorder_total_rekaptriwulan','LaporanMasterController@ajaxcarideliveryorder_total_rekaptriwulan');
+  //end off
+  //deial mobil
+  Route::get('ajaxcarideliveryorder_total_detailnopol/ajaxcarideliveryorder_total_detailnopol','LaporanMasterController@ajaxcarideliveryorder_total_detailnopol');
+  //end off
 
 //END OF DELIVERY ORDER TOTAL
 
