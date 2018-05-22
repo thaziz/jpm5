@@ -3016,8 +3016,8 @@
                   //cek jika double item
                   nobrg = nourut - 1;
                   idbarang = $('.brg-'+nobrg).val();
-                  alert(idbarang);
-                  alert(item);
+                 // alert(idbarang);
+                 // alert(item);
                   if(kodeitem == idbarang){
                     toastr.info('Mohon maaf barang tersebut sudah ditambah :)');
                   }

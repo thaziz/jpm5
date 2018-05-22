@@ -6204,8 +6204,7 @@ public function kekata($x) {
 		}
 
 		else if($jenisbayar == '5'){ 
-			$data['fpg'] = DB::select("select * from fpg, fpg_dt, supplier where idfpg ='$idfpg' and  fpgdt_idfpg = idfpg ");
-	
+			$data['fpg'] = DB::select("select * from fpg, fpg_cekbank, cabang, masterbank, jenisbayar where idfpg = '$idfpg' fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpgb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg'");
 		}
 	}
 		/*$data['fpgbank'] = DB::select("select * from fpg_cekbank , fpg where fpdb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg' and fpdb_id = '$idfpgb' and fpgb_idfpg = idfpg and idfpg = '$idfpg'");*/

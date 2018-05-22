@@ -568,7 +568,7 @@
                                       <td> <input type="text" class="input-sm form-control norekening" name="norekening"></td>
                                      
                                      <th> Nama Rekening </th>
-                                      <td> <input type="text" class="input-sm form-control norekening" name="norekening" readonly=""></td>
+                                      <td> <input type="text" class="input-sm form-control namarekening" name="namarekening" readonly=""></td>
 
                                     </tr>
 
@@ -1727,9 +1727,15 @@
                   type : "post",
                   dataType : "json",
                   success : function(data) {
-                     $('#myModal2').modal('hide');
 
-                     $('.checkcek').attr('checked' , false);
+                    bank = $('.bank').val();
+                    explode = bank.split(",");
+                    kodebank = explode[4];
+                    $('.hutangdagang').val(kodebank);
+
+                    $('#myModal2').modal('hide');
+
+                    $('.checkcek').attr('checked' , false);
 
                     $('.nocheck').val(data.mbdt[0][0].mbdt_noseri);
 
@@ -2372,9 +2378,9 @@
     }
     else {
           idsup = $('jenisbayar2').val();
-         $('.hsljenisbayar').val(idsup);
-
+          $('.hsljenisbayar').val(idsup);
     }
+
 		/*$('.jenisbayar2').change(function(){
               var idsup = $(this).val();
               var idjenisbayar = $('.jenisbayar').val();
