@@ -77,7 +77,7 @@
                     <h5> Pembelian Order
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
-                     @if(Auth::user()->punyaAkses('Purchase Order','hapus'))
+                     @if(Auth::user()->punyaAkses('Purchase Order','tambah'))
                     <div class="text-right">
                         <a class="btn btn-success" href="{{url('purchaseorder/createpurchase')}}"> <i class="fa fa-plus"> </i> Buat PO </a>
                     </div>

@@ -54,8 +54,20 @@
 
                 <div class="ibox-content">
                 <div class="row">
-            <div class="col-xs-12">
-              
+                   <div class="col-xs-12">
+                        
+    @if(count($jurnal_dt)!=0)
+                      <div class="pull-right">  
+                     
+                          <a onclick="lihatjurnal('{{$data['bbk'][0]->bbk_nota}} or null}}','POSTING BANK')" class="btn-xs btn-primary" aria-hidden="true">
+                    
+                            <i class="fa  fa-eye"> </i>
+                             &nbsp;  Lihat Jurnal  
+                           </a> 
+                      </div>
+    @endif
+
+
               <div class="box" id="seragam_box">
                 <div class="box-header">
                 </div><!-- /.box-header -->
@@ -298,6 +310,65 @@
                           </div>
                           <br>
                           <br>
+
+                          <!-- modal jurnal -->
+                          <div id="jurnal" class="modal" >
+                  <div class="modal-dialog">
+                    <div class="modal-content no-padding">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title">Laporan Jurnal</h5>
+                        <h4 class="modal-title">No PO:  <u> {{$data['bbk'][0]->bbk_nota or null }}</u> </h4>
+                        
+                      </div>
+                      <div class="modal-body" style="padding: 15px 20px 15px 20px">                            
+                                <table id="table_jurnal" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Akun</th>
+                                            <th>Debit</th>
+                                            <th>Kredit</th>                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                             $totalDebit=0;
+                                             $totalKredit=0;
+                                        @endphp
+                                              @for($i = 0 ; $i < count($jurnal_dt); $i++)
+                                            <tr>
+                                                <td>{{$jurnal_dt[$i]->nama_akun}}</td>
+                                                <td> @if($jurnal_dt[$i]->dk=='D') 
+                                                        @php
+                                                        $totalDebit+=$jurnal_dt[$i]->jrdt_value;
+                                                        @endphp
+                                                         {{(number_format(abs($jurnal_dt[$i]->jrdt_value),2,',','.'))}}
+                                                    @endif
+                                                </td>
+                                                <td>@if($jurnal_dt[$i]->dk=='K') 
+                                                    @php
+                                                        $totalKredit+=$jurnal_dt[$i]->jrdt_value;
+                                                    @endphp
+                                                    {{number_format(abs($jurnal_dt[$i]->jrdt_value),2,',','.')}}
+                                                     @endif
+                                                </td>
+                                            <tr> 
+                                              @endfor
+                                                                                   
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                                <th>Total</th>                                                
+                                                <th>{{number_format(abs($totalDebit),2,',','.')}}</th>
+                                                <th>{{number_format(abs($totalKredit),2,',','.')}}</th>
+                                        <tr>
+                                    </tfoot>
+                                </table>                            
+                          </div>                          
+                    </div>
+                  </div>
+                </div>
+
 
                           <!-- modal DATA BG -->
                               <div class="modal inmodal fade" id="myModalCekBg" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -588,6 +659,9 @@
             return x1 + x2;
     }
 
+
+
+
     
     $('.date').datepicker({
         autoclose: true,
@@ -871,6 +945,7 @@
     })
     
     $('.nominalbiaya').change(function(){
+      /*alert('jaja');*/
         val = $(this).val();
         val = accounting.formatMoney(val, "", 2, ",",'.');
         $(this).val(val);
@@ -885,6 +960,27 @@
           }
 
           $('.totalbiaya').val(addCommas(nilaitotal));
+          $('.total').val(addCommas(nilaitotal));
+        })
+
+    })
+
+    $('.nominal2').change(function(){
+      /*alert('jaja');*/
+        val = $(this).val();
+        val = accounting.formatMoney(val, "", 2, ",",'.');
+        $(this).val(val);
+
+        nilaitotal = 0;
+        $('.nominal2').each(function(){
+          val = $(this).val();
+
+          if(val != ''){
+            val2 = val.replace(/,/g, '');
+            nilaitotal = parseFloat(parseFloat(nilaitotal) + parseFloat(val2)).toFixed(2);
+          }
+
+          $('.cekbg').val(addCommas(nilaitotal));
           $('.total').val(addCommas(nilaitotal));
         })
 
@@ -962,8 +1058,8 @@
           "<td> <input type='text' class='input-sm form-control' value='"+nobbk+"' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+nmakun+"' readonly> <input type='hidden' name='akun[]' value="+idakun+"> </td>" +
           "<td>  <input type='text' class='input-sm form-control' value='"+dk+"' name='dk[]' readonly> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+jumlah+"' name='jumlah[]' readonly> </td>" +
-          "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]' readonly></td>" +
+          "<td> <input type='text' style='text-align:right' class='input-sm form-control' value='"+jumlah+"' name='jumlah[]'> </td>" +
+          "<td><input type='text' class='input-sm form-control' value=' "+keterangan+"' name='keterangan[]'></td>" +
           "<td> <button class='btn btn-danger btn-sm remove-btn' type='button' data-id="+$nmrbiaya+" data-cek='"+akun+"' data-nominal='"+jumlah+"'><i class='fa fa-trash'></i></button>  </td> </tr>";
 
           $('#tbl-biaya').append(rowHtml);
@@ -981,14 +1077,32 @@
           }
       })
 
-   
-
       $('.ubahdata').click(function(){
         $('.removes-btn').show();
         $('.remove-btn').show();
         $('.tmbhdatacek').show();
         $('.simpansukses').show();
         $('.tambahdatabiaya').show();
+        $('.nominal2').attr('readonly' , false);
       })
+
+
+  function lihatjurnal($ref,$note){
+
+          $.ajax({
+          url:baseUrl +'/data/jurnal-umum',
+          type:'get',
+          data:'ref='+$ref
+               +'&note='+$note,
+          /* data: "{'ref':'" + $ref+ "', 'note':'" + $note+ "'}",
+  */
+          
+         
+          success:function(response){
+                $('#data-jurnal').html(response);
+                $('#jurnal').modal('show');
+              }
+        });
+   }
 </script>
 @endsection
