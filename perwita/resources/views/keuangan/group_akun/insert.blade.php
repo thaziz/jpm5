@@ -58,6 +58,32 @@
     </table>
   </div>
 
+
+  {{-- <div class="col-md-12 m-t" style="border: 1px solid #ddd; border-radius: 5px; padding: 10px;">
+
+    <span class="text-muted" style="position: absolute; background: white; top: -10px; padding: 0px 10px; font-style: italic;"><small>Pilih Akun</small></span>
+    
+    <div class="col-md-12 m-t" style="padding: 0px; height: 300px; overflow-y: scroll; border-bottom: 1px solid #bbb;">
+      <table border="0" class="table table-bordered" style="padding:0px; font-size: 8pt;">
+        
+        <thead>
+          <tr>
+            <th width="10%" style="background: white; color: #999;position: sticky;top: 0;">
+              <input type="checkbox" name="check_all" id="check_all">
+            </th>
+            <th width="15%" style="background: white; color: #999;position: sticky;top: 0;">ID Akun</th>
+            <th style="background: white; color: #999;position: sticky;top: 0;">Nama Akun</th>
+          </tr>
+        </thead>
+        
+        <tbody id="akun-wrap">
+
+        </tbody>
+
+      </table>
+    </div>
+  </div> --}}
+
   </form>
 
   <div class="col-md-12 m-t" style="border-top: 1px solid #eee; padding: 10px 10px 0px 0px;">
@@ -68,11 +94,12 @@
 <script>
   $(document).ready(function(){
 
+    
+
     $(".chosen-select").chosen();
     $('[data-toggle="tooltip"]').tooltip();
 
-
-    // console.log(cabang);
+    // generate_akun("Laba Rugi");
 
     $("#saldo").on("change", function(){
       if($(this).is(":checked")){
@@ -215,6 +242,37 @@
       // $('#saldo').prop('checked', false);
       // $(".saldo_awal").attr("disabled", "disabled");
       // $(".saldo_awal").val(0);
+    }
+
+    function generate_akun(jenis){
+
+      html = "";
+
+      if(jenis == "Neraca/Balance Sheet"){
+        $.each($.grep(akun, function(n){ return n.group_neraca === "---" }), function(i, n) {
+
+          html = html + '<tr>'+
+                          '<td class="text-center">aaa</td>'+
+                          '<td class="text-center">'+n.id_akun+'</td>'+
+                          '<td>'+n.nama_akun+'</td>'+
+                        '</tr>';
+
+        })
+
+      }else{
+        $.each($.grep(akun, function(n){ return n.group_laba_rugi === "---" }), function(i, n) {
+
+          html = html + '<tr>'+
+                          '<td class="text-center">aaa</td>'+
+                          '<td class="text-center">'+n.id_akun+'</td>'+
+                          '<td>'+n.nama_akun+'</td>'+
+                        '</tr>';
+
+        })
+      }
+
+      $("#akun-wrap").html(html);
+
     }
   })
 </script>
