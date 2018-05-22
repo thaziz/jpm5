@@ -74,7 +74,7 @@
                                   </select> 
                                 @endif
                                 
-
+                                <input type="hidden" class="cabangfaktur">
                               </td>
                              
                             </tr>
@@ -811,6 +811,50 @@
           }
         })
 
+       $('.cabang').change(function(){
+         $.ajax({
+          type : "get",
+          data : {cabang},
+          url : baseUrl + '/formfpg/getnofpg',
+          dataType : 'json',
+          success : function (response){     
+               cabang = $('.cabang').val();
+               $('.cabangfaktur').val(cabang);
+               var d = new Date();
+                
+                //tahun
+                var year = d.getFullYear();
+                //bulan
+                var month = d.getMonth();
+                var month1 = parseInt(month + 1)
+                console.log(d);
+                console.log();
+                console.log(year);
+
+                if(month < 10) {
+                  month = '0' + month1;
+                }
+
+                console.log(d);
+
+                tahun = String(year);
+//                console.log('year' + year);
+                year2 = tahun.substring(2);
+                //year2 ="Anafaradina";
+                 nofpg = 'FPG' + month + year2 + '/' + cabang + '/'  + response.idfpg ;
+               
+                $('.nofpg').val(nofpg);
+
+                nofpg = $('.nofpg').val();
+                if(nofpg == ''){
+                    location.reload();
+                }
+          },
+          error : function(){
+            location.reload();
+          }
+        })
+       })
 
 
 
@@ -1245,22 +1289,7 @@
                         }
                       }
                       
-                       /* $jumlahdebit = 0;
-                        $('.dnbruto').each(function(){
-                          val = $(this).val();
-                          $jumlahdebit = parseFloat(parseFloat($jumlahdebit) + parseFloat(val)).toFixed(2);
-                        });
-                        $('.dnkanan').val(addCommas($jumlahdebit));
-
-                        $jumlahkredit = 0;
-                        $('.cnbruto').each(function(){
-                          val = $(this).val();
-                          $jumlahkredit = parseFloat(parseFloat($jumlahkredit) + parseFloat(val)).toFixed(2);
-                          $sisafaktur2 = $('.sisafaktur').val();  
-                        })
-                        $('.cnkanan').val(addCommas($jumlahkredit));*/
-
-
+          
 
                     $('#myModal5').modal('hide');
                       $('.check').attr('checked' , false);
@@ -1278,7 +1307,7 @@
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].fp_netto));
                           $('.uangmukakanan').val(addCommas(data.faktur[0][0].fp_uangmuka));
                           $('.hutangdagang').val(data.faktur[0][0].fp_acchutang); 
-
+                          $('.cabangfaktur').val(data.faktur[0][0].fp_comp);
 
                      //LOOPING DATA NO FAKTUR 
 
@@ -1346,7 +1375,8 @@
                           $('.sisafaktur').val(addCommas(data.faktur[0][0].v_pelunasan));
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].v_hasil));
-                      
+                           $('.cabangfaktur').val(data.faktur[0][0].vc_comp);
+                           $('.hutangdagang').val(data.faktur[0][0].v_akunhutang);
 
 
                      //LOOPING DATA NO FAKTUR 
@@ -1415,7 +1445,8 @@
                           $('.sisafaktur').val(addCommas(data.faktur[0][0].um_sisapelunasan));
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].um_jumlah));
-                      
+                          $('.hutangdagang').val(data.faktur[0][0].um_akunhutang); 
+                            $('.cabangfaktur').val(data.faktur[0][0].um_comp);
 
 
                      //LOOPING DATA NO FAKTUR 
@@ -1444,7 +1475,7 @@
                                    "<td> <input type='text' class='input-sm pembayaranitem pembayaranitem"+data.faktur[i][0].um_id+" form-control' style='text-align:right' readonly data-id="+nmr+" name='pembayaran[]' value="+addCommas(totalpembayaranfp)+"> </td>" +
 
 
-                                  "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].um_pelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
+                                  "<td> <input type='text' class='input-sm form-control sisa_terbayar"+nmr+" data-id="+nmr+"' value="+addCommas(data.faktur[i][0].um_sisapelunasan)+" readonly name='sisapelunasan[]' style='text-align:right'> </td>" + //sisapelunasan
 
                                   "<td> <input type='text' class='input-sm form-control' name='fpgdt_keterangan[]'> </td>" +
 
@@ -1480,7 +1511,8 @@
                           $('.sisafaktur').val(addCommas(data.faktur[0][0].ik_pelunasan));
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].ik_total));
-                      
+                          $('.hutangdagang').val(data.faktur[0][0].ik_akunhutang); 
+                          
 
 
                      //LOOPING DATA NO FAKTUR 
@@ -2113,6 +2145,10 @@
             
 			 var hslnota = [];
         //button get faktur
+   
+
+      cabang = $('.cabang').val();    
+      $('.cabangfaktur').val(cabang);
 		$('#getDataFaktur').click(function(){
               var tablefaktur = $('#tbl-faktur').DataTable();
               tablefaktur.clear().draw();
@@ -2122,14 +2158,16 @@
               idsup = split[0];
               nosupplier = split[1];
               var idjenisbayar = $('.jenisbayar').val();
-              var cabang = $('.cabang').val();
+            
+              cabangfaktur = $('.cabangfaktur').val();
+             // alert(cabangfaktur);
               $('.hsljenisbayar').val(val);
 
               if(idsup == ''){
                 toastr.info("Data Supplier belum ada :)");
                 return false;
               }
-
+              //alert(cabangfaktur);
               arrnofaktur = [];
              $('tr.field').each(function(){
                 nobukti = $(this).data('nota');
@@ -2140,14 +2178,13 @@
              // alert(idsup);
                $.ajax({
                   url : baseUrl + '/formfpg/changesupplier',
-                  data : {idsup, idjenisbayar,cabang, arrnofaktur,nosupplier},
+                  data : {idsup, idjenisbayar,cabangfaktur, arrnofaktur,nosupplier},
                   type : "get",
                   dataType : "json",
                   success : function(data) {
                  
                     var fp = data.fakturpembelian;
-                    console.log(fp);
-                    console.log(idjenisbayar);
+                  
                     //$('.hari_bank').val(fp[0].fp_jatuhtempo);
 
                      //tambah data ke table data po
@@ -2189,13 +2226,15 @@
                           console.log(n +'n');
                                 
                               }
+                          $('.hutangdagang').val(fp[0].fp_acchutang); 
+                          $('.cabangfaktur').val(fp[0].fp_comp);
                         }
                     else if(idjenisbayar == '6' || idjenisbayar == '7'|| idjenisbayar == '9') {
                          var tablefaktur = $('#tbl-faktur').DataTable();
                        tablefaktur.clear().draw();
                       $('.supfaktur').show();
                       $('.invfaktur').show(); 
-                      alert(fp.length);                      
+                     // alert(fp.length);                      
                        for(var i = 0; i < fp.length; i++){ 
                            var html2 = "<tr class='data"+n+"' id='data"+fp[i].fp_nofaktur+"'> <td>"+n+"</td>" +
                                        "<td>"+fp[i].namacabang+"</td>" +
@@ -2228,7 +2267,10 @@
                             n++; 
                             console.log(n +'n');
                               }
-                        $('.hutangdagang').val(fp[0].fp_acchutang);     
+                        $('.hutangdagang').val(fp[0].fp_acchutang); 
+                       $('.cabangfaktur').val(fp[0].fp_comp) 
+                      /*  alert(fp[0].fp_comp + 'cabangfaktur');   
+                        alert(fp[0].fp_acchutang + 'hutangdagang');   */
                     }
                     else if(idjenisbayar == '3'){
                       $('.supfaktur').show();

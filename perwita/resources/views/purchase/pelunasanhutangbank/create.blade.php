@@ -844,7 +844,7 @@
                     $('.jenissup').val('supplier');            
                 }
                 else if(response.fpg[0].fpg_jenisbayar == '4') {
-                    $jenissup = response.fpg[0].um_jenissup;
+                    $jenissup = response.jenissup;
                     if($jenissup == 'supplier'){                      
                       $('.kodesup').val(response.fpg[0].no_supplier);
                       $('.namasupplier').val(response.fpg[0].nama_supplier);   
