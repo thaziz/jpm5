@@ -339,10 +339,10 @@
                        
                         <td> 
                          @if($tipespp != 'J')
-                          @if($codt->sg_qty == '')
+                          @if($sppd->sg_qty == '')
                            Kosong
                             @else
-                            {{$codt->sg_qty}}
+                            {{$sppd->sg_qty}}
                              @endif
                         @else
                           -
