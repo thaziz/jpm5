@@ -659,6 +659,9 @@
             return x1 + x2;
     }
 
+
+
+
     
     $('.date').datepicker({
         autoclose: true,
@@ -942,6 +945,7 @@
     })
     
     $('.nominalbiaya').change(function(){
+      /*alert('jaja');*/
         val = $(this).val();
         val = accounting.formatMoney(val, "", 2, ",",'.');
         $(this).val(val);
@@ -956,6 +960,27 @@
           }
 
           $('.totalbiaya').val(addCommas(nilaitotal));
+          $('.total').val(addCommas(nilaitotal));
+        })
+
+    })
+
+    $('.nominal2').change(function(){
+      /*alert('jaja');*/
+        val = $(this).val();
+        val = accounting.formatMoney(val, "", 2, ",",'.');
+        $(this).val(val);
+
+        nilaitotal = 0;
+        $('.nominal2').each(function(){
+          val = $(this).val();
+
+          if(val != ''){
+            val2 = val.replace(/,/g, '');
+            nilaitotal = parseFloat(parseFloat(nilaitotal) + parseFloat(val2)).toFixed(2);
+          }
+
+          $('.cekbg').val(addCommas(nilaitotal));
           $('.total').val(addCommas(nilaitotal));
         })
 
