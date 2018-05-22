@@ -66,91 +66,7 @@
                       </tr>
                     
                       <tr>
-                          <th style="width: 100px; padding-top: 16px">Cabang</th>
-                          <td colspan="1">
-                            <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
-                              <option></option>
-                              @foreach ($cabang as $element)
-                                <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
-                              @endforeach
-                            </select>
-                          </td>
 
-                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Tipe --</option>
-                            <option value="DOKUMEN">DOKUMEN</option>
-                            <option value="KILOGRAM">KILOGRAM</option>
-                            <option value="KOLI">KOLI</option>
-                            <option value="SEPEDA">SEPEDA</option>
-                           </select>
-                          </td>
-                        </tr>
-                        <tr >
-                           <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
-                          <td >
-                          <select style="width: 200px; margin-top: 20px;" name="asal" class="cari_semua chosen-select-width select-picker1 form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal">
-                            <option value=""  selected=""> --Asal --</option>
-                            @foreach ($kota1 as $asal)
-                                <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
-                            @endforeach
-                          </select>
-                          </td>
-                        
-                          <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="tujuan" class="cari_semua select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="kota_tujuan" >
-                            <option value=""  selected=""> --Tujuan --</option>
-                            @foreach ($kota as $tujuan)
-                                <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
-                            @endforeach
-                           </select>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th style="width: 100px; padding-top: 16px"> Jenis </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="jenis" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="REGULER">REGULER</option>
-                            <option value="EXPRESS">EXPRESS</option>
-                            <option value="OUTLET">OUTLET</option>
-                           </select>
-                          </td>
-                          <th style="width: 100px; padding-top: 16px"> Status </th>
-                          <td colspan="3"> 
-                           <select style="width: 200px; margin-top: 20px;" name="status" class="cari_semua select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status"  >
-                            <option value=""  selected=""> --Status --</option>
-                            <option value="MANIFESTED">MANIFESTED</option>
-                            <option value="TRANSIT">TRANSIT</option>
-                            <option value="RECEIVED">RECEIVED</option>
-                            <option value="DELIVERED">DELIVERED</option>
-                            <option value="DELIVERED OK">DELIVERED OK</option>
-                           </select>
-                          </td>
-                        </tr>
-                        <tr>
-                          <th style="width: 100px; padding-top: 16px"> Pendapatan </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="pendapatan" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Tipe --</option>
-                            <option value="PAKET">PAKET</option>
-                            <option value="KORAN">KORAN</option>
-                            <option value="KARGO">KARGO</option>
-                           </select>
-                          </td>
-
-                          <th style="width: 100px; padding-top: 16px"> Customer </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="customer" class="cari_semua customer chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Customer --</option>
-                            @foreach ($customer as $e)
-                                <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
-                            @endforeach
-                           </select>
-                          </td>
-                        </tr>
                           <th style="width: 100px; padding-top: 16px"> Laporan </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" name="laporan" class="cari_semua laporan chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
@@ -168,21 +84,113 @@
                             <option value="REKAP PER SALES" class="redline">REKAP PER SALES</option>
                            </select>
                           </td>
-                        </tr>       
 
+                          <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
+                          <td >
+                          <select style="width: 200px; margin-top: 20px;" name="asal" class="cari_semua chosen-select-width select-picker1 form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal">
+                            <option value=""  selected=""> --Asal --</option>
+                            @foreach ($kota1 as $asal)
+                                <option value="{{ $asal->id }}">{{ $asal->asal }}</option>
+                            @endforeach
+                          </select>
+                          </td>
+
+                        </tr>       
+                        <tr>
+                          
+
+                          <th style="width: 100px; padding-top: 16px"> Pendapatan </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" name="pendapatan" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Tipe --</option>
+                            <option value="PAKET">PAKET</option>
+                            <option value="KORAN">KORAN</option>
+                            <option value="KARGO">KARGO</option>
+                           </select>
+                          </td>
+
+                          <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" name="tujuan" class="cari_semua select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="kota_tujuan" >
+                            <option value=""  selected=""> --Tujuan --</option>
+                            @foreach ($kota as $tujuan)
+                                <option value="{{ $tujuan->id }}">{{ $tujuan->tujuan }}</option>
+                            @endforeach
+                           </select>
+                          </td>
+
+                           
+                        </tr>
+                        <tr >
+                          <th style="width: 100px; padding-top: 16px">Cabang</th>
+                          <td colspan="1">
+                            <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
+                              <option></option>
+                              @foreach ($cabang as $element)
+                                <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                              @endforeach
+                            </select>
+                          </td>
+                        
+                        <th style="width: 100px; padding-top: 16px"> Status </th>
+                          <td colspan="3"> 
+                           <select style="width: 200px; margin-top: 20px;" name="status" class="cari_semua select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status"  >
+                            <option value=""  selected=""> --Status --</option>
+                            <option value="MANIFESTED">MANIFESTED</option>
+                            <option value="TRANSIT">TRANSIT</option>
+                            <option value="RECEIVED">RECEIVED</option>
+                            <option value="DELIVERED">DELIVERED</option>
+                            <option value="DELIVERED OK">DELIVERED OK</option>
+                           </select>
+                          </td>
+
+                          
+                        </tr>
+                        <tr>
+                          <th style="width: 100px; padding-top: 16px"> Jenis </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" name="jenis" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="REGULER">REGULER</option>
+                            <option value="EXPRESS">EXPRESS</option>
+                            <option value="OUTLET">OUTLET</option>
+                           </select>
+                          </td>
+
+                          <th style="width: 100px; padding-top: 16px"> Customer </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" name="customer" class="cari_semua customer chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Customer --</option>
+                            @foreach ($customer as $e)
+                                <option value="{{ $e->kode }}">{{ $e->kode }} - {{ $e->nama }}</option>
+                            @endforeach
+                           </select>
+                          </td>
+                          
+                        </tr>
+                        <tr>
+                          
+
+                          
+                        </tr>
+                          <th style="width: 100px; padding-top: 16px"> Tipe </th>
+                          <td > 
+                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Tipe --</option>
+                            <option value="DOKUMEN">DOKUMEN</option>
+                            <option value="KILOGRAM">KILOGRAM</option>
+                            <option value="KOLI">KOLI</option>
+                            <option value="SEPEDA">SEPEDA</option>
+                           </select>
+                          </td>
 
                       <br>
                       </table>
                       
-                      <div class="row pull-right" style="margin-top: 0px;margin-right: 3px;"> &nbsp; &nbsp; 
-                        <select class="chosen-select-width form-control" onchange="location = this.value;">
-                          <option selected="" disabled="">- Jenis Laporan -</option>
-                          <option value="{{ url('rekap_customer/rekap_customer') }}">Rekap Customer</option>
-                        </select>
-                      </div>
+
                       <div class="row" style="margin-top: 20px;margin-bottom: -72px;"> &nbsp; &nbsp; <a class="btn btn-primary" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </a> </div>
-                      <div class="row" style="margin-top: 21px;margin-left: 56px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
-                      <div class="row" style="margin-top: -51px;margin-left: 137px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
+                      <div class="row" style="margin-top: 34px;margin-left: 56px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                      <div class="row" style="margin-top: -38px;margin-left: 137.5px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                 </form>
                 <div class="box-body">
                 <div id="replace">
@@ -190,13 +198,13 @@
                     <thead>
                         <tr>
                             <th> No DO</th>
+                            <th> Cabang</th>
                             <th> Tanggal </th>
                             <th> Customer </th>
                             <th> Pengirim </th>
                             <th> Penerima </th>
                             <th> Kota Asal </th>
                             <th> Kota Tujuan </th>
-                            <th> Status </th>
                             <th> Detail </th>
                        
                         </tr>
@@ -272,9 +280,9 @@
                     '<td>'+d.total_net+'</td>'+
                 '</tr>'+
                 '<tr>'+
-                    '<td>cabang</td>'+
+                    '<td>status</td>'+
                     '<td>:</td>'+
-                    '<td>'+d.cab+'</td>'+
+                    '<td>'+d.status+'</td>'+
                 '</tr>'+
             '</table>'
               ;
@@ -289,13 +297,13 @@
             },
             "columns": [
             { "data": "nomor" },
+            { "data": "cab" },
             { "data": "tanggal" },
             { "data": "cus" },
             { "data": "nama_pengirim" },
             { "data": "nama_penerima" },
             { "data": "asal" },
             { "data": "tujuan" },
-            { "data": "status" },
             {
                 "class": "details-control",
                 "orderable": false,
@@ -373,6 +381,22 @@
         autoclose: true,
         format: 'yyyy-mm-dd'
     });
+
+    $("select[name='laporan']").change(function(){
+        var this_val = $(this).find(':selected').val();
+        if (this_val == 'REKAP BULANAN') {
+            $('#min').attr('disabled',true);
+            $('#max').attr('disabled',true);
+            $('#max').val('-');
+            $('#min').val('-');
+        }else{
+            $('#max').attr('disabled',false);
+            $('#min').attr('disabled',false);
+            $('#max').val();
+            $('#min').val();
+
+        }
+    })
     function cari(){
       var min = $('#min').val();
       var max = $('#max').val();

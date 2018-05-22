@@ -234,6 +234,7 @@ class ikhtisarController extends Controller
 								   		'ikd_akun' 		=> $cari_id[$i][0]->pc_akun,
 								   		'ikd_nominal'  	=> $cari_id[$i][0]->pc_kredit,
 								   		'ikd_keterangan'=> $cari_id[$i][0]->pc_keterangan,
+								   		'ikd_acc_hutang'=> $cari_id[$i][0]->pc_akun,
 								   		'created_at'	=> Carbon::now(),
 								   		'updated_at'	=> Carbon::now()
 								]);

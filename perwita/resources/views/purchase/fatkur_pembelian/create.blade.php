@@ -4674,7 +4674,7 @@
                       $('.item').append(" <option value=''>  -- Pilih Barang -- </option> ");
                         $.each(arrItem, function(i , obj) {
                   //        console.log(obj.is_kodeitem);
-                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.nama_masteritem+"</option>");
+                          $('.item').append("<option value='"+obj.kode_item+","+obj.harga+","+obj.nama_masteritem+","+obj.acc_persediaan+","+obj.acc_hpp+"'>"+obj.kode_item+","+obj.nama_masteritem+"</option>");
                              $(".item").trigger("chosen:updated");
                              $(".item").trigger("liszt:updated");
                         })
