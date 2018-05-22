@@ -75,7 +75,11 @@ class PurchaseController extends Controller
        $request->jumlahharga;
        $request->ppn;
        $lokasigudang = [];
-		$data2['po'] = DB::select("select * from pembelian_order, supplier where po_id = '$id'  and po_supplier = idsup " );
+       // return $id;
+       $data2['po'] = DB::table('pembelian_order')
+       								  ->join('supplier','supplier.idsup','=','pembelian_order.po_supplier')
+       								  ->where('po_id','=',$id)
+       								  ->get();
 
 		$data2['supplier'] = DB::select("select * from supplier where active='AKTIF'");
 
@@ -99,6 +103,7 @@ class PurchaseController extends Controller
 		foreach ($data2['po'] as $key => $value) {
 			$a = $value->nama_supplier;
 		}
+		// return $a;
 		foreach ($data2['po'] as $key => $value) {
 			$b = $value->telp;
 		}
