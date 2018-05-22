@@ -21,7 +21,9 @@ class group_akun_controller extends Controller
     }
 
     public function add(){
+        // $akun = json_encode(DB::table("d_akun")->select("id_akun", "nama_akun", "group_neraca", "group_laba_rugi")->orderBy("id_akun", "asc")->get());
         $ids = DB::table("d_group_akun")->orderBy("id", "desc")->first()->id;
+
     	return view("keuangan.group_akun.insert")->withIds($ids);
     }
 
