@@ -399,11 +399,15 @@
 
         if (this_val == 'DETAIL PER NOPOL') {
             $("select[name='pendapatan']").val('KARGO');
-        }else if (this_val == 'DETAIL PER MOBIL') {}{
+        }else{
+            $("select[name='pendapatan']").val();
+        }
+        else if(this_val == 'DETAIL PER MOBIL') {}{
             $("select[name='pendapatan']").val('KARGO');
         }else{
-             $("select[name='pendapatan']").val();
+            $("select[name='pendapatan']").val();
         }
+
     })
     function cari(){
       var min = $('#min').val();

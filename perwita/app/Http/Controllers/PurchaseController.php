@@ -103,7 +103,7 @@ class PurchaseController extends Controller
 		foreach ($data2['po'] as $key => $value) {
 			$a = $value->nama_supplier;
 		}
-		// return $a;
+		return $a;
 		foreach ($data2['po'] as $key => $value) {
 			$b = $value->telp;
 		}

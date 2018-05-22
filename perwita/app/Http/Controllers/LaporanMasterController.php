@@ -1202,7 +1202,7 @@ class LaporanMasterController extends Controller
     	//endd 
 
     		//ajax cari detail mopbil
-    		public function ajaxcarideliveryorder_total_detailnopol(Request $request)
+    		public function ajaxcarideliveryorder_total_detailmobil(Request $request)
     		{
     		if ($request->asal != '') {
 			$asal_fil = (int)$request->asal;
