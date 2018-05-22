@@ -1058,6 +1058,7 @@
         $('.tmbhdatacek').show();
         $('.simpansukses').show();
         $('.tambahdatabiaya').show();
+        $('.nominal2').attr('readonly' , false);
       })
 
 
