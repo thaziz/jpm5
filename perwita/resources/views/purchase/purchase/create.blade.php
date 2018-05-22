@@ -99,7 +99,7 @@
                          
                           <td> 
 
-                          @if(Auth::user()->punyaAkses('Konfirmasi Order','cabang'))
+                          @if(Auth::user()->punyaAkses('Purchase Order','cabang'))
                           <select class="form-control  cabang" name="cabang">
                               @foreach($data['cabang'] as $cabang)
                             <option value="{{$cabang->kode}}" @if($cabang->kode == Session::get('cabang')) selected @endif> {{$cabang->nama}} </option>
