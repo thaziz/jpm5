@@ -959,6 +959,12 @@ Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterContr
   //deial mobil
   Route::get('ajaxcarideliveryorder_total_detailnopol/ajaxcarideliveryorder_total_detailnopol','LaporanMasterController@ajaxcarideliveryorder_total_detailnopol');
   //end off
+  //deial mobil
+  Route::get('ajaxcarideliveryorder_total_detailmobil/ajaxcarideliveryorder_total_detailmobil','LaporanMasterController@ajaxcarideliveryorder_total_detailmobil');
+  //end off
+  //deial mobil
+  Route::get('ajaxcarideliveryorder_total_detailsales/ajaxcarideliveryorder_total_detailsales','LaporanMasterController@ajaxcarideliveryorder_total_detailsales');
+  //end off
 
 //END OF DELIVERY ORDER TOTAL
 
