@@ -359,8 +359,8 @@
       data = []; data_neraca = {!! $data_neraca !!}; data_detail = {!! $data_detail !!};
       data_akun = {!! $data_akun !!}; data_group = {!! $data_group !!};
 
-      console.log(data_neraca);
-      console.log(data_detail);
+      // console.log(data_neraca);
+      // console.log(data_detail);
 
       // console.log(data_group);
       // console.log(data_akun);
@@ -540,12 +540,11 @@
           $("#parrent").attr("disabled", "disabled");
           $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
           $("#keterangan").val(data_neraca[idx].keterangan);
+          $("#group_show").html("");
 
           if(data_neraca[idx].jenis == 4){
             $("#keterangan").attr("readonly", "readonly");
           }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
-            
-            $("#group_show").html("");
 
             if(data_neraca[idx].jenis == 2)
               $("#tambah_detail").removeAttr("disabled");
@@ -630,6 +629,7 @@
           $("#parrent").attr("disabled", "disabled");
           $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
           $("#keterangan").val(data_neraca[idx].keterangan);
+          $("#group_show").html("");
 
           if(data_neraca[idx].jenis == 4){
             $("#keterangan").attr("readonly", "readonly");
@@ -1017,7 +1017,6 @@
                 toastr.success('Data Desain Neraca Berhasil Diubah');
                 btn.removeAttr("disabled");
                 btn.text("Simpan Perubahan Desain");
-                data_neraca = []; data_detail = [];
 
                 form_reset();
               }else if(response.status == "exist"){
