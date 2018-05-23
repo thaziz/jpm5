@@ -135,6 +135,7 @@ Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
 Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
 Route::get('penerimaanbarang/hapusdatapenerimaan', 'PurchaseController@hapusdatapenerimaan');
+Route::get('penerimaanbarang/lihatjurnal/{id}', 'PurchaseController@lihatjurnal');
 
 
 
@@ -428,7 +429,8 @@ Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
 Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
-Route::post('pelunasanhutangbank/hapusbank', 'PurchaseController@hapusbbk');
+Route::get('pelunasanhutangbank/hapuspelunasanhutang/{id}', 'PurchaseController@hapusbbk');
+Route::post('pelunasanhutangbank/lihatjurnal', 'PurchaseController@lihatjurnalpelunasan');
 
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
