@@ -909,7 +909,7 @@
                                                 </select>                                        
                                             </td>
                                             </td>
-                                            <input type="text" class="acchutangdagang_po" name="acchutangdagang"> <input type="text" class="cabangtransaksi" name="cabangtransaksi">
+                                            <input type="hidden" class="acchutangdagang_po" name="acchutangdagang"> <input type="hidden" class="cabangtransaksi" name="cabangtransaksi">
 
                                           </tr>
 
