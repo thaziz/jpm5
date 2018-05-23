@@ -2031,12 +2031,23 @@
                             
                             var koli_dikali =$("input[name='ed_koli']").val() ;
                             var biaya = convertToRupiah(parseInt(data.biaya_penerus));
+                            var cek_tipe = $('#type_kiriman').find(':selected').val();
                             if (koli_dikali == 0 ) {
                                 // alert('a');
-                                var hit = data.harga  * 1;
+                                if (cek_tipe != 'KILOGRAM') {
+                                    var hit = data.harga  * 1;
+                                }else{
+                                    var hit = data.harga;
+                                }
+                                
                             }else{
                                 // alert('b');
-                                var hit = parseInt($("input[name='ed_koli']").val())  * data.harga;
+                                if (cek_tipe != 'KILOGRAM') {
+                                    var hit = parseInt($("input[name='ed_koli']").val())  * data.harga;
+                                }else{
+                                    var hit = data.harga;
+                                }
+                                
                             }
                             // alert(hit);
                             var acc_penjualan = data.acc_penjualan;
