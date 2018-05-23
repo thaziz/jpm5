@@ -94,8 +94,6 @@
 <script>
   $(document).ready(function(){
 
-    
-
     $(".chosen-select").chosen();
     $('[data-toggle="tooltip"]').tooltip();
 
