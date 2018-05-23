@@ -59,7 +59,7 @@
     @if(count($jurnal_dt)!=0)
                       <div class="pull-right">  
                      
-                          <a onclick="lihatjurnal('{{$data['bbk'][0]->bbk_nota}} or null}}','POSTING BANK')" class="btn-xs btn-primary" aria-hidden="true">
+                          <a onclick="lihatjurnal()" class="btn-xs btn-primary" aria-hidden="true">
                     
                             <i class="fa  fa-eye"> </i>
                              &nbsp;  Lihat Jurnal  
@@ -96,7 +96,7 @@
                           No BBK
                             </td>
                             <td>
-                             <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk" value='{{$data['bbk'][0]->bbk_nota}}'>
+                             <input type="text" class="input-sm form-control nobbk" readonly="" name="nobbk" value="{{$data['bbk'][0]->bbk_nota}}">
                               <input type="hidden" class="input-sm form-control" readonly="" name="bbkid" value='{{$data['bbk'][0]->bbk_id}}'>
                               <input type='hidden' name='username' value="{{Auth::user()->m_name}}">
                             </td>
@@ -105,12 +105,12 @@
                           <tr>
                             <td> Kode Bank </td>
                             <td>
-                              <select class="form-control " name="kodebank">
+                              <select class="form-control disabled" >
                                 @foreach($data['bank'] as $bank)
                                   <option value="{{$bank->mb_id}}" @if($data['bbk'][0]->bbk_kodebank == $bank->mb_id) selected="" @endif disabled>  {{$bank->mb_kode}} - {{$bank->mb_nama}} </option>
                                 @endforeach
                               </select>
-                              <input type="hidden" class="kodebank" name='idbank' value="{{$data['bbk'][0]->bbk_kodebank}}">
+                              <input type="hidden" class="kodebank" name='kodebank' value="{{$data['bbk'][0]->bbk_kodebank}}">
                              </td>
                           </tr>
 
@@ -241,21 +241,21 @@
                                                       
                                                         @for($i=0; $i < count($data['bbkd']) ; $i++)
                                                         
-                                                        <tr class=data-{{$i}} id="hslbank">
+                                                        <tr class="transaksi data-{{$i}}" id="hslbank" class="transaksi" data-transaksi="{{$data['bbkd'][$i]->bbkd_nocheck}}">
                                                          <td> {{$i + 1}} </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbk_nota}}" name="nofpg[]" readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_idfpg}}" name="idfpg[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_tglfpg)->format('d-M-Y ') }}" name="tgl[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_nocheck}}" name="notransaksi[]" readonly="">  </td>
                                                          <td> <input type="text" class="form-control" name="jatuhtempo[]" readonly="" value="{{ Carbon\Carbon::parse($data['bbkd'][$i]->bbkd_jatuhtempo)->format('d-M-Y ') }}"> </td>
                                                          <td> <input type="text" class="form-control input-sm" name="idbank[]" value="{{$data['bbkd'][$i]->mb_kode}}" readonly=""> </td>
-                                                         <td style="text-align: right"> <input type="text" class="form-control input-sm nominal2" value=" {{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}" name="nominal[]" readonly=""> </td>
+                                                         <td style="text-align: right"> <input type="text" class="form-control input-sm nominal2" value="{{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}" name="nominal[]" readonly=""> </td>
                                                          @if($data['bbkd'][$i]->bbkd_jenissup == 'supplier')
                                                           <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->nama_supplier}}"  readonly="">  <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->no_supplier}}" name="supplier[]" readonly=""> </td>
                                                          @else
                                                            <td> <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->nama}}"  readonly=""> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->kode}}" name="supplier[]" readonly="">  </td>
                                                          @endif
                                                         
-                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_keterangan}}" name="keterangan[]" readonly=""> </td>
+                                                         <td> <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_jenissup}}" name="jenissup[]" readonly="">  <input type="text" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_keterangan}}" name="keterangan[]" readonly="">  <input type="hidden" class="form-control input-sm" value="{{$data['bbkd'][$i]->bbkd_akunhutang}}" name="akunhutangdagang[]" readonly=""> </td>
                                                          <td> <button class="btn btn-danger btn-sm removes-btn" type="button" data-id={{$i}} data-cek="{{$data['bbkd'][$i]->bbkd_nocheck}}" data-nominal="{{ number_format($data['bbkd'][$i]->bbkd_nominal, 2) }}"><i class="fa fa-trash"></i></button>  </td>
                                                         </tr>
                                                         
@@ -311,8 +311,36 @@
                           <br>
                           <br>
 
-                          <!-- modal jurnal -->
-                          <div id="jurnal" class="modal" >
+
+                        <!-- modal jurnal -->
+                        <div id="jurnal" class="modal" >
+                        <div class="modal-dialog">
+                          <div class="modal-content no-padding">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h5 class="modal-title">Laporan Jurnal</h5>
+                              <h4 class="modal-title">No PO:  <u>{{$data['po'][0]->po_no or null }}</u> </h4>
+                              
+                            </div>
+                            <div class="modal-body" style="padding: 15px 20px 15px 20px">                            
+                                      <table id="table_jurnal" class="table table-bordered table-striped">
+                                          <thead>
+                                              <tr>
+                                                  <th> ID Akun </th>
+                                                  <th>Akun</th>
+                                                  <th>Debit</th>
+                                                  <th>Kredit</th>                                            
+                                              </tr>
+                                          </thead>
+                                          
+                                      </table>                            
+                                </div>                          
+                          </div>
+                        </div>
+                      </div>
+  
+
+                         {{--  <div id="jurnal" class="modal" >
                   <div class="modal-dialog">
                     <div class="modal-content no-padding">
                       <div class="modal-header">
@@ -367,7 +395,7 @@
                           </div>                          
                     </div>
                   </div>
-                </div>
+                </div> --}}
 
 
                           <!-- modal DATA BG -->
@@ -425,8 +453,10 @@
 
                                                         <tr>
                                                           <th> Tanggal FPG </th>
-                                                          <td> <input type='text' class='input-sm form-control tgl bg' name="tglfpg" readonly=""></td>
+                                                          <td> <input type='text' class='input-sm form-control tgl bg' name="tglfpg" readonly=""> <input type="hidden" class="akunhutang">  </td>
                                                         </tr>
+
+
 
                                                        
                                                       </table>
@@ -669,21 +699,29 @@
         endDate: 'today'
 
     }).datepicker("setDate", "0");;
-    
+    arrtransaksi = [];
     $('.nocheck').click(function(){
         kodebank = $('.kodebank').val();
+         
+        $('.transaksi').each(function(){
+          transaksi = $(this).data('transaksi');
+        //  alert(transaksi);
+          arrtransaksi.push(transaksi);
+        })
 
-     
+        
 
         $.ajax({
           type : "get",
-          data : {kodebank},
+          data : {kodebank,arrtransaksi},
           url : baseUrl + '/pelunasanhutangbank/nocheck',
           dataType : "json",
           success : function(response){
-
+              $('.loading').css('display', 'none');
               length = arrtransaksi.length;
-              
+             // alert(length + 'length');
+             // alert(arrtransaksi + 'arrtransaksi');
+
               $('.datacek').empty();
               databank = response.fpgbank;
               $no = 1;
@@ -691,31 +729,13 @@
               var tablecek = $('#tbl-cheuque').DataTable();
               tablecek.clear().draw();
 
-              if(length != 0){
-                 for(j = 0 ; j < length; j++){
                   for(i = 0; i < databank.length; i++){
-                    
-                    if(arrtransaksi[j] ==  databank[i].fpgb_nocheckbg){
-
-                    }
-                    else {
-                     // alert('heo');
-                      row = "<tr class='datacek"+databank[i].fpgb_nocheckbg+"' id='transaksi"+databank[i].fpgb_nocheckbg+"'> <td>"+$no+"</td> <td>"+databank[i].fpgb_nocheckbg+"</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
-                     $no++;
-                     tablecek.rows.add($(row)).draw(); 
-                                       }
-                      
-                  }
-                }
-              }
-              else {
-                 for(i = 0; i < databank.length; i++){
                     row = "<tr class='datacek"+databank[i].fpgb_nocheckbg+"' id='transaksi"+databank[i].fpgb_nocheckbg+"'> <td>"+$no+"</td> <td>"+databank[i].fpgb_nocheckbg+"</td> <td>"+databank[i].fpg_nofpg+"</td> <td>"+databank[i].fpgb_jenisbayarbank+"</td> <td style='text-align:right'>"+addCommas(databank[i].fpgb_nominal)+"</td> <td>  <input type='checkbox' id="+databank[i].fpgb_id+","+databank[i].fpgb_idfpg+" class='checkcek' value='option1' aria-label='Single checkbox One'> <label></label>  </td> </tr> ";
                      $no++;
                      tablecek.rows.add($(row)).draw(); 
-                 }
-              }
-             
+                
+                      
+                  }
           }
         })
     })
@@ -761,6 +781,9 @@
                  nobbk = 'BK-' + month1 + year2 + '/' + comp + '/' +  data;
               //  console.log(nospp);
                 $('.nobbk').val(nobbk);
+            },
+            error : function(){
+              location.reload();
             }
         })
 
@@ -797,16 +820,17 @@
       jatuhtempo = $('.jatuhtempo').val();
       idbank = $('.idbank').val();
       jenissup = $('.jenissup').val();
+      akunhutang = $('.akunhutang').val();
 
-      row = "<tr class='transaksi data-"+$nomr+" bayar"+$nomr+"' id='hslbank datacek"+notransaksi+" '>" +
+      row = "<tr class='transaksi data-"+$nomr+" bayar"+$nomr+"' id='hslbank datacek"+notransaksi+" data-transaksi='"+notransaksi+"''>" +
           "<td>"+$nomr+"</td> <td> <input type='text' class='input-sm form-control' value='"+nofpg+"' name='nofpg[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+tgl+"' name='tgl[]' readonly></td>" +
           "<td> <input type='text' class='input-sm form-control' value='"+notransaksi+"' name='notransaksi[]' readonly>" +
           "</td> <td> <input type='text' class='input-sm form-control' name='jatuhtempo[]' value='"+jatuhtempo+"' readonly> <input type='text' class='input-sm form-control' name='idfpg[]' value='"+idfpg+"' readonly> </td>" +
           "<td> <input type='text' class='input-sm form-control' value= "+accbank+" name='bank[]' readonly> <input type='hidden' class='idbank' name='idbank[]' value='"+accbank+"'>  </td>" +
           "<td style='text-align:right'> <input type='text' class='input-sm form-control nominal' value= '"+addCommas(nominal)+"' name='nominal[]' readonly> </td>" +
-          "<td><input type='text' class='input-sm form-control' value= '"+supplier+"' name='supplier[]' readonly> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> </td>" +
-          "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]' readonly></td>" +
+          "<td><input type='text' class='input-sm form-control' value= '"+namasupplier+"'  readonly> <input type='hidden' class='input-sm form-control' value= '"+jenissup+"' name='jenissup[]'> <input type='hidden' class='input-sm form-control' value= '"+supplier+"' name='supplier[]'> </td>" +
+          "<td> <input type='text' class='input-sm form-control' value='"+keterangan+"' name='keterangan[]' readonly> <input type='text' class='form-control input-sm' value='"+akunhutang+"' name='akunhutangdagang[]' readonly=''></td>" +
           "<td> <button class='btn btn-danger btn-sm removes-btn' type='button' data-id="+$nomr+" data-cek='"+notransaksi+"' data-nominal='"+nominal+"'><i class='fa fa-trash'></i></button> </td> </tr>";
 
 
@@ -870,6 +894,14 @@
           $('.cekbg').val(addCommas(nilaicekbg));
           $('.total').val(addCommas(nilaicekbg));
        //   parent.remove();
+
+           datacek = cek.toString();
+          indexdata = arrtransaksi.indexOf(datacek);
+          //alert(indexdata + 'indexdata');
+          if(indexdata > -1){
+            arrtransaksi.splice(indexdata , 1);
+          }
+
           parentbayar.remove();
       })
 
@@ -905,6 +937,7 @@
                     $('.namabank').val(response.fpg[0].mb_nama)
                     $('.tgl').val(response.fpg[0].fpg_tgl );
                     $('.idbank').val(response.fpg[0].mb_id);
+                    $('.akunhutang').val(response.fpg[0].fpg_acchutang);
 
                 if(response.fpg[0].fpg_jenisbayar == '2' || response.fpg[0].fpg_jenisbayar == '3' ) {                  
                     $('.kodesup').val(response.fpg[0].no_supplier);
@@ -912,7 +945,7 @@
                     $('.jenissup').val('supplier');            
                 }
                 else if(response.fpg[0].fpg_jenisbayar == '4') {
-                    $jenissup = response.fpg[0].um_jenissup;
+                    $jenissup = response.jenissup;
                     if($jenissup == 'supplier'){                      
                       $('.kodesup').val(response.fpg[0].no_supplier);
                       $('.namasupplier').val(response.fpg[0].nama_supplier);   
@@ -922,6 +955,11 @@
                       $('.kodesup').val(response.fpg[0].kode);
                       $('.namasupplier').val(response.fpg[0].nama);
                       $('.jenissup').val('agen');                    
+                    }
+                     else if($jenissup == 'subcon'){                    
+                      $('.kodesup').val(response.fpg[0].kode);
+                      $('.namasupplier').val(response.fpg[0].nama);
+                      $('.jenissup').val('subcon');                    
                     }
 
                 }
@@ -1083,24 +1121,56 @@
         $('.tmbhdatacek').show();
         $('.simpansukses').show();
         $('.tambahdatabiaya').show();
-        $('.nominal2').attr('readonly' , false);
+      
       })
 
 
-  function lihatjurnal($ref,$note){
+  function lihatjurnal(){
+          $('.loading').css('display', 'block');
+          id = $('.nobbk').val();
 
           $.ajax({
-          url:baseUrl +'/data/jurnal-umum',
-          type:'get',
-          data:'ref='+$ref
-               +'&note='+$note,
-          /* data: "{'ref':'" + $ref+ "', 'note':'" + $note+ "'}",
-  */
-          
-         
-          success:function(response){
-                $('#data-jurnal').html(response);
+          type : "post",
+          url : baseUrl + '/pelunasanhutangbank/lihatjurnal',
+          data : {id},
+          dataType : "json",
+          success : function(response){
+                console.log(response);
+                /*$('#data-jurnal').html(response);*/
                 $('#jurnal').modal('show');
+
+                  $('#jurnal').modal('show'); 
+             $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                        console.log(response);
+                      
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'> <td>"+response.jurnal[key].id_akun+" </td> <td> "+response.jurnal[key].nama_akun+"</td>";
+
+                          if(response.jurnal[key].dk == 'D'){
+                            $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                            rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                          }
+                          else {
+                            $totalKredit = parseFloat($totalKredit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
+                          }
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th colspan='2'>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>"
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
               }
         });
    }
