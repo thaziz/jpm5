@@ -15,12 +15,12 @@
     </tr>
   </thead>
   <tbody>
-    @foreach ($nopol as $i => $a)
+    @foreach ($mobil as $i => $a)
         <tr>
-          <td colspan="9" style="background-color: #aeff87;">NOMOR POLISI  -  {{ $nopol[$i][0]->nopol }}</td>
+          <td colspan="9" style="background-color: #aeff87;">MOBIL  -  {{ $mobil[$i][0]->merk }} / {{ $mobil[$i][0]->nopol }} / {{ $mobil[$i][0]->jenis_bak }}</td>
         </tr>
       @foreach ($data as $e)
-        @if ( $nopol[$i][0]->nopol == $e->nopol )
+        @if ( $mobil[$i][0]->id == $e->id_kendaraan )
          <tr>
           <td>{{ $e->nomor }}</td>
           <td>{{ $e->tanggal }}</td>
@@ -29,8 +29,8 @@
           <td>{{ $e->deskripsi }}</td>
           <td>{{ $e->jumlah }}</td>
           <td>{{ $e->kode_satuan }}</td>
-          <td>{{ $e->total }}</td>
-          <td>{{ $e->total_net }}</td>
+          <td align="right">{{ number_format($e->total,0,'','.') }}</td>
+          <td align="right">{{ number_format($e->total_net,0,'','.') }}</td>
         </tr>
         @endif
       @endforeach

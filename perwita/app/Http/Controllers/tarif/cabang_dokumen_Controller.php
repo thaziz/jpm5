@@ -224,7 +224,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                     }
                     // return $cari_old0;
 
-                    return $cari_nota0 = DB::select("SELECT  kode as id from tarif_cabang_dokumen
+                    $cari_nota0 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
                                                 WHERE kode_cabang = '$request->ed_cabang'
                                                 and jenis = 'REGULER'");
 
@@ -235,7 +235,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                     $cari_nota2 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
                                                 WHERE kode_cabang = '$request->ed_cabang'
                                                 and jenis = 'OUTLET'");
-                    return $cari_nota0;
+                    // return $cari_nota0;
                     $id1 = (integer)$cari_nota0[0]->id+1;
                     $id2 = (integer)$cari_nota1[0]->id+1;
                     $id3 = (integer)$cari_nota2[0]->id+1;
