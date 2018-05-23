@@ -1,6 +1,6 @@
 
 
-<table class="table table-bordered datatable table-striped" id="table">
+<table class="table table-bordered datatable table-striped" id="bulan_rep">
   <thead>
     <tr>
       <th> No.</th>
@@ -21,157 +21,98 @@
     </tr>
   </thead>
   <tbody>
-    
-         
-    
-    @foreach ($cust as $itcus => $cus)
+    @foreach ($a as $index => $row)
         <tr>
-           <td>{{ $itcus+1 }}</td>
-           <td>{{ $cus->kode }} - {{ $cus->nama }}</td>
+           <td>{{ $index+1 }}</td>
+           <td class="hit">{{ $row->customer }} - {{ $row->nama_cus }}</td>
+              
+              @if ( $a[$index]->januari != null)
+                <td class=" jan" >{{ number_format($a[$index]->januari,0,'',',')  }}</td>
+              @else
+                <td class=" jan">0</td>
+              @endif
 
-        {{-- jan --}}
-        @if (count($a[1]) > 0)
-            @for ($i = 0; $i <count($a[1]) ; $i++)
-                @if ($a[1][$i]->kode_customer == $cus->kode)
-                  <td class="jan">{{ $a[1][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="jan">1</td>
-        @endif  
-        
+              @if ( $a[$index]->februari != null)
+                <td class="feb">{{  number_format($$a[$index]->februari,0,'',',')  }}</td>
+              @else
+                <td class="feb">0</td>
+              @endif
 
-        {{-- feb --}}
-        @if (count($a[2]) > 0)
-            @for ($i = 0; $i <count($a[2]) ; $i++)
-                @if ($a[2][$i]->kode_customer == $cus->kode)
-                  <td class="feb">{{ $a[2][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="feb">2</td>
-        @endif
+              @if ( $a[$index]->maret != null)
+                <td class="mar">{{  number_format($$a[$index]->maret,0,'',',')  }}</td>
+              @else
+                <td class="mar">0</td>
+              @endif
 
-        {{-- mar --}}
-        @if (count($a[3]) > 0)
-            @for ($i = 0; $i <count($a[3]) ; $i++)
-                @if ($a[3][$i]->kode_customer == $cus->kode)
-                  <td class="mar">{{ $a[3][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="mar">3</td>
-        @endif
+              @if ( $a[$index]->april != null)
+                <td class="april">{{  number_format($$a[$index]->april,0,'',',')  }}</td>
+              @else
+                <td class="april">0</td>
+              @endif
 
-        {{-- apr --}}
-        
-        @if (count($a[4]) > 0)
-            @for ($i = 0; $i <count($a[4]) ; $i++)
-                @if ($a[4][$i]->kode_customer == $cus->kode)
-                    <td class="apr">{{ $a[4][$i]->total_net }}</td>
-                @endif
-            @endfor
-        @else
-                  <td class="apr">4</td>
-        @endif
+              @if ( $a[$index]->mei != null)
+                <td class="mei">{{  number_format($$a[$index]->mei,0,'',',')  }}</td>
+              @else
+                <td class="mei">0</td>
+              @endif
 
-        {{-- mei --}}
-        @if (count($a[5]) > 0)
-            @for ($i = 0; $i <count($a[5]) ; $i++)
-                @if ($a[5][$i]->kode_customer == $cus->kode)
-                  <td class="mei">{{ $a[5][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="mei">5</td>
-        @endif
+              @if ( $a[$index]->juni != null)
+                <td class="jun">{{  number_format($$a[$index]->juni,0,'',',')  }}</td>
+              @else
+                <td class="jun">0</td>
+              @endif
 
-        {{-- jun --}}
-        @if (count($a[6]) > 0)
-            @for ($i = 0; $i <count($a[6]) ; $i++)
-                @if ($a[6][$i]->kode_customer == $cus->kode)
-                  <td class="jun">{{ $a[6][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="jun">6</td>
-        @endif
+              @if ( $a[$index]->juli != null)
+                <td class="jul">{{  number_format($$a[$index]->juli,0,'',',')  }}</td>
+              @else
+                <td class="jul">0</td>
+              @endif
 
-        {{-- aug --}}
-        @if (count($a[7]) > 0)
-            @for ($i = 0; $i <count($a[7]) ; $i++)
-                @if ($a[7][$i]->kode_customer == $cus->kode)
-                  <td class="jul">{{ $a[7][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="jul">7</td>
-        @endif
+              @if ( $a[$index]->agustus != null)
+                <td class="aug">{{ number_format($ $a[$index]->agustus,0,'',',')  }}</td>
+              @else
+                <td class="aug">0</td>
+              @endif
 
-        {{-- sep --}}
-        @if (count($a[8]) > 0)
-            @for ($i = 0; $i <count($a[8]) ; $i++)
-                @if ($a[8][$i]->kode_customer == $cus->kode)
-                  <td class="aug">{{ $a[8][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="aug">8</td>
-        @endif
+              @if ( $a[$index]->september != null)
+                <td class="sep">{{  number_format($$a[$index]->september,0,'',',')  }}</td>
+              @else
+                <td class="sep">0</td>
+              @endif
 
-        {{-- okt --}}
-        @if (count($a[9]) > 0)
-            @for ($i = 0; $i <count($a[9]) ; $i++)
-                @if ($a[9][$i]->kode_customer == $cus->kode)
-                  <td class="sep">{{ $a[9][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="sep">9</td>
-        @endif
+              @if ( $a[$index]->oktober != null)
+                <td class="okt">{{  number_format($$a[$index]->oktober,0,'',',')  }}</td>
+              @else
+                <td class="okt">0</td>
+              @endif
 
-        {{-- nov --}}
-        @if (count($a[10]) > 0)
-            @for ($i = 0; $i <count($a[10]) ; $i++)
-                @if ($a[10][$i]->kode_customer == $cus->kode)
-                  <td class="okt">{{ $a[10][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="okt">10</td>
-        @endif
+              @if ( $a[$index]->desember != null)
+                <td class="nov">{{  number_format($$a[$index]->november,0,'',',')  }}</td>
+              @else
+                <td class="nov">0</td>
+              @endif
 
-        {{-- des --}}
-        @if (count($a[11]) > 0)
-            @for ($i = 0; $i <count($a[11]) ; $i++)
-                @if ($a[11][$i]->kode_customer == $cus->kode)
-                  <td class="nov">{{ $a[11][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="nov">11</td>
-        @endif
-          
-        @if (count($a[12]) > 0)
-            @for ($i = 0; $i <count($a[12]) ; $i++)
-                @if ($a[12][$i]->kode_customer == $cus->kode)
-                  <td class="des">{{ $a[12][$i]->total_net }}</td>  
-                @endif
-            @endfor
-        @else
-                  <td class="des">12</td>
-        @endif
+              @if ( $a[$index]->desember != null)
+                <td class="des">{{  number_format($$a[$index]->desember,0,'',',')  }}</td>
+              @else
+                <td class="des">0</td>
+              @endif
+           
+                
 
-        <td id="total_total"></td>
+
+
+        <td class="total_total"></td>
         </tr>
     @endforeach
-    
-      
-    
+    <tr> 
+        <td colspan="12">total</td>     
+        <td id="hasilakir"></td>
+    </tr>
   </tbody>
 </table>
 
-    <script type="text/javascript" src="{{ asset('assets/plugins/jquery-1.12.3.min.js') }}"></script>
+
 
 <script type="text/javascript">
   

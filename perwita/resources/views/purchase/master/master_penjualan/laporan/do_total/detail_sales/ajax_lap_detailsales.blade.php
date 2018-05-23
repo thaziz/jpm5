@@ -1,6 +1,6 @@
 
 
-<table class="table table-bordered datatable table-striped" id="table" width="900px">
+<table class="table table-bordered datatable table-striped" id="table_detailsales" width="900px">
   <thead>
     <tr>
       <th> No. Do</th>
@@ -15,12 +15,12 @@
     </tr>
   </thead>
   <tbody>
-    @foreach ($nopol as $i => $a)
+    @foreach ($marketing as $i => $a)
         <tr>
-          <td colspan="9" style="background-color: #aeff87;">NOMOR POLISI  -  {{ $nopol[$i][0]->nopol }}</td>
+          <td colspan="9" style="background-color: #aeff87;">{{ $marketing[$i][0]->kode }} - {{ $marketing[$i][0]->nama }}</td>
         </tr>
       @foreach ($data as $e)
-        @if ( $nopol[$i][0]->nopol == $e->nopol )
+        @if ( $marketing[$i][0]->kode == $e->kode_marketing )
          <tr>
           <td>{{ $e->nomor }}</td>
           <td>{{ $e->tanggal }}</td>

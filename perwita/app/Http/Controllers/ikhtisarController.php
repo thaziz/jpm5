@@ -220,7 +220,8 @@ class ikhtisarController extends Controller
 								   		'ik_edit'		=> 'UNALLOWED',
 								   		'ik_status'		=> 'RELEASED',
 								   		'created_at'	=> Carbon::now(),
-								   		'updated_at'	=> Carbon::now()
+								   		'updated_at'	=> Carbon::now(),
+								   		'ik_akunhutang' => $acchutang,
 								]);
 				for ($i=0; $i < count($cari_id); $i++) { 
 

@@ -548,12 +548,10 @@
             dataType:"JSON",
             data : $('.kirim :input').serialize() ,
             success: function(data, textStatus, jqXHR)
+            
             {
-                console.log(data);
-                if (data.crud == '0') {
-                    swal("warning","Data Telah ada Di Database",'warning');
-                }else{
-                    if(data.crud == 'N'){
+              console.log(data);
+                if(data.crud == 'N'){
                     if(data.result == 1){
                         var table = $('#table_data').DataTable();
                         table.ajax.reload( null, false );
@@ -574,9 +572,10 @@
                         swal("Error","Can't update customer data, error : "+data.error,"error");
                     }
                 }else{
-                    swal("Error","invalid order","error");
+                  console.log(data.result);
+                    swal(data.result,'Cek sekali lagi',"warning");
                 }
-                }
+            
                 
             },
             error: function(jqXHR, textStatus, errorThrown)
