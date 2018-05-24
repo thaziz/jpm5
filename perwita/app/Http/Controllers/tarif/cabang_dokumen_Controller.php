@@ -226,16 +226,19 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
 
                     $cari_nota0 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
                                                 WHERE kode_cabang = '$request->ed_cabang'
-                                                and jenis = 'REGULER'");
+                                                and jenis = 'REGULER'
+                                                and id_kota_asal = '$request->cb_kota_asal'");
 
                     $cari_nota1 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
                                                 WHERE kode_cabang = '$request->ed_cabang'
-                                                and jenis = 'EXPRESS'");
+                                                and jenis = 'EXPRESS'
+                                                and id_kota_asal = '$request->cb_kota_asal'");
 
                     $cari_nota2 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
                                                 WHERE kode_cabang = '$request->ed_cabang'
-                                                and jenis = 'OUTLET'");
-                    // return $cari_nota2;
+                                                and jenis = 'OUTLET'
+                                                and id_kota_asal = '$request->cb_kota_asal'");
+                    // return $cari_nota0;
                     $id1 = (integer)$cari_nota0[0]->id+1;
                     $id2 = (integer)$cari_nota1[0]->id+1;
                     $id3 = (integer)$cari_nota2[0]->id+1;
@@ -268,15 +271,18 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
 
                     $cari_nota0 = DB::select("SELECT  max(substring(kode,10)) as id from tarif_cabang_dokumen
                                                         WHERE kode_cabang = '$request->ed_cabang'
-                                                        and jenis = 'REGULER'");
+                                                        and jenis = 'REGULER'
+                                                        and id_kota_asal = '$request->cb_kota_asal'");
                     // return $cari_nota0;
                     $cari_nota1 = DB::select("SELECT  max(substring(kode,10)) as id from tarif_cabang_dokumen
                                                         WHERE kode_cabang = '$request->ed_cabang'
-                                                        and jenis = 'EXPRESS'");
+                                                        and jenis = 'EXPRESS'
+                                                        and id_kota_asal = '$request->cb_kota_asal'");
 
                     $cari_nota2 = DB::select("SELECT  max(substring(kode,10)) as id from tarif_cabang_dokumen
                                                         WHERE kode_cabang = '$request->ed_cabang'
-                                                        and jenis = 'OUTLET'");
+                                                        and jenis = 'OUTLET'
+                                                        and id_kota_asal = '$request->cb_kota_asal'");
                     $id1 = (integer)$cari_nota0[0]->id+1;
                     $id2 = (integer)$cari_nota1[0]->id+1;
                     $id3 = (integer)$cari_nota2[0]->id+1;

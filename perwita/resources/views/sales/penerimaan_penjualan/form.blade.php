@@ -1042,9 +1042,12 @@ $('#btnsave').click(function(){
         data:{nomor},
         dataType:'json',
         success:function(response){
+
             for(var i = 0; i < response.data.length;i++){
+                var i_nomor = response.data[i].i_nomor;
+                i_nomor = i_nomor.replace(/\//g,"");
                 table_data.row.add([
-                        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+response.data[i].i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
+                        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+response.data[i].i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor+'" name="i_nomor[]" value="'+response.data[i].i_nomor+'">',
                         accounting.formatMoney(response.data[i].i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+response.data[i].i_tagihan+'">',
                         accounting.formatMoney(response.data[i].i_sisa_akhir, "", 2, ".",',')+'<input type="hidden" class="i_sisa" name="i_sisa[]" value="'+response.data[i].i_sisa_akhir+'">',
                         '<input type="text" style="text-align:right;" readonly class="form-control i_bayar_text input-sm" value="0">'+
@@ -1482,6 +1485,7 @@ $('#btnsave2').click(function(){
     angka                    = angka.replace(/[^0-9\-]+/g,"");
     angka                    = parseFloat(angka);
     var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
+    ed_nomor_invoice = ed_nomor_invoice.replace(/\//g,"");
     var tes                  = [];
     var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
     var jumlah_biaya         = 0;
@@ -2037,6 +2041,7 @@ $('#save_um').click(function(){
                         angka                    = angka.replace(/[^0-9\-]+/g,"");
                         angka                    = parseFloat(angka);
                         var ed_nomor_invoice     = $('.ed_nomor_invoice').val();
+                        ed_nomor_invoice = ed_nomor_invoice.replace(/\//g,"");
                         var par                  = $('.i_flag_'+ed_nomor_invoice).parents('tr');
                         var jumlah_biaya         = 0;
                         if (jenis == 'K') {
