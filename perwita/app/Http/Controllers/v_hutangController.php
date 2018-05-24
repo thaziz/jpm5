@@ -102,6 +102,7 @@ class v_hutangController extends Controller
        // return json_encode('tdk kosong');
        }
 
+       $total = str_replace("," , "" , $request->hasil);
 
         $store1 = new v_hutang;
         $store1->v_id  = $anj;
@@ -110,8 +111,8 @@ class v_hutangController extends Controller
         $store1->v_tempo =$request->tempo;
         $store1->v_supid =$request->suppilername;
         $store1->v_keterangan =$request->ket;
-        $store1->v_hasil =$request->total;
-        $store1->v_pelunasan =$request->total;
+        $store1->v_hasil =$total;
+        $store1->v_pelunasan =$total;
         $store1->v_akunhutang = $dataakunitem;
         $store1->vc_comp = $request->cabang;
      //   return json_encode($request->suppilername);
@@ -151,7 +152,11 @@ class v_hutangController extends Controller
 
         }
 
-    }
+         /* $datajurnal[$i]['id_akun'] = $acchutang;
+          $datajurnal[$i]['subtotal'] = '-' . $nominal;
+          $datajurnal[$i]['dk'] = 'D';*/
+
+      }
 
         //savejurnal
           $nosupplier = $request->suppilername;
@@ -162,7 +167,7 @@ class v_hutangController extends Controller
           $subacchutang = substr($acchutangsup, 0 , 4);
           $datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$comp'");
           $acchutangsupplier = $datakun[0]->id_akun;
-
+          $akundka = $dataakun[0]->akun_dka;
 
         $lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
         if(isset($lastidjurnal)) {
@@ -184,12 +189,20 @@ class v_hutangController extends Controller
             $jurnal->jr_note = $request->ket;
             $jurnal->save();
             
-            
-            $dataakun = array (
-            'id_akun' => $acchutangsupplier,
-            'subtotal' => $request->total,
-            'dk' => 'K',
-          );
+            if($akundka == 'D'){
+              $dataakun = array (
+                'id_akun' => $acchutangsupplier,
+                'subtotal' => '-' .$total,
+                'dk' => 'K',
+              );
+            }
+            else {
+             $dataakun = array (
+                'id_akun' => $acchutangsupplier,
+                'subtotal' => $total,
+                'dk' => 'K',
+              ); 
+            }
 
            array_push($datajurnal, $dataakun );
           $key  = 1;

@@ -3,7 +3,50 @@
 @section('title', 'dashboard')
 
 @section('content')
+<style type="text/css">
+  .table-biaya{
+    overflow-x: auto;
+  }
+  tbody tr{
+    cursor: pointer;
+  }
+  th{
+    text-align: center !important;
+  }
+  .tengah{
+    text-align: center;
+  }
+  .kecil{
+    width: 50px;
+    
+  }
+  .datatable tbody tr td{
+    padding-top: 16px;
+  }
+  .dataTables_paginate{
+    float: right;
+  }
+  #modal-biaya .modal-dialog .modal-body{
+    min-height: 340px;
+  }
+  .disabled {
+    pointer-events: none;
+    opacity: 1;
+}
+  .right{
+      text-align: right;
+  }
+  .table-hover tbody tr{
+    cursor: pointer;
+  }
 
+  .center{
+      text-align: center;
+  }
+  .modal {
+  overflow-y:auto;
+}
+</style>
  <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
                     <h2> Form Permintaan Cek / BG (FPG) </h2>
@@ -1305,7 +1348,12 @@
                           $('.sisafaktur').val(addCommas(data.faktur[0][0].fp_sisapelunasan));
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].fp_netto));
-                          $('.uangmukakanan').val(addCommas(data.faktur[0][0].fp_uangmuka));
+                          if(data.faktur[0][0].fp_uangmuka == null){
+                              $('.uangmukakanan').val('0.00');
+                          }
+                          else {
+                              $('.uangmukakanan').val(addCommas(data.faktur[0][0].fp_uangmuka)); 
+                          }
                           $('.hutangdagang').val(data.faktur[0][0].fp_acchutang); 
                           $('.cabangfaktur').val(data.faktur[0][0].fp_comp);
 
@@ -2127,13 +2175,17 @@
                         } 
 
                         cabang = $('.cabang').val();
+                        $('.jenisbayar2').val(cabang);
+                        $('.jenisbayar2').trigger("liszt:updated");
+                        $('.jenisbayar2').trigger("chosen:updated");
+
+
                        // alert(cabang);
-                        if(cabang != 000){
+/*                        if(cabang != 000){
                           $('.jenisbayar2').val(cabang);
                           $('.jenisbayar2').prop('disabled', true).trigger("liszt:updated");
                           $('.jenisbayar2').prop('disabled', true).trigger("chosen:updated");
-
-                        }
+                        }*/
 
                     }
                     else if(idjenis == '4'){

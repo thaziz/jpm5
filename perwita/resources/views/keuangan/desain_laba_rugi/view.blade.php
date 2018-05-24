@@ -100,6 +100,7 @@
       </table>
     </div>
   </div>
+</div>
 
 @if($cek->is_active == 1)
   <div class="row">

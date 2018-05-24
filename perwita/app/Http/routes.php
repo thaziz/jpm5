@@ -743,6 +743,7 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 //_____________$
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
 
+
 //LAPORAN MASTER BERSAMA INDEX
 Route::get('laporanbersama/laporanbersama','LaporanMasterController@lap_bersama');
 //END OF

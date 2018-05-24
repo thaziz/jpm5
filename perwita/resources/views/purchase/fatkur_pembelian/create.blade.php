@@ -806,7 +806,7 @@
                                                   <th> Total Jumlah Uang Muka </th>                      
                                               </tr>
                                               <tr>
-                                                    <td> <input type="text" class="form-control totaljumlah" readonly="" name="totaljumlah"> <input type="text" class="inputbayaruangmuka" name="inputbayaruangmuka"> </td>
+                                                    <td> <input type="text" class="form-control totaljumlah" readonly="" name="totaljumlah"> <input type="hidden" class="inputbayaruangmuka" name="inputbayaruangmuka"> </td>
                                               </tr>
                                           </table>
 
@@ -1395,9 +1395,10 @@
   $('#buttongetum').click(function(){
 
     id = $('.check').val();
+    cabangtransaksi = $('.cabangtransaksi').val();
     $.ajax({
       url : baseUrl + '/fakturpembelian/hasilum',
-      data : {id},
+      data : {id,cabangtransaksi},
       dataType : "json",
       type : "get",
       success : function(response){
@@ -1436,10 +1437,17 @@
       val = $(this).data('nota');
       arrnoum.push(val);
     })
-
+    var a = $('ul#tabmenu').find('li.active').data('val');
+    /*if(a == 'I'){
+      cabang = $('.cabang').val()
+    }
+    else {
+      cabang = $('.cabangtransaksi').val();
+    }*/
+    
     $.ajax({
       url : baseUrl + '/fakturpembelian/getum',
-      data :{idsup,arrnoum},
+      data :{idsup,arrnoum,cabang},
       type : "get",
       dataType : "json",
       success : function(response){
@@ -4455,7 +4463,7 @@
                     var jumlahtotalharga = 0;
                       for(var k = 0 ; k < response.po_barang.length; k++){
                         for(var z = 0; z < response.po_barang[k].length; z++){
-                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].pbdt_item+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].sumqty+"> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pb_gudang+" name='pb_gudang[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].sumharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+flag[0]+" name='flag'>  <th> <input type='hidden' value="+response.po_barang[k][z].pb_po+" name='idpo[]'> <input type='text' value="+jenis[0]+" name='jenis'></th> </tr> ";
+                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].pbdt_item+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].sumqty+"> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pb_gudang+" name='pb_gudang[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].sumharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+flag[0]+" name='flag'>  <th> <input type='hidden' value="+response.po_barang[k][z].pb_po+" name='idpo[]'> <input type='hidden' value="+jenis[0]+" name='jenis'> <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'></th> </tr> ";
 
                               $('#input_data').append(rowinput);
                                 jumlahtotalharga = jumlahtotalharga + parseInt(response.po_barang[k][z].sumharga);
