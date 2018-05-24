@@ -603,7 +603,7 @@ class LaporanMasterController extends Controller
 
 	public function deliveryorder_total(){
 		
-		return $kota = DB::select("SELECT id, nama as tujuan from kota");
+		$kota = DB::select("SELECT id, nama as tujuan from kota");
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
 		$cabang = DB::table('cabang')->get();
 		$customer = DB::table('customer')->get();
