@@ -2133,12 +2133,11 @@
 
                         cabang = $('.cabang').val();
                        // alert(cabang);
-                        if(cabang != 000){
+/*                        if(cabang != 000){
                           $('.jenisbayar2').val(cabang);
                           $('.jenisbayar2').prop('disabled', true).trigger("liszt:updated");
                           $('.jenisbayar2').prop('disabled', true).trigger("chosen:updated");
-
-                        }
+                        }*/
 
                     }
                     else if(idjenis == '4'){
