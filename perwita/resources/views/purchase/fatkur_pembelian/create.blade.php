@@ -1437,12 +1437,17 @@
       val = $(this).data('nota');
       arrnoum.push(val);
     })
-
-    cabang = $('.cabangtransaksi').val();
-
+    var a = $('ul#tabmenu').find('li.active').data('val');
+    /*if(a == 'I'){
+      cabang = $('.cabang').val()
+    }
+    else {
+      cabang = $('.cabangtransaksi').val();
+    }*/
+    
     $.ajax({
       url : baseUrl + '/fakturpembelian/getum',
-      data :{idsup,arrnoum,$cabang},
+      data :{idsup,arrnoum,cabang},
       type : "get",
       dataType : "json",
       success : function(response){
