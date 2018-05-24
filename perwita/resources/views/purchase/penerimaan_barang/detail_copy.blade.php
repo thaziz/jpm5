@@ -111,6 +111,11 @@
                       </tr>
 
                       <tr>
+                        <th class="suratjalan" style="width:200px"> Keterangan </th>
+                        <td style="width:400px"> <input type="text" class="form-control keterangan" name="keterangan" required="">  </td>
+                      </tr>
+
+                      <tr>
                         <th class="tgl suratjalan"> Tanggal di Terima </th>
                         <td>
                           <div class="input-group date tgl">
@@ -268,6 +273,11 @@
                         <td style="width:400px"> <input type="text" class="form-control diterimadari" name="diterimadari">  </td>
                       </tr>
 
+                       <tr>
+                        <th class="suratjalan" style="width:200px"> Keterangan </th>
+                        <td style="width:400px"> <input type="text" class="form-control keterangan" name="keterangan" required="">  </td>
+                      </tr>
+
                          <tr>
                           <th class="tgl suratjalan"> Tanggal di Terima </th>
                           <td>
@@ -338,7 +348,8 @@
                             <input type="hidden" value="{{$data['podtbarang'][$i][$j]->podt_jumlahharga}}" name="jumlahharga[]" class="jumlahharga{{$j}}">
                             <input type="hidden" class="item kodeitem{{$j}}" value="{{$data['podtbarang'][$i][$j]->podt_kodeitem}}" name="kodeitem[]">
 
-                            <input type="hidden" class="akunitem" value="{{$data['podtbarang'][$i][$j]->podt_akunitem}}" name="akunitem[]">
+                            <input type="hidden" class="akunitem" value="{{$data['podtbarang'][$i][$j]->podt_akunitem}}" name="accpersediaan[]">
+
                              <input type="hidden" class="item kodeitem{{$j}}" value="{{$data['podtbarang'][$i][$j]->acc_hpp}}" name="acchpp[]">
                             
                             <input type="hidden" class="item podtid" value="{{$data['podtbarang'][$i][$j]->podt_id}}" name="podtid[]">
@@ -442,6 +453,11 @@
                       <tr>
                         <th class="suratjalan" style="width:200px"> Diterima dari </th>
                         <td style="width:400px"> <input type="text" class="form-control diterimadari" name="diterimadari">  </td>
+                      </tr>
+
+                       <tr>
+                        <th class="suratjalan" style="width:200px"> Keterangan </th>
+                        <td style="width:400px"> <input type="text" class="form-control keterangan" name="keterangan" required="">  </td>
                       </tr>
 
                       <tr>

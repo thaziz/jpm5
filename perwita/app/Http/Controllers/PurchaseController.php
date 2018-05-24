@@ -1946,6 +1946,7 @@ public function purchase_order() {
 			$penerimaanbarang->create_by = $request->username;
 			$penerimaanbarang->update_by = $request->username;
 			$penerimaanbarang->pb_acchutangdagang = $request->acchutangsupplierpo;
+			$penerimaanbarang->pb_keterangan = $request->keterangan;
 			
 			$penerimaanbarang->save();
 
@@ -2418,6 +2419,7 @@ public function purchase_order() {
 							$penerimaanbarangdt->create_by = $request->username;
 							$penerimaanbarangdt->update_by = $request->username;
 							$penerimaanbarangdt->save();
+							
 							$datajurnal[$i]['id_akun'] = $request->accpersediaan[$i];
 							$datajurnal[$i]['subtotal'] = $totalharga;
 							$datajurnal[$i]['dk'] = 'D';
@@ -4890,7 +4892,7 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 
 				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$datacomp2'");
 				if(count($datakun2) == 0){
-					$dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk Cabang Belum Tersedia'];
+					$dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk '.$datacomp2.' Belum Tersedia'];
 				    DB::rollback();
 			            return json_encode($dataInfo);
 				}
@@ -4908,6 +4910,55 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 			}
 
 			//akun pph
+			$datajurnalpo = [];
+			if($request->jenis == 'S'){
+				if($request->hasilppn_po != ''){
+				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '2302%' and kode_cabang = '$datacomp2'");
+				if(count($datakun2) == 0){
+					 $dataInfo=['status'=>'gagal','info'=>'Akun PPN Untuk Cabang Belum Tersedia'];
+				    DB::rollback();
+			            return json_encode($dataInfo);
+				}
+				else {
+					$akunppn = $datakun2[0]->id_akun;
+
+					$dataakun = array (
+						'id_akun' => $akunppn,
+						'subtotal' => $hasilppn,
+						'dk' => 'D',
+					);
+					array_push($datajurnalpo, $dataakun );
+				}
+
+			}
+
+			if($request->hasilpph_po != ''){
+				$datapph = DB::select("select * from pajak where id = '$jenispph'");
+				$kodepajak2 = $datapph[0]->acc1;
+				$kodepajak = substr($kodepajak2, 0,4);
+
+				$datakun2 = DB::select("select * from d_akun where id_akun LIKE '$kodepajak%' and kode_cabang = '$datacomp2'");
+				if(count($datakun2) == 0){
+					$dataInfo=['status'=>'gagal','info'=>'Akun PPH Untuk '.$datacomp2.' Belum Tersedia'];
+				    DB::rollback();
+			            return json_encode($dataInfo);
+				}
+				else {
+					$akunpph = $datakun2[0]->id_akun;
+
+					$dataakun = array (
+						'id_akun' => $akunpph,
+						'subtotal' => $hasilpph,
+						'dk' => 'K',
+					);
+					array_push($datajurnalpo, $dataakun );
+				}
+
+			}
+
+			
+			}
+
 
 
 			//save jurnal

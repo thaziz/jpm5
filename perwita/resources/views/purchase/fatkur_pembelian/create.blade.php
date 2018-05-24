@@ -909,7 +909,7 @@
                                                 </select>                                        
                                             </td>
                                             </td>
-                                            <input type="text" class="acchutangdagang_po" name="acchutangdagang"> <input type="text" class="cabangtransaksi" name="cabangtransaksi">
+                                            <input type="hidden" class="acchutangdagang_po" name="acchutangdagang"> <input type="hidden" class="cabangtransaksi" name="cabangtransaksi">
 
                                           </tr>
 
@@ -2876,14 +2876,13 @@
             type : "POST",
             data : form_data3+form_dataum,
             url : post_url3,
-          
+            dataType : "json",
             success : function(response){
                 if(response.status == "gagal"){                   
                     swal({
                         title: "error",
                         text: response.info,
-                        type: "error",
-                        
+                        type: "error",                        
                     });
                    
                 }
@@ -4456,7 +4455,7 @@
                     var jumlahtotalharga = 0;
                       for(var k = 0 ; k < response.po_barang.length; k++){
                         for(var z = 0; z < response.po_barang[k].length; z++){
-                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].pbdt_item+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].sumqty+"> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pb_gudang+" name='pb_gudang[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].sumharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+flag[0]+" name='flag'>  <th> <input type='hidden' value="+response.po_barang[k][z].pb_po+" name='idpo[]'></th> </tr> ";
+                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].pbdt_item+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].sumqty+"> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pb_gudang+" name='pb_gudang[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].sumharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+flag[0]+" name='flag'>  <th> <input type='hidden' value="+response.po_barang[k][z].pb_po+" name='idpo[]'> <input type='text' value="+jenis[0]+" name='jenis'></th> </tr> ";
 
                               $('#input_data').append(rowinput);
                                 jumlahtotalharga = jumlahtotalharga + parseInt(response.po_barang[k][z].sumharga);
@@ -4474,7 +4473,7 @@
                   $('th.updatestockpo').remove();
                       for(var k = 0 ; k < response.po_barang.length; k++){
                         for(var z = 0; z < response.po_barang[k].length; z++){
-                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].podt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].podt_qtykirim+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].podt_totalharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+response.po_barang[k][z].po_id+" name='idpo[]'>    <th> <input type='hidden' value="+flag[0]+" name='flag'>  <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'>  <input type='hidden' value="+jenis[0]+" name='jenis'>  <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'>  </th> </tr> ";
+                             var rowinput = "<tr> <th> <input type='hidden' name='item_po[]' value="+response.po_barang[k][z].podt_kodeitem+"> </th> <th> <input type='hidden' name='qty[]' value="+response.po_barang[k][z].podt_qtykirim+"> </th>  <th> <input type='hidden'  value="+response.po_barang[k][z].podt_totalharga+" name='totalharga[]'> </th> <th> <input type='hidden' value="+response.po_barang[k][z].pbdt_updatestock+" name='updatestock[]'> </th>   <th> <input type='hidden' value="+response.po_barang[k][z].po_id+" name='idpo[]'>    <th> <input type='hidden' value="+flag[0]+" name='flag'>  <input type='hidden' value="+response.po_barang[k][z].podt_jumlahharga+" name='hpp[]'>  <input type='text' value="+jenis[0]+" name='jenis'>  <input type='hidden' value="+response.po_barang[k][z].podt_akunitem+" name='akunitem[]'>  </th> </tr> ";
 
                               $('#input_data').append(rowinput);
                          

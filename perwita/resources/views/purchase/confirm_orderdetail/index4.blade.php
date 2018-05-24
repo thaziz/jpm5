@@ -661,6 +661,9 @@
                             })
                       }
 
+                },
+                error : function(){
+                  location.reload();
                 }
 
 
