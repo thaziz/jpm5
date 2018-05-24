@@ -1048,6 +1048,149 @@ class LaporanMasterController extends Controller
     		{
     		if ($request->asal != '') {
 			$asal_fil = (int)$request->asal;
+			$asal = ' AND id_kota_asal = '.$asal_fil.'';
+			}else{
+				$asal = '';
+			}
+			//tujuan
+			if ($request->tujuan != '') {
+				$tujuan = " AND id_kota_tujuan = '".(int)$request->tujuan."' ";
+			}else{
+				$tujuan = '';
+			}
+			//cabang
+			if ($request->cabang != '') {
+				$cabang = " where kode_cabang = '".$request->cabang."' ";
+			}else{
+				$cabang ='';
+			}
+			//tipe
+			if ($request->tipe != '') {
+				$tipe = " AND type_kiriman = '".$request->tipe."' ";
+			}else{
+				$tipe ='';
+			}
+			
+			if ($request->status != '' || $request->status != null) {
+				$status = " AND status = '".$request->status."' ";
+			}else{
+				$status = '';
+			}
+			
+			if ($request->pendapatan != '' || $request->pendapatan != null) {
+				$pendapatan = " AND pendapatan = '".$request->pendapatan."' ";
+			}else{
+				$pendapatan = '';
+			}
+
+			if ($request->jenis != '' || $request->jenis != null) {
+				$jenis = " AND jenis_pengiriman = '".$request->jenis."' ";
+			}else{
+				$jenis = '';
+			}
+			
+			if ($request->customer != '' || $request->customer != null) {
+			$customer = " AND kode_customer = '".$request->customer."' ";
+			}else{
+				$customer = '';
+			}
+				
+			$min = $request->min;
+			$max = $request->max;
+			
+			
+		
+				$a = DB::select("SELECT cu.kode as customer,cu.nama as nama_cus,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 1
+											and kode_customer = cu.kode
+											group by kode) as januari,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 2
+											and kode_customer = cu.kode
+											group by kode) as februari,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 3
+											and kode_customer = cu.kode
+											group by kode) as maret,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 4
+											and kode_customer = cu.kode
+											group by kode) as april,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 5
+											and kode_customer = cu.kode
+											group by kode) as mei,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 6
+											and kode_customer = cu.kode
+											group by kode) as juni,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 7
+											and kode_customer = cu.kode
+											group by kode) as juli,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 8
+											and kode_customer = cu.kode
+											group by kode) as agustus,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 9
+											and kode_customer = cu.kode
+											group by kode) as september,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 10
+											and kode_customer = cu.kode
+											group by kode) as oktober,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 11
+											and kode_customer = cu.kode
+											group by kode) as november,
+											(select sum(total_net) from delivery_order 
+											join customer on kode_customer = kode 
+											where EXTRACT(MONTH FROM tanggal) = 12
+											and kode_customer = cu.kode
+											group by kode) as desember
+										from delivery_order
+										join customer cu on kode_customer = kode 
+										group by cu.kode
+										order by cu.kode asc");
+
+
+					
+
+			// return $a;
+			// return count($cek);
+			if ($request->customer != null) {
+				$cust = DB::table('customer')->select('kode','nama')->where('kode','=',$request->customer)->groupBy('kode')->orderBy('kode','ASC')->get();
+				
+			}else{
+				$cust = DB::table('customer')->select('kode','nama')->groupBy('kode')->orderBy('kode','ASC')->get();
+			}
+			
+			// return $cust;
+			
+			
+			
+			
+    			return view('purchase/master/master_penjualan/laporan/do_total/rekap_bulanan/ajax_lap_rekapbulanan',compact('a','cust','gg'));
+    		}
+
+    	//ajax cari detail nopol
+    		public function ajaxcarideliveryorder_total_detailnopol(Request $request)
+    		{
+    		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
 			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
 			}else{
 				$asal = '';
@@ -1098,34 +1241,188 @@ class LaporanMasterController extends Controller
 			$min = $request->min;
 			$max = $request->max;
 			
-			for ($i=1; $i < 12; $i++) { 
+			
 
-				$a[$i] = DB::select("SELECT sum(d.total_net) as total_net,d.kode_customer
+			$data  = DB::select("SELECT d.jumlah,d.kode_satuan,d.nopol,d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total,d.deskripsi	 
 				FROM delivery_order as d 
-				WHERE EXTRACT(MONTH FROM d.tanggal) = '".$i."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." 
-				group by d.kode_customer ");
+				LEFT JOIN kota k ON k.id=d.id_kota_asal
+	            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	            join customer c on d.kode_customer = c.kode 
+	            join cabang cc on d.kode_cabang = cc.kode 
+	            -- left join delivery_orderd dd on dd.dd_nomor = d.nomor 
+				WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
+			// return $data[0]->nopol;
+			for ($i=0; $i <count($data) ; $i++) { 
+				 
+				$nopol[$i] = DB::select("SELECT nopol from delivery_order where nopol = '".$data[$i]->nopol."' ");
+
 			}
-			// return $a;
+			// return $nopol;
+    		return view('purchase/master/master_penjualan/laporan/do_total/detail_nopol/ajax_lap_nopol',compact('data','nopol'));
+    		}
+    	//endd 
 
-			// if ($a[5] == null) {
-			// 	$a[5] = 0;
-			// 	return 'a';
-			// }else{
-			// 	// return 'b';
+    		//ajax cari detail mopbil
+    		public function ajaxcarideliveryorder_total_detailmobil(Request $request)
+    		{
+    		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+			}else{
+				$asal = '';
+			}
+			//tujuan
+			if ($request->tujuan != '') {
+				$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+			}else{
+				$tujuan = '';
+			}
+			//cabang
+			if ($request->cabang != '') {
+				$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+			}else{
+				$cabang ='';
+			}
+			//tipe
+			if ($request->tipe != '') {
+				$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+			}else{
+				$tipe ='';
+			}
+			
+			if ($request->status != '' || $request->status != null) {
+				$status = " AND d.status = '".$request->status."' ";
+			}else{
+				$status = '';
+			}
+			
+			if ($request->pendapatan != '' || $request->pendapatan != null) {
+				$pendapatan = " AND d.pendapatan = '".$request->pendapatan."' ";
+			}else{
+				$pendapatan = '';
+			}
 
-			// 	for ($i=1; $i <count($a[5]) ; $i++) { 
-			// 		for ($h=0; $h <count($a[5][$i]) ; $h++) { 
-			// 			$aaa[5][$h] = $a[5][$h]->total_net;
-						
-			// 		}
-			// 		return $aaa;
-			// 		$aa = array_sum($aaa);
-			// 	}
-			// }
+			if ($request->jenis != '' || $request->jenis != null) {
+				$jenis = " AND d.jenis_pengiriman = '".$request->jenis."' ";
+			}else{
+				$jenis = '';
+			}
 			
-			// return $aa;
+			if ($request->customer != '' || $request->customer != null) {
+			$customer = " AND d.kode_customer = '".$request->customer."' ";
+			}else{
+				$customer = '';
+			}
+				
+			$min = $request->min;
+			$max = $request->max;
 			
-    			return view('purchase/master/master_penjualan/laporan/do_total/rekap_bulanan/ajax_lap_rekapbulanan',compact('a'));
+			
+
+			$data  = DB::select("SELECT d.jumlah,d.kode_satuan,kn.merk,kn.nopol as knnop,kn.jenis_bak,d.id_kendaraan,d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total,d.deskripsi	 
+				FROM delivery_order as d 
+				LEFT JOIN kota k ON k.id=d.id_kota_asal
+	            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	            join customer c on d.kode_customer = c.kode 
+	            join cabang cc on d.kode_cabang = cc.kode 
+	            left join kendaraan kn on d.id_kendaraan = kn.id 
+	            -- left join delivery_orderd dd on dd.dd_nomor = d.nomor 
+				WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
+			// return $data[0]->nopol;
+			for ($i=0; $i <count($data) ; $i++) { 
+				 
+				$mobil[$i] = DB::select("SELECT id,merk,nopol,jenis_bak from kendaraan where id = '".$data[$i]->id_kendaraan."' ");
+
+			}
+			// return $mobil;
+    		return view('purchase/master/master_penjualan/laporan/do_total/detail_mobil/ajax_lap_mobil',compact('data','mobil'));
+    		}
+    	//endd 
+
+    		//laporan master detail delivery order total
+    	
+    		public function ajaxcarideliveryorder_total_detailsales(Request $request)
+    		{
+    		// dd($request->all());
+    		if ($request->asal != '') {
+			$asal_fil = (int)$request->asal;
+			$asal = ' AND d.id_kota_asal = '.$asal_fil.'';
+			}else{
+				$asal = '';
+			}
+			//tujuan
+			if ($request->tujuan != '') {
+				$tujuan = " AND d.id_kota_tujuan = '".(int)$request->tujuan."' ";
+			}else{
+				$tujuan = '';
+			}
+			//cabang
+			if ($request->cabang != '') {
+				$cabang = " AND d.kode_cabang = '".$request->cabang."' ";
+			}else{
+				$cabang ='';
+			}
+			//tipe
+			if ($request->tipe != '') {
+				$tipe = " AND d.type_kiriman = '".$request->tipe."' ";
+			}else{
+				$tipe ='';
+			}
+			
+			if ($request->status != '' || $request->status != null) {
+				$status = " AND d.status = '".$request->status."' ";
+			}else{
+				$status = '';
+			}
+			
+			if ($request->pendapatan != '' || $request->pendapatan != null) {
+				$pendapatan = " AND d.pendapatan = '".$request->pendapatan."' ";
+			}else{
+				$pendapatan = '';
+			}
+
+			if ($request->jenis != '' || $request->jenis != null) {
+				$jenis = " AND d.jenis_pengiriman = '".$request->jenis."' ";
+			}else{
+				$jenis = '';
+			}
+			
+			if ($request->customer != '' || $request->customer != null) {
+			$customer = " AND d.kode_customer = '".$request->customer."' ";
+			}else{
+				$customer = '';
+			}
+				
+			$min = $request->min;
+			$max = $request->max;
+			
+
+			$data  = DB::select("SELECT d.jumlah,d.kode_satuan,d.kode_marketing,d.kode_customer,d.pendapatan,d.total_dpp,d.total_vendo,cc.nama as cab,d.total_net,d.type_kiriman,d.jenis_pengiriman,c.nama as cus,d.nomor, d.tanggal, d.nama_pengirim, d.nama_penerima, k.nama asal, kk.nama tujuan, d.status, d.total_net,d.total,d.deskripsi	 
+				FROM delivery_order as d 
+				LEFT JOIN kota k ON k.id=d.id_kota_asal
+	            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	            join customer c on d.kode_customer = c.kode 
+	            join cabang cc on d.kode_cabang = cc.kode 
+
+				WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." ");
+			$cek =	DB::select("SELECT d.kode_marketing 
+				FROM delivery_order as d 
+				LEFT JOIN kota k ON k.id=d.id_kota_asal
+	            LEFT JOIN kota kk ON kk.id=d.id_kota_tujuan
+	            join customer c on d.kode_customer = c.kode 
+	            join cabang cc on d.kode_cabang = cc.kode 
+
+				WHERE tanggal >= '".$min."' AND tanggal <= '".$max."' ".$cabang." ".$asal." ".$tujuan." ".$pendapatan." ".$jenis."  ".$tipe." ".$status." ".$customer." group by d.kode_marketing");
+			for ($i=0; $i <count($cek) ; $i++) { 
+				$marketing[$i] = DB::table('marketing')->where('kode','=',$cek[$i]->kode_marketing)->get(); 
+			}
+			for ($i=0; $i <count($data) ; $i++) { 
+				$total[$i] = $data[$i]->total_net;
+			}
+			$total = array_sum($total);
+
+			// return $customer_foreach;
+    				return view('purchase/master/master_penjualan/laporan/do_total/detail_sales/ajax_lap_detailsales',compact('total','data','marketing','min','max','asal','tujuan','cabang','tipe','status','pendapatan','jenis'));
     		}
 
     	//end off

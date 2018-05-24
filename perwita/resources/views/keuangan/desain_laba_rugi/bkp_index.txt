@@ -3,39 +3,26 @@
 @section('title', 'dashboard')
 
 @section("extra_styles")
-
-  <link href="{{ asset('assets/vendors/jsTree/style.min.css') }}" rel="stylesheet">
+  
+  <link href="{{ asset('assets/vendors/bootstrap-treegrid/css/jquery.treegrid.css') }}" rel="stylesheet">
 
   <style>
     body{
       overflow-y: scroll;
     }
 
-    #table{
-      width: 100%;
+    #form-table{
+      font-size: 8pt;
     }
 
-    #table td{
-      padding: 8px 20px;
+    #form-table td{
+      padding: 5px 0px;
     }
 
-    #table_form, #table-filter{
-      border:0px solid black;
-      width: 100%;
-    }
-
-    #table_form input,{
-      padding-left: 5px;
-    }
-
-    #table_form td{
-      padding: 10px 0px 0px 0px;
-      vertical-align: top;
-    }
-
-    #table-filter td,
-    #table-filter th{
-      padding:10px 0px;
+    #form-table .form-control{
+      height: 30px;
+      width: 90%;
+      font-size: 8pt;
     }
 
     .error-badge{
@@ -47,9 +34,6 @@
       display: none;
     }
 
-    #table_form .right_side{
-      padding-left: 10px;
-    }
     .modal-open{
       overflow: inherit;
     }.chosen-select {
@@ -68,6 +52,9 @@
                 <a>Home</a>
             </li>
             <li>
+                <a>Operasional</a>
+            </li>
+            <li>
                 <a>Keuangan</a>
             </li>
             <li class="active">
@@ -77,26 +64,37 @@
         </ol>
     </div>
 
-    {{-- <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
-      <table border="0" width="100%" id="table-filter">
-        <tr>
-          <th width="7%" class="text-center">Pencarian Berdasarkan : </th>
-          <td width="10%">
-            &nbsp;&nbsp;<select style="width:90%; border: 0px; border-bottom: 1px solid #aaa; cursor: pointer;" id="berdasarkan">
-              <option value="semua">Semua</option>
-              <option value="id_akun">Kode Akun</option>
-              <option value="nama_akun">Nama Akun</option>
-              <option value="dka">Posisi Debet/Kredit</option>
+    <div class="col-lg-12" style="border: 1px solid #eee; margin-top: 15px;">
+      <table border="0" id="form-table" class="col-md-10">
+      <tr>
+        <td width="15%" class="text-center">Filter Berdasarkan : </td>
+        <td width="18%">
+          <select class="form-control" style="width:90%; height: 30px" id="berdasarkan">
+              <option value="1">Nama Desain</option>
+              <option value="2">Tanggal Dibuat</option>
+              <option value="3">Status</option>
             </select>
-          </td>
+        </td>
 
-          <th width="5%" class="text-center">Kata Kunci : </th>
-          <td width="8%">
-            &nbsp;&nbsp;<input style="width:90%; padding-left: 3px;" data-toggle="tooltip" id="filter" placeholder="Masukkan Kata Kunci">
-          </td>
-        </tr>
-      </table>
-    </div> --}}
+        <td width="18%">
+          <select class="form-control" style="width:90%; height: 30px" id="yang">
+              <option value="1">Yang Mengandung</option>
+              <option value="2">Yang Berawalan</option>
+            </select>
+        </td>
+
+        <td width="15%" class="text-center">Kata Kunci : </td>
+        <td width="20%">
+          <input class="form-control" style="width:90%; height: 30px;" data-toggle="tooltip" id="filter" placeholder="Masukkan Kata Kunci">
+        </td>
+
+        <td width="15%" class="text-left">
+          <button class="btn btn-success btn-sm" id="set" style="font-size: 8pt;"> Terapkan</button>
+        </td>
+      </tr>
+
+    </table>
+    </div>
 </div>
 
 <div class="wrapper wrapper-content animated fadeInRight">
@@ -108,195 +106,101 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        <button class="btn btn-sm btn-primary tambahAkun" data-toggle="modal" data-target="#modal_tambah_akun">
-                          <i class="fa fa-plus"></i> &nbsp;Tambah Desain Laba Rugi
-                        </button>
+                        <a class="btn btn-sm btn-primary tambahAkun" href="{{ url('master_keuangan/desain_neraca/add')}}">
+                          <i class="fa fa-plus"></i> &nbsp;Tambahkan Data Desain Laba Rugi
+                        </a>
                     </div>
                 </div>
                 <div class="ibox-content">
-                        <div class="row">
-            <div class="col-xs-12">
+                    <div class="row">
+                      <div class="col-xs-12">
+                        
+                        <div class="box" id="seragam_box">
+                          <div class="box-header">
+                          </div><!-- /.box-header -->
+                          <div class="box-body" style="min-height: 330px;">
 
-              <div class="box" id="seragam_box">
-                <div class="box-header">
-                </div><!-- /.box-header -->
-                <div class="box-body" style="min-height: 330px;">
+                            <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px; font-size: 8pt;">
+                              <thead>
+                                <tr>
+                                  <th width="5%" class="text-center">No</th>
+                                  <th width="40%" class="text-center">Nama Desain</th>
+                                  <th width="20%" class="text-center">Tanggal Dibuat</th>
+                                  <th class="text-center">Status</th>
+                                  <th class="text-center">Aksi</th>
 
-                  <table id="table" width="100%" class="table table-bordered table-striped tbl-penerimabarang no-margin" style="padding:0px;">
-                    <thead>
-                      <tr>
-                        <th width="8%" style="padding:8px 0px" class="text-center">No</ht>
-                        <th width="30%" style="padding:8px 0px" class="text-center">Tanggal Buat</ht>
-                        <th width="30%" style="padding:8px 0px" class="text-center">Status Saat Ini</th>
-                        {{-- <th style="padding:8px 0px" class="text-center">Saldo</th> --}}
-                        <th width="20%" style="padding:8px 0px" width="20%" class="text-center">Aksi</th>
+                                </tr>
+                              </thead>
+                              <tbody  class="searchable">
 
-                      </tr>
-                    </thead>
-                    <tbody  class="searchable">
+                                <?php $a = 1; ?>
 
-                      <?php $no = 1; ?>
+                                @foreach($desain as $data_desain)
+                                <?php $status = ($data_desain->is_active == 1) ? '<span class="text-navy">Sedang Digunakan</span>' : "Tidak Aktif" ?>
+                                  <tr>
+                                    <td class="text-center">{{ $a }}</td>
+                                    <td class="text-center">{{ $data_desain->nama_desain }}</td>
+                                    <td class="text-center">{{ date("d", strtotime($data_desain->tanggal_buat)) }} {{ date_ind(date("m")) }} {{ date("Y", strtotime($data_desain->tanggal_buat)) }}</td>
+                                    <td class="text-center">{!! $status !!}</td>
+                                    <td class="text-center">
+                                      
+                                      <?php
+                                        $dis = "";
+                                        if($data_desain->is_active == 1){
+                                          $dis = "disabled";
+                                        }
+                                      ?>
 
-                      @foreach($desain as $dataDesain)
-                        <?php
-                          $status = ($dataDesain->is_active == 1) ? "Sedang Digunakan" : "Tidak Aktif";
-                          $color = ($dataDesain->is_active == 1) ? "#1ab394" : "";
-                        ?>
+                                      <span data-toggle="tooltip" data-placement="top" title="Gunakan Desain Ini">
+                                          <button class="btn btn-xs btn-success aktifkan" data-id="{{ $data_desain->id_desain }}" {{ $dis }}><i class="fa fa-check-square fa-fw"></i></button>
+                                      </span>
 
-                        <tr>
-                          <td class="text-center">{{ $no }}</td>
-                          <td class="text-center">{{ Date("d M Y", strtotime($dataDesain->tanggal_buat)) }}</td>
-                          <td class="text-center" style="color:{{$color}}; font-weight: 600;"><small>{{ $status }}</small></td>
-                          <td class="text-center">
-                            <span data-toggle="tooltip" data-placement="top" title="Tampilkan Desain">
-                                <button class="btn btn-xs btn-success tampilkan" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-external-link-square"></i></button>
-                            </span>
+                                      <span data-toggle="tooltip" data-placement="top" title="Tampilkan Desain">
+                                          <button class="btn btn-xs btn-primary tampilkan" data-id="{{ $data_desain->id_desain }}"><i class="fa fa-external-link-square fa-fw"></i></button>
+                                      </span>
 
-                            <span data-toggle="tooltip" data-placement="top" title="Perbarui Desain">
-                                <button class="btn btn-xs btn-warning editDesain" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-pencil-square"></i></button>
-                            </span>
+                                      <span data-toggle="tooltip" data-placement="top" title="Perbarui Desain">
+                                          <button class="btn btn-xs btn-warning edit" data-id="{{ $data_desain->id_desain }}"><i class="fa fa-edit fa-fw"></i></button>
+                                      </span>
 
-                            @if($dataDesain->is_active != 1)
-                              <span data-toggle="tooltip" data-placement="top" title="Aktifkan Desain Ini">
-                                  <button class="btn btn-xs btn-primary aktifkan" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-check-square"></i></button>
-                              </span>
-                            @endif
+                                      <span data-toggle="tooltip" data-placement="top" title="Hapus Desain">
+                                          <button class="btn btn-xs btn-danger hapus" data-id="{{ $data_desain->id_desain }}" {{ $dis }}><i class="fa fa-eraser fa-fw"></i></button>
+                                      </span>
+                                    </td>
+                                  </tr> 
 
-                            @if($dataDesain->is_active != 1)
-                              <span data-toggle="tooltip" data-placement="top" title="Hapus Desain">
-                                  <button class="btn btn-xs btn-danger hapus" data-id="{{ $dataDesain->id_desain }}"><i class="fa fa-eraser"></i></button>
-                              </span>
-                            @endif
-                          </td>
-                        </tr>
-
-                        <?php $no++; ?>
-                      @endforeach
-
-                    </tbody>
-
-
-                  </table>
-                </div><!-- /.box-body -->
-                <div class="box-footer">
-                  <div class="pull-right">
-
-                    </div>
-                  </div><!-- /.box-footer -->
-              </div><!-- /.box -->
-            </div><!-- /.col -->
-          </div><!-- /.row -->
+                                  <?php $a++; ?>
+                                @endforeach
+                                
+                              </tbody>
+                            </table>
+                          </div><!-- /.box-body -->
+                      </div><!-- /.box -->
+                    </div><!-- /.col -->
+                  </div><!-- /.row -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-   <!-- modal -->
-<div id="modal_view" class="modal">
-  <div class="modal-dialog">
+ <!-- modal -->
+<div id="modal_tampilkan" class="modal">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Tampilan Laba Rugi</h4>
+        <h4 class="modal-title">Tampilan Desain Neraca</h4>
         <input type="hidden" class="parrent"/>
       </div>
-      <div class="modal-body" style="padding: 0px;padding-left: 15px;">
-        <center class="text-muted" style="padding: 10px;">Sedang Mengambil Data...</center>
-      </div>
-    </div>
-  </div>
-</div>
-  <!-- modal -->
+      <div class="modal-body" id="wrap">
 
-<!-- modal -->
-<div id="modal_tambah_akun" class="modal">
-  <div class="modal-dialog" style="width: 70%">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Tambah Data Desain Laba Rugi</h4>
-        <input type="hidden" class="parrent"/>
-      </div>
-      <div class="modal-body" style="padding: 0px;padding-left: 15px;">
-        <center class="text-muted" style="padding: 10px;">Menyiapkan Form</center>
       </div>
 
     </div>
   </div>
 </div>
   <!-- modal -->
-
-  <!-- modal -->
-<div id="modal_edit_akun" class="modal">
-  <div class="modal-dialog" style="width: 70%">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Form Edit Data Desain Laba Rugi</h4>
-        <input type="hidden" class="parrent"/>
-      </div>
-      <div class="modal-body" style="padding: 0px;padding-left: 15px;">
-        <center class="text-muted" style="padding: 10px;">Menyiapkan Form</center>
-      </div>
-
-    </div>
-  </div>
-</div>
-  <!-- modal -->
-
-  <div id="modal_detail" class="modal">
-    <div class="modal-dialog" style="width: 50%;">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title">Tambahkan Detail Akun di Desain Laba Rugi <span id="title-for"></span></h4>
-          <input type="hidden" class="parrent"/>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-md-6">
-              <div class="col-md-12">
-                <input type="text" id="akl" class="form-control" placeholder="Lakukan Pencarian" style="width: 93%;">
-              </div>
-              <div class="col-md-12" style="height: 300px; overflow-y: scroll; font-size: 8pt; margin-top: 10px;">
-                <table class="table table-bordered">
-                  <tbody id="parrent-wrap">
-
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-
-            <div class="col-md-6" style="background: #f9f9f9;padding: 0px;height: 300px; overflow-y: scroll;">
-              <table width="100%" class="table" style="font-size: 8pt;">
-                <thead>
-                  <tr>
-                    <th class="text-center" width="35%">Kode</th>
-                    <th class="text-center">Keterangan</th>
-                  </tr>
-                </thead>
-
-                <tbody id="detail-wrapper">
-
-                </tbody>
-              </table>
-            </div>
-
-            <div class="col-md-12" id="listErrWrap" style="background: #fff;padding: 5px 10px;height: 100px; overflow-y: scroll; border: 1px solid #eee">
-
-            </div>
-
-            <div class="col-md-12" id="cek" style="border-top: 1px solid #eee;padding-top: 15px;">
-              <button class="btn btn-primary btn-xs col-md-3 col-lg-offset-9" id="apply-detail">Apply Detail</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-</div>
-
 
 @endsection
 
@@ -304,358 +208,130 @@
 
 @section('extra_scripts')
 
-<script src="{{ asset('assets/vendors/jsTree/jsTree.min.js') }}"></script>
-<script src="{{ asset('assets/vendors/jsTree/jstreetable.js') }}"></script>
+<script src="{{ asset('assets/vendors/bootstrap-treegrid/js/jquery.treegrid.js') }}"></script>
 <script src="{{ asset('assets/vendors/inputmask/inputmask.jquery.js') }}"></script>
 <script type="text/javascript">
 
   $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip()
 
-    $('[data-toggle="tooltip"]').tooltip();
-    // $("#modal_detail").modal("show");
-
-    {{-- @if(Session::has('sukses')) --}}
-        // alert("{{ Session::get('sukses') }}")
-    {{-- @endif --}}
-
-    dataParrent = {!! $data !!};
+    @if(Session::has('sukses'))
+        toastr.success('{{ Session::get('sukses') }}');
+    @elseif(Session::has('terpakai'))
+        alert("{{ Session::get('terpakai') }}")
+    @elseif(Session::has('err'))
+        toastr.error('{{ Session::get('err') }}');
+    @endif
 
     tableDetail = $('.tbl-penerimabarang').DataTable({
-          responsive: true,
-          searching: false,
-          sorting: true,
-          paging: true,
-          //"pageLength": 10,
-          "language": dataTableLanguage,
+      responsive: true,
+      searching: true,
+      sorting: true,
+      paging: true,
+      //"pageLength": 10,
+      "language": dataTableLanguage,
     });
 
-    $(".tambahAkun").on("click", function(){
-      $("#modal_tambah_akun .modal-header .parrent").val($(this).data("parrent"));
-    })
+    $(".tampilkan").click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
 
-    $("#modal_tambah_akun").on("hidden.bs.modal", function(e){
-      $("#modal_tambah_akun .modal-body").html('<center class="text-muted" style="padding: 10px;">Menyiapkan Form</center>');
-      if($change)
-        window.location = baseUrl+"/master_keuangan/akun";
-    })
+      $("#modal_tampilkan").modal("show");
+      $("#modal_tampilkan .modal-body").html('<center><small class="text-muted">Sedang Mengambil Data Tampilan Neraca...</small></center>');
 
-    $("#modal_detail").on("hidden.bs.modal", function(e){
-      $("#detail-wrapper").html("");
-      $("#listErrWrap").html("");
-    })
-
-    $("#modal_detail").on("shown.bs.modal", function(e){
-      $("#parrent-wrap").html(""); $html = "";
-
-      $.each(dataParrent, function(i, n){
-        if(n.id_akun.substring(0, 1) > 0){
-          $html = $html + "<tr class='searchable'>"+
-            '<td width="30%" class="text-center clickAble" style="cursor: pointer;" data-nama="'+n.nama_akun+'" data-parrent="'+n.id_akun+'">'+n.id_akun+'</td>'+
-              '<td class="text-center">'+n.nama_akun+'</td>'+
-          "</tr>";
-        }
-      })
-
-      //alert($html);
-      $("#parrent-wrap").html($html);
-    })
-
-    $("#modal_tambah_akun").on("shown.bs.modal", function(e){
-      //alert($("#modal_tambah_akun .modal-header .parrent").val())
-
-      $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/add", {
-         timeout: 10000,
+      $.ajax(baseUrl+"/master_keuangan/desain_neraca/view/"+$(this).data("id"), {
+         timeout: 15000,
          dataType: "html",
          success: function (data) {
-             $("#modal_tambah_akun .modal-body").html(data);
+             $("#modal_tampilkan .modal-body").html(data);
          },
          error: function(request, status, err) {
             if (status == "timeout") {
-              $("#modal_tambah_akun .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+              $("#modal_tampilkan .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
             } else {
-              $("#modal_tambah_akun .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+              $("#modal_tampilkan .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
             }
         }
       });
     })
 
-    $(".editDesain").on("click", function(evt){
+    $(".edit").click(function(evt){
       evt.stopImmediatePropagation();
-      $("#modal_edit_akun").modal("show");
-      $("#modal_edit_akun .modal-body").html('<center class="text-muted" style="padding: 10px;">Menyiapkan Form</center>');
+      evt.preventDefault();
 
-      $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/edit/"+$(this).data("id"), {
-         timeout: 10000,
-         dataType: "html",
+      $(".edit").attr("disabled", "disabled");
+
+      window.location = baseUrl+"/master_keuangan/desain_neraca/edit/"+$(this).data("id");
+
+    })
+
+    $(".hapus").click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      $(".hapus").attr("disabled", "disabled");
+
+      prmpt = confirm("Apa Anda Yakin Ingin Menghapus Desain Ini ? ");
+
+      if(prmpt)
+        window.location = baseUrl+"/master_keuangan/desain_neraca/delete/"+$(this).data("id");
+      else
+        return false;
+
+    })
+
+
+    $(".aktifkan").click(function(evt){
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+
+      $(".aktifkan").attr("disabled", "disabled");
+
+      $.ajax(baseUrl+"/master_keuangan/desain_neraca/aktifkan/"+$(this).data("id"), {
+         timeout: 15000,
+         dataType: "json",
          success: function (data) {
-             $("#modal_edit_akun .modal-body").html(data);
+            if(data.status == "sukses"){
+              alert("Neraca Berhasil Digunakan.");
+              window.location = baseUrl+"/master_keuangan/desain_neraca";
+            }else if(data.status == "miss"){
+              alert("Ups. Kami Tidak Bisa Menemukan Data Desain Yang Dimaksud..");
+              $(".aktifkan").removeAttr("disabled");
+            }
          },
          error: function(request, status, err) {
             if (status == "timeout") {
-              $("#modal_edit_akun .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
+              toastr.error('Request Timeout. Data Gagal Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
             } else {
-              $("#modal_edit_akun .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
+              toastr.error('Internal Server Error. Data Gagal Disimpan');
+              btn.removeAttr("disabled");
+              btn.text("Simpan");
             }
         }
       });
-    })
-
-    $(".aktifkan").on("click", function(evt){
-      evt.stopImmediatePropagation();
-
-      //alert($(this).data("id"));
-
-      $trk = confirm("Apakah Anda Yakin ?. Desain Yang Aktif Sebelumnya Akan Dinonaktifkan...");
-
-      if($trk){
-        $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/aktifkan/"+$(this).data("id"),{
-          type: "get",
-          dataType: "json",
-          success: function(response){
-            if(response.status == "sukses"){
-              alert("Desain Berhasil Diaktifkan. Halaman Akan Dimuat Ulang.")
-              window.location = baseUrl+"/master_keuangan/desain_laba_rugi";
-            }
-          },
-          error: function(request, status, err) {
-            if(status == "timeout") {
-              alert("Waktu Koneksi Habis. Data Gagal Diubah");
-            }else {
-              alert("ups. Gagal Loading. Data Gagal Diubah");
-            }
-          }
-        })
-      }
-    })
-
-    $(".hapus").on("click", function(evt){
-      evt.stopImmediatePropagation();
-
-      //alert($(this).data("id"));
-
-      $trk = confirm("Apakah Anda Yakin ?. Desain Yang Dihapus Tidak Akan Bisa Dikembalikan...");
-
-      if($trk){
-        $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/delete/"+$(this).data("id"),{
-          type: "get",
-          dataType: "json",
-          success: function(response){
-            if(response.status == "sukses"){
-              alert("Desain Berhasil Dihapus. Halaman Akan Dimuat Ulang.")
-              window.location = baseUrl+"/master_keuangan/desain_laba_rugi";
-            }
-          },
-          error: function(request, status, err) {
-            if(status == "timeout") {
-              alert("Waktu Koneksi Habis. Data Gagal Diubah");
-            }else {
-              alert("ups. Gagal Loading. Data Gagal Diubah");
-            }
-          }
-        })
-      }
-    })
-
-    $(".tampilkan").on("click", function(evt){
-      evt.stopImmediatePropagation();
-      $("#modal_view").modal("show");
-      $("#modal_view .modal-body").html('<center class="text-muted" style="padding: 10px;">Sedang Mengambil Data...</center>');
-
-      $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/view/"+$(this).data("id"), {
-         timeout: 5000,
-         dataType: "html",
-         success: function (data) {
-             $("#modal_view .modal-body").html(data);
-         },
-         error: function(request, status, err) {
-            if (status == "timeout") {
-              $("#modal_view .modal-body").html('<center class="text-muted">Waktu Koneksi habis</center>');
-            } else {
-              $("#modal_view .modal-body").html('<center class="text-muted">Ups Gagal Loading</center>');
-            }
-        }
-      });
-    })
-
-    $('#akl').keyup(function () {
-        //alert($('#parrent-wrap .search').html());
-        $val = $(this).val().toUpperCase();
-        var rex = new RegExp($(this).val(), 'i');
-        $('#parrent-wrap tr').hide();
-        $('#parrent-wrap tr').filter(function () {
-            return rex.test($(this).text());
-        }).show();
-    })
-
-    $("#cek").click("#apply-detail", function(event){
-      event.stopImmediatePropagation();
-      // alert("oke tambah")
-
-      $html = ""; $falsed= false; $list = "";
-
-      console.log($neracaDetail);
-
-      //$("#detail-in-show").html("");
-
-      //alert(1);
-      $add = true; errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Berhasil Ditambahkan.</span>';
-
-      $("#detail-in-show .inSearch").each(function(){
-        $id1 = $(this).text(); $id2 = $apply_id;
-        $ambil = Math.min($id1.length, $id2.length);
-
-        if($id1 == $apply_id){
-          errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Tidak Bisa Ditambahkan.</span>'+
-              '<span style="font-size: 8pt; font-weight: 400;"><br/>'+
-                'ID Akun Ini Sudah Anda Pilih.'+
-              '</span>';
-          $add = false;
-
-          return false;
-        }
-
-        if($id1.substring(0, $ambil) == $id2.substring(0, $ambil)){
-          if($id1.length < $id2.length){
-            errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Tidak Bisa Ditambahkan.</span>'+
-              '<span style="font-size: 8pt; font-weight: 400;"><br/>'+
-                'ID Akun Yang Anda Pilih Sudah Termasuk Kedalam Akun '+$(this).data("nama")+' Yang Sebelumnya Sudah Anda Pilih.'
-              '</span>';
-
-            $add = false;
-          }else{
-            $(this).parent("tr").remove();
-          }
-
-          //return false;
-        }
-
-      })
-
-      $.each($neracaDetail, function(i, n){
-        $id1 = n.id_akun; $id2 = $apply_id;
-        $ambil = Math.min($id1.length, $id2.length);
-        // alert("okee");
-
-        if($id1 == $apply_id){
-          errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Tidak Bisa Ditambahkan.</span>'+
-              '<span style="font-size: 8pt; font-weight: 400;"><br/>'+
-                'ID Akun Ini Sudah Anda Pilih Lohh.'+
-              '</span>';
-          $add = false;
-
-          return false;
-        }
-
-        if($id1.substring(0, $ambil) == $id2.substring(0, $ambil)){
-          if($id1.length < $id2.length){
-            $idx = $dataNeraca.findIndex(c => c.nomor_id == n.nomor_id);
-            errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Tidak Bisa Ditambahkan.</span>'+
-              '<span style="font-size: 8pt; font-weight: 400;"><br/>'+
-                'ID Akun Yang Anda Pilih Sudah Termasuk Kedalam Detail '+$dataNeraca[$idx]["keterangan"]+' Yang Sebelumnya Sudah Anda Buat.'
-              '</span>';
-
-            $add = false;
-          }else{
-            $(this).parent("tr").remove();
-          }
-
-          //return false;
-        }
-
-      })
-
-      if($add)
-        $html = "<tr><td class='inSearch' data-for='child' data-nama='"+apply_nama+"'>"+$apply_id+"</td> <td>"+apply_nama+"</td></tr>";
-
-      $("#detail-in-show").prepend($html);
-      $("#listErrWrap").html(errList);
 
     })
 
-    $("#cek").click("#apply-detail", function(event){
-      event.stopImmediatePropagation();
-      // alert("oke tambah")
+    $('#set').click(function () {
+        $val = $('#filter').val().toUpperCase();
 
-      $html = ""; $falsed= false; $list = "";
-
-      console.log($neracaDetail);
-
-      //$("#detail-in-show").html("");
-
-      //alert(1);
-      $add = true; errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Berhasil Ditambahkan.</span>';
-
-      $("#detail-in-show .inSearch").each(function(){
-        $id1 = $(this).text(); $id2 = $apply_id;
-        $ambil = Math.min($id1.length, $id2.length);
-
-        if($id1 == $apply_id){
-          errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Tidak Bisa Ditambahkan.</span>'+
-              '<span style="font-size: 8pt; font-weight: 400;"><br/>'+
-                'ID Akun Ini Sudah Anda Pilih.'+
-              '</span>';
-          $add = false;
-
-          return false;
+        if($("#yang").val() == 1)
+          tableDetail.columns($("#berdasarkan").val()).every( function () {
+              var that = this;
+              // console.log(that);
+              that.search($val).draw();
+          });
+        else{
+          tableDetail.columns($("#berdasarkan").val()).every( function () {
+              var that = this;
+              // console.log(that);
+              that.search('^' + $val, true, false).draw();
+          });
         }
-
-        if($id1.substring(0, $ambil) == $id2.substring(0, $ambil)){
-          if($id1.length < $id2.length){
-            errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Tidak Bisa Ditambahkan.</span>'+
-              '<span style="font-size: 8pt; font-weight: 400;"><br/>'+
-                'ID Akun Yang Anda Pilih Sudah Termasuk Kedalam Akun '+$(this).data("nama")+' Yang Sebelumnya Sudah Anda Pilih.'
-              '</span>';
-
-            $add = false;
-          }else{
-            $(this).parent("tr").remove();
-          }
-
-          //return false;
-        }
-
-      })
-
-      $.each($neracaDetail, function(i, n){
-        $id1 = n.id_akun; $id2 = $apply_id;
-        $ambil = Math.min($id1.length, $id2.length);
-        // alert("okee");
-
-        if($id1 == $apply_id){
-          errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Tidak Bisa Ditambahkan.</span>'+
-              '<span style="font-size: 8pt; font-weight: 400;"><br/>'+
-                'ID Akun Ini Sudah Anda Pilih Lohh.'+
-              '</span>';
-          $add = false;
-
-          return false;
-        }
-
-        if($id1.substring(0, $ambil) == $id2.substring(0, $ambil)){
-          if($id1.length < $id2.length){
-            $idx = $dataNeraca.findIndex(c => c.nomor_id == n.nomor_id);
-            errList = '<span style="font-size: 8pt; font-weight: 600;">-- Data Tidak Bisa Ditambahkan.</span>'+
-              '<span style="font-size: 8pt; font-weight: 400;"><br/>'+
-                'ID Akun Yang Anda Pilih Sudah Termasuk Kedalam Detail '+$dataNeraca[$idx]["keterangan"]+' Yang Sebelumnya Sudah Anda Buat.'
-              '</span>';
-
-            $add = false;
-          }else{
-            $(this).parent("tr").remove();
-          }
-
-          //return false;
-        }
-
-      })
-
-      if($add)
-        $html = "<tr><td class='inSearch' data-for='child' data-nama='"+apply_nama+"'>"+$apply_id+"</td> <td>"+apply_nama+"</td></tr>";
-
-      $("#detail-in-show").prepend($html);
-      $("#listErrWrap").html(errList);
-
     })
+
   })
 
 </script>

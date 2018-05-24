@@ -1471,7 +1471,7 @@ $('#btnsave2').click(function(){
     var jumlah_biaya_admin   = $('.jumlah_biaya_admin').val();
     var jenis                = $('.jenis_biaya').val();
     var akun_acc_biaya       = $('.akun_acc_biaya').val();
-    var keterangan_modal        = $('.keterangan_modal').val();
+    var keterangan_modal     = $('.keterangan_modal').val();
 
 
     if (jumlah_biaya_admin == '') {

@@ -198,11 +198,12 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
         // return $array_harga;
 
         if ($crud  == 'N') {
+          // dd($request->all());
             if ($request->cb_provinsi_tujuan != null or '') {
                    for ($i=0; $i < count($cari); $i++) { 
                     $cari_old0[$i] = DB::table('tarif_cabang_dokumen')
                               ->where('id_kota_asal',$request->cb_kota_asal)
-                              ->where('id_kota_tujuan',$cari[$i]->id)
+                              ->where('id_kota_tujuan','=',$cari[$i]->id)
                               ->where('kode_cabang',$request->ed_cabang)
                               ->where('jenis','REGULER')
                               ->get();
@@ -221,7 +222,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                               ->where('jenis','OUTLET')
                               ->get();
                     }
-                    // return $cari_old0;
+                    // return $cari_old2;
 
                     $cari_nota0 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
                                                 WHERE kode_cabang = '$request->ed_cabang'
@@ -234,7 +235,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                     $cari_nota2 = DB::select("SELECT  substring(max(kode),10) as id from tarif_cabang_dokumen
                                                 WHERE kode_cabang = '$request->ed_cabang'
                                                 and jenis = 'OUTLET'");
-                    // return $cari_nota1;
+                    // return $cari_nota2;
                     $id1 = (integer)$cari_nota0[0]->id+1;
                     $id2 = (integer)$cari_nota1[0]->id+1;
                     $id3 = (integer)$cari_nota2[0]->id+1;
@@ -262,6 +263,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                         $id3++;
                     }
                     $array_note = [$nota0,$nota1,$nota2];
+                    
             }else{
 
                     $cari_nota0 = DB::select("SELECT  max(substring(kode,10)) as id from tarif_cabang_dokumen
@@ -334,7 +336,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
             }
             // return $cari_old0;
 
-
+            // return $array_harga;
             if ($request->cb_provinsi_tujuan != null or '') {
                 for ($i=0; $i < count($cari); $i++) { 
 
@@ -374,6 +376,8 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                                                 'crud'=>$crud,
                                       ]);
                                 }else{
+                                  // return 'b';
+
                                     if (${'cari_old'.$a}[$i][0]->crud != 'E') {
                                         $data = DB::table('tarif_cabang_dokumen')
                                         ->where('kode',${'cari_old'.$a}[$i][0]->kode)
@@ -390,13 +394,16 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                                 
                             }
                         }else{
+                          // return $array_note;
                             // return 'asd';
-                          // return $array_harga[$a] ;
+                          // dd($request->all());
+                          // return $array_harga[$a];
                             if ($array_harga[$a] != '') {
                                 if (isset(${'cari_old'.$a}[$i][0]->id_kota_asal) != $request->cb_kota_asal and
                                     isset(${'cari_old'.$a}[$i][0]->id_kota_tujuan) != $cari[$i]->id and
                                     isset(${'cari_old'.$a}[$i][0]->kode_cabang) != $request->ed_cabang ) {
                                   // return 'a';
+                                  // return 'c';
 
                                         $data = DB::table('tarif_cabang_dokumen')
                                         ->insert([
@@ -417,6 +424,7 @@ if ($data[$i]['id_provinsi_cabdokumen'] == null || $data[$i]['id_provinsi_cabdok
                                 }
                                 
                             }
+
                         }
                         
                     }

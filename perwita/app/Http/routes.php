@@ -135,6 +135,7 @@ Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
 Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
 Route::get('penerimaanbarang/hapusdatapenerimaan', 'PurchaseController@hapusdatapenerimaan');
+Route::get('penerimaanbarang/lihatjurnal/{id}', 'PurchaseController@lihatjurnal');
 
 
 
@@ -428,7 +429,8 @@ Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
 Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
-Route::post('pelunasanhutangbank/hapusbank', 'PurchaseController@hapusbbk');
+Route::get('pelunasanhutangbank/hapuspelunasanhutang/{id}', 'PurchaseController@hapusbbk');
+Route::post('pelunasanhutangbank/lihatjurnal', 'PurchaseController@lihatjurnalpelunasan');
 
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
@@ -952,6 +954,18 @@ Route::get('carideliveryorder_total/carideliveryorder_total','LaporanMasterContr
   //end off
   //rekap bulanan
   Route::get('ajaxcarideliveryorder_total_rekapbulanan/ajaxcarideliveryorder_total_rekapbulanan','LaporanMasterController@ajaxcarideliveryorder_total_rekapbulanan');
+  //end off
+  //rekap tri wulan
+  Route::get('ajaxcarideliveryorder_total_rekaptriwulan/ajaxcarideliveryorder_total_rekaptriwulan','LaporanMasterController@ajaxcarideliveryorder_total_rekaptriwulan');
+  //end off
+  //deial mobil
+  Route::get('ajaxcarideliveryorder_total_detailnopol/ajaxcarideliveryorder_total_detailnopol','LaporanMasterController@ajaxcarideliveryorder_total_detailnopol');
+  //end off
+  //deial mobil
+  Route::get('ajaxcarideliveryorder_total_detailmobil/ajaxcarideliveryorder_total_detailmobil','LaporanMasterController@ajaxcarideliveryorder_total_detailmobil');
+  //end off
+  //deial mobil
+  Route::get('ajaxcarideliveryorder_total_detailsales/ajaxcarideliveryorder_total_detailsales','LaporanMasterController@ajaxcarideliveryorder_total_detailsales');
   //end off
 
 //END OF DELIVERY ORDER TOTAL
@@ -2063,7 +2077,11 @@ Route::get('master_keuangan/akun/hapus_data/{id}', [
 Route::get('master_keuangan/akun/cek_parrent/{id}', [
   'uses'=> 'master_keuangan\akun_controller@cek_parrent',
   'as'  => 'akun.cek_parrent'
+]);
 
+Route::get('master_keuangan/akun/share_akun', [
+  'uses'=> 'master_keuangan\akun_controller@share_akun',
+  'as'  => 'akun.share'
 ]);
 
 Route::get('master_keuangan/akun/tabel', 'master_keuangan\akun_controller@table_data');

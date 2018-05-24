@@ -266,24 +266,17 @@
       
       function hitung(hitung){
       var temp = 0;
-      $('.nominal').each(function(i){
-        if ($(this).val() != '') {
-            hasil[i] = $(this).val();
-            
+      $('.nominal').each(function(){
+        val = $(this).val();
+        if(val != ''){
+            temp = parseFloat(temp) + parseFloat(val);          
         }
-        else {
-         hasil[i] = 0; 
-        }
+
+        $('.hasil').val(temp);
       })
 
-       for (var i=0  ; i < hasil.length ;i++){
-          temp += parseInt(hasil[i]);
-        }
-        var money = temp.toLocaleString('de-DE');
-        var hasilakir = money.replace(/[^0-9\,-]+/g,"");
-        var total = $(".hasil").val("Rp."+money+',00');
-        var n = Number(hasilakir);
-        var total = $(".totalhidden").val(n);
+
+     
       }
     
    $('.date').datepicker({

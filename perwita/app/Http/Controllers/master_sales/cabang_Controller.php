@@ -75,7 +75,7 @@ class cabang_Controller extends Controller
         if ($crud == 'N') {
             $simpan = DB::table('cabang')->insert($data);
 
-            $main_id = DB::table("d_akun")->where("shareable", '1')->select(DB::raw("distinct(main_id)"))->get();
+            $main_id = DB::table("d_akun")->select(DB::raw("distinct(main_id)"))->get();
 
             foreach ($main_id as $key => $data_main_id) {
 
@@ -102,6 +102,7 @@ class cabang_Controller extends Controller
                     $akun->main_name = $acc->main_name;
                     $akun->group_neraca = $acc->group_neraca;
                     $akun->group_laba_rugi = $acc->group_laba_rugi;
+                    $akun->shareable = $acc->shareable;
 
                     if($akun->save()){
                         $saldo = new master_akun_saldo;

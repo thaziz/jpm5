@@ -6,7 +6,7 @@
 
         <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Uang Muka Pembelian </h2>
+                    <h2> Voucher Hutang </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -131,7 +131,7 @@
                         <td style="text-align: center;"> {{$index+1}} </td>
                         <td> {{$a->vd_acc}}  </td>
                         <td> {{$a->vd_keterangan}} </td>
-                        <td> Rp. {{ number_format($Expense->price, 2) }}</td>
+                        <td> Rp. {{number_format($a->vd_nominal, 2)}}</td>
                       </tr>
                     </tbody>
                     @endforeach

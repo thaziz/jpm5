@@ -66,29 +66,27 @@
                       </tr>
                     
                       <tr>
-                          <th style="width: 100px; padding-top: 16px">Cabang</th>
-                          <td colspan="1">
-                            <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
-                              <option></option>
-                              @foreach ($cabang as $element)
-                                <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
-                              @endforeach
-                            </select>
-                          </td>
 
-                           <th style="width: 100px; padding-top: 16px"> Tipe </th>
+                          <th style="width: 100px; padding-top: 16px"> Laporan </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Tipe --</option>
-                            <option value="DOKUMEN">DOKUMEN</option>
-                            <option value="KILOGRAM">KILOGRAM</option>
-                            <option value="KOLI">KOLI</option>
-                            <option value="SEPEDA">SEPEDA</option>
+                           <select style="width: 200px; margin-top: 20px;" name="laporan" class="cari_semua laporan chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Laporan--</option>
+                            <option value="DEFAULT">MASTER</option>
+                            <option value="MASTER DETAIL">MASTER DETAIL</option>
+                            <option value="rekap">REKAP CUSTOMER</option>
+                            <option value="rekap_detail">REKAP CUSTOMER DETIL</option>
+                            <option value="REKAP BULANAN">REKAP BULANAN</option>
+                            <option value="DETAIL PER NOPOL">DETAIL PER NOPOL</option>
+                            <option value="DETAIL PER MOBIL">DETAIL PER MOBIL</option>
+                            <option value="DETAIL PER SOPIR" class="redline">DETAIL PER SOPIR</option>
+                            <option value="DETAIL PER SALES" class="redline">DETAIL PER SALES</option>
+                            <option value="REKAP PER MOBIL" class="redline">REKAP PER MOBIL</option>
+                            <option value="REKAP PER SOPIR" class="redline">REKAP PER SOPIR</option>
+                            <option value="REKAP PER SALES" class="redline">REKAP PER SALES</option>
                            </select>
                           </td>
-                        </tr>
-                        <tr >
-                           <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
+
+                          <th style="width: 100px; padding-top: 16px"> Kota Asal  </th>
                           <td >
                           <select style="width: 200px; margin-top: 20px;" name="asal" class="cari_semua chosen-select-width select-picker1 form-control" data-show-subtext="true" data-live-search="true"  id="kota_asal">
                             <option value=""  selected=""> --Asal --</option>
@@ -97,7 +95,21 @@
                             @endforeach
                           </select>
                           </td>
-                        
+
+                        </tr>       
+                        <tr>
+                          
+
+                          <th style="width: 100px; padding-top: 16px"> Pendapatan </th>
+                          <td > 
+                           <select  name="pendapatan" class="cari_semua select-picker3  form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Pendapatan --</option>
+                            <option value="PAKET">PAKET</option>
+                            <option value="KORAN">KORAN</option>
+                            <option value="KARGO">KARGO</option>
+                           </select>
+                          </td>
+
                           <th style="width: 100px; padding-top: 16px"> Kota Tujuan </th>
                           <td > 
                            <select style="width: 200px; margin-top: 20px;" name="tujuan" class="cari_semua select-picker2 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="kota_tujuan" >
@@ -107,18 +119,21 @@
                             @endforeach
                            </select>
                           </td>
+
+                           
                         </tr>
-                        <tr>
-                          <th style="width: 100px; padding-top: 16px"> Jenis </th>
-                          <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="jenis" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value="" disabled="" selected=""> --Pilih --</option>
-                            <option value="REGULER">REGULER</option>
-                            <option value="EXPRESS">EXPRESS</option>
-                            <option value="OUTLET">OUTLET</option>
-                           </select>
+                        <tr >
+                          <th style="width: 100px; padding-top: 16px">Cabang</th>
+                          <td colspan="1">
+                            <select class="cari_semua chosen-select-width" id="cabang"  name="cabang">
+                              <option></option>
+                              @foreach ($cabang as $element)
+                                <option value="{{ $element->kode }}">{{ $element->kode }} - {{ $element->nama }}</option>
+                              @endforeach
+                            </select>
                           </td>
-                          <th style="width: 100px; padding-top: 16px"> Status </th>
+                        
+                        <th style="width: 100px; padding-top: 16px"> Status </th>
                           <td colspan="3"> 
                            <select style="width: 200px; margin-top: 20px;" name="status" class="cari_semua select-picker5 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" id="status"  >
                             <option value=""  selected=""> --Status --</option>
@@ -129,15 +144,17 @@
                             <option value="DELIVERED OK">DELIVERED OK</option>
                            </select>
                           </td>
+
+                          
                         </tr>
                         <tr>
-                          <th style="width: 100px; padding-top: 16px"> Pendapatan </th>
+                          <th style="width: 100px; padding-top: 16px"> Jenis </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="pendapatan" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Tipe --</option>
-                            <option value="PAKET">PAKET</option>
-                            <option value="KORAN">KORAN</option>
-                            <option value="KARGO">KARGO</option>
+                           <select style="width: 200px; margin-top: 20px;" name="jenis" class="select-picker4 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value="" disabled="" selected=""> --Pilih --</option>
+                            <option value="REGULER">REGULER</option>
+                            <option value="EXPRESS">EXPRESS</option>
+                            <option value="OUTLET">OUTLET</option>
                            </select>
                           </td>
 
@@ -150,39 +167,31 @@
                             @endforeach
                            </select>
                           </td>
+                          
                         </tr>
-                          <th style="width: 100px; padding-top: 16px"> Laporan </th>
+                        <tr>
+                          
+
+                          
+                        </tr>
+                          <th style="width: 100px; padding-top: 16px"> Tipe </th>
                           <td > 
-                           <select style="width: 200px; margin-top: 20px;" name="laporan" class="cari_semua laporan chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
-                            <option value=""  selected=""> --Laporan--</option>
-                            <option value="DEFAULT">MASTER</option>
-                            <option value="MASTER DETAIL">MASTER DETAIL</option>
-                            <option value="rekap">REKAP CUSTOMER</option>
-                            <option value="rekap_detail">REKAP CUSTOMER DETIL</option>
-                            <option value="REKAP BULANAN" class="redline">REKAP BULANAN</option>
-                            <option value="DETAIL PER MOBIL" class="redline">DETAIL PER MOBIL</option>
-                            <option value="DETAIL PER SOPIR" class="redline">DETAIL PER SOPIR</option>
-                            <option value="DETAIL PER SALES" class="redline">DETAIL PER SALES</option>
-                            <option value="REKAP PER MOBIL" class="redline">REKAP PER MOBIL</option>
-                            <option value="REKAP PER SOPIR" class="redline">REKAP PER SOPIR</option>
-                            <option value="REKAP PER SALES" class="redline">REKAP PER SALES</option>
+                           <select style="width: 200px; margin-top: 20px;" name="tipe" class="cari_semua select-picker3 chosen-select-width form-control" data-show-subtext="true" data-live-search="true" >
+                            <option value=""  selected=""> --Tipe --</option>
+                            <option value="DOKUMEN">DOKUMEN</option>
+                            <option value="KILOGRAM">KILOGRAM</option>
+                            <option value="KOLI">KOLI</option>
+                            <option value="SEPEDA">SEPEDA</option>
                            </select>
                           </td>
-                        </tr>       
-
 
                       <br>
                       </table>
                       
-                      <div class="row pull-right" style="margin-top: 0px;margin-right: 3px;"> &nbsp; &nbsp; 
-                        <select class="chosen-select-width form-control" onchange="location = this.value;">
-                          <option selected="" disabled="">- Jenis Laporan -</option>
-                          <option value="{{ url('rekap_customer/rekap_customer') }}">Rekap Customer</option>
-                        </select>
-                      </div>
+
                       <div class="row" style="margin-top: 20px;margin-bottom: -72px;"> &nbsp; &nbsp; <a class="btn btn-primary" onclick="cari()"> <i class="fa fa-search" aria-hidden="true"></i> Cari </a> </div>
-                      <div class="row" style="margin-top: 21px;margin-left: 56px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
-                      <div class="row" style="margin-top: -51px;margin-left: 137px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
+                      <div class="row" style="margin-top: 34px;margin-left: 56px;"> &nbsp; &nbsp; <a class="btn btn-info cetak" onclick="cetak()"> <i class="fa fa-print" aria-hidden="true"></i> Cetak </a> </div>
+                      <div class="row" style="margin-top: -38px;margin-left: 137.5px;"> &nbsp; &nbsp; <a class="btn btn-warning cetak" onclick="excel()"> <i class="fa fa-print" aria-hidden="true"></i> Excel </a> </div>
                 </form>
                 <div class="box-body">
                 <div id="replace">
@@ -190,13 +199,13 @@
                     <thead>
                         <tr>
                             <th> No DO</th>
+                            <th> Cabang</th>
                             <th> Tanggal </th>
                             <th> Customer </th>
                             <th> Pengirim </th>
                             <th> Penerima </th>
                             <th> Kota Asal </th>
                             <th> Kota Tujuan </th>
-                            <th> Status </th>
                             <th> Detail </th>
                        
                         </tr>
@@ -272,9 +281,9 @@
                     '<td>'+d.total_net+'</td>'+
                 '</tr>'+
                 '<tr>'+
-                    '<td>cabang</td>'+
+                    '<td>status</td>'+
                     '<td>:</td>'+
-                    '<td>'+d.cab+'</td>'+
+                    '<td>'+d.status+'</td>'+
                 '</tr>'+
             '</table>'
               ;
@@ -289,13 +298,13 @@
             },
             "columns": [
             { "data": "nomor" },
+            { "data": "cab" },
             { "data": "tanggal" },
             { "data": "cus" },
             { "data": "nama_pengirim" },
             { "data": "nama_penerima" },
             { "data": "asal" },
             { "data": "tujuan" },
-            { "data": "status" },
             {
                 "class": "details-control",
                 "orderable": false,
@@ -372,7 +381,44 @@
     $('.date').datepicker({
         autoclose: true,
         format: 'yyyy-mm-dd'
+        
     });
+
+    $("select[name='laporan']").change(function(){
+        var this_val = $(this).find(':selected').val();
+        if (this_val == 'REKAP BULANAN') {
+            $('#min').attr('disabled',true);
+            $('#max').attr('disabled',true);
+            $('#max').val('-');
+            $('#min').val('-');
+        }else{
+            $('#max').attr('disabled',false);
+            $('#min').attr('disabled',false);
+            $('#max').val();
+            $('#min').val();
+        }
+
+        if (this_val == 'DETAIL PER NOPOL') {
+            $("select[name='pendapatan']").html(' <option value=""  selected=""> --Tipe --</option>'+
+                            '<option value="KARGO" selected>KARGO</option>');
+            $('#max').val();
+            $('#min').val();
+        }else if(this_val == 'DETAIL PER MOBIL'){
+            $("select[name='pendapatan']").html(' <option value=""  selected=""> --Tipe --</option>'+
+                            '<option value="KARGO" selected>KARGO</option>');
+            $('#max').val();
+            $('#min').val();
+        }else{
+            $("select[name='pendapatan']").html('<option value=""  selected=""> --Tipe --</option>'+
+                            '<option value="PAKET">PAKET</option>'+
+                            '<option value="KORAN">KORAN</option>'+
+                            '<option value="KARGO">KARGO</option>');
+            $('#max').val();
+            $('#min').val();
+        }
+        
+
+    })
     function cari(){
       var min = $('#min').val();
       var max = $('#max').val();
@@ -450,6 +496,9 @@
                 return false;
             }
       if (laporan == 'DEFAULT') {
+
+
+
         $.ajax({
             data: $('#cari_data').serialize(),
             url: baseUrl + '/ajaxcarideliveryorder_total/ajaxcarideliveryorder_total',
@@ -463,6 +512,10 @@
             },
             
         });
+
+
+
+
       }
 
 
@@ -527,6 +580,44 @@
             type: "get",
             success: function (response, textStatus, request) {
               $('#replace').html(response);
+              // alert('a');
+              var total = 0;
+               $('.april').each(function(){
+                  var par = $(this).parents('tr');
+                  var jan = $(par).find('.jan').text();
+                  var feb = $(par).find('.feb').text() ;
+                  var mar = $(par).find('.mar').text() ;
+                  var mei = $(par).find('.mei').text() ;
+                  var jun = $(par).find('.jun').text() ;
+                  var jul = $(par).find('.jul').text() ;
+                  var aug = $(par).find('.aug').text() ;
+                  var sep = $(par).find('.sep').text() ;
+                  var okt = $(par).find('.okt').text() ;
+                  var nov = $(par).find('.nov').text() ;
+                  var des = $(par).find('.des').text() ;
+                  var hasil = parseInt($(this).text())  + parseInt(jan) + parseInt(feb) + parseInt(mar) + parseInt(mei) + parseInt(jun) + parseInt(jul) + parseInt(aug) + parseInt(sep) + parseInt(okt) + parseInt(nov) + parseInt(des) ;
+                  // console.log(hasil);
+                  total += hasil;
+                  $(par).find('.total_total').text(hasil);
+                })
+               // alert(total);
+               $('#hasilakir').text(total);
+               $('#bulan_rep').DataTable({});
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
+      }
+       //CARI DETAIL PER NOPOL
+      else if(laporan == 'DETAIL PER NOPOL'){
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total_detailnopol/ajaxcarideliveryorder_total_detailnopol',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
               
             },
             error: function (ajaxContext) {
@@ -537,16 +628,40 @@
       }
       //CARI DETAIL PER MOBIL
       else if(laporan == 'DETAIL PER MOBIL'){
-        alert('a');
+        $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total_detailmobil/ajaxcarideliveryorder_total_detailmobil',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
+      }
+      //CARI DETAIL PER SALES
+      else if(laporan == 'DETAIL PER SALES'){
+         $.ajax({
+            data: $('#cari_data').serialize(),
+            url: baseUrl + '/ajaxcarideliveryorder_total_detailsales/ajaxcarideliveryorder_total_detailsales',
+            type: "get",
+            success: function (response, textStatus, request) {
+              $('#replace').html(response);
+              // $('#table_detailsales').DataTable({});
+            },
+            error: function (ajaxContext) {
+              toastr.error('Export error: '+ajaxContext.responseText);
+            },
+            
+        });
       }
       //CARI DETAIL PER SOPIR
       else if(laporan == 'DETAIL PER SOPIR'){
         alert('a');
       }
-      //CARI DETAIL PER SALES
-      else if(laporan == 'DETAIL PER SALES'){
-        alert('a');
-      }
+      
       //CARI REKAP PER MOBIL
       else if(laporan == 'REKAP PER MOBIL'){
         alert('a');
@@ -559,6 +674,7 @@
     }
 
 
+    
 
 </script>
 @endsection

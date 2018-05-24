@@ -439,12 +439,11 @@
           $("#parrent").attr("disabled", "disabled");
           $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
           $("#keterangan").val(data_neraca[idx].keterangan);
+          $("#group_show").html("");
 
           if(data_neraca[idx].jenis == 4){
             $("#keterangan").attr("readonly", "readonly");
           }else if(data_neraca[idx].jenis == 2 || data_neraca[idx].jenis == 3){
-            
-            $("#group_show").html("");
 
             if(data_neraca[idx].jenis == 2)
               $("#tambah_detail").removeAttr("disabled");
@@ -529,6 +528,7 @@
           $("#parrent").attr("disabled", "disabled");
           $('#jenis').val(data_neraca[idx].jenis); $("#jenis").attr("disabled", "disabled");
           $("#keterangan").val(data_neraca[idx].keterangan);
+          $("#group_show").html("");
 
           if(data_neraca[idx].jenis == 4){
             $("#keterangan").attr("readonly", "readonly");

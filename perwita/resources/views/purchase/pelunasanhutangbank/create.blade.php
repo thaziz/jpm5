@@ -506,6 +506,9 @@
                
               
           },
+          eror : function(){
+            location.reload();
+          }
         })
 
      $('#formbbk').submit(function(){
@@ -546,7 +549,7 @@
           },
            function(){
          $.ajax({
-          type : "post",
+          type : "POST",
           data : form_data2,
           url : post_url2,
           dataType : 'json',
@@ -683,6 +686,9 @@
                  else {
                   location.reload();
                  }
+            },
+            error : function(){
+              location.reload();
             }
         })
 
@@ -693,7 +699,7 @@
      $nomr = 1;
     $('.tmbhdatacek').click(function(){
 
-        $('.kodebank').addClass('disabled');
+      
         nofpg = $('.nofpg').val();
         nobbk = $('.nobbk').val();
         flag = $('.flag').val();
@@ -702,19 +708,22 @@
 
           kodecabang = $('.kodebank').val();
         // alert(kodecabang);
-          $('.valkodebank').val(kodecabang);
+         
 
       if(flag == 'BIAYA'){
         toastr.info("Anda sudah mengisi form 'biaya biaya' mohon untuk dilanjutkan :)");       
       }
       else if(nofpg == ''){
         toastr.info("Mohon isi data transaksi bank");
+
       }
       else if(nobbk == ''){
         toastr.info("Mohon isi data cabang");
       }
      
       else {
+          $('.kodebank').addClass('disabled');
+           $('.valkodebank').val(kodecabang);
         flag = $('.flag').val('CEKBG');
       nofpg = $('.nofpg').val();
       notransaksi =$('.nocheck').val();
@@ -841,7 +850,7 @@
                     $('.jenissup').val('supplier');            
                 }
                 else if(response.fpg[0].fpg_jenisbayar == '4') {
-                    $jenissup = response.fpg[0].um_jenissup;
+                    $jenissup = response.jenissup;
                     if($jenissup == 'supplier'){                      
                       $('.kodesup').val(response.fpg[0].no_supplier);
                       $('.namasupplier').val(response.fpg[0].nama_supplier);   
@@ -896,6 +905,7 @@
           flag = $('.flag').val();
 
           kodecabang = $('.kodebank').val();
+          $('.kodebank').addClass('disabled');
          // alert(kodecabang);
           $('.valkodebank').val(kodecabang);
 

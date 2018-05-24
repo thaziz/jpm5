@@ -588,18 +588,19 @@
       var no_pod              = "{{$val->bpd_pod}}";
       var DEBET               = "{{$val->bpd_debit}}";
       var akun_biaya          = "{{$val->bpd_akun_biaya}}";
-      @foreach($akun as $i)
-        @if($val->bpd_akun_biaya == $i->id_akun)
-          var akun_biaya_text     = '{{$i->id_akun}}-{{$i->nama_akun}}';
+      @for($i = 0; $i<count($akun); $i++)
+        @if($val->bpd_akun_biaya == $akun[$i]->id_akun)
+          var akun_biaya_text     = '{{$akun[$i]->id_akun}}-{{$akun[$i]->nama_akun}}';
+          @else
+          var akun_biaya_text     = '{{$val->bpd_akun_biaya}}';
         @endif
-      @endforeach
+      @endfor
       var keterangan_biaya    = "{{$val->bpd_memo}}";
       var nominal             = "{{$val->bpd_nominal}}";
       var harga_do            = "{{$val->bpd_tarif_resi}}";
       // nominal                 = nominal.replace(/[^0-9\-]+/g,"");
 
-
-
+      console.log('{{ $val->bpd_akun_biaya }}');
       datatable1.row.add( [
                 '<input type="hidden" class="form-control tengah kecil seq seq_biaya_'+jml_data+'" name="seq_biaya[]" value="'+jml_data+'" readonly>'+'<div class="seq_text">'+jml_data+'</div>',
 
@@ -619,9 +620,11 @@
                 '<a  onclick="edit_biaya(this)" class="btn btn-sm btn-success"><i class="fa fa-pencil"></i></a>'+
                 '<a  onclick="hapus_biaya(this)" class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></a>'+
                 '</div>',
-            ] ).draw( false );   
+            ] ).draw();  
+
       count++;
       array_do.push(no_pod);
+
       $('.table_biaya').prop('hidden',false);
       $('.table_detail input').val(''); 
       $('.jml_data').val(count); 
