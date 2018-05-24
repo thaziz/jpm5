@@ -604,10 +604,10 @@ class LaporanMasterController extends Controller
 	public function deliveryorder_total(){
 		// return 'ccccccccccccccccc';
 			return $data =DB::table('delivery_order as do')
-				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','do.kode_customer as customer','kc.nama as kecamatan')
-				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
+				// ->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','do.kode_customer as customer','kc.nama as kecamatan')
+				// ->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
+				// ->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
+				// ->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
 				->get();
 			// return 'a';
 // 		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
