@@ -247,7 +247,7 @@ class desain_labaRugiController extends Controller
             $no++;
         }
 
-        return json_encode($data_neraca);
+        // return json_encode($data_neraca);
 
         return view("keuangan.desain_laba_rugi.view")->withData_neraca($data_neraca)->withData_detail($data_detail)->withCek($cek);
     }
