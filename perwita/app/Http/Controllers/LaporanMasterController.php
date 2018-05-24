@@ -602,7 +602,7 @@ class LaporanMasterController extends Controller
 //END OF
 
 	public function deliveryorder_total(){
-		return 'a';
+		// return 'a';
 			$data =DB::table('delivery_order as do')
 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','do.kode_customer as customer','kc.nama as kecamatan')
 				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
