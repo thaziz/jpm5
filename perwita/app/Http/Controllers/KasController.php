@@ -1238,6 +1238,14 @@ class KasController extends Controller
 	}
 
 	public function hapus($id){
+		$cari = DB::table('biaya_penerus_kas')
+					->where('bpk_id',$id)
+					->first();
+
+		$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$cari->bpk_nota)
+							   ->delete();
+							   
 		$delete = DB::table('biaya_penerus_kas')
 					->where('bpk_id',$id)
 					->delete();
