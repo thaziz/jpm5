@@ -602,75 +602,8 @@ class LaporanMasterController extends Controller
 //END OF
 
 	public function deliveryorder_total(){
-		// return 'ccccccccccccccccc';
-			return $data =DB::table('delivery_order as do')
-				// ->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','do.kode_customer as customer','kc.nama as kecamatan')
-				// ->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-				// ->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-				// ->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-				->get();
-			// return 'a';
-// 		 $array_bulan = ['1','2','3','4','5','6','7','8','9','10','11','12'];
-// 		 $tahun = carbon::now();
-// 		 $sre = substr($tahun,0, 10);
-// 		 $year =  $tahun->year;
-// 		 $date =  $tahun->day;
-
-// 		 $dat =DB::table('delivery_order as do')
-// 				->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-// 				->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-// 				->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-// 				->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-// 				->whereDate('tanggal','=',$sre)
-// 				->where('pendapatan','=','PAKET')
-// 				->get();
-// 		$dat1 =DB::table('delivery_order as do')
-// 			->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-// 			->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-// 			->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-// 			->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-// 			->whereDate('tanggal','=',$sre)
-// 			->where('pendapatan','=','KORAN')
-// 			->get();
-// 		$dat2 =DB::table('delivery_order as do')
-// 			->select('do.*','ka.id as kaid','kt.id as ktid','ka.nama as asal','kt.nama as tujuan','kc.nama as kecamatan')
-// 			->leftjoin('kota as ka','do.id_kota_asal','=','ka.id')
-// 			->leftjoin('kota as kt','do.id_kota_tujuan','=','kt.id')
-// 			->leftjoin('kecamatan as kc','do.id_kecamatan_tujuan','=','kc.id')
-// 			->whereDate('tanggal','=',$sre)
-// 			->where('nomor','like','%KGO%')
-// 			->get();
-
-// 		if ($dat == null) {
-// 			$paket = 0;
-// 		}else{
-// 		for ($i=0; $i <count($dat) ; $i++) { 
-// 			$hit[$i] =  $dat[$i]->total_net;
-// 		}
-// 		$paket = array_sum($hit);
-// 		}
-
-// //b
-// 		if ($dat1 == null) {
-// 			$koran = 0;
-// 		}else{
-// 			for ($i=0; $i <count($dat1) ; $i++) { 
-// 			$hit1[$i] =  $dat1[$i]->total_net;
-// 		}
-// 			$koran = array_sum($hit1);
-// 		}
 		
-// //b
-// 		if ($dat2 == null) {
-// 			$kargo = 0;
-// 		}else{
-// 		for ($i=0; $i <count($dat2) ; $i++) { 
-// 			$hit2[$i] =  $dat2[$i]->total_net;
-// 		}
-// 		$kargo = array_sum($hit2);
-// 		}
-		
-		$kota = DB::select("SELECT id, nama as tujuan from kota");
+		return $kota = DB::select("SELECT id, nama as tujuan from kota");
 		$kota1 = DB::select("SELECT id, nama as asal from kota");
 		$cabang = DB::table('cabang')->get();
 		$customer = DB::table('customer')->get();
