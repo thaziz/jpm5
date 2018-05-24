@@ -1395,9 +1395,10 @@
   $('#buttongetum').click(function(){
 
     id = $('.check').val();
+    cabangtransaksi = $('.cabangtransaksi').val();
     $.ajax({
       url : baseUrl + '/fakturpembelian/hasilum',
-      data : {id},
+      data : {id,cabangtransaksi},
       dataType : "json",
       type : "get",
       success : function(response){

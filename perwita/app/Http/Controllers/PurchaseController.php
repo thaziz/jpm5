@@ -4762,6 +4762,9 @@ $jurnalRef=$data['faktur'][0]->fp_nofaktur;
 
 		//save bayaruangmuka
 			if($request->inputbayaruangmuka == 'sukses'){
+
+			$jurnalum = [];
+			
 			$lastid =  DB::table('uangmukapembelian_fp')->max('umfp_id');;
 			if(isset($lastid)) {
 				$idumfp = $lastid;
@@ -7314,7 +7317,6 @@ public function kekata($x) {
 					else {
 						$data['fakturpembelian'] = $datas['fp1'];
 					}
-
 				}
 				else if($idjenisbayar == '1'){ //GIRO KAS KECIL
 					$datas['fp']  = DB::select("select * from ikhtisar_kas, cabang where  ik_comp = '$nosupplier' and ik_comp = kode and ik_status = 'APPROVED'");
@@ -7802,9 +7804,30 @@ public function kekata($x) {
 
 
 	public function getum(Request $request){
-		$idsup = $request->idsup;
+		/*$idsup = $request->idsup;
 		$explode = explode("," , $idsup);
-		$nosupplier = $explode[4];
+		$nosupplier = $explode[4];*/
+		$nosupplier = 'SP/EM/000001';
+		$cabang = $request->cabang;
+
+
+		$fpg =  DB::table('fpg')
+				 ->join('fpg_cekbank','fpgb_idfpg','=','idfpg')
+				 ->join('d_uangmuka','um_supplier','=','fpg_agen')
+				 ->select('fpg_nofpg','fpg_agen', 'fpg_tgl' , 'fpg_acchutang', 'idfpg' , 'fpg_totalbayar' , 'fpg_keterangan' , 'um_sisaterpakai' , 'um_nomorbukti')
+				 ->where('fpgb_posting','DONE')
+				 ->where('fpg_cabang' , $cabang);
+				 ->where('fpg_agen' , $nosupplier)
+				 ->get();
+
+		$bk = DB::table('bukti_kas_keluar')
+				 ->join('d_uangmuka','um_supplier','=','bkk_supplier')
+				 ->select('bkk_nota','bkk_supplier')
+				 ->where('bkk_supplier' , $nosupplier)
+				 ->where('bkk_comp' , $cabang);
+				 ->get();
+
+		return json_encode($data = array_merge($fpg,$bk));
 
 		$datas['um'] = DB::select("select fpg_nofpg as nota, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , um_sisaterpakai as sisaterpakai, um_nomorbukti as no_um from fpg, d_uangmuka, fpg_dt where fpg_agen = '$nosupplier' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpgdt_idfpg = idfpg  and fpgdt_idfp = um_id union select  bkk_nota as nota, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , um_sisaterpakai as sisaterpakai, um_nomorbukti as no_um  from bukti_kas_keluar, bukti_kas_keluar_detail, d_uangmuka where bkk_supplier = '$nosupplier' and bkk_supplier = um_supplier and bkkd_bkk_id = bkk_id   and bkkd_ref = um_supplier  ");
 
@@ -7835,7 +7858,7 @@ public function kekata($x) {
 
 	public function hasilum(Request $request){
 		$id = $request->id;
-		$data['um'] = DB::select("select fpg_nofpg as nota, um_nomorbukti as nota_um, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , um_sisaterpakai as sisaterpakai from fpg, fpg_dt, d_uangmuka where idfpg = '$id' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpg_jenisbayar = '4' and fpgdt_idfpg = idfpg and fpgdt_idfp = um_id union select  bkk_nota as nota, um_nomorbukti as nota_um, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , um_sisaterpakai as sisaterpakai from bukti_kas_keluar, d_uangmuka, bukti_kas_keluar_detail where bkk_id = '$id' and bkk_supplier = um_supplier and bkk_jenisbayar = '4' and bkkd_bkk_id = bkk_id and bkkd_ref = um_supplier");
+		/*$data['um'] = DB::select("select fpg_nofpg as nota, um_nomorbukti as nota_um, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , um_sisaterpakai as sisaterpakai, from fpg, fpg_dt, d_uangmuka where idfpg = '$id' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpg_jenisbayar = '4' and fpgdt_idfpg = idfpg and fpgdt_idfp = um_id union select  bkk_nota as nota, um_nomorbukti as nota_um, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , um_sisaterpakai as sisaterpakai from bukti_kas_keluar, d_uangmuka, bukti_kas_keluar_detail where bkk_id = '$id' and bkk_supplier = um_supplier and bkk_jenisbayar = '4' and bkkd_bkk_id = bkk_id and bkkd_ref = um_supplier");*/
 
 		return json_encode($data);
 
