@@ -627,7 +627,7 @@ class KasController extends Controller
 
 			$cari_asal_2[$i] = $cari_asal[$i]->bpkd_kode_cabang_awal; 
 		}
-		
+
 		if (isset($cari_asal_2)) {
 		    $unik_asal = array_unique($cari_asal_2);
 		    $unik_asal = array_values($unik_asal);
@@ -793,7 +793,7 @@ class KasController extends Controller
 				  ->get();
 
 		$akun_kas = DB::table('d_akun')
-    			  ->where('id_akun','like','1003'.'%')
+    			  ->where('id_akun','like','1001'.'%')
     			  ->where('kode_cabang',$data->bpk_comp)
     			  ->get();
 		$id = $request->id;
@@ -1574,6 +1574,42 @@ class KasController extends Controller
     	return view('purchase/kas/nopol',compact('data','tipe','id'));
 
     }
+
+    public function jurnal(request $req)
+	{
+		$bkk = DB::table('biaya_penerus_kas')	
+				 ->where('bpk_id',$req->id)
+				 ->first();
+		$data= DB::table('d_jurnal')
+				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+				 ->join('d_akun','jrdt_acc','=','id_akun')
+				 ->where('jr_ref',$bkk->bpk_nota)
+				 ->get();
+
+
+		$d = [];
+		$k = [];
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_value < 0) {
+				$data[$i]->jrdt_value *= -1;
+			}
+		}
+
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_statusdk == 'D') {
+				$d[$i] = $data[$i]->jrdt_value;
+			}elseif ($data[$i]->jrdt_statusdk == 'K') {
+				$k[$i] = $data[$i]->jrdt_value;
+			}
+		}
+		$d = array_values($d);
+		$k = array_values($k);
+
+		$d = array_sum($d);
+		$k = array_sum($k);
+
+		return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
+	}
 }
 
 ?>

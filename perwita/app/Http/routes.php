@@ -310,6 +310,7 @@ Route::get('biaya_penerus/hapuskas/{id}', 'KasController@hapus')->name('hapuskas
 Route::get('biaya_penerus/buktikas', 'KasController@buktikas')->name('buktikas');
 Route::get('biaya_penerus/detailkas', 'KasController@detailkas')->name('detailkas');
 Route::get('biaya_penerus/carinopol', 'KasController@carinopol')->name('carinopol');
+Route::get('biaya_penerus/jurnal', 'KasController@jurnal');
 
 // BIAYA PENERUS LOADING/UNLOADING
 Route::get('biaya_penerus_loading/index', 'loadingController@index_loading');
