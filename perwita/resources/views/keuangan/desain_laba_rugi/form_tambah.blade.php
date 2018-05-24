@@ -116,7 +116,7 @@
                       <div class="col-md-12" style="border: 1px solid #ddd; border-radius: 1px; padding: 10px; height: 500px; box-shadow: 0px 0px 10px #eee;">
                           <div class="tab-content">
                             <div role="tabpanel" class="tab-pane fade in active" id="aktiva">
-                              <span style="position: absolute; top: 50%; left: 28%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Laba Rugi</span>
+                              <span style="position: absolute; top: 50%; left: 35%; opacity: 0.1; color: #000; font-size: 15pt; font-style: italic; ">Canvas Laba Rugi</span>
                               <div id="aktiva_tree" style="font-size: 8pt;">
                                   
                               </div>
