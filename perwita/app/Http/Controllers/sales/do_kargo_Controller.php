@@ -498,7 +498,7 @@ class do_kargo_Controller extends Controller
                          ->where('kode_cabang',$request->cabang)
                          ->first();
         if ($select_akun == null) {
-              return response()->json(['status'=>4]);
+              return response()->json(['status'=>5]);
         }else{
           $akun_piutang = $select_akun->id_akun;
         }
