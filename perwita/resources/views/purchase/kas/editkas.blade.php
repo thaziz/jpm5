@@ -682,7 +682,7 @@ var id  =  '{{ $id }}';
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
 
 function(){
