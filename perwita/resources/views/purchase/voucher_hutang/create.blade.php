@@ -1,4 +1,4 @@
-  @extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 @section('content')
@@ -173,7 +173,17 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+   function addCommas(nStr) {
+            nStr += '';
+            x = nStr.split('.');
+            x1 = x[0];
+            x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+    }
   //CHOSEN SELECT WIDTH
     clearInterval(reset);
           var reset =setInterval(function(){
@@ -268,11 +278,12 @@
       var temp = 0;
       $('.nominal').each(function(){
         val = $(this).val();
+        val2 = val.replace(/,/g, '');
         if(val != ''){
-            temp = parseFloat(temp) + parseFloat(val);          
+            temp = (parseFloat(temp) + parseFloat(val2)).toFixed(2);          
         }
 
-        $('.hasil').val(temp);
+        $('.hasil').val(addCommas(temp));
       })
 
 

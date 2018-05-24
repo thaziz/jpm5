@@ -1305,7 +1305,12 @@
                           $('.sisafaktur').val(addCommas(data.faktur[0][0].fp_sisapelunasan));
                           $('.pelunasan').attr('readonly' , false);
                           $('.jmlhfaktur').val(addCommas(data.faktur[0][0].fp_netto));
-                          $('.uangmukakanan').val(addCommas(data.faktur[0][0].fp_uangmuka));
+                          if(data.faktur[0][0].fp_uangmuka == null){
+                              $('.uangmukakanan').val('0.00');
+                          }
+                          else {
+                              $('.uangmukakanan').val(addCommas(data.faktur[0][0].fp_uangmuka)); 
+                          }
                           $('.hutangdagang').val(data.faktur[0][0].fp_acchutang); 
                           $('.cabangfaktur').val(data.faktur[0][0].fp_comp);
 
@@ -2128,12 +2133,11 @@
 
                         cabang = $('.cabang').val();
                        // alert(cabang);
-                        if(cabang != 000){
+/*                        if(cabang != 000){
                           $('.jenisbayar2').val(cabang);
                           $('.jenisbayar2').prop('disabled', true).trigger("liszt:updated");
                           $('.jenisbayar2').prop('disabled', true).trigger("chosen:updated");
-
-                        }
+                        }*/
 
                     }
                     else if(idjenis == '4'){

@@ -310,6 +310,7 @@ Route::get('biaya_penerus/hapuskas/{id}', 'KasController@hapus')->name('hapuskas
 Route::get('biaya_penerus/buktikas', 'KasController@buktikas')->name('buktikas');
 Route::get('biaya_penerus/detailkas', 'KasController@detailkas')->name('detailkas');
 Route::get('biaya_penerus/carinopol', 'KasController@carinopol')->name('carinopol');
+Route::get('biaya_penerus/jurnal', 'KasController@jurnal');
 
 // BIAYA PENERUS LOADING/UNLOADING
 Route::get('biaya_penerus_loading/index', 'loadingController@index_loading');
@@ -944,6 +945,7 @@ Route::get('carilaporan_penjualan/carilaporan_penjualan','LaporanMasterControlle
 
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
+
 Route::get('sales/laporandeliveryorder_total_data','LaporanMasterController@deliveryorder_total_data')->name('deliveryorder_total_data');
 Route::get('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
 Route::get('exceldeliveryorder_total/exceldeliveryorder_total','LaporanMasterController@exceldeliveryorder_total');
