@@ -719,6 +719,7 @@ function(){
           $('.cari').addClass('disabled');
           $('.asd').attr('hidden',false);
           $('.id').val(data.id);
+          jurnal();
         }else if(data.status == '2'){
           $('.pending').html("Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")");
           $("html, body").animate({ scrollTop: 0 }, "slow");
