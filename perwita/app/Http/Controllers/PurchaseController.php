@@ -7815,7 +7815,7 @@ public function kekata($x) {
 				 ->join('d_uangmuka','um_supplier','=','fpg_agen')
 				 ->select('fpg_nofpg','fpg_agen', 'fpg_tgl' , 'fpg_acchutang', 'idfpg' , 'fpg_totalbayar' , 'fpg_keterangan' , 'um_sisaterpakai' , 'um_nomorbukti')
 				 ->where('fpgb_posting','DONE')
-				 ->where('fpg_cabang' , $cabang);
+				 ->where('fpg_cabang' , $cabang)
 				 ->where('fpg_agen' , $nosupplier)
 				 ->get();
 
@@ -7823,12 +7823,12 @@ public function kekata($x) {
 				 ->join('d_uangmuka','um_supplier','=','bkk_supplier')
 				 ->select('bkk_nota','bkk_supplier')
 				 ->where('bkk_supplier' , $nosupplier)
-				 ->where('bkk_comp' , $cabang);
+				 ->where('bkk_comp' , $cabang)
 				 ->get();
 
 		$datas['um'] = array_merge($fpg, $bk);
 		$datas['um1'] = array_merge($fpg, $bk);
-		
+
 /*		return json_encode($data = array_merge($fpg,$bk));
 
 		$datas['um'] = DB::select("select fpg_nofpg as nota, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , um_sisaterpakai as sisaterpakai, um_nomorbukti as no_um from fpg, d_uangmuka, fpg_dt where fpg_agen = '$nosupplier' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpgdt_idfpg = idfpg  and fpgdt_idfp = um_id union select  bkk_nota as nota, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , um_sisaterpakai as sisaterpakai, um_nomorbukti as no_um  from bukti_kas_keluar, bukti_kas_keluar_detail, d_uangmuka where bkk_supplier = '$nosupplier' and bkk_supplier = um_supplier and bkkd_bkk_id = bkk_id   and bkkd_ref = um_supplier  ");

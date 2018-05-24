@@ -806,7 +806,7 @@
                                                   <th> Total Jumlah Uang Muka </th>                      
                                               </tr>
                                               <tr>
-                                                    <td> <input type="text" class="form-control totaljumlah" readonly="" name="totaljumlah"> <input type="text" class="inputbayaruangmuka" name="inputbayaruangmuka"> </td>
+                                                    <td> <input type="text" class="form-control totaljumlah" readonly="" name="totaljumlah"> <input type="hidden" class="inputbayaruangmuka" name="inputbayaruangmuka"> </td>
                                               </tr>
                                           </table>
 
@@ -1438,9 +1438,11 @@
       arrnoum.push(val);
     })
 
+    cabang = $('.cabangtransaksi').val();
+
     $.ajax({
       url : baseUrl + '/fakturpembelian/getum',
-      data :{idsup,arrnoum},
+      data :{idsup,arrnoum,$cabang},
       type : "get",
       dataType : "json",
       success : function(response){
