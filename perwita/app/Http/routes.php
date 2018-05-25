@@ -2405,6 +2405,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/laporaninvoicepenjualan','laporan_penjualan\laporaninvoiceController@index');
   Route::get('data/jurnal/{ref}/{note}', 'jurnalController@lihatJurnal');
   Route::get('data/jurnal-umum', 'jurnalController@lihatJurnalUmum');
+  Route::get('data/jurnal-umum-pembelian', 'jurnalController@lihatJurnalPemb');
 
 
   //laporan Do

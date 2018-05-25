@@ -49,15 +49,15 @@
  @if(count($jurnal_dt)!=0)
                     <div class="pull-right">  
                      @if($data['faktur'][0]->fp_tipe != 'PO')
-                         <a onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','FP ITEM')" class="btn-xs btn-primary" aria-hidden="true"> 
+                         <a onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','FAKTUR PEMBELIAN')" class="btn-xs btn-primary" aria-hidden="true"> 
                     @else
-                        <a onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','FP PO')" class="btn-xs btn-primary" aria-hidden="true">
+                        <a onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','FAKTUR PEMBELIAN')" class="btn-xs btn-primary" aria-hidden="true">
                     @endif
                           <i class="fa  fa-eye"> </i>
                            &nbsp;  Lihat Jurnal  
                          </a> 
                     </div>
-@endif
+                    @endif
 
                <form method="post" action=""  enctype="multipart/form-data" class="form-horizontal" id="updatefp" >
               <div class="box" id="seragam_box">
@@ -262,6 +262,14 @@
                             <!--  @endif -->
                            @endif
                            <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+
+                           @if(count($jurnal_um) != 0)
+                           <a onclick="lihatjurnalum('{{$data['faktur'][0]->fp_nofaktur or null}}','UANG MUKA PEMBELIAN FP')" class="btn-sm btn-primary" aria-hidden="true">             
+                                <i class="fa  fa-eye"> </i>
+                                 &nbsp;  Lihat Jurnal Uang Muka  
+                           </a> 
+                           @endif
+
                         </td>
                       </tr>
                       </table>
@@ -840,6 +848,62 @@
 
 <div id="data-jurnal">
 </div>
+<div id="jurnal" class="modal" >
+                  <div class="modal-dialog">
+                    <div class="modal-content no-padding">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h5 class="modal-title">Laporan Jurnal</h5>
+                        <h4 class="modal-title">No PO:  <u>{{$data['po'][0]->po_no or null }}</u> </h4>
+                        
+                      </div>
+                      <div class="modal-body" style="padding: 15px 20px 15px 20px">                            
+                                <table id="table_jurnal" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Akun</th>
+                                            <th>Debit</th>
+                                            <th>Kredit</th>                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $totalDebit=0;
+                                             $totalKredit=0;
+                                        @endphp
+                                        @foreach($jurnal_dt as $data2)
+                                            <tr>
+                                                <td>{{$data2->nama_akun}}</td>
+                                                <td> @if($data2->dk=='D') 
+                                                        @php
+                                                        $totalDebit+=$data2->jrdt_value;
+                                                        @endphp
+                                                        {{number_format(abs($data2->jrdt_value),2,',','.')}} 
+                                                    @endif
+                                                </td>
+                                                <td>@if ($data2->dk=='K') 
+                                                    @php
+                                                        $totalKredit+=$data2->jrdt_value;
+                                                    @endphp
+                                                    {{number_format(abs($data2->jrdt_value),2,',','.')}}
+                                                     @endif
+                                                </td>
+                                            <tr> 
+                                        @endforeach                                           
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                                <th>Total</th>                                                
+                                                <th> {{number_format(abs($totalDebit),2,',','.')}} </th>
+                                                <th> {{number_format(abs($totalKredit),2,',','.')}}</th>
+                                        <tr>
+                                    </tfoot>
+                                </table>                            
+                          </div>                          
+                    </div>
+                  </div>
+                </div>
+
 
 @endsection
 
@@ -4641,7 +4705,24 @@ function lihatjurnal($ref,$note){
           /* data: "{'ref':'" + $ref+ "', 'note':'" + $note+ "'}",
 */
           
-         
+          success:function(response){
+                $('#data-jurnal').html(response);
+                $('#jurnal').modal('show');
+              }
+        });
+   }
+
+
+   function lihatjurnalum($ref,$note){
+
+          $.ajax({
+          url:baseUrl +'/data/jurnal-umum-pembelian',
+          type:'get',
+          data:'ref='+$ref
+               +'&note='+$note,
+          /* data: "{'ref':'" + $ref+ "', 'note':'" + $note+ "'}",
+*/
+          
           success:function(response){
                 $('#data-jurnal').html(response);
                 $('#jurnal').modal('show');
