@@ -515,7 +515,7 @@ class do_kargo_Controller extends Controller
           }
         }else if ($request->status_kendaraan == 'SUB'){
           $select_akun = DB::table('d_akun')
-                         ->where('id_akun','like','4202'.'%')
+                         ->where('id_akun','like','4401'.'%')
                          ->where('kode_cabang',$request->cabang)
                          ->first();
           if ($select_akun == null) {

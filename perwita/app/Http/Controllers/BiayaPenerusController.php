@@ -2383,6 +2383,13 @@ public function cari_do_subcon(request $request)
 	return view('purchase.fatkur_pembelian.tabelSubcon',compact('data'));
 }
 
+
+public function biaya_penerus_um(request $req)
+{
+	
+	return view('purchase.fatkur_pembelian.biaya_penerus_um_modal',compact('data'));
+}
+
 }
 
 

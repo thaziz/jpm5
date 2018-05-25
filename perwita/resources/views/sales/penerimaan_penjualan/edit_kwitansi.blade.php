@@ -187,7 +187,7 @@
                             <tr class="">
                                 <td style="padding-top: 0.4cm">Customer</td>
                                 <td  class="customer_td">
-                                    <div style="width: 400px">
+                                    <div>
                                         <select class="chosen-select-width customer"  name="customer " id="customer " style="width:100%" >
                                         <option value="0">Pilih - Customer</option>
                                         @foreach ($customer as $row)
@@ -2125,10 +2125,10 @@ var i_ket     = "{{$val->kd_keterangan}}"
 array_simpan.push(i_nomor);
 array_edit.push(i_nomor);
 array_harga.push(bayar);
-i_nomor = i_nomor.replace(/\//g,"");
+i_nomor1 = i_nomor.replace(/\//g,"");
 
     table_data.row.add([
-        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor+'" name="i_nomor[]" value="'+i_nomor+'">',
+        '<a class="his" title="Klik disini untuk menginput nilai" onclick="histori(this)">'+i_nomor+'</a>'+'<input type="hidden" class="i_nomor i_flag_'+i_nomor1+'" name="i_nomor[]" value="'+i_nomor+'">',
 
         accounting.formatMoney(i_tagihan, "", 2, ".",',')+'<input type="hidden" class="i_tagihan" name="i_tagihan[]" value="'+i_tagihan+'">',
 
