@@ -174,7 +174,7 @@
 
     function edit(id) {
         var id = id.replace(/\//g, "-");
-        window.open("{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}"+'/'+id);
+        window.open("{{ url('sales/edit_do_kargo')}}"+'/'+id);
     }
 
     function hapus(id){
