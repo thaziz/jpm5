@@ -307,9 +307,7 @@
             $('.status_pod').val('Terdaftar');
           }
           $('.harga_do').val(ui.item.harga);
-
       }
-
     });
   }
 
