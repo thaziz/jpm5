@@ -2405,10 +2405,11 @@ public function biaya_penerus_um(request $req)
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
 					   inner join d_uangmuka on um_supplier = fpg_agen
 					   where fpgb_posting = 'DONE'
-					   where fpg_agen = '$req->sup'");
+					   and fpg_agen = '$req->sup'");
 
 	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen, d_uangmuka.*
-					   from bukti_kas_keluar inner join d_uangmuka on um_supplier = bkk_supplier
+					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
+					    inner join d_uangmuka on um_supplier = bkk_supplier
 					   where bkk_supplier = '$req->sup'");
 
 	$data = [];
@@ -2416,7 +2417,7 @@ public function biaya_penerus_um(request $req)
 	// return $data;
 	return $data = array_merge($fpg,$bk);
 
-
+	
 	return view('purchase.fatkur_pembelian.biaya_penerus_um_modal',compact('data'));
 }
 
