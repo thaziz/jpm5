@@ -72,7 +72,7 @@
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td><a href="{{ url('sales/detail_do_kargo')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
+                                <td><a onclick="detail('{{$row->nomor}}')" href="">{{ $row->nomor }}</a></td>
                                 <td>{{ $row->tanggal }}</td>
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->nama_pengirim }}</td>
@@ -175,6 +175,12 @@
     function edit(id) {
         var id = id.replace(/\//g, "-");
         window.open("{{ url('sales/edit_do_kargo')}}"+'/'+id);
+    }
+
+    function detail(id) {
+        var id = id.replace(/\//g, "-");
+        window.open("{{ url('sales/detail_do_kargo')}}"+'/'+id);
+        
     }
 
     function hapus(id){

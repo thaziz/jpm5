@@ -993,7 +993,7 @@ $('.ritase').change(function(){
 // ngeprint
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();
-
+    var print = print.replace(/\//g, "-");
     window.open('{{ url('sales/deliveryorderkargoform/nota')}}'+'/'+print);
 })
 </script>

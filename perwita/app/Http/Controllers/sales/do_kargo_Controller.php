@@ -142,7 +142,7 @@ class do_kargo_Controller extends Controller
     public function cetak_nota($nomor=null) {
         
         $nomor = str_replace('-', '/', $nomor);
-        
+
         $nota = DB::table('delivery_order')
                   ->where('nomor',$nomor)
                   ->get();
@@ -789,6 +789,9 @@ class do_kargo_Controller extends Controller
     }
     public function detail_do_kargo($id)
     {
+
+        $id = str_replace('-', '/', $id);
+      
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $customer = DB::select(" SELECT kode,nama,tipe FROM customer ORDER BY nama ASC ");
         $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k
