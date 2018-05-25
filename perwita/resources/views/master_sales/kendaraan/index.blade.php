@@ -116,8 +116,14 @@
                                 <td>{{ $row->status }}</td>
                                 <td class="text-center">
                                     <div class="btn-group">
+                                    @if(Auth::user()->punyaAkses('Kendaraan','ubah'))
                                         <a href="{{ url('master_sales/kendaraan_form/'.$row->id.'/edit') }}" data-toggle="tooltip" title="Edit" class="btn btn-warning btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                    @endif
+                                    @if(Auth::user()->punyaAkses('Kendaraan','hapus'))
+
                                         <a href="{{ url('master_sales/kendaraan/'.$row->id.'/hapus_data') }}" data-toggle="tooltip" title="Delete" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-times"></i></a>
+                                    @endif
+
                                     </div>
                                 </td>
                             </tr>

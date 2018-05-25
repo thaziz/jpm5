@@ -682,7 +682,7 @@ var id  =  '{{ $id }}';
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
 
 function(){
@@ -721,13 +721,13 @@ function(){
           $('.id').val(data.id);
           jurnal();
         }else if(data.status == '2'){
-          $('.pending').html("Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")");
+          $('.pending').html("Data Belum disimpan biaya maksimal ("+data.minimal+")");
           $("html, body").animate({ scrollTop: 0 }, "slow");
           $('.my-bg').attr('hidden',false);
           swal({
           title: "Berhasil!",
                   type: 'warning',
-                  text: "Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")",
+                  text: "Data Belum disimpan PENDING biaya maksimal ("+data.minimal+")",
                   timer: 2000,
                   showConfirmButton: true
                   },function(){

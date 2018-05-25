@@ -612,7 +612,7 @@ function save_data(){
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
 
 function(){
@@ -656,7 +656,7 @@ function(){
           swal({
           title: "Berhasil!",
                   type: 'warning',
-                  text: "Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")",
+                  text: "Data belum disimpan PENDING biaya maksimal ("+data.minimal+")",
                   timer: 2000,
                   showConfirmButton: true
                   },function(){

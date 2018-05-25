@@ -250,6 +250,7 @@ Route::get('fakturpembelian/notaoutlet', 'BiayaPenerusController@notaoutlet');
 Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
+Route::get('fakturpembelian/biaya_penerus_um', 'BiayaPenerusController@biaya_penerus_um');
 
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
@@ -1868,24 +1869,29 @@ Route::get('master_keuangan/neraca-detail/excel/{throtle}', [
   'as'   => 'neraca_detail.excel'
 ]);
 
+Route::get('master_keuangan/laba_rugi/pdf/perbandingan/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_pdf_laba_rugi_perbandingan',
+  'as'   => 'laba_rugi.pdf_perbandingan'
+]);
+
 //endneraca_detail
 
 
 //laba rugi
 
-Route::get('master_keuangan/laba_rugi/{throttle}', [
-  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@index_laba_rugi',
-  'as'   => 'laba_rugi.index'
+Route::get('master_keuangan/laba_rugi/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@index_laba_rugi_single',
+  'as'   => 'laba_rugi.index_single'
 ]);
 
-Route::get('master_keuangan/laba_rugi/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_excel_laba_rugi',
-  'as'   => 'laba_rugi.excel'
+Route::get('master_keuangan/laba_rugi/perbandingan/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@index_laba_rugi_perbandingan',
+  'as'   => 'laba_rugi.index_perbandingan'
 ]);
 
-Route::get('master_keuangan/laba_rugi/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_pdf_laba_rugi',
-  'as'   => 'laba_rugi.pdf'
+Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_pdf_laba_rugi_single',
+  'as'   => 'laba_rugi.pdf_single'
 ]);
 
 //end laba rugi
