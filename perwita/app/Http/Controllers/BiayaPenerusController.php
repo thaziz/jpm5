@@ -2386,7 +2386,37 @@ public function cari_do_subcon(request $request)
 
 public function biaya_penerus_um(request $req)
 {
+	// $fpg = DB::table('fpg')
+	// 		 ->join('fpg_cekbank','fpgb_idfpg','=','idfpg')
+	// 		 ->join('d_uangmuka','um_supplier','=','fpg_agen')
+	// 		 ->select('fpg_nofpg','fpg_agen','d_uangmuka.*')
+	// 		 ->where('fpgb_posting','DONE')
+	// 		 ->where('fpg_agen',$req->sup)
+	// 		 ->get();
+
+
+	// $bk = DB::table('bukti_kas_keluar')
+	// 		 ->join('d_uangmuka','um_supplier','=','bkk_supplier')
+	// 		 ->select('bkk_nota','bkk_supplier','d_uangmuka.*')
+	// 		 ->where('bkk_supplier',$req->sup)
+	// 		 ->get();
+
+	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen, d_uangmuka.*
+					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join d_uangmuka on um_supplier = fpg_agen
+					   where fpgb_posting = 'DONE'
+					   where fpg_agen = '$req->sup'");
+
+	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen, d_uangmuka.*
+					   from bukti_kas_keluar inner join d_uangmuka on um_supplier = bkk_supplier
+					   where bkk_supplier = '$req->sup'");
+
+	$data = [];
 	
+	// return $data;
+	return $data = array_merge($fpg,$bk);
+
+
 	return view('purchase.fatkur_pembelian.biaya_penerus_um_modal',compact('data'));
 }
 
