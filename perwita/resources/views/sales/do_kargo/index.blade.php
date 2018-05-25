@@ -72,7 +72,7 @@
                         <tbody>
                             @foreach ($data as $row)
                             <tr>
-                                <td><a href="{{ url('sales/detail_do_kargo')}}/{{$row->nomor}}">{{ $row->nomor }}</a></td>
+                                <td><a onclick="detail('{{$row->nomor}}')" href="">{{ $row->nomor }}</a></td>
                                 <td>{{ $row->tanggal }}</td>
                                 <td>{{ $row->nama }}</td>
                                 <td>{{ $row->nama_pengirim }}</td>
@@ -94,7 +94,7 @@
 
                                         @if($row->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah'))
                                             @if(cek_periode(carbon\carbon::parse($row->tanggal)->format('m'),carbon\carbon::parse($row->tanggal)->format('Y') ) != 0)
-                                            <a type="button" href="{{ url('sales/edit_do_kargo')}}/{{$row->nomor}}" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
+                                            <a type="button" onclick="edit('{{$row->nomor}}')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>
                                             @endif
                                         @endif
 
@@ -168,7 +168,19 @@
 
 
     function print(id) {
+        var id = id.replace(/\//g, "-");
         window.open("{{url('sales/deliveryorderkargoform/nota')}}"+'/'+id);
+    }
+
+    function edit(id) {
+        var id = id.replace(/\//g, "-");
+        window.open("{{ url('sales/edit_do_kargo')}}"+'/'+id);
+    }
+
+    function detail(id) {
+        var id = id.replace(/\//g, "-");
+        window.open("{{ url('sales/detail_do_kargo')}}"+'/'+id);
+        
     }
 
     function hapus(id){

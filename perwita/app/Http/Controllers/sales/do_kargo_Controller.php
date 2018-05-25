@@ -141,6 +141,8 @@ class do_kargo_Controller extends Controller
     
     public function cetak_nota($nomor=null) {
         
+        $nomor = str_replace('-', '/', $nomor);
+
         $nota = DB::table('delivery_order')
                   ->where('nomor',$nomor)
                   ->get();
@@ -515,7 +517,7 @@ class do_kargo_Controller extends Controller
           }
         }else if ($request->status_kendaraan == 'SUB'){
           $select_akun = DB::table('d_akun')
-                         ->where('id_akun','like','4202'.'%')
+                         ->where('id_akun','like','4401'.'%')
                          ->where('kode_cabang',$request->cabang)
                          ->first();
           if ($select_akun == null) {
@@ -718,6 +720,7 @@ class do_kargo_Controller extends Controller
     
     public function edit_do_kargo($id)
     {
+        $id = str_replace('-', '/', $id);
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $customer = DB::select(" SELECT kode,nama,tipe FROM customer ORDER BY nama ASC ");
         $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k
@@ -786,6 +789,9 @@ class do_kargo_Controller extends Controller
     }
     public function detail_do_kargo($id)
     {
+
+        $id = str_replace('-', '/', $id);
+      
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $customer = DB::select(" SELECT kode,nama,tipe FROM customer ORDER BY nama ASC ");
         $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k

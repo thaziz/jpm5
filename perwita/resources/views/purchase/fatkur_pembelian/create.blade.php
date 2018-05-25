@@ -1167,6 +1167,246 @@
 <div class="row" style="padding-bottom: 50px;"></div>
 
 
+
+
+
+
+
+
+
+
+{{-- modal uang muka --}}
+
+
+
+
+<div id="modal_um_bp" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 1200px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pembayaran Uang Muka</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        <div class="col-sm-8">
+              <table class="table bp_tabel_um">
+              <tr>
+                <td>No Transaksi Kas / Bank</td>
+                <td colspan="2">
+                  <input placeholder="klik disini" type="text" name="bp_nomor_um" class=" form-control bp_nomor_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Tanggal</td>
+                <td colspan="2">
+                  <input type="text" name="bp_tanggal_um" class=" form-control bp_tanggal_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Jumlah</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="bp_jumlah_um" class=" form-control bp_jumlah_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Keterangan</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="bp_keterangan_um" class=" form-control bp_keterangan_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Dibayar</td>
+                <td>
+                  <input type="text" name="bp_dibayar_um" class=" form-control bp_dibayar_um">
+                </td>
+                <td align="right">
+                  <button class="btn btn-primary bp_tambah_um" type="button"><i class="fa fa-plus"> Tambah</i></button> 
+                </td>
+              </tr>
+            </table>
+            </div>
+            <div class="col-sm-4">
+              <table class="table ">
+                <tr>
+                  <td align="center">
+                   <h3>Total Jumlah Uang Muka</h3>
+                  </td>
+                </tr>
+              <tr>
+                <td>
+                  <input readonly="" type="text" name="bp_total_um" class="bp_total_um form-control ">
+                </td>
+              </tr>
+            </table>
+            </div>
+
+              <div class="col-sm-12">
+               <table class="table table-bordered bp_tabel_detail_um" ">
+                <thead>
+                <tr class="tableum">
+                  <th style="width:120px"> No Faktur </th>
+                  <th> No Kas / Bank</th>
+                  <th> Tanggal </th>
+                  <th> No Uang Muka</th>
+                  <th> Jumlah Uang Muka </th>
+                  <th> Dibayar </th>
+                  <th> Keterangan</th>
+                  <th> Hapus </th> 
+                </tr>
+                </thead>
+                <tbody>
+              
+               </tbody>
+            </table>
+          </div>
+      </div>
+    </div>
+     <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+      </div>
+     
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<div id="modal_show_um" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document" style="width: 1200px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Pilih Uang Muka</h4>
+      </div>
+      <div class="modal-body bp_div_um">
+        
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!--  MODAL TT PENERUS  -->
+
+<div class="modal fade" id="modal_tt_penerus" tabindex="-1" role="dialog"  aria-hidden="true">
+  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Form Tanda Terima</h2>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-stripped tabel_tt_penerus">
+          <tr>
+            <td width="150px">
+                  No Tanda Terima 
+                </td>
+                <td>
+                  <input type='text' name="nota_tt" class='input-sm form-control notandaterima'>
+                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                </td>
+          </tr>
+          <tr>
+            <td> Tanggal </td>
+                <td>
+                   <div class="input-group date">
+                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="{{carbon\carbon::now()->format('d/m/Y')}}" readonly="" name="tgl_tt">
+                  </div>
+                </td>
+          </tr>
+          <tr>
+              <td> Supplier </td>
+              <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                 <div class="row">
+                    <div class="col-sm-3"> 
+                      <div class="checkbox checkbox-info checkbox-circle">
+                          <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
+                            <label for="Kwitansi">
+                                Kwitansi / Invoice / No
+                            </label>
+                      </div> 
+                    </div>
+                    <div class="col-sm-3"> 
+                      <div class="checkbox checkbox-info checkbox-circle">
+                          <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
+                            <label for="FakturPajak">
+                                Faktur Pajak
+                            </label>
+                      </div> 
+                    </div>
+
+                    <div class="col-sm-3"> 
+                      <div class="checkbox checkbox-info checkbox-circle">
+                          <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
+                            <label for="SuratPerananAsli">
+                                Surat Peranan Asli
+                            </label>
+                      </div> 
+                    </div>
+
+                     <div class="col-sm-3"> 
+                      <div class="checkbox checkbox-info checkbox-circle">
+                          <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
+                            <label for="SuratJalanAsli">
+                               Surat Jalan Asli
+                            </label>
+                      </div> 
+                    </div>
+                  </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+               Lain Lain
+              </td>
+              <td>                      
+                <input type="text" class="form-control lain_penerus" name="lainlain_penerus">
+              </td>
+            </tr>
+            <tr>
+              <td> Tanggal Kembali </td>
+              <td><div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
+                </div>
+              </td>
+            </tr>
+            <tr>
+            <td>Total di Terima</td>
+              <td>
+                <div class="row">
+                  <div class="col-sm-3">
+                    <label class="col-sm-3 label-control"> Rp </label>
+                  </div>
+                  <div class="col-sm-9">
+                    <input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly="">
+                  </div>
+                </div>
+              </td>
+            </tr>
+        </table>
+      </div>
+      <div class="modal-footer inline-form">
+        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+        <button onclick="simpan_tt()" type="button" class="btn btn-primary simpan_penerus" data-dismiss="modal">Simpan</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
 @endsection
 
 
@@ -5684,7 +5924,30 @@ $('#tmbhdataitem').click(function(){
     })
   
  
-    
+      var datatable2 = $('.bp_tabel_detail_um').DataTable({
+            responsive: true,
+            searching:false,
+            //paging: false,
+            "pageLength": 10,
+            "language": dataTableLanguage,
+            columnDefs: [
+              {
+                 targets: 0,
+                 className: 'center'
+              },
+              {
+                 targets: 3,
+                 className: 'right'
+              },
+              {
+                 targets: 6,
+                 className: 'center'
+              }
+            ]
+    });
+
+
+ 
 
 
 
