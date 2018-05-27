@@ -281,26 +281,18 @@ class kasKeluarController extends Controller
 					'bkkd_ref' 			=> 'NONE',
 					'bkkd_supplier' 	=> 'NONE',
 					]);
-				
-			}
 
+				$id_pt = DB::table('patty_cash')
+						   ->max('pc_id')+1;
 
-			$id_pt = DB::table('patty_cash')
-						   ->max('pc_id');
-				if ($id_pt == null) {
-					$id_pt = 1;
-				}else{
-					$id_pt += 1;
-				}
-
-			$patty_cash = DB::table('patty_cash')
+				$patty_cash = DB::table('patty_cash')
 							->insert([
-								'pc_id'  		=> $id_pt,
+								'pc_id'			=> $id_pt,
 								'pc_ref'  		=> $req->jenis_bayar,
-								'pc_akun'  		=> $req->hutang,
-								'pc_keterangan' => strtoupper($req->keterangan_head),
+								'pc_akun'  		=> $req->pt_akun_biaya[$i],
+								'pc_keterangan' => strtoupper($req->pt_keterangan[$i]),
 								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+								'pc_kredit' 	=> $req->pt_nominal[$i],
 								'updated_at' 	=> carbon::now(),
 								'created_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
@@ -311,6 +303,13 @@ class kasKeluarController extends Controller
 								'pc_edit'  		=> 'UNALLOWED',
 								'pc_reim'  		=> 'UNRELEASED',
 							]);	
+				
+			}
+
+
+
+
+
 			// //JURNAL
 			$id_jurnal=d_jurnal::max('jr_id')+1;
 			// dd($id_jurnal);
@@ -428,6 +427,10 @@ class kasKeluarController extends Controller
 						->where('bkkd_bkk_id',$cari_nota->bkk_id)
 						->delete();
 
+			$delete = DB::table('patty_cash')
+						->where('pc_no_trans',$nota)
+						->delete();
+
 			for ($i=0; $i < count($req->pt_seq); $i++) {
 
 				$id_dt = DB::table('bukti_kas_keluar_detail')
@@ -452,17 +455,19 @@ class kasKeluarController extends Controller
 					'bkkd_ref' 			=> 'NONE',
 					'bkkd_supplier' 	=> 'NONE',
 					]);
-				
-			}
 
-			$patty_cash = DB::table('patty_cash')
-							->where('pc_no_trans',$nota)
-							->update([
+
+				$id_pt = DB::table('patty_cash')
+						   ->max('pc_id')+1;
+						   
+				$patty_cash = DB::table('patty_cash')
+							->insert([
+								'pc_id'			=> $id_pt,
 								'pc_ref'  		=> $req->jenis_bayar,
-								'pc_akun'  		=> $req->hutang,
-								'pc_keterangan' => strtoupper($req->keterangan_head),
+								'pc_akun'  		=> $req->pt_akun_biaya[$i],
+								'pc_keterangan' => strtoupper($req->pt_keterangan[$i]),
 								'pc_debet' 		=> 0,
-								'pc_kredit' 	=> filter_var($req->total, FILTER_SANITIZE_NUMBER_INT)/100,
+								'pc_kredit' 	=> $req->pt_nominal[$i],
 								'updated_at' 	=> carbon::now(),
 								'created_at' 	=> carbon::now(),
 								'pc_akun_kas' 	=> $req->kas,
@@ -473,6 +478,10 @@ class kasKeluarController extends Controller
 								'pc_edit'  		=> 'UNALLOWED',
 								'pc_reim'  		=> 'UNRELEASED',
 							]);	
+				
+			}
+
+			
 			// //JURNAL
 			$delete_jurnal = DB::table('d_jurnal')
 							   ->where('jr_ref',$nota)
