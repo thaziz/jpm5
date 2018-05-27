@@ -119,7 +119,7 @@ class cabang_kargo_Controller extends Controller
         // return $array_waktu;
        
 
-
+        // return 'a';
         // return $array_harga;
 
         if ($crud  == 'N') {
@@ -222,6 +222,7 @@ class cabang_kargo_Controller extends Controller
                 }
 
             }else{
+                // return 'a';
                     if (isset($cari_kode[0]->id_kota_asal) != $request->cb_kota_asal  and
                         isset($cari_kode[0]->id_kota_tujuan) != $request->cb_kota_tujuan and
                         isset($cari_kode[0]->kode_cabang) != $request->ed_cabang and 
@@ -262,7 +263,7 @@ class cabang_kargo_Controller extends Controller
                             $data = DB::table('tarif_cabang_kargo')->insert($simpan);
                         }
                     }else{
-
+                        // return 'a';
                         // return $request->cb_angkutan;
                         // if ($crud == 'N') {
                         //     $simpan = array(

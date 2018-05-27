@@ -119,7 +119,7 @@
                                     <select class="form-control subcon chosen-select-width" name="cb_subcon" >
                                         <option value="0">NON SUBCON</option>
                                     @foreach ($subcon as $row)
-                                        <option value="{{$row->kode}}">{{$row->nama}}</option>
+                                        <option value="{{$row->kode}}">{{$row->kode}} - {{$row->nama}}</option>
                                     @endforeach
                                     </select>
                                 </td>

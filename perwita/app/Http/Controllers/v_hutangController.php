@@ -14,6 +14,8 @@ use Validator;
 use App\Http\Controllers\Controller;
 use Session;
 use Auth;
+Use App\d_jurnal_dt;
+Use App\d_jurnal;
 
 class v_hutangController extends Controller
 {
@@ -72,8 +74,8 @@ class v_hutangController extends Controller
   
   
     public function simpan(Request $request){
-
-      $comp = $request->cabang;
+      return DB::transaction(function() use ($request) {  
+          $comp = $request->cabang;
       $datakun2 = DB::select("select * from d_akun where id_akun LIKE '2101%' and kode_cabang = '$comp'");
       
       if(count($datakun2) == 0){
@@ -84,6 +86,9 @@ class v_hutangController extends Controller
       else {
         $dataakunitem = $datakun2[0]->id_akun;
       }
+
+      $datajurnal = [];
+      $totalhutang = 0;
         
 
         $anj = DB::table('v_hutang')->max('v_id');
@@ -97,6 +102,7 @@ class v_hutangController extends Controller
        // return json_encode('tdk kosong');
        }
 
+       $total = str_replace("," , "" , $request->hasil);
 
         $store1 = new v_hutang;
         $store1->v_id  = $anj;
@@ -105,15 +111,15 @@ class v_hutangController extends Controller
         $store1->v_tempo =$request->tempo;
         $store1->v_supid =$request->suppilername;
         $store1->v_keterangan =$request->ket;
-        $store1->v_hasil =$request->total;
-        $store1->v_pelunasan =$request->total;
+        $store1->v_hasil =$total;
+        $store1->v_pelunasan =$total;
         $store1->v_akunhutang = $dataakunitem;
         $store1->vc_comp = $request->cabang;
      //   return json_encode($request->suppilername);
        $store1->save();
 
      //   return json_encode($request->nobukti);
-   
+      $comp = $request->cabang;
        for ($i=0; $i <count($request->accountid); $i++) {
 
 
@@ -126,7 +132,102 @@ class v_hutangController extends Controller
         $store2->vd_nominal=$nominal;
         $store2->vd_id=$idbaru+1;
         $store2->save();
-    }
+
+
+
+        $subacchutang = substr($request->accountid[$i], 0 , 4);
+        $datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$comp'");
+        $acchutang = $datakun[0]->id_akun;
+        $akundka = $datakun[0]->akun_dka;
+
+        if($akundka == 'K'){
+          $datajurnal[$i]['id_akun'] = $acchutang;
+          $datajurnal[$i]['subtotal'] = '-' . $nominal;
+          $datajurnal[$i]['dk'] = 'D';
+        }
+        else {
+          $datajurnal[$i]['id_akun'] = $acchutang;
+          $datajurnal[$i]['subtotal'] = $nominal;
+          $datajurnal[$i]['dk'] = 'D';
+
+        }
+
+         /* $datajurnal[$i]['id_akun'] = $acchutang;
+          $datajurnal[$i]['subtotal'] = '-' . $nominal;
+          $datajurnal[$i]['dk'] = 'D';*/
+
+      }
+
+        //savejurnal
+          $nosupplier = $request->suppilername;
+
+          $datasupplier = DB::select("select * from supplier where no_supplier = '$nosupplier'");
+          $acchutangsup = $datasupplier[0]->acc_hutang;
+
+          $subacchutang = substr($acchutangsup, 0 , 4);
+          $datakun = DB::select("select * from d_akun where id_akun LIKE '$subacchutang%' and  kode_cabang = '$comp'");
+          $acchutangsupplier = $datakun[0]->id_akun;
+          $akundka = $dataakun[0]->akun_dka;
+
+        $lastidjurnal = DB::table('d_jurnal')->max('jr_id'); 
+        if(isset($lastidjurnal)) {
+          $idjurnal = $lastidjurnal;
+          $idjurnal = (int)$idjurnal + 1;
+        }
+        else {
+          $idjurnal = 1;
+        }
+      
+        $year = date('Y');  
+        $date = date('Y-m-d');
+        $jurnal = new d_jurnal();
+        $jurnal->jr_id = $idjurnal;
+            $jurnal->jr_year = date('Y');
+            $jurnal->jr_date = date('Y-m-d');
+            $jurnal->jr_detail = 'VOUCHER HUTANG';
+            $jurnal->jr_ref = $request->nobukti;
+            $jurnal->jr_note = $request->ket;
+            $jurnal->save();
+            
+            if($akundka == 'D'){
+              $dataakun = array (
+                'id_akun' => $acchutangsupplier,
+                'subtotal' => '-' .$total,
+                'dk' => 'K',
+              );
+            }
+            else {
+             $dataakun = array (
+                'id_akun' => $acchutangsupplier,
+                'subtotal' => $total,
+                'dk' => 'K',
+              ); 
+            }
+
+           array_push($datajurnal, $dataakun );
+          $key  = 1;
+          for($j = 0; $j < count($datajurnal); $j++){
+            
+            $lastidjurnaldt = DB::table('d_jurnal')->max('jr_id'); 
+          if(isset($lastidjurnaldt)) {
+            $idjurnaldt = $lastidjurnaldt;
+            $idjurnaldt = (int)$idjurnaldt + 1;
+          }
+          else {
+            $idjurnaldt = 1;
+          }
+
+            $jurnaldt = new d_jurnal_dt();
+            $jurnaldt->jrdt_jurnal = $idjurnal;
+            $jurnaldt->jrdt_detailid = $key;
+            $jurnaldt->jrdt_acc = $datajurnal[$j]['id_akun'];
+            $jurnaldt->jrdt_value = $datajurnal[$j]['subtotal'];
+            $jurnaldt->jrdt_statusdk = $datajurnal[$j]['dk'];
+            $jurnaldt->save();
+            $key++;
+          }
+
+
        /* return response()->json([
                             'status' => 'berhasil',
                             'data' => $store1,
@@ -134,10 +235,13 @@ class v_hutangController extends Controller
                     ]);*/
 
         return json_encode('sukses');
+      });    
     }
 
     public function voucherhutang() {
-      $data = DB::table('v_hutang')->get();
+     /* $data = DB::table('v_hutang')->get()->OrderBy('v_id' , desc);*/
+      $data = DB::select("select * from v_hutang order by v_id desc");
+
      // dd($data);
     return view('purchase/voucher_hutang/index',compact('data'));
     }
@@ -257,7 +361,7 @@ class v_hutangController extends Controller
       foreach ($data as $key => $value) {
         $g = $value->v_hasil;
       }
-      dd($data);
+    //  dd($data);
       return view('purchase/voucher_hutang/detail',compact('data','a','b','c','d','e','f','g','h','i'));
     }
     public function cetakvoucherhutang($v_id){

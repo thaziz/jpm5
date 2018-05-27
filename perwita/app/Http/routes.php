@@ -135,6 +135,7 @@ Route::post('penerimaanbarang/cekgudang', 'PurchaseController@cekgudang');
 Route::get('penerimaanbarang/detailterimabarang/{id}', 'PurchaseController@detailterimabarang');
 Route::get('penerimaanbarang/valgudang', 'PurchaseController@valgudang');
 Route::get('penerimaanbarang/hapusdatapenerimaan', 'PurchaseController@hapusdatapenerimaan');
+Route::get('penerimaanbarang/lihatjurnal/{id}', 'PurchaseController@lihatjurnal');
 
 
 
@@ -249,6 +250,7 @@ Route::get('fakturpembelian/notaoutlet', 'BiayaPenerusController@notaoutlet');
 Route::get('fakturpembelian/notasubcon', 'BiayaPenerusController@notasubcon');
 Route::get('fakturpembelian/adinott', 'BiayaPenerusController@adinott');
 Route::get('fakturpembelian/nota_tt', 'BiayaPenerusController@nota_tt');
+Route::get('fakturpembelian/biaya_penerus_um', 'BiayaPenerusController@biaya_penerus_um');
 
 //PEMBAYARAN OUTLET
 Route::get('fakturpembelian/getpembayaranoutlet', 'BiayaPenerusController@getpembayaranoutlet')->name('getpembayaranoutlet');
@@ -309,6 +311,7 @@ Route::get('biaya_penerus/hapuskas/{id}', 'KasController@hapus')->name('hapuskas
 Route::get('biaya_penerus/buktikas', 'KasController@buktikas')->name('buktikas');
 Route::get('biaya_penerus/detailkas', 'KasController@detailkas')->name('detailkas');
 Route::get('biaya_penerus/carinopol', 'KasController@carinopol')->name('carinopol');
+Route::get('biaya_penerus/jurnal', 'KasController@jurnal');
 
 // BIAYA PENERUS LOADING/UNLOADING
 Route::get('biaya_penerus_loading/index', 'loadingController@index_loading');
@@ -428,7 +431,8 @@ Route::post('pelunasanhutangbank/getcek', 'PurchaseController@getcek');
 Route::post('pelunasanhutangbank/simpan', 'PurchaseController@simpanbbk');
 Route::get('pelunasanhutangbank/cetak/{id}', 'PurchaseController@cetakbbk');
 Route::post('pelunasanhutangbank/update', 'PurchaseController@updatebbk');
-Route::post('pelunasanhutangbank/hapusbank', 'PurchaseController@hapusbbk');
+Route::get('pelunasanhutangbank/hapuspelunasanhutang/{id}', 'PurchaseController@hapusbbk');
+Route::post('pelunasanhutangbank/lihatjurnal', 'PurchaseController@lihatjurnalpelunasan');
 
 
 Route::get('bankkaslain/bankkaslain', 'PurchaseController@bankkaslain');
@@ -740,6 +744,7 @@ Route::get('historisuangmukapembelian/historisuangmukapembelian', 'LaporanPurcha
 //_____________$
 //➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥ LAPORAN MASTER BERSAMA ➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥➥//
 
+
 //LAPORAN MASTER BERSAMA INDEX
 Route::get('laporanbersama/laporanbersama','LaporanMasterController@lap_bersama');
 //END OF
@@ -941,6 +946,7 @@ Route::get('carilaporan_penjualan/carilaporan_penjualan','LaporanMasterControlle
 
 //LAPORAN DELIVERY ORDER TOTAL 
 Route::get('sales/laporandeliveryorder_total','LaporanMasterController@deliveryorder_total');
+
 Route::get('sales/laporandeliveryorder_total_data','LaporanMasterController@deliveryorder_total_data')->name('deliveryorder_total_data');
 Route::get('reportdeliveryorder_total/reportdeliveryorder_total','LaporanMasterController@reportdeliveryorder_total');
 Route::get('exceldeliveryorder_total/exceldeliveryorder_total','LaporanMasterController@exceldeliveryorder_total');
@@ -1863,24 +1869,29 @@ Route::get('master_keuangan/neraca-detail/excel/{throtle}', [
   'as'   => 'neraca_detail.excel'
 ]);
 
+Route::get('master_keuangan/laba_rugi/pdf/perbandingan/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_pdf_laba_rugi_perbandingan',
+  'as'   => 'laba_rugi.pdf_perbandingan'
+]);
+
 //endneraca_detail
 
 
 //laba rugi
 
-Route::get('master_keuangan/laba_rugi/{throttle}', [
-  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@index_laba_rugi',
-  'as'   => 'laba_rugi.index'
+Route::get('master_keuangan/laba_rugi/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@index_laba_rugi_single',
+  'as'   => 'laba_rugi.index_single'
 ]);
 
-Route::get('master_keuangan/laba_rugi/excel/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_excel_laba_rugi',
-  'as'   => 'laba_rugi.excel'
+Route::get('master_keuangan/laba_rugi/perbandingan/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@index_laba_rugi_perbandingan',
+  'as'   => 'laba_rugi.index_perbandingan'
 ]);
 
-Route::get('master_keuangan/laba_rugi/print/{throtle}', [
-  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_pdf_laba_rugi',
-  'as'   => 'laba_rugi.pdf'
+Route::get('master_keuangan/laba_rugi/pdf/single/{throtle}', [
+  'uses' => 'master_keuangan\laporan\laporan_laba_rugi@print_pdf_laba_rugi_single',
+  'as'   => 'laba_rugi.pdf_single'
 ]);
 
 //end laba rugi
@@ -2400,6 +2411,7 @@ Route::get('master_keuangan/akun/get_data', 'master_keuangan\akun_controller@get
   Route::get('sales/laporaninvoicepenjualan','laporan_penjualan\laporaninvoiceController@index');
   Route::get('data/jurnal/{ref}/{note}', 'jurnalController@lihatJurnal');
   Route::get('data/jurnal-umum', 'jurnalController@lihatJurnalUmum');
+  Route::get('data/jurnal-umum-pembelian', 'jurnalController@lihatJurnalPemb');
 
 
   //laporan Do

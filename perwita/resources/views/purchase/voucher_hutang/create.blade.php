@@ -1,4 +1,4 @@
-  @extends('main')
+@extends('main')
 
 @section('title', 'dashboard')
 @section('content')
@@ -173,7 +173,17 @@
 
 @section('extra_scripts')
 <script type="text/javascript">
-
+   function addCommas(nStr) {
+            nStr += '';
+            x = nStr.split('.');
+            x1 = x[0];
+            x2 = x.length > 1 ? '.' + x[1] : '';
+            var rgx = /(\d+)(\d{3})/;
+            while (rgx.test(x1)) {
+                x1 = x1.replace(rgx, '$1' + ',' + '$2');
+            }
+            return x1 + x2;
+    }
   //CHOSEN SELECT WIDTH
     clearInterval(reset);
           var reset =setInterval(function(){
@@ -266,24 +276,18 @@
       
       function hitung(hitung){
       var temp = 0;
-      $('.nominal').each(function(i){
-        if ($(this).val() != '') {
-            hasil[i] = $(this).val();
-            
+      $('.nominal').each(function(){
+        val = $(this).val();
+        val2 = val.replace(/,/g, '');
+        if(val != ''){
+            temp = (parseFloat(temp) + parseFloat(val2)).toFixed(2);          
         }
-        else {
-         hasil[i] = 0; 
-        }
+
+        $('.hasil').val(addCommas(temp));
       })
 
-       for (var i=0  ; i < hasil.length ;i++){
-          temp += parseInt(hasil[i]);
-        }
-        var money = temp.toLocaleString('de-DE');
-        var hasilakir = money.replace(/[^0-9\,-]+/g,"");
-        var total = $(".hasil").val("Rp."+money+',00');
-        var n = Number(hasilakir);
-        var total = $(".totalhidden").val(n);
+
+     
       }
     
    $('.date').datepicker({

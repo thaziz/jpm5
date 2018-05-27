@@ -612,7 +612,7 @@ function save_data(){
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
 
 function(){
@@ -650,25 +650,20 @@ function(){
           $('.asd').attr('hidden',false);
           $('.id').val(data.id);
         }else if(data.status == '2'){
-          $('.pending').html("Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")");
+          $('.pending').html("Data belum disimpan, biaya maksimal ("+data.minimal+")");
           $("html, body").animate({ scrollTop: 0 }, "slow");
           $('.my-bg').attr('hidden',false);
           swal({
           title: "Berhasil!",
                   type: 'warning',
-                  text: "Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")",
+                  text: "Data belum disimpan PENDING biaya maksimal ("+data.minimal+")",
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
         
           });
-          $('.id').val(data.id);
-          $('.asd').attr('hidden',false);
-          $('.process').addClass('disabled');
-          $('.cari').addClass('disabled');
         }
         
-        $('.asd').attr('hidden',false);
       },
       error:function(data){
         swal({

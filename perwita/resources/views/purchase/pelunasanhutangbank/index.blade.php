@@ -89,7 +89,7 @@
                                 @endif
 
                         @if(Auth::user()->punyaAkses('Pelunasan Hutang','hapus')) 
-                        <a class="btn btn-sm btn-danger" href="{{url('pelunasanhutangbank/hapus/'. $bbk->bbk_id.'')}}" type="button"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
+                        <a class="btn btn-sm btn-danger" onclick="hapus({{$bbk->bbk_id}})" type="button"> <i class="fa fa-trash" aria-hidden="true"></i> </a>
                                 @endif
 
                         </td>
@@ -122,16 +122,58 @@
 @section('extra_scripts')
 <script type="text/javascript">
 
-     tableDetail = $('.tbl-penerimabarang').DataTable({
-            responsive: true,
-            searching: true,
-            //paging: false,
-            "pageLength": 10,
-            "language": dataTableLanguage,
+  tableDetail = $('.tbl-penerimabarang').DataTable({
+          responsive: true,
+          searching: true,
+          //paging: false,
+          "pageLength": 10,
+          "language": dataTableLanguage,
+  });
+
+  function hapus(id){
+    swal({
+    title: "Apakah anda yakin?",
+    text: "Hapus Data!",
+    type: "warning",
+    showCancelButton: true,
+    showLoaderOnConfirm: true,
+    confirmButtonColor: "#DD6B55",
+    confirmButtonText: "Ya, Hapus!",
+    cancelButtonText: "Batal",
+    closeOnConfirm: false
+  },
+
+function(){
+
+     $.ajax({
+      url:baseUrl + '/pelunasanhutangbank/hapuspelunasanhutang/'+id,
+      type:'get',
+      success:function(data){
+      swal({
+          title: "Berhasil!",
+                  type: 'success',
+                  text: "Data Berhasil Dihapus",
+                  timer: 2000,
+                  showConfirmButton: true
+                  },function(){
+                     location.reload();
+          });
+      },
+      error:function(data){
+
+        swal({
+        title: "Terjadi Kesalahan",
+                type: 'error',
+                timer: 2000,
+                showConfirmButton: false
     });
+   }
+  });
+  });
+}
 
   
-  
+    
     
 
 </script>

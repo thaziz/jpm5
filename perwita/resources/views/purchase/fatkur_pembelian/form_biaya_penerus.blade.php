@@ -132,6 +132,9 @@
         <button type="button" class="btn btn-primary pull-right cari-pod" onclick="appendDO();"><i class="fa fa-search">&nbsp;Append</i></button>
 
         <button type="button" class="btn btn-primary pull-right disabled save_biaya" style="margin-right: 20px" id="save-update"  onclick="save_biaya()" ><i class="fa fa-save"></i> Simpan Data</button>
+
+        <button class="btn btn-primary btn_modal_bp" type="button" > Bayar dengan Uang Muka </button>
+
       </td>
     </tr>
      </table>
@@ -238,118 +241,9 @@
 </div>
 
 
-<!--  MODAL TT PENERUS  -->
 
-<div class="modal fade" id="modal_tt_penerus" tabindex="-1" role="dialog"  aria-hidden="true">
-  <div class="modal-dialog" role="document" style="min-width: 800px !important; min-height: 800px">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title">Form Tanda Terima</h2>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-stripped tabel_tt_penerus">
-        	<tr>
-        		<td width="150px">
-                  No Tanda Terima 
-                </td>
-                <td>
-                  <input type='text' name="nota_tt" class='input-sm form-control notandaterima'>
-                  <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                </td>
-        	</tr>
-        	<tr>
-        		<td> Tanggal </td>
-                <td>
-                   <div class="input-group date">
-                    	<span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_tt" value="{{carbon\carbon::now()->format('d/m/Y')}}" readonly="" name="tgl_tt">
-                  </div>
-                </td>
-        	</tr>
-        	<tr>
-              <td> Supplier </td>
-              <td> <input type='text' class="form-control supplier_tt" value="" name="supplier_tt" readonly=""></td>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                 <div class="row">
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="Kwitansi" type="checkbox" checked="" name="kwitansi">
-                            <label for="Kwitansi">
-                                Kwitansi / Invoice / No
-                            </label>
-                      </div> 
-                    </div>
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="FakturPajak" type="checkbox" checked="" name="faktur_pajak">
-                            <label for="FakturPajak">
-                                Faktur Pajak
-                            </label>
-                      </div> 
-                    </div>
 
-                    <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratPerananAsli" type="checkbox" checked="" name="surat_peranan">
-                            <label for="SuratPerananAsli">
-                                Surat Peranan Asli
-                            </label>
-                      </div> 
-                    </div>
 
-                     <div class="col-sm-3"> 
-                      <div class="checkbox checkbox-info checkbox-circle">
-                          <input id="SuratJalanAsli" type="checkbox" checked="" name="surat_jalan">
-                            <label for="SuratJalanAsli">
-                               Surat Jalan Asli
-                            </label>
-                      </div> 
-                    </div>
-                  </div>
-              </td>
-            </tr>
-            <tr>
-              <td>
-               Lain Lain
-              </td>
-              <td>                      
-                <input type="text" class="form-control lain_penerus" name="lainlain_penerus">
-              </td>
-            </tr>
-            <tr>
-              <td> Tanggal Kembali </td>
-              <td><div class="input-group">
-                <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control jatuhtempo_tt" readonly="" name="tgl_kembali">
-                </div>
-              </td>
-            </tr>
-            <tr>
-            <td>Total di Terima</td>
-              <td>
-              	<div class="row">
-              		<div class="col-sm-3">
-              			<label class="col-sm-3 label-control"> Rp </label>
-              		</div>
-              		<div class="col-sm-9">
-              			<input type="text" class="form-control totalterima_tt" name="total_diterima" style="text-align:right;" readonly="">
-              		</div>
-              	</div>
-              </td>
-            </tr>
-        </table>
-      </div>
-      <div class="modal-footer inline-form">
-        <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-        <button onclick="simpan_tt()" type="button" class="btn btn-primary simpan_penerus" data-dismiss="modal">Simpan</button>
-      </div>
-    </div>
-  </div>
-</div>
 <script type="text/javascript">
   var array_do = [];
 	var jt = $('.jatuh_tempo').datepicker({
@@ -385,6 +279,8 @@
             ]
     });
 
+
+
   function ganti_agen(val) {
     $.ajax({
       url:baseUrl +'/fakturpembelian/rubahVen',
@@ -411,9 +307,7 @@
             $('.status_pod').val('Terdaftar');
           }
           $('.harga_do').val(ui.item.harga);
-
       }
-
     });
   }
 
@@ -744,4 +638,31 @@ function print_penerus() {
    window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
   }
 
+
+$('.btn_modal_bp').click(function(){
+  $('#modal_um_bp').modal('show');
+})
+
+
+
+$('.bp_nomor_um').focus(function(){
+  var sup = $('.agen_vendor').val();
+  if (sup == '0') {
+    toastr.warning('Agen/Vendor Harus Diisi');
+    return false;
+  }
+
+  $.ajax({
+    url:baseUrl +'/fakturpembelian/biaya_penerus_um',
+    data: {sup},
+    success:function(data){
+      console.log('asd');
+      $('.bp_div_um').html(data);
+    },error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
+
+  $('#modal_show_um').modal('show');
+})
 </script>

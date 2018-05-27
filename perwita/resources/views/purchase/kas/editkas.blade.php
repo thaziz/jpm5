@@ -78,6 +78,7 @@
       <div class="ibox-title">
         <h5>Biaya Penerus Kas</h5>
         <a href="../biaya_penerus/index" class="pull-right" style="color: grey"><i class="fa fa-arrow-left"> Kembali</i></a>
+        <a class="pull-right jurnal" style="margin-right: 20px;"><i class="fa fa-eye"> Lihat Jurnal</i></a>
       </div>
       <div class="ibox-content col-sm-12">
         <div class="col-sm-6">
@@ -256,6 +257,27 @@
 <div class="row" style="padding-bottom: 50px;"></div>
 
 
+
+<div class="modal modal_jurnal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document" style="width: 1000px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body tabel_jurnal">
+          
+        </div>
+        <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 @endsection
 
 
@@ -388,6 +410,7 @@ $('.tanggal').datepicker({
       })
     hitung();
     search();
+    jurnal();
   });
    var asd = $('.biaya_dll').maskMoney({precision:0, prefix:'Rp '});
 
@@ -659,7 +682,7 @@ var id  =  '{{ $id }}';
     confirmButtonColor: "#DD6B55",
     confirmButtonText: "Ya, Simpan!",
     cancelButtonText: "Batal",
-    closeOnConfirm: false
+    closeOnConfirm: true
   },
 
 function(){
@@ -696,14 +719,15 @@ function(){
           $('.cari').addClass('disabled');
           $('.asd').attr('hidden',false);
           $('.id').val(data.id);
+          jurnal();
         }else if(data.status == '2'){
-          $('.pending').html("Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")");
+          $('.pending').html("Data Belum disimpan biaya maksimal ("+data.minimal+")");
           $("html, body").animate({ scrollTop: 0 }, "slow");
           $('.my-bg').attr('hidden',false);
           swal({
           title: "Berhasil!",
                   type: 'warning',
-                  text: "Data berhasil disimpan dengan status PENDING biaya maksimal ("+data.minimal+")",
+                  text: "Data Belum disimpan PENDING biaya maksimal ("+data.minimal+")",
                   timer: 2000,
                   showConfirmButton: true
                   },function(){
@@ -752,6 +776,24 @@ function cariDATA(){
 function reload(){
   location.reload();
 }
+
+$('.jurnal').click(function(){
+    $('.modal_jurnal').modal('show');
+})
+function jurnal() {
+    var id = '{{ $id }}';
+    $.ajax({
+        url:baseUrl + '/biaya_penerus/jurnal',
+        type:'get',
+        data:{id},
+        success:function(data){
+           $('.tabel_jurnal').html(data);
+        },
+        error:function(data){
+            // location.reload();
+        }
+    }); 
+  }
 
 </script>
 @endsection

@@ -1,150 +1,111 @@
 <style>
-	.row-eq-height {
-	    display: -webkit-box;
-	    display: -webkit-flex;
-	    display: -ms-flexbox;
-	    display: flex;
-	}
+  
+  .table_neraca td{
+    font-weight: 600;
+    border-top:1px dotted #efefef;
+  }
 
-    #table_form input{
-      padding-left: 5px;
-    }
+  .table_neraca td.lv1{
+    padding: 5px 10px;
+  }
 
-    #table_form td,
-    #table_form th{
-      padding:10px 0px;
-    }
+  .table_neraca td.lv2{
+    padding: 5px 25px;
+  }
 
-    #tree th{
-      padding:5px;
-      border: 1px solid #ccc;
-      font-weight: 600;
-    }
+  .table_neraca td.lv3{
+    padding: 5px 40px;
+  }
 
-    #tree td.secondTree{
-      padding-left: 40px;
-    }
+  .table_neraca td.money{
+    text-align: right;
+    padding: 5px 10px;
+  }
 
-    #tree td{
-      border: 0px;
-      padding: 5px;
-    }
-
-    #tree td.{
-      color:blue;
-    }
-
-    #tree td.highlight{
-      border-top:2px solid #aaa;
-      border-bottom: 2px solid #aaa;
-      color:#222;
-    }
-
-    #tree td.break{
-      padding: 10px 0px;
-      background: #eee;
-    }
-
-    #bingkai td.header{
-      font-weight: bold;
-    }
-
-    #bingkai td.child{
-      padding-left: 20px;
-    }
-
-    #bingkai td.total{
-      border-top: 2px solid #999;
-      font-weight: 600;
-    }
-
-    #bingkai td.no-border{
-      border: 0px;
-    }
+  .table_neraca td.total{
+    border-top: 1px solid #666;
+  }
 
 </style>
 
-<div class="row" style="margin-top: 20px; padding-right: 15px;">
-    <div class="col-md-12">                           
-      <table id="tree" width="100%">
+<div class="row">
+  
+  {{-- Aktiva START --}}
 
-          <tbody>
-            <td style="border: 1px solid #ccc">
-              <table width="100%" style="border: 0px solid red; font-size: 8pt;" id="bingkai">
-                <tr>
-                  <?php $DatatotalAktiva = 0; $totalHeader = 0;?>
-                  @foreach($data as $dataAktiva)
-                    <?php 
-                      $header = ""; $child = ""; $total = ""; 
+  <div class="col-md-12">
+    <div class="col-md-12 text-center text-muted" style="padding: 10px; border: 1px solid #eee; box-shadow: 0px 0px 10px #eee;">Laba Rugi</div>
 
-                      if($dataAktiva["jenis"] == 1){
-                        $header = "header"; $totalHeader = 0;
-                      }
+    <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
+      <table class="table_neraca" width="100%" style="font-size: 8pt;" border="0">
 
-                      if($dataAktiva["parrent"] != "")
-                        $child = "child";
+        @foreach($data_neraca as $data_neraca_aktiva)
+            <?php 
+              $level = "lv".$data_neraca_aktiva["level"];
+            ?>
+            
+            @if($data_neraca_aktiva["jenis"] == 1)
+              <tr>
+                <td colspan="3" class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+              </tr>
+            @elseif($data_neraca_aktiva["jenis"] == 2)
+              <tr>
+                <td width="55%" class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                <td class="money">{{ $data_neraca_aktiva["total"] }}</td>
+                <td></td>
+              </tr>
 
-                      if($dataAktiva["jenis"] == 3)
-                        $total = "total";
-                    ?>
+                @foreach($data_detail as $data_detail_aktiva)
+                  @if($data_detail_aktiva["id_parrent"] == $data_neraca_aktiva["nomor_id"])
+                    <tr>
+                      <td class="lv3">{{ $data_detail_aktiva["nama_referensi"] }}</td>
+                      <td class="money">{{ $data_detail_aktiva["total"] }}</td>
+                      <td></td>
+                    </tr>
+                  @endif
+                @endforeach
 
+            @elseif($data_neraca_aktiva["jenis"] == 3)
+              <tr>
+                <td class="{{ $level }}">{{ $data_neraca_aktiva["keterangan"] }}</td>
+                <td></td>
+                <td class="money total">{{ $data_neraca_aktiva["total"] }}</td>
+              </tr>
+            @elseif($data_neraca_aktiva["jenis"] == 4)
+              <tr>
+                <td class="{{ $level }}">&nbsp;</td>
+                <td></td>
+                <td></td>
+              </tr>
+            @endif
+        @endforeach
 
-                    @if($dataAktiva["type"] == "aktiva")
-                      
-                        @if($dataAktiva["jenis"] == "4")
-                          <tr><td colspan="2">&nbsp;</td></tr>
-                        @else
-                          <tr>
-                            <td class="{{ $header." ".$child." ".$total }} no-border" width="70%">{{ $dataAktiva["nama_perkiraan"] }}</td>
-                            @if($dataAktiva["jenis"] == 2)
-
-                              <?php 
-                                $show = ($dataAktiva["total"] < 0) ? "(".number_format($dataAktiva["total"]).")" : number_format($dataAktiva["total"]); 
-                              ?>
-
-                              <td class="text-right {{ $total }}">XXX.XXX.XXX</td>
-                            @elseif($dataAktiva["jenis"] == 3)
-                              <?php 
-                                $show = ($totalHeader < 0) ? "(".number_format($totalHeader).")" : number_format($totalHeader); 
-                              ?>
-
-                              <td class="text-right {{ $total }}">XXX.XXX.XXX</td>
-                            @endif
-                          </tr>
-                        @endif
-
-                      <?php $DatatotalAktiva+= $dataAktiva["total"]; $totalHeader+= $dataAktiva["total"]; ?>
-                    @endif
-
-                  @endforeach
-                </tr>
-              </table>
-            </td>
-          </tbody>           
       </table>
     </div>
+  </div>
+
+  {{-- Aktiva END --}}
+
 </div>
 
-<div class="row" style="margin-bottom: 20px; padding-right: 15px;">
-	<div class="col-md-12 m-t">                           
-	  <table id="tree" width="100%" style="font-size: 8pt;">
-	      <thead>
-	        <tr>
-	          <th class="text-center" width="70%">Total Akhir Laba Rugi</th>
-	          <th class="text-right">XXX.XXX.XXX</th>
-	        </tr>
-	      </thead>         
-	  </table>
-	</div>
+<div class="row">
+  <div class="col-md-12 m-t">
+    <div class="col-md-12" style="border: 1px solid #eee; box-shadow: 0px 0px 10px #eee; padding: 0px;">
+      <table class="table_neraca" width="100%" style="font-size: 8pt;" border="0">
+
+        <tr>
+          <td class="text-center">Laba Rugi</td>
+          <td class="money">XXXX</td>
+        </tr>
+
+      </table>
+    </div>
+  </div>
 </div>
 
-<div class="row" style="margin-bottom: 20px; padding-right: 15px;">
-	<div class="col-md-3 col-md-offset-7">
-		<a href="{{ route("laba_rugi.index", "bulan?m=".date("m")."&y=".date("Y")."") }}"><button type="button" class="btn btn-primary">Pergi Ke Halaman Laba Rugi</button></a>
-	</div>
-</div>
-
-
-
-
-
+@if($cek->is_active == 1)
+  <div class="row">
+    <div class="col-md-12 m-t-lg">
+      <a href="{{ route("neraca.index_single", "bulan?m=".date("m")."&y=".date("Y")."") }}" target="_blank" class="btn btn-primary btn-sm pull-right" style="font-size: 8pt;" id="simpan_desain">Buka Laporan Laba Rugi</a>
+    </div>
+  </div>
+@endif

@@ -111,6 +111,7 @@ class KasController extends Controller
 
 	public function create(){
 
+
 	    $year  = Carbon::now()->format('Y'); 
 		$month = Carbon::now()->format('m');  	
 		$now   = Carbon::now()->format('d-m-Y');
@@ -448,6 +449,10 @@ class KasController extends Controller
 			$pending_status = 'PENDING';
 		}
 
+		if ($pending_status == "PENDING") {
+
+		  return response()->json(['status' => '2','minimal' => $sisa]);
+		}
 	   	// dd($total_tarif);
 
 		if($request->jenis_pembiayaan=='PAKET'){
@@ -624,13 +629,100 @@ class KasController extends Controller
 			}
 
 			// IKI MAS JURNAL.E HARGA MBEK ASALE
-			 // return $jurnal;
-			//
+			
+			// //JURNAL
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			$jenis_bayar = DB::table('jenisbayar')
+							 ->where('idjenisbayar',10)
+							 ->first();
+
+			$jurnal_save = d_jurnal::create(['jr_id'		=> $id_jurnal,
+										'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
+										'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
+										'jr_detail' => $jenis_bayar->jenisbayar,
+										'jr_ref'  	=> $request->no_trans,
+										'jr_note'  	=> 'BIAYA PENERUS KAS',
+										'jr_insert' => carbon::now(),
+										'jr_update' => carbon::now(),
+										]);
+
 			//IKI TOTAL KABEH HARGANE
 			$total_harga=array_sum($harga_array);
 
+			$cari_akun = substr($cari_persen->kode_akun, 0,4);
+
+
+
+			$akun 	  = [];
+			$akun_val = [];
+			$jumlah   = [];
+
+			array_push($akun, $request->nama_kas);
+			array_push($akun_val, $total_harga);
+			for ($i=0; $i < count($jurnal); $i++) { 
+				$acc = DB::table('d_akun')
+						 ->where('id_akun','like',$cari_akun .'%')
+						 ->where('kode_cabang',$jurnal[$i]['asal'])
+						 ->first();
+
+				if ($acc == null) {
+					return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
+				}
+				array_push($akun, $acc->id_akun);
+				array_push($akun_val, $jurnal[$i]['harga']);
+			}
+
+			// dd($akun_val);
+
+
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun','like',$akun[$i].'%')
+								  ->first();
+
+
+				if (substr($akun[$i],0, 1)==1) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}
+				}else if (substr($akun[$i],0, 1)>1) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}
+				}
+			}
+			$jurnal_dt = d_jurnal_dt::insert($data_akun);
+
+			$lihat_jurnal = DB::table('d_jurnal_dt')
+						->where('jrdt_jurnal',$id_jurnal)
+						->get();
+
 
 		}
+			// dd($lihat_jurnal);
 		  			
 
 		  if ($pending_status == "APPROVED") {
@@ -675,7 +767,7 @@ class KasController extends Controller
 				  ->get();
 
 		$akun_kas = DB::table('d_akun')
-    			  ->where('id_akun','like','1003'.'%')
+    			  ->where('id_akun','like','1001'.'%')
     			  ->where('kode_cabang',$data->bpk_comp)
     			  ->get();
 		$id = $request->id;
@@ -800,6 +892,12 @@ class KasController extends Controller
 			$pending_status = 'APPROVED';
 		}else{
 			$pending_status = 'PENDING';
+		}
+
+
+		if ($pending_status == "PENDING") {
+
+		  return response()->json(['status' => '2','minimal' => $sisa]);
 		}
 
 	   	// dd($total_tarif);
@@ -973,6 +1071,9 @@ class KasController extends Controller
 			$cari_asal_2[$i] = $cari_asal[$i]->bpkd_kode_cabang_awal; 
 		}
 
+
+
+
 		if (isset($cari_asal_2)) {
 		    $unik_asal = array_unique($cari_asal_2);
 		    $unik_asal = array_values($unik_asal);
@@ -1000,12 +1101,98 @@ class KasController extends Controller
 			}
 
 			// IKI MAS JURNAL.E HARGA MBEK ASALE
-			 // return $jurnal;
-			//
+			$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$request->no_trans)
+							   ->delete();
+			// //JURNAL
+			$id_jurnal=d_jurnal::max('jr_id')+1;
+			$jenis_bayar = DB::table('jenisbayar')
+							 ->where('idjenisbayar',10)
+							 ->first();
+
+			$jurnal_save = d_jurnal::create(['jr_id'		=> $id_jurnal,
+										'jr_year'   => carbon::parse(str_replace('/', '-', $request->tN))->format('Y'),
+										'jr_date' 	=> carbon::parse(str_replace('/', '-', $request->tN))->format('Y-m-d'),
+										'jr_detail' => $jenis_bayar->jenisbayar,
+										'jr_ref'  	=> $request->no_trans,
+										'jr_note'  	=> 'BIAYA PENERUS KAS',
+										'jr_insert' => carbon::now(),
+										'jr_update' => carbon::now(),
+										]);
+
 			//IKI TOTAL KABEH HARGANE
 			$total_harga=array_sum($harga_array);
 
+			$cari_akun = substr($cari_persen->kode_akun, 0,4);
 
+
+
+			$akun 	  = [];
+			$akun_val = [];
+			$jumlah   = [];
+
+			array_push($akun, $request->nama_kas);
+			array_push($akun_val, $total_harga);
+			for ($i=0; $i < count($jurnal); $i++) { 
+				$acc = DB::table('d_akun')
+						 ->where('id_akun','like',$cari_akun .'%')
+						 ->where('kode_cabang',$jurnal[$i]['asal'])
+						 ->first();
+
+				if ($acc == null) {
+					return response()->json(['status'=>3,'data'=>'Terdapat Resi Yang Tidak Memiliki Akun Biaya']);
+				}
+				array_push($akun, $acc->id_akun);
+				array_push($akun_val, $jurnal[$i]['harga']);
+			}
+
+			// dd($akun_val);
+
+
+			for ($i=0; $i < count($akun); $i++) { 
+
+				$cari_coa = DB::table('d_akun')
+								  ->where('id_akun','like',$akun[$i].'%')
+								  ->first();
+
+
+				if (substr($akun[$i],0, 1)==1) {
+					
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}
+				}else if (substr($akun[$i],0, 1)>1) {
+
+					if ($cari_coa->akun_dka == 'D') {
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_statusdk'] = 'K';
+					}else{
+						$data_akun[$i]['jrdt_jurnal'] 	= $id_jurnal;
+						$data_akun[$i]['jrdt_detailid']	= $i+1;
+						$data_akun[$i]['jrdt_acc'] 	 	= $cari_coa->id_akun;
+						$data_akun[$i]['jrdt_value'] 	= -$akun_val[$i];
+						$data_akun[$i]['jrdt_statusdk'] = 'D';
+					}
+				}
+			}
+			$jurnal_dt = d_jurnal_dt::insert($data_akun);
+
+			$lihat_jurnal = DB::table('d_jurnal_dt')
+						->where('jrdt_jurnal',$id_jurnal)
+						->get();
 
 
 		}
@@ -1024,6 +1211,14 @@ class KasController extends Controller
 	}
 
 	public function hapus($id){
+		$cari = DB::table('biaya_penerus_kas')
+					->where('bpk_id',$id)
+					->first();
+
+		$delete_jurnal = DB::table('d_jurnal')
+							   ->where('jr_ref',$cari->bpk_nota)
+							   ->delete();
+							   
 		$delete = DB::table('biaya_penerus_kas')
 					->where('bpk_id',$id)
 					->delete();
@@ -1451,6 +1646,42 @@ class KasController extends Controller
     	return view('purchase/kas/nopol',compact('data','tipe','id'));
 
     }
+
+    public function jurnal(request $req)
+	{
+		$bkk = DB::table('biaya_penerus_kas')	
+				 ->where('bpk_id',$req->id)
+				 ->first();
+		$data= DB::table('d_jurnal')
+				 ->join('d_jurnal_dt','jrdt_jurnal','=','jr_id')
+				 ->join('d_akun','jrdt_acc','=','id_akun')
+				 ->where('jr_ref',$bkk->bpk_nota)
+				 ->get();
+
+
+		$d = [];
+		$k = [];
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_value < 0) {
+				$data[$i]->jrdt_value *= -1;
+			}
+		}
+
+		for ($i=0; $i < count($data); $i++) { 
+			if ($data[$i]->jrdt_statusdk == 'D') {
+				$d[$i] = $data[$i]->jrdt_value;
+			}elseif ($data[$i]->jrdt_statusdk == 'K') {
+				$k[$i] = $data[$i]->jrdt_value;
+			}
+		}
+		$d = array_values($d);
+		$k = array_values($k);
+
+		$d = array_sum($d);
+		$k = array_sum($k);
+
+		return view('purchase.buktikaskeluar.jurnal',compact('data','d','k'));
+	}
 }
 
 ?>

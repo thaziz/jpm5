@@ -892,6 +892,14 @@ $('.save').click(function(){
                             showConfirmButton: true
 
                 });
+        }else if (response.status == 5) {
+                swal({
+                    title: "Akun Pendapatan Untuk Cabang Ini Belum Tersedia",
+                            type: 'error',
+                            timer: 900,
+                            showConfirmButton: true
+
+                });
         }else{
             swal({
                 title: "Data "+response.text+" Harus Diisi",
@@ -935,6 +943,7 @@ $('.ritase').change(function(){
 // ngeprint
 $('.ngeprint').click(function(){
     var print = $('.nomor_print').val();
+    var print = print.replace(/\//g, "-");
 
     window.open('{{ url('sales/deliveryorderkargoform/nota')}}'+'/'+print);
 })

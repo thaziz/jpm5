@@ -106,7 +106,7 @@
                      <!-- {{Session::get('comp_year')}} -->
                      </h5>
                     <div class="ibox-tools">
-                        <a class="btn btn-sm btn-primary tambahAkun" href="{{ url('master_keuangan/desain_neraca/add')}}">
+                        <a class="btn btn-sm btn-primary tambahAkun" href="{{ url('master_keuangan/desain_laba_rugi/add')}}">
                           <i class="fa fa-plus"></i> &nbsp;Tambahkan Data Desain Laba Rugi
                         </a>
                     </div>
@@ -186,11 +186,11 @@
 
  <!-- modal -->
 <div id="modal_tampilkan" class="modal">
-  <div class="modal-dialog modal-lg">
+  <div class="modal-dialog ">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Tampilan Desain Neraca</h4>
+        <h4 class="modal-title">Tampilan Desain Laba Rugi</h4>
         <input type="hidden" class="parrent"/>
       </div>
       <div class="modal-body" id="wrap">
@@ -237,9 +237,9 @@
       evt.preventDefault();
 
       $("#modal_tampilkan").modal("show");
-      $("#modal_tampilkan .modal-body").html('<center><small class="text-muted">Sedang Mengambil Data Tampilan Neraca...</small></center>');
+      $("#modal_tampilkan .modal-body").html('<center><small class="text-muted">Sedang Mengambil Data Tampilan Laba Rugi...</small></center>');
 
-      $.ajax(baseUrl+"/master_keuangan/desain_neraca/view/"+$(this).data("id"), {
+      $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/view/"+$(this).data("id"), {
          timeout: 15000,
          dataType: "html",
          success: function (data) {
@@ -261,7 +261,7 @@
 
       $(".edit").attr("disabled", "disabled");
 
-      window.location = baseUrl+"/master_keuangan/desain_neraca/edit/"+$(this).data("id");
+      window.location = baseUrl+"/master_keuangan/desain_laba_rugi/edit/"+$(this).data("id");
 
     })
 
@@ -274,7 +274,7 @@
       prmpt = confirm("Apa Anda Yakin Ingin Menghapus Desain Ini ? ");
 
       if(prmpt)
-        window.location = baseUrl+"/master_keuangan/desain_neraca/delete/"+$(this).data("id");
+        window.location = baseUrl+"/master_keuangan/desain_laba_rugi/delete/"+$(this).data("id");
       else
         return false;
 
@@ -287,13 +287,13 @@
 
       $(".aktifkan").attr("disabled", "disabled");
 
-      $.ajax(baseUrl+"/master_keuangan/desain_neraca/aktifkan/"+$(this).data("id"), {
+      $.ajax(baseUrl+"/master_keuangan/desain_laba_rugi/aktifkan/"+$(this).data("id"), {
          timeout: 15000,
          dataType: "json",
          success: function (data) {
             if(data.status == "sukses"){
-              alert("Neraca Berhasil Digunakan.");
-              window.location = baseUrl+"/master_keuangan/desain_neraca";
+              alert("Desain Laba Rugi Berhasil Digunakan.");
+              window.location = baseUrl+"/master_keuangan/desain_laba_rugi";
             }else if(data.status == "miss"){
               alert("Ups. Kami Tidak Bisa Menemukan Data Desain Yang Dimaksud..");
               $(".aktifkan").removeAttr("disabled");

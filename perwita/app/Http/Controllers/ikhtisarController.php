@@ -162,7 +162,7 @@ class ikhtisarController extends Controller
 		$datacomp = $request->cabang;
 
 		$datakun = DB::select("select * from d_akun where id_akun LIKE '1001%' and  kode_cabang = '$datacomp'");
-		if(count($datakaun) == 0){
+		if(count($datakun) == 0){
 				return Response()->json(['status' => 3, 'message' => 'Data Akun KAS untuk cabang '. $datacomp.'']);
 		}
 		else {
@@ -220,7 +220,8 @@ class ikhtisarController extends Controller
 								   		'ik_edit'		=> 'UNALLOWED',
 								   		'ik_status'		=> 'RELEASED',
 								   		'created_at'	=> Carbon::now(),
-								   		'updated_at'	=> Carbon::now()
+								   		'updated_at'	=> Carbon::now(),
+								   		'ik_akunhutang' => $acchutang,
 								]);
 				for ($i=0; $i < count($cari_id); $i++) { 
 
