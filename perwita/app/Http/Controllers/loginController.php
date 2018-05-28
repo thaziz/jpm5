@@ -70,7 +70,10 @@ class loginController extends Controller {
                     $cabang=cabang::get();
                     session::set('userCabang',$cabang);
                  }else{
-                    $cabang=cabang::where('kode',$user->kode_cabang)->first();                                        
+                    $cabang=cabang::where('kode',$user->kode_cabang)->first();               
+
+
+                                             
                     session::set('cabang',$cabang->kode);
                     session::set('namaCabang',$cabang->nama);
 
