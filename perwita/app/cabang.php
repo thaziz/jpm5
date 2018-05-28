@@ -8,6 +8,6 @@ class cabang extends Model
 {
     protected $table = 'cabang';
     protected $primaryKey = 'kode';
-  
+  	
 	public $incrementing = false;
 }
