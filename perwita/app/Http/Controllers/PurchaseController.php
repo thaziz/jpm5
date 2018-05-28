@@ -4376,7 +4376,7 @@ public function purchase_order() {
 		                    (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef' and jr_detail = 'UANG MUKA PEMBELIAN FP')"));
 		}
 
-		//dd($jurnal_dt);
+		
 		return view('purchase/fatkur_pembelian/detail', compact('data','jurnal_dt', 'jurnal_um'));
 	}	
 

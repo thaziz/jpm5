@@ -252,7 +252,7 @@
                           <!--  <button class="btn btn-primary" style="margin-right: 10px;" type="text" id="createmodal" data-toggle="modal" data-target="#myModal5"><i class="fa fa-book">&nbsp;Buat Tanda Terima</i></button> 
                        &nbsp;
                         -->
-                           <a class="btn btn-sm btn-info " href="{{url('fakturpembelian/cetaktt/'.$data['tt'][0]->tt_idform.'')}}" "><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>   &nbsp;
+                           <a class="btn btn-sm btn-info " href="{{url('fakturpembelian/cetaktt/'.$data['tt'][0]->tt_idform.'')}}"><i class="fa fa-print">&nbsp;Cetak Tanda Terima</i></a>   &nbsp;
 
                            @if($data['faktur'][0]->fp_status == 'Approved')
 
@@ -263,7 +263,7 @@
                            @endif
                            <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
 
-                           @if(count($jurnal_um) != 0)
+                           @if(isset($jurnal_um))
                            <a onclick="lihatjurnalum('{{$data['faktur'][0]->fp_nofaktur or null}}','UANG MUKA PEMBELIAN FP')" class="btn-sm btn-primary" aria-hidden="true">             
                                 <i class="fa  fa-eye"> </i>
                                  &nbsp;  Lihat Jurnal Uang Muka  
