@@ -3287,7 +3287,7 @@
             $('.keterangan2').attr('disabled' , true);
 
             $('.noinvoice').attr('disabled' , true);
-            $('.groupitem').addClass('disabled');
+           // $('.groupitem').addClass('disabled');
           }
           var amount = $('.amount').val();
           var diskon = $('.diskon').val();
@@ -5347,8 +5347,8 @@
        if(stock == 'T') {
             $('.penerimaan').val(stock);
            //$('tr#tdupdatestock').css('display', 'none');
-           $('td#tdupdatestock').css('display', 'none');
-           $('td#tdgudang').css('display', 'none');
+           $('td#tdupdatestock').hide();
+           $('td#tdgudang').hide();
            $.ajax({    
             type :"post",
             data : {idsup, groupitem, stock, updatestock},
@@ -5410,8 +5410,8 @@
        // alert(updatestock);
         $('.penerimaan').val(stock);
            //$('tr#tdupdatestock').css('display', 'block');
-           $('td#tdupdatestock').css('display', 'block');
-            $('td#tdgudang').css('display', 'block');
+           $('td#tdupdatestock').show();
+            $('td#tdgudang').show();
 
           $.ajax({    
             type :"post",

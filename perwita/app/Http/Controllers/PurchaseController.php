@@ -340,6 +340,7 @@ class PurchaseController extends Controller
 				}
 				else if($request->updatestock == 'T'){
 					$spp->spp_tipe = 'NS';
+					$spp->spp_lokasigudang = $request->gudang;
 				}
 			}
 
@@ -883,6 +884,7 @@ class PurchaseController extends Controller
 			$namatipe = 'JASA';
 		}
 		
+
 		if($tipespp != 'J'){
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
 
@@ -2036,6 +2038,7 @@ public function purchase_order() {
 					$penerimaanbarangdt->pbdt_acchpp = $request->acchpp[$i];
 					$penerimaanbarangdt->pbdt_accpersediaan = $request->accpersediaan[$i];
 					$penerimaanbarangdt->create_by = $request->username;
+					$penerimaanbarangdt->update_by = $request->username;
 					$penerimaanbarangdt->save();
 
 
