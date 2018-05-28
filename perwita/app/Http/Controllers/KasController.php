@@ -679,8 +679,9 @@ class KasController extends Controller
 					   		'pc_edit'  	  	  => 'UNALLOWED',
 					   		'pc_reim'  	  	  => 'UNRELEASED',
 					   		'pc_debet'  	  => 0,
-					   		'pc_no_trans'  	  => $jurnal[$i]['harga'],
-					   		'pc_kredit'  	  => round($total_penerus_float,2),
+					   		'pc_no_trans'  	  => $request->no_trans,
+					   		'pc_kredit'  	  => $jurnal[$i]['harga'],
+					   		'pc_user'    	  => Auth::user()->m_name,
 					   		'created_at'	  => Carbon::now(),
 				        	'updated_at' 	  => Carbon::now()
 				]);
@@ -1153,8 +1154,9 @@ class KasController extends Controller
 					   		'pc_edit'  	  	  => 'UNALLOWED',
 					   		'pc_reim'  	  	  => 'UNRELEASED',
 					   		'pc_debet'  	  => 0,
-					   		'pc_no_trans'  	  => $jurnal[$i]['harga'],
-					   		'pc_kredit'  	  => round($total_penerus_float,2),
+					   		'pc_user'    	  => Auth::user()->m_name,
+					   		'pc_no_trans'  	  => $request->no_trans,
+					   		'pc_kredit'  	  => $jurnal[$i]['harga'],
 					   		'created_at'	  => Carbon::now(),
 				        	'updated_at' 	  => Carbon::now()
 				]);
