@@ -224,13 +224,18 @@
 
                           <tr>
                             <td> Pilih Group Item </td>
-                            <td> <select class="form-control groupitem" name="groupitem"> 
+                            <td> <select class="form-control  groupitem" name="groupitem" id="selectgroup"> 
                                     @foreach($data['jenisitem'] as $jenis)
                                   <option value="{{$jenis->kode_jenisitem}},{{$jenis->stock}}"> {{$jenis->keterangan_jenisitem}} </option> 
                                     @endforeach
-                                    </select> 
-                                  
-                                  </td>
+
+                                  <!--   <option value="A,Y"> ATK </option>
+                                    <option value="P,Y"> PENGEPAKAN </option>
+                                    <option value="S,Y"> SPARE PART </option>
+                                    <option value="J,T"> JASA </option> -->
+                                  </select> 
+                                  <!-- <input type="text" class="hsljenisitem"> -->
+                            </td>
                           </tr>
 
                           
@@ -1686,7 +1691,8 @@
 
   $('#buttongetum').click(function(){
 
-    id = $('.check').val();
+    id = $('.check:checked').val();
+
     cabangtransaksi = $('.cabangtransaksi').val();
     $.ajax({
       url : baseUrl + '/fakturpembelian/hasilum',
@@ -3250,10 +3256,7 @@
       var nourut = 1;
       $jumlahharga = 0;
       $('#myform').submit(function(event){
-         
-
-
-
+            
         event.preventDefault();
           var post_url = $(this).attr("action");
           var form_data = $(this).serialize();
@@ -3305,9 +3308,24 @@
           kodestock = string4[1];
          // alert(penerimaan);
 
-       
+          $.ajax({
+            type : "get",
+            data  : {kodestock},
+            url : baseUrl + "/fakturpembelian/datagroupitem",
+            dataType : "json",
+            success : function(response){
+             
+            
+              for(i = 0; i < response.countgroupitem; i++){
+              //  console.log(response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock);
+                 $('#selectgroup option[value="'+response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock+'"]').remove();
+              }
 
+              /*$('#selectgroup option[value="J,T"]').remove();*/
+            }
+          })
 
+          $('.hsljenisitem').val(kodestock);
 
           var  row = "<tr id='data-item-"+nourut+"'> <td>"+nourut+"</td>"+
                   "<td> <select class='form-control disabled barangitem brg-"+nourut+"' data-id="+nourut+">  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}}'>{{$brg->nama_masteritem}} </option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
