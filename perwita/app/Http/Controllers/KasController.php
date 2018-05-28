@@ -216,7 +216,7 @@ class KasController extends Controller
 
 			$cari_resi1 = DB::table('delivery_order')
 						   ->select('bpkd_no_resi')
-						   ->leftjoin('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+						   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
 						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
 						   ->whereIn('nomor',$request->resi_array)
 						   ->groupBy('bpkd_no_resi')
@@ -224,12 +224,10 @@ class KasController extends Controller
 						   ->get();
 
 		}
-
-		// return $cari_resi1;
 		for ($i=0; $i < count($cari_resi); $i++) { 
 			$resi[$i] = $cari_resi[$i]->nomor;
-			if (isset($cari_resi1[$i])) {
-				if ($cari_resi1[$i]->bpkd_no_resi != null) {
+			for ($b=0; $b < count($cari_resi1); $b++) { 
+				if ($cari_resi1[$b]->bpkd_no_resi == $cari_resi[$i]->nomor) {
 					if ($jenis_biaya == '3') {
 						// shuttle
 						$tarif_shuttle = $cari_resi[$i]->total_net;
@@ -263,16 +261,12 @@ class KasController extends Controller
 					}else{
 						unset($resi[$i]);
 					}
-				}elseif($cari_resi[$i]->jenis_tarif == 9){
-					unset($resi[$i]);
-				}
+				}					
 			}
-
 		}
+		// return $resi;
 		$resi = array_unique($resi);
 		$resi = array_values($resi);
-		
-
 		for ($i=0; $i < count($resi); $i++) { 
 			for ($a=0; $a < count($cari_loading); $a++) { 
 				if ($cari_loading[$a]->nomor == $resi[$i]) {
@@ -1477,7 +1471,7 @@ class KasController extends Controller
 
 			$cari_resi1 = DB::table('delivery_order')
 						   ->select('bpkd_no_resi')
-						   ->leftjoin('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
+						   ->join('biaya_penerus_kas_detail','bpkd_no_resi','=','nomor')
 						   ->where('pendapatan',$cari_persen->jenis_pendapatan)
 						   ->whereIn('nomor',$request->resi_array)
 						   ->groupBy('bpkd_no_resi')
@@ -1499,8 +1493,8 @@ class KasController extends Controller
 		// return $cari_resi2;
 		for ($i=0; $i < count($cari_resi); $i++) { 
 			$resi[$i] = $cari_resi[$i]->nomor;
-			if (isset($cari_resi1[$i])) {
-				if ($cari_resi1[$i]->bpkd_no_resi != null) {
+			for ($b=0; $b < count($cari_resi1); $b++) { 
+				if ($cari_resi1[$b]->bpkd_no_resi == $cari_resi[$i]->nomor) {
 					if ($jenis_biaya == '3') {
 						// shuttle
 						$tarif_shuttle = $cari_resi[$i]->total_net;
@@ -1515,7 +1509,7 @@ class KasController extends Controller
 							$terbayar[$a] = $cari_resi_shuttle[$a]->bpkd_tarif_penerus;
 						}
 						$terbayar = array_sum($terbayar);
-						if ($terbayar >= $tarif_shuttle) {
+						if ($terbayar > $tarif_shuttle) {
 							unset($resi[$i]);
 						}
 
@@ -1534,12 +1528,13 @@ class KasController extends Controller
 					}else{
 						unset($resi[$i]);
 					}
-				}
+				}					
 			}
-
 		}
+
 		// $resi = array_filter($resi);
 		$resi = array_values($resi);
+		$resi = array_unique($resi);
 		// return $resi;
 		for ($i=0; $i < count($cari_resi2); $i++) { 
 			for ($a=0; $a < count($cari_resi); $a++) { 
