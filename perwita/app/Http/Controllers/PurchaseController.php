@@ -5666,7 +5666,7 @@ public function purchase_order() {
 	       			$dataakun_um = array (
 					'id_akun' => $request->acchutangdagang,
 					'subtotal' => $totaljumlah,
-					'dk' => 'K',
+					'dk' => 'D',
 					);	
 	       		}
 		        		

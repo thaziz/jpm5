@@ -247,7 +247,7 @@
                       
                       <table class="table" border="0">
                       <tr>
-                        <td style="width:200px"> <h4> Detail Faktur alalalallalalalal</h4> </td>
+                        <td style="width:200px"> <h4> Detail Faktur </h4> </td>
                         <td> 
                           <!--  <button class="btn btn-primary" style="margin-right: 10px;" type="text" id="createmodal" data-toggle="modal" data-target="#myModal5"><i class="fa fa-book">&nbsp;Buat Tanda Terima</i></button> 
                        &nbsp;
