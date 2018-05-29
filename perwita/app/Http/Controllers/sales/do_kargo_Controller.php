@@ -37,7 +37,6 @@ class do_kargo_Controller extends Controller
     public function form($nomor=null){
         $kota = DB::select(" SELECT id,nama FROM kota ORDER BY nama ASC ");
         $customer = DB::table('customer')
-                      ->leftjoin('kontrak_customer','kc_kode_customer','=','kode')
                       ->get();
         $kendaraan = DB::select("   SELECT k.id,k.nopol,k.tipe_angkutan,k.status,k.kode_subcon,s.nama FROM kendaraan k
                                     LEFT JOIN subcon s ON s.kode=k.kode_subcon ");
@@ -63,6 +62,18 @@ class do_kargo_Controller extends Controller
             $do = null;
             $jml_detail = 0;
         }
+
+        // for ($i=0; $i < count($customer); $i++) { 
+        //   for ($a=0; $a < count($kota); $a++) { 
+        //     if ($customer[$i]->kota == $kota[$a]->id) {
+        //       $cus[$i]['nama_kota'] = $kota[$a]->nama;
+        //       $cus[$i]['nama'] = $customer[$i]->nama;
+        //       $cus[$i]['id'] = $customer[$a]->kode;
+        //     }
+        //   }
+        // }
+
+        // return $cus;
 
       
         return view('sales.do_kargo.form',compact('kota','customer', 'kendaraan', 'marketing', 'outlet', 'do', 'jml_detail','cabang','tipe_angkutan','now','jenis_tarif','bulan_depan','subcon'));
