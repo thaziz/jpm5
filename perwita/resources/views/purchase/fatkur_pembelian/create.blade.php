@@ -52,7 +52,7 @@
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Faktur Pembelian </h2>
+                    <h2> Faktur Pembeliansss </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -202,11 +202,7 @@
                               <div class="col-xs-6">
                                   <table class="table table-striped">
                                   <tr>
-<<<<<<< HEAD
                                     <td width="150px"> No Invoicesss </td>
-=======
-                                    <td width="150px"> No Invoice_rubah </td>
->>>>>>> 381ccd6e1c53602f21e5fad6bc10ac545a23f8f5
                                     <td> <input type="text" class="form-control noinvoice" name="no_invoice" required="" novalidate> </td>
                                   </tr>
 
