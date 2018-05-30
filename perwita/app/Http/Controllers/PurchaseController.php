@@ -4839,7 +4839,7 @@ public function purchase_order() {
 				$dibayarum = str_replace(',', '', $request->dibayarum[$i]);
 				$umfpdt = new uangmukapembeliandt_fp;
 			  	$umfpdt->umfpdt_id =  $idumfp;
-			  	$umfpdt->umfpdt_idum = $idumfpdt;
+			  	$umfpdt->umfpdt_idumfp = $idumfpdt;
 			  	$umfpdt->umfpdt_transaksibank = $request->nokas[$i];
 			  	$umfpdt->umfpdt_tgl = $request->tglum[$i];
 			  	$umfpdt->umfpdt_jumlahum = $jumlahum;
@@ -5604,7 +5604,7 @@ public function purchase_order() {
 				$dibayarum = str_replace(',', '', $request->dibayarum[$i]);
 				$umfpdt = new uangmukapembeliandt_fp;
 			  	$umfpdt->umfpdt_id =  $idumfp;
-			  	$umfpdt->umfpdt_idum = $idumfpdt;
+			  	$umfpdt->umfpdt_idumfp = $idumfpdt;
 			  	$umfpdt->umfpdt_transaksibank = $request->nokas[$i];
 			  	$umfpdt->umfpdt_tgl = $request->tglum[$i];
 			  	$umfpdt->umfpdt_jumlahum = $jumlahum;
@@ -5643,7 +5643,16 @@ public function purchase_order() {
 	                ]);
                 }
                 else {
+                	$databkk = DB::select("select * from bukti_kas_keluar where bkk_nota = '$notransaksi'");
+                	$idbkk = $databkk[0]->bkk_id;
+                	$sisaum = $datafpg[0]->bkkd_sisaum;
 
+                	$hasilsisa = floatval($sisaum) - floatval($dibayarum);
+                	 $updateum = DB::table('bukti_kas_keluar_detail')
+	                ->where([['bkkd_bkk_id' , '='  , $idbkk], ['bkkd_ref' , '=' , $request->notaum[$i]]])
+	                ->update([
+	                	'bkkd_sisaum' => $hasilsisa,                                                           
+	                ]);
                 }
 
 
@@ -6077,6 +6086,7 @@ public function purchase_order() {
 		$bulan = Carbon::now()->format('m');
         $tahun = Carbon::now()->format('y');
 
+    //   return $bulan . $tahun;
 		if($flag == ''){
 				$faktur = DB::select("select * from faktur_pembelian where  to_char(fp_tgl, 'MM') = '$bulan' and to_char(fp_tgl, 'YY') = '$tahun' and fp_comp = '$cabang' and fp_nofaktur LIKE '%/I-%' order by fp_idfaktur desc limit 1");
 
@@ -6098,6 +6108,7 @@ public function purchase_order() {
 			$idfaktur = (int)$idfaktur2 + 1;
 			$data['idfaktur'] = str_pad($idfaktur, 3, '0', STR_PAD_LEFT);
 			
+			//return $data['idfaktur'];
 		}
 
 		else {
