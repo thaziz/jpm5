@@ -314,7 +314,8 @@ class cndnController extends Controller
 						//return $hasilcn;
 						$updatefaktur->update([
 						 	'fp_creditnota' => $hasilcn,
-						 	'fp_sisapelunasan' => $hasilakhir
+						 	'fp_sisapelunasan' => $hasilakhir,
+						 	'fp_edit' => 'UNALLOWED',
 						]);
 					}
 					else {
@@ -328,7 +329,8 @@ class cndnController extends Controller
 
 						$updatefaktur->update([
 						 	'fp_debitnota' => $hasildn,
-						 	'fp_sisapelunasan' => $hasilakhir
+						 	'fp_sisapelunasan' => $hasilakhir,
+						 	'fp_edit' => 'UNALLOWED',
 						]);
 					}
 					

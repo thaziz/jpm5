@@ -220,6 +220,14 @@
                         <td> <b> Netto Hutang </b> </td>
                         <td> <input type='text' class='form-control nettohutang_po' readonly="" name="nettohutang_po" style="text-align: right" value="{{ number_format($faktur->fp_netto, 2) }}"> <input type="hidden" name="idfaktur" value="{{$faktur->fp_idfaktur}}" class="idfaktur">  </td>
                       </tr>
+
+                      <tr>
+                        <td> <b> Sisa Hutang </b> </td>
+                        <td> <input type='text' class='form-control nettohutang_po' readonly="" name="sisapelunasan_po" style="text-align: right" value="{{ number_format($faktur->fp_sisapelunasan, 2) }}"> </td>
+                      </tr>
+
+                      <tr>  </tr>
+
                       @endforeach
 
                        <tr>
@@ -261,8 +269,10 @@
                             
                             <!--  @endif -->
                            @endif
-                           <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
 
+                           @if($data['faktur'][0]->fp_edit == 'UNALLOWED')
+                           <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+                           @endif
                            @if(isset($jurnal_um))
                            <a onclick="lihatjurnalum('{{$data['faktur'][0]->fp_nofaktur or null}}','UANG MUKA PEMBELIAN FP')" class="btn-sm btn-primary" aria-hidden="true">             
                                 <i class="fa  fa-eye"> </i>
@@ -384,6 +394,7 @@
                       </tr>
                       <tbody>
                           @foreach($data['fakturdtpo'] as $index=>$fakturdt)
+                      <!--     asas {{$fakturdt->fpdt_qty}} -->
                           <tr class="fakturdt{{$fakturdt->po_id}}" data-id="{{$fakturdt->po_no}}" id="faktur{{$fakturdt->po_no}}">
                         
                                 @if($data['status'] == 'PO')
@@ -861,6 +872,7 @@
                                 <table id="table_jurnal" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
+                                            <th>ID Akun </th>
                                             <th>Akun</th>
                                             <th>Debit</th>
                                             <th>Kredit</th>                                            
@@ -873,6 +885,7 @@
                                         @endphp
                                         @foreach($jurnal_dt as $data2)
                                             <tr>
+                                                <td>{{$data2->id_akun}} </td>
                                                 <td>{{$data2->nama_akun}}</td>
                                                 <td> @if($data2->dk=='D') 
                                                         @php
