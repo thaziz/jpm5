@@ -157,7 +157,7 @@ class kasKeluarController extends Controller
 			$sup = 0;
 		}
 		if ($req->jenis_bayar == 2) {
-			$all = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+			$all = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
 		} elseif($req->jenis_bayar == 3){
 			$agen 	  = DB::select("SELECT kode, nama from agen order by kode");
@@ -166,7 +166,7 @@ class kasKeluarController extends Controller
 
 			$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
-			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
 
 			$all = array_merge($agen,$vendor,$subcon,$supplier);
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
@@ -177,7 +177,7 @@ class kasKeluarController extends Controller
 
 			$subcon   = DB::select("SELECT kode, nama from subcon order by kode "); 
 
-			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier order by no_supplier");
+			$supplier = DB::select("SELECT no_supplier as kode, nama_supplier as nama from supplier where status = 'SETUJU' and active = 'AKTIF' order by no_supplier");
 
 			$all = array_merge($agen,$vendor,$subcon,$supplier);
 			return view('purchase.buktikaskeluar.supplier_dropdown',compact('all','sup'));
