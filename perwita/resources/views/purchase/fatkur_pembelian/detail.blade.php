@@ -269,8 +269,10 @@
                             
                             <!--  @endif -->
                            @endif
-                           <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
 
+                           @if($data['faktur'][0]->fp_edit == 'UNALLOWED')
+                           <a class="btn btn-sm btn-warning ubah"> <i class="fa fa-pencil"> </i> &nbsp; Ubah Data </a>
+                           @endif
                            @if(isset($jurnal_um))
                            <a onclick="lihatjurnalum('{{$data['faktur'][0]->fp_nofaktur or null}}','UANG MUKA PEMBELIAN FP')" class="btn-sm btn-primary" aria-hidden="true">             
                                 <i class="fa  fa-eye"> </i>
@@ -392,6 +394,7 @@
                       </tr>
                       <tbody>
                           @foreach($data['fakturdtpo'] as $index=>$fakturdt)
+                      <!--     asas {{$fakturdt->fpdt_qty}} -->
                           <tr class="fakturdt{{$fakturdt->po_id}}" data-id="{{$fakturdt->po_no}}" id="faktur{{$fakturdt->po_no}}">
                         
                                 @if($data['status'] == 'PO')

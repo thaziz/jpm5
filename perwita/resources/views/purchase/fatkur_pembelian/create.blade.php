@@ -693,7 +693,7 @@
                               <th width="100px">
                               Qty
                               </th>
-                              <th width='150px'>
+                              <th width='150px' class="tdgudangitem">
                                 Gudang
                               </th>
                               <th width='300px'>
@@ -3276,7 +3276,15 @@
           var idsup = $('.idsup').val();
           
 
-          if(gudang == ''){
+          var grupitem = $('.groupitem').val();
+          var string4 = grupitem.split(",");
+          groupitem = string4[0];
+          kodestock = string4[1];
+
+          if(kodestock == 'Y') {
+           $('.tdgudangitem').hide();
+           
+            if(gudang == ''){
             toastr.info('Maaf anda belum mengisi gudang :)');
             return false;
           }
@@ -3292,6 +3300,11 @@
             $('.noinvoice').attr('disabled' , true);
            // $('.groupitem').addClass('disabled');
           }
+          }
+          else {
+            $('.tdgudangitem').hide();
+          }
+
           var amount = $('.amount').val();
           var diskon = $('.diskon').val();
           var biaya = $('.biaya').val();
@@ -3333,7 +3346,7 @@
                   "<td> <input type='text' class='input-sm form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
                   "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem[]'> <input type='hidden' class='form-control kodestock' value="+kodestock+" name='kodestock[]'> </td>"+ //qty
                   
-                  "<td> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
+                  "<td class='tdgudangitem'> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
 
                   "<td> <input type='text' class='input-sm form-control hargaitem hargaitem"+nourut+"' value='"+ addCommas(harga)+"' name='harga[]' data-id="+nourut+"></td>"+ //harga
 
@@ -3380,6 +3393,10 @@
                   }
                   else {
                     $('#tablefp').append(row);
+
+                    if(kodestock == 'T'){
+                      $('.tdgudangitem').hide();
+                    }
                   }
 
                  // alert(item);
