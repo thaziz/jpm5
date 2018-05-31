@@ -223,6 +223,7 @@ Route::get('fakturpembelian/getum' , 'PurchaseController@getum');
 Route::get('fakturpembelian/hasilum' , 'PurchaseController@hasilum');
 Route::post('fakturpembelian/bayaruangmuka' , 'PurchaseController@bayaruangmuka');
 Route::get('fakturpembelian/datagroupitem' , 'PurchaseController@datagroupitem');
+Route::get('fakturpembelian/jurnalumum' , 'PurchaseController@lihatjurnalumum');
 
 
 //BIAYA PENERUS AGEN

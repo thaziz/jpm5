@@ -82,7 +82,7 @@
                             <td>
                               <input type='text' readonly="" class="input-sm form-control nofaktur" value="{{$faktur->fp_nofaktur}}" name="nofaktur">
                               <input type='hidden' readonly="" class="input-sm form-control tampilpo" value="nope">
-
+                              <input type="hidden" value="{{$faktur->fp_acchutang}}" name="acchutang">
                             </td>
                           </tr>
 
@@ -229,7 +229,7 @@
                       </tr>
 
                       <tr> <td> <button class="btn btn-sm btn-primary" type="button" id="createmodal_um" data-target="#bayaruangmuka" data-toggle="modal"> Bayar dengan Uang Muka </button> </td> <td>   @if(isset($jurnal_um))
-                           <button class="btn btn-sm btn-info" type="button" onclick="lihatjurnalum('{{$data['faktur'][0]->fp_nofaktur or null}}','UANG MUKA PEMBELIAN FP')" class="btn-sm btn-info" aria-hidden="true">             
+                           <button class="btn btn-sm btn-info" type="button" onclick="lihatjurnal('{{$data['faktur'][0]->fp_nofaktur or null}}','UANG MUKA PEMBELIAN FP')" class="btn-sm btn-info" aria-hidden="true">             
                                 <i class="fa  fa-eye"> </i>
                                  &nbsp;  Lihat Jurnal Uang Muka  
                            </button> 
@@ -353,7 +353,7 @@
 
                       <td> <input type="text" class="form-control acc_persediaanitem acc_persediaanitem{{$index + 1}} " value='{{$fakturdt->fpdt_accpersediaan}}' name='acc_persediaan[]' readonly=""> </td> <!-- "+ //acc_persediaan -->
 
-                      <td> <input type='text' class="form-control keteranganitem keteranganitem{{$index + 1}} edit" value="{{$fakturdt->fpdt_keterangan}}"  name='keteranganitem[]' readonly="">  <input type='hidden' name='penerimaan[]' class='penerimaan' value=""></td>
+                      <td> <input type='text' class="form-control keteranganitem keteranganitem{{$index + 1}} edit" value="{{$fakturdt->fpdt_keterangan}}"  name='keteranganitem[]' readonly="">  <input type='hidden' name='penerimaan[]' class='penerimaan' value=""> <input type="hidden" value="{{$fakturdt->fpdt_groupitem}}" class="grupitem" name="grupitem[]">   <input type="hidden" value="{{$fakturdt->fpdt_updatedstock}}" class="updatedstock"> </td>
                           
                       <td class='edit{{$index + 1}}'> <button class='btn btn-sm btn-danger removes-itm' data-id='{{$index + 1}}' type='button'> <i class='fa fa-trash'></i> </button></td> 
 
@@ -366,8 +366,8 @@
 
 
                         <input type="hidden" value="ITEM" name="flag">
-                         <input type="hidden" value="{{$fakturdt->fpdt_groupitem}}" class="grupitem" name="grupitem">
-                         <input type="hidden" value="{{$fakturdt->fpdt_updatedstock}}" class="updatedstock">
+                         
+                       
                        <!--   <input type="hidden" value="{{$fakturdt->fpdt_gudang}}" class="gudangheader"> -->
                       </table>
                       @else
@@ -426,185 +426,7 @@
                    </div>
                    </div>
 
-                  <!-- FORM BAYAR UANG MUKA -->
-                            <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
-                <form method="post" action="{{url('fakturpembelian/bayaruangmuka')}}" enctype="multipart/form-data" class="form-horizontal" id="form_hasilum">  
-                                <div class="modal-dialog" style="min-width: 1200px !important; min-height: 800px">
-                                 
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span>
-                                        <span class="sr-only">Close</span>
-                                      </button>                     
-                                      <h3 class="modal-title" style="text-align: center;">
-                                          Uang Muka Pembelian
-                                      </h3>     
-                                    </div>
-                                            
-                                    <div class="modal-body">
-                                    <div class="col-sm-8">              
-                                    <table class="table table-stripped tabel_tt">
-                                      <tr>
-                                        <td width="150px">
-                                          No Transaksi Kas / Bank 
-                                        </td>
-                                        <td>
-                                          <input type='text' class='input-sm form-control no_umheader' id="transaksium" readonly="" data-toggle="modal" data-target="#caritransaksium">
-                                          <input type="hidden" class="nota_um editum">
-                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                          <input type="hidden" class="notr">
-                                          <input type="hidden" class="akunhutang_um">
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td> Tanggal </td>
-                                        <td>
-                                           <div class="input-group date">
-                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_umheader editum" value="" readonly="">
-                                          </div>
-                                        </td>
-                                      </tr>
-                                     
-                                      <tr>
-                                        <td> Jumlah </td>
-                                        <td> <input type='text' class="form-control jumlah_header editum" value="" readonly=""></td>
-                                        </td>
-                                      </tr>
-                                      
-                                      <tr>
-                                        <td>
-                                         Keterangan
-                                        </td>
-                                        <td>
-                                        
-                                          <input type="text" class="form-control keterangan_header editum" readonly="">
-                                        </td>
-                                      </tr>
-
-                                      <tr>
-                                        <td> Dibayar </td>
-                                        <td> <input type="text" class="form-control dibayar_header editum">   </td>
-                                      </tr>
-
-                                       <tr>
-                                        <td> Keterangan </td>
-                                        <td> <input type="text" class="form-control keteranganum_header">   </td>
-                                      </tr>
-
-                                       </table> 
-
-                                       </div>
-
-                                       <div class="col-sm-4">
-                                          <table class="table">
-                                              <tr>
-                                                  <th> Total Jumlah Uang Muka </th>                      
-                                              </tr>
-                                              <tr>
-                                                    <td> <input type="text" value="{{number_format($data['faktur'][0]->fp_uangmuka,2,",",".")}}" class="form-control totaljumlah" readonly="" name="totaljumlah" style="text-align:right"> <input type="hidden" class="inputbayaruangmuka" name="inputbayaruangmuka"> </td>
-                                              </tr>
-                                          </table>
-
-                                          <br>
-                                          <br>
-                                          <br>
-                                          <br>
-                                          <br>
-
-                                            <div class="pull-left">
-                                                <button class="btn btn-sm btn-info" id="tambahdataum" type="button"> <i class="fa fa-plus"> </i>  Tambah Data </button>
-                                            </div>
-                                       </div>                          
-                                      <div id="here"> </div>       
-                                      <br>
-                                      <br>
-                                     
-                                      <table class="table table-bordered" id="tablehasilum">
-                                          <thead>
-                                          <tr class="tableum">
-                                            <th style="width:120px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Dibayar </th> <th> Keterangan </th> <th> Hapus </th> 
-                                          </tr>
-
-
-                                          </thead>
-                                          <tbody>
-                                            @if(count($dataumfp) != 0)
-                                            @foreach($dataumfp as $index=>$umfp)
-
-                                              <tr class="dataum dataum{{$index}}" data-nota="{{$umfp->umfpdt_transaksibank}}">
-                                              <td>  <p class="nofaktur nofaktur2{{$index}}"  onclick="klikkas(this)"> {{$umfp->umfp_nofaktur}} </p> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_nofaktur}}" name="nofaktur[]"> </td>
-                                              <td> <p class="nokas_text">{{$umfp->umfpdt_transaksibank}}</p> <input type="hidden" class="nokas" value="{{$umfp->umfpdt_transaksibank}}" name="nokas[]"> </td>
-                                              <td><p class="tgl_text">{{$umfp->umfpdt_tgl}}</p> <input type="hidden" class="tglum" value="{{$umfp->umfpdt_tgl}}" name="tglum[]"> </td>
-                                              <td> <p class="notaum_text">{{$umfp->umfpdt_notaum}}</p> <input type="hidden" class="notaum" value="{{$umfp->umfpdt_notaum}}" name="notaum[]"></td>
-                                              <td> <p class="jumlahum_text"> {{number_format($umfp->umfpdt_jumlahum,2,",",".")}}</p> <input type="hidden" class="jumlahum" value="{{$umfp->umfpdt_jumlahum}}" name="jumlahum[]">  </td>
-                                              <td> <p class="dibayar_text"> {{number_format($umfp->umfpdt_dibayar,2,",",".")}} </p> <input type="hidden" class="dibayar" value="{{$umfp->umfpdt_dibayar}}" name="dibayarum[]"> </td>
-                                              <td>  <p class="keterangan_text">{{$umfp->umfpdt_keterangan}}</p><input type="hidden" value="{{$umfp->umfpdt_keterangan}}" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='{{$index}}' class="notr"> <input type="hidden" class="akunhutangum" value="{{$umfp->umfpdt_acchutang}}" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="
-                                              {{$umfp->umfp_keterangan}}" name="keteranganumheader"></td>
-                                              <td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button> </td>
-                                           
-
-                                            </tr>
-                                            @endforeach
-                                            @endif
-                                         </tbody>
-
-                                      </table> 
-                                    
-                   
-                  
-                                    </div>
-                                      
-                                      <div class="modal-footer">
-                                          <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
-                                          <button type="button" class="btn btn-primary" id="buttonsimpan_um">
-                                            Simpan
-                    </button>
-                                      </div>
-                                       </form>
-                                  </div>
-                                </div>
-                             </div> 
-            
-            
-            
-              <!-- FORM BAYAR UANG MUKA -->
-                            <div class="modal fade" id="caritransaksium" tabindex="-1" role="dialog"  aria-hidden="true">
-                                <div class="modal-dialog" style="min-width: 1000px !important; min-height: 800px">
-                                  <div class="modal-content">
-                                    <div class="modal-header">
-                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
-                                        <span aria-hidden="true">&times;</span>
-                                        <span class="sr-only">Close</span>
-                                      </button>                     
-                                      <h3 class="modal-title" style="text-align: center;">
-                                         Transaksi Kas / Hutang Uang Muka
-                                      </h3>     
-                                    </div>
-                                                  
-                                    <div class="modal-body">
-                                                  
-                                    <table class="table table-stripped tabel_tt" id="tabletransaksi">
-                                      <thead>
-                                      <tr>
-                                        <th> No Kas / Hutang </th> <th style="width:100px"> Tgl </th> <th> Supplier</th><th> Keterangan </th> <th> Jumlah Uang Muka </th> <th> Sisa Terpakai di Faktur </th> <th> Aksi </th>
-                                      </tr>
-                                      </thead>
-                                      
-                                    </table>     
-                                     </div>
-
-                                      <div class="modal-footer">
-                                          <button type="button" class="btn btn-white" data-dismiss="modal" >Batal</button>
-                                          <button type="button" class="btn btn-primary" id="buttongetum">
-                                            Simpan
-                                          </button>
-                                         
-                                      </div>
-                                      
-                                  </div>
-                                </div>
-                             </div> 
+                 
 
                 <!-- FORM TANA TERIMA -->
                                  <div class="modal fade" id="myModal_TT" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -897,6 +719,186 @@
                              
                              </div>
 							 </div>
+
+                <!-- FORM BAYAR UANG MUKA -->
+                            <div class="modal fade" id="bayaruangmuka" tabindex="-1" role="dialog"  aria-hidden="true">
+                <form method="post" action="{{url('fakturpembelian/bayaruangmuka')}}" enctype="multipart/form-data" class="form-horizontal" id="form_hasilum">  
+                                <div class="modal-dialog" style="min-width: 1200px !important; min-height: 800px">
+                                 
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
+                                      <h3 class="modal-title" style="text-align: center;">
+                                          Uang Muka Pembelian
+                                      </h3>     
+                                    </div>
+                                            
+                                    <div class="modal-body">
+                                    <div class="col-sm-8">              
+                                    <table class="table table-stripped tabel_tt">
+                                      <tr>
+                                        <td width="150px">
+                                          No Transaksi Kas / Bank 
+                                        </td>
+                                        <td>
+                                          <input type='text' class='input-sm form-control no_umheader' id="transaksium" readonly="" data-toggle="modal" data-target="#caritransaksium">
+                                          <input type="hidden" class="nota_um editum">
+                                          <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                          <input type="hidden" class="notr">
+                                          <input type="hidden" class="akunhutang_um">
+                                        </td>
+                                      </tr>
+                                      <tr>
+                                        <td> Tanggal </td>
+                                        <td>
+                                           <div class="input-group date">
+                                                      <span class="input-group-addon"><i class="fa fa-calendar"></i></span><input type="text" class="form-control tgl_umheader editum" value="" readonly="">
+                                          </div>
+                                        </td>
+                                      </tr>
+                                     
+                                      <tr>
+                                        <td> Jumlah </td>
+                                        <td> <input type='text' class="form-control jumlah_header editum" value="" readonly=""></td>
+                                        </td>
+                                      </tr>
+                                      
+                                      <tr>
+                                        <td>
+                                         Keterangan
+                                        </td>
+                                        <td>
+                                        
+                                          <input type="text" class="form-control keterangan_header editum" readonly="">
+                                        </td>
+                                      </tr>
+
+                                      <tr>
+                                        <td> Dibayar </td>
+                                        <td> <input type="text" class="form-control dibayar_header editum">   </td>
+                                      </tr>
+
+                                       <tr>
+                                        <td> Keterangan </td>
+                                        <td> <input type="text" class="form-control keteranganum_header">   </td>
+                                      </tr>
+
+                                       </table> 
+
+                                       </div>
+
+                                       <div class="col-sm-4">
+                                          <table class="table">
+                                              <tr>
+                                                  <th> Total Jumlah Uang Muka </th>                      
+                                              </tr>
+                                              <tr>
+                                                    <td> <input type="text" value="{{number_format($data['faktur'][0]->fp_uangmuka,2,",",".")}}" class="form-control totaljumlah" readonly="" name="totaljumlah" style="text-align:right"> <input type="hidden" class="inputbayaruangmuka" name="inputbayaruangmuka"> </td>
+                                              </tr>
+                                          </table>
+
+                                          <br>
+                                          <br>
+                                          <br>
+                                          <br>
+                                          <br>
+
+                                            <div class="pull-left">
+                                                <button class="btn btn-sm btn-info" id="tambahdataum" type="button"> <i class="fa fa-plus"> </i>  Tambah Data </button>
+                                            </div>
+                                       </div>                          
+                                      <div id="here"> </div>       
+                                      <br>
+                                      <br>
+                                     
+                                      <table class="table table-bordered" id="tablehasilum">
+                                          <thead>
+                                          <tr class="tableum">
+                                            <th style="width:120px"> No Faktur </th> <th> No Kas / Bank</th> <th> Tanggal </th> <th> No Uang Muka </th> <th> Jumlah Uang Muka </th> <th> Dibayar </th> <th> Keterangan </th> <th> Hapus </th> 
+                                          </tr>
+
+
+                                          </thead>
+                                          <tbody>
+                                            @if(count($dataumfp) != 0)
+                                            @foreach($dataumfp as $index=>$umfp)
+
+                                              <tr class="dataum dataum{{$index}}" data-nota="{{$umfp->umfpdt_transaksibank}}">
+                                              <td>  <p class="nofaktur nofaktur2{{$index}}"  onclick="klikkas(this)"> {{$umfp->umfp_nofaktur}} </p> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_nofaktur}}" name="nofaktur[]"> </td>
+                                              <td> <p class="nokas_text">{{$umfp->umfpdt_transaksibank}}</p> <input type="hidden" class="nokas" value="{{$umfp->umfpdt_transaksibank}}" name="nokas[]"> </td>
+                                              <td><p class="tgl_text">{{$umfp->umfpdt_tgl}}</p> <input type="hidden" class="tglum" value="{{$umfp->umfpdt_tgl}}" name="tglum[]"> </td>
+                                              <td> <p class="notaum_text">{{$umfp->umfpdt_notaum}}</p> <input type="hidden" class="notaum" value="{{$umfp->umfpdt_notaum}}" name="notaum[]"></td>
+                                              <td> <p class="jumlahum_text"> {{number_format($umfp->umfpdt_jumlahum,2,",",".")}}</p> <input type="hidden" class="jumlahum" value="{{$umfp->umfpdt_jumlahum}}" name="jumlahum[]">  </td>
+                                              <td> <p class="dibayar_text"> {{number_format($umfp->umfpdt_dibayar,2,",",".")}} </p> <input type="hidden" class="dibayar" value="{{$umfp->umfpdt_dibayar}}" name="dibayarum[]"> </td>
+                                              <td>  <p class="keterangan_text">{{$umfp->umfpdt_keterangan}}</p><input type="hidden" value="{{$umfp->umfpdt_keterangan}}" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='{{$index}}' class="notr"> <input type="hidden" class="akunhutangum" value="{{$umfp->umfpdt_acchutang}}" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="
+                                              {{$umfp->umfp_keterangan}}" name="keteranganumheader"></td>
+                                              <td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button> </td>
+                                           
+
+                                            </tr>
+                                            @endforeach
+                                            @endif
+                                         </tbody>
+
+                                      </table> 
+                                    
+                   
+                  
+                                    </div>
+                                      
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-white" data-dismiss="modal">Batal</button>
+                                          <button type="button" class="btn btn-primary" id="buttonsimpan_um">
+                                            Simpan
+                    </button>
+                                      </div>
+                                       </form>
+                                  </div>
+                                </div>
+                             </div> 
+            
+            
+            
+              <!-- FORM BAYAR UANG MUKA -->
+                            <div class="modal fade" id="caritransaksium" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog" style="min-width: 1000px !important; min-height: 800px">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <button style="min-height:0;" type="button" class="close" data-dismiss="modal">
+                                        <span aria-hidden="true">&times;</span>
+                                        <span class="sr-only">Close</span>
+                                      </button>                     
+                                      <h3 class="modal-title" style="text-align: center;">
+                                         Transaksi Kas / Hutang Uang Muka
+                                      </h3>     
+                                    </div>
+                                                  
+                                    <div class="modal-body">
+                                                  
+                                    <table class="table table-stripped tabel_tt" id="tabletransaksi">
+                                      <thead>
+                                      <tr>
+                                        <th> No Kas / Hutang </th> <th style="width:100px"> Tgl </th> <th> Supplier</th><th> Keterangan </th> <th> Jumlah Uang Muka </th> <th> Sisa Terpakai di Faktur </th> <th> Aksi </th>
+                                      </tr>
+                                      </thead>
+                                      
+                                    </table>     
+                                     </div>
+
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-white" data-dismiss="modal" >Batal</button>
+                                          <button type="button" class="btn btn-primary" id="buttongetum">
+                                            Simpan
+                                          </button>
+                                         
+                                      </div>
+                                      
+                                  </div>
+                                </div>
+                             </div> 
                           <div class="modal-footer">
                               <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
                               <button type="button" class="btn btn-primary" id="buttongetbrg">Save changes</button>
@@ -1048,11 +1050,11 @@
                       <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h5 class="modal-title">Laporan Jurnal</h5>
-                        <h4 class="modal-title">No PO:  <u>{{$data['po'][0]->po_no or null }}</u> </h4>
+                        <h4 class="modal-title">No Faktur:  <u>{{$data['faktur'][0]->fp_nofaktur or null }}</u> </h4>
                         
                       </div>
-                      <div class="modal-body" style="padding: 15px 20px 15px 20px">                            
-                                <table id="table_jurnal" class="table table-bordered table-striped">
+                      <div class="modal-body" style="padding: 15px 20px 15px 20px">   
+                          <table id="table_jurnal" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
                                             <th>ID Akun </th>
@@ -1061,39 +1063,7 @@
                                             <th>Kredit</th>                                            
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        @php
-                                            $totalDebit=0;
-                                             $totalKredit=0;
-                                        @endphp
-                                        @foreach($jurnal_dt as $data2)
-                                            <tr>
-                                                <td>{{$data2->id_akun}} </td>
-                                                <td>{{$data2->nama_akun}}</td>
-                                                <td> @if($data2->dk=='D') 
-                                                        @php
-                                                        $totalDebit+=$data2->jrdt_value;
-                                                        @endphp
-                                                        {{number_format(abs($data2->jrdt_value),2,',','.')}} 
-                                                    @endif
-                                                </td>
-                                                <td>@if ($data2->dk=='K') 
-                                                    @php
-                                                        $totalKredit+=$data2->jrdt_value;
-                                                    @endphp
-                                                    {{number_format(abs($data2->jrdt_value),2,',','.')}}
-                                                     @endif
-                                                </td>
-                                            <tr> 
-                                        @endforeach                                           
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                                <th>Total</th>                                                
-                                                <th> {{number_format(abs($totalDebit),2,',','.')}} </th>
-                                                <th> {{number_format(abs($totalKredit),2,',','.')}}</th>
-                                        <tr>
-                                    </tfoot>
+                                    
                                 </table>                            
                           </div>                          
                     </div>
@@ -1228,7 +1198,7 @@
           arrnotakas = [];
       $('.dataum').each(function(){
         valum = $(this).data('nota');
-        alert(valum);
+       // alert(valum);
         arrnotakas.push(valum);
 
       })
@@ -1364,11 +1334,11 @@
       
       totalum2 = $('.totaljumlah').val();
       totalum   = totalum2.replace(/,/g,'');
-      sisahutang2 = $('.nettohutang').val();
+      sisahutang2 = $('.nettohutang_po').val();
       sisahutang = sisahutang2.replace(/,/g,'');
       
       hasilsisa = (parseFloat(sisahutang) - parseFloat(totalum)).toFixed(2);
-      $('.sisahutang').val(addCommas(hasilsisa));
+      $('.sisahutang_po').val(addCommas(hasilsisa));
 
     });
 
@@ -1641,7 +1611,8 @@
           event.preventDefault();
          // alert('test');
           var post_url2 = $(this).attr("action");
-          var form_data2 = $(this).serialize();
+          var form_data2 = $(this).serialize();  
+          var form_data3 = $('#form_hasilum').serialize();
             swal({
             title: "Apakah anda yakin?",
             text: "Simpan Data Faktur Pembelian!",
@@ -1655,7 +1626,7 @@
           function(){
         $.ajax({
           type : "get",
-          data : form_data2,
+          data : form_data2+form_data3,
           url : baseUrl + "/fakturpembelian/updatefaktur",
           dataType : 'json',
           success : function (response){
@@ -6943,19 +6914,51 @@ $('.edit').click(function(){
 })
 
 
-function lihatjurnal($ref,$note){
+  function lihatjurnal($ref,$note){
+          nota = $ref;
+          detail = $note;
 
           $.ajax({
-          url:baseUrl +'/data/jurnal-umum',
+          url:baseUrl +'/fakturpembelian/jurnalumum',
           type:'get',
-          data:'ref='+$ref
-               +'&note='+$note,
-          /* data: "{'ref':'" + $ref+ "', 'note':'" + $note+ "'}",
-*/
-          
+          data:{nota,detail},
+          dataType : "json",
           success:function(response){
-                $('#data-jurnal').html(response);
                 $('#jurnal').modal('show');
+
+             $('.loading').css('display', 'none');
+                $('.listjurnal').empty();
+                $totalDebit=0;
+                $totalKredit=0;
+                        console.log(response);
+                      
+                        for(key = 0; key < response.countjurnal; key++) {
+                           
+                          var rowtampil2 = "<tr class='listjurnal'>" +
+                          "<td> "+response.jurnal[key].id_akun+"</td>" +
+                          "<td> "+response.jurnal[key].nama_akun+"</td>";
+
+                          if(response.jurnal[key].dk == 'D'){
+                            $totalDebit = parseFloat($totalDebit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                            rowtampil2 += "<td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td> <td> </td>";
+                          }
+                          else {
+                            $totalKredit = parseFloat($totalKredit) + parseFloat(Math.abs(response.jurnal[key].jrdt_value));
+                            rowtampil2 += "<td> </td><td>"+accounting.formatMoney(Math.abs(response.jurnal[key].jrdt_value), "", 2, ",",'.')+"</td>";
+                          }
+                            $('#table_jurnal').append(rowtampil2);
+                        }
+                     var rowtampil1 = "</tbody>" +
+                      "<tfoot>" +
+                          "<tr class='listjurnal'> " +
+                                  "<th colspan='2'>Total</th>" +                        
+                                  "<th>"+accounting.formatMoney($totalDebit, "", 2, ",",'.')+"</th>" +
+                                  "<th>"+accounting.formatMoney($totalKredit,"",2,',','.')+"</th>"
+                          "<tr>" +
+                      "</tfoot>";
+                                     
+                   
+                      $('#table_jurnal').append(rowtampil1);
               }
         });
    }
@@ -6964,13 +6967,10 @@ function lihatjurnal($ref,$note){
    function lihatjurnalum($ref,$note){
 
           $.ajax({
-          url:baseUrl +'/data/jurnal-umum-pembelian',
+          url:baseUrl +'/fakturpembelian/lihatjurnalumum',
           type:'get',
           data:'ref='+$ref
                +'&note='+$note,
-          /* data: "{'ref':'" + $ref+ "', 'note':'" + $note+ "'}",
-*/
-          
           success:function(response){
                 $('#data-jurnal').html(response);
                 $('#jurnal').modal('show');
