@@ -4236,7 +4236,7 @@ public function purchase_order() {
 	public function datagroupitem(Request $request){
 		$kodestock = $request->kodestock;
 
-		$data['groupitem'] = DB::select("select * from jenis_item where stock = '$kodestock'");
+		$data['groupitem'] = DB::select("select * from jenis_item where stock != '$kodestock'");
 		$data['countgroupitem'] = count($data['groupitem']);
 
 		return json_encode($data);
@@ -4386,7 +4386,9 @@ public function purchase_order() {
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef' and jr_detail = 'FAKTUR PEMBELIAN')"));
 
-		$dataumfp = DB::select("select * from uangmukapembelian_fp where umfp_nofaktur = '$jurnalRef'");
+		$dataumfp = DB::select("select * from uangmukapembelian_fp, uangmukapembeliandt_fp where umfp_nofaktur = '$jurnalRef' and umfpdt_idumfp = umfp_id");
+
+		//dd($dataumfp);
 		if(count($dataumfp) != 0){
 			$jurnal_um =collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
 		                    FROM d_akun a join d_jurnal_dt jd
@@ -4395,7 +4397,7 @@ public function purchase_order() {
 		}
 
 //		dd($data);
-		return view('purchase/fatkur_pembelian/detail', compact('data','jurnal_dt', 'jurnal_um'));
+		return view('purchase/fatkur_pembelian/detail', compact('data','jurnal_dt', 'jurnal_um', 'dataumfp'));
 	}	
 
 	public function getbarang(Request $request){
@@ -7920,13 +7922,13 @@ public function kekata($x) {
 
 
 	public function getum(Request $request){
-		/*$idsup = $request->idsup;
-		$explode = explode("," , $idsup);*/
-	/*	$nosupplier = $explode[4];
-		$cabang = $request->cabang;*/
+		$idsup = $request->idsup;
+		$explode = explode("," , $idsup);
+		$nosupplier = $explode[4];
+		$cabang = $request->cabang;
 
-		$nosupplier = 'SP/EM/000008';
-		$cabang = '000';
+	/*	$nosupplier = 'SP/EM/000008';
+		$cabang = '000';*/
 
 		/*$fpg =  DB::table('fpg')
 				 ->join('fpg_cekbank','fpgb_idfpg','=','idfpg')
@@ -7960,7 +7962,7 @@ public function kekata($x) {
 			for($i = 0 ; $i < count($datas['um']); $i++){
 				for($j = 0; $j < count($request->arrnoum); $j++){
 					
-					if($request->arrnoum[$j] == $datas['um'][$i]->um_nomorbukti){
+					if($request->arrnoum[$j] == $datas['um'][$i]->no_um){
 						
 						unset($datas['um1'][$i]);
 					}
