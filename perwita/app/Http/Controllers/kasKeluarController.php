@@ -1105,7 +1105,8 @@ class kasKeluarController extends Controller
 					$update_faktur =DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
 									  ]);
 				}
 				
