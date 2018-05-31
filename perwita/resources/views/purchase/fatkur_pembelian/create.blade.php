@@ -1223,6 +1223,12 @@
                 </td>
               </tr>
               <tr>
+                <td>Sisa Uang Muka</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="bp_sisa_um" class=" form-control bp_sisa_um">
+                </td>
+              </tr>
+              <tr>
                 <td>Keterangan</td>
                 <td colspan="2">
                   <input readonly="" type="text" name="bp_keterangan_um" class=" form-control bp_keterangan_um">
@@ -6123,8 +6129,12 @@ $('#tmbhdataitem').click(function(){
 
  
 
-
-
+$('.bp_dibayar_um').maskMoney({
+        precision : 0,
+        thousands:'.',
+        allowZero:true,
+        defaultZero: true
+    });
 
 </script>
 @endsection
