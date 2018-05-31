@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use PDF;
-use carbon;
+use carbon\Carbon;
 use Auth;
 use Yajra\Datatables\Datatables;
 

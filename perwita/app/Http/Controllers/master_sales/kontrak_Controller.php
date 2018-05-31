@@ -32,6 +32,13 @@ class kontrak_Controller extends Controller
                    ->get(); 
         }
         
+        $upda = DB::table('kontrak_customer_d')
+                  ->join('kontrak_customer','kc_id','=','kcd_id')
+                  ->where('kc_kode_cabang','006')
+                  ->update([
+                    'kcd_acc_penjualan' =>'420116006',
+                    'kcd_csf_penjualan' => '420116006'
+                  ]);
 
         return view('master_sales.kontrak.index',compact('data','cab'));
     }
