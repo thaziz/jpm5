@@ -222,6 +222,7 @@ Route::get('fakturpembelian/hapusfakturpembelian/{id}' , 'PurchaseController@hap
 Route::get('fakturpembelian/getum' , 'PurchaseController@getum');
 Route::get('fakturpembelian/hasilum' , 'PurchaseController@hasilum');
 Route::post('fakturpembelian/bayaruangmuka' , 'PurchaseController@bayaruangmuka');
+Route::get('fakturpembelian/datagroupitem' , 'PurchaseController@datagroupitem');
 
 
 //BIAYA PENERUS AGEN
@@ -1365,6 +1366,7 @@ Route::get('sales/tarif_penerus_sepeda_indentdo/save_data', 'sales\do_Controller
 
 // delivery order kargo
 Route::get('sales/deliveryorderkargo', 'sales\do_kargo_Controller@index');
+Route::get('sales/datatable_do_kargo', 'sales\do_kargo_Controller@datatable_do_kargo')->name('datatable_do_kargo');
 Route::get('sales/deliveryorderkargoform', 'sales\do_kargo_Controller@form');
 Route::get('sales/cari_nopol_kargo', 'sales\do_kargo_Controller@cari_nopol_kargo');
 Route::get('sales/nama_subcon', 'sales\do_kargo_Controller@nama_subcon');

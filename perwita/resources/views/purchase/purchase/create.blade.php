@@ -18,7 +18,6 @@
   }
   .kecil{
     width: 50px;
-    
   }
   .datatable tbody tr td{
     padding-top: 16px;
@@ -590,18 +589,18 @@
 
                     
                       for(var k = 0; k < response.gudang.length; k++){
-                          if(response.gudang[k].mg_cabang == cabang){
+                          if(response.gudang[k].mg_cabang == response.spp[0][0].spp_lokasigudang){
                               $('.gudang').val(response.gudang[k].mg_id );
                               console.log('gudang');                        
                           }
                       }
 
-          if(response.spp[0][0].spp_tipe == 'J'){
-            $('#tdgudang').hide();
-          }
-          else {
-            $('#tdgudang').show();
-          }
+        if(response.spp[0][0].spp_tipe == 'J'){
+          $('#tdgudang').hide();
+        }
+        else {
+          $('#tdgudang').show();
+        }
 
 
                       

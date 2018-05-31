@@ -106,11 +106,7 @@
                                                 <select onchange="cari_kontrak()" class="form-control customer chosen-select-width" name="customer">
                                                 <option value="0">Pilih - Customer</option>
                                                 @foreach($customer as $val)
-                                                    @foreach($kota as $i)
-                                                    @if($val->kota == $i->id)
-                                                    <option @if($val->kc_id != null && $val->kc_aktif == 'AKTIF') style="background: green; color: white" @endif value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}-{{$i->nama}}</option>
-                                                    @endif
-                                                    @endforeach
+                                                    <option  value="{{$val->kode}}">{{$val->kode}}-{{$val->nama}}</option>
                                                 @endforeach
                                             </select>
                                             </div>

@@ -340,6 +340,7 @@ class PurchaseController extends Controller
 				}
 				else if($request->updatestock == 'T'){
 					$spp->spp_tipe = 'NS';
+					$spp->spp_lokasigudang = $request->gudang;
 				}
 			}
 
@@ -883,6 +884,7 @@ class PurchaseController extends Controller
 			$namatipe = 'JASA';
 		}
 		
+
 		if($tipespp != 'J'){
 			$data['sppdt'] =  DB::select("select * from spp, masteritem, supplier, spp_detail LEFT OUTER JOIN stock_gudang on sppd_kodeitem = sg_item and sg_gudang = '$lokasigudang' where sppd_idspp = '$id' and sppd_idspp = spp_id and kode_item = sppd_kodeitem and  sppd_supplier = idsup order by sppd_seq asc");
 
@@ -2036,6 +2038,7 @@ public function purchase_order() {
 					$penerimaanbarangdt->pbdt_acchpp = $request->acchpp[$i];
 					$penerimaanbarangdt->pbdt_accpersediaan = $request->accpersediaan[$i];
 					$penerimaanbarangdt->create_by = $request->username;
+					$penerimaanbarangdt->update_by = $request->username;
 					$penerimaanbarangdt->save();
 
 
@@ -4230,6 +4233,15 @@ public function purchase_order() {
 		return json_encode($data);
 	}
 
+	public function datagroupitem(Request $request){
+		$kodestock = $request->kodestock;
+
+		$data['groupitem'] = DB::select("select * from jenis_item where stock != '$kodestock'");
+		$data['countgroupitem'] = count($data['groupitem']);
+
+		return json_encode($data);
+	}
+
 	public function updatebarangitem(Request $request){
 		$idsup = $request->idsup;
 		$updatestock = $request->updatestock;
@@ -4326,8 +4338,13 @@ public function purchase_order() {
 			$data['fakturdtpo'] = DB::select("select * from faktur_pembeliandt , faktur_pembelian, masteritem, supplier where fpdt_idfp = fp_idfaktur and fp_idfaktur = '$id' and fpdt_kodeitem = kode_item and fp_idsup = idsup");
 			$grupitem = $data['fakturdtpo'][0]->fpdt_groupitem;
 			$updatestock = $data['fakturdtpo'][0]->fpdt_updatedstock;
+			$tipe = $data['fakturdtpo'][0]->fp_tipe;
+			if($tipe == 'J'){
+				$data['barang'] = DB::select("select * from masteritem where jenisitem = '$grupitem'");
+			}
 
-			$data['barang'] = DB::select("select * from masteritem where jenisitem = '$grupitem' and updatestock = '$updatestock'");
+			else{
+						$data['barang'] = DB::select("select * from masteritem where jenisitem = '$grupitem' and updatestock = '$updatestock'");}
 		}
 		else {
 			$data['status'] = 'PO';			
@@ -4358,7 +4375,8 @@ public function purchase_order() {
 		$data['gudang'] =  masterGudangPurchase::all();
 		$data['pajak'] = tb_master_pajak::all();
 		$data['cabang'] = DB::select("select * from cabang");
-		
+	/*	$data['cndn'] = DB::select("select * from cndtpembelian_dt where cndt_idfp = '$id'");
+		$data['fpg'] = DB::select("select * from fpg_dt where fpgdt_nofaktur = '$jurnalRef'");*/
 		$data['jenisitem'] = masterJenisItemPurchase::all();
 	//	dd(count($data['fpm']));
 	/*	dd($data);*/
@@ -4368,7 +4386,9 @@ public function purchase_order() {
                         on a.id_akun=jd.jrdt_acc and jd.jrdt_jurnal in 
                         (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef' and jr_detail = 'FAKTUR PEMBELIAN')"));
 
-		$dataumfp = DB::select("select * from uangmukapembelian_fp where umfp_nofaktur = '$jurnalRef'");
+		$dataumfp = DB::select("select * from uangmukapembelian_fp, uangmukapembeliandt_fp where umfp_nofaktur = '$jurnalRef' and umfpdt_idumfp = umfp_id");
+
+		//dd($dataumfp);
 		if(count($dataumfp) != 0){
 			$jurnal_um =collect(\DB::select("SELECT id_akun,nama_akun,jd.jrdt_value,jd.jrdt_statusdk as dk
 		                    FROM d_akun a join d_jurnal_dt jd
@@ -4376,8 +4396,8 @@ public function purchase_order() {
 		                    (select j.jr_id from d_jurnal j where jr_ref='$jurnalRef' and jr_detail = 'UANG MUKA PEMBELIAN FP')"));
 		}
 
-		
-		return view('purchase/fatkur_pembelian/detail', compact('data','jurnal_dt', 'jurnal_um'));
+//		dd($data);
+		return view('purchase/fatkur_pembelian/detail', compact('data','jurnal_dt', 'jurnal_um', 'dataumfp'));
 	}	
 
 	public function getbarang(Request $request){
@@ -5039,6 +5059,12 @@ public function purchase_order() {
 		        $jurnal->jr_note = $request->keterangan_po;
 		        $jurnal->save();
 	       		
+		        $acchutangjr = $request->acchutangdagang;
+
+		        $datakun = DB::select("select * from d_akun where id_akun = '$acchutangjr' and  kode_cabang = '$datacomp2'");
+				
+				$dataakundkajr = $datakun[0]->akun_dka;
+
 	       		if($dataakundkajr == 'D'){
 	       			$dataakun = array (
 					'id_akun' => $request->acchutangdagang,
@@ -5654,7 +5680,7 @@ public function purchase_order() {
 	       			$dataakun_um = array (
 					'id_akun' => $request->acchutangdagang,
 					'subtotal' => $totaljumlah,
-					'dk' => 'K',
+					'dk' => 'D',
 					);	
 	       		}
 		        		
@@ -7901,11 +7927,13 @@ public function kekata($x) {
 		$nosupplier = $explode[4];
 		$cabang = $request->cabang;
 
+	/*	$nosupplier = 'SP/EM/000008';
+		$cabang = '000';*/
 
 		/*$fpg =  DB::table('fpg')
 				 ->join('fpg_cekbank','fpgb_idfpg','=','idfpg')
 				 ->join('d_uangmuka','um_supplier','=','fpg_agen')
-				 ->select('fpg_nofpg','fpg_agen', 'fpg_tgl' , 'fpg_acchutang', 'idfpg' , 'fpg_totalbayar' , 'fpg_keterangan' , 'um_sisaterpakai' , 'um_nomorbukti')
+				 ->select('fpg_nofpg','fpg_agen', 'fpg_tgl' , 'fpg_acchutang', 'idfpg' , 'fpgb_nominal' , 'fpg_keterangan' , 'um_sisaterpakai' , 'um_nomorbukti')
 				 ->where('fpgb_posting','DONE')
 				 ->where('fpg_cabang' , $cabang)
 				 ->where('fpg_agen' , $nosupplier)
@@ -7913,15 +7941,18 @@ public function kekata($x) {
 
 		$bk = DB::table('bukti_kas_keluar')
 				 ->join('d_uangmuka','um_supplier','=','bkk_supplier')
-				 ->select('bkk_nota','bkk_supplier')
+				 ->select('bkk_nota','bkk_supplier', 'bkk_tgl', 'bkk_akun_hutang', 'bkk_id', 'bkk_total', 'bkk_keterangan' , 'um_sisaterpakai' , 'um_nomorbukti')
 				 ->where('bkk_supplier' , $nosupplier)
 				 ->where('bkk_comp' , $cabang)
 				 ->get();
 
+
+
 		$datas['um'] = array_merge($fpg, $bk);
 		$datas['um1'] = array_merge($fpg, $bk);
-*/
-		/*return json_encode($data = array_merge($fpg,$bk));*/
+
+
+		return json_encode($fpg);*/
 
 		$datas['um'] = DB::select("select fpg_nofpg as nota, idfpg as idtransaksi, fpg_tgl as tgl, fpg_keterangan as keterangan, fpg_agen as supplier, fpg_totalbayar as totalbayar , um_sisaterpakai as sisaterpakai, um_nomorbukti as no_um from fpg, d_uangmuka, fpg_dt where fpg_agen = '$nosupplier' and fpg_agen = um_supplier and fpg_posting = 'DONE' and fpgdt_idfpg = idfpg  and fpgdt_idfp = um_id union select  bkk_nota as nota, bkk_id as idtransaksi, bkk_tgl as tgl, bkk_keterangan as keterangan , bkk_supplier as supplier , bkk_total as totalbayar , um_sisaterpakai as sisaterpakai, um_nomorbukti as no_um  from bukti_kas_keluar, bukti_kas_keluar_detail, d_uangmuka where bkk_supplier = '$nosupplier' and bkk_supplier = um_supplier and bkkd_bkk_id = bkk_id   and bkkd_ref = um_supplier  ");
 
@@ -7931,7 +7962,7 @@ public function kekata($x) {
 			for($i = 0 ; $i < count($datas['um']); $i++){
 				for($j = 0; $j < count($request->arrnoum); $j++){
 					
-					if($request->arrnoum[$j] == $datas['um'][$i]->nota){
+					if($request->arrnoum[$j] == $datas['um'][$i]->no_um){
 						
 						unset($datas['um1'][$i]);
 					}
@@ -8301,7 +8332,7 @@ public function kekata($x) {
 			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, agen.kode as kodesupplier , cabang.nama as namacabang, agen.nama as namasupplier  from fpg,subcon, masterbank, jenisbayar, cabang where idfpg = '$id' and fpg_agen = kode and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");	
 		}
 		else if($jenisbayar == '1'){
-			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, agen.kode as kodesupplier , cabang.nama as namacabang, agen.nama as namasupplier  from fpg,cabang, masterbank, jenisbayar where idfpg = '$id' and fpg_agen = agen.kode and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");
+			$data['fpg'] = DB::select("select *, fpg_agen as kodesupplier, cabang.kode as kodecabang , cabang.nama as namacabang, cabang.nama as namasupplier  from fpg,cabang, masterbank, jenisbayar where idfpg = '$id'  and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");
 		}
 		else if($jenisbayar == '3'){
 			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, supplier.no_supplier as kodesupplier , cabang.nama as namacabang, supplier.nama_supplier as namasupplier from fpg, masterbank, jenisbayar, supplier, cabang where  idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode and fpg_agen = no_supplier ");
@@ -8310,7 +8341,7 @@ public function kekata($x) {
 		else if($jenisbayar == '5'){
 			$data['fpg'] = DB::select("select *, cabang.kode as kodecabang, cabang.nama as namacabang  from fpg,cabang, masterbank, jenisbayar where idfpg = '$id' and fpg_jenisbayar = idjenisbayar and fpg_idbank = mb_id and fpg_cabang = cabang.kode");
 		}
-		/*dd($data['fpg']);	*/
+		//dd($data['fpg']);	
 		$jenisbayar = $data['fpg'][0]->fpg_jenisbayar;
 		//dd($data['fpg']);
 		if($jenisbayar == '2' || $jenisbayar == '6' || $jenisbayar == '7' || $jenisbayar == '9' ) {
@@ -8546,6 +8577,7 @@ public function kekata($x) {
 						$updatefaktur->update([
 						 	'fp_sisapelunasan' => $sisafaktur,
 						 	'fp_status' => 'APPROVED',
+						 	'fp_edit' => 'UNALLOWED',
 					 	]);	
 
 						$idfaktur = $request->idfaktur[$i];
@@ -8568,13 +8600,23 @@ public function kekata($x) {
 					 	]);	
 					}
 					else if($request->jenisbayar == 4){
-						
-						
+						$nofaktur = $request->nofaktur[$i];
+						$dataum = DB::select("select * from d_uangmuka where um_nomorbukti = '$nofaktur'");
+						$sisaterpakai = $dataum[0]->um_sisaterpakai;
+
+						if($sisaterpakai == null){
+							$temp = 0; 
+							$sisaterpakai = $temp + $pelunasan;
+						}
+						else {
+							$sisaterpakai2 = floatval($sisaterpakai) + floatval($pelunasan); 
+						}
+
 						$updateum = DB::table('d_uangmuka')
 						->where('um_nomorbukti', $request->nofaktur[$i])
 						->update([
 							'um_sisapelunasan' => $sisafaktur,
-							'um_sisaterpakai' => $pelunasan,
+							'um_sisaterpakai' => $sisaterpakai2,
 						]);	
 					}
 

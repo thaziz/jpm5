@@ -224,13 +224,18 @@
 
                           <tr>
                             <td> Pilih Group Item </td>
-                            <td> <select class="form-control groupitem" name="groupitem"> 
+                            <td> <select class="form-control  groupitem" name="groupitem" id="selectgroup"> 
                                     @foreach($data['jenisitem'] as $jenis)
                                   <option value="{{$jenis->kode_jenisitem}},{{$jenis->stock}}"> {{$jenis->keterangan_jenisitem}} </option> 
                                     @endforeach
-                                    </select> 
-                                  
-                                  </td>
+
+                                  <!--   <option value="A,Y"> ATK </option>
+                                    <option value="P,Y"> PENGEPAKAN </option>
+                                    <option value="S,Y"> SPARE PART </option>
+                                    <option value="J,T"> JASA </option> -->
+                                  </select> 
+                                  <!-- <input type="text" class="hsljenisitem"> -->
+                            </td>
                           </tr>
 
                           
@@ -688,7 +693,7 @@
                               <th width="100px">
                               Qty
                               </th>
-                              <th width='150px'>
+                              <th width='150px' class="tdgudangitem">
                                 Gudang
                               </th>
                               <th width='300px'>
@@ -804,7 +809,7 @@
 
                                        <tr>
                                         <td> Keterangan </td>
-                                        <td> <input type="text" class="form-control keteranganum_header editum">   </td>
+                                        <td> <input type="text" class="form-control keteranganum_header">   </td>
                                       </tr>
 
                                        </table> 
@@ -1686,7 +1691,8 @@
 
   $('#buttongetum').click(function(){
 
-    id = $('.check').val();
+    id = $('.check:checked').val();
+
     cabangtransaksi = $('.cabangtransaksi').val();
     $.ajax({
       url : baseUrl + '/fakturpembelian/hasilum',
@@ -1923,7 +1929,7 @@
       
       totalum2 = $('.totaljumlah').val();
       totalum   = totalum2.replace(/,/g,'');
-      sisahutang2 = $('.sisahutang').val();
+      sisahutang2 = $('.nettohutang').val();
       sisahutang = sisahutang2.replace(/,/g,'');
 
       hasilsisa = (parseFloat(sisahutang) - parseFloat(totalum)).toFixed(2);
@@ -3250,10 +3256,7 @@
       var nourut = 1;
       $jumlahharga = 0;
       $('#myform').submit(function(event){
-         
-
-
-
+            
         event.preventDefault();
           var post_url = $(this).attr("action");
           var form_data = $(this).serialize();
@@ -3273,7 +3276,15 @@
           var idsup = $('.idsup').val();
           
 
-          if(gudang == ''){
+          var grupitem = $('.groupitem').val();
+          var string4 = grupitem.split(",");
+          groupitem = string4[0];
+          kodestock = string4[1];
+
+          if(kodestock == 'Y') {
+           $('.tdgudangitem').show();
+           
+            if(gudang == ''){
             toastr.info('Maaf anda belum mengisi gudang :)');
             return false;
           }
@@ -3287,8 +3298,13 @@
             $('.keterangan2').attr('disabled' , true);
 
             $('.noinvoice').attr('disabled' , true);
-            $('.groupitem').addClass('disabled');
+           // $('.groupitem').addClass('disabled');
           }
+          }
+          else {
+            $('.tdgudangitem').hide();
+          }
+
           var amount = $('.amount').val();
           var diskon = $('.diskon').val();
           var biaya = $('.biaya').val();
@@ -3305,9 +3321,24 @@
           kodestock = string4[1];
          // alert(penerimaan);
 
-       
+          $.ajax({
+            type : "get",
+            data  : {kodestock},
+            url : baseUrl + "/fakturpembelian/datagroupitem",
+            dataType : "json",
+            success : function(response){
+             
+            
+              for(i = 0; i < response.countgroupitem; i++){
+              //  console.log(response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock);
+                 $('#selectgroup option[value="'+response.groupitem[i].kode_jenisitem+','+response.groupitem[i].stock+'"]').remove();
+              }
 
+              /*$('#selectgroup option[value="J,T"]').remove();*/
+            }
+          })
 
+          $('.hsljenisitem').val(kodestock);
 
           var  row = "<tr id='data-item-"+nourut+"'> <td>"+nourut+"</td>"+
                   "<td> <select class='form-control disabled barangitem brg-"+nourut+"' data-id="+nourut+">  @foreach($data['barang'] as $brg) <option value='{{$brg->kode_item}}'>{{$brg->nama_masteritem}} </option> @endforeach </select>  <input type='hidden' class='brg-"+nourut+"' name='item[]'> </td>" + //nama barang
@@ -3315,7 +3346,7 @@
                   "<td> <input type='text' class='input-sm form-control qtyitem qtyitem"+nourut+"' value="+qty+" name='qty[]' data-id="+nourut+"> " +
                   "<input type='hidden' class='form-control groupitem' value="+groupitem+" name='groupitem[]'> <input type='hidden' class='form-control kodestock' value="+kodestock+" name='kodestock[]'> </td>"+ //qty
                   
-                  "<td> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
+                  "<td class='tdgudangitem'> <select class='form-control gudangitem gudangitem"+nourut+"' name='gudang[]'> @foreach($data['gudang'] as $gudang)  <option value='{{$gudang->mg_id}}'> {{$gudang->mg_namagudang}} </option> @endforeach</select> </td>"+ //gudang
 
                   "<td> <input type='text' class='input-sm form-control hargaitem hargaitem"+nourut+"' value='"+ addCommas(harga)+"' name='harga[]' data-id="+nourut+"></td>"+ //harga
 
@@ -3362,6 +3393,11 @@
                   }
                   else {
                     $('#tablefp').append(row);
+
+                    if(kodestock == 'T'){
+                      alert(kodestock);
+                     $('.tdgudangitem').hide();
+                    }
                   }
 
                  // alert(item);
@@ -5347,8 +5383,8 @@
        if(stock == 'T') {
             $('.penerimaan').val(stock);
            //$('tr#tdupdatestock').css('display', 'none');
-           $('td#tdupdatestock').css('display', 'none');
-           $('td#tdgudang').css('display', 'none');
+           $('td#tdupdatestock').hide();
+           $('td#tdgudang').hide();
            $.ajax({    
             type :"post",
             data : {idsup, groupitem, stock, updatestock},
@@ -5410,8 +5446,8 @@
        // alert(updatestock);
         $('.penerimaan').val(stock);
            //$('tr#tdupdatestock').css('display', 'block');
-           $('td#tdupdatestock').css('display', 'block');
-            $('td#tdgudang').css('display', 'block');
+           $('td#tdupdatestock').show();
+            $('td#tdgudang').show();
 
           $.ajax({    
             type :"post",
