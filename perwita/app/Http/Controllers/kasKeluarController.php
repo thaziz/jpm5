@@ -880,7 +880,7 @@ class kasKeluarController extends Controller
 			$nota = 0;
 		}
 
-		$fpg = DB::select("SELECT fpg_nofpg as nota, fpg_tgl as tanggal, fpgdt_jumlahtotal as total 
+		$fpg = DB::select("SELECT fpg_nofpg as nota, fpg_tgl as tanggal, fpgdt_pelunasan as total 
 							from fpg inner join fpg_dt on fpgdt_idfpg = idfpg where fpgdt_nofaktur = '$req->fp_faktur'");	
 
 		$bkk = DB::select("SELECT bkk_nota as nota, bkk_tgl as tanggal, bkkd_total as total 
@@ -1064,6 +1064,11 @@ class kasKeluarController extends Controller
 				}else{
 					$id_dt += 1;
 				}
+				if ($req->jenis_bayar == 4) {
+					$sisa_um = filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT);
+				}else{
+					$sisa_um = 0;
+				}
 
 				$detail = DB::table('bukti_kas_keluar_detail')
 				  ->insert([
@@ -1078,6 +1083,7 @@ class kasKeluarController extends Controller
 					'created_at' 		=> carbon::now(),
 					'bkkd_ref' 			=> $req->fp_faktur[$i],
 					'bkkd_supplier' 	=> $req->supplier_faktur,
+					'bkkd_sisaum'    	=> $sisa_um,
 					]);
 
 				if ($req->jenis_bayar == 2 or $req->jenis_bayar == 6 or $req->jenis_bayar == 7 or $req->jenis_bayar == 9) {
@@ -1105,7 +1111,8 @@ class kasKeluarController extends Controller
 					$update_faktur =DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
 									  ]);
 				}
 				
@@ -2236,8 +2243,10 @@ class kasKeluarController extends Controller
 					$update_faktur = DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$detail->bkkd_ref)
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $detail->bkkd_total
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $detail->bkkd_total,
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $detail->bkkd_total
 									  ]);
+			
 				}
 			}
 
@@ -2276,6 +2285,12 @@ class kasKeluarController extends Controller
 					$id_dt += 1;
 				}
 
+				if ($req->jenis_bayar == 4) {
+					$sisa_um = filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT);
+				}else{
+					$sisa_um = 0;
+				}
+
 				$detail = DB::table('bukti_kas_keluar_detail')
 				  ->insert([
 				  	'bkkd_id'  			=> $id_dt,
@@ -2288,6 +2303,7 @@ class kasKeluarController extends Controller
 					'updated_at'		=> carbon::now(),
 					'created_at' 		=> carbon::now(),
 					'bkkd_ref' 			=> $req->fp_faktur[$i],
+					'bkkd_sisaum'		=> $sisa_um,
 					'bkkd_supplier' 	=> $req->supplier_faktur,
 					]);
 
@@ -2313,10 +2329,11 @@ class kasKeluarController extends Controller
 					$cari_faktur = DB::table('d_uangmuka')
 									 ->where('um_nomorbukti',$req->fp_faktur[$i])
 									 ->first();
-					$update_faktur =DB::table('d_uangmuka')
+							$update_faktur =DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$req->fp_faktur[$i])
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan - filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT),
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai + filter_var($req->fp_pelunasan[$i], FILTER_SANITIZE_NUMBER_INT)
 									  ]);
 				}
 				
@@ -2591,7 +2608,8 @@ class kasKeluarController extends Controller
 					$update_faktur = DB::table('d_uangmuka')
 									  ->where('um_nomorbukti',$cari_nota[$i]->bkkd_ref)
 									  ->update([
-									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total
+									  	'um_sisapelunasan' => $cari_faktur->um_sisapelunasan + $cari_nota[$i]->bkkd_total,
+									  	'um_sisaterpakai' => $cari_faktur->um_sisaterpakai - $cari_nota[$i]->bkkd_total
 									  ]);
 				}
 			}

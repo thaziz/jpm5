@@ -1193,9 +1193,6 @@
 
 {{-- modal uang muka --}}
 
-
-
-
 <div id="modal_um_bp" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document" style="width: 1200px">
     <div class="modal-content">

@@ -8,8 +8,17 @@
     <th>Sisa Terpakai</th>
   </thead>
   <tbody>
-    
+    @foreach($data as $val)
+    <tr>
+      <td>{{$val->nomor}}</td>
+      <td>{{$val->um_tgl}}</td>
+      <td>{{$val->um_supplier}}</td>
+      <td>{{$val->um_keterangan}}</td>
+      <td>{{$val->total_um}}</td>
+      <td>{{$val->total_um}}</td>
+    </tr>
   </tbody>
+  @endforeach
 </table>
 
 

@@ -1194,6 +1194,7 @@
      $('#buttongetid').click(function(){
 
         jenisbayar = $('.jenisbayar').val();
+        $('.jenisbayar').addClass('disabled');
         var checked = $(".check:checked").map(function(){
           return this.id;
         }).toArray();
