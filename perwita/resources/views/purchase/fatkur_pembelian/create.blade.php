@@ -202,7 +202,7 @@
                               <div class="col-xs-6">
                                   <table class="table table-striped">
                                   <tr>
-                                    <td width="150px"> No Invoice </td>
+                                    <td width="150px"> No Invoice_rubah </td>
                                     <td> <input type="text" class="form-control noinvoice" name="no_invoice" required="" novalidate> </td>
                                   </tr>
 
@@ -1269,9 +1269,10 @@
                   <th> Tanggal </th>
                   <th> No Uang Muka</th>
                   <th> Jumlah Uang Muka </th>
+                  <th> Sisa Uang Muka </th>
                   <th> Dibayar </th>
                   <th> Keterangan</th>
-                  <th> Hapus </th> 
+                  <th> Aksi </th> 
                 </tr>
                 </thead>
                 <tbody>
@@ -6112,15 +6113,19 @@ $('#tmbhdataitem').click(function(){
             "language": dataTableLanguage,
             columnDefs: [
               {
-                 targets: 0,
-                 className: 'center'
+                 targets: 4,
+                 className: 'right'
               },
               {
-                 targets: 3,
+                 targets: 5,
                  className: 'right'
               },
               {
                  targets: 6,
+                 className: 'right'
+              },
+              {
+                 targets: 8,
                  className: 'center'
               }
             ]

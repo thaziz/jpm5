@@ -630,6 +630,16 @@
      });
   }
 
+function hitung_um() {
+  var temp = 0;
+  datatable2.$('.tb_bayar_um').each(function(){
+    var b = $(this).val();
+    b   = b.replace(/[^0-9\-]+/g,"")/1;
+    console.log(b);
+    temp+=b;
+  })
+  $('.bp_total_um').val(accounting.formatMoney(temp, "", 2, ".",','));
+}
   
 
 function print_penerus() {
@@ -638,13 +648,15 @@ function print_penerus() {
    window.open('{{url('fakturpembelian/detailbiayapenerus')}}'+'/'+idfaktur);
   }
 
-
+var array_um1 = [];
+var array_um2 = [];
 $('.btn_modal_bp').click(function(){
   $('#modal_um_bp').modal('show');
 })
 
 
-
+var array_um1 = [0];
+var array_um2 = [0];
 $('.bp_nomor_um').focus(function(){
   var sup = $('.agen_vendor').val();
   if (sup == '0') {
@@ -654,7 +666,7 @@ $('.bp_nomor_um').focus(function(){
 
   $.ajax({
     url:baseUrl +'/fakturpembelian/biaya_penerus_um',
-    data: {sup},
+    data: {sup,array_um1,array_um2},
     success:function(data){
       console.log('asd');
       $('.bp_div_um').html(data);
@@ -665,16 +677,74 @@ $('.bp_nomor_um').focus(function(){
   })
 
 })
+var id_um    = $('.nofaktur').val();
 
 $('.bp_tambah_um').click(function(){
   var nota = $('.bp_nomor_um').val();
   var sup = $('.agen_vendor').val();
+  var nofaktur = $('.nofaktur').val();
+  var bp_dibayar_um = $('.bp_dibayar_um').val();
+  bp_dibayar_um   = bp_dibayar_um.replace(/[^0-9\-]+/g,"")/1;
+
+  if (nota == '') {
+    toastr.warning("Uang Muka Harus dipilih");
+    return false;
+  }
+  console.log(nota);
+  if (bp_dibayar_um == '' || bp_dibayar_um == '0') {
+    toastr.warning("Pembayaran Tidak Boleh 0");
+    return false;
+  }
+  
+
   $.ajax({
     url:baseUrl +'/fakturpembelian/biaya_penerus/append_um',
     data: {nota,sup},
     dataType:'json',
     success:function(data){
+
+      $('.bp_nomor_um').val(data.data.nomor);
+      $('.bp_tanggal_um').val(data.data.um_tgl);
+      $('.bp_jumlah_um').val(accounting.formatMoney(data.data.total_um, "", 2, ".",','));
+      $('.bp_sisa_um').val(accounting.formatMoney(data.data.sisa_um, "", 2, ".",','));
+      $('.bp_keterangan_um').val(data.data.um_keterangan);
+
+      if (bp_dibayar_um > data.data.sisa_um) {
+        toastr.warning("Pembayaran Melebihi Sisa Uang Muka");
+        return false;
+      }
       
+      datatable2.row.add([
+          '<p class="tb_faktur_um_text">'+nofaktur+'</p>'+
+          '<input type="hidden" class="tb_faktur_um_'+id_um+'">',
+
+          '<p class="tb_transaksi_um_text">'+data.data.nomor+'</p>'+
+          '<input type="hidden" class="tb_transaksi_um" name="tb_transaksi_um[]" value="'+data.data.nomor+'">',
+
+          '<p class="tb_tanggal_text">'+data.data.um_tgl+'</p>',
+
+          '<p class="tb_um_um_text">'+data.data.um_nomorbukti+'</p>'+
+          '<input type="hidden" class="tb_um_um" name="tb_um_um[]" value="'+data.data.um_nomorbukti+'">',
+
+          '<p class="tb_jumlah_um_text">'+accounting.formatMoney(data.data.total_um, "", 2, ".",',')+'</p>',
+
+          '<p class="tb_sisa_um_text">'+accounting.formatMoney(data.data.sisa_um, "", 2, ".",',')+'</p>',
+
+          '<p class="tb_bayar_um_text">'+bp_dibayar_um+'</p>'+
+          '<input type="hidden" class="tb_bayar_um" name="tb_bayar_um[]" value="'+bp_dibayar_um+'">',
+
+          '<p class="tb_keterangan_um_text">'+data.data.um_keterangan+'</p>',
+
+          '<div class="btn-group ">'+
+          '<a  onclick="edit_um(this)" class="btn btn-xs btn-success"><i class="fa fa-pencil"></i></a>'+
+          '<a  onclick="hapus_um(this)" class="btn btn-xs btn-danger"><i class="fa fa-trash"></i></a>'+
+          '</div>',
+        ]).draw();
+      id_um++;
+      array_um1.push(data.data.nomor);
+      array_um2.push(data.data.um_nomorbukti);
+      hitung_um();
+      $('.bp_tabel_um :input').val('');
     },error:function(){
       toastr.warning('Terjadi Kesalahan');
     }

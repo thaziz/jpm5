@@ -2416,13 +2416,53 @@ public function biaya_penerus_um(request $req)
 
 	$data = [];
 	
-	// return $data;
+	// return dd($req->all());
 	$data = array_merge($fpg,$bk);
+	$data1 = array_merge($fpg,$bk);
+
+	for ($i=0; $i < count($data1); $i++) { 
+		for ($a=0; $a < count($req->array_um1); $a++) { 
+			if ($data1[$i]->nomor == $req->array_um1[$a] and $data1[$i]->um_nomorbukti == $req->array_um2[$a]) {
+				unset($data[$i]);
+			}
+		}
+		
+	}
 
 	
 	return view('purchase.fatkur_pembelian.biaya_penerus_um_modal',compact('data'));
 }
 public function pilih_um(request $req)
+{
+	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
+					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
+					   inner join fpg_dt on fpgdt_idfpg = idfpg
+					   inner join d_uangmuka on um_supplier = fpg_agen
+					   where fpgb_posting = 'DONE'
+					   and fpg_agen = '$req->sup'");
+
+
+	$bk  = DB::select("SELECT bkk_nota as nomor,bkk_supplier as agen,bkkd_total as total_um,bkkd_sisaum as sisa_um, d_uangmuka.*
+					   from bukti_kas_keluar inner join bukti_kas_keluar_detail on bkkd_bkk_id = bkk_id
+					   inner join d_uangmuka on um_supplier = bkk_supplier
+					   where bkk_supplier = '$req->sup'");
+
+	$data = [];
+	
+	// return $data;
+	$data = array_merge($fpg,$bk);
+
+
+	for ($i=0; $i < count($data); $i++) { 
+		if ($data[$i]->nomor == $req->nota) {
+			$head = $data[$i];
+		}
+	}
+	return response()->json(['data'=>$head]);
+}
+
+
+public function append_um(request $req)
 {
 	$fpg = DB::select("SELECT fpg_nofpg as nomor, fpg_agen as agen,fpgb_nominal as total_um,fpgdt_sisapelunasanumfp as sisa_um, d_uangmuka.*
 					   from fpg inner join fpg_cekbank on fpgb_idfpg = idfpg
