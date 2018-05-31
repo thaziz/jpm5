@@ -775,6 +775,7 @@
                                           <input type="hidden" name="_token" value="{{ csrf_token() }}">
                                           <input type="hidden" class="notr">
                                           <input type="hidden" class="akunhutang_um">
+                                          <input type="hidden" class="flag_um">
                                         </td>
                                       </tr>
                                       <tr>
@@ -1537,7 +1538,7 @@
         notransaksi = $('.notr').val();
         akunhutang = $('.akunhutang_um').val();
         keteranganum = $('.keteranganum_header').val();
-
+        flag = $('.flag_um').val();
         if(dibayar == ''){
           toastr.info("harap diisi jumlah dibayar nya :)");
           return false;
@@ -1567,7 +1568,7 @@
                   '<td><p class="notaum_text">'+notaum+'</p> <input type="hidden" class="notaum" value="'+notaum+'" name="notaum[]"> </td>' +
                   '<td> <p class="jumlahum_text">'+jumlah+'</p> <input type="hidden" class="jumlahum" value="'+jumlah+'" name="jumlahum[]"> </td>' +
                   '<td> <p class="dibayar_text">'+dibayar+'</p> <input type="hidden" class="dibayar" value="'+dibayar+'" name="dibayarum[]"> </td>'+
-                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> </td>' +
+                  '<td> <p class="keterangan_text">'+keterangan+'</p><input type="hidden" value="'+keterangan+'" class="keteranganum" name="keteranganum[]"> <input type="hidden" value='+notr+' class="notr"> <input type="hidden" class="akunhutangum" value="'+akunhutang+'" name="akunhutangum[]"> <input type="hidden" class="keteranganumheader" value="'+keteranganum+'" name="keteranganumheader"> <input type="hidden" class="flagum" name="flag"> </td>' +
                   '<td> <button class="btn btn-sm btn-danger" type="button" onclick="hapusum(this)"><i class="fa fa-trash"></i></button></td>'+ 
                 "</tr>";
 
@@ -1708,6 +1709,7 @@
         $('.nota_um').val(response.um[0].nota_um);
         $('.idtransaksi').val(response.um[0].idtransaksi);
         $('.akunhutang_um').val(response.um[0].acchutang);
+        $('.flag_um').val(response.um[0].flag);
           var tableum = $('#tabletransaksi').DataTable();
       }
     })    
@@ -1734,6 +1736,7 @@
     arrnoum = [];
     $('.dataum').each(function(){
       val = $(this).data('nota');
+      alert(val);
       arrnoum.push(val);
     })
     var a = $('ul#tabmenu').find('li.active').data('val');

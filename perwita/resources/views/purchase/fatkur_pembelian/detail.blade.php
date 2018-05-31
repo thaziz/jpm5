@@ -827,7 +827,7 @@
                                             @foreach($dataumfp as $index=>$umfp)
 
                                               <tr class="dataum dataum{{$index}}" data-nota="{{$umfp->umfpdt_transaksibank}}">
-                                              <td>  <p class="nofaktur nofaktur2{{$index}}"  onclick="klikkas(this)"> {{$umfp->umfp_nofaktur}} </p> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_nofaktur}}" name="nofaktur[]"> </td>
+                                              <td>  <p class="nofaktur nofaktur2{{$index}}"  onclick="klikkas(this)"> {{$umfp->umfp_nofaktur}} </p> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_nofaktur}}" name="nofaktur[]"> <input type="hidden" class="nofaktur" value="{{$umfp->umfp_id}}" name="idumfp"> </td>
                                               <td> <p class="nokas_text">{{$umfp->umfpdt_transaksibank}}</p> <input type="hidden" class="nokas" value="{{$umfp->umfpdt_transaksibank}}" name="nokas[]"> </td>
                                               <td><p class="tgl_text">{{$umfp->umfpdt_tgl}}</p> <input type="hidden" class="tglum" value="{{$umfp->umfpdt_tgl}}" name="tglum[]"> </td>
                                               <td> <p class="notaum_text">{{$umfp->umfpdt_notaum}}</p> <input type="hidden" class="notaum" value="{{$umfp->umfpdt_notaum}}" name="notaum[]"></td>
