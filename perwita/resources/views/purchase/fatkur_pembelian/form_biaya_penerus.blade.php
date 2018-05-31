@@ -658,11 +658,26 @@ $('.bp_nomor_um').focus(function(){
     success:function(data){
       console.log('asd');
       $('.bp_div_um').html(data);
+      $('#modal_show_um').modal('show');
     },error:function(){
       toastr.warning('Terjadi Kesalahan');
     }
   })
 
-  $('#modal_show_um').modal('show');
+})
+
+$('.bp_tambah_um').click(function(){
+  var nota = $('.bp_nomor_um').val();
+  var sup = $('.agen_vendor').val();
+  $.ajax({
+    url:baseUrl +'/fakturpembelian/biaya_penerus/append_um',
+    data: {nota,sup},
+    dataType:'json',
+    success:function(data){
+      
+    },error:function(){
+      toastr.warning('Terjadi Kesalahan');
+    }
+  })
 })
 </script>

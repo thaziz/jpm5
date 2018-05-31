@@ -1194,9 +1194,6 @@
 
 {{-- modal uang muka --}}
 
-
-
-
 <div id="modal_um_bp" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog" role="document" style="width: 1200px">
     <div class="modal-content">
@@ -1224,6 +1221,12 @@
                 <td>Jumlah</td>
                 <td colspan="2">
                   <input readonly="" type="text" name="bp_jumlah_um" class=" form-control bp_jumlah_um">
+                </td>
+              </tr>
+              <tr>
+                <td>Sisa Uang Muka</td>
+                <td colspan="2">
+                  <input readonly="" type="text" name="bp_sisa_um" class=" form-control bp_sisa_um">
                 </td>
               </tr>
               <tr>
@@ -6129,8 +6132,12 @@ $('#tmbhdataitem').click(function(){
 
  
 
-
-
+$('.bp_dibayar_um').maskMoney({
+        precision : 0,
+        thousands:'.',
+        allowZero:true,
+        defaultZero: true
+    });
 
 </script>
 @endsection

@@ -32,7 +32,7 @@ class kontrak_Controller extends Controller
                    ->get(); 
         }
         
-
+    
         return view('master_sales.kontrak.index',compact('data','cab'));
     }
     
