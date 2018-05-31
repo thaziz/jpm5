@@ -809,7 +809,7 @@
 
                                        <tr>
                                         <td> Keterangan </td>
-                                        <td> <input type="text" class="form-control keteranganum_header editum">   </td>
+                                        <td> <input type="text" class="form-control keteranganum_header">   </td>
                                       </tr>
 
                                        </table> 
@@ -1929,7 +1929,7 @@
       
       totalum2 = $('.totaljumlah').val();
       totalum   = totalum2.replace(/,/g,'');
-      sisahutang2 = $('.sisahutang').val();
+      sisahutang2 = $('.nettohutang').val();
       sisahutang = sisahutang2.replace(/,/g,'');
 
       hasilsisa = (parseFloat(sisahutang) - parseFloat(totalum)).toFixed(2);
@@ -3282,7 +3282,7 @@
           kodestock = string4[1];
 
           if(kodestock == 'Y') {
-           $('.tdgudangitem').hide();
+           $('.tdgudangitem').show();
            
             if(gudang == ''){
             toastr.info('Maaf anda belum mengisi gudang :)');
@@ -3395,7 +3395,8 @@
                     $('#tablefp').append(row);
 
                     if(kodestock == 'T'){
-                      $('.tdgudangitem').hide();
+                      alert(kodestock);
+                     $('.tdgudangitem').hide();
                     }
                   }
 
