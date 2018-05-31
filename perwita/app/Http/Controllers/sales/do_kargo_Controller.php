@@ -6,9 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use PDF;
-use Carbon\Carbon;
+use carbon;
 use Auth;
-
+use Yajra\Datatables\Datatables;
 
 class do_kargo_Controller extends Controller
 {
@@ -32,6 +32,76 @@ class do_kargo_Controller extends Controller
         $kota = DB::table('kota')
                   ->get();
         return view('sales.do_kargo.index',compact('data','kota'));
+    }
+
+    public function datatable_do_kargo($value='')
+    {
+
+      $cabang = auth::user()->kode_cabang;
+      if (Auth::user()->punyaAkses('Delivery Order','all')) {
+          $data = DB::table('delivery_order')
+                    ->join('cabang','kode','=','kode_cabang')
+                    ->where('jenis','KARGO')
+                    ->orderBy('tanggal','DESC')
+                    ->get();
+      }else{
+          $data = DB::table('delivery_order')
+                    ->join('cabang','kode','=','kode_cabang')
+                    ->where('jenis','KARGO')
+                    ->where('kode_cabang',$cabang)
+                    ->orderBy('tanggal','DESC')
+                    ->get();
+      }
+        
+        // return $data;
+        $data = collect($data);
+        // return $data;
+        return Datatables::of($data)
+                        ->addColumn('aksi', function ($data) {
+
+                            if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
+                                if(cek_periode(carbon\carbon::parse($data->tanggal)->format('m'),carbon\carbon::parse($data->tanggal)->format('Y') ) != 0){
+                                $a = '<a type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>';
+                                }
+                            }
+
+                            if(Auth::user()->punyaAkses('Delivery Order','print')){
+                                $b = '<button type="button" onclick="print(\''.$data->nomor.'\')" target="_blank" data-toggle="tooltip" title="Print" class="btn btn-warning btn-xs btnedit"><i class="fa fa-print"></i></button>';
+                            }
+
+
+                            if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus')){
+                                if(cek_periode(carbon\carbon::parse($data->tanggal)->format('m'),carbon\carbon::parse($data->tanggal)->format('Y') ) != 0){
+                                  $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
+                                }
+                            }
+                            return $a . $b .$c  ;
+                            
+
+                                   
+                        })
+                        ->addColumn('asal', function ($data) {
+                          $kota = DB::table('kota')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->id_kota_asal == $kota[$i]->id) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addColumn('tujuan', function ($data) {
+                          $kota = DB::table('kota')
+                                    ->get();
+
+                          for ($i=0; $i < count($kota); $i++) { 
+                            if ($data->id_kota_tujuan == $kota[$i]->id) {
+                                return $kota[$i]->nama;
+                            }
+                          }
+                        })
+                        ->addIndexColumn()
+                        ->make(true);
     }
 
     public function form($nomor=null){
