@@ -87,9 +87,16 @@ class item_Controller extends Controller
                }
         
         if ($crud == 'N') {
+
+            $kode = DB::table('item')
+                      ->where('kode_grup_item',strtoupper($request->cb_grup_item))
+                      ->max('id_item')+1;
+
+
             $data = array(
                 // 'id_item' => $id_kode,
                 'kode' => $kodekode,
+                'id_item' => $kode,
                 'nama' => strtoupper($request->ed_nama),
                 'harga' => filter_var($request->ed_harga, FILTER_SANITIZE_NUMBER_INT),
                 'keterangan' => strtoupper($request->ed_keterangan),
@@ -156,8 +163,8 @@ class item_Controller extends Controller
     public function pilih_nota(request $request)
     {
         $kode = DB::table('item')
-                  ->where('kode','like',$request->cb_grup_item.'%')
-                  ->max('kode');
+                  ->where('kode_grup_item','like',$request->cb_grup_item.'%')
+                  ->max('id_item');
         $kode = filter_var($kode, FILTER_SANITIZE_NUMBER_INT);
         if ($kode == null) {
           $kode = $request->cb_grup_item.'1';

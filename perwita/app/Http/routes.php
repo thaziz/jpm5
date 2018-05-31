@@ -665,12 +665,12 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
 
   //LAPORAN KARTU HUTANG
   Route::get('kartuhutang/kartuhutang', 'LaporanPembelianControlle@kartuhutang');
-  Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPembelianControlle@reportkartuhutang');
-  Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPembelianControlle@reportexcelkartuhutang');
+  Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPembelianController@reportkartuhutang');
+  Route::get('reportexcelkartuhutang/reportexcelkartuhutang', 'LaporanPembelianController@reportexcelkartuhutang');
   //END OF
 
   //LAPORAN MASTER GROUP ITEM
-  Route::get('reportmastergroupitem/reportmastergroupitem', 'LaporanPembelianControlle@reportmastergroupitem');
+  Route::get('reportmastergroupitem/reportmastergroupitem', 'LaporanPembelianController@reportmastergroupitem');
   //END OF
 
   //LAPORAN PAJAK MASUKAN
@@ -719,7 +719,7 @@ Route::post('laporan_master_penjualan/tabledokumen', 'LaporanMasterController@ta
   //END OF 
 //================================    BELUM SELESAI    ========================================//
 
-Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
+// Route::get('reportkartuhutang/reportkartuhutang', 'LaporanPurchaseController@reportkartuhutang');
 Route::get('reportfakturpelunasan/reportfakturpelunasan', 'LaporanPurchaseController@reportfakturpelunasan');
 Route::get('reportanalisausiahutang/reportanalisausiahutang', 'LaporanPurchaseController@reportanalisausiahutang');
 Route::get('kartuhutangajax/kartuhutangajax', 'LaporanPurchaseController@kartuhutangajax');
