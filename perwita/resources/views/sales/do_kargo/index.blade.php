@@ -5,6 +5,9 @@
 @section('content')
 <style type="text/css">
     .cssright { text-align: right; }
+    .center{
+        text-align: center;
+    }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -76,11 +79,6 @@
                 </div><!-- /.box-body -->
                 <div class="box-footer">
                   <div class="pull-right">
-
-
-
-
-
                     </div>
                   </div><!-- /.box-footer -->
               </div><!-- /.box -->
@@ -114,20 +112,29 @@
             ajax: {
                 url:'{{ route("datatable_do_kargo") }}',
             },
-            // columnDefs: [
-
-             
-            //     ],
-            // "columns": [
-            // { "data": "i_code" },
-            // { "data": "i_name" },
-            // { "data": "harga"},
-            // { "data": "i_unit" },
-            // { "data": "i_description" },
-            // { "data": "gambar"},
-            // { "data": "aksi" },
+            columnDefs: [
+              {
+                 targets: 8,
+                 className: 'right'
+              },
+              {
+                 targets:9,
+                 className: 'center'
+              },
+            ],
+            "columns": [
+            { "data": "nomor" },
+            { "data": "tanggal" },
+            { "data": "nama"},
+            { "data": "nama_pengirim" },
+            { "data": "nama_penerima" },
+            { "data": "asal"},
+            { "data": "tujuan" },
+            { "data": "status" },
+            { "data": "total_net" },
+            { "data": "aksi" },
             
-            // ]
+            ]
       });
     });
 
