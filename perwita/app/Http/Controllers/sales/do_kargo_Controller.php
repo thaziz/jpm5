@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests;
 use PDF;
-use Carbon;
+use carbon\Carbon;
 use Auth;
 use Yajra\Datatables\Datatables;
 
@@ -60,7 +60,7 @@ class do_kargo_Controller extends Controller
                         ->addColumn('aksi', function ($data) {
 
                             if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','ubah')){
-                                if(cek_periode(carbon\carbon::parse($data->tanggal)->format('m'),carbon\carbon::parse($data->tanggal)->format('Y') ) != 0){
+                                if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
                                 $a = '<a type="button" onclick="edit(\''.$data->nomor.'\')" data-toggle="tooltip" title="Edit" class="btn btn-success btn-xs btnedit"><i class="fa fa-pencil"></i></a>';
                                 }
                             }
@@ -71,7 +71,7 @@ class do_kargo_Controller extends Controller
 
 
                             if($data->status_do == 'Released' or Auth::user()->punyaAkses('Delivery Order','hapus')){
-                                if(cek_periode(carbon\carbon::parse($data->tanggal)->format('m'),carbon\carbon::parse($data->tanggal)->format('Y') ) != 0){
+                                if(cek_periode(carbon::parse($data->tanggal)->format('m'),carbon::parse($data->tanggal)->format('Y') ) != 0){
                                   $c = '<button type="button" onclick="hapus(\''.$data->nomor.'\')" class="btn btn-xs btn-danger btnhapus"><i class="fa fa-trash"></i></button>';
                                 }
                             }
