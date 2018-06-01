@@ -105,6 +105,7 @@ class invoice_Controller extends Controller
                   ->join('customer','kode','=','i_kode_customer')
                   ->where('i_nomor',$id)
                   ->first();
+
         if ($head->i_pendapatan == 'KARGO' or $head->i_pendapatan == 'PAKET') {
            $detail = DB::table('invoice_d')
                     ->join('delivery_order','id_nomor_do','=','nomor')
@@ -116,7 +117,7 @@ class invoice_Controller extends Controller
                     ->where('id_nomor_invoice',$id)
                     ->get();
         }
-        
+        dd($detail);
         $counting = count($detail); 
   
         $update_status = DB::table('invoice')
