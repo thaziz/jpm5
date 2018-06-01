@@ -105,9 +105,18 @@ class invoice_Controller extends Controller
                   ->join('customer','kode','=','i_kode_customer')
                   ->where('i_nomor',$id)
                   ->first();
-        $detail = DB::table('invoice_d')
+        if ($head->i_pendapatan == 'KARGO' or $head->i_pendapatan == 'PAKET') {
+           $detail = DB::table('invoice_d')
+                    ->join('delivery_order','id_nomor_do','=','nomor')
                     ->where('id_nomor_invoice',$id)
                     ->get();
+        }else{
+           $detail = DB::table('invoice_d')
+                    ->join('delivery_orderd','id_nomor_do_dt','=','dd_id')
+                    ->where('id_nomor_invoice',$id)
+                    ->get();
+        }
+        
         $counting = count($detail); 
   
         $update_status = DB::table('invoice')
@@ -629,7 +638,7 @@ public function simpan_invoice(request $request)
                                               'id_tgl_do'        => $do->tanggal,
                                               'id_jumlah'        => $request->dd_jumlah[$i],
                                               'id_keterangan'    => $do->deskripsi,
-                                              'id_harga_satuan'  => $request->dd_harga[$i],
+                                              'id_harga_satuan'  => $do->tarif_dasar,
                                               'id_harga_bruto'   => $request->dd_total[$i],
                                               'id_diskon'        => $request->dd_diskon[$i],
                                               'id_harga_netto'   => $request->harga_netto[$i],
@@ -715,6 +724,7 @@ public function simpan_invoice(request $request)
                          ->where('nomor',$request->do_detail[$i])
                          ->first();
 
+
                  $save_detail_invoice = DB::table('invoice_d')
                                           ->insert([
                                               'id_id'            => $cari_id,
@@ -727,7 +737,7 @@ public function simpan_invoice(request $request)
                                               'id_tgl_do'        => $do->tanggal,
                                               'id_jumlah'        => $request->dd_jumlah[$i],
                                               'id_keterangan'    => $do->deskripsi,
-                                              'id_harga_satuan'  => $request->dd_harga[$i],
+                                              'id_harga_satuan'  => $do->tarif_dasar,
                                               'id_harga_bruto'   => $request->dd_total[$i],
                                               'id_diskon'        => $request->dd_diskon[$i],
                                               'id_harga_netto'   => $request->harga_netto[$i],
@@ -814,7 +824,7 @@ public function simpan_invoice(request $request)
                                               'id_tgl_do'        => Carbon::parse($do->tanggal)->format('Y-m-d'),
                                               'id_jumlah'        => $request->dd_jumlah[$i],
                                               'id_keterangan'    => $do->dd_keterangan,
-                                              'id_harga_satuan'  => $request->dd_harga[$i],
+                                              'id_harga_satuan'  => $do->dd_harga,
                                               'id_harga_bruto'   => $request->dd_total[$i],
                                               'id_diskon'        => $request->dd_diskon[$i],
                                               'id_harga_netto'   => $request->harga_netto[$i],
@@ -913,7 +923,7 @@ public function simpan_invoice(request $request)
                                               'id_tgl_do'        => $do->tanggal,
                                               'id_jumlah'        => $request->dd_jumlah[$i],
                                               'id_keterangan'    => $do->dd_keterangan,
-                                              'id_harga_satuan'  => $request->dd_harga[$i],
+                                              'id_harga_satuan'  => $do->dd_harga,
                                               'id_harga_bruto'   => $request->dd_total[$i],
                                               'id_diskon'        => $request->dd_diskon[$i],
                                               'id_harga_netto'   => $request->harga_netto[$i],
