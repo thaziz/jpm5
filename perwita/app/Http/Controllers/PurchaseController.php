@@ -5603,8 +5603,8 @@ public function purchase_order() {
 				$jumlahum = str_replace(',', '', $request->jumlahum[$i]);
 				$dibayarum = str_replace(',', '', $request->dibayarum[$i]);
 				$umfpdt = new uangmukapembeliandt_fp;
-			  	$umfpdt->umfpdt_id =  $idumfp;
-			  	$umfpdt->umfpdt_idumfp = $idumfpdt;
+			  	$umfpdt->umfpdt_id =  $idumfpdt;
+			  	$umfpdt->umfpdt_idumfp = $idumfp;
 			  	$umfpdt->umfpdt_transaksibank = $request->nokas[$i];
 			  	$umfpdt->umfpdt_tgl = $request->tglum[$i];
 			  	$umfpdt->umfpdt_jumlahum = $jumlahum;
@@ -5613,7 +5613,7 @@ public function purchase_order() {
 			  	$umfpdt->umfpdt_idfp = $idfaktur;
 			  	$umfpdt->umfpdt_notaum = $request->notaum[$i];
 			  	$umfpdt->umfpdt_acchutang = $request->akunhutangum[$i];
-			  	$umfpdt->umfpdt_flag = $request->flag;
+			  	$umfpdt->umfpdt_flag = $request->flagum;
 			  	$umfpdt->save();
 
 			  	$notaum = $request->notaum[$i];
@@ -5629,9 +5629,9 @@ public function purchase_order() {
                 ]);
 
                 $notransaksi = $request->nokas[$i];
-                if($request->flag == 'FLAG'){
+                if($request->flagum == 'FPG'){
 
-                	$datafpg = DB::select("select * from fpg where fpg_nofpg = '$notransaksi'");
+                	$datafpg = DB::select("select * from fpg, fpg_dt where fpg_nofpg = '$notransaksi' and fpgdt_idfpg = idfpg");
                 	$idfpg = $datafpg[0]->idfpg;
                 	$sisaum = $datafpg[0]->fpgdt_sisapelunasanumfp;
 
@@ -7963,11 +7963,25 @@ public function kekata($x) {
 					    		}
 
 					    		//UPDATE UM
+					    		$totaljumlah = str_replace(",", "", $request->totaljumlah);
+
 					    		$data['header4'] = DB::table('uangmukapembelian_fp')
 								->where('umfp_id' , $request->idumfp)
 								->update([
-
+									'umfp_totalbiaya' => $totaljumlah,
+									'umfp_keterangan' => $request->keteranganumheader
 								]);
+
+								
+								for($keys = 0; $keys < count($request->nokas); $keys++){
+									$data['header4'] = DB::table('uangmukapembeliandt_fp')
+										->where([['umfpdt_idumfp' , '=' , $request->idumfp],['umfpdt_']])
+										->update([
+											'umfp_totalbiaya' => $totaljumlah,
+											'umfp_keterangan' => $request->keteranganumheader
+										]);
+								}
+
 		
 
 

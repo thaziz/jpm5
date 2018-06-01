@@ -52,7 +52,7 @@
 <!-- <link href="{{ asset('assets/vendors/chosen/chosen.css')}}" rel="stylesheet"> -->
 <div class="row wrapper border-bottom white-bg page-heading">
                 <div class="col-lg-10">
-                    <h2> Faktur Pembeliansss </h2>
+                    <h2> Faktur Pembelian </h2>
                     <ol class="breadcrumb">
                         <li>
                             <a>Home</a>
@@ -202,7 +202,7 @@
                               <div class="col-xs-6">
                                   <table class="table table-striped">
                                   <tr>
-                                    <td width="150px"> No Invoicesss </td>
+                                    <td width="150px"> No Invoice </td>
                                     <td> <input type="text" class="form-control noinvoice" name="no_invoice" required="" novalidate> </td>
                                   </tr>
 
